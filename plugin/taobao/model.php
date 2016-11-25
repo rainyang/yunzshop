@@ -509,6 +509,8 @@ if (!class_exists('TaobaoModel')) {
             if ($remote == true) {
                 file_delete($path);
             }
+
+            $path = 'http://' . $_SERVER['HTTP_HOST'] . '/' . $apath . $path;
             return $path;
         }
         function get_pageno_url($url = '', $pageNo = 1)
@@ -695,7 +697,7 @@ if (!class_exists('TaobaoModel')) {
             $response = ihttp_get($url);
             $length = strval($response['headers']['Content-Length']);
             if ($length != NULL) {
-                return array('result' => '0', 'error' => '未从京东获取到商品信息!');
+                return array('result' => '0', 'error' => '未从1688获取到商品信息!');
             }
             $content = $response['content'];
             $dom = new DOMDocument();
@@ -767,6 +769,74 @@ if (!class_exists('TaobaoModel')) {
             $item['params'] = $params;
             return $this->save_1688_goods($item, $one688url);
         }
+
+        //获取酷美乐购商品
+        public function get_item_kumei($itemid = '', $kumeiurl = '', $pcate = 0, $ccate = 0, $tcate = 0)
+        {
+            error_reporting(0);
+            global $_W;
+            $g = pdo_fetch('select * from ' . tablename('sz_yi_goods') . ' where uniacid=:uniacid and catch_id=:catch_id and catch_source=\'kumei\' limit 1', array(':uniacid' => $_W['uniacid'], ':catch_id' => $itemid));
+            $url = $this->get_kumei_info_url($itemid);
+            load()->func('communication');
+            $response = ihttp_get($url);
+            $length = strval($response['headers']['Content-Length']);
+            if (empty($response)) {
+                return array('result' => '0', 'error' => '未从酷美乐购获取到商品信息!');
+            }
+            $content = $response['content'];
+            $dom = new DOMDocument();
+            $dom->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>' . $content);
+            $xml = simplexml_import_dom($dom);
+            if (!$xml) {
+                echo 'Error while parsing the document';
+                exit;
+            }
+
+            $prodectNameContent = $xml->xpath('//*[@class="good_name"]');
+            $prodectName = strval($prodectNameContent[0]);
+            if ($prodectName == NULL) {
+                echo '宝贝不存在';
+                return array('result' => '0', 'error' => '宝贝不存在!');
+            }
+            $item = array();
+            $item['id'] = $g['id'];
+            $item['pcate'] = $pcate;
+            $item['ccate'] = $ccate;
+            $item['tcate'] = $tcate;
+            $item['cates'] = $pcate . ',' . $ccate . ',' . $tcate;
+            $item['itemId'] = $itemid;
+            $item['title'] = $prodectName;
+            $pics = array();
+            $imgurls = $xml->xpath('//*[@id="showArea"]');
+            foreach ($imgurls[0]->a as $imgurl) {
+                if (count($pics) < 4) {
+                    $pics[] = strval($imgurl->img->attributes()->src);
+                }
+            }
+            $item['pics'] = $pics;
+            $specs = array();
+            $item['total'] = 10;
+            $item['sales'] = 0;
+            $prodectPriceContent = $xml->xpath('//*[@id="mallPrice"]');
+            $prodectPrices = strval($prodectPriceContent[0]);
+            $item['marketprice'] = mb_substr($prodectPrices,3);
+
+            //$prodectContent = $xml->xpath('//*[@class="lib_Contentbox"]/div');
+            $prodectContent = $response['content'];
+            //$Contents = $prodectContent[0];
+            preg_match('/<div id="con_three_1"[\s\S]*?>([\s\S]*?)<\/div>/i', $prodectContent, $matches);
+            /*$info = '';
+            foreach ($Contents->p->img as $val) {
+                $img = '<img align="absmiddle" src="' . strval($val->attributes()->src) . '">';
+                $info .= $img;
+            }
+            $item['content'] = $info;*/
+
+            $item['content'] = $matches['1'];
+
+            return $this->save_kumei_goods($item, $kumeiurl);
+        }
+
         public function save_jingdong_goods($item = array(), $catch_url = '')
         {
             global $_W;
@@ -973,6 +1043,83 @@ if (!class_exists('TaobaoModel')) {
             //pdo_update('sz_yi_goods', $d, array('id' => $goodsid));
             return array('result' => '1', 'goodsid' => $goodsid);
         }
+
+        public function save_kumei_goods($item = array(), $catch_url = '')
+        {
+            global $_W;
+            $data = array('uniacid' => $_W['uniacid'], 'catch_source' => 'kumei', 'catch_id' => $item['itemId'], 'catch_url' => $catch_url, 'title' => $item['title'], 'total' => $item['total'], 'marketprice' => $item['marketprice'], 'pcate' => $item['pcate'], 'ccate' => $item['ccate'], 'tcate' => $item['tcate'], 'cates' => $item['cates'], 'sales' => $item['sales'], 'createtime' => time(), 'updatetime' => time(), 'hasoption' => 0, 'status' => 0, 'deleted' => 0, 'buylevels' => '', 'showlevels' => '', 'buygroups' => '', 'showgroups' => '', 'noticeopenid' => '', 'storeids' => '', 'minprice' => $item['marketprice'], 'maxprice' => $item['marketprice']);
+            $data['supplier_uid'] = $this->get_supplier_uid();
+            $thumb_url = array();
+            $pics = $item['pics'];
+            $piclen = count($pics);
+            if (0 < $piclen) {
+                $data['thumb'] = $this->save_image($pics[0], false);
+                if (1 < $piclen) {
+                    $i = 1;
+                    while ($i < $piclen) {
+                        $img = $this->save_image($pics[$i], false);
+                        $thumb_url[] = $img;
+                        ++$i;
+                    }
+                }
+            }
+            $data['thumb_url'] = serialize($thumb_url);
+            $goods = pdo_fetch('select * from ' . tablename('sz_yi_goods') . ' where  catch_id=:catch_id and catch_source=\'kumei\' and uniacid=:uniacid', array(':catch_id' => $item['itemId'], ':uniacid' => $_W['uniacid']));
+            if (empty($goods)) {
+                pdo_insert('sz_yi_goods', $data);
+                $goodsid = pdo_insertid();
+            } else {
+                $goodsid = $goods['id'];
+                unset($data['createtime']);
+                pdo_update('sz_yi_goods', $data, array('id' => $goodsid));
+            }
+            $goods_params = pdo_fetchall('select * from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid ', array(':goodsid' => $goodsid));
+            $params = $item['params'];
+            $paramids = array();
+            $displayorder = 0;
+            foreach ($params as $p) {
+                $oldp = pdo_fetch('select * from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid and title=:title limit 1', array(':goodsid' => $goodsid, ':title' => $p['title']));
+                $paramid = 0;
+                $d = array('uniacid' => $_W['uniacid'], 'goodsid' => $goodsid, 'title' => $p['title'], 'value' => $p['value'], 'displayorder' => $displayorder);
+                if (empty($oldp)) {
+                    pdo_insert('sz_yi_goods_param', $d);
+                    $paramid = pdo_insertid();
+                } else {
+                    pdo_update('sz_yi_goods_param', $d, array('id' => $oldp['id']));
+                    $paramid = $oldp['id'];
+                }
+                $paramids[] = $paramid;
+                ++$displayorder;
+            }
+            if (0 < count($paramids)) {
+                pdo_query('delete from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid and id not in (' . implode(',', $paramids) . ')', array(':goodsid' => $goodsid));
+            } else {
+                pdo_query('delete from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid ', array(':goodsid' => $goodsid));
+            }
+            $content = $item['content'];
+            preg_match_all('/<img.*?src=[\\\\\'| \\"](.*?(?:[\\.gif|\\.jpg]?))[\\\\\'|\\"].*?[\\/]?>/', $content, $imgs);
+            if (isset($imgs[1])) {
+                foreach ($imgs[1] as $img) {
+                    $catchimg = $img;
+                    if (substr($catchimg, 0, 2) == '//') {
+                        $img = 'http://' . substr($img, 2);
+                    }
+                    $im = array('catchimg' => $catchimg, 'system' => $this->save_image($img, false));
+                    $images[] = $im;
+                }
+            }
+            $html = $content;
+            if (isset($images)) {
+                foreach ($images as $img) {
+                    $html = str_replace($img['catchimg'], $img['system'], $html);
+                }
+            }
+
+            $d = array('content' => $html);
+            pdo_update('sz_yi_goods', $d, array('id' => $goodsid));
+            return array('result' => '1', 'goodsid' => $goodsid);
+        }
+
         private function get_supplier_uid()
         {
             global $_W;
@@ -998,6 +1145,10 @@ if (!class_exists('TaobaoModel')) {
         public function get_1688_info_url($itemid)
         {
             return 'https://detail.1688.com/offer/' . $itemid . '.html';
+        }
+        public function get_kumei_info_url($itemid)
+        {
+            return 'http://www.sousz.com/item/item-' . $itemid . '.html';
         }
     }
 }
