@@ -38,6 +38,8 @@ if($foo == 'bind') {
                     $exist = pdo_fetch('SELECT * FROM ' . tablename('mc_mapping_ucenter') . ' WHERE `uniacid`=:uniacid AND `centeruid`=:centeruid', array(':uniacid' => $_W['uniacid'], 'centeruid' => $data[0]));
                     if(empty($exist)) {
                         pdo_insert('mc_mapping_ucenter', array('uniacid' => $_W['uniacid'], 'uid' => $member['uid'], 'centeruid' => $data[0]));
+                        //获取论坛积分
+                        $uc_credit = $this->model->getUCCredits($data[0]);
 
                         //同步会员现有积分
                         $credits     = pdo_fetchcolumn("SELECT `credit1` FROM " . tablename('mc_members') . " WHERE `uid` = :uid", array(
@@ -45,6 +47,9 @@ if($foo == 'bind') {
                         ));
 
                         $this->model->setCredits($openid, floatval($credits), 1);
+
+                        //同步论坛积分
+                        $this->model->setShopCredit($data[0], $uc_credit);
 
                         @message('绑定UC账号成功！', $this->createMobileUrl('member'), 'success');
                     } else {
@@ -96,10 +101,27 @@ if($foo == 'bind') {
         @message('系统尚未开启UC！', '', 'success');
     }
 } else {
+    mc_init_uc();
+    $exist = $this->model->isExist($member['uid']);
+
+    if (!empty($exist)) {
+        $uc_credits = $this->model->getUCCredits($exist['centeruid']);
+
+        $shop_credits = $this->model->getShopCreditFromUC($exist);
+
+        //删除论坛里的商城积分
+        $this->model->delShopCreditFromUC($exist);
+
+        //删除商城里的论坛积分
+        $credit = $uc_credits - $shop_credits;
+        $this->model->setShopCredit($exist['centeruid'], -$credit);
+    }
+
     $result = pdo_delete('mc_mapping_ucenter', array('uid' => $member['uid'], 'uniacid' => $_W['uniacid']), ' AND ');
     if($result === false) {
         @message('解除绑定UC账号失败！', referer(), 'error');
     } else {
+
         @message('解除绑定UC账号成功！', referer(), 'success');
     }
 }

@@ -40,40 +40,7 @@ if ($operation == 'info') {
     }
 
     if (!empty($_GPC['centeruid']) && !empty($_GPC['credit1'])) {
-        $exist = pdo_fetch("SELECT * FROM " .tablename('mc_mapping_ucenter') . " WHERE `uniacid` = " . $_W['uniacid'] . " AND `centeruid` =" . $_GPC['centeruid']);
-
-        if (!empty($exist)) {
-            $value     = pdo_fetchcolumn("SELECT credit1 FROM " . tablename('mc_members') . " WHERE `uid` = :uid", array(
-                ':uid' => $exist['uid']
-            ));
-
-            $newcredit = $_GPC['credit1'] + $value;
-            if ($newcredit <= 0) {
-                $newcredit = 0;
-            }
-
-            pdo_update('mc_members', array(
-                'credit1' => $newcredit
-            ), array(
-                'uid' => $exist['uid']
-            ));
-            if (empty($log) || !is_array($log)) {
-                $log = array(
-                    $exist['uid'],
-                    '未记录'
-                );
-            }
-            $data = array(
-                'uid' => $exist['uid'],
-                'credittype' => 'credit1',
-                'uniacid' => $_W['uniacid'],
-                'num' => $_GPC['credit1'],
-                'createtime' => TIMESTAMP,
-                'operator' => intval($log[0]),
-                'remark' => $log[1]
-            );
-            pdo_insert('mc_credits_record', $data);
-        }
+        $this->model->setShopCredit($_GPC['centeruid'], $_GPC['credit1']);
     }
 
 } elseif ($operation == 'usergroups') {

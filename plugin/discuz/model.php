@@ -495,5 +495,139 @@ if (!class_exists('discuzModel')) {
                 pdo_insert('mc_mapping_ucenter', array('uniacid' => $_W['uniacid'], 'uid' => $uuid, 'centeruid' => $uid));
             }
         }
+
+        /**
+         * 获取绑定前论坛会员积分
+         *
+         * @param $ucid
+         * @return mixed
+         */
+        public function getUCCredits($ucid)
+        {
+            $prefix = $this->_dz_db_prefix();
+
+            $result = self::getInstance()->fetch_first("SELECT `credits` FROM " . $prefix . "common_member  WHERE uid =" . $ucid);
+
+            return $result['credits'];
+        }
+
+        /**
+        * 同步论坛积分到商城
+        *
+        */
+        public function setShopCredit($ucid, $credit, $log = array())
+        {
+            global $_W;
+
+            $exist = pdo_fetch("SELECT * FROM " .tablename('mc_mapping_ucenter') . " WHERE `uniacid` = " . $_W['uniacid'] . " AND `centeruid` =" . $ucid);
+
+            if (!empty($exist)) {
+                $value     = pdo_fetchcolumn("SELECT credit1 FROM " . tablename('mc_members') . " WHERE `uid` = :uid", array(
+                    ':uid' => $exist['uid']
+                ));
+
+                $newcredit = $credit + $value;
+                if ($newcredit <= 0) {
+                    $newcredit = 0;
+                }
+
+                pdo_update('mc_members', array(
+                    'credit1' => $newcredit
+                ), array(
+                    'uid' => $exist['uid']
+                ));
+                if (empty($log) || !is_array($log)) {
+                    $log = array(
+                        $exist['uid'],
+                        '论坛同步积分'
+                    );
+                }
+                $data = array(
+                    'uid' => $exist['uid'],
+                    'credittype' => 'credit1',
+                    'uniacid' => $_W['uniacid'],
+                    'num' => $credit,
+                    'createtime' => TIMESTAMP,
+                    'operator' => intval($log[0]),
+                    'remark' => $log[1]
+                );
+                pdo_insert('mc_credits_record', $data);
+            }
+        }
+
+        /**
+        * 是否有绑定数据
+        *
+        */
+        public function isExist($uid)
+        {
+            global $_W;
+
+            $exist = pdo_fetch('SELECT * FROM ' . tablename('mc_mapping_ucenter') . ' WHERE `uniacid`=:uniacid AND `uid`=:uid', array(':uniacid' => $_W['uniacid'], ':uid' => $uid));
+
+            return $exist;
+        }
+
+        /**
+        * 删除论坛里的商城积分
+        *
+        */
+        public function delShopCreditFromUC($exist)
+        {
+        
+            $prefix = $this->_dz_db_prefix();
+               
+            self::getInstance()->query("UPDATE " . $prefix . "common_member_count SET extcredits4 = 0 WHERE uid =" . $exist['centeruid']);
+            
+        }
+
+        /**
+        * 删除商城里的uc积分
+        *
+        */
+        public function delUCCreditFromShop($uid, $credit)
+        {
+            global $_W;
+
+             pdo_update('mc_members', array(
+                    'credit1' => $credit
+                ), array(
+                    'uid' => $uid
+                )
+            );
+
+             if (empty($log) || !is_array($log)) {
+                    $log = array(
+                        $uid,
+                        '删除论坛同步积分'
+                    );
+                }
+                $data = array(
+                    'uid' => $uid,
+                    'credittype' => 'credit1',
+                    'uniacid' => $_W['uniacid'],
+                    'num' => $credit,
+                    'createtime' => TIMESTAMP,
+                    'operator' => intval($log[0]),
+                    'remark' => $log[1]
+                );
+                pdo_insert('mc_credits_record', $data);
+
+
+        }
+
+        /**
+        * 获取论坛里商城积分
+        *
+        */
+        public function getShopCreditFromUC($exist)
+        {
+            $prefix = $this->_dz_db_prefix();
+
+            $result = self::getInstance()->fetch_first("SELECT extcredits4 FROM " . $prefix . "common_member_count  WHERE uid =" . $exist['centeruid']);
+
+            return $result['extcredits4'];
+
+        }
     }
 }
