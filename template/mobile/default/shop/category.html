@@ -108,14 +108,19 @@
     {/if}
     
    <%each category as value%>
-    <div class="category_item"  
-         <%if value.level==2%>
-            data-pcate="<%value.parentid%>"   
-            data-ccate="<%value.id%>" 
-            <%else%>
+    <div class="category_item"
+
+        <%if value.level==1%>
+            data-pcate="<%value.id%>"
+        <%/if%>
+        <%if value.level==2%>
+            data-pcate="<%value.parentid%>"
+            data-ccate="<%value.id%>"
+        <%/if%>
+        <%if value.level==3%>
             data-ccate="<%value.parentid%>"   
-            data-tcate="<%value.id%>" 
-            <%/if%>
+            data-tcate="<%value.id%>"
+        <%/if%>
             data-level='<%value.level%>'
          >
         <img src="<%value.thumb%>" />
@@ -217,26 +222,23 @@
            
             var ret = null;
             if(catid=='rec'){
-                
+
                 recommand = [];
                 for(i in category){
-              
-                    if(category[i].isrecommand=='1'){
-                     //   recommand.push(category[i]);
+
+                    if(category[i].ishome=='1'){
+                        recommand.push(category[i]);
                     }
                     if(category[i].children.length>0){
                            for(j in category[i].children){
-                                if(category[i].children[j].isrecommand==1){
+                                if(category[i].children[j].ishome=='1'){
                                          
-                                            recommand.push(category[i].children[j]);
-                                        
-                                         
-                                            for(k in category[i].children[j].children){
-                                                    if(category[i].children[j].children[k].isrecommand==1){
-                                                             recommand.push(category[i].children[j].children[k]);
-                                                    }                
-                                            }
-                                  
+                                    recommand.push(category[i].children[j]);
+                                    for(k in category[i].children[j].children){
+                                        if(category[i].children[j].children[k].ishome=='1'){
+                                            recommand.push(category[i].children[j].children[k]);
+                                        }
+                                    }
                                  }
                            }
                     }
