@@ -79,7 +79,7 @@ if ($operation == 'info') {
     $fan = mc_fansinfo($openid);
 
     if (empty($fan)) {
-        $usreinfo = array(
+        $userinfo = array(
             "openid" => $openid,
             "nickname" => $_GPC['username'],
             "email" => $_GPC['email'],
