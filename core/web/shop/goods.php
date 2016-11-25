@@ -1228,7 +1228,7 @@ if ($operation == "change") {
         if($_GPC['plugin'] == "fund"){
             foreach ($list as $key => &$value) {
                 $allprice = pdo_fetchcolumn("select allprice from ". tablename('sz_yi_fund_goods') ." where goodsid=".$value['id']);
-                $value['casesceu'] = ceil($allprice / $value['marketprice']) <= $value['sales'];
+                $value['casesceu'] = ceil($allprice / $value['marketprice']) <= $value['salesreal'];
                 if(!$value['casesceu']){
                     $value['allrefund'] = pdo_fetchcolumn("select allrefund from ". tablename('sz_yi_fund_goods') ." where goodsid=".$value['id']);
                 }
@@ -1271,6 +1271,17 @@ if ($operation == "change") {
         $id = intval($_GPC['id']);
         $type = $_GPC['type'];
         $data = intval($_GPC['data']);
+        $allrefund = 0;
+        if($_GPC['plugin'] == "fund"){
+            $allrefund = pdo_fetchcolumn("SELECT allrefund FROM " . tablename('sz_yi_fund_goods') . " WHERE goodsid = :id", array(
+                    ':id' => $id
+            ));  
+        }
+        if($allrefund == 1 && $type == 0){
+            die(json_encode(array(
+                'result' => 0
+            )));
+        }   
         if (in_array($type, array(
             'new',
             'hot',
@@ -1352,6 +1363,7 @@ if ($operation == "change") {
                 'data' => $data
             )));
         }
+
         die(json_encode(array(
             'result' => 0
         )));
