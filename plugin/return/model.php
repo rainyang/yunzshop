@@ -631,9 +631,11 @@ if (!class_exists('ReturnModel')) {
             if (!is_dir($tmpdirs)) {
                 mkdirs($tmpdirs);
             }
+			$set = m('plugin')->getpluginSet('return', $_W['uniacid']);
+            //延期返现队列处理
+            $this->setDelay($set, $_W['uniacid']);
             $validation      = $tmpdirs."/".date("Ymd").$_W['uniacid'].".txt";
             if (!file_exists($validation)) {
-                $set = m('plugin')->getpluginSet('return', $_W['uniacid']);
                 if (!empty($set)) {
                 	//延期返现队列处理
                 	$this->setDelay($set, $_W['uniacid']);
