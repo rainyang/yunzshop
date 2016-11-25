@@ -74,10 +74,8 @@ if ($operation == 'index') {
             $data = array(
                 'uniacid' => $_W['uniacid'],
                 'email' => md5($userinfo['openid']).'@we7.cc',
-                'salt' => random(8),
                 'groupid' => $default_groupid,
                 'createtime' => TIMESTAMP,
-                'password' => md5($message['from'] . $data['salt'] . $_W['config']['setting']['authkey']),
                 'nickname' => stripslashes($userinfo['nickname']),
                 'avatar' => $userinfo['headimgurl'],
                 'gender' => $userinfo['sex'],
@@ -85,15 +83,21 @@ if ($operation == 'index') {
                 'resideprovince' => $userinfo['province'] . '省',
                 'residecity' => $userinfo['city'] . '市',
             );
+
+            $data['salt']  = random(8);
+
+            $data['password'] = md5($data['email'] . $data['salt'] . $_W['config']['setting']['authkey']);
+
             //mc_members
             pdo_insert('mc_members', $data);
             $uid = pdo_insertid();
             $record['uid'] = $uid;
             $_SESSION['uid'] = $uid;
         }
+
         //mc_mapping_fans
         pdo_insert('mc_mapping_fans', $record);
-        $_SESSION['openid'] = $oauth['openid'];
+        $_SESSION['openid'] = $record['openid'];
         $_W['fans'] = $record;
         $_W['fans']['from_user'] = $record['openid'];
 
@@ -111,7 +115,7 @@ if ($operation == 'index') {
             'city' => $userinfo['city'],
             'area' => '',
             'createtime' => time(),
-            'status' => 0
+            'status' => 1
         );
 
         pdo_insert('sz_yi_member', $member);
