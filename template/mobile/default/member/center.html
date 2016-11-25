@@ -312,9 +312,9 @@
     {/if}
     {if p('discuz') && isset($uc['status']) && $uc['status'] == '1'}
     {if !empty($ucUser)}
-    <a href="{php echo $this->createPluginMobileUrl('discuz/uc', array('foo' => 'unbind', 'openid' => $openid))}"><div class="list1" style="margin:0px;"><i class="fa fa-share-square-o" ></i>已绑定{$uc['title']}账号({$ucUser['username']}), 点击解除绑定<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    <a href="javascript:;"><div id="uc_unbind" class="list1" style="margin:0px;"><i class="fa fa-share-square-o" ></i>已绑定{$uc['title']}账号({$ucUser['username']}), 点击解除绑定<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {else}
-    <a href="{php echo $this->createPluginMobileUrl('discuz/uc', array('foo' => 'bind', 'openid' => $openid))}"><div class="list1" style="margin:0px;"><i class="fa fa-share-square-o" ></i>绑定{$uc['title']}账号<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    <a id="uc_bind" href="{php echo $this->createPluginMobileUrl('discuz/uc', array('foo' => 'bind', 'openid' => $openid))}"><div class="list1" style="margin:0px;"><i class="fa fa-share-square-o" ></i>绑定{$uc['title']}账号<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {/if}
 </div>
@@ -408,6 +408,11 @@
         core.json('member/center',{},function(json){
 
            $('#container').html(  tpl('member_center',json.result) );
+            $("#uc_unbind").click(function () {
+                if (confirm("UC账号解绑将清除论坛积分")) {
+                    location.href = "{php echo $this->createPluginMobileUrl('discuz/uc', array('foo' => 'unbind', 'openid' => $openid))}";
+                }
+            });
            var withdrawmoney = {php echo empty($set['trade']['withdrawmoney'])?0:floatval($set['trade']['withdrawmoney'])};
            $('#btnwithdraw').click(function(){
 
