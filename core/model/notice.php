@@ -1465,8 +1465,8 @@ class Sz_DYi_Notice
                 $product = "后台充值";
                 if ($log_info['rechargetype'] == 'wechat') {
                     $product = "微信支付";
-                } else if ($log_info == 'alipay') {
-                    $product['rechargetype'] = "支付宝";
+                } else if ($log_info['rechargetype'] == 'alipay') {
+                    $product = "支付宝支付";
                 }
                 $money = '￥' . $log_info['money'] . '元';
                 if ($log_info['gives'] > 0) {
