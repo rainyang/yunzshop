@@ -130,7 +130,7 @@ class Sz_DYi_Common
             'url' => ALIPAY_GATEWAY . '?' . http_build_query($set, '', '&')
         );
     }
-	
+
 	
     function wechat_build($params, $wechat, $type = 0)
     {
@@ -197,7 +197,7 @@ class Sz_DYi_Common
         } else {
             $package              = array();
             $package['appid']     = $wechat['appid'];
-            $package['mch_id']    = 1338526101;//$wechat['mchid'];
+            $package['mch_id']    = $wechat['mchid'];
             $package['nonce_str'] = random(8) . "";
             $package['body']             = $params['title'];
             $package['device_info']      = "sz_yi";
@@ -207,7 +207,8 @@ class Sz_DYi_Common
             $package['spbill_create_ip'] = CLIENT_IP;
             $package['notify_url']       = $_W['siteroot'] . "addons/sz_yi/payment/wechat/notify.php";
             $package['trade_type']       = !in_array($params['trade_type'],['NATIVE','APP','JSAPI']) ? 'JSAPI' : $params['trade_type'];
-            $package['openid']           = 'ufcf3a784d5e5d4e5f3266cdb138bf581';//$_W['fans']['from_user'];
+            $package['openid']           = $_W['fans']['from_user'];//'oYGiFxMGM1qetXjN5iDJJXA3O--k';//
+            dump($package);
             ksort($package, SORT_STRING);
             $string1 = '';
             foreach ($package as $key => $v) {
@@ -220,8 +221,10 @@ class Sz_DYi_Common
             $package['sign'] = strtoupper(md5($string1));
             $dat             = array2xml($package);
             $response        = ihttp_request('https://api.mch.weixin.qq.com/pay/unifiedorder', $dat);
-            getExitInfo();
+            //ddump($response);
+            //getExitInfo();
             if (is_error($response)) {
+
                 return $response;
             }
             $xml = @simplexml_load_string($response['content'], 'SimpleXMLElement', LIBXML_NOCDATA);

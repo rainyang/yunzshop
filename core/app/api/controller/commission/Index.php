@@ -25,8 +25,9 @@ class Index extends YZ
         //$json = $this->getJson('commission/index');
         //$set = p('commission')->getSet();
         $member = $this->json['member'];
-        $member['can_withdraw'] = true;//todo 假数据
-
+        if($this->json['commission_ok']>0 && $this->json['commission_ok']>= $this->json['set']['withdraw']){
+            $member['can_withdraw'] = true;
+        }
         $block_list = $this->_getBlockList();
         $res = ['block_list' => $block_list];
         $res += array_part('commission_total,agentcount,agenttime,commission_ok,can_withdraw', $member);
