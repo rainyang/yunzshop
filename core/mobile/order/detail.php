@@ -14,20 +14,27 @@ $orderisyb = pdo_fetch("select ordersn_general,status from " . tablename('sz_yi_
             ':uniacid' => $uniacid,
             ':openid' => $openid
         ));
-if ($_GPC['master'] == 1) {
-    $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(
-        ':id' => $orderid,
+//通过openid判断是否是店长  store_manager  存在为店长
+$member_id = pdo_fetch('select id from ' . tablename('sz_yi_member') . ' where openid =:openid and uniacid=:uniacid limit 1', array(
+        ':openid' => $openid,
         ':uniacid' => $uniacid
     ));
-} else {
+$store_manager = pdo_fetch('select id from ' . tablename('sz_yi_store') . ' where member_id =:member_id and uniacid=:uniacid limit 1', array(
+        ':member_id' => $member_id,
+        ':uniacid' => $uniacid
+    ));
+if (empty($store_manager)) {
     $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
         ':id' => $orderid,
         ':uniacid' => $uniacid,
         ':openid' => $openid
     ));
+} else {
+    $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(
+        ':id' => $orderid,
+        ':uniacid' => $uniacid
+    ));
 }
-
-
 $yunbi_plugin   = p('yunbi');
 if ($yunbi_plugin) {
     $yunbiset = $yunbi_plugin->getSet();
