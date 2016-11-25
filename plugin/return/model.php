@@ -180,6 +180,7 @@ if (!class_exists('ReturnModel')) {
 
 				}elseif($set['returnrule'] == 2)
 				{
+					//排除赠送积分
 					if ($set['iscumulative'] && $order['credit1'] > 0) {
 						$order_price = $order_price - $order['credit1'];
 					}
@@ -193,13 +194,17 @@ if (!class_exists('ReturnModel')) {
 		public function setOrderRule($order_goods,$order_price,$set=array(),$uniacid='')
 		{
 			$data = array(
-                'mid' => $order_goods[0]['mid'],
-                'uniacid' => $uniacid,
-                'money' => $order_price,
-                'returnrule' => $set['returnrule'],
+                'mid' 			=> $order_goods[0]['mid'],
+                'uniacid' 		=> $uniacid,
+                'money' 		=> $order_price,
+                'returnrule'	=> $set['returnrule'],
+                'status' 		=> 1,
 				'create_time'	=> time()
-                );
-			pdo_insert('sz_yi_return', $data);
+            );
+
+			//单笔订单加入队列
+			pdo_insert('sz_yi_return_tpm', $data);
+
 			$order_price_txt = $set['order_price'];
 			$order_price_txt = str_replace('[订单金额]', $order_price, $order_price_txt);
 			$msg = array(
@@ -495,10 +500,12 @@ if (!class_exists('ReturnModel')) {
 							'uniacid' 		=> $value['uniacid'],
 							'mid' 			=> $value['mid'],
 							'money' 		=> $orderprice,
-							'returnrule' => $set['returnrule'],
+							'returnrule' 	=> $set['returnrule'],
+							'status' 		=> 1,
 							'create_time'	=> time()
-							 );
-						pdo_insert('sz_yi_return', $data);
+						);
+						//订单累计金额加入队列
+						pdo_insert('sz_yi_return_tpm', $data);
 						pdo_update('sz_yi_return_money', array('money'=>$value['money']-$orderprice), array('id' => $value['id'], 'uniacid' => $uniacid));	
 					}
 				}
@@ -579,7 +586,38 @@ if (!class_exists('ReturnModel')) {
 	        
 	    }
 
-		public function autoexec ($uniacid) {
+	    //全返队列临时表处理
+	    public function setDelay( $set = array(), $uniacid = '' ) {
+	    	if ( isset($set['delay']) && $set['delay'] > 0 ) {
+	    		$days = intval($set['delay']);
+				$daytimes = 3600 * $days;
+				$delay_queue = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return_tpm') . " where uniacid = :uniacid and status = :status AND create_time + " . $daytimes . " <= unix_timestamp() ",array( ':uniacid'	=> $uniacid, ':status' => '1' ));
+	    	} else {
+	    		$delay_queue = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return_tpm') . " where uniacid = :uniacid and status = :status",array( ':uniacid'	=> $uniacid, ':status' => '1' ));
+	    	}
+    		foreach ($delay_queue as $key => $value) {
+				$queue_data = array(
+					'uniacid' 		=> $value['uniacid'],
+					'mid' 			=> $value['mid'],
+					'money' 		=> $value['money'],
+					'returnrule' 	=> $value['returnrule'],
+					'create_time'	=> time()
+				);
+				//添加队列
+				pdo_insert('sz_yi_return', $queue_data);
+				$queueid = pdo_insertid();
+				//修改临时队列
+	            pdo_update('sz_yi_return_tpm', array(
+	                'status' => 2,
+	                'update_time' => time(),
+	                'queue' => $queueid
+	            ), array(
+	                'uniacid' => $uniacid,
+	                'id' => $value['id']
+	            ));
+    		}
+	    }
+		public function autoexec( $uniacid ) {
 			global $_W, $_GPC;
 			$_W['uniacid'] = $uniacid;
 			set_time_limit(0);
@@ -593,10 +631,14 @@ if (!class_exists('ReturnModel')) {
             if (!is_dir($tmpdirs)) {
                 mkdirs($tmpdirs);
             }
+			$set = m('plugin')->getpluginSet('return', $_W['uniacid']);
+            //延期返现队列处理
+            $this->setDelay($set, $_W['uniacid']);
             $validation      = $tmpdirs."/".date("Ymd").$_W['uniacid'].".txt";
             if (!file_exists($validation)) {
-                $set = m('plugin')->getpluginSet('return', $_W['uniacid']);
                 if (!empty($set)) {
+                	//延期返现队列处理
+                	$this->setDelay($set, $_W['uniacid']);
                     $isexecute = false;
                     if ($set['returnlaw'] == 1) {
                         $log_content[] = '返现规律：按天返现，每天：'.$set['returntime']."返现\r\n";
