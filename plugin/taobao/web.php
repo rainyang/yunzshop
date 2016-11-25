@@ -26,6 +26,10 @@ class TaobaoWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
+    public function kumei()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
     public function taobaocsv()
     {
         $this->_exec_plugin(__FUNCTION__);

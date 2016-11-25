@@ -20,6 +20,7 @@
     <li {if $_GPC['p'] == 'taobao' && $_GPC['method'] == 'index'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('taobao')}">淘宝商品导入</a></li>
     <li {if $_GPC['p'] == 'taobao' && $_GPC['method'] == 'jingdong'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('taobao/jingdong')}">京东商品导入</a></li>
     <li {if $_GPC['p'] == 'taobao' && $_GPC['method'] == 'one688'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('taobao/one688')}">1688商品导入</a></li>
+    <li {if $_GPC['p'] == 'taobao' && $_GPC['method'] == 'kumei'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('taobao/kumei')}">酷美乐购商品导入</a></li>
 <!--
     {ifp 'shop.dispatch.view'}<li {if $_GPC['p'] == 'dispatch'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/dispatch')}">配送方式</a></li>{/if}
     {ifp 'shop.adv.view'}<li {if $_GPC['p'] == 'adv'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adv')}">幻灯片管理</a></li>{/if}
