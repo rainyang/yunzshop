@@ -48,5 +48,15 @@ if (!class_exists('FundModel')) {
 			}
 			return 0;
 		}
+
+		//自动执行众筹项目下架
+		public function autogoods(){
+			global $_W;
+			$time = time();
+			$goods = pdo_fetchall("SELECT id FROM " . tablename('sz_yi_goods') . " WHERE uniacid=".$_W['uniacid']." and timeend < " . $time . " and status > 0 and plugin = 'fund'");
+			foreach ($goods as $key => $value) {
+				pdo_update("sz_yi_goods", array("status" => 0), array("id" => $value['id'], 'uniacid' => $_W['uniacid']));
+			}
+		}
 	}
 }

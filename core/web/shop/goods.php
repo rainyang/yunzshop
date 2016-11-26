@@ -1118,6 +1118,9 @@ if ($operation == "change") {
                 'op' => 'display'
             )), 'success');
         }
+        if($_GPC['plugin'] == "fund"){
+            p("fund")->autogoods();
+        }
         $pindex = max(1, intval($_GPC['page']));
         $psize = 20;
         $condition = ' WHERE `uniacid` = :uniacid AND `deleted` = :deleted';

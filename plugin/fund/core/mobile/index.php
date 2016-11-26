@@ -3,7 +3,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-
+$this->model->autogoods();
 $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 $operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid     = m('user')->getOpenid();
@@ -134,7 +134,6 @@ if (!empty($maxprice) || !empty($minprice)) {
     $goods    = m('goods')->getList($args);
 }
 foreach ($goods as $key => &$value) {
-    $this->model->check_goods($value['id']);
     $get_fund_data = pdo_fetch("SELECT * FROM " . tablename('sz_yi_fund_goods') . " WHERE goodsid = :id", array(
         ':id' => $value['id']
     ));

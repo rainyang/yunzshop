@@ -5,6 +5,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 @session_start();
 setcookie('preUrl', $_W['siteurl']);
+$this->model->autogoods();
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
