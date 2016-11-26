@@ -100,7 +100,7 @@ if (!empty($_POST)) {
                         ':uniacid' => $_W['uniacid'],
                         ':logno' => $logno
                     ));
-                    if (!empty($log) && empty($log['status']) && $log['fee'] == $total_fee) {
+                    if (!empty($log) && empty($log['status']) && $log['money'] == $total_fee) {
                         pdo_update('sz_yi_member_log', array(
                             'status' => 1,
                             'rechargetype' => 'yunpay'
