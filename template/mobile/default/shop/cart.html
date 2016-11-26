@@ -115,7 +115,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                         data-goodsid="<%value.goodsid%>" 
                         sel='1' 
                         data-maxbuy='<%value.maxbuy%>' 
-                        data-stock='<%value.stock%>'>
+                        data-stock='<%value.stock%>' id="marketprice_<%value.id%>_<%value.goodsid%>">
                  <div class="ico"><i class="iconfont icon-check-circle-o" style="color:#f15353;"></i></div>
                  <div class="img" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%value.goodsid%>'"><img src="<%value.thumb%>"/></div>
                  <div class="info">
@@ -203,7 +203,8 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                 }
                  $this.find('.shownum').val(num);
                  total+=parseInt(num);
-                totalprice+= parseFloat( $this.find('.shownum').val() ) * parseFloat($this.data('marketprice'));
+                totalprice+= parseFloat( $this.find('.shownum').val() ) * parseFloat($this.attr('data-marketprice'));
+
             }
      
         });
@@ -314,9 +315,13 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                     core.tip.show("您最多购买 " + stock + "件");
                 }
                 input.val(num);
-            
-                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},null,false,true);
-                calcprice();
+                var cartid = $(this).closest('.cart_good').data('cartid');
+                var goodsid = $(this).closest('.cart_good').data('goodsid');
+                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},function(json){
+                  $('#marketprice_' + cartid + '_' + goodsid).attr('data-marketprice',json.result);
+                  calcprice();
+                },false,true);
+                
                 
                
            })
@@ -346,9 +351,13 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                     num=1;
                 }
                 input.val(num);
-          
-                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},null,false,true);
-                calcprice();
+                var cartid = $(this).closest('.cart_good').data('cartid');
+                var goodsid = $(this).closest('.cart_good').data('goodsid');
+                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},function(json){
+                  $('#marketprice_' + cartid + '_' + goodsid).attr('data-marketprice',json.result);
+                  calcprice();
+                },false,true);
+                
             })
             
              $('.rightnav').click(function(){
@@ -376,9 +385,13 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                     core.tip.show("库存不足");
                 }
                 input.val(num);
-   
-                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},null,false,true);
-                calcprice();
+                var cartid = $(this).closest('.cart_good').data('cartid');
+                var goodsid = $(this).closest('.cart_good').data('goodsid');
+                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},function(json){
+                  $('#marketprice_' + cartid + '_' + goodsid).attr('data-marketprice',json.result);
+                  calcprice();
+                },false,true);
+                
             });
       
             $('.optionsel').click(function(){

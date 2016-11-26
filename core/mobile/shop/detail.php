@@ -34,7 +34,7 @@ if (p('yunbi')) {
     $yunbi_set = p('yunbi')->getSet();
 }
 
-$isladder = false;
+$goods['isladder'] = false;
 if (p('ladder')) {
     $ladder_set = p('ladder')->getSet();
     if ($ladder_set['isladder']) {
