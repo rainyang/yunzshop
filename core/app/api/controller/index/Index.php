@@ -33,7 +33,7 @@ class Index extends YZ
     private function _getCategory()
     {
         global $_W;
-        $category = set_medias(pdo_fetchall('SELECT name, advimg FROM '. tablename('sz_yi_category') . ' WHERE parentid = 0 and uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'),'advimg,thumb');
+        $category = set_medias(pdo_fetchall('SELECT id, name, advimg FROM '. tablename('sz_yi_category') . ' WHERE parentid = 0 and uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'),'advimg,thumb');
 
         return $category;
     }
