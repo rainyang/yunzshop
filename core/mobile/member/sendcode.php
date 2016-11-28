@@ -22,7 +22,6 @@ if($op == 'sendcode'){
         show_json(0, '该手机号已被注册！不能获取验证码。');
     } 
     $code = rand(1000, 9999);
-    $code = 1234;
     $_SESSION['codetime'] = time();
     $_SESSION['code'] = $code;
     $_SESSION['code_mobile'] = $mobile;
