@@ -381,19 +381,19 @@ if ($operation == "change") {
                         //$hh .= '<td class="success"><input name="option_marketprice_' . $ids . '[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids . '" value="' . $val['marketprice'] . '"/></td>';
 
                         $hh .= '<td class="success"><input name="option_marketprice_' . $ids .'[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids .'" value="' . $val['marketprice'] . '"/>';
-                        $hh .= '<div style="padding-bottom:10px;text-align:center;font-size:14px;">阶梯价格&nbsp;<a class="btn-success ng-scope addopladder" data-ids="' . $ids .'" href="javascript:;"><i class="fa fa-plus" style="width: 20px;height: auto;"></i></a></div>';
-                        $hh .= '<div id="ladderop">';
+                        // $hh .= '<div style="padding-bottom:10px;text-align:center;font-size:14px;">阶梯价格&nbsp;<a class="btn-success ng-scope addopladder" data-ids="' . $ids .'" href="javascript:;"><i class="fa fa-plus" style="width: 20px;height: auto;"></i></a></div>';
+                        // $hh .= '<div id="ladderop">';
 
-                        $hh .= '<div class="input-group">';
-                        $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_minimum_' . $ids .'[]"/>';
-                        $hh .= '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >至</span>';
-                        $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_maximum_' . $ids .'[]"/>';
-                        $hh .= '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >=</span>';
-                        $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_ladderprice_' . $ids .'[]"/>';
-                        $hh .= ' <span style="width: 10px;padding: 6px 1px;" class="input-group-addon"> &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteopladder" title="删除"><i class="fa fa-times"></i></a> </span>';
-                        $hh .= '</div>';  
+                        // $hh .= '<div class="input-group">';
+                        // $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_minimum_' . $ids .'[]"/>';
+                        // $hh .= '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >至</span>';
+                        // $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_maximum_' . $ids .'[]"/>';
+                        // $hh .= '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >=</span>';
+                        // $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_ladderprice_' . $ids .'[]"/>';
+                        // $hh .= ' <span style="width: 10px;padding: 6px 1px;" class="input-group-addon"> &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteopladder" title="删除"><i class="fa fa-times"></i></a> </span>';
+                        // $hh .= '</div>';  
 
-                        $hh .= '</div>'; 
+                        // $hh .= '</div>'; 
                         $hh .= '</td>';
 
                         $hh .= '<td class="warning"><input name="option_productprice_' . $ids . '[]" type="text" class="form-control option_productprice option_productprice_' . $ids . '" " value="' . $val['productprice'] . '"/></td>';
