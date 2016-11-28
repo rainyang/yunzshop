@@ -583,8 +583,9 @@ if ($_W['isajax']) {
 
     $opt_switch = $goods['opt_switch'];
     $specs_nums = count($specs);
+    $isverify = $goods['isverify'];
 
-    if (!empty($goods['hasoption']) && $opt_switch == 1 && $specs_nums == 2) {
+    if (!empty($goods['hasoption']) && $goods['isverify'] == 1 && $opt_switch == 1 && $specs_nums == 2) {
         foreach ($options as $opt) {
             $prices[] = $opt['marketprice'];
         }
@@ -617,6 +618,7 @@ if ($_W['isajax']) {
         'specs_nums' => $specs_nums,
         'min_price' => $min_price,
         'max_price' => $max_price,
+        'isverify' => $isverify,
         'goodscount' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_goods') . ' where uniacid=:uniacid and status=1 and deleted=0 ',
             array(
                 ':uniacid' => $uniacid
