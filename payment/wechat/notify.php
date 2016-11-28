@@ -36,9 +36,14 @@ if ($type == 0) {
 ';
 	m('common')->paylog($paylog);
 }
+$set = m('common')->getSysset(array('shop', 'pay'));
 $setting = uni_setting($_W['uniacid'], array('payment'));
-if (is_array($setting['payment'])) {
+if (is_array($setting['payment']) || $set['pay']['weixin_jie'] == 1) {
 	$wechat = $setting['payment']['wechat'];
+	//借号支付修改数据
+	if ($set['pay']['weixin_jie'] == 1) {
+		$wechat = array('version' => 1, 'key' => $set['pay']['weixin_jie_apikey'], 'signkey' => $set['pay']['weixin_jie_apikey'], 'appid' => $set['pay']['weixin_jie_appid'], 'mchid' => $set['pay']['weixin_jie_mchid']);
+	}
 	if (!empty($wechat)) {
 		m('common')->paylog('setting: ok');
 		ksort($get);
@@ -48,6 +53,8 @@ if (is_array($setting['payment'])) {
 				$string1 .= "{$k}={$v}&";
 			}
 		}
+		//m('common')->paylog(print_r($wechat,1));
+		//m('common')->paylog(print_r($get,1));
 		$wechat['signkey'] = ($wechat['version'] == 1) ? $wechat['key'] : $wechat['signkey'];
 		$sign = strtoupper(md5($string1 . "key={$wechat['signkey']}"));
 		if ($sign == $get['sign']) {
@@ -64,7 +71,7 @@ if (is_array($setting['payment'])) {
 				$params[':module'] = 'sz_yi';
 				$log = pdo_fetch($sql, $params);
 				m('common')->paylog('log: ' . (empty($log) ? '' : json_encode($log)) . '');
-				if (!empty($log) && $log['status'] == '0' && $log['fee'] == $total_fee) {
+				if (!empty($log) && $log['status'] == '0' &&  bccomp($log['fee'], $total_fee, 2) == 0) {
 					m('common')->paylog('corelog: ok');
 					$site = WeUtility::createModuleSite($log['module']);
 
@@ -91,6 +98,16 @@ if (is_array($setting['payment'])) {
 								$record['status'] = '1';
 								$record['tag'] = iserializer($log['tag']);
 								pdo_update('core_paylog', $record, array('plid' => $log['plid']));
+                                if (p('cashier')) {
+                                    $order   = pdo_fetch('select id,cashier from ' . tablename('sz_yi_order') . ' where  (ordersn=:ordersn or pay_ordersn=:ordersn or ordersn_general=:ordersn) and uniacid=:uniacid limit 1', array(
+                                        ':uniacid' => $_W['uniacid'],
+                                        ':ordersn' => $ret['tid']
+                                    ));
+                                    if (!empty($order['cashier'])) {
+                                        pdo_update('sz_yi_order', array('status' => '3'), array('id' => $order['id']));
+                                    }
+                                }
+
 								exit('success');
 							}
 						}
@@ -102,7 +119,7 @@ if (is_array($setting['payment'])) {
 					exit;
 				}
 				$log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `uniacid`=:uniacid and `logno`=:logno limit 1', array(':uniacid' => $_W['uniacid'], ':logno' => $logno));
-				if (!empty($log) && empty($log['status']) && $log['fee'] == $total_fee && ($log['openid'] == $get["openid"])) {
+				if (!empty($log) && empty($log['status']) && $log['money'] == $total_fee && ($log['openid'] == $get["openid"])) {
 					pdo_update('sz_yi_member_log', array('status' => 1, 'rechargetype' => 'wechat'), array('id' => $log['id']));
 					m('member')->setCredit($log['openid'], 'credit2', $log['money'], array(0, '商城会员充值:credit2:' . $log['money']));
 					m('member')->setRechargeCredit($log['openid'], $log['money']);

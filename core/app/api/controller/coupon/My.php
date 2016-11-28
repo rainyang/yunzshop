@@ -19,6 +19,9 @@ class My extends YZ    //优惠券列表
 
     public function index()
     {
+        if(empty($this->json['list'])){
+            return $this->returnError('该账户没有优惠券');
+        }
         $this->returnSuccess($this->json);
     }
 }
