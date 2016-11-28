@@ -14,11 +14,11 @@ if (!class_exists('YunprintModel')) {
 	{
         public $client;
 
-        function __construct () {
+        function __construct() {
             $this->client = new HttpClient(IP, PORT);
         }
 
-        function feiyin_print ($print_order,$member_code,$device_no,$key, $offers)
+        function feiyin_print($print_order,$member_code,$device_no,$key, $offers)
         {   
             $orderinfo = "";
             $shopname = '';
@@ -60,11 +60,7 @@ if (!class_exists('YunprintModel')) {
                         $goods .= " " . $num . " " . $value['title'] . "\n" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'] . "\n";
                         $num++;
                     }
-                    $orderinfo .= "
--------------------------
-序号 商品名称 单价 数量  金额               
-{$goods}\n
--------------------------";
+                    $orderinfo .= "-------------------------序号 商品名称 单价 数量  金额{$goods}\n-------------------------";
                 }
                 if ($offers['goodsprice'] == 1) {
                     $orderinfo .= "商品合计：         {$print_order['goodsprice']}\n";
@@ -88,28 +84,20 @@ if (!class_exists('YunprintModel')) {
                     $orderinfo .= "运费：              {$print_order['dispatchprice']}\n";
                 }
                 if ($offers['shopname'] == 1) {
-                    $shopname = "
-商城：{$print_order['shopname']}\n
--------------------------";
+                    $shopname = "商城：{$print_order['shopname']}\n-------------------------";
                 }
             }
             $orderinfo .= "实际支付：         {$print_order['price']}\n";
             if (!empty($offers)) {
                 if ($offers['usersign'] == 1) {
-                    $orderinfo .= "
--------------------------
-客户签收：";
+                    $orderinfo .= "-------------------------客户签收：";
                 }
             }
             $msgNo = $print_order['ordersn'];
             $freeMessage = array(
                 'memberCode'=>$member_code, 
                 'msgDetail'=>
-                "
-{$shopname}
-订单号:{$print_order['ordersn']}
-{$orderinfo}
-            ",
+                "{$shopname}订单号:{$print_order['ordersn']}{$orderinfo}",
                 'deviceNo'=>$device_no, 
                 'msgNo'=>$msgNo
             );
@@ -128,7 +116,7 @@ if (!class_exists('YunprintModel')) {
             return $this->sendMessage($msg);
         }
 
-        function sendMessage ($msgInfo) 
+        function sendMessage($msgInfo)
         {
             $clientt = new HttpClient(FEYIN_HOST,FEYIN_PORT);
             if(!$clientt->post('/api/sendMsg',$msgInfo)){ //提交失败
@@ -138,7 +126,7 @@ if (!class_exists('YunprintModel')) {
             }
         }
 
-        function feie_print ($print_order,$printer_sn,$key,$times,$url, $offers)
+        function feie_print($print_order,$printer_sn,$key,$times,$url, $offers)
         {
             //标签说明："<BR>"为换行符,"<CB></CB>"为居中放大,"<B></B>"为放大,"<C></C>"为居中,"<L></L>"为字体变高
             //"<W></W>"为字体变宽,"<QR></QR>"为二维码,"<CODE>"为条形码,后面接12个数字
@@ -147,12 +135,10 @@ if (!class_exists('YunprintModel')) {
             $address = unserialize($print_order['address']);
             if (!empty($offers)) {
                 if ($offers['logo'] == 1) {
-                    $orderinfo .= "<LOGO><BR>";
+                    $orderinfo .= "<LOGO>";
                 }
                 if ($offers['shopname'] == 1) {
-                    $orderinfo .= "
-                                <CB>{$print_order['shopname']}</CB><BR>
-                                ================================<BR>";
+                    $orderinfo .= "<CB>{$print_order['shopname']}</CB>================================<BR>";
                 }
             }
             $orderinfo .= "订单编号：{$print_order['ordersn']}<BR>";
@@ -170,7 +156,7 @@ if (!class_exists('YunprintModel')) {
                 if ($offers['address'] == 1) {
                     $orderinfo .= "配送地址：{$address['province']}{$address['city']}{$address['area']}{$address['address']}<BR>";
                 }
-                if ($offers['remark'] == 1) {
+                if ($offers['remark'] == 1 && !empty($print_order['remark'])) {
                     $orderinfo .= "订单备注：{$print_order['remark']}<BR>";
                 }
                 if ($offers['diy'] == 1) {
@@ -190,14 +176,10 @@ if (!class_exists('YunprintModel')) {
                     $goods = "";
                     $num = 1;
                     foreach ($print_order['goods'] as $value) {
-                        $goods .= " " . $num . " " . $value['title'] . "<BR>" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'] . "<BR>";
+                        $goods .= " " . $num . " " . $value['title'] . "<BR>" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'];
                         $num++;
                     }
-                    $orderinfo .= "
-                                ================================<BR>
-                                序号 商品名称 单价 数量  金额<BR>               
-                                {$goods}<BR>
-                                ================================<BR>";
+                    $orderinfo .= "================================<BR>序号 商品名称 单价 数量  金额<BR>{$goods}<BR>================================<BR>";
                 }
                 if ($offers['goodsprice'] == 1) {
                     $orderinfo .= "商品合计：           {$print_order['goodsprice']}<BR>";
@@ -221,12 +203,10 @@ if (!class_exists('YunprintModel')) {
                     $orderinfo .= "订单运费：           {$print_order['dispatchprice']}<BR>";
                 }
             }
-            $orderinfo .= "实际支付：           {$print_order['price']}";
+            $orderinfo .= "实际支付：           {$print_order['price']}<BR>";
             if (!empty($offers)) {
                 if ($offers['url'] == 1) {
-                    $orderinfo .= "
-                                ================================<BR>
-                                <QR>{$url}</QR>";
+                    $orderinfo .= "================================<BR><QR>{$url}</QR>";
                 }
             }
             $content = array(
@@ -246,7 +226,7 @@ if (!class_exists('YunprintModel')) {
             }
         }
 
-        public function executePrint ($orderid) {
+        public function executePrint($orderid) {
             global $_W;
             if (empty($orderid)) {
                 return;
