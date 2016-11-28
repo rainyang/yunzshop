@@ -29,13 +29,32 @@ if (!class_exists('CommissionModel')) {
 			$set = $this->getSet();
 			$levels = $this->getLevels();
 			$agentid = pdo_fetchcolumn('select agentid from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
-			$goods = pdo_fetchall('select og.id,og.realprice,og.total,g.type,g.hascommission,g.nocommission, g.commission1_rate,g.commission1_pay,g.commission2_rate,g.commission2_pay,g.commission3_rate,g.commission3_pay,og.commissions,og.optionid,g.productprice,g.marketprice,g.costprice from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+			$goods = pdo_fetchall('select og.id,og.realprice,og.total,g.type,g.hascommission,g.nocommission, g.commission1_rate,g.commission1_pay,g.commission2_rate,g.commission2_pay,g.commission3_rate,g.commission3_pay,og.commissions,og.optionid,g.productprice,g.marketprice,g.costprice,g.id as goodsid from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+			//阶梯价格插件
+			$isladder = false;
+			if (p('ladder')) {
+			    $ladder_set = p('ladder')->getSet();
+			    if ($ladder_set['isladder']) {
+			        $isladder = true;   
+			    }
+			}
 			if ($set['level'] > 0) {			
-				    foreach ($goods as &$cinfo) {
+				foreach ($goods as &$cinfo) {
+					//计算阶梯价格
+		            if ($isladder) {
+		                $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+		                        ':id' => $cinfo['goodsid']
+		                    ));
+		                if ($ladders) {
+		                    $ladders = unserialize($ladders['ladders']);
+		                    $laddermoney = m('goods')->getLaderMoney($ladders,$cinfo['total']);
+		                    $cinfo['marketprice'] = $laddermoney > 0 ? $laddermoney : $cinfo['marketprice'];
+		                }
+		            }
 					$price = $this->calculate_method($cinfo);
 					if(p('hotel')&& $goods[0]['type']=='99'){
-			    	$order = pdo_fetch('select id,goodsprice from ' . tablename('sz_yi_order').' where id=:id and uniacid=:uniacid', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
-			    	$price =$order['goodsprice'];
+				    	$order = pdo_fetch('select id,goodsprice from ' . tablename('sz_yi_order').' where id=:id and uniacid=:uniacid', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
+				    	$price =$order['goodsprice'];
 			        }
 					//$price = $cinfo['realprice'];
 					if (empty($cinfo['nocommission']) && $price > 0) {
@@ -119,9 +138,10 @@ if (!class_exists('CommissionModel')) {
 					$option = pdo_fetch('select productprice,marketprice,costprice from ' . tablename('sz_yi_goods_option') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $order_goods['optionid'], ':uniacid' => $_W['uniacid']));
 					$productprice = $option['productprice'] * $order_goods['total'];	//原价
 					$marketprice  = $option['marketprice'] * $order_goods['total'];		//现价
-					$costprice    = $option['costprice'] * $order_goods['total'];	
+					$costprice    = $option['costprice'] * $order_goods['total'];		//成本价
 				}else{
-					$productprice = $order_goods['productprice'] * $order_goods['total'];	//原价
+
+					$productprice = $order_goods['productprice'] * $order_goods['total'];		//原价
 					$marketprice  = $order_goods['marketprice'] * $order_goods['total'];		//现价
 					$costprice    = $order_goods['costprice'] * $order_goods['total'];			//成本价
 				}
