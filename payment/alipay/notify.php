@@ -2,12 +2,14 @@
 //芸众商城 QQ:913768135
 error_reporting(0);
 define('IN_MOBILE', true);
+
 if (!empty($_POST)) {
 	$out_trade_no = $_POST['out_trade_no'];
 	require '../../../../framework/bootstrap.inc.php';
 	require '../../../../addons/sz_yi/defines.php';
 	require '../../../../addons/sz_yi/core/inc/functions.php';
 	require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
+
 	$body = $_POST['body'];
     $total_fee = $_POST['total_fee'];
 	$trade_no = $_POST['trade_no'];
@@ -16,7 +18,7 @@ if (!empty($_POST)) {
 	$type = intval($strs[1]);
 	if ($type == 0) {
 		$paylog = "\r\n-------------------------------------------------\r\n";
-		$paylog .= "orderno: " . $get['out_trade_no'] . "\r\n";
+		$paylog .= "orderno: " . $out_trade_no . "\r\n";
 		$paylog .= "paytype: alipay\r\n";
 		$paylog .= "data: " . json_encode($_POST) . "\r\n";
 		m('common')->paylog($paylog);
@@ -38,7 +40,7 @@ if (!empty($_POST)) {
 			$sign = md5($string);
 			if ($sign == $_POST['sign']) {
 				m('common')->paylog("sign: ok\r\n");
-				if (empty($type)) {
+				if (empty($type)) {;
 					$tid = $out_trade_no;
 					if (strexists($tid, 'GJ')) {
 						$tids = explode("GJ", $tid);
@@ -77,7 +79,17 @@ if (!empty($_POST)) {
 									$record['status'] = '1';
 									pdo_update('core_paylog', $record, array('plid' => $log['plid']));
 									$orders = array('trade_no'=>$trade_no);
-   									pdo_update('sz_yi_order', $orders, array('ordersn_general' =>$tid,'uniacid'=>$log['uniacid']));
+                                    if (p('cashier')) {
+                                        $order   = pdo_fetch('select id,cashier from ' . tablename('sz_yi_order') . ' where  (ordersn=:ordersn or pay_ordersn=:ordersn or ordersn_general=:ordersn) and uniacid=:uniacid limit 1', array(
+                                            ':uniacid' => $_W['uniacid'],
+                                            ':ordersn' => $ret['tid']
+                                        ));
+                                        if (!empty($order['cashier'])) {
+                                            $orders['status'] = '3';
+                                        }
+                                    }
+
+   									pdo_update('sz_yi_order', $orders, array('pay_ordersn' =>$tid,'uniacid'=>$log['uniacid']));
 									exit('success');
 								}
 							} else {
@@ -90,11 +102,12 @@ if (!empty($_POST)) {
 					}
 				} else if ($type == 1) {
 					$logno = trim($out_trade_no);
+
 					if (empty($logno)) {
 						exit;
 					}
 					$log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `uniacid`=:uniacid and `logno`=:logno limit 1', array(':uniacid' => $_W['uniacid'], ':logno' => $logno));
-					if (!empty($log) && empty($log['status']) && $log['fee'] == $total_fee  && ($log['openid'] == $get["openid"])) {
+					if (!empty($log) && empty($log['status']) &&  bccomp($log['money'], $total_fee, 2) == 0) {
 						pdo_update('sz_yi_member_log', array('status' => 1, 'rechargetype' => 'alipay'), array('id' => $log['id']));
 						m('member')->setCredit($log['openid'], 'credit2', $log['money'], array(0, '商城会员充值:credit2:' . $log['money']));
 						m('member')->setRechargeCredit($log['openid'], $log['money']);

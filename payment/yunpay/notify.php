@@ -44,7 +44,7 @@ if (!empty($_POST)) {
                     $params[':module'] = 'sz_yi';
                     $log               = pdo_fetch($sql, $params);
                     m('common')->paylog('log: ' . (empty($log) ? '' : json_encode($log)) . "\r\n");
-                    if (!empty($log) && $log['status'] == '0' && $log['fee'] == $total_fee) {
+                    if (!empty($log) && $log['status'] == '0' &&  bccomp($log['fee'], $total_fee, 2) == 0) {
                         m('common')->paylog("corelog: ok\r\n");
                         $site = WeUtility::createModuleSite($log['module']);
                         if (!is_error($site)) {
@@ -72,6 +72,15 @@ if (!empty($_POST)) {
                                     pdo_update('core_paylog', $record, array(
                                         'plid' => $log['plid']
                                     ));
+                                    if (p('cashier')) {
+                                        $order   = pdo_fetch('select id,cashier from ' . tablename('sz_yi_order') . ' where  (ordersn=:ordersn or pay_ordersn=:ordersn or ordersn_general=:ordersn) and uniacid=:uniacid limit 1', array(
+                                            ':uniacid' => $_W['uniacid'],
+                                            ':ordersn' => $ret['tid']
+                                        ));
+                                        if (!empty($order['cashier'])) {
+                                            pdo_update('sz_yi_order', array('status' => '3'), array('id' => $order['id']));
+                                        }
+                                    }
                                     exit('success');
                                 }
                             } else {
@@ -91,7 +100,7 @@ if (!empty($_POST)) {
                         ':uniacid' => $_W['uniacid'],
                         ':logno' => $logno
                     ));
-                    if (!empty($log) && empty($log['status']) && $log['fee'] == $total_fee) {
+                    if (!empty($log) && empty($log['status']) && $log['money'] == $total_fee) {
                         pdo_update('sz_yi_member_log', array(
                             'status' => 1,
                             'rechargetype' => 'yunpay'
