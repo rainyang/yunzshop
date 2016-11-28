@@ -115,6 +115,14 @@ if ($pluginreturn) {
         $isreturn = true;
     }
 }
+$isladder = false;
+$pluginladder = p('ladder');
+if ($pluginladder) {
+    $ladder_set = $pluginladder->getSet();
+    if ($ladder_set['isladder'] == 1 ) {
+        $isladder = true;
+    }
+}
 $isyunbi = false;
 $pluginyunbi = p('yunbi');
 if ($pluginyunbi) {
@@ -342,32 +350,23 @@ if ($operation == "change") {
                 $canedit = ce('shop.goods', $item);
                 if ($canedit) {
                     $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div><div class="input-group"><input type="text" class="form-control option_stock_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_stock\');"></a></span></div></div></th>';
-                    $html .= '<th class="success" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">'.$lang['marketprice'].'</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
-                    if($_GPC['plugin'] != "fund"){
-                    $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_productprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
-                    }
-                    $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
-                    
-                    $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">红包价格</div><div class="input-group"><input type="text" class="form-control option_redprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_redprice\');"></a></span></div></div></th>';
-                    $html .= '<th class="primary" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">'.$lang['shopnumber'].'</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
-                    if($_GPC['plugin'] != "fund"){
-                    $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
-                    }
-                    $html .= '<th class="info" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
+
+                    $html .= '<th class="success" style="width:30%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
+                    $html .= '<th class="warning" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_productprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
+                    $html .= '<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
+                    $html .= '<th class="warning" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">红包价格</div><div class="input-group"><input type="text" class="form-control option_redprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_redprice\');"></a></span></div></div></th>';
+                    $html .= '<th class="primary" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
+                    $html .= '<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
+                    $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
                     $html .= '</tr></thead>';
                 } else {
                     $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div></div></th>';
-                    $html .= '<th class="success" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">'.$lang['marketprice'].'</div></div></th>';
-                    if($_GPC['plugin'] != "fund"){
-                    $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div></div></th>';
-                    }
-                    $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div></div></th>';
-                    
-                    $html .= '<th class="primary" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">'.$lang['shopnumber'].'</div></div></th>';
-                    if($_GPC['plugin'] != "fund"){
-                    $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div></div></th>';
-                    }
-                    $html .= '<th class="info" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div></th>';
+                    $html .= '<th class="success" style="width:30%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div></div></th>';
+                    $html .= '<th class="warning" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div></div></th>';
+                    $html .= '<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div></div></th>';
+                    $html .= '<th class="primary" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div></div></th>';
+                    $html .= '<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div></div></th>';
+                    $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div></th>';
                     $html .= '</tr></thead>';
                 }
                 for ($m = 0; $m < $len; $m++) {
@@ -443,7 +442,27 @@ if ($operation == "change") {
                         $hh .= '<input name="option_title_' . $ids . '[]"  type="hidden" class="form-control option_title option_title_' . $ids . '" value="' . $val['title'] . '"/>';
                         $hh .= '<input name="option_virtual_' . $ids . '[]"  type="hidden" class="form-control option_title option_virtual_' . $ids . '" value="' . $val['virtual'] . '"/>';
                         $hh .= '</td>';
-                        $hh .= '<td class="success"><input name="option_marketprice_' . $ids . '[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids . '" value="' . $val['marketprice'] . '"/></td>';
+
+
+                        
+
+                        //$hh .= '<td class="success"><input name="option_marketprice_' . $ids . '[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids . '" value="' . $val['marketprice'] . '"/></td>';
+
+                        $hh .= '<td class="success"><input name="option_marketprice_' . $ids .'[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids .'" value="' . $val['marketprice'] . '"/>';
+                        $hh .= '<div style="padding-bottom:10px;text-align:center;font-size:14px;">阶梯价格&nbsp;<a class="btn-success ng-scope addopladder" data-ids="' . $ids .'" href="javascript:;"><i class="fa fa-plus" style="width: 20px;height: auto;"></i></a></div>';
+                        $hh .= '<div id="ladderop">';
+
+                        $hh .= '<div class="input-group">';
+                        $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_minimum_' . $ids .'[]"/>';
+                        $hh .= '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >至</span>';
+                        $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_maximum_' . $ids .'[]"/>';
+                        $hh .= '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >=</span>';
+                        $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_ladderprice_' . $ids .'[]"/>';
+                        $hh .= ' <span style="width: 10px;padding: 6px 1px;" class="input-group-addon"> &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteopladder" title="删除"><i class="fa fa-times"></i></a> </span>';
+                        $hh .= '</div>';  
+
+                        $hh .= '</div>'; 
+                        $hh .= '</td>';
                         if($_GPC['plugin'] != "fund"){
                         $hh .= '<td class="warning"><input name="option_productprice_' . $ids . '[]" type="text" class="form-control option_productprice option_productprice_' . $ids . '" " value="' . $val['productprice'] . '"/></td>';
                         }
@@ -494,7 +513,16 @@ if ($operation == "change") {
             if (!empty($item['noticeopenid'])) {
                 $saler = m('member')->getMember($item['noticeopenid']);
             }
+            if ($isladder) {
+                $item['ladder'] = pdo_fetch("select * from " . tablename('sz_yi_goods_ladder') . " where goodsid=:goodsid and  uniacid=:uniacid",
+                    array(
+                        ":goodsid" => $id,
+                        ":uniacid" => $_W['uniacid']
+                    ));
+                $item['ladder']['ladders'] = unserialize($item['ladder']['ladders']);
+            }
         }
+        //echo "<pre>";print_r($item);exit;
         // if (empty($category)) {
         //     message('抱歉，请您先添加商品分类！', $this->createWebUrl('shop/category', array(
         //         'op' => 'post'
@@ -699,6 +727,15 @@ if ($operation == "change") {
                 $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
                 $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
                 $data['return_appoint_amount'] = intval($_GPC['return_appoint_amount']); //全返分红金额
+            }
+            $ladders = array(); //阶梯价格数组
+            if($isladder && !empty($_GPC['minimum']) && !empty($_GPC['maximum']) && !empty($_GPC['ladderprice'])) {
+                // 开启阶梯价格插件 && get阶梯数据
+                for ($i=0; $i < count($_GPC['minimum']); $i++) { 
+                    $ladders[$i]['minimum'] = $_GPC['minimum'][$i];
+                    $ladders[$i]['maximum'] = $_GPC['maximum'][$i];
+                    $ladders[$i]['ladderprice'] = $_GPC['ladderprice'][$i];
+                }
             }
             if ($pluginyunbi) {
                 $data['isyunbi'] = intval($_GPC['isyunbi']);   //返虚拟币开关    1:开    0:关
@@ -919,6 +956,31 @@ if ($operation == "change") {
                     pdo_update('sz_yi_fund_goods', $fund_data, array('goodsid' => $id));
                 }
                 plog('shop.goods.edit', "编辑{$lang['good']} ID: {$id}");
+            }
+
+            if (!empty($ladders)) {
+                // 有阶梯数据 进行添加 编辑
+                $ladder_data = array(
+                        'uniacid'   => $_W['uniacid'],
+                        'goodsid'   => $id,
+                        'ladders'   => serialize($ladders),
+                        'times'     => time()
+                    );
+                $ladderid = pdo_fetchcolumn("select id from " . tablename('sz_yi_goods_ladder') . " where goodsid=:goodsid and  uniacid=:uniacid",
+                        array(
+                            ":goodsid" => $id,
+                            ":uniacid" => $_W['uniacid']
+                        ));
+                if(empty($ladderid)){
+                    //添加阶梯价格
+                    pdo_insert('sz_yi_goods_ladder', $ladder_data);
+                } else {
+                    //修改阶梯价格
+                    pdo_update('sz_yi_goods_ladder', $ladder_data, array(
+                            'id' => $ladderid
+                        ));
+                }
+
             }
             $totalstocks = 0;
             $param_ids = $_POST['param_id'];

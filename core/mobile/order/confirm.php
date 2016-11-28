@@ -54,6 +54,13 @@ $carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHE
     ":uniacid" => $_W["uniacid"]
 ));
 
+$isladder = false;
+if (p('ladder')) {
+    $ladder_set = p('ladder')->getSet();
+    if ($ladder_set['isladder']) {
+        $isladder = true;   
+    }
+}
 if ($operation == "display" || $operation == "create") {
     $id   = ($operation == "create") ? intval($_GPC["order"][0]["id"]) : intval($_GPC["id"]);
     $show = 1;
@@ -117,6 +124,20 @@ if ($operation == "date") {
             }
             break;
     }
+} elseif ($operation == 'ladder' && $_W['isajax']) {
+    $laddermoney = 0;
+    if ($isladder) {
+        $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+                ':id' => $_GPC['goodsid']
+            ));
+        if ($ladders) {
+            $ladders = unserialize($ladders['ladders']);
+            $laddermoney = m('goods')->getLaderMoney($ladders,$_GPC['total']);
+        }
+    }
+
+    $marketprice = $laddermoney > 0 ? $laddermoney : $_GPC['marketprice'];
+    show_json(1, $marketprice);
 }
 
 $yunbi_plugin   = p('yunbi');
@@ -194,6 +215,17 @@ if ($_W['isajax']) {
                     if (!empty($v["optionweight"])) {
                         $goods[$k]["weight"] = $v["optionweight"];
                     }
+                    //阶梯价格
+                    if ($isladder) {
+                        $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+                                ':id' => $v['goodsid']
+                            ));
+                        if ($ladders) {
+                            $ladders = unserialize($ladders['ladders']);
+                            $laddermoney = m('goods')->getLaderMoney($ladders,$v['total']);
+                            $goods[$k]['marketprice'] = $laddermoney > 0 ? $laddermoney : $v['marketprice'];
+                        }
+                    } 
                 }
             }
             $fromcart = 1;
@@ -207,6 +239,17 @@ if ($_W['isajax']) {
                 ':uniacid' => $uniacid,
                 ':id' => $id
             ));
+            //阶梯价格
+            if ($isladder) {
+                $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+                        ':id' => $data['goodsid']
+                    ));
+                if ($ladders) {
+                    $ladders = unserialize($ladders['ladders']);
+                    $laddermoney = m('goods')->getLaderMoney($ladders,$total);
+                    $data['marketprice'] = $laddermoney > 0 ? $laddermoney : $data['marketprice'];
+                }
+            }
             $suppliers = array($data['supplier_uid'] => array("supplier_uid" => $data['supplier_uid']));
 
             //新规格
@@ -1604,6 +1647,17 @@ if ($_W['isajax']) {
                     ':uniacid' => $uniacid,
                     ':id' => $goodsid
                 ));
+                //阶梯价格
+                if ($isladder) {
+                    $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+                            ':id' => $goodsid
+                        ));
+                    if ($ladders) {
+                        $ladders = unserialize($ladders['ladders']);
+                        $laddermoney = m('goods')->getLaderMoney($ladders,$goodstotal);
+                        $data['marketprice'] = $laddermoney > 0 ? $laddermoney : $data['marketprice'];
+                    }
+                } 
                 if (p('channel')) {
                     if ($ischannelpay == 1) {
                         if (empty($data['isopenchannel'])) {
@@ -2332,7 +2386,6 @@ if ($_W['isajax']) {
                     $order["diyformdata"]   = $idata;
                     $order["diyformid"]     = $order_formInfo["id"];
                 }
-
             }
 
             if($issale == false){

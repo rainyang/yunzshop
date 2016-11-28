@@ -740,6 +740,50 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <span style='float:right'><d id="stockcontainer">库存:<d id="stock"><%goods.total%></d></d> 销量:<%goods.sales%><%goods.unit%></d></span>
         </div>
 
+
+        <%if goods.isladder%>
+            <div class="other1">
+                <div class='left'>
+                    <span><i class='iconfont icon-activity'></i> 阶梯价格 </span> 
+                </div>
+                <div class='right'>
+                    <div class='inner'> 
+                        <%each goods.ladders as l i%>
+                            <%if i<=1%>
+                                <%if l.minimum == '大于'%>
+                                    <span style='color:#f15353'><%l.minimum%></span> 
+                                    <span style='color:#f15353'><%l.maximum%></span> 
+                                    <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/每<%goods.unit%> </span>;<br/>
+                                <%else%>
+                                    <span style='color:#f15353'><%l.minimum%></span> 
+                                    至<span style='color:#f15353'><%l.maximum%></span> 
+                                    <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/每<%goods.unit%> </span>;<br/>
+                                <%/if%>
+                            <%/if%>
+                        <%/each%>
+                        <%if goods.ladders.length>2%>
+                            <span id='ladder' onclick='showMoreLadder()'><i class='fa fa-angle-down'></i> 查看更多阶梯价格<br/></span>
+                        <%/if%>
+                        <div id='moreladder' style='display:none'>
+                            <%each goods.ladders as l i%>
+                                <%if i>1%>
+                                    <%if l.minimum == '大于'%>
+                                        <span style='color:#f15353'><%l.minimum%></span> 
+                                        <span style='color:#f15353'><%l.maximum%></span> 
+                                        <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/每<%goods.unit%> </span>;<br/>
+                                    <%else%>
+                                        <span style='color:#f15353'><%l.minimum%></span> 
+                                        至<span style='color:#f15353'><%l.maximum%></span> 
+                                        <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/每<%goods.unit%> </span>;<br/>
+                                    <%/if%>
+                                <%/if%>
+                            <%/each%>                     
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <%/if%>
+
        <%if saleset && saleset.enoughfree=='1' %>
       <div class="other">
             <div class='left'>
@@ -1090,10 +1134,15 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
     var qr_url = "{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id'], 'scan_qr'=>1))}";
     var qr_imgurl = "";
 
-  function showMoreActivity(){
-     $('#morebtn').hide();
-     $("#moreactivity").fadeIn();
- }
+
+    function showMoreActivity(){
+        $('#morebtn').hide();
+        $("#moreactivity").fadeIn();
+    }
+    function showMoreLadder(){
+        $('#ladder').hide();
+        $("#moreladder").fadeIn();
+    }
 
     var hasoption = false;
     var maxbuy = 0;
@@ -1562,6 +1611,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
            }
 
            $('#total').blur(function(){
+
                 var total = $("#total");
                 if(!total.isInt()){
                      total.val("1");
@@ -1581,22 +1631,22 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     num = stock;
                 }
                 total.val(num);
-                $(".indiana_total").html(num
-                    );
+                $(".indiana_total").html(num);
                 $(".indiana_price_total").html(num * $("#indiana_price").html());
                 $("#indiana_price_total").html(num * $("#indiana_price").html());
 
            });
 
 
-                    new Swipe($('.main_image')[0], {
+        new Swipe($('.main_image')[0], {
             speed:300,
             auto:4000,
             callback: function(){
+                $(".flicking_con  .inner  a").removeClass("on").eq(this.index).addClass("on");
+            }
+        });
 
-            $(".flicking_con  .inner  a").removeClass("on").eq(this.index).addClass("on");
-        }
-      });
+
             {if !empty($formInfo)}
             {template 'diyform/common_js'}
             {/if}

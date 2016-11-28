@@ -184,4 +184,19 @@ class Sz_DYi_Goods
         unset($row);
         return $list;
     }
+    //计算阶梯价格
+    public function getLaderMoney($data = array(), $number = '') {
+        $money = 0;
+
+        foreach ($data as $key => $value) {
+            if ( $value['minimum'] <= $number && $value['maximum'] >= $number) {
+                $money = $value['ladderprice'];
+                break;
+            } elseif ($value['minimum'] == '大于' && $value['maximum'] <= $number) {
+                $money = $value['ladderprice'];
+                break;
+            }
+        }
+        return $money;
+    }
 }
