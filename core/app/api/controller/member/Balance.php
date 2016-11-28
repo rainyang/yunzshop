@@ -112,6 +112,9 @@ class Balance extends YZ
                 $this->returnSuccess($jsons['json']);
 
             } else if ($trigger == 'post') {
+                global $_W;
+                
+                $_W['ispost'] = 1;
 
                 $msg = '';
                 if (empty($_REQUEST['money'])) {
