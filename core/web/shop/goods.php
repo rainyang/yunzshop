@@ -218,6 +218,7 @@ if ($operation == "change") {
                 ));
                 $item['allprice'] = $get_fund_data['allprice'];
                 $item['desc'] = $get_fund_data['desc'];
+                $item['isrefund'] = $get_fund_data['allrefund'];
             }
             if (empty($item)) {
                 message('抱歉，'.$lang['good'].'不存在或是已经删除！', '', 'error');
