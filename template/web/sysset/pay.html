@@ -163,14 +163,14 @@
 
                         <input type="file" name="weixin_jie_cert_file" class="form-control" />
                                     <span class="help-block">
-                                        {if !empty($sec['jie']['cert'])}
+                                        {if !empty($sec['jie_cert'])}
                                         <span class='label label-success'>已上传</span>
                                         {else}
                                         <span class='label label-danger'>未上传</span>
                                         {/if}
                                         下载证书 cert.zip 中的 apiclient_cert.pem 文件</span>
                         {else}
-                        {if !empty($sec['cert'])}
+                        {if !empty($sec['jie_cert'])}
                         <span class='label label-success'>已上传</span>
                         {else}
                         <span class='label label-danger'>未上传</span>
@@ -187,7 +187,7 @@
 
                         <input type="file" name="weixin_jie_key_file" class="form-control" />
                                     <span class="help-block">
-                                       {if !empty($sec['jie']['key'])}
+                                       {if !empty($sec['jie_key'])}
                                         <span class='label label-success'>已上传</span>
                                         {else}
                                         <span class='label label-danger'>未上传</span>
@@ -195,7 +195,7 @@
                                         下载证书 cert.zip 中的 apiclient_key.pem 文件
                                     </span>
                         {else}
-                        {if !empty($sec['key'])}
+                        {if !empty($sec['jie_key'])}
                         <span class='label label-success'>已上传</span>
                         {else}
                         <span class='label label-danger'>未上传</span>
@@ -211,7 +211,7 @@
 
                         <input type="file" name="weixin_jie_root_file" class="form-control" />
                                     <span class="help-block">
-                                      {if !empty($sec['jie']['root'])}
+                                      {if !empty($sec['jie_root'])}
                                         <span class='label label-success'>已上传</span>
                                         {else}
                                         <span class='label label-danger'>未上传</span>
@@ -219,7 +219,7 @@
                                         下载证书 cert.zip 中的 rootca.pem 文件
                                     </span>
                         {else}
-                        {if !empty($sec['jie']['root'])}
+                        {if !empty($sec['jie_root'])}
                         <span class='label label-success'>已上传</span>
                         {else}
                         <span class='label label-danger'>未上传</span>
