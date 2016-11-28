@@ -184,22 +184,22 @@ if (!class_exists('YunprintModel')) {
                 if ($offers['goodsprice'] == 1) {
                     $orderinfo .= "商品合计：           {$print_order['goodsprice']}<BR>";
                 }
-                if ($offers['discountprice'] == 1) {
+                if ($offers['discountprice'] == 1 && ($print_order['discountprice'] > 0)) {
                     $orderinfo .= "会员折扣：           {$print_order['discountprice']}<BR>";
                 }
-                if ($offers['deductcredit2'] == 1) {
+                if ($offers['deductcredit2'] == 1 && ($print_order['deductcredit2'] > 0)) {
                     $orderinfo .= "余额抵扣：           {$print_order['deductcredit2']}<BR>";
                 }
-                if ($offers['deductenough'] == 1) {
+                if ($offers['deductenough'] == 1 && ($print_order['deductenough'] > 0)) {
                     $orderinfo .= "满额优惠：           {$print_order['deductenough']}<BR>";
                 }
-                if ($offers['deductprice'] == 1) {
+                if ($offers['deductprice'] == 1 && ($print_order['deductprice'] > 0)) {
                     $orderinfo .= "积分抵扣：           {$print_order['deductprice']}<BR>";
                 }
-                if ($offers['couponprice'] == 1) {
+                if ($offers['couponprice'] == 1 && ($print_order['couponprice'] > 0)) {
                     $orderinfo .= "优惠项目：           {$print_order['couponprice']}<BR>";
                 }
-                if ($offers['dispatchprice'] == 1) {
+                if ($offers['dispatchprice'] == 1 && ($print_order['dispatchprice'] > 0)) {
                     $orderinfo .= "订单运费：           {$print_order['dispatchprice']}<BR>";
                 }
             }
