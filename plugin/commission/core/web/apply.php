@@ -441,9 +441,9 @@ if ($apply['status'] == 2  && checksubmit('submit_pay') ) {
 	}
 	
 	if (is_error($result)) {
+		$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');
+		pdo_update('sz_yi_commission_apply', $updateno, array('id' => $apply['id']));
 		if (strexists($result['message'], '系统繁忙')) {
-			$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');
-			pdo_update('sz_yi_commission_apply', $updateno, array('id' => $apply['id']));
 			$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
 			if (is_error($result)) {
 				message($result['message'], '', 'error');
@@ -501,14 +501,14 @@ if ($apply['status'] == 2  && checksubmit('submit_pay') ) {
 	}
 	
 	if (is_error($result)) {
-		//if (strexists($result['message'], '系统繁忙')) {
-			$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');
-			pdo_update('sz_yi_commission_apply', $updateno, array('id' => $apply['id']));
+		$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');
+		pdo_update('sz_yi_commission_apply', $updateno, array('id' => $apply['id']));
+		if (strexists($result['message'], '系统繁忙')) {
 			$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
 			if (is_error($result)) {
 				message($result['message'], '', 'error');
 			}
-		//}
+		}
 		message($result['message'], '', 'error');
 	}
 
