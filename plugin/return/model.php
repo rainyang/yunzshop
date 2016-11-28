@@ -17,6 +17,7 @@ if (!class_exists('ReturnModel')) {
 		 * $orderid：订单ID
 		 * $set：后台设置
 		 * $uniacid：公众号ID
+		 * 实付款价格
 		 */
 		public function setGoodsQueue($orderid,$set=array(),$uniacid='') {
 
@@ -95,6 +96,10 @@ if (!class_exists('ReturnModel')) {
 			}
 
 		}
+		/**
+		 * 会员等级返现 
+		 * 商品设置会员等级金额
+		 */
 		public function setMembeerLevel($orderid,$set=array(),$uniacid='') {
 			$order_goods = pdo_fetchall("SELECT og.price,og.total,g.isreturn,g.returns,g.returns2,g.returntype,o.openid,m.id as mid ,m.level, m.agentlevel FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 				array(':orderid' => $orderid,':uniacid' => $uniacid
@@ -115,16 +120,6 @@ if (!class_exists('ReturnModel')) {
 			}
 			if( $money > 0 )
 			{
-				// $data = array(
-				// 	'uniacid' => $uniacid,
-	   //              'mid' => $order_goods[0]['mid'],
-	   //              'openid' => $order_goods[0]['openid'],
-	   //              'money' => $money,
-	   //              'status' => 1,
-	   //              'returntype' => 1,
-				// 	'create_time'	=> time()
-    //             );
-				// pdo_insert('sz_yi_return_log', $data);
 
 				$this->setReturnCredit($order_goods[0]['openid'],'credit2',$money,'1');
 				$member_price_txt = $set['member_price'];
@@ -142,9 +137,10 @@ if (!class_exists('ReturnModel')) {
 				}
 	        	//m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
 			}
-			
-			
 		}
+		/*
+		* 确认订单执行
+		*/
 		public function cumulative_order_amount($orderid) {
 			global $_W, $_GPC;
 			$set = $this->getSet();
@@ -209,11 +205,9 @@ if (!class_exists('ReturnModel')) {
 			
 		}
 
-		//单笔订单
+		//单笔订单 加入队列 支付价格
 		public function setOrderRule($order_goods,$order_price,$set=array(),$uniacid='')
 		{
-
-
 			$data = array(
                 'mid' => $order_goods[0]['mid'],
                 'uniacid' => $uniacid,
@@ -237,7 +231,7 @@ if (!class_exists('ReturnModel')) {
         	//m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
 
 		}
-		//订单累计金额
+		//订单累计金额 加入队列 支付价格
 		public function setOrderMoneyRule($order_goods,$order_price,$set=array(),$uniacid='')
 		{
 				$return = pdo_fetch("SELECT * FROM " . tablename('sz_yi_return_money') . " WHERE mid = :mid and uniacid = :uniacid",
