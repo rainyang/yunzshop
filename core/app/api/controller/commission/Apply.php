@@ -17,9 +17,8 @@ class Apply extends YZ
     {
         $result = $this->callPlugin('commission/Apply');
         $result['json']['set']['texts']['commission_apply_title'] = $result['json']['set']['texts']['commission'] . "提现";
-        $result['json']['set']['texts']['commission_ok_title'] = "当前" . $result['json']['member']['commission_ok'] . "(元)";
+        $result['json']['set']['texts']['commission_ok_title'] = "当前" . $result['json']['texts']['commission_ok'] . "(元)";
         $result['json']['set']['texts']['widthdraw_log'] = "提现记录";
-        $result['json']['commission_ok'] = number_format($result['json']['member']['commission_ok'], 2);
         $result['json']['buttons'] = array();
         if (empty($result['json']['set']['closetocredit'])) {
            $result['json']['buttons'][] =  array(
@@ -38,7 +37,7 @@ class Apply extends YZ
         }
 
         if ($result['json']['settingalipay']['pay']['weixin'] == 1 && $result['json']['settingalipay']['pay']['weixin_withdrawals'] == 1) {
-            if ($result['json']['member']['commission_ok'] >= 1 && $result['json']['member']['commission_ok'] <= 200){
+            if ($result['json']['commission_ok'] >= 1 && $result['json']['commission_ok'] <= 200){
                $result['json']['buttons'][] =  array(
                     'id' => 3, 
                     'text' => $result['json']['set']['texts']['widthdraw']."到微信红包",

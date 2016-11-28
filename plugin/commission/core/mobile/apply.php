@@ -185,6 +185,6 @@ if ($_W['isajax']) {
 	}
 	$returnurl = urlencode($this->createPluginMobileUrl('commission/apply'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-	return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname']), 'settingalipay' => $settingalipay));
+	return show_json(1, array('commission_ok' => $commission_ok, 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname']), 'settingalipay' => $settingalipay));
 }
 include $this->template('apply');
