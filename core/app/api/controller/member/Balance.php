@@ -113,7 +113,7 @@ class Balance extends YZ
 
             } else if ($trigger == 'post') {
                 global $_W;
-                
+
                 $_W['ispost'] = 1;
 
                 $msg = '';
