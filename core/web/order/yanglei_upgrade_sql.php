@@ -58,4 +58,18 @@ if (!pdo_fieldexists('sz_yi_order', 'credit1')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `credit1` INT(11) NOT NULL COMMENT '购物积分' AFTER `goodsprice`;");
 }
 
+//2016-11-18 商品阶梯价格
+$sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_goods_ladder') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `goodsid` int(11) NOT NULL,
+  `ladders` text NOT NULL COMMENT '阶梯价格',
+  `times` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+pdo_fetchall($sql);
+
+
+
+
 

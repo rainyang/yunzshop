@@ -383,7 +383,7 @@
             <div class="price">
                 <div class='pnum'>￥<span class='marketprice'><%g.marketprice%></span></div>
                 <%if changenum%>
-                <div class="cnum"><div class="leftnav">-</div><input type="text" class="shownum" value="<%g.total%>" /><div class="rightnav">+</div></div>
+                <div class="cnum"><div class="leftnav" data-goodsid='<%g.goodsid%>'>-</div><input type="text" class="shownum" value="<%g.total%>" data-goodsid='<%g.goodsid%>'/><div class="rightnav" data-goodsid='<%g.goodsid%>'>+</div></div>
                 <%else%>
                 <div class='pnum'><span class='total'>×<%g.total%></span></div>
                 <%/if%>
@@ -515,6 +515,7 @@ var fromcart = 0;
             {/if}
 
             $('.leftnav').click(function(){
+                var thiss = $(this);
                 var input =$(this).next();
                 if(!input.isInt()){
                     input.val('1');
@@ -525,40 +526,51 @@ var fromcart = 0;
                     num=1;
                 }
                 input.val(num);
-                    $('.goodscount').html(num);
-                marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
-                $('.goodsprice').html( marketprice.toFixed(2) );
-                    var supplierids = $("#supplierids").val();
-                    var supplierarr = new Array();
-                    supplierarr = supplierids.split(",");
+                $('.goodscount').html(num);
+                marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") );
+                core.json('order/confirm',{
+                    op:"ladder",
+                    goodsid:$(this).data('goodsid'),
+                    total:num,
+                    marketprice:marketprice
+                },function(json){
+                    marketprice = json.result * num;
+                    $(this).closest('.good').find('.marketprice').html();
+                    ladder_marketprice = parseFloat(json.result);
+                    thiss.closest('.good').find('.marketprice').html( ladder_marketprice.toFixed(2) );
+                    $('.goodsprice').html( marketprice.toFixed(2) );
+                        var supplierids = $("#supplierids").val();
+                        var supplierarr = new Array();
+                        supplierarr = supplierids.split(",");
 
-                    var discount = '';
-                    var discountway = '';
-                    var discountprice = 0;
+                        var discount = '';
+                        var discountway = '';
+                        var discountprice = 0;
 
-                    for (var i = 0; i < supplierarr.length; i++) {
-                        discountprice = 0;
-                        discount = $('input[data-id=discount'+supplierarr[i]+']').val();
-                        discountway = $('input[data-id=discountway'+supplierarr[i]+']').val();
-                        if (discountway == 1) {
-                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
-                                discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
-                                
-                            }
-                        } else {
-                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
-                                discountprice += parseFloat( discount.replace(",","") ) * num;
-                            }
-                        }   
-                        $('.discountprice[data-id='+supplierarr[i]+']').html( discountprice.toFixed(2) );  
-                    }
+                        for (var i = 0; i < supplierarr.length; i++) {
+                            discountprice = 0;
+                            discount = $('input[data-id=discount'+supplierarr[i]+']').val();
+                            discountway = $('input[data-id=discountway'+supplierarr[i]+']').val();
+                            if (discountway == 1) {
+                                if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
+                                    discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
+                                    
+                                }
+                            } else {
+                                if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
+                                    discountprice += parseFloat( discount.replace(",","") ) * num;
+                                }
+                            }   
+                            $('.discountprice[data-id='+supplierarr[i]+']').html( discountprice.toFixed(2) );  
+                        }
 
-                var zt =  $('.addorder_nav .selected').data('nav') =='1';
-                getDispatchPrice(zt);
-                
+                    var zt =  $('.addorder_nav .selected').data('nav') =='1';
+                    getDispatchPrice(zt);
+                },false,true);
             })
             
              $('.rightnav').click(function(){
+                var thiss = $(this);
                 var maxbuy = parseInt( $(this).closest('.good').data('totalmaxbuy'));
              
                 var input =$(this).prev();
@@ -574,42 +586,51 @@ var fromcart = 0;
                 }
                 input.val(num);
                 $('.goodscount').html(num);
-                var marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
-                $('.goodsprice').html( marketprice.toFixed(2) );
-                    var supplierids = $("#supplierids").val();
-                    var supplierarr = new Array();
-                    supplierarr = supplierids.split(",");
+                marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") );
+                core.json('order/confirm',{
+                    op:"ladder",
+                    goodsid:$(this).data('goodsid'),
+                    total:num,
+                    marketprice:marketprice
+                },function(json){
+                    marketprice = json.result * num;
+                    ladder_marketprice = parseFloat(json.result);
+                    thiss.closest('.good').find('.marketprice').html( ladder_marketprice.toFixed(2) );
+                    $('.goodsprice').html( marketprice.toFixed(2) );
+                        var supplierids = $("#supplierids").val();
+                        var supplierarr = new Array();
+                        supplierarr = supplierids.split(",");
 
-                    var discount = '';
-                    var discountway = '';
-                    var discountprice = 0;
+                        var discount = '';
+                        var discountway = '';
+                        var discountprice = 0;
 
-                    for (var i = 0; i < supplierarr.length; i++) {
-                        discountprice = 0;
-                        discount = $('input[data-id=discount'+supplierarr[i]+']').val();
-                        discountway = $('input[data-id=discountway'+supplierarr[i]+']').val();
-                        if (discountway == 1) {
-                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
-                                discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
-                                
-                            }
-                        } else {
-                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
-                                discountprice += parseFloat( discount.replace(",","") ) * num;
-                            }
-                        } 
-                        $('.discountprice[data-id='+supplierarr[i]+']').html( discountprice.toFixed(2) );  
-                    }
+                        for (var i = 0; i < supplierarr.length; i++) {
+                            discountprice = 0;
+                            discount = $('input[data-id=discount'+supplierarr[i]+']').val();
+                            discountway = $('input[data-id=discountway'+supplierarr[i]+']').val();
+                            if (discountway == 1) {
+                                if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
+                                    discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
+                                    
+                                }
+                            } else {
+                                if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
+                                    discountprice += parseFloat( discount.replace(",","") ) * num;
+                                }
+                            } 
+                            $('.discountprice[data-id='+supplierarr[i]+']').html( discountprice.toFixed(2) );  
+                        }
 
-                
+                    
 
-               var zt =  $('.addorder_nav .selected').data('nav') =='1';
-                getDispatchPrice(zt);
-
+                   var zt =  $('.addorder_nav .selected').data('nav') =='1';
+                    getDispatchPrice(zt);
+                },false,true);
             });
             
      $('.shownum').blur(function(){
-               
+               var thiss = $(this);
                var maxbuy = parseInt( $(this).closest('.good').data('totalmaxbuy'));
            
                 var input =$(this);
@@ -630,37 +651,47 @@ var fromcart = 0;
                 }
                 input.val(num);
                 $('#goodscount').html(num);
-                   marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
-                $('.goodsprice').html( marketprice.toFixed(2) );
-                    var supplierids = $("#supplierids").val();
-                    var supplierarr = new Array();
-                    supplierarr = supplierids.split(",");
+                marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") );
+                core.json('order/confirm',{
+                    op:"ladder",
+                    goodsid:$(this).data('goodsid'),
+                    total:num,
+                    marketprice:marketprice
+                },function(json){
+                    marketprice = json.result * num;
+                    ladder_marketprice = parseFloat(json.result);
+                    thiss.closest('.good').find('.marketprice').html( ladder_marketprice.toFixed(2) );
 
-                    var discount = '';
-                    var discountway = '';
-                    var discountprice = 0;
+                    $('.goodsprice').html( marketprice.toFixed(2) );
+                        var supplierids = $("#supplierids").val();
+                        var supplierarr = new Array();
+                        supplierarr = supplierids.split(",");
 
-                    for (var i = 0; i < supplierarr.length; i++) {
-                        discountprice = 0;
-                        discount = $('input[data-id=discount'+supplierarr[i]+']').val();
-                        discountway = $('input[data-id=discountway'+supplierarr[i]+']').val();
-                        if (discountway == 1) {
-                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
-                                discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
-                                
-                            }
-                        } else {
-                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
-                                discountprice += parseFloat( discount.replace(",","") ) * num;
-                            }
-                        }   
-                        $('.discountprice[data-id='+supplierarr[i]+']').html( discountprice.toFixed(2) );  
-                    }
+                        var discount = '';
+                        var discountway = '';
+                        var discountprice = 0;
 
-          
-               var zt =  $('.addorder_nav .selected').data('nav') =='1';
-                getDispatchPrice(zt);
-               
+                        for (var i = 0; i < supplierarr.length; i++) {
+                            discountprice = 0;
+                            discount = $('input[data-id=discount'+supplierarr[i]+']').val();
+                            discountway = $('input[data-id=discountway'+supplierarr[i]+']').val();
+                            if (discountway == 1) {
+                                if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
+                                    discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
+                                    
+                                }
+                            } else {
+                                if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
+                                    discountprice += parseFloat( discount.replace(",","") ) * num;
+                                }
+                            }   
+                            $('.discountprice[data-id='+supplierarr[i]+']').html( discountprice.toFixed(2) );  
+                        }
+
+              
+                   var zt =  $('.addorder_nav .selected').data('nav') =='1';
+                    getDispatchPrice(zt);
+                },false,true);
            })
         fromcart = json.result.fromcart;
         
