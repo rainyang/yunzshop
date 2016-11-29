@@ -194,7 +194,7 @@
                                 <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 9999'>
                                
                         {ifp 'member.member.view|member.member.edit'}<li><a href="{php echo $this->createWebUrl('member',array('op'=>'detail','id' => $row['id']));}" title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>{/if}
-                        {ifp 'order'}<li><a  href="{php echo $this->createWebUrl('order', array('op' => 'display','member'=>$row['nickname']))}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>{/if}
+                        {ifp 'order'}<li><a  href="{php echo $this->createWebUrl('order', array('op' => 'display','openid'=>$row['openid']))}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>{/if}
                         {ifp 'finance.recharge.credit1'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit1','id'=>$row['id']))}" title='充值{php echo SZ_YI_INTEGRAL}'><i class='fa fa-credit-card'></i> 充值{php echo SZ_YI_INTEGRAL}</a></li>{/if}
                         {ifp 'finance.recharge.credit2'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit2','id'=>$row['id']))}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>{/if}
                         {if p('yunbi')}

@@ -365,7 +365,7 @@
      
                     </td>
                     <td   rowspan="{php echo count($item['goods'])}" ><label class='label label-{$item['statuscss']}'>{$item['status']}</label><br />
-                    <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id'], 'plugin' => $_GPC['plugin']))}"   >查看详情</a></td>
+                    <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id'], 'plugin' => $_GPC['plugin'], 'openid' => $_GPC['openid']))}">查看详情</a></td>
                      <td   rowspan="{php echo count($item['goods'])}" width="10%">
                     {template 'web/order/ops'}
                      </td>

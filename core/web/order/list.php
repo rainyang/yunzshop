@@ -264,7 +264,7 @@ if ($operation == "display") {
     if (!empty($_GPC["member"])) {
         $_GPC["member"] = trim($_GPC["member"]);
         $sql = 'SELECT m.openid FROM ' . tablename("sz_yi_member") . " m WHERE (m.realname LIKE :member 
-                OR m.mobile LIKE :member OR m.nickname LIKE :member) AND m.uniacid = :uniacid 
+                OR m.mobile LIKE :member OR m.membermobile LIKE :member OR m.nickname LIKE :member) AND m.uniacid = :uniacid 
                 UNION 
                 SELECT a.openid FROM " . tablename("sz_yi_member_address") . " a 
                 WHERE (a.realname LIKE :member OR a.mobile LIKE :member) AND a.uniacid = :uniacid";
@@ -284,6 +284,11 @@ if ($operation == "display") {
             $condition .= " AND o.openid = '' ";
         }
         //$condition .= " AND (m.realname LIKE '%{$_GPC["member"]}%' or m.mobile LIKE '%{$_GPC["member"]}%' or m.nickname LIKE '%{$_GPC["member"]}%' " . " or a.realname LIKE '%{$_GPC["member"]}%' or a.mobile LIKE '%{$_GPC["member"]}%' or o.carrier LIKE '%{$_GPC["member"]}%')";
+    }
+    //会员订单查询
+    if(!empty($_GPC['openid'])){
+        $_GPC["openid"] = trim($_GPC["openid"]);
+        $condition .= " AND o.openid='" . $_GPC["openid"] . "'";
     }
     if (!empty($_GPC["saler"])) {
         $_GPC["saler"] = trim($_GPC["saler"]);
@@ -843,6 +848,11 @@ if ($operation == "display") {
         $condition.= " and plugin='".$_GPC['plugin']."'";
     }
 
+    if(!empty($_GPC['openid'])){
+        $condition .= " AND openid='" . $_GPC["openid"] . "'";
+        $join_order_type .= " AND o.openid='" . $_GPC["openid"] . "'";
+    }
+
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
@@ -854,6 +864,12 @@ if ($operation == "display") {
             $supplier_cond = ' AND supplier_uid=' . $_W['uid'];
             $supplier_conds = ' AND o.supplier_uid=' . $_W['uid'];
         }
+    }
+    //会员订单查询
+    if(!empty($_GPC['openid'])){
+        $_GPC["openid"] = trim($_GPC["openid"]);
+        $condition .= " AND openid='" . $_GPC["openid"] . "'";
+        $join_order_type .= " AND o.openid='" . $_GPC["openid"] . "'";
     }
     $totals['all'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . $supplier_cond,
         $paras);
@@ -1145,6 +1161,7 @@ if ($operation == "display") {
     if(!empty($_GPC['plugin'])){
         $condition.= " and plugin='".$_GPC['plugin']."'";
     }
+
     $supplier_conds = '';
     $supplier_cond = '';
     if (p('supplier')) {
