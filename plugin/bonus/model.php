@@ -345,7 +345,18 @@ if (!class_exists('BonusModel')) {
 			}else{
 				
 				if($order_goods['optionid'] != 0){
-					$option = pdo_fetch('select productprice,marketprice,costprice from ' . tablename('sz_yi_goods_option') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $order_goods['optionid'], ':uniacid' => $_W['uniacid']));
+					$option = pdo_fetch('select productprice,marketprice,costprice,option_ladders from ' . tablename('sz_yi_goods_option') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $order_goods['optionid'], ':uniacid' => $_W['uniacid']));
+					//阶梯价格插件
+					if (p('ladder')) {
+					    $ladder_set = p('ladder')->getSet();
+					    if ($ladder_set['isladder']) {
+					        $ladders = unserialize($option['option_ladders']);
+			                if ($ladders) {
+			                    $laddermoney = m('goods')->getLaderMoney($ladders,$order_goods['total']);
+			                    $option['marketprice'] = $laddermoney > 0 ? $laddermoney : $option['marketprice'];
+			                }  
+					    }
+					}
 					$productprice = $option['productprice'] * $order_goods['total'];	//原价
 					$marketprice  = $option['marketprice'] * $order_goods['total'];		//现价
 					$costprice    = $option['costprice'] * $order_goods['total'];	
