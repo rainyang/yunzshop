@@ -92,6 +92,8 @@ $sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_goods_ladder') . " (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 pdo_fetchall($sql);
 
-
-
+//2016-11-29 商品规格阶梯价格
+if (!pdo_fieldexists('sz_yi_goods_option', 'option_ladders')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods_option')." ADD `option_ladders` TEXT NULL DEFAULT NULL COMMENT '规格阶梯价格' AFTER `redprice`;");
+}
 

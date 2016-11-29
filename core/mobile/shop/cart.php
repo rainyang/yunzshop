@@ -43,7 +43,7 @@ if ($_W['isajax']) {
         if (p('yunbi')) {
             $yunbi_condtion = 'g.isforceyunbi,g.yunbi_deduct,';
         }
-        $sql        = 'SELECT f.id,f.total,' . $channel_condtion . $yunbi_condtion . 'f.goodsid,g.total as stock, o.stock as optionstock, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,g.productprice,o.title as optiontitle,f.optionid,o.specs FROM ' . tablename('sz_yi_member_cart') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on f.optionid = o.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC ';
+        $sql        = 'SELECT f.id,f.total,' . $channel_condtion . $yunbi_condtion . 'f.goodsid,g.total as stock, o.stock as optionstock, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,g.productprice,o.title as optiontitle,f.optionid,o.specs,o.option_ladders FROM ' . tablename('sz_yi_member_cart') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on f.optionid = o.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC ';
         $list       = pdo_fetchall($sql, $params);
 
         $verify_goods_ischannelpick = '';
@@ -65,6 +65,13 @@ if ($_W['isajax']) {
 
             if (!empty($r['optionid'])) {
                 $r['stock'] = $r['optionstock'];
+                if ($isladder) {
+                    $ladders = unserialize($r['option_ladders']);
+                    if ($ladders) {
+                        $laddermoney = m('goods')->getLaderMoney($ladders,$r['total']);
+                        $r['marketprice'] = $laddermoney > 0 ? $laddermoney : $r['marketprice'];
+                    }
+                }
             }
             if (p('yunbi')) {
                 if (!empty($yunbi_set['isdeduct']) && !empty($r['isforceyunbi']) && $member['virtual_currency'] < $r['yunbi_deduct']) {
@@ -501,7 +508,9 @@ if ($_W['isajax']) {
         $goodsid = intval($_GPC['goodsid']);
         $total   = intval($_GPC['total']);
         empty($total) && $total = 1;
-        $data = pdo_fetch("select id,total,marketprice from " . tablename('sz_yi_member_cart') . " " . " where id=:id and uniacid=:uniacid and goodsid=:goodsid  and openid=:openid limit 1 ", array(
+        $data = pdo_fetch("select f.id,f.total,f.marketprice,o.option_ladders from " . tablename('sz_yi_member_cart') . " f 
+        left join " . tablename('sz_yi_goods_option') . " o on f.optionid = o.id  " . " 
+        where f.id=:id and f.uniacid=:uniacid and f.goodsid=:goodsid  and f.openid=:openid limit 1 ", array(
             ':id' => $id,
             ':uniacid' => $uniacid,
             ':goodsid' => $goodsid,
@@ -518,11 +527,16 @@ if ($_W['isajax']) {
             'goodsid' => $goodsid
         ));
             if ($isladder) {
-                $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
-                        ':id' => $goodsid
-                    ));
-                if ($ladders) {
+                if ($data['option_ladders']) {
+
+                    $ladders = unserialize($data['option_ladders']);
+                }else{
+                    $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+                            ':id' => $goodsid
+                        ));
                     $ladders = unserialize($ladders['ladders']);
+                }
+                if ($ladders) {
                     $laddermoney = m('goods')->getLaderMoney($ladders,$total);
                     $marketprice = $laddermoney > 0 ? $laddermoney : $data['marketprice'];
                 }

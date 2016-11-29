@@ -1652,85 +1652,72 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             {/if}
 
             $(".option").click(function() {
+                var specid = $(this).attr("specid");
+                var oid = $(this).attr("oid");
+                $(".optionid_"+specid).val(oid);
+                $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
+                $(this).addClass("on").attr("sel", "true");
 
-             var specid = $(this).attr("specid");
-             var oid = $(this).attr("oid");
-            $(".optionid_"+specid).val(oid);
-            $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
-            $(this).addClass("on").attr("sel", "true");
-
-             var titles='已选: ';
-                 $('.spec_items').each(function(){
-                                 if($(this).find('.on').length>0){
-                    titles+= $(this).find('.on').attr('title')+";";
-                            }
-                 });
-
-                             $('.good_choose .info .right .option').html(titles);
-         var thumb = $(this).attr('thumb');
-         if(thumb!=''){
-             $("#chooser_img").attr('src',thumb);
-         }
-         else{
-
-             $("#chooser_img").attr('src',json.result.goods.thumb);
-         }
-         setoptions();
-            var optionid = "";
-            var stock =0;
-            var marketprice = 0;
-            var productprice = 0;
-             var ret = option_selected();
-
-            if(ret.no==''){
-                var len = options.length;
-                for(var i=0;i<len;i++) {
-                    var o = options[i];
-                    var ids = ret.all.join("_");
-
-                                var specarr = o.specs.split('_').sort();
-                                var idsarr = ret.all.sort();
-
-
-
-
-                    if(specarr.join('_') ==idsarr.join('_') ){
-                        optionid = o.id;
-                        stock = o.stock;
-                        marketprice = o.marketprice;
-                        productprice = o.productprice;
-                        break;
+                var titles='已选: ';
+                $('.spec_items').each(function(){
+                    if($(this).find('.on').length>0){
+                        titles+= $(this).find('.on').attr('title')+";";
                     }
+                });
 
+                $('.good_choose .info .right .option').html(titles);
+                var thumb = $(this).attr('thumb');
+                if(thumb!=''){
+                    $("#chooser_img").attr('src',thumb);
+                } else {
+                    $("#chooser_img").attr('src',json.result.goods.thumb);
                 }
+                setoptions();
+                var optionid = "";
+                var stock =0;
+                var marketprice = 0;
+                var productprice = 0;
+                var ret = option_selected();
 
-               $("#optionid").val(optionid);
-
-                if(stock!="-1"){
-                    $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
-                }
-                else{
-                  $("#stockcontainer").html("<span id='stock'></span>");
-                }
                 if(ret.no==''){
-                    if(stock==0){
-                       $('.confirm_option').addClass('disabled').html('库存不足,无法购买');
+                    var len = options.length;
+                    for(var i=0;i<len;i++) {
+                        var o = options[i];
+                        var ids = ret.all.join("_");
+                        var specarr = o.specs.split('_').sort();
+                        var idsarr = ret.all.sort();
+                        if(specarr.join('_') ==idsarr.join('_') ){
+                            optionid = o.id;
+                            stock = o.stock;
+                            marketprice = o.marketprice;
+                            productprice = o.productprice;
+                            break;
+                        }
                     }
-                    else{
-                     $('.confirm_option').removeClass('disabled').html('确认');
+
+                    $("#optionid").val(optionid);
+
+                    if(stock!="-1"){
+                        $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
+                    } else{
+                      $("#stockcontainer").html("<span id='stock'></span>");
                     }
-                }
-                $("#marketprice").html(marketprice);
+                    if(ret.no==''){
+                        if(stock==0){
+                           $('.confirm_option').addClass('disabled').html('库存不足,无法购买');
+                        }
+                        else{
+                         $('.confirm_option').removeClass('disabled').html('确认');
+                        }
+                    }
+                    $("#marketprice").html(marketprice);
+                    $("#option_price").html(marketprice);
+                    $("#option_stock").html(stock);
+                    $("#productprice").html(productprice);
 
-                $("#option_price").html(marketprice);
-                $("#option_stock").html(stock);
-
-                $("#productprice").html(productprice);
                 if(productprice<=0){
-                $('#productpricecontainer').html("");
-                }
-                else{
-
+                    $('#productpricecontainer').html("");
+                } else{
                    $('#productpricecontainer').html("市场价￥<span id='productprice'>" + productprice + "</span>");
                 }
             }

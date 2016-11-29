@@ -527,12 +527,14 @@ var fromcart = 0;
                 }
                 input.val(num);
                 $('.goodscount').html(num);
+                optionid = '{php echo $_GPC['optionid']}';
                 marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") );
                 core.json('order/confirm',{
                     op:"ladder",
                     goodsid:$(this).data('goodsid'),
                     total:num,
-                    marketprice:marketprice
+                    marketprice:marketprice,
+                    optionid:optionid
                 },function(json){
                     marketprice = json.result * num;
                     $(this).closest('.good').find('.marketprice').html();
@@ -586,12 +588,14 @@ var fromcart = 0;
                 }
                 input.val(num);
                 $('.goodscount').html(num);
+                optionid = '{php echo $_GPC['optionid']}';
                 marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") );
                 core.json('order/confirm',{
                     op:"ladder",
                     goodsid:$(this).data('goodsid'),
                     total:num,
-                    marketprice:marketprice
+                    marketprice:marketprice,
+                    optionid:optionid
                 },function(json){
                     marketprice = json.result * num;
                     ladder_marketprice = parseFloat(json.result);
@@ -651,12 +655,14 @@ var fromcart = 0;
                 }
                 input.val(num);
                 $('#goodscount').html(num);
+                optionid = '{php echo $_GPC['optionid']}';
                 marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") );
                 core.json('order/confirm',{
                     op:"ladder",
                     goodsid:$(this).data('goodsid'),
                     total:num,
-                    marketprice:marketprice
+                    marketprice:marketprice,
+                    optionid:optionid
                 },function(json){
                     marketprice = json.result * num;
                     ladder_marketprice = parseFloat(json.result);

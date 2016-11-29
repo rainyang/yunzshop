@@ -402,10 +402,21 @@ if ($_W['isajax']) {
     }
     $options = array();
     if (!empty($goods['hasoption'])) {
-        $options = pdo_fetchall("select id,title,thumb,marketprice,productprice,costprice, stock,weight,specs from " . tablename('sz_yi_goods_option') . " where goodsid=:id order by id asc",
+        $options = pdo_fetchall("select id,title,thumb,marketprice,productprice,costprice, stock,weight,specs,option_ladders from " . tablename('sz_yi_goods_option') . " where goodsid=:id order by id asc",
             array(
                 ':id' => $goodsid
             ));
+        //echo "<pre>";print_r($options);exit;
+            //阶梯价格计算
+            if ($goods['isladder']) {
+                foreach ($options as &$value) {
+                    $laddermoney = m('goods')->getLaderMoney(unserialize($value['option_ladders']),'1');
+                    $value['marketprice'] = $laddermoney > 0 ? $laddermoney : $value['marketprice'];
+                    
+                }
+                unset($value);           
+            }  
+
         if (!empty($ischannelpay) && p('channel')) {
             foreach ($options as &$value) {
                 $superior_stock = p('channel')->getSuperiorStock($openid, $goodsid, $value['id']);

@@ -429,7 +429,8 @@ if ($operation == "change") {
                                 "productsn" => $o['productsn'],
                                 "weight" => $o['weight'],
                                 'virtual' => $o['virtual'],
-                                'redprice' => $o['redprice']
+                                'redprice' => $o['redprice'],
+                                'option_ladder'=>unserialize($o['option_ladders'])
                             );
                             break;
                         }
@@ -442,24 +443,22 @@ if ($operation == "change") {
                         $hh .= '<input name="option_title_' . $ids . '[]"  type="hidden" class="form-control option_title option_title_' . $ids . '" value="' . $val['title'] . '"/>';
                         $hh .= '<input name="option_virtual_' . $ids . '[]"  type="hidden" class="form-control option_title option_virtual_' . $ids . '" value="' . $val['virtual'] . '"/>';
                         $hh .= '</td>';
-
-
-                        
-
                         //$hh .= '<td class="success"><input name="option_marketprice_' . $ids . '[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids . '" value="' . $val['marketprice'] . '"/></td>';
-
                         $hh .= '<td class="success"><input name="option_marketprice_' . $ids .'[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids .'" value="' . $val['marketprice'] . '"/>';
                         $hh .= '<div style="padding-bottom:10px;text-align:center;font-size:14px;">阶梯价格&nbsp;<a class="btn-success ng-scope addopladder" data-ids="' . $ids .'" href="javascript:;"><i class="fa fa-plus" style="width: 20px;height: auto;"></i></a></div>';
-                        $hh .= '<div id="ladderop">';
+                        $hh .= '<div id="ladderop_' . $ids .'">';
 
-                        $hh .= '<div class="input-group">';
-                        $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_minimum_' . $ids .'[]"/>';
-                        $hh .= '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >至</span>';
-                        $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_maximum_' . $ids .'[]"/>';
-                        $hh .= '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >=</span>';
-                        $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_ladderprice_' . $ids .'[]"/>';
-                        $hh .= ' <span style="width: 10px;padding: 6px 1px;" class="input-group-addon"> &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteopladder" title="删除"><i class="fa fa-times"></i></a> </span>';
-                        $hh .= '</div>';  
+                        foreach ($val['option_ladder'] as $ol) {
+                            $hh .= '<div class="input-group">';
+                            $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control option_minimum_' . $ids .'" value="'.$ol['minimum'].'" name="option_minimum_' . $ids .'[]"/>';
+                            $hh .= '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >至</span>';
+                            $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control option_maximum_' . $ids .'" value="'.$ol['maximum'].'" name="option_maximum_' . $ids .'[]"/>';
+                            $hh .= '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >=</span>';
+                            $hh .= ' <input type="text" style="padding: 6px 2px;" class="form-control option_ladderprice_' . $ids .'" value="'.$ol['ladderprice'].'" name="option_ladderprice_' . $ids .'[]"/>';
+                            $hh .= ' <span style="width: 10px;padding: 6px 1px;" class="input-group-addon"> &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteopladder" title="删除"><i class="fa fa-times"></i></a> </span>';
+                            $hh .= '</div>'; 
+                        } 
+
 
                         $hh .= '</div>'; 
                         $hh .= '</td>';
@@ -1137,6 +1136,16 @@ if ($operation == "change") {
                 );
                 if($_GPC['plugin'] == 'fund'){
                     $a['productprice'] = $a['marketprice'];
+                }
+                $option_ladders = array(); //阶梯价格数组
+                if($isladder && !empty($_GPC['option_minimum_'. $ids]) && !empty($_GPC['option_maximum_'. $ids]) && !empty($_GPC['option_ladderprice_'. $ids])) {
+                    // 开启阶梯价格插件 && get阶梯数据
+                    for ($i=0; $i < count($_GPC['option_minimum_'. $ids]); $i++) { 
+                        $option_ladders[$i]['minimum']     = $_GPC['option_minimum_'. $ids][$i];
+                        $option_ladders[$i]['maximum']     = $_GPC['option_maximum_'. $ids][$i];
+                        $option_ladders[$i]['ladderprice'] = $_GPC['option_ladderprice_'. $ids][$i];
+                    }
+                    $a['option_ladders'] = serialize($option_ladders);
                 }
                 $totalstocks += $a['stock'];
                 if (empty($get_option_id)) {

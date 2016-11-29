@@ -187,7 +187,6 @@ class Sz_DYi_Goods
     //计算阶梯价格
     public function getLaderMoney($data = array(), $number = '') {
         $money = 0;
-
         foreach ($data as $key => $value) {
             if ( $value['minimum'] <= $number && $value['maximum'] >= $number) {
                 $money = $value['ladderprice'];

@@ -134,9 +134,25 @@ if ($operation == "date") {
             $ladders = unserialize($ladders['ladders']);
             $laddermoney = m('goods')->getLaderMoney($ladders,$_GPC['total']);
         }
+        if (intval($_GPC['optionid'])) {
+            $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight,option_ladders from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
+                        ':uniacid' => $uniacid,
+                        ':goodsid' => $_GPC['goodsid'],
+                        ':id' => $_GPC['optionid']
+                    ));
+            //阶梯价格
+            if ($isladder) {
+                $ladders = unserialize($option['option_ladders']);
+                if ($ladders) {
+                    $laddermoney = m('goods')->getLaderMoney($ladders,$_GPC['total']);
+                    //$option['marketprice'] = $laddermoney > 0 ? $laddermoney : $option['marketprice'];
+                }
+            }
+        }
     }
-
     $marketprice = $laddermoney > 0 ? $laddermoney : $_GPC['marketprice'];
+
+
     show_json(1, $marketprice);
 }
 
@@ -159,7 +175,6 @@ if ($_W['isajax']) {
         } else {
             $optionid = intval($_GPC['optionid']);
         }
-
         if (strpos($_GPC['total'], '|')) {
             $total    = rtrim($_GPC['total'], '|');
             $total = explode('|', $total);
@@ -197,7 +212,7 @@ if ($_W['isajax']) {
                 ':openid' => $openid
             ), 'supplier_uid');
 
-            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
+            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct,o.option_ladders FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
 
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
@@ -217,11 +232,16 @@ if ($_W['isajax']) {
                     }
                     //阶梯价格
                     if ($isladder) {
-                        $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+                        if ($v['option_ladders']) {
+                            $ladders = unserialize($v['option_ladders']);
+                        }else{
+                            $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
                                 ':id' => $v['goodsid']
                             ));
-                        if ($ladders) {
                             $ladders = unserialize($ladders['ladders']);
+                        }
+                        
+                        if ($ladders) {
                             $laddermoney = m('goods')->getLaderMoney($ladders,$v['total']);
                             $goods[$k]['marketprice'] = $laddermoney > 0 ? $laddermoney : $v['marketprice'];
                         }
@@ -257,11 +277,19 @@ if ($_W['isajax']) {
                 $data['total']    = $total;
                 $data['optionid'] = $optionid;
                 if (!empty($optionid)) {
-                    $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
+                    $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight,option_ladders from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
                         ':uniacid' => $uniacid,
                         ':goodsid' => $id,
                         ':id' => $optionid
                     ));
+                    //阶梯价格
+                    if ($isladder) {
+                        $ladders = unserialize($option['option_ladders']);
+                        if ($ladders) {
+                            $laddermoney = m('goods')->getLaderMoney($ladders,$total);
+                            $option['marketprice'] = $laddermoney > 0 ? $laddermoney : $option['marketprice'];
+                        }
+                    }
                     if (!empty($option)) {
                         $data['optionid']    = $optionid;
                         $data['optiontitle'] = $option['title'];
@@ -1723,6 +1751,15 @@ if ($_W['isajax']) {
                         ':id' => $optionid
 
                     ));
+
+                    //阶梯价格
+                    if ($isladder) {
+                        $ladders = unserialize($option['option_ladders']);
+                        if ($ladders) {
+                            $laddermoney = m('goods')->getLaderMoney($ladders,$goodstotal);
+                            $option['marketprice'] = $laddermoney > 0 ? $laddermoney : $option['marketprice'];
+                        }
+                    }
                     if (p('channel') && !empty($ischannelpick)) {
                         $my_option_stock = p('channel')->getMyOptionStock($openid,$goodsid,$optionid);
                         $option['stock'] = $my_option_stock;

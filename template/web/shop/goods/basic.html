@@ -549,15 +549,15 @@ $(document).on('click','.deleteladder',function(){
   $(document).on('click','.addopladder',function(){  
     var ids = $(this).data('ids');
     var hh = '<div class="input-group">';
-        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_minimum_' + ids+'[]"/>';
+        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control option_minimum_' + ids +'" value="" name="option_minimum_' + ids +'[]"/>';
         hh += '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >至</span>';
-        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_maximum_' + ids+'[]"/>';
+        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control option_maximum_' + ids +'" value="" name="option_maximum_' + ids +'[]"/>';
         hh += '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >=</span>';
-        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_ladderprice_' + ids+'[]"/>';
+        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control option_ladderprice_' + ids +'" value="" name="option_ladderprice_' + ids +'[]"/>';
         hh += ' <span style="width: 10px;padding: 6px 1px;" class="input-group-addon"> &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteopladder" title="删除"><i class="fa fa-times"></i></a> </span>';
         hh += '</div>'; 
 
-    $('#ladderop').append(hh);
+    $('#ladderop_' + ids).append(hh);
   });
 
 $(document).on('click','.deleteopladder',function(){
