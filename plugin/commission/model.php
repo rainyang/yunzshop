@@ -576,7 +576,14 @@ if (!class_exists('CommissionModel')) {
 			$member['level2_agentids'] = $level2_agentids;
 			$member['level3'] = $level3;
 			$member['level3_agentids'] = $level3_agentids;
-			$member['agenttime'] = date('Y-m-d H:i', $member['agenttime']);
+			//成为分销商未记录时间，已创建时间为准修改
+			if(!empty($member['agenttime'])){
+				$member['agenttime'] = date('Y-m-d H:i', $member['agenttime']);
+			}else{
+				$agent_time = $member['createtime'] > 0 ? $member['createtime'] : $time;
+				pdo_update("sz_yi_member", array("agenttime" => $agent_time), array("openid" => $openid, "uniacid" => $_W['uniacid']));
+				$member['agenttime'] = date('Y-m-d H:i', $agent_time);
+			}
 			$member['myordermoney'] = $myordermoney;
 			$member['myordercount'] = $myordercount;
 			return $member;
