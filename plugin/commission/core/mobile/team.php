@@ -41,10 +41,6 @@ if ($_W['isajax']) {
 	$psize = 20;
 	$list = array();
 	if ($hasangent) {
-        if (!empty($_GPC['id'])) {
-            $condition .=' AND id<:id';
-            $params[':id'] = intval($_GPC['id']);
-        }
 		$list = pdo_fetchall("select * from " . tablename('sz_yi_member') . " where isagent =1 and status=1 and uniacid = " . $_W['uniacid'] . " {$condition}  ORDER BY agenttime desc, id desc limit " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		foreach ($list as &$row) {
 			$info = $this->model->getInfo($row['openid'], array('total'));

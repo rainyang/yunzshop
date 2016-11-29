@@ -112,6 +112,9 @@ class Balance extends YZ
                 $this->returnSuccess($jsons['json']);
 
             } else if ($trigger == 'post') {
+                global $_W;
+
+                $_W['ispost'] = 1;
 
                 $msg = '';
                 if (empty($_REQUEST['money'])) {
@@ -133,7 +136,23 @@ class Balance extends YZ
         } else {
             $this->returnError("请重新登录!");
         }
+    }
 
+    /**
+     * 获取当前用户余额
+     *
+     * @request member/Balance/getBalance
+     */
+    public function getBalance() {
+        if ($this->_openid) {
+            $json = $this->callMobile('member/recharge');
+
+            $res = array('money'=>$json['json']['credit']);
+
+            $this->returnSuccess($res);
+        } else {
+            $this->returnError("请重新登录!");
+        }
 
 
     }
