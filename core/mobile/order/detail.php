@@ -116,7 +116,7 @@ if (!empty($order)) {
         if($order['plugin'] == 'fund'){
             $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
         }else{
-            $g['url'] = $this->createMobileUrl('shop/detail', array('goodsid' => $g['goodsid']));
+            $g['url'] = $this->createMobileUrl('shop/detail', array('id' => $g['goodsid']));
         }
         if ($diyform_plugin) {
             $diyformdata   = iunserializer($g['diyformdata']);
