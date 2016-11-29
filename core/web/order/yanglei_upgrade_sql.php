@@ -97,3 +97,4 @@ if (!pdo_fieldexists('sz_yi_goods_option', 'option_ladders')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods_option')." ADD `option_ladders` TEXT NULL DEFAULT NULL COMMENT '规格阶梯价格' AFTER `redprice`;");
 }
 
+
