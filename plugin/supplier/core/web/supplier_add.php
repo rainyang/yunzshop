@@ -65,12 +65,13 @@ if($operation == 'post'){
 } elseif ($operation == 'delete') {
     ca('supplier.supplier.delete');
     $id = intval($_GPC['id']);
-    $item = pdo_fetch('SELECT id,uid,username FROM ' . tablename('sz_yi_perm_user') . " WHERE id = '$id'");
+    $item = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_perm_user') . " WHERE id = '$id'");
     if (empty($item)) {
         message('抱歉，操作员不存在或是已经被删除！', $this->createPluginWebUrl('supplier/supplier'), 'error');
     }
     pdo_delete('sz_yi_perm_user', array('id' => $id, 'uniacid' => $_W['uniacid']));
     pdo_delete('users', array('uid' => $item['uid']));
+    pdo_delete('sz_yi_af_supplier', array('openid' => $item['openid'], 'uniacid' => $_W['uniacid']));
     plog('supplier.supplier.delete', "删除操作员 ID: {$id} 用户名: {$item['username']} ");
     message('操作员删除成功！', $this->createPluginWebUrl('supplier/supplier'), 'success');
 }
