@@ -20,6 +20,7 @@ class Team extends YZ
 		$result['json']['set']['texts']['c2'] = $result['json']['set']['texts']['c2'] . "(" . $result['json']['level2'] . ")";
 		$result['json']['set']['texts']['c3'] = $result['json']['set']['texts']['c3'] . "(" . $result['json']['level3'] . ")";
 		$result['json']['set']['texts']['commission_team'] = "TA的" . $result['json']['set']['texts']['commission'] . "/成员";
+        $result['json']['pageon'] = ceil($result['json']['total'] / $result['json']['pagesize']);
         foreach ($result['json']['list'] as $key => &$val) {
         	$val['avatar'] = !empty($val['avatar']) ? $val['avatar'] : "../addons/sz_yi/plugin/commission/images/head.jpg";
         	$val['nickname'] = !empty($val['nickname']) ? $val['nickname'] : "未获取";
