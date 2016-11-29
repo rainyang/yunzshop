@@ -555,7 +555,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                  <img id="chooser_img" src='<%goods.thumb%>'/>
              </div>
              <div class="right">
-                 <%if opt_switch == 1 && specs_nums == 2 %>
+                 <%if opt_switch == 1 && specs_nums == 2 && isverify == 1 %>
                  <div class="price">￥<span id='option_price'><%min_price%>-<%max_price%></span></div>
                  <%else%>
                  <div class="price">￥<span id='option_price'><%goods.marketprice%></span></div>
@@ -568,7 +568,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <div class="close" onClick="closechoose()"><i class="fa fa-remove-o"></i></div>
         </div>
         <!--规格选项-->
-        <%if opt_switch == 1 && specs_nums == 2 %>
+        <%if opt_switch == 1 && specs_nums == 2 && isverify == 1 %>
         {template 'shop/detail_ext_option'}
         <%else%>
         <div class="other">

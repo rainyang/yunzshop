@@ -108,10 +108,10 @@ if ($op == 'display') {
         $condition .= ' and log.paymethod=' . intval($_GPC['paymethod']);
     }
 
-    $sql = "select log.id,log.aging_id,m.id as mid, m.realname,m.diymemberdata,m.avatar,m.weixin,log.logno,log.type,log.status,log.rechargetype,m.nickname,m.mobile,g.groupname,log.money,log.poundage,log.createtime,l.levelname from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ORDER BY log.createtime DESC ";
+    $sql = "select log.id,log.aging_id,m.id as mid, m.realname,m.diymemberdata,m.avatar,m.weixin,log.logno,log.type,log.status,log.rechargetype,m.nickname,m.mobile,g.groupname,log.money,log.poundage,log.createtime,l.levelname from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid and m.uniacid = log.uniacid " . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ORDER BY log.createtime DESC ";
     if (empty($_GPC['export'])) {
         $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
-    }
+    } 
     $list = pdo_fetchall($sql, $params);
     if(p('love')){
         foreach ($list as $key => &$value) {
