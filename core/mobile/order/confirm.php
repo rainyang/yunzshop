@@ -13,6 +13,8 @@ $trade     = m('common')->getSysset('trade');
 $verifyset  = m('common')->getSetData();
 $allset = iunserializer($verifyset['plugins']);
 $store_total = false;
+$issale = true;
+
 if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
     $store_total = true;
 }
@@ -401,7 +403,7 @@ if ($_W['isajax']) {
         }
 
         $goods = set_medias($goods, 'thumb');
-        $issale = true;
+
         foreach ($goods as &$g) {
             if ($g['isverify'] == 2) {
                 $isverify = true;
@@ -929,6 +931,7 @@ if ($_W['isajax']) {
                 $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['goodsprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
+            //var_dump($order_all[$val['supplier_uid']]);exit;
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
             $realprice_total += $order_all[$val['supplier_uid']]['realprice'];
             $order_all[$val['supplier_uid']]['deductcredit']  = 0;
@@ -1567,7 +1570,7 @@ if ($_W['isajax']) {
             $isvirtual = false;
             $isverify  = false;
             $isverifysend  = false;
-            $issale = true;
+
             foreach ($goodsarr as $g) {
                 if (empty($g)) {
                     continue;
