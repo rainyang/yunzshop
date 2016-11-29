@@ -397,6 +397,7 @@ if ($_W['isajax']) {
     } else if ($operation == 'comment') {
         $orderid = intval($_GPC['orderid']);
         $order = pdo_fetch('select id,status,iscomment from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
+        //echo pdo_sql_debug('select id,status,iscomment from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
         if (empty($order)) {
             return show_json(0, '订单未找到!');
         }
@@ -409,6 +410,8 @@ if ($_W['isajax']) {
         if ($_W['ispost']) {
             $member = m('member')->getMember($openid);
             $comments = $_GPC['comments'];
+            $score = (int)$_GPC['score'];
+
             if (!is_array($comments)) {
                 return show_json(0, '数据出错，请重试!');
             }
@@ -429,7 +432,8 @@ if ($_W['isajax']) {
                         'openid' => $openid,
                         'nickname' => $member['nickname'],
                         'headimgurl' => $member['avatar'],
-                        'createtime' => time()
+                        'createtime' => time(),
+                        'score' => $score
                     );
                     pdo_insert('sz_yi_order_comment', $comment);
                 } else {

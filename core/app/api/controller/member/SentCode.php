@@ -20,4 +20,9 @@ class SentCode extends YZ
         $result = $this->callMobile('member/sendcode/sendcode');
         $this->returnSuccess($result['json']);
     }
+    public function check()
+    {
+        //member/SentCode/check&code=123
+        $result = $this->callMobile('member/sendcode/check');
+        $this->returnSuccess($result['json']);    }
 }

@@ -203,7 +203,7 @@ class Sz_DYi_User
             return $this->getUserInfo();
         }
         if(is_app_api()){
-            if(in_array($_GET['api'],['index/Index','category/Index','goods/Detail','member/Register','member/SentCode'])){
+            if(in_array($_GET['api'],['index/Index','category/Index','goods/Detail','member/Register','goods/Display','member/SentCode'])){
                 return false;
             }
         }
