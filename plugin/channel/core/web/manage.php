@@ -59,6 +59,7 @@ if ($operation == 'display') {
     ), array(
         'id' => $_GPC['id']
     ));
+    pdo_delete('sz_yi_af_channel', array('openid' => $member['openid'], 'uniacid' => $_W['uniacid']));
     plog('channel.manage.delete', "取消渠道商资格 <br/>渠道商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
     message('删除成功！', $this->createPluginWebUrl('channel/manage'), 'success');
 }
