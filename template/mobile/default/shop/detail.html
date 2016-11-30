@@ -753,11 +753,11 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                                 <%if l.minimum == '大于'%>
                                     <span style='color:#f15353'><%l.minimum%></span> 
                                     <span style='color:#f15353'><%l.maximum%></span> 
-                                    <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/每<%goods.unit%> </span>;<br/>
+                                    <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/<%goods.unit%> </span>;<br/>
                                 <%else%>
                                     <span style='color:#f15353'><%l.minimum%></span> 
                                     至<span style='color:#f15353'><%l.maximum%></span> 
-                                    <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/每<%goods.unit%> </span>;<br/>
+                                    <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/<%goods.unit%> </span>;<br/>
                                 <%/if%>
                             <%/if%>
                         <%/each%>
