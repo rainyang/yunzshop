@@ -18,7 +18,7 @@
     
     .team_list .info {height:40px; width:60%; float:left; border-right:1px solid #eaeaea; font-size:16px; color:#666; line-height:40px; text-align:left;}
     .team_list .info span {font-size:14px; color:#999;}
-    .team_list .num {height:40px; width:23%; float:right; text-align:right; font-size:16px; color:#666; line-height:40px;}
+    .team_list .num {height:40px; width:23%; float:right; text-align:right; font-size:12px; color:#666; line-height:40px;}
     .team_list .num span {font-size:14px; color:#999;}
     .team_tab {height:30px; margin:5px; border:1px solid #ff6801; border-radius:5px; overflow:hidden;font-size:13px;background:#fff;padding-right: -2px;}
     .team_nav {height:30px;  background:#fff; color:#666; text-align:center; line-height:30px; float:left;}
@@ -40,7 +40,7 @@
     
     <%each list as row%>
     <div class="team_list">
-        <div class="info"><%if row.realname%><%row.realname%><%else%>未获取<%/if%><br><span><%row.realname%></span></div>
+        <div class="info"><%if row.realname%><%row.realname%><%else%>未获取<%/if%></div>
         <div class="num"><%row.channel_level_name%><br><span></span></div>
     </div>
     <%/each%>
