@@ -17,6 +17,7 @@ if (!class_exists('ReturnModel')) {
 		 * $orderid：订单ID
 		 * $set：后台设置
 		 * $uniacid：公众号ID
+		 * 实付款价格
 		 */
 		public function setGoodsQueue($orderid,$set=array(),$uniacid='') {
 
@@ -93,6 +94,10 @@ if (!class_exists('ReturnModel')) {
 				}
 			}
 		}
+		/**
+		 * 会员等级返现 
+		 * 商品设置会员等级金额
+		 */
 		public function setMembeerLevel($orderid,$set=array(),$uniacid='') {
 			$order_goods = pdo_fetchall("SELECT og.price,og.total,g.isreturn,g.returns,g.returns2,g.returntype,o.openid,m.id as mid ,m.level, m.agentlevel FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 				array(':orderid' => $orderid,':uniacid' => $uniacid ));	
@@ -130,6 +135,9 @@ if (!class_exists('ReturnModel')) {
 
 			}
 		}
+		/*
+		* 确认订单执行
+		*/
 		public function cumulative_order_amount($orderid) {
 			global $_W, $_GPC;
 			$set = $this->getSet();
@@ -190,7 +198,7 @@ if (!class_exists('ReturnModel')) {
 			}
 		}
 
-		//单笔订单
+		//单笔订单 加入队列 支付价格
 		public function setOrderRule($order_goods,$order_price,$set=array(),$uniacid='')
 		{
 			$data = array(
@@ -220,7 +228,7 @@ if (!class_exists('ReturnModel')) {
         	//m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
 
 		}
-		//订单累计金额
+		//订单累计金额 加入队列 支付价格
 		public function setOrderMoneyRule($order_goods,$order_price,$set=array(),$uniacid='')
 		{
 			$return = pdo_fetch("SELECT * FROM " . tablename('sz_yi_return_money') . " WHERE mid = :mid and uniacid = :uniacid",
@@ -284,48 +292,73 @@ if (!class_exists('ReturnModel')) {
 			$tmpdir = IA_ROOT . "/addons/sz_yi/tmp/reutrn";
 			$return_log = $tmpdir."/return_jog.txt";
 			$log_content[] = date("Y-m-d H:i:s")."公众号ID：".$uniacid." 单笔订单返现开始==============\r\n";
-			$member_record = pdo_fetchall("SELECT r.mid, m.level, m.agentlevel, m.openid FROM " . tablename('sz_yi_return') . " r 
-				left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
-			 WHERE r.uniacid = '". $uniacid ."' and r.returnrule = '".$set['returnrule']."' and r.delete = '0'  group by r.mid");
-			$level =  array();
+
+			$current_time = time(); // 返现时间
+
 			if($set['islevels'] == 1) {
+				//会员等级 分销商等级比例返现
+				$level =  array(); 
 				if($set['islevel'] == 1) {
-					$level = json_decode($set['member'], true);
+					$level = json_decode($set['member'], true); //会员等级返现比例
+					$log_content[] = "会员等级返现比例";
+					$log_content[] = "\r\n";
 				} elseif($set['islevel'] == 2) {
-					$level = json_decode($set['commission'], true);
+					$level = json_decode($set['commission'], true); //分销商等返现级比例
+					$log_content[] = "分销商等返现级比例";
+					$log_content[] = "\r\n";
 				}
-			}
-			$log_content[] = "单笔返现队列人：";
-			$log_content[] = var_export($member_record,true);
-			$log_content[] = "\r\n";
-			$current_time = time();
-			foreach ($member_record as $key => $value) {
-				$percentage = $set['percentage'];
 
-				if($set['islevels'] == 1) {
+				foreach ($level as $key => $value) {
+					$levelid = intval(substr($key, 5)); 
 					if($set['islevel'] == 1) {
-						$percentage = $level['level'.$value['level']]?$level['level'.$value['level']]:$set['percentage'];
-					} elseif ($set['islevel'] == 2) {
-						$percentage = $level['level'.$value['agentlevel']]?$level['level'.$value['agentlevel']]:$set['percentage'];
+						$condition = " m.level = '".$levelid."'";
+					} elseif($set['islevel'] == 2) {
+						$condition = " m.agentlevel = '".$levelid."'";
 					}
+					$member_record = pdo_fetchall("SELECT r.mid, m.level, m.agentlevel, m.openid FROM "." 
+						(SELECT distinct mid, uniacid, returnrule,`delete` FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' AND returnrule = '".$set['returnrule']."' AND `delete` =  '0') as r "." 
+						LEFT JOIN " . tablename('sz_yi_member') . " m ON ( r.mid = m.id )  WHERE ".$condition);
+					$mid = array();
+					foreach ($member_record as $k => $v) {
+						$mid[] = $v['mid'];
+					}
+					$ratio[$value] = implode(',', $mid);
 				}
-
-					// $unfinished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
-					// $finished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
+				
+				foreach ($ratio as $percentage => $mids) {
+					$log_content[] = $percentage;
+					$log_content[] = "\r\n";
 					if($set['degression'] == 1)
 					{
 						$log_content[] = "递减返现";
 						$log_content[] = "\r\n";
-						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money <= 0.5  and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
-						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + (money - return_money) * ".$percentage." / 100,last_money = (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money <= 0.5  and returnrule = '".$set['returnrule']."' and mid in (".$mids.") ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + (money - return_money) * ".$percentage." / 100,last_money = (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$set['returnrule']."' and mid in (".$mids.") ");
 					}else{
 						$log_content[] = "单笔返现";
 						$log_content[] = "\r\n";
-						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
-						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid in (".$mids.") ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid in (".$mids.") ");
 					}
-					
+				}
+
+			} else {
+				$percentage = $set['percentage'];
+				if($set['degression'] == 1)
+				{
+					$log_content[] = "递减返现";
+					$log_content[] = "\r\n";
+					pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money <= 0.5  and returnrule = '".$set['returnrule']."' ");
+					pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + (money - return_money) * ".$percentage." / 100,last_money = (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$set['returnrule']."'");
+				}else{
+					$log_content[] = "单笔返现";
+					$log_content[] = "\r\n";
+					pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' ");
+					pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' ");
+				}
 			}
+
+			//继续优化
 			$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
 				left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
 				WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$set['returnrule']."' and r.delete = '0'  group by r.mid");
@@ -337,6 +370,7 @@ if (!class_exists('ReturnModel')) {
 					$return_money_totle = $value['last_money'];
 					$surplus_money_totle = $value['money']-$value['return_money'];
 					$this->setReturnCredit($value['openid'],'credit2',$return_money_totle,'2');
+
 					$single_message_txt = $set['single_message'];
 					$single_message_txt = str_replace('[返现金额]', $return_money_totle, $single_message_txt);
 					$single_message_txt = str_replace('[剩余返现金额]', $surplus_money_totle, $single_message_txt);
@@ -668,8 +702,9 @@ if (!class_exists('ReturnModel')) {
                             }
                         }
                     }
+                    $isexecute = true;
                     if (($set["isreturn"] || $set["isqueue"]) && $isexecute) {
-                        touch($validation);
+                        //touch($validation);
                         $log_content[] = "当前可以返现\r\n";
                         if ($set["returnrule"] == 1) {
                         	if ($set["isappoint"] == 1) {
