@@ -104,11 +104,30 @@ if (!class_exists('BonusModel')) {
 			$openid = $order['openid'];
 			$address = unserialize($order['address']);
 			
-			$goods = pdo_fetchall('select og.id,og.realprice,og.price,og.goodsid,og.total,og.optionname,og.optionid,g.hascommission,g.nocommission,g.nobonus,g.bonusmoney,g.productprice,g.marketprice,g.costprice from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+			$goods = pdo_fetchall('select og.id,og.realprice,og.price,og.goodsid,og.total,og.optionname,og.optionid,g.hascommission,g.nocommission,g.nobonus,g.bonusmoney,g.productprice,g.marketprice,g.costprice,g.id as goodsid from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			$member = m('member')->getInfo($openid);
 			$levels = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY level asc");
 			$isdistinction = empty($set['isdistinction']) ? 0 : 1;
+			//阶梯价格插件
+			$isladder = false;
+			if (p('ladder')) {
+			    $ladder_set = p('ladder')->getSet();
+			    if ($ladder_set['isladder']) {
+			        $isladder = true;   
+			    }
+			}
 			foreach ($goods as $cinfo) {
+				//计算阶梯价格
+	            if ($isladder) {
+	                $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+	                        ':id' => $cinfo['goodsid']
+	                    ));
+	                if ($ladders) {
+	                    $ladders = unserialize($ladders['ladders']);
+	                    $laddermoney = m('goods')->getLaderMoney($ladders,$cinfo['total']);
+	                    $cinfo['marketprice'] = $laddermoney > 0 ? $laddermoney : $cinfo['marketprice'];
+	                }
+	            }
 				$price_all = $this->calculate_method($cinfo);
 				if (empty($cinfo['nobonus']) && $price_all > 0) {
 					if(empty($set['selfbuy'])){
@@ -326,7 +345,18 @@ if (!class_exists('BonusModel')) {
 			}else{
 				
 				if($order_goods['optionid'] != 0){
-					$option = pdo_fetch('select productprice,marketprice,costprice from ' . tablename('sz_yi_goods_option') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $order_goods['optionid'], ':uniacid' => $_W['uniacid']));
+					$option = pdo_fetch('select productprice,marketprice,costprice,option_ladders from ' . tablename('sz_yi_goods_option') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $order_goods['optionid'], ':uniacid' => $_W['uniacid']));
+					//阶梯价格插件
+					if (p('ladder')) {
+					    $ladder_set = p('ladder')->getSet();
+					    if ($ladder_set['isladder']) {
+					        $ladders = unserialize($option['option_ladders']);
+			                if ($ladders) {
+			                    $laddermoney = m('goods')->getLaderMoney($ladders,$order_goods['total']);
+			                    $option['marketprice'] = $laddermoney > 0 ? $laddermoney : $option['marketprice'];
+			                }  
+					    }
+					}
 					$productprice = $option['productprice'] * $order_goods['total'];	//原价
 					$marketprice  = $option['marketprice'] * $order_goods['total'];		//现价
 					$costprice    = $option['costprice'] * $order_goods['total'];	

@@ -115,7 +115,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                         data-goodsid="<%value.goodsid%>" 
                         sel='1' 
                         data-maxbuy='<%value.maxbuy%>' 
-                        data-stock='<%value.stock%>'>
+                        data-stock='<%value.stock%>' id="marketprice_<%value.id%>_<%value.goodsid%>">
                  <div class="ico"><i class="iconfont icon-check-circle-o" style="color:#f15353;"></i></div>
                  <div class="img" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%value.goodsid%>'"><img src="<%value.thumb%>"/></div>
                  <div class="info">
@@ -138,7 +138,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                     </div>
                  </div>
                      <div class="other">
-                           <div class="price"><%value.marketprice%></div>  
+                           <div class="price ladder_price_<%value.id%>_<%value.goodsid%>"><%value.marketprice%></div>  
                            <div class="price1"><span class='line'><%value.productprice%></span></div>  
                            <div class="num"><div class="leftnav">-</div><input type="text" class="shownum" value="<%value.total%>" /><div class="rightnav">+</div>
                     </div>
@@ -203,7 +203,8 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                 }
                  $this.find('.shownum').val(num);
                  total+=parseInt(num);
-                totalprice+= parseFloat( $this.find('.shownum').val() ) * parseFloat($this.data('marketprice'));
+                totalprice+= parseFloat( $this.find('.shownum').val() ) * parseFloat($this.attr('data-marketprice'));
+
             }
      
         });
@@ -314,9 +315,14 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                     core.tip.show("您最多购买 " + stock + "件");
                 }
                 input.val(num);
-            
-                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},null,false,true);
-                calcprice();
+                var cartid = $(this).closest('.cart_good').data('cartid');
+                var goodsid = $(this).closest('.cart_good').data('goodsid');
+                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},function(json){
+                  $('#marketprice_' + cartid + '_' + goodsid).attr('data-marketprice',json.result);
+                  $('.ladder_price_' + cartid + '_' + goodsid).html(json.result);
+                  calcprice();
+                },false,true);
+                
                 
                
            })
@@ -346,9 +352,14 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                     num=1;
                 }
                 input.val(num);
-          
-                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},null,false,true);
-                calcprice();
+                var cartid = $(this).closest('.cart_good').data('cartid');
+                var goodsid = $(this).closest('.cart_good').data('goodsid');
+                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},function(json){
+                  $('#marketprice_' + cartid + '_' + goodsid).attr('data-marketprice',json.result);
+                  $('.ladder_price_' + cartid + '_' + goodsid).html(json.result);
+                  calcprice();
+                },false,true);
+                
             })
             
              $('.rightnav').click(function(){
@@ -376,9 +387,14 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                     core.tip.show("库存不足");
                 }
                 input.val(num);
-   
-                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},null,false,true);
-                calcprice();
+                var cartid = $(this).closest('.cart_good').data('cartid');
+                var goodsid = $(this).closest('.cart_good').data('goodsid');
+                core.json('shop/cart',{'op':'updatenum',id:$(this).closest('.cart_good').data('cartid'),goodsid:$(this).closest('.cart_good').data('goodsid'), total:num},function(json){
+                  $('#marketprice_' + cartid + '_' + goodsid).attr('data-marketprice',json.result);
+                  $('.ladder_price_' + cartid + '_' + goodsid).html(json.result);
+                  calcprice();
+                },false,true);
+                
             });
       
             $('.optionsel').click(function(){
@@ -402,99 +418,94 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                             $(this).find('.option[oid=' +cartspecs[i] + ']' ).addClass('on');
                         });
                         var stock =0;
-      var marketprice = 0;
-      var productprice = 0;
-      
-        var len = options.length;
-        for(var i=0;i<len;i++) {
-          var o = options[i];
-                                      
-          if( o.specs==cartoption.specs){
-            optionid = o.id;
-            stock = o.stock;
-            marketprice = o.marketprice;
-            productprice = o.productprice;
-            break;
-          }
-                                                                           }
-          if(stock==0){
-             $('.sub').addClass('disabled').html('库存不足,无法购买');
-          }
-          else{
-               $('.sub').removeClass('disabled').html('确认');
-          }
-                               
-         
-        
-          $("#option_price").html(marketprice); 
-          $("#option_stock").html(stock); 
+                        var marketprice = 0;
+                        var productprice = 0;
+                        
+                          var len = options.length;
+                          for(var i=0;i<len;i++) {
+                            var o = options[i];
+                                                        
+                            if( o.specs==cartoption.specs){
+                              optionid = o.id;
+                              stock = o.stock;
+                              marketprice = o.marketprice;
+                              productprice = o.productprice;
+                              break;
+                            }
+                                                                                             }
+                            if(stock==0){
+                               $('.sub').addClass('disabled').html('库存不足,无法购买');
+                            }
+                            else{
+                                 $('.sub').removeClass('disabled').html('确认');
+                            }
+                            $("#option_price").html(marketprice); 
+                            $("#option_stock").html(stock); 
                         
             
-                       $(".spec_items .option").click(function() {
-       var specid = $(this).attr("specid");
-       var oid = $(this).attr("oid");
-      $(".optionid_"+specid).val(oid);
-      $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
-      $(this).addClass("on").attr("sel", "true");
-        var titles='已选: ';
-           $('.spec_items').each(function(){
-                                  if($(this).find('.on').length>0){
-              titles+= $(this).find('.on').attr('title')+";";   
+                            $(".spec_items .option").click(function() {
+                            var specid = $(this).attr("specid");
+                            var oid = $(this).attr("oid");
+                            $(".optionid_"+specid).val(oid);
+                            $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
+                            $(this).addClass("on").attr("sel", "true");
+                            var titles='已选: ';
+                            $('.spec_items').each(function(){
+                              if($(this).find('.on').length>0){
+                                titles+= $(this).find('.on').attr('title')+";";   
+                              }
+                            });
+                                                 
+                            $('.good_choose .info .right .option').html(titles);
+                            var thumb = $(this).attr('thumb');
+                            if(thumb!=''){
+                              $("#chooser_img").attr('src',thumb);
+                            } else {
+                              $("#chooser_img").attr('src',json.result.goods.thumb);
                             }
-           });
-                             
-                             $('.good_choose .info .right .option').html(titles);
-         var thumb = $(this).attr('thumb');
-         if(thumb!=''){
-             $("#chooser_img").attr('src',thumb);
-         }
-         else{
-             
-             $("#chooser_img").attr('src',json.result.goods.thumb);
-         }
-      var optionid = "";
-      var stock =0;
-      var marketprice = 0;
-      var productprice = 0;
-       var ret = option_sel(json.result.options.length>0);
-  
-      if(ret.no==''){
-        var len = options.length;
-        for(var i=0;i<len;i++) {
-          var o = options[i];
-          var ids = ret.all.join("_");
-          if( o.specs==ids){
-            optionid = o.id;
-            stock = o.stock;
-            marketprice = o.marketprice;
-            productprice = o.productprice;
-            break;
-          }
-          
-        }
-         $("#optionid").val(optionid); 
-          
-        if(stock!="-1"){
-              $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
-        }
-        else{
-               $("#stockcontainer").html("<span id='stock'></span>");
-        }
-        if(ret.no==''){
-          if(stock==0){
-             $('.sub').addClass('disabled').html('库存不足,无法购买');
-          }
-          else{
-               $('.sub').removeClass('disabled').html('确认');
-          }
-        } 
-         
-        
-          $("#option_price").html(marketprice); 
-          $("#option_stock").html(stock); 
-         
-      }
-    });
+                            var optionid = "";
+                            var stock =0;
+                            var marketprice = 0;
+                            var productprice = 0;
+                            var ret = option_sel(json.result.options.length>0);
+                        
+                            if(ret.no==''){
+                              var len = options.length;
+                              for(var i=0;i<len;i++) {
+                                var o = options[i];
+                                var ids = ret.all.join("_");
+                                if( o.specs==ids){
+                                  optionid = o.id;
+                                  stock = o.stock;
+                                  marketprice = o.marketprice;
+                                  productprice = o.productprice;
+                                  break;
+                                }
+                                
+                              }
+                               $("#optionid").val(optionid); 
+                                
+                              if(stock!="-1"){
+                                    $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
+                              }
+                              else{
+                                     $("#stockcontainer").html("<span id='stock'></span>");
+                              }
+                              if(ret.no==''){
+                                if(stock==0){
+                                   $('.sub').addClass('disabled').html('库存不足,无法购买');
+                                }
+                                else{
+                                     $('.sub').removeClass('disabled').html('确认');
+                                }
+                              } 
+                               
+                              
+                                $("#option_price").html(marketprice); 
+                                $("#option_stock").html(stock); 
+                               
+                            }
+                          });
                                 }
                   
                         $('.sub').click(function(){
