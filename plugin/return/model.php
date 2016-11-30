@@ -54,7 +54,7 @@ if (!class_exists('ReturnModel')) {
 						if(($queuenum-$return_queue) >= $set['queue']) {
 							$queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." and status = 0 order by queue asc limit 1" );
 							pdo_update('sz_yi_order_goods_queue', array('returnid'=>$queueid,'status'=>'1'), array('id' => $queue['id'], 'uniacid' => $uniacid));
-
+							//商品排列全返返现
 							$this->setReturnCredit($queue['openid'],'credit2',$queue['price'],'4');
 							$queue_price_txt= $set['queue_price'];
 							$queue_price_txt = str_replace('[返现金额]', $queue['price'], $queue_price_txt);
@@ -116,6 +116,7 @@ if (!class_exists('ReturnModel')) {
 				}
 			}
 			if( $money > 0 ) {
+				//会员等级返现 
 				$this->setReturnCredit($order_goods[0]['openid'],'credit2',$money,'1');
 				$member_price_txt = $set['member_price'];
 				$member_price_txt = str_replace('[排列序号]', $money, $member_price_txt);
@@ -358,39 +359,47 @@ if (!class_exists('ReturnModel')) {
 				}
 			}
 
-			//继续优化
 			$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
 				left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
 				WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$set['returnrule']."' and r.delete = '0'  group by r.mid");
 			$log_content[] = "单笔返现内容：";
 			$log_content[] = var_export($return_record,true);
 			$log_content[] = "\r\n";
+			//单笔订单返现
+			$data = array();
 			foreach ($return_record as $key => $value) {
 				if($value['last_money'] > 0) {
 					$return_money_totle = $value['last_money'];
 					$surplus_money_totle = $value['money']-$value['return_money'];
-					$this->setReturnCredit($value['openid'],'credit2',$return_money_totle,'2');
 
-					$single_message_txt = $set['single_message'];
-					$single_message_txt = str_replace('[返现金额]', $return_money_totle, $single_message_txt);
-					$single_message_txt = str_replace('[剩余返现金额]', $surplus_money_totle, $single_message_txt);
-					$messages = array(
-						'keyword1' => array(
-							'value' => $set['single_return_title']?$set['single_return_title']:'返现通知',
-							'color' => '#73a68d'),
-						'keyword2' =>array(
-							'value' => $single_message_txt?$single_message_txt:'本次返现金额'.$return_money_totle."元",
-							'color' => '#73a68d')
-						);
-					$templateid = $set['templateid'];
-					if (!empty($templateid)) {
-						m('message')->sendTplNotice($value['openid'], $templateid, $messages);
-					} else {
-						m('message')->sendCustomNotice($value['openid'], $messages);
-					}
+					$data[$key]['openid'] = $value['openid'];
+					$data[$key]['credit'] = 'credit2';
+					$data[$key]['return_money_totle'] = $return_money_totle;
+					$data[$key]['type'] = 2;
+
+					//$this->setReturnCredit($value['openid'],'credit2',$return_money_totle,'2');
+
+					// $single_message_txt = $set['single_message'];
+					// $single_message_txt = str_replace('[返现金额]', $return_money_totle, $single_message_txt);
+					// $single_message_txt = str_replace('[剩余返现金额]', $surplus_money_totle, $single_message_txt);
+					// $messages = array(
+					// 	'keyword1' => array(
+					// 		'value' => $set['single_return_title']?$set['single_return_title']:'返现通知',
+					// 		'color' => '#73a68d'),
+					// 	'keyword2' =>array(
+					// 		'value' => $single_message_txt?$single_message_txt:'本次返现金额'.$return_money_totle."元",
+					// 		'color' => '#73a68d')
+					// 	);
+					// $templateid = $set['templateid'];
+					// if (!empty($templateid)) {
+					// 	m('message')->sendTplNotice($value['openid'], $templateid, $messages);
+					// } else {
+					// 	m('message')->sendCustomNotice($value['openid'], $messages);
+					// }
 					//m('message')->sendCustomNotice($value['openid'], $messages);
 				}
-			}	
+			}
+			echo "<pre>";print_r($data);exit;	
 			$log_content[] = date("Y-m-d H:i:s")."公众号ID：".$uniacid." 单笔订单返现完成==============\r\n\r\n\r\n\r\n";
 			file_put_contents($return_log,$log_content,FILE_APPEND);
 		}
@@ -424,11 +433,13 @@ if (!class_exists('ReturnModel')) {
 			$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
 				left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
 			 WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$set['returnrule']."' and r.delete = '0'  group by r.mid");
+			//单笔订单分红金额返现
 			foreach ($return_record as $key => $value) {
 				if($value['last_money'] > 0) {
 					$return_money_totle = $value['last_money'];
 					$surplus_money_totle = $value['money']-$value['return_money'];
 					$this->setReturnCredit($value['openid'],'credit2',$return_money_totle,'2');
+
 					$total_messsage_txt = $set['total_messsage'];
 					$total_messsage_txt = str_replace('[返现金额]', $return_money_totle, $total_messsage_txt);
 					$total_messsage_txt = str_replace('[剩余返现金额]', $surplus_money_totle, $total_messsage_txt);
@@ -492,6 +503,7 @@ if (!class_exists('ReturnModel')) {
 					left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
 				 WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$set['returnrule']."' and r.delete = '0'  group by r.mid \r\n";
 				$log_content[] = "订单累计金额返现内容：".var_export($return_record,true)."\r\n";
+				//订单累计金额返现
 				foreach ($return_record as $key => $value) {
 					if($value['last_money'] > 0) {
 						$return_money_totle = $value['last_money'];
