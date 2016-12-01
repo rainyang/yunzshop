@@ -214,7 +214,7 @@ if ($_W['isajax']) {
                 ':openid' => $openid
             ), 'supplier_uid');
 
-            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct,o.option_ladders FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
+            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct, g.isforceyunbi, o.option_ladders FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
 
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
