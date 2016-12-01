@@ -13,8 +13,9 @@ class Comment extends YZ
     {
 
         parent::__construct();
-        global $_W;
+        global $_W,$_GPC;
         $_W['ispost']= true;
+        $_GPC['comments'] = json_decode($_GPC['comments'],true);
         $result = $this->callMobile('order/op/comment');
         //dump($result);exit;
         if($result['code'] == -1){

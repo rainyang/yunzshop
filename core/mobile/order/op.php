@@ -410,7 +410,6 @@ if ($_W['isajax']) {
         if ($_W['ispost']) {
             $member = m('member')->getMember($openid);
             $comments = $_GPC['comments'];
-            $score = (int)$_GPC['score'];
 
             if (!is_array($comments)) {
                 return show_json(0, '数据出错，请重试!');
@@ -433,7 +432,6 @@ if ($_W['isajax']) {
                         'nickname' => $member['nickname'],
                         'headimgurl' => $member['avatar'],
                         'createtime' => time(),
-                        'score' => $score
                     );
                     pdo_insert('sz_yi_order_comment', $comment);
                 } else {

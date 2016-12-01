@@ -29,11 +29,11 @@ class Index extends YZ
         }
         return $res['goods'];
     }
-    //获取一级菜单
+    //获取推荐分类
     private function _getCategory()
     {
         global $_W;
-        $category = set_medias(pdo_fetchall('SELECT id, name, advimg FROM '. tablename('sz_yi_category') . ' WHERE parentid = 0 and uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'),'advimg,thumb');
+        $category = set_medias(pdo_fetchall('SELECT id, name, thumb,level FROM '. tablename('sz_yi_category') . ' WHERE isrecommand = 1 AND uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'),'thumb');
 
         return $category;
     }

@@ -12,9 +12,11 @@ class Confirm extends YZ
 
     public function __construct()
     {
-        global $_W;
+        global $_W,$_GPC;
         //cartids=14,13
         parent::__construct();
+        $_GPC['cartids'] = $_GPC['cart_ids'];
+
         $result = $this->callMobile('order/confirm');
         $_W['ispost'] = true;
         $this->variable = $result['variable'];
@@ -24,24 +26,22 @@ class Confirm extends YZ
     public function index()
     {
         global $_GPC;
-        $json = $this->json;
         //$variable = $this->variable;
         $is_show_dispatch_type_block = $this->_isShowDispatchTypeBlock();
         $contacts_block = $this->_getContactsBlock();
         $address_block = $this->_getAddressBlock();
-        $json = $this->_setDiscountWayName();
-        $json = $this->_setGoodsData();
+        $this->_setDiscountWayName();
+        $this->_setGoodsData();
         //dump(compact('is_show_dispatch_type_block','contacts_block','address_block'));
-        $json['cartids'] = $_GPC['cartids'];
-        $json += compact('is_show_dispatch_type_block','contacts_block','address_block');
-        dump($json);
-        return $this->returnSuccess($json);
+        $this->json['cartids'] = $_GPC['cart_ids'];
+        $this->json += compact('is_show_dispatch_type_block','contacts_block','address_block');
+        dump($this->json);
+        return $this->returnSuccess($this->json);
     }
     private function _setDiscountWayName(){
-        $json = $this->json;
-        foreach ($json['order_all'] as &$order){
+        foreach ($this->json['order_all'] as &$order){
             foreach ($order['goods'] as &$good){
-                if($good['isnodiscount'] == '0' && $json['haslevel']){
+                if($good['isnodiscount'] == '0' && $this->json['haslevel']){
                     if($good['discountway']==1){
                         $good['discountwayname'] = '折扣';
                     }else{
@@ -50,17 +50,16 @@ class Confirm extends YZ
                 }
             }
         }
-        return $json;
+        return ;
     }
     private function _setGoodsData(){
-        $json = $this->json;
-        foreach ($json['order_all'] as &$order){
+        foreach ($this->json['order_all'] as &$order){
             $order['goods_data'] = '';
             foreach ($order['goods'] as &$good){
                 $order['goods_data'].="{$good['goodsid']},{$good['optionid']},{$good['total']}|";
             }
         }
-        return $json;
+        return ;
     }
     private function _isShowDispatchTypeBlock(){
         $json = $this->json;
