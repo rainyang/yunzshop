@@ -688,6 +688,12 @@ if ($operation == 'display' && $_W['isajax']) {
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=3 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $uniacid
                 ));
+
+        //货到付款订单打印
+        if (p('yunprint')) {
+            p('yunprint')->executePrint($orderid);
+        }
+
         $ret            = array();
         $ret['result']  = 'success';
         $ret['type']    = 'cash';
