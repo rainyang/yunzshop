@@ -2515,12 +2515,16 @@ if ($_W['isajax']) {
                         $order_goods['ischannelpay']  = $ischannelpay;
                     }
                     $order_goods['channel_id'] = 0;
-                    if (!empty($my_info['up_level'])) {
+                    $mi = p('channel')->recursive_access_to_superior($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
+                    if (!empty($mi)) {
+                        $mi_member = m('member')->getInfo($mi['openid']);
+                        $order_goods['channel_id'] = $mi_member['id'];
+                    }
+                    /*if (!empty($my_info['up_level'])) {
                         $up_member = m('member')->getInfo($my_info['up_level']['openid']);
                         $order_goods['channel_id'] = $up_member['id'];
-                    }
+                    }*/
                 }
-                //print_r($order_goods);exit;
                 pdo_insert('sz_yi_order_goods', $order_goods);
                 if (p('channel')) {
                     if (!empty($order_goods['channel_id']) && empty($order_goods['ischannelpay'])) {

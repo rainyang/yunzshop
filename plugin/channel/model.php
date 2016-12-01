@@ -693,5 +693,55 @@ if (!class_exists('ChannelModel')) {
             	}				
             }        
         }
+
+        //11-19 edit by yangyang
+        public function recursive_access_to_superior ($openid, $goodsid='', $optionid='', $total='')
+        {
+            global $_W;
+            $member = m('member')->getInfo($openid);
+            if ($member['agentid'] == 0) {
+                return array();
+            }
+            if ($member['ischannel'] == 0) {
+                $level_leight = -1;
+            } else {
+                $level = $this->getLevel($openid);
+                $level_leight = $level['level_num'];
+            }
+            $superior = pdo_fetch("SELECT * FROM " . tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND id=:id", array(
+                ':uniacid'  => $_W['uniacid'],
+                ':id'       => $member['agentid']
+            ));
+            if ($superior['ischannel'] == 0) {
+                if ($superior['agentid'] == 0) {
+                    return array();
+                }
+                return $this->recursive_access_to_superior($superior['openid'], $goodsid, $optionid, $total);
+            } else {
+                $superior_level = $this->getLevel($superior['openid']);
+                if ($superior_level > $level_leight) {
+                    $condtion = " AND goodsid={$goodsid} AND stock_total>={$total}";
+                    if (!empty($optionid)) {
+                        $condtion .= " AND optionid={$optionid}";
+                    }
+                    $superior_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid=:uniacid AND openid=:openid {$condtion}", array(':uniacid' => $_W['uniacid'], ':openid' => $superior['openid']));
+                    if (empty($superior_stock)) {
+                        if ($superior['agentid'] == 0) {
+                            return array();
+                        }
+                        return $this->recursive_access_to_superior($superior['openid'], $goodsid, $optionid, $total);
+                    } else {
+                        $superior_level['openid'] = $superior['openid'];
+                        $superior_level['stock'] = $superior_stock;
+                        return $superior_level;
+                    }
+                } else {
+                    if ($superior['agentid'] == 0) {
+                        return array();
+                    }
+                    return $this->recursive_access_to_superior($superior['openid'], $goodsid, $optionid, $total);
+                }
+            }
+        }
 	}
 }

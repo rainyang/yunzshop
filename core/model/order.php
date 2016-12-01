@@ -552,13 +552,15 @@ class Sz_DYi_Order
                     if (p('channel')) {
                         if (empty($channel)) {
                             if (!empty($g['channel_id'])) {
-                                $my_info = p('channel')->getInfo($order['openid'],$g['goodsid'],0,$g['total']);
-                                if (!empty($my_info['up_level']['stock'])) {
+                                //$my_info = p('channel')->getInfo($order['openid'],$g['goodsid'],0,$g['total']);
+                                $my_superior = p('channel')->recursive_access_to_superior($order['openid'],$g['goodsid'],0,$g['total']);
+                                $my_level = p('channel')->getLevel($order['openid']);
+                                if (!empty($my_superior['stock'])) {
                                     $totalstock = -1;
                                     if ($stocktype == 1) {
-                                        $totalstock = $my_info['up_level']['stock']['stock_total'] + $g['total'];
+                                        $totalstock = $my_superior['stock']['stock_total'] + $g['total'];
                                     } else if ($stocktype == -1) {
-                                        $totalstock = $my_info['up_level']['stock']['stock_total'] - $g['total'];
+                                        $totalstock = $my_superior['stock']['stock_total'] - $g['total'];
                                     }
                                     if ($totalstock != -1) {
                                         pdo_update('sz_yi_channel_stock', array(
@@ -566,7 +568,7 @@ class Sz_DYi_Order
                                         ), array(
                                             'uniacid' => $_W['uniacid'],
                                             'goodsid' => $g['goodsid'],
-                                            'openid'  => $my_info['up_level']['openid']
+                                            'openid'  => $my_superior['openid']
                                         ));
                                         $channels = true;
                                     }
@@ -582,8 +584,8 @@ class Sz_DYi_Order
                                         'mid'           => $up_mem['id'],
                                         'paytime'       => time()
                                     );
-                                    if (!empty($my_info['up_level'])) {
-                                        $log_data['openid'] = $my_info['up_level']['openid'];
+                                    if (!empty($my_superior)) {
+                                        $log_data['openid'] = $my_superior['openid'];
                                     }
                                     if (!empty($g['ischannelpay'])) {
                                         $log_data['every_turn_price'] = $goods_price*$my_info['my_level']['purchase_discount']/100;
