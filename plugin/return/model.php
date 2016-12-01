@@ -320,12 +320,17 @@ if (!class_exists('ReturnModel')) {
 						(SELECT distinct mid, uniacid, returnrule,`delete` FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' AND returnrule = '".$set['returnrule']."' AND `delete` =  '0') as r "." 
 						LEFT JOIN " . tablename('sz_yi_member') . " m ON ( r.mid = m.id )  WHERE ".$condition);
 					$mid = array();
-					foreach ($member_record as $k => $v) {
-						$mid[] = $v['mid'];
+					if($member_record)
+					{
+						foreach ($member_record as $k => $v) {
+							$mid[] = $v['mid'];
+						}
+						$ratio[$value] = implode(',', $mid);
 					}
-					$ratio[$value] = implode(',', $mid);
 				}
-				
+				if(empty($ratio)){
+					return false;
+				}
 				foreach ($ratio as $percentage => $mids) {
 					$log_content[] = $percentage;
 					$log_content[] = "\r\n";
