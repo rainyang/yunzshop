@@ -18,7 +18,6 @@ class Account extends YZ
     {
         parent::__construct();
 
-
     }
 
     public function index()
@@ -143,7 +142,7 @@ class Account extends YZ
                 'birthday' =>$user_info['json']['member']['birthday'],
                 'province' =>$user_info['json']['member']['province'],
                 'city' =>$user_info['json']['member']['city'],
-                'area' => '',
+                'area' => $user_info['json']['member']['city'],
                 'alipay' =>$user_info['json']['member']['alipay'],
                 'alipayname' =>$user_info['json']['member']['alipayname'],
             );

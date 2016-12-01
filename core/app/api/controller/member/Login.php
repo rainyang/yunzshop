@@ -15,7 +15,6 @@ class Login extends YZ
         }
         $para = $this->getPara();
         $info = $this->_getUserInfo($para);
-        //dump(D('Member')->_sql());
         if (empty($info)) {
             $this->returnError('用户名或密码错误');
         }
@@ -27,7 +26,7 @@ class Login extends YZ
         $member  = m('member')->getMember($info['openid']);
 
         if(!empty($info)){
-            $member['commission_level'] = "一星董事";
+            $member['commission_level'] = p("bonus")->getLevel($info['openid'])?:'普通等级';
         }
         return $member;
     }
@@ -52,7 +51,6 @@ class Login extends YZ
     }
     private function _setCookie($openid,$mobile){
         global $_W;
-        //var_dump($_W['uniacid']);
         if (is_app()) {
             $lifeTime = 24 * 3600 * 3 * 100;
         } else {
@@ -68,4 +66,3 @@ class Login extends YZ
         setcookie('member_mobile', $mobile);
     }
 }
-
