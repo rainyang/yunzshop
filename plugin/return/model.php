@@ -579,7 +579,7 @@ if (!class_exists('ReturnModel')) {
 	    {
 	        global $_W;
 	        load()->model('mc');
-	        if ($data) {
+	        if (!empty($data)) {
 		        $sql = '';
 		        foreach ($data as $key => $value) {
 		        	$member = array();
@@ -612,7 +612,7 @@ if (!class_exists('ReturnModel')) {
 			        $sql .= "INSERT INTO `ims_sz_yi_return_log`(`uniacid`, `mid`, `openid`, `money`, `status`, `returntype`, `create_time`) VALUES ('".$_W['uniacid']."','".$member['id']."','".$value['openid']."','".$value['return_money_totle']."','1','".$value['type']."','".TIMESTAMP."');";
 					//pdo_insert('sz_yi_return_log', $data_log);
 		        }
-				pdo_fetch($sql); 
+				pdo_fetch($sql);
 			} 
 	    }
 		/**
