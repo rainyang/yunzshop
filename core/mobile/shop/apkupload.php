@@ -41,30 +41,27 @@ if ($data['encrypt'] == md5('yitian_make')) {
             $apkinfo['clientdownload'] = $_SERVER['SERVER_NAME']. "/addons/sz_yi/apk/" . $apkinfo['createtime'] . "/" . $apkinfo['apkname'];
 
             pdo_insert('sz_yi_client_app', $apkinfo);
-            $ret = "同步操作成功！";
+            //$ret = "同步操作成功！";
+            $ret = array('status' => 1, 'message' => "同步操作成功！");
             echo json_encode($ret);
             exit;
         } else {
-            $ret = "同步失败！未能正确下载！！";
+            $ret = array('status' => 0, 'message' => "同步失败！未能正确下载！！");
             echo json_encode($ret);
             exit;
         }
-
-    } elseif ($data['operation'] == 'modifystatus') {
-        //修改是否允许升级状态【可以考虑新一个表】
-        $apkinfo['apkstatus'] = $data['apkstatus'];
-        pdo_update('sz_yi_client_app', $data);
-        exit;
     }
 
-    $ret = "无效操作！！";
+    //$ret = "无效操作！！";
+    $ret = array('status' => 0, 'message' => "无效操作！！");
     echo json_encode($ret);
     exit;
 
 } else {
-    echo json_encode( array('status' => 1, 'msg' => 'error'));
+    //echo json_encode( array('status' => 1, 'msg' => 'error'));
     message('错误访问.');
 }
+//下载APK文件
 function getFile($url,$save_dir='',$filename='',$type=0){
     if(trim($url)==''){
         return false;
