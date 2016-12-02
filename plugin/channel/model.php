@@ -743,5 +743,53 @@ if (!class_exists('ChannelModel')) {
                 }
             }
         }
+
+        //edit by yangyang 12-02 commont:渠道商推荐员,下单时触发
+        public function isChannelMerchant($orderid)
+        {
+            global $_W;
+            $set = $this->getSet();
+            if ($set['closerecommenderchannel'] == 1) {
+                return;
+            }
+            if (empty($orderid)) {
+                return;
+            }
+            $order = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND id=:id", array(
+                ':uniacid'  => $_W['uniacid'],
+                ':id'       => $orderid
+            ));
+            if (empty($order)) {
+                return;
+            }
+            $order_by_member = m('member')->getInfo($order['openid']);
+            if ($order_by_member['agentid'] == 0 && $order_by_member['ischannel'] == 0) {
+                return;
+            }
+            $superior_member = pdo_fetch("SELECT * FROM " . tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND id=:id", array(
+                ':uniacid'  => $_W['uniacid'],
+                ':id'       => $order_by_member['agentid']
+            ));
+            if ($superior_member['ischannel'] == 0) {
+                return;
+            }
+            $member_level = $this->getLevel($order_by_member['openid']);
+            $superior_level = $this->getLevel($superior_member['openid']);
+            if (empty($member_level) || empty($superior_level)) {
+                return;
+            }
+            if ($member_level['level_num'] < $superior_level['level_num']) {
+                return;
+            }
+            $money = $order['goodsprice']*$set['setprofitproportion']/100;
+            $data = array(
+                'uniacid'       => $_W['uniacid'],
+                'openid'        => $superior_member['openid'],
+                'orderid'       => $orderid,
+                'commission'    => $set['setprofitproportion'],
+                'money'         => $money
+            );
+            pdo_insert('sz_yi_channel_merchant_order', $data);
+        }
 	}
 }
