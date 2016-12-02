@@ -19,27 +19,29 @@ if (!class_exists('YunbiModel')) {
 			if (empty($orderid)) {
 				return false;
 			}
-			$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.goodsprice,o.dispatchprice,m.id,m.openid as mid ,g.isdeclaration,g.virtual_declaration,og.declaration_mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
+			$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.dispatchprice,m.id,m.openid as mid ,g.isdeclaration,g.virtual_declaration,og.declaration_mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 				array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
 			));
 			if (empty($order_goods)) {
 				return false;
 			}
+
 			$virtual_currency = 0;
 			$virtual_agent = 0;
 			$declaration = array();
 			foreach($order_goods as $good){
 				if($good['isyunbi'] == 1 && $good['declaration_mid'] != ''){
 					if ($good['yunbi_consumption'] > 0) {
-						$virtual_currency += ($good['goodsprice']) * $good['yunbi_consumption'] / 100;
+						$virtual_currency += ($good['price'] - $good['dispatchprice']) * $good['yunbi_consumption'] / 100;
 					} else {
-						$virtual_currency += ($good['goodsprice']) * $set['consumption'] / 100;
+						$virtual_currency += ($good['price'] - $good['dispatchprice']) * $set['consumption'] / 100;
 					}
 					$is_goods_return = true;
 					if ($good['yunbi_commission'] > 0) {
-						$virtual_agent += ( $good['goodsprice'] ) * $good['yunbi_commission'] / 100;
+						$virtual_agent += ( $good['price'] - $good['dispatchprice'] ) * $good['yunbi_commission'] / 100;
 					}
 				}
+
 				if ($good['isdeclaration'] == '1') {
 					//$virtual_declaration += $good['virtual_declaration'];
 					$declaration[$good['declaration_mid']] += $good['virtual_declaration'];
@@ -52,14 +54,14 @@ if (!class_exists('YunbiModel')) {
 
 						$declaration_info = m('member')->getMember($key);
 						$this->setVirtualCurrency($declaration_info['openid'],$value);
-						$declaration_log = array(
+						$declaration_log[$key] = array(
 					        'id' 			=> $declaration_info['id'],
 					        'openid' 		=> $declaration_info['openid'],
 					        'credittype' 	=> 'virtual_currency',
 					        'money' 		=> $value,
 							'remark'		=> '报单获得'.$value.$set['yunbi_title']
 					    );
-						$this->addYunbiLog($_W['uniacid'],$declaration_log,'13');
+						//$this->addYunbiLog($_W['uniacid'],$declaration_log,'13');
 
 						$declaration = array(
 							'keyword1' => array(
@@ -72,6 +74,7 @@ if (!class_exists('YunbiModel')) {
 						m('message')->sendCustomNotice($declaration_info['openid'], $declaration);
 					}
 				}
+				$this->addYunbiLogs($_W['uniacid'],$declaration_log,'13');
 			}
 
 
@@ -168,14 +171,14 @@ if (!class_exists('YunbiModel')) {
 				array(':updatetime' => $current_time,':uniacid' => $uniacid
 			));	
 			foreach ($update_member as $key => $value) {
-				$data_log = array(
+				$data_log['$key'] = array(
 	                'id' 			=> $value['id'],
 	                'openid' 		=> $value['openid'],
 	                'credittype' 	=> 'virtual_currency',
 	                'money' 		=> $value['last_money'],
 					'remark'		=> '分销下线获得'.$value['last_money'].$set['yunbi_title']
                 );
-				$this->addYunbiLog($uniacid,$data_log,'2');
+				//$this->addYunbiLog($uniacid,$data_log,'2');
 				$messages = array(
 					'keyword1' => array(
 						'value' => '分销下线获得'.$set['yunbi_title'].'通知',
@@ -186,6 +189,7 @@ if (!class_exists('YunbiModel')) {
 					);
 				m('message')->sendCustomNotice($value['openid'], $messages);
 			}
+			$this->addYunbiLogs($uniacid,$data_log,'2');
 		}
 	
 		//虚拟币返现到余额
@@ -203,14 +207,14 @@ if (!class_exists('YunbiModel')) {
 				));	
 
 				foreach ($update_member as $key => $value) {
-					$data_log = array(
+					$data_log[$key] = array(
 		                'id' 			=> $value['id'],
 		                'openid' 		=> $value['openid'],
 		                'credittype' 	=> 'virtual_currency',
 		                'money' 		=> $value['last_money'],
 						'remark'		=> $set['yunbi_title']."返现到余额,扣除".$value['last_money']
 	                );
-	                $this->addYunbiLog($uniacid,$data_log,'5');
+	                //$this->addYunbiLog($uniacid,$data_log,'5');
 					$messages = array(
 						'keyword1' => array(
 							'value' => $set['yunbi_title'].'返现通知',
@@ -221,38 +225,35 @@ if (!class_exists('YunbiModel')) {
 						);
 					m('message')->sendCustomNotice($value['openid'], $messages);
 				}
+				$this->addYunbiLogs($uniacid,$data_log,'5');
 			}
 		}
+
 		//临时虚拟币转入到云币
 		public function PerformYunbiInto($set,$uniacid){
 			global $_W, $_GPC;
 			$current_time = time();
 			if ($set['isreturn_or_remove'] == 3) {
-
-				pdo_fetchall("update ".tablename('sz_yi_member')."  set last_money =  '0' where `uniacid` =  " . $uniacid ." ;");
-
 				//小于等于返现比例
 				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + virtual_temporary, last_money =  virtual_temporary ,updatetime = " .$current_time. ", `virtual_temporary` = 0 where `uniacid` =  " . $uniacid ." AND virtual_temporary <= (virtual_temporary_total * " .$set['yunbi_return']. " / 100) AND virtual_temporary > 0;");
 				//大于返现比例
 				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + (virtual_temporary_total * " .$set['yunbi_return']. " / 100), last_money =  (virtual_temporary_total * " .$set['yunbi_return']. " / 100) ,updatetime = " .$current_time. ", `virtual_temporary` = virtual_temporary - (virtual_temporary_total * " .$set['yunbi_return']. " / 100) where `uniacid` =  " . $uniacid ." AND virtual_temporary > 0;");
-
 				//上级获得相应数量的云币
-				$sql = "update ".tablename('sz_yi_member')." as m join (select sm.agentid, count(1) as cnt from ".tablename('sz_yi_member')." sm where sm.`uniacid` =  " . $uniacid . " AND sm.updatetime = " .$current_time. " group by sm.agentid ) as ac on m.id = ac.agentid set `virtual_currency` = virtual_currency + " . $set['the_superior_obtain'] . " * ac.cnt, last_money = if(updatetime = " .$current_time. ",last_money + " . $set['the_superior_obtain'] . " * ac.cnt," . $set['the_superior_obtain'] . " * ac.cnt),updatetime = " .$current_time. " where m.`uniacid` =  " . $uniacid . " AND status = '1' AND isagent = '1' ";
-
+				$sql = "update ".tablename('sz_yi_member')." as m join (select sm.agentid, sm.id as smid from ".tablename('sz_yi_member')." sm where sm.`uniacid` =  " . $uniacid . " AND sm.updatetime = " .$current_time. " ) as ac on m.id = ac.agentid set `virtual_currency` = virtual_currency + " . $set['the_superior_obtain'] . ", last_money = last_money + " . $set['the_superior_obtain'] . ",updatetime = " .$current_time. " where m.`uniacid` =  " . $uniacid . " AND status = '1' AND isagent = '1' ";
 				pdo_fetchall($sql);
 
 				$update_member = pdo_fetchall("SELECT id, uniacid, openid, last_money, updatetime FROM " . tablename('sz_yi_member') . " WHERE updatetime = :updatetime and uniacid = :uniacid ",
 					array(':updatetime' => $current_time,':uniacid' => $uniacid
 				));	
 				foreach ($update_member as $key => $value) {
-					$data_log = array(
+					$data_log[$key] = array(
 		                'id' 			=> $value['id'],
 		                'openid' 		=> $value['openid'],
 		                'credittype' 	=> 'virtual_currency',
 		                'money' 		=> $value['last_money'],
 						'remark'		=> "待转".$set['yunbi_title']."转入".$set['yunbi_title'].",增加".$value['last_money']
 	                );
-	                $this->addYunbiLog($uniacid,$data_log,'10');// 10 虚拟币转入云币
+	                //$this->addYunbiLog($uniacid,$data_log,'10');// 10 虚拟币转入云币
 					$messages = array(
 						'keyword1' => array(
 							'value' => $set['yunbi_title'].'转入通知',
@@ -263,7 +264,7 @@ if (!class_exists('YunbiModel')) {
 						);
 					m('message')->sendCustomNotice($value['openid'], $messages);
 				}
-
+				$this->addYunbiLogs($uniacid,$data_log,'10');// 10 虚拟币转入云币
 			}
 		}
 		//虚拟币清除
@@ -277,14 +278,14 @@ if (!class_exists('YunbiModel')) {
 				array(':updatetime' => $current_time,':uniacid' => $uniacid
 			));	
 			foreach ($update_member as $key => $value) {
-				$data_log = array(
+				$data_log[$key] = array(
 	                'id' 			=> $value['id'],
 	                'openid' 		=> $value['openid'],
 	                'credittype' 	=> 'virtual_currency',
 	                'money' 		=> $value['last_money'],
 					'remark'		=> "清除".$set['yunbi_title']
                 );
-				$this->addYunbiLog($uniacid,$data_log,'6');
+				//$this->addYunbiLog($uniacid,$data_log,'6');
 				$messages = array(
 					'keyword1' => array(
 						'value' => $set['yunbi_title'].'清除通知',
@@ -295,6 +296,7 @@ if (!class_exists('YunbiModel')) {
 					);
 				m('message')->sendCustomNotice($value['openid'], $messages);
 			}
+			$this->addYunbiLogs($uniacid,$data_log,'6');
 		}
 		/*
 		 * 添加 虚拟币log
@@ -316,7 +318,22 @@ if (!class_exists('YunbiModel')) {
 			);
 			pdo_insert('sz_yi_yunbi_log', $data_log);
 		}
-		
+		/*
+		 * 添加 虚拟币log
+		 * type 1:购物获得 2:分销下线获得 3:购物抵扣 4:返还抵扣 5:返现到余额 6:清除明细
+		 * data log数组
+		 */	
+		public function addYunbiLogs ($uniacid,$data=array(),$type){
+			if(!empty($data)){
+				$sql = '';
+				foreach ($data as $key => $value) {
+					$status = isset($value['status'])?$value['status']:'1';
+			        $sql .= "INSERT INTO " . tablename('sz_yi_yunbi_log') . " (`uniacid`, `mid`, `openid`, `credittype`, `money`, `status`, `returntype`, `create_time`, `remark`) VALUES ('".$uniacid."', '".$value['id']."', '".$value['openid']."','".$value['credittype']."','".$value['money']."','".$status."','".$type."','".TIMESTAMP."','".$value['remark']."');";
+				}
+				pdo_fetch($sql); 
+			}
+			
+		}
 		public function PerformRecycling($set,$uniacid) {
 			global $_W, $_GPC;
 			$recycling = (int)$set['recycling'] * 3600;
