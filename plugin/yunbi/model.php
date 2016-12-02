@@ -324,6 +324,7 @@ if (!class_exists('YunbiModel')) {
 		 * data log数组
 		 */	
 		public function addYunbiLogs ($uniacid,$data=array(),$type){
+			global $_W, $_GPC;
 			if(!empty($data)){
 				$sql = '';
 				foreach ($data as $key => $value) {
