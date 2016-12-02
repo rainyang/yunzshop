@@ -310,6 +310,7 @@ if (!class_exists('ReturnModel')) {
 				}
 
 				foreach ($level as $key => $value) {
+					$value = !empty($value) ? $value : $set['percentage'];
 					$levelid = intval(substr($key, 5)); 
 					if($set['islevel'] == 1) {
 						$condition = " m.level = '".$levelid."'";
