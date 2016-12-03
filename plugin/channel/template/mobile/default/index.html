@@ -227,7 +227,7 @@
         <a {php echo "href='".$this->createPluginMobileUrl('channel/stock',array('type'=>$_GPC['type']))."'";}><div class="nav nav1"><i class="fa iconfont icon-stock" style="background:#58d5d9;"></i><div class="title">商品库存</div></div></a>
         <a href="{php echo $purchaseurl}"><div class="nav nav1"><i class="fa iconfont icon-purchase" style="background:#ffb13b;"></i><div class="title">我要采购</div></div></a>
         <a href="{php echo $pickingurl}"><div class="nav nav1"><i class="fa iconfont icon-take"style="background:#ff3877;"></i><div class="title">我要提货</div></div></a>
-        {if !empty($channelinfo['channel']['lower_openids'])}
+        {if !empty($channelinfo['channel']['iscmas'])}
             <a href="{php echo $this->createPluginMobileUrl('channel/chamer_list')}"><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#7775FF;"></i><div class="title">推荐订单</div></div></a>
         {/if}
     </div>

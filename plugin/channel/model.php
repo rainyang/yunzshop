@@ -102,26 +102,51 @@ if (!class_exists('ChannelModel')) {
 		public function getInfo($openid, $goodsid='', $optionid='', $total='')
 		{
 			global $_W;
+            $set = $this->getSet();
 			$channel_info = array();
 			$member = m('member')->getInfo($openid);
 			if (empty($member)) {
 				return;
 			}
-			$ischannelmerchant = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_merchant') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}'");
-			$set = $this->getSet();
-			if (!empty($ischannelmerchant)) {
-				$lower_openids = array();
-				foreach ($ischannelmerchant as $value) {
-					$lower_openids[] = "'".$value['lower_openid']."'";
-				}
-				$lower_openids = implode(',', $lower_openids);
-				$lower_order_money = pdo_fetchcolumn("SELECT sum(o.goodsprice) FROM " . tablename('sz_yi_order') . " o LEFT JOIN " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=:uniacid AND o.status>=3 AND o.iscmas=0 AND og.ischannelpay=1 AND o.openid in ({$lower_openids})", array(':uniacid' => $_W['uniacid']));
-				$lower_order_money = number_format($lower_order_money*$set['setprofitproportion']/100,2);
-			} else {
-				$lower_openids = 0;
-				$lower_order_money = 0;
-			}
-			$channel_info['channel']['lower_openids'] = $lower_openids;
+			//$ischannelmerchant = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_merchant') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}'");
+            /*if (!empty($ischannelmerchant)) {
+                $lower_openids = array();
+                foreach ($ischannelmerchant as $value) {
+                    $lower_openids[] = "'".$value['lower_openid']."'";
+                }
+                $lower_openids = implode(',', $lower_openids);
+                $lower_order_money = pdo_fetchcolumn("SELECT sum(o.goodsprice) FROM " . tablename('sz_yi_order') . " o LEFT JOIN " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=:uniacid AND o.status>=3 AND o.iscmas=0 AND og.ischannelpay=1 AND o.openid in ({$lower_openids})", array(':uniacid' => $_W['uniacid']));
+                $lower_order_money = number_format($lower_order_money*$set['setprofitproportion']/100,2);
+            } else {
+                $lower_openids = 0;
+                $lower_order_money = 0;
+            }*/
+            $ischannelmerchant = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_merchant_order') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+            $lower_order_money = 0;
+            $lower_order_ids = array();
+            if (!empty($ischannelmerchant)) {
+                $lower_order_money = pdo_fetchcolumn("SELECT sum(cmo.money) FROM " . tablename('sz_yi_channel_merchant_order') . " cmo LEFT JOIN " . tablename('sz_yi_order') . " o ON o.id=cmo.orderid WHERE cmo.uniacid=:uniacid AND cmo.openid=:openid AND o.status=:status AND o.iscmas=0", array(
+                    ':uniacid'  => $_W['uniacid'],
+                    ':openid'   => $openid,
+                    ':status'   => 3
+                ));
+                $lower_order = pdo_fetchall("SELECT cmo.orderid FROM " . tablename('sz_yi_channel_merchant_order') . " cmo LEFT JOIN " . tablename('sz_yi_order') . " o ON o.id=cmo.orderid WHERE cmo.uniacid=:uniacid AND cmo.openid=:openid AND o.status>=:status", array(
+                    ':uniacid'  => $_W['uniacid'],
+                    ':openid'   => $openid,
+                    ':status'   => 1
+                ));
+                foreach ($lower_order AS $lo) {
+                    $lower_order_ids[] = $lo['orderid'];
+                }
+                if (empty($lower_order_ids)) {
+                    $lo_ids = 0;
+                } else {
+                    $lo_ids = implode(',', $lower_order_ids);
+                }
+            }
+            $channel_info['channel']['iscmas'] = $ischannelmerchant;
+            $channel_info['channel']['cma_orders'] = $lower_order_ids;
+			$channel_info['channel']['lower_order_ids'] = $lo_ids;
 			$channel_info['channel']['lower_order_money'] = $lower_order_money;
 
 			$channel_info['channel']['dispatchprice'] = pdo_fetchcolumn("SELECT ifnull(sum(dispatchprice),0) FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND status>=3 AND iscmas=0 AND ischannelself=1 AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));

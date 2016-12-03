@@ -2347,6 +2347,10 @@ if ($_W['isajax']) {
             }
             pdo_insert('sz_yi_order',$order);
             $orderid = pdo_insertid();
+            //渠道商推荐员
+            if (p('channel')) {
+                p('channel')->isChannelMerchant($orderid);
+            }
             if(p('hotel')){
                 if($_GPC['type']=='99'){
                     //像订单管理房间信息表插入数据
