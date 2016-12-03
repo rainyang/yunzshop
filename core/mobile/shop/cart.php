@@ -43,8 +43,24 @@ if ($_W['isajax']) {
         if (p('yunbi')) {
             $yunbi_condtion = 'g.isforceyunbi,g.yunbi_deduct,';
         }
-        $sql        = 'SELECT f.id,f.total,' . $channel_condtion . $yunbi_condtion . 'f.goodsid,g.total as stock, o.stock as optionstock, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,g.productprice,o.title as optiontitle,f.optionid,o.specs,o.option_ladders FROM ' . tablename('sz_yi_member_cart') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on f.optionid = o.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC ';
+        $sql        = 'SELECT f.id,f.total,' . $channel_condtion . $yunbi_condtion . 'f.goodsid,g.total as stock, o.stock as optionstock, g.maxbuy, g.usermaxbuy, g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,g.productprice,o.title as optiontitle,f.optionid,o.specs,o.option_ladders FROM ' . tablename('sz_yi_member_cart') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on f.optionid = o.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC ';
         $list       = pdo_fetchall($sql, $params);
+        //商品购买限制
+        foreach ($list as &$row) {
+            if ($row['usermaxbuy'] > 0) {
+                $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' WHERE og.goodsid=:goodsid AND  o.status>=1 AND o.openid=:openid  AND og.uniacid=:uniacid ', array(
+                    ':goodsid' => $row['goodsid'],
+                    ':uniacid' => $uniacid,
+                    ':openid' => $openid
+                ));
+                $last = $row['usermaxbuy'] - $order_goodscount;
+                if ($last <= 0) {
+                    $last = 0;
+                }
+
+                $row['maxbuy'] = $last;
+            }
+        }
 
         $verify_goods_ischannelpick = '';
         if (p('yunbi')) {
