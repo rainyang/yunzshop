@@ -288,7 +288,7 @@ class Sz_DYi_Order
                                 $shopset['name'] . "余额抵扣: {$order['deductcredit2']} 订单号: " . $order['ordersn']
                             ));
                         }
-                        if ($order['order_type'] != '4') {
+                        //if ($order['order_type'] != '4') {
                             //$order['order_type']=4 为夺宝订单 夺宝订单不执行下面代码
                             if(is_array($orderid)){
                                 foreach ($orderall as $k => $v) {
@@ -311,7 +311,7 @@ class Sz_DYi_Order
                                     p('commission')->checkOrderPay($orderid);
                                 }
                             }
-                        }  
+                        //}  
 
                     }
                 }

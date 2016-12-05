@@ -89,7 +89,11 @@ if ( $orderid ) {
         'goods_op_cost_price' => $goods['costprice']
     );
     pdo_insert('sz_yi_order_goods', $order_goods);
-
+    
+    $pluginc = p('commission');
+    if ($pluginc) {
+        $pluginc->checkOrderConfirm($orderid);
+    }
     show_json(1, array(
         'orderid' => $orderid
     ));
