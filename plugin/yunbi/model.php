@@ -19,7 +19,7 @@ if (!class_exists('YunbiModel')) {
 			if (empty($orderid)) {
 				return false;
 			}
-			$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.dispatchprice,m.id,m.openid as mid ,g.isdeclaration,g.virtual_declaration,og.declaration_mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
+			$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.dispatchprice,o.deductyunbi,m.id,m.openid as mid ,g.isdeclaration,g.virtual_declaration,og.declaration_mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 				array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
 			));
 			if (empty($order_goods)) {
@@ -192,7 +192,7 @@ if (!class_exists('YunbiModel')) {
 			$this->addYunbiLogs($uniacid,$data_log,'2');
 		}
 	
-		//虚拟币返现到余额
+		//虚拟币奖励到余额
 		public function PerformYunbiReturn($set,$uniacid){
 			global $_W, $_GPC;
 			$current_time = time();
@@ -212,15 +212,15 @@ if (!class_exists('YunbiModel')) {
 		                'openid' 		=> $value['openid'],
 		                'credittype' 	=> 'virtual_currency',
 		                'money' 		=> $value['last_money'],
-						'remark'		=> $set['yunbi_title']."返现到余额,扣除".$value['last_money']
+						'remark'		=> $set['yunbi_title']."奖励到余额,扣除".$value['last_money']
 	                );
 	                //$this->addYunbiLog($uniacid,$data_log,'5');
 					$messages = array(
 						'keyword1' => array(
-							'value' => $set['yunbi_title'].'返现通知',
+							'value' => $set['yunbi_title'].'奖励通知',
 							'color' => '#73a68d'),
 						'keyword2' =>array(
-							'value' => '本次返现到余额'.$value['last_money'].$set['yunbi_title'].",余额获得：".$value['last_money']."元",
+							'value' => '本次奖励到余额'.$value['last_money'].$set['yunbi_title'].",余额获得：".$value['last_money']."元",
 							'color' => '#73a68d')
 						);
 					m('message')->sendCustomNotice($value['openid'], $messages);
@@ -234,9 +234,13 @@ if (!class_exists('YunbiModel')) {
 			global $_W, $_GPC;
 			$current_time = time();
 			if ($set['isreturn_or_remove'] == 3) {
-				//小于等于返现比例
+
+
+				pdo_fetchall("update ".tablename('sz_yi_member')."  set last_money =  '0' where `uniacid` =  " . $uniacid ." ;");
+
+				//小于等于奖励比例
 				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + virtual_temporary, last_money =  virtual_temporary ,updatetime = " .$current_time. ", `virtual_temporary` = 0 where `uniacid` =  " . $uniacid ." AND virtual_temporary <= (virtual_temporary_total * " .$set['yunbi_return']. " / 100) AND virtual_temporary > 0;");
-				//大于返现比例
+				//大于奖励比例
 				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + (virtual_temporary_total * " .$set['yunbi_return']. " / 100), last_money =  (virtual_temporary_total * " .$set['yunbi_return']. " / 100) ,updatetime = " .$current_time. ", `virtual_temporary` = virtual_temporary - (virtual_temporary_total * " .$set['yunbi_return']. " / 100) where `uniacid` =  " . $uniacid ." AND virtual_temporary > 0;");
 				//上级获得相应数量的云币
 				$sql = "update ".tablename('sz_yi_member')." as m join (select sm.agentid, sm.id as smid from ".tablename('sz_yi_member')." sm where sm.`uniacid` =  " . $uniacid . " AND sm.updatetime = " .$current_time. " ) as ac on m.id = ac.agentid set `virtual_currency` = virtual_currency + " . $set['the_superior_obtain'] . ", last_money = last_money + " . $set['the_superior_obtain'] . ",updatetime = " .$current_time. " where m.`uniacid` =  " . $uniacid . " AND status = '1' AND isagent = '1' ";
@@ -300,7 +304,7 @@ if (!class_exists('YunbiModel')) {
 		}
 		/*
 		 * 添加 虚拟币log
-		 * type 1:购物获得 2:分销下线获得 3:购物抵扣 4:返还抵扣 5:返现到余额 6:清除明细
+		 * type 1:购物获得 2:分销下线获得 3:购物抵扣 4:返还抵扣 5:奖励到余额 6:清除明细
 		 * data log数组
 		 */	
 		public function addYunbiLog ($uniacid,$data=array(),$type){
@@ -400,8 +404,8 @@ if (!class_exists('YunbiModel')) {
 	            mkdirs($tmpdirs);
 	        }
 	        $set = m('plugin')->getpluginSet('yunbi', $_W['uniacid']);
-	        $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."虚拟币返现到余额开始--------\r\n";
-	       //虚拟币返现到余额
+	        $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."虚拟币奖励到余额开始--------\r\n";
+	       //虚拟币奖励到余额
 	        if (!empty($set) && $set['isreturn_or_remove'] == 0 && $set['isreturnremove'] == 1 ) {
 	            if ($set['acquisition'] == 0) {
 	                $return_validation   = $tmpdirs."/return_".date("Ymd").$_W['uniacid'].".txt";
@@ -416,19 +420,19 @@ if (!class_exists('YunbiModel')) {
 	                        }
 	                    }
 	                }else{
-	                	$log_content[] = "uniacid:".$_W['uniacid']."时间：".date("Y-m-d")."虚拟币已返现！\r\n";
+	                	$log_content[] = "uniacid:".$_W['uniacid']."时间：".date("Y-m-d")."虚拟币已奖励！\r\n";
 	                }
 	                if ( $isexecute ) {
-	                    //虚拟币返现到余额
+	                    //虚拟币奖励到余额
 	                   	$this->PerformYunbiReturn($set, $_W['uniacid']);
 	                    touch($return_validation);
-	                    $log_content[] = "uniacid:".$_W['uniacid']."时间：".date("Y-m-d")."虚拟币返现到余额成功！\r\n";
+	                    $log_content[] = "uniacid:".$_W['uniacid']."时间：".date("Y-m-d")."虚拟币奖励到余额成功！\r\n";
 	                } else {
-	                	$log_content[] = "uniacid:".$_W['uniacid']."时间：".date("Y-m-d")."当前虚拟币不可返现到余额！\r\n";
+	                	$log_content[] = "uniacid:".$_W['uniacid']."时间：".date("Y-m-d")."当前虚拟币不可奖励到余额！\r\n";
 	                }
 	            }
 	        }
-			$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."虚拟币返现到余额结束--------\r\n";
+			$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."虚拟币奖励到余额结束--------\r\n";
 			$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."清除虚拟币开始--------\r\n";
 	        if (!empty($set) && $set['isreturn_or_remove'] == 1 && $set['isreturnremove'] == 1) {
 	            //清除虚拟币
@@ -489,7 +493,7 @@ if (!class_exists('YunbiModel')) {
 	                    $isexecute = true;
 	                }
 	                if ( $isexecute ) {
-	                    //虚拟币返现到余额
+	                    //虚拟币奖励到余额
 	                    $this->PerformYunbiInto($set, $_W['uniacid']);
 	                    touch($yunbi_into);
 	                    $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."临时虚拟币转入到".$set['yunbi_title']."成功！\r\n";
