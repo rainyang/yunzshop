@@ -32,13 +32,13 @@ if (!class_exists('YunbiModel')) {
 			foreach($order_goods as $good){
 				if($good['isyunbi'] == 1 && $good['declaration_mid'] != ''){
 					if ($good['yunbi_consumption'] > 0) {
-						$virtual_currency += ($good['price'] - $good['dispatchprice']) * $good['yunbi_consumption'] / 100;
+						$virtual_currency += ($good['price'] - $good['deductyunbi']) * $good['yunbi_consumption'] / 100;
 					} else {
-						$virtual_currency += ($good['price'] - $good['dispatchprice']) * $set['consumption'] / 100;
+						$virtual_currency += ($good['price'] - $good['deductyunbi']) * $set['consumption'] / 100;
 					}
 					$is_goods_return = true;
 					if ($good['yunbi_commission'] > 0) {
-						$virtual_agent += ( $good['price'] - $good['dispatchprice'] ) * $good['yunbi_commission'] / 100;
+						$virtual_agent += ( $good['price'] - $good['deductyunbi'] ) * $good['yunbi_commission'] / 100;
 					}
 				}
 
@@ -408,9 +408,9 @@ if (!class_exists('YunbiModel')) {
 	                if (!file_exists($return_validation)) {
 	                    $isexecute = false;
 	                    if (date('H') == $set['yunbi_returntime']) {
-	                        if (!isset($set['current_d']) || $set['current_d'] != date('d')) {
-	                            //$data  = array_merge($set, array('current_d'=>date('d')));
-	                            $set['current_d'] = date('d');
+	                        if (!isset($set['yunbi_current_d']) || $set['yunbi_current_d'] != date('d')) {
+	                            //$data  = array_merge($set, array('yunbi_current_d'=>date('d')));
+	                            $set['yunbi_current_d'] = date('d');
 	                            $this->updateSet($set);
 	                            $isexecute = true;
 	                        }
