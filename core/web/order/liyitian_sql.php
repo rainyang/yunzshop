@@ -18,7 +18,6 @@ $sql = "CREATE TABLE IF NOT EXISTS" . tablename(`ims_sz_yi_client_app`). "(
   `version_code` varchar(255) DEFAULT NULL COMMENT '版本代码，用来判断版本',
   `app_icon` varchar(255) DEFAULT NULL COMMENT '图片路径',
   `apkpath` varchar(255) DEFAULT NULL COMMENT '文件储存路径',
-  `apkstatus` tinyint(1) DEFAULT '0' COMMENT '是否开启app升级，1允许，0禁止',
   `apkremark` text COMMENT '更新日志',
   `downloadurl` varchar(255) NOT NULL COMMENT '采集地址',
   `clientdownload` varchar(255) NOT NULL COMMENT '客户下载地址',
