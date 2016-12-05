@@ -19,7 +19,7 @@ if (!class_exists('YunbiModel')) {
 			if (empty($orderid)) {
 				return false;
 			}
-			$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.dispatchprice,m.id,m.openid as mid ,g.isdeclaration,g.virtual_declaration,og.declaration_mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
+			$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.dispatchprice,o.deductyunbi,m.id,m.openid as mid ,g.isdeclaration,g.virtual_declaration,og.declaration_mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 				array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
 			));
 			if (empty($order_goods)) {
@@ -234,14 +234,9 @@ if (!class_exists('YunbiModel')) {
 			global $_W, $_GPC;
 			$current_time = time();
 			if ($set['isreturn_or_remove'] == 3) {
-<<<<<<< HEAD
-
 				pdo_fetchall("update ".tablename('sz_yi_member')."  set last_money =  '0' where `uniacid` =  " . $uniacid ." ;");
 
 				//小于等于奖励比例
-=======
-				//小于等于返现比例
->>>>>>> test_yunbi
 				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + virtual_temporary, last_money =  virtual_temporary ,updatetime = " .$current_time. ", `virtual_temporary` = 0 where `uniacid` =  " . $uniacid ." AND virtual_temporary <= (virtual_temporary_total * " .$set['yunbi_return']. " / 100) AND virtual_temporary > 0;");
 				//大于奖励比例
 				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + (virtual_temporary_total * " .$set['yunbi_return']. " / 100), last_money =  (virtual_temporary_total * " .$set['yunbi_return']. " / 100) ,updatetime = " .$current_time. ", `virtual_temporary` = virtual_temporary - (virtual_temporary_total * " .$set['yunbi_return']. " / 100) where `uniacid` =  " . $uniacid ." AND virtual_temporary > 0;");
