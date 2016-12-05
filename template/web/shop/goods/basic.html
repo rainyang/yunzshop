@@ -482,11 +482,95 @@
     <div class="col-sm-9 col-xs-12">
          {ife 'shop.goods' $item}
         <div class="input-group form-group">
-
             <span class="input-group-addon">现价</span>
             <input type="text" name="marketprice" id="marketprice" class="form-control" value="{$item['marketprice']}" />
             <span class="input-group-addon">元</span>
         </div>
+        {if $isladder}
+          <div class="input-group form-group">
+              <span class="input-group-addon"  style="float: left;overflow: hidden;width:80px">阶梯价格</span>
+              <a class="btn btn-success ng-scope" id="addladder" href="javascript:;"><i class="fa fa-plus"></i> 增加</a>
+          </div>
+          <div style="margin: 10px 40px;" id="ladderhtml">
+          {if $item['ladder']}
+            {loop $item['ladder']['ladders'] $ladder_val}
+              
+                  <div class="input-group form-group" >
+                      <span class="input-group-addon" >数量</span>
+                      <input type="text" name="minimum[]"  style="width:200px" class="form-control " value="{$ladder_val['minimum']}" ">
+                      <span class="input-group-addon" style="width: 20px;" >至</span>
+                      <input type="text" name="maximum[]" style="width: 200px" class="form-control " value="{$ladder_val['maximum']}">
+                      <span class="input-group-addon" style="width: 20px;" >=</span>
+                      <input type="text" name="ladderprice[]" style="width: 190px" class="form-control " value="{$ladder_val['ladderprice']}">
+                      <span class="input-group-addon" style="border-left: 0px;">元
+                      &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteladder" title="删除"><i class="fa fa-times"></i></a></span>
+                  </div>  
+              
+            {/loop}
+          {else}
+            
+                <div class="input-group form-group" >
+                    <span class="input-group-addon" >数量</span>
+                    <input type="text" name="minimum[]"  style="width:200px" class="form-control " value="1" ">
+                    <span class="input-group-addon" style="width: 20px;" >至</span>
+                    <input type="text" name="maximum[]" style="width: 200px" class="form-control " value="">
+                    <span class="input-group-addon" style="width: 20px;" >=</span>
+                    <input type="text" name="ladderprice[]" style="width: 190px" class="form-control " value="">
+                    <span class="input-group-addon" style="border-left: 0px;">元
+                    &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteladder" title="删除"><i class="fa fa-times"></i></a></span>
+                </div>  
+            
+          {/if}
+
+          </div>
+          <span class="help-block">填写数量阶梯数量与阶梯价格，最后一行可填写 "大于" 至 数量 = 金额。 </span>
+        {/if}
+<script type="text/javascript">
+  $('#addladder').click(function() {
+    var html = '<div class="input-group form-group" >';
+        html += '<span class="input-group-addon" >数量</span>';
+        html += '<input type="text" name="minimum[]"  style="width:200px" class="form-control " value="">';
+        html += '<span class="input-group-addon" style="width: 20px;" >至</span>';
+        html += '<input type="text" name="maximum[]" style="width: 200px" class="form-control " value="">';
+        html += '<span class="input-group-addon" style="width: 20px;" >=</span>';
+        html += '<input type="text" name="ladderprice[]" style="width: 190px" class="form-control " value="">';
+        html += '<span class="input-group-addon " style="border-left: 0px;">元&nbsp;<a href="javascript:;" class="btn-default  btn-sm deleteladder" title="删除"><i class="fa fa-times"></i></a></span>';
+        html += '</div>';
+    $('#ladderhtml').append(html);
+  });
+
+$(document).on('click','.deleteladder',function(){
+  if(!confirm("确认删除阶梯价格?")) {
+    return false;
+  }
+  $(this).parent().parent().remove();
+})
+
+  $(document).on('click','.addopladder',function(){  
+    var ids = $(this).data('ids');
+    var hh = '<div class="input-group">';
+        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control option_minimum_' + ids +'" value="" name="option_minimum_' + ids +'[]"/>';
+        hh += '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >至</span>';
+        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control option_maximum_' + ids +'" value="" name="option_maximum_' + ids +'[]"/>';
+        hh += '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >=</span>';
+        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control option_ladderprice_' + ids +'" value="" name="option_ladderprice_' + ids +'[]"/>';
+        hh += ' <span style="width: 10px;padding: 6px 1px;" class="input-group-addon"> &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteopladder" title="删除"><i class="fa fa-times"></i></a> </span>';
+        hh += '</div>'; 
+
+    $('#ladderop_' + ids).append(hh);
+  });
+
+$(document).on('click','.deleteopladder',function(){
+
+  if(!confirm("确认删除阶梯价格?")) {
+    return false;
+  }
+  $(this).parent().parent().remove();
+})
+
+</script>
+
+
           {else}
            <div class='form-control-static'>现价：{$item['marketprice']} 元</div>
         {/if}

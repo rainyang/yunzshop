@@ -71,7 +71,11 @@ function cascdeInit(v1,v2,v3,v4) {
                 //街道列表
                 countys = TopnodeList[nodeindex].getElementsByTagName("county")
                 for (var i = 0; i < countys.length; i++) {
-                    var id = dropElement2.options[nodeindex].value;
+
+                    if(dropElement2.options[nodeindex]!=undefined){
+                       var id = dropElement2.options[nodeindex].value; 
+                    }
+                    
 
                     province = TopnodeList[nodeindex].getElementsByTagName("county");
                     var option = document.createElement("option");

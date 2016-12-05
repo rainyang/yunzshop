@@ -18,6 +18,7 @@ $commentcount = pdo_fetchcolumn($sql, $params);
 $goods = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id limit 1", array(
     ':id' => $goodsid
 ));
+// echo "<pre>";print_r($goods);exit;
 if ($goods['pcate']) {
     $pcate = pdo_fetchcolumn(" select name from " . tablename('sz_yi_category') . " where id =" . $goods['pcate'] . " and uniacid=" . $uniacid);
 }
@@ -33,6 +34,19 @@ if (p('yunbi')) {
     $yunbi_set = p('yunbi')->getSet();
 }
 
+$goods['isladder'] = false;
+if (p('ladder')) {
+    $ladder_set = p('ladder')->getSet();
+    if ($ladder_set['isladder']) {
+        $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+            ':id' => $goodsid
+        ));
+        if ($ladders) {
+            $goods['ladders'] = unserialize($ladders['ladders']);
+            $goods['isladder'] = true; 
+        }
+    }
+}
 if (p('hotel')) {//开启酒店插件后 判断当前时间是否有剩余房间可预约
     $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
     $params2 = array(':goodsid' => $goods['id']);
@@ -284,6 +298,13 @@ if ($_W['isajax']) {
     } else {
         $goods['isforce'] = '1';
     }
+
+    //阶梯价格计算
+    if ($goods['isladder']) {
+        $laddermoney = m('goods')->getLaderMoney($goods['ladders'],'1');
+        $goods['marketprice'] = $laddermoney > 0 ? $laddermoney : $goods['marketprice'];
+    }
+
     $goods['canbuy'] = !empty($goods['status']) && empty($goods['deleted']);
     $goods['timestate'] = '';
     $goods['userbuy'] = '1';
@@ -381,10 +402,21 @@ if ($_W['isajax']) {
     }
     $options = array();
     if (!empty($goods['hasoption'])) {
-        $options = pdo_fetchall("select id,title,thumb,marketprice,productprice,costprice, stock,weight,specs from " . tablename('sz_yi_goods_option') . " where goodsid=:id order by id asc",
+        $options = pdo_fetchall("select id,title,thumb,marketprice,productprice,costprice, stock,weight,specs,option_ladders from " . tablename('sz_yi_goods_option') . " where goodsid=:id order by id asc",
             array(
                 ':id' => $goodsid
             ));
+        //echo "<pre>";print_r($options);exit;
+            //阶梯价格计算
+            if ($goods['isladder']) {
+                foreach ($options as &$value) {
+                    $laddermoney = m('goods')->getLaderMoney(unserialize($value['option_ladders']),'1');
+                    $value['marketprice'] = $laddermoney > 0 ? $laddermoney : $value['marketprice'];
+                    
+                }
+                unset($value);           
+            }  
+
         if (!empty($ischannelpay) && p('channel')) {
             foreach ($options as &$value) {
                 $superior_stock = p('channel')->getSuperiorStock($openid, $goodsid, $value['id']);
@@ -595,6 +627,21 @@ if ($_W['isajax']) {
     } else {
         $min_price = 0;
         $max_price = 0;
+    }
+
+    //商品购买数量限制
+    if ($goods['usermaxbuy'] > 0) {
+        $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' WHERE og.goodsid=:goodsid AND  o.status>=1 AND o.openid=:openid  AND og.uniacid=:uniacid ', array(
+            ':goodsid' => $goodsid,
+            ':uniacid' => $uniacid,
+            ':openid' => $openid
+        ));
+        $last = $goods['usermaxbuy'] - $order_goodscount;
+        if ($last <= 0) {
+            $last = 0;
+        }
+
+        $goods['maxbuy'] = $last;
     }
 
     $ret = array(
