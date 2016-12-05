@@ -419,7 +419,7 @@ if ($operation == "display") {
     }
     //查询订单总数以及总金额
     if ($_W['ispost']) {
-        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " AS o 
+        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " AS o 
             LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond}", $paras);
         $total = $result['total'];
         $totalmoney = $result['totalmoney'];
@@ -486,9 +486,9 @@ if ($operation == "display") {
         }
     }
 
-    $sql = 'SELECT count(1) AS suppliers_num, o.*, r.rtype 
+    $sql = 'SELECT 1 AS suppliers_num, o.*, r.rtype 
             FROM ' . tablename("sz_yi_order") . " AS o 
-            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond} GROUP BY o.ordersn_general ORDER BY o.createtime DESC,o.status DESC
+            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond} ORDER BY o.createtime DESC
             LIMIT " . ($pindex - 1) * $psize . "," . $psize;
     //echo $sql;exit;
     $list = pdo_fetchall($sql, $paras);
