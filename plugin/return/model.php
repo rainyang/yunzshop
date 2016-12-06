@@ -778,7 +778,7 @@ if (!class_exists('ReturnModel')) {
                         }
                     }
                     if (($set["isreturn"] || $set["isqueue"]) && $isexecute) {
-                        //touch($validation);
+                        touch($validation);
                         $log_content[] = "当前可以返现\r\n";
                         if ($set["returnrule"] == 1) {
                         	if ($set["isappoint"] == 1) {
