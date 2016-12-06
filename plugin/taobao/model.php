@@ -410,9 +410,6 @@ if (!class_exists('TaobaoModel')) {
                         "taobao" => $taobaoimg,
                         "system" => $this->save_image($img, $config)
                     );
-                    if (!strexists($im['system'], 'http://') && !strexists($im['system'], 'https://')) {
-                        $im['system'] = $_W['attachurl'] . $im['system'];
-                    }
                     $images[] = $im;
                 }
             }
@@ -510,7 +507,7 @@ if (!class_exists('TaobaoModel')) {
                 file_delete($path);
             }
 
-            $path = 'http://' . $_SERVER['HTTP_HOST'] . '/' . $apath . $path;
+            $path = $_W['attachurl'] . $path;
             return $path;
         }
         function get_pageno_url($url = '', $pageNo = 1)
