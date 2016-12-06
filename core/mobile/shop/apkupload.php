@@ -35,7 +35,7 @@ if ($_GPC['operation'] == 'synchronous' && $_GPC['encrypt'] == md5('yitian_make'
         $apkinfo['apkpath'] = $file['save_path'];
         $apkinfo['clientdownload'] = $_SERVER['SERVER_NAME']. "/addons/sz_yi/apk/" . $apkinfo['createtime'] . "/" . $apkinfo['apkname'];
 
-        pdo_insert('sz_yi_client_app', $apkinfo);
+        pdo_insert('sz_yi_appinfo', $apkinfo);
         //$ret = "同步操作成功！";
         $ret = array('status' => 1, 'message' => "同步操作成功！");
         echo json_encode($ret);
