@@ -605,7 +605,7 @@ if (!class_exists('ReturnModel')) {
 			            //更新金额
 						$sql .= " UPDATE " . tablename('mc_members') . " SET " . $value['credit'] . " = " . $newcredit . " WHERE uid = '".$uid."';";
 			            //添加日志
-			            $sql .= " INSERT INTO " . tablename('mc_members') . " (`uid`, `uniacid`, `credittype`, `num`, `operator`,  `createtime`, `remark`) VALUES ('".$uid."','".$_W['uniacid']."','".$value['credit']."','".$value['return_money_totle']."','".intval($log[0])."','".TIMESTAMP.",".$log[1]."');";
+			            $sql .= " INSERT INTO " . tablename('mc_credits_record') . " (`uid`, `uniacid`, `credittype`, `num`, `operator`,  `createtime`, `remark`) VALUES ('".$uid."','".$_W['uniacid']."','".$value['credit']."','".$value['return_money_totle']."','".intval($log[0])."','".TIMESTAMP."','".$log[1]."');";
 					} else {
 			            $credit     = pdo_fetchcolumn("SELECT ".$value['credit']." FROM " . tablename('sz_yi_member') . " WHERE  uniacid=:uniacid and openid=:openid limit 1", array(
 			                ':uniacid' => $_W['uniacid'],
