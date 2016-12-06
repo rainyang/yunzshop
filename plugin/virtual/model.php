@@ -182,7 +182,7 @@ if (!class_exists('VirtualModel')) {
                 p('commission')->checkOrderPay($order['id']);
                 p('commission')->checkOrderFinish($order['id']);
             }
-            if($order['redprice'] > 0) {
+            if($order['redprice'] >= 1 && $order['redprice'] <= 200) {
                 m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $order['id'],$desc = '购买商品红包', $act_name = '购买商品红包', $remark = '购买商品发送红包');
             }
         }
