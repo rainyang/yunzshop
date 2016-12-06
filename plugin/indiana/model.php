@@ -132,6 +132,21 @@ if (!class_exists('IndianaModel')) {
 		public function dispose($orderid = ''){
 			global $_W;
 			$set = $this->getSet();
+
+	        pdo_update('sz_yi_order', array(
+	            'status' => 3,
+	            'finishtime' => time(),
+	            'refundstate' => 0
+	        ), array(
+	            'id' => $orderid,
+	            'uniacid' => $_W['uniacid']
+	        ));
+
+			if (p('commission')) {
+				p('commission')->checkOrderFinish($orderid);
+			}
+
+
 			$order = pdo_fetch('SELECT o.*, og.total, og.goodsid FROM ' . tablename('sz_yi_order') . ' o 
 			left join ' . tablename('sz_yi_order_goods') . ' og on (o.id = og.orderid)
 			 where o.uniacid=:uniacid and o.id = :orderid and o.status = 1 ',array(
