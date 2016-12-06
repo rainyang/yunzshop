@@ -6,7 +6,7 @@ if (!pdo_fieldexists('sz_yi_member', 'membermobile')) {
     pdo_query($sql);
 }
 //12.2增加app库APK信息数据表
-$sql = "CREATE TABLE IF NOT EXISTS" . tablename(`sz_yi_appinfo`). "(
+$sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_appinfo'). "(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `apkname` varchar(255) DEFAULT NULL COMMENT 'apk包名',
   `apktype` varchar(255) DEFAULT NULL COMMENT 'apk类型',
@@ -27,7 +27,7 @@ $sql = "CREATE TABLE IF NOT EXISTS" . tablename(`sz_yi_appinfo`). "(
 pdo_query($sql);
 
 //云端数据库增加APK信息表【只限云端使用，使用时去请粘贴出去独立运行】
-/*$sql = "CREATE TABLE IF NOT EXISTS" . tablename(`sz_yi_client_app`). "(
+/*$sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_client_app'). "(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `clientid` int(11) DEFAULT NULL COMMENT '客户ID',
   `apkname` varchar(255) DEFAULT NULL COMMENT 'apk包名',
