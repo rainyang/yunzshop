@@ -629,6 +629,21 @@ if ($_W['isajax']) {
         $max_price = 0;
     }
 
+    //商品购买数量限制
+    if ($goods['usermaxbuy'] > 0) {
+        $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' WHERE og.goodsid=:goodsid AND  o.status>=1 AND o.openid=:openid  AND og.uniacid=:uniacid ', array(
+            ':goodsid' => $goodsid,
+            ':uniacid' => $uniacid,
+            ':openid' => $openid
+        ));
+        $last = $goods['usermaxbuy'] - $order_goodscount;
+        if ($last <= 0) {
+            $last = 0;
+        }
+
+        $goods['maxbuy'] = $last;
+    }
+
     $ret = array(
         'is_admin' => $_GPC['is_admin'],
         'goods' => $goods,

@@ -1721,7 +1721,8 @@ if ($_W['isajax']) {
                         ':uniacid' => $uniacid,
                         ':openid' => $openid
                     ));
-                    if ($order_goodscount >= $data['usermaxbuy']) {
+                    if (($order_goodscount > 0 && $order_goodscount > $data['usermaxbuy'])
+                        || ($order_goodscount == 0 && $goodstotal > $data['usermaxbuy'])) {
                         show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
                     }
                 }
