@@ -13,6 +13,8 @@ $trade     = m('common')->getSysset('trade');
 $verifyset  = m('common')->getSetData();
 $allset = iunserializer($verifyset['plugins']);
 $store_total = false;
+$issale = true;
+
 if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
     $store_total = true;
 }
@@ -54,6 +56,13 @@ $carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHE
     ":uniacid" => $_W["uniacid"]
 ));
 
+$isladder = false;
+if (p('ladder')) {
+    $ladder_set = p('ladder')->getSet();
+    if ($ladder_set['isladder']) {
+        $isladder = true;   
+    }
+}
 if ($operation == "display" || $operation == "create") {
     $id   = ($operation == "create") ? intval($_GPC["order"][0]["id"]) : intval($_GPC["id"]);
     $show = 1;
@@ -117,6 +126,36 @@ if ($operation == "date") {
             }
             break;
     }
+} elseif ($operation == 'ladder' && $_W['isajax']) {
+    $laddermoney = 0;
+    if ($isladder) {
+        $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+                ':id' => $_GPC['goodsid']
+            ));
+        if ($ladders) {
+            $ladders = unserialize($ladders['ladders']);
+            $laddermoney = m('goods')->getLaderMoney($ladders,$_GPC['total']);
+        }
+        if (intval($_GPC['optionid'])) {
+            $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight,option_ladders from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
+                        ':uniacid' => $uniacid,
+                        ':goodsid' => $_GPC['goodsid'],
+                        ':id' => $_GPC['optionid']
+                    ));
+            //阶梯价格
+            if ($isladder) {
+                $ladders = unserialize($option['option_ladders']);
+                if ($ladders) {
+                    $laddermoney = m('goods')->getLaderMoney($ladders,$_GPC['total']);
+                    //$option['marketprice'] = $laddermoney > 0 ? $laddermoney : $option['marketprice'];
+                }
+            }
+        }
+    }
+    $marketprice = $laddermoney > 0 ? $laddermoney : $_GPC['marketprice'];
+
+
+    show_json(1, $marketprice);
 }
 
 $yunbi_plugin   = p('yunbi');
@@ -138,7 +177,6 @@ if ($_W['isajax']) {
         } else {
             $optionid = intval($_GPC['optionid']);
         }
-
         if (strpos($_GPC['total'], '|')) {
             $total    = rtrim($_GPC['total'], '|');
             $total = explode('|', $total);
@@ -176,7 +214,7 @@ if ($_W['isajax']) {
                 ':openid' => $openid
             ), 'supplier_uid');
 
-            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
+            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct, g.isforceyunbi, o.option_ladders FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
 
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
@@ -194,6 +232,22 @@ if ($_W['isajax']) {
                     if (!empty($v["optionweight"])) {
                         $goods[$k]["weight"] = $v["optionweight"];
                     }
+                    //阶梯价格
+                    if ($isladder) {
+                        if ($v['option_ladders']) {
+                            $ladders = unserialize($v['option_ladders']);
+                        }else{
+                            $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+                                ':id' => $v['goodsid']
+                            ));
+                            $ladders = unserialize($ladders['ladders']);
+                        }
+                        
+                        if ($ladders) {
+                            $laddermoney = m('goods')->getLaderMoney($ladders,$v['total']);
+                            $goods[$k]['marketprice'] = $laddermoney > 0 ? $laddermoney : $v['marketprice'];
+                        }
+                    } 
                 }
             }
             $fromcart = 1;
@@ -207,6 +261,17 @@ if ($_W['isajax']) {
                 ':uniacid' => $uniacid,
                 ':id' => $id
             ));
+            //阶梯价格
+            if ($isladder) {
+                $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+                        ':id' => $data['goodsid']
+                    ));
+                if ($ladders) {
+                    $ladders = unserialize($ladders['ladders']);
+                    $laddermoney = m('goods')->getLaderMoney($ladders,$total);
+                    $data['marketprice'] = $laddermoney > 0 ? $laddermoney : $data['marketprice'];
+                }
+            }
             $suppliers = array($data['supplier_uid'] => array("supplier_uid" => $data['supplier_uid']));
 
             //新规格
@@ -214,11 +279,19 @@ if ($_W['isajax']) {
                 $data['total']    = $total;
                 $data['optionid'] = $optionid;
                 if (!empty($optionid)) {
-                    $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
+                    $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight,option_ladders from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
                         ':uniacid' => $uniacid,
                         ':goodsid' => $id,
                         ':id' => $optionid
                     ));
+                    //阶梯价格
+                    if ($isladder) {
+                        $ladders = unserialize($option['option_ladders']);
+                        if ($ladders) {
+                            $laddermoney = m('goods')->getLaderMoney($ladders,$total);
+                            $option['marketprice'] = $laddermoney > 0 ? $laddermoney : $option['marketprice'];
+                        }
+                    }
                     if (!empty($option)) {
                         $data['optionid']    = $optionid;
                         $data['optiontitle'] = $option['title'];
@@ -401,7 +474,7 @@ if ($_W['isajax']) {
         }
 
         $goods = set_medias($goods, 'thumb');
-        $issale = true;
+
         foreach ($goods as &$g) {
             if ($g['isverify'] == 2) {
                 $isverify = true;
@@ -929,6 +1002,7 @@ if ($_W['isajax']) {
                 $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['goodsprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
+            //var_dump($order_all[$val['supplier_uid']]);exit;
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
             $realprice_total += $order_all[$val['supplier_uid']]['realprice'];
             $order_all[$val['supplier_uid']]['deductcredit']  = 0;
@@ -1567,7 +1641,7 @@ if ($_W['isajax']) {
             $isvirtual = false;
             $isverify  = false;
             $isverifysend  = false;
-            $issale = true;
+
             foreach ($goodsarr as $g) {
                 if (empty($g)) {
                     continue;
@@ -1604,6 +1678,17 @@ if ($_W['isajax']) {
                     ':uniacid' => $uniacid,
                     ':id' => $goodsid
                 ));
+                //阶梯价格
+                if ($isladder) {
+                    $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+                            ':id' => $goodsid
+                        ));
+                    if ($ladders) {
+                        $ladders = unserialize($ladders['ladders']);
+                        $laddermoney = m('goods')->getLaderMoney($ladders,$goodstotal);
+                        $data['marketprice'] = $laddermoney > 0 ? $laddermoney : $data['marketprice'];
+                    }
+                } 
                 if (p('channel')) {
                     if ($ischannelpay == 1) {
                         if (empty($data['isopenchannel'])) {
@@ -1636,7 +1721,8 @@ if ($_W['isajax']) {
                         ':uniacid' => $uniacid,
                         ':openid' => $openid
                     ));
-                    if ($order_goodscount >= $data['usermaxbuy']) {
+                    if (($order_goodscount > 0 && $order_goodscount > $data['usermaxbuy'])
+                        || ($order_goodscount == 0 && $goodstotal > $data['usermaxbuy'])) {
                         show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
                     }
                 }
@@ -1669,6 +1755,15 @@ if ($_W['isajax']) {
                         ':id' => $optionid
 
                     ));
+
+                    //阶梯价格
+                    if ($isladder) {
+                        $ladders = unserialize($option['option_ladders']);
+                        if ($ladders) {
+                            $laddermoney = m('goods')->getLaderMoney($ladders,$goodstotal);
+                            $option['marketprice'] = $laddermoney > 0 ? $laddermoney : $option['marketprice'];
+                        }
+                    }
                     if (p('channel') && !empty($ischannelpick)) {
                         $my_option_stock = p('channel')->getMyOptionStock($openid,$goodsid,$optionid);
                         $option['stock'] = $my_option_stock;
@@ -2332,7 +2427,6 @@ if ($_W['isajax']) {
                     $order["diyformdata"]   = $idata;
                     $order["diyformid"]     = $order_formInfo["id"];
                 }
-
             }
 
             if($issale == false){

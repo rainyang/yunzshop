@@ -576,8 +576,13 @@ if (!class_exists('discuzModel')) {
         {
         
             $prefix = $this->_dz_db_prefix();
+
+            $result = self::getInstance()->fetch_first("SELECT extcredits4 FROM " . $prefix . "common_member_count  WHERE uid =" . $exist['centeruid']);
+
                
             self::getInstance()->query("UPDATE " . $prefix . "common_member_count SET extcredits4 = 0 WHERE uid =" . $exist['centeruid']);
+
+            self::getInstance()->query("UPDATE " . $prefix . "common_member SET credits = credits-{$result['extcredits4']} WHERE uid =" . $exist['centeruid']);
             
         }
 

@@ -1915,7 +1915,7 @@ function order_list_finish($order)
         p('yunbi')->GetVirtualCurrency($order['id']);
     }
     // 订单确认收货后自动发送红包
-    if ($order["redprice"] > 0) {
+    if ($order["redprice"] >= 1 && $order["redprice"] <= 200) {
         m('finance')->sendredpack($order['openid'], $order["redprice"] * 100, $order["id"], $desc = '购买商品赠送红包',
             $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
     }

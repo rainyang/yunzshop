@@ -62,6 +62,9 @@ if (!pdo_fieldexists('sz_yi_merchant_apply', 'iscenter')) {
 if (!pdo_fieldexists('sz_yi_order', 'center_apply_status')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `center_apply_status` tinyint(3) DEFAULT '0';");
 }
+if (pdo_fieldexists('sz_yi_merchant_level', 'commission')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_merchant_level')." MODIFY `commission` decimal(10,2) DEFAULT '0.00' COMMENT '比例';");
+}
 if(!$info){
     $sql = "INSERT INTO " . tablename('sz_yi_plugin'). " (`displayorder`, `identity`, `name`, `version`, `author`, `status`, `category`) VALUES(0, 'merchant', '招商员', '1.0', '官方', 1, 'biz');";
     pdo_query($sql);

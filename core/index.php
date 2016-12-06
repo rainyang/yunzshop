@@ -157,11 +157,11 @@ require_once __CORE_PATH__ . '/inc/framework/framework.php';
 /*$info = D('User')->find();
 echo D('User')->_sql();
 dump($info);exit;*/
-define('YII_DEBUG',true);
+/*define('YII_DEBUG',true);
 
 require_once __VENDOR_PATH__."/autoload.php";
 require(__VENDOR_PATH__ . '/yiisoft/yii2/Yii.php');
 $config = require(__CORE_PATH__ . '/config/yii.php');
-new \yii\web\Application($config);
+new \yii\web\Application($config);*/
 new Run();
 
