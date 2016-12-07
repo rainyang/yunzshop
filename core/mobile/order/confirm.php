@@ -2219,6 +2219,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
             }
             if ($order_row['fromcart'] == 1) {
                 $cartids = $order_row['cartids'];
+                $cartids = implode(',',$cartids);
                 if (!empty($cartids)) {
                     pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where id in (' . $cartids . ') and openid=:openid and uniacid=:uniacid ', array(
                         ':uniacid' => $uniacid,
