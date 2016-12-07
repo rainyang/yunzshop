@@ -31,7 +31,7 @@ class Set extends YZ
 
     public function index()
     {
-        $this->returnSuccess($this->json);
+        $this->returnSuccess($this->json,'收藏成功');
     }
 
 }

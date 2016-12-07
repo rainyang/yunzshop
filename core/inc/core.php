@@ -324,6 +324,10 @@ class Core extends WeModuleSite
                 $query['mid'] = $mid;
             }
         }
+
+        if (empty($query['m'])) {
+            $this->modulename = empty($_GPC['m'])?:'sz_yi';
+        }
         return $_W['siteroot'] . 'app/' . substr(parent::createMobileUrl($do[0], $query, true), 2);
     }
     public function createWebUrl($do, $query = array())

@@ -17,7 +17,7 @@ class ForgetPassword extends YZ
 
     public function index()
     {
-        //member/ForgetPassword&mobile=18545571024&password=111111
+        //member/ForgetPassword&mobile=18545571024&password=111111&code=8976
 
         global $_W,$_GPC;
         if(($_SESSION['codetime']+60*5) < time()){

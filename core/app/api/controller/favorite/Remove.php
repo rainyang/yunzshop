@@ -12,8 +12,16 @@ class Remove extends YZ
     public function __construct()
     {
         parent::__construct();
+
+    }
+
+    public function index()
+    {
+        //goods_ids
         global $_W;
+
         $_W['ispost']= true;
+
         $result = $this->callMobile('shop/favorite/remove');
         //dump($result);exit;
         if($result['code'] == -1){
@@ -21,12 +29,7 @@ class Remove extends YZ
         }
         $this->variable = $result['variable'];
         $this->json = $result['json'];
+        $this->returnSuccess($this->json,'取消收藏');
     }
-
-    public function index()
-    {
-        $this->returnSuccess($this->json);
-    }
-
 }
 

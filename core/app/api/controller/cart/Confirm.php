@@ -66,7 +66,7 @@ class Confirm extends YZ
         if(!$this->_isVerifySend()){
             return false;
         }
-        if($json['carrier_list']['length']>0){
+        if(count($json['carrier_list'])>0){
             return true;
         }
         return false;
@@ -90,7 +90,7 @@ class Confirm extends YZ
         if($this->_isCarrier()){
             return $this->_getCarrierContactsBlock();
         }
-        if(!$this->_isVirtual()){
+        if($this->_isVirtual()){
             return $this->_getVirtualContactsBlock();
         }
 

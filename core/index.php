@@ -1,4 +1,5 @@
 <?php
+namespace api;
 /**
  * 网站入口页面
  *
@@ -8,7 +9,6 @@
  * @author    name <xxx@yunzshop.com>
  * @version   v1.0
  */
-namespace api;
 define('IN_SYS', true);
 define("__CORE_PATH__", __DIR__);
 define("__VENDOR_PATH__", __DIR__."/../vendor");
@@ -162,7 +162,7 @@ new AutoLoader();
 echo D('User')->_sql();
 dump($info);exit;*/
 define('YII_DEBUG',true);
-if(is_test()){
+if(is_test()||is_app_api()){
     require_once __VENDOR_PATH__."/autoload.php";
     require(__VENDOR_PATH__ . '/yiisoft/yii2/Yii.php');
     $config = require(__CORE_PATH__ . '/config/yii.php');

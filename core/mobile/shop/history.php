@@ -20,14 +20,13 @@ if ($_W['isajax']) {
         $list = array();
         if (!empty($total)) {
             if (!empty($_GPC['history_id'])) {
-                $condition .= ' and f.id > :history_id';
+                $condition .= ' and f.id < :history_id';
                 $params['history_id'] = $_GPC['history_id'];
             }
             $sql = 'SELECT f.id,f.goodsid,g.title,g.thumb,g.marketprice,g.productprice FROM ' . tablename('sz_yi_member_history') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
             $list = pdo_fetchall($sql, $params);
             $list = set_medias($list, 'thumb');
         }
-        dump($list);
         return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
     } else if ($operation == 'remove' && $_W['ispost']) {
         $ids = $_GPC['ids'];
