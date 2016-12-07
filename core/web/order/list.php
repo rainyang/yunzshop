@@ -22,11 +22,12 @@ if ($indiana_plugin) {
         foreach ($period as $key => $value) {
             $inordersn[$key] .= $value['ordersn'];
         }
-        if ($inordersn) {
-            $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
-        }else{
-            $isindiana = " AND o.order_type = 4 ";
-        }
+        $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
+        // if ($inordersn) {
+        //     $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
+        // }else{
+        //     $isindiana = " AND o.order_type = 4 ";
+        // }
         
     }else{
         $isindiana = " AND o.order_type <> 4 ";

@@ -133,18 +133,18 @@ if (!class_exists('IndianaModel')) {
 			global $_W;
 			$set = $this->getSet();
 
-	        pdo_update('sz_yi_order', array(
-	            'status' => 3,
-	            'finishtime' => time(),
-	            'refundstate' => 0
-	        ), array(
-	            'id' => $orderid,
-	            'uniacid' => $_W['uniacid']
-	        ));
+	  //       pdo_update('sz_yi_order', array(
+	  //           'status' => 3,
+	  //           'finishtime' => time(),
+	  //           'refundstate' => 0
+	  //       ), array(
+	  //           'id' => $orderid,
+	  //           'uniacid' => $_W['uniacid']
+	  //       ));
 
-			if (p('commission')) {
-				p('commission')->checkOrderFinish($orderid);
-			}
+			// if (p('commission')) {
+			// 	p('commission')->checkOrderFinish($orderid);
+			// }
 
 
 			$order = pdo_fetch('SELECT o.*, og.total, og.goodsid FROM ' . tablename('sz_yi_order') . ' o 
@@ -200,7 +200,6 @@ if (!class_exists('IndianaModel')) {
 					'codes' 		=> serialize($buy_codes),//购买码
 					'count' 		=> $codes_number, //购买个数
 					'microtime' 	=> $microtime
-
 				);
 				pdo_insert('sz_yi_indiana_record',$record);
 			}else{
@@ -218,6 +217,7 @@ if (!class_exists('IndianaModel')) {
 				'openid' 		=> $openid,
 				'uniacid' 		=> $_W['uniacid'],
 				'num' 			=> $codes_number,
+				'ordersn' 		=> $order['ordersn'],
 				'codes' 		=> serialize($buy_codes),//购买码
 				'period_num' 	=> $period_num,
 				'create_time' 	=> $create_time,
@@ -349,7 +349,6 @@ if (!class_exists('IndianaModel')) {
 		public function createtime_winer($periodid = '',$period_number = '',$uniacid){
 			global $_W;
 			$_W['uniacid'] = $uniacid;
-
 			$src = 'http://f.apiplus.cn/cqssc.json';
 			$src .= '?_='.time();
 			$json = file_get_contents(urldecode($src));
@@ -419,16 +418,51 @@ if (!class_exists('IndianaModel')) {
 				for ($i=0; $i < count($scodes) ; $i++) { 
 					if ($scodes[$i]==$wincode) {
 						$lack_period['openid']=$v['openid'];
-						$lack_period['ordersn']=$v['ordersn'];
 						$lack_period['recordid']=$v['id'];
 						break;
 					}
 				}
 			}
+
 			if(empty($lack_period['openid'])){
 				pdo_delete('sz_yi_indiana_comcode',array('pid'=>$periodid));
 				self::createtime_winer($periodid,$period_num,$uniacid);
 			}else{
+
+				//计算中奖订单
+				$sql_record_order = "select * from ".tablename('sz_yi_indiana_consumerecord')." where uniacid = :uniacid and openid = :openid and period_num = :period_num";
+				$data_record_order = array(
+						':uniacid' => $_W['uniacid'],
+						':openid' => $lack_period['openid'],
+						':period_num' => $period_num
+					);
+				$order_data = pdo_fetchall($sql_record_order,$data_record_order);
+				foreach ($order_data as$k=> $v) {
+					$scodes=unserialize($v['codes']);//转换商品code
+					for ($i=0; $i < count($scodes) ; $i++) { 
+						if ($scodes[$i]==$wincode) {
+							$lack_period['ordersn']=$v['ordersn'];
+							pdo_update('sz_yi_indiana_record',array('ordersn'=>$v['ordersn']),array('uniacid'=>$_W['uniacid'],'id'=>$lack_period['recordid']));	//写入中奖信息
+							break;
+						}
+					}
+				}
+		        pdo_update('sz_yi_order', array(
+		            'status' => 3,
+		            'finishtime' => time(),
+		            'refundstate' => 0
+		        ), array(
+		            'period_num' => $period_num,
+		            'uniacid' => $_W['uniacid']
+		        ));
+		        //执行夺宝订单 分销
+				$orders = pdo_fetchall("select id from ".tablename('sz_yi_order')." where uniacid = :uniacid and  period_num = :period_num",array(':uniacid' => $_W['uniacid'],':period_num' => $period_num));
+				foreach ($orders as $o) {
+					if (p('commission')) {
+						p('commission')->checkOrderFinish($o['id']);
+					}
+				}
+
 				$pro_m = m('member')->getMember($lack_period['openid']);//获奖用户信息
 				$lack_record = pdo_fetch("select count from ".tablename('sz_yi_indiana_record')." where uniacid='{$_W['uniacid']}' and openid='{$lack_period['openid']}' and period_num='{$period_num}'");
 				$lack_period['code']=$wincode;
