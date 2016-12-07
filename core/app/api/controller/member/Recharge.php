@@ -41,11 +41,11 @@ class Recharge extends YZ
                 }
 
                 if ($json['json']['yunpay']['success']) {
-                    $btn[] = array('name' => '云支付', 'value' => 'yunpay');
+                   // $btn[] = array('name' => '云支付', 'value' => 'yunpay');
                 }
 
                 if ($json['json']['alipay']['success']) {
-                    $btn[] = array('name' => '支付宝支付', 'value' => 'alipay');
+                   // $btn[] = array('name' => '支付宝支付', 'value' => 'alipay');
                 }
 
                 $res = array('openid'=>$openid, 'money'=>$json['json']['credit'], 'btn'=>$btn, 'acts'=>$json['json']['acts'], 'logid'=>$json['json']['logid']);
