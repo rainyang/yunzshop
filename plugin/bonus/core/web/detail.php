@@ -189,6 +189,34 @@ if($operation == "display"){
         'result' => 1
     )));
 
-}
+}else if($operation == "sendpay"){
+	$id = intval($_GPC['id']);
+	$log = pdo_fetch("select * from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and id =:id", array(':id' => $id, ":uniacid" => $_W['uniacid']));
+	if($log['sendpay'] == 1){
+		message("该用户已经发放过了,无需重新发放", $this->createPluginWebUrl('bonus/detail', array("sn" => $sn)), "error");
+	}
+	$setshop = m('common')->getSysset('shop');
+	$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
+	$bonus_log = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where uniacid=:uniacid and send_bonus_sn =:sn", array(':sn' => $sn, ":uniacid" => $_W['uniacid']));
+	if($bonus_log['isglobal']==1){
+		$sendname = "全球分红";
+	}else{
+		if($bonus_log['type'] == 2){
+			$sendname = "团队分红";
+		}else{
+			$sendname = "地区分红";
+		}
+	}
 
+	$result = m('finance')->pay($log['openid'], 1, $log['money'] * 100, $logno, "【" . $setshop['name']. "】".$sendname);
+    if (is_error($result)) {
+        message('打款到微信钱包失败: ' . $result['message'], '', 'error');
+    }
+    pdo_update('sz_yi_bonus_log', array("sendpay" => 1), array("uniacid" => $_W['uniacid'], "id" => $id));
+    $send_error_count = pdo_fetchall("select count(*) from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and sendpay=0 and send_bonus_sn=:sn", array(':id' => $id, ":uniacid" => $_W['uniacid'], ":sn" => $sn));
+    if(empty($send_error_count)){
+    	pdo_update('sz_yi_bonus', array("sendpay_error" => 0), array("uniacid" => $_W['uniacid'], "send_bonus_sn" => $sn));
+    }
+    message("打款成功", $this->createPluginWebUrl('bonus/detail', array("sn" => $sn)), "error");
+}
 include $this->template('detail');

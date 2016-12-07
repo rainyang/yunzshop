@@ -143,12 +143,13 @@ if (!empty($_POST)) {
 		            }
 
 				}else{
-					$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
+					/*$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
 					$result = m('finance')->pay($member['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$value['levelname']."团队分红");
 			        if (is_error($result)) {
-			            $sendpay = 0;
-			            $sendpay_error = 1;
-			        }
+			            
+			        }*/
+			        $sendpay = 0;
+			        $sendpay_error = 1;
 				}
 			}
 			//更新分红订单完成
@@ -194,7 +195,8 @@ if (!empty($_POST)) {
 	    pdo_insert('sz_yi_bonus', $log);
     }
     plog('bonus.send', "后台发放团队分红，共计{$real_total}人 金额{$totalmoney}元");
-    message("团队分红发放成功,需在下一页面点击发送消息！", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn)), "success");
+    $ms = $set['paymethod'] == 1 ? "发放分红金额及" : "";
+    message("团队分红发放成功,需在下一页面点击" . $ms . "发送消息", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn)), "success");
 }
 $pager = pagination($total, $pindex, $psize);
 include $this->template('send');

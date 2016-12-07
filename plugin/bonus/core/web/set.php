@@ -6,6 +6,9 @@ $trade     = m('common')->getSysset('trade');
 if (checksubmit('submit')) {
     $data          = is_array($_GPC['setdata']) ? array_merge($set, $_GPC['setdata']) : array();
     $data['texts'] = is_array($_GPC['texts']) ? $_GPC['texts'] : array();
+    if($data['paymethod'] == 1 && $data['sendmethod'] == 1){
+    	message('打款微信钱包不允许使用自动方式，请改为手动！', '', 'error');
+    }
     if(is_array($_GPC['leveltype'])){
     	$data['leveltype'] = $_GPC['leveltype'];
     }

@@ -167,12 +167,13 @@ if (!empty($_POST)) {
             
         } else {
             //打款到微信钱包
-            $logno = m('common')->createNO('bonus_log', 'logno', 'RB');
+            /*$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
             $result = m('finance')->pay($value['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$levelname."全球分红");
             if (is_error($result)) {
-                $sendpay = 0;
-                $sendpay_error = 1;
-            }
+                
+            }*/
+            $sendpay = 0;
+            $sendpay_error = 1;
         }
 
         //写入日志调整
@@ -213,7 +214,8 @@ if (!empty($_POST)) {
             );
     pdo_insert('sz_yi_bonus', $log);
     plog('bonus.sendall', "后台发放全球分红，共计{$total}人 金额{$totalmoney}元，订单总额{$orderallmoney}元");
-    message("全球分红发放成功,需在下一页面点击发送消息！", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn, "isglobal" => 1)), "success");
+    $ms = $set['paymethod'] == 1 ? "发放分红金额及" : "";
+    message("全球分红发放成功,需在下一页面点击" . $ms . "发送消息" 。$ms, $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn, "isglobal" => 1)), "success");
 }
 $pager = pagination($total, $pindex, $psize);
 include $this->template('sendall');
