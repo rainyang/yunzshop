@@ -88,7 +88,7 @@
                     </td>
                     <td>
                         {ifp 'member.member.view'}
-                        <a class='btn btn-default' href="{php echo $this->createWebUrl('member',array('op'=>'detail','id' => $row['member_id']));}">用户信息</a>
+                        <a class='btn btn-default' href="{php echo $this->createWebUrl('member',array('op'=>'detail'));}&id={$row['member_id']}">用户信息</a>
                         {/if}
                         {if $row['status']==0}
                         {ifp 'cashier.withdraw.withdraw'}
