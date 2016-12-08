@@ -489,7 +489,7 @@ if ($_W['isajax']) {
         array(
             ":id" => $goodsid
         ));
-    $history = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member_history') . ' where goodsid=:goodsid and uniacid=:uniacid and openid=:openid and deleted=0 limit 1',
+    $history_info = pdo_fetch('select id from ' . tablename('sz_yi_member_history') . ' where goodsid=:goodsid and uniacid=:uniacid and openid=:openid and deleted=0',
         array(
             ':goodsid' => $goodsid,
             ':uniacid' => $uniacid,
@@ -502,7 +502,7 @@ if ($_W['isajax']) {
             ':uniacid' => $uniacid,
             ':openid' => $openid
         )), 'thumb');
-    if ($history <= 0) {
+    if (empty($history_info)) {
         $history = array(
             'uniacid' => $uniacid,
             'openid' => $openid,
@@ -511,6 +511,8 @@ if ($_W['isajax']) {
             'createtime' => time()
         );
         pdo_insert('sz_yi_member_history', $history);
+    }else{
+        pdo_update('sz_yi_member_history', array("utime" => time()), array("id" => $history_info['id']));
     }
 
     //是否折扣权限

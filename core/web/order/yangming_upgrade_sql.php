@@ -57,4 +57,8 @@ if(!pdo_fieldexists('sz_yi_order_comment', 'plugin')) {
 if(!pdo_fieldexists('sz_yi_order', 'plugin')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `plugin` varchar(10) DEFAULT '' COMMENT '插件关联';");
 }
+//12.08会员足迹添加更新时间做为排序依据
+if(!pdo_fieldexists('sz_yi_member_history', 'utime')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_history')." ADD `utime` int(11) DEFAULT '0' COMMENT '更新时间';");
+}
 echo 1;
