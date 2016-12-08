@@ -380,16 +380,24 @@ if (!class_exists('BonusModel')) {
 			}
 		}
 
-		public function getChildAgents($id){
+		//查询下级的全部id
+		public function getChildAgents($agentids, $childids = array()){
             global $_W;
-
-            $sql = "select id from " . tablename('sz_yi_member') . " where agentid={$id} and id!={$id} and status=1 and isagent = 1 and uniacid=".$_W['uniacid'];
-            $agents =  pdo_fetchall($sql);
-            foreach ($agents as $agent) {
-                $this->agents[] = $agent['id'];
-                $this->getChildAgents($agent['id']);
+            $condition = " status=1 and isagent=1 and uniacid=:uniacid"; 
+            if(count($agentids) > 1){
+            	$condition .= ' and agentid in ( ' . implode(',', $agentids) . ')';
+            }else{
+            	$condition .= ' and agentid = '.$agentids[0];
             }
-            return $this->agents;
+            $sql = "select id from " . tablename('sz_yi_member') . " where ".$condition;
+            $agents =  pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+            if(!empty($agents)){
+	            $agentids = array_keys($agents);
+	            $childids = array_merge($childids, $agentids);
+	            return $this->getChildAgents($agentids, $childids);
+	        }else{
+	        	return $childids;
+	        }
         }
 
         public function getLevels($all = true)
@@ -509,7 +517,7 @@ if (!class_exists('BonusModel')) {
 				//Author:ym Date:2016-04-08 Content:自购订单数量
 				$myordercount = $myorder['ordercount'];
 			}
-	        $agentids 						= $this->getChildAgents($member['id']);
+	        $agentids 						= $this->getChildAgents(array($member['id']));
 	        $agentcount                     = count($agentids);
             //$member['commissionTotal']      = $commissionTotal;
             $member['commission_ok']        = isset($commission_ok) ? $commission_ok : 0;
