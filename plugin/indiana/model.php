@@ -447,16 +447,18 @@ if (!class_exists('IndianaModel')) {
 						}
 					}
 				}
-		        pdo_update('sz_yi_order', array(
-		            'status' => 3,
-		            'finishtime' => time(),
-		            'refundstate' => 0
-		        ), array(
-		            'period_num' => $period_num,
-		            'uniacid' => $_W['uniacid']
-		        ));
+		        // pdo_update('sz_yi_order', array(
+		        //     'status' => 3,
+		        //     'finishtime' => time(),
+		        //     'refundstate' => 0
+		        // ), array(
+		        //     'period_num' => $period_num,
+		        //     'uniacid' => $_W['uniacid']
+		        // ));
+		        pdo_fetch("UPDATE ".tablename('sz_yi_order')." SET status = '3',finishtime = '".time()."', refundstate = '0' where uniacid = :uniacid and  period_num = :period_num and ordersn <> :ordersn",array(':uniacid' => $_W['uniacid'],':period_num' => $period_num,':ordersn' => $lack_period['ordersn']));
+
 		        //执行夺宝订单 分销
-				$orders = pdo_fetchall("select id from ".tablename('sz_yi_order')." where uniacid = :uniacid and  period_num = :period_num",array(':uniacid' => $_W['uniacid'],':period_num' => $period_num));
+				$orders = pdo_fetchall("select id from ".tablename('sz_yi_order')." where uniacid = :uniacid and  period_num = :period_num and ordersn <> :ordersn",array(':uniacid' => $_W['uniacid'],':period_num' => $period_num,':ordersn' => $lack_period['ordersn']));
 				foreach ($orders as $o) {
 					if (p('commission')) {
 						p('commission')->checkOrderFinish($o['id']);

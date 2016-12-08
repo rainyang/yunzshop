@@ -28,11 +28,13 @@ if (!class_exists('CommissionModel')) {
 			global $_W;
 			$set = $this->getSet();
 			$levels = $this->getLevels();
-			$agentid = pdo_fetchcolumn('select agentid from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
+			$orders = pdo_fetch('select agentid, period_num from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
+			$agentid = $orders['agentid'];
+
 			$goods = pdo_fetchall('select og.id,og.realprice,og.total,g.type,g.hascommission,g.nocommission, g.commission1_rate,g.commission1_pay,g.commission2_rate,g.commission2_pay,g.commission3_rate,g.commission3_pay,og.commissions,og.optionid,g.productprice,g.marketprice,g.costprice from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			if ($set['level'] > 0) {			
 				    foreach ($goods as &$cinfo) {
-					$price = $this->calculate_method($cinfo);
+					$price = $this->calculate_method($cinfo,$orders['period_num']);
 					if(p('hotel')&& $goods[0]['type']=='99'){
 			    	$order = pdo_fetch('select id,goodsprice from ' . tablename('sz_yi_order').' where id=:id and uniacid=:uniacid', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
 			    	$price =$order['goodsprice'];
@@ -107,11 +109,11 @@ if (!class_exists('CommissionModel')) {
 		}
 
 		//Author:ym Date:2016-05-06 Content:分成方式计算		
-		public function calculate_method($order_goods){
+		public function calculate_method($order_goods, $period_num = ''){
 			global $_W;
 			$set = $this->getSet();
 			$realprice = $order_goods['realprice'];
-			if(empty($set['culate_method'])){
+			if(empty($set['culate_method']) || $period_num){
 				return $realprice;
 			}else{
 				
