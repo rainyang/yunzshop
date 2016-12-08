@@ -52,12 +52,12 @@ return show_json(1, array('isfavorite' => true));
 		$ids = $_GPC['ids'];
         $goods_ids = $_GPC['goods_ids'];
 
-        if(!is_array($ids)){
+        if(!is_array($ids)&&!empty($ids)){
             $ids = explode(',',$ids);
             $condition = 'and id in (' . implode(',', $ids) . ')';
 
         }
-        if(!is_array($goods_ids)){
+        if(!is_array($goods_ids)&&!empty($goods_ids)){
             $goods_ids = explode(',',$goods_ids);
             $condition = 'and goodsid in (' . implode(',', $goods_ids) . ')';
         }
