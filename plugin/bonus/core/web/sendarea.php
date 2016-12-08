@@ -51,7 +51,7 @@ if ($operation != "sub_bonus") {
 				}
 				$row['commission_ok'] = $commission_teamok;
 	            $commission_pay = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_log') . " where sendpay=1 and uniacid=:uniacid and openid =:openid ", array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
-				$row['commission_pay'] = $commission_pay;
+				$row['commission_pay'] = number_format($commission_pay, 2);
 				$row['id'] = $member['id'];
 				$row['avatar'] = $member['avatar'];
 				$row['nickname'] = $member['nickname'];

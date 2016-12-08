@@ -215,7 +215,7 @@ if (!empty($_POST)) {
     pdo_insert('sz_yi_bonus', $log);
     plog('bonus.sendall', "后台发放全球分红，共计{$total}人 金额{$totalmoney}元，订单总额{$orderallmoney}元");
     $ms = $set['paymethod'] == 1 ? "发放分红金额及" : "";
-    message("全球分红发放成功,需在下一页面点击" . $ms . "发送消息" 。$ms, $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn, "isglobal" => 1)), "success");
+    message("全球分红发放成功,需在下一页面点击" . $ms . "发送消息", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn, "isglobal" => 1)), "success");
 }
 $pager = pagination($total, $pindex, $psize);
 include $this->template('sendall');
