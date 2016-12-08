@@ -9,10 +9,10 @@ class Login extends YZ
 {
     public function index()
     {
-        $validate_messages = $this->_validatePara();
+        /*$validate_messages = $this->_validatePara();
         if (!empty($validate_messages)) {
             $this->returnError($validate_messages);
-        }
+        }*/
         $para = $this->getPara();
         $info = $this->_getUserInfo($para);
         if (empty($info)) {
@@ -32,14 +32,6 @@ class Login extends YZ
     }
     private function _validatePara(){
         $validate_fields = array(
-            'mobile' => array(
-                'type' => 'required',
-                'describe' => '手机号'
-            ),
-            'pwd' => array(
-                'type' => 'required',
-                'describe' => '密码'
-            ),
             'uniacid' => array(
                 'type' => 'required',
                 'describe' => '公众号id'
