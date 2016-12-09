@@ -638,7 +638,10 @@ if ($operation == "display") {
         } elseif ($value['cashier'] == 1) {
             $value["dispatchname"] = "收银台支付";
         }
-        $value["dispatchname"] = empty($value["addressid"]) ? "上门自提" : $value["dispatchname"];
+
+        if(empty($value["addressid"]) && $value["isvirtual"] != "1" && empty($value["virtual"])){
+            $value["dispatchname"] = "上门自提";
+        }
 
         if (p('cashier') && $value['cashier'] == 1) {
             $value['name'] = set_medias(array(
@@ -934,7 +937,7 @@ if ($operation == "display") {
 
     } elseif ($indiana_plugin && $_GPC['isindiana']) {
         include p('indiana')->ptemplate("order");
-    }else{          
+    }else{
         include $this->template("web/order/list");
     }
     exit;
