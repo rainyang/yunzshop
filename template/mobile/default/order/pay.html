@@ -114,9 +114,7 @@
     </div>
      <div class="order_main1" >
          <%if order.order_type=='3'%>
-
             <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list',array('type'=>'hotel'))}'">订单详情</span>
-        
         <%else if order.order_type =='4'%>
             <span class="order_sub5" onclick="location.href='{php echo $this->createPluginMobileUrl('indiana/order')}'">夺宝详情</span>
             <span class="order_sub5" onclick="location.href='{php echo $this->createPluginMobileUrl('indiana/goods')}'">更多夺宝商品</span>
