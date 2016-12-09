@@ -142,7 +142,7 @@ class Account extends YZ
                 'birthday' =>$user_info['json']['member']['birthday'],
                 'province' =>$user_info['json']['member']['province'],
                 'city' =>$user_info['json']['member']['city'],
-                'area' => $user_info['json']['member']['city'],
+                'area' => $user_info['json']['member']['area'],
                 'alipay' =>$user_info['json']['member']['alipay'],
                 'alipayname' =>$user_info['json']['member']['alipayname'],
             );

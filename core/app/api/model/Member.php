@@ -3,7 +3,7 @@ namespace app\api\model;
 
 class Member extends BaseModel
 {
-
+    protected $tableName = 'sz_yi_member';
     public static function tableName()
     {
         return 'ims_sz_yi_member';

@@ -15,7 +15,7 @@ class Register extends YZ
 
         $para = $this->getPara();
 
-        //$code_message = $this->_checkCode($para['code'],$para['mobile']);
+        $code_message = $this->_checkCode($para['code'],$para['mobile']);
         if(!empty($code_message)){
             $this->returnError($code_message);
         }

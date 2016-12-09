@@ -61,8 +61,8 @@
       "Login": {
         "describe": "登录",
         "para": {
-          "mobile": "18545571024",
-          "pwd": "sgl918"
+          "mobile": "13936237723",
+          "pwd": ""
         },
         "data": []
       }
@@ -75,10 +75,36 @@
         "describe": "列表",
         "para": {
           "uniacid": "2",
+          "openid": "oYGiFxGKfOCLWmS8o1kjV_C_wU6I"
+        },
+        "data": []
+      }
+    }
+  },
+  "address": {
+    "describe": "地址",
+    "method": {
+      "Edit": {
+        "describe": "编辑",
+        "para": {
+          "uniacid": "2"
+        },
+        "data": []
+      }
+    }
+  },
+  "coupon": {
+    "describe": "优惠券",
+    "method": {
+      "My": {
+        "describe": "列表",
+        "para": {
+          "uniacid": "2",
           "openid":"oYGiFxGKfOCLWmS8o1kjV_C_wU6I"
         },
         "data": []
       }
     }
   }
+
 }

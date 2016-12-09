@@ -4,7 +4,6 @@ namespace app\api\controller\channel;
 use app\api\YZ;
 use app\api\controller\order;
 use yii\helpers\ArrayHelper;
-
 class Index extends YZ
 {
 

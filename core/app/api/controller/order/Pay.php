@@ -43,7 +43,7 @@ class Pay extends YZ
      * 余额支付
      *
      * @method post
-     * @request order/Pay/credit
+     * @request member/Pay/credit
      * @param orderid
      * @param type
      *

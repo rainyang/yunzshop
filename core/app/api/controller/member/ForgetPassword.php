@@ -3,7 +3,6 @@ namespace app\api\controller\member;
 @session_start();
 use app\api\Request;
 use app\api\YZ;
-
 class ForgetPassword extends YZ
 {
     private $json;

@@ -3,7 +3,6 @@ namespace app\api\controller\goods;
 @session_start();
 use app\api\YZ;
 use app\api\Request;
-
 class Detail extends YZ
 {
     private $json;
