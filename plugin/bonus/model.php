@@ -340,9 +340,11 @@ if (!class_exists('BonusModel')) {
 			global $_W;
 			$set = $this->getSet();
 			$realprice = $order_goods['realprice'];
-			if(empty($set['culate_method']) || $period_num){
+			if($period_num){
+				return $order_goods['price'];
+			} elseif (empty($set['culate_method']) ){
 				return $order_goods['bonusmoney'] > 0 && !empty($order_goods['bonusmoney']) ? $order_goods['bonusmoney'] * $order_goods['total'] : $order_goods['price'];
-			}else{
+			} else {
 				
 				if($order_goods['optionid'] != 0){
 					$option = pdo_fetch('select productprice,marketprice,costprice,option_ladders from ' . tablename('sz_yi_goods_option') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $order_goods['optionid'], ':uniacid' => $_W['uniacid']));
