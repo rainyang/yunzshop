@@ -117,18 +117,36 @@ if ($_W['isajax']) {
 
                 //删除其他手机号相同用户信息
                 pdo_delete('sz_yi_member', array('openid' => $oldopenid));
-
+                $newid = $member['id'];
+                $oldid = $info['id'];
                 //当前用户是否大于其他用户
                 if($member['createtime'] > $info['createtime']){
                     if($info['agentid'] != 0){
                         //大于则使用老的用户id
-                        pdo_update('sz_yi_member', array('id' => $info['id']), array('openid' => $openid, 'uniacid' => $_W['uniacid']));
+                        $newid = $info['id'];
+                        $oldid = $member['id'];
+                        pdo_update('sz_yi_member', array('id' => $newid), array('openid' => $openid, 'uniacid' => $_W['uniacid']));
                         //修改新用户，所有用户agentid为老的用户id
-                        pdo_update('sz_yi_member', array('agentid' => $info['id']), array('agentid' => $member['id'], 'uniacid' => $_W['uniacid']));
+                        pdo_update('sz_yi_member', array('agentid' => $newid), array('agentid' => $member['id'], 'uniacid' => $_W['uniacid']));
                     }
                 }else{
                     //修改老用户的agentid改为新用户id
-                    pdo_update('sz_yi_member', array('agentid' => $member['id']), array('agentid' => $info['id'], 'uniacid' => $_W['uniacid']));
+                    pdo_update('sz_yi_member', array('agentid' => $newid), array('agentid' => $info['id'], 'uniacid' => $_W['uniacid']));
+                }
+
+                //修改全反表
+                if(p("return")){
+                    pdo_update('sz_yi_return', array('mid' => $newid), array('mid' => $oldid, 'uniacid' => $_W['uniacid']));
+                    pdo_update('sz_yi_return_log', array('mid' => $newid, 'openid' => $openid), array('mid' => $oldid, 'uniacid' => $_W['uniacid']));
+                    pdo_update('sz_yi_return_money', array('mid' => $newid), array('mid' => $oldid, 'uniacid' => $_W['uniacid']));
+                    pdo_update('sz_yi_return_tpm', array('mid' => $newid), array('mid' => $oldid, 'uniacid' => $_W['uniacid']));
+                }
+
+                //修改分红表
+                if(p("bonus")){
+                    pdo_update('sz_yi_bonus_apply', array('mid' => $newid), array('mid' => $oldid, 'uniacid' => $_W['uniacid']));
+                    pdo_update('sz_yi_bonus_goods', array('mid' => $newid), array('mid' => $oldid, 'uniacid' => $_W['uniacid']));
+                    pdo_update('sz_yi_bonus_log', array('openid' => $openid), array('openid' => $oldopenid, 'uniacid' => $_W['uniacid']));
                 }
 
                 //是否绑定app
