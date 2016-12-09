@@ -1089,16 +1089,14 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 </script>
 <script type="text/javascript">
     $(document).ready(function(){
-    function FreshTime(){
-        var str ='{$indiana['jiexiao']}';
-        str = str.replace(/-/g,"/");
-        var starttime= new Date(str);//开始时间
-        var nowtime = new Date();//当前时间
-        var now_time = parseInt(nowtime.getTime());
-        var start_time = parseInt(starttime.getTime());
-        var jiexiao_time = start_time;
-        var lefttime = (jiexiao_time-now_time)/1000;
-       if (lefttime > 0) {
+
+    var jiexiao_time = '{$indiana['jiexiao']}';
+    var now_time = '{$indiana['now_time']}';
+    jiexiao_time = parseInt(jiexiao_time) * parseInt(1000);
+    now_time = parseInt(now_time) * parseInt(1000);
+    function FreshTimes(){
+        var lefttime = (parseInt(jiexiao_time)-parseInt(now_time))/1000;
+        if (lefttime > 0) {
             mm=parseInt((lefttime/60)%60);
             if(10>mm>0){
                 mm="0"+mm;
@@ -1112,10 +1110,11 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             //location.reload([false])
             return false;
         }
+        now_time = parseInt(now_time) + parseInt(10);
     }
-    FreshTime();
+    FreshTimes();
     var sh;
-    sh=setInterval(FreshTime,10);
+    sh=setInterval(FreshTimes,10);
 });
 </script>
 

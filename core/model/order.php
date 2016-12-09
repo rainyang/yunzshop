@@ -302,27 +302,31 @@ class Sz_DYi_Order
                                 $shopset['name'] . "余额抵扣: {$order['deductcredit2']} 订单号: " . $order['ordersn']
                             ));
                         }
-                        if(is_array($orderid)){
-                            foreach ($orderall as $k => $v) {
-                                $this->setStocksAndCredits($v['id'], 1);
-                                if (p('coupon') && !empty($v['couponid'])) {
-                                    p('coupon')->backConsumeCoupon($v['id']);
+                        //if ($order['order_type'] != '4') {
+                            //$order['order_type']=4 为夺宝订单 夺宝订单不执行下面代码
+                            if(is_array($orderid)){
+                                foreach ($orderall as $k => $v) {
+                                    $this->setStocksAndCredits($v['id'], 1);
+                                    if (p('coupon') && !empty($v['couponid'])) {
+                                        p('coupon')->backConsumeCoupon($v['id']);
+                                    }
+                                    m('notice')->sendOrderMessage($v['id']);
+                                    if (p('commission')) {
+                                        p('commission')->checkOrderPay($v['id']);
+                                    }
                                 }
-                                m('notice')->sendOrderMessage($v['id']);
+                            }else{
+                                $this->setStocksAndCredits($orderid, 1);
+                                if (p('coupon') && !empty($order['couponid'])) {
+                                    p('coupon')->backConsumeCoupon($orderid);
+                                }
+                                m('notice')->sendOrderMessage($orderid);
                                 if (p('commission')) {
-                                    p('commission')->checkOrderPay($v['id']);
+                                    p('commission')->checkOrderPay($orderid);
                                 }
                             }
-                        }else{
-                            $this->setStocksAndCredits($orderid, 1);
-                            if (p('coupon') && !empty($order['couponid'])) {
-                                p('coupon')->backConsumeCoupon($orderid);
-                            }
-                            m('notice')->sendOrderMessage($orderid);
-                            if (p('commission')) {
-                                p('commission')->checkOrderPay($orderid);
-                            }
-                        }   
+                        //}  
+
                     }
                 }
                 //云打印
@@ -343,7 +347,7 @@ class Sz_DYi_Order
                 $plugin_fund = p('fund');
                     foreach ($ordergoods as $key =>$value) {
                         if($plugin_fund){
-                            $plugin_fund->check($value['goodsid']);
+                            $plugin_fund->check_goods($value['goodsid']);
                         }
                         //$ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
                         $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");

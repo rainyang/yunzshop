@@ -183,15 +183,14 @@ if (p('ranking')) {
 }
 $pindiana = false;
 $indiana = p('indiana');
-$indiana_type = '';
+$indiana_type = " and plugin='" . $_GPC['plugin'] . "'";
 if ($indiana) {
 	$indiana_set = $indiana->getSet();
 	if (!empty($indiana_set['isindiana'])) {
 		$pindiana = true;
-		$indiana_type = " and order_type <> 4 ";
+		$indiana_type .= " and order_type <> 4 ";
 	}
 }
-
 
 $open_creditshop = false;
 $creditshop = p('creditshop');
@@ -209,6 +208,7 @@ if ($_W['isajax']) {
 	}
 	
 	$orderparams = array(':uniacid' => $_W['uniacid'], ':openid' => $openid);
+
 	$order = array(
 		'status0' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=0 '.$indiana_type.' and uniacid=:uniacid limit 1', $orderparams), 
 		'status1' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=1 and refundid=0 '.$indiana_type.' and uniacid=:uniacid limit 1', $orderparams), 
