@@ -11,10 +11,12 @@ if ($yunbi_plugin) {
 }
 
 $isindiana = '';
+$isindiana_o = '';
 $indiana_plugin   = p('indiana');
 if ($indiana_plugin) {
     if ($_GPC['isindiana']) {
         $isindiana = " AND o.order_type = 4 ";
+        $isindiana_o = " AND order_type = 4 ";
         $period = pdo_fetchall("SELECT ir.ordersn FROM " . tablename('sz_yi_indiana_record') . " ir 
         left join " . tablename('sz_yi_indiana_period') . " ip on ( ip.openid = ir.openid and ip.period_num = ir.period_num ) 
         WHERE ip.uniacid = :uniacid",array(
@@ -24,6 +26,7 @@ if ($indiana_plugin) {
             $inordersn[$key] .= $value['ordersn'];
         }
         $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
+        $isindiana_o .= " AND ordersn in ('".implode($inordersn,"','")."') "; 
         // if ($inordersn) {
         //     $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
         // }else{
@@ -32,6 +35,7 @@ if ($indiana_plugin) {
         
     }else{
         $isindiana = " AND o.order_type <> 4 ";
+        $isindiana_o = " AND order_type <> 4 ";
     }
     
 }
@@ -815,8 +819,8 @@ if ($operation == "display") {
         $value["goods_str"] = $goods;
     }
     unset($value);
-
     $condition = " uniacid=:uniacid and deleted=0";
+    $condition .= $isindiana_o;
     if (p('hotel') && $type == 'hotel') {
         $condition .= " and order_type=3";
         $join_order_type = " and o.order_type=3";
