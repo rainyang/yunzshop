@@ -447,14 +447,6 @@ if (!class_exists('IndianaModel')) {
 						}
 					}
 				}
-		        // pdo_update('sz_yi_order', array(
-		        //     'status' => 3,
-		        //     'finishtime' => time(),
-		        //     'refundstate' => 0
-		        // ), array(
-		        //     'period_num' => $period_num,
-		        //     'uniacid' => $_W['uniacid']
-		        // ));
 		        pdo_fetch("UPDATE ".tablename('sz_yi_order')." SET status = '3',finishtime = '".time()."', refundstate = '0' where uniacid = :uniacid and  period_num = :period_num and ordersn <> :ordersn",array(':uniacid' => $_W['uniacid'],':period_num' => $period_num,':ordersn' => $lack_period['ordersn']));
 
 		        //执行夺宝订单 分销
