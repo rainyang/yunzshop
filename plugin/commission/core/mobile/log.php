@@ -43,7 +43,7 @@ if ($_W['isajax']) {
 			}
 		}
 		unset($row);
-		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize, 'commissioncount' => number_format($commissioncount, 2)));
+		return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize, 'commissioncount' => number_format($commissioncount, 2), 'set' => $this->set));
 	} else if ($operation == 'detail') {
 		$id = intval($_GPC['id']);
 		$apply = pdo_fetch('select * from ' . tablename('sz_yi_commission_apply') . ' where id=:id and `mid`=:mid and uniacid=:uniacid limit 1', array(':id' => $id, ':mid' => $mid, ':uniacid' => $uniacid));
@@ -167,7 +167,7 @@ if ($_W['isajax']) {
 			$row['orderpay'] = $orderpay;
 		}
 		unset($row);
-		show_json(1, array('list' => $list, 'pagesize' => $psize, 'totalcommission' => $totalcommission));
+		return show_json(1, array('list' => $list, 'pagesize' => $psize, 'totalcommission' => $totalcommission, 'set' => $this->set));
 	}
 }
 if ($operation == 'display') {

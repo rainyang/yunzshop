@@ -58,7 +58,7 @@ if ($_W['isajax']) {
 		unset($row);
 	}
 	
-	show_json(1, array('list' => $list, 'pagesize' => $psize));
+    return show_json(1, array('list' => $list, 'ordercount' => $ordercount, 'commissioncount' => $commissioncount, 'pagesize' => $psize));
 }
 
 

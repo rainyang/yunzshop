@@ -18,7 +18,7 @@ $commentcount = pdo_fetchcolumn($sql, $params);
 $goods = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id limit 1", array(
     ':id' => $goodsid
 ));
-// echo "<pre>";print_r($goods);exit;
+
 if ($goods['pcate']) {
     $pcate = pdo_fetchcolumn(" select name from " . tablename('sz_yi_category') . " where id =" . $goods['pcate'] . " and uniacid=" . $uniacid);
 }
@@ -282,7 +282,7 @@ if ($_W['isajax']) {
         $ischannelpick = intval($_GPC['ischannelpick']);
     }
     if (empty($goods)) {
-        show_json(0);
+        return show_json(0);
     }
     $goods = set_medias($goods, 'thumb');
     if (p('yunbi')) {
@@ -708,7 +708,7 @@ if ($_W['isajax']) {
         'btnurl2' => !empty($goods['detail_btnurl2']) ? $goods['detail_btnurl2'] : $shop['url']
     );
 
-    show_json(1, $ret);
+    return show_json(1, $ret);
 
 }
 

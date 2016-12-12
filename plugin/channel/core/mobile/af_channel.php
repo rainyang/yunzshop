@@ -54,10 +54,16 @@ if ($_W['isajax']) {
             );
             pdo_insert('sz_yi_af_channel',$channeldata);
         }
-        show_json(1);
+        return show_json(1);
     }
-    show_json(1, array(
-        'member' => $af_channel
+    if (!empty($af_channel)) {
+        $is_channel = true;
+    } else {
+        $is_channel = false;
+    }
+    return show_json(1, array(
+        'member' => $af_channel,
+        'is_channel' => $is_channel
     ));
 }
 if ($template_flag == 1) {

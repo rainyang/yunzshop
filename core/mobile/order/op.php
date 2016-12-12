@@ -23,10 +23,10 @@ if ($_W['isajax']) {
 	            ':openid' => $openid
 	        ));		
 		if (empty($order)) {
-			show_json(0, '订单未找到!');
+			return show_json(0, '订单未找到!');
 		}
 		if ($order['status'] != 0) {
-			show_json(0, '订单已支付，不能取消!');
+			return show_json(0, '订单已支付，不能取消!');
 		}
 		pdo_update('sz_yi_order', array(
 	            'status' => -1,
@@ -60,7 +60,7 @@ if ($_W['isajax']) {
 	        if (p('coupon') && !empty($order['couponid'])) {
 	            p('coupon')->returnConsumeCoupon($orderid);
 	        }
-	        show_json(1);
+	        return show_json(1);
 	    } else if ($operation == 'complete') {
 
 	        $orderid = intval($_GPC['orderid']);
@@ -70,11 +70,11 @@ if ($_W['isajax']) {
 	            ':openid' => $openid
 	        ));
 	        if (empty($order)) {
-	            show_json(0, '订单未找到!');
+	            return show_json(0, '订单未找到!');
 	        }
 
 		if ($order['status'] != 2) {
-			show_json(0, '订单未发货，不能确认收货!');
+			return show_json(0, '订单未发货，不能确认收货!');
 		}
 		if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
             $change_refund               = array();
@@ -147,7 +147,7 @@ if ($_W['isajax']) {
 			m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $orderid, $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
 		}
 
-		show_json(1);
+		return show_json(1);
 	}else if ($operation == 'completehotel') {
 		    $orderid = intval($_GPC['orderid']);
 
@@ -157,10 +157,10 @@ if ($_W['isajax']) {
 	            ':openid' => $openid
 	        ));
 	        if (empty($order)) {
-	            show_json(0, '订单未找到!');
+	            return show_json(0, '订单未找到!');
 	        }
 		if ($order['status'] != 2) {
-			show_json(0, '订单未确认，不能确认入住!');
+			return show_json(0, '订单未确认，不能确认入住!');
 
 		}
 		pdo_update('sz_yi_order', array(
@@ -169,7 +169,7 @@ if ($_W['isajax']) {
             'id' => $order['id'],
             'uniacid' => $uniacid
         ));
-        show_json(1);
+        return show_json(1);
 	}  else if ($operation == 'delivery') {
 	        if ($_W['ispost']) {
 	            $refundid = intval($_GPC['id']);
@@ -180,7 +180,7 @@ if ($_W['isajax']) {
 	                ':openid' => $openid
 	            ));
 	            if (empty($order)) {
-	                show_json(0, '订单未找到!');
+	                return show_json(0, '订单未找到!');
 	            }
 	            $refund = pdo_fetch('select * from ' . tablename('sz_yi_order_refund') . ' where id=:id and uniacid=:uniacid and orderid=:orderid limit 1', array(
 	                ':id' => $refundid,
@@ -188,7 +188,7 @@ if ($_W['isajax']) {
 	                ':orderid' => $orderid
 	            ));
 	            if (empty($refund)) {
-	                show_json(0, '换货申请未找到!');
+	                return show_json(0, '换货申请未找到!');
 	            }
 	            $time                      = time();
 	            $refund_data               = array();
@@ -206,7 +206,7 @@ if ($_W['isajax']) {
 	                'id' => $orderid,
 	                'uniacid' => $uniacid
 	            ));
-	            show_json(1, '成功!');
+	            return show_json(1, '成功!');
 	        }
 	    } else if ($operation == 'express') {
 	        if ($_W['ispost']) {
@@ -216,10 +216,10 @@ if ($_W['isajax']) {
 	            $expresscom = $refunddata['expresscom'];
 	            $expresssn  = $refunddata['expresssn'];
 	            if (empty($refundid)) {
-	                show_json(0, '参数错误!');
+	                return show_json(0, '参数错误!');
 	            }
 	            if (empty($expresssn)) {
-	                show_json(0, '请输入快递单号!');
+	                return show_json(0, '请输入快递单号!');
 	            }
 	            $refund               = array();
 	            $refund['status']     = 4;
@@ -231,7 +231,7 @@ if ($_W['isajax']) {
 	                'id' => $refundid,
 	                'uniacid' => $uniacid
 	            ));
-	            show_json(1, '成功!');
+	            return show_json(1, '成功!');
 	        }
 	} else if ($operation == 'refund') {
 		$orderid = intval($_GPC['orderid']);
@@ -241,24 +241,24 @@ if ($_W['isajax']) {
 	            ':openid' => $openid
 	        ));
 	        if (empty($order)) {
-	            show_json(0, '订单未找到!');
+	            return show_json(0, '订单未找到!');
 	        }
 		if ($order['status'] != 1 && $order['status'] != 3) {
-			show_json(0, '订单未付款或未收货，不能申请退款!');
+			return show_json(0, '订单未付款或未收货，不能申请退款!');
 		} else {
 			if ($order['status'] == 3) {
 				/*if (!empty($order['virtual']) || $order['isverify'] == 1) {
-					show_json(0, '此订单不允许退款!');
+					return show_json(0, '此订单不允许退款!');
 				} else {*/
 					$tradeset = m('common')->getSysset('trade');
 					$refunddays = intval($tradeset['refunddays']);
 					if ($refunddays > 0) {
 						$days = intval((time() - $order['finishtime']) / 3600 / 24);
 						if ($days > $refunddays) {
-							show_json(0, '订单完成已超过 ' . $refunddays . ' 天, 无法发起退款申请!');
+							return show_json(0, '订单完成已超过 ' . $refunddays . ' 天, 无法发起退款申请!');
 						}
 					} else {
-						show_json(0, '订单完成, 无法申请退款!');
+						return show_json(0, '订单完成, 无法申请退款!');
 					}
 				/*}*/
 			}
@@ -288,17 +288,17 @@ if ($_W['isajax']) {
 	                    'id' => $orderid,
 	                    'uniacid' => $uniacid
 	                ));
-	                show_json(1);
+	                return show_json(1);
 	            } else {
 	                $refunddata = $_GPC['refunddata'];
 	                $rtype      = $refunddata['rtype'];
 	                if ($rtype != 2) {
 	                    $price = $refunddata['price'];
 	                    if (empty($price)) {
-	                        show_json(2, '退款金额不能为0元');
+	                        return show_json(2, '退款金额不能为0元');
 	                    }
 	                    if ($price > $order['refundprice']) {
-	                        show_json(3, '退款金额不能超过' . $order['refundprice'] . '元');
+	                        return show_json(3, '退款金额不能超过' . $order['refundprice'] . '元');
 	                    }
 	                    $price = trim($refunddata['price']);
 	                } else {
@@ -349,7 +349,7 @@ if ($_W['isajax']) {
 	                    ));
 	                }
 	                m('notice')->sendOrderMessage($orderid, true);
-	                show_json(1);
+	                return show_json(1);
 	            }
 	        }
 	        $refund = false;
@@ -390,7 +390,7 @@ if ($_W['isajax']) {
 	        } else {
 	            $show_price = $refund['applyprice'];
 	        }
-	        show_json(1, array(
+	        return show_json(1, array(
 	            'showprice' => $show_price,
 	            'order' => $order,
 	            'refund' => $refund,
@@ -400,19 +400,19 @@ if ($_W['isajax']) {
 		$orderid = intval($_GPC['orderid']);
 		$order = pdo_fetch('select id,status,iscomment from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
 		if (empty($order)) {
-			show_json(0, '订单未找到!');
+			return show_json(0, '订单未找到!');
 		}
 		if ($order['status'] != 3 && $order['status'] != 4) {
-			show_json(0, '订单未收货，不能评价!');
+			return show_json(0, '订单未收货，不能评价!');
 		}
 		if ($order['iscomment'] >= 2) {
-			show_json(0, '您已经评价了!');
+			return show_json(0, '您已经评价了!');
 		}
 		if ($_W['ispost'] && $_GPC['from_client'] == 'post') {
 	            $member   = m('member')->getMember($openid);
 	            $comments = $_GPC['comments'];
 	            if (!is_array($comments)) {
-	                show_json(0, '数据出错，请重试!');
+	                return show_json(0, '数据出错，请重试!');
 	            }
 	            foreach ($comments as $c) {
 	                $old_c = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order_comment') . ' where uniacid=:uniacid and orderid=:orderid and goodsid=:goodsid limit 1', array(
@@ -455,14 +455,14 @@ if ($_W['isajax']) {
 	                'id' => $orderid,
 	                'uniacid' => $uniacid
 	            ));
-	            show_json(1);
+	            return show_json(1);
 	        }
 	        $goods = pdo_fetchall('select og.id,og.goodsid,og.price,g.title,g.thumb,og.total,g.credit,og.optionid,o.title as optiontitle from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on o.id=og.optionid ' . ' where og.orderid=:orderid and og.uniacid=:uniacid ', array(
 	            ':uniacid' => $uniacid,
 	            ':orderid' => $orderid
 	        ));
 	        $goods = set_medias($goods, 'thumb');
-	        show_json(1, array(
+	        return show_json(1, array(
 	            'order' => $order,
 	            'goods' => $goods
 	        ));
@@ -474,10 +474,10 @@ if ($_W['isajax']) {
 	            ':openid' => $openid
 	        ));
 		if (empty($order)) {
-			show_json(0, '订单未找到!');
+			return show_json(0, '订单未找到!');
 		}
 		if ($order['status'] != 3 && $order['status'] != -1) {
-			show_json(0, '订单无交易，不能删除!');
+			return show_json(0, '订单无交易，不能删除!');
 		}
  if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
             $change_refund               = array();
@@ -495,7 +495,7 @@ if ($_W['isajax']) {
             'id' => $order['id'],
             'uniacid' => $uniacid
         ));
-		show_json(1);
+		return show_json(1);
 	}
 }
 if ($operation == 'refund') {

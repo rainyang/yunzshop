@@ -18,11 +18,13 @@ if ($_W['isajax']) {
 		$time = time();
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
 		$apply_ordergoods_ids = "";
-        foreach ($supplierinfo['sp_goods'] as $key => $value) {
-            if ($key == 0) {
-                $apply_ordergoods_ids .= $value['ogid'];
-            } else {
-                $apply_ordergoods_ids .= ','.$value['ogid'];
+        if (!empty($supplierinfo['sp_goods'])) {
+            foreach ($supplierinfo['sp_goods'] as $key => $value) {
+                if ($key == 0) {
+                    $apply_ordergoods_ids .= $value['ogid'];
+                } else {
+                    $apply_ordergoods_ids .= ','.$value['ogid'];
+                }
             }
         }
 		$apply = array(
@@ -50,10 +52,11 @@ if ($_W['isajax']) {
 		$returnurl = urlencode($this->createPluginMobileUrl('supplier/orderj'));
 		$infourl = $this->createPluginMobileUrl('supplier/orderj', array('returnurl' => $returnurl));
 		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 2 ? '微信' : '线下'), TM_COMMISSION_APPLY);
-		show_json(1, '已提交,请等待审核!');
+		return show_json(1, '已提交,请等待审核!');
 	}
+	$closetocredit = $this->set['closetocredit'];
 	$returnurl = urlencode($this->createPluginMobileUrl('commission/applyg'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-	show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname']), 'supplierinfo' => $supplierinfo));
+	return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname']), 'supplierinfo' => $supplierinfo, 'closetocredit' => $closetocredit, 'shopset' => $shopset));
 }
 include $this->template('applyg');

@@ -50,12 +50,25 @@ if ($_W['isajax']) {
 		}
 	} else if ($operation == 'remove' && $_W['ispost']) {
 		$ids = $_GPC['ids'];
-		if (empty($ids) || !is_array($ids)) {
-			show_json(0, '参数错误');
-		}
-		$sql = "update " . tablename('sz_yi_member_favorite') . ' set deleted=1 where uniacid=:uniacid and openid=:openid and id in (' . implode(',', $ids) . ')';
+        $goods_ids = $_GPC['goods_ids'];
+
+        if(!is_array($ids)&&!empty($ids)){
+            $ids = explode(',',$ids);
+            $condition = 'and id in (' . implode(',', $ids) . ')';
+
+        }
+        if(!is_array($goods_ids)&&!empty($goods_ids)){
+            $goods_ids = explode(',',$goods_ids);
+            $condition = 'and goodsid in (' . implode(',', $goods_ids) . ')';
+        }
+        if (empty($ids) || !is_array($ids)) {
+            if (empty($goods_ids) || !is_array($goods_ids)) {
+                return show_json(0, '参数错误');
+            }
+        }
+		$sql = "update " . tablename('sz_yi_member_favorite') . ' set deleted=1 where uniacid=:uniacid and openid=:openid '.$condition;
 		pdo_query($sql, array(':uniacid' => $uniacid, ':openid' => $openid));
-		show_json(1);
+        return show_json(1);
 	}
 }
 include $this->template('shop/favorite');

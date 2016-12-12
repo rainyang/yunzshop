@@ -55,6 +55,11 @@ class Sz_DYi_Goods
         if (!empty($args['isverify']) && $args['isverify'] == 2) {
             $condition .= " and isverify = '2' ";
         }
+
+        if (!empty($goodsid)) {
+            $condition .= " and id < :goodsid";
+            $params[':goodsid'] = intval($goodsid);
+        }
         if (!empty($sup_uid)) {
             $condition .= " and supplier_uid = :supplier_uid ";
             $params[':supplier_uid'] = intval($sup_uid);

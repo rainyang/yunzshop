@@ -558,7 +558,7 @@ if ($_W['isajax']) {
                 }
             }
 
-        show_json(1,$marketprice);
+        return show_json(1,$marketprice);
     } else if ($operation == 'tofavorite' && $_W['ispost']) {
         $ids = $_GPC['ids'];
         if (empty($ids) || !is_array($ids)) {
