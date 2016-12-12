@@ -23,6 +23,7 @@ if ($_W['isajax']) {
     }
     if ($operation == 'display') {
         $ischannelpick = intval($_GPC['ischannelpick']);
+        $ischannelpay = intval($_GPC['ischannelpay']);
         if (p('channel')) {
             $my_info = p('channel')->getInfo($openid);
         }
@@ -63,6 +64,7 @@ if ($_W['isajax']) {
         }
 
         $verify_goods_ischannelpick = '';
+        $verify_goods_ischannelpay = '';
         if (p('yunbi')) {
             $yunbi_set = p('yunbi')->getSet();
             $yunbi_title = empty($yunbi_set['yunbi_title'])?'云币':$yunbi_set['yunbi_title'];
@@ -107,12 +109,17 @@ if ($_W['isajax']) {
                     $my_stock = p('channel')->getMyOptionStock($openid, $r['goodsid'], $r['optionid']);
                     $r['stock'] = $my_stock;
                 }
+                if ($ischannelpay == 1) {
+                    if (empty($r['isopenchannel'])) {
+                        $verify_goods_ischannelpay .= 1;
+                    }
+                }
             }
             $totalprice += $r['marketprice'] * $r['total'];
             $total += $r['total'];
         }
         $difference = '';
-        $ischannelpay = $_GPC['ischannelpay'];
+        
         if (p('channel')) {
             if (empty($ischannelpick)) {
                 //if (!empty($ischannelpay)) {
@@ -137,6 +144,7 @@ if ($_W['isajax']) {
                 'difference' => $difference,
                 'ischannelpay' => $ischannelpay,
                 'verify_goods_ischannelpick' => $verify_goods_ischannelpick,
+                'verify_goods_ischannelpay' => $verify_goods_ischannelpay,
                 'virtual_currency' => $virtual_currency,
                 'yunbi_title' => $yunbi_title
             ));
