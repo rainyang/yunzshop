@@ -347,7 +347,7 @@ if (!class_exists('ReturnModel')) {
 						$log_content[] = "单笔返现";
 						$log_content[] = "\r\n";
 						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid in (".$mids.") ");
-						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid in (".$mids.") ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money * ".$percentage." / 100, return_money = return_money + money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid in (".$mids.") ");
 					}
 				}
 
@@ -358,12 +358,12 @@ if (!class_exists('ReturnModel')) {
 					$log_content[] = "递减返现";
 					$log_content[] = "\r\n";
 					pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money <= 0.5  and returnrule = '".$set['returnrule']."' ");
-					pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + (money - return_money) * ".$percentage." / 100,last_money = (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$set['returnrule']."'");
+					pdo_query("update  " . tablename('sz_yi_return') . " set last_money = (money - return_money) * ".$percentage." / 100, return_money = return_money + (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$set['returnrule']."'");
 				}else{
 					$log_content[] = "单笔返现";
 					$log_content[] = "\r\n";
 					pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' ");
-					pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' ");
+					pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money * ".$percentage." / 100, return_money = return_money + money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' ");
 				}
 			}
 
@@ -605,7 +605,7 @@ if (!class_exists('ReturnModel')) {
 			            //更新金额
 						$sql .= " UPDATE " . tablename('mc_members') . " SET " . $value['credit'] . " = " . $newcredit . " WHERE uid = '".$uid."';";
 			            //添加日志
-			            $sql .= " INSERT INTO " . tablename('mc_members') . " (`uid`, `uniacid`, `credittype`, `num`, `operator`,  `createtime`, `remark`) VALUES ('".$uid."','".$_W['uniacid']."','".$value['credit']."','".$value['return_money_totle']."','".intval($log[0])."','".TIMESTAMP.",".$log[1]."');";
+			            $sql .= " INSERT INTO " . tablename('mc_credits_record') . " (`uid`, `uniacid`, `credittype`, `num`, `operator`,  `createtime`, `remark`) VALUES ('".$uid."','".$_W['uniacid']."','".$value['credit']."','".$value['return_money_totle']."','".intval($log[0])."','".TIMESTAMP."','".$log[1]."');";
 					} else {
 			            $credit     = pdo_fetchcolumn("SELECT ".$value['credit']." FROM " . tablename('sz_yi_member') . " WHERE  uniacid=:uniacid and openid=:openid limit 1", array(
 			                ':uniacid' => $_W['uniacid'],
@@ -777,9 +777,8 @@ if (!class_exists('ReturnModel')) {
                             }
                         }
                     }
-                    $isexecute = true;
                     if (($set["isreturn"] || $set["isqueue"]) && $isexecute) {
-                        //touch($validation);
+                        touch($validation);
                         $log_content[] = "当前可以返现\r\n";
                         if ($set["returnrule"] == 1) {
                         	if ($set["isappoint"] == 1) {

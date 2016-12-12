@@ -638,7 +638,10 @@ if ($operation == "display") {
         } elseif ($value['cashier'] == 1) {
             $value["dispatchname"] = "收银台支付";
         }
-        $value["dispatchname"] = empty($value["addressid"]) ? "上门自提" : $value["dispatchname"];
+
+        if(empty($value["addressid"]) && $value["isvirtual"] != "1" && empty($value["virtual"])){
+            $value["dispatchname"] = "上门自提";
+        }
 
         if (p('cashier') && $value['cashier'] == 1) {
             $value['name'] = set_medias(array(
@@ -934,7 +937,7 @@ if ($operation == "display") {
 
     } elseif ($indiana_plugin && $_GPC['isindiana']) {
         include p('indiana')->ptemplate("order");
-    }else{          
+    }else{
         include $this->template("web/order/list");
     }
     exit;
@@ -1806,7 +1809,11 @@ function order_list_confirmsend1($order)
     if (p('beneficence')) {
         p('beneficence')->GetVirtualBeneficence($order["id"]);
     }
-
+    // 订单确认收货后自动发送红包
+    if ($order["redprice"] >= 1 && $order["redprice"] <= 200) {
+        m('finance')->sendredpack($order['openid'], $order["redprice"] * 100, $order["id"], $desc = '购买商品赠送红包',
+            $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
+    }
     plog("order.op.fetch", "订单确认取货 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
     message("发货操作成功！", order_list_backurl(), "success");
 }
@@ -1915,7 +1922,7 @@ function order_list_finish($order)
         p('yunbi')->GetVirtualCurrency($order['id']);
     }
     // 订单确认收货后自动发送红包
-    if ($order["redprice"] > 0) {
+    if ($order["redprice"] >= 1 && $order["redprice"] <= 200) {
         m('finance')->sendredpack($order['openid'], $order["redprice"] * 100, $order["id"], $desc = '购买商品赠送红包',
             $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
     }

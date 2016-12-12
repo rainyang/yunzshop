@@ -51,8 +51,11 @@ if ($operation == 'display' && $_W['isajax']) {
         if ($goods_list[$key]['distance'] >= 1000) {
             $goods_list[$key]['distance'] = round($goods_list[$key]['distance']/1000,1);
             $goods_list[$key]['km'] = 1;
+            $distance[] =  $goods_list[$key]['distance']*1000;
+        } else {
+            $distance[] =  $goods_list[$key]['distance'];
         }
-        $distance[] =  $goods_list[$key]['distance'];
+
         $goods_list[$key]['address'] = $row['area'].$row['address'];
         if (empty($row['lng']) || empty($row['lat']) || empty($row['id'])) {
             unset($goods_list[$key]);
@@ -69,8 +72,11 @@ if ($operation == 'display' && $_W['isajax']) {
         if ($store_list[$key]['distance'] >= 1000) {
             $store_list[$key]['distance'] = round($store_list[$key]['distance']/1000,1);
             $store_list[$key]['km'] = 1;
+            $distance_s[] =  $store_list[$key]['distance']*1000;
+        } else {
+            $distance_s[] =  $store_list[$key]['distance'];
         }
-        $distance_s[] =  $store_list[$key]['distance'];
+
         if (empty($row1['lng']) || empty($row1['lat']) || $row1['id'] == $id) {
             unset($store_list[$key]);
         }
@@ -81,5 +87,3 @@ if ($operation == 'display' && $_W['isajax']) {
 }
 
 include $this->template('store_detail');
-
-

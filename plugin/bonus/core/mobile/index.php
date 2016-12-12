@@ -1,5 +1,6 @@
 <?php
 global $_W, $_GPC;
+set_time_limit(0);
 $openid = m('user')->getOpenid();
 $level = $this->model->getLevel($openid);
 $set = $this->getSet();

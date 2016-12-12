@@ -65,10 +65,10 @@
                     <th style='width:10%;'>电话</th>
                     <th style='width:10%;'>账户余额</th>
                     <th style='width:10%;'>分红金额</th>
-                    <th style='width:10%;'>账户积分</th>
                     <th style='width:10%;'>分红积分</th>
                     <th style='width:10%;'>打款方式</th>
                     <th style='width:15%;'>时间</th>
+                    <th style='width:10%;'>操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -81,10 +81,18 @@
                     <td>{$row['mobile']}</td>
                     <td>{$row['credit2']}</td>
                     <td>{$row['money']}</td>
-                    <td>{$row['credit1']}</td>
                     <td>{$row['integral']}</td>
                     <td>{if $row['paymethod']==1}微信钱包{else}账户余额{/if}{if empty($row['sendpay'])}(打款失败){/if}</td>
                     <td><?php echo date("Y-m-d H:i:s", $row['ctime'])?></td>
+                    <td>
+                        {if empty($row['sendpay'])}
+                        <a class="btn btn-success ng-scope" href="<?php echo $this->createPluginWebUrl('bonus/detail', array('op' => 'sendpay', 'id'=> $row['id'], 'sn' => $row['send_bonus_sn']))?>" title="打款到微信钱包">
+                            打款到微信
+                        </a>
+                        {else}
+                        <label class="label label-default text-default label-info text-pinfo">打款成功</label>
+                        {/if}
+                    </td>
                 </tr>
                 {/loop}
             </tbody>
@@ -269,7 +277,7 @@
                     </td>
                     <td>
                         {php echo empty($row['paymethod']) ? "账户余额" : "微信钱包"}
-                        {if $row['sendpay_error']==1 && !empty($row['status'])}(打款失败){/if}
+                        {if $row['sendpay_error']==1}(需手动打款){/if}
                     </td>
                     <td>
                         {if $row['isglobal']==1}
@@ -289,11 +297,11 @@
                         <a class="btn btn-default" href="<?php echo $this->createPluginWebUrl('bonus/detail', array('sn' => $row['send_bonus_sn'], 'isglobal'=> $row['isglobal']))?>" data-original-title="" title="">
                         详情
                         </a>
-                        {if $row['sendpay_error']==1 && !empty($row['paymethod'])}
+                        <!-- {if $row['sendpay_error']==1 && !empty($row['paymethod'])}
                         <a class="btn btn-default" href="<?php echo $this->createPluginWebUrl('bonus/detail', array('sn' => $row['send_bonus_sn'],"op" => "afresh"))?>" data-original-title="" title="">
                         重发
                         </a>
-                        {/if}
+                        {/if} -->
                     </td>
                 </tr>
                 {/loop}

@@ -1,5 +1,6 @@
 <?php
 global $_W, $_GPC;
+set_time_limit(0);
 $agentlevels = $this->model->getLevels();
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 $trade     = m('common')->getSysset('trade');

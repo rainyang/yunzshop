@@ -343,7 +343,7 @@ class Sz_DYi_Order
                 $plugin_fund = p('fund');
                     foreach ($ordergoods as $key =>$value) {
                         if($plugin_fund){
-                            $plugin_fund->check($value['goodsid']);
+                            $plugin_fund->check_goods($value['goodsid']);
                         }
                         //$ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
                         $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
