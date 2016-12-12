@@ -14,7 +14,7 @@ if ($plugin_yunbi) {
 }
 $plugin_fund = p('fund');
 $ordertitle = "我的订单";
-if($plugin_fund){
+if($plugin_fund && $_GPC['plugin'] == "fund"){
 	$fund_set = $plugin_fund->getSet();
 	$ordertitle = $fund_set['texts']['order'];
 }

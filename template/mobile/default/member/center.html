@@ -75,7 +75,7 @@
         {/if}
         {if $member['credit2'] > 0 && empty($set['trade']['transfer'])}
             <a href="#" class="recharge-ybut" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转账</a>
-        {/if} 
+        {/if}
         {if !empty($yunbiset['isbot'])}
         {if $member['virtual_currency'] > 0 && p('yunbi')}
             <a href="#" class="recharge-ybut" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer', 'yunbi' => 1))}'">{if !empty($shopset['yunbi_title'])}{php echo $shopset['yunbi_title']}{else}云币{/if}转账</a>
@@ -194,13 +194,13 @@
     <div class="cart">
         <a href="{php echo $this->createPluginMobileUrl('indiana/order')}">
             <div class="list1">
-                <i class="iconfont icon-duobaojilu"></i>夺宝记录
+                <i class="iconfont icon-baojilu"></i>夺宝记录
                 <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right;line-height: 44px; "></i>
             </div>
         </a>
         <a href="{php echo $this->createPluginMobileUrl('indiana/order',array('op'=>'lucky'))}">
             <div class="list1" style="margin:0px;">
-                <i class="iconfont icon-xingyunjilu" ></i>幸运记录
+                <i class="iconfont icon-luckjilu" ></i>幸运记录
                 <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i>
             </div>
         </a>
@@ -256,33 +256,33 @@
     {/if}
     {if is_weixin_show()}
     <%if shopset.isreturn%>
-    <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+    <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     <%/if%>
     {/if}
         {if $shopset['isbeneficence']}
             <a href="{php echo $this->createPluginMobileUrl('beneficence/beneficence')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-donation" ></i>{$beneficencename}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-           
-        {/if} 
+
+        {/if}
         {if $shopset['isyunbi']}
             <a href="{php echo $this->createPluginMobileUrl('yunbi/yunbi_log',array('type'=>'1'))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-coin" ></i>{$yunbi_title}明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-           
-        {/if} 
+
+        {/if}
     {if $fund_start}
     <a href="{php echo $this->createMobileUrl('order/list', array('plugin' => 'fund'))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i>{$fund_text}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
      <%if shopset.isarticle == 1%>
     <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {if p('helper')}
-    <a href="{php echo $this->createPluginMobileUrl('article/article', array('is_helper' => 1))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i>帮助中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+    <a href="{php echo $this->createPluginMobileUrl('article/article', array('is_helper' => 1))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i>帮助中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     <%/if%>
- 
+
     {if p('merchant') && !empty($iscenter)}
     <a href="{php echo $this->createPluginMobileUrl('merchant/index')}"><div class="list1" style="margin:0px; "><i class="fa fa-globe"></i>招商中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
 
      <%if shopset.isranking == 1%>
-    <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+    <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     <%/if%>
     {if $allset['verify']}
         {if $allset['verify']['centershow'] == 1}

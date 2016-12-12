@@ -3,7 +3,7 @@ body,h1,h2,h3,h4,h5,h6,hr,i,em,b,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldse
 	margin:0;padding:0;border:0;outline:none;list-style:none;font-family: 微软雅黑, Microsoft Yahei;font-weight: normal;
 	font-style:normal;color:#888888; }
 html, body{height: 100%;background: #dddddd!important;width:100%; min-width: 320px;max-width:720px;margin:0 auto}
-body, em, b, ol, a, i, span, nav, strong {display: inline-block;max-width:720px;margin:0 auto;}
+body, em, b, ol, a, i, nav, strong {display: inline-block;max-width:720px;margin:0 auto;}
 a {font-size:1.4rem;text-decoration:none !important;outline: none;}
 a:hover,.w-input,textarea,.sig-button,.dev-table>ul>li>a {
 	-webkit-transition-property:all;
