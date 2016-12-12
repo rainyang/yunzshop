@@ -50,7 +50,7 @@ if ($_W['isajax']) {
         } else {
             pdo_update('sz_yi_member', $memberdata, array(
                 'openid' => $openid,
-                'uniacid' => $_W['uniacid']
+                    'uniacid' => $_W['uniacid']
             ));
             if (!empty($member['uid'])) {
                 $mcdata = $_GPC['mcdata'];
@@ -72,9 +72,9 @@ if ($_W['isajax']) {
                 p('discuz')->updateUserInfo($member['uid'], $dzdata);
             }
         }
-        show_json(1);
+        return show_json(1);
     }
-    show_json(1, array(
+    return show_json(1, array(
         'member' => $member
     ));
 }

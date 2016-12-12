@@ -1,5 +1,4 @@
 <?php
-namespace Api;
 define("IS_TEST", true);
 
 if (!function_exists("dump")) {
