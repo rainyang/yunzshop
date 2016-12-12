@@ -12,8 +12,18 @@ if ($operation == 'display' && $_W['isajax']) {
 	$credit = m('member')->getCredit($openid, 'credit2');
 	$member = m('member')->getMember($openid);
 	$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
-	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl,'withdraw' => '1'));
-	show_json(1, array('credit' => $credit, 'infourl' => $infourl, 'noinfo' => false));
+
+	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
+
+    if ($set['trade']) {
+        $variable = array(
+            'set'=> $set['trade'],
+            'shopset' =>$shopset
+        );
+    } else {
+        $variable = array();
+    }
+    return show_json(1, array('credit' => $credit, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])),$variable);
 } else if ($operation == 'submit' && $_W['ispost']) {
 	$money = floatval($_GPC['money']);
 	$credit = m('member')->getCredit($openid, 'credit2');
@@ -37,9 +47,8 @@ if ($operation == 'display' && $_W['isajax']) {
 	$logid = pdo_insertid();
 
     m('notice')->sendMemberLogMessage($logid);
-    show_json(2);
+    return show_json(2);
 
-    
 	
 }
 include $this->template('member/withdraw');

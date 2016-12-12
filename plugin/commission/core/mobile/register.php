@@ -129,10 +129,10 @@ if ($_W["isajax"]) {
     }
     if ($_W["ispost"]) {
         if ($member["isagent"] == 1 && $member["status"] == 1) {
-            show_json(0, "您已经是" . $set["texts"]["become"] . "，无需再次申请!");
+            return show_json(0, "您已经是" . $set["texts"]["become"] . "，无需再次申请!");
         }
         if ($ret["status"] == 1 || $ret["status"] == 2) {
-            show_json(0, "您消费的还不够哦，无法申请" . $set["texts"]["become"] . "!");
+            return show_json(0, "您消费的还不够哦，无法申请" . $set["texts"]["become"] . "!");
         } else {
             $become_check  = intval($set["become_check"]);
             $ret["status"] = $become_check;
@@ -161,7 +161,7 @@ if ($_W["isajax"]) {
                     load()->model("mc");
                     if (!empty($mc_data)) {
                         mc_update($member["uid"], $mc_data);
-                        show_json(1, $ret);
+                        return show_json(1, $ret);
                     }
                 }
             } else {
@@ -191,12 +191,12 @@ if ($_W["isajax"]) {
                         "realname" => $data["realname"],
                         "mobile" => $data["membermobile"]
                     ));
-                    show_json(1, $ret);
+                   return show_json(1, $ret);
                 }
             }
         }
     }
-    show_json(1, $ret);
+    return show_json(1, $ret);
 }
 $this->setHeader();
 if ($template_flag == 1) {

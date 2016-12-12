@@ -20,6 +20,10 @@ if ($_W['isajax']) {
 			$condition .= ' and status=' . intval($status);
 		}
 		$commissioncount = 0;
+		if (!empty($_GPC['id'])) {
+            $condition .=' AND id<:id';
+            $params[':id'] = intval($_GPC['id']);
+        }
 		$list = pdo_fetchall("select * from " . tablename('sz_yi_commission_apply') . " where 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_commission_apply') . " where 1 {$condition}", $params);
 		foreach ($list as &$row) {

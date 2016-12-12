@@ -14,6 +14,10 @@ if ($_W['isajax']) {
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 20;
 		$condition = " and `openid`=:openid and uniacid=:uniacid";
+		if (!empty($_GPC['id'])) {
+            $condition .=' AND id<:id';
+            $params[':id'] = intval($_GPC['id']);
+        }
 		$params = array(':openid' => $openid, ':uniacid' => $uniacid);
 		$status = intval($_GPC['status']);
 		if($status > 1){

@@ -150,7 +150,7 @@ if ($diyform_plugin) {
             ));
             $gdid = $goods_temp['id'];
         }
-        show_json(1, array(
+        return show_json(1, array(
             'goods_data_id' => $gdid
         ));
     }

@@ -34,6 +34,7 @@ class Sz_DYi_Goods
         $orderby   = !empty($args['by']) ? $args['by'] : '';
         $ids       = !empty($args['ids']) ? trim($args['ids']) : '';
         $id       = !empty($args['id']) ? trim($args['id']) : '0';
+        $goodsid       = !empty($args['goodsid']) ? trim($args['goodsid']) : '0';
         $sup_uid   = !empty($args['supplier_uid']) ? trim($args['supplier_uid']) : '';
         $isopenchannel   = !empty($args['isopenchannel']) ? trim($args['isopenchannel']) : 0;
         $ischannelpick   = !empty($args['ischannelpick']) ? trim($args['ischannelpick']) : 0;

@@ -45,6 +45,8 @@ if ($_W['isajax']) {
             $channeldata = array(
             'realname'      => $_GPC['channeldata']['realname'],
             'mobile'        => $_GPC['channeldata']['mobile'],
+            'address'       => $_GPC['channeldata']['address'],
+            'url'           => $_GPC['channeldata']['url'],
             'openid'        => $openid,
             'uniacid'       => $_W['uniacid'],
             'status'        => 0,

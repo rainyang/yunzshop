@@ -19,6 +19,10 @@ if ($_W['isajax']) {
 		$total = pdo_fetchcolumn($sql, $params);
 		$list = array();
 		if (!empty($total)) {
+            if (!empty($_GPC['favorite_id'])) {
+                $condition .= ' and f.id < :favorite_id';
+                $params['favorite_id'] = $_GPC['favorite_id'];
+            }
 			$sql = 'SELECT f.id,f.goodsid,g.title,g.thumb,g.marketprice,g.productprice FROM ' . tablename('sz_yi_member_favorite') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 			$list = pdo_fetchall($sql, $params);
 			$list = set_medias($list, 'thumb');
