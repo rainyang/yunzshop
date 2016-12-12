@@ -61,7 +61,7 @@ if ($_W['isajax']) {
 	            p('coupon')->returnConsumeCoupon($orderid);
 	        }
 	        show_json(1);
-	    } else if ($operation == 'complete') {
+	} else if ($operation == 'complete') {
 
 	        $orderid = intval($_GPC['orderid']);
 	        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
@@ -125,18 +125,20 @@ if ($_W['isajax']) {
 		if (p('coupon') && !empty($order['couponid'])) {
 			p('coupon')->backConsumeCoupon($orderid);
 		}
+		if ($order['order_type'] != '4') {
 
-		m('notice')->sendOrderMessage($orderid);
-		if (p('commission')) {
-			p('commission')->checkOrderFinish($orderid);
-		}
+			m('notice')->sendOrderMessage($orderid);
+			if (p('commission')) {
+				p('commission')->checkOrderFinish($orderid);
+			}
 
-		if (p('return')) {
-			p('return')->cumulative_order_amount($orderid);
-		}
+			if (p('return')) {
+				p('return')->cumulative_order_amount($orderid);
+			}
 
-		if (p('yunbi')) {
-			p('yunbi')->GetVirtualCurrency($orderid);
+			if (p('yunbi')) {
+				p('yunbi')->GetVirtualCurrency($orderid);
+			}
 		}
 		if (p('beneficence')) {
 			p('beneficence')->GetVirtualBeneficence($orderid);

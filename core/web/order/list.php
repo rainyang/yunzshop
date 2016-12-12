@@ -817,6 +817,10 @@ if ($operation == "display") {
         }
         $value["goods"] = set_medias($order_goods, "thumb");
         $value["goods_str"] = $goods;
+        if ($indiana_plugin && $_GPC['isindiana']) {
+            $value['indiana'] = p('indiana')->getorder($value['period_num']);
+        }
+
     }
     unset($value);
     $condition = " uniacid=:uniacid and deleted=0";

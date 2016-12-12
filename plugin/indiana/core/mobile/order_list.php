@@ -25,7 +25,7 @@ if ( $_W['isajax'] && $operation == 'display') {
             ':uniacid' => $_W['uniacid'],
             ':openid' => $openid
         ));
-    foreach ($list as &$row) {
+    foreach ($list as $k=>&$row) {
 
         switch ($row['status']) {
             case '-1':
@@ -55,19 +55,20 @@ if ( $_W['isajax'] && $operation == 'display') {
                 break;
         }
         $row['statusstr'] = $status;
-        $sql = 'SELECT og.goodsid,og.total,g.type,ig.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og 
-        left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id 
-        left join ' . tablename('sz_yi_indiana_goods') . ' ig on og.goodsid = ig.good_id 
-        where og.orderid = '.$row['id'].'  order by og.id asc';
-        $row['goods'] = set_medias(pdo_fetchall($sql), 'thumb');
+        
+        if (!empty($row['id'])) {
+            $sql = 'SELECT og.goodsid,og.total,g.type,ig.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og 
+            left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id 
+            left join ' . tablename('sz_yi_indiana_goods') . ' ig on og.goodsid = ig.good_id 
+            where og.orderid = '.$row['id'].'  order by og.id asc';
+            $row['goods'] = set_medias(pdo_fetchall($sql), 'thumb');
+        }
     }
-
     unset($row);
     show_json(1, array(
         //'total' => $total,
         'list' => $list,
         'pagesize' => $psize,
-       
     ));
 
 }
