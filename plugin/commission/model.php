@@ -1556,17 +1556,17 @@ if (!class_exists('CommissionModel')) {
 				if (empty($agents)) {
 					return;
 				}
-				foreach ($agents as $m33) {
-					$m34 = $this->getInfo($m33['id'], array('ordercount3', 'ordermoney3', 'order13money', 'order13'));
-					if (!empty($m34['agentnotupgrade'])) {
+				foreach ($agents as $agent) {
+					$agent_info = $this->getInfo($agent['id'], array('ordercount3', 'ordermoney3', 'order13money', 'order13'));
+					if (!empty($agent_info['agentnotupgrade'])) {
 						continue;
 					}
-					$oldlevel = $this->getLevel($m33['openid']);
+					$oldlevel = $this->getLevel($agent['openid']);
 					if (empty($oldlevel['id'])) {
 						$oldlevel = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 					}
 					if ($leveltype == 0) {
-						$ordermoney = $m34['ordermoney3'];
+						$ordermoney = $agent_info['ordermoney3'];
 						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid and {$ordermoney} >= ordermoney and ordermoney>0  order by ordermoney desc limit 1", array(':uniacid' => $_W['uniacid']));
 						if (empty($newlevel)) {
 							continue;
@@ -1580,7 +1580,7 @@ if (!class_exists('CommissionModel')) {
 							}
 						}
 					} else if ($leveltype == 1) {
-						$ordermoney = $m34['order13money'];
+						$ordermoney = $agent_info['order13money'];
 						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid and {$ordermoney} >= ordermoney and ordermoney>0  order by ordermoney desc limit 1", array(':uniacid' => $_W['uniacid']));
 						if (empty($newlevel)) {
 							continue;
@@ -1594,7 +1594,7 @@ if (!class_exists('CommissionModel')) {
 							}
 						}
 					} else if ($leveltype == 2) {
-						$ordercount = $m34['ordercount3'];
+						$ordercount = $agent_info['ordercount3'];
 						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$ordercount} >= ordercount and ordercount>0  order by ordercount desc limit 1", array(':uniacid' => $_W['uniacid']));
 						if (empty($newlevel)) {
 							continue;
@@ -1608,7 +1608,7 @@ if (!class_exists('CommissionModel')) {
 							}
 						}
 					} else if ($leveltype == 3) {
-						$ordercount = $m34['order13'];
+						$ordercount = $agent_info['order13'];
 						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$ordercount} >= ordercount and ordercount>0  order by ordercount desc limit 1", array(':uniacid' => $_W['uniacid']));
 						if (empty($newlevel)) {
 							continue;
@@ -1622,8 +1622,8 @@ if (!class_exists('CommissionModel')) {
 							}
 						}
 					}
-					pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $m33['id']));
-					$this->sendMessage($m33['openid'], array('nickname' => $m33['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
+					pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $agent['id']));
+					$this->sendMessage($agent['openid'], array('nickname' => $agent['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
 				}
 			}
 			$pluginbonus = p("bonus");
@@ -1671,7 +1671,7 @@ if (!class_exists('CommissionModel')) {
 			if ($leveltype < 6 || $leveltype > 9) {
 				return;
 			}
-			$m34 = $this->getInfo($member['id'], array());
+			$agent_info = $this->getInfo($member['id'], array());
 			if ($leveltype == 6 || $leveltype == 8) {
 				$agents = array($member);
 				if (!empty($member['agentid'])) {
@@ -1689,30 +1689,30 @@ if (!class_exists('CommissionModel')) {
 				if (empty($agents)) {
 					return;
 				}
-				foreach ($agents as $m33) {
-					$m34 = $this->getInfo($m33['id'], array());
-					if (!empty($m34['agentnotupgrade'])) {
+				foreach ($agents as $agent) {
+					$agent_info = $this->getInfo($agent['id'], array());
+					if (!empty($agent_info['agentnotupgrade'])) {
 						continue;
 					}
-					$oldlevel = $this->getLevel($m33['openid']);
+					$oldlevel = $this->getLevel($agent['openid']);
 					if (empty($oldlevel['id'])) {
 						$oldlevel = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 					}
 					if ($leveltype == 6) {
-						$m35 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid=:agentid and uniacid=:uniacid ', array(':agentid' => $member['id'], ':uniacid' => $_W['uniacid']), 'id');
-						$m36 += count($m35);
-						if (!empty($m35)) {
-							$m37 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($m35)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
-							$m36 += count($m37);
-							if (!empty($m37)) {
-								$m38 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($m37)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
-								$m36 += count($m38);
+						$below1_ids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid=:agentid and uniacid=:uniacid ', array(':agentid' => $agent['id'], ':uniacid' => $_W['uniacid']), 'id');
+						$below_count = count($below1_ids);
+						if (!empty($below1_ids)) {
+							$below2_ids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($below1_ids)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
+							$below_count += count($below2_ids);
+							if (!empty($below2_ids)) {
+								$below3_ids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($below2_ids)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
+								$below_count += count($below3_ids);
 							}
 						}
-						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$m36} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
+						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$below_count} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
 					} else if ($leveltype == 8) {
-						$m36 = $m34['level1'] + $m34['level2'] + $m34['level3'];
-						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$m36} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
+						$below_count = $agent_info['level1'] + $agent_info['level2'] + $agent_info['level3'];
+						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$below_count} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
 					}
 					if (empty($newlevel)) {
 						continue;
@@ -1725,8 +1725,8 @@ if (!class_exists('CommissionModel')) {
 							continue;
 						}
 					}
-					pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $m33['id']));
-					$this->sendMessage($m33['openid'], array('nickname' => $m33['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
+					pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $agent['id']));
+					$this->sendMessage($agent['openid'], array('nickname' => $agent['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
 				}
 			} else {
 				if (!empty($member['agentnotupgrade'])) {
@@ -1737,11 +1737,11 @@ if (!class_exists('CommissionModel')) {
 					$oldlevel = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 				}
 				if ($leveltype == 7) {
-					$m36 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where agentid=:agentid and uniacid=:uniacid ', array(':agentid' => $member['id'], ':uniacid' => $_W['uniacid']));
-					$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$m36} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
+					$below_count = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where agentid=:agentid and uniacid=:uniacid ', array(':agentid' => $member['id'], ':uniacid' => $_W['uniacid']));
+					$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$below_count} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
 				} else if ($leveltype == 9) {
-					$m36 = $m34['level1'];
-					$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$m36} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
+					$below_count = $agent_info['level1'];
+					$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$below_count} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
 				}
 				if (empty($newlevel)) {
 					return;
