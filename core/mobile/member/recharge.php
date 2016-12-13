@@ -192,8 +192,17 @@ if ($operation == 'display' && $_W['isajax']) {
         ));
         if (is_array($setting['payment'])) {
             $options           = $setting['payment']['wechat'];
-            $options['appid']  = $_W['account']['key'];
-            $options['secret'] = $_W['account']['secret'];
+            if (is_app_api()) {
+                $sysset_data = m("cache")->get("sysset");
+                $sysset_data = unserialize($setdata['sets']);
+                $options['mchid'] = $sysset_data['app']['base']['wx_native']['mchid'];
+                $options['appid'] = $sysset_data['app']['base']['wx_native']['appid'];
+                $options['secret'] = $sysset_data['app']['base']['wx_native']['secret'];
+                $params['trade_type'] = 'APP';
+            } else {
+                $options['appid'] = $_W['account']['key'];
+                $options['secret'] = $_W['account']['secret'];
+            }
             $wechat            = m('common')->wechat_build($params, $options, 1);
             $wechat['success'] = false;
             if (!is_error($wechat)) {
