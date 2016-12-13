@@ -308,7 +308,7 @@ if (!class_exists('ReturnModel')) {
 					$log_content[] = "分销商等返现级比例";
 					$log_content[] = "\r\n";
 				}
-
+				$level['level0'] = $set['percentage'];
 				foreach ($level as $key => $value) {
 					$value = !empty($value) ? $value : $set['percentage'];
 					$levelid = intval(substr($key, 5)); 
@@ -777,6 +777,7 @@ if (!class_exists('ReturnModel')) {
                             }
                         }
                     }
+                    $isexecute = true;
                     if (($set["isreturn"] || $set["isqueue"]) && $isexecute) {
                         touch($validation);
                         $log_content[] = "当前可以返现\r\n";
