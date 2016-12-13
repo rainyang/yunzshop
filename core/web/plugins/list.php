@@ -67,6 +67,8 @@ $plugins_icon = array(
 	"beneficence" => "donation",
     "yunprint" => "print",
     "discuz" => "discuz",
+	"fund"	=> "fund",
+	"indiana" => "indiana",
 	);
 $plugins_desc = array(
 	"supplier" => "厂家入驻，平台统一销售", 
@@ -99,7 +101,8 @@ $plugins_desc = array(
 	"merchant" => "招募供应商获得销售分红",
 	"channel" => "虚拟库存，人、货、钱一体化管理",
     "yunprint" => "云打印",
-    "fund"	=> "项目在指定时间众筹金额"
+    "fund"	=> "项目在指定时间众筹金额",
+	"indiana" => "投入一元就有机会获得一件商品",
 );
 
 if(!pdo_fieldexists('sz_yi_plugin', 'desc')) {
