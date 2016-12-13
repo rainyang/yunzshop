@@ -226,6 +226,11 @@ $default_columns = array(
         "field" => "profit",
         "width" => 12
     ) ,
+    array(
+        "title" => "成本价",
+        "field" => "goods_cost_price",
+        "width" => 12
+    ) ,
 );
 if ($operation == "save") {
     $columns = $_GPC["columns"];
@@ -617,7 +622,7 @@ if ($_GPC["export"] == 1) {
                 }
             }
         }
-        $order_goods = pdo_fetchall("select g.id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice,og.changeprice,og.oldprice,og.commission1,og.commission2,og.commission3,og.commissions,og.diyformdata,og.diyformfields from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ", array(
+        $order_goods = pdo_fetchall("select g.id,g.title,g.costprice,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn,og.optionid, og.total,og.price,og.optionname as optiontitle, og.realprice,og.changeprice,og.oldprice,og.commission1,og.commission2,og.commission3,og.commissions,og.diyformdata,og.diyformfields from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ", array(
             ":uniacid" => $_W["uniacid"],
             ":orderid" => $value["id"]
         ));
@@ -761,6 +766,13 @@ if ($_GPC["export"] == 1) {
                 $exportlist["row{$goodsindex}"]["goods_rprice1"] = $g["price"];
                 $exportlist["row{$goodsindex}"]["goods_rprice2"] = $g["realprice"];
                 $exportlist["row{$goodsindex}"]["goods_diyformdata"] = $g["goods_diyformdata"];
+                $exportlist["row{$goodsindex}"]["goods_cost_price"] = $g['costprice'];
+                if (!empty($g['optionid'])) {
+                    $goods_option = m('goods')->getOption($g['id'],$g['optionid']);
+                    if ($goods_option['costprice'] > 0) {
+                        $exportlist["row{$goodsindex}"]["goods_cost_price"] = $goods_option['costprice'];
+                    }
+                }
                 $goodsindex++;
             }
             $nextindex = 0;
@@ -801,4 +813,3 @@ $totals["status4"] = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename("sz_yi_
 $totals["status5"] = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id  order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition and o.refundtime<>0", $paras);
 load()->func("tpl");
 include $this->template("web/order/export"); ?>
-
