@@ -446,6 +446,7 @@ if ($operation == "change") {
                         $hh .= '</td>';
                         //$hh .= '<td class="success"><input name="option_marketprice_' . $ids . '[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids . '" value="' . $val['marketprice'] . '"/></td>';
                         $hh .= '<td class="success"><input name="option_marketprice_' . $ids .'[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids .'" value="' . $val['marketprice'] . '"/>';
+                    if ($isladder){
                         $hh .= '<div style="padding-bottom:10px;text-align:center;font-size:14px;">阶梯价格&nbsp;<a class="btn-success ng-scope addopladder" data-ids="' . $ids .'" href="javascript:;"><i class="fa fa-plus" style="width: 20px;height: auto;"></i></a></div>';
                         $hh .= '<div id="ladderop_' . $ids .'">';
 
@@ -462,6 +463,7 @@ if ($operation == "change") {
 
 
                         $hh .= '</div>'; 
+                    }
                         $hh .= '</td>';
                         if($_GPC['plugin'] != "fund"){
                         $hh .= '<td class="warning"><input name="option_productprice_' . $ids . '[]" type="text" class="form-control option_productprice option_productprice_' . $ids . '" " value="' . $val['productprice'] . '"/></td>';
