@@ -19,7 +19,6 @@ ul,li {padding:0px; margin:0px;}
 .good_info1 .info2  {height:auto; width:100%; /*border-bottom:1px dashed #f3f3f3;*/ padding:11px 0px 5px;color:#666;}
 .good_info1 .info3 {color: #999;font-size: 12px;float: right;}
 .good_info1 .price-area {font-size:12px;color: #fff;background: #f77183;border-radius: 2px;padding:0 5px;width:auto;float: left;text-align: center;  }
-
 .info1-price {width:100%;  font-size:18px; color:#f15353; padding-bottom: 10px ; overflow: hidden;}
 .info1-price span {font-size:12px; color:#999;}
 .good_info1 .price {width:100%;  font-size:18px; color:#f15353; padding-bottom: 10px ; overflow: hidden}
@@ -646,7 +645,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <div class="info2">第<%indiana.period%>期 <%indiana.title%> </div>
 
             <div class="price-area">
-                <span><%indiana.init_money%>元专区</span>
+                <span><%indiana.initmoney%>元专区</span>
             </div>
 
             <div class="info3">商品价格：￥<%goods.marketprice%> </div>
@@ -1089,16 +1088,14 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 </script>
 <script type="text/javascript">
     $(document).ready(function(){
-    function FreshTime(){
-        var str ='{$indiana['jiexiao']}';
-        str = str.replace(/-/g,"/");
-        var starttime= new Date(str);//开始时间
-        var nowtime = new Date();//当前时间
-        var now_time = parseInt(nowtime.getTime());
-        var start_time = parseInt(starttime.getTime());
-        var jiexiao_time = start_time;
-        var lefttime = (jiexiao_time-now_time)/1000;
-       if (lefttime > 0) {
+
+    var jiexiao_time = '{$indiana['jiexiao']}';
+    var now_time = '{$indiana['now_time']}';
+    jiexiao_time = parseInt(jiexiao_time) * parseInt(1000);
+    now_time = parseInt(now_time) * parseInt(1000);
+    function FreshTimes(){
+        var lefttime = (parseInt(jiexiao_time)-parseInt(now_time))/1000;
+        if (lefttime > 0) {
             mm=parseInt((lefttime/60)%60);
             if(10>mm>0){
                 mm="0"+mm;
@@ -1112,10 +1109,11 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             //location.reload([false])
             return false;
         }
+        now_time = parseInt(now_time) + parseInt(10);
     }
-    FreshTime();
+    FreshTimes();
     var sh;
-    sh=setInterval(FreshTime,10);
+    sh=setInterval(FreshTimes,10);
 });
 </script>
 

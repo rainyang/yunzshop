@@ -19,6 +19,13 @@ if($_W['ispost']) {
 	$app = array_elements(array('switch', 'accept', 'useing', 'android_url', 'ios_url'), $_GPC['app']);
 
 	$set['app']['base'] = $app;
+    //测试用
+    $wx_native = array(
+        'wx_appid' => '1338526101',
+        'wx_mcid' => 'wxeeba418aa0deeb15',
+        'wx_secret' => '351d89bf124e08557bebf5b284b33229'
+    );
+    $set['app']['base']['wx_native'] = $wx_native;
 
 	$leancloud = array_elements(array('switch', 'id', 'key', 'master', 'notify'), $_GPC['leancloud']);
 	$set['app']['base']['leancloud'] = $leancloud;

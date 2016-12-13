@@ -55,7 +55,7 @@ $parent_category = pdo_fetch('select id,parentid,name,level from ' . tablename('
     ':uniacid' => $_W['uniacid']
 ));
 $args = array(
-    'pagesize' => 28,
+    'pagesize' => $_GPC['pagesize'] ?: 28,
     'page' => $_GPC['page'],
     'isnew' => $_GPC['isnew'],
     'ishot' => $_GPC['ishot'],
@@ -70,7 +70,8 @@ $args = array(
     'ccate1' => intval($_GPC['ccate1']),
     'tcate1' => intval($_GPC['tcate1']),
     'order' => $_GPC['order'],
-    'by' => $_GPC['by']
+    'by' => $_GPC['by'],
+    'goodsid' => $_GPC['goodsid']
 );
 if ($args['pcate']) {
     $pcatename = pdo_fetch(" select id,name from ".tablename('sz_yi_category')." where id =".$args['pcate']." and uniacid=".$uniacid);
@@ -139,6 +140,11 @@ $keywords = !empty($args['keywords']) ? $args['keywords'] : '';
 if (!empty($keywords)) {
     $condition .= ' AND `title` LIKE :title';
     $params[':title'] = '%' . trim($keywords) . '%';
+}
+$goodsid = !empty($args['$goodsid']) ? $args['$goodsid'] : 0;
+if (!empty($goodsid)) {
+    $condition .= " and id < :goodsid";
+    $params[':goodsid'] = intval($goodsid);
 }
 $tcate = intval($args['tcate']);
 if (!empty($tcate)) {
@@ -288,12 +294,14 @@ if (intval($_GPC['page']) <= 1) {
     }
     unset($c);
 }
+
 if ($_W['isajax']) {
-    show_json(1, array(
+    return show_json(1, array(
         'goods' => $goods,
         'pagesize' => $args['pagesize'],
         'category' => $category,
-        'current_category' => $current_category
+        'current_category' => $current_category,
+        'page_total' => ceil($total / $args['pagesize']) ?: 1
     ));
 }
 include $this->template('shop/list');

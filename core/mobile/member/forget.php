@@ -44,7 +44,7 @@ if ($_W['isajax']) {
         $mid = ($_GPC['mid']) ? "&mid=".$_GPC['mid'] : "";
         $url = "/app/index.php?i={$_W['uniacid']}&c=entry&p=login&do=member&m=sz_yi".$mid;
 
-        show_json(1, array(
+        return show_json(1, array(
             'preurl' => $url
         ));
     }

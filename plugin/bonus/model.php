@@ -100,7 +100,7 @@ if (!class_exists('BonusModel')) {
 			$set = $this->getSet();
 			$levels = $this->getLevels();
 			$time = time();
-			$order = pdo_fetch('select openid, address from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
+			$order = pdo_fetch('select openid, address, period_num from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
 			$openid = $order['openid'];
 			$address = unserialize($order['address']);
 			
@@ -128,7 +128,7 @@ if (!class_exists('BonusModel')) {
 	                    $cinfo['marketprice'] = $laddermoney > 0 ? $laddermoney : $cinfo['marketprice'];
 	                }
 	            }
-				$price_all = $this->calculate_method($cinfo);
+				$price_all = $this->calculate_method($cinfo, $order['period_num']);
 				if (empty($cinfo['nobonus']) && $price_all > 0) {
 					if(empty($set['selfbuy'])){
 						$masid = $member['agentid'];
@@ -336,13 +336,15 @@ if (!class_exists('BonusModel')) {
 		}
 
 		//Author:ym Date:2016-05-06 Content:分成方式计算		
-		public function calculate_method($order_goods){
+		public function calculate_method($order_goods, $period_num = ''){
 			global $_W;
 			$set = $this->getSet();
 			$realprice = $order_goods['realprice'];
-			if(empty($set['culate_method'])){
+			if($period_num){
+				return $order_goods['price'];
+			} elseif (empty($set['culate_method']) ){
 				return $order_goods['bonusmoney'] > 0 && !empty($order_goods['bonusmoney']) ? $order_goods['bonusmoney'] * $order_goods['total'] : $order_goods['price'];
-			}else{
+			} else {
 				
 				if($order_goods['optionid'] != 0){
 					$option = pdo_fetch('select productprice,marketprice,costprice,option_ladders from ' . tablename('sz_yi_goods_option') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $order_goods['optionid'], ':uniacid' => $_W['uniacid']));

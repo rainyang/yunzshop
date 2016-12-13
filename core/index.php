@@ -1,4 +1,5 @@
 <?php
+namespace api;
 /**
  * 网站入口页面
  *
@@ -8,8 +9,7 @@
  * @author    name <xxx@yunzshop.com>
  * @version   v1.0
  */
-namespace api;
-use Think;
+
 define('IN_SYS', true);
 define("__CORE_PATH__", __DIR__);
 define("__VENDOR_PATH__", __DIR__."/../vendor");
@@ -48,7 +48,7 @@ class AutoLoader
         $name = array_pop($array);
         return $name;
     }
-    private function _mapNamespaceToDir($namespace)
+    private static function _mapNamespaceToDir($namespace)
     {
         $dir = '';
         switch ($namespace) {
@@ -119,8 +119,6 @@ final class Run
     public function __construct()
     {
         $this->dispatch = new Dispatcher($_GET['api']);
-        //todo 感觉应该使用静态方法
-        new AutoLoader();
         $this->run();
     }
 
@@ -154,14 +152,17 @@ final class Run
     }
 }
 require_once __CORE_PATH__ . '/inc/framework/framework.php';
+new AutoLoader();
 /*$info = D('User')->find();
 echo D('User')->_sql();
 dump($info);exit;*/
-/*define('YII_DEBUG',true);
 
-require_once __VENDOR_PATH__."/autoload.php";
-require(__VENDOR_PATH__ . '/yiisoft/yii2/Yii.php');
-$config = require(__CORE_PATH__ . '/config/yii.php');
-new \yii\web\Application($config);*/
+define('YII_DEBUG',true);
+if(is_test()||is_app_api()){
+    require_once __VENDOR_PATH__."/autoload.php";
+    require(__VENDOR_PATH__ . '/yiisoft/yii2/Yii.php');
+    $config = require(__CORE_PATH__ . '/config/yii.php');
+    new \yii\web\Application($config);
+}
 new Run();
 

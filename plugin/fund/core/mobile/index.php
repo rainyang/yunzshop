@@ -3,7 +3,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-
+$this->model->autogoods();
 $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 $operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid     = m('user')->getOpenid();
@@ -134,19 +134,17 @@ if (!empty($maxprice) || !empty($minprice)) {
     $goods    = m('goods')->getList($args);
 }
 foreach ($goods as $key => &$value) {
-    $this->model->check_goods($value['id']);
     $get_fund_data = pdo_fetch("SELECT * FROM " . tablename('sz_yi_fund_goods') . " WHERE goodsid = :id", array(
         ':id' => $value['id']
     ));
     $value['allprice'] = number_format($get_fund_data['allprice'], 2);
     $value['desc'] = $get_fund_data['desc'];
     $yetprice = pdo_fetchcolumn("select sum(og.price) as yetprice from ". tablename('sz_yi_order_goods') ." og left join " . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status > 0 and og.goodsid=".$value['id']);
-    $yetprice += $value['marketprice']*$value['sales'];
+    //$yetprice += $value['marketprice']*$value['sales'];
     $value['yetprice'] = number_format($yetprice, 2);
-    $people = pdo_fetchcolumn("select count(og.id) from ". tablename('sz_yi_order_goods') ." og left join " . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status > 0 and og.goodsid=".$value['id']);
-    $value['people'] = $people + $value['sales'];
+    $value['people'] = pdo_fetchcolumn("select count(o.id) from ". tablename('sz_yi_order_goods') ." og left join " . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status > 0 and og.goodsid=".$value['id']);
     $value['percentage'] = !empty($yetprice) && !empty($get_fund_data['allprice']) ? intval($yetprice/$get_fund_data['allprice']*100) : 0;
-    $value['sday'] = $value['timeend'] > time() ? ceil(($value['timeend'] - time())/86400) : 0;
+    $value['sday'] = $value['timeend'] > time() ? $this->model->check_time($value['timeend']) : "0秒";
 }
 unset($value);
 

@@ -14,6 +14,10 @@ if ($_W['isajax']) {
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 20;
 		$condition = " and `openid`=:openid and uniacid=:uniacid";
+		if (!empty($_GPC['id'])) {
+            $condition .=' AND id<:id';
+            $params[':id'] = intval($_GPC['id']);
+        }
 		$params = array(':openid' => $openid, ':uniacid' => $uniacid);
 		$status = intval($_GPC['status']);
 		if($status > 1){
@@ -27,7 +31,7 @@ if ($_W['isajax']) {
 			$row['dealtime'] = date('Y-m-d H:i', $row['ctime']);
 		}
 		unset($row);
-		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize, 'commissioncount' => number_format($commissioncount, 2)));
+        return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize, 'commissioncount' => number_format($commissioncount, 2), 'set' => $this->set, 'level' => $agentLevel));
 	} else if ($operation == 'detail') {
 		$id = intval($_GPC['id']);
 		$apply = pdo_fetch('select * from ' . tablename('sz_yi_bonus_log') . ' where id=:id and `openid`=:openid and uniacid=:uniacid limit 1', array(':id' => $id, ':openid' => $openid, ':uniacid' => $uniacid));
@@ -147,7 +151,7 @@ if ($_W['isajax']) {
 			$row['orderpay'] = $orderpay;
 		}
 		unset($row);
-		show_json(1, array('list' => $list, 'pagesize' => $psize, 'totalcommission' => $totalcommission));
+        return show_json(1, array('list' => $list, 'pagesize' => $psize, 'totalcommission' => $totalcommission, 'set' => $this->set));
 	}
 }
 if ($operation == 'display') {

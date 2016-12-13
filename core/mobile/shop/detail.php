@@ -18,7 +18,7 @@ $commentcount = pdo_fetchcolumn($sql, $params);
 $goods = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id limit 1", array(
     ':id' => $goodsid
 ));
-// echo "<pre>";print_r($goods);exit;
+
 if ($goods['pcate']) {
     $pcate = pdo_fetchcolumn(" select name from " . tablename('sz_yi_category') . " where id =" . $goods['pcate'] . " and uniacid=" . $uniacid);
 }
@@ -150,7 +150,7 @@ if ($diyform_plugin) {
             ));
             $gdid = $goods_temp['id'];
         }
-        show_json(1, array(
+        return show_json(1, array(
             'goods_data_id' => $gdid
         ));
     }
@@ -192,7 +192,8 @@ if ($pindiana && $_GPC['indiana']) {
         where 1 {$condition} " , $params),'thumb');
         if ($indiana) {
             $indiana['shengyu'] = $indiana['shengyu_codes']/$indiana['zong_codes']*100;
-            $indiana['jiexiao'] =  $indiana['jiexiao_time']?date("Y-m-d H:i:s",$indiana['jiexiao_time']):'';
+            $indiana['jiexiao'] =  $indiana['jiexiao_time'];//$indiana['jiexiao_time']?date("Y-m-d H:i:s",$indiana['jiexiao_time']):'';
+            $indiana['now_time'] = time();
         }
         //下一期
         $next = $indiana['period'];
@@ -282,7 +283,7 @@ if ($_W['isajax']) {
         $ischannelpick = intval($_GPC['ischannelpick']);
     }
     if (empty($goods)) {
-        show_json(0);
+        return show_json(0);
     }
     $goods = set_medias($goods, 'thumb');
     if (p('yunbi')) {
@@ -708,7 +709,7 @@ if ($_W['isajax']) {
         'btnurl2' => !empty($goods['detail_btnurl2']) ? $goods['detail_btnurl2'] : $shop['url']
     );
 
-    show_json(1, $ret);
+    return show_json(1, $ret);
 
 }
 
@@ -741,6 +742,9 @@ if ($com) {
             }
         }
     }
+}
+if ($pindiana && $_GPC['indiana']) {
+    $_W['shopshare']['link'] .= "&periodnum=".$periodnum."&indiana=1";
 }
 $this->setHeader();
 if (p('hotel')) { //判断是否开启酒店插件

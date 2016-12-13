@@ -35,13 +35,13 @@
                 </div>
             </div>
 
-            <div class="form-group" >
+<!--             <div class="form-group" >
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">最大购买数</label>
                 <div class="col-sm-8 col-xs-12">
                     <input type="text" name="data[max_num]" class="form-control" value="{$good['max_num']}"  />
                     <span class='help-block'>0为任意购买数量，默认0</span>
                 </div>
-            </div>
+            </div> -->
 
             <div class="form-group" >
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">夺宝价格</label>
@@ -102,6 +102,11 @@
         if ($("#init_money").isEmpty()) {
             $('#myTab a[href="#tab_basic"]').tab('show');
             Tip.focus("#init_money", "请输入几元专区!");
+            return false;
+        }
+        if ($("#init_money").val() <=0 ) {
+            $('#myTab a[href="#tab_basic"]').tab('show');
+            Tip.focus("#init_money", "专区金额输入不正确!");
             return false;
         }
         if ($("#title").isEmpty()) {

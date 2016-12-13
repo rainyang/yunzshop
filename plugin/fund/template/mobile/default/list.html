@@ -23,17 +23,17 @@
         <div class="card_top">{$g['title']}</div>
         <div class="card_con">
             <span class="status_com">众筹中</span>
-            <a href="javascript:void(0)"><img src="{$g['thumb']}"></a>
+            <a href="javascript:void(0)" style="width:100%"><img src="{$g['thumb']}"></a>
         </div>
         <div class="card_foot">
             <div class="jine">筹集金额<em>￥</em><span> {$g['yetprice']} </span>元/<em>￥</em><span> {$g['allprice']} </span>元</div>
             <ul>
                 <li>支持人数<br><span>{$g['people']}</span></li>
                 <li>项目进度<br><span>{$g['percentage']}%</span></li>
-                <li>剩余天数<br><span>{$g['sday']}</span>天</li>
+                <li>剩余时间<br><span>{$g['sday']['n']}</span>{$g['sday']['text']}</li>
             </ul>
             <div class="progress_container">
-               <div class="progress_bar" progress="101" style="width: {$g['percentage']}%;"></div>
+               <div class="progress_bar" progress="101" style="width: {php echo $g['percentage'] > 100 ? 100 : $g['percentage'];}%;"></div>
             </div>
             <div class="exp_text">
                 <a href="javascript">{$g['desc']}</a>

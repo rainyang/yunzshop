@@ -10,6 +10,7 @@ require_once IA_ROOT . '/addons/sz_yi/version.php';
 require_once IA_ROOT . '/addons/sz_yi/defines.php';
 require_once SZ_YI_INC . 'functions.php';
 require_once SZ_YI_INC . 'core.php';
+require_once SZ_YI_INC . '360safe.php';
 require_once SZ_YI_INC . 'plugin/plugin.php';
 require_once SZ_YI_INC . 'plugin/plugin_model.php';
 

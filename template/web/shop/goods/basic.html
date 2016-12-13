@@ -742,6 +742,7 @@ $(document).on('click','.deleteopladder',function(){
 
     </div>
 </div>
+{if $_GPC['plugin'] != "fund"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">已出售数</label>
     <div class="col-sm-6 col-xs-12">
@@ -756,6 +757,7 @@ $(document).on('click','.deleteopladder',function(){
         {/if}
     </div>
 </div>
+{/if}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送{php echo SZ_YI_INTEGRAL}</label>
     <div class="col-sm-6 col-xs-12">
@@ -859,6 +861,7 @@ $(document).on('click','.deleteopladder',function(){
 </div>
 {/if}
 {if $perm_role == 0}
+  {if !$item['isrefund']}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$lang['isputaway']}</label>
     <div class="col-sm-9 col-xs-12">
@@ -874,5 +877,6 @@ $(document).on('click','.deleteopladder',function(){
 
     </div>
 </div>
+  {/if}
 {else}
 {/if}

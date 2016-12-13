@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
 #     FileName: category.php
-#         Desc: ÉÌÆ··ÖÀà
+#         Desc: ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½
 #       Author: Yunzhong - http://www.yunzshop.com
 #        Email: 913768135@qq.com
 #     HomePage: http://www.yunzshop.com
