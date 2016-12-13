@@ -76,11 +76,12 @@ if($_W['isajax']){
             }
         }
     }
-
-    if (empty($page['isstore']) && empty($_GPC['storeid'])) {
-        $args['isverify'] = 1;
-    } elseif (!empty($page['isstore']) || !empty($_GPC['storeid'])) {
-        $args['isverify'] = 2;
+    if (p('verify')) {
+        if (empty($page['isstore']) && empty($_GPC['storeid'])) {
+            $args['isverify'] = 1;
+        } elseif (!empty($page['isstore']) || !empty($_GPC['storeid'])) {
+            $args['isverify'] = 2;
+        }
     }
     $args['choose'] = true;
     $goods = m('goods')->getList($args);

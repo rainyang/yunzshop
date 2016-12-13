@@ -10,8 +10,8 @@ $uniacid = $_W['uniacid'];
 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
 
 $title = $operation == 'lucky'?"幸运记录":"夺宝记录";
-
-
+// p('indiana')->createtime_winer('1','20161207833180275199','4');
+// echo "<pre>";print_r(22);exit;
 
 if ( $_W['isajax'] && $operation == 'display') {
     $pindex = max(1, intval($_GPC['page']));
