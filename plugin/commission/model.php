@@ -1699,7 +1699,7 @@ if (!class_exists('CommissionModel')) {
 						$oldlevel = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 					}
 					if ($leveltype == 6) {
-						$below1_ids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid=:agentid and uniacid=:uniacid ', array(':agentid' => $member['id'], ':uniacid' => $_W['uniacid']), 'id');
+						$below1_ids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid=:agentid and uniacid=:uniacid ', array(':agentid' => $agent['id'], ':uniacid' => $_W['uniacid']), 'id');
 						$below_count = count($below1_ids);
 						if (!empty($below1_ids)) {
 							$below2_ids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($below1_ids)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
