@@ -404,7 +404,7 @@ if (!class_exists('ReturnModel')) {
 					} else {
 						m('message')->sendCustomNotice($value['openid'], $messages);
 					}
-					m('message')->sendCustomNotice($value['openid'], $messages);
+					//m('message')->sendCustomNotice($value['openid'], $messages);
 				}
 			}
 			$this->setReturnCredits($data);
