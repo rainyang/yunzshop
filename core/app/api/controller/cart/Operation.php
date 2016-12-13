@@ -29,10 +29,9 @@ class Operation extends YZ
 
     }
     public function add(){
-        global $_GPC,$_W;
+        global $_W;
 
         $_W['ispost'] = true;
-        $_GPC['ids'] = $this->_getIds($_GPC['ids']);
         $result = $this->callMobile('shop/cart/add');
         $this->json = $result['json'];
 
@@ -40,7 +39,6 @@ class Operation extends YZ
     }
     public function remove(){
         global $_GPC,$_W;
-
         $_W['ispost'] = true;
         $_GPC['ids'] = $this->_getIds($_GPC['ids']);
         $result = $this->callMobile('shop/cart/remove');
