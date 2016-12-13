@@ -102,3 +102,9 @@ if (!pdo_fieldexists('sz_yi_indiana_consumerecord', 'ordersn')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_indiana_consumerecord')." ADD `ordersn` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `num`;");
 }
 
+
+//夺宝分期期号 2016-10-09
+if (!pdo_fieldexists('sz_yi_order', 'period_num')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `period_num` VARCHAR(145) NOT NULL COMMENT '夺宝分期期号' AFTER `order_type`;");
+}
+
