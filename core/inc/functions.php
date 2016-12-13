@@ -496,13 +496,21 @@ function show_message($msg = '', $url = '', $type = 'success')
     die($scripts);
 }
 
-function show_json($status = 1, $return = null)
+function show_json($status = 1, $return = null,$variable = null)
 {
     $ret = array(
         'status' => $status
     );
     if ($return) {
         $ret['result'] = $return;
+    }
+
+    if (is_app_api()) {
+        return array(
+            'status' => $status,
+            'variable' => $variable,
+            'json' => $return,
+        );
     }
     die(json_encode($ret));
 }
@@ -930,7 +938,13 @@ function is_app()
 
     return false;
 }
+if (!function_exists("ddump")) {
+    function ddump($var, $echo = true, $label = null, $strict = true){
+        defined('IS_TEST')||define('IS_TEST',1);
+        return dump($var, $echo, $label, $strict);
+    }
 
+}
 /**
  * 浏览器友好的变量输出
  * @param mixed $var 变量
@@ -1077,7 +1091,6 @@ if (!function_exists("pdo_sql_debug")) {
         foreach ($placeholders as $k => $v) {
             $sql = preg_replace('/' . $k . '/', "'" . $v . "'", $sql);
         }
-        dump($sql);
         return $sql;
     }
 }
@@ -1100,5 +1113,38 @@ function json_encode_ex($value)
         return $str;
     } else {
         return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+}
+if (!function_exists("getExitInfo")) {
+
+    function getExitInfo()
+    {
+        function shutdown_find_exit()
+        {
+            ddump($GLOBALS['dbg_stack']);
+        }
+
+        register_shutdown_function('shutdown_find_exit');
+        function write_dbg_stack()
+        {
+            $GLOBALS['dbg_stack'] = debug_backtrace();
+        }
+
+        register_tick_function('write_dbg_stack');
+        declare(ticks = 1);
+    }
+}
+if (! function_exists('array_get')) {
+    /**
+     * Get an item from an array using "dot" notation.
+     *
+     * @param  \ArrayAccess|array  $array
+     * @param  string  $key
+     * @param  mixed   $default
+     * @return mixed
+     */
+    function array_get($array, $key, $default = null)
+    {
+        return \util\Arr::get($array, $key, $default);
     }
 }

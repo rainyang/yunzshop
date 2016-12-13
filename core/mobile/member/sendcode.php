@@ -11,7 +11,7 @@ session_start();
 if($op == 'sendcode'){
     $mobile = $_GPC['mobile'];
     if(empty($mobile)){
-        show_json(0, '请填入手机号');
+        return show_json(0, '请填入手机号');
     }
     $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $_W['uniacid'],
@@ -19,7 +19,7 @@ if($op == 'sendcode'){
             ));
     if(!empty($info))
     {
-        show_json(0, '该手机号已被注册！不能获取验证码。');
+        return show_json(0, '该手机号已被注册！不能获取验证码。');
     } 
     $code = rand(1000, 9999);
     $_SESSION['codetime'] = time();
@@ -33,24 +33,24 @@ if($op == 'sendcode'){
     //互亿无线
     if($set['sms']['type'] == 1){
         if($issendsms['SubmitResult']['code'] == 2){
-            show_json(1);
+            return show_json(1);
         }
         else{
-            show_json(0, $issendsms['SubmitResult']['msg']);
+            return show_json(0, $issendsms['SubmitResult']['msg']);
         }
     }
     else{
         if(isset($issendsms['result']['success'])){
-            show_json(1);
+            return show_json(1);
         }
         else{
-            show_json(0, $issendsms['msg']. '/' . $issendsms['sub_msg']);
+            return show_json(0, $issendsms['msg']. '/' . $issendsms['sub_msg']);
         }
     }
 }else if ($op == 'forgetcode'){
     $mobile = $_GPC['mobile'];
     if(empty($mobile)){
-        show_json(0, '请填入手机号');
+        return show_json(0, '请填入手机号');
     }
     $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $_W['uniacid'],
@@ -59,7 +59,7 @@ if($op == 'sendcode'){
     //print_r($info);
     if(empty($info))
     {
-        show_json(0, '该手机号未注册！不能找回密码。');
+        return show_json(0, '该手机号未注册！不能找回密码。');
     } 
     $code = rand(1000, 9999);
     $_SESSION['codetime'] = time();
@@ -71,35 +71,35 @@ if($op == 'sendcode'){
     //互亿无线
     if($set['sms']['type'] == 1){
         if($issendsms['SubmitResult']['code'] == 2){
-            show_json(1);
+            return show_json(1);
         }
         else{
-            show_json(0, $issendsms['SubmitResult']['msg']);
+            return show_json(0, $issendsms['SubmitResult']['msg']);
         }
     }
     else{
         if(isset($issendsms['result']['success'])){
-            show_json(1);
+            return show_json(1);
         }
         else{
-            show_json(0, $issendsms['msg']);
+            return show_json(0, $issendsms['msg']);
         }
     }
 }else if ($op == 'bindmobilecode'){
     $mobile = $_GPC['mobile'];
     if(empty($mobile)){
-        show_json(0, '请填入手机号');
+        return show_json(0, '请填入手机号');
     }
     $isbindmobile = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and uniacid=:uniacid and isbindmobile=1', array(':uniacid' => $_W['uniacid'], ':mobile' => $mobile));
     if(!empty($isbindmobile)){
-        show_json(0, '该手机已经绑定其它微信号了!');
+        return show_json(0, '该手机已经绑定其它微信号了!');
     }
     $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid and isbindmobile=1 limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':mobile' => $mobile
             ));
     /*if(!empty($info)){
-        show_json(0, '该手机号已绑定过');
+        return show_json(0, '该手机号已绑定过');
     }*/
     $code = rand(1000, 9999);
     $_SESSION['codetime'] = time();
@@ -111,35 +111,35 @@ if($op == 'sendcode'){
     //互亿无线
     if($set['sms']['type'] == 1){
         if($issendsms['SubmitResult']['code'] == 2){
-            show_json(1);
+            return show_json(1);
         }
         else{
-            show_json(0, $issendsms['SubmitResult']['msg']);
+            return show_json(0, $issendsms['SubmitResult']['msg']);
         }
     }
     else{
         if(isset($issendsms['result']['success'])){
-            show_json(1);
+            return show_json(1);
         }
         else{
-            show_json(0, $issendsms['msg']);
+            return show_json(0, $issendsms['msg']);
         }
     }
 }else if ($op == 'checkcode'){
     $code = $_GPC['code']; 
 
     if(($_SESSION['codetime']+60*5) < time()){
-        show_json(0, '验证码已过期,请重新获取');
+        return show_json(0, '验证码已过期,请重新获取');
     }
     if($_SESSION['code'] != $code){
-        show_json(0, '验证码错误,请重新获取');
+        return show_json(0, '验证码错误,请重新获取');
     }
-    show_json(1);  
+    return show_json(1);  
 }
 else if ($op == 'ismobile'){
     $mobile = $_GPC['mobile'];
     if(empty($mobile)){
-        show_json(0, '请填入手机号');
+        return show_json(0, '请填入手机号');
     }
     $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $_W['uniacid'],
@@ -147,8 +147,8 @@ else if ($op == 'ismobile'){
             ));
     if(!empty($info))
     {
-        show_json(0, '该手机号已被注册！');
+        return show_json(0, '该手机号已被注册！');
     }else{
-        show_json(1); 
+        return show_json(1); 
     }    
 }

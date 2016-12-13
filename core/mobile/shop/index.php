@@ -48,18 +48,10 @@ if (empty($this->yzShopSet['ispc']) || isMobile()) {
 }
 
 if ($operation == 'index') {
-	$advs = pdo_fetchall('select id,advname,link,thumb,thumb_pc from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
-	foreach($advs as $key => $adv){
-		if(!empty($advs[$key]['thumb'])){
-			$adv[] = $advs[$key];
-		}
-		if(!empty($advs[$key]['thumb_pc'])){
-			$adv_pc[] = $advs[$key];
-		}
-	}
-	$advs = set_medias($advs, 'thumb,thumb_pc');
-	$advs_pc = set_medias($adv_pc, 'thumb,thumb_pc');
-	$category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 and parentid>0 order by displayorder desc', array(':uniacid' => $uniacid));
+
+	$advs = m('shop')->getADs($uniacid);
+	$advs_pc = m('shop')->getPCADs($uniacid);
+    $category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
 	$category = set_medias($category, 'thumb');
 
 	//首页获取全部分类导航条

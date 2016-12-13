@@ -23,7 +23,7 @@ if ($operation == 'display' && $_W['isajax']) {
         $acts = unserialize($sale_set['recharges']);
     }
     if (!empty($set['trade']['closerecharge'])) {
-        show_json(-1, '系统未开启账户充值!');
+        return show_json(-1, '系统未开启账户充值!');
     }
     pdo_delete('sz_yi_member_log', array(
         'openid' => $openid,
@@ -47,7 +47,7 @@ if ($operation == 'display' && $_W['isajax']) {
     $wechat = array(
         'success' => false
     );
-    if (is_weixin()) {
+    if (is_weixin() || is_app_api()) {
         if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
             load()->model('payment');
             $setting = uni_setting($_W['uniacid'], array(
@@ -109,7 +109,10 @@ if ($operation == 'display' && $_W['isajax']) {
         }
     }
 
-    show_json(1, array(
+    $variable = array(
+        'hascoupon'=> ''
+    );
+    return show_json(1, array(
         'set' => $set,
         'logid' => $logid,
         'isweixin' => is_weixin(),
@@ -121,21 +124,21 @@ if ($operation == 'display' && $_W['isajax']) {
         'yunpay' => $yunpay,
         'payno' => $logno,
         'acts' => $acts
-    ));
+    ),$variable);
 } else if ($operation == 'recharge' && $_W['ispost']) {
     if (!empty($set['trade']['closerecharge'])) {
-        show_json(-1, '系统未开启账户充值!');
+        return show_json(-1, '系统未开启账户充值!');
     }
     $logid = intval($_GPC['logid']);
     if (empty($logid)) {
-        show_json(0, '充值出错, 请重试!');
+        return show_json(0, '充值出错, 请重试!');
     }
     $money = floatval($_GPC['money']);
     if (empty($money)) {
-        show_json(0, '请填写充值金额!');
+        return show_json(0, '请填写充值金额!');
     }
     if ($money <= 0) {
-        show_json(0, '充值金额需大于0');
+        return show_json(0, '充值金额需大于0');
     }
     $type = $_GPC['type'];
     if (!in_array($type, array(
@@ -144,14 +147,14 @@ if ($operation == 'display' && $_W['isajax']) {
         'yunpay',
         'ping'
     ))) {
-        show_json(0, '未找到支付方式');
+        return show_json(0, '未找到支付方式');
     }
     $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
         ':uniacid' => $uniacid,
         ':id' => $logid
     ));
     if (empty($log)) {
-        show_json(0, '充值出错, 请重试!');
+        return show_json(0, '充值出错, 请重试!');
     }
 
     /*修复支付问题*/
@@ -160,7 +163,7 @@ if ($operation == 'display' && $_W['isajax']) {
         pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
     }else{
        if($log['money']!=$money){
-            show_json(0, '充值异常, 请重试!');
+            return show_json(0, '充值异常, 请重试!');
        }
     }
 
@@ -169,11 +172,11 @@ if ($operation == 'display' && $_W['isajax']) {
         'pay'
     ));
     if ($type == 'weixin') {
-        if (!is_weixin()) {
-            show_json(0, '非微信环境!');
+        if (!is_weixin() && !is_app_api()) {
+            return show_json(0, '非微信环境!');
         }
         if (empty($set['pay']['weixin'])) {
-            show_json(0, '未开启微信支付!');
+            return show_json(0, '未开启微信支付!');
         }
         $wechat          = array(
             'success' => false
@@ -189,28 +192,37 @@ if ($operation == 'display' && $_W['isajax']) {
         ));
         if (is_array($setting['payment'])) {
             $options           = $setting['payment']['wechat'];
-            $options['appid']  = $_W['account']['key'];
-            $options['secret'] = $_W['account']['secret'];
+            if (is_app_api()) {
+                $sysset_data = m("cache")->get("sysset");
+                $sysset_data = unserialize($setdata['sets']);
+                $options['mchid'] = $sysset_data['app']['base']['wx_native']['mchid'];
+                $options['appid'] = $sysset_data['app']['base']['wx_native']['appid'];
+                $options['secret'] = $sysset_data['app']['base']['wx_native']['secret'];
+                $params['trade_type'] = 'APP';
+            } else {
+                $options['appid'] = $_W['account']['key'];
+                $options['secret'] = $_W['account']['secret'];
+            }
             $wechat            = m('common')->wechat_build($params, $options, 1);
             $wechat['success'] = false;
             if (!is_error($wechat)) {
                 $wechat['success'] = true;
             } else {
-                show_json(0, $wechat['message']);
+                return show_json(0, $wechat['message']);
             }
         }
         if (!$wechat['success']) {
-            show_json(0, '微信支付参数错误!');
+            return show_json(0, '微信支付参数错误!');
         }
-        show_json(1, array(
+        return show_json(1, array(
             'wechat' => $wechat
         ));
     } else if ($type == 'alipay') {
-        show_json(1);
+        return show_json(1);
     } else if ($type == 'yunpay') {
-        show_json(1);
+        return show_json(1);
     } else if ($type == 'ping') {
-        show_json(1);
+        return show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
     $logid = intval($_GPC['logid']);
@@ -244,7 +256,7 @@ if ($operation == 'display' && $_W['isajax']) {
             m('notice')->sendMemberLogMessage($logid);
         }
     }
-    show_json(1);
+    return show_json(1);
 } else if ($operation == 'return') {
     $logno     = trim($_GPC['out_trade_no']);
     $notify_id = trim($_GPC['notify_id']);

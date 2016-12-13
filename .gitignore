@@ -7,3 +7,4 @@ sh.exe.stackdump
 /vendor/phpunit
 /vendor/phpdocumentor
 /vendor/doctrine
+tmp/

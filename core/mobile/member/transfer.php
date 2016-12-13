@@ -31,12 +31,12 @@ if($operation == 'assigns'){
         ));
         if($assigns){
             if($assigns['id'] == $member['id']){
-                show_json(0,"受让人不可以是您自己！");
+                return show_json(0,"受让人不可以是您自己！");
                 exit;
             }
-            show_json(1, $assigns);
+            return show_json(1, $assigns);
         }else{
-            show_json(-1);
+            return show_json(-1);
         }
     }
 }elseif($operation == 'submit'){
@@ -53,16 +53,16 @@ if($operation == 'assigns'){
             if (empty($_GPC['yunbi'])) {
                 if ($money <= 0 || $member['credit2'] < $money){
                     @unlink ($file);
-                    show_json(0,'转让金额不正确');
+                    return show_json(0,'转让金额不正确');
                 }
             } else {
                 if ($money <= 0 || $member['virtual_currency'] < $money) {
                     @unlink ($file);
-                    show_json(0,"转让{$title}不正确");
+                    return show_json(0,"转让{$title}不正确");
                 }
                 if ($money < $yunbi_set['bot_limit'] || ($money%$yunbi_set['bot_fold'] != 0)) {
                     @unlink ($file);
-                    show_json(0, "转让{$yunbi_set['yunbi_title']}小于{$yunbi_set['bot_limit']}或不是{$yunbi_set['bot_fold']}的倍数");
+                    return show_json(0, "转让{$yunbi_set['yunbi_title']}小于{$yunbi_set['bot_limit']}或不是{$yunbi_set['bot_fold']}的倍数");
                 }
             }
             $assigns_id = intval($_GPC['assigns']);
@@ -110,7 +110,7 @@ if($operation == 'assigns'){
                     );
                     pdo_insert('sz_yi_member_transfer_log', $member_data); 
                     @unlink ($file); 
-                    show_json(1);
+                    return show_json(1);
                 } else {
                     $moneys = -$money;
                     p('yunbi')->setVirtualCurrency($openid, $moneys);
@@ -156,12 +156,12 @@ if($operation == 'assigns'){
                         )
                     );
                     m('message')->sendCustomNotice($assigns['openid'], $messages);
-                    @unlink ($file); 
-                    show_json(1);
+                    @unlink ($file);
+                    return show_json(1);
                 }
             } else {
-                @unlink ($file); 
-                show_json(0,'受让人不存在！');
+                @unlink ($file);
+                return show_json(0,'受让人不存在！');
             }
             
         }

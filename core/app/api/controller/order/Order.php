@@ -39,8 +39,8 @@ class Order
                 'value' => static::COMPLETE
             ],
             static::EXPRESS => [
-                'name' => '确认收货',
-                'api' => 'express',
+                'name' => '查看物流',
+                'api' => '/order/express/display',
                 'value' => static::EXPRESS
             ],
             static::CANCEL => [
@@ -158,7 +158,7 @@ class Order
                 }
             } else {
                 if(!empty($order['refundstate'])){
-                    $button_id_arr[] = static::IN_AFTER_SALES;//删除订单
+                    $button_id_arr[] = static::IN_AFTER_SALE;//删除订单
                 }else{
                     $button_id_arr[] = static::REFUND;//删除订单
                 }

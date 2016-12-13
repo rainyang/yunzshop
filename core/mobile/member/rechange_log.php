@@ -27,7 +27,7 @@ if ($_W['isajax']) {
             $row['money'] = "充值".$paymethod.$row['num'].$paymethod_by."（分".$row['qnum']."期）,已充第".$row['phase']."期".$row['money'].$paymethod_by;
         }
         unset($row);
-        show_json(1, array(
+        return show_json(1, array(
             'total' => $total,
             'list' => $list,
             'pagesize' => $psize

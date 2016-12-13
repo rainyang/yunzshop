@@ -59,6 +59,8 @@ if($_W['isajax']) {
 			}
 		}
 	show_json(2, array('list' => $list,'pagesize' => $psize));
+        return show_json(2, array('list' => $list,'pagesize' => $psize));
 	}
+    return show_json(1, array('member'=>$member,'channelinfo'=>$channelinfo));
 }
 include $this->template('index');
