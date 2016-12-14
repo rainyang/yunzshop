@@ -206,7 +206,7 @@ class Sz_DYi_Common
             $package['total_fee']        = $params['fee'] * 100;
             $package['spbill_create_ip'] = CLIENT_IP;
             $package['notify_url']       = $_W['siteroot'] . "addons/sz_yi/payment/wechat/notify.php";
-            $package['trade_type']       = !in_array($params['trade_type'],['NATIVE','APP','JSAPI']) ? 'JSAPI' : $params['trade_type'];
+            $package['trade_type']       = !in_array($params['trade_type'],array('NATIVE','APP','JSAPI')) ? 'JSAPI' : $params['trade_type'];
             $package['openid']           = $_W['fans']['from_user'];//'oYGiFxMGM1qetXjN5iDJJXA3O--k';//
             ksort($package, SORT_STRING);
             $string1 = '';
