@@ -29,13 +29,13 @@ if ($_W['isajax']) {
 			$sql = 'SELECT * FROM ' . tablename('sz_yi_member_address') . ' where 1 ' . $condition . ' ORDER BY `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 			$list = pdo_fetchall($sql, $params);
 		}
-		show_json(1, array('list' => $list));
+		return show_json(1, array('list' => $list));
 	} else if ($operation == 'new') {
-		show_json(1, array('address' => array('province' => $member['province'], 'city' => $member['city']), 'area' => $member['area'], 'street' => $member['street'], 'member' => $member, 'shareAddress' => $shareAddress));
+		return show_json(1, array('address' => array('province' => $member['province'], 'city' => $member['city']), 'area' => $member['area'], 'street' => $member['street'], 'member' => $member, 'shareAddress' => $shareAddress));
 	} else if ($operation == 'get') {
 		$id = intval($_GPC['id']);
 		$data = pdo_fetch('select * from ' . tablename('sz_yi_member_address') . ' where id=:id and deleted=0 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
-		show_json(1, array('address' => $data, 'member' => $member));
+		return show_json(1, array('address' => $data, 'member' => $member));
 	} else if ($operation == 'submit' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$data = $_GPC['addressdata'];
@@ -51,12 +51,12 @@ if ($_W['isajax']) {
 		} else {
 			pdo_update('sz_yi_member_address', $data, array('id' => $id, 'uniacid' => $_W['uniacid'], 'openid' => $openid));
 		}
-		show_json(1, array('addressid' => $id));
+		return show_json(1, array('addressid' => $id));
 	} else if ($operation == 'remove' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$data = pdo_fetch('select id,isdefault from ' . tablename('sz_yi_member_address') . ' where  id=:id and openid=:openid and deleted=0 and uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':id' => $id));
 		if (empty($data)) {
-			show_json(0, '地址未找到');
+			return show_json(0, '地址未找到');
 		}
 		pdo_update('sz_yi_member_address', array('deleted' => 1), array('id' => $id));
 		if ($data['isdefault'] == 1) {
@@ -64,19 +64,19 @@ if ($_W['isajax']) {
 			$data2 = pdo_fetch('select id from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and uniacid=:uniacid order by id desc limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
 			if (!empty($data2)) {
 				pdo_update('sz_yi_member_address', array('isdefault' => 1), array('uniacid' => $_W['uniacid'], 'openid' => $openid, 'id' => $data2['id']));
-				show_json(1, array('defaultid' => $data2['id']));
+				return show_json(1, array('defaultid' => $data2['id']));
 			}
 		}
-		show_json(1);
+		return show_json(1);
 	} else if ($operation == 'setdefault' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$data = pdo_fetch('select id from ' . tablename('sz_yi_member_address') . ' where id=:id and deleted=0 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
 		if (empty($data)) {
-			show_json(0, '地址未找到');
+			return show_json(0, '地址未找到');
 		}
 		pdo_update('sz_yi_member_address', array('isdefault' => 0), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
 		pdo_update('sz_yi_member_address', array('isdefault' => 1), array('id' => $id, 'uniacid' => $_W['uniacid'], 'openid' => $openid));
-		show_json(1);
+		return show_json(1);
 	}
 }
 include $this->template('shop/address');

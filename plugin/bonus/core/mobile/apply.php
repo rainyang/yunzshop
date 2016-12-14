@@ -43,10 +43,10 @@ if ($_W['isajax']) {
 		$returnurl = urlencode($this->createMobileUrl('member/withdrawg'));
 		$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
 		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 1 ? '微信' : '余额'), TM_COMMISSION_APPLY);
-		show_json(1, '已提交,请等待审核!');
+		return show_json(1, '已提交,请等待审核!');
 	}
 	$returnurl = urlencode($this->createPluginMobileUrl('bonus/apply'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-	show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
+	return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
 }
 include $this->template('apply');

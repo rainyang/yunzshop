@@ -9,38 +9,38 @@ if ($operation == 'display') {
     if ($_W['isajax']) {
         if ($_W['ispost']) {
         	if (!p('supplier')) {
-        		show_json(3);
+        		return show_json(3);
         	}
             $userdata = $_GPC['userdata'];
             $member = array();
 			$username = trim($userdata['username']);
 			if(empty($username)) {
-				show_json(0);
+				return show_json(0);
 			}
 			$member['username'] = $username;
 			$member['password'] = $userdata['password'];
 			if(empty($member['password'])) {
-				show_json(0);
+				return show_json(0);
 			}
 			$record = user_single($member);
 			if(empty($record['uid'])) {
-				show_json(0);
+				return show_json(0);
 			}
 
 			$perm_user = pdo_fetch("select roleid,uniacid from " . tablename('sz_yi_perm_user') . " where uid={$record['uid']}");
 			if(empty($perm_user['roleid'])) {
-				show_json(0);
+				return show_json(0);
 			}
 			$record['uniacid'] = $perm_user['uniacid'];
 			$record['supplier_status'] = pdo_fetchcolumn("select status1 from " . tablename('sz_yi_perm_role') . " where id=".$perm_user['roleid']);
 			if(!empty($record)) {
 				if($record['status'] == 1) {
-					show_json(0);
+					return show_json(0);
 				}
 				$founders = explode(',', $_W['config']['setting']['founder']);
 				$_W['isfounder'] = in_array($record['uid'], $founders);
 				if (!empty($_W['siteclose']) && empty($_W['isfounder'])) {
-					show_json(0);
+					return show_json(0);
 				}
 				$cookie = array();
 				$cookie['uid'] = $record['uid'];
@@ -68,14 +68,14 @@ if ($operation == 'display') {
 				if($record['supplier_status'] == 1) {
 					//$preUrl = $_W['siteroot']."/web/index.php?c=account&a=switch&uniacid={$record['uniacid']}";
 					$preUrl = $this->createWebUrl('order/list');
-					show_json(1, array(
+					return show_json(1, array(
 	                    'preurl' => $preUrl
 	                ));
 				} else {
-					show_json(0);
+					return show_json(0);
 				}
 			} else {
-				show_json(0);
+				return show_json(0);
 			} 
         }
     }

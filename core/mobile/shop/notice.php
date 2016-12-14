@@ -22,14 +22,14 @@ if ($_W['isajax']) {
 		}
 		unset($row);
 		$list = set_medias($list, 'thumb');
-		show_json(1, array('list' => $list, 'pagesize' => $psize));
+		return show_json(1, array('list' => $list, 'pagesize' => $psize));
 	} else if ($operation == 'get') {
 		$id = intval($_GPC['id']);
 		$data = pdo_fetch('select * from ' . tablename('sz_yi_notice') . ' where uniacid=:uniacid and id=:id and status=1 limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
 		if (!empty($data)) {
 			$data['createtime'] = date('Y-m-d H:i', $data['createtime']);
 		}
-		show_json(1, array('notice' => $data));
+		return show_json(1, array('notice' => $data));
 	}
 }
 include $this->template('shop/notice');

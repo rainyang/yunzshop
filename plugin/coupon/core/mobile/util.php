@@ -304,5 +304,5 @@ if ($operation == 'query') {
 	foreach ($suppliers as $key => $value) {
 		$suppliers[$key] = $value['supplier_uid'];
 	}
-	show_json(1, array('coupons' => $list, 'supplier_uid' => $supplier_uid, 'supplier_uids' => $suppliers));
+	return show_json(1, array('coupons' => $list, 'supplier_uid' => $supplier_uid, 'supplier_uids' => $suppliers));
 } 
