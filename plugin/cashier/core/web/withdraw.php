@@ -57,7 +57,7 @@ if ($operation == 'display') {
         }
     }
 
-    $sql   = "select w.id, s.name, m.nickname, m.avatar, m.weixin, w.withdraw_no, w.money, w.create_time, w.status from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id  left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition} and w.status=0";
+    $sql   = "select w.id, s.name, m.nickname, m.avatar, m.weixin, w.withdraw_no, w.money, w.create_time, w.status, s.member_id from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id  left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition} and w.status=0";
     $list  = pdo_fetchall($sql, $params);
     $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition} and w.status=0", $params);
     $pager = pagination($total, $pindex, $psize);
@@ -94,6 +94,13 @@ if ($operation == 'display') {
         ca('caisher.withdraw.withdraw');
         $result = m('finance')->pay($log['openid'], 1, $log['money'] * 100, $log['withdraw_no'], $log['name'] . '收银台商户提现');
         if (is_error($result)) {
+            $withdraw_no = m('common')->createNO('cashier_withdraw', 'withdraw_no', 'CW');
+            pdo_update('sz_yi_cashier_withdraw', array(
+                'withdraw_no' => $withdraw_no
+            ), array(
+                'id' => $id,
+                'uniacid' => $uniacid
+            ));
             message('微信钱包提现失败: ' . $result['message'], '', 'error');
         }
         pdo_update('sz_yi_cashier_withdraw', array(

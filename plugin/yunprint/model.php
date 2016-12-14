@@ -176,7 +176,7 @@ if (!class_exists('YunprintModel')) {
                     $goods = "";
                     $num = 1;
                     foreach ($print_order['goods'] as $value) {
-                        $goods .= " " . $num . " " . $value['title'] . "<BR>" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'];
+                        $goods .= " " . $num . " " . $value['title'] . "<BR>" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'] . "<BR>";
                         $num++;
                     }
                     $orderinfo .= "================================<BR>序号 商品名称 单价 数量  金额<BR>{$goods}<BR>================================<BR>";
