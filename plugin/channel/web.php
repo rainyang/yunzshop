@@ -38,7 +38,7 @@ class ChannelWeb extends Plugin
 	 
 	public function level()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	/**
@@ -47,7 +47,7 @@ class ChannelWeb extends Plugin
 	 
 	public function upgrade()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	/**
@@ -56,7 +56,7 @@ class ChannelWeb extends Plugin
 	 
 	public function set()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	/**
@@ -65,7 +65,7 @@ class ChannelWeb extends Plugin
 	 
 	public function manage()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	/**
@@ -74,7 +74,7 @@ class ChannelWeb extends Plugin
 	 
 	public function apply()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	/**
@@ -83,18 +83,18 @@ class ChannelWeb extends Plugin
 	 
 	public function withdraw()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function notice()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	/**
 	  * 渠道商库存管理
 	  */
 	public function inventory()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 }

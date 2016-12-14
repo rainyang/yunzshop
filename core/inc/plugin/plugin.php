@@ -164,7 +164,6 @@ class Plugin extends Core
         if (!is_file($file)) {
             message("未找到控制器文件 : {$file}");
         }
-        include $file;
-        exit;
+        return include $file;
     }
 }

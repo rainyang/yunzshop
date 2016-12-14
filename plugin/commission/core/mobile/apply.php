@@ -179,7 +179,7 @@ if ($_W['isajax']) {
 			$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
 			$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
 			$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $typename), TM_COMMISSION_APPLY);
-			show_json(1, '已提交,请等待审核!');
+			return show_json(1, '已提交,请等待审核!');
 			
 		}
 	}

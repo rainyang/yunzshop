@@ -26,6 +26,6 @@ if ($_W['isajax']) {
 		$rowp['goods'] 		= set_medias(pdo_fetch($sql, array(':goodsid' => $rowp['goodsid'])), 'thumb');
 	}
 	unset($row);
-	show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+	return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 }
 include $this->template('stock');

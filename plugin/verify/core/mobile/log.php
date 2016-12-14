@@ -41,7 +41,7 @@ if ($_W['isajax']) {
 			}
 		}
 		unset($row);
-		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize, 'commissioncount' => number_format($commissioncount, 2)));
+		return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize, 'commissioncount' => number_format($commissioncount, 2)));
 	}
 }
 if ($operation == 'display') {

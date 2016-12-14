@@ -35,7 +35,7 @@ class RechargeWeb extends Plugin
 	 
 	public function upgrade()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	/**
@@ -44,7 +44,7 @@ class RechargeWeb extends Plugin
 	 
 	public function set()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	/**
@@ -52,7 +52,7 @@ class RechargeWeb extends Plugin
  * 	 	 */
 	public function notice()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 }
