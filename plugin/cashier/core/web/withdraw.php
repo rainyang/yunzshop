@@ -94,6 +94,13 @@ if ($operation == 'display') {
         ca('caisher.withdraw.withdraw');
         $result = m('finance')->pay($log['openid'], 1, $log['money'] * 100, $log['withdraw_no'], $log['name'] . '收银台商户提现');
         if (is_error($result)) {
+            $withdraw_no = m('common')->createNO('cashier_withdraw', 'withdraw_no', 'CW');
+            pdo_update('sz_yi_cashier_withdraw', array(
+                'withdraw_no' => $withdraw_no
+            ), array(
+                'id' => $id,
+                'uniacid' => $uniacid
+            ));
             message('微信钱包提现失败: ' . $result['message'], '', 'error');
         }
         pdo_update('sz_yi_cashier_withdraw', array(
