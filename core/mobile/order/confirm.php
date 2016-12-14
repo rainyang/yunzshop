@@ -168,7 +168,7 @@ if ($_W['isajax']) {
         $telephone =  $_GPC['telephone'];
     }
     $ischannelpick = intval($_GPC['ischannelpick']);
-    $isyunbipay = intval($_GPC['isyunbipay']);
+    //$isyunbipay = intval($_GPC['isyunbipay']);
     if ($operation == 'display') {
         $id   = intval($_GPC["id"]);
         if (strpos($_GPC['optionid'], '|')) {
@@ -494,11 +494,11 @@ if ($_W['isajax']) {
                     $isvirtual = true;
                 }
             }
-            if (p('yunbi')) {
+            /*if (p('yunbi')) {
                 if (!empty($isyunbipay) && !empty($yunbiset['isdeduct'])) {
                     $g['marketprice'] -= $g['yunbi_deduct'];
                 }
-            }
+            }*/
 
             if($g['plugin'] == 'fund'){
                 $issale = false;
@@ -1583,7 +1583,7 @@ if ($_W['isajax']) {
     elseif ($operation == 'create' && $_W['ispost']) {
         $ischannelpay = intval($_GPC['ischannelpay']);
         $ischannelpick = intval($_GPC['ischannelpick']);
-        $isyunbipay = intval($_GPC['isyunbipay']);
+        //$isyunbipay = intval($_GPC['isyunbipay']);
         $order_data = $_GPC['order'];
         if(p('hotel')){
             if($_GPC['type']=='99'){
@@ -2046,8 +2046,9 @@ if ($_W['isajax']) {
                 //虚拟币抵扣
                 $deductyunbi = 0;
                 $deductyunbimoney = 0;
+
                 if ($yunbi_plugin && $yunbiset['isdeduct']) {
-                    if (empty($isyunbipay)) {
+
                         if (isset($_GPC['order']) && !empty($_GPC['order'][0]['yunbi'])) {
                             $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
                             $ycredit = 1;
@@ -2068,25 +2069,7 @@ if ($_W['isajax']) {
                             $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
 
                         }
-                    } else {
-                        $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
-                        $ycredit = 1;
-                        $ymoney  = round(floatval($yunbiset['money']), 2);
-                        if ($ycredit > 0 && $ymoney > 0) {
-                            if ($virtual_currency % $ycredit == 0) {
-                                $deductyunbimoney = round(intval($virtual_currency / $ycredit) * $ymoney * $data["total"], 2);
-                            } else {
-                                $deductyunbimoney = round((intval($virtual_currency / $ycredit) + 1) * $ymoney * $data["total"], 2);
-                            }
-                        }
-                        if ($deductyunbimoney > $yunbideductprice) {
-                            $deductyunbimoney = $yunbideductprice;
-                        }
-                        if ($deductyunbimoney > $totalprice) {
-                            $deductyunbimoney = $totalprice;
-                        }
-                        $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
-                    }
+
                     $totalprice -= $deductyunbimoney;
                 }
                 $virtualsales += $data["sales"];
