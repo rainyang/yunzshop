@@ -287,8 +287,11 @@ class Sz_DYi_Order
                         $pv->pay($order);
                     } else {
                         if (p('channel')) {
+                            //渠道商采购的订单，直接完成
                             if ($params['ischannelpay'] == 1) {
                                 pdo_query('update ' . tablename('sz_yi_order') . " set status=3, paytime=".time().", finishtime=".time().", pay_ordersn=ordersn_general, ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
+                                //添加库存
+                                p('channel')->addStock($orderid);
                             } else {
                                 pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time().", pay_ordersn=ordersn_general, ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
                             }

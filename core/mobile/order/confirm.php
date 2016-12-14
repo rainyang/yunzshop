@@ -2561,7 +2561,7 @@ if ($_W['isajax']) {
                 if (p('channel')) {
                     $my_info = p('channel')->getInfo($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
                     if ($ischannelpay == 1 && empty($ischannelpick)) {
-                        $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
+                        /*$every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
                         $channel_cond = '';
                         if (!empty($goods['optionid'])) {
                             $channel_cond = " AND optionid={$goods['optionid']}";
@@ -2607,7 +2607,7 @@ if ($_W['isajax']) {
                             'mid'                 => $up_mem['id']
                         );
                         // type==1  进货
-                        pdo_insert('sz_yi_channel_stock_log', $stock_log);
+                        pdo_insert('sz_yi_channel_stock_log', $stock_log);*/
                         $order_goods['ischannelpay']  = $ischannelpay;
                     }
                     $order_goods['channel_id'] = 0;

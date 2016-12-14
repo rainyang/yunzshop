@@ -769,7 +769,7 @@ if (!class_exists('ChannelModel')) {
             }
         }
 
-        //edit by yangyang 12-02 commont:渠道商推荐员,下单时触发
+        //edit by yangyang 12-02 content:渠道商推荐员,下单时触发
         public function isChannelMerchant($orderid)
         {
             global $_W;
@@ -815,6 +815,87 @@ if (!class_exists('ChannelModel')) {
                 'money'         => $money
             );
             pdo_insert('sz_yi_channel_merchant_order', $data);
+        }
+
+        //edit by yangyang 12-14 content:渠道商采购，订单支付后加库存
+        public function addStock($orderid)
+        {
+        	global $_W;
+        	if (empty($orderid)) {
+        		return;
+        	}
+        	$order = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND id=:id", array(
+        			':uniacid' 	=> $_W['uniacid'],
+        			':id'		=> $orderid
+        		));
+        	if (empty($order)) {
+        		return;
+        	}
+        	if ($order['status'] != 3) {
+        		return;
+        	}
+        	$openid = $order['openid'];
+        	$order_goods = pdo_fetchall("SELECT goodsid,total,optionid FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid=:uniacid AND orderid=:orderid", array(
+        			':uniacid'	=> $_W['uniacid'],
+        			':orderid'	=> $orderid
+        		));
+        	foreach ($order_goods as $key => $value) {
+        		$marketprice = pdo_fetchcolumn("SELECT marketprice FROM " . tablename('sz_yi_goods') . " WHERE uniacid=:uniacid AND id=:id", array(
+        				':uniacid'	=> $_W['uniacid'],
+        				':id'		=> $value['goodsid']
+        			));
+        		$my_info = $this->getInfo($openid,$value['goodsid'],$goods['optionid'],$value['total']);
+        		$every_turn_price = $marketprice*($my_info['my_level']['purchase_discount']/100);
+        		$channel_cond = '';
+                if (!empty($value['optionid'])) {
+                    $channel_cond = " AND optionid={$value['optionid']}";
+                }
+                $ischannelstock  = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid=:uniacid AND openid=:openid AND goodsid=:goodsid {$channel_cond}", array(
+                		':uniacid'	=> $_W['uniacid'],
+                		':openid'	=> $openid,
+                		':goodsid'	=> $value['goodsid']
+                	));
+                if (empty($ischannelstock)) {
+                    pdo_insert('sz_yi_channel_stock', array(
+                        'uniacid'       => $_W['uniacid'],
+                        'openid'        => $openid,
+                        'goodsid'       => $value['goodsid'],
+                        'optionid'      => $value['optionid'],
+                        'stock_total'   => $value['total']
+                    ));
+                } else {
+                    $stock_total = $ischannelstock['stock_total'] + $value['total'];
+                    pdo_update('sz_yi_channel_stock', array(
+                        'stock_total'   => $stock_total
+                    ), array(
+                        'uniacid'       => $_W['uniacid'],
+                        'openid'        => $openid,
+                        'optionid'      => $value['optionid'],
+                        'goodsid'       => $value['goodsid']
+                    ));
+                }
+                $surplus_stock = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid=:uniacid AND openid=:openid AND goodsid=:goodsid {$channel_cond}", array(
+                		':uniacid'	=> $_W['uniacid'],
+                		':openid'	=> $openid,
+                		':goodsid'	=> $value['goodsid']
+                	));
+                $up_member = m('member')->getInfo($my_info['up_level']['openid']);
+                $stock_log = array(
+                    'uniacid'             => $_W['uniacid'],
+                    'openid'              => $openid,
+                    'goodsid'             => $value['goodsid'],
+                    'optionid'            => $value['optionid'],
+                    'every_turn'          => $value['total'],
+                    'every_turn_price'    => $every_turn_price,
+                    'every_turn_discount' => $my_info['my_level']['purchase_discount'],
+                    'goods_price'         => $marketprice,
+                    'paytime'             => time(),
+                    'type'                => 1,
+                    'surplus_stock'       => $surplus_stock,
+                    'mid'                 => $up_member['id']
+                );
+                pdo_insert('sz_yi_channel_stock_log', $stock_log);
+        	}
         }
 	}
 }
