@@ -407,7 +407,7 @@ class Core extends WeModuleSite
         if (!is_file($file)) {
             message("未找到 控制器文件 {$do}::{$p} : {$file}");
         }
-        include $file;
+        return include $file;
     }
 
     public function _execFront($do, $default = '', $web = true)
