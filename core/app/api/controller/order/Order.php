@@ -103,7 +103,7 @@ class Order
         if(empty($button_model['api'])){
             echo '正在写';exit;
         }
-        if(Str::startsWith($button_model['api'],'/')){
+        if(substr($button_model['api'], 0, strlen('/')) === (string) '/'){
             return ltrim($button_model['api'],'/');
         }
         $api = $file_name . $button_model['api'];
