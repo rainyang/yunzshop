@@ -48,18 +48,10 @@ if (empty($this->yzShopSet['ispc']) || isMobile()) {
 }
 
 if ($operation == 'index') {
-	$advs = pdo_fetchall('select id,advname,link,thumb,thumb_pc from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
-	foreach($advs as $key => $adv){
-		if(!empty($advs[$key]['thumb'])){
-			$adv[] = $advs[$key];
-		}
-		if(!empty($advs[$key]['thumb_pc'])){
-			$adv_pc[] = $advs[$key];
-		}
-	}
-	$advs = set_medias($advs, 'thumb,thumb_pc');
-	$advs_pc = set_medias($adv_pc, 'thumb,thumb_pc');
-	$category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 and parentid>0 order by displayorder desc', array(':uniacid' => $uniacid));
+
+	$advs = m('shop')->getADs($uniacid);
+	$advs_pc = m('shop')->getPCADs($uniacid);
+    $category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
 	$category = set_medias($category, 'thumb');
 
 	//首页获取全部分类导航条
@@ -219,10 +211,10 @@ if ($operation == 'index') {
 if ($_W['isajax']) {
 	if ($operation == 'index') {
 
-		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read));
+		return show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read));
 	} else if ($operation == 'goods') {
 		$type = $_GPC['type'];
-		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize'],'recharge_goods' => $recharge_goods));
+		return show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize'],'recharge_goods' => $recharge_goods));
 	} else if ($operation == 'category'){
 
         $category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=0 and uniacid=".$_W['uniacid']." order by displayorder limit 14"),array('advimg','thumb'));
@@ -250,7 +242,7 @@ if ($_W['isajax']) {
             }
         }
 
-		show_json(1,array('category' => $category));
+		return show_json(1,array('category' => $category));
 	} else if ($operation == 'category_recommend'){
 
 		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=0 and uniacid=".$_W['uniacid']." order by displayorder desc"),'advimg_pc');
@@ -269,25 +261,25 @@ if ($_W['isajax']) {
 
 			}
 		}
-		show_json(1,array('category' => $category));
+		return show_json(1,array('category' => $category));
 	} else if ($operation == 'children_goods'){
 		$id = $_GPC['id'];
 		$aid = $_GPC['aid'];
 		if($aid){
 			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ( pcate=:pcate or find_in_set('{$aid}',pcates) ) and uniacid=:uniacid and isrecommand =1 and deleted = 0 and status = 1 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
-			show_json(1,array('goods' => $goods));
+			return show_json(1,array('goods' => $goods));
 		}else{
 			if(empty($id)){
-				show_json(0);
+				return show_json(0);
 			}
 			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ( ccate=:ccate or find_in_set('{$id}',ccates) ) and uniacid=:uniacid and deleted = 0 and status = 1 limit 8",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid and enabled = 1",array(':pid' => $id , ':uniacid' => $_W["uniacid"]));
-			show_json(1,array('goods' => $goods,'third' => $third));
+			return show_json(1,array('goods' => $goods,'third' => $third));
 		}
 	} elseif ($operation == 'property_goods'){
 		$property = $_GPC['property'];
 		$property_goods = set_medias(pdo_fetchall("SELECT * FROM ".tablename('sz_yi_goods')." WHERE deleted=0 and status=1 and uniacid=:uniacid and {$property}=1",array(':uniacid' => $_W['uniacid'])),'thumb');
-		show_json(1,$property_goods);
+		return show_json(1,$property_goods);
 	}
 }
 

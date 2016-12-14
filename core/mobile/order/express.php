@@ -20,7 +20,7 @@ if ($_W['isajax']) {
 	if ($operation == 'display') {
 		$order = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
 		if (empty($order)) {
-			show_json(0);
+			return show_json(0);
 		}
 		$pindiana = p('indiana');
 		$indiana = array();
@@ -31,7 +31,7 @@ if ($_W['isajax']) {
 		$goods = set_medias($goods, 'thumb');
 		$order['goodstotal'] = count($goods);
 		$set = set_medias(m('common')->getSysset('shop'), 'logo');
-		show_json(1, array('order' => $order, 'goods' => $goods, 'set' => $set, 'indiana' => $indiana));
+		return show_json(1, array('order' => $order, 'goods' => $goods, 'set' => $set, 'indiana' => $indiana));
 	} else if ($operation == 'step') {
 		$express = trim($_GPC['express']);
 		$expresssn = trim($_GPC['expresssn']);
@@ -39,13 +39,13 @@ if ($_W['isajax']) {
 		if (!$content) {
 			$content = getExpress($express, $expresssn);
 			if (!$content) {
-				show_json(1, array('list' => array()));
+				return show_json(1, array('list' => array()));
 			}
 		}
 		foreach ($content as $data) {
 			$list[] = array('time' => $data->time, 'step' => $data->context, 'ts' => $data->time);
 		}
-		show_json(1, array('list' => $list));
+		return show_json(1, array('list' => $list));
 	}
 }
 include $this->template('order/express');

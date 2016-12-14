@@ -30,7 +30,7 @@ if ($_W['isajax']) {
 			$reccategory[] = $c;
 		}
 	}
-	show_json(1, array('category' => $category, 'reccategory' => $reccategory, 'credit' => number_format(intval($credit), 0), 'advs' => $advs, 'vips' => $vips, 'tops' => $tops, 'times' => $times, 'recommands' => $recommands));
+	return show_json(1, array('category' => $category, 'reccategory' => $reccategory, 'credit' => number_format(intval($credit), 0), 'advs' => $advs, 'vips' => $vips, 'tops' => $tops, 'times' => $times, 'recommands' => $recommands));
 }
 $_W['shopshare'] = array('title' => $this->set['share_title'], 'imgUrl' => tomedia($this->set['share_icon']), 'link' => $this->createPluginMobileUrl('creditshop'), 'desc' => $this->set['share_desc']);
 $com = p('commission');

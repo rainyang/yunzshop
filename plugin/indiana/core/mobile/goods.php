@@ -30,7 +30,7 @@ left join " . tablename('sz_yi_goods') . " g on (ig.good_id = g.id)
 left join " . tablename('sz_yi_indiana_period') . " ip on (ig.id = ip.ig_id) 
  where 1 {$condition} ", $params);
 
-$goods = set_medias(pdo_fetchall("SELECT ig.*, g.thumb, ip.period, ip.shengyu_codes, ip.zong_codes, ip.period_num FROM " . tablename('sz_yi_indiana_goods') . " ig 
+$goods = set_medias(pdo_fetchall("SELECT ig.*, g.thumb, ip.period, ip.shengyu_codes, ip.zong_codes, ip.period_num, ip.init_money as initmoney FROM " . tablename('sz_yi_indiana_goods') . " ig 
 left join " . tablename('sz_yi_goods') . " g on (ig.good_id = g.id) 
 left join " . tablename('sz_yi_indiana_period') . " ip on (ig.id = ip.ig_id)
  where 1 {$condition} AND ip.status = 1 LIMIT " . ($pindex - 1) * $psize . "," . $psize, $params),'thumb');

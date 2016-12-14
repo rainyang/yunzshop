@@ -57,7 +57,7 @@ if ($_W['isajax']) {
 					$row['status'] = '待退房';
 				}
  			}
-			if (!empty($this->set['openorderdetail'])) {
+			//if (!empty($this->set['openorderdetail'])) {
 				$goods = pdo_fetchall("SELECT og.id,og.ordergoodid,og.money,g.thumb,g.title,og.total,og.optionname from " . tablename('sz_yi_bonus_goods') . " og" . " left join " . tablename('sz_yi_goods') . " g on g.id=og.ordergoodid  " . " where og.orderid=:orderid and og.uniacid = :uniacid and og.bonus_area=0 and og.mid =:mid order by og.createtime desc ", array(':uniacid' => $_W['uniacid'], ':orderid' => $row['id'], ':mid' => $member['id']));
 				$goods = set_medias($goods, 'thumb');
 				foreach ($goods as &$g) {
@@ -67,7 +67,7 @@ if ($_W['isajax']) {
 				}
 				unset($g);
 				$row['order_goods'] = set_medias($goods, 'thumb');
-			}
+			//}
 			if (!empty($this->set['openorderbuyer'])) {
 				$row['buyer'] = m('member')->getMember($row['openid']);
 			}
@@ -75,7 +75,7 @@ if ($_W['isajax']) {
 		unset($row);
 	}
 	
-	show_json(1, array('list' => $list, 'pagesize' => $psize));
+    return show_json(1, array('list' => $list, 'ordercount' => $ordercount, 'commissioncount' => $commissioncount, 'pagesize' => $psize));
 }
 
 

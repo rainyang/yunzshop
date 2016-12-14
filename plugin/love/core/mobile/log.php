@@ -86,33 +86,33 @@ if ($_W['isajax']) {
 		  	$donation_credit1 = -$pay*100;
 		  	pdo_insert('sz_yi_love_log',$data);
 		  	m('member')->setCredit($openid, 'credit1', $donation_credit1, array(0, '会员爱心基金贡献：' . $donation_credit1 . " 积分"));
-		  	show_json(1, array('url' => $this->createPluginMobileUrl('love/log_detail')));
+		  	return show_json(1, array('url' => $this->createPluginMobileUrl('love/log_detail')));
 		  }else{
-		  	show_json(0, array('message' => '积分不足!您可以购买商品来进行捐赠！'));
+		  	return show_json(0, array('message' => '积分不足!您可以购买商品来进行捐赠！'));
 		  }			
 		}else if($gender==2){
 	      if($member['credit2'] > 0 && $member['credit2'] >= $pay){
 		  	$donation_credit2 = -$pay;
 		  	pdo_insert('sz_yi_love_log',$data);
 		  	m('member')->setCredit($openid, 'credit2', $donation_credit2, array(0, '会员爱心基金贡献：' . $donation_credit2 . " 元"));
-		  	show_json(1, array('url' => $this->createPluginMobileUrl('love/log_detail')));
+		  	return show_json(1, array('url' => $this->createPluginMobileUrl('love/log_detail')));
 		  }else{
-		  	show_json(0, array('message' => '余额不足!您可以购买商品来进行捐赠！'));
+		  	return show_json(0, array('message' => '余额不足!您可以购买商品来进行捐赠！'));
 		  }
 		}else if($gender==3){
 	      if($member['commission_ok'] > 0 && $member['commission_ok'] >= $pay){
 		  	$donation_credit20 = $pay;
 		  	pdo_insert('sz_yi_love_log',$data);
 		  	m('member')->setCredit($openid, 'credit20', $donation_credit20);
-		  	show_json(1, array('url' => $this->createPluginMobileUrl('love/log_detail')));
+		  	return show_json(1, array('url' => $this->createPluginMobileUrl('love/log_detail')));
 		  }else{
-		  	show_json(0, array('message' => '佣金不足!您可以购买商品来进行捐赠！'));
+		  	return show_json(0, array('message' => '佣金不足!您可以购买商品来进行捐赠！'));
 		  }
 		}
 		exit();
  	}	
  	$member['commission_ok'] = number_format($member['commission_ok'], 2);
-	show_json(1, array('list' => $list, 'member' => $member, 'status' => $status));
+	return show_json(1, array('list' => $list, 'member' => $member, 'status' => $status));
 }
 include $this->template('log');
 	

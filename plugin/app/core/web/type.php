@@ -52,6 +52,9 @@ if (checksubmit()) {
 
     $pay['ping'] = $ping;
 
+    $wx_native = array_elements(array('wx_appid', 'wx_mcid', 'wx_secret'), $_GPC['wx_native']);
+    $pay['wx_native'] = $wx_native;
+
     $dat = iserializer($pay);
     pdo_update('uni_settings', array('payment' => $dat), array('uniacid' => $_W['uniacid']));
     cache_delete("unisetting:{$_W['uniacid']}");

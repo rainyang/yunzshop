@@ -77,9 +77,9 @@ if ($operation == 'category') {
 	        }
 	        $parent_category[$key]['count'] = $conut;
 		}
-		show_json(1, array('category' => $parent_category,'current_category' => $current_category));
+		return show_json(1, array('category' => $parent_category,'current_category' => $current_category));
 	} else {
 		$category = m('shop')->getCategory();
-		show_json(1, array('category' => $category));
+		return show_json(1, array('category' => $category));
 	}
 } 

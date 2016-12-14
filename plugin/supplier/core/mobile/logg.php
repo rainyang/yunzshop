@@ -19,8 +19,14 @@ if ($_W['isajax']) {
 	if ($status != '') {
 		$condition .= ' and status=' . intval($status);
 	}
+    if (!empty($_GPC['id'])) {
+        $condition .=' AND id<:id';
+        $params[':id'] = intval($_GPC['id']);
+    }
 	$list = pdo_fetchall("select * from " . tablename('sz_yi_supplier_apply') . " where 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 	$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_supplier_apply') . " where 1 {$condition}", $params);
+    $count = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_supplier_apply') . " where 1 and `uid`=:uid and uniacid=:uniacid", array(':uniacid' => $_W['uniacid'],':uid' => $uid));
+    $pageno = ceil($count/$psize);
 	foreach ($list as &$row) {
 		$row['apply_money'] = number_format($row['apply_money'],2);
 		if ($row['status'] == 0) {
@@ -34,7 +40,7 @@ if ($_W['isajax']) {
 		}
 	}
 	unset($row);
-	show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+	return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize, 'pageno' => $pageno));
 }
 if ($operation == 'display') {
 	include $this->template('logg');

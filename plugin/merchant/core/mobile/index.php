@@ -55,7 +55,7 @@ if($_W['isajax']) {
 	 			}
 			}
 		}
-	show_json(2, array('list' => $list,'pagesize' => $psize));
+	return show_json(2, array('list' => $list,'pagesize' => $psize));
 	}
 }
 include $this->template('index');
