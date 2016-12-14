@@ -54,63 +54,63 @@ class BonusWeb extends Plugin
 
 	public function upgrade()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function agent()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function level()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function send()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function sendarea()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function sendall()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function notice()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function cover()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function set()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	public function detail()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	public function order()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	public function goods_rank()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	public function apply()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	
 }

@@ -27,27 +27,27 @@ class HotelWeb extends Plugin
 
 	public function upgrade()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function room_status()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	public function room_price()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	public function meet()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	public function rest()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	public function prints()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 }
