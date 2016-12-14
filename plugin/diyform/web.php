@@ -26,26 +26,26 @@ class DiyformWeb extends Plugin
     }
     public function temp()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function data()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function category()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function import()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function export()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function set()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
 }

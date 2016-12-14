@@ -28,46 +28,46 @@ class SupplierWeb extends Plugin
 	}
     public function upgrade()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function supplier()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function supplier_apply()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function supplier_finish()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function supplier_for()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function supplier_list()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function supplier_add()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function notice()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function set()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function supplier_for_resu()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function supplier_detail()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
 }
