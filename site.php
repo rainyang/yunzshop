@@ -19,55 +19,55 @@ class Sz_yiModuleSite extends Core
     //商城管理 
     public function doWebShop()
     {
-        $this->_exec(__FUNCTION__, 'index');
+        return $this->_exec(__FUNCTION__, 'index');
     }
 
     //订单管理  
     public function doWebOrder()
     {
-        $this->_exec(__FUNCTION__, 'list');
+        return $this->_exec(__FUNCTION__, 'list');
     }
 
     //会员管理
     public function doWebMember()
     {
-        $this->_exec(__FUNCTION__, 'list');
+        return $this->_exec(__FUNCTION__, 'list');
     }
 
     //财务管理
     public function doWebFinance()
     {
-        $this->_exec(__FUNCTION__, 'log');
+        return $this->_exec(__FUNCTION__, 'log');
     }
 
     //统计分析
     public function doWebStatistics()
     {
-        $this->_exec(__FUNCTION__, 'sale');
+        return $this->_exec(__FUNCTION__, 'sale');
     }
 
     //插件管理
     public function doWebPlugins()
     {
-        $this->_exec(__FUNCTION__, 'list');
+        return $this->_exec(__FUNCTION__, 'list');
     }
 
     //系统设置 
     public function doWebSysset()
     {
-        $this->_exec(__FUNCTION__, 'sysset');
+        return $this->_exec(__FUNCTION__, 'sysset');
     }
 
     //会议入口
     public function doWebMeet()
     {
-        $this->_exec(__FUNCTION__, 'meet');
+        return $this->_exec(__FUNCTION__, 'meet');
     }
 
     //餐饮入口
     public function doWebRest()
     {
-        $this->_exec(__FUNCTION__, 'rest');
+        return $this->_exec(__FUNCTION__, 'rest');
     }
 
     //插件web入口  
@@ -126,55 +126,55 @@ class Sz_yiModuleSite extends Core
     //购物车入口
     public function doMobileCart()
     {
-        $this->_exec('doMobileShop', 'cart', false);
+        return $this->_exec('doMobileShop', 'cart', false);
     }
 
     //我的收藏入口
     public function doMobileFavorite()
     {
-        $this->_exec('doMobileShop', 'favorite', false);
+        return $this->_exec('doMobileShop', 'favorite', false);
     }
 
     //工具
     public function doMobileUtil()
     {
-        $this->_exec(__FUNCTION__, '', false);
+        return $this->_exec(__FUNCTION__, '', false);
     }
 
     //会员
     public function doMobileMember()
     {
-        $this->_exec(__FUNCTION__, 'center', false);
+        return $this->_exec(__FUNCTION__, 'center', false);
     }
 
     //商城
     public function doMobileShop()
     {
-        $this->_exec(__FUNCTION__, 'index', false);
+        return $this->_exec(__FUNCTION__, 'index', false);
     }
 
     //订单
     public function doMobileOrder()
     {
-        $this->_exec(__FUNCTION__, 'list', false);
+        return $this->_exec(__FUNCTION__, 'list', false);
     }
 
     //会议
     public function doMobileMeet()
     {
-        $this->_exec(__FUNCTION__, 'index', false);
+        return $this->_exec(__FUNCTION__, 'index', false);
     }
 
     //餐饮
     public function doMobileRest()
     {
-        $this->_exec(__FUNCTION__, 'index', false);
+        return $this->_exec(__FUNCTION__, 'index', false);
     }
 
     //接口
     public function doMobileApi()
     {
-        $this->_exec(__FUNCTION__, 'index', false);
+        return $this->_exec(__FUNCTION__, 'index', false);
     }
     //订单
     //支付成功
@@ -196,18 +196,18 @@ class Sz_yiModuleSite extends Core
 
     public function doWebAuth()
     {
-        $this->_exec('doWebSysset', 'auth', true);
+        return $this->_exec('doWebSysset', 'auth', true);
     }
 
     public function doWebUpgrade()
     {
-        $this->_exec('doWebSysset', 'upgrade', true);
+        return $this->_exec('doWebSysset', 'upgrade', true);
     }
 
     //微信管理订单
     public function doMobileWechatOrder()
     {
-        $this->_execFront('doWebOrder', 'list', false);
+        return $this->_execFront('doWebOrder', 'list', false);
     }
 
 }
