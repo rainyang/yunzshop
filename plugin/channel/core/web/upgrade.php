@@ -133,6 +133,14 @@ COMMENT = '渠道商推荐员订单'";
 
 pdo_fetchall($sql);
 
+if(!pdo_fieldexists('sz_yi_af_channel', 'address')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_af_channel')." ADD `address` varchar(255) DEFAULT NULL;");
+}
+
+if(!pdo_fieldexists('sz_yi_af_channel', 'url')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_af_channel')." ADD `url` varchar(100) DEFAULT NULL;");
+}
+
 if(!pdo_fieldexists('sz_yi_member', 'ischannel')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `ischannel` INT(1) DEFAULT '0';");
 }

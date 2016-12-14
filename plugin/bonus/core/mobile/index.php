@@ -48,4 +48,7 @@ if ($this->set['select_goods'] == '1') {
 	}
 }
 $this->set['openselect'] = $openselect;
+if ($_W['isajax']) {
+	return show_json(1, array('member' => $member, 'level' => $level, 'set' => $set));
+}
 include $this->template('index');

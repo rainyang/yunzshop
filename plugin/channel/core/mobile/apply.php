@@ -13,7 +13,7 @@ if ($_W['isajax']) {
 	$last_apply					= pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND (apply_time+{$setapplycycle}>{$time}) ORDER BY id DESC");
 	if ($_W['ispost']) {
 		if ($commission_ok <= 0) {
-			show_json(0, '没有可提现金额');
+			return show_json(0, '没有可提现金额');
 		}
 		$time = time();
 		//出货单
@@ -83,10 +83,10 @@ if ($_W['isajax']) {
 		$returnurl 	= urlencode($this->createPluginMobileUrl('channel/orderj'));
 		$infourl 	= $this->createPluginMobileUrl('channel/orderj', array('returnurl' => $returnurl));
 		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_APPLY);
-		show_json(1, '已提交,请等待审核!');
+		return show_json(1, '已提交,请等待审核!');
 	}
 	$returnurl 	= urlencode($this->createPluginMobileUrl('commission/applyg'));
 	$infourl 	= $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-	show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'last_apply' => $last_apply, 'set' => $this->set, 'channel_info' => $channelinfo, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
+	return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'last_apply' => $last_apply, 'set' => $this->set, 'channel_info' => $channelinfo, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
 }
 include $this->template('apply');

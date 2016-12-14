@@ -255,7 +255,42 @@ if ($_W['isajax']) {
 		$sql .= " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time})) order by d.gettime desc";
 		$counts['couponcount'] = pdo_fetchcolumn($sql, array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
 	}
-	show_json(1, array('member' => $member,'referrer'=>$referrer,'shop_set'=>$shop_set, 'order' => $order,'orderhotel' => $orderhotel,'memberhotel'=>$memberhotel,'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade, 'app'=>$app));
+
+	if (p('supplier') && $shopset['switch'] == 1 && empty($shopset['af_result']) && empty($issupplier)) {
+    	$show_af_supplier = true;
+    } else {
+    	$show_af_supplier = false;
+    }
+    if (p('supplier') && !empty($issupplier) && $shopset['switch_centre'] == 1) {
+    	$show_supplier_center = true;
+    } else {
+    	$show_supplier_center = false;
+    }
+    if (p('channel') && empty($ischannel) && $channel_set['become_condition'] == 1 && $member['isagent'] == 1 && $member['status'] == 1) {
+    	$show_af_channel = true;
+    } else {
+    	$show_af_channel = false;
+    }
+    if (p('channel') && !empty($ischannel)) {
+    	$show_channel_center = true;
+    } else {
+    	$show_channel_center = false;
+    }
+    if ($pluginbonus && is_weixin_show() && !empty($shopset['bonus_start'])) {
+    	$show_bonus_center = true;
+    } else {
+    	$show_bonus_center = false;
+    }
+    $variable = array(
+        'yunbiset'=> $yunbiset,
+        'show_af_supplier' => $show_af_supplier,
+        'show_supplier_center' => $show_supplier_center,
+        'show_af_channel' => $show_af_channel,
+        'show_channel_center' => $show_channel_center,
+        'show_bonus_center' => $show_bonus_center
+    );
+	return show_json(1, array('member' => $member,'referrer'=>$referrer,'shop_set'=>$shop_set, 'order' => $order,'orderhotel' => $orderhotel,'memberhotel'=>$memberhotel,'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade, 'app'=>$app, 'set'=> $set),$variable);
+
 }
 $pcashier = p('cashier');
 $has_cashier = false;

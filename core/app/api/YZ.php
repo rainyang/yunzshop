@@ -37,16 +37,49 @@ class YZ extends base
      * @var int
      */
     protected $uniacid;
+
     /**
      * 写入属性默认值
      */
     public function __construct()
     {
-        global $_W,$_GPC;
+        global $_W, $_GPC;
         parent::__construct();
         $this->set_WAnd_GPC();
         //require IA_ROOT . '/web/common/bootstrap.sys.inc.php';
+        require_once __CORE_PATH__ . '/../site.php';
     }
+
+    protected function callMobile($path)
+    {
+        global $_W, $_GPC;
+        $_W['isajax'] = true;
+        list($folder_name, $file_name, $action_name, $to) = explode('/', $path);
+        $class = new \Sz_yiModuleSite();
+        $method = 'doMobile' . ucfirst($folder_name);
+        $_GPC['p'] = $file_name;
+        $_GPC['op'] = $action_name;
+        $_GPC['to'] = $to;
+        $result = $class->$method();
+        if (!in_array($result['status'], [1, 2])) {
+            $this->returnError($result['json']);
+        }
+        return $result;
+    }
+
+    protected function callPlugin($path)
+    {
+        global $_GPC, $_W;
+        $_W['isajax'] = true;
+        list($_GPC['p'], $_GPC['method'], $_GPC['op'], $_GPC['to']) = explode('/', $path);
+        $class = new \Sz_yiModuleSite();
+        $result = $class->doMobilePlugin();
+        if (!in_array($result['status'], [1, 2])) {
+            $this->returnError($result['json']);
+        }
+        return $result;
+    }
+
     /**
      * 返回解密的参数
      *
@@ -59,9 +92,10 @@ class YZ extends base
         global $_W, $_GPC;
         $this->_W = $_W;
         $this->_GPC = $_GPC;
-        if(is_array($para)){
+        if (is_array($para)) {
             $_GPC = array_merge($_GPC, $para);
         }
+        $_GPC['m'] = 'sz_yi';
         $_W['uid'] = $para['uid'];
         $_GPC['__uid'] = $para['uid'];
         $para['uniacid'] = $_GET['uniacid'];
@@ -72,6 +106,7 @@ class YZ extends base
             $_GPC['__uniacid'] = $para['uniacid'];
         }
     }
+
     /**
      * 判断管理员是否为正版用户
      *
@@ -83,6 +118,7 @@ class YZ extends base
         $founders = explode(',', $this->_W['config']['setting']['founder']);
         return in_array($para['uid'], $founders);
     }
+
     /**
      * 验证用户是否拥有该接口访问权限
      *
@@ -96,6 +132,7 @@ class YZ extends base
             $this->returnError('您没有权限操作，请联系管理员!');
         }
     }
+
     /**
      * 获取当前访问管理员的ID
      *
@@ -106,6 +143,7 @@ class YZ extends base
     {
         return $this->uid;
     }
+
     /**
      * 获取当前操作公众号的ID
      *
@@ -116,6 +154,7 @@ class YZ extends base
     {
         return $this->uniacid;
     }
+
     /**
      * 管理员是否为供应商
      *
@@ -127,6 +166,7 @@ class YZ extends base
         $open_id = m('user')->getPerOpenid();
         return $open_id;
     }
+
     /**
      * 载入指定model
      *

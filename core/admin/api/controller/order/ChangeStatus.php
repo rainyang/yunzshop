@@ -211,7 +211,6 @@ class ChangeStatus extends \admin\api\YZ
             'company_list' => $company_list,
             'address' => $address
         );
-        dump($res);
         $this->returnSuccess($res);
     }
 

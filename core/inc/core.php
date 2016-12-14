@@ -330,6 +330,10 @@ class Core extends WeModuleSite
                 $query['mid'] = $mid;
             }
         }
+
+        if (empty($query['m'])) {
+            $this->modulename = empty($_GPC['m'])?:'sz_yi';
+        }
         return $_W['siteroot'] . 'app/' . substr(parent::createMobileUrl($do[0], $query, true), 2);
     }
     public function createWebUrl($do, $query = array())
@@ -403,8 +407,7 @@ class Core extends WeModuleSite
         if (!is_file($file)) {
             message("未找到 控制器文件 {$do}::{$p} : {$file}");
         }
-        include $file;
-        exit;
+        return include $file;
     }
 
     public function _execFront($do, $default = '', $web = true)

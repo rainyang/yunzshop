@@ -206,8 +206,8 @@ class Sz_DYi_Common
             $package['total_fee']        = $params['fee'] * 100;
             $package['spbill_create_ip'] = CLIENT_IP;
             $package['notify_url']       = $_W['siteroot'] . "addons/sz_yi/payment/wechat/notify.php";
-            $package['trade_type']       = ($params['trade_type'] == 'NATIVE') ? 'NATIVE' : 'JSAPI';
-            $package['openid']           = $_W['fans']['from_user'];
+            $package['trade_type']       = !in_array($params['trade_type'],['NATIVE','APP','JSAPI']) ? 'JSAPI' : $params['trade_type'];
+            $package['openid']           = $_W['fans']['from_user'];//'oYGiFxMGM1qetXjN5iDJJXA3O--k';//
             ksort($package, SORT_STRING);
             $string1 = '';
             foreach ($package as $key => $v) {
@@ -234,15 +234,21 @@ class Sz_DYi_Common
             $wOpt['appId']     = $wechat['appid'];
             $wOpt['timeStamp'] = TIMESTAMP . "";
             $wOpt['nonceStr']  = random(8) . "";
-            $wOpt['package']   = 'prepay_id=' . $prepayid;
-            $wOpt['signType']  = 'MD5';
-
-            if($params['trade_type'] == 'NATIVE'){
-                $code_url = (array)$xml->code_url;
-                $wOpt['code_url']  = $code_url[0];
+            if($params['trade_type'] == 'APP'){
+                list($wOpt['prepayId'])  = (array)$prepay_id;
+                $wOpt['package']   = 'Sign=WXPay';
+                list($wOpt['partnerId'])  = (array)$xml->mch_id;
+            }else{
+                $wOpt['signType']  = 'MD5';
+                $wOpt['package']   = 'prepay_id=' . $prepay_id;
+                if($params['trade_type'] == 'NATIVE'){
+                    $code_url = (array)$xml->code_url;
+                    $wOpt['code_url']  = $code_url[0];
+                }
             }
             ksort($wOpt, SORT_STRING);
             foreach ($wOpt as $key => $v) {
+                $key = strtolower($key);
                 $string .= "{$key}={$v}&";
             }
             $string .= "key={$wechat['signkey']}";

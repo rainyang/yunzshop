@@ -61,21 +61,21 @@ if ( $order['order_type'] == '4' && $_W['ispost'] ) {
             ':period_num'  => $order['period_num']
         ));
     if ($goodstotal > $shengyu_codes) {
-        show_json(0, '剩余人次不足!');
+        return show_json(0, '剩余人次不足!');
     }
 }
 
 if ($operation == 'display' && $_W['isajax']) {
     if (empty($orderid)) {
-        show_json(0, '参数错误!');
+        return show_json(0, '参数错误!');
     }
     if (empty($order)) {
-        show_json(0, '订单未找到!');
+        return show_json(0, '订单未找到!');
     }
     if ($order['status'] == -1) {
-        show_json(-1, '订单已关闭, 无法付款!');
+        return show_json(-1, '订单已关闭, 无法付款!');
     } elseif ($order['status'] >= 1) {
-        show_json(-1, '订单已付款, 无需重复支付!');
+        return show_json(-1, '订单已付款, 无需重复支付!');
     }
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
@@ -83,7 +83,7 @@ if ($operation == 'display' && $_W['isajax']) {
         ':tid' => $ordersn_general
     ));
     if (!empty($log) && $log['status'] != '0') {
-        show_json(-1, '订单已支付, 无需重复支付!');
+        return show_json(-1, '订单已支付, 无需重复支付!');
     }
     if (!empty($log) && $log['status'] == '0') {
         pdo_delete('core_paylog', array(
@@ -268,7 +268,7 @@ if ($operation == 'display' && $_W['isajax']) {
     }
     unset($value);
     $order_goods = set_medias($order_goods, 'thumb');
-    show_json(1, array(
+    return show_json(1, array(
         'order' => $order,
         'set' => $set,
         'credit' => $credit,
@@ -293,7 +293,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'pay'
     ));
     if (empty($order)) {
-        show_json(0, '订单未找到!');
+        return show_json(0, '订单未找到!');
     }
     $type = $_GPC['type'];
     if (!in_array($type, array(
@@ -307,11 +307,11 @@ if ($operation == 'display' && $_W['isajax']) {
         'paypal',
         'yeepay_wy'
     ))) {
-        show_json(0, '未找到支付方式');
+        return show_json(0, '未找到支付方式');
     }
 
     if($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0){
-        show_json(0, '余额不足，请充值后在试！');
+        return show_json(0, '余额不足，请充值后在试！');
     }
     $pay_ordersn = $order['pay_ordersn'] ? $order['pay_ordersn'] : $ordersn_general;
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
@@ -320,7 +320,7 @@ if ($operation == 'display' && $_W['isajax']) {
         ':tid' => $pay_ordersn
     ));
     if (empty($log)) {
-        show_json(0, '支付出错,请重试!');
+        return show_json(0, '支付出错,请重试!');
     }
     if(is_array($orderid)){
         $orderids = implode(',', $orderid);
@@ -362,11 +362,11 @@ if ($operation == 'display' && $_W['isajax']) {
 
     foreach ($order_goods as $data) {
         if (empty($data['status']) || !empty($data['deleted'])) {
-            show_json(-1, $data['title'] . '<br/> 已下架!');
+            return show_json(-1, $data['title'] . '<br/> 已下架!');
         }
         if ($data['maxbuy'] > 0) {
             if ($data['buycount'] > $data['maxbuy']) {
-                show_json(-1, $data['title'] . '<br/> 一次限购 ' . $data['maxbuy'] . $unit . "!");
+                return show_json(-1, $data['title'] . '<br/> 一次限购 ' . $data['maxbuy'] . $unit . "!");
             }
         }
         if ($data['usermaxbuy'] > 0) {
@@ -376,27 +376,27 @@ if ($operation == 'display' && $_W['isajax']) {
                 ':openid' => $openid
             ));
             if ($order_goodscount >= $data['usermaxbuy']) {
-                show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
+                return show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
             }
         }
         if ($data['istime'] == 1) {
             if (time() < $data['timestart']) {
-                show_json(-1, $data['title'] . '<br/> 限购时间未到!');
+                return show_json(-1, $data['title'] . '<br/> 限购时间未到!');
             }
             if (time() > $data['timeend']) {
-                show_json(-1, $data['title'] . '<br/> 限购时间已过!');
+                return show_json(-1, $data['title'] . '<br/> 限购时间已过!');
             }
         }
         if ($data['buylevels'] != '') {
             $buylevels = explode(',', $data['buylevels']);
             if (!in_array($member['level'], $buylevels)) {
-                show_json(-1, '您的会员等级无法购买<br/>' . $data['title'] . '!');
+                return show_json(-1, '您的会员等级无法购买<br/>' . $data['title'] . '!');
             }
         }
         if ($data['buygroups'] != '') {
             $buygroups = explode(',', $data['buygroups']);
             if (!in_array($member['groupid'], $buygroups)) {
-                show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
+                return show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
             }
         }
         if (!empty($data['optionid'])) {
@@ -408,14 +408,14 @@ if ($operation == 'display' && $_W['isajax']) {
             if (!empty($option)) {
                 if ($option['stock'] != -1) {
                     if (empty($option['stock'])) {
-                        show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+                        return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
                     }
                 }
             }
         } else {
             if ($data['stock'] != -1) {
                 if (empty($data['stock'])) {
-                    show_json(-1, $data['title'] . "<br/>库存不足!");
+                    return show_json(-1, $data['title'] . "<br/>库存不足!");
                 }
             }
         }
@@ -432,7 +432,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if (!empty($set['pay']['weixin']) || !empty($set['pay']['weixin_jie'])) {
             
         }else{
-            show_json(0, '未开启微信支付!');
+            return show_json(0, '未开启微信支付!');
         }
 
         $wechat        = array(
@@ -457,14 +457,23 @@ if ($operation == 'display' && $_W['isajax']) {
                 $options           = $setting['payment']['wechat'];
                 if (is_weixin()) {
                     if(empty($set['pay']['weixin_jie'])){
-                        $options['appid']  = $_W['account']['key'];
-                        $options['secret'] = $_W['account']['secret'];
+                        if(is_app_api()){
+                            $sysset_data = m("cache")->get("sysset");
+                            $sysset_data = unserialize($setdata['sets']);
+                            $options['mchid'] = $sysset_data['app']['base']['wx_native']['mchid'];
+                            $options['appid'] = $sysset_data['app']['base']['wx_native']['appid'];
+                            $options['secret'] = $sysset_data['app']['base']['wx_native']['secret'];
+                            $params['trade_type'] = 'APP';
+                        }else {
+                            $options['appid'] = $_W['account']['key'];
+                            $options['secret'] = $_W['account']['secret'];
+                        }
                         $wechat            = m('common')->wechat_build($params, $options, 0);
                         //$wechat['success'] = false;
                         if (!is_error($wechat)) {
                             $wechat['success'] = true;
                         } else {
-                            show_json(0, $wechat['message']);
+                            return show_json(0, $wechat['message']);
                         }
                     }
                 }
@@ -481,13 +490,13 @@ if ($operation == 'display' && $_W['isajax']) {
                 }
             }
             if (!$wechat['success']) {
-                show_json(0, '微信支付参数错误!');
+                return show_json(0, '微信支付参数错误!');
             }
 
             pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $uniacid
                 ));
-            show_json(1, array(
+            return show_json(1, array(
                 'wechat' => $wechat
             ));
         }
@@ -506,12 +515,12 @@ if ($operation == 'display' && $_W['isajax']) {
                     $wechat['code_url'] = m('qrcode')->createWechatQrcode($wechat['code_url']);
                     //$wechat['code_url'] = $wechat['code_url']; 
                 } else {
-                    show_json(0, $wechat['message']);
+                    return show_json(0, $wechat['message']);
                 }
                 pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $uniacid
                 ));
-                show_json(1, array(
+                return show_json(1, array(
                     'wechat' => $wechat
                 ));
             }
@@ -520,27 +529,27 @@ if ($operation == 'display' && $_W['isajax']) {
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=22 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $uniacid
                 ));
-        show_json(1);
+        return show_json(1);
     }else if ($type == 'yunpay') {
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=24 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $uniacid
                 ));
-        show_json(1);
+        return show_json(1);
     } else if ($type == 'yeepay') {
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=25 where '.$where_update.' and uniacid=:uniacid ', array(
             ':uniacid' => $uniacid
         ));
-        show_json(1);
+        return show_json(1);
     } else if ($type == 'yeepay_wy') {
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=26 where '.$where_update.' and uniacid=:uniacid ', array(
             ':uniacid' => $uniacid
         ));
-        show_json(1);
+        return show_json(1);
     }elseif ($type == 'paypal') {
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=29 where '.$where_update.' and uniacid=:uniacid ', array(
             ':uniacid' => $uniacid
         ));
-        show_json(1);
+        return show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
     $pset = m('common')->getSysset();
@@ -589,11 +598,11 @@ if ($operation == 'display' && $_W['isajax']) {
     
     foreach ($order_goods as $data) {
         if (empty($data['status']) || !empty($data['deleted'])) {
-            show_json(-1, $data['title'] . '<br/> 已下架!');
+            return show_json(-1, $data['title'] . '<br/> 已下架!');
         }
         if ($data['maxbuy'] > 0) {
             if ($data['buycount'] > $data['maxbuy']) {
-                show_json(-1, $data['title'] . '<br/> 一次限购 ' . $data['maxbuy'] . $unit . "!");
+                return show_json(-1, $data['title'] . '<br/> 一次限购 ' . $data['maxbuy'] . $unit . "!");
             }
         }
         if ($data['usermaxbuy'] > 0) {
@@ -603,27 +612,27 @@ if ($operation == 'display' && $_W['isajax']) {
                 ':openid' => $openid
             ));
             if ($order_goodscount >= $data['usermaxbuy']) {
-                show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
+                return show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
             }
         }
         if ($data['istime'] == 1) {
             if (time() < $data['timestart']) {
-                show_json(-1, $data['title'] . '<br/> 限购时间未到!');
+                return show_json(-1, $data['title'] . '<br/> 限购时间未到!');
             }
             if (time() > $data['timeend']) {
-                show_json(-1, $data['title'] . '<br/> 限购时间已过!');
+                return show_json(-1, $data['title'] . '<br/> 限购时间已过!');
             }
         }
         if ($data['buylevels'] != '') {
             $buylevels = explode(',', $data['buylevels']);
             if (!in_array($member['level'], $buylevels)) {
-                show_json(-1, '您的会员等级无法购买<br/>' . $data['title'] . '!');
+                return show_json(-1, '您的会员等级无法购买<br/>' . $data['title'] . '!');
             }
         }
         if ($data['buygroups'] != '') {
             $buygroups = explode(',', $data['buygroups']);
             if (!in_array($member['groupid'], $buygroups)) {
-                show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
+                return show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
             }
         }
         if (!empty($data['optionid'])) {
@@ -635,20 +644,20 @@ if ($operation == 'display' && $_W['isajax']) {
             if (!empty($option)) {
                 if ($option['stock'] != -1) {
                     if (empty($option['stock'])) {
-                        show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+                        return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
                     }
                 }
             }
         } else {
             if ($data['stock'] != -1) {
                 if (empty($data['stock'])) {
-                    show_json(-1, $data['title'] . "<br/>库存不足!");
+                    return show_json(-1, $data['title'] . "<br/>库存不足!");
                 }
             }
         }
     }
     if (empty($order)) {
-        show_json(0, '订单未找到!');
+        return show_json(0, '订单未找到!');
     }
     $type = $_GPC['type'];
     if (!in_array($type, array(
@@ -659,11 +668,11 @@ if ($operation == 'display' && $_W['isajax']) {
         'storecash',
         'paypal'
     ))) {
-        show_json(0, '未找到支付方式');
+        return show_json(0, '未找到支付方式');
     }
 
     if ($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0) {
-        show_json(0, '余额不足，请充值后在试！');
+        return show_json(0, '余额不足，请充值后在试！');
     }
     $pay_ordersn = $order['pay_ordersn'] ? $order['pay_ordersn'] : $ordersn_general;
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
@@ -672,7 +681,7 @@ if ($operation == 'display' && $_W['isajax']) {
         ':tid' => $pay_ordersn
     ));
     if (empty($log)) {
-        show_json(0, '支付出错,请重试!');
+        return show_json(0, '支付出错,请重试!');
     }
     $plid = $log['plid'];
     if(is_array($orderid)){
@@ -683,7 +692,7 @@ if ($operation == 'display' && $_W['isajax']) {
     }
     if ($type == 'cash') {
         if (!$set['pay']['cash']) {
-            show_json(0, '当前支付方式未开启,请重试!');
+            return show_json(0, '当前支付方式未开启,请重试!');
         }
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=3 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $uniacid
@@ -714,22 +723,22 @@ if ($operation == 'display' && $_W['isajax']) {
         if (!empty($pay_result['verifycode'])) {
             if($pset['sms']['type'] == 1){
                 if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
-                    show_json(1, $pay_result);
+                    return show_json(1, $pay_result);
                 }
                 else{
-                    show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                    return show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
                 }
             }
             else{
                 if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
-                    show_json(1, $pay_result);
+                    return show_json(1, $pay_result);
                 }
                 else{
-                    show_json(0, $pay_result['verifycode']['msg']);
+                    return show_json(0, $pay_result['verifycode']['msg']);
                 }
             }
         } else {
-            show_json(1, $pay_result);
+            return show_json(1, $pay_result);
         }
     }
     $ps          = array();
@@ -739,7 +748,7 @@ if ($operation == 'display' && $_W['isajax']) {
     $ps['title'] = $log['title'];
     if ($type == 'storecash') {
         if (!$set['pay']['cash']) {
-            show_json(0, '当前支付方式未开启,请重试!');
+            return show_json(0, '当前支付方式未开启,请重试!');
         }
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=4 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $_W['uniacid']
@@ -759,22 +768,22 @@ if ($operation == 'display' && $_W['isajax']) {
         if (!empty($pay_result['verifycode'])) {
             if($pset['sms']['type'] == 1){
                 if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
-                    show_json(1, $pay_result);
+                    return show_json(1, $pay_result);
                 }
                 else{
-                    show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                    return show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
                 }
             }
             else{
                 if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
-                    show_json(1, $pay_result);
+                    return show_json(1, $pay_result);
                 }
                 else{
-                    show_json(0, $pay_result['verifycode']['msg']);
+                    return show_json(0, $pay_result['verifycode']['msg']);
                 }
             }
         } else {
-            show_json(1, $pay_result);
+            return show_json(1, $pay_result);
         }
     }
     $ps          = array();
@@ -784,11 +793,11 @@ if ($operation == 'display' && $_W['isajax']) {
     $ps['title'] = $log['title'];
     if ($type == 'credit') {
         if (!$set['pay']['credit']) {
-            show_json(0, '余额支付未开启！');
+            return show_json(0, '余额支付未开启！');
         }
         $credits = m('member')->getCredit($openid, 'credit2');
         if ($credits < $ps['fee']) {
-            show_json(0, "余额不足,请充值");
+            return show_json(0, "余额不足,请充值");
         }
         $fee    = floatval($ps['fee']);
         $result = m('member')->setCredit($openid, 'credit2', -$fee, array(
@@ -796,7 +805,7 @@ if ($operation == 'display' && $_W['isajax']) {
             '消费' . $setting['creditbehaviors']['currency'] . ':' . $fee
         ));
         if (is_error($result)) {
-            show_json(0, $result['message']);
+            return show_json(0, $result['message']);
         }
         $record           = array();
         $record['status'] = '1';
@@ -830,22 +839,22 @@ if ($operation == 'display' && $_W['isajax']) {
         if (!empty($pay_result['verifycode'])) {
             if($pset['sms']['type'] == 1){
                 if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
-                    show_json(1, $pay_result);
+                    return show_json(1, $pay_result);
                 }
                 else{
-                    show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                    return show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
                 }
             }
             else{
                 if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
-                    show_json(1, $pay_result);
+                    return show_json(1, $pay_result);
                 }
                 else{
-                    show_json(0, $pay_result['verifycode']['msg']);
+                    return show_json(0, $pay_result['verifycode']['msg']);
                 }
             }
         } else {
-            show_json(1, $pay_result);
+            return show_json(1, $pay_result);
         }
        
     } else if ($type == 'weixin') {
@@ -914,25 +923,25 @@ if ($operation == 'display' && $_W['isajax']) {
             if (!empty($pay_result['verifycode'])) {
                 if($pset['sms']['type'] == 1){
                     if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
-                        show_json(1, $pay_result);
+                        return show_json(1, $pay_result);
                     }
                     else{
-                        show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                        return show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
                     }
                 }
                 else{
                     if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
-                        show_json(1, $pay_result);
+                        return show_json(1, $pay_result);
                     }
                     else{
-                        show_json(0, $pay_result['verifycode']['msg']);
+                        return show_json(0, $pay_result['verifycode']['msg']);
                     }
                 }
             } else {
-                show_json(1, $pay_result);
+                return show_json(1, $pay_result);
             }
         }
-        show_json(0, '支付出错,请重试!');
+        return show_json(0, '支付出错,请重试!');
         
     }
 } else if ($operation == 'return') {    
@@ -941,8 +950,8 @@ if ($operation == 'display' && $_W['isajax']) {
         die('支付出现错误，请重试!');
     }
     //保存支付宝交易号
-    $trade_no = array('trade_no'=>$_GPC['trade_no']);
-    pdo_update('sz_yi_order', $trade_no, array('pay_ordersn' =>$_GPC['out_trade_no'],'uniacid'=>$uniacid));
+    $trade_no = array('trade_no' => $_GPC['trade_no']);
+    pdo_update('sz_yi_order', $trade_no, array('pay_ordersn' => $_GPC['out_trade_no'], 'uniacid' => $uniacid));
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
         ':module' => 'sz_yi',
@@ -1209,7 +1218,7 @@ if ($operation == 'display' && $_W['isajax']) {
 }elseif ($operation == 'orderstatus' && $_W['isajax']) {
     global $_W;
     $order = pdo_fetch('select status from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid));
-    show_json(1, $order);
+    return show_json(1, $order);
 }
 
 

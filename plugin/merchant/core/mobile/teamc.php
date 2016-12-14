@@ -15,6 +15,6 @@ if ($_W['isajax']) {
         $value['realname'] = $merchants_member['realname'];
     }
     unset($value);
-	show_json(1, array('list' => $list, 'pagesize' => $psize));
+	return show_json(1, array('list' => $list, 'pagesize' => $psize));
 }
 include $this->template('teamc');
