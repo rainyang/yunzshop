@@ -217,7 +217,7 @@ if ($_W['isajax']) {
 		    }
 	    }
 		unset($row);
-		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+		return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	}
 }
 if(p('hotel')){

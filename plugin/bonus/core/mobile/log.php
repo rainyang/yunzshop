@@ -36,24 +36,24 @@ if ($_W['isajax']) {
 		$id = intval($_GPC['id']);
 		$apply = pdo_fetch('select * from ' . tablename('sz_yi_bonus_log') . ' where id=:id and `openid`=:openid and uniacid=:uniacid limit 1', array(':id' => $id, ':openid' => $openid, ':uniacid' => $uniacid));
 		if (empty($apply)) {
-			show_json(0, array('message' => '未找到提现申请!'));
+			return show_json(0, array('message' => '未找到提现申请!'));
 		}
 		$orderids = iunserializer($apply['orderids']);
 		if (!is_array($orderids) || count($orderids) <= 0) {
-			show_json(0, array('message' => '未找到订单信息!'));
+			return show_json(0, array('message' => '未找到订单信息!'));
 		}
-		show_json(1, array('apply' => $apply));
+		return show_json(1, array('apply' => $apply));
 	} else if ($operation == 'detail_order') {
 		$id = intval($_GPC['id']);
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 5;
 		$apply = pdo_fetch('select orderids from ' . tablename('sz_yi_commission_apply') . ' where id=:id and `mid`=:mid and uniacid=:uniacid limit 1', array(':id' => $id, ':mid' => $mid, ':uniacid' => $uniacid));
 		if (empty($apply)) {
-			show_json(0, array('message' => '未找到提现申请!'));
+			return show_json(0, array('message' => '未找到提现申请!'));
 		}
 		$orderids = iunserializer($apply['orderids']);
 		if (!is_array($orderids) || count($orderids) <= 0) {
-			show_json(0, array('message' => '未找到订单信息!'));
+			return show_json(0, array('message' => '未找到订单信息!'));
 		}
 		$ids = array();
 		foreach ($orderids as $o) {

@@ -38,7 +38,7 @@ if ($_W['isajax']) {
 			}
 			unset($row);
 		}
-		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+		return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	}
 }
 $_W['shopshare'] = array('title' => $this->set['share_title'], 'imgUrl' => tomedia($this->set['share_icon']), 'link' => $this->createPluginMobileUrl('creditshop'), 'desc' => $this->set['share_desc']);

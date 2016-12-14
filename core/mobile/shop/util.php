@@ -7,10 +7,10 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if ($operation == 'category') {
 	$category = m('shop')->getCategory();
 	$category2 = m('shop')->getCategory2();
-	show_json(1, array('category' => $category,'category2'=>$category2));
+	return show_json(1, array('category' => $category,'category2'=>$category2));
 } else if($operation == 'category2'){
 	$category = m('shop')->getCategory2();
-	show_json(1, array('category' => $category));
+	return show_json(1, array('category' => $category));
 } else if ($operation == 'areas') {
 	$areas = m('cache')->getArray('areas', 'global');
 	if (!is_array($areas)) {
@@ -25,7 +25,7 @@ if ($operation == 'category') {
 } else if ($operation == 'search') {
 	$keywords = trim($_GPC['keywords']);
 	$goods = m('goods')->getList(array('pagesize' => 100000, 'keywords' => trim($_GPC['keywords'])));
-	show_json(1, array('list' => $goods));
+	return show_json(1, array('list' => $goods));
 } else if ($operation == 'comment') {
 	$goodsid = intval($_GPC['goodsid']);
 	$pindex = max(1, intval($_GPC['page']));
@@ -47,10 +47,10 @@ if ($operation == 'category') {
 		$row['append_reply_images'] = is_array($append_reply_images) ? set_medias($append_reply_images) : array();
 	}
 	unset($row);
-	show_json(1, array('list' => $list, 'pagesize' => $psize));
+	return show_json(1, array('list' => $list, 'pagesize' => $psize));
 } else if ($operation == 'recommand') {
 	$goods = m('goods')->getList(array('pagesize' => 4, 'isrecommand' => true, 'random' => true));
-	show_json(1, array('list' => $goods));
+	return show_json(1, array('list' => $goods));
 } else if ($operation == 'benqi') {
 	$sql = 'SELECT ic.*, m.realname, m.avatar FROM ' . tablename('sz_yi_indiana_consumerecord') . ' ic 
 	 left join ' . tablename('sz_yi_member') . ' m on (ic.openid = m.openid)  
@@ -65,7 +65,7 @@ if ($operation == 'category') {
 	}
 	unset($row);
 
-	show_json(1, array('list' => $list));
+	return show_json(1, array('list' => $list));
 } else if ($operation == 'wangqi') {
 	$sql = 'SELECT * FROM ' . tablename('sz_yi_indiana_period') . ' where uniacid = :uniacid and goodsid=:goodsid and status = 3 ORDER BY period ASC ';
 	$params = array(
@@ -77,5 +77,5 @@ if ($operation == 'category') {
 		$row['jiexiao_time'] = date('Y-m-d H:i:s', $row['jiexiao_time']);
 	}
 	unset($row);
-	show_json(1, array('list' => $list));
+	return show_json(1, array('list' => $list));
 }

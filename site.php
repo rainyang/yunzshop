@@ -113,14 +113,15 @@ class Sz_yiModuleSite extends Core
         $plug = new $pluginClass($p);
         $method = strtolower($_GPC['method']);
         if (empty($method)) {
-            $plug->index();
+            return $plug->index();
+        }
+        elseif (method_exists($plug, $method)) {
+
+            return $plug->$method();
+        }else{
+            trigger_error('Plugin Mobile Method ' . $method . ' not Found!');
             exit;
         }
-        if (method_exists($plug, $method)) {
-            $plug->$method();
-            exit;
-        }
-        trigger_error('Plugin Mobile Method ' . $method . ' not Found!');
     }
 
     //购物车入口

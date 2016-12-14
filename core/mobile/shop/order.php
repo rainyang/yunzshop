@@ -39,7 +39,7 @@ if ($operation == 'display') {
 		}
 		unset($row);
 	}
-	show_json(1, array('total' => $total, 'list' => $list));
+	return show_json(1, array('total' => $total, 'list' => $list));
 } else if ($operation == 'detail') {
 	$orderid = intval($_GPC['orderid']);
 	$item = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid = '{$_W['uniacid']}' AND from_user = '{$_W['fans']['from_user']}' and id='{$orderid}' limit 1");
@@ -58,7 +58,7 @@ if ($operation == 'display') {
 	}
 	unset($g);
 	$dispatch = pdo_fetch("select id,dispatchname from " . tablename('shopping_dispatch') . " where id=:id limit 1", array(":id" => $item['dispatch']));
-	show_json(1, array('goods' => $goods, 'dispatch' => $dispatch));
+	return show_json(1, array('goods' => $goods, 'dispatch' => $dispatch));
 } else if ($operation == 'confirm') {
 	$orderid = intval($_GPC['orderid']);
 	$order = pdo_fetch("SELECT status FROM " . tablename('sz_yi_order') . " WHERE id = :id AND from_user = :from_user", array(':id' => $orderid, ':from_user' => $_W['fans']['from_user']));

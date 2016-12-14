@@ -24,7 +24,7 @@ if ($_W['isajax']) {
         $wait_applyed = 0;
     }
 
-	show_json(1, array('totalprice' => $totalprice, 'ordercount' => $ordercount, 'store' => $store, 'canwithdraw' => $canwithdraw, 'withdraw_money' => $totalwithdraws, 'canwithdrawtotal' => $totalwithdrawprice, 'wait_apply' => $wait_applyed, 'storeid' => $id));
+	return show_json(1, array('totalprice' => $totalprice, 'ordercount' => $ordercount, 'store' => $store, 'canwithdraw' => $canwithdraw, 'withdraw_money' => $totalwithdraws, 'canwithdrawtotal' => $totalwithdrawprice, 'wait_apply' => $wait_applyed, 'storeid' => $id));
 
 }
 include $this->template('my_pocket');

@@ -130,7 +130,7 @@ if ($_W['isajax']) {
         unset($r);
         $list       = set_medias($list, 'thumb');
         $totalprice = number_format($totalprice, 2);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'totalprice' => $totalprice,
@@ -191,14 +191,14 @@ if ($_W['isajax']) {
         if ($goods['hasoption'] == 1) {
               $option_data = pdo_fetch("SELECT `stock` FROM " . tablename('sz_yi_goods_option') . ' WHERE id=:id', array(':id'=> $optionid));
             if (intval($data['total'] + $total) > $option_data['stock']) {
-                show_json(0, array(
+                return show_json(0, array(
                     'message' => '您最多购买' . $option_data['stock'] . '件'
                 ));
             }
 
         } else {
             if (intval($data['total'] + $total) > $goods['total']) {
-                show_json(0, array(
+                return show_json(0, array(
                     'message' => '您最多购买' . $goods['total'] . '件'
                 ));
             }
@@ -278,7 +278,7 @@ if ($_W['isajax']) {
                     'optionid' => $optionid,
                 ));
                 $cartcount += $total;
-                show_json(1, array(
+                return show_json(1, array(
                     'message' => '添加成功',
                     'cartcount' => $cartcount
                 ));
@@ -290,7 +290,7 @@ if ($_W['isajax']) {
             $optionid = explode('|', $optionid);
 
             if (count($total) != count($optionid)) {
-                show_json(0);
+                return show_json(0);
             }
 
             foreach ($optionid as $key => $val) {
@@ -309,7 +309,7 @@ if ($_W['isajax']) {
                     }
 
 
-                    show_json(1, array(
+                    return show_json(1, array(
                         /*'message' => '添加成功',*/
                         'cartcount' => 0
                     ));
@@ -321,7 +321,7 @@ if ($_W['isajax']) {
                     ':id' => $id
                 ));
                 if (empty($goods)) {
-                    show_json(0, '商品未找到');
+                    return show_json(0, '商品未找到');
                 }
                 $diyform_plugin = p('diyform');
                 $datafields     = "id,total";
@@ -338,14 +338,14 @@ if ($_W['isajax']) {
                 if ($goods['hasoption'] == 1) {
                     $option_data = pdo_fetch("SELECT `stock` FROM " . tablename('sz_yi_goods_option') . ' WHERE id=:id', array(':id'=> $optionid[$key]));
                     if (intval($data['total'] + $total[$key]) > $option_data['stock']) {
-                        show_json(0, array(
+                        return show_json(0, array(
                             'message' => '您最多购买' . $option_data['stock'] . '件'
                         ));
                     }
 
                 } else {
                     if (intval($data['total'] + $total[$key]) > $goods['total']) {
-                        show_json(0, array(
+                        return show_json(0, array(
                             'message' => '您最多购买' . $goods['total'] . '件'
                         ));
                     }
@@ -422,7 +422,7 @@ if ($_W['isajax']) {
                         'optionid' => $optionid[$key],
                     ));
                     $cartcount += $total[$key];
-                    show_json(1, array(
+                    return show_json(1, array(
                         'message' => '添加成功',
                         'cartcount' => $cartcount
                     ));

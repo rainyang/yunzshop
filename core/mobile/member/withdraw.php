@@ -28,13 +28,13 @@ if ($operation == 'display' && $_W['isajax']) {
 	$money = floatval($_GPC['money']);
 	$credit = m('member')->getCredit($openid, 'credit2');
     if ($money < 0) {
-		show_json(0, '非法提现金额!');
+		return show_json(0, '非法提现金额!');
 	}
 	if (empty($money)) {
-		show_json(0, '申请金额为空!');
+		return show_json(0, '申请金额为空!');
 	}
 	if ($money > $credit) {
-		show_json(0, '提现金额过大!');
+		return show_json(0, '提现金额过大!');
 	}
 	m('member')->setCredit($openid, 'credit2', -$money, array(0, '余额提现：-' . $money . " 元"));
 	$logno = m('common')->createNO('member_log', 'logno', 'RW');
