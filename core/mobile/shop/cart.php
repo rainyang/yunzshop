@@ -63,10 +63,7 @@ if ($_W['isajax']) {
         }
 
         $verify_goods_ischannelpick = '';
-        if (p('yunbi')) {
-            $yunbi_set = p('yunbi')->getSet();
-            $yunbi_title = empty($yunbi_set['yunbi_title'])?'云币':$yunbi_set['yunbi_title'];
-        }
+
         foreach ($list as &$r) {
             if ($isladder) {
                 $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
@@ -89,11 +86,8 @@ if ($_W['isajax']) {
                     }
                 }
             }
-            if (p('yunbi')) {
-                if (!empty($yunbi_set['isdeduct']) && !empty($r['isforceyunbi']) && $member['virtual_currency'] < $r['yunbi_deduct']) {
-                    $virtual_currency = '';
-                }
-            }
+
+
             if (p('channel')) {
                 $member = m('member')->getInfo($openid);
                 if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
@@ -136,9 +130,7 @@ if ($_W['isajax']) {
                 'totalprice' => $totalprice,
                 'difference' => $difference,
                 'ischannelpay' => $ischannelpay,
-                'verify_goods_ischannelpick' => $verify_goods_ischannelpick,
-                'virtual_currency' => $virtual_currency,
-                'yunbi_title' => $yunbi_title
+                'verify_goods_ischannelpick' => $verify_goods_ischannelpick
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {

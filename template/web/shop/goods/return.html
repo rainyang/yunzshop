@@ -87,17 +87,6 @@
         </div>
        <span class="help-block">如果设置0，则不支持{$yunbi_set['yunbi_title']}抵扣</span>
     </div>   
-</div> 
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><p class="yunbi">是否强制使用{if $yunbi_set['yunbi_title'] }{$yunbi_set['yunbi_title']}{else}云币{/if} </p></label>
-    <div class="col-sm-6 col-xs-6">
-        {ife 'shop.goods' $item}
-        <label class="radio-inline"><input type="radio" name="isforceyunbi" value="1" {if $item['isforceyunbi'] == 1}checked="true"{/if}  /> 是</label>
-        <label class="radio-inline"><input type="radio" name="isforceyunbi" value="0" {if $item['isforceyunbi'] == 0}checked="true"{/if}  /> 否</label>
-           {else}
-           <div class='form-control-static'>{if $item['isforceyunbi']}是{else}否{/if}</div>
-         {/if}
-    </div>
 </div>
 <div class='panel-heading'>
    报单设置
