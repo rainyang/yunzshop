@@ -217,7 +217,7 @@ function order_list_confirmsend($order) {
         }
     }
     if (is_app_api()) {
-        return show_json(1, ['confirmsend' => 1]);
+        return show_json(1, array('confirmsend' => 1));
     }
     m("notice")->sendOrderMessage($order["id"]);
     plog("order.op.send", "订单发货 ID: {$order["id"]} 订单号: {$order["ordersn"]} <br/>快递公司: {$_GPC["expresscom"]} 快递单号: {$_GPC["expresssn"]}");
