@@ -1128,11 +1128,11 @@ if ($_W['isajax']) {
             $changenum = false;
         }
         //echo "<pre>".print_r($changenum);exit;
-        $variable = [
+        $variable = array(
             'show'=>$show,
             'diyform_flag'=>$diyform_flag,
             'goods'=>$goods,
-        ];
+        );
 
         return show_json(1, array(
             'member' => $member,
