@@ -98,6 +98,7 @@ if ($_W['isajax']) {
 			$sql = 'SELECT og.goodsid,og.total,g.type,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid' . $channel_cond . ' FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$order_where.' order by og.id asc';
 			$row['goods'] = set_medias(pdo_fetchall($sql), 'thumb');
 			foreach ($row['goods'] as $k => $value) {
+				$row['goods'][$k]['unit_price'] = $value['price'] / $value['total'];
 				if ($value['ischannelpay'] == 1) {
 					$row['ordertype'] = "采购单";
 				}
