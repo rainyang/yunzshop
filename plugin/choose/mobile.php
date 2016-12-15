@@ -11,22 +11,22 @@ class ChooseMobile extends Plugin
     }
     public function index()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function list_category()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function list_goods()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function cart()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
     // public function api()
     // {
-    //     $this->_exec_plugin(__FUNCTION__, false);
+    // 	return $this->_exec_plugin(__FUNCTION__, false);
     // }
 }

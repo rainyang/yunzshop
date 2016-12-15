@@ -12,11 +12,11 @@ class YunpayWeb extends Plugin
     }
     public function index()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function fetch()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
 }
 

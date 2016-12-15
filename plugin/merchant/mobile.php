@@ -21,26 +21,26 @@ class MerchantMobile extends Plugin
     }
     public function logg()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function applyg()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function orderj()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function team()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function teamc()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function index()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
 }

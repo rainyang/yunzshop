@@ -10,10 +10,10 @@ class HelperWeb extends Plugin
     }
     public function index()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function upgrade()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
 }
