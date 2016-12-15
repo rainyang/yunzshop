@@ -57,10 +57,13 @@ if (!class_exists('YunprintModel')) {
                     $goods = "";
                     $num = 1;
                     foreach ($print_order['goods'] as $value) {
-                        $goods .= " " . $num . " " . $value['title'] . "\n" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'] . "\n";
+                        if (empty($value['optionname'])) {
+                            $value['optionname'] = "未选";
+                        }
+                        $goods .= " " . $num . " " . $value['title'] . "(" . $value['optionname'] . ")" . "\n" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'] . "\n";
                         $num++;
                     }
-                    $orderinfo .= "-------------------------序号 商品名称 单价 数量  金额{$goods}\n-------------------------";
+                    $orderinfo .= "-------------------------序号 商品名称(规格) 单价 数量 金额{$goods}\n-------------------------";
                 }
                 if ($offers['goodsprice'] == 1) {
                     $orderinfo .= "商品合计：         {$print_order['goodsprice']}\n";
@@ -127,7 +130,7 @@ if (!class_exists('YunprintModel')) {
         }
 
         function feie_print($print_order,$printer_sn,$key,$times,$url, $offers)
-        {
+        {   
             //标签说明："<BR>"为换行符,"<CB></CB>"为居中放大,"<B></B>"为放大,"<C></C>"为居中,"<L></L>"为字体变高
             //"<W></W>"为字体变宽,"<QR></QR>"为二维码,"<CODE>"为条形码,后面接12个数字
             $orderinfo = "";
@@ -176,10 +179,13 @@ if (!class_exists('YunprintModel')) {
                     $goods = "";
                     $num = 1;
                     foreach ($print_order['goods'] as $value) {
-                        $goods .= " " . $num . " " . $value['title'] . "<BR>" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'];
+                        if (empty($value['optionname'])) {
+                            $value['optionname'] = "未选";
+                        }
+                        $goods .= " " . $num . " " . $value['title'] . "(" . $value['optionname'] . ")" . "<BR>" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'] . "<BR>";
                         $num++;
                     }
-                    $orderinfo .= "================================<BR>序号 商品名称 单价 数量  金额<BR>{$goods}<BR>================================<BR>";
+                    $orderinfo .= "================================<BR>序号 商品名称(规格) 单价 数量  金额<BR>{$goods}<BR>================================<BR>";
                 }
                 if ($offers['goodsprice'] == 1) {
                     $orderinfo .= "商品合计：           {$print_order['goodsprice']}<BR>";
@@ -239,7 +245,7 @@ if (!class_exists('YunprintModel')) {
                     ':id'       => $orderid
                 ));
             $order['shopname'] = $shopset['name'];
-            $order['goods'] = pdo_fetchall("SELECT og.goodsid,og.price,og.total,g.title,g.marketprice FROM " . tablename('sz_yi_order_goods') . " og LEFT JOIN " . tablename('sz_yi_goods') . " g ON g.id=og.goodsid WHERE og.uniacid=:uniacid AND og.orderid=:orderid", array(
+            $order['goods'] = pdo_fetchall("SELECT og.goodsid,og.price,og.total,g.title,g.marketprice,og.optionname FROM " . tablename('sz_yi_order_goods') . " og LEFT JOIN " . tablename('sz_yi_goods') . " g ON g.id=og.goodsid WHERE og.uniacid=:uniacid AND og.orderid=:orderid", array(
                     ':uniacid' => $_W['uniacid'],
                     ':orderid' => $orderid
                 )); 
