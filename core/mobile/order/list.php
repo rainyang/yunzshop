@@ -43,6 +43,10 @@ if ($_W['isajax']) {
 		}else{
 	          $condition.= " AND order_type<>3";
 	    }
+        if (!empty($_GPC['id'])) {
+            $condition .=' AND id < :id';
+            $params['id'] = $_GPC['id'];
+        }
 		$conds = '';
 		if (p('channel')) {
 			$conds = ',ischannelself';
