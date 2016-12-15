@@ -112,6 +112,7 @@ if (!empty($order)) {
     $show         = 1;
     $diyform_flag = 0;
     foreach ($goods as &$g) {
+        $g['unit_price'] = $g['price'] / $g['total'];
         $g['thumb'] = tomedia($g['thumb']);
         if($order['plugin'] == 'fund'){
             $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
