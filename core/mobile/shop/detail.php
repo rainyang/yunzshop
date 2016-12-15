@@ -242,6 +242,14 @@ if ($goods['showgroups'] != '') {
 //}
 //分销佣金
 $commissionprice = p('commission')->getCommission($goods);
+$_W['shopshare'] = array(
+    'title' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'],
+    'imgUrl' => !empty($goods['share_icon']) ? tomedia($goods['share_icon']) : tomedia($goods['thumb']),
+    'desc' => !empty($goods['description']) ? $goods['description'] : $shop['name'],
+    'link' => $this->createMobileUrl('shop/detail', array(
+        'id' => $goods['id']
+    ))
+);
 if ($_W['isajax']) {
     if ($operation == 'can_buy') {
         $id = intval($_GPC['id']);
@@ -713,14 +721,7 @@ if ($_W['isajax']) {
 
 }
 
-$_W['shopshare'] = array(
-    'title' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'],
-    'imgUrl' => !empty($goods['share_icon']) ? tomedia($goods['share_icon']) : tomedia($goods['thumb']),
-    'desc' => !empty($goods['description']) ? $goods['description'] : $shop['name'],
-    'link' => $this->createMobileUrl('shop/detail', array(
-        'id' => $goods['id']
-    ))
-);
+
 $com = p('commission');
 if ($com) {
     $cset = $com->getSet();
