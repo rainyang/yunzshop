@@ -193,11 +193,12 @@ if ($operation == 'display' && $_W['isajax']) {
         if (is_array($setting['payment'])) {
             $options           = $setting['payment']['wechat'];
             if (is_app_api()) {
-                $sysset_data = m("cache")->get("sysset");
-                $sysset_data = unserialize($setdata['sets']);
-                $options['mchid'] = $sysset_data['app']['base']['wx_native']['mchid'];
-                $options['appid'] = $sysset_data['app']['base']['wx_native']['appid'];
-                $options['secret'] = $sysset_data['app']['base']['wx_native']['secret'];
+                $pay = $setting['payment'];
+
+                $options['mchid'] = $pay['wx_native']['wx_mcid'];
+                $options['appid'] = $pay['wx_native']['wx_appid'];
+                $options['secret'] = $pay['wx_native']['wx_secret'];
+
                 $params['trade_type'] = 'APP';
             } else {
                 $options['appid'] = $_W['account']['key'];
