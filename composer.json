@@ -9,6 +9,8 @@
   "require": {
     "php": ">=5.4.0",
     "yiisoft/yii2": "*"
+    "phpunit/phpunit": "^5.5",
+    "tencentyun-api/qcloudapi-sdk-php":"*"
   },
   "config": {
     "process-timeout": 1800

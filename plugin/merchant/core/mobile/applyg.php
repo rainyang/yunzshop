@@ -98,10 +98,10 @@ if ($_W['isajax']) {
 				pdo_update('sz_yi_order', array('merchant_apply_status' => 1), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
 			}
 		}
-		show_json(1, '已提交,请等待审核!');
+		return show_json(1, '已提交,请等待审核!');
 	}
 	$returnurl = urlencode($this->createPluginMobileUrl('commission/applyg'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-	show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname']), 'center_info' => $center_info));
+	return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname']), 'center_info' => $center_info));
 }
 include $this->template('applyg');

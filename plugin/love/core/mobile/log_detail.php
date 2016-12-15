@@ -14,7 +14,7 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 
 if ($_W['isajax']) {
 	if ($operation == 'display') {
-		show_json(1, array('message' => '感谢您对合利宝基金事业做出贡献！', 'url' => $this->createPluginMobileUrl('love/log')));
+		return show_json(1, array('message' => '感谢您对合利宝基金事业做出贡献！', 'url' => $this->createPluginMobileUrl('love/log')));
  	}	
 }	
 include $this->template('log_detail');

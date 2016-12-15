@@ -75,27 +75,6 @@ if($_GPC['plugin'] == "fund"){
     'shopsubmit'=> "发布项目"
     ); 
 }
-if($_GPC['plugin'] == "fund"){
-$lang = array(
-    "shopname" => "商品名称",
-    "mainimg" => "商品图片",
-    "limittime" => "限时卖时间",
-    "shopnumber" => "商品编号",
-    "shopprice" => "商品价格",
-    "putaway"   => "上架",
-    "soldout"   => "下架",
-    "good"      => "商品",
-    "price"     => "价格",
-    "repertory" => "库存",
-    "copyshop"  => "复制商品",
-    "isputaway" => "是否上架",
-    "shopdesc"  => "商品描述",
-    "shopinfo"  => "商品详情",
-    'shopoption'=> "商品规格",
-    'marketprice'=> "销售价格",
-    'shopsubmit'=> "发布商品"
-    ); 
-}
 
 //  END
 //分红
@@ -258,6 +237,7 @@ if ($operation == "change") {
                 ));
                 $item['allprice'] = $get_fund_data['allprice'];
                 $item['desc'] = $get_fund_data['desc'];
+                $item['isrefund'] = $get_fund_data['allrefund'];
             }
             if (empty($item)) {
                 message('抱歉，'.$lang['good'].'不存在或是已经删除！', '', 'error');
@@ -445,6 +425,7 @@ if ($operation == "change") {
                         $hh .= '</td>';
                         //$hh .= '<td class="success"><input name="option_marketprice_' . $ids . '[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids . '" value="' . $val['marketprice'] . '"/></td>';
                         $hh .= '<td class="success"><input name="option_marketprice_' . $ids .'[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids .'" value="' . $val['marketprice'] . '"/>';
+                    if ($isladder){
                         $hh .= '<div style="padding-bottom:10px;text-align:center;font-size:14px;">阶梯价格&nbsp;<a class="btn-success ng-scope addopladder" data-ids="' . $ids .'" href="javascript:;"><i class="fa fa-plus" style="width: 20px;height: auto;"></i></a></div>';
                         $hh .= '<div id="ladderop_' . $ids .'">';
 
@@ -461,6 +442,7 @@ if ($operation == "change") {
 
 
                         $hh .= '</div>'; 
+                    }
                         $hh .= '</td>';
                         if($_GPC['plugin'] != "fund"){
                         $hh .= '<td class="warning"><input name="option_productprice_' . $ids . '[]" type="text" class="form-control option_productprice option_productprice_' . $ids . '" " value="' . $val['productprice'] . '"/></td>';
@@ -1228,6 +1210,9 @@ if ($operation == "change") {
                 'op' => 'display'
             )), 'success');
         }
+        if($_GPC['plugin'] == "fund"){
+            p("fund")->autogoods();
+        }
         $pindex = max(1, intval($_GPC['page']));
         $psize = 20;
         $condition = ' WHERE `uniacid` = :uniacid AND `deleted` = :deleted';
@@ -1338,8 +1323,11 @@ if ($operation == "change") {
         if($_GPC['plugin'] == "fund"){
             foreach ($list as $key => &$value) {
                 $allprice = pdo_fetchcolumn("select allprice from ". tablename('sz_yi_fund_goods') ." where goodsid=".$value['id']);
-                $yetprice = pdo_fetchcolumn("select sum(price) from ". tablename('sz_yi_order_goods') ." where goodsid=".$value['id']);
-                $yetprice += $value['marketprice']*$value['sales'];
+                $value['casesceu'] = ceil($allprice / $value['marketprice']) <= $value['salesreal'];
+                if(!$value['casesceu']){
+                    $value['allrefund'] = pdo_fetchcolumn("select allrefund from ". tablename('sz_yi_fund_goods') ." where goodsid=".$value['id']);
+                }
+                $yetprice = pdo_fetchcolumn("select sum(og.price) as yetprice from ". tablename('sz_yi_order_goods') ." og left join " . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status > 0 and og.goodsid=".$value['id']);
                 $value['yetprice'] = number_format($yetprice, 2);
                 $value['allprice'] = number_format($allprice, 2);
             }
@@ -1378,6 +1366,17 @@ if ($operation == "change") {
         $id = intval($_GPC['id']);
         $type = $_GPC['type'];
         $data = intval($_GPC['data']);
+        $allrefund = 0;
+        if($_GPC['plugin'] == "fund"){
+            $allrefund = pdo_fetchcolumn("SELECT allrefund FROM " . tablename('sz_yi_fund_goods') . " WHERE goodsid = :id", array(
+                    ':id' => $id
+            ));  
+        }
+        if($allrefund == 1 && $type == 0){
+            die(json_encode(array(
+                'result' => 0
+            )));
+        }   
         if (in_array($type, array(
             'new',
             'hot',
@@ -1459,6 +1458,7 @@ if ($operation == "change") {
                 'data' => $data
             )));
         }
+
         die(json_encode(array(
             'result' => 0
         )));

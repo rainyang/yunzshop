@@ -466,6 +466,9 @@
 
 							<th width="10%">销量</th>
 							<th width="10%">状态</th>
+							{if $_GPC['status'] == 0 && !empty($_GPC['plugin'])}
+							<th width="10%">进度</th>
+							{/if}
 							<th width="20%">操作</th>
 						</tr>
 					</thead>
@@ -590,6 +593,12 @@
                             {/if}
 
 							</td>
+							{if $_GPC['status'] == 0 && !empty($_GPC['plugin'])}
+							<td >
+								<label class='label  label-default {if $item['casesceu']}label-info{/if}'>{if $item['casesceu']}成功{else}失败{/if}</label>
+								{if !$item['casesceu']}{if $item['allrefund']==0}<br /><a href="{php echo $this->createPluginWebUrl('fund/order', array('id' => $item['id'], 'op' => 'refund'))}"  onclick="return confirm('确定全部退款吗？'); return false;"><label class="label label-danger">全部退款</label></a>{else}<label class="label label-default">全部退款成功</label>{/if}{/if}
+							</td>
+							{/if}
 							<td style="position:relative;" width="20%">
 								<a href="javascript:;" data-url="{php echo $_GPC['plugin'] == 'fund' ? $this->createPluginMobileUrl('fund/detail', array('id' => $item['id'])) : $this->createMobileUrl('shop/detail', array('id' => $item['id']));}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
 								{ifp 'shop.goods.copy'}<a href="{php echo $_GPC['plugin'] == 'fund' ? $this->createWebUrl('order/list', array('good_id' => $item['id'] ,'plugin' =>'fund', 'status' => 'all')) : $this->createWebUrl('shop/goods', array('id' => $item['id'] ,'op' =>'copygoods'))}"  title="{$lang['copyshop']}" class="btn btn-default btn-smjs-clip"><i class="fa fa-article"></i></a>{/if}
@@ -703,7 +712,7 @@
 	function setProperty(obj, id, type) {
 		$(obj).html($(obj).html() + "...");
 		$.post("{php echo $this->createWebUrl('shop/goods')}"
-				, {'op': 'setgoodsproperty', id: id, type: type, data: obj.getAttribute("data")}
+				, {'op': 'setgoodsproperty', id: id, type: type, plugin: "{$_GPC['plugin']}", data: obj.getAttribute("data")}
 		, function (d) {
 			$(obj).html($(obj).html().replace("...", ""));
 			if (type == 'type') {

@@ -15,6 +15,6 @@ class BeneficenceMobile extends Plugin
 
     public function beneficence()
     {    
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
 }

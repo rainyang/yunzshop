@@ -11,10 +11,12 @@ if ($yunbi_plugin) {
 }
 
 $isindiana = '';
+$isindiana_o = '';
 $indiana_plugin   = p('indiana');
 if ($indiana_plugin) {
     if ($_GPC['isindiana']) {
         $isindiana = " AND o.order_type = 4 ";
+        $isindiana_o = " AND order_type = 4 ";
         $period = pdo_fetchall("SELECT ir.ordersn FROM " . tablename('sz_yi_indiana_record') . " ir 
         left join " . tablename('sz_yi_indiana_period') . " ip on ( ip.openid = ir.openid and ip.period_num = ir.period_num ) 
         WHERE ip.uniacid = :uniacid",array(
@@ -24,8 +26,16 @@ if ($indiana_plugin) {
             $inordersn[$key] .= $value['ordersn'];
         }
         $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
+        $isindiana_o .= " AND ordersn in ('".implode($inordersn,"','")."') "; 
+        // if ($inordersn) {
+        //     $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
+        // }else{
+        //     $isindiana = " AND o.order_type = 4 ";
+        // }
+        
     }else{
         $isindiana = " AND o.order_type <> 4 ";
+        $isindiana_o = " AND order_type <> 4 ";
     }
     
 }
@@ -412,6 +422,9 @@ if ($operation == "display") {
     }
 
     $cond = "";
+    $condition.= " and o.plugin='".$_GPC['plugin']."'";
+    //是否为供应商 等于1的是
+
     if (p('supplier')) {
         if ($perm_role == 1) {
             $cond .= " and o.supplier_uid={$_W['uid']} ";
@@ -528,6 +541,7 @@ if ($operation == "display") {
             unset($members);
         }
     }
+    $plugin_fund = p("fund");
 
 
     foreach ($list as & $value) {
@@ -711,7 +725,7 @@ if ($operation == "display") {
 
         $order_goods = pdo_fetchall("select g.id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, 
                         og.total,og.price,og.optionname as optiontitle, og.realprice,og.changeprice,og.oldprice,og.commission1,og.commission2,
-                        og.commission3,og.commissions,og.diyformdata,og.diyformfields 
+                        og.commission3,og.commissions,og.diyformdata,og.diyformfields, g.timeend 
                         from " . tablename("sz_yi_order_goods") . " og " . " 
                         left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " 
                         where og.uniacid=:uniacid and " . $order_where, array(
@@ -775,7 +789,15 @@ if ($operation == "display") {
                 }
                 $og["goods_diyformdata"] = $diyformdata;
             }
+            
+        }
 
+        //众筹订单未到时间隐藏发货
+        $value['confirmsend'] = true;
+        if($plugin_fund){
+            if(!empty($_GPC['plugin'])){
+               $value['confirmsend'] =  $og['timeend'] < time();
+            }    
         }
         unset($og);
         if (!empty($level) && empty($agentid)) {
@@ -798,10 +820,14 @@ if ($operation == "display") {
         }
         $value["goods"] = set_medias($order_goods, "thumb");
         $value["goods_str"] = $goods;
+        if ($indiana_plugin && $_GPC['isindiana']) {
+            $value['indiana'] = p('indiana')->getorder($value['period_num']);
+        }
+
     }
     unset($value);
-
     $condition = " uniacid=:uniacid and deleted=0";
+    $condition .= $isindiana_o;
     if (p('hotel') && $type == 'hotel') {
         $condition .= " and order_type=3";
         $join_order_type = " and o.order_type=3";
@@ -847,9 +873,7 @@ if ($operation == "display") {
         }
     }
 
-    if(!empty($_GPC['plugin'])){
-        $condition.= " and plugin='".$_GPC['plugin']."'";
-    }
+    $condition.= " and plugin='".$_GPC['plugin']."'";
 
     if(!empty($_GPC['openid'])){
         $condition .= " AND openid='" . $_GPC["openid"] . "'";
@@ -930,6 +954,8 @@ if ($operation == "display") {
     if (p('hotel')) {
         if ($type == 'hotel') {
             include $this->template("web/order/list_hotel");
+        } elseif ($indiana_plugin && $_GPC['isindiana']) {
+            include p('indiana')->ptemplate("order");
         } else {
             include $this->template("web/order/list");
         }
@@ -1161,6 +1187,7 @@ if ($operation == "display") {
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
+
     if(!empty($_GPC['plugin'])){
         $condition.= " and plugin='".$_GPC['plugin']."'";
     }

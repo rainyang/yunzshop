@@ -71,6 +71,53 @@ class YZ extends base
         }
 
     }
+    protected function callMobile($path)
+    {
+        require_once __CORE_PATH__.'/../site.php';
+        global $_W,$_GPC;
+        $_W['isajax'] = true;
+        list($folder_name,$file_name,$action_name,$to_name)=explode('/',$path);
+        $class = new \Sz_yiModuleSite();
+        $method = 'doMobile'.ucfirst($folder_name);
+        $_GPC['p'] = $file_name;
+        $_GPC['op'] = $action_name;
+        $_GPC['to'] = $to_name;
+
+        $result = $class->$method();
+        if($result['status'] != 1 ){
+            $this->returnError($result['json']);
+        }
+        return $result;
+    }
+    protected function callWeb($path)
+    {
+        require_once __CORE_PATH__.'/../site.php';
+        global $_W,$_GPC;
+        $_W['isajax'] = true;
+        list($folder_name,$file_name,$action_name,$to_name)=explode('/',$path);
+        $class = new \Sz_yiModuleSite();
+        $method = 'doWeb'.ucfirst($folder_name);
+        $_GPC['p'] = $file_name;
+        $_GPC['op'] = $action_name;
+        $_GPC['to'] = $to_name;
+        $class->modulename = 'Sz_yi';
+        $result = $class->$method();
+        if($result['status'] != 1 ){
+            $this->returnError($result['json']);
+        }
+        return $result;
+    }
+    protected function callPlugin($path){
+        global $_GPC,$_W;
+        $_W['isajax'] = true;
+        list($_GPC['p'],$_GPC['method'],$_GPC['op']) = explode('/',$path);
+        $class = new \Sz_yiModuleSite();
+        $result = $class->doMobilePlugin();
+        if($result['status'] != 1){
+            $this->returnError($result['json']);
+        }
+        return $result;
+    }
     /**
      * 判断管理员是否为正版用户
      *

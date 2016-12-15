@@ -39,7 +39,7 @@
 <div id='container'></div>
 <script id='tpl_order_list' type='text/html'>
     <div class="page_topbar">
-    	<a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+    	<a href="javascript:;" class="back" onclick="location.href='{php echo $this->createMobileUrl('member')}'"><i class="fa fa-angle-left"></i></a>
     	<div class="title">{$title}</div>
 	</div>
 	{if $operation == 'display'}
@@ -120,7 +120,7 @@
 <script id='tpl_empty' type='text/html'>
     <div class="order_no no-icon"><i class="fa fa-file-text-o"></i><br><span>您还没有相关的夺宝记录哦~</span><br>可以去看看哪些想买的</div>
     <div class="order_no_menu">
-        <span class="order_no_nav"  onclick="location.href='{php echo $this->getUrl()}'">随便逛逛</span>
+        <span class="order_no_nav"  onclick="location.href='{php echo $this->createPluginMobileUrl('indiana/goods')}'">随便逛逛</span>
     </div>
 </script>
 

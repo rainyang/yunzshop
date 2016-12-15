@@ -1,5 +1,5 @@
 <?php
-//Ü¿ÖÚÉÌ³Ç QQ:913768135
+//Ü¿ï¿½ï¿½ï¿½Ì³ï¿½ QQ:913768135
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -22,26 +22,26 @@ class VirtualWeb extends Plugin
     }
     public function temp()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function data()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function category()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function import()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function export()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function set()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
 }

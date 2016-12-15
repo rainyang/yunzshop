@@ -14,7 +14,7 @@ if ($plugin_yunbi) {
 }
 $plugin_fund = p('fund');
 $ordertitle = "我的订单";
-if($plugin_fund){
+if($plugin_fund && $_GPC['plugin'] == "fund"){
 	$fund_set = $plugin_fund->getSet();
 	$ordertitle = $fund_set['texts']['order'];
 }
@@ -37,9 +37,6 @@ if ($_W['isajax']) {
 			} else {
 				$condition .= ' and refundstate>0 and status!=-1';
 			}
-		} else {
-
-			$condition .= ' and status<>-1';
 		}
 	    if (p('hotel') && $type=='hotel') {	        
 	          $condition.= " AND order_type=3";
@@ -113,7 +110,11 @@ if ($_W['isajax']) {
 			$row['createtime'] = date('Y-m-d H:i:s',$row['createtime']);
 			switch ($row['status']) {
 				case '-1':
-					$status = '已取消';
+					if (!empty($row["refundtime"])){
+						$status = '已退款';
+					} else {
+						$status = '已取消';
+					}
 					break;
 				case "0":
 					if ($row['paytype'] == 3) {
@@ -216,7 +217,7 @@ if ($_W['isajax']) {
 		    }
 	    }
 		unset($row);
-		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+		return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	}
 }
 if(p('hotel')){

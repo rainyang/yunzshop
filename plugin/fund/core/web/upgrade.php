@@ -17,6 +17,7 @@ $sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_fund_goods') . " (
   `goodsid` int(11) DEFAULT '0',
   `allprice` int(11) DEFAULT '0',
   `desc` varchar(255) DEFAULT '',
+  `allrefund` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='众筹商品表' AUTO_INCREMENT=1 ;
@@ -30,5 +31,8 @@ if(!pdo_fieldexists('sz_yi_order_comment', 'plugin')) {
 }
 if(!pdo_fieldexists('sz_yi_order', 'plugin')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `plugin` varchar(10) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_fund_goods', 'allrefund')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_fund_goods')." ADD `allrefund` TINYINT(1) DEFAULT '0';");
 }
 message('芸众众筹插件安装成功', $this->createWebUrl('shop/goods', array('plugin' => 'fund')), 'success');

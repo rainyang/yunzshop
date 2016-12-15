@@ -1,8 +1,9 @@
 <?php
-
+namespace app\api\tests;
+require_once '/addons/sz_yi/vendor/autoload.php';
 class TestCase extends \PHPUnit_Framework_TestCase
 {
-    protected $base_url = 'http://www.yunzong.com/test/app_api.php?api=';
+    protected $base_url = 'http://www.yunzong.com/test/uniacid=2&app_api.php?api=';
 
     protected function get($path,$data){
         $base_url = $this->base_url;

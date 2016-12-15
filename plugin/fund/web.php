@@ -27,16 +27,21 @@ class FundWeb extends Plugin
 
 	public function set()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	public function cover()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
+	}
+
+	public function order()
+	{
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function upgrade()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 	
 }

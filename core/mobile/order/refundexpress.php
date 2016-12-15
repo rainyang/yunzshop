@@ -21,12 +21,12 @@ if ($_W["isajax"]) {
 	if ($operation == "display") {
 		$order = pdo_fetch("select refundid from " . tablename("sz_yi_order") . " where id=:id and uniacid=:uniacid and openid=:openid limit 1", array(":id" => $orderid, ":uniacid" => $uniacid, ":openid" => $openid));
 		if (empty($order)) {
-			show_json(0);
+			return show_json(0);
 		}
 		$refundid = $order["refundid"];
 		$refund = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id and uniacid=:uniacid  limit 1", array(":id" => $refundid, ":uniacid" => $uniacid));
 		$set = set_medias(m("common")->getSysset("shop"), "logo");
-		show_json(1, array("order" => $order, "refund" => $refund, "set" => $set));
+		return show_json(1, array("order" => $order, "refund" => $refund, "set" => $set));
 	} else if ($operation == "step") {
 		$express = trim($_GPC["express"]);
 		$expresssn = trim($_GPC["expresssn"]);
@@ -34,13 +34,13 @@ if ($_W["isajax"]) {
 		if (!$content) {
 			$content = getExpress($express, $expresssn);
 			if (!$content) {
-				show_json(1, array('list' => array()));
+				return show_json(1, array('list' => array()));
 			}
 		}
 		foreach ($content as $data) {
 			$list[] = array('time' => $data->time, 'step' => $data->context, 'ts' => $data->time);
 		}
-		show_json(1, array('list' => $list));
+		return show_json(1, array('list' => $list));
 	}
 }
 include $this->template("order/refundexpress");

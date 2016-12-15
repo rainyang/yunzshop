@@ -10,7 +10,10 @@ $master_db_config = $_W['config']['db']['master'];
 return array(
     'id' => 'myapp',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log'],//,'debug'
+    'modules' => [
+        //'debug' => 'yii\debug\Module',
+    ],
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation

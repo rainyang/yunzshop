@@ -137,8 +137,8 @@
         "describe": "列表",
         "para": {
           "uid": "1",
-          "uniacid": "4",
-          "order_id": "0",
+          "uniacid": "2",
+          "order_id": "904",
           "status": ""
         },
         "data": []
@@ -147,8 +147,8 @@
         "describe": "配送信息",
         "para": {
           "uid": "1",
-          "uniacid": "4",
-          "order_id": "189"
+          "uniacid": "2",
+          "order_id": "967"
         },
         "data": []
       },

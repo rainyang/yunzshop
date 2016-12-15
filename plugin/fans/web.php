@@ -27,16 +27,16 @@ class FansWeb extends Plugin
 
 	public function member()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function agent()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function upgrade()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 }

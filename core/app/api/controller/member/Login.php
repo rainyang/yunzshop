@@ -9,35 +9,29 @@ class Login extends YZ
 {
     public function index()
     {
-        $validate_messages = $this->_validatePara();
+        /*$validate_messages = $this->_validatePara();
         if (!empty($validate_messages)) {
             $this->returnError($validate_messages);
-        }
+        }*/
         $para = $this->getPara();
         $info = $this->_getUserInfo($para);
-        //dump(D('Member')->_sql());
         if (empty($info)) {
             $this->returnError('用户名或密码错误');
         }
         $this->_setCookie($info['openid'],$info['mobile']);
-
         $this->returnSuccess($info);
     }
     private function _getUserInfo($para){
-        $info = D('Member')->field('id,openid,nickname,mobile,avatar,isagent')->where($para)->find();
-        $info['commission_level'] = "一星董事";
-        return $info;
+        $info = D('Member')->field('id,openid')->where($para)->find();
+        $member  = m('member')->getMember($info['openid']);
+
+        if(!empty($info)){
+            $member['commission_level'] = p("bonus")->getLevel($info['openid'])?:'普通等级';
+        }
+        return $member;
     }
     private function _validatePara(){
         $validate_fields = array(
-            'mobile' => array(
-                'type' => 'required',
-                'describe' => '手机号'
-            ),
-            'pwd' => array(
-                'type' => 'required',
-                'describe' => '密码'
-            ),
             'uniacid' => array(
                 'type' => 'required',
                 'describe' => '公众号id'
@@ -49,7 +43,6 @@ class Login extends YZ
     }
     private function _setCookie($openid,$mobile){
         global $_W;
-        //var_dump($_W['uniacid']);
         if (is_app()) {
             $lifeTime = 24 * 3600 * 3 * 100;
         } else {
@@ -64,5 +57,29 @@ class Login extends YZ
         };
         setcookie('member_mobile', $mobile);
     }
-}
 
+    /**
+     * 小程序登陆
+     */
+    public function wx_app_login()
+    {
+        load()->func('communication');
+
+        $para = $this->getPara();
+
+
+        $data = array(
+            'appid' => 'wx31002d5db09a6719',
+            'secret' => '9e2d6dbafb37b40c9413d2966e1a3dea',
+            'js_code' => $para['code'],
+            'grant_type' => 'authorization_code',
+        );
+
+        $url = 'https://api.weixin.qq.com/sns/jscode2session';
+
+        $res = ihttp_request($url, $data);
+
+        echo '<pre>';print_r($res);exit;
+
+    }
+}

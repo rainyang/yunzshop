@@ -4,19 +4,61 @@ use app\api\Request;
 use app\api\YZ;
 class Index extends YZ
 {
+    private $json;
+    private $variable;
 
-    public function getGoodsList()
+    public function __construct()
     {
-        //$para = Request::all();
-        //$type = $_GPC['type'];
-        $goodsid = Request::input('goodsid');
-        $keywords = Request::input('keywords','');
-        $args = array('page' => 1,'pagesize' => 10,'goodsid' => $goodsid,'keywords'=>$keywords ,'isrecommand' => 1, 'order' => 'displayorder desc,id desc', 'by' => '');
-
-        $goods = m('goods')->getList($args);
-        foreach ($goods as &$good){
-            $good = array_part('id,thumb,title,marketprice,type,groupnumber,productprice,productprice',$good);
+        parent::__construct();
+        global $_W,$_GPC;
+        $_W['ispost'] = true;
+        $_GPC['pagesize'] = 10;
+        $result = $this->callMobile('shop/list');
+        //dump($result);exit;
+        if ($result['code'] == -1) {
+            $this->returnError($result['json']);
         }
-        $this->returnSuccess($goods);
+        $this->variable = $result['variable'];
+        $this->json = $result['json'];
+    }
+    private function _getGoods()
+    {
+        $res = $this->json;
+        foreach ($res['goods'] as &$good) {
+            unset($good['content']);
+        }
+        return $res['goods'];
+    }
+    //获取推荐分类
+    private function _getCategory()
+    {
+        global $_W;
+        $category = set_medias(pdo_fetchall('SELECT id, name, thumb,level FROM '. tablename('sz_yi_category') . ' WHERE isrecommand = 1 AND uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'),'thumb');
+
+        return $category;
+    }
+
+    //获取推荐商品
+    private function _getRecommand()
+    {
+        global $_W;
+        $condition = ' AND isrecommand = :isrecommand AND deleted = :deleted AND uniacid = :uniacid';
+        $sql = 'SELECT id, title, thumb, productprice, marketprice FROM '. tablename('sz_yi_goods') . ' WHERE 1 '.$condition.' ORDER BY displayorder, id DESC LIMIT 10';
+        $params = array(
+            ':isrecommand'=>1,
+            ':deleted'=>0,
+            ':uniacid'=>$_W['uniacid'],
+        );
+        $recommand = set_medias(pdo_fetchall($sql,$params),'thumb');
+        return $recommand;
+    }
+
+    public function index(){
+        $res['goods'] = $this->_getGoods();
+        $res['ads'] = m('shop')->getADs();
+        dump($res['ads']);
+        $res['category'] = $this->_getCategory();
+        $res['recommand'] = $this->_getRecommand();
+        $this->returnSuccess($res);
     }
 }

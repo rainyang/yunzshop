@@ -308,7 +308,7 @@ if (!class_exists('ReturnModel')) {
 					$log_content[] = "分销商等返现级比例";
 					$log_content[] = "\r\n";
 				}
-
+				$level['level0'] = $set['percentage'];
 				foreach ($level as $key => $value) {
 					$value = !empty($value) ? $value : $set['percentage'];
 					$levelid = intval(substr($key, 5)); 
@@ -340,8 +340,8 @@ if (!class_exists('ReturnModel')) {
 						$log_content[] = "递减返现";
 						$log_content[] = "\r\n";
 
-						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money <= 0.5  and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
-						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = (money - return_money) * ".$percentage." / 100, return_money = return_money + (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money <= 0.5  and returnrule = '".$set['returnrule']."' and mid in (".$mids.") ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = (money - return_money) * ".$percentage." / 100, return_money = return_money + (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$set['returnrule']."' and mid in (".$mids.") ");
 
 					}else{
 						$log_content[] = "单笔返现";
@@ -404,7 +404,7 @@ if (!class_exists('ReturnModel')) {
 					} else {
 						m('message')->sendCustomNotice($value['openid'], $messages);
 					}
-					m('message')->sendCustomNotice($value['openid'], $messages);
+					//m('message')->sendCustomNotice($value['openid'], $messages);
 				}
 			}
 			$this->setReturnCredits($data);

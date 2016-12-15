@@ -206,7 +206,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         <div class="zc-go_back"><a href="javascript:void(0)" onclick="history.back();"><i class="iconfont icon-chevron-left"></i></a></div>
         <div class="zc-go2index"><a href="<%shop.url%>"><i class="iconfont icon-team-home"></i></a></div>
         <div class="single_fk">
-            <a href="javascript:void(0);"><img id="chooser_img" src="<%goods.thumb%>"></a>
+            <a href="javascript:void(0);" style="width:100%"><img src="<%goods.thumb%>" style="width:100%"></a>
         </div>
         <div class="bg_bottom">
             <a href="javascript:void(0);"><%goods.title%></a>
@@ -221,7 +221,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     <span class="center_span">众筹中</span>
                     </div>
                 </li>
-                <li><p><span><i>{$goods['sday']}<b>天</b></i><em>剩余时间</em></span></p></li>
+                <li><p><span><i>{$goods['sday']['n']}<b>{$goods['sday']['text']}</b></i><em>剩余时间</em></span></p></li>
             </ul>
          </div>
          <div class="total_tab">
@@ -282,7 +282,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                <%if goods.isdeclaration == '1'%>
                   <div class="diyform_main">
                     <div class="dline " style="border:none">
-                      <div class="dtitle">保单人：</div>
+                      <div class="dtitle">报单人：</div>
                       <div class="dinfo">
                         <div class="dinner ">
                           <input id="declaration"  type="text" value="" placeholder="请输入ID\名称" name="declaration">
@@ -341,10 +341,10 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         <%if shopset.cservice%>
 
 
-            <div class="buy" onclick="choose('buy')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即购买</div>
+            <div class="buy" onclick="choose('buy')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即支持</div>
 
         <%else%>
-            <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
+            <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即支持</div>
         <%/if%>
         <input type="hidden" value="<%goods.isdeclaration%>" id='isdeclaration'>
         <input type="hidden" value="<%goods.isforce%>" id='isforce'>
@@ -725,7 +725,7 @@ var drow= function (curr) {
 
     ctx.fillStyle="#fff";
     ctx.font="60px abc";
-    text = Math.floor(curr*100)+"%";
+    text = Math.floor({$goods['percentage']})+"%";
     text_w = ctx.measureText(text).width;
     ctx.fillText(text,50,100);
 };
@@ -742,7 +742,8 @@ var lod= function (gos) {
 
     },5)
 };
-lod(0.{$goods['percentage']});
+{php $jd = $goods['percentage'] > 100 ? 100 : $goods['percentage']}
+lod({php echo $jd/100});
  
 
           var bh = $(document.body).height() - 50;

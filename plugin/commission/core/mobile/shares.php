@@ -75,6 +75,13 @@ if (empty($infourl) && $_W['isajax']) {
             $img = $this->model->createShopImage($shop_set);
         }
     }
+    if ($_GPC['type'] == "app") {
+        $variable = array(
+            'commission_total'=>$commission,
+            'sales_quantity'=>$goods['sales']
+            );
+        return show_json(1, array('img' => $img, 'set' => $this->set), $variable);
+    }
     die($img);
 }
 

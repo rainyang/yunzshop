@@ -12,6 +12,6 @@ class DiyformMobile extends Plugin
     }
     public function index()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+    	return $this->_exec_plugin(__FUNCTION__, false);
     }
 }

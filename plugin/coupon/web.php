@@ -31,31 +31,31 @@ class CouponWeb extends Plugin
 
 	public function coupon()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function center()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function category()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function send()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function log()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 
 	public function set()
 	{
-		$this->_exec_plugin(__FUNCTION__);
+		return $this->_exec_plugin(__FUNCTION__);
 	}
 }
