@@ -308,7 +308,8 @@ if ($op == 'display') {
             'id' => $id,
             'uniacid' => $uniacid
         ));
-        m('member')->setCredit($log['openid'], 'credit2', $log['money'], array(
+        $money = $log['poundage'] > 0 ? $log['money']+$log['poundage'] : $log['money'];
+        m('member')->setCredit($log['openid'], 'credit2', $money, array(
             0,
             $set['name'] . '余额提现退回'
         ));
