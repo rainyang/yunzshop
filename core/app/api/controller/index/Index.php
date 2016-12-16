@@ -33,8 +33,8 @@ class Index extends YZ
     private function _getCategory()
     {
         global $_W;
-        $category = set_medias(pdo_fetchall('SELECT id, name, thumb,level FROM '. tablename('sz_yi_category') . ' WHERE isrecommand = 1 AND uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'),'thumb');
-
+        $category = set_medias(pdo_fetchall('SELECT id, name, thumb,level FROM '. tablename('sz_yi_category') . ' WHERE isrecommand = 1 AND enabled=1 AND uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'),'thumb');
+//pdo_sql_debug();
         return $category;
     }
 
