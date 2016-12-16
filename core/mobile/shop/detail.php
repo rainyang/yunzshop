@@ -240,8 +240,11 @@ if ($goods['showgroups'] != '') {
     }
 }
 //}
+
 //分销佣金
-$commissionprice = p('commission')->getCommission($goods);
+if(p('commission')){
+    $commissionprice = p('commission')->getCommission($goods);
+}
 $_W['shopshare'] = array(
     'title' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'],
     'imgUrl' => !empty($goods['share_icon']) ? tomedia($goods['share_icon']) : tomedia($goods['thumb']),
