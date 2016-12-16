@@ -18,4 +18,9 @@ class Af_channel extends YZ
         $result = $this->callPlugin('channel/af_channel');
         $this->returnSuccess($result);
     }
+    public function hasApplied(){
+        $result = $this->callPlugin('supplier/af_channel');
+        $this->returnSuccess(array('is_channel'=>(string)$result['json']['is_channel']));
+
+    }
 }
