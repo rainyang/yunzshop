@@ -159,13 +159,20 @@ if ($operation == 'display' && $_W['isajax']) {
 
     /*修复支付问题*/
     $couponid = intval($_GPC['couponid']);
-	if($log['money'] <= 0){
-        pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
-    }else{
-       if($log['money']!=$money){
-            return show_json(0, '充值异常, 请重试!');
-       }
+    if (!empty($_GPC['from']) && $_GPC['from'] == 'app') {
+        if ($money > 0) {
+            pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
+        }
+    } else {
+        if($log['money'] <= 0){
+            pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
+        }else{
+            if($log['money']!=$money){
+                return show_json(0, '充值异常, 请重试!');
+            }
+        }
     }
+
 
     $set = m('common')->getSysset(array(
         'shop',
