@@ -12,8 +12,10 @@ class Edit extends YZ
     public function __construct()
     {
         parent::__construct();
-        global $_W;
+        global $_W,$_GPC;
         $_W['ispost'] = true;
+        $_GPC['addressdata'] = array_elements(array('realname','mobile','province','city','area','address'),$_GPC);
+
         $result = $this->callMobile('shop/address/submit');
         $this->variable = $result['variable'];
         $this->json = $result['json'];
