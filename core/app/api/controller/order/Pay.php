@@ -44,10 +44,6 @@ class Pay extends YZ
             ':uniacid' => $_W['uniacid'],
             ':id' => $_GPC['order_id']
         ));
-        dump(pdo_sql_debug('select status,goodsprice,address from ' . tablename('sz_yi_order') . ' where id=:id  and uniacid=:uniacid limit 1', array(
-            ':uniacid' => $_W['uniacid'],
-            ':id' => $_GPC['order_id']
-        )));
         if($result['status']<1){
             $this->returnError('未付款');
         }
