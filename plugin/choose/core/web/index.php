@@ -226,7 +226,7 @@ if ($op == 'display') {
                     $do = pdo_delete('sz_yi_chooseagent', array(
                         'id' => $pageid
                     ));
-                    show_json(1);
+                    return show_json(1);
                 }
             }
         } elseif ($apido == 'selectgood') {

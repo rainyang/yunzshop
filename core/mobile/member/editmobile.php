@@ -11,7 +11,7 @@ if ($_W['isajax']) {
         $mc = $_GPC['memberdata'];
         $isbindmobile = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and uniacid=:uniacid and isbindmobile=1', array(':uniacid' => $_W['uniacid'], ':mobile' => $mc['mobile']));
         if(!empty($isbindmobile)){
-            show_json(0, array());
+            return show_json(0, array());
         }
 
         pdo_update('sz_yi_member',
@@ -25,7 +25,7 @@ if ($_W['isajax']) {
                 'uniacid' => $_W['uniacid']
             )
         );
-        show_json(1, array(
+        return show_json(1, array(
             'preurl' => $preUrl
         ));
     }

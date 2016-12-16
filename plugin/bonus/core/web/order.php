@@ -977,7 +977,7 @@ if ($operation == "display") {
     $expresssn  = trim($_GPC['expresssn']);
     if (empty($id)) {
         $ret = 'Url参数错误！请重试！';
-        show_json(0, $ret);
+        return show_json(0, $ret);
     }
     if (!empty($expresssn)) {
         $change_data               = array();
@@ -989,10 +989,10 @@ if ($operation == "display") {
             'uniacid' => $_W['uniacid']
         ));
         $ret = '修改成功';
-        show_json(1, $ret);
+        return show_json(1, $ret);
     } else {
         $ret = '请填写快递单号！';
-        show_json(0, $ret);
+        return show_json(0, $ret);
     }
 } elseif ($operation == "saveaddress") {
     $province = $_GPC["province"];
@@ -1005,19 +1005,19 @@ if ($operation == "display") {
     if (!empty($id)) {
         if (empty($realname)) {
             $ret = "请填写收件人姓名！";
-            show_json(0, $ret);
+            return show_json(0, $ret);
         }
         if (empty($mobile)) {
             $ret = "请填写收件人手机！";
-            show_json(0, $ret);
+            return show_json(0, $ret);
         }
         if ($province == "请选择省份") {
             $ret = "请选择省份！";
-            show_json(0, $ret);
+            return show_json(0, $ret);
         }
         if (empty($address)) {
             $ret = "请填写详细地址！";
-            show_json(0, $ret);
+            return show_json(0, $ret);
         }
         $item = pdo_fetch("SELECT address FROM " . tablename("sz_yi_order") . " WHERE id = :id and uniacid=:uniacid", array(
             ":id" => $id,
@@ -1039,10 +1039,10 @@ if ($operation == "display") {
             "uniacid" => $_W["uniacid"]
         ));
         $ret = "修改成功";
-        show_json(1, $ret);
+        return show_json(1, $ret);
     } else {
         $ret = "Url参数错误！请重试！";
-        show_json(0, $ret);
+        return show_json(0, $ret);
     }
 } elseif ($operation == "delete") {
     ca("order.op.delete");

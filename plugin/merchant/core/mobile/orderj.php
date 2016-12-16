@@ -68,7 +68,7 @@ if($_W['isajax']) {
                 }
             }
         }
-    show_json(2, array('list' => $listsd,'pagesize' => $psize,'setlevel'=>$setids));
+    return show_json(2, array('list' => $listsd,'pagesize' => $psize,'setlevel'=>$setids));
     
     
     }

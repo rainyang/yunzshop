@@ -15,7 +15,7 @@ $uniacid = $_W['uniacid'];
 $orderid = intval($_GPC['orderid']);
 if ($operation == 'display' && $_W['isajax']) {
     if (empty($orderid)) {
-        show_json(0, '参数错误!');
+        return show_json(0, '参数错误!');
     }
     $order = pdo_fetch(
         'select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1',
@@ -43,12 +43,12 @@ if ($operation == 'display' && $_W['isajax']) {
          $couponUrl = $this->createMobileUrl('member');
     }
     if (empty($order)) {
-        show_json(0, '订单未找到!');
+        return show_json(0, '订单未找到!');
     }
     if ($order['status'] == -1) {
-        show_json(-1, '订单已关闭, 无法付款!');
+        return show_json(-1, '订单已关闭, 无法付款!');
     } else if ($order['status'] >= 1) {
-        show_json(-1, '订单已付款, 无需重复支付!');
+        return show_json(-1, '订单已付款, 无需重复支付!');
     }
     $log = pdo_fetch(
         'SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1',
@@ -59,7 +59,7 @@ if ($operation == 'display' && $_W['isajax']) {
         )
     );
     if (!empty($log) && $log['status'] != '0') {
-        show_json(-1, '订单已支付, 无需重复支付!');
+        return show_json(-1, '订单已支付, 无需重复支付!');
     }
     if (!empty($log) && $log['status'] == '0') {
         pdo_delete('core_paylog', array(
@@ -138,7 +138,7 @@ if ($operation == 'display' && $_W['isajax']) {
     $returnurl = urlencode($this->createPluginMobileUrl('cashier/order_pay', array(
         'orderid' => $orderid
     )));
-    show_json(1, array(
+    return show_json(1, array(
         'order'         => $order,
         'set'           => $set,
         'credit'        => $credit,
@@ -163,15 +163,15 @@ if ($operation == 'display' && $_W['isajax']) {
         )
     );
     if (empty($order)) {
-        show_json(0, '订单未找到!');
+        return show_json(0, '订单未找到!');
     }
     $type = $_GPC['type'];
     if (!in_array($type, array('weixin', 'alipay', 'unionpay', 'yunpay'))) {
-        show_json(0, '未找到支付方式');
+        return show_json(0, '未找到支付方式');
     }
 
     if($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0){
-        show_json(0, '余额不足，请充值后在试！');
+        return show_json(0, '余额不足，请充值后在试！');
     }
 
     $log = pdo_fetch(
@@ -183,17 +183,17 @@ if ($operation == 'display' && $_W['isajax']) {
         )
     );
     if (empty($log)) {
-        show_json(0, '支付出错,请重试!');
+        return show_json(0, '支付出错,请重试!');
     }
 
     $plid        = $log['plid'];
     $param_title = $set['shop']['name'] . "订单: " . $order['ordersn'];
     if ($type == 'weixin') {
         if (!is_weixin()) {
-            show_json(0, '非微信环境!');
+            return show_json(0, '非微信环境!');
         }
         if (empty($set['pay']['weixin'])) {
-            show_json(0, '未开启微信支付!');
+            return show_json(0, '未开启微信支付!');
         }
         $wechat        = array(
             'success' => false
@@ -220,11 +220,11 @@ if ($operation == 'display' && $_W['isajax']) {
             if (!is_error($wechat)) {
                 $wechat['success'] = true;
             } else {
-                show_json(0, $wechat['message']);
+                return show_json(0, $wechat['message']);
             }
         }
         if (!$wechat['success']) {
-            show_json(0, '微信支付参数错误!');
+            return show_json(0, '微信支付参数错误!');
         }
         pdo_update('sz_yi_order', array(
             'paytype' => 21
@@ -235,7 +235,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
-        show_json(1, array(
+        return show_json(1, array(
             'wechat' => $wechat
         ));
     } else if ($type == 'alipay') {
@@ -248,7 +248,7 @@ if ($operation == 'display' && $_W['isajax']) {
              p('commission')->checkOrderPay($orderid);
         }
 
-        show_json(1);
+        return show_json(1);
     }else if ($type == 'yunpay') {
         pdo_update('sz_yi_order', array(
             'paytype' => 24
@@ -259,7 +259,7 @@ if ($operation == 'display' && $_W['isajax']) {
              p('commission')->checkOrderPay($orderid);
         }
 
-        show_json(1);
+        return show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
     $order = pdo_fetch(
@@ -285,14 +285,14 @@ if ($operation == 'display' && $_W['isajax']) {
          $couponUrl = $this->createMobileUrl('member');
     }
     if (empty($order)) {
-        show_json(0, '订单未找到!');
+        return show_json(0, '订单未找到!');
     }
     $type = $_GPC['type'];
     if (!in_array($type, array('weixin', 'alipay', 'credit'))) {
-        show_json(0, '未找到支付方式');
+        return show_json(0, '未找到支付方式');
     }
     if($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0){
-        show_json(0, '余额不足，请充值后在试！');
+        return show_json(0, '余额不足，请充值后在试！');
     }
     $log = pdo_fetch(
         'SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1',
@@ -303,7 +303,7 @@ if ($operation == 'display' && $_W['isajax']) {
         )
     );
     if (empty($log)) {
-        show_json(0, '支付出错,请重试!');
+        return show_json(0, '支付出错,请重试!');
     }
     $plid        = $log['plid'];
     $ps          = array();
@@ -314,7 +314,7 @@ if ($operation == 'display' && $_W['isajax']) {
     if ($type == 'credit') {
         $credits = m('member')->getCredit($openid, 'credit2');
         if ($credits < $ps['fee']) {
-            show_json(0, "余额不足,请充值");
+            return show_json(0, "余额不足,请充值");
         }
         $fee    = floatval($ps['fee']);
         $result = m('member')->setCredit($openid, 'credit2', -$fee, array(
@@ -322,7 +322,7 @@ if ($operation == 'display' && $_W['isajax']) {
             '消费' . $setting['creditbehaviors']['currency'] . ':' . $fee
         ));
         if (is_error($result)) {
-            show_json(0, $result['message']);
+            return show_json(0, $result['message']);
         }
         $record           = array();
         $record['status'] = '1';
@@ -358,7 +358,7 @@ if ($operation == 'display' && $_W['isajax']) {
         $this->model->redpack($openid,$orderid);
         //$this->model->setCredits($orderid);
         $this->model->setCredits2($orderid);
-        show_json(1, $pay_result);
+        return show_json(1, $pay_result);
 
     } else if ($type == 'weixin') {
         $ordersn =  $order['pay_ordersn'] ? $order['pay_ordersn'] : $order['ordersn_general'];
@@ -394,12 +394,12 @@ if ($operation == 'display' && $_W['isajax']) {
             $this->model->setCredits2($orderid);
             $pay_result['couponurl'] = $couponUrl;
             $pay_result['order'] = $order;
-            show_json(1,$pay_result); 
+            return show_json(1,$pay_result);
             
             
 
         }
-        show_json(0, '支付出错,请重试!');
+        return show_json(0, '支付出错,请重试!');
     }
 } else if ($operation == 'return') {
     $tid = $_GPC['out_trade_no'];

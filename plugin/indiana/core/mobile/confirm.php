@@ -21,7 +21,7 @@ $goods = pdo_fetch($sql, array(
     ':id' => $goodsid
 ));
 if (empty($goods)) {
-    show_json(-1, '未找到任何商品');
+    return show_json(-1, '未找到任何商品');
 }
 
 $indiana_period = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_period') . ' where uniacid=:uniacid and goodsid = :goodsid and period = :period and status = 1 ',array(
@@ -30,7 +30,7 @@ $indiana_period = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_period')
         ':period'   => $period
     ));
 if ( $total > $indiana_period['shengyu_codes'] ) {
-    show_json(-1, '剩余人次不足！');
+    return show_json(-1, '剩余人次不足！');
 }
 
 $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE openid=:openid AND deleted=0 AND isdefault=1  AND uniacid=:uniacid limit 1', array(
@@ -94,7 +94,7 @@ if ( $orderid ) {
     if ($pluginc) {
         $pluginc->checkOrderConfirm($orderid);
     }
-    show_json(1, array(
+    return show_json(1, array(
         'orderid' => $orderid
     ));
 }

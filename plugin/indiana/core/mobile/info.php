@@ -38,7 +38,7 @@ if ( $_W['isajax'] && $operation == 'display') {
         $row['codes'] = unserialize($row['codes']);
     }
     unset($row);
-    show_json(1, array(
+    return show_json(1, array(
         'list' => $list,
         'pagesize' => $psize,
        

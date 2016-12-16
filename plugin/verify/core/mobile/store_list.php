@@ -75,7 +75,7 @@ if ($operation == 'display') {
             unset($goods_list[$k]);
         }
     }
-    show_json(1, array('goods' => $goods_list, 'pagesize' => 10));
+    return show_json(1, array('goods' => $goods_list, 'pagesize' => 10));
 }
 
 include $this->template('store_list');

@@ -15,7 +15,7 @@ if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
 if ($operation == 'display' && $_W['isajax']) {
     $id = intval($_GPC['id']);
     if (empty($id)) {
-        show_json(0);
+        return show_json(0);
     }
     $store_detail = set_medias(pdo_fetch(" SELECT info,thumb,id,storename,singleprice,province,city,area,street,address,tel,lat,lng,cashierid FROM " .tablename('sz_yi_store'). " WHERE id=:id and uniacid=:uniacid ", array(':id' => $id, ':uniacid' => $_W['uniacid'])), 'thumb');
     $store_comment = pdo_fetchall(" SELECT level FROM " .tablename('sz_yi_order_comment'). " WHERE storeid=:storeid and uniacid=:uniacid ", array(':storeid' => $id, ':uniacid' => $_W['uniacid']));
@@ -83,7 +83,7 @@ if ($operation == 'display' && $_W['isajax']) {
 
     }
     array_multisort($distance_s, SORT_ASC, $store_list);
-    show_json(1,array('store' => $store_detail, 'store_goods' => $store_goods, 'near_goods' => $goods_list, 'store_list' => $store_list));
+    return show_json(1,array('store' => $store_detail, 'store_goods' => $store_goods, 'near_goods' => $goods_list, 'store_list' => $store_list));
 }
 
 include $this->template('store_detail');

@@ -22,7 +22,7 @@ if ($_W['isajax']) {
         //查询其它已绑定该手机的微信号
         $isbindmobile = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and uniacid=:uniacid and isbindmobile=1', array(':uniacid' => $_W['uniacid'], ':mobile' => $mc['mobile']));
         if(!empty($isbindmobile)){
-            show_json(0, array());
+            return show_json(0, array());
         }
         
         //更换公众号或pc到微信绑定
@@ -185,7 +185,7 @@ if ($_W['isajax']) {
             $log .= print_r($member, 1);
             $log .= "绑定结束++++++++++++++++++++++++++++++++";
             @file_put_contents($path.'/'.date('Ymd').".log", $log, FILE_APPEND);
-            show_json(1, array(
+            return show_json(1, array(
                 'preurl' => $preUrl
             ));
         } else {
@@ -202,7 +202,7 @@ if ($_W['isajax']) {
                 )
             );
 
-            show_json(1, array(
+            return show_json(1, array(
                 'preurl' => $preUrl
             ));
         }

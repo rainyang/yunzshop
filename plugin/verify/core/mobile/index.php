@@ -20,7 +20,7 @@ $set = $this->getSet();
      //未提现金额
      $canwithdraw =  $totalwithdrawprice - $totalwithdraws;
 
-     show_json(1, array('totalprice' => $totalprice, 'ordercount' => $ordercount, 'store' => $store, 'canwithdraw' => $canwithdraw));
+     return show_json(1, array('totalprice' => $totalprice, 'ordercount' => $ordercount, 'store' => $store, 'canwithdraw' => $canwithdraw));
  }
 
 include $this->template('index');
