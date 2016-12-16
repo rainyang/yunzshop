@@ -24,7 +24,7 @@ if ($_W['isajax']) {
             $row['createtime'] = date('Y-m-d H:i', $row['createtime']);
         }
         unset($row);
-        show_json(1, array(
+        return show_json(1, array(
             'total' => $total,
             'list' => $list,
             'pagesize' => $psize

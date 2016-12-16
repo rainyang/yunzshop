@@ -75,27 +75,6 @@ if($_GPC['plugin'] == "fund"){
     'shopsubmit'=> "发布项目"
     ); 
 }
-if($_GPC['plugin'] == "fund"){
-$lang = array(
-    "shopname" => "商品名称",
-    "mainimg" => "商品图片",
-    "limittime" => "限时卖时间",
-    "shopnumber" => "商品编号",
-    "shopprice" => "商品价格",
-    "putaway"   => "上架",
-    "soldout"   => "下架",
-    "good"      => "商品",
-    "price"     => "价格",
-    "repertory" => "库存",
-    "copyshop"  => "复制商品",
-    "isputaway" => "是否上架",
-    "shopdesc"  => "商品描述",
-    "shopinfo"  => "商品详情",
-    'shopoption'=> "商品规格",
-    'marketprice'=> "销售价格",
-    'shopsubmit'=> "发布商品"
-    ); 
-}
 
 //  END
 //分红

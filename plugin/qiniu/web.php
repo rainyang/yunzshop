@@ -14,6 +14,6 @@ class QiniuWeb extends Plugin
     }
     public function index()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
 }

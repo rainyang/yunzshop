@@ -2372,7 +2372,7 @@ if ($_W['isajax']) {
                 'discountprice' => $discountprice,
                 'deductprice' => $deductmoney,
                 'deductcredit' => $deductcredit,
-                'deductyunbimoney' => $yunbiprice,
+                'deductyunbimoney' => $deductyunbi > 0 ? $yunbiprice : 0,
                 'deductyunbi' => $deductyunbi,
                 'deductcredit2' => $deductcredit2,
                 'deductenough' => $deductenough,

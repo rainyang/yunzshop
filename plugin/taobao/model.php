@@ -399,6 +399,7 @@ if (!class_exists('TaobaoModel')) {
             }
             $response = $item['content'];
             $content  = $response['content'];
+            $content = preg_replace("/<img.+(imglazyload\/spaceball)+[^>]+>/", '', $content);
             preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $content, $imgs);
             if (isset($imgs[1])) {
                 foreach ($imgs[1] as $img) {
