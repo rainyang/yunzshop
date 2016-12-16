@@ -10,7 +10,11 @@ if($_W['isajax']) {
 	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 	$list = pdo_fetchall($sql);
 	foreach ($list as $key => &$rowp) {
-        $rowp['commission'] = pdo_fetchcolumn("SELECT money FROM " . tablename('sz_yi_channel_merchant_order') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}'");
+        $rowp['commission'] = pdo_fetchcolumn("SELECT money FROM " . tablename('sz_yi_channel_merchant_order') . " WHERE uniacid=:uniacid AND openid=:openid AND orderid=:orderid", array(
+            ':uniacid'  => $_W['uniacid'],
+            ':openid'   => $openid,
+            ':orderid'  => $rowp['id']
+        ));
 		$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . " WHERE og.orderid=:orderid order by og.id asc";
 		$rowp['goods'] 		= set_medias(pdo_fetchall($sql, array(':orderid' => $rowp['id'])), 'thumb');
 		$rowp['goodscount'] = count($rowp['goods']);
