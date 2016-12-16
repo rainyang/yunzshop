@@ -17,7 +17,7 @@ $uniacid    = $_W['uniacid'];
 $list = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_message') . " WHERE `openid` = '" . $openid . "' ORDER BY `id` DESC");
 
 if ($_W['isajax']) {
-    show_json(1, array(
+    return show_json(1, array(
         'list' => $list
     ));
 }

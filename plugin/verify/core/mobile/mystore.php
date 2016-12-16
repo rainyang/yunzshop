@@ -17,10 +17,10 @@ $store = pdo_fetch('SELECT * FROM '.tablename('sz_yi_store')." WHERE id=".$id);
 if ($operation == 'reset') {
     $id = intval($_GPC['storeid']);
     if (empty($id)) {
-        show_json(0);
+        return show_json(0);
     }
     pdo_delete('sz_yi_store_goods', array('storeid' => $id));
-    show_json(1);
+    return show_json(1);
 
 }
 

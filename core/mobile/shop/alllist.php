@@ -34,7 +34,7 @@ foreach ($category as $key => $value) {
 }
 
 if ($_W['isajax']) {
-    show_json(1, array(
+    return show_json(1, array(
         
         'category' => $category
         

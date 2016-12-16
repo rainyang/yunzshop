@@ -30,7 +30,7 @@ if ($_W['isajax']) {
             "isagency" => 1
         );
         pdo_update('sz_yi_member', $mdata, array('openid' => $openid, 'uniacid' => $_W['uniacid']));
-        show_json(1);
+        return show_json(1);
     }
 }
 include $this->template('agency');

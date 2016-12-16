@@ -43,7 +43,7 @@ if ($_W['isajax']) {
             $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
         }
         unset($row);
-        show_json(1, array(
+        return show_json(1, array(
             'total' => $total,
             'list' => $stores,
             'pagesize' => $psize

@@ -1227,7 +1227,17 @@ var fromcart = 0;
         	  {/if}
 
           }
-          data = {op:'create', order:order};
+
+            var useyunbimoney = 0;
+            var money = $('.deductyunbi').attr('money');
+            var credit = $('.deductyunbi').attr('credit');
+            var yunbion = $('.deductyunbi').attr('on')=='0'?'0':'1';
+            if('1' == yunbion){
+                useyunbimoney = money;
+            }
+
+            data = {op:'create', order:order, ischannelpay:"{$_GPC['ischannelpay']}", ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:"{$_GPC['isyunbipay']}",useyunbimoney:useyunbimoney};
+            
           $(this).attr('submitting', '1').html('提交中...');
             core.json('order/confirm', data, function(create_json) {
 

@@ -38,7 +38,7 @@ if ($operation == 'display') {
     if ($_W['isajax']) {
         $money = floatval($_GPC['money']);
         if ($money > $member['virtual_currency']) {
-            show_json(0,'出让'.$yunbi_title.'不正确');
+            return show_json(0,'出让'.$yunbi_title.'不正确');
         }
         p('yunbi')->setVirtualCurrency($member['openid'],-$money);
         $data_log = array(
@@ -51,7 +51,7 @@ if ($operation == 'display') {
         );
         p('yunbi')->addYunbiLog($uniacid,$data_log,'11');
 
-        show_json(1);
+        return show_json(1);
     }
     include $this->template('trading');
     exit;
@@ -114,7 +114,7 @@ if ($operation == 'display') {
 
     }
     unset($row);
-    show_json(1, array(
+    return show_json(1, array(
         'total' => $total,
         'list' => $list,
         'pagesize' => $psize,
@@ -128,15 +128,15 @@ if ($operation == 'display') {
                     ':id' => $id
                 ));
     if (!$info) {
-        show_json(0,"撤回失败,信息不存在！");
+        return show_json(0,"撤回失败,信息不存在！");
     }
     if ($info['mid'] != $member['id']) {
-        show_json(0,"撤回失败,信息不正确！");
+        return show_json(0,"撤回失败,信息不正确！");
     }
     $sql = "update ".tablename('sz_yi_yunbi_log')."  set status = -1 where `uniacid` =  " . $uniacid ." AND id = ".$id;
     pdo_fetchall($sql);
     p('yunbi')->setVirtualCurrency($member['openid'],$info['money']);
-    show_json(1);
+    return show_json(1);
 
 } elseif ( $operation == 'buy') {
     $payset = m('common')->getSysset(array('pay'));
@@ -147,12 +147,12 @@ if ($operation == 'display') {
                     ':id' => $id
                 ));
         if (!$trading) {
-            show_json(0,"购买失败,信息不存在！");
+            return show_json(0,"购买失败,信息不存在！");
         }
         $trading['create_time'] = date("Y-m-d H:i:s", $trading['create_time']);
         $trading['price'] = $trading['money'] * $yunbiset['trading_money'] / $yunbiset['credit'];
         if ($trading['price'] <= 0) {
-            show_json(0,"购买失败,支付金额不能小于0！");
+            return show_json(0,"购买失败,支付金额不能小于0！");
         }
 
 
@@ -169,7 +169,7 @@ if ($operation == 'display') {
             'id' => $id,
             'op' => 'buy'
         )));
-        show_json(1, array(
+        return show_json(1, array(
             'credit' => $credit,
             'trading' => $trading,
             'returnurl' => $returnurl
@@ -185,14 +185,14 @@ if ($operation == 'display') {
                 ':id' => $id
             ));
     if (!$trading) {
-        show_json(0,"支付失败,信息不存在！");
+        return show_json(0,"支付失败,信息不存在！");
     }
     $trading['create_time'] = date("Y-m-d H:i:s", $trading['create_time']);
     $trading['price'] = $trading['money'] * $yunbiset['trading_money'] / $yunbiset['credit'];
     $poundage = $trading['price'] * $yunbiset['poundage'] / 100;
 
     if ($trading['price'] <= 0) {
-        show_json(0,"支付失败,支付金额不能小于0！");
+        return show_json(0,"支付失败,支付金额不能小于0！");
     }
     $type = $_GPC['type'];
     if (!in_array($type, array(
@@ -202,18 +202,18 @@ if ($operation == 'display') {
         'cash',
         'storecash'
     ))) {
-        show_json(0, '未找到支付方式');
+        return show_json(0, '未找到支付方式');
     }
     if ($member['credit2'] < $trading['price']) {
-        show_json(0, '余额不足，请充值后在试！');
+        return show_json(0, '余额不足，请充值后在试！');
     }
     if ($type == 'credit') {
         if (!$payset['pay']['credit']) {
-            show_json(0, '余额支付未开启！');
+            return show_json(0, '余额支付未开启！');
         }
         $credits = m('member')->getCredit($openid, 'credit2');
         if ($credits < $trading['price']) {
-            show_json(0, "余额不足,请充值");
+            return show_json(0, "余额不足,请充值");
         }
         $fee    = floatval($trading['price']);
 
@@ -222,7 +222,7 @@ if ($operation == 'display') {
             '消费-购买'.$yunbi_title.'-余额支付:' . $fee
         ));
         if (is_error($result)) {
-            show_json(0, $result['message']);
+            return show_json(0, $result['message']);
         }
         p('yunbi')->setVirtualCurrency($openid,$trading['money']);
         $data_log = array(
@@ -242,9 +242,9 @@ if ($operation == 'display') {
             '出让'.$yunbi_title.'-余额获得:' . $fee - $poundage . '手续费:' .$poundage
         ));
         // 出售人推送信息
-        show_json(1);
+        return show_json(1);
     }
-    show_json(0,'支付失败，请重试！');
+    return show_json(0,'支付失败，请重试！');
 }
 
     

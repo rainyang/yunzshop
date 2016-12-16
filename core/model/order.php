@@ -246,7 +246,7 @@ class Sz_DYi_Order
             ':tid' => $ordersn
         ));
         if (empty($log)) {
-            show_json(-1, '订单金额错误, 请重试!');
+            return show_json(-1, '订单金额错误, 请重试!');
             exit;
         }
 

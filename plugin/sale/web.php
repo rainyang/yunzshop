@@ -1,5 +1,5 @@
 <?php
-//Ü¿ÖÚÉÌ³Ç QQ:913768135
+//Ü¿ï¿½ï¿½ï¿½Ì³ï¿½ QQ:913768135
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -25,14 +25,14 @@ class SaleWeb extends Plugin
     }
     public function deduct()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function enough()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
     public function recharge()
     {
-        $this->_exec_plugin(__FUNCTION__);
+    	return $this->_exec_plugin(__FUNCTION__);
     }
 }

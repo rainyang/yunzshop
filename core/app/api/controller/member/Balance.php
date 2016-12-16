@@ -88,10 +88,12 @@ class Balance extends YZ
     public function withdraw()
     {
         $trigger = !empty($_REQUEST['trigger']) ? $_REQUEST['trigger'] : 'display';
+        $jsons = $this->callMobile('member/withdraw');
+
+        $withdrawmoney = $this->_withdrawmoney = empty($jsons['variable']['set']['withdrawmoney']) ? 0 : $jsons['variable']['set']['withdrawmoney'];
 
         if ($this->_openid) {
             if ($trigger == 'display') {
-                $jsons = $this->callMobile('member/withdraw');
 
                 $msg = '';
                 if (!$jsons['json']['noinfo']) {
@@ -102,7 +104,6 @@ class Balance extends YZ
                     $msg = "无余额,无法申请提现!";
                 }
 
-                $withdrawmoney = $this->_withdrawmoney = empty($set['withdrawmoney']) ? 0 : $set['withdrawmoney'];
 
                 if ($withdrawmoney > 0 && $withdrawmoney > $jsons['json']['credit']) {
                     $msg = "余额不足!";

@@ -19,7 +19,7 @@ foreach ($list as $key => $value) {
 	$list[$key]['time'] = date('Y-m-d',$value['time']);
 }
 if ($_W['isajax']) {
-    show_json(1, array(
+    return show_json(1, array(
         'list' => $list
     ));
 }
