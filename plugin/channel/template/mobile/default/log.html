@@ -17,7 +17,7 @@ a {text-decoration:none;}
 .log_list .left {height:40px; width:100%; float:left; color:#999; margin-right:-20%;font-size:14px;}
 .log_list .left .inner { width:100%;margin-right:-20%}
 .log_list .left span {color:#666; font-size:14px; line-height:28px;}
-.log_list .right {height:40px; width:20%; float:right; font-size:14px; text-align:right; line-height:40px; margin-left:-20%;}
+
 .log_list .right span {color:#f90;}
 .log_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
 #log_loading { padding:10px;color:#666;text-align: center;}
@@ -29,8 +29,8 @@ a {text-decoration:none;}
  
 <div class="log_menu">
         <div class="nav navon" style="border-left:0px;width:33%;" data-status=''>全部</div>
-        <div class="nav"  data-status='0'>待审核</div>
-        <div class="nav"  data-status='1'>已打款</div>
+        <div class="nav"  data-status='1'>待审核</div>
+        <div class="nav"  data-status='3'>已打款</div>
 </div>
 <div id='container'></div>
 
@@ -40,10 +40,10 @@ a {text-decoration:none;}
     <%each list as log%>
   <div class="log_list"
        data-applyid='<%log.id%>'>
-    <div class="left"><div class='inner'>编号: <%log.applysn%><br><span>
-                申请结算金额: <%log.apply_money%> 
-                <%if log.status==0%>申请时间:<%/if%>
-                <%if log.status==1%>打款时间:<%/if%>
+    <div class="left"><div class='inner'>编号: <%log.applyno%><br><span>
+                金额: <%log.apply_money%> 
+                <%if log.status==1%>申请时间:<%/if%>
+                <%if log.status==3%>打款时间:<%/if%>
                 
                 <%log.dealtime%></span></div></div>
    <div class="right">+<%log.apply_money%><br><span><%log.statusstr%></span></div>

@@ -98,8 +98,10 @@ if ($_W['isajax']) {
             }
             if (p('channel')) {
                 $member = m('member')->getInfo($openid);
-                if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
-                    $r['marketprice'] = $r['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                if ($ischannelpay == 1) {
+                    if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
+                        $r['marketprice'] = $r['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                    }
                 }
                 //自提库存替换
                 if ($ischannelpick == 1) {
