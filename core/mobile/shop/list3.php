@@ -19,7 +19,7 @@ if ($_W['isajax']) {
         $args = array('page' => $_GPC['page'], 'pagesize' => 6, 'isrecommand' => 1, 'order' => 'displayorder desc,createtime desc', 'by' => '');
         $goods = m('goods')->getList($args);
 
-        show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
+        return show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
     }
 }
 

@@ -22,6 +22,6 @@ if ($_W['isajax']) {
         $rowp['paytime'] = date('Y-m-d H:i:s', $rowp['paytime']);
     }
     unset($rowp);
-    show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+    return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 }
 include $this->template('detail');

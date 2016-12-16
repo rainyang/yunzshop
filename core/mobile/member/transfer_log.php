@@ -48,7 +48,7 @@ if ($_W['isajax']) {
             $row['type'] = $_GPC['type'];
         }
         unset($row);
-        show_json(1, array(
+        return show_json(1, array(
             'total' => $total,
             'list' => $list,
             'pagesize' => $psize

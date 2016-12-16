@@ -177,17 +177,17 @@ if ($operation == 'display') {
             $ret .= '有' . $datacount3 . '种商品正在使用该表单，请关闭后再进行删除。';
         }
         if ($use_flag1 || $use_flag2 || $datacount3) {
-            show_json(0, $ret);
+            return show_json(0, $ret);
         } else {
             pdo_delete('sz_yi_diyform_type', array(
                 'id' => $id
             ));
             $ret = "删除成功";
-            show_json(1, $ret);
+            return show_json(1, $ret);
         }
     } else {
         $ret = "Url参数错误！请重试！";
-        show_json(0, $ret);
+        return show_json(0, $ret);
     }
     exit;
 }

@@ -54,18 +54,18 @@ if ($operation == 'display') {
                     setcookie('member_name', base64_encode($member_name));
                 }
                 if (is_app()) {
-                    show_json(1, array(
+                    return show_json(1, array(
                         'preurl' => $preUrl,
                         'open_id' => $info['openid'],
                     ));
                 } else {
-                    show_json(1, array(
+                    return show_json(1, array(
                         'preurl' => $preUrl
                     ));
                 }
             }
             else{
-                show_json(0, "用户名或密码错误！");
+                return show_json(0, "用户名或密码错误！");
             }
 
         }

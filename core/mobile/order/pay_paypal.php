@@ -43,7 +43,7 @@ if (!empty($orderid) && $operation = 'display') {
         ':openid' => $openid
     ));
     if (empty($order)) {
-        show_json(0, '订单未找到!');
+        return show_json(0, '订单未找到!');
     }
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
@@ -52,7 +52,7 @@ if (!empty($orderid) && $operation = 'display') {
     ));
     //echo "<pre>"; print_r($log);exit;
     if (!empty($log) && $log['status'] != '0') {
-        show_json(0, '订单已支付, 无需重复支付!');
+        return show_json(0, '订单已支付, 无需重复支付!');
     }
 	
 	if (empty($paypal['currencies'])) {

@@ -16,11 +16,11 @@ if (!class_exists('IndianaModel')) {
 		{
 			//设置本期
 			global $_W, $_GPC;
-			$indiana_good = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . " WHERE uniacid = '" .$_W['uniacid'] . "' AND id = '".$id."'");
+			$indiana_good = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . " WHERE uniacid = '" .$_W['uniacid'] . "' AND id = '".$id."' and status > 0");
 
 			if($indiana_good['max_periods'] <= $indiana_good['periods']){
 				//判断是否期数已满
-				pdo_update('sz_yi_indiana_goods',array('status'=>0),array('id'=>$id));
+				pdo_update('sz_yi_indiana_goods',array('status'=>1),array('id'=>$id));
 			}
 
 			//判断是否已经有正在进行的期数
@@ -273,7 +273,7 @@ if (!class_exists('IndianaModel')) {
 			pdo_update('sz_yi_indiana_period',array('jiexiao_time'=>$jiexiao, 'status'=>'2'),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_num));
 
 			$period = pdo_fetch("SELECT ip.goodsid, ip.period, ig.max_periods, ig.id FROM " . tablename('sz_yi_indiana_period') . " ip 
-			left join " . tablename('sz_yi_indiana_goods') . " ig on (ip.goodsid = ig.good_id) 
+			left join " . tablename('sz_yi_indiana_goods') . " ig on (ip.goodsid = ig.good_id and ig.status > 0) 
 			 WHERE ip.uniacid = :uniacid and ip.period_num = :period_num ",array(
 			 	'uniacid' => $_W['uniacid'],
 			 	'period_num' => $period_num

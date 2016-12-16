@@ -39,7 +39,7 @@ if (!class_exists('RechargeModel')) {
 		    $return = curl_exec($ch);  
 		    $status = json_decode($return,true);
 		    if (!empty($status['blance']) && $status['blance'] < $data['price']) {
-		        show_json(0,'接口账户余额不足！无法充值！请联系工作人员！');
+		        return show_json(0,'接口账户余额不足！无法充值！请联系工作人员！');
 		    }
 		}
 		function mobile_submit_api($data){
