@@ -18,4 +18,9 @@ class Af_supplier extends YZ
         $result = $this->callPlugin('supplier/af_supplier');
         $this->returnSuccess($result);
     }
+    public function hasApplied(){
+        $result = $this->callPlugin('supplier/af_supplier');
+        $this->returnSuccess(array('is_supplier'=>(string)$result['json']['is_supplier']));
+
+    }
 }
