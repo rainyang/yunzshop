@@ -11,7 +11,6 @@ if (checksubmit('submit')) {
 		unset($data['backruntime']);
 	}
 	$this->updateSet($data);
-	plog('coupon.set.save', '修改基本设置');
 	message('设置保存成功!', referer(), 'success');
 }
 load()->func('tpl');

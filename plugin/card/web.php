@@ -14,38 +14,6 @@ class CardWeb extends Plugin
 
 	public function index()
 	{
-		if (cv('coupon.coupon.view')) {
-			header('location: ' . $this->createPluginWebUrl('card/coupon'));
-			exit;
-		} else if (cv('coupon.category.view')) {
-			header('location: ' . $this->createPluginWebUrl('card/category'));
-			exit;
-		} else if (cv('coupon.center.view')) {
-			header('location: ' . $this->createPluginWebUrl('card/center'));
-			exit;
-		} else if (cv('coupon.set.view')) {
-			header('location: ' . $this->createPluginWebUrl('card/set'));
-			exit;
-		}
-	}
-
-	public function coupon()
-	{
-		return $this->_exec_plugin(__FUNCTION__);
-	}
-
-	public function center()
-	{
-		return $this->_exec_plugin(__FUNCTION__);
-	}
-
-	public function category()
-	{
-		return $this->_exec_plugin(__FUNCTION__);
-	}
-
-	public function send()
-	{
 		return $this->_exec_plugin(__FUNCTION__);
 	}
 
@@ -55,6 +23,10 @@ class CardWeb extends Plugin
 	}
 
 	public function set()
+	{
+		return $this->_exec_plugin(__FUNCTION__);
+	}
+	public function upgrade()
 	{
 		return $this->_exec_plugin(__FUNCTION__);
 	}
