@@ -68,10 +68,10 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
             ':logno' => $orderNo
         ));
         if (empty($log)) {
-            show_json(0, '充值出错!');
+            return show_json(0, '充值出错!');
         }
         if (!empty($log['status'])) {
-            show_json(0, '已经充值成功,无需重复支付!');
+            return show_json(0, '已经充值成功,无需重复支付!');
         }
 
         $amount = (int)($log['money'] * 100);

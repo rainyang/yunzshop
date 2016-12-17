@@ -41,7 +41,7 @@ if ($orderidss) {
 
 if ($operation == 'display' && $_W['isajax']) {
     $store['totalprices'] = $totalpricess;
-    show_json(1, array(
+    return show_json(1, array(
         'store'  => $store,
         'noinfo' => empty($member['realname'])
     ));
@@ -49,13 +49,13 @@ if ($operation == 'display' && $_W['isajax']) {
     $money = floatval($_GPC['money']);
     
     if (empty($money)) {
-        show_json(0, '申请金额为空!');
+        return show_json(0, '申请金额为空!');
     }
     if ($money <= 0) {
-        show_json(0, '提现金额不能小于0元!');
+        return show_json(0, '提现金额不能小于0元!');
     }
     if ($money > $totalprices) {
-        show_json(0, '提现金额过大!');
+        return show_json(0, '提现金额过大!');
     }
    
     $withdraw_no = m('common')->createNO('cashier_withdraw', 'withdraw_no', 'CW');
@@ -74,7 +74,7 @@ if ($operation == 'display' && $_W['isajax']) {
                             'remark' => array('value' => '恭喜,您的提现申请已经成功提交!')
                         );          
     m('message')->sendCustomNotice($openid, $msg);
-    show_json(1);
+    return show_json(1);
 }
 
 include $this->template('withdraw');

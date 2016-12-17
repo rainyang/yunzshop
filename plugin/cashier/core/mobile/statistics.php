@@ -70,7 +70,7 @@ if($operation == 'display' && $_W['isajax']){
         $row['carrier'] = iunserializer($row['carrier']);
         $row['createtime'] = date('Y-m-d,H:i:s',$row['createtime']);
     }
-    show_json(1,array('list'=>$list,'total'=>$total,'totalmoney'=>$totalmoney,'realtotalmoney'=>$realtotalmoney ));
+    return show_json(1,array('list'=>$list,'total'=>$total,'totalmoney'=>$totalmoney,'realtotalmoney'=>$realtotalmoney ));
 
 }
 include $this->template('statistics');

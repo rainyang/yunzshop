@@ -56,9 +56,9 @@ if ($operation == 'index') {
             $value['link'] = $this->createPluginMobileUrl('area/area_list',array('pcate_area'=>$value['id']));
         }
         unset($value);
-        show_json(1, $category_area);
+        return show_json(1, $category_area);
     }else {
-        show_json(0,"未检测到相应数据！");
+        return show_json(0,"未检测到相应数据！");
     }
 
 }
@@ -107,7 +107,7 @@ if ($_W['isajax']) {
     
     } 
     
-    show_json(1, array(
+    return show_json(1, array(
         'category' => $category,
         'current_category' => $current_category,
         'parent' => $parent,

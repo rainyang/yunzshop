@@ -25,7 +25,7 @@ if ($_W['isajax']) {
         }
         unset($row);
 
-        show_json(1, array(
+        return show_json(1, array(
             'total' => $total,
             'list' => $list,
             'pagesize' => $psize

@@ -16,7 +16,7 @@ if ($_W['isajax']) {
             $cset          = p('commission')->getSet();
             $hascommission = !empty($cset['level']);
         }
-        show_json(1, array(
+        return show_json(1, array(
             'notice' => $notice,
             'hascommission' => $hascommission
         ));
@@ -32,7 +32,7 @@ if ($_W['isajax']) {
             'openid' => $openid,
             'uniacid' => $uniacid
         ));
-        show_json(1);
+        return show_json(1);
     }
 }
 include $this->template('member/notice');

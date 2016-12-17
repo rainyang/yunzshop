@@ -71,5 +71,5 @@ if($_W['isajax']){
         }
     }
 
-    show_json(1,array('goods' => $goods, 'specs' => $specs, 'good' => $good));
+    return show_json(1,array('goods' => $goods, 'specs' => $specs, 'good' => $good));
 }

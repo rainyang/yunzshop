@@ -163,13 +163,13 @@ if ($diyform_plugin) {
                     ':mid' => $_GPC['mid']
                 ));
             if ($declaration) {
-                show_json(1, array('mid' => $declaration['id']));
+                return show_json(1, array('mid' => $declaration['id']));
             } else {
-                show_json(0, '用户信息不存在');
+                return show_json(0, '用户信息不存在');
             }
 
         } else {
-            show_json(1, array('mid' => ''));
+            return show_json(1, array('mid' => ''));
         }
     }
 }
@@ -282,9 +282,9 @@ if ($_W['isajax']) {
 
             }
             if ($a == 0) {
-                show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
+                return show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
             } else {
-                show_json(1);
+                return show_json(1);
             }
         }
 

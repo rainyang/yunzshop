@@ -14,7 +14,7 @@ if ($_W['isajax']) {
             ));
 
         if(!$info){
-            show_json(0, array(
+            return show_json(0, array(
                 'msg' => '手机号码不存在'
             ));
             exit;

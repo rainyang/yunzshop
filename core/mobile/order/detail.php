@@ -169,7 +169,7 @@ if (!empty($order)) {
 }
 if ($_W['isajax']) {
     if (empty($order)) {
-        show_json(0);
+        return show_json(0);
     }
     $order['virtual_str']     = str_replace("\n", "<br/>", $order['virtual_str']);
     $order['goodstotal']      = count($goods);
