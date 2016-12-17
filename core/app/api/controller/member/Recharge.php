@@ -56,9 +56,10 @@ class Recharge extends YZ
             }
         } else if ($trigger == 'post') {
             global $_W;
+
             if ($openid) {
                 $_W['ispost'] = 1;
-                $json = $this->callMobile('member/recharge/recharge');
+                $json = $this->callMobile('member/recharge/app_recharge');
 
                 $this->returnSuccess($json);
             } else {

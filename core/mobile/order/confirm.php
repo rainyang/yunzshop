@@ -155,7 +155,7 @@ if ($operation == "date") {
     $marketprice = $laddermoney > 0 ? $laddermoney : $_GPC['marketprice'];
 
 
-    show_json(1, $marketprice);
+    return show_json(1, $marketprice);
 }
 
 $yunbi_plugin   = p('yunbi');
@@ -407,7 +407,7 @@ if ($_W['isajax']) {
                 $goods[] = $data;
             } else {
                 if (count($total) != count($optionid)) {
-                    show_json(0);
+                    return show_json(0);
                 }
                 foreach ($optionid as $key => $val) {
                     $data['total']    = $total[$key];
@@ -1599,10 +1599,10 @@ if ($_W['isajax']) {
         $can_buy = array();
         $can_buy = m('order')->isSupportDelivery($order_data);
         if ($can_buy['status'] == -1) {
-            show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
+            return show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
 
         } else if ($can_buy['status'] == -2) {
-            show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
+            return show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
 
         }
         $yunbiprice = 0;
@@ -1665,7 +1665,7 @@ if ($_W['isajax']) {
                 if ($store_total) {
                     $storegoodstotal = pdo_fetchcolumn("SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':goodsid' => $goodsid, ':uniacid' => $uniacid, ':storeid' => $carrierid, ':optionid' => $optionid));
                     if ($goodstotal > $storegoodstotal && !empty($carrierid)) {
-                        show_json(-2,'抱歉，此门店库存不足！');
+                        return show_json(-2,'抱歉，此门店库存不足！');
                     }
                 }
 
@@ -1732,7 +1732,7 @@ if ($_W['isajax']) {
                     ));
                     if (($order_goodscount > 0 && $order_goodscount > $data['usermaxbuy'])
                         || ($order_goodscount == 0 && $goodstotal > $data['usermaxbuy'])) {
-                        show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
+                        return show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
                     }
                 }
                 if ($data['istime'] == 1) {
@@ -2355,7 +2355,7 @@ if ($_W['isajax']) {
                 'discountprice' => $discountprice,
                 'deductprice' => $deductmoney,
                 'deductcredit' => $deductcredit,
-                'deductyunbimoney' => $yunbiprice,
+                'deductyunbimoney' => $deductyunbi > 0 ? $yunbiprice : 0,
                 'deductyunbi' => $deductyunbi,
                 'deductcredit2' => $deductcredit2,
                 'deductenough' => $deductenough,

@@ -25,7 +25,7 @@ if ($_W['isajax'] || $_W['ispost']) {
 
         $set = $this->getSet();
         $set = set_medias($set, array('advtitle1','advtitle2','advtitle3','advtitle4'));
-        show_json(1, array('category' => $category, 'set' => $set));
+        return show_json(1, array('category' => $category, 'set' => $set));
     } elseif ($operation == 'goods') {
         $page = $_GPC['page'];
         if (!empty($_GPC['lng'])) {
@@ -80,7 +80,7 @@ if ($_W['isajax'] || $_W['ispost']) {
             }
         }
 
-        show_json(1, array('goods' => $goods_list, 'pagesize' => 10));
+        return show_json(1, array('goods' => $goods_list, 'pagesize' => 10));
 
     }
 

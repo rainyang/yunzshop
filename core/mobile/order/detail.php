@@ -112,6 +112,7 @@ if (!empty($order)) {
     $show         = 1;
     $diyform_flag = 0;
     foreach ($goods as &$g) {
+        $g['unit_price'] = $g['price'] / $g['total'];
         $g['thumb'] = tomedia($g['thumb']);
         if($order['plugin'] == 'fund'){
             $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
@@ -168,7 +169,7 @@ if (!empty($order)) {
 }
 if ($_W['isajax']) {
     if (empty($order)) {
-        show_json(0);
+        return show_json(0);
     }
     $order['virtual_str']     = str_replace("\n", "<br/>", $order['virtual_str']);
     $order['goodstotal']      = count($goods);

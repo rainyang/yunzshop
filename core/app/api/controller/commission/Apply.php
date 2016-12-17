@@ -15,6 +15,10 @@ class Apply extends YZ
 
     public function index()
     {
+        global $_GPC;
+        if(isset($_GPC['type'])){
+            $this->submit();
+        }
         $result = $this->callPlugin('commission/Apply');
         $result['json']['set']['texts']['commission_apply_title'] = $result['json']['set']['texts']['commission'] . "提现";
         $result['json']['set']['texts']['commission_ok_title'] = "当前" . $result['json']['texts']['commission_ok'] . "(元)";
@@ -55,5 +59,10 @@ class Apply extends YZ
         }
         $this->returnSuccess($result);
     }
-
+    public function submit(){
+        global $_W;
+        $_W['ispost'] = true;
+        $result = $this->callPlugin('commission/Apply');
+        $this->returnSuccess($result['json']);
+    }
 }
