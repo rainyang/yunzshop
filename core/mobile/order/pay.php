@@ -407,14 +407,14 @@ if ($operation == 'display' && $_W['isajax']) {
             ));
             if (!empty($option)) {
                 if ($option['stock'] != -1) {
-                    if (empty($option['stock'])) {
+                    if (empty($option['stock'])  OR ($option['buycount'] > $data['stock'])) {
                         return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
                     }
                 }
             }
         } else {
             if ($data['stock'] != -1) {
-                if (empty($data['stock'])) {
+                if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
                     return show_json(-1, $data['title'] . "<br/>库存不足!");
                 }
             }
@@ -645,14 +645,14 @@ if ($operation == 'display' && $_W['isajax']) {
             ));
             if (!empty($option)) {
                 if ($option['stock'] != -1) {
-                    if (empty($option['stock'])) {
+                    if (empty($option['stock']) OR ($option['buycount'] > $data['stock'])) {
                         return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
                     }
                 }
             }
         } else {
             if ($data['stock'] != -1) {
-                if (empty($data['stock'])) {
+                if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
                     return show_json(-1, $data['title'] . "<br/>库存不足!");
                 }
             }
