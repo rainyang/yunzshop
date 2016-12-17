@@ -30,7 +30,7 @@ class Operation extends YZ
         if($button_id == Order::PAY){
             //订单抵扣到价格为0时,开启余额支付,关闭微信支付
             if($result['json']['order']['price'] == 0){
-                $result['json']['credit']['success'] = true;
+                $result['json']['free']['success'] = true;
                 $result['json']['app_wechat']['success'] = false;
 
             }
