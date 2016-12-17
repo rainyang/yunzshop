@@ -779,4 +779,82 @@ class Sz_DYi_Order
             }
         }
     }
+
+    /**
+     * 获取订单商品
+     *
+     * @param $orderid
+     * @return array
+     */
+    public function getOrderGodds($orderid)
+    {
+        global $_W;
+        $order_goods = pdo_fetchall("select g.id,og.orderid, g.type, og.total,og.optionid from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ",
+            array(
+                ":uniacid" => $_W["uniacid"],
+                ":orderid" => $orderid
+            ));
+
+        return $order_goods;
+    }
+
+    /**
+     * 更新无规格商品库存
+     *
+     * @param $goodsid
+     * @param $total
+     */
+    public function updateGoodsStock($goodsid, $total)
+    {
+        global $_W;
+
+        $sql = "UPDATE " . tablename('sz_yi_goods') . " SET total = total + " . $total . " 
+                WHERE uniacid= " . $_W['uniacid'] . " AND id= " . $goodsid;
+
+        pdo_query($sql);
+    }
+
+    /**
+     * 更新规格商品库存
+     *
+     * @param $goodsid
+     * @param $optionid
+     * @param $total
+     */
+    public function updateGoodsOptionStock($goodsid, $optionid, $total)
+    {
+        global $_W;
+
+        $sql = "UPDATE " . tablename('sz_yi_goods_option') . " SET stock = stock + " . $total . " 
+                WHERE uniacid= " . $_W['uniacid'] .  " AND id = " . $optionid . " AND goodsid= " . $goodsid ;
+
+        pdo_query($sql);
+    }
+
+    /**
+     * 更新虚拟商品记录
+     *
+     * @param $orderid
+     */
+    public function updateVirtualGoodsRecord($orderid, $goodsid)
+    {
+        global $_W;
+
+        $typeid = pdo_fetchcolumn("SELECT typeid FROM " . tablename('sz_yi_virtual_data') . " 
+                   WHERE uniacid=:uniacid AND orderid=:orderid",
+                   array(':uniacid' => $_W['uniacid'], ':orderid' => $orderid));
+
+        $this->updateGoodsStock($goodsid, 1);
+
+        $sql = "UPDATE " . tablename('sz_yi_virtual_data') . " SET openid = '', usetime = '0', orderid = '0', ordersn = '0', price = '0'
+                WHERE uniacid = " . $_W['uniacid'] . " AND orderid = " . $orderid;
+
+        pdo_query($sql);
+
+        $sql = "UPDATE " . tablename('sz_yi_virtual_type') . " SET usedata = usedata-1
+                WHERE uniacid = " . $_W['uniacid'] . " AND id = " . $typeid;
+
+        pdo_query($sql);
+
+    }
 }
