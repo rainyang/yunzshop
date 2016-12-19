@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_card_data') . " (
   `openid` varchar(50) NOT NULL DEFAULT '0' COMMENT '绑定者openid',
   `bindtime` int(11) NOT NULL DEFAULT '0' COMMENT '绑定时间',
   `balance` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '余额',
+  `isoverdue` tinyint(3) NOT NULL DEFAULT '0' COMMENT '1已过期',
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`),
   KEY `idx_openid`(`openid`)
@@ -50,5 +51,8 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_card_log') . " (
 ";
 pdo_query($sql);
 
+if(!pdo_fieldexists('sz_yi_card_data', 'cdkey')) {
+    pdo_query("ALTER TABLE ".tablename('sz_yi_card_data')." ADD UNIQUE(`cdkey`);");
+}
 
 message('芸众代金卡插件安装成功', $this->createPluginWebUrl('card/index'), 'success');

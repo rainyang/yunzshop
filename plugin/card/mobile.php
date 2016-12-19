@@ -11,27 +11,12 @@ class CardMobile extends Plugin
 		parent::__construct('card');
 	}
 
-	public function index()
+	public function center()
 	{
 		return $this->_exec_plugin(__FUNCTION__, false);
 	}
 
-	public function detail()
-	{
-		return $this->_exec_plugin(__FUNCTION__, false);
-	}
-
-	public function my()
-	{
-		return $this->_exec_plugin(__FUNCTION__, false);
-	}
-
-	public function mydetail()
-	{
-		return $this->_exec_plugin(__FUNCTION__, false);
-	}
-
-	public function util()
+	public function bindcard()
 	{
 		return $this->_exec_plugin(__FUNCTION__, false);
 	}

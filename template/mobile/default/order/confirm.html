@@ -444,6 +444,19 @@
         </div>
     </div>
     {/if}
+    <!--代金卡-->
+    {if $hascard}
+    <div class="addorder_price carddiv"  data-id="<%order.supplier_uid%>" >
+        <div class="price">
+            <div class="line selectcoupon" style="line-height:32px;" data-id="<%order.supplier_uid%>">
+                <d class="couponselect" data-id="<%order.supplier_uid%>"><%if order.cardcount>0%>我要使用{$card_set['gift_title']}<%else%>没有符合条件的{$card_set['gift_title']}~<%/if%></d>
+                <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
+                <div class="couponcount"><%order.cardcount%></div>
+            </div>
+        </div>
+    </div>
+    {/if}
+
    <%if order.deductyunbi>0%>
      <div class="addorder_price">
         <div class="price" >
@@ -968,6 +981,18 @@ var fromcart = 0;
                         $('.couponselect[data-id='+supplier_uid+']').html('没有符合条件的优惠券~');
                         $('.coupondiv[data-id='+supplier_uid+'] .couponcount').html('0');
                         //$('.coupondiv[data-id='+supplier_uid+']').hide();
+                      }
+
+                      if(getjson.result.hascard){
+                          $('.carddiv[data-id='+supplier_uid+']').show();
+                          $('.couponselect[data-id='+supplier_uid+']').html("我要使用{$card_set['gift_title']}");
+                          $('.carddiv[data-id='+supplier_uid+'] .couponcount').html(getjson.result.couponcount);
+                          bindCardEvents();
+                      }else{
+                          $("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
+                          $('.couponselect[data-id='+supplier_uid+']').html("没有符合条件的{$card_set['gift_title']}~");
+                          $('.carddiv[data-id='+supplier_uid+'] .couponcount').html('0');
+                          //$('.coupondiv[data-id='+supplier_uid+']').hide();
                       }
 
                       if(getjson.result.deductenough_money>0){
@@ -1530,6 +1555,31 @@ var fromcart = 0;
                      }, true, true);
                 });
           }
+
+            function bindCardEvents(){
+                $('.selectcoupon').click( function(){
+                    core.pjson('card/util', {op: 'query'}, function (rjson) {
+                        if (rjson.status != 1) {
+                            core.tip.show(rjson.result);
+                            $("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
+                            calctotalprice(supplier_uid);
+                            return;
+                        }
+                        if(rjson.result.coupons.length>0 || $.makeArray(rjson.result.coupons).length>0){
+                            CouponChooser.cancelCallback = function(){
+                                $('.coupondeduct_div[data-id='+supplier_uid+']').hide();
+                                $('.coupondeduct_text[data-id='+supplier_uid+']').html('');
+                                $('.coupondeduct_money[data-id='+supplier_uid+']').html('0');
+                                calctotalprice(supplier_uid);
+                            }
+                            CouponChooser.confirmCallback = function(){
+                                calctotalprice(supplier_uid);
+                            }
+                            CouponChooser.open( rjson.result, supplier_uid);
+                        }
+                    }, true, true);
+                });
+            }
       {/if}
   }, true,true);
 });

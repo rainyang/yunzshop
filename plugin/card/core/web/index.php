@@ -22,6 +22,7 @@ if ($op == 'post') {
 	        $data['timeend'] 			= strtotime($_GPC['timeend']);
 	        $data['validity_period']	= intval($_GPC['validity_period'])*60*60*24;
 	        $data['cdkey'] 				= $this->model->getCdkey();
+            $data['balance']            = trim($_GPC['money']);
 	        pdo_insert('sz_yi_card_data', $data);
 		}
 		message('生成代金卡'.$total.'张成功!', $this->createPluginWebUrl('card/index'), 'success');
