@@ -872,5 +872,35 @@ if (!class_exists('ChannelModel')) {
                 pdo_insert('sz_yi_channel_stock_log', $stock_log);
         	}
         }
+
+        //edit by yangyang 12-19 comment 退款加库存
+        public function channelRefund($orderid, $uniacid, $openid)
+        {
+            global $_W;
+            $order_goods = pdo_fetchall("SELECT channel_id,goodsid,optionid,total FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid=:uniacid AND orderid=:orderid", array(
+                ':uniacid'  => $uniacid,
+                ':orderid'  => $orderid
+            ));
+            foreach ($order_goods as $og) {
+                if ($og['channel_id'] > 0) {
+                    $up_openid = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_member') . " WHERE id=:id", array(
+                        ':id'   => $og['channel_id']
+                    ));
+                    $stock = $this->getMyOptionStock($up_openid,$og['goodsid'],$og['optionid']);
+                    $stock += $og['total'];
+                    pdo_update('sz_yi_channel_stock',
+                        array(
+                            'stock_total' => $stock
+                        ),
+                        array(
+                            'uniacid'   => $_W['uniacid'],
+                            'openid'    => $up_openid,
+                            'goodsid'   => $og['goodsid'],
+                            'optionid'  => $og['optionid']
+                        )
+                    );
+                }
+            }
+        }
 	}
 }
