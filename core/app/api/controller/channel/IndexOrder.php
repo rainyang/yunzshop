@@ -2,8 +2,6 @@
 namespace app\api\controller\channel;
 @session_start();
 use app\api\YZ;
-use app\api\controller\order;
-use yii\helpers\ArrayHelper;
 
 class IndexOrder extends YZ
 {

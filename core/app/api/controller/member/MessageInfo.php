@@ -2,7 +2,6 @@
 namespace app\api\controller\member;
 @session_start();
 use app\api\YZ;
-use yii\helpers\ArrayHelper;
 
 /**
  * 通知详情API

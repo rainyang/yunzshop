@@ -95,6 +95,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_indiana_consumerec
   `uniacid` int(11) NOT NULL,
   `openid` varchar(145) NOT NULL,
   `num` int(11) NOT NULL COMMENT '夺宝数量',
+  `ordersn` varchar(20) NOT NULL,
   `codes` LONGTEXT NOT NULL ,
   `period_num` varchar(145) NOT NULL COMMENT '期号',
   `create_time` varchar(145) NOT NULL COMMENT '消费时间',
