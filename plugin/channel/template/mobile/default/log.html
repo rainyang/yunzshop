@@ -40,8 +40,7 @@ a {text-decoration:none;}
     <%each list as log%>
   <div class="log_list"
        data-applyid='<%log.id%>'>
-    <div class="left"><div class='inner'>编号: <%log.applyno%><br><span>
-                金额: <%log.apply_money%> 
+    <div class="left"><div class='inner'><%log.applyno%><br><span>
                 <%if log.status==1%>申请时间:<%/if%>
                 <%if log.status==3%>打款时间:<%/if%>
                 
