@@ -7,11 +7,11 @@ class Display extends YZ
 {
     public function index()
     {
+        global $_GPC;
         $this->_validatePara();
         $openid    = m('user')->isLogin();
-        $uniacid = Request::input("uniacid");$request = \Yii::$app->request;
-        $get = $request->get();
-        $address_id = Request::input("address_id");
+        $uniacid = $_GPC["uniacid"];
+        $address_id = $_GPC["address_id"];
         $total = $this->_getCount($openid,$uniacid);
         $list = $this->_getList($openid,$uniacid,$address_id);
         $this->returnSuccess(array('total' => $total, 'list' => $list));

@@ -2,7 +2,6 @@
 namespace app\api\controller\commission;
 @session_start();
 use app\api\YZ;
-use yii\helpers\ArrayHelper;
 
 class Index extends YZ
 {
