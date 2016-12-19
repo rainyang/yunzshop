@@ -20,4 +20,9 @@ class CardMobile extends Plugin
 	{
 		return $this->_exec_plugin(__FUNCTION__, false);
 	}
+
+    public function util()
+    {
+        return $this->_exec_plugin(__FUNCTION__, false);
+    }
 }
