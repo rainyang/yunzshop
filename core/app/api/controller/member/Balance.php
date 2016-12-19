@@ -146,9 +146,9 @@ class Balance extends YZ
      */
     public function getBalance() {
         if ($this->_openid) {
-            $json = $this->callMobile('member/recharge');
+            $credit = m('member')->getCredit($this->_openid, 'credit2');
 
-            $res = array('money'=>$json['json']['credit']);
+            $res = array('money'=>$credit);
 
             $this->returnSuccess($res);
         } else {

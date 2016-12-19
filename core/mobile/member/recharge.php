@@ -331,30 +331,11 @@ if ($operation == 'display' && $_W['isajax']) {
         'pay'
     ));
 
-    pdo_delete('sz_yi_member_log', array(
-        'openid' => $openid,
-        'status' => 0,
-        'type' => 0,
-        'uniacid' => $_W['uniacid']
-    ));
-    $logno = m('common')->createNO('member_log', 'logno', 'RC');
-    $log   = array(
-        'uniacid' => $_W['uniacid'],
-        'logno' => $logno,
-        'title' => $set['shop']['name'] . "会员充值",
-        'openid' => $openid,
-        'type' => 0,
-        'createtime' => time(),
-        'status' => 0
-    );
-    pdo_insert('sz_yi_member_log', $log);
-    $logid  = pdo_insertid();
-
-
     if (!empty($set['trade']['closerecharge'])) {
         return show_json(-1, '系统未开启账户充值!');
     }
 
+    $logid = floatval($_GPC['logid']);
     if (empty($logid)) {
         return show_json(0, '充值出错, 请重试!');
     }
@@ -374,6 +355,30 @@ if ($operation == 'display' && $_W['isajax']) {
     ))) {
         return show_json(0, '未找到支付方式');
     }
+
+    /*修复支付问题*/
+    $couponid = intval($_GPC['couponid']);
+
+    if($log['money'] <= 0){
+            pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
+    }elseif ($log['money']!=$money){
+        $logno = m('common')->createNO('member_log', 'logno', 'RC');
+        $log   = array(
+            'uniacid' => $_W['uniacid'],
+            'logno' => $logno,
+            'title' => $set['shop']['name'] . "会员充值",
+            'openid' => $openid,
+            'type' => 0,
+            'createtime' => time(),
+            'money' => $money,
+            'couponid' => $couponid,
+            'status' => 0
+        );
+
+        pdo_insert('sz_yi_member_log', $log);
+        $logid  = pdo_insertid();
+    }
+
     $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
         ':uniacid' => $uniacid,
         ':id' => $logid
@@ -381,18 +386,6 @@ if ($operation == 'display' && $_W['isajax']) {
     if (empty($log)) {
         return show_json(0, '充值出错, 请重试!');
     }
-
-    /*修复支付问题*/
-    $couponid = intval($_GPC['couponid']);
-
-    if($log['money'] <= 0){
-            pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
-    }else{
-            if($log['money']!=$money){
-                return show_json(0, '充值异常, 请重试!');
-            }
-    }
-
 
     if ($type == 'weixin') {
         if (!is_weixin() && !is_app_api()) {
