@@ -1,14 +1,13 @@
 {
   "name": "yunzhong",
   "description": "yunzhong shop",
-  "keywords": ["yii2", "legacy"],
+  "keywords": ["legacy"],
   "homepage": "http://www.yunzshop.com/",
   "type": "project",
   "license": "Copyrighted",
   "minimum-stability": "dev",
   "require": {
     "php": ">=5.4.0",
-    "yiisoft/yii2": "*"
     "phpunit/phpunit": "^5.5",
     "tencentyun-api/qcloudapi-sdk-php":"*"
   },
