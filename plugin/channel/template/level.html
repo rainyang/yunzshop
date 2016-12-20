@@ -56,7 +56,7 @@
                             <input type="text" name="profit_sharing" class="form-control" value="{$level['profit_sharing']}" />
                             <span class='input-group-addon'>%</span>
                         </div>
-                        <div class="help-block" style="color:red">渠道商进货价格 +（商品销售价格-渠道商进货价格）*利润分成。<br>例:(销售价1000元,渠道商进货折扣50%,利润分成20%)<br>结果:[1000*50%+(1000-1000*50%)]*20% = 200</div>
+                        <div class="help-block" style="color:red">（商品销售价-渠道商进货价）*利润分成+渠道商进货价<br>例:(2299,渠道商进货折扣50%,利润分成50%)<br>结果:（2299-2299）*0.5+2299*0.5=1724.25</div>
                     </div>
                 </div>
                 <div class="form-group">
