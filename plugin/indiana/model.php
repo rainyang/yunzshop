@@ -270,13 +270,11 @@ if (!class_exists('IndianaModel')) {
 				$raise = 5;
 			}
 			$jiexiao = time() + $raise * 60;	
-			pdo_update('sz_yi_indiana_period',array('jiexiao_time'=>$jiexiao, 'status'=>'2'),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_num));
+			pdo_update('sz_yi_indiana_period',array('jiexiao_time'=>$jiexiao, 'status'=>'2'),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_num)); 
 
-			$period = pdo_fetch("SELECT ip.goodsid, ip.period, ig.max_periods, ig.id FROM " . tablename('sz_yi_indiana_period') . " ip 
-			left join " . tablename('sz_yi_indiana_goods') . " ig on (ip.goodsid = ig.good_id and ig.status > 0) 
-			 WHERE ip.uniacid = :uniacid and ip.period_num = :period_num ",array(
-			 	'uniacid' => $_W['uniacid'],
-			 	'period_num' => $period_num
+			$period = pdo_fetch("SELECT ip.goodsid, ip.period, ig.max_periods, ig.id FROM " . tablename('sz_yi_indiana_period') . " ip left join " . tablename('sz_yi_indiana_goods') . " ig on (ip.goodsid = ig.good_id and ig.status > 0) WHERE ip.uniacid = :uniacid and ip.period_num = :period_num ",array(
+			 	':uniacid' => $_W['uniacid'],
+			 	':period_num' => $period_num
 			 ));
 			if ($period['max_periods']-$period['period'] > 0) {
 				self::setPeriod($period['id']);
