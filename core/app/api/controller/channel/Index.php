@@ -2,8 +2,6 @@
 namespace app\api\controller\channel;
 @session_start();
 use app\api\YZ;
-use app\api\controller\order;
-use yii\helpers\ArrayHelper;
 class Index extends YZ
 {
 
@@ -69,21 +67,6 @@ class Index extends YZ
                 'title'      => '我的客户',
                 'value'     =>$result['json']['channelcount'],
                 'unit'      =>'人'
-            ], [
-                'id'        => '4',
-                'title'      => '商品库存',
-                'value'     => '',
-                'unit'      => ''
-            ], [
-                'id'        => '5',
-                'title'      => '我要采购',
-                'value'     => '',
-                'unit'      => ''
-            ], [
-                'id'        => '6',
-                'title'      => '我要提货',
-                'value'     => '',
-                'unit'      => ''
             ]
         ];
 

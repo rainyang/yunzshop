@@ -59,4 +59,8 @@ class SystemWeb extends Plugin
     {
     	return $this->_exec_plugin(__FUNCTION__);
     }
+    public function uploadqiniu()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
 }

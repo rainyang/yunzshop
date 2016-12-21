@@ -432,12 +432,12 @@ if ($operation == "display") {
     }
     //查询订单总数以及总金额
     if ($_W['ispost']) {
-        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " AS o 
+        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " AS o 
             LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond}", $paras);
         $total = $result['total'];
         $totalmoney = $result['totalmoney'];
         $pager = pagination($total, $pindex, $psize);
-        show_json(1, array(
+        return show_json(1, array(
                 'pager' => $pager,
                 'total' => $total,
                 'totalmoney' => floatval($totalmoney)
@@ -499,9 +499,9 @@ if ($operation == "display") {
         }
     }
 
-    $sql = 'SELECT count(1) AS suppliers_num, o.*, r.rtype 
+    $sql = 'SELECT 1 AS suppliers_num, o.*, r.rtype 
             FROM ' . tablename("sz_yi_order") . " AS o 
-            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond} GROUP BY o.ordersn_general ORDER BY o.createtime DESC,o.status DESC
+            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond} ORDER BY o.createtime DESC
             LIMIT " . ($pindex - 1) * $psize . "," . $psize;
     //echo $sql;exit;
     $list = pdo_fetchall($sql, $paras);
@@ -1321,7 +1321,7 @@ if ($operation == "display") {
     $expresssn = trim($_GPC['expresssn']);
     if (empty($id)) {
         $ret = 'Url参数错误！请重试！';
-        show_json(0, $ret);
+        return show_json(0, $ret);
     }
     if (!empty($expresssn)) {
         $change_data = array();
@@ -1333,10 +1333,10 @@ if ($operation == "display") {
             'uniacid' => $_W['uniacid']
         ));
         $ret = '修改成功';
-        show_json(1, $ret);
+        return show_json(1, $ret);
     } else {
         $ret = '请填写快递单号！';
-        show_json(0, $ret);
+        return show_json(0, $ret);
     }
 } elseif ($operation == "saveaddress") {
     $province = $_GPC["province"];
@@ -1349,19 +1349,19 @@ if ($operation == "display") {
     if (!empty($id)) {
         if (empty($realname)) {
             $ret = "请填写收件人姓名！";
-            show_json(0, $ret);
+            return show_json(0, $ret);
         }
         if (empty($mobile)) {
             $ret = "请填写收件人手机！";
-            show_json(0, $ret);
+            return show_json(0, $ret);
         }
         if ($province == "请选择省份") {
             $ret = "请选择省份！";
-            show_json(0, $ret);
+            return show_json(0, $ret);
         }
         if (empty($address)) {
             $ret = "请填写详细地址！";
-            show_json(0, $ret);
+            return show_json(0, $ret);
         }
         $item = pdo_fetch("SELECT id,address,ordersn_general FROM " . tablename("sz_yi_order") . " WHERE id = :id and uniacid=:uniacid",
             array(
@@ -1399,10 +1399,10 @@ if ($operation == "display") {
             "uniacid" => $_W["uniacid"]
         ));*/
         $ret = "修改成功";
-        show_json(1, $ret);
+        return show_json(1, $ret);
     } else {
         $ret = "Url参数错误！请重试！";
-        show_json(0, $ret);
+        return show_json(0, $ret);
     }
 } elseif ($operation == "delete") {
     ca("order.op.delete");
@@ -2065,7 +2065,7 @@ function order_list_confirmpay($order)
                 ':tid' => $ordersn_general
             ));
         if (!empty($log) && $log['status'] != '0') {
-            show_json(-1, '订单已支付, 无需重复支付!');
+            return show_json(-1, '订单已支付, 无需重复支付!');
             message("订单已支付, 无需重复支付!", '', "error");
         }
         if (!empty($log) && $log['status'] == '0') {
@@ -2426,6 +2426,9 @@ function order_list_refund($item)
                             p('yunbi')->addYunbiLog($_W["uniacid"], $data_log, '4');
                         }
 
+                        if (p('channel')) {
+                            p('channel')->channelRefund($item['id'],$item['uniacid'], $item['openid']);
+                        }
 
                         if (!empty($refundtype)) {
                             if ($item['deductcredit2'] > 0) {

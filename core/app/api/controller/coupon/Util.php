@@ -2,7 +2,6 @@
 namespace app\api\controller\coupon;
 @session_start();
 use app\api\YZ;
-use yii\helpers\ArrayHelper;
 
 class Util extends YZ    //优惠券列表
 {

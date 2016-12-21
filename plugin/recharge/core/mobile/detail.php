@@ -72,9 +72,9 @@ if ($_W['isajax']) {
 
             }
             if ($a == 0) {
-                show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
+                return show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
             } else {
-                show_json(1);
+                return show_json(1);
             }
         }
 
@@ -84,7 +84,7 @@ if ($_W['isajax']) {
         $ischannelpick  = intval($_GPC['ischannelpick']);
     }
     if (empty($goods)) {
-        show_json(0);
+        return show_json(0);
     }
     $goods              = set_medias($goods, 'thumb');
     if (p('yunbi')) {
@@ -418,7 +418,7 @@ if ($_W['isajax']) {
         'btnurl2' => !empty($goods['detail_btnurl2']) ? $goods['detail_btnurl2'] : $shop['url']
     );
 
-    show_json(1, $ret);
+    return show_json(1, $ret);
 
 }
 

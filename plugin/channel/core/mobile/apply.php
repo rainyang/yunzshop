@@ -28,8 +28,10 @@ if ($_W['isajax']) {
 	        $apply_ordergoods_ids = implode(',', $apply_ordergoods_ids);
 		}
         //推荐单
-        $apply_cmaorders_ids = '';
-        $cma_orders = array();
+        $info = $this->model->getInfo($openid);
+        $apply_cmaorders_ids = $info['channel']['lower_order_ids'];
+        $cma_orders = $info['channel']['cma_orders'];
+        /*$cma_orders = array();
         if (!empty($channelinfo['channel']['lower_openids'])) {
         	$cma_orders = pdo_fetchall("SELECT o.id FROM " . tablename('sz_yi_order') . " o LEFT JOIN " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid={$_W['uniacid']} AND o.status>=3 AND og.ischannelpay=1 AND o.openid in ({$channelinfo['channel']['lower_openids']})");
         	if (!empty($cma_orders)) {
@@ -39,7 +41,7 @@ if ($_W['isajax']) {
 	        	}
 	        	$apply_cmaorders_ids = implode(',', $apply_cmaorders_ids);
         	}
-        }
+        }*/
         //自提运费单
         $apply_selforders_ids = '';
         $selforders = pdo_fetchall("SELECT id FROM " . tablename('sz_yi_order') . " WHERE uniacid={$_W['uniacid']} AND status>=3 AND openid='{$openid}' AND ischannelself=1");
@@ -68,7 +70,7 @@ if ($_W['isajax']) {
 		@file_put_contents(IA_ROOT . "/addons/sz_yi/data/apply.log", print_r($apply, 1), FILE_APPEND);
 		if( pdo_insertid() ) {
 			foreach ($order_ids as $key => $value) {
-				pdo_update('sz_yi_order', array('iscmas' => 1), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
+				pdo_update('sz_yi_order', array('iscmas' => 1), array('uniacid' => $_W['uniacid'], 'id' => $value));
 			}
 			foreach ($channel_goods as $key => $value) {
 				pdo_update('sz_yi_order_goods', array('channel_apply_status' => 1), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));

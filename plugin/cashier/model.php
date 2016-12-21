@@ -42,7 +42,7 @@ if (!class_exists('CashierModel')) {
             ));
 
             if (empty($log)) {
-                show_json(-1, '订单金额错误, 请重试!');
+                return show_json(-1, '订单金额错误, 请重试!');
                 exit;
             }
 

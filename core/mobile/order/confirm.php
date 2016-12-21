@@ -161,7 +161,7 @@ if ($operation == "date") {
     $marketprice = $laddermoney > 0 ? $laddermoney : $_GPC['marketprice'];
 
 
-    show_json(1, $marketprice);
+    return show_json(1, $marketprice);
 }
 
 $yunbi_plugin   = p('yunbi');
@@ -174,7 +174,7 @@ if ($_W['isajax']) {
         $telephone =  $_GPC['telephone'];
     }
     $ischannelpick = intval($_GPC['ischannelpick']);
-    $isyunbipay = intval($_GPC['isyunbipay']);
+    //$isyunbipay = intval($_GPC['isyunbipay']);
     if ($operation == 'display') {
         $id   = intval($_GPC["id"]);
         if (strpos($_GPC['optionid'], '|')) {
@@ -413,7 +413,7 @@ if ($_W['isajax']) {
                 $goods[] = $data;
             } else {
                 if (count($total) != count($optionid)) {
-                    show_json(0);
+                    return show_json(0);
                 }
                 foreach ($optionid as $key => $val) {
                     $data['total']    = $total[$key];
@@ -500,11 +500,11 @@ if ($_W['isajax']) {
                     $isvirtual = true;
                 }
             }
-            if (p('yunbi')) {
+            /*if (p('yunbi')) {
                 if (!empty($isyunbipay) && !empty($yunbiset['isdeduct'])) {
                     $g['marketprice'] -= $g['yunbi_deduct'];
                 }
-            }
+            }*/
 
             if($g['plugin'] == 'fund'){
                 $issale = false;
@@ -1608,7 +1608,7 @@ if ($_W['isajax']) {
     elseif ($operation == 'create' && $_W['ispost']) {
         $ischannelpay = intval($_GPC['ischannelpay']);
         $ischannelpick = intval($_GPC['ischannelpick']);
-        $isyunbipay = intval($_GPC['isyunbipay']);
+        //$isyunbipay = intval($_GPC['isyunbipay']);
         $order_data = $_GPC['order'];
         if(p('hotel')){
             if($_GPC['type']=='99'){
@@ -1624,10 +1624,10 @@ if ($_W['isajax']) {
         $can_buy = array();
         $can_buy = m('order')->isSupportDelivery($order_data);
         if ($can_buy['status'] == -1) {
-            show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
+            return show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
 
         } else if ($can_buy['status'] == -2) {
-            show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
+            return show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
 
         }
         $yunbiprice = 0;
@@ -1690,7 +1690,7 @@ if ($_W['isajax']) {
                 if ($store_total) {
                     $storegoodstotal = pdo_fetchcolumn("SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':goodsid' => $goodsid, ':uniacid' => $uniacid, ':storeid' => $carrierid, ':optionid' => $optionid));
                     if ($goodstotal > $storegoodstotal && !empty($carrierid)) {
-                        show_json(-2,'抱歉，此门店库存不足！');
+                        return show_json(-2,'抱歉，此门店库存不足！');
                     }
                 }
 
@@ -1757,7 +1757,7 @@ if ($_W['isajax']) {
                     ));
                     if (($order_goodscount > 0 && $order_goodscount > $data['usermaxbuy'])
                         || ($order_goodscount == 0 && $goodstotal > $data['usermaxbuy'])) {
-                        show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
+                        return show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
                     }
                 }
                 if ($data['istime'] == 1) {
@@ -2071,8 +2071,9 @@ if ($_W['isajax']) {
                 //虚拟币抵扣
                 $deductyunbi = 0;
                 $deductyunbimoney = 0;
+
                 if ($yunbi_plugin && $yunbiset['isdeduct']) {
-                    if (empty($isyunbipay)) {
+
                         if (isset($_GPC['order']) && !empty($_GPC['order'][0]['yunbi'])) {
                             $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
                             $ycredit = 1;
@@ -2093,25 +2094,7 @@ if ($_W['isajax']) {
                             $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
 
                         }
-                    } else {
-                        $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
-                        $ycredit = 1;
-                        $ymoney  = round(floatval($yunbiset['money']), 2);
-                        if ($ycredit > 0 && $ymoney > 0) {
-                            if ($virtual_currency % $ycredit == 0) {
-                                $deductyunbimoney = round(intval($virtual_currency / $ycredit) * $ymoney * $data["total"], 2);
-                            } else {
-                                $deductyunbimoney = round((intval($virtual_currency / $ycredit) + 1) * $ymoney * $data["total"], 2);
-                            }
-                        }
-                        if ($deductyunbimoney > $yunbideductprice) {
-                            $deductyunbimoney = $yunbideductprice;
-                        }
-                        if ($deductyunbimoney > $totalprice) {
-                            $deductyunbimoney = $totalprice;
-                        }
-                        $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
-                    }
+
                     $totalprice -= $deductyunbimoney;
                 }
                 $virtualsales += $data["sales"];
@@ -2397,7 +2380,7 @@ if ($_W['isajax']) {
                 'discountprice' => $discountprice,
                 'deductprice' => $deductmoney,
                 'deductcredit' => $deductcredit,
-                'deductyunbimoney' => $yunbiprice,
+                'deductyunbimoney' => $deductyunbi > 0 ? $yunbiprice : 0,
                 'deductyunbi' => $deductyunbi,
                 'deductcredit2' => $deductcredit2,
                 'deductenough' => $deductenough,
@@ -2472,6 +2455,10 @@ if ($_W['isajax']) {
             }
             pdo_insert('sz_yi_order',$order);
             $orderid = pdo_insertid();
+            //渠道商推荐员
+            if (p('channel')) {
+                p('channel')->isChannelMerchant($orderid);
+            }
             if(p('hotel')){
                 if($_GPC['type']=='99'){
                     //像订单管理房间信息表插入数据
@@ -2591,62 +2578,15 @@ if ($_W['isajax']) {
                 if (p('channel')) {
                     $my_info = p('channel')->getInfo($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
                     if ($ischannelpay == 1 && empty($ischannelpick)) {
-                        $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
-                        $channel_cond = '';
-                        if (!empty($goods['optionid'])) {
-                            $channel_cond = " AND optionid={$goods['optionid']}";
-                        }
-                        $ischannelstock             = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goods['goodsid']} {$channel_cond}");
-                        if (empty($ischannelstock)) {
-                            pdo_insert('sz_yi_channel_stock', array(
-                                'uniacid'       => $_W['uniacid'],
-                                'openid'        => $openid,
-                                'goodsid'       => $goods['goodsid'],
-                                'optionid'      => $goods['optionid'],
-                                'stock_total'   => $goods['total']
-                            ));
-                        } else {
-                            $stock_total = $ischannelstock['stock_total'] + $goods['total'];
-                            pdo_update('sz_yi_channel_stock', array(
-                                'stock_total'   => $stock_total
-                            ), array(
-                                'uniacid'       => $_W['uniacid'],
-                                'openid'        => $openid,
-                                'optionid'      => $goods['optionid'],
-                                'goodsid'       => $goods['goodsid']
-                            ));
-                        }
-                        $op_where = '';
-                        if (!empty($goods['optionid'])) {
-                            $op_where = " AND optionid={$goods['optionid']}";
-                        }
-                        $surplus_stock = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goods['goodsid']} {$op_where}");
-                        $up_mem = m('member')->getInfo($my_info['up_level']['openid']);
-                        $stock_log = array(
-                            'uniacid'             => $_W['uniacid'],
-                            'openid'              => $openid,
-                            'goodsid'             => $goods['goodsid'],
-                            'optionid'            => $goods['optionid'],
-                            'every_turn'          => $goods['total'],
-                            'every_turn_price'    => $goods['marketprice'],
-                            'every_turn_discount' => $my_info['my_level']['purchase_discount'],
-                            'goods_price'         => $every_turn_price,
-                            'paytime'             => time(),
-                            'type'                => 1,
-                            'surplus_stock'       => $surplus_stock,
-                            'mid'                 => $up_mem['id']
-                        );
-                        // type==1  进货
-                        pdo_insert('sz_yi_channel_stock_log', $stock_log);
                         $order_goods['ischannelpay']  = $ischannelpay;
                     }
                     $order_goods['channel_id'] = 0;
-                    if (!empty($my_info['up_level'])) {
-                        $up_member = m('member')->getInfo($my_info['up_level']['openid']);
-                        $order_goods['channel_id'] = $up_member['id'];
+                    $mi = p('channel')->recursive_access_to_superior($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
+                    if (!empty($mi)) {
+                        $mi_member = m('member')->getInfo($mi['openid']);
+                        $order_goods['channel_id'] = $mi_member['id'];
                     }
                 }
-                //print_r($order_goods);exit;
                 pdo_insert('sz_yi_order_goods', $order_goods);
                 if (p('channel')) {
                     if (!empty($order_goods['channel_id']) && empty($order_goods['ischannelpay'])) {

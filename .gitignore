@@ -6,5 +6,6 @@ sh.exe.stackdump
 /vendor/sebastian
 /vendor/phpunit
 /vendor/phpdocumentor
-/vendor/doctrine
+/vendor/yii
 tmp/
+.idea/

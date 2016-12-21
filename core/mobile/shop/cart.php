@@ -23,6 +23,7 @@ if ($_W['isajax']) {
     }
     if ($operation == 'display') {
         $ischannelpick = intval($_GPC['ischannelpick']);
+        $ischannelpay = intval($_GPC['ischannelpay']);
         if (p('channel')) {
             $my_info = p('channel')->getInfo($openid);
         }
@@ -63,10 +64,6 @@ if ($_W['isajax']) {
         }
 
         $verify_goods_ischannelpick = '';
-        if (p('yunbi')) {
-            $yunbi_set = p('yunbi')->getSet();
-            $yunbi_title = empty($yunbi_set['yunbi_title'])?'云币':$yunbi_set['yunbi_title'];
-        }
         foreach ($list as &$r) {
             if ($isladder) {
                 $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
@@ -89,15 +86,14 @@ if ($_W['isajax']) {
                     }
                 }
             }
-            if (p('yunbi')) {
-                if (!empty($yunbi_set['isdeduct']) && !empty($r['isforceyunbi']) && $member['virtual_currency'] < $r['yunbi_deduct']) {
-                    $virtual_currency = '';
-                }
-            }
+
+
             if (p('channel')) {
                 $member = m('member')->getInfo($openid);
-                if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
-                    $r['marketprice'] = $r['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                if ($ischannelpay == 1) {
+                    if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
+                        $r['marketprice'] = $r['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                    }
                 }
                 //自提库存替换
                 if ($ischannelpick == 1) {
@@ -107,12 +103,17 @@ if ($_W['isajax']) {
                     $my_stock = p('channel')->getMyOptionStock($openid, $r['goodsid'], $r['optionid']);
                     $r['stock'] = $my_stock;
                 }
+                if ($ischannelpay == 1) {
+                    if (empty($r['isopenchannel'])) {
+                        $verify_goods_ischannelpay .= 1;
+                    }
+                }
             }
             $totalprice += $r['marketprice'] * $r['total'];
             $total += $r['total'];
         }
         $difference = '';
-        $ischannelpay = $_GPC['ischannelpay'];
+        
         if (p('channel')) {
             if (empty($ischannelpick)) {
                 //if (!empty($ischannelpay)) {
@@ -136,9 +137,14 @@ if ($_W['isajax']) {
                 'totalprice' => $totalprice,
                 'difference' => $difference,
                 'ischannelpay' => $ischannelpay,
+<<<<<<< HEAD
+                'verify_goods_ischannelpick' => $verify_goods_ischannelpick
+=======
                 'verify_goods_ischannelpick' => $verify_goods_ischannelpick,
+                'verify_goods_ischannelpay' => $verify_goods_ischannelpay,
                 'virtual_currency' => $virtual_currency,
                 'yunbi_title' => $yunbi_title
+>>>>>>> xiao_master
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {

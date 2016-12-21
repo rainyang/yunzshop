@@ -8,7 +8,7 @@ $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 if ($_W['isajax']) {
     if(empty($openid) || strstr($openid, 'http-equiv=refresh')){
-        show_json(2, array(
+        return show_json(2, array(
                 'message' => '请先登录',
                 'url' => $this->createMobileUrl('member/login')
             )); 
@@ -90,7 +90,7 @@ if ($_W['isajax']) {
         $list       = set_medias($list, 'thumb');
         $totalprice = number_format($totalprice, 2);
         $counttotal = pdo_fetchcolumn('SELECT COUNT(DISTINCT goodsid) FROM '.tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid ",array(':storeid'=>intval($_GPC['storeid']), ':uniacid'=>$_W['uniacid']));
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'counttotal' => $counttotal,
                 'list' => $list,
@@ -122,7 +122,7 @@ if ($_W['isajax']) {
             }
 
             
-            show_json(1, array(
+            return show_json(1, array(
                 /*'message' => '添加成功',*/
                 'cartcount' => 0
             ));
@@ -140,7 +140,7 @@ if ($_W['isajax']) {
             }
         }
         if (empty($goods)) {
-            show_json(0, '商品未找到');
+            return show_json(0, '商品未找到');
         }
         $diyform_plugin = p('diyform');
         $datafields     = "id,total";
@@ -199,7 +199,7 @@ if ($_W['isajax']) {
             );
             pdo_insert('sz_yi_store_goods', $data);
             $cartcount += $total;
-            show_json(1, array(
+            return show_json(1, array(
                 'message' => '添加成功',
                 'cartcount' => $cartcount
             )); 
@@ -226,7 +226,7 @@ if ($_W['isajax']) {
             		'storeid' => $storeid
                 ));
             $cartcount += $total;
-            show_json(1, array(
+            return show_json(1, array(
                 'message' => '添加成功',
                 'cartcount' => $cartcount
             ));
@@ -236,7 +236,7 @@ if ($_W['isajax']) {
             'goodsid' => $id,
             ':openid' => $openid
         ));
-        show_json(1, array(
+        return show_json(1, array(
             'message' => '添加成功',
             'cartcount' => $cartcount
         ));
@@ -287,7 +287,7 @@ if ($_W['isajax']) {
                 }
             }
         }
-        show_json(1, array(
+        return show_json(1, array(
             'cartdata' => $cartdata,
             'cartoption' => $cartoption,
             'cartspecs' => $cartspecs,
@@ -306,7 +306,7 @@ if ($_W['isajax']) {
         ));
         $option   = set_medias($option, 'thumb');
         if (empty($option)) {
-            show_json(0, '规格未找到');
+            return show_json(0, '规格未找到');
         }
         pdo_update('sz_yi_store_goods', array(
             'optionid' => $optionid
@@ -315,7 +315,7 @@ if ($_W['isajax']) {
             'uniacid' => $uniacid,
             'goodsid' => $goodsid
         ));
-        show_json(1, array(
+        return show_json(1, array(
             'optionid' => $optionid,
             'optiontitle' => $option['title']
         ));
@@ -331,7 +331,7 @@ if ($_W['isajax']) {
             ':openid' => $openid
         ));
         if (empty($data)) {
-            show_json(0, '购物车数据未找到');
+            return show_json(0, '购物车数据未找到');
         }
         pdo_update('sz_yi_store_goods', array(
             'total' => $total
@@ -340,11 +340,11 @@ if ($_W['isajax']) {
             'uniacid' => $uniacid,
             'goodsid' => $goodsid
         ));
-        show_json(1);
+        return show_json(1);
     } else if ($operation == 'tofavorite' && $_W['ispost']) {
         $ids = $_GPC['ids'];
         if (empty($ids) || !is_array($ids)) {
-            show_json(0, '参数错误');
+            return show_json(0, '参数错误');
         }
         foreach ($ids as $id) {
             $goodsid = pdo_fetchcolumn('select goodsid from ' . tablename('sz_yi_store_goods') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1 ', array(
@@ -375,18 +375,18 @@ if ($_W['isajax']) {
             ':uniacid' => $uniacid,
             ':openid' => $openid
         ));
-        show_json(1);
+        return show_json(1);
     } else if ($operation == 'remove' && $_W['ispost']) {
         $ids = $_GPC['ids'];
         if (empty($ids) || !is_array($ids)) {
-            show_json(0, '参数错误');
+            return show_json(0, '参数错误');
         }
         $sql = "update " . tablename('sz_yi_store_goods') . ' set deleted=1 where uniacid=:uniacid and openid=:openid and id in (' . implode(',', $ids) . ')';
         pdo_query($sql, array(
             ':uniacid' => $uniacid,
             ':openid' => $openid
         ));
-        show_json(1);
+        return show_json(1);
     } else if ($operation == 'cart' && $_W['ispost']) {
         $storeid = intval($_GPC['storeid']);
         $data          = pdo_fetchall("select * from " . tablename('sz_yi_store_goods') . ' where storeid=:storeid and deleted=0 and  uniacid=:uniacid ', array(
@@ -431,7 +431,7 @@ if ($_W['isajax']) {
             $category['count'] = $conut;
         }
 
-         show_json(1, array(
+         return show_json(1, array(
             'categorys' => $parent_category,
             'goods' => $data
         ));
@@ -449,7 +449,7 @@ if ($_W['isajax']) {
             )
         );
         
-        show_json(1,$total);
+        return show_json(1,$total);
     }
 }
 include $this->template('shop/cart');

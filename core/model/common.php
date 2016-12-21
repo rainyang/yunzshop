@@ -235,12 +235,12 @@ class Sz_DYi_Common
             $wOpt['timeStamp'] = TIMESTAMP . "";
             $wOpt['nonceStr']  = random(8) . "";
             if($params['trade_type'] == 'APP'){
-                list($wOpt['prepayId'])  = (array)$prepay_id;
+                list($wOpt['prepayId'])  = (array)$prepayid;
                 $wOpt['package']   = 'Sign=WXPay';
                 list($wOpt['partnerId'])  = (array)$xml->mch_id;
             }else{
                 $wOpt['signType']  = 'MD5';
-                $wOpt['package']   = 'prepay_id=' . $prepay_id;
+                $wOpt['package']   = 'prepay_id=' . $prepayid;
                 if($params['trade_type'] == 'NATIVE'){
                     $code_url = (array)$xml->code_url;
                     $wOpt['code_url']  = $code_url[0];
@@ -248,7 +248,9 @@ class Sz_DYi_Common
             }
             ksort($wOpt, SORT_STRING);
             foreach ($wOpt as $key => $v) {
-                $key = strtolower($key);
+                if($params['trade_type'] == 'APP'){
+                    $key = strtolower($key);
+                }
                 $string .= "{$key}={$v}&";
             }
             $string .= "key={$wechat['signkey']}";

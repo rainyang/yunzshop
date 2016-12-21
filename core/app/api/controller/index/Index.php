@@ -33,24 +33,18 @@ class Index extends YZ
     private function _getCategory()
     {
         global $_W;
-        $category = set_medias(pdo_fetchall('SELECT id, name, thumb,level FROM '. tablename('sz_yi_category') . ' WHERE isrecommand = 1 AND uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'),'thumb');
-
+        $category = set_medias(pdo_fetchall('SELECT id, name, thumb,level FROM '. tablename('sz_yi_category') . ' WHERE isrecommand = 1 AND enabled=1 AND uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'),'thumb');
+//pdo_sql_debug();
         return $category;
     }
 
     //获取推荐商品
     private function _getRecommand()
     {
-        global $_W;
-        $condition = ' AND isrecommand = :isrecommand AND deleted = :deleted AND uniacid = :uniacid';
-        $sql = 'SELECT id, title, thumb, productprice, marketprice FROM '. tablename('sz_yi_goods') . ' WHERE 1 '.$condition.' ORDER BY displayorder, id DESC LIMIT 10';
-        $params = array(
-            ':isrecommand'=>1,
-            ':deleted'=>0,
-            ':uniacid'=>$_W['uniacid'],
-        );
-        $recommand = set_medias(pdo_fetchall($sql,$params),'thumb');
-        return $recommand;
+
+        $goods = m('goods')->getList(array('pagesize' => 100000, 'isrecommand' => 1));
+
+        return $goods;
     }
 
     public function index(){

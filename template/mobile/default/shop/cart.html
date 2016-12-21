@@ -268,16 +268,13 @@ body {margin:0px; background:#f8f8f8;width:100%;}
            $('.paysub').click(function(){
               var total =  calcprice();
               var ischannelpay = json.result.ischannelpay;
-              var virtual_currency = json.result.virtual_currency;
-               var yunbi_title = json.result.yunbi_title;
-              if (!virtual_currency) {
-                  core.tip.show(yunbi_title + "不足以购买");
-                  return;
-              } else {
-                  var isyunbipay = 1;
-              }
+
               if (json.result.verify_goods_ischannelpick) {
                   core.tip.show("请移除非自提商品");
+                  return;
+              }
+              if (json.result.verify_goods_ischannelpay) {
+                  core.tip.show("请移除不支持采购的商品");
                   return;
               }
               if(total<=0){
@@ -287,7 +284,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
               $('.cart_good[sel=1]').each(function(){
                    ids.push($(this).data('cartid'));
               })
-              location.href = core.getUrl('order/confirm',{cartids:ids.join(','),ischannelpay:"{$_GPC['ischannelpay']}",ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:isyunbipay});
+              location.href = core.getUrl('order/confirm',{cartids:ids.join(','),ischannelpay:"{$_GPC['ischannelpay']}",ischannelpick:"{$_GPC['ischannelpick']}"});
             })
            $('.shownum').blur(function(){
                

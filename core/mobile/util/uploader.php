@@ -46,5 +46,5 @@ if ($op == 'upload') {
 } elseif ($op == 'remove') {
     $file = $_GPC['file'];
     file_delete($file);
-    show_json(1);
+    return show_json(1);
 }

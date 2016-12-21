@@ -71,9 +71,9 @@ if ($_W['isajax']) {
             $data['create_time'] = date('Y-m-d H:i:s');
             pdo_insert('sz_yi_cashier_store', $data);
         }
-        show_json(1);
+        return show_json(1);
     }
-    show_json(1, array(
+    return show_json(1, array(
         'store' => $store
     ));
 }

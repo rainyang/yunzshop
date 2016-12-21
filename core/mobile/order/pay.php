@@ -407,14 +407,14 @@ if ($operation == 'display' && $_W['isajax']) {
             ));
             if (!empty($option)) {
                 if ($option['stock'] != -1) {
-                    if (empty($option['stock'])) {
+                    if (empty($option['stock'])  OR ($option['buycount'] > $data['stock'])) {
                         return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
                     }
                 }
             }
         } else {
             if ($data['stock'] != -1) {
-                if (empty($data['stock'])) {
+                if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
                     return show_json(-1, $data['title'] . "<br/>库存不足!");
                 }
             }
@@ -452,22 +452,13 @@ if ($operation == 'display' && $_W['isajax']) {
             'payment'
         ));
         //微信下
-        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {  
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
             if (is_array($setting['payment'])) {
                 $options           = $setting['payment']['wechat'];
                 if (is_weixin()) {
                     if(empty($set['pay']['weixin_jie'])){
-                        if(is_app_api()){
-                            $sysset_data = m("cache")->get("sysset");
-                            $sysset_data = unserialize($setdata['sets']);
-                            $options['mchid'] = $sysset_data['app']['base']['wx_native']['mchid'];
-                            $options['appid'] = $sysset_data['app']['base']['wx_native']['appid'];
-                            $options['secret'] = $sysset_data['app']['base']['wx_native']['secret'];
-                            $params['trade_type'] = 'APP';
-                        }else {
-                            $options['appid'] = $_W['account']['key'];
-                            $options['secret'] = $_W['account']['secret'];
-                        }
+                        $options['appid'] = $_W['account']['key'];
+                        $options['secret'] = $_W['account']['secret'];
                         $wechat            = m('common')->wechat_build($params, $options, 0);
                         //$wechat['success'] = false;
                         if (!is_error($wechat)) {
@@ -492,13 +483,24 @@ if ($operation == 'display' && $_W['isajax']) {
             if (!$wechat['success']) {
                 return show_json(0, '微信支付参数错误!');
             }
-
-            pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where '.$where_update.' and uniacid=:uniacid ', array(
-                    ':uniacid' => $uniacid
-                ));
-            return show_json(1, array(
-                'wechat' => $wechat
-            ));
+        }
+        elseif(is_app_api()){//新版app原生支付
+            $options           = $setting['payment']['wechat'];
+            $pay = $setting['payment'];
+            $options['mchid'] = $pay['wx_native']['wx_mcid'];
+            $options['appid'] = $pay['wx_native']['wx_appid'];
+            $options['secret'] = $pay['wx_native']['wx_secret'];
+            $params['trade_type'] = 'APP';
+            $wechat            = m('common')->wechat_build($params, $options, 0);
+            //$wechat['success'] = false;
+            if (!is_error($wechat)) {
+                $wechat['success'] = true;
+            } else {
+                return show_json(0, $wechat['message']);
+            }
+            if (!$wechat['success']) {
+                return show_json(0, '微信支付参数错误!');
+            }
         }
         else{   //PC端微信扫码pay
             if (is_array($setting['payment'])) {
@@ -517,14 +519,14 @@ if ($operation == 'display' && $_W['isajax']) {
                 } else {
                     return show_json(0, $wechat['message']);
                 }
-                pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where '.$where_update.' and uniacid=:uniacid ', array(
-                    ':uniacid' => $uniacid
-                ));
-                return show_json(1, array(
-                    'wechat' => $wechat
-                ));
             }
         }
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where '.$where_update.' and uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid
+        ));
+        return show_json(1, array(
+            'wechat' => $wechat
+        ));
     } else if ($type == 'alipay') {
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=22 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $uniacid
@@ -643,14 +645,14 @@ if ($operation == 'display' && $_W['isajax']) {
             ));
             if (!empty($option)) {
                 if ($option['stock'] != -1) {
-                    if (empty($option['stock'])) {
+                    if (empty($option['stock']) OR ($option['buycount'] > $data['stock'])) {
                         return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
                     }
                 }
             }
         } else {
             if ($data['stock'] != -1) {
-                if (empty($data['stock'])) {
+                if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
                     return show_json(-1, $data['title'] . "<br/>库存不足!");
                 }
             }

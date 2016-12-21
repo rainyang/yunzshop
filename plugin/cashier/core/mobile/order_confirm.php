@@ -155,7 +155,7 @@ if ($operation == 'display') {
             
             'deductmoney'=>$deductmoney,
             );
-        show_json(1,array('couponcount' => $couponcount, 'deduct' => $deduct, 'coupon' => $coupon ));
+        return show_json(1,array('couponcount' => $couponcount, 'deduct' => $deduct, 'coupon' => $coupon ));
     }
 } else if ($operation == 'create-order') {
     $sid = $_GPC['sid'];
@@ -220,7 +220,7 @@ if ($operation == 'display') {
             if ($totalprice >= $coupon["enough"] && empty($coupon["used"])) {
                 if ($coupon["backtype"] == 0) {
                     if($coupon['deduct'] >= $totalprice && $coupon["enough"] == 0){
-                        show_json(-2,'优惠券金额不能大于订单金额!');exit;
+                        return show_json(-2,'优惠券金额不能大于订单金额!');exit;
                     }
 
                     if ($coupon["deduct"] > 0) {
@@ -429,6 +429,6 @@ if ($operation == 'display') {
     if($commission['become_child']==1){
         p('commission')->checkOrderConfirm($orderid);
     }
-    show_json(1, array('orderid' => $orderid));
+    return show_json(1, array('orderid' => $orderid));
 }
 include $this->template('cashier/order_confirm');

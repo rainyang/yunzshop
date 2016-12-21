@@ -52,5 +52,10 @@ function get_test_para()
 
 $_POST['para'] = get_test_para();
 //var_dump($_POST['para']);
+define('YII_DEBUG',true);
 
+require_once __VENDOR_PATH__."/autoload.php";
+require(__VENDOR_PATH__ . '/yiisoft/yii2/Yii.php');
+$config = require(__CORE_PATH__ . '/config/yii.php');
+new \yii\web\Application($config);
 require __DIR__ . "/index.php";

@@ -36,12 +36,12 @@ if ($_W['isajax']) {
             }
             
             if (empty($ret)) {
-                show_json(0);
+                return show_json(0);
             } else {
-                show_json(1, array('nickname' => $ret[$num]['nickname'],'avatar' => $ret[$num]['avatar'],'time' => $showtime));
+                return show_json(1, array('nickname' => $ret[$num]['nickname'],'avatar' => $ret[$num]['avatar'],'time' => $showtime));
             } 
         } else {
-            show_json(0);
+            return show_json(0);
         }
         
     }

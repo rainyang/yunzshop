@@ -82,7 +82,7 @@ if ($operation == "display") {
 	$condition .= " AND ( `title` LIKE :keyword or `id` LIKE :keyword )";
 	$params[':keyword'] = "%{$kwd}%";
 
-	$ds = pdo_fetchall('SELECT id, title, thumb FROM ' . tablename('sz_yi_goods') . " WHERE uniacid = '" .$_W['uniacid'] . "' {$condition} AND type = 1 order by createtime desc", $params);
+	$ds = pdo_fetchall('SELECT id, title, thumb FROM ' . tablename('sz_yi_goods') . " WHERE uniacid = '" .$_W['uniacid'] . "' {$condition} AND type = 1 AND deleted = 0 order by createtime desc", $params);
 	foreach ($ds as $k => $row) {
 		$info = pdo_fetch('SELECT id FROM ' . tablename('sz_yi_indiana_goods') . " WHERE uniacid = '" .$_W['uniacid'] . "'  and status > 0 AND good_id = '".$row['id']."'");
 		if ($info) {
