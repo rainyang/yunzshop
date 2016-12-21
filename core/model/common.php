@@ -248,7 +248,9 @@ class Sz_DYi_Common
             }
             ksort($wOpt, SORT_STRING);
             foreach ($wOpt as $key => $v) {
-                $key = strtolower($key);
+                if($params['trade_type'] == 'APP'){
+                    $key = strtolower($key);
+                }
                 $string .= "{$key}={$v}&";
             }
             $string .= "key={$wechat['signkey']}";

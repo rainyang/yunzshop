@@ -8,3 +8,4 @@ sh.exe.stackdump
 /vendor/phpdocumentor
 /vendor/yii
 tmp/
+.idea/

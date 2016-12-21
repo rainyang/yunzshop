@@ -118,8 +118,18 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_channel_stock_log') . " (
   `goods_price` DECIMAL(10,2) NULL COMMENT '进货时商品单价',
   PRIMARY KEY (`id`))
 ENGINE = MyISAM
-COMMENT = '渠道商进货记录'";
+COMMENT = '渠道商进货记录';
 
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_channel_merchant_order') . " (
+`id` INT(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` INT(11) NOT NULL,
+  `openid` VARCHAR(50) NULL,
+  `orderid` INT(11) NULL COMMENT '订单ID',
+  `commission` DECIMAL(10,2) NULL COMMENT '当前推荐员分红比例',
+  `money` DECIMAL(10,2) NULL COMMENT '订单分红',
+  PRIMARY KEY (`id`))
+ENGINE = MyISAM
+COMMENT = '渠道商推荐员订单'";
 
 pdo_fetchall($sql);
 
