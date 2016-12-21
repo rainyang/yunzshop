@@ -273,6 +273,10 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                   core.tip.show("请移除非自提商品");
                   return;
               }
+              if (json.result.verify_goods_ischannelpay) {
+                  core.tip.show("请移除不支持采购的商品");
+                  return;
+              }
               if(total<=0){
                   return;
               }
