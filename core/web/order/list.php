@@ -2426,6 +2426,9 @@ function order_list_refund($item)
                             p('yunbi')->addYunbiLog($_W["uniacid"], $data_log, '4');
                         }
 
+                        if (p('channel')) {
+                            p('channel')->channelRefund($item['id'],$item['uniacid'], $item['openid']);
+                        }
 
                         if (!empty($refundtype)) {
                             if ($item['deductcredit2'] > 0) {

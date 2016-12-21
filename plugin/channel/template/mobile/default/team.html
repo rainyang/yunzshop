@@ -40,7 +40,10 @@
     
     <%each list as row%>
     <div class="team_list">
-        <div class="info"><%if row.realname%><%row.realname%><%else%>未获取<%/if%></div>
+        <div class="img"><img src="<%if row.nickname%><%row.avatar%><%else%>../addons/sz_yi/plugin/commission/images/head.jpg<%/if%>"></div>
+        <div class="left">
+            <div class="info"><span><%if row.realname%><%row.realname%><%else%><%row.mobile%><%/if%></span></div>
+        </div>
         <div class="num"><%row.channel_level_name%><br><span></span></div>
     </div>
     <%/each%>

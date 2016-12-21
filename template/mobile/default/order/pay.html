@@ -219,6 +219,7 @@
                         orderid:'{$_GPC['orderid']}',
                         type:'credit',
                         telephone:'{$_GPC['telephone']}',
+                        ischannelpay:'{$_GPC['ischannelpay']}',
                     },function(pay_json){
                         if(pay_json.status==1){
                            $('#container').html(tpl('tpl_order_pay',pay_json.result));
