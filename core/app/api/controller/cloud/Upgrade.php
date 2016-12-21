@@ -29,8 +29,8 @@ class Upgrade extends YZ
     //云端检测
     private function detection()
     {
-        //define('CLOUD_URL', 'http://cloud.yunzshop.com/web/index.php?c=account&a=appupgrade');
-        define('CLOUD_URL', 'http://lyt.yunzshop.com/web/index.php?c=account&a=appupgrade');        //测试链接
+        define('CLOUD_URL', 'http://cloud.yunzshop.com/web/index.php?c=account&a=appupgrade');
+        //define('CLOUD_URL', 'http://lyt.yunzshop.com/web/index.php?c=account&a=appupgrade');        //测试链接
         load()->func('communication');
 
         $resp = ihttp_post(CLOUD_URL, array(
