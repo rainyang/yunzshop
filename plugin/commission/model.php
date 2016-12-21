@@ -1556,6 +1556,7 @@ if (!class_exists('CommissionModel')) {
 				if (empty($agents)) {
 					return;
 				}
+				$pluginbonus = p("bonus");
 				foreach ($agents as $agent) {
 					$agent_info = $this->getInfo($agent['id'], array('ordercount3', 'ordermoney3', 'order13money', 'order13'));
 					if (!empty($agent_info['agentnotupgrade'])) {
@@ -1624,11 +1625,10 @@ if (!class_exists('CommissionModel')) {
 					}
 					pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $agent['id']));
 					$this->sendMessage($agent['openid'], array('nickname' => $agent['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
+					if(!empty($pluginbonus)){
+						$pluginbonus->upgradeLevelByAgent($agent['openid']);
+					}
 				}
-			}
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$pluginbonus->upgradeLevelByAgent($openid);
 			}
 		}
 		//会员根据
@@ -1671,6 +1671,7 @@ if (!class_exists('CommissionModel')) {
 			if ($leveltype < 6 || $leveltype > 9) {
 				return;
 			}
+			$pluginbonus = p("bonus");
 			$agent_info = $this->getInfo($member['id'], array());
 			if ($leveltype == 6 || $leveltype == 8) {
 				$agents = array($member);
@@ -1727,6 +1728,9 @@ if (!class_exists('CommissionModel')) {
 					}
 					pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $agent['id']));
 					$this->sendMessage($agent['openid'], array('nickname' => $agent['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
+					if(!empty($pluginbonus)){
+						$pluginbonus->upgradeLevelByAgent($agent['openid']);
+					}
 				}
 			} else {
 				if (!empty($member['agentnotupgrade'])) {
@@ -1756,10 +1760,9 @@ if (!class_exists('CommissionModel')) {
 				}
 				pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $member['id']));
 				$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
-			}
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$pluginbonus->upgradeLevelByAgent($openid);
+				if(!empty($pluginbonus)){
+					$pluginbonus->upgradeLevelByAgent($member['openid']);
+				}
 			}
 		}
 		//根据可提现佣金升级
@@ -1807,7 +1810,7 @@ if (!class_exists('CommissionModel')) {
 			$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
-				$pluginbonus->upgradeLevelByAgent($openid);
+				$pluginbonus->upgradeLevelByAgent($member['openid']);
 			}
 		}
 		//发送消息
