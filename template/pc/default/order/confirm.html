@@ -1342,8 +1342,8 @@ var fromcart = 0;
 				  $('.selectcoupon').click( function(){
              var money =parseFloat( $('.totalprice').html().replace(",","") ) ;	
              var supplier_uid = $(this).attr('data-id');
-             console.log(supplier_uid);
- 				     core.pjson('coupon/util', {op: 'query', money: money, type:0}, function (rjson) {
+             //console.log(supplier_uid);
+ 				     core.pjson('coupon/util', {op: 'query', money: money, type:0, supplier_uid:supplier_uid}, function (rjson) {
   							if (rjson.status != 1) {
   								core.tip.show(rjson.result);
   								$("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
