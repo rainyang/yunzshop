@@ -1561,6 +1561,45 @@ var fromcart = 0;
       {/if}
             {if $hascard}
             bindCardEvents();
+            function calcCardPrice(totalprice, supplier_uid){
+               $('.carddeduct_div[data-id='+supplier_uid+']').hide();
+               $('.carddeduct_text[data-id='+supplier_uid+']').html('');
+               $('.carddeduct_money[data-id='+supplier_uid+']').html('0');
+               if($("input[data-name='cardid'][data-id="+supplier_uid+"]").val()=='' ||  $("input[data-name='cardid'][data-id="+supplier_uid+"]").val()=='0')   {
+                     return totalprice;
+               }
+                 var deduct   = parseFloat( $('.cardselect[data-id='+supplier_uid+']').data('deduct') );
+               var discount = parseFloat( $('.cardselect[data-id='+supplier_uid+']').data('discount') );
+               var backtype = parseFloat( $('.cardselect[data-id='+supplier_uid+']').data('backtype') );
+                 var deductprice = 0;
+                 if(deduct>0 && backtype==0){ //抵扣
+                   if(deduct>totalprice){
+                       deduct=totalprice;
+                   }
+                   if(deduct<=0){
+                       deduct = 0;
+                   }
+                   deductprice = deduct;
+                   totalprice-=deduct;
+                   $('.carddeduct_text[data-id='+supplier_uid+']').html('优惠券优惠');
+                 }else if(discount>0 && backtype==1){//打折
+                   deductprice = totalprice *  (1 - discount/10 );
+                   if(deductprice>totalprice){
+                       deductprice=totalprice;
+                   }
+                     if(deductprice<=0){
+                           deductprice = 0;
+                     }
+                     totalprice-=deductprice;
+                     $('.carddeduct_text[data-id='+supplier_uid+']').html('优惠券折扣(' + discount + '折)');
+                 }
+                 if(deductprice>0){
+                    $('.carddeduct_div[data-id='+supplier_uid+']').show();
+                  $('.carddeduct_money[data-id='+supplier_uid+']').html(deductprice.toFixed(2));
+                 }
+                 return totalprice;
+
+            }
             function bindCardEvents(){
                 $('.selectcard').click( function(){
                     var supplier_uid = $(this).attr('data-id');
@@ -1569,7 +1608,7 @@ var fromcart = 0;
                     core.pjson('card/util', {op: 'query'}, function (rjson) {
                         if (rjson.status != 1) {
                             core.tip.show(rjson.result);
-                            $("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
+                            $("input[data-name='carddid'][data-id="+supplier_uid+"]").val('');
                             calctotalprice(supplier_uid);
                             return;
                         }
