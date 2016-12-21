@@ -237,6 +237,9 @@ if ($_W['isajax']) {
             }
         }
     }
+    if ($order['cashier']){
+        $canrefund = false;
+    }
     $order['canrefund'] = $canrefund;
     if ($canrefund == true) {
         if ($order['status'] == 1) {
