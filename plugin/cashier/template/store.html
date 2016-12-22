@@ -249,6 +249,9 @@
                              <label for="decommission" class="checkbox-inline" >
                                 <input type="checkbox" name="decommission" value="1" id="decommission" {if $item['decommission'] == 1}checked="true"{/if} /> 佣金
                             </label>
+                            <label for="debonus" class="checkbox-inline" >
+                                <input type="checkbox" name="debonus" value="1" id="debonus" {if $item['debonus'] == 1}checked="true"{/if} /> 分红金额
+                            </label>
                             <label for="decredits" class="checkbox-inline">
                                 <input type="checkbox" name="decredits" value="1" id="decredits" {if $item['decredits'] == 1}checked="true"{/if} /> 奖励余额
                             </label>
@@ -256,7 +259,7 @@
                                 <input type="checkbox" name="deredpack" value="1" id="deredpack" {if $item['deredpack'] == 1}checked="true"{/if} /> 奖励红包
                             </label>
                             {else}
-                            <div class='form-control-static'>{if $item['decommission'] == 1}扣除佣金{/if}{if $item['decredits'] == 1}扣除奖励积分{/if}{if $item['deredpack'] == 1}扣除奖励红包{/if}</div>
+                            <div class='form-control-static'>{if $item['decommission'] == 1}扣除佣金{/if}{if $item['debonus'] == 1}扣除分红金额{/if}{if $item['decredits'] == 1}扣除奖励积分{/if}{if $item['deredpack'] == 1}扣除奖励红包{/if}</div>
                             {/if}
                         </div>
                          <span class="help-block">决定奖励费用由平台还是商家提供!</span>
@@ -271,7 +274,7 @@
         <div class='panel-body'>    
             
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">佣金比例</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">佣金比例%</label>
                 <div class="col-sm-9 col-xs-12">
                     <div class="input-group">
                         {if $com_set['level'] >= 1}
@@ -303,7 +306,7 @@
             </div>
             {if p('bonus')}
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红金额</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红金额%</label>
                 <div class="col-sm-9 col-xs-12">
                     {ife 'cashier.store' $item}
                         <input type="text" name="bonus" class="form-control" value="{$item['bonus']}" placeholder="消费者在商家支付完成后，代理商获得的分红奖励百分比">

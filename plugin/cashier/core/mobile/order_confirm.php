@@ -309,15 +309,14 @@ if ($operation == 'display') {
             }
         }
         
-        $agentid = $user['agentid'];
-
-
-        
-            
-
-        
+        $agentid = $user['agentid'];   
     }
-
+    //扣除分红金额
+    if (p('bonus')) {
+        if($store['debonus'] == 1) {
+            $realtotalprice = $realtotalprice  - $totalprice * ($store['bonus']/100);
+        }
+    }
     //扣除红包
     
     if($totalprice>=$store['redpack_min'] && $store['deredpack']==1){
@@ -391,13 +390,18 @@ if ($operation == 'display') {
         "openid" => $openid
     );
     if (p('bonus')) {
-        $order_goods['bonusmoney'] = $store['bonus'];
+        //小于0.01的分红是无法计算的    yitian_add //2016-12-22:qq:751818588
+        //$bonusmoney = round($totalprice * ($store['bonus']/100), 2);
+        if ($store['bonus']) {
+            $order_goods['bonusmoney'] = $totalprice * ($store['bonus']/100);
+            $this->model->calculateBonus($orderid);
+        } else {
+            $order_goods['bonusmoney'] = 0;
+        }
     }
     pdo_insert('sz_yi_order_goods', $order_goods);
     $this->model->calculateCommission($orderid);
-    if (p('bonus')) {
-        $this->model->calculateBonus($orderid);
-    }
+
     if($store['iscontact'] == 1){
         if (is_array($carrier)) {
             $up = array(
