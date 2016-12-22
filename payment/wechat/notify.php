@@ -21,7 +21,13 @@ require '../../../../addons/sz_yi/defines.php';
 require '../../../../addons/sz_yi/core/inc/functions.php';
 require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 $strs = explode(':', $get['attach']);
+global $_W;
 $_W['uniacid'] = $_W['weid'] = intval($strs[0]);
+
+//验证支付签名
+if(!($get['sign'] == m('common')->get_wechat_sign($get))){
+    exit('fail');
+}
 $type = intval($strs[1]);
 $total_fee = $get['total_fee'] / 100;
 if ($type == 0) {
@@ -119,7 +125,7 @@ if (is_array($setting['payment']) || $set['pay']['weixin_jie'] == 1) {
 					exit;
 				}
 				$log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `uniacid`=:uniacid and `logno`=:logno limit 1', array(':uniacid' => $_W['uniacid'], ':logno' => $logno));
-				if (!empty($log) && empty($log['status']) && bccomp($log['money'], $total_fee, 2) == 0 && ($log['openid'] == $get["openid"])) {
+				if (!empty($log) && empty($log['status']) && bccomp($log['money'], $total_fee, 2) == 0 ) {
 					pdo_update('sz_yi_member_log', array('status' => 1, 'rechargetype' => 'wechat'), array('id' => $log['id']));
 					m('member')->setCredit($log['openid'], 'credit2', $log['money'], array(0, '商城会员充值:credit2:' . $log['money']));
 					m('member')->setRechargeCredit($log['openid'], $log['money']);
