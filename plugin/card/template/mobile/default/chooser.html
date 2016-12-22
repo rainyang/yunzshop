@@ -45,15 +45,15 @@
 				</div>
 			</div>
 			<div class="cright">
-				<div class="bg png png-<%card.css%>"></div>
-				<div class="bg sideleft side side-<%card.css%>"></div>
+				<div class="bg png png-deduct"></div>
+				<div class="bg sideleft side side-deduct"></div>
 				<div class="rinfo" >
-					<div class='rinner <%card.css%>'>
-						<div class="price"><%if card.backpre%>￥<%/if%><span><%card.backmoney%></span></div>
+					<div class='rinner deduct'>
+						<div class="price"><%if card.balance%>￥<%/if%><span><%card.balance%></span></div>
 						<div class="type"><%card.backstr%></div>
 					</div>
 				</div>
-				<div class="bg sideright side side-<%card.css%>"></div>
+				<div class="bg sideright side side-deduct"></div>
 
 			</div>
 		</div>
@@ -121,20 +121,7 @@
 					core.tip.show('请选择优惠券!');
 					return;
 				}
-				console.log(result);
-				var r = false;
-				$.each(result.supplier_uids,function(b){
-
-
-					if ($("input[data-name='cardid'][data-id="+result.supplier_uid+"]").val() == $("input[data-name='cardid'][data-id="+b+"]").val() && b != result.supplier_uid) {
-						r = true;
-						return;
-					}
-				})
-				if (r) {
-					core.tip.show('此优惠券已经被选中，请选择其他优惠券！');
-					return;
-				}
+				
 
 				$('#card_chooser .card_item').removeClass('card_selected');
 
