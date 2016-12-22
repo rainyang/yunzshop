@@ -45,7 +45,11 @@
         <div class="line"><div class="title">联系电话</div><div class='info'><div class='inner'><input type="text" id='membermobile' placeholder="请输入您的手机号"  value="<%membermobile%>" /></div></div></div>
         <div class="line"><div class="title">支付宝帐号</div><div class='info'><div class='inner'><input type="text"  id='alipay' placeholder="请输入支付宝帐号" value="<%alipay%>"/></div></div></div>
         <div class="line"><div class="title">账号姓名</div><div class='info'><div class='inner'><input type="text"  id='alipayname' placeholder="请输入账号姓名" value="<%alipayname%>"/></div></div></div>
-        <div class="line">
+        {if p('hlag')}
+		<div class="line"><div class="title">开户行</div><div class='info'><div class='inner'><input type="text"  id='bank' placeholder="请输入开户行信息" value="<%bank%>"/></div></div></div>
+        <div class="line"><div class="title">银行卡号</div><div class='info'><div class='inner'><input type="text"  id='bank_num' placeholder="请输入银行卡号" value="<%bank_num%>"/></div></div></div>
+		{/if}
+		<div class="line">
             <div class="title">性别</div><div class='info'><div class='inner'>
             <span class="gender" data-val="1"><i class="fa <%if gender=='1'%>fa-check-circle-o<%else%>fa-circle-o<%/if%>" <%if gender=='1'%>style="color:#0C9;"<%/if%>></i> 男</span>&nbsp;&nbsp;
             <span class="gender" data-val="2"><i class="fa <%if gender=='2'%>fa-check-circle-o<%else%>fa-circle-o<%/if%>" <%if gender=='2'%>style="color:#0C9;"<%/if%>></i> 女
@@ -120,7 +124,17 @@
                         core.tip.show('请输入微信号!');
                         return;
                     }
+					{if p('hlag')}
+						if( $('#bank').isEmpty()){
+                           core.tip.show('请输入开户行!');
+                           return;
+                       }
 
+                       if( $('#bank_num').isEmpty()){
+                           core.tip.show('请输入银行卡号!');
+                           return;
+                       }
+					{/if}
                     $(this).html('正在处理...').attr('saving',1);
                     var birthday = $('#birthday').val().split('-');
                     core.json('member/info', {
@@ -136,7 +150,11 @@
                             'province': $('#sel-provance').val(),
                             'city': $('#sel-city').val(),
                             'alipay': $('#alipay').val(),
-                            'alipayname': $('#alipayname').val()
+                            'alipayname': $('#alipayname').val(),
+							{if p('hlag')}
+							'bank': $('#bank').val(),
+                            'bank_num': $('#bank_num').val(),
+							{/if}
                         },
                         'mcdata':{
                             'realname': $('#realname').val(),

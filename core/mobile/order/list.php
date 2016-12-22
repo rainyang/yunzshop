@@ -94,8 +94,10 @@ if ($_W['isajax']) {
 			}
 			$channel_cond = '';
 			if (p('channel')) {
+				$row['ischannelorder'] = false;
 				if ($row['ischannelself'] == 1) {
 					$row['ordertype'] = "自提单";
+					$row['ischannelorder'] = true;
 				}
 				$channel_cond = ',og.ischannelpay';
 			}
@@ -105,6 +107,7 @@ if ($_W['isajax']) {
 				$row['goods'][$k]['unit_price'] = $value['price'] / $value['total'];
 				if ($value['ischannelpay'] == 1) {
 					$row['ordertype'] = "采购单";
+					$row['ischannelorder'] = true;
 				}
 				break;
 			}

@@ -2,7 +2,7 @@
 <ul class="nav nav-tabs">
 	{ifp 'bonus.agent'}<li {if $_GPC['method']=='agent'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/agent')}">代理商管理</a></li>{/if}
 	{ifp 'bonus.level'}<li {if $_GPC['method']=='level'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/level')}">代理商等级</a></li>{/if}
-	{if p('love')}
+	{if p('hlag')}
 	 {ifp 'bonus.apply.view1'}<li {if $_GPC['method']=='apply' && ($_GPC['status']==1 || $apply['status']==1)}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/apply',array('status'=>1))}">待审核提现</a></li>{/if}
     {ifp 'bonus.apply.view2'}<li {if $_GPC['method']=='apply' && ($_GPC['status']==2 || $apply['status']==2)}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/apply',array('status'=>2))}">待打款提现</a></li>{/if}
     {ifp 'bonus.apply.view3'}<li {if $_GPC['method']=='apply' && ($_GPC['status']==3 || $apply['status']==3)}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/apply',array('status'=>3))}">已打款提现</a></li>{/if}    
