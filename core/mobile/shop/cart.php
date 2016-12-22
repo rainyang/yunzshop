@@ -648,7 +648,7 @@ if ($_W['isajax']) {
             foreach ($goods as $key => $good) {
                 $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_member_cart') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
                     ':uniacid' => $_W['uniacid'],
-                    'goodsid' => $good['id'],
+                    ':goodsid' => $good['id'],
                     ':openid' => $openid
                 ));
 
