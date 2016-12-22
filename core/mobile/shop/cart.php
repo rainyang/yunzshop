@@ -137,14 +137,10 @@ if ($_W['isajax']) {
                 'totalprice' => $totalprice,
                 'difference' => $difference,
                 'ischannelpay' => $ischannelpay,
-<<<<<<< HEAD
-                'verify_goods_ischannelpick' => $verify_goods_ischannelpick
-=======
                 'verify_goods_ischannelpick' => $verify_goods_ischannelpick,
                 'verify_goods_ischannelpay' => $verify_goods_ischannelpay,
                 'virtual_currency' => $virtual_currency,
                 'yunbi_title' => $yunbi_title
->>>>>>> xiao_master
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {
@@ -644,7 +640,7 @@ if ($_W['isajax']) {
             foreach ($goods as $key => $good) {
                 $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_member_cart') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
                     ':uniacid' => $_W['uniacid'],
-                    'goodsid' => $good['id'],
+                    ':goodsid' => $good['id'],
                     ':openid' => $openid
                 ));
 
