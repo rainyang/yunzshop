@@ -130,7 +130,7 @@
                 <th style='width:12%;'>代理累计分红<br/>全部已发放分红</th>
                 <th style='width:7%;;'>下级总数</th>
                 <th style='width:7%;'>关注</th>
-                {if p('love')}
+                {if p('hlag')}
                 <th style='width:7%;'>审核</th>
                 {/if}
                 <th style='width:10%;'>操作</th>
@@ -177,7 +177,7 @@
                     {else}
                     <label class='label label-success'>已关注</label>
                     {/if}</td>
-                {if p('love')}
+                {if p('hlag')}
                 <td>  
                     {if $row['isagency']==1}
                         {if $row['agentblack']==1}
@@ -337,7 +337,7 @@
                 {/if}
             </div>
         </div>
-        {if p('love') && !empty($check_imgs)}
+        {if p('hlag') && !empty($check_imgs)}
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">申请信息</label>
             <div class="col-sm-9 col-xs-12">

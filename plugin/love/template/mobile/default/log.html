@@ -95,7 +95,7 @@ a {text-decoration:none;}
               <em>
               <%log.title%>
               </em>
-              <span class="right-s">贡献:
+              <span class="right-s"><%if log.type==1%>平台<%/if%>捐献:
               <%if log.paymonth==1%>
               <%log.money*100%>积分
               <%else%>
@@ -241,7 +241,7 @@ require(['tpl', 'core'], function (tpl, core) {
               if(json.status == 1){
                 location.href = json.result.url;
               }else{
-                core.tip.show(json.result);
+                core.tip.show(json.result.message);
               }
             },true);
           } 

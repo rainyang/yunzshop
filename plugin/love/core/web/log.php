@@ -101,6 +101,8 @@ if ($op == 'display') {
 		m('excel')->export($list, array("title" => (empty($type) ? "会员充值数据-" : "会员提现记录") . date('Y-m-d-H-i', time()), "columns" => $columns));
 	}
 	$total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_love_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where log.uniacid=:uniacid and log.status=0 {$condition} ", $params);
+	$total_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_love_log') . " where uniacid=:uniacid", array(":uniacid" => $_W['uniacid']));
+	$love_money = pdo_fetchcolumn("select sum(love_money) from " . tablename('sz_yi_article') . " where uniacid=:uniacid", array(":uniacid" => $_W['uniacid']));
 	$pager = pagination($total, $pindex, $psize);
 } 
 load()->func('tpl');
