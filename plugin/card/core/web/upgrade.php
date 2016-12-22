@@ -55,4 +55,12 @@ if(!pdo_fieldexists('sz_yi_card_data', 'cdkey')) {
     pdo_query("ALTER TABLE ".tablename('sz_yi_card_data')." ADD UNIQUE(`cdkey`);");
 }
 
+if(!pdo_fieldexists('sz_yi_order', 'cardid')) {
+    pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `cardid` int(11) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'cardprice')) {
+    pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `cardprice` decimal(10,2) DEFAULT '0';");
+}
+
 message('芸众代金卡插件安装成功', $this->createPluginWebUrl('card/index'), 'success');

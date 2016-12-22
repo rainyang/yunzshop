@@ -30,26 +30,19 @@
 </script>
 <script id='tpl_list' type='text/html'>
 	<%each list as row%>
-	<div class="coupon_item" onclick="location.href = '{php echo $this->createPluginMobileUrl('card/order')}&id=<%row.id%>'">
-		<div class='bg cside side side-left'></div>
-	<div class="cinfo" >
-		<div class="inner" >
-			<div class="name">余额 <%row.balance%>元</div>
-			<div class="time">
-				<%if row.timestr==''%>
-					永久有效
-				<%else%>
-					<%if row.past%>
-						已过期
-					<%else%>
+		<div class="coupon_item" onclick="location.href = '{php echo $this->createPluginMobileUrl('card/order')}&cardid=<%row.id%>'">
+			<div class='bg cside side side-left'></div>
+			<div class="cinfo" >
+				<div class="inner" >
+					<div class="name">
+						余额 <%row.balance%>元
+					</div>
+					<div class="time">
 						有效期 <%row.timestr%>
-					<%/if%>
-				<%/if%>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-
-	</div>
 	<%/each%>
 </script>
 

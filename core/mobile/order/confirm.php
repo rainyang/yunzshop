@@ -2287,6 +2287,34 @@ if ($_W['isajax']) {
             }
             $totalprice -= $deductenough;
             $totalprice += $dispatch_price;
+
+            $cardid = 0;
+            $cardid = intval($order_row['cardid']);
+            //使用金额
+            $cardprice = 0;
+            if ($plugincard) {
+                $cardinfo = $plugincard->getCradInfo($cardid);
+                if (!empty($cardinfo)) {
+                    if ($cardinfo['balance'] >= $totalprice) {
+                        $cardprice = $totalprice;
+                        $balance = $cardinfo['balance'] - $totalprice;
+                        $totalprice -= $cardinfo['balance'];
+                        if ($totalprice < 0) {
+                            $totalprice = 0;
+                        }
+                    } else {
+                        $cardprice = $cardinfo['balance'];
+                    }
+                    //代金卡剩余金额
+                    $balance = $cardinfo['balance'] - $cardprice;
+                    pdo_update('sz_yi_card_data', 
+                        array('balance' => $balance), 
+                        array('uniacid' => $_W['uniacid'], 'id' => $cardid)
+                    );
+                    $totalprice -= $cardprice;
+                }
+            }
+
             if ($saleset && empty($saleset["dispatchnodeduct"])) {
                 $deductprice2 += $dispatch_price;
             }
@@ -2405,6 +2433,8 @@ if ($_W['isajax']) {
                 "couponid" => $couponid,
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
+                'cardid'   => $cardid,
+                'cardprice'  => $cardprice
             );
             if (p('channel')) {
                 if (!empty($ischannelpick)) {

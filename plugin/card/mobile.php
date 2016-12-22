@@ -25,4 +25,9 @@ class CardMobile extends Plugin
     {
         return $this->_exec_plugin(__FUNCTION__, false);
     }
+
+    public function order()
+    {
+        return $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

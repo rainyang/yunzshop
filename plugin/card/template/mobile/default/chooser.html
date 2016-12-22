@@ -23,11 +23,8 @@
 		<div class="card_list">
 			<%each cards as card%>
 			<div class="card_item"
-				 data-cardname="<%card.cardname%>"
 				 data-cardid="<%card.id%>"
-				 data-deduct="<%card.deduct%>"
-				 data-discount="<%card.discount%>"
-				 data-backtype="<%card.backtype%>"
+				 data-balance="<%card.balance%>"
 			>
 				<div class='bg cside side side-left'></div>
 				
@@ -62,7 +59,7 @@
 	</div>
 
 	<div class="card_footer">
-		<div class="card_btn card_cancel">不使用优惠券</div>
+		<div class="card_btn card_cancel">不使用{$card_set['gift_title']}</div>
 		<div class="card_btn card_confirm">确定使用</div>
 	</div>
 	</div>
@@ -76,7 +73,6 @@
 		}
 		CardChooser.open = function(result){
 			var html = tpl('tpl_cards',result);
-
 			$('#card_container').html(html);
 			var h = $(document.body).height() * 0.7;
 			$('#card_chooser').css('max-height',h).fadeIn(300);
@@ -85,7 +81,7 @@
 				CardChooser.close();
 			});
 
-			var cardid = $("input[data-name='cardid'][data-id="+result.supplier_uid+"]").val();
+			var cardid = $("input[data-name='cardid']").val();
 			if( cardid== '' ) {
 				cardid='0';
 			}
@@ -97,19 +93,16 @@
 			$('#card_chooser .card_item').unbind('click').click(function(){
 				$('#card_chooser .card_item').removeClass('card_selected');
 				$(this).addClass('card_selected');
-				$("input[data-name='cardid'][data-id="+result.supplier_uid+"]").val($(this).data('cardid'));
-				$('.cardselect[data-id='+result.supplier_uid+']').data({
-					'cardname': $(this).data('cardname'),
+				$("input[data-name='cardid']").val($(this).data('cardid'));
+				$('.cardselect').data({
 					'cardid':$(this).data('cardid'),
-					'deduct':$(this).data('deduct'),
-					'discount':$(this).data('discount'),
-					'backtype':$(this).data('backtype')
-				}).html("我选择了 " +$(this).data('cardname'));
+					'balance':$(this).data('balance')
+				}).html("我选择了{$card_set['gift_title']}");
 
 			});
 			$('#card_chooser .card_cancel').unbind('click').click(function(){
-				$("input[data-name='cardid'][data-id="+result.supplier_uid+"]").val('');
-				$('.cardselect[data-id='+result.supplier_uid+']').html('我要使用优惠券');
+				$("input[data-name='cardid']").val('');
+				$('.cardselect').html("我要使用{$card_set['gift_title']}");
 				$('#card_chooser .card_item').removeClass('card_selected');
 				CardChooser.close();
 				if(CardChooser.cancelCallback){
@@ -117,11 +110,10 @@
 				}
 			});
 			$('#card_chooser .card_confirm').unbind('click').click(function(){
-				if($("input[data-name='cardid'][data-id="+result.supplier_uid+"]").val()=='' || $("input[data-name='cardid'][data-id="+result.supplier_uid+"]").val()=='0'){
-					core.tip.show('请选择优惠券!');
+				if($("input[data-name='cardid']").val()=='' || $("input[data-name='cardid']").val()=='0'){
+					core.tip.show("请选择{$card_set['gift_title']}!");
 					return;
 				}
-				
 
 				$('#card_chooser .card_item').removeClass('card_selected');
 

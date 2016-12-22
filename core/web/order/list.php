@@ -9,7 +9,10 @@ $yunbi_plugin = p('yunbi');
 if ($yunbi_plugin) {
     $yunbiset = $yunbi_plugin->getSet();
 }
-
+$card_plugin = p('card');
+if ($card_plugin) {
+    $card_set = $card_plugin->getSet();
+}
 $isindiana = '';
 $isindiana_o = '';
 $indiana_plugin   = p('indiana');
