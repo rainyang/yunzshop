@@ -663,10 +663,17 @@ if (!class_exists('ChannelModel')) {
 						$status[1]['status'] = 0;
 					}
             	}
+				$order = pdo_fetchall("SELECT id FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+				$ordermoney = 0;
+				$ordercount = 0;
+				foreach ($order as $value) {
+					$ordercount += 1;
+					$order_goods = pdo_fetchall("SELECT realprice FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid=:uniacid AND orderid=:orderid AND ischannelpay=1", array(':uniacid' => $_W['uniacid'],':orderid' => $value['id']));
+					foreach ($order_goods as $v) {
+						$ordermoney += $v['realprice'];
+					}
+				}
             	if (in_array(2,$set['become_other'])) {//累计进货量(金额)
-					$orderinfo = pdo_fetch('SELECT sum(og.realprice) AS ordermoney,count(distinct og.orderid) AS ordercount FROM ' . tablename('sz_yi_order') . ' o ' . ' LEFT JOIN  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' WHERE o.openid=:openid ' . $condtion . ' AND o.uniacid=:uniacid AND og.ischannelpay=1 limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
-					$ordermoney = $orderinfo['ordermoney'];
-					//$ordercount = $orderinfo['ordercount'];
 					if ($ordermoney >= $channel_level['order_money']) {
 						$status[2]['status'] = 1;
 					} else {
@@ -674,23 +681,16 @@ if (!class_exists('ChannelModel')) {
 					}
             	}
             	if (in_array(3,$set['become_other'])) {//累计进货次数(次)
-            		$orderinfo = pdo_fetch('SELECT sum(og.realprice) AS ordermoney,count(distinct og.orderid) AS ordercount FROM ' . tablename('sz_yi_order') . ' o ' . ' LEFT JOIN  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' WHERE o.openid=:openid ' . $condtion . ' AND o.uniacid=:uniacid AND og.ischannelpay=1 limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
-					//$ordermoney = $orderinfo['ordermoney'];
-					$ordercount = $orderinfo['ordercount'];
 					if ($ordercount >= $channel_level['order_count']) {
 						$status[3]['status'] = 1;
 					} else {
 						$status[3]['status'] = 0;
 					}
             	}
-            	
             	$finish_status = 0;
             	foreach ($status as $row) {
             		if ($row['status'] == 1) {
             			$finish_status = 1;
-            		} else {
-            			$finish_status = 0;
-            			break;
             		}
             	}
             	if ($finish_status == 1) {
