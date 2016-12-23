@@ -48,8 +48,11 @@ if ($_GPC['operation'] == 'synchronous' && $_GPC['encrypt'] == md5('yitian_make'
 }
 if ($_GPC['operation'] == 'update_remark' && $_GPC['encrypt'] == md5('yitian_make')) {
     $apkinfo['apkremark'] = $_GPC['apkremark'];
-    $id = pdo_fetch('select max(id) from ' . table(sz_yi_appinfo));
-    pdo_update('client', $clientdata, array('id' => intval($id)));
+    $id = pdo_fetch('select id from ' . tablename('sz_yi_appinfo') . 'where version_code = (select max(version_code) from ' . tablename('sz_yi_appinfo') . ')');
+    pdo_update('sz_yi_appinfo', $apkinfo, array('id' => intval($id)));
+    $ret = array('status' => 1, 'message' => "更新日志同步操作成功！");
+    echo json_encode($ret);
+    exit;
 }
 message('错误访问.');
 
