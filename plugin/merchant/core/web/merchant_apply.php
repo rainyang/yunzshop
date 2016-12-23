@@ -35,21 +35,33 @@ if ($operation == 'display') {
     if(!empty($id)){
         $apply = pdo_fetch('select * from ' . tablename('sz_yi_merchant_apply') . ' where id = '.$id);
         $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_member') . ' where id=:id and uniacid=:uniacid',array(':id' => $apply['member_id'],':uniacid'=> $_W['uniacid']));
-        $result = m('finance')->pay($openid, 1, $apply['money'] * 100, $apply['applysn'], '招商员提现');
-        if (is_error($result)) {
-            message('微信钱包提现失败: ' . $result['message'], '', 'error');
+        if ($apply['type'] == 1) {
+            $data = array(
+                'status' => 1,
+                'finish_time' => time()
+            );
+            pdo_update('sz_yi_merchant_apply', $data, array(
+                    'id' => $id,
+                    'uniacid' => $_W['uniacid']
+                ));
+            $msg = '打款成功!';
+        } else if ($apply['type'] == 2) {
+            $result = m('finance')->pay($openid, 1, $apply['money'] * 100, $apply['applysn'], '招商员提现');
+            if (is_error($result)) {
+                message('微信钱包提现失败: ' . $result['message'], '', 'error');
+            }
+            $data = array(
+                'status' => 1,
+                'finish_time' => time()
+            );
+            pdo_update('sz_yi_merchant_apply', $data, array(
+                    'id' => $id,
+                    'uniacid' => $_W['uniacid']
+                ));
+            $msg = '提现到微信钱包成功!';
         }
-        $data = array(
-            'status' => 1,
-            'finish_time' => time()
-        );
-        pdo_update('sz_yi_merchant_apply', $data, array(
-                'id' => $id,
-                'uniacid' => $_W['uniacid']
-            ));
-        $msg = '提现到微信钱包成功!';
         p('merchant')->sendMessage($openid, array('money' => $apply['apply_money'], 'type' => $msg, 'time' => time()), TM_MERCHANT_PAY);
-        message($msg, $this->createPluginWebUrl('merichant/merchant_apply'), 'success');
+        message($msg, $this->createPluginWebUrl('merchant/merchant_apply'), 'success');
     }
 }
 load()->func('tpl');
