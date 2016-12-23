@@ -49,5 +49,8 @@ pdo_query($sql);
 ";
 pdo_query($sql);*/
 
-
+//2016-12-22  yitian_add 
+if(!pdo_fieldexists('sz_yi_cashier_store', 'debonus')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `debonus` tinyint(1) DEFAULT '0' COMMENT '结算扣除分红，1开启，0关闭';");
+}
 echo  "运行成功";
