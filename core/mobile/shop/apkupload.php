@@ -46,6 +46,11 @@ if ($_GPC['operation'] == 'synchronous' && $_GPC['encrypt'] == md5('yitian_make'
         exit;
     }
 }
+if ($_GPC['operation'] == 'update_remark' && $_GPC['encrypt'] == md5('yitian_make')) {
+    $apkinfo['apkremark'] = $_GPC['apkremark'];
+    $id = pdo_fetch('select max(id) from ' . table(sz_yi_appinfo));
+    pdo_update('client', $clientdata, array('id' => intval($id)));
+}
 message('错误访问.');
 
 //下载APK文件
