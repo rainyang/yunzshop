@@ -36,6 +36,12 @@ $plugc           = p("coupon");
 if ($plugc) {
     $hascouponplugin = true;
 }
+$hascard = false;
+$plugincard = p('card');
+if ($plugincard) {
+    $hascard = true;
+    $card_set = $plugincard->getSet();
+}
 $goodid = $_GPC['id'] ? intval($_GPC['id']) : 0;
 $cartid = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
 $diyform_plugin = p("diyform");
@@ -1003,7 +1009,9 @@ if ($_W['isajax']) {
                 $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['goodsprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
-            //var_dump($order_all[$val['supplier_uid']]);exit;
+            if ($hascard) {
+                $order_all[$val['supplier_uid']]['cardcount'] = $plugincard->consumeCardCount($openid);
+            }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
             $realprice_total += $order_all[$val['supplier_uid']]['realprice'];
             $order_all[$val['supplier_uid']]['deductcredit']  = 0;
@@ -1191,6 +1199,7 @@ if ($_W['isajax']) {
         $hascoupon      = false;
         $couponcount    = 0;
         $pc             = p("coupon");
+        $plucard        = p('card');
         $supplier_uid   = $_GPC["supplier_uid"];
         $coupon_carrierid = intval($_GPC['carrierid']);
         $goodid = $_GPC['id'] ? intval($_GPC['id']) : 0;
@@ -1227,6 +1236,12 @@ if ($_W['isajax']) {
            }
         }
 
+        if ($plucard) {
+            $card_set   = $plucard->getSet();
+            $cardcount  = $plucard->consumeCardCount($openid);
+            $hascard    = $cardcount > 0;
+        }
+
         if ($sale_plugin) {
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
@@ -1241,6 +1256,8 @@ if ($_W['isajax']) {
                             'price' => 0,
                             "hascoupon" => $hascoupon,
                             "couponcount" => $couponcount,
+                            "hascard"   => $hascard,
+                            "cardcount" => $cardcount,
                             "deductenough_money" => $deductenough_money,
                             "deductenough_enough" => $deductenough_enough
                         ));
@@ -1254,6 +1271,8 @@ if ($_W['isajax']) {
                                 "price" => 0,
                                 "hascoupon" => $hascoupon,
                                 "couponcount" => $couponcount,
+                                "hascard"   => $hascard,
+                                "cardcount" => $cardcount,
                                 "deductenough_money" => $deductenough_money,
                                 "deductenough_enough" => $deductenough_enough
                             ));
@@ -1263,6 +1282,8 @@ if ($_W['isajax']) {
                             "price" => 0,
                             "hascoupon" => $hascoupon,
                             "couponcount" => $couponcoun,
+                            "hascard"   => $hascard,
+                            "cardcount" => $cardcount,
                             "deductenough_money" => $deductenough_money,
                             "deductenough_enough" => $deductenough_enough
                         ));
@@ -1396,7 +1417,9 @@ if ($_W['isajax']) {
                 return show_json(1, array(
                     "price" => 0,
                     "hascoupon" => $hascoupon,
-                    "couponcount" => $couponcount
+                    "couponcount" => $couponcount,
+                    "hascard"   => $hascard,
+                    "cardcount" => $cardcount,
                 ));
             }
             if (!empty($allgoods)) {
@@ -1569,6 +1592,8 @@ if ($_W['isajax']) {
             "price" => $dispatch_price,
             "hascoupon" => $hascoupon,
             "couponcount" => $couponcount,
+            "hascard"   => $hascard,
+            "cardcount" => $cardcount,
             "deductenough_money" => $deductenough_money,
             "deductenough_enough" => $deductenough_enough,
             "deductcredit2" => $deductcredit2,
@@ -2262,6 +2287,34 @@ if ($_W['isajax']) {
             }
             $totalprice -= $deductenough;
             $totalprice += $dispatch_price;
+
+            $cardid = 0;
+            $cardid = intval($order_row['cardid']);
+            //使用金额
+            $cardprice = 0;
+            if ($plugincard) {
+                $cardinfo = $plugincard->getCradInfo($cardid);
+                if (!empty($cardinfo)) {
+                    if ($cardinfo['balance'] >= $totalprice) {
+                        $cardprice = $totalprice;
+                        $balance = $cardinfo['balance'] - $totalprice;
+                        $totalprice -= $cardinfo['balance'];
+                        if ($totalprice < 0) {
+                            $totalprice = 0;
+                        }
+                    } else {
+                        $cardprice = $cardinfo['balance'];
+                    }
+                    //代金卡剩余金额
+                    $balance = $cardinfo['balance'] - $cardprice;
+                    pdo_update('sz_yi_card_data', 
+                        array('balance' => $balance), 
+                        array('uniacid' => $_W['uniacid'], 'id' => $cardid)
+                    );
+                    $totalprice -= $cardprice;
+                }
+            }
+
             if ($saleset && empty($saleset["dispatchnodeduct"])) {
                 $deductprice2 += $dispatch_price;
             }
@@ -2380,6 +2433,8 @@ if ($_W['isajax']) {
                 "couponid" => $couponid,
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
+                'cardid'   => $cardid,
+                'cardprice'  => $cardprice
             );
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
