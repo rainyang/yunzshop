@@ -14,6 +14,48 @@
 	.coupon_menu {height:60px; width:100%; }
 	.coupon_no_nav {height:38px; background:#eee; margin:0px 3%; border:1px solid #d4d4d4; border-radius:5px; text-align:center; line-height:38px; color:#666;}
 	.coupon_more { height:40px; line-height:40px; font-size:14px;color:#232323; margin:10px; border-radius: 5px; background-repeat:no-repeat; border:1px solid #232323; text-align: center; }
+
+	.lw_coupon_item {
+		padding:10px 10px 0px 10px;
+	}
+	.lw_coupon_item .li{
+		margin-bottom:10px;
+		background: #fff;
+		border:1px solid #d9d9d9;
+		box-sizing:border-box;
+		
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	
+	.lw_coupon_item .top{
+		text-align: center;
+		font-size: 18px;
+		padding:20px 0px;
+
+	}
+	.lw_coupon_item .top .s1{
+		font-weight: bold;
+		color:#666;
+
+	}
+	.lw_coupon_item .top .s2{
+		color:#f22;
+		margin-left:10px;
+	}
+	.lw_coupon_item .bottom{
+		text-align: center;
+		background: #e3e3e3;
+		font-size: 12px;
+		line-height:40px;
+		color:#777;
+	}
+	.lw_coupon_item .li.in{
+		opacity: 0.7;
+	}
+	.lw_coupon_item .li.in .s2{
+		color:#888;
+	}
 </style>
 <div class="page_topbar">
 	<a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
@@ -29,21 +71,19 @@
 	<div class="coupon_no"><i class="fa fa-credit-card" style="font-size:80px;"></i><br><span style="line-height:18px; font-size:16px;">您还没有{$set['gift_title']}~</span></div>
 </script>
 <script id='tpl_list' type='text/html'>
-	<%each list as row%>
-		<div class="coupon_item" onclick="location.href = '{php echo $this->createPluginMobileUrl('card/order')}&cardid=<%row.id%>'">
-			<div class='bg cside side side-left'></div>
-			<div class="cinfo" >
-				<div class="inner" >
-					<div class="name">
-						余额 <%row.balance%>元
-					</div>
-					<div class="time">
-						有效期 <%row.timestr%>
-					</div>
+	<div class="lw_coupon_item">
+		<%each list as row%>
+			<div class="li <%row.css%>" onclick="location.href = '{php echo $this->createPluginMobileUrl('card/order')}&cardid=<%row.id%>'">
+				<div class="top" >
+					<span class="s1">余额 <%row.balance%>元</span>
+					<span class="s2"><%if row.css%>[已过期]<%/if%></span>
+				</div>
+				<div class="bottom" >
+					有效期 <%row.timestr%>
 				</div>
 			</div>
-		</div>
-	<%/each%>
+		<%/each%>
+	</div>
 </script>
 
 <script language='javascript'>

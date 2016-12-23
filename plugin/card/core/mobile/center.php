@@ -15,13 +15,21 @@ if ($_W['isajax']) {
     $list = pdo_fetchall($sql, array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
     foreach ($list as &$row) {
         $isoverdue = $this->model->checkValidity($row['id']);
-        if ($isoverdue == 0) {
-            if ($row['isday'] == 1) {
-                $row['timestr'] = date('Y-m-d H:i:s',$row['bindtime']) . "至" . date('Y-m-d H:i:s', ($row['bindtime']+$row['validity_period']));
-            } else if ($row['isday'] == 2) {
-                $row['timestr'] = date('Y-m-d H:i:s',$row['timestart']) . "至" . date('Y-m-d H:i:s', $row['timeend']);
+        if ($row['balance'] > 0) {
+            $row['css'] = '';
+            if ($isoverdue == 0) {
+                if ($row['isday'] == 1) {
+                    $row['timestr'] = date('Y-m-d H:i:s',$row['bindtime']) . "至" . date('Y-m-d H:i:s', ($row['bindtime']+$row['validity_period']));
+                } else if ($row['isday'] == 2) {
+                    $row['timestr'] = date('Y-m-d H:i:s',$row['timestart']) . "至" . date('Y-m-d H:i:s', $row['timeend']);
+                }
+                $row['css'] = '';
+            } else {
+                $row['css'] = 'in';
+                $row['timestr'] = "已过期";
             }
         } else {
+            $row['css'] = 'in';
             $row['timestr'] = "已过期";
         }
         //余额等于0在页面判断

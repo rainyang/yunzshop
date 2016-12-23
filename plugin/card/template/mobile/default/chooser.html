@@ -26,11 +26,10 @@
 				 data-cardid="<%card.id%>"
 				 data-balance="<%card.balance%>"
 			>
-				<div class='bg cside side side-left'></div>
+				<!--<div class='bg cside side side-left'></div>-->
 				
 			<div class="cinfo" >
 				<div class="inner" >
-					<div class="name"><%card.balance%></div>
 					<div class="time">
 						<%if card.timestr==''%>
 						永久有效
@@ -43,14 +42,15 @@
 			</div>
 			<div class="cright">
 				<div class="bg png png-deduct"></div>
-				<div class="bg sideleft side side-deduct"></div>
+				<!--<div class="bg sideleft side side-deduct"></div>-->
 				<div class="rinfo" >
 					<div class='rinner deduct'>
+						<div class="xuan">√</div>
 						<div class="price"><%if card.balance%>￥<%/if%><span><%card.balance%></span></div>
 						<div class="type"><%card.backstr%></div>
 					</div>
 				</div>
-				<div class="bg sideright side side-deduct"></div>
+				<!--<div class="bg sideright side side-deduct"></div>-->
 
 			</div>
 		</div>

@@ -1,19 +1,22 @@
-.card_item { margin:8px; height:65px; position: relative}
-.card_selected { border:1px solid #f60;margin:10px;height:66px;}
+.card_list{ padding:10px 10px 0px 10px; box-sizing:border-box;}
+.card_list .xuan{
+	position: absolute; left:20px; top:18px;  height:20px; line-height:20px; width:20px; color:#fff;
+	border-radius: 100%; border:2px solid #fff; color:#fff; text-align: center;
+	display: none;
+}
+.card_item { margin-bottom:10px;position: relative; width:100%; background: #fff; padding-bottom:35px; border-radius: 4px; overflow: hidden; opacity: 0.6;}
+.card_selected {  opacity: 1;}
+.card_selected .xuan{ display: block;}
 .card_item .cside  {  float:left; width:4px; height:65px;border-bottom: 1px solid #d6d6d6;  }
 .card_item .cthumb { float:left; width:50px;height:65px; background:#fff; text-align: center;  line-height: 60px; border-bottom: 1px solid #d6d6d6; }
 .card_item .cthumb img { width:40px;height:40px; vertical-align:middle;}
 
-.card_item .cinfo {float:left; width:100%; margin-left:-55px;;height:65px; }
-.card_item .cinfo .inner { margin-left:55px;height:65px; background:#fff; border-bottom: 1px solid #d6d6d6;}
-.card_item .cinfo .inner .name { font-size:14px; color:#222; height:36px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; line-height: 40px}
-.card_item .cinfo .inner .time { font-size:12px; color:#666; height:22px; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;}
+.card_item .cinfo { width:100%; ;height:35px; line-height:35px;  bottom:0px; position: absolute; left:0px; text-align: center; font-size: 12px; color:#666;}
 
-.card_item .cright { float:right;width:30%;height:65px; margin-left:-40%; color:#fff; position: relative; }
+.card_item .cright { }
 .card_item .cright .sideleft { float:left;width:4px;height:65px;}
-.card_item .cright .rinfo { float:left;width:100%;height:65px; margin-left:-4px;margin-right:-4px;}
-.card_item .cright .rinfo .rinner { margin-left:4px;margin-right:4px;height:65px;}
-.card_item .cright .rinfo .rinner .price { font-size:13px; text-align: right;padding-right:10px;padding-top:8px;}
+.card_item .cright .rinfo .rinner {width:100%;}
+.card_item .cright .rinfo .rinner .price { font-size:18px; text-align: right; line-height:60px;padding-right:30px;color:#fff; height:60px; position: relative;}
 .card_item .cright .rinfo .rinner .price span { font-size:22px;}
 .card_item .cright .rinfo .rinner .type { font-size:12px; text-align: right;padding-right:10px; }
 .card_item .cright .sideright { float:right;width:4px;height:65px; 
@@ -24,7 +27,7 @@
 								  -ms-transform: rotate(180deg); 
 								  transform: rotate(180deg); 
 }
-.card_item .cright .png { position: absolute;bottom:0;left:5%; width:80%;height:80%; opacity:0.8 }
+.card_item .cright .png { position: absolute;top:0;left:5%; width:80%;height:80%; opacity:0.8 }
 
 .card_content { margin:5px 10px ; height:150px;   position: relative;}
 .card_content .png { position: absolute;bottom:0;left:10%;height:80px; opacity:0.8; width:50%; }
