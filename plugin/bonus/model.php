@@ -771,7 +771,7 @@ if (!class_exists('BonusModel')) {
 			}
 		
 			if($isleveup == true){
-				pdo_update('sz_yi_member', array('bonuslevel' => $levelup['id'], 'bonus_status' =>１), array('id' => $member['id']));
+				pdo_update('sz_yi_member', array('bonuslevel' => $levelup['id'], 'bonus_status' =>1), array('id' => $member['id']));
 				//查看是否可以连升级
 				$ismsg = $this->upgradeLevelByAgent($member['id']);
 				if($ismsg == false){
