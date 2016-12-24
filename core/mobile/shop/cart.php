@@ -23,6 +23,7 @@ if ($_W['isajax']) {
     }
     if ($operation == 'display') {
         $ischannelpick = intval($_GPC['ischannelpick']);
+        $ischannelpay = intval($_GPC['ischannelpay']);
         if (p('channel')) {
             $my_info = p('channel')->getInfo($openid);
         }
@@ -63,7 +64,10 @@ if ($_W['isajax']) {
         }
 
         $verify_goods_ischannelpick = '';
+<<<<<<< HEAD
 
+=======
+>>>>>>> 90b2f3c2be4c477d3b24e640419947c36bebdc46
         foreach ($list as &$r) {
             if ($isladder) {
                 $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
@@ -90,8 +94,10 @@ if ($_W['isajax']) {
 
             if (p('channel')) {
                 $member = m('member')->getInfo($openid);
-                if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
-                    $r['marketprice'] = $r['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                if ($ischannelpay == 1) {
+                    if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
+                        $r['marketprice'] = $r['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                    }
                 }
                 //自提库存替换
                 if ($ischannelpick == 1) {
@@ -101,12 +107,17 @@ if ($_W['isajax']) {
                     $my_stock = p('channel')->getMyOptionStock($openid, $r['goodsid'], $r['optionid']);
                     $r['stock'] = $my_stock;
                 }
+                if ($ischannelpay == 1) {
+                    if (empty($r['isopenchannel'])) {
+                        $verify_goods_ischannelpay .= 1;
+                    }
+                }
             }
             $totalprice += $r['marketprice'] * $r['total'];
             $total += $r['total'];
         }
         $difference = '';
-        $ischannelpay = $_GPC['ischannelpay'];
+        
         if (p('channel')) {
             if (empty($ischannelpick)) {
                 //if (!empty($ischannelpay)) {
@@ -130,7 +141,14 @@ if ($_W['isajax']) {
                 'totalprice' => $totalprice,
                 'difference' => $difference,
                 'ischannelpay' => $ischannelpay,
+<<<<<<< HEAD
                 'verify_goods_ischannelpick' => $verify_goods_ischannelpick
+=======
+                'verify_goods_ischannelpick' => $verify_goods_ischannelpick,
+                'verify_goods_ischannelpay' => $verify_goods_ischannelpay,
+                'virtual_currency' => $virtual_currency,
+                'yunbi_title' => $yunbi_title
+>>>>>>> 90b2f3c2be4c477d3b24e640419947c36bebdc46
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {
@@ -630,7 +648,7 @@ if ($_W['isajax']) {
             foreach ($goods as $key => $good) {
                 $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_member_cart') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
                     ':uniacid' => $_W['uniacid'],
-                    'goodsid' => $good['id'],
+                    ':goodsid' => $good['id'],
                     ':openid' => $openid
                 ));
 

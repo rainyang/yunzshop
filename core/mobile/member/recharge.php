@@ -25,12 +25,12 @@ if ($operation == 'display' && $_W['isajax']) {
     if (!empty($set['trade']['closerecharge'])) {
         return show_json(-1, '系统未开启账户充值!');
     }
-    pdo_delete('sz_yi_member_log', array(
+    /*pdo_delete('sz_yi_member_log', array(
         'openid' => $openid,
         'status' => 0,
         'type' => 0,
         'uniacid' => $_W['uniacid']
-    ));
+    ));*/
     $logno = m('common')->createNO('member_log', 'logno', 'RC');
     $log   = array(
         'uniacid' => $_W['uniacid'],
@@ -359,6 +359,11 @@ if ($operation == 'display' && $_W['isajax']) {
     /*修复支付问题*/
     $couponid = intval($_GPC['couponid']);
 
+    $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
+        ':uniacid' => $uniacid,
+        ':id' => $logid
+    ));
+
     if($log['money'] <= 0){
             pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
     }elseif ($log['money']!=$money){
@@ -377,12 +382,14 @@ if ($operation == 'display' && $_W['isajax']) {
 
         pdo_insert('sz_yi_member_log', $log);
         $logid  = pdo_insertid();
+
+        $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
+            ':uniacid' => $uniacid,
+            ':id' => $logid
+        ));
     }
 
-    $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
-        ':uniacid' => $uniacid,
-        ':id' => $logid
-    ));
+
     if (empty($log)) {
         return show_json(0, '充值出错, 请重试!');
     }

@@ -131,7 +131,27 @@ class Sz_DYi_Common
         );
     }
 	
-	
+	function get_wechat_sign($package,$uniacid = false){
+        global $_W;
+        $uniacid = $uniacid ?: $_W['uniacid'];
+        $setting = uni_setting($uniacid, array(
+            'payment'
+        ));
+        $signkey = $setting['payment']['wechat']['signkey'];
+
+        unset($package['sign']);
+        ksort($package, SORT_STRING);
+        $string1 = '';
+        foreach ($package as $key => $v) {
+            if (empty($v)) {
+                continue;
+            }
+            $string1 .= "{$key}={$v}&";
+        }
+        $string1 .= "key={$signkey}";
+        $result = strtoupper(md5($string1));
+        return $result;
+    }
     function wechat_build($params, $wechat, $type = 0)
     {
         global $_W;
@@ -230,6 +250,7 @@ class Sz_DYi_Common
             if (strval($xml->result_code) == 'FAIL') {
                 return error(-1, strval($xml->err_code) . ': ' . strval($xml->err_code_des));
             }
+
             $prepayid          = $xml->prepay_id;
             $wOpt['appId']     = $wechat['appid'];
             $wOpt['timeStamp'] = TIMESTAMP . "";
@@ -248,7 +269,9 @@ class Sz_DYi_Common
             }
             ksort($wOpt, SORT_STRING);
             foreach ($wOpt as $key => $v) {
-                $key = strtolower($key);
+                if($params['trade_type'] == 'APP') {
+                    $key = strtolower($key);
+                }
                 $string .= "{$key}={$v}&";
             }
             $string .= "key={$wechat['signkey']}";

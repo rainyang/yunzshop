@@ -60,6 +60,7 @@ if ($operation == 'display') {
             'redpack' => trim($_GPC['redpack']),
             'deredpack' => trim($_GPC['deredpack']),
             'decommission' => trim($_GPC['decommission']),
+            'debonus' => trim($_GPC['debonus']),
             'decredits' => trim($_GPC['decredits']),
             'iscontact' => intval($_GPC['iscontact']),
             'condition' => trim($_GPC['condition']),

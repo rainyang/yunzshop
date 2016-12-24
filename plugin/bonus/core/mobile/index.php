@@ -13,7 +13,7 @@ $member['commission_ok'] = number_format($member['commission_ok'], 2);
 $member['commission_pay'] = number_format($member['commission_pay'], 2);
 $member['commission_total'] = number_format($member['commission_total'], 2);
 $member['customercount'] = intval($member['agentcount']);
-if(p('love')){
+if(p('hlag')){
     $paytime =  pdo_fetchcolumn("select paytime from " . tablename('sz_yi_bonus_apply') . " where mid={$member['id']} and uniacid=".$_W['uniacid']." order by id desc limit 1");
     $nopaytime = '';
     if($paytime){

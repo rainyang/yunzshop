@@ -88,7 +88,7 @@ if ($operation == 'display') {
     }
     $list  = pdo_fetchall($sql, $params);
     foreach ($list as &$row) {
-        $row['stock_sum'] = pdo_fetchcolumn('SELECT sum(every_turn) FROM ' . tablename('sz_yi_channel_stock_log') . ' WHERE uniacid=:uniacid AND goodsid = :goodsid AND type = 1',array(':uniacid' => $_W['uniacid'],':goodsid' => $row['id']));
+        $row['stock_sum'] = pdo_fetchcolumn('SELECT sum(every_turn) FROM ' . tablename('sz_yi_channel_stock_log') . ' WHERE uniacid=:uniacid AND goodsid = :goodsid AND type = 1 AND openid=:openid',array(':uniacid' => $_W['uniacid'],':goodsid' => $row['id'], ':openid' => $openid));
         $row['stock_sold_sum'] = pdo_fetchcolumn('SELECT sum(every_turn) FROM ' . tablename('sz_yi_channel_stock_log') . ' WHERE uniacid=:uniacid AND goodsid = :goodsid AND type = 2 AND type = 3',array(':uniacid' => $_W['uniacid'],':goodsid' => $row['id']));
     }
     $pager = pagination($total, $pindex, $psize);

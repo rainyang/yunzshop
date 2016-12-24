@@ -680,18 +680,50 @@ if (!class_exists('BonusModel')) {
 			}
 		}
 
-		public function upgradeLevelByAgent($mid)
-		{
-			global $_W;
+		public function upgradeLevelByAgent($mid){
 			if (empty($mid)) {
 				return false;
 			}
 			$set = $this->getSet();
-			$member = p('commission')->getInfo($mid, array('ordercount0'));
+			$leveltype = $set['leveltype'];
+			$pluginCommission = p('commission');
+			$member = $pluginCommission->getInfo($mid, array('ordercount0'));
 			if (empty($member)) {
 				return;
 			}
 
+			$agents = array($member);
+			if (!empty($member['agentid']) && $leveltype != 4) {
+				$m1 = $pluginCommission->getInfo($member['agentid'], array('ordercount0'));
+				if (!empty($m1)) {
+					$agents[] = $m1;
+					if (!empty($m1['agentid']) && $m1['isagent'] == 1 && $m1['status'] == 1) {
+						$m2 = $pluginCommission->getInfo($m1['agentid'], array('ordercount0'));
+						if (!empty($m2) && $m2['isagent'] == 1 && $m2['status'] == 1) {
+							$agents[] = $m2;
+							if (empty($set['selfbuy'])) {
+								if (!empty($m2['agentid']) && $m2['isagent'] == 1 && $m2['status'] == 1) {
+									$m3 = $pluginCommission->getInfo($m2['agentid'], array('ordercount0'));
+									if (!empty($m3) && $m3['isagent'] == 1 && $m3['status'] == 1) {
+										$agents[] = $m3;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			if (empty($agents)) {
+				return;
+			}
+			foreach ($agents as $agent) {
+				$this->upgradeAgent($member, $leveltype);
+			}
+		}
+
+		public function upgradeAgent($member, $leveltype)
+		{
+			global $_W;
 			if(empty($member['bonuslevel'])){
 				$oldlevel = false;
 				$levelup = pdo_fetch('select * from ' . tablename('sz_yi_bonus_level') . ' where uniacid='.$_W['uniacid'].' order by level asc');
@@ -713,7 +745,7 @@ if (!class_exists('BonusModel')) {
 			if(empty($levelup) || $levelup['status'] == 1){
 				return false;
 			}
-			$leveltype = $set['leveltype'];
+			
 			//升级为真，下面只要有没满足的就不升级
 			$isleveup = true;
 			

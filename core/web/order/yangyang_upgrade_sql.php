@@ -49,7 +49,13 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_merchant_order')." (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 ";
 pdo_query($sql);
-if (p('supplier')) {
+
+//12-19 更改字段属性
+if (pdo_fieldexists('sz_yi_designer', 'datas')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_designer')." MODIFY `datas` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+
+/*if (p('supplier')) {
     $isinsert = pdo_fetch("SELECT * FROM " . tablename('sz_yi_supplier_order') . " WHERE uniacid=:uniacid", array(':uniacid' => '999999'));
     if (empty($isinsert)) {
         $roleid = p('supplier')->getRoleId();
@@ -245,5 +251,5 @@ if (p('supplier')) {
             }
         }
     }
-}
+}*/
 echo 'ok...';

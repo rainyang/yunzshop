@@ -2,8 +2,6 @@
 namespace app\api\controller\category;
 @session_start();
 use app\api\YZ;
-use app\api\Request;
-use yii\helpers\ArrayHelper;
 
 class Index extends YZ
 {

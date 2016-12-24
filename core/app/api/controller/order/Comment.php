@@ -13,6 +13,17 @@ class Comment extends YZ
     {
 
         parent::__construct();
+
+    }
+    public function getList(){
+        //goodsid,page
+        $result = $this->callMobile('shop/util/comment');
+        $json = $result['json'];
+        $this->returnSuccess($json);
+
+    }
+    public function index()
+    {
         global $_W,$_GPC;
         $_W['ispost']= true;
         $_GPC['from_client'] = 'post';
@@ -24,10 +35,6 @@ class Comment extends YZ
         }
         $this->variable = $result['variable'];
         $this->json = $result['json'];
-    }
-
-    public function index()
-    {
         $res = $this->json;
         //$res['order'] = array_part('expresssn,expresscom',$this->json);
         $this->returnSuccess($res);

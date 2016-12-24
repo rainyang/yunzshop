@@ -1487,6 +1487,10 @@ if (!class_exists('CommissionModel')) {
 			if (empty($member)) {
 				return;
 			}
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$pluginbonus->upgradeLevelByAgent($openid);
+			}
 			$leveltype = intval($set['leveltype']);
 			if ($leveltype == 4 || $leveltype == 5) {
 				if (!empty($member['agentnotupgrade'])) {
@@ -1624,11 +1628,8 @@ if (!class_exists('CommissionModel')) {
 					}
 					pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $agent['id']));
 					$this->sendMessage($agent['openid'], array('nickname' => $agent['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
+					
 				}
-			}
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$pluginbonus->upgradeLevelByAgent($openid);
 			}
 		}
 		//会员根据
@@ -1646,7 +1647,10 @@ if (!class_exists('CommissionModel')) {
 			if (empty($member)) {
 				return;
 			}
-			
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$pluginbonus->upgradeLevelByAgent($openid);
+			}
 			$pluginchannel = p('channel');
 			if(!empty($pluginchannel)){
 				$channel_set = $pluginchannel->getSet();
@@ -1757,10 +1761,6 @@ if (!class_exists('CommissionModel')) {
 				pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $member['id']));
 				$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
 			}
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$pluginbonus->upgradeLevelByAgent($openid);
-			}
 		}
 		//根据可提现佣金升级
 		function upgradeLevelByCommissionOK($openid)
@@ -1777,7 +1777,10 @@ if (!class_exists('CommissionModel')) {
 			if (empty($member)) {
 				return;
 			}
-			
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$pluginbonus->upgradeLevelByAgent($openid);
+			}
 			$leveltype = intval($set['leveltype']);
 			if ($leveltype != 10) {
 				return;
@@ -1805,10 +1808,6 @@ if (!class_exists('CommissionModel')) {
 			}
 			pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $member['id']));
 			$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$pluginbonus->upgradeLevelByAgent($openid);
-			}
 		}
 		//发送消息
 		function sendMessage($openid = '', $data = array(), $message_type = '')

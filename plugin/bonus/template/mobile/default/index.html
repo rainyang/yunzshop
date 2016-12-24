@@ -84,10 +84,10 @@
  </div>
 <div class="comm-center">
     <ul>
-        {php $love_width = p('love') ? "" : "width: 50%";}
+        {php $love_width = p('hlag') ? "" : "width: 50%";}
         <li style="{$love_width}"><a href="#"><span>{$member['commission_total']}</span><br/>{php echo $this->set['texts']['commission_total']}</a></li>
         <li style="{$love_width}"><a href="#"><span>{$member['commission_ok']}</span><br/>{php echo $this->set['texts']['commission_ok']}</a></li>
-        {if p('love')}
+        {if p('hlag')}
         <li><a class="recharge" {if $commission_ok<=0 || $commission_ok< $set['withdraw'] || $commission_ok< $set['consume_withdraw']}href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('commission/apply')}"{/if} id='withdraw' ><p style="margin:0" {if $commission_ok<=0 || $commission_ok< $set['withdraw']}class='disabled'{/if} >{php echo $this->set['texts']['withdraw']}</p style="margin:0"></a></li>
         {/if}
     </ul>

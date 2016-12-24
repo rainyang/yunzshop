@@ -97,10 +97,10 @@ if (!pdo_fieldexists('sz_yi_goods_option', 'option_ladders')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods_option')." ADD `option_ladders` TEXT NULL DEFAULT NULL COMMENT '规格阶梯价格' AFTER `redprice`;");
 }
 
-//2016-12-09
-if (!pdo_fieldexists('sz_yi_indiana_consumerecord', 'ordersn')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_indiana_consumerecord')." ADD `ordersn` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `num`;");
-}
+// //2016-12-09
+// if (!pdo_fieldexists('sz_yi_indiana_consumerecord', 'ordersn')) {
+//     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_indiana_consumerecord')." ADD `ordersn` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `num`;");
+// }
 
 
 //夺宝分期期号 2016-10-09
