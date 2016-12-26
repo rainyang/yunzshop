@@ -257,7 +257,7 @@ require(['tpl', 'core'], function(tpl, core) {
             }
             $('.button').attr('submitting',1);
             var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
-            core.json('order/pay', {op: 'pay',type: 'weixin', orderid:'{$_GPC['orderid']}',deduct:deduct}, function (rjson) {
+            core.pjson('cashier/order_pay', {op: 'pay',type: 'weixin', orderid:'{$_GPC['orderid']}',deduct:deduct}, function (rjson) {
                 if(rjson.status!=1){
                     $('.button').removeAttr('submitting');
                     core.tip.show(rjson.result);
@@ -279,15 +279,19 @@ require(['tpl', 'core'], function(tpl, core) {
                     }, function(data) {
                         if (data.result.status >= 1) {
                             clearInterval(settime);
-                            core.json('order/pay',{
+                            core.pjson('cashier/order_pay',{
                                 op:'complete',
                                 orderid:'{$_GPC['orderid']}',
                                 type:'weixin',deduct:deduct
                             },function(pay_json){
                                 if(pay_json.status==1){
-                                    clearInterval(settime);
-                                    $(".order-weixinpay-hidden").hide();
                                     $('#container').html(tpl('tpl_order_pay',pay_json.result));
+                                    if (pay_json.result.couponurl) {
+                                        setTimeout(function () {
+                                            // TODO: 跳转到营销页面
+                                            location.href =pay_json.result.couponurl;
+                                        }, 2000);
+                                    }
                                     return;
                                 }
                                 core.tip.show(pay_json.result);
