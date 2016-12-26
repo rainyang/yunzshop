@@ -8,7 +8,7 @@
         <th>剩余数量</th>
         <th>选择</th>
     </thead>
-    <tbody>   
+    <tbody>
         {loop $ds $row}
         <tr>
 			<td><img src="{$row['thumb']}" style="width:30px;height:30px;padding:1px solid #ccc" /></td>
@@ -35,7 +35,7 @@
         </tr>
         {/loop}
         {if count($ds)<=0}
-        <tr> 
+        <tr>
             <td colspan='5' align='center'>未找到任何优惠券, 点击 <a href="{php echo $this->createPluginWebUrl('coupon/coupon/post')}" target='_blank'>【创建购物优惠券】</a> <a href="{php echo $this->createPluginWebUrl('coupon/coupon/post',array('type'=>1))}" target='_blank'>【创建充值优惠券】</a></td>
         </tr>
         {/if}

@@ -1,0 +1,173 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+{template 'tabs'}
+<style type="text/css">
+    .require{color:red;}
+    .info{padding:6px;width:400px;margin:-20px auto 3px auto;text-align:center;}
+</style>
+
+<div class="rightlist">
+{if $op == 'post'}
+    <form class="form-horizontal form" id="form1" action="" method="post" enctype="multipart/form-data">
+        <div class="main">
+            <div class="panel panel-default">
+                <div class="panel-heading">添加代金卡</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span class="require">* </span>数量</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" class="form-control" name="total" value="" placeholder="请填写生成数量">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span class="require">* </span>面额(元)</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" class="form-control" name="money" value="" placeholder="请填写面额">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-xs-12 col-sm-3 col-md-2 col-lg-2 control-label"><span class="require">* </span>固定or活期</label>
+                      <div class="col-xs-12 col-sm-8">
+                        <label class="radio radio-inline" onclick="$('.picmode').hide();$('.print_nums').show();">
+                            <input type="radio" name="isday" value="1"> 固定
+                        </label>
+                        <label class="radio radio-inline" onclick="$('.picmode').show();$('.print_nums').hide();">
+                            <input type="radio" name="isday" value="2"> 活期
+                        </label>
+                      </div>
+                    </div>
+                    <div class="form-group picmode" style="display:none;">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span class="require">* </span>日期</label>
+                        <div class="col-sm-4 col-xs-6">
+                            {php echo sz_tpl_form_field_date('timestart', date('Y-m-d H:i:s'), 1)}
+                        </div>
+                        <div class="col-sm-4 col-xs-6">
+                            {php echo sz_tpl_form_field_date('timeend', date('Y-m-d H:i:s'), 1)}
+                        </div>
+                    </div>
+                    <div class="form-group print_nums" style="display:none;">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span class="require">* </span>天数</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" class="form-control" name="validity_period" value="" placeholder="请填写有效期">
+                        </div>
+                    </div>
+                  </div>
+              </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <input type="hidden" name="token" value="{$_W['token']}" />
+                    <input name="submit" id="submit" type="submit" value="提交" class="btn btn-primary col-lg-1">
+                    <a class="btn btn-default col-lg-1" href="{php echo $this->createPluginWebUrl('card/index', array('op' => 'display'));}"/>返回</a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript">
+        require(['util'], function(u){
+            $('#post-add').click(function(){
+                $('#tpl-container').append($('#tpl').html());
+            });
+        });
+    </script>
+{elseif $op == 'display'}
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <a class="btn btn-success col-lg-1" href="{php echo $this->createPluginWebUrl('card/index', array('op' => 'post'));}"/><i class="fa fa-plus-circle"> </i>  添加代金卡</a>
+        <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+          <input type="hidden" name="c" value="site" />
+          <input type="hidden" name="a" value="entry" />
+          <input type="hidden" name="m" value="sz_yi" />
+          <input type="hidden" name="do" value="plugin" />
+          <input type="hidden" name="p" value="card" />
+          <input type="hidden" name="method" value="index" />
+          <input type="hidden" name="op" value="display" />
+          <button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button>
+      </form>
+    </div>
+    <div class="panel-heading">总数：{$total}</div>
+        </div>
+            <div class="panel panel-default">
+                <div class="panel-body table-responsive">
+                    <table class="table table-hover">
+                        <thead class="navbar-inner">
+                            <tr>
+                                <th>期数</th>
+                                <th>数量</th>
+                                <th>面额</th>
+                                <th>发放时间</th>
+                                <th>详情</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loop $list $row}
+                            <tr>
+                              <td><span class="label label-success">{$row['id']}</span></td>
+                              <td>{$row['total']}张</td>
+                              <td><span class="label label-danger">{$row['money']}元</span></td>
+                              <td>{php echo date('Y-m-d H:i:s',$row['createtime'])}</td>
+                              <td><a class='btn btn-default' href="{php echo $this->createPluginWebUrl('card/index', array('op' => 'detail', 'gift_id' => $row['id']))}">查看</a></td>
+                            </tr>
+                            {/loop}
+                        </tbody>
+                    </table>
+                    {$pager}
+                </div>
+            </div>
+    </div>
+{elseif $op == 'detail'}
+<div class="panel panel-default">
+      <div class="panel-body">
+        <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+          <input type="hidden" name="c" value="site" />
+          <input type="hidden" name="a" value="entry" />
+          <input type="hidden" name="m" value="sz_yi" />
+          <input type="hidden" name="do" value="plugin" />
+          <input type="hidden" name="p" value="card" />
+          <input type="hidden" name="method" value="index" />
+          <input type="hidden" name="op" value="detail" />
+          <input type="hidden" name="gift_id" value="{$_GPC['gift_id']}" />
+          <button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button>
+      </form>
+    </div>
+    <div class="panel-heading">总数：{$total}</div>
+        </div>
+            <div class="panel panel-default">
+                <div class="panel-body table-responsive">
+                    <table class="table table-hover">
+                        <thead class="navbar-inner">
+                            <tr>
+                                <th>期数</th>
+                                <th>CDkey</th>
+                                <th>面额</th>
+                                <th>有效期</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loop $list $row}
+                            <tr>
+                              <td><span class="label label-success">{$row['gift_id']}</span></td>
+                              <td>{$row['cdkey']}</td>
+                              <td><span class="label label-danger">{$row['money']}元</span></td>
+                              <td>{$row['time']}</td>
+                            </tr>
+                            {/loop}
+                        </tbody>
+                    </table>
+                    {$pager}
+                </div>
+            </div>
+    </div>
+{/if}
+</div>
+<script type="text/javascript">
+    require(['util'], function(u){
+        $('.btn').hover(function(){
+            $(this).tooltip('show');
+        },function(){
+            $(this).tooltip('hide');
+        });
+    });
+</script>
+
+{template 'web/_footer'}

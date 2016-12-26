@@ -94,7 +94,7 @@
     .cnum .shownum {height:20px; width:40px; float:left;  border:0px; margin:0px; padding:0px; text-align:center;}
     .cnum .rightnav {height:20px; width:19px; float:right; border-left:1px solid #e2e2e2; background:#eee; color:#6b6b6b; text-align:center; line-height:20px; font-size:18px; font-weight:bold;}
     .couponcount {float:right; margin-top:8px;  margin-right: 5px; height:16px; width:16px; background:#f30; border-radius:8px; font-size:12px; color:#fff; line-height:16px; text-align: center;}
-
+    .cardcount {float:right; margin-top:8px;  margin-right: 5px; height:16px; width:16px; background:#f30; border-radius:8px; font-size:12px; color:#fff; line-height:16px; text-align: center;}
 </style>
 
 <div id='carrier_container'></div>
@@ -425,13 +425,16 @@
               <%if order.saleset%>
             <div class="deductenough"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;<%if !order.saleset.showenough %>display:none<%/if%>"  >-单笔满 <d style='color:#f15353' class="deductenough_enough" data-id='<%order.supplier_uid%>'><%saleset.enoughmoney%></d> 元立减  <span>-￥<span class="deductenough_money"  data-id='<%order.supplier_uid%>'><%saleset.enoughdeduct%></span><span></div>
             <%/if%>
-                   {if $hascouponplugin}
-                   <div class="coupondeduct_div"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;display:none"><d class='coupondeduct_text' data-id='<%order.supplier_uid%>'></d><span>-￥<span class="coupondeduct_money"  data-id='<%order.supplier_uid%>'>0</span><span></div>
-                   {/if}
-            
+           {if $hascouponplugin}
+           <div class="coupondeduct_div"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;display:none"><d class='coupondeduct_text' data-id='<%order.supplier_uid%>'></d><span>-￥<span class="coupondeduct_money"  data-id='<%order.supplier_uid%>'>0</span><span></div>
+           {/if}
+            {if $hascard}
+           <div class="carddeduct_div" class="line" style="line-height:26px;display:none"><d class='carddeduct_text'></d><span>-￥<span class="carddeduct_money">0</span><span></div>
+           {/if}
         </div>
     </div>
     <input type="hidden" data-id="<%order.supplier_uid%>" data-name="couponid" value="" />
+    <input type="hidden" data-name="cardid" value="" />
      <div></div>
     {if empty($_GPC['ischannelpay']) && $hascouponplugin}
      <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" >
@@ -444,6 +447,19 @@
         </div>
     </div>
     {/if}
+    <!--代金卡-->
+    {if $hascard}
+    <div class="addorder_price carddiv"  data-id="<%order.supplier_uid%>" >
+        <div class="price">
+            <div class="line selectcard" style="line-height:32px;" data-id="<%order.supplier_uid%>">
+                <d class="cardselect" data-id="<%order.supplier_uid%>"><%if order.cardcount>0%>我要使用{$card_set['gift_title']}<%else%>没有符合条件的{$card_set['gift_title']}~<%/if%></d>
+                <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
+                <div class="couponcount"><%order.cardcount%></div>
+            </div>
+        </div>
+    </div>
+    {/if}
+
    <%if order.deductyunbi>0%>
      <div class="addorder_price">
         <div class="price" >
@@ -498,6 +514,9 @@
 
 {if $hascouponplugin}
 {template 'coupon/chooser'}
+{/if}
+{if $hascard}
+{template 'card/chooser'}
 {/if}
 <script type="text/javascript">
 var fromcart = 0;
@@ -701,7 +720,7 @@ var fromcart = 0;
            })
         fromcart = json.result.fromcart;
         
- 
+
 
 
         //选择快递或字提
@@ -970,6 +989,18 @@ var fromcart = 0;
                         //$('.coupondiv[data-id='+supplier_uid+']').hide();
                       }
 
+                      if(getjson.result.hascard){
+                          $('.carddiv').show();
+                          $('.cardselect').html("我要使用{$card_set['gift_title']}");
+                          $('.carddiv .cardcount').html(getjson.result.cardcount);
+                          bindCardEvents();
+                      }else{
+                          $("input[data-name='cardid']").val('');
+                          $('.cardselect').html("没有符合条件的{$card_set['gift_title']}~");
+                          $('.carddiv .cardcount').html('0');
+                          //$('.coupondiv[data-id='+supplier_uid+']').hide();
+                      }
+
                       if(getjson.result.deductenough_money>0){
                           $('.deductenough[data-id='+getjson.result.supplier_uid+']').show();
                           $('.deductenough_money[data-id='+getjson.result.supplier_uid+']').html( getjson.result.deductenough_money);
@@ -1054,8 +1085,10 @@ var fromcart = 0;
               {if $hascouponplugin}
                    totalprice = calcCouponPrice(totalprice, supplier_uid);
               {/if}
+              {if $hascard}
+                   totalprice = calcCardPrice(totalprice, supplier_uid);
+              {/if}
             totalprice = totalprice - enoughprice + dispatchprice;
-
             var deductprice = 0;
             if($('.deductcredit[data-id='+supplier_uid+']').length>0){
                 if($('.deductcredit[data-id='+supplier_uid+']').attr('on')=='1'){
@@ -1095,7 +1128,6 @@ var fromcart = 0;
                           deductprice2 = parseFloat( $('.deductcredit2_money[data-id='+supplier_uid+']').html().replace(',','') );
                      }
              }
-
             totalprice = totalprice - deductprice - deductprice2 - deductyunbi;
             if(totalprice<=0){
                 totalprice = 0;
@@ -1392,6 +1424,9 @@ var fromcart = 0;
               {if $hascouponplugin}
                   order[i].couponid = $("input[data-name='couponid'][data-id="+supplierarr[i]+"]").val();
               {/if}
+              {if $hascard}
+                  order[i].cardid = $("input[data-name='cardid']").val();
+              {/if}
 
           }
            data = {op:'create', order:order, ischannelpay:"{$_GPC['ischannelpay']}", ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:"{$_GPC['isyunbipay']}"};
@@ -1492,15 +1527,15 @@ var fromcart = 0;
                  if(deductprice<=0){
                        deductprice = 0;
                  }
-                 totalprice-=deductprice;       
+                 totalprice-=deductprice;
                  $('.coupondeduct_text[data-id='+supplier_uid+']').html('优惠券折扣(' + discount + '折)');
              }
              if(deductprice>0){
                 $('.coupondeduct_div[data-id='+supplier_uid+']').show();
-              $('.coupondeduct_money[data-id='+supplier_uid+']').html(deductprice.toFixed(2));  
+              $('.coupondeduct_money[data-id='+supplier_uid+']').html(deductprice.toFixed(2));
              }
              return totalprice;
-                
+
         }
 
         function bindCouponEvents(){
@@ -1531,6 +1566,59 @@ var fromcart = 0;
                 });
           }
       {/if}
+            {if $hascard}
+            bindCardEvents();
+            function calcCardPrice(totalprice, supplier_uid){
+               $('.carddeduct_div').hide();
+               $('.carddeduct_text').html('');
+               $('.carddeduct_money').html('0');
+               if($("input[data-name='cardid']").val()=='' ||  $("input[data-name='cardid'][data-id="+supplier_uid+"]").val()=='0')   {
+                     return totalprice;
+               }
+                 var balance   = parseFloat( $('.cardselect').data('balance') );
+                 if(balance>0){ //抵扣
+                   if(balance>totalprice){
+                       balance=totalprice;
+                   }
+                   if(balance<=0){
+                       balance = 0;
+                   }
+                   totalprice-=balance;
+                   $('.carddeduct_text').html("优惠");
+                 }
+                 if(balance>0){
+                    $('.carddeduct_div').show();
+                    $('.carddeduct_money').html(balance.toFixed(2));
+                 }
+                 return totalprice;
+
+            }
+            function bindCardEvents(){
+                $('.selectcard').click( function(){
+                    var supplier_uid = $(this).attr('data-id');
+                    core.pjson('card/util', {op: 'query'}, function (rjson) {
+                        if (rjson.status != 1) {
+                            core.tip.show(rjson.result);
+                            $("input[data-name='carddid']").val('');
+                            calctotalprice(supplier_uid);
+                            return;
+                        }
+                        if(rjson.result.cards.length>0 || $.makeArray(rjson.result.cards).length>0){
+                            CardChooser.cancelCallback = function(){
+                                    $('.cardeduct_div').hide();
+                                    $('.cardeduct_text').html('');
+                                    $('.cardeduct_money').html('0');
+                                    calctotalprice(supplier_uid); 
+                                }
+                            CardChooser.confirmCallback = function(){
+                                calctotalprice(supplier_uid);
+                            }
+                            CardChooser.open( rjson.result, supplier_uid);
+                        }
+                    }, true, true);
+                });
+            }
+            {/if}
   }, true,true);
 });
 </script>
