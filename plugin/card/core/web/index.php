@@ -82,7 +82,7 @@ if ($op == 'post') {
     	if ($value['isday'] == 1) {
     		$value['time'] = $value['validity_period']/60/60/24 . "天";
     	} else if ($value['isday'] == 2) {
-    		$value['time'] = date('Y-m-d H:i:s',$value['timestart']) . "至" . date('Y-m-d H:i:s',$value['timestart']);
+    		$value['time'] = date('Y-m-d H:i:s',$value['timestart']) . "至" . date('Y-m-d H:i:s',$value['timeend']);
     	}
     }
     unset($value);
