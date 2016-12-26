@@ -139,5 +139,24 @@ if (!class_exists('CardModel')) {
 
             return $total;
         }
+
+        /**
+         * @name 退款
+         * $author yangyang
+         * $param $cardid   $cardprice
+         */
+        public function cardRefund($cardid,$cardprice)
+        {
+            global $_W;
+            $card_info = $this->getCradInfo($cardid);
+            if (!empty($card_info)) {
+                $balance = $card_info['balance'] + $cardprice;
+                pdo_update(
+                    'sz_yi_card_data',
+                    array('balance' => $balance),
+                    array('uniacid' => $_W['uniacid'], 'id' => $cardid)
+                );
+            }
+        }
 	}
 }

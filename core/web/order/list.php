@@ -2432,6 +2432,9 @@ function order_list_refund($item)
                         if (p('channel')) {
                             p('channel')->channelRefund($item['id'],$item['uniacid'], $item['openid']);
                         }
+                        if (p('card')) {
+                            p('card')->cardRefund($item['cardid'],$item['cardprice']);
+                        }
 
                         if (!empty($refundtype)) {
                             if ($item['deductcredit2'] > 0) {
