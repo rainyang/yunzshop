@@ -57,7 +57,6 @@ if ($operation != "sub_bonus") {
 				$row['nickname'] = $member['nickname'];
 				$row['realname'] = $member['realname'];
 				$row['mobile'] = $member['mobile'];
-				$totalmoney += $commission_teamok;
 			}
 		}else{
 			//Author:ym Date:2016-08-02 Content:如未查询到该用户则被删除
@@ -65,6 +64,8 @@ if ($operation != "sub_bonus") {
 		}	
 	}
 	unset($row);
+    $sql = "select sum(cg.money) from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 left join ".tablename('sz_yi_member')." m on cg.mid=m.id where 1 and m.id!=0 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area!=0 ORDER BY o.finishtime DESC,o.status DESC";
+    $totalmoney = pdo_fetchcolumn($sql);
 }
 
 if (!empty($_POST)) {
