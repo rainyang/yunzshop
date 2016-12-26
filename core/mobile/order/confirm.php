@@ -2433,9 +2433,11 @@ if ($_W['isajax']) {
                 "couponid" => $couponid,
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
-                'cardid'   => $cardid,
                 'cardprice'  => $cardprice
             );
+            if ($plugincard) {
+                $order['cardid'] = $cardid;
+            }
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
                     $order['ischannelself'] = 1;
