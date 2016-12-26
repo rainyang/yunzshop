@@ -98,15 +98,31 @@ if ($operation == 'display' && $_W['isajax']) {
         'payment'
     ));
     $wechat  = array(
-        'success' => false
+        'success' => false,
+        'qrcode' => false
     );
+    $jie = $set['pay']['weixin_jie'];
     if (is_weixin()) {
-        if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
+
+        if (isset($set['pay']) && ($set['pay']['weixin'] == 1) && ($jie != 1)) {
             if (is_array($setting['payment']['wechat']) && $setting['payment']['wechat']['switch']) {
                 $wechat['success'] = true;
+                $wechat['weixin'] = true;
+                $wechat['weixin_jie'] = false;
             }
+
+        }
+
+    }
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
+        if ((isset($set['pay']) && ($set['pay']['weixin_jie'] == 1) && !$wechat['success']) || ($jie == 1)) {
+            $wechat['success'] = true;
+            $wechat['weixin_jie'] = true;
+            $wechat['weixin'] = false;
         }
     }
+    $wechat['jie'] = $jie;
+
     $alipay = array(
         'success' => false
     );

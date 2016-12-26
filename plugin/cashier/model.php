@@ -7,10 +7,10 @@ if (!class_exists('CashierModel')) {
     class CashierModel extends PluginModel
     {
         /**
-
-         * 支付完成回调方法
-
-         */
+        *
+        * 支付完成回调方法
+        *
+        */
         public function payResult($params)
         {
             global $_W;
@@ -92,7 +92,7 @@ if (!class_exists('CashierModel')) {
             global $_W;
             $order = pdo_fetch(
                 'select id,ordersn,openid,price from ' . tablename('sz_yi_order') . ' where id=:id limit 1',
-                array(':id' => $orderid)
+                array(':id' => $orderid) 
             );
             $store = pdo_fetch(
                 'select * from ' . tablename('sz_yi_cashier_order') . ' o inner join ' . tablename('sz_yi_cashier_store') . ' s on o.cashier_store_id = s.id where o.order_id=:orderid and o.uniacid=:uniacid',

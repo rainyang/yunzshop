@@ -33,11 +33,17 @@ if(!pdo_fieldexists('sz_yi_member_group', 'status')) {
 }
 
 if(!pdo_fieldexists('uni_settings', 'wx')) {
-    $sql = "ALTER TABLE " . tablename('uni_settings'). " ADD `wx` varchar(500) NULL COMMENT '微信开放平台appid appsecret';
-";
+    $sql = "
+ALTER TABLE " . tablename('uni_settings'). " ADD `wx` varchar(500) NULL COMMENT '微信开放平台appid appsecret';
+
+ALTER TABLE " . tablename('uni_settings') . " MODIFY `uc` varchar(600);";
 
     pdo_query($sql);
 }
+
+/*$sql = "ALTER TABLE " . tablename('uni_settings') . " MODIFY `uc` varchar(600);";
+pdo_fetch($sql);*/
+
 
 
 message('芸众Discuz会员数据同步插件安装成功', $this->createPluginWebUrl('discuz/index'), 'success');
