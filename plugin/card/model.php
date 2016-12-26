@@ -87,7 +87,7 @@ if (!class_exists('CardModel')) {
                 return $card_info['isoverdue'];
             }
             if ($card_info['isday'] == 1) {
-                $isoverdue = (($card_info['validity_period'] + $card_info['bindtime'])<$time)?0:1;
+                $isoverdue = (($card_info['validity_period'] + $card_info['bindtime'])>$time)?0:1;
             } else if ($card_info['isday'] == 2) {
                 $isoverdue = ($card_info['timeend']>$time)?0:1;
             }
