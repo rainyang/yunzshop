@@ -670,7 +670,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                return i;    
             } 
 
-        core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}",is_admin:'{$_GPC['is_admin']}'},function(json){
+        core.pjson('fund/detail',{id:'{$_GPC['id']}',mid:"{$mid}"},function(json){
      
           tip = core.tip;
           if(json.status<=0){
@@ -1220,7 +1220,7 @@ lod({php echo $jd/100});
                  });
               }else if(action=='buy'){
                   require(['core'],function(core){
-                      core.json('shop/detail',{op:'can_buy', id:'{$_GPC['id']}'},function(cret){
+                      core.pjson('fund/detail',{op:'can_buy', id:'{$_GPC['id']}'},function(cret){
                           if(cret.status==1){
                               location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
 
