@@ -1,0 +1,88 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+    {template 'tabs'}
+    <style type='text/css'>
+        .trhead td {  background:#efefef;text-align: center}
+        .trbody td {  text-align: center; vertical-align:top;border-left:1px solid #ccc;overflow: hidden;}
+        .goods_info{position:relative;width:60px;}
+        .goods_info img {width:50px;background:#fff;border:1px solid #CCC;padding:1px;}
+        .goods_info:hover {z-index:1;position:absolute;width:auto;}
+        .goods_info:hover img{width:320px; height:320px;}
+    </style>
+
+    <div class="main rightlist">
+        <form id="form1" action="" method="post" class="form-horizontal form ">
+            <div class="panel panel-default">
+                <div class="panel-heading">论坛设置</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">域名</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="domain" class="form-control" value="{$wx['domain']}" autocomplete="off">
+                            <span class="help-block">域名地址必须是http://或https://开头</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-heading">微信扫码</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用</label>
+                        <div class="col-sm-8 col-xs-12">
+                            <label class="radio-inline">
+                                <input type="radio"  name="login_switch" id="switch_on" value="1" {if $wx['login_switch'] == 1} checked {/if}/>
+                                开启
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="login_switch" id="switch_off" value="0" {if empty($wx['login_switch']) || $wx['login_switch'] == 0} checked {/if}/>
+                                关闭
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div id="appid" class="form-group" {if empty($wx['login_switch'])} style="display:none" {/if}>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">AppID</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <input type="text" name="wx_appid" class="form-control" value="{$wx['wx_appid']}" >
+                        <span class="help-block">微信开放平台-网站应用-AppID</span>
+                    </div>
+                </div>
+
+                <div id="appsecret" class="form-group" {if empty($wx['login_switch'])} style="display:none" {/if}>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">AppSecret</label>
+                <div class="col-sm-8 col-xs-12">
+                    <input type="text" name="wx_appsecret" class="form-control" value="{$wx['wx_appsecret']}">
+                    <span class="help-block">微信开放平台-网站应用-AppSecret</span>
+                </div>
+            </div>
+
+
+            <div class="form-group"></div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+                    <input type="hidden" name="token" value="{$_W['token']}" />
+                </div>
+            </div>
+    </div>
+
+</div>
+</form>
+</div>
+</div>
+<script>
+    $(function(){
+        $("#switch_on").click(function () {
+            $("#appid").show();
+            $("#appsecret").show();
+        });
+
+        $("#switch_off").click(function () {
+            $("#appid").hide();
+            $("#appsecret").hide();
+        });
+    })
+</script>
+{template 'web/_footer'}
+
