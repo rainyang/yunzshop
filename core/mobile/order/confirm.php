@@ -2436,7 +2436,8 @@ if ($_W['isajax']) {
                 'cardprice'  => $cardprice
             );
             if ($plugincard) {
-                $order['cardid'] = $cardid;
+                $order['cardid']    = $cardid;
+                $order['cardprice'] = $cardprice;
             }
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
