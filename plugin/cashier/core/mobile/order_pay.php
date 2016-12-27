@@ -189,6 +189,7 @@ if ($operation == 'display' && $_W['isajax']) {
     if (empty($order)) {
         return show_json(0, '订单未找到!');
     }
+    //支付方式应该支持商城所有支付接口  yitian_add::2016-12-27::qq::751818588
     $type = $_GPC['type'];
     if (!in_array($type, array('weixin', 'alipay', 'unionpay', 'yunpay'))) {
         return show_json(0, '未找到支付方式');
