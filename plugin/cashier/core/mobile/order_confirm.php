@@ -415,13 +415,17 @@ if ($operation == 'display') {
                 'realname' => $carrier['carrier_realname'],
                 'membermobile' => $carrier['carrier_mobile']
             );
+            $mc_up = array(
+                'realname' => $carrier['carrier_realname'],
+                'mobile' => $carrier['carrier_mobile']
+            );
             pdo_update('sz_yi_member', $up, array(
                 'id' => $member['id'],
                 'uniacid' => $_W['uniacid']
             ));
             if (!empty($member['uid'])) {
                 load()->model('mc');
-                mc_update($member['uid'], $up);
+                mc_update($member['uid'], $mc_up);
             }
         }       
     }
