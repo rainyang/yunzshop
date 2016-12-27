@@ -413,7 +413,7 @@ if ($operation == 'display') {
         if (is_array($carrier)) {
             $up = array(
                 'realname' => $carrier['carrier_realname'],
-                'mobile' => $carrier['carrier_mobile']
+                'membermobile' => $carrier['carrier_mobile']
             );
             pdo_update('sz_yi_member', $up, array(
                 'id' => $member['id'],
