@@ -322,6 +322,14 @@
                                 <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductcredit2'],2)}</td>
                             </tr> 
                             {/if}
+                            {if $card_plugin}
+                                {if $item['cardprice']>0}
+                                <tr>
+                                    <td  style='border:none;text-align:right;'>{$card_set['gift_title']}抵扣：</td>
+                                    <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['cardprice'],2)}</td>
+                                </tr> 
+                                {/if}
+                            {/if}
                             {if $item['deductenough']>0}
                             <tr>
                                 <td  style='border:none;text-align:right;'>满额立减：</td>

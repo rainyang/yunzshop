@@ -1,0 +1,9 @@
+<div class="ulleft-nav">
+<ul class="nav nav-tabs">
+<div class="addtit-name"></div>
+  <li {if $_GPC['method']=='index'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('card/index')}">代金卡</a></li>
+  <li {if $_GPC['method']=='log'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('card/log')}">记录</a></li>
+  <li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('card/set')}">基础设置</a></li>
+   
+</ul>
+</div>

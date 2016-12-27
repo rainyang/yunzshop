@@ -9,7 +9,10 @@ $yunbi_plugin = p('yunbi');
 if ($yunbi_plugin) {
     $yunbiset = $yunbi_plugin->getSet();
 }
-
+$card_plugin = p('card');
+if ($card_plugin) {
+    $card_set = $card_plugin->getSet();
+}
 $isindiana = '';
 $isindiana_o = '';
 $indiana_plugin   = p('indiana');
@@ -2428,6 +2431,9 @@ function order_list_refund($item)
 
                         if (p('channel')) {
                             p('channel')->channelRefund($item['id'],$item['uniacid'], $item['openid']);
+                        }
+                        if (p('card')) {
+                            p('card')->cardRefund($item['cardid'],$item['cardprice']);
                         }
 
                         if (!empty($refundtype)) {
