@@ -132,7 +132,7 @@
 <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
 <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
 <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2_locale_zh-CN.js"></script>
-
+{if $supplier_show}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">其他分类</label>
     <div class="col-sm-8 col-xs-12">
@@ -262,6 +262,7 @@
     })
     </script>
 {/if}
+{/if}
 {if $_GPC['plugin'] != "recharge"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品类型</label>
@@ -361,7 +362,7 @@
         {/if}
     </div>
 </div>
-
+{if $supplier_show}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品属性</label>
     <div class="col-sm-9 col-xs-12" >
@@ -399,6 +400,7 @@
           {/if}
     </div>
 </div>
+{/if}
 {/if}
 {/if}
 <div class="form-group">
@@ -645,6 +647,7 @@ $(document).on('click','.deleteopladder',function(){
     </div>
 </div>
 {/if}
+{if $supplier_show}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">红包价格</label>
     <div class="col-sm-6 col-xs-12">
@@ -659,6 +662,7 @@ $(document).on('click','.deleteopladder',function(){
         {/if}
     </div>
 </div>
+{/if}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">重量</label>
     <div class="col-sm-6 col-xs-12">
@@ -687,6 +691,7 @@ $(document).on('click','.deleteopladder',function(){
         {/if}
     </div>
 </div>
+{if $supplier_show}
 {if $_GPC['plugin'] != "fund"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">减库存方式</label>
@@ -709,7 +714,10 @@ $(document).on('click','.deleteopladder',function(){
     </div>
 </div>
 {else}
-  <input type="hidden" name="totalcnf" value='1' />
+    <input type="hidden" name="totalcnf" value='1' />
+{/if}
+{else}
+    <input type="hidden" name="totalcnf" value='1' />
 {/if}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">单次最多购买量</label>
@@ -758,6 +766,7 @@ $(document).on('click','.deleteopladder',function(){
     </div>
 </div>
 {/if}
+{if $supplier_show}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送{php echo SZ_YI_INTEGRAL}</label>
     <div class="col-sm-6 col-xs-12">
@@ -774,6 +783,7 @@ $(document).on('click','.deleteopladder',function(){
         {/if}
     </div>
 </div>
+{/if}
 {if $com_set['upgrade_by_good'] && !empty($com_set['level'])}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商</label>
