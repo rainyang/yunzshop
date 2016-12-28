@@ -19,8 +19,9 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_gift_card') . " (
   `createtime` int(11) NOT NULL DEFAULT '0' COMMENT '发放时间',
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='发放代金卡数据' AUTO_INCREMENT=1 ;
-CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_card_data') . " (
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='发放代金卡数据' AUTO_INCREMENT=1 ;";
+pdo_query($sql);
+$sql1 = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_card_data') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `gift_id` int(11) NOT NULL DEFAULT '0' COMMENT '发放id',
@@ -38,8 +39,9 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_card_data') . " (
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`),
   KEY `idx_openid`(`openid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='代金卡数据' AUTO_INCREMENT=1 ;
-CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_card_log') . " (
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='代金卡数据' AUTO_INCREMENT=1 ;";
+pdo_query($sql1);
+$sql2 = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_card_log') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `orderid` int(11) NOT NULL DEFAULT '0' COMMENT '订单id',
@@ -47,9 +49,8 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_card_log') . " (
   `card_id` int(11) NOT NULL DEFAULT '0' COMMENT '代金卡id',
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='代金卡消费记录' AUTO_INCREMENT=1 ;
-";
-pdo_query($sql);
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='代金卡消费记录' AUTO_INCREMENT=1 ;";
+pdo_query($sql2);
 
 if(!pdo_fieldexists('sz_yi_card_data', 'cdkey')) {
     pdo_query("ALTER TABLE ".tablename('sz_yi_card_data')." ADD UNIQUE(`cdkey`);");
