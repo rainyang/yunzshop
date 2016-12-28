@@ -227,6 +227,13 @@ if ($operation == "change") {
         $levels = m('member')->getLevels();
         $groups = m('member')->getGroups();
         $distributor_levels = p("commission")->getLevels();
+        //区分
+        $supplier_show = true;
+        if (p('hlag')) {
+            if ($perm_role != 0) {
+                $supplier_show = false;
+            }
+        }
         if (!empty($id)) {
             $item = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id", array(
                 ':id' => $id

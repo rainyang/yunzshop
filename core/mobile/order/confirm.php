@@ -508,6 +508,7 @@ if ($_W['isajax']) {
 
             if($g['plugin'] == 'fund'){
                 $issale = false;
+                $hascouponplugin = false;
                 $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
             }else{
                 $g['url'] = $this->createMobileUrl('shop/detail', array('id' => $g['goodsid']));
@@ -1183,6 +1184,7 @@ if ($_W['isajax']) {
             "deposit" => number_format($deposit, 2),
             'price_list' => $price_list,
             'realprice' => number_format($realprice, 2),
+            'hascouponplugin' => $hascouponplugin,
             'type'=>$goods[0]['type'],
         ),$variable);
     }

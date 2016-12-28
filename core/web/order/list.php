@@ -1138,6 +1138,8 @@ if ($operation == "display") {
         $commission1 = 0;
         $commission2 = 0;
         $commission3 = 0;
+        $plugin_fund = p('fund');
+        $item['confirmsend'] = true;
         foreach ($goods as & $og) {
             $oc1 = 0;
             $oc2 = 0;
@@ -1175,6 +1177,11 @@ if ($operation == "display") {
                 }
                 $og["oc3"] = $oc3;
                 $commission3 += $oc3;
+            }
+        }
+        if($plugin_fund){
+            if(!empty($_GPC['plugin'])){
+                $item['confirmsend'] =  $og['timeend'] < time();
             }
         }
         unset($og);
