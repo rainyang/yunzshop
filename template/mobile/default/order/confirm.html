@@ -557,9 +557,9 @@ var fromcart = 0;
                     marketprice:marketprice,
                     optionid:optionid
                 },function(json){
-                    marketprice = json.result * num;
+                    marketprice = json.result.marketprice * num;
                     $(this).closest('.good').find('.marketprice').html();
-                    ladder_marketprice = parseFloat(json.result);
+                    ladder_marketprice = parseFloat(json.result.marketprice);
                     thiss.closest('.good').find('.marketprice').html( ladder_marketprice.toFixed(2) );
                     $('.goodsprice').html( marketprice.toFixed(2) );
                         var supplierids = $("#supplierids").val();
@@ -595,7 +595,7 @@ var fromcart = 0;
              $('.rightnav').click(function(){
                 var thiss = $(this);
                 var maxbuy = parseInt( $(this).closest('.good').data('totalmaxbuy'));
-             
+
                 var input =$(this).prev();
                 if(!input.isInt()){
                     input.val('1');
@@ -618,8 +618,8 @@ var fromcart = 0;
                     marketprice:marketprice,
                     optionid:optionid
                 },function(json){
-                    marketprice = json.result * num;
-                    ladder_marketprice = parseFloat(json.result);
+                    marketprice = json.result.marketprice * num;
+                    ladder_marketprice = parseFloat(json.result.marketprice);
                     thiss.closest('.good').find('.marketprice').html( ladder_marketprice.toFixed(2) );
                     $('.goodsprice').html( marketprice.toFixed(2) );
                         var supplierids = $("#supplierids").val();
@@ -685,8 +685,8 @@ var fromcart = 0;
                     marketprice:marketprice,
                     optionid:optionid
                 },function(json){
-                    marketprice = json.result * num;
-                    ladder_marketprice = parseFloat(json.result);
+                    marketprice = json.result.marketprice * num;
+                    ladder_marketprice = parseFloat(json.result.marketprice);
                     thiss.closest('.good').find('.marketprice').html( ladder_marketprice.toFixed(2) );
 
                     $('.goodsprice').html( marketprice.toFixed(2) );

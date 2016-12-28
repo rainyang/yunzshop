@@ -160,8 +160,7 @@ if ($operation == "date") {
     }
     $marketprice = $laddermoney > 0 ? $laddermoney : $_GPC['marketprice'];
 
-
-    return show_json(1, $marketprice);
+    return show_json(1, array('marketprice' => $marketprice));
 }
 
 $yunbi_plugin   = p('yunbi');
