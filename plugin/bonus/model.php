@@ -1036,6 +1036,13 @@ if (!class_exists('BonusModel')) {
 
 			$uids = array();
 			$senddata = array();
+            $sql_num = 0;
+            $path = IA_ROOT . "/addons/sz_yi/data/bonus";
+            if (!is_dir($path)) {
+                load()->func('file');
+                @mkdirs($path, '0777');
+            }
+            $file_bonus_log = $path . "/" . $send_bonus_sn . ".log";
 			foreach ($list as $key => $value) {
 				$member = pdo_fetch("select id, avatar, nickname, realname, mobile, openid, bonuslevel, uid from ". tablename('sz_yi_member') . " where id=".$value['mid']." and uniacid=". $_W['uniacid']);
 				if(!empty($member)){
@@ -1097,19 +1104,24 @@ if (!class_exists('BonusModel')) {
 					}
 					//更新分红订单完成
 					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
-
+                    $insert_ids = empty($ids) ? "" : iserializer($ids);
 					//写入日志调整
-			        $insert_log_data[] = " ('".$member['openid']."', '".$member['uid']."', '".$send_money."', '".$_W['uniacid']."', '".$set['paymethod']."', '".$sendpay."', '".iserializer($ids)."', 1, ".TIMESTAMP.", ".$send_bonus_sn.")";
+			        $insert_log_data[] = " ('".$member['openid']."', '".$member['uid']."', '".$send_money."', '".$_W['uniacid']."', '".$set['paymethod']."', '".$sendpay."', '".$insert_ids."', 1, ".TIMESTAMP.", ".$send_bonus_sn.")";
 			        if ($sql_num % 500 == 0) {
 			            if(!empty($insert_log_data)){
 			                pdo_query($insert_log_key . implode(",", $insert_log_data));
 			                $insert_log_data = array();
+                            @unlink($file_bonus_log);
 			            }
 			        }
 
 			        //更新分红订单完成
-					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
-			        if($sendpay == 1){
+                    if (!empty($ids)) {
+                        $in_ids = implode(',', array_keys($ids));
+                        pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime=' . $time . ', checktime=' . $time . ', paytime=' . $time . ', invalidtime=' . $time . ' where id in( ' . $in_ids . ') and uniacid=' . $_W['uniacid']);
+                        file_put_contents($file_bonus_log, print_r(array('id' => $member['id'], 'auto' => 1, 'orderids' => $in_ids), true), FILE_APPEND);
+                    }
+                    if($sendpay == 1){
 			        	//获取用户等级名称
 			            $templateid = $set['tm']['templateid'];
 			            $message = $set['tm']['bonus_pay'];
@@ -1153,15 +1165,16 @@ if (!class_exists('BonusModel')) {
 			            "total" => $real_total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
+                @unlink ($file_bonus_log);
 			    plog('bonus.send', "自动发放团队分红，共计{$real_total}人 金额{$totalmoney}元");
 			    if($senddata){
 			    	$filedata = array();
 			    	$file_path = IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log";
 			    	if(file_exists($file_path)){
-			    		$filedata = unserialize(file_get_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log"));
+			    		$filedata = unserialize(file_get_contents($file_path));
 			    	}
 			    	$data = serialize(array_merge($senddata, $filedata));
-			    	file_put_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log", $data, FILE_APPEND);
+			    	file_put_contents($file_path, $data, FILE_APPEND);
 			    }
 		    }
 		}
@@ -1227,6 +1240,13 @@ if (!class_exists('BonusModel')) {
 
 			$uids = array();
 			$senddata = array();
+            $sql_num = 0;
+            $path = IA_ROOT . "/addons/sz_yi/data/bonus";
+            if (!is_dir($path)) {
+                load()->func('file');
+                @mkdirs($path, '0777');
+            }
+            $file_bonus_log = $path . "/" . $send_bonus_sn . ".log";
 			foreach ($list as $key => $value) {
 				$member = pdo_fetch("select id, avatar, nickname, realname, mobile, openid, bonus_area, uid from ". tablename('sz_yi_member') . " where id=".$value['mid']." and uniacid=". $_W['uniacid']);
 				if(!empty($member)){
@@ -1294,19 +1314,24 @@ if (!class_exists('BonusModel')) {
 					}
 					//更新分红订单完成
 					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area!=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
-
+                    $insert_ids = empty($ids) ? "" : iserializer($ids);
 					//写入日志调整
-			        $insert_log_data[] = " ('".$member['openid']."', '".$member['uid']."', '".$send_money."', '".$_W['uniacid']."', '".$set['paymethod']."', '".$sendpay."', '".iserializer($ids)."', 1, ".TIMESTAMP.", ".$send_bonus_sn.")";
+			        $insert_log_data[] = " ('".$member['openid']."', '".$member['uid']."', '".$send_money."', '".$_W['uniacid']."', '".$set['paymethod']."', '".$sendpay."', '".$insert_ids."', 1, ".TIMESTAMP.", ".$send_bonus_sn.")";
 			        if ($sql_num % 500 == 0) {
 			            if(!empty($insert_log_data)){
 			                pdo_query($insert_log_key . implode(",", $insert_log_data));
 			                $insert_log_data = array();
+                            @unlink($file_bonus_log);
 			            }
 			        }
 
 			        //更新分红订单完成
-					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
-			        if($sendpay == 1){
+                    if (!empty($ids)) {
+                        $in_ids = implode(',', array_keys($ids));
+                        pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime=' . $time . ', checktime=' . $time . ', paytime=' . $time . ', invalidtime=' . $time . ' where id in( ' . $in_ids . ') and uniacid=' . $_W['uniacid']);
+                        file_put_contents($file_bonus_log, print_r(array('id' => $member['id'], 'auto' => 0, 'orderids' => $in_ids), true), FILE_APPEND);
+                    }
+                    if($sendpay == 1){
 			        	//获取用户等级名称
 			            $templateid = $set['tm']['templateid'];
 			            $message = $set['tm']['bonus_pay'];
@@ -1351,15 +1376,16 @@ if (!class_exists('BonusModel')) {
 			            "total" => $real_total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
+                @unlink ($file_bonus_log);
 			    plog('bonus.sendarea', "自动发放地区分红，共计{$real_total}人 金额{$totalmoney}元");
 			    if($senddata){
 			    	$filedata = array();
 			    	$file_path = IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log";
 			    	if(file_exists($file_path)){
-			    		$filedata = unserialize(file_get_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log"));
+			    		$filedata = unserialize(file_get_contents($file_path));
 			    	}
 			    	$data = serialize(array_merge($senddata, $filedata));
-			    	file_put_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log", $data, FILE_APPEND);
+			    	file_put_contents($file_path, $data, FILE_APPEND);
 			    }
 		    }
 		}
@@ -1389,7 +1415,7 @@ if (!class_exists('BonusModel')) {
 				$stattime = $now_stattime - $day_times;
     			$now_endtime = mktime(0, 0, 0, date('m'), 1, date('Y'));
     			$endtime = $now_endtime - $day_times;
-				$interval_ady = empty($set['interval_day']) ? 1 : 1+$set['interval_day'];
+                $interval_day = empty($set['interval_day']) ? 1 : 1+$set['interval_day'];
 				$sendtime = strtotime(date("Y-".date('m')."-".$interval_day." ".$set['senddaytime'].":00:00"));
 			}
 
@@ -1577,10 +1603,10 @@ if (!class_exists('BonusModel')) {
 			    	$filedata = array();
 			    	$file_path = IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log";
 			    	if(file_exists($file_path)){
-			    		$filedata = unserialize(file_get_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log"));
+			    		$filedata = unserialize(file_get_contents($file_path));
 			    	}
 			    	$data = serialize(array_merge($senddata, $filedata));
-			    	file_put_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log", $data, FILE_APPEND);
+			    	file_put_contents($file_path, $data, FILE_APPEND);
 			    }
 			}
 		}

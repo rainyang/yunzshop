@@ -44,20 +44,10 @@
 <script id="member_center" type="text/html">
     <div class="header">
         <div class="user">
-            <div class="user-head">
-                <%if member.avatar.length > 0%>
-                <img src="<%member.avatar%>" />
-                <%else%>
-                <img src="../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg" />
-                <%/if%>
-            </div>
-                <div class="user-info">
+            <div class="user-head"><img src="<%member.avatar%>" /></div>
+            <div class="user-info">
                 <div class="user-name"><%member.nickname%>[会员ID:<%member.id%>]</div>
-                <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>
-                [<%level.levelname%>]
-                <%if member.level > 0 %> <span id="countdown_nums"></span><%/if%>
-
-                 {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
+                <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
                     <%if shop_set.shop.isreferrer%>
                         [推荐人：<%referrer.realname%>]
                     <%/if%>
@@ -88,8 +78,10 @@
         {if $shopset['isyunbi']}
             <li><a href="#"><span><%member.virtual_currency%></span><br/>{$yunbi_title}</a></li>
         {/if}
-        <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
+
+        <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}{php echo SZ_YI_INTEGRAL}{/if}</a></li>
         <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
+
     </ul>
 </div>
 <div class="order">
@@ -138,13 +130,6 @@
                 </a>
             </li>
         {/if}
-        {if $issupervisor}
-            <li>
-                <a href="{php echo $this->createPluginMobileUrl('verify', array('id' => $verify['id']))}">
-                    <i class="fa iconfont icon-sitemap" style="background:#f15353"></i><br/>店长中心
-                </a>
-            </li>
-        {/if}
         <li>
         <a href="{php echo $this->createMobileUrl('member/info')}">
         <i class="fa iconfont icon-user" style="background:#BC7BFF"></i><br/>我的资料
@@ -179,67 +164,24 @@
             </a>
         </li>
         {/if}
-        {if $open_creditshop}
+{if $open_creditshop}
         <li>
-            <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
-                <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>积分商城
-            </a>
+        <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
+        <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>{php echo SZ_YI_INTEGRAL}商城
+        </a>
         </li>
-        {/if}
-        {if p('card')}
-        <li>
-            <a href="{php echo $this->createPluginMobileUrl('card/center')}">
-                <i class="fa fa-credit-card" style="background:#eeee00"></i><br/>{$card_set['gift_title']}
-            </a>
-        </li>
-        {/if}
+{/if}
     </ul>
 
 </div>
-
-{if $pindiana}
-    <div class="cart">
-        <a href="{php echo $this->createPluginMobileUrl('indiana/order')}">
-            <div class="list1">
-                <i class="iconfont icon-baojilu"></i>夺宝记录
-                <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right;line-height: 44px; "></i>
-            </div>
-        </a>
-        <a href="{php echo $this->createPluginMobileUrl('indiana/order',array('op'=>'lucky'))}">
-            <div class="list1" style="margin:0px;">
-                <i class="iconfont icon-luckjilu" ></i>幸运记录
-                <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i>
-            </div>
-        </a>
-        <a href="{php echo $this->createPluginMobileUrl('indiana/order_list')}">
-            <div class="list1" style="margin:0px;">
-                <i class="iconfont icon-duobaodingdan" ></i>夺宝订单
-                <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i>
-            </div>
-        </a>
-    </div>
-{/if}
-
-{if p('recharge')}
-    <div class="cart">
-        <a href="{php echo $this->createPluginMobileUrl('recharge/detail')}">
-            <div class="list1">
-                <i class="fa fa-mobile"></i>充值专区
-                <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right;line-height: 44px; "></i>
-            </div>
-        </a>
-    </div>
-{/if}
-
 <div class="cart">
-    {if p('credits')}
-    <a href="{php echo $this->createMobileUrl('member/eblock')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>Eblock积分兑换<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    {/if}
+	{if $member['is_bind']==0}
+	 <a href="{php echo $this->createMobileUrl('member/bind')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>善心汇账户绑定<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+	{else}
+	 <a href="{php echo $this->createMobileUrl('member/sxh')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>善心汇账户<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+	{/if}
     {if !$member['isbindmobile'] && is_weixin()}
     <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px;"><i class="fa fa-mobile"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    {/if}
-    {if $member['isbindmobile']}
-    <a href="{php echo $this->createMobileUrl('member/editmobile')}"><div class="list1" style="margin:0px;"><i class="fa fa-mobile"></i>修改绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {if p('supplier')}
         {if $shopset['switch'] == 1 && empty($shopset['af_result']) && empty($issupplier)}
@@ -254,7 +196,7 @@
         <a href="{php echo $this->createPluginMobileUrl('channel/index')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-channel" ></i>渠道中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {if empty($ischannel) && $channel_set['become_condition'] == 1 && $member['isagent'] == 1 && $member['status'] == 1}
-        <a href="{php echo $this->createPluginMobileUrl('channel/af_channel')}"><div class="list1" style="margin:0px;"><i class="fa fa-arrow-up"></i>申请渠道商<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('channel/af_channel')}"><div class="list1" style="margin:0px;"><i class="fa fa-arrow-up" style="color:#f10;"></i>申请渠道商<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {/if}
     {if $pluginbonus && is_weixin_show()}
@@ -269,18 +211,12 @@
     <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     <%/if%>
     {/if}
-        {if $shopset['isbeneficence']}
-            <a href="{php echo $this->createPluginMobileUrl('beneficence/beneficence')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-donation" ></i>{$beneficencename}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-
-        {/if}
         {if $shopset['isyunbi']}
-            <a href="{php echo $this->createPluginMobileUrl('yunbi/yunbi_log',array('type'=>'1'))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-coin" ></i>{$yunbi_title}明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+            <a href="{php echo $this->createPluginMobileUrl('yunbi/yunbi_log',array('type'=>'1'))}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>{$yunbi_title}明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 
         {/if}
-    {if $fund_start}
-    <a href="{php echo $this->createMobileUrl('order/list', array('plugin' => 'fund'))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i>{$fund_text}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    {/if}
-     <%if shopset.isarticle == 1%>
+
+    <%if shopset.isarticle == 1%>
     <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {if p('helper')}
     <a href="{php echo $this->createPluginMobileUrl('article/article', array('is_helper' => 1))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i>帮助中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
@@ -294,11 +230,6 @@
      <%if shopset.isranking == 1%>
     <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     <%/if%>
-    {if $allset['verify']}
-        {if $allset['verify']['centershow'] == 1}
-        <a href="{php echo $this->createPluginMobileUrl('verify/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i>门店销售排行榜<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-        {/if}
-    {/if}
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
     <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-cny"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}
             <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
@@ -306,26 +237,6 @@
    {if p('love')}
    <a href="{php echo $this->createMobileUrl('member/rechange_log')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-cny"></i>分期记录
     <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    {/if}
-    {if is_app()}
-
-    {if $app['accept'] == 1}
-
-    <a href="{php echo $this->createMobileUrl('member/referral')}"><div class="list1" style="margin:0px;"><i class="fa fa-barcode" ></i>我的推荐码<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-
-    {/if}
-
-    <a href="{php echo $this->createMobileUrl('member/messagelist')}"><div class="list1" style="margin:0px;"><i class="fa fa-volume-up" ></i>订单通知<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-
-    <a href="{php echo $this->createMobileUrl('member/pushlist')}"><div class="list1" style="margin:0px;"><i class="fa fa-share-square-o" ></i>系统消息<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-
-    {/if}
-    {if p('discuz') && isset($uc['status']) && $uc['status'] == '1'}
-    {if !empty($ucUser)}
-    <a href="javascript:;"><div id="uc_unbind" class="list1" style="margin:0px;"><i class="fa fa-share-square-o" ></i>已绑定{$uc['title']}账号({$ucUser['username']}), 点击解除绑定<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    {else}
-    <a id="uc_bind" href="{php echo $this->createPluginMobileUrl('discuz/uc', array('foo' => 'bind', 'openid' => $openid))}"><div class="list1" style="margin:0px;"><i class="fa fa-share-square-o" ></i>绑定{$uc['title']}账号<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    {/if}
     {/if}
 </div>
 {if $hascoupon}
@@ -362,6 +273,7 @@
 {if $has_cashier}
     <a href="{php echo $this->createPluginMobileUrl('cashier/qrcode_list')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>收银台<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 {/if}
+
 {if !is_weixin()}
 <div class="cart">
 <a href="{php echo $this->createMobileUrl('member/logout')}"><div class="list1"><i class="iconfont icon-sign-out"></i>退出<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
@@ -370,59 +282,12 @@
 
 <div class="copyright">版权所有 ©{if empty($set['shop']['copyright'])}{$set['shop']['name']}{else}{$set['shop']['copyright']}{/if} </div>
 </script>
-<script type="text/javascript">
-    $(document).ready(function(){
-
-    var d_time = '{$dtimes}';
-    var now_time = '{$member['upgradeleveltime']}';
-    var termtime = '{$termtime}';
-    prefix = "会员倒计时: ";
-    function FreshTimes(){
-        var lefttime =  parseInt(termtime) + parseInt(now_time) - parseInt(d_time);
-        if (lefttime > 0) {
-                var dd = parseInt(lefttime / 60 / 60 / 24, 10);//计算剩余的天数
-                var hh = parseInt(lefttime  / 60 / 60 % 24, 10);//计算剩余的小时数
-                var mm = parseInt(lefttime  / 60 % 60, 10);//计算剩余的分钟数
-                var ss = parseInt(lefttime % 60, 10);//计算剩余的秒数
-                dd = checkTime(dd);
-                hh = checkTime(hh);
-                mm = checkTime(mm);
-                ss = checkTime(ss);
-                $('#countdown_nums').html(prefix + "<span>" + dd + "</span>天<span>" + hh + "</span>时<span>" + mm + "</span>分<span>" + ss + "</span>秒");
-        }else{
-            //location.reload();
-            return false;
-        }
-        d_time = parseInt(d_time) + parseInt(1);
-    }
-
-    var memberlevel = "{$member['level']}";
-    if (memberlevel > 0) {
-        FreshTimes();
-        var sh;
-        sh=setInterval(FreshTimes,1000);
-    }
-
-    function checkTime(i)    
-    {    
-       if (i < 10) {    
-           i = "0" + i;    
-        }    
-       return i;    
-    } 
-});
-
-
+<script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
 
         core.json('member/center',{},function(json){
 
            $('#container').html(  tpl('member_center',json.result) );
-            $("#uc_unbind").click(function () {
-                if (confirm("UC账号解绑将清除论坛积分")) {
-                    location.href = "{php echo $this->createPluginMobileUrl('discuz/uc', array('foo' => 'unbind', 'openid' => $openid))}";
-                }
-            });
            var withdrawmoney = {php echo empty($set['trade']['withdrawmoney'])?0:floatval($set['trade']['withdrawmoney'])};
            $('#btnwithdraw').click(function(){
 

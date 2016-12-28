@@ -847,7 +847,7 @@ $(document).on('click','.deleteopladder',function(){
 </div>
 {/if}
 {/if}
-{if p('channel')}
+{if p('channel') && $_GPC['plugin'] != "fund"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持渠道商采购</label>
     <div class="col-sm-6 col-xs-6">
