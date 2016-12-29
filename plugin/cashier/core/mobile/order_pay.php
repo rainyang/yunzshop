@@ -50,6 +50,14 @@ if ($operation == 'display' && $_W['isajax']) {
     } else if ($order['status'] >= 1) {
         return show_json(-1, '订单已付款, 无需重复支付!');
     }
+    if(empty($order['ordersn_general'])){
+        pdo_update('sz_yi_order', array(
+            'ordersn_general' => $order['ordersn']
+        ), array(
+            'id' => $order['id']
+        ));
+        $order['ordersn_general'] = $order['ordersn'];
+    }
     $log = pdo_fetch(
         'SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1',
         array(
@@ -181,6 +189,7 @@ if ($operation == 'display' && $_W['isajax']) {
     if (empty($order)) {
         return show_json(0, '订单未找到!');
     }
+    //支付方式应该支持商城所有支付接口  yitian_add::2016-12-27::qq::751818588
     $type = $_GPC['type'];
     if (!in_array($type, array('weixin', 'alipay', 'unionpay', 'yunpay'))) {
         return show_json(0, '未找到支付方式');
@@ -204,13 +213,19 @@ if ($operation == 'display' && $_W['isajax']) {
 
     $plid        = $log['plid'];
     $param_title = $set['shop']['name'] . "订单: " . $order['ordersn'];
+    if(is_array($orderid)){
+        $orderids = implode(',', $orderid);
+        $where_update = "id in ({$orderids})";
+    }else{
+        $where_update = "id={$orderid}";
+    }
     if ($type == 'weixin') {
-        if (!is_weixin()) {
-            return show_json(0, '非微信环境!');
-        }
-        if (empty($set['pay']['weixin'])) {
+        if (!empty($set['pay']['weixin']) || !empty($set['pay']['weixin_jie'])) {
+
+        }else{
             return show_json(0, '未开启微信支付!');
         }
+
         $wechat        = array(
             'success' => false
         );
@@ -223,34 +238,89 @@ if ($operation == 'display' && $_W['isajax']) {
         $params['user']  = $openid;
         $params['fee']   = $order['price'];
         $params['title'] = $param_title;
-        load()->model('payment');
+        load()->model('payment');   //todo,貌似没有使用
         $setting = uni_setting($_W['uniacid'], array(
             'payment'
         ));
-        if (is_array($setting['payment'])) {
+        //微信下
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
+            if (is_array($setting['payment'])) {
+                $options           = $setting['payment']['wechat'];
+                if (is_weixin()) {
+                    if(empty($set['pay']['weixin_jie'])){
+                        $options['appid'] = $_W['account']['key'];
+                        $options['secret'] = $_W['account']['secret'];
+                        $wechat            = m('common')->wechat_build($params, $options, 0);
+                        //$wechat['success'] = false;
+                        if (!is_error($wechat)) {
+                            $wechat['success'] = true;
+                        } else {
+                            return show_json(0, $wechat['message']);
+                        }
+                    }
+                }
+                if(!empty($set['pay']['weixin_jie'])){
+                    $options['appid'] = $set['pay']['weixin_jie_appid'];
+                    $options['mchid'] = $set['pay']['weixin_jie_mchid'];
+                    $options['apikey'] = $set['pay']['weixin_jie_apikey'];
+                    $wechat = m('common')->wechat_native_build($params, $options, 0);
+
+                    if (!is_error($wechat)) {
+                        $wechat['success'] = true;
+                        $wechat['weixin_jie'] = true;
+                    }
+                }
+            }
+            if (!$wechat['success']) {
+                return show_json(0, '微信支付参数错误!');
+            }
+            pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where '.$where_update.' and uniacid=:uniacid ', array(
+                ':uniacid' => $uniacid
+            ));
+            show_json(1, array(
+                'wechat' => $wechat
+            ));
+        }
+        elseif(is_app_api()){//新版app原生支付
             $options           = $setting['payment']['wechat'];
-            $options['appid']  = $_W['account']['key'];
-            $options['secret'] = $_W['account']['secret'];
+            $pay = $setting['payment'];
+            $options['mchid'] = $pay['wx_native']['wx_mcid'];
+            $options['appid'] = $pay['wx_native']['wx_appid'];
+            $options['secret'] = $pay['wx_native']['wx_secret'];
+            $params['trade_type'] = 'APP';
             $wechat            = m('common')->wechat_build($params, $options, 0);
-            $wechat['success'] = false;
+            //$wechat['success'] = false;
             if (!is_error($wechat)) {
                 $wechat['success'] = true;
             } else {
                 return show_json(0, $wechat['message']);
             }
+            if (!$wechat['success']) {
+                return show_json(0, '微信支付参数错误!');
+            }
         }
-        if (!$wechat['success']) {
-            return show_json(0, '微信支付参数错误!');
-        }
-        pdo_update('sz_yi_order', array(
-            'paytype' => 21
-        ), array(
-            'id' => $order['id']
-        ));
+        else{   //PC端微信扫码pay
+            if (is_array($setting['payment'])) {
+                $params['trade_type']  = 'NATIVE';
+                $options           = $setting['payment']['wechat'];
+                $options['appid']  = $_W['account']['key'];
+                $options['secret'] = $_W['account']['secret'];
+                $wechat            = m('common')->wechat_build($params, $options, 0);
+                //print_r($wechat);exit;
+                //$wechat['success'] = false;
 
-        if($commission['become_child']==2){
-             p('commission')->checkOrderPay($orderid);
+                if (!is_error($wechat)) {
+                    $wechat['success'] = true;
+                    $wechat['code_url'] = m('qrcode')->createWechatQrcode($wechat['code_url']);
+                    //$wechat['code_url'] = $wechat['code_url'];
+                } else {
+                    return show_json(0, $wechat['message']);
+                }
+            }
         }
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where '.$where_update.' and uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid
+        ));
         return show_json(1, array(
             'wechat' => $wechat
         ));
@@ -404,15 +474,15 @@ if ($operation == 'display' && $_W['isajax']) {
             if($commission['become_child']==2){
                  p('commission')->checkOrderPay($orderid);
             }
-            
+
             $this->model->redpack($openid,$orderid);
             $this->model->setCredits($orderid);
             $this->model->setCredits2($orderid);
             $pay_result['couponurl'] = $couponUrl;
             $pay_result['order'] = $order;
             return show_json(1,$pay_result);
-            
-            
+
+
 
         }
         return show_json(0, '支付出错,请重试!');
