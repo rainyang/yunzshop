@@ -295,8 +295,8 @@ if ($_W['isajax']) {
 	                $rtype      = $refunddata['rtype'];
 	                if ($rtype != 2) {
 	                    $price = $refunddata['price'];
-	                    if (empty($price)) {
-	                        return show_json(2, '退款金额不能为0元');
+	                    if (empty($price) || $price <= 0) {
+	                        return show_json(2, '退款金额必须大于0元');
 	                    }
 	                    if ($price > $order['refundprice']) {
 	                        return show_json(3, '退款金额不能超过' . $order['refundprice'] . '元');
