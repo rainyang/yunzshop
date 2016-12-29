@@ -483,6 +483,12 @@ if ($operation == 'display' && $_W['isajax']) {
             if (!$wechat['success']) {
                 return show_json(0, '微信支付参数错误!');
             }
+	        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where '.$where_update.' and uniacid=:uniacid ', array(
+                    ':uniacid' => $uniacid
+                ));
+            show_json(1, array(
+                'wechat' => $wechat
+            ));
         }
         elseif(is_app_api()){//新版app原生支付
             $options           = $setting['payment']['wechat'];

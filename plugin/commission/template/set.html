@@ -70,6 +70,9 @@
                         <option value="2" {if $set['culate_method']==2}selected{/if} >商品现价</option>
                         <option value="3" {if $set['culate_method']==3}selected{/if} >商品成本价</option>
                         <option value="4" {if $set['culate_method']==4}selected{/if} >商品利润（实付款金额-成本价）</option>
+                        {if p('hlag')}
+                        <option value="5" {if $set['culate_method']==5}selected{/if}>分红金额</option>
+                        {/if}
                     </select>
                     <span class='help-block'>原实付金额：包括优惠劵、满减、积分余额抵扣的金额，不包括邮费、会员折扣的金额</span>
                 </div>

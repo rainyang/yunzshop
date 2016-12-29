@@ -9,7 +9,10 @@ $yunbi_plugin = p('yunbi');
 if ($yunbi_plugin) {
     $yunbiset = $yunbi_plugin->getSet();
 }
-
+$card_plugin = p('card');
+if ($card_plugin) {
+    $card_set = $card_plugin->getSet();
+}
 $isindiana = '';
 $isindiana_o = '';
 $indiana_plugin   = p('indiana');
@@ -1135,6 +1138,8 @@ if ($operation == "display") {
         $commission1 = 0;
         $commission2 = 0;
         $commission3 = 0;
+        $plugin_fund = p('fund');
+        $item['confirmsend'] = true;
         foreach ($goods as & $og) {
             $oc1 = 0;
             $oc2 = 0;
@@ -1172,6 +1177,11 @@ if ($operation == "display") {
                 }
                 $og["oc3"] = $oc3;
                 $commission3 += $oc3;
+            }
+        }
+        if($plugin_fund){
+            if(!empty($_GPC['plugin'])){
+                $item['confirmsend'] =  $og['timeend'] < time();
             }
         }
         unset($og);
@@ -2429,6 +2439,9 @@ function order_list_refund($item)
                         if (p('channel')) {
                             p('channel')->channelRefund($item['id'],$item['uniacid'], $item['openid']);
                         }
+                        if (p('card')) {
+                            p('card')->cardRefund($item['cardid'],$item['cardprice']);
+                        }
 
                         if (!empty($refundtype)) {
                             if ($item['deductcredit2'] > 0) {
@@ -2658,77 +2671,8 @@ function abnormalroom($paylog2)
 }
 
 //退押金
-function order_list_depositprice($paylog2)
+function order_list_depositprice($item)
 {
-    global $_W, $_GPC;
-    if ($_GPC['expresssn'] == '') {
-        message("请填写押金金额");
-    }
-    if ($paylog2['depositpricetype'] == '2') {
-        pdo_update("sz_yi_order", array(
-            'returndepositprice' => $_GPC['expresssn'],
-        ), array(
-            "id" => $paylog2["id"],
-            "uniacid" => $_W["uniacid"]
-        ));
-    } else {
-        $ordersn = $paylog2["ordersn"];
-        if (!empty($paylog2["ordersn2"])) {
-            $ordersn0 = sprintf("%02d", $paylog2["ordersn2"]);
-            $ordersn .= "GJ" . $ordersn0;
-        }
-        $ordersn8 = $_GPC['expresssn'];
-        $msg8 = pdo_fetchall("SELECT g.id,g.credit, o.total,o.realprice FROM " . tablename("sz_yi_order_goods") . " o left join " . tablename("sz_yi_goods") . " g on o.goodsid=g.id " . " WHERE o.orderid=:orderid and o.uniacid=:uniacid",
-            array(
-                ":orderid" => $paylog2["id"],
-                ":uniacid" => $_W["uniacid"]
-            ));
-        $ordersn2 = 0;
-        foreach ($msg8 as $ordersn3) {
-            $ordersn2 += $ordersn3["credit"] * $ordersn3["total"];
-        }
-        $ordersn6 = 0;
-        if ($paylog2["paytype"] == 1) {
-            m("member")->setCredit($paylog2["openid"], "credit2", $ordersn8, array(
-                0,
-                $paylog0["name"] . "退押金: {$ordersn8}元 订单号: " . $paylog2["ordersn"]
-            ));
-            $ordersn5 = true;
-        } else {
-            if ($paylog2["paytype"] == 21) {
-                $ordersn8 = round($ordersn8 - $paylog2["deductcredit2"], 2);
-                $ordersn5 = m("finance")->refund($paylog2["openid"], $ordersn, $refund["refundno"],
-                    $paylog2["price"] * 100, $ordersn8 * 100);
-                $ordersn6 = 2;
-            } else {
-                if ($ordersn8 < 1) {
-                    message("押金金额必须大于1元，才能使用微信企业付款!", '', "error");
-                }
-                $ordersn8 = round($ordersn8 - $paylog2["deductcredit2"], 2);
-                $ordersn5 = m("finance")->pay($paylog2["openid"], 1, $ordersn8 * 100, $refund["refundno"],
-                    $paylog0["name"] . "押金: {$ordersn8}元 订单号: " . $paylog2["ordersn"]);
-                $ordersn6 = 1;
-            }
-        }
-        if (is_error($ordersn5)) {
-            message($ordersn5["message"], '', "error");
-        }
-        pdo_update("sz_yi_order", array(
-            'returndepositprice' => $_GPC['expresssn'],
-        ), array(
-            "id" => $paylog2["id"],
-            "uniacid" => $_W["uniacid"]
-        ));
-
-        m("notice")->sendOrderMessage($paylog2["id"], true);
-
-        plog("order.op.refund", "订单退押金 ID: {$paylog2["id"]} 订单号: {$paylog2["ordersn"]}");
-
-    }
-
-    //退押金
-    function order_list_depositprice($item)
-    {
         global $_W, $_GPC;
         if ($_GPC['expresssn'] == '') {
             message("请填写押金金额");
@@ -2794,7 +2738,7 @@ function order_list_depositprice($paylog2)
             plog("order.op.refund", "订单退押金 ID: {$item["id"]} 订单号: {$item["ordersn"]}");
 
         }
-    }
+
 
     message("押金退款处理成功!", order_list_backurl(), "success");
 }

@@ -322,11 +322,10 @@ class Sz_DYi_Order
                                     }
                                 }
                             }else{
+                                $this->setStocksAndCredits($orderid, 1);
                                 if (p('channel')) {
                                     //更改库存
                                     p('channel')->changeStock($orderid);
-                                } else {
-                                    $this->setStocksAndCredits($orderid, 1);
                                 }
                                 if (p('coupon') && !empty($order['couponid'])) {
                                     p('coupon')->backConsumeCoupon($orderid);
