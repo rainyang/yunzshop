@@ -52,6 +52,9 @@ if ($operation == 'display' && $_W['isajax']) {
     if (is_weixin() || is_app_api()) {
 
         if (isset($set['pay']) && ($set['pay']['weixin'] == 1) && ($jie != 1)) {
+            $setting = uni_setting($_W['uniacid'], array(
+                'payment'
+            ));
             if (is_array($setting['payment']['wechat']) && $setting['payment']['wechat']['switch']) {
                 $wechat['success'] = true;
                 $wechat['weixin'] = true;
@@ -73,6 +76,9 @@ if ($operation == 'display' && $_W['isajax']) {
     //扫码
     if (!isMobile() && isset($set['pay']) && $set['pay']['weixin'] == 1) {
         if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
+            $setting = uni_setting($_W['uniacid'], array(
+                'payment'
+            ));
             if (is_array($setting['payment']['wechat']) && $setting['payment']['wechat']['switch']) {
                 $wechat['qrcode'] = true;
             }
