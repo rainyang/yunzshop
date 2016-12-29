@@ -2670,9 +2670,9 @@ function abnormalroom($paylog2)
     message("操作成功！", order_list_backurl(), "success");
 }
 
-    //退押金
-    function order_list_depositprice($item)
-    {
+//退押金
+function order_list_depositprice($item)
+{
         global $_W, $_GPC;
         if ($_GPC['expresssn'] == '') {
             message("请填写押金金额");
@@ -2738,7 +2738,7 @@ function abnormalroom($paylog2)
             plog("order.op.refund", "订单退押金 ID: {$item["id"]} 订单号: {$item["ordersn"]}");
 
         }
-    }
+
 
     message("押金退款处理成功!", order_list_backurl(), "success");
 }
