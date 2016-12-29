@@ -177,3 +177,9 @@ if(!pdo_fieldexists('sz_yi_member_address', 'street')) {
 if(!pdo_fieldexists('sz_yi_member', 'street')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `street` varchar(255) DEFAULT '0';");
 }
+
+if (!pdo_fieldexists('sz_yi_member_log', 'couponid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_log')." ADD `couponid` int(11) DEFAULT '0' COMMENT '优惠券id';");
+}
+
+echo '完成sql执行';

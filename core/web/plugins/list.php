@@ -70,6 +70,7 @@ $plugins_icon = array(
 	"fund"	=> "fund",
 	"indiana" => "indiana",
 	"card" => "gift_card",
+    "credits" => "credits",
 	);
 $plugins_desc = array(
 	"supplier" => "厂家入驻，平台统一销售", 
@@ -105,6 +106,7 @@ $plugins_desc = array(
     "fund"	=> "项目在指定时间众筹金额",
 	"indiana" => "投入一元就有机会获得一件商品",
 	"card"	=> "代金卡",
+    "credits"	=> "积分兑换",
 );
 
 if(!pdo_fieldexists('sz_yi_plugin', 'desc')) {
