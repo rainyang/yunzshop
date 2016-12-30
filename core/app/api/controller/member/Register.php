@@ -194,19 +194,6 @@ class Register extends YZ
 
         $user_info = json_decode($res['content'], true);
 
-
-/*
-$para = Array('uniacid' => 3,
-    'api' => 'member/Register/wx_app_login',
-    'code' => '001xNECs1qvCTq05zwCs14QGCs1xNECk',
-    'info' => '{"errMsg":"getUserInfo:ok","rawData":"{\"nickName\":\"因果\",\"gender\":1,\"language\":\"zh_CN\",\"city\":\"Harbin\",\"province\":\"Heilongjiang\",\"country\":\"CN\",\"avatarUrl\":\"http://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoo1iamn7sDjIXx1Xib4YicdrP2UzzICicgOzHxmlqMms50CauxfqXwr8uYm8WthNfx4hukwqNTLsleJg/0\"}","userInfo":{"nickName":"因果","gender":1,"language":"zh_CN","city":"Harbin","province":"Heilongjiang","country":"CN","avatarUrl":"http://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoo1iamn7sDjIXx1Xib4YicdrP2UzzICicgOzHxmlqMms50CauxfqXwr8uYm8WthNfx4hukwqNTLsleJg/0"},"signature":"5753780bddbd2669b725efb4c82b83c167e29ebc","encryptData":"V5So6QtCjdWoal3spzS10J0326TDZVnd8D5clJ5HApKEXnJeSjO/gGUblc8XG3ybw2tsEQOLzWzca01jbPPm/pxg+wP6sarCnKanrg9bqKfTdcST3jKCHqcKTcjxFHfeMB+jrAaIupukVoISlj0ltPxl7QQgulgedcCO8b15l0bKsaoqA4F8uu0DbAnRk8GYXD5hBeJq//GGKtdTnVYXHzgEkXc38bAP4J7CJRKXWUSTV1/xQEsnNMswkBq/DSJR4pWoZ76pI3MyUsWFRcgwXDGqwnWTWSVE174MjNrjDZocmVn47ATiEIfVfwa9OR523qLafvMd4w3QkZ8dVF4M8GM/sbGbVR1aKiyOKM69FZegX5IjxvXC/c2Vpz+pcn8cpzOJhJdBDKnoddEEGamkuCKls9iAl4HAPoabg/G0wOpe8T8FPqXxknix89ri9QLovysuU9UgBxl7IlM7wXD4mJ2+ngorhH4Z4hQw8FN11WQiqPwNDtFKGyKsrkZOkEC4DKWRAxrbxaHg1vPETRFfkA==","encryptedData":"4zdCzny8lO90gktSglMQbYFjvie/a7F5UcP0WFAJNqNFxraz6jX4dcpzxBdnHegUC+Dj2k8AU40TYWCeZ09bqJRWsoMIN5Gq15B6MDv0XzG88gy1r81HTVUzvArjvtrO97rmszXPEk/Hl0pYjLg5z8LKQ/WBBAnw0qiqrp/ThYo8gc1OmTnxtIYLddLcNt28IkDESAn/nsFUnBU6PylriXSrs8qQ7bTaqI/gcGFLQ8S1+ppits1Dn6Z2lcnTnU0sUk8bEsfvA9RU/SZIIY48HxiLPbtJ/8vVImUeBP8O7n7wMc3Dfc+FLg1tfvHXS8dSj4gxv4ogxL1Me8d4tyQ119A0P8W0mU8AykQHceTAWfvd0HHPRBuawhMEgbiU4p+njg+QT8kQQRtJS+Kx8F3KWEuuHcR9MoJw4ywN2qL8X6GG0DyQpOApkGfiJ89erdLqAMo0ZHiW9tMkA6nalAMTm52Mdb2AXrE0aJQq3bl5fQbiWSxzYnrqcM4pozKrHgM5iIuJZnWoAehra0f0KpO2qw==","iv":"c5L48zgoO9ta25JFvZXppQ=="}'
-);
-$user_info['openid'] = 'oDRLq0F21DJUfcwMPrrZGEDgJl-Y';
-$user_info['session_key'] = 'Rj6EvhCdf9ZwcPcYobPMfQ==';
-$data = '{"openId":"oDRLq0F21DJUfcwMPrrZGEDgJl-Y","nickName":"因果","gender":1,"language":"zh_CN","city":"Harbin","province":"Heilongjiang","country":"CN","avatarUrl":"http://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoo1iamn7sDjIXx1Xib4YicdrP2UzzICicgOzHxmlqMms50CauxfqXwr8uYm8WthNfx4hukwqNTLsleJg/0","unionId":"o2gLis-uggcBGmrbZtw-XtsBvbYg","watermark":{"timestamp":1482742692,"appid":"wx31002d5db09a6719"}}';
-$errCode = 0;*/
-
-
         $data = '';  //json
 
         if (!empty($para['info'])) {
@@ -230,7 +217,7 @@ $errCode = 0;*/
 
         //小程序session处理
         $random = $this->wx_app_session($user_info);
-file_put_contents(IA_ROOT . '/addons/sz_yi/data/session.log', print_r($_SESSION, 1));
+
         $res = array('3rd_session' => $random);
         $this->returnSuccess($res);
     }
