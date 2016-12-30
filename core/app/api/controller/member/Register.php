@@ -169,59 +169,70 @@ class Register extends YZ
      */
     public function wx_app_login()
     {
-        require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/wechat/wxBizDataCrypt.php';
+        include "./addons/sz_yi/core/inc/plugin/vendor/wechat/wxBizDataCrypt.php";
+        include "./framework/model/mc.mod.php";
 
         global $_W;
 
+        session_start();
         load()->func('communication');
-/*
+
+        $appid = 'wx31002d5db09a6719';
+        $secret = '9e2d6dbafb37b40c9413d2966e1a3dea';
+
         $para = $this->getPara();
 
         $data = array(
-            'appid' => 'wx31002d5db09a6719',
-            'secret' => '9e2d6dbafb37b40c9413d2966e1a3dea',
+            'appid' => $appid,
+            'secret' => $secret,
             'js_code' => $para['code'],
             'grant_type' => 'authorization_code',
         );
 
         $url = 'https://api.weixin.qq.com/sns/jscode2session';
         $res = ihttp_request($url, $data);
-file_put_contents(IA_ROOT . '/addons/sz_yi/data/get.log', print_r($para, 1));
-        $user_info = json_decode($res['content'], true);*/
 
+        $user_info = json_decode($res['content'], true);
+
+
+/*
 $para = Array('uniacid' => 3,
     'api' => 'member/Register/wx_app_login',
     'code' => '001xNECs1qvCTq05zwCs14QGCs1xNECk',
     'info' => '{"errMsg":"getUserInfo:ok","rawData":"{\"nickName\":\"因果\",\"gender\":1,\"language\":\"zh_CN\",\"city\":\"Harbin\",\"province\":\"Heilongjiang\",\"country\":\"CN\",\"avatarUrl\":\"http://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoo1iamn7sDjIXx1Xib4YicdrP2UzzICicgOzHxmlqMms50CauxfqXwr8uYm8WthNfx4hukwqNTLsleJg/0\"}","userInfo":{"nickName":"因果","gender":1,"language":"zh_CN","city":"Harbin","province":"Heilongjiang","country":"CN","avatarUrl":"http://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoo1iamn7sDjIXx1Xib4YicdrP2UzzICicgOzHxmlqMms50CauxfqXwr8uYm8WthNfx4hukwqNTLsleJg/0"},"signature":"5753780bddbd2669b725efb4c82b83c167e29ebc","encryptData":"V5So6QtCjdWoal3spzS10J0326TDZVnd8D5clJ5HApKEXnJeSjO/gGUblc8XG3ybw2tsEQOLzWzca01jbPPm/pxg+wP6sarCnKanrg9bqKfTdcST3jKCHqcKTcjxFHfeMB+jrAaIupukVoISlj0ltPxl7QQgulgedcCO8b15l0bKsaoqA4F8uu0DbAnRk8GYXD5hBeJq//GGKtdTnVYXHzgEkXc38bAP4J7CJRKXWUSTV1/xQEsnNMswkBq/DSJR4pWoZ76pI3MyUsWFRcgwXDGqwnWTWSVE174MjNrjDZocmVn47ATiEIfVfwa9OR523qLafvMd4w3QkZ8dVF4M8GM/sbGbVR1aKiyOKM69FZegX5IjxvXC/c2Vpz+pcn8cpzOJhJdBDKnoddEEGamkuCKls9iAl4HAPoabg/G0wOpe8T8FPqXxknix89ri9QLovysuU9UgBxl7IlM7wXD4mJ2+ngorhH4Z4hQw8FN11WQiqPwNDtFKGyKsrkZOkEC4DKWRAxrbxaHg1vPETRFfkA==","encryptedData":"4zdCzny8lO90gktSglMQbYFjvie/a7F5UcP0WFAJNqNFxraz6jX4dcpzxBdnHegUC+Dj2k8AU40TYWCeZ09bqJRWsoMIN5Gq15B6MDv0XzG88gy1r81HTVUzvArjvtrO97rmszXPEk/Hl0pYjLg5z8LKQ/WBBAnw0qiqrp/ThYo8gc1OmTnxtIYLddLcNt28IkDESAn/nsFUnBU6PylriXSrs8qQ7bTaqI/gcGFLQ8S1+ppits1Dn6Z2lcnTnU0sUk8bEsfvA9RU/SZIIY48HxiLPbtJ/8vVImUeBP8O7n7wMc3Dfc+FLg1tfvHXS8dSj4gxv4ogxL1Me8d4tyQ119A0P8W0mU8AykQHceTAWfvd0HHPRBuawhMEgbiU4p+njg+QT8kQQRtJS+Kx8F3KWEuuHcR9MoJw4ywN2qL8X6GG0DyQpOApkGfiJ89erdLqAMo0ZHiW9tMkA6nalAMTm52Mdb2AXrE0aJQq3bl5fQbiWSxzYnrqcM4pozKrHgM5iIuJZnWoAehra0f0KpO2qw==","iv":"c5L48zgoO9ta25JFvZXppQ=="}'
 );
 $user_info['openid'] = 'oDRLq0F21DJUfcwMPrrZGEDgJl-Y';
+$user_info['session_key'] = 'Rj6EvhCdf9ZwcPcYobPMfQ==';
+$data = '{"openId":"oDRLq0F21DJUfcwMPrrZGEDgJl-Y","nickName":"因果","gender":1,"language":"zh_CN","city":"Harbin","province":"Heilongjiang","country":"CN","avatarUrl":"http://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoo1iamn7sDjIXx1Xib4YicdrP2UzzICicgOzHxmlqMms50CauxfqXwr8uYm8WthNfx4hukwqNTLsleJg/0","unionId":"o2gLis-uggcBGmrbZtw-XtsBvbYg","watermark":{"timestamp":1482742692,"appid":"wx31002d5db09a6719"}}';
+$errCode = 0;*/
 
-        $id = pdo_fetchcolumn('select id from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid limit 1', array(
-            ':uniacid' => $_W['uniacid'],
-            ':openid' => $user_info['openid']
-        ));
 
-        if (empty($id)) {
-            if(Request::has('referral') && D("Sysset")->appReferral($para['uniacid'])){
-                $referral = D('Member')->has(array(
-                    'uniacid' => $para['uniacid'],
-                    'referralsn' =>$para['referralsn']
-                ));
-                if (empty($referral)) {
-                    $this->returnError('推荐码无效！');
-                }
-            }
-            $this->_createAppMember($_W['uniacid'], $user_info['openid']);
+        $data = '';  //json
 
-            if(!empty($referral)){
-                $this->_saveReferralInfo($para['uniacid'],$para['mobile'],$referral);
-            }
-            $this->_setSessionAndCookie($para['uniacid'],'',$user_info['openid']);
-        } else {
-            $this->_setCookie($user_info['openid'],'');
+        if (!empty($para['info'])) {
+            $json_data = json_decode($para['info'], true);
+
+            $pc = new \WXBizDataCrypt($appid, $user_info['session_key']);
+            $errCode = $pc->decryptData($json_data['encryptedData'], $json_data['iv'], $data);
         }
 
-        $this->returnSuccess();
+
+        if ($errCode == 0) {
+          $json_user = json_decode($data, true);
+        } else {
+            $this->returnError('登录认证失败');
+        }
+        $fan = mc_fansinfo($json_user['openId']);
+
+        if (empty($fan)) {
+            $this->regitsterAccount($json_user);
+        }
+
+        //小程序session处理
+        $random = $this->wx_app_session($user_info);
+file_put_contents(IA_ROOT . '/addons/sz_yi/data/session.log', print_r($_SESSION, 1));
+        $res = array('3rd_session' => $random);
+        $this->returnSuccess($res);
     }
 
     private function _createAppMember($uniacid,$openid){
@@ -248,6 +259,107 @@ $user_info['openid'] = 'oDRLq0F21DJUfcwMPrrZGEDgJl-Y';
             pdo_insert('sz_yi_member', $member_data);
             $openid = $member_data['openid'];
 
+    }
+
+    /**
+     * 注册用户
+     *
+     * mc_members mapping_fans sz_yi_member
+     *
+     * @param $json_user
+     */
+    public function regitsterAccount($json_user)
+    {
+        global $_W;
+
+        if(is_error($json_user) && empty($json_user)) {
+            $this->returnError('登录认证失败！');
+        }
+
+        $record = array(
+            'openid' => $json_user['openId'],
+            'uid' => 0,
+            'acid' => $_W['acid'],
+            'uniacid' => $_W['uniacid'],
+            'salt' => random(8),
+            'updatetime' => TIMESTAMP,
+            'unionid' => $json_user['unionId'],
+            'nickname' => stripslashes($json_user['nickName']),
+            'follow' => 0,
+            'followtime' => '',
+            'unfollowtime' => 0,
+            'tag' => base64_encode(iserializer($json_user))
+        );
+
+        if (!isset($unisetting['passport']) || empty($unisetting['passport']['focusreg'])) {
+            $default_groupid = pdo_fetchcolumn('SELECT groupid FROM ' .tablename('mc_groups') . ' WHERE uniacid = :uniacid AND isdefault = 1', array(':uniacid' => $_W['uniacid']));
+            $data = array(
+                'uniacid' => $_W['uniacid'],
+                'email' => md5($json_user['openId']).'@yunzshop.com',
+                'groupid' => $default_groupid,
+                'createtime' => TIMESTAMP,
+                'nickname' => stripslashes($json_user['nickName']),
+                'avatar' => $json_user['avatarUrl'],
+                'gender' => $json_user['gender'],
+                'nationality' => $json_user['country'],
+                'resideprovince' => $json_user['province'] . '省',
+                'residecity' => $json_user['city'] . '市',
+            );
+
+            $data['salt']  = random(8);
+
+            $data['password'] = md5($data['email'] . $data['salt'] . $_W['config']['setting']['authkey']);
+
+            //mc_members
+            pdo_insert('mc_members', $data);
+            $uid = pdo_insertid();
+            $record['uid'] = $uid;
+            $_SESSION['uid'] = $uid;
+        }
+
+        //mc_mapping_fans
+        pdo_insert('mc_mapping_fans', $record);
+        $_SESSION['openid'] = $record['openid'];
+        $_W['fans'] = $record;
+        $_W['fans']['from_user'] = $record['openid'];
+
+        //sz_yi_member
+        $member = array(
+            'uniacid' => $_W['uniacid'],
+            'uid' => $uid,
+            'openid' => $json_user['openId'],
+            'realname' =>  '',
+            'mobile' => '',
+            'nickname' => $json_user['nickName'],
+            'avatar' => $json_user['avatarUrl'],
+            'gender' => $json_user['gender'],
+            'province' => $json_user['province'],
+            'city' => $json_user['city'],
+            'area' => '',
+            'createtime' => time(),
+            'status' => 1
+        );
+
+        pdo_insert('sz_yi_member', $member);
+    }
+
+    /**
+     * 小程序登录态
+     *
+     * @param $user_info
+     * @return string
+     */
+    function wx_app_session($user_info)
+    {
+        if (empty($user_info['session_key']) || empty($user_info['openid'])) {
+            $this->returnError('登录认证失败！');
+        }
+
+        $random = md5(uniqid(mt_rand()));
+
+        $_SESSION['wx_app'] = array($random => iserializer(array('session_key'=>$user_info['session_key'], 'openid'=>$user_info['openid'])));
+
+        return $random;
     }
 }
 
