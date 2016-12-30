@@ -216,6 +216,16 @@ class Sz_DYi_User
         if(!is_weixin()&&!is_app_api() ){
             return $this->getUserInfo();
         }
+
+        if ($_GPC['app_type'] == 'wechat') {
+            if ($_GPC['3rd_session'] && $_SESSION['wx_app'][$_GPC['3rd_session']]) {
+                return array('openid' =>unserialize($_SESSION['wx_app'][$_GPC['3rd_session']]));
+            } else {
+                return false;
+            }
+
+        }
+
         if(is_app_api()){
             if(in_array($_GET['api'],array('index/Index','category/Index','goods/Detail','member/Register','goods/Display','member/SentCode'))){
                 return false;
