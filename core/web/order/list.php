@@ -2056,6 +2056,7 @@ function order_list_confirmpay($order)
         $plugin_coupon = p("coupon");
         $plugin_commission = p("commission");
         $orderid = array();
+        $price = 0;
         foreach ($order_all as $key => $val) {
             //m("order")->setStocksAndCredits($val["id"], 1);
             m("notice")->sendOrderMessage($val["id"]);
@@ -2128,6 +2129,11 @@ function order_list_close($order)
             message("订单已付款，不能关闭！");
         }
     }
+
+    if (p('yunbi')) {
+        $yunbiset = p('yunbi')->getSet();
+    }
+
     if (!empty($order["transid"])) {
         changeWechatSend($order["ordersn"], 0, $_GPC["reson"]);
     }
@@ -2196,6 +2202,11 @@ function order_list_refund($item)
     if (empty($item['refundstate'])) {
         message('订单未申请退款，不需处理！');
     }
+
+    if (p('yunbi')) {
+        $yunbiset = p('yunbi')->getSet();
+    }
+
     $refund = pdo_fetch('select * from ' . tablename('sz_yi_order_refund') . ' where id=:id and (status=0 or status>1) order by id desc limit 1',
         array(
             ':id' => $item['refundid']
@@ -2305,7 +2316,7 @@ function order_list_refund($item)
                                     ':uniacid' => $uniacid
                                 ));
                         } else {
-                            $pay_ordersn = $ordersn;
+                            message('支付单号不存在', '', 'error');
                         }
                         $ordersn = $item['ordersn'];
 
@@ -2674,9 +2685,35 @@ function abnormalroom($paylog2)
 function order_list_depositprice($item)
 {
         global $_W, $_GPC;
+
+        $shopset = m("common")->getSysset("shop");
+
         if ($_GPC['expresssn'] == '') {
             message("请填写押金金额");
         }
+
+        $refund = pdo_fetch('select * from ' . tablename('sz_yi_order_refund') . ' where id=:id and (status=0 or status>1) order by id desc limit 1',
+            array(
+                ':id' => $item['refundid']
+            ));
+        if (empty($refund)) {
+            pdo_update('sz_yi_order', array(
+                'refundstate' => 0
+            ), array(
+                'id' => $item['id'],
+                'uniacid' => $_W['uniacid']
+            ));
+            message('未找到退款申请，不需处理！');
+        }
+        if (empty($refund['refundno'])) {
+            $refund['refundno'] = m('common')->createNO('order_refund', 'refundno', 'SR');
+            pdo_update('sz_yi_order_refund', array(
+                'refundno' => $refund['refundno']
+            ), array(
+                'id' => $refund['id']
+            ));
+        }
+
         if ($item['depositpricetype'] == '2') {
             pdo_update("sz_yi_order", array(
                 'returndepositprice' => $_GPC['expresssn'],
