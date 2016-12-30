@@ -11,40 +11,47 @@
 #      History:
 #         Q Q : 751818588
 =============================================================================*/
-
+define('DOWNLOAD', 'http://cloud.yunzshop.com');
 global $_GPC;
 
-if ($_GPC['operation'] == 'synchronous' && $_GPC['encrypt'] == md5('yitian_make')) {
-    //同步apk文件、数据
-    $apkinfo = array();
-    $apkinfo['apksize']         = $_GPC['apksize'];
-    $apkinfo['createtime']      = TIMESTAMP;        //独立创建时间
-    $apkinfo['appname']         = $_GPC['appname'];
-    $apkinfo['package']         = $_GPC['package'];
-    $apkinfo['version_name']    = $_GPC['version_name'];
-    $apkinfo['version_code']    = $_GPC['version_code'];
-    $apkinfo['apkremark']       = $_GPC['apkremark'];
+if ($_GPC['operation'] == 'synchronous') {
+    $apkinfo = $_GPC['apkinfo'];
+    $apkinfo['createtime'] = TIMESTAMP;
+    $num = $_GPC['num'];
+    $time = $_GPC['time'];
+    $parms = array(
+        'operation' => 'validation',
+        'id' => $_GPC['id'],
+        'token' => $_GPC['token'],
+        'signature' =>'sz_cloud_register'
+        );
+    $resp = tokenValidation($parms);
+    if ($resp['status'] == 'OK') {
+        $apkinfo['apkname'] = $resp['apkname'];
 
-    $url        = $apkinfo['downloadurl']   = $_GPC['link_url'];
-    $filename   = $apkinfo['apkname']       = $_GPC['apkname'];
-    $type       = $apkinfo['apktype']       = $_GPC['apktype'];
-    $path = dirname(__FILE__)."/../../../apk/".$apkinfo['createtime'];
+        $url = DOWNLOAD . "/apk/" . $num . "/" . $time . "/" .$resp['apkname'];
+        $url = "http://lbj.yunzshop.com/apk/" . $num . "/" . $time . "/" . $resp['apkname'];        //测试使用
 
-    $file = getFile($url, $path, $filename, $type);
-    if ($file) {
-        $apkinfo['apkpath'] = $file['save_path'];
-        $apkinfo['clientdownload'] = "http://" . $_SERVER['SERVER_NAME']. "/addons/sz_yi/apk/" . $apkinfo['createtime'] . "/" . $apkinfo['apkname'];
+        $path = dirname(__FILE__)."/../../../apk/".$apkinfo['createtime'];
+        $files = getFile($url, $path, $apkinfo['apkname'], $apkinfo['apktype']);
+        if ($files) {
+            $apkinfo['apkpath'] = $file['save_path'];
+            $apkinfo['clientdownload'] = "http://" . $_SERVER['SERVER_NAME']. "/addons/sz_yi/apk/" . $apkinfo['createtime'] . "/" . $apkinfo['apkname'];
 
-        pdo_insert('sz_yi_appinfo', $apkinfo);
-        //$ret = "同步操作成功！";
-        $ret = array('status' => 1, 'message' => "同步操作成功！");
-        echo json_encode($ret);
-        exit;
-    } else {
-        $ret = array('status' => 0, 'message' => "同步失败！未能正确下载！！");
-        echo json_encode($ret);
-        exit;
+            pdo_insert('sz_yi_appinfo', $apkinfo);
+            $ret = array('status' => 1, 'message' => "同步操作成功！");
+            echo json_encode($ret);
+            exit;
+        } else {
+            $ret = array('status' => 0, 'message' => "同步失败！未能正确下载！！");
+            echo json_encode($ret);
+            exit;
+        }
     }
+    //file_put_contents(IA_ROOT."/yitian_file.txt",print_r($resp, true), FILE_APPEND);
+    $ret = array('status' => -1, 'message' => "云端验证失败！！");
+    echo json_encode($ret);
+    exit;
 }
 message('错误访问.');
 
@@ -85,4 +92,21 @@ function getFile($url, $save_dir = '', $filename = '', $type = 0){
     fclose($fp2);
     unset($content, $url);
     return array('file_name' => $filename, 'save_path' => $save_dir . $filename);
+}
+function tokenValidation($parms)
+{
+    //$url = "http://cloud.yunzshop.com/web/index.php?c=account&a=apkupgrade";
+    $url = "http://lbj.yunzshop.com/web/index.php?c=account&a=apkupgrade";      //测试使用
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $parms);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+    $return  = curl_exec($ch);
+    $status = json_decode($return,true);
+    curl_close($ch);
+
+    return $status;
 }
