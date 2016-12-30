@@ -20,7 +20,7 @@ class Sz_DYi_Notice
         if (empty($orderid)) {
             return;
         }
-        $order = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(
+        $order = pdo_fetch('select o.*,s.storename  from ' . tablename('sz_yi_order') . ' o left join ' . tablename('sz_yi_store') . ' s on o.storeid = s.id where o.id=:id limit 1', array(
             ':id' => $orderid
         ));
 
@@ -487,6 +487,9 @@ class Sz_DYi_Notice
                 m('message')->sendCustomNotice($openid, $msg, $detailurl);
                 m('message')->sendCustomAppNotice($openid, $msg);
             }else{
+                if($order['isverify'] && !empty($order['storename'])){
+                    $shop['name'] = $order['storename'];
+                }
                 $msg = array(
                     'first' => array(
                         'value' => "您的订单已提交成功！",
@@ -727,7 +730,17 @@ class Sz_DYi_Notice
             
             }
             $remark = "\r\n【" . $shop['name'] . "】欢迎您的再次购物！";
+            $paytype = '支付成功';
+            if($order['paytype'] == 3){
+                $paytype = '货到付款';
+            }
             if ($order['isverify']) {
+                if($order['paytype'] == 4){
+                    $paytype = '到店支付';
+                }
+                if(!empty($order['storename'])){
+                    $shop['name'] = $order['storename'];
+                }
                 $remark = "\r\n点击订单详情查看可消费门店, 【" . $shop['name'] . "】欢迎您的再次购物！";
             }
             $msg           = array(
@@ -742,7 +755,7 @@ class Sz_DYi_Notice
                 ),
                 'keyword2' => array(
                     'title' => '支付状态',
-                    'value' => '支付成功',
+                    'value' => $paytype,
                     "color" => "#4a5077"
                 ),
                 'keyword3' => array(
@@ -779,7 +792,7 @@ class Sz_DYi_Notice
                 ),
                 'keyword2' => array(
                     'title' => '支付状态',
-                    'value' => '支付成功',
+                    'value' => $paytype,
                     "color" => "#4a5077"
                 ),
                 'keyword3' => array(
