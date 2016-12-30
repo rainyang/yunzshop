@@ -18,7 +18,6 @@ class Remove extends YZ
         }
         $this->_removeAddressInfo($id);
         if ($address_info['isdefault'] == 1) {
-            $this->
             pdo_update('sz_yi_member_address', array('isdefault' => 0), array('uniacid' => $uniacid, 'openid' => $openid, 'id' => $id));
             $data2 = pdo_fetch('select id from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and uniacid=:uniacid order by id desc limit 1', array(':uniacid' => $uniacid, ':openid' => $openid));
             if (!empty($data2)) {
