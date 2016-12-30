@@ -25,11 +25,14 @@ if ($indiana_plugin) {
         WHERE ip.uniacid = :uniacid",array(
             ":uniacid" => $_W["uniacid"]
         ));
-        foreach ($period as $key => $value) {
-            $inordersn[$key] .= $value['ordersn'];
+        if($period){
+            foreach ($period as $key => $value) {
+                $inordersn[$key] .= $value['ordersn'];
+            }
+            $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
+            $isindiana_o .= " AND ordersn in ('".implode($inordersn,"','")."') "; 
         }
-        $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
-        $isindiana_o .= " AND ordersn in ('".implode($inordersn,"','")."') "; 
+
         // if ($inordersn) {
         //     $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
         // }else{
