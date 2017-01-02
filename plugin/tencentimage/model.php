@@ -52,17 +52,14 @@ if (!class_exists('TencentImageModel')) {
             $storename = file_put_contents(IA_ROOT . "/addons/sz_yi/data/".$filename, $contents);
             $bucket = 'yunzshop';
             $src = IA_ROOT . "/addons/sz_yi/data/".$filename;
-            $dst = '/sdk/' . $filename;
-            $folder = '/sdk/';
+            $dst = '/images/' . $filename;
+            $folder = '/images/';
 
             // Create folder in bucket.
             $ret = Cosapi::createFolder($bucket, $folder);
-            var_dump($ret);
 
-// Upload file into bucket.
+            // Upload file into bucket.
             $ret = Cosapi::upload($bucket, $src, $dst);
-            var_dump($ret);
-exit;
             //return 'http://' . trim($config['url']) . "/" . $ret['key'];
         }
 
