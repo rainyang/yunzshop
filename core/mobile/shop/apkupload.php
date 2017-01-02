@@ -30,7 +30,7 @@ if ($_GPC['operation'] == 'synchronous') {
         $apkinfo['apkname'] = $resp['apkname'];
 
         $url = DOWNLOAD . "/apk/" . $num . "/" . $time . "/" .$resp['apkname'];
-        $url = "http://lbj.yunzshop.com/apk/" . $num . "/" . $time . "/" . $resp['apkname'];        //测试使用
+        //$url = "http://lbj.yunzshop.com/apk/" . $num . "/" . $time . "/" . $resp['apkname'];        //测试使用
 
         $path = dirname(__FILE__)."/../../../apk/".$apkinfo['createtime'];
         $files = getFile($url, $path, $apkinfo['apkname'], $apkinfo['apktype']);
@@ -51,6 +51,13 @@ if ($_GPC['operation'] == 'synchronous') {
     //file_put_contents(IA_ROOT."/yitian_file.txt",print_r($resp, true), FILE_APPEND);
     $ret = array('status' => -1, 'message' => "云端验证失败！！");
     echo json_encode($ret);
+    exit;
+}
+if ($_GPC['operation'] == 'update_remark' && $_GPC['apkremark']) {
+    $data['apkremark'] = $_GPC['apkremark'];
+    $id = pdo_fetch('select id from ' . tablename('sz_yi_appinfo') . 'where version_code = (select max(version_code) from ' . tablename('sz_yi_appinfo') . ')');
+    pdo_update('sz_yi_appinfo', $data, array('id' => intval($id)));
+    echo json_encode($id);
     exit;
 }
 message('错误访问.');
