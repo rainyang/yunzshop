@@ -252,4 +252,29 @@ if (p('supplier')) {
         }
     }
 }*/
+//12月30日
+if (pdo_fieldexists('sz_yi_af_supplier', 'diymemberfields')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `diymemberfields` `diymemberfields` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+if (pdo_fieldexists('sz_yi_af_supplier', 'diymemberdata')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `diymemberdata` `diymemberdata` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+if (pdo_fieldexists('sz_yi_af_supplier', 'username')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `username` `username` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+if (pdo_fieldexists('sz_yi_af_supplier', 'password')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `password` `password` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+if (pdo_fieldexists('sz_yi_af_supplier', 'productname')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `productname` `productname` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+if (pdo_fieldexists('sz_yi_af_supplier', 'weixin')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `weixin` `weixin` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+if (pdo_fieldexists('sz_yi_af_supplier', 'mobile')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `mobile` `mobile` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+if (pdo_fieldexists('sz_yi_af_supplier', 'realname')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `realname` `realname` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
 echo 'ok...';

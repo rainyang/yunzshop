@@ -1,0 +1,223 @@
+{template 'web/_header'}
+<script type="text/javascript">
+    function validate() {
+
+        if ($(':checkbox[name="user[upload]"]:checked').val() == '1') {
+            if ($.trim($(':text[name="user[AppID]"]').val()) == '') {
+                Tip.focus(':text[name="user[AppID]"]', '请输入万象优图 AppID !', 'top');
+                return false;
+            }
+            if ($.trim($(':text[name="user[SecretID]"]').val()) == '') {
+                Tip.focus(':text[name="user[SecretID]"]', '请输入万象优图 SecretID !', 'top');
+                return false;
+            }
+            if ($.trim($(':text[name="user[SecretKey]"]').val()) == '') {
+                Tip.focus(':text[name="user[SecretKey]"]', '请输入万象优图 SecretKey !', 'top');
+                return false;
+            }
+            if ($.trim($(':text[name="user[bucket]"]').val()) == '') {
+                Tip.focus(':text[name="user[bucket]"]', '请输入万象优图空间名称 !', 'top');
+                return false;
+            }
+            if ($.trim($(':text[name="user[url]"]').val()) == '') {
+                Tip.focus(':text[name="user[url]"]', '请输入万象优图空间链接  !', 'top');
+                return false;
+            }
+        }
+        {if $_W['isfounder']}
+        if ($(':radio[name="admin[upload]"]:checked').val() == '1') {
+            if ($.trim($(':text[name="admin[AppID]"]').val()) == '') {
+                Tip.focus(':text[name="admin[AppID]"]', '请输入万象优图 AppID !', 'top');
+                return false;
+            }
+            if ($.trim($(':text[name="admin[SecretID]"]').val()) == '') {
+                Tip.focus(':text[name="admin[SecretID]"]', '请输入万象优图 SecretID !', 'top');
+                return false;
+            }
+            if ($.trim($(':text[name="admin[SecretKey]"]').val()) == '') {
+                Tip.focus(':text[name="admin[SecretKey]"]', '请输入万象优图 SecretKey !', 'top');
+                return false;
+            }
+            if ($.trim($(':text[name="admin[bucket]"]').val()) == '') {
+                Tip.focus(':text[name="admin[bucket]"]', '请输入万象优图空间名称 !', 'top');
+                return false;
+            }
+            if ($.trim($(':text[name="admin[url]"]').val()) == '') {
+                Tip.focus(':text[name="admin[url]"]', '请输入万象优图空间链接 !', 'top');
+                return false;
+            }
+        }
+        {/if}
+        return true;
+    }
+    $(function () {
+        $(':radio[name="user[upload]"]').click(function () {
+            if ($(this).val()=='0') {
+                $('.tencentimage-params').hide();
+            } else {
+                $('.tencentimage-params').show();
+            }
+        });
+
+        $(':radio[name="admin[upload]"]').click(function () {
+            if ($(this).val()=='0') {
+                $('.tencentimage-params-admin').hide();
+            } else {
+
+                $('.tencentimage-params-admin').show();
+            }
+        });
+
+    });
+</script>
+<div class="w1200 m0a">
+    <div class="ulleft-nav">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="javascript:;">万象优图存储设置</a></li>
+        </ul>
+    </div>
+    <div class="rightlist">
+        <form method="post" class="form-horizontal form"  onsubmit="return validate();">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    存储设置
+                </div>
+                <div class="panel-body">
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">系统存储设置</label>
+                        <div class="col-sm-9">
+                            <div class='form-control-static'>
+                                {if $set['admin']['allow']==1}
+                                {if $set['user']['upload']==1}万象优图{else}本地{/if}
+                                {else}
+                                {if $set['admin']['upload']==1}万象优图{else}本地{/if}
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                    {if $set['admin']['allow']==1}
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">万象优图存储</label>
+                        <div class="col-sm-9">
+                            <label class="radio-inline">
+                                <input type="radio" name="user[upload]" value="1" {if $set['user']['upload']==1} checked="checked"{/if}/>开启
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="user[upload]" value="0" {if empty($set['user']['upload'])} checked="checked"{/if}/>关闭
+                            </label>
+                            <span class="help-block">开启万象优图存储，不使用系统默认的存储方式, <a href="http://www.tencentimage.com/" target="_blank">万象优图存储</a></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group tencentimage-params" {if empty($set['user']['upload'])}style="display:none"{/if} >
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">ACCESS_KEY</label>
+                    <div class="col-sm-9">   <input type="text" name="user[access_key]" class="form-control" value="{$set['user']['access_key']}" autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-group tencentimage-params" {if empty($set['user']['upload'])}style="display:none"{/if} >
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">SECRET_KEY</label>
+                <div class="col-sm-9">  <input type="text" name="user[secret_key]" class="form-control" value="{$set['user']['secret_key']}" autocomplete="off"/>
+                </div>
+            </div>
+
+            <div class="form-group tencentimage-params" {if empty($set['user']['upload'])}style="display:none"{/if} >
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">BUCKET(空间名称)</label>
+            <div class="col-sm-9"> <input type="text" name="user[bucket]" class="form-control" value="{$set['user']['bucket']}" autocomplete="off"/>
+            </div>
+    </div>
+
+    <div class="form-group tencentimage-params" {if empty($set['user']['upload'])}style="display:none"{/if} >
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">URL(空间链接)</label>
+    <div class="col-sm-9"> <input type="text" name="user[url]" class="form-control" value="{$set['user']['url']}" autocomplete="off"/>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+    <div class="col-sm-9">
+        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+        <input type="hidden" name="token" value="{$_W['token']}" />
+    </div>
+</div>
+{/if}
+
+</div>
+</div>
+
+{if $_W['isfounder']}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        管理员存储设置
+    </div>
+    <div class="panel-body">
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">允许客户自定义万象优图路径</label>
+            <div class="col-sm-9">
+                <label class="radio-inline">
+                    <input type="radio" name="admin[allow]" value="0" {if empty($set['admin']['allow'])} checked="checked"{/if}/>
+                    不允许
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="admin[allow]" value="1" {if $set['admin']['allow']} checked="checked"{/if}/>
+                    允许
+                </label>
+                <span class="help-block">是否允许客户自定义万象优图空间</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认存储设置</label>
+            <div class="col-sm-9">
+                <label class="radio-inline">
+                    <input type="radio" name="admin[upload]" value="0" {if empty($set['admin']['upload'])} checked="checked"{/if}/>
+                    本地存储
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="admin[upload]" value="1" {if $set['admin']['upload']} checked="checked"{/if}/>
+                    万象优图存储
+                </label>
+                <span class="help-block">默认宝贝图片存储方式</span>
+            </div>
+        </div>
+        <div class="form-group tencentimage-params-admin" {if empty($set['admin']['upload'])}style="display:none"{/if} >
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">AppID</label>
+        <div class="col-sm-9">   <input type="text" name="admin[AppID]" class="form-control" value="{$set['admin']['AppID']}" autocomplete="off">
+        </div>
+    </div>
+    <div class="form-group tencentimage-params-admin" {if empty($set['admin']['upload'])}style="display:none"{/if} >
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">SecretID</label>
+    <div class="col-sm-9">  <input type="text" name="admin[SecretID]" class="form-control" value="{$set['admin']['SecretID']}" autocomplete="off"/>
+    </div>
+    <div class="form-group tencentimage-params-admin" {if empty($set['admin']['upload'])}style="display:none"{/if} >
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">SecretKey</label>
+    <div class="col-sm-9">  <input type="text" name="admin[SecretKey]" class="form-control" value="{$set['admin']['SecretKey']}" autocomplete="off"/>
+    </div>
+
+</div>
+
+<div class="form-group tencentimage-params-admin" {if empty($set['admin']['upload'])}style="display:none"{/if} >
+<label class="col-xs-12 col-sm-3 col-md-2 control-label">BUCKET(空间名称)</label>
+<div class="col-sm-9"> <input type="text" name="admin[bucket]" class="form-control" value="{$set['admin']['bucket']}" autocomplete="off"/>
+</div>
+</div>
+<div class="form-group tencentimage-params-admin" {if empty($set['admin']['upload'])}style="display:none"{/if} >
+<label class="col-xs-12 col-sm-3 col-md-2 control-label">URL(空间链接)</label>
+<div class="col-sm-9"> <input type="text" name="admin[url]" class="form-control" value="{$set['admin']['url']}" autocomplete="off"/>
+</div>
+</div>
+
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+    <div class="col-sm-9">
+        <input type="submit" name="submit_admin" value="提交" class="btn btn-primary col-lg-1" />
+        <input type="hidden" name="token" value="{$_W['token']}" />
+    </div>
+</div>
+</div>
+</form>
+
+{/if}
+</div> </div>
+{template 'web/_footer'}
+
