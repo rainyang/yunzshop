@@ -16,7 +16,7 @@ global $_GPC;
 
 if ($_GPC['operation'] == 'synchronous') {
     $apkinfo = $_GPC['apkinfo'];
-    $apkinfo['createtime'] = TIMESTAMP;
+
     $num = $_GPC['num'];
     $time = $_GPC['time'];
     $parms = array(
@@ -25,9 +25,10 @@ if ($_GPC['operation'] == 'synchronous') {
         'token' => $_GPC['token'],
         'signature' =>'sz_cloud_register'
         );
-    $resp = tokenValidation($parms);
+    $resp = tokenValidation($parms);    //验证token
     if ($resp['status'] == 'OK') {
         $apkinfo['apkname'] = $resp['apkname'];
+        $apkinfo['createtime'] = TIMESTAMP;
 
         $url = DOWNLOAD . "/apk/" . $num . "/" . $time . "/" .$resp['apkname'];
         //$url = "http://lbj.yunzshop.com/apk/" . $num . "/" . $time . "/" . $resp['apkname'];        //测试使用
@@ -35,7 +36,7 @@ if ($_GPC['operation'] == 'synchronous') {
         $path = dirname(__FILE__)."/../../../apk/".$apkinfo['createtime'];
         $files = getFile($url, $path, $apkinfo['apkname'], $apkinfo['apktype']);
         if ($files) {
-            $apkinfo['apkpath'] = $file['save_path'];
+            $apkinfo['apkpath'] = $path;
             $apkinfo['clientdownload'] = "http://" . $_SERVER['SERVER_NAME']. "/addons/sz_yi/apk/" . $apkinfo['createtime'] . "/" . $apkinfo['apkname'];
 
             pdo_insert('sz_yi_appinfo', $apkinfo);
@@ -56,7 +57,7 @@ if ($_GPC['operation'] == 'synchronous') {
 if ($_GPC['operation'] == 'update_remark' && $_GPC['apkremark']) {
     $data['apkremark'] = $_GPC['apkremark'];
     $id = pdo_fetch('select id from ' . tablename('sz_yi_appinfo') . 'where version_code = (select max(version_code) from ' . tablename('sz_yi_appinfo') . ')');
-    pdo_update('sz_yi_appinfo', $data, array('id' => intval($id)));
+    pdo_update('sz_yi_appinfo', $data, array('id' => $id));
     echo json_encode($id);
     exit;
 }
