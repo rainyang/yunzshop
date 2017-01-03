@@ -22,7 +22,7 @@ $sql = "
 CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_wxapp'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
-  `switch` tinyint(1) DEFAULT '',
+  `switch` tinyint(1) DEFAULT '0',
   `appid` varchar(255) DEFAULT '',
   `secret` varchar(255) DEFAULT '',
   PRIMARY KEY (`id`)
