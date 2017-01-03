@@ -169,6 +169,7 @@ class Register extends YZ
      */
     public function wx_app_login()
     {
+        \sy_debug\Debug::__init();
         include "./addons/sz_yi/core/inc/plugin/vendor/wechat/wxBizDataCrypt.php";
         include "./framework/model/mc.mod.php";
 
@@ -177,8 +178,12 @@ class Register extends YZ
         session_start();
         load()->func('communication');
 
-        $appid = 'wx31002d5db09a6719';
-        $secret = '9e2d6dbafb37b40c9413d2966e1a3dea';
+        $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+            ':uniacid' => $_W['uniacid']
+        ));
+
+        $appid = $setdata['appid'];
+        $secret = $setdata['secret'];
 
         $para = $this->getPara();
 
@@ -203,9 +208,8 @@ class Register extends YZ
             $errCode = $pc->decryptData($json_data['encryptedData'], $json_data['iv'], $data);
         }
 
-
         if ($errCode == 0) {
-          $json_user = json_decode($data, true);
+            $json_user = json_decode($data, true);
         } else {
             $this->returnError('登录认证失败');
         }
@@ -218,33 +222,34 @@ class Register extends YZ
         //小程序session处理
         $random = $this->wx_app_session($user_info);
 
-        $res['3rd_session'] = array(array('wxappid'=>$random));
-        $this->returnSuccess($res);
+        $result['session'] = $random;
+        //exit($random);
+        $this->returnSuccess($result);
     }
 
     private function _createAppMember($uniacid,$openid){
-            $member_data = array(
-                'uniacid' => $uniacid,
-                'uid' => 0,
-                'openid' => $openid,
-                'mobile' => '',
-                'pwd' => md5(''),   //md5
-                'createtime' => time(),
-                'status' => 0,
-                'regtype' => 2,
-            );
+        $member_data = array(
+            'uniacid' => $uniacid,
+            'uid' => 0,
+            'openid' => $openid,
+            'mobile' => '',
+            'pwd' => md5(''),   //md5
+            'createtime' => time(),
+            'status' => 0,
+            'regtype' => 2,
+        );
 
-            if (is_app()) {
-                $member_data['bindapp'] = 1;
-            }
+        if (is_app()) {
+            $member_data['bindapp'] = 1;
+        }
 
-            if (!is_weixin()) {
-                $member_data['nickname'] = $openid;
-                $member_data['avatar'] = "http://".$_SERVER ['HTTP_HOST']. '/addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg';
-            }
+        if (!is_weixin()) {
+            $member_data['nickname'] = $openid;
+            $member_data['avatar'] = "http://".$_SERVER ['HTTP_HOST']. '/addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg';
+        }
 
-            pdo_insert('sz_yi_member', $member_data);
-            $openid = $member_data['openid'];
+        pdo_insert('sz_yi_member', $member_data);
+        $openid = $member_data['openid'];
 
     }
 
@@ -349,4 +354,3 @@ class Register extends YZ
         return $random;
     }
 }
-
