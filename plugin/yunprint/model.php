@@ -1,6 +1,6 @@
 <?php
 if (!defined('IN_IA')) {
-	exit('Access Denied');
+    exit('Access Denied');
 }
 define('IP','api163.feieyun.com');
 define('PORT','80');
@@ -10,8 +10,8 @@ define('FEYIN_HOST','my.feyin.net');
 define('FEYIN_PORT', 80);
 include_once 'HttpClient.class.php';
 if (!class_exists('YunprintModel')) {
-	class YunprintModel extends PluginModel
-	{
+    class YunprintModel extends PluginModel
+    {
         public $client;
 
         function __construct() {
@@ -19,7 +19,7 @@ if (!class_exists('YunprintModel')) {
         }
 
         function feiyin_print($print_order,$member_code,$device_no,$key, $offers)
-        {   
+        {
             $orderinfo = "";
             $shopname = '';
             $address = unserialize($print_order['address']);
@@ -98,19 +98,19 @@ if (!class_exists('YunprintModel')) {
             }
             $msgNo = $print_order['ordersn'];
             $freeMessage = array(
-                'memberCode'=>$member_code, 
+                'memberCode'=>$member_code,
                 'msgDetail'=>
-                "{$shopname}订单号:{$print_order['ordersn']}{$orderinfo}",
-                'deviceNo'=>$device_no, 
+                    "{$shopname}订单号:{$print_order['ordersn']}{$orderinfo}",
+                'deviceNo'=>$device_no,
                 'msgNo'=>$msgNo
             );
 
-             $this->sendFreeMessage($freeMessage,$key);
+            $this->sendFreeMessage($freeMessage,$key);
 
             return $msgNo;
         }
 
-        function sendFreeMessage ($msg,$key) 
+        function sendFreeMessage ($msg,$key)
         {
             $msg['reqTime'] = number_format(1000*time(), 0, '', '');
             $content = $msg['memberCode'].$msg['msgDetail'].$msg['deviceNo'].$msg['msgNo'].$msg['reqTime'].$key;
@@ -130,7 +130,7 @@ if (!class_exists('YunprintModel')) {
         }
 
         function feie_print($print_order,$printer_sn,$key,$times,$url, $offers)
-        {   
+        {
             //标签说明："<BR>"为换行符,"<CB></CB>"为居中放大,"<B></B>"为放大,"<C></C>"为居中,"<L></L>"为字体变高
             //"<W></W>"为字体变宽,"<QR></QR>"为二维码,"<CODE>"为条形码,后面接12个数字
             $orderinfo = "";
@@ -216,13 +216,13 @@ if (!class_exists('YunprintModel')) {
                 }
             }
             $content = array(
-                'sn'=>$printer_sn,  
+                'sn'=>$printer_sn,
                 'printContent'=>$orderinfo,
                 //'apitype'=>'php',//如果打印出来的订单中文乱码，请把注释打开
                 'key'=>$key,
                 'times'=>$times//打印次数
             );
-            
+
             if(!$this->client->post(HOSTNAME.'/printOrderAction',$content)){
                 echo 'error';
             }
@@ -241,22 +241,22 @@ if (!class_exists('YunprintModel')) {
             $offers = $set['offers'];
             $shopset = m('common')->getSysset('shop');
             $order = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND id=:id", array(
-                    ':uniacid'  => $_W['uniacid'],
-                    ':id'       => $orderid
-                ));
+                ':uniacid'  => $_W['uniacid'],
+                ':id'       => $orderid
+            ));
             $order['shopname'] = $shopset['name'];
             $order['goods'] = pdo_fetchall("SELECT og.goodsid,og.price,og.total,g.title,g.marketprice,og.optionname FROM " . tablename('sz_yi_order_goods') . " og LEFT JOIN " . tablename('sz_yi_goods') . " g ON g.id=og.goodsid WHERE og.uniacid=:uniacid AND og.orderid=:orderid", array(
-                    ':uniacid' => $_W['uniacid'],
-                    ':orderid' => $orderid
-                )); 
+                ':uniacid' => $_W['uniacid'],
+                ':orderid' => $orderid
+            ));
             foreach ($order['goods'] as &$value) {
                 $value['totalmoney'] = number_format($value['price']*$value['total'],2);
             }
             unset($value);
             $openprint = pdo_fetch("SELECT * FROM " . tablename('sz_yi_yunprint_list') . " WHERE uniacid=:uniacid AND status=:status LIMIT 1 ", array(
-                    ':uniacid'  => $_W['uniacid'],
-                    ':status'   => 1
-                ));
+                ':uniacid'  => $_W['uniacid'],
+                ':status'   => 1
+            ));
             // mode = 1 飞蛾   mode = 2 飞印
             if ($openprint['mode'] == 1) {
                 $this->feie_print($order, $openprint['print_no'], $openprint['key'], $openprint['print_nums'], $openprint['qrcode_link'],$offers);
@@ -271,5 +271,5 @@ if (!class_exists('YunprintModel')) {
             $set = parent::getSet();
             return $set;
         }
-	}
+    }
 }

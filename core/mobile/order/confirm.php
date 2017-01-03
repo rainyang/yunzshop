@@ -1260,7 +1260,8 @@ if ($_W['isajax']) {
                             "hascard"   => $hascard,
                             "cardcount" => $cardcount,
                             "deductenough_money" => $deductenough_money,
-                            "deductenough_enough" => $deductenough_enough
+                            "deductenough_enough" => $deductenough_enough,
+                            "supplier_uid" => $supplier_uid
                         ));
                     }
                 }
@@ -1275,7 +1276,8 @@ if ($_W['isajax']) {
                                 "hascard"   => $hascard,
                                 "cardcount" => $cardcount,
                                 "deductenough_money" => $deductenough_money,
-                                "deductenough_enough" => $deductenough_enough
+                                "deductenough_enough" => $deductenough_enough,
+                                "supplier_uid" => $supplier_uid
                             ));
                         }
                     } else {
@@ -1286,7 +1288,8 @@ if ($_W['isajax']) {
                             "hascard"   => $hascard,
                             "cardcount" => $cardcount,
                             "deductenough_money" => $deductenough_money,
-                            "deductenough_enough" => $deductenough_enough
+                            "deductenough_enough" => $deductenough_enough,
+                            "supplier_uid" => $supplier_uid
                         ));
                     }
                 }
@@ -1421,6 +1424,7 @@ if ($_W['isajax']) {
                     "couponcount" => $couponcount,
                     "hascard"   => $hascard,
                     "cardcount" => $cardcount,
+                    "supplier_uid" => $supplier_uid
                 ));
             }
             if (!empty($allgoods)) {
