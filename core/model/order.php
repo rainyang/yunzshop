@@ -276,10 +276,12 @@ class Sz_DYi_Order
                     $order_update = "id in ({$orderids})";
                     $orderdetail_where = "o.id in ({$orderids})";
                     $goods_where = "og.orderid in ({$orderids})";
+                    $orderids_where = "orderid in ({$orderids})";
                 }else{
                     $order_update = "id = ".$orderid;
                     $orderdetail_where = "o.id = {$orderid}";
                     $goods_where = "og.orderid = {$orderid}";
+                    $orderids_where = "orderid = {$orderid}";
                 }
                 if ($order['status'] == 0) {
                     $pv = p('virtual');
@@ -353,7 +355,7 @@ class Sz_DYi_Order
                 //订单信息
                 $print_order = $order;
                 //商品信息
-                $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
+                $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid'] . $orderids_where);
                 $plugin_fund = p('fund');
                     foreach ($ordergoods as $key =>$value) {
                         if($plugin_fund){
