@@ -2613,7 +2613,8 @@ if ($_W['isajax']) {
                     $order_goods['supplier_uid'] = $goods['supplier_uid'];
                 }
                 if (p('channel')) {
-                    $my_info = p('channel')->recursive_access_to_superior($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
+                    $my_level = p('channel')->getLevel($openid);
+                    $my_info = p('channel')->recursive_access_to_superior($openid,$goods['goodsid'],$goods['optionid'],$goods['total'],$my_level['level_num']);
                     if ($ischannelpay == 1 && empty($ischannelpick)) {
                         $order_goods['ischannelpay']  = $ischannelpay;
                     }

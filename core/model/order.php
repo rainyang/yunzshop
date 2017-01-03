@@ -444,15 +444,13 @@ class Sz_DYi_Order
         ));
 
         //comment:如果是渠道商零售或者采购的订单不走下面的逻辑(造成即扣除了渠道商的库存又扣除了商城的库存,这么改的影响是：只要和渠道商有关的订单都不会赠送积分) edit yangyang date 01-03
-        foreach ($goods AS $g) {
-            if (!empty($g['channel_id'])) {
-                return;
-            }
-        }
 
         $credits = 0;
 
         foreach ($goods as $g) {
+            if (!empty($g['channel_id'])) {
+                return;
+            }
             $stocktype = 0;
             if ($type == 0) {
                 if ($g['totalcnf'] == 0) {

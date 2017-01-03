@@ -261,7 +261,7 @@ if (!class_exists('ChannelModel')) {
 			}
 			$member = m('member')->getMember($openid);
 			if (empty($member['channel_level'])) {
-				return false;
+				return -1;
 			}
 			$level = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid AND id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $member['channel_level']));
 			return $level;
@@ -725,7 +725,7 @@ if (!class_exists('ChannelModel')) {
         }
 
         //01-03 edit by yangyang comment 库存满足条件的上级渠道商
-        public function recursive_access_to_superior ($openid, $goodsid=0, $optionid=0, $total=0)
+        public function recursive_access_to_superior ($openid, $goodsid=0, $optionid=0, $total=0, $level_leight=0)
         {
             global $_W;
             if (empty($optionid)) {
@@ -735,12 +735,6 @@ if (!class_exists('ChannelModel')) {
             if ($member['agentid'] == 0) {
                 return array();
             }
-            if ($member['ischannel'] == 0) {
-                $level_leight = -1;
-            } else {
-                $level = $this->getLevel($openid);
-                $level_leight = $level['level_num'];
-            }
             $superior = pdo_fetch("SELECT * FROM " . tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND id=:id", array(
                 ':uniacid'  => $_W['uniacid'],
                 ':id'       => $member['agentid']
@@ -749,7 +743,7 @@ if (!class_exists('ChannelModel')) {
                 if ($superior['agentid'] == 0) {
                     return array();
                 }
-                return $this->recursive_access_to_superior($superior['openid'], $goodsid, $optionid, $total);
+                return $this->recursive_access_to_superior($superior['openid'], $goodsid, $optionid, $total, $level_leight);
             } else {
                 $superior_level = $this->getLevel($superior['openid']);
                 if ($superior_level['level_num'] > $level_leight) {
@@ -766,7 +760,7 @@ if (!class_exists('ChannelModel')) {
                         if ($superior['agentid'] == 0) {
                             return array();
                         }
-                        return $this->recursive_access_to_superior($superior['openid'], $goodsid, $optionid, $total);
+                        return $this->recursive_access_to_superior($superior['openid'], $goodsid, $optionid, $total, $level_leight);
                     } else {
                         $superior_level['openid'] = $superior['openid'];
                         $superior_level['stock'] = $superior_stock;
@@ -776,7 +770,7 @@ if (!class_exists('ChannelModel')) {
                     if ($superior['agentid'] == 0) {
                         return array();
                     }
-                    return $this->recursive_access_to_superior($superior['openid'], $goodsid, $optionid, $total);
+                    return $this->recursive_access_to_superior($superior['openid'], $goodsid, $optionid, $total, $level_leight);
                 }
             }
         }
@@ -854,7 +848,8 @@ if (!class_exists('ChannelModel')) {
                     ':id'		=> $value['goodsid']
                 ));
                 $my_info = $this->getInfo($openid,$value['goodsid'],$value['optionid'],$value['total']);
-                $up_info = $this->recursive_access_to_superior($openid,$value['goodsid'],$value['optionid'],$value['total']);
+                $my_level = $this->getLevel($openid);
+                $up_info = $this->recursive_access_to_superior($openid,$value['goodsid'],$value['optionid'],$value['total'], $my_level['level_num']);
                 $every_turn_price = $marketprice*($my_info['my_level']['purchase_discount']/100);
                 if (!empty($value['ischannelpay'])) {
                     $channel_cond = '';
