@@ -36,7 +36,7 @@ if (!class_exists('CardModel')) {
             if (empty($cdkey)) {
                 return array();
             }
-            $result = pdo_fetch("SELECT * FROM " . tablename('sz_yi_card_data') . " WHERE uniacid=:uniacid AND cdkey=:cdkey", array(
+            $result = pdo_fetch("SELECT * FROM " . tablename('sz_yi_card_data') . " WHERE uniacid=:uniacid AND cdkey=:cdkey AND isbind=0", array(
                 ':uniacid'  => $_W['uniacid'],
                 ':cdkey'    => $cdkey
             ));
