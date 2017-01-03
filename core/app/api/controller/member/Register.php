@@ -218,7 +218,7 @@ class Register extends YZ
         //小程序session处理
         $random = $this->wx_app_session($user_info);
 
-        $res = array('3rd_session' => $random);
+        $res['3rd_session'] = array(array('wxappid'=>$random));
         $this->returnSuccess($res);
     }
 
