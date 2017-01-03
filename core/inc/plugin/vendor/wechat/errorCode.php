@@ -1,4 +1,4 @@
-﻿﻿<?php
+<?php
 
 /**
  * error code 说明.
