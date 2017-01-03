@@ -219,7 +219,8 @@ class Sz_DYi_User
 
         if ($_GPC['app_type'] == 'wechat') {
             if ($_GPC['3rd_session'] && $_SESSION['wx_app'][$_GPC['3rd_session']]) {
-                return array('openid' =>unserialize($_SESSION['wx_app'][$_GPC['3rd_session']]));
+                $wx_app = unserialize($_SESSION['wx_app'][$_GPC['3rd_session']]);
+                return array('openid' => $wx_app['openid']);
             } else {
                 return false;
             }

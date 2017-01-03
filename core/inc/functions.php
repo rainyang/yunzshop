@@ -529,6 +529,9 @@ function is_weixin_show()
 function is_weixin()
 {
     global $_W;
+    if($_GET['app_type'] == 'wechat'){
+        return false;
+    }
     if ($_W['uniaccount']['level'] == 1 OR $_W['uniaccount']['level'] == 3) {
         return false;
     }
@@ -1101,19 +1104,13 @@ if (!function_exists("pdo_sql_debug")) {
  */
 function json_encode_ex($value)
 {
-    if (version_compare(PHP_VERSION, '5.4.0', '<')) {
-        $str = json_encode($value);
-        $str = preg_replace_callback(
-            "#\\\u([0-9a-f]{4})#i",
-            function ($matchs) {
-                return iconv('UCS-2BE', 'UTF-8', pack('H4', $matchs[1]));
-            },
-            $str
-        );
-        return $str;
-    } else {
-        return json_encode($value, JSON_UNESCAPED_UNICODE);
+    $value2 = '{"result":"1","msg":"\u6210\u529f","data":{"total":"3","list":[{"id":"333","total":"1","isopenchannel":"0","isforceyunbi":"0","yunbi_deduct":"0.00","goodsid":"250","stock":"863","optionstock":"","maxbuy":"0","usermaxbuy":"0","title":"\u6d77\u5357\u519c\u57a6\u767d\u6c99\u7eff\u8336 \u6d77\u5357\u7279\u4ea7\u94c1\u76d2\u88c5 \u6b63\u54c1\u4e00\u7ea7150g\u514b\u94c1\u76d2\u7eff\u8336\u4e13\u4f9b","thumb":"http:\/\/demo.yunzshop.com\/attachment\/images\/sz_yi\/3\/2016\/12\/zCkvFPXIFx4JFX4fFXxk4xt2IcN36c.jpg","marketprice":"158.00","productprice":"0.00","optiontitle":"","optionid":"0","specs":"","option_ladders":""},{"id":"332","total":"1","isopenchannel":"0","isforceyunbi":"0","yunbi_deduct":"0.00","goodsid":"252","stock":"857","optionstock":"","maxbuy":"0","usermaxbuy":"0","title":"\u4e4c\u9f99\u8336 \u6709\u673a\u8336 \u7279\u7ea7\u9999\u6d53 \u897f\u5ca9\u5c71\u8336 \u9ad8\u5c71\u8336 500g \u8336\u738b","thumb":"http:\/\/demo.yunzshop.com\/attachment\/images\/sz_yi\/3\/2016\/12\/N7rzsBSNpI87i643P61735785ziLSl.jpg","marketprice":"290.00","productprice":"0.00","optiontitle":"","optionid":"0","specs":"","option_ladders":""},{"id":"331","total":"1","isopenchannel":"0","isforceyunbi":"0","yunbi_deduct":"0.00","goodsid":"253","stock":"48062","optionstock":"","maxbuy":"0","usermaxbuy":"0","title":"\u7279\u60e0\u5305\u90ae \u6e56\u5357\u5b89\u5316\u9ed1\u8336 \u6b63\u54c1\u767d\u6c99\u6eaa\u91d1\u82b1\u624b\u538b\u832f\u7816\u5929\u5c16\u8336 \u5929\u832f\u83361kg","thumb":"http:\/\/demo.yunzshop.com\/attachment\/images\/sz_yi\/3\/2016\/12\/lQ2WEw382SE4a7qae89wq334294I8W.jpg","marketprice":"390.00","productprice":"0.00","optiontitle":"","optionid":"0","specs":"","option_ladders":""}],"totalprice":"838.00","difference":"","ischannelpay":"0","verify_goods_ischannelpick":"","verify_goods_ischannelpay":"","virtual_currency":"1","yunbi_title":""}}';
+    $result = json_encode($value);
+    if($value2 === $result){
+        dump($value2);
+
     }
+    return $result;
 }
 if (!function_exists("getExitInfo")) {
 
