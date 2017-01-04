@@ -2700,14 +2700,14 @@ if ($_W['isajax']) {
                     $order_goods['supplier_uid'] = $goods['supplier_uid'];
                 }
                 if (p('channel')) {
-                    $my_info = p('channel')->getInfo($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
+                    $my_level = p('channel')->getLevel($openid);
+                    $my_info = p('channel')->recursive_access_to_superior($openid,$goods['goodsid'],$goods['optionid'],$goods['total'],$my_level['level_num']);
                     if ($ischannelpay == 1 && empty($ischannelpick)) {
                         $order_goods['ischannelpay']  = $ischannelpay;
                     }
                     $order_goods['channel_id'] = 0;
-                    $mi = p('channel')->recursive_access_to_superior($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
-                    if (!empty($mi)) {
-                        $mi_member = m('member')->getInfo($mi['openid']);
+                    if (!empty($my_info)) {
+                        $mi_member = m('member')->getInfo($my_info['openid']);
                         $order_goods['channel_id'] = $mi_member['id'];
                     }
                 }
@@ -2715,16 +2715,7 @@ if ($_W['isajax']) {
                 if (p('channel')) {
                     if (!empty($order_goods['channel_id']) && empty($order_goods['ischannelpay'])) {
                         $order_goods_id = pdo_insertid();
-                        $profit = ($order_goods['price'] - $order_goods['price'] * $my_info['up_level']['purchase_discount']/100) * $my_info['up_level']['profit_sharing']/100 + ($order_goods['price'] * $my_info['up_level']['purchase_discount']/100);
-                        $profit_data = array(
-                            'uniacid'           => $_W['uniacid'],
-                            'order_goods_id'    => $order_goods_id,
-                            'goods_price'       => $order_goods['price'],
-                            'discount'          => $my_info['up_level']['purchase_discount'],
-                            'profit_ratio'      => $my_info['up_level']['profit_sharing'],
-                            'profit'            => $profit
-                        );
-                        pdo_insert('sz_yi_channel_order_goods_profit', $profit_data);
+                        p('channel')->addChannelProfit($my_info,$order_goods,$order_goods_id);
                     }
                 }
             }
