@@ -159,6 +159,12 @@ if($_GPC['plugin'] == "fund"){
     'orderlist' => '众筹订单'
     ); 
 }
+$plugin_commission = p("commission");
+$level = 0;
+if ($plugin_commission) {
+    $cset = $plugin_commission->getSet();
+    $level = intval($cset["level"]);
+}
 if ($operation == "display") {
     ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
     //判断该帐号的权限
@@ -378,12 +384,6 @@ if ($operation == "display") {
         }
     }
     $agentid = intval($_GPC["agentid"]);
-    $plugin_commission = p("commission");
-    $level = 0;
-    if ($plugin_commission) {
-        $cset = $plugin_commission->getSet();
-        $level = intval($cset["level"]);
-    }
     $olevel = intval($_GPC["olevel"]);
     if (!empty($agentid) && $level > 0) {
         $agent = $plugin_commission->getInfo($agentid, array());
@@ -2421,6 +2421,13 @@ function order_list_refund($item)
                             m('member')->setCredit($item['openid'], 'credit1', $item['deductcredit'], array(
                                 '0',
                                 $shopset['name'] . "购物返还抵扣积分 积分: {$item['deductcredit']} 抵扣金额: {$item['deductprice']} 订单号: {$item['ordersn']}"
+                            ));
+                        }
+
+                        if ($item['deductcommission'] > 0) {
+                            m('member')->setCredit($item['openid'], 'credit20', -$item['deductcommission'], array(
+                                '0',
+                                $shopset['name'] . "购物返还抵扣佣金 抵扣金额: {$item['deductcommission']} 订单号: {$item['ordersn']}"
                             ));
                         }
 

@@ -477,7 +477,7 @@
     
     <%if order.deductcredit>0 || order.deductcredit2>0  %>
      <div class="addorder_price">
-            <div class="price" >
+         <div class="price" >
             <%if order.deductcredit>0 %>
             <div class="line" style="line-height:26px;"><d class="deductcredit_info" data-id="<%order.supplier_uid%>"><%order.deductcredit%></d> {if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}可抵扣 <d class="deductcredit_money" data-id="<%order.supplier_uid%>" style='color:#f15353'><%order.deductmoney%></d> 元
                 <div class="nav deductcredit" data-id="<%order.supplier_uid%>" on="0" credit="<%order.deductcredit%>" money='<%order.deductmoney%>'><nav></nav></div>
@@ -489,7 +489,12 @@
                 <div data-id="<%order.supplier_uid%>" class="nav deductcredit2" on="0" credit2="<%order.deductcredit2%>"><nav></nav></div>
             </div>
             <%/if%>
-     
+
+             <%if order.deductcommission>0 %>
+             <div class="line" style="line-height:33px;">佣金可抵扣 <d class="deductcommission_money"  data-id="<%order.supplier_uid%>" style='color:#f15353'><%order.deductcommission%></d> 元
+                 <div data-id="<%order.supplier_uid%>" class="nav deductcommission" on="0" commission="<%order.deductcommission%>"><nav></nav></div>
+             </div>
+             <%/if%>
         </div>
       
     </div>
@@ -979,6 +984,11 @@ var fromcart = 0;
                           $('.deductcredit2[data-id='+getjson.result.supplier_uid+']').attr('credit2',getjson.result.deductcredit2);
                       }
 
+                      if(getjson.result.deductcommission){
+                          $('.deductcommission_money[data-id='+getjson.result.supplier_uid+']').html( getjson.result.deductcommission);
+                          $('.deductcommission[data-id='+getjson.result.supplier_uid+']').attr('commission',getjson.result.deductcommission);
+                      }
+
                       if(getjson.result.hascoupon){
                         $('.coupondiv[data-id='+supplier_uid+']').show();
                           $('.couponselect[data-id='+supplier_uid+']').html('我要使用优惠券');
@@ -1092,32 +1102,70 @@ var fromcart = 0;
               {/if}
             totalprice = totalprice - enoughprice + dispatchprice;
             var deductprice = 0;
+            var td = 0;
             if($('.deductcredit[data-id='+supplier_uid+']').length>0){
                 if($('.deductcredit[data-id='+supplier_uid+']').attr('on')=='1'){
                     deductprice = parseFloat( $('.deductcredit[data-id='+supplier_uid+']').attr('money').replace(',','') )
 
-                           if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
-                              var td1 = parseFloat( $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2').replace(',','') );
+                       if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
+                          var td1 = parseFloat( $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2').replace(',','') );
 
-                              if(totalprice-deductprice>=0){
-                                  var td = totalprice - deductprice;
-                                  if(td>td1){
-                                      td = td1;
-                                  }
-                                  $('.deductcredit2_money[data-id='+supplier_uid+']').html( td.toFixed(2) );
-                              }else{
-                                   $('.deductcredit2[data-id='+supplier_uid+']').attr('on','0').removeClass('on');
+                          if(totalprice-deductprice>=0){
+                              var td = totalprice - deductprice;
+                              if(td>td1){
+                                  td = td1;
                               }
-                           }
+                              $('.deductcredit2_money[data-id='+supplier_uid+']').html( td.toFixed(2) );
+                          }else{
+                               $('.deductcredit2[data-id='+supplier_uid+']').attr('on','0').removeClass('on');
+                          }
+                       }
 
+
+                        if($('.deductcommission[data-id='+supplier_uid+']').length>0){
+                            var comd1 = parseFloat( $('.deductcommission[data-id='+supplier_uid+']').attr('commission').replace(',','') );
+                            var comd = totalprice - deductprice;
+                            if($('.deductcredit2[data-id='+supplier_uid+']').attr('on')=='1'){
+                                comd = totalprice-deductprice-td;
+                            }
+                            if(comd>=0){
+                                if(comd>comd1){
+                                    comd = comd1;
+                                }
+                                $('.deductcommission_money[data-id='+supplier_uid+']').html( comd.toFixed(2) );
+                            }else{
+                                $('.deductcommission[data-id='+supplier_uid+']').attr('on','0').removeClass('on');
+                            }
+                        }
+                        if ($('.deductcommission[data-id='+supplier_uid+']').attr('on')=='1') {
+
+                        }
                 } else{
                      if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
                         var td = parseFloat( $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2').replace(',','') );
                         $('.deductcredit2_money[data-id='+supplier_uid+']').html( td.toFixed(2) );
                      }
 
+                    if($('.deductcommission[data-id='+supplier_uid+']').length>0){
+                        var comd1 = parseFloat( $('.deductcommission[data-id='+supplier_uid+']').attr('commission').replace(',','') );
+                        var comd = totalprice - deductprice;
+                        if($('.deductcredit2[data-id='+supplier_uid+']').attr('on')=='1'){
+                            comd = totalprice-deductprice-td;
+                        }
+                        if(comd>=0){
+                            if(comd>comd1){
+                                comd = comd1;
+                            }
+                            $('.deductcommission_money[data-id='+supplier_uid+']').html( comd.toFixed(2) );
+                        }else{
+                            $('.deductcommission[data-id='+supplier_uid+']').attr('on','0').removeClass('on');
+                        }
+                    }
                 }
             }
+
+
+
             var deductyunbi = 0;
             if($('.deductyunbi[data-id='+supplier_uid+']').length>0){
                 if($('.deductyunbi[data-id='+supplier_uid+']').attr('on')=='1'){
@@ -1126,11 +1174,17 @@ var fromcart = 0;
             }
             var deductprice2 = 0;
             if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
-                     if($('.deductcredit2[data-id='+supplier_uid+']').attr('on')=='1'){
-                          deductprice2 = parseFloat( $('.deductcredit2_money[data-id='+supplier_uid+']').html().replace(',','') );
-                     }
-             }
-            totalprice = totalprice - deductprice - deductprice2 - deductyunbi;
+                 if($('.deductcredit2[data-id='+supplier_uid+']').attr('on')=='1'){
+                      deductprice2 = parseFloat( $('.deductcredit2_money[data-id='+supplier_uid+']').html().replace(',','') );
+                 }
+            }
+            var deductcommission = 0;
+            if($('.deductcommission[data-id='+supplier_uid+']').length>0){
+                if($('.deductcommission[data-id='+supplier_uid+']').attr('on')=='1'){
+                    deductcommission = parseFloat( $('.deductcommission_money[data-id='+supplier_uid+']').html().replace(',','') );
+                }
+            }
+            totalprice = totalprice - deductprice - deductprice2 - deductyunbi - deductcommission;
             if(totalprice<=0){
                 totalprice = 0;
             }
@@ -1277,6 +1331,11 @@ var fromcart = 0;
                       order[i].deduct2 = 1;
                 }
             }
+              if($('.deductcommission[data-id='+supplierarr[i]+']').length>0){
+                  if($('.deductcommission[data-id='+supplierarr[i]+']').attr('on')=='1'){
+                      order[i].commission = 1;
+                  }
+              }
               {if $hascouponplugin}
                   order[i].couponid = $("input[data-name='couponid'][data-id="+supplierarr[i]+"]").val();
               {/if}
@@ -1423,6 +1482,11 @@ var fromcart = 0;
                       order[i].deduct2 = 1;       
                 }
             }
+            if($('.deductcommission[data-id='+supplierarr[i]+']').length>0){
+                if($('.deductcommission[data-id='+supplierarr[i]+']').attr('on')=='1'){
+                    order[i].commission = 1;
+                }
+            }
               {if $hascouponplugin}
                   order[i].couponid = $("input[data-name='couponid'][data-id="+supplierarr[i]+"]").val();
               {/if}
@@ -1497,6 +1561,20 @@ var fromcart = 0;
                      $(this).removeClass('on').find('nav').removeClass('on');
                } 
                calctotalprice(supplier_uid);
+        });
+
+        //佣金抵扣
+        $('.deductcommission').click(function(){
+            var on = $(this).attr('on')=='0'?'1':'0';
+            var supplier_uid = $(this).attr('data-id');
+            $(this).attr('on',on);
+            if(on=='1'){
+                $(this).addClass('on').find('nav').addClass('on');
+            }
+            else{
+                $(this).removeClass('on').find('nav').removeClass('on');
+            }
+            calctotalprice(supplier_uid);
         });
        {if $hascouponplugin}
         bindCouponEvents();

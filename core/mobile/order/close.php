@@ -46,6 +46,8 @@ foreach ($sets as $set) {
             m('member')->returnCredit($o['id']);
 
 			if ($p) {
+			    //返回佣金
+			    $p->returnCommission($o['id']);
 				if (!empty($o['couponid'])) {
 					$p->returnConsumeCoupon($o['id']);
 				}
