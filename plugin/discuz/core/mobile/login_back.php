@@ -132,6 +132,7 @@ if ($operation == 'index') {
     $exist = $this->model->hasId($uid);
 
     if (empty($exist)) {
+        $userinfo['nickname'] = @iconv("utf-8", "gbk", $userinfo['nickname']);
         $this->model->userScanRegister($uid, $userinfo['nickname'] . substr($userinfo['openid'], 0, 4), $email, $pwd);
     }
 
