@@ -115,7 +115,6 @@ function tokenValidation($parms)
 
     $return  = curl_exec($ch);
     $status = json_decode($return,true);
-    file_put_contents(IA_ROOT."/yitian_return.txt",print_r($return, true), FILE_APPEND);
     curl_close($ch);
 
     return $status;
