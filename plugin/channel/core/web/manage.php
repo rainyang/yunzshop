@@ -24,7 +24,7 @@ if ($operation == 'display') {
     $sql = "SELECT dm.*,dm.nickname,dm.avatar,l.level_name,l.level_num,p.nickname AS parentname,p.avatar AS parentavatar FROM " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('sz_yi_channel_level') . " l on l.id = dm.channel_level" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid AND f.uniacid={$_W['uniacid']}" . " WHERE dm.uniacid = " . $_W['uniacid'] . " AND dm.ischannel =1  {$condition} ORDER BY dm.channeltime DESC";
     $list  = pdo_fetchall($sql, $params);
     foreach ($list as $key => $row) {
-        $list[$key]['downcount'] = pdo_fetchcolumn('SELECT count(*) FROM ' . tablename('sz_yi_member') . ' WHERE agentid = :agentid', array(':agentid' => $list[$key]['id']));
+        $list[$key]['downcount'] = pdo_fetchcolumn('SELECT count(*) FROM ' . tablename('sz_yi_member') . ' WHERE agentid = :agentid AND ischannel=1 AND channel_level<>0', array(':agentid' => $list[$key]['id']));
     }
     $total = pdo_fetchcolumn("SELECT count(dm.id) FROM" . tablename('sz_yi_member') . " dm  " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " WHERE dm.uniacid =" . $_W['uniacid'] . " AND dm.ischannel =1 {$condition}", $params);
     //print_r($list);exit;
