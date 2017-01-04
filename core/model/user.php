@@ -213,14 +213,11 @@ class Sz_DYi_User
     function getInfo($base64 = false, $debug = false)
     {
         global $_W, $_GPC;
-        if(!is_weixin()&&!is_app_api() ){
-            return $this->getUserInfo();
-        }
 
         if ($_GPC['app_type'] == 'wechat') {
             if ($_GPC['3rd_session'] && $_SESSION['wx_app'][$_GPC['3rd_session']]) {
                 $wx_app = unserialize($_SESSION['wx_app'][$_GPC['3rd_session']]);
-
+                
                 if (!empty($wx_app)) {
                     return array('openid' => $wx_app['openid']);
                 } else {
@@ -232,6 +229,12 @@ class Sz_DYi_User
             }
 
         }
+
+        if(!is_weixin()&&!is_app_api() ){
+            return $this->getUserInfo();
+        }
+
+
 
         if(is_app_api()){
             if(in_array($_GET['api'],array('index/Index','category/Index','goods/Detail','member/Register','goods/Display','member/SentCode'))){
