@@ -178,7 +178,7 @@ class Register extends YZ
         session_start();
         load()->func('communication');
 
-        $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+        $setdata = pdo_fetch("select * from " . tablename('sz_yi_wxapp') . ' where uniacid=:uniacid limit 1', array(
             ':uniacid' => $_W['uniacid']
         ));
 
