@@ -22,10 +22,20 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 if ($operation == 'upgrade') {
     $version = grtVersion();
     if ($version['apkstatus'] == 1) {
-        echo json_encode($version);
+        $result = array(
+            'result' => '1',
+            'msg' => "成功",
+            'data' => $version
+            );
+        echo json_encode($result);
         exit;
     }
-    echo json_encode($version);
+    $result = array(
+        'result' => 0,
+        'msg' => "失败",
+        'data' => $version
+        );
+    echo json_encode($result);
     exit;
 
 }
