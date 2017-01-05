@@ -276,12 +276,12 @@ class Sz_DYi_Order
                     $order_update = "id in ({$orderids})";
                     $orderdetail_where = "o.id in ({$orderids})";
                     $goods_where = "og.orderid in ({$orderids})";
-                    $orderids_where = "orderid in ({$orderids})";
+                    $orderids_where = " and orderid in ({$orderids})";
                 }else{
                     $order_update = "id = ".$orderid;
                     $orderdetail_where = "o.id = {$orderid}";
                     $goods_where = "og.orderid = {$orderid}";
-                    $orderids_where = "orderid = {$orderid}";
+                    $orderids_where = " and orderid = {$orderid}";
                 }
                 if ($order['status'] == 0) {
                     $pv = p('virtual');
