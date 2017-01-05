@@ -50,7 +50,7 @@ class Detail extends YZ
 
     private static function getAddressBlockTypeId($order, $show)
     {
-        $id_arr = [];
+        $id_arr = array();
         if ($show) {
             if ($order['isverify'] == 1 && $order['virtual'] != '0') {
                 //地址类型1  联系人 carrier 联系电话 carrier
