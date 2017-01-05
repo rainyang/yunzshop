@@ -167,7 +167,6 @@ class Sz_DYi_Goods
                 
             }
             $list = pdo_fetchall($sql, $params);
-            dump(pdo_sql_debug($sql, $params));
         }
         $list = set_medias($list, 'thumb');
         return $list;

@@ -44,8 +44,10 @@ class Index extends YZ
     private function _getRecommand()
     {
 
-        $goods = m('goods')->getList(array('pagesize' => 100000, 'isrecommand' => 1));
-
+        $goods = m('goods')->getList(array('pagesize' => 6, 'isrecommand' => 1));
+        foreach ($goods as &$good) {
+            unset($good['content']);
+        }
         return $goods;
     }
 
