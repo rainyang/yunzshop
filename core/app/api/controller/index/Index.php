@@ -13,6 +13,7 @@ class Index extends YZ
         global $_W,$_GPC;
         $_W['ispost'] = true;
         $_GPC['pagesize'] = 10;
+        $_GPC['ishot'] = 1;
         $result = $this->callMobile('shop/list');
         //dump($result);exit;
         if ($result['code'] == -1) {
@@ -33,8 +34,9 @@ class Index extends YZ
     private function _getCategory()
     {
         global $_W;
+        //dump(pdo_sql_debug('SELECT id, name, thumb,level FROM '. tablename('sz_yi_category') . ' WHERE isrecommand = 1 AND enabled=1 AND uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'));
+
         $category = set_medias(pdo_fetchall('SELECT id, name, thumb,level FROM '. tablename('sz_yi_category') . ' WHERE isrecommand = 1 AND enabled=1 AND uniacid= '.$_W['uniacid'].' ORDER BY displayorder, id DESC'),'thumb');
-//pdo_sql_debug();
         return $category;
     }
 
@@ -50,7 +52,6 @@ class Index extends YZ
     public function index(){
         $res['goods'] = $this->_getGoods();
         $res['ads'] = m('shop')->getADs();
-        dump($res['ads']);
         $res['category'] = $this->_getCategory();
         $res['recommand'] = $this->_getRecommand();
         $this->returnSuccess($res);

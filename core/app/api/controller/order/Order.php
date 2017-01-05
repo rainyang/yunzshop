@@ -27,68 +27,68 @@ class Order
 
     public static function getButtonModel($button_id)
     {
-        $button = [
-            static::PAY => [
+        $button = array(
+            static::PAY => array(
                 'name' => '付款',
                 'api' => '/order/pay',//
                 'value' => static::PAY
-            ],
-            static::COMPLETE => [
+            ),
+            static::COMPLETE => array(
                 'name' => '确认收货',
                 'api' => 'complete',
                 'value' => static::COMPLETE
-            ],
-            static::EXPRESS => [
+            ),
+            static::EXPRESS => array(
                 'name' => '查看物流',
                 'api' => '/order/express/display',
                 'value' => static::EXPRESS
-            ],
-            static::CANCEL => [
+            ),
+            static::CANCEL => array(
                 'name' => '取消订单',
                 'api' => 'cancel',
                 'value' => static::CANCEL
-            ],
-            static::COMMENT=>[
+            ),
+            static::COMMENT=>array(
                 'name'=>'评价',
                 'api'=>'comment',
                 'value'=>static::COMMENT
-            ],
-            static::ADD_COMMENT=>[
+            ),
+            static::ADD_COMMENT=> array(
                 'name'=>'追加评价',
                 'api'=>'comment',
                 'value'=>static::ADD_COMMENT
-            ],
-            static::DELETE=>[
+            ),
+            static::DELETE=> array(
                 'name'=>'删除订单',
                 'api'=>'delete',
                 'value'=>static::DELETE
-            ],
-            static::REFUND=>[
+            ),
+            static::REFUND=> array(
                 'name'=>'申请退款',
                 'api'=>'refund',
                 'value'=>static::REFUND
-            ],
-            static::AFTER_SALES=>[
+            ),
+            static::AFTER_SALES=> array(
                 'name'=>'refund',
                 'api'=>'申请售后',
                 'value'=>static::AFTER_SALES
-            ],
-            static::IN_REFUND=>[//todo 有问题这个状态不是一个按钮
+            ),
+            static::IN_REFUND=> array(//todo 有问题这个状态不是一个按钮
                 'name'=>'申请退款中',
                 'api'=>'/',
                 'value'=>static::IN_REFUND
-            ],
-            static::IN_AFTER_SALE=>[//todo 有问题这个状态不是一个按钮
+            ),
+            static::IN_AFTER_SALE=> array(//todo 有问题这个状态不是一个按钮
                 'name'=>'申请退款中',
                 'api'=>'/',
                 'value'=>static::IN_AFTER_SALE
-            ],
-            static::VERIFY=>[
+            ),
+            static::VERIFY => array(
                 'name'=>'确认使用',
                 'api'=>'/',//verify
                 'value'=>static::VERIFY
-            ],
-        ];
+            ),
+        );
         if (!isset($button[$button_id])) {
             echo 'button_id不存在';
             exit;

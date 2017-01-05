@@ -18,7 +18,7 @@ class Operation extends YZ
     }
     private function _getIds($ids){
         if(is_numeric($ids)){
-            return [$ids];
+            return array($ids);
         }else{
             $ids = explode(',',$ids);
         }

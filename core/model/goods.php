@@ -165,9 +165,9 @@ class Sz_DYi_Goods
                 
                     $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
                 
-                
             }
             $list = pdo_fetchall($sql, $params);
+            dump(pdo_sql_debug($sql, $params));
         }
         $list = set_medias($list, 'thumb');
         return $list;

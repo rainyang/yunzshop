@@ -28,7 +28,7 @@ class Index extends YZ
             $member['can_withdraw'] = true;
         }
         $block_list = $this->_getBlockList();
-        $res = ['block_list' => $block_list];
+        $res = array('block_list' => $block_list);
         $res += array_part('commission_total,agentcount,agenttime,commission_ok,can_withdraw', $member);
         $this->returnSuccess($res);
     }
@@ -46,32 +46,32 @@ class Index extends YZ
         $bonus_set = $this->variable['bonus_set'];
         $member_bonus = $this->variable['member_bonus'];
 
-        $list = [];
+        $list = array();
         //dump($this->variable['bonus']);
         if ($this->variable['bonus'] != 1) {
             return $list;
         }
-        $list = [
-            [
+        $list = array(
+            array(
                 'id' => 8,
                 'icon' => '',
                 'title' => $bonus_set['texts']['commission'],
                 'value' => $member_bonus['commission_total'],
                 'unit' => '元'
-            ], [
+            ), array(
                 'id' => 9,
                 'icon' => '',
                 'title' => $bonus_set['texts']['order'],
                 'value' => $member_bonus['ordercount0'],
                 'unit' => '个'
-            ], [
+            ), array(
                 'id' => 10,
                 'icon' => '',
                 'title' => $bonus_set['texts']['order_area'],
                 'value' => $member_bonus['ordercount_area0'],
                 'unit' => '个'
-            ],
-        ];
+            ),
+        );
         return $list;
     }
 
@@ -79,45 +79,45 @@ class Index extends YZ
     {
         $member = $this->json['member'];
         $set = p('commission')->getSet();
-        $list = [
-            [
+        $list = array(
+            array(
                 'id' => 1,
                 'icon' => '',
                 'title' => $set['texts']['commission1'],
                 'value' => $member['commission_total'],
                 'unit' => '元'
-            ], [
+            ), array(
                 'id' => 2,
                 'icon' => '',
                 'title' => $set['texts']['order'],
                 'value' => $member['ordercount0'],
                 'unit' => '个'
-            ], [
+            ), array(
                 'id' => 3,
                 'icon' => '',
                 'title' => $set['texts']['commission_detail'],
                 'value' => '',
                 'unit' => $set['texts']['commission_detail']
-            ], [
+            ), array(
                 'id' => 4,
                 'icon' => '',
                 'title' => $set['texts']['myteam'],
                 'value' => $member['agentcount'],
                 'unit' => '个'
-            ], [
+            ), array(
                 'id' => 5,
                 'icon' => '',
                 'title' => $set['texts']['mycustomer'],
                 'value' => $member['customercount'],
                 'unit' => '人'
-            ], [
+            ), array(
                 'id' => 6,
                 'icon' => '',
                 'title' => '二维码',
                 'value' => '',
                 'unit' => '推广二维码'
-            ], 
-        ];
+            ),
+        );
 
         return $list;
     }

@@ -39,9 +39,9 @@ class Display extends YZ
     {
         $button_list = $this->_getButtonList($order);
         //$order['goods'] =
-        $order += [
+        $order += array(
             'button_list' => $button_list,
-        ];
+        );
         return $order;
     }
 

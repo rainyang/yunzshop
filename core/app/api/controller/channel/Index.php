@@ -27,12 +27,12 @@ class Index extends YZ
         $list = $result['list'];
         $lower_openids = $result['json']['channelinfo']['channel']['lower_openids'];
         if(!empty($lower_openids)){
-            $list[] = [
+            $list[] = array(
                 'id'        => '7',
                 'title'      => '推荐订单',
                 'value'     =>'',
                 'unit'      =>''
-            ];
+            );
         }
         $json['json'] = array(
             'avatar'            => $result['json']['member']['avatar'],

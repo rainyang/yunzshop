@@ -32,7 +32,7 @@ class Express extends \admin\api\YZ
         $order_info['url'] = $_W['siteurl']."/wap/&uniacid={$_W['uniacid']}&id={$order_info['id']}&express={$order_info['express']}&expresssn={$order_info['expresssn']}";
         //dump($order_info);
         $order_info = array_part('expresscom,expresssn,url',$order_info);
-        pdo_update('sz_yi_api_log', ['error_info'=> json_encode($order_info)], array('api_log_id' => pdo_insertid()));
+        pdo_update('sz_yi_api_log', array('error_info'=> json_encode($order_info)), array('api_log_id' => pdo_insertid()));
 
         //dump($order_info);
         $this->returnSuccess($order_info);
