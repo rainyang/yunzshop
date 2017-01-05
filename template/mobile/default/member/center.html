@@ -179,13 +179,20 @@
             </a>
         </li>
         {/if}
-{if $open_creditshop}
+        {if $open_creditshop}
         <li>
-        <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
-        <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>积分商城
-        </a>
+            <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
+                <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>积分商城
+            </a>
         </li>
-{/if}
+        {/if}
+        {if p('card')}
+        <li>
+            <a href="{php echo $this->createPluginMobileUrl('card/center')}">
+                <i class="fa fa-credit-card" style="background:#eeee00"></i><br/>{$card_set['gift_title']}
+            </a>
+        </li>
+        {/if}
     </ul>
 
 </div>
@@ -225,6 +232,9 @@
 {/if}
 
 <div class="cart">
+    {if p('credits') && $appset['eblock']['switch']}
+    <a href="{php echo $this->createPluginMobileUrl('credits')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-coindollar"></i>VC积分兑换<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
     {if !$member['isbindmobile'] && is_weixin()}
     <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px;"><i class="fa fa-mobile"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}

@@ -36,6 +36,17 @@ $plugc           = p("coupon");
 if ($plugc) {
     $hascouponplugin = true;
 }
+
+$pluginc = p('commission');
+if ($pluginc) {
+    $commission_set = $pluginc->getSet();
+}
+$hascard = false;
+$plugincard = p('card');
+if ($plugincard) {
+    $hascard = true;
+    $card_set = $plugincard->getSet();
+}
 $goodid = $_GPC['id'] ? intval($_GPC['id']) : 0;
 $cartid = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
 $diyform_plugin = p("diyform");
@@ -154,8 +165,7 @@ if ($operation == "date") {
     }
     $marketprice = $laddermoney > 0 ? $laddermoney : $_GPC['marketprice'];
 
-
-    return show_json(1, $marketprice);
+    return show_json(1, array('marketprice' => $marketprice));
 }
 
 $yunbi_plugin   = p('yunbi');
@@ -215,7 +225,7 @@ if ($_W['isajax']) {
             ), 'supplier_uid');
 
 
-            $sql   = 'SELECT c.goodsid, c.total, g.maxbuy, g.type, g.issendfree, g.isnodiscount, g.weight, o.weight as optionweight, g.title, g.thumb, ifnull(o.marketprice, g.marketprice) as marketprice, o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2, g.virtual, o.virtual as optionvirtual, discounts, discounts2, discounttype, discountway, g.supplier_uid, g.dispatchprice, g.dispatchtype, g.dispatchid, g.yunbi_deduct, g.isforceyunbi, o.option_ladders, g.plugin FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
+            $sql   = 'SELECT c.goodsid, c.total, g.maxbuy, g.type, g.issendfree, g.isnodiscount, g.weight, o.weight as optionweight, g.title, g.thumb, ifnull(o.marketprice, g.marketprice) as marketprice, o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2, g.deductcommission, g.virtual, o.virtual as optionvirtual, discounts, discounts2, discounttype, discountway, g.supplier_uid, g.dispatchprice, g.dispatchtype, g.dispatchid, g.yunbi_deduct, g.isforceyunbi, o.option_ladders, g.plugin FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
 
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
@@ -254,9 +264,9 @@ if ($_W['isajax']) {
             $fromcart = 1;
         } else {
             if(p('hotel')){
-                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct,virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct, plugin FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct,virtual,maxbuy,usermaxbuy,discounts,discounts2,deductcommission,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct, plugin FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }else{
-                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct,virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct, plugin FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct,virtual,maxbuy,usermaxbuy,discounts,discounts2,deductcommission,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct, plugin FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }
             $data = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
@@ -502,6 +512,7 @@ if ($_W['isajax']) {
 
             if($g['plugin'] == 'fund'){
                 $issale = false;
+                $hascouponplugin = false;
                 $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
             }else{
                 $g['url'] = $this->createMobileUrl('shop/detail', array('id' => $g['goodsid']));
@@ -607,7 +618,7 @@ if ($_W['isajax']) {
                     }
                 } else {
                     //分销商等级折扣
-                    $level     = p("commission")->getLevel($openid);
+                    $level     = $pluginc->getLevel($openid);
                     $discounts = json_decode($g['discounts2'], true);
                     //是分销商
                     $level["discount"] = 0;
@@ -658,7 +669,7 @@ if ($_W['isajax']) {
                     }
                 } else {
                     //分销商等级立减
-                    $level     = p("commission")->getLevel($openid);
+                    $level     = $pluginc->getLevel($openid);
                     $discounts = json_decode($g['discounts2'], true);
                     //是分销商
                     $level["discount"] = 0;
@@ -747,13 +758,22 @@ if ($_W['isajax']) {
             } else {
                 $order_all[$g['supplier_uid']]['yunbideductprice'] += $g["yunbi_deduct"];
             }
-            if ($g["deduct2"] == 0) {
+            if ($g["deduct2"] == 0.00) {
                 $order_all[$g['supplier_uid']]['deductprice2'] += $price;
             } elseif ($g["deduct2"] > 0) {
                 if ($g["deduct2"] > $price) {
                     $order_all[$g['supplier_uid']]['deductprice2'] += $price;
                 } else {
                     $order_all[$g['supplier_uid']]['deductprice2'] += $g["deduct2"];
+                }
+            }
+            if ($g["deductcommideductcommissionssion"] == 0.00) {
+                $order_all[$g['supplier_uid']]['deductcommissionprice'] += $price;
+            } elseif ($g["deductcommission"] > 0) {
+                if ($g["deductcommission"] > $price) {
+                    $order_all[$g['supplier_uid']]['deductcommissionprice'] += $price;
+                } else {
+                    $order_all[$g['supplier_uid']]['deductcommissionprice'] += $g["deductcommission"];
                 }
             }
             $order_all[$g['supplier_uid']]['goods'][] = $g;
@@ -1003,7 +1023,9 @@ if ($_W['isajax']) {
                 $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['goodsprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
-            //var_dump($order_all[$val['supplier_uid']]);exit;
+            if ($hascard) {
+                $order_all[$val['supplier_uid']]['cardcount'] = $plugincard->consumeCardCount($openid);
+            }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
             $realprice_total += $order_all[$val['supplier_uid']]['realprice'];
             $order_all[$val['supplier_uid']]['deductcredit']  = 0;
@@ -1039,6 +1061,21 @@ if ($_W['isajax']) {
                     }
                 }
             }
+
+            //佣金抵扣
+            $order_all[$val['supplier_uid']]['deductcommission'] = 0;
+            if ($pluginc && $commission_set['deduction']) {
+                $member_commission = $pluginc->getInfo($openid, array('ok'));
+                $order_all[$val['supplier_uid']]['deductcommission_money'] = $member_commission['commission_ok'];
+                if ($order_all[$val['supplier_uid']]['deductcommission_money'] >$order_all[$val['supplier_uid']]['deductcommissionprice']) {
+                    $order_all[$val['supplier_uid']]['deductcommission_money'] = $order_all[$val['supplier_uid']]['deductcommissionprice'];
+                }
+                if ($order_all[$val['supplier_uid']]['deductcommission_money'] > $order_all[$val['supplier_uid']]['realprice']) {
+                    $order_all[$val['supplier_uid']]['deductcommission_money'] = $order_all[$val['supplier_uid']]['realprice'];
+                }
+                $order_all[$val['supplier_uid']]['deductcommission'] = $order_all[$val['supplier_uid']]['deductcommission_money'];
+            }
+
 
             //虚拟币抵扣
             $order_all[$val['supplier_uid']]['deductyunbi'] = 0;
@@ -1175,6 +1212,7 @@ if ($_W['isajax']) {
             "deposit" => number_format($deposit, 2),
             'price_list' => $price_list,
             'realprice' => number_format($realprice, 2),
+            'hascouponplugin' => $hascouponplugin,
             'type'=>$goods[0]['type'],
         ),$variable);
     }
@@ -1185,12 +1223,14 @@ if ($_W['isajax']) {
         $deductprice    = 0;
         $deductprice2   = 0;
         $deductcredit2  = 0;
+        $deductcommissionprice  = 0;
         $dispatch_array = array();
         $totalprice = floatval($_GPC['totalprice']);
         $dflag          = $_GPC["dflag"];
         $hascoupon      = false;
         $couponcount    = 0;
         $pc             = p("coupon");
+        $plucard        = p('card');
         $supplier_uid   = $_GPC["supplier_uid"];
         $coupon_carrierid = intval($_GPC['carrierid']);
         $goodid = $_GPC['id'] ? intval($_GPC['id']) : 0;
@@ -1227,6 +1267,12 @@ if ($_W['isajax']) {
            }
         }
 
+        if ($plucard) {
+            $card_set   = $plucard->getSet();
+            $cardcount  = $plucard->consumeCardCount($openid);
+            $hascard    = $cardcount > 0;
+        }
+
         if ($sale_plugin) {
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
@@ -1241,8 +1287,11 @@ if ($_W['isajax']) {
                             'price' => 0,
                             "hascoupon" => $hascoupon,
                             "couponcount" => $couponcount,
+                            "hascard"   => $hascard,
+                            "cardcount" => $cardcount,
                             "deductenough_money" => $deductenough_money,
-                            "deductenough_enough" => $deductenough_enough
+                            "deductenough_enough" => $deductenough_enough,
+                            "supplier_uid" => $supplier_uid
                         ));
                     }
                 }
@@ -1254,8 +1303,11 @@ if ($_W['isajax']) {
                                 "price" => 0,
                                 "hascoupon" => $hascoupon,
                                 "couponcount" => $couponcount,
+                                "hascard"   => $hascard,
+                                "cardcount" => $cardcount,
                                 "deductenough_money" => $deductenough_money,
-                                "deductenough_enough" => $deductenough_enough
+                                "deductenough_enough" => $deductenough_enough,
+                                "supplier_uid" => $supplier_uid
                             ));
                         }
                     } else {
@@ -1263,8 +1315,11 @@ if ($_W['isajax']) {
                             "price" => 0,
                             "hascoupon" => $hascoupon,
                             "couponcount" => $couponcoun,
+                            "hascard"   => $hascard,
+                            "cardcount" => $cardcount,
                             "deductenough_money" => $deductenough_money,
-                            "deductenough_enough" => $deductenough_enough
+                            "deductenough_enough" => $deductenough_enough,
+                            "supplier_uid" => $supplier_uid
                         ));
                     }
                 }
@@ -1291,7 +1346,7 @@ if ($_W['isajax']) {
                         "price" => 0
                     ));
                 }
-                $sql  = "SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformid,diyformtype,diymode,dispatchtype,dispatchid,dispatchprice,yunbi_deduct FROM " . tablename("sz_yi_goods") . " WHERE id=:id AND uniacid=:uniacid  limit 1";
+                $sql  = "SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,deduct2,deductcommission,ednum,edmoney,edareas,diyformid,diyformtype,diymode,dispatchtype,dispatchid,dispatchprice,yunbi_deduct FROM " . tablename("sz_yi_goods") . " WHERE id=:id AND uniacid=:uniacid  limit 1";
                 $data = pdo_fetch($sql, array(
                     ":uniacid" => $uniacid,
                     ":id" => $goodsid
@@ -1370,13 +1425,23 @@ if ($_W['isajax']) {
                     $yunbideductprice += $g["yunbi_deduct"];
                 }
 
-                if ($g["deduct2"] == 0) {
+                if ($g["deduct2"] == 0.00) {
                     $deductprice2 += $g["ggprice"];
                 } else if ($g["deduct2"] > 0) {
                     if ($g["deduct2"] > $g["ggprice"]) {
                         $deductprice2 += $g["ggprice"];
                     } else {
-                        $deductprice2 += $g["deduct2"];
+                        $deductprice2 += $g["deduct2"] * $g["total"];
+                    }
+                }
+
+                if ($g["deductcommission"] == 0.00) {
+                    $deductcommissionprice += $g["ggprice"];
+                } else if ($g["deductcommission"] > 0) {
+                    if ($g["deductcommission"] > $g["ggprice"]) {
+                        $deductcommissionprice += $g["ggprice"];
+                    } else {
+                        $deductcommissionprice += $g["deductcommission"] * $g["total"];
                     }
                 }
                 if (p('channel')) {
@@ -1396,7 +1461,10 @@ if ($_W['isajax']) {
                 return show_json(1, array(
                     "price" => 0,
                     "hascoupon" => $hascoupon,
-                    "couponcount" => $couponcount
+                    "couponcount" => $couponcount,
+                    "hascard"   => $hascard,
+                    "cardcount" => $cardcount,
+                    "supplier_uid" => $supplier_uid
                 ));
             }
             if (!empty($allgoods)) {
@@ -1500,7 +1568,7 @@ if ($_W['isajax']) {
                 }
             }
             if ($dflag != "true") {
-                if (empty($saleset["dispatchnodeduct"])) {
+                if (empty($saleset["dispatchnodeduct"]) && $deductprice2 > 0) {
                     $deductprice2 += $dispatch_price;
                 }
             }
@@ -1537,6 +1605,25 @@ if ($_W['isajax']) {
                 }
             }
 
+            //佣金抵扣
+            if ($pluginc && $commission_set['deduction']) {
+                if ($deductcredit2 == 0) {
+                    $deductcommissionprice += $dispatch_price;  //添加运费金额
+                }
+                $member_commission = $pluginc->getInfo($openid, array('ok'));
+                $commission_ok = $member_commission['commission_ok'];
+
+                if ($commission_ok > $totalprice) {
+                    $deductcommission = $totalprice;
+                }
+
+                if ($commission_ok >$deductcommissionprice) {
+                    $deductcommission = $deductcommissionprice;
+                }
+
+            }
+
+
             //虚拟币抵扣
             $deductyunbi = 0;
             $deductyunbimoney = 0;
@@ -1569,6 +1656,8 @@ if ($_W['isajax']) {
             "price" => $dispatch_price,
             "hascoupon" => $hascoupon,
             "couponcount" => $couponcount,
+            "hascard"   => $hascard,
+            "cardcount" => $cardcount,
             "deductenough_money" => $deductenough_money,
             "deductenough_enough" => $deductenough_enough,
             "deductcredit2" => $deductcredit2,
@@ -1576,6 +1665,7 @@ if ($_W['isajax']) {
             "deductmoney" => $deductmoney,
             "deductyunbi" => $deductyunbi,
             "deductyunbimoney" => $deductyunbimoney,
+            "deductcommission" => $deductcommission,
             "supplier_uid" => $supplier_uid
         ));
 
@@ -1638,6 +1728,7 @@ if ($_W['isajax']) {
             $cash          = 1;
             $deductprice   = 0;
             $deductprice2   = 0;
+            $deductcommissionprice   = 0;
             $virtualsales  = 0;
             $dispatch_price = 0;
             $dispatch_array = array();
@@ -1681,7 +1772,7 @@ if ($_W['isajax']) {
                 if (p('yunbi')) {
                     $yunbi_condtion = 'isforceyunbi,yunbi_deduct,';
                 }
-                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct,bonusmoney,plugin FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,deductcommission,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct,bonusmoney,plugin FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
 
                 $data = pdo_fetch($sql, array(
                     ':uniacid' => $uniacid,
@@ -1916,7 +2007,7 @@ if ($_W['isajax']) {
                     } else {
                         //分销商等级折扣
                         $discounts      = json_decode($data['discounts2'], true);
-                        $level     = p("commission")->getLevel($openid);
+                        $level     = $pluginc->getLevel($openid);
 
                         //是分销商
                         $level["discount"] = 0;
@@ -1977,7 +2068,7 @@ if ($_W['isajax']) {
                     } else {
                         //分销商等级立减
                         $discounts      = json_decode($data['discounts2'], true);
-                        $level     = p("commission")->getLevel($openid);
+                        $level     = $pluginc->getLevel($openid);
 
                         //是分销商
                         $level["discount"] = 0;
@@ -2079,7 +2170,18 @@ if ($_W['isajax']) {
                     if ($data["deduct2"] > $ggprice) {
                         $deductprice2 += $ggprice;
                     } else {
-                        $deductprice2 += $data["deduct2"];
+                        $deductprice2 += $data["deduct2"] * $data["total"];
+                    }
+                }
+
+
+                if ($data["deductcommission"] == 0.00) {
+                    $deductcommissionprice += $ggprice;
+                } else if ($data["deductcommission"] > 0) {
+                    if ($data["deductcommission"] > $ggprice) {
+                        $deductcommissionprice += $ggprice;
+                    } else {
+                        $deductcommissionprice += $data["deductcommission"] * $data["total"];
                     }
                 }
                 $allgoods[] = $data;
@@ -2262,12 +2364,41 @@ if ($_W['isajax']) {
             }
             $totalprice -= $deductenough;
             $totalprice += $dispatch_price;
+
+            $cardid = 0;
+            $cardid = intval($order_row['cardid']);
+            //使用金额
+            $cardprice = 0;
+            if ($plugincard) {
+                $cardinfo = $plugincard->getCradInfo($cardid);
+                if (!empty($cardinfo)) {
+                    if ($cardinfo['balance'] >= $totalprice) {
+                        $cardprice = $totalprice;
+                        $balance = $cardinfo['balance'] - $totalprice;
+                        $totalprice -= $cardinfo['balance'];
+                        if ($totalprice < 0) {
+                            $totalprice = 0;
+                        }
+                    } else {
+                        $cardprice = $cardinfo['balance'];
+                    }
+                    //代金卡剩余金额
+                    $balance = $cardinfo['balance'] - $cardprice;
+                    pdo_update('sz_yi_card_data', 
+                        array('balance' => $balance), 
+                        array('uniacid' => $_W['uniacid'], 'id' => $cardid)
+                    );
+                    $totalprice -= $cardprice;
+                }
+            }
+
             if ($saleset && empty($saleset["dispatchnodeduct"])) {
                 $deductprice2 += $dispatch_price;
             }
             $deductcredit  = 0;
             $deductmoney   = 0;
             $deductcredit2 = 0;
+            $deductcommission = 0;
             if ($sale_plugin) {
                 if (isset($_GPC['order']) && !empty($_GPC['order'][0]['deduct'])) {
                     $credit  = m('member')->getCredit($openid, 'credit1');
@@ -2302,6 +2433,23 @@ if ($_W['isajax']) {
                     }
                 }
                 $totalprice -= $deductcredit2;
+            }
+
+            if ($pluginc && $commission_set['deduction']) {
+                if (isset($_GPC['order']) && !empty($_GPC['order'][0]['commission'])) {
+                    if ($deductcredit2 == 0) {
+                        $deductcommissionprice += $dispatch_price;  //添加运费金额
+                    }
+                    $member_commission = $pluginc->getInfo($openid, array('ok'));
+                    $commission_ok = $member_commission['commission_ok'];
+                    if ($commission_ok > $totalprice) {
+                        $deductcommission = $totalprice;
+                    }
+                    if ($commission_ok > $deductcommissionprice) {
+                        $deductcommission = $deductcommissionprice;
+                    }
+                    $totalprice -= $deductcommission;
+                }
             }
             $ordersn    = m('common')->createNO('order', 'ordersn', 'SH');
             $verifycode = "";
@@ -2358,6 +2506,7 @@ if ($_W['isajax']) {
                 'deductyunbimoney' => $deductyunbi > 0 ? $yunbiprice : 0,
                 'deductyunbi' => $deductyunbi,
                 'deductcredit2' => $deductcredit2,
+                'deductcommission' => $deductcommission,
                 'deductenough' => $deductenough,
                 'status' => 0,
                 'paytype' => 0,
@@ -2381,6 +2530,10 @@ if ($_W['isajax']) {
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
             );
+            if ($plugincard) {
+                $order['cardid']    = $cardid;
+                $order['cardprice'] = $cardprice;
+            }
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
                     $order['ischannelself'] = 1;
@@ -2497,18 +2650,14 @@ if ($_W['isajax']) {
                 $cartids = $order_row['cartids'];
                 $cartids = implode(',',$cartids);
                 if (!empty($cartids)) {
-                    pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where id in (' . $cartids . ') and openid=:openid and goodsid=:goodsid and optionid=:optionid and uniacid=:uniacid ', array(
+                    pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where id in (' . $cartids . ') and openid=:openid and uniacid=:uniacid ', array(
                         ':uniacid' => $uniacid,
-                        ':openid' => $openid,
-                        ":goodsid" => $data["goodsid"],
-                        ":optionid" => $data["optionid"]
+                        ':openid' => $openid
                     ));
                 } else {
-                    pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where openid=:openid and goodsid=:goodsid and optionid=:optionid and uniacid=:uniacid ', array(
+                    pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where openid=:openid and uniacid=:uniacid ', array(
                         ':uniacid' => $uniacid,
-                        ':openid' => $openid,
-                        ":goodsid" => $data["goodsid"],
-                        ":optionid" => $data["optionid"]
+                        ':openid' => $openid
                     ));
                 }
             }
@@ -2551,14 +2700,14 @@ if ($_W['isajax']) {
                     $order_goods['supplier_uid'] = $goods['supplier_uid'];
                 }
                 if (p('channel')) {
-                    $my_info = p('channel')->getInfo($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
+                    $my_level = p('channel')->getLevel($openid);
+                    $my_info = p('channel')->recursive_access_to_superior($openid,$goods['goodsid'],$goods['optionid'],$goods['total'],$my_level['level_num']);
                     if ($ischannelpay == 1 && empty($ischannelpick)) {
                         $order_goods['ischannelpay']  = $ischannelpay;
                     }
                     $order_goods['channel_id'] = 0;
-                    $mi = p('channel')->recursive_access_to_superior($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
-                    if (!empty($mi)) {
-                        $mi_member = m('member')->getInfo($mi['openid']);
+                    if (!empty($my_info)) {
+                        $mi_member = m('member')->getInfo($my_info['openid']);
                         $order_goods['channel_id'] = $mi_member['id'];
                     }
                 }
@@ -2566,16 +2715,7 @@ if ($_W['isajax']) {
                 if (p('channel')) {
                     if (!empty($order_goods['channel_id']) && empty($order_goods['ischannelpay'])) {
                         $order_goods_id = pdo_insertid();
-                        $profit = ($order_goods['price'] - $order_goods['price'] * $my_info['up_level']['purchase_discount']/100) * $my_info['up_level']['profit_sharing']/100 + ($order_goods['price'] * $my_info['up_level']['purchase_discount']/100);
-                        $profit_data = array(
-                            'uniacid'           => $_W['uniacid'],
-                            'order_goods_id'    => $order_goods_id,
-                            'goods_price'       => $order_goods['price'],
-                            'discount'          => $my_info['up_level']['purchase_discount'],
-                            'profit_ratio'      => $my_info['up_level']['profit_sharing'],
-                            'profit'            => $profit
-                        );
-                        pdo_insert('sz_yi_channel_order_goods_profit', $profit_data);
+                        p('channel')->addChannelProfit($my_info,$order_goods,$order_goods_id);
                     }
                 }
             }
@@ -2666,6 +2806,13 @@ if ($_W['isajax']) {
                 }
             }
 
+            if ($deductcommission > 0) {
+                m('member')->setCredit($openid, 'credit20', $deductcommission, array(
+                    '0',
+                    $this->yzShopSet . "购物佣金抵扣 抵扣金额: {$deductcommission} 订单号: {$ordersn}"
+                ));
+            }
+
             if ($deductcredit > 0) {
                 $shop = m('common')->getSysset('shop');
                 m('member')->setCredit($openid, 'credit1', -$deductcredit, array(
@@ -2724,19 +2871,16 @@ if ($_W['isajax']) {
             m('notice')->sendOrderMessage($orderid);
             if (p('channel')) {
                 if (empty($ischannelpay)) {
-                    $pluginc = p('commission');
                     if ($pluginc) {
                         $pluginc->checkOrderConfirm($orderid);
                     }
                 }
             } else {
-                $pluginc = p('commission');
                 if ($pluginc) {
                     $pluginc->checkOrderConfirm($orderid);
                 }
             }
-            /*$pluginc = p('commission');
-            if ($pluginc) {
+            /*if ($pluginc) {
                 $pluginc->checkOrderConfirm($orderid);
             }*/
 

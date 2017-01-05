@@ -128,7 +128,8 @@
         <a href="{php echo $this->createMobileUrl('member')}" class="btn">返回</a>&nbsp;
 
     </div>
-
+</div>
+{template 'order/pay/wechat_jie'}
 <script language="javascript">
     function isWeiXin() {
         var ua = window.navigator.userAgent.toLowerCase();
@@ -285,75 +286,119 @@
             }
             if (result.wechat.success) {
                 $('.balance_sub1').click(function () {
-                    if ($(this).attr('submitting') == '1') {
-                        return;
-                    }
-                    var money = $('#money').val();
-                    if (!$('#money').isNumber()) {
-                        core.tip.show('请输入数字金额!');
-                        return;
-                    }
-                    var logid = $('#logid').val();
-                    if (logid == '') {
-                        core.tip.show('请刷新重试!');
-                        return;
-                    }
+					if (result.wechat.weixin) {
+						if ($(this).attr('submitting') == '1') {
+							return;
+						}
+						var money = $('#money').val();
+						if (!$('#money').isNumber()) {
+							core.tip.show('请输入数字金额!');
+							return;
+						}
+						var logid = $('#logid').val();
+						if (logid == '') {
+							core.tip.show('请刷新重试!');
+							return;
+						}
 
-                    $('.button').attr('submitting', 1);
-                    core.json('member/recharge', {op: 'recharge', openid:"{$openid}",type: 'weixin', money: money, logid: logid}, function (rjson) {
-                        if(rjson.status!=1){
-                            $('.button').removeAttr('submitting');
-                            core.tip.show(rjson.result);
-                            return;
-                        }
-                        
-                        var wechat = rjson.result.wechat;
-                        WeixinJSBridge.invoke('getBrandWCPayRequest', {
-                                    'appId': wechat.appid ? wechat.appid : wechat.appId,
-                                    'timeStamp': wechat.timeStamp,
-                                    'nonceStr': wechat.nonceStr,
-                                    'package': wechat.package,
-                                    'signType': wechat.signType,
-                                    'paySign': wechat.paySign,
-                                }, function (res) {
-                                    if (res.err_msg == 'get_brand_wcpay_request:ok') {
-                                        rechargeok('wechat');
-                                    } else if(res.err_msg=='get_brand_wcpay_request:cancel') {
-                                        $('.button').removeAttr('submitting');
-                                        core.tip.show('取消支付');
-                                    } else {
-                                        $('.button').removeAttr('submitting');
-                                    	alert(res.err_msg);
-                                    }
-                           });
-//                        require(['http://res.wx.qq.com/open/js/jweixin-1.0.0.js'], function (wx) {
-//                            
-//                            jssdkconfig = {php echo json_encode($_W['account']['jssdkconfig']); } || {jsApiList: []};
-//                            jssdkconfig.debug = false;
-//                            jssdkconfig.jsApiList = ['checkJsApi', 'chooseWXPay'];
-//                            wx.config(jssdkconfig);
-//                            wx.ready(function () {
-//                                $('.button').removeAttr('submitting');
-//                                var appid = wechat.appid?wechat.appid:wechat.appId;
-//                                wx.chooseWXPay({
-//                                    'appId': appid,
-//                                    'timestamp': wechat.timeStamp,
-//                                    'nonceStr': wechat.nonceStr,
-//                                    'package': wechat.package,
-//                                    'signType': wechat.signType,
-//                                    'paySign': wechat.paySign,
-//                                    success: function (res) {
-//                                         rechargeok('wechat');
-//                                    }, fail: function (res) {
-//                                        alert(res.errMsg);
-//                                    }
-//                                });
-//                            }); 
-//                        }); 
-                    }, true, true);
+						$('.button').attr('submitting', 1);
+						core.json('member/recharge', {
+							op: 'recharge',
+							openid: "{$openid}",
+							type: 'weixin',
+							money: money,
+							logid: logid
+						}, function (rjson) {
+							if (rjson.status != 1) {
+								$('.button').removeAttr('submitting');
+								core.tip.show(rjson.result);
+								return;
+							}
 
+							var wechat = rjson.result.wechat;
+							WeixinJSBridge.invoke('getBrandWCPayRequest', {
+								'appId': wechat.appid ? wechat.appid : wechat.appId,
+								'timeStamp': wechat.timeStamp,
+								'nonceStr': wechat.nonceStr,
+								'package': wechat.package,
+								'signType': wechat.signType,
+								'paySign': wechat.paySign,
+							}, function (res) {
+								if (res.err_msg == 'get_brand_wcpay_request:ok') {
+									rechargeok('wechat');
+								} else if (res.err_msg == 'get_brand_wcpay_request:cancel') {
+									$('.button').removeAttr('submitting');
+									core.tip.show('取消支付');
+								} else {
+									$('.button').removeAttr('submitting');
+									alert(res.err_msg);
+								}
+							});
+						}, true, true);
+					}
+
+					if (result.wechat.weixin_jie || result.wechat.jie == 1) {
+						payWechatJie();
+					}
                 });
             }
+
+			function payWechatJie(){
+				if($(this).attr('submitting')=='1'){
+					return;
+				}
+				var money = $('#money').val();
+				if (!$('#money').isNumber()) {
+					core.tip.show('请输入数字金额!');
+					return;
+				}
+				var logid = $('#logid').val();
+				if (logid == '') {
+					core.tip.show('请刷新重试!');
+					return;
+				}
+				$('.button').attr('submitting',1);
+				var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
+				core.json('member/recharge', {
+					op: 'recharge',
+					openid: "{$openid}",
+					type: 'weixin',
+					money: money,
+					logid: logid
+				}, function (rjson) {
+					if(rjson.status!=1){
+						$('.button').removeAttr('submitting');
+						core.tip.show(rjson.result);
+						return;
+					}
+
+					var wechat = rjson.result.wechat;
+					var img = "http://paysdk.weixin.qq.com/example/qrcode.php?data=" + wechat.code_url;
+					$("#qrmoney").text(money);
+					$(".order-weixinpay-hidden").show();
+					$("#btnWeixinJieCancel").unbind("click").click(function() {
+						//btn.removeAttr("stop");
+						clearInterval(settime);
+						$(".order-weixinpay-hidden").hide();
+					});
+					var settime = setInterval(function() {
+						$.getJSON(core.getUrl("member/recharge",{op:'recharge_status'}), {
+							logid: logid
+						}, function(data) {
+							if (data.result.status >= 1) {
+								clearInterval(settime);
+								rechargeok('wechat');
+							}
+						});
+					}, 1e3);
+					$(".verify-pop").find(".close").unbind("click").click(function() {
+						$(".order-weixinpay-hidden").hide();
+						//btn.removeAttr("stop");
+						clearInterval(settime);
+					});
+					$(".verify-pop").find(".qrimg").attr("src", img).show();
+				},true,true);
+			}
         }, true)
     });
 

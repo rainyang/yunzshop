@@ -52,7 +52,6 @@ if ($operation != "sub_bonus") {
 				$row['nickname'] = $member['nickname'];
 				$row['realname'] = $member['realname'];
 				$row['mobile'] = $member['mobile'];
-				$totalmoney += $commission_teamok;
 			}
 		}else{
 			//Author:ym Date:2016-08-02 Content:如未查询到该用户则被删除
@@ -60,6 +59,8 @@ if ($operation != "sub_bonus") {
 		}	
 	}
 	unset($row);
+    $sql = "select sum(cg.money) from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 left join ".tablename('sz_yi_member')." m on cg.mid=m.id where 1 and m.id!=0 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area=0 ORDER BY o.finishtime DESC,o.status DESC";
+    $totalmoney = pdo_fetchcolumn($sql);
 }
 if (!empty($_POST)) {
 	$send_bonus_sn = time();
@@ -92,6 +93,12 @@ if (!empty($_POST)) {
 	if(empty($list)){
 		message("发放人数为0，不能发放。", "", "error");
 	}
+    $path = IA_ROOT . "/addons/sz_yi/data/bonus";
+    if (!is_dir($path)) {
+        load()->func('file');
+        @mkdirs($path, '0777');
+    }
+    $file_bonus_log = $path . "/" . $send_bonus_sn . ".log";
 	foreach ($list as $key => $value) {
 		$member = pdo_fetch("select id, avatar, nickname, realname, mobile, openid, bonuslevel, uid from ". tablename('sz_yi_member') . " where id=".$value['mid']." and uniacid=". $_W['uniacid']);
 		if(!empty($member)){
@@ -154,19 +161,24 @@ if (!empty($_POST)) {
 			}
 			//更新分红订单完成
 			$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
-
+            $insert_ids = empty($ids) ? "" : iserializer($ids);
 			//写入日志调整
-	        $insert_log_data[] = " ('".$member['openid']."', '".$member['uid']."', '".$send_money."', '".$_W['uniacid']."', '".$set['paymethod']."', '".$sendpay."', '".iserializer($ids)."', 1, ".TIMESTAMP.", ".$send_bonus_sn.", 2)";
+	        $insert_log_data[] = " ('".$member['openid']."', '".$member['uid']."', '".$send_money."', '".$_W['uniacid']."', '".$set['paymethod']."', '".$sendpay."', '".$insert_ids."', 1, ".TIMESTAMP.", ".$send_bonus_sn.", 2)";
 	        if ($sql_num % 500 == 0) {
 	            if(!empty($insert_log_data)){
 	                pdo_query($insert_log_key . implode(",", $insert_log_data));
 	                $insert_log_data = array();
+                    @unlink($file_bonus_log);
 	            }
 	        }
 
 	        //更新分红订单完成
-			pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
-		}	
+            if (!empty($ids)){
+                $in_ids = implode(',', array_keys($ids));
+                pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . $in_ids . ') and uniacid='.$_W['uniacid']);
+                file_put_contents($file_bonus_log, print_r(array('id' => $member['id'], 'auto' => 0, 'orderids' => $in_ids), true), FILE_APPEND);
+            }
+        }
 	}
 
 	if(!empty($insert_log_data)){
@@ -193,6 +205,7 @@ if (!empty($_POST)) {
 	            "total" => $real_total
 	            );
 	    pdo_insert('sz_yi_bonus', $log);
+        @unlink ($file_bonus_log);
     }
     plog('bonus.send', "后台发放团队分红，共计{$real_total}人 金额{$totalmoney}元");
     $ms = $set['paymethod'] == 1 ? "发放分红金额及" : "";

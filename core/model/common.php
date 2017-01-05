@@ -134,10 +134,15 @@ class Sz_DYi_Common
 	function get_wechat_sign($package,$uniacid = false){
         global $_W;
         $uniacid = $uniacid ?: $_W['uniacid'];
+        $set = m('common')->getSysset(array('pay'));
         $setting = uni_setting($uniacid, array(
             'payment'
         ));
-        $signkey = $setting['payment']['wechat']['signkey'];
+        if ($set['pay']['weixin_jie'] == 1) {
+            $signkey = $set['pay']['weixin_jie_apikey'];
+        } else {
+            $signkey = $setting['payment']['wechat']['signkey'];
+        }
 
         unset($package['sign']);
         ksort($package, SORT_STRING);

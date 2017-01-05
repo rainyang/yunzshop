@@ -152,8 +152,10 @@ if (p('area')) {
     }    
 }
 
+$plugin_commission = p('commission');
 
-if (p('commission')) {
+if ($plugin_commission) {
+    $commission_set = $plugin_commission->getSet();
     $commissionLevels = pdo_fetchall(
         'SELECT id, levelname FROM ' . tablename('sz_yi_commission_level') . ' WHERE `uniacid` = :uniacid ORDER BY `commission1` DESC, `commission2` DESC, `commission3` DESC',
         array(':uniacid' => $_W['uniacid'])
@@ -226,7 +228,14 @@ if ($operation == "change") {
         }
         $levels = m('member')->getLevels();
         $groups = m('member')->getGroups();
-        $distributor_levels = p("commission")->getLevels();
+        $distributor_levels = $plugin_commission->getLevels();
+        //区分
+        $supplier_show = true;
+        if (p('hlag')) {
+            if ($perm_role != 0) {
+                $supplier_show = false;
+            }
+        }
         if (!empty($id)) {
             $item = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id", array(
                 ':id' => $id
@@ -653,6 +662,7 @@ if ($operation == "change") {
                 'followtip' => trim($_GPC['followtip']),
                 'deduct' => $_GPC['deduct'],
                 "deduct2" => $_GPC["deduct2"],
+                "deductcommission" => $_GPC["deductcommission"],
                 'virtual' => intval($_GPC['type']) == 3 ? intval($_GPC['virtual']) : 0,
                 'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : "",
                 'discounts2' => is_array($_GPC['discounts2']) ? json_encode($_GPC['discounts2']) : "",
@@ -718,6 +728,8 @@ if ($operation == "change") {
                     $ladders[$i]['ladderprice'] = $_GPC['ladderprice'][$i];
                 }
             }
+
+
             if ($pluginyunbi) {
                 $data['isyunbi'] = intval($_GPC['isyunbi']);   //返虚拟币开关    1:开    0:关
                 $data['yunbi_consumption'] = floatval($_GPC['yunbi_consumption']);  //虚拟币 返现比例 
@@ -822,9 +834,8 @@ if ($operation == "change") {
                 $content = str_replace($img['old'], $img['new'], $content);
             }
             $data['content'] = $content;
-            if (p('commission')) {
-                $cset = p('commission')->getSet();
-                if (!empty($cset['level'])) {
+            if ($plugin_commission) {
+                if (!empty($commission_set['level'])) {
                     $data['nocommission'] = intval($_GPC['nocommission']);
                     $data['nobonus'] = intval($_GPC['nobonus']);
                     $data['hascommission'] = intval($_GPC['hascommission']);
@@ -1164,9 +1175,7 @@ if ($operation == "change") {
                 'plugin' => $_GPC['plugin']
             )), 'success');
         }
-        if (p('commission')) {
-            $com_set = p('commission')->getSet();
-        }
+        $com_set = $commission_set;
         if ($pv) {
             $virtual_types = pdo_fetchall("select * from " . tablename('sz_yi_virtual_type') . " where uniacid=:uniacid order by id asc",
                 array(

@@ -43,6 +43,13 @@ if ($_W['isajax']) {
 	                $shop['name'] . "购物返还抵扣积分 积分: {$order['deductcredit']} 抵扣金额: {$order['deductprice']} 订单号: {$order['ordersn']}"
 	            ));
 	        }
+            if ($order['deductcommission'] > 0) {
+                m('member')->setCredit($order['openid'], 'credit20', -$order['deductcommission'], array(
+                    '0',
+                    $this->yzShopSet['name'] . "购物返还抵扣佣金 抵扣金额: {$order['deductcommission']} 订单号: {$order['ordersn']}"
+                ));
+            }
+
 	       	if ($order['deductyunbimoney'] > 0) {
 	            $shop = m('common')->getSysset('shop');
 	            p('yunbi')->setVirtualCurrency($order['openid'],$order['deductyunbi']);
@@ -295,8 +302,8 @@ if ($_W['isajax']) {
 	                $rtype      = $refunddata['rtype'];
 	                if ($rtype != 2) {
 	                    $price = $refunddata['price'];
-	                    if (empty($price)) {
-	                        return show_json(2, '退款金额不能为0元');
+	                    if (empty($price) || $price <= 0) {
+	                        return show_json(2, '退款金额必须大于0元');
 	                    }
 	                    if ($price > $order['refundprice']) {
 	                        return show_json(3, '退款金额不能超过' . $order['refundprice'] . '元');

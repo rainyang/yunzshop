@@ -124,8 +124,8 @@ if ($operation == 'index') {
     }
 
     //discuz会员注册
-    $email = md5($userinfo['openid']).'@we7.cc';
-    $pwd = '';
+    $email = substr(md5($userinfo['openid']), 0, 15) .'@yunzshop.com';
+    $pwd = md5(uniqid(mt_rand()));
 
     mc_init_uc();
 

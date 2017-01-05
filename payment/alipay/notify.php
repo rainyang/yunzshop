@@ -86,6 +86,7 @@ if (!empty($_POST)) {
                                         ));
                                         if (!empty($order['cashier'])) {
                                             $orders['status'] = '3';
+                                            $orders['finishtime'] = time();
                                         }
                                     }
 

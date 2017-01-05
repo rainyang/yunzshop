@@ -99,8 +99,12 @@ if (!class_exists('discuzModel')) {
             }
 
             $username = $this->getMemberNickName();
-            $email    = $_W['member']['email'];
-            $password = '';
+            $email    = $_W['member']['email'] ? $_W['member']['email'] : substr(md5(uniqid(mt_rand())), 0, 15) . '@yunzshop.com';
+            $password = md5(uniqid(mt_rand()));
+
+            if (strlen($email) > 32) {
+                $email = substr(md5($email), 0, 15) . '@yunzshop.com';
+            }
 
             $uid = uc_user_register($username, $password, $email);
 

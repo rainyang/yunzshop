@@ -71,8 +71,8 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
         </div>
     </div>
 </script>
- 
 
+{template 'order/pay/wechat_jie'}
 <script language="javascript">
 
 require(['tpl', 'core'], function(tpl, core) {
@@ -186,41 +186,105 @@ require(['tpl', 'core'], function(tpl, core) {
                 });
             });
         }
-        if (result.wechat.success) {
-            $('.order_sub1').click(function () {
-                if ($(this).attr('submitting') == '1') {
-                   return;
-                }
-                $('.button').attr('submitting',1);
-                var deduct = ($('#deductmoney').length > 0 && $('#deductmoney').attr('on')=='1') ? 1 : 0;
-                core.pjson('cashier/order_pay', {
-                    op: 'pay',
-                    type: 'weixin',
-                    orderid: '{$_GPC['orderid']}',
-                    deduct: deduct
-                }, function (rjson) {
-                    if (rjson.status != 1) {
-                        $('.button').removeAttr('submitting');
-                        core.tip.show(rjson.result);
-                        return;
+        if(result.wechat.success){
+            $('.order_sub1').click(function(){
+                if (result.wechat.weixin) {
+                    if ($(this).attr('submitting') == '1') {
+                       return;
                     }
-                    var wechat = rjson.result.wechat;
-                    WeixinJSBridge.invoke('getBrandWCPayRequest', {
-                        'appId': wechat.appid ? wechat.appid : wechat.appId,
-                        'timeStamp': wechat.timeStamp,
-                        'nonceStr': wechat.nonceStr,
-                        'package': wechat.package,
-                        'signType': wechat.signType,
-                        'paySign': wechat.paySign,
-                    }, function (res) {
-                        if (res.err_msg == 'get_brand_wcpay_request:ok') {
-                            core.pjson('cashier/order_pay', {
-                                op: 'complete',
-                                orderid: '{$_GPC['orderid']}',
-                                type: 'weixin',
-                                deduct: deduct
-                            }, function (pay_json) { 
-                                if (pay_json.status == 1) {
+                    $('.button').attr('submitting',1);
+                    var deduct = ($('#deductmoney').length > 0 && $('#deductmoney').attr('on')=='1') ? 1 : 0;
+                    core.pjson('cashier/order_pay', {
+                        op: 'pay',
+                        type: 'weixin',
+                        orderid: '{$_GPC['orderid']}',
+                        deduct: deduct
+                    }, function (rjson) {
+                        if (rjson.status != 1) {
+                            $('.button').removeAttr('submitting');
+                            core.tip.show(rjson.result);
+                            return;
+                        }
+                        var wechat = rjson.result.wechat;
+                        WeixinJSBridge.invoke('getBrandWCPayRequest', {
+                            'appId': wechat.appid ? wechat.appid : wechat.appId,
+                            'timeStamp': wechat.timeStamp,
+                            'nonceStr': wechat.nonceStr,
+                            'package': wechat.package,
+                            'signType': wechat.signType,
+                            'paySign': wechat.paySign,
+                        }, function (res) {
+                            if (res.err_msg == 'get_brand_wcpay_request:ok') {
+                                core.pjson('cashier/order_pay', {
+                                    op: 'complete',
+                                    orderid: '{$_GPC['orderid']}',
+                                    type: 'weixin',
+                                    deduct: deduct
+                                }, function (pay_json) {
+                                    if (pay_json.status == 1) {
+                                        $('#container').html(tpl('tpl_order_pay',pay_json.result));
+                                        if (pay_json.result.couponurl) {
+                                            setTimeout(function () {
+                                                // TODO: 跳转到营销页面
+                                                location.href =pay_json.result.couponurl;
+                                            }, 2000);
+                                        }
+                                        return;
+                                    }
+                                    core.tip.show(pay_json.result);
+                                    $('.button').removeAttr('submitting');
+                                }, true, true);
+                            } else if(res.err_msg=='get_brand_wcpay_request:cancel') {
+                                $('.button').removeAttr('submitting');
+                                core.tip.show('取消支付');
+                            } else {
+                                $('.button').removeAttr('submitting');
+                                alert(res.err_msg);
+                            }
+                        });
+                    }, true, true);
+                }
+
+                if (result.wechat.weixin_jie || result.wechat.jie == 1) {
+                    payWechatJie();
+                }
+            });
+        }
+
+        function payWechatJie(){
+            if($(this).attr('submitting')=='1'){
+                return;
+            }
+            $('.button').attr('submitting',1);
+            var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
+            core.pjson('cashier/order_pay', {op: 'pay',type: 'weixin', orderid:'{$_GPC['orderid']}',deduct:deduct}, function (rjson) {
+                if(rjson.status!=1){
+                    $('.button').removeAttr('submitting');
+                    core.tip.show(rjson.result);
+                    return;
+                }
+
+                var wechat = rjson.result.wechat;
+                var img = "http://paysdk.weixin.qq.com/example/qrcode.php?data=" + wechat.code_url;
+                $("#qrmoney").text({$order['price']});
+                $(".order-weixinpay-hidden").show();
+                $("#btnWeixinJieCancel").unbind("click").click(function() {
+                    //btn.removeAttr("stop");
+                    clearInterval(settime);
+                    $(".order-weixinpay-hidden").hide();
+                });
+                var settime = setInterval(function() {
+                    $.getJSON(core.getUrl("order/pay",{op:'orderstatus'}), {
+                        orderid: {$_GPC['orderid']}
+                    }, function(data) {
+                        if (data.result.status >= 1) {
+                            clearInterval(settime);
+                            core.pjson('cashier/order_pay',{
+                                op:'complete',
+                                orderid:'{$_GPC['orderid']}',
+                                type:'weixin',deduct:deduct
+                            },function(pay_json){
+                                if(pay_json.status==1){
                                     $('#container').html(tpl('tpl_order_pay',pay_json.result));
                                     if (pay_json.result.couponurl) {
                                         setTimeout(function () {
@@ -232,17 +296,17 @@ require(['tpl', 'core'], function(tpl, core) {
                                 }
                                 core.tip.show(pay_json.result);
                                 $('.button').removeAttr('submitting');
-                            }, true, true);
-                        } else if(res.err_msg=='get_brand_wcpay_request:cancel') {
-                            $('.button').removeAttr('submitting');
-                            core.tip.show('取消支付');
-                        } else {
-                            $('.button').removeAttr('submitting');
-                            alert(res.err_msg);
+                            },true,true);
                         }
                     });
-                }, true, true);
-            });
+                }, 1e3);
+                $(".verify-pop").find(".close").unbind("click").click(function() {
+                    $(".order-weixinpay-hidden").hide();
+                    //btn.removeAttr("stop");
+                    clearInterval(settime);
+                });
+                $(".verify-pop").find(".qrimg").attr("src", img).show();
+            },true,true);
         }
     }, true);
 });

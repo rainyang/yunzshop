@@ -1,22 +1,36 @@
 <?php
+/*=============================================================================
+#     FileName: order_confirm.php
+#   Created by: Sublime Text3.  
+#       Author: yitian - http://www.yunzshop.com
+#        Email: livsyitian@163.com
+#     HomePage: http://shop.yunzshop.com
+#      Version: 0.0.1
+#   LastChange: 2016-12-23 11:01:10
+#      History:
+#         Q Q : 751818588
+=============================================================================*/
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
-$shopset = m('common')->getSysset(array('shop'));
-$hascouponplugin = false;
-if (p('commission')) {
-    $commission = p('commission')->getSet();
-}
-$plugc           = p("coupon");
 $member = m('member')->getMember($openid);
+$shopset = m('common')->getSysset(array('shop'));   // Unknow $shopset 用来做什么，下面没有调用  yitian_add::2016-12-23::qq:751818588
+
+$hascouponplugin = false;
+$plugc           = p("coupon");
 if ($plugc) {
     $hascouponplugin = true;
 }
+//获取分销商基础设置-->判断成为下线条件
+if (p('commission')) {
+    $commission = p('commission')->getSet();
+}
+
 if ($operation == 'display') {
-    $shopset   = m('common')->getSysset('shop');
+    $shopset   = m('common')->getSysset('shop');        // Unknow $shopset 用来做什么，下面没有调用  yitian_add::2016-12-23::qq:751818588
     $sid = $_GPC['sid'];
     if (!is_numeric($sid)) {
         redirect($this->createMobileUrl('member'));
@@ -25,22 +39,11 @@ if ($operation == 'display') {
     $store=set_medias($store,'thumb');
 
     if (!$store) {
-        
         redirect($this->createMobileUrl('member'));
     }
     if($commission['become_child']==0){
         p('commission')->checkAgent();
     }
-// } else if ($operation == 'get-deduct') {
-    // $member = m('member')->getMember($openid);
-    // $sid = $_GPC['sid'];
-    // if (!is_numeric($sid)) {
-    //     redirect($this->createMobileUrl('member'));
-    // }
-    // $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $sid, ':uniacid' => $_W['uniacid']));
-    // if (!$store) {
-    //     redirect($this->createMobileUrl('member'));
-    // }
     if($_W['isajax']){
         $orig_price = $_GPC['orig_price'];
         if (!is_numeric($orig_price) || $orig_price <= 0) {
@@ -57,6 +60,7 @@ if ($operation == 'display') {
     $deductcredit  = 0;
     $deductmoney   = 0;
     $deductcredit2 = 0;
+    //营销宝 sale
     $sale_plugin = p('sale');
     if ($sale_plugin) {
         $saleset = $sale_plugin->getSet();
@@ -309,15 +313,14 @@ if ($operation == 'display') {
             }
         }
         
-        $agentid = $user['agentid'];
-
-
-        
-            
-
-        
+        $agentid = $user['agentid'];   
     }
-
+    //扣除分红金额
+    if (p('bonus')) {
+        if($store['debonus'] == 1) {
+            $realtotalprice = $realtotalprice  - $totalprice * ($store['bonus']/100);
+        }
+    }
     //扣除红包
     
     if($totalprice>=$store['redpack_min'] && $store['deredpack']==1){
@@ -363,14 +366,17 @@ if ($operation == 'display') {
         'ordersn_general' =>  $ordersn,
         'pay_ordersn' => $ordersn
     );
-    if($store['deredpack']==1){
-        $order['deredpack']=1;
+    if ($store['deredpack'] == 1) {
+        $order['deredpack'] = 1;
     }
-    if($store['decommission']==1){
-        $order['decommission']=1;
+    if ($store['decommission'] == 1) {
+        $order['decommission'] = 1;
     }
-    if($store['decredits']==1){
-        $order['decredits']=1;
+    if ($store['decredits'] == 1) {
+        $order['decredits'] = 1;
+    }
+    if ($store['debonus'] == 1) {
+        $order['debonus'] = 1;
     }
     pdo_insert('sz_yi_order', $order);
     $orderid = pdo_insertid();
@@ -391,16 +397,25 @@ if ($operation == 'display') {
         "openid" => $openid
     );
     if (p('bonus')) {
-        $order_goods['bonusmoney'] = $store['bonus'];
+        //小于0.01的分红是无法计算的    yitian_add //2016-12-22:qq:751818588
+        //$bonusmoney = round($totalprice * ($store['bonus']/100), 2);
+        if ($store['bonus']) {
+            $order_goods['bonusmoney'] = $totalprice * ($store['bonus']/100);
+            $this->model->calculateBonus($orderid);
+        } else {
+            $order_goods['bonusmoney'] = 0;
+        }
     }
     pdo_insert('sz_yi_order_goods', $order_goods);
     $this->model->calculateCommission($orderid);
-    if (p('bonus')) {
-        $this->model->calculateBonus($orderid);
-    }
+    //是否开启下单时填写联系人信息  yitian_add::2016-22-23::qq:751818588
     if($store['iscontact'] == 1){
         if (is_array($carrier)) {
             $up = array(
+                'realname' => $carrier['carrier_realname'],
+                'membermobile' => $carrier['carrier_mobile']
+            );
+            $mc_up = array(
                 'realname' => $carrier['carrier_realname'],
                 'mobile' => $carrier['carrier_mobile']
             );
@@ -410,7 +425,7 @@ if ($operation == 'display') {
             ));
             if (!empty($member['uid'])) {
                 load()->model('mc');
-                mc_update($member['uid'], $up);
+                mc_update($member['uid'], $mc_up);
             }
         }       
     }

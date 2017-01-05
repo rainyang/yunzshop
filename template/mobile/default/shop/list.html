@@ -135,10 +135,10 @@ div.addinfo{height:18px;}
                 <div class="search"><i class="iconfont icon-search" style="font-size: 22px"></i></div>
             </div>
             <div class="sort_list sort_listnew">
-                <div class="nav navon"  data-order='sales' data-by='desc'>销量从高到低</div>
-                <div class="nav" data-order='marketprice' data-by='asc'>价格从低到高</div>
-                <div class="nav "  data-order='marketprice' data-by='desc'>价格从高到低</div>
-                <div class="nav"  data-order='score' data-by='asc'>评价从高到低</div>
+                <div class="nav {if $_GPC['order']=='sales' || empty($_GPC['order'])}navon{/if}" data-order='sales' data-by='desc'>销量从高到低</div>
+                <div class="nav {if $_GPC['order']=='marketprice' && $_GPC['by']=='asc'}navon{/if}" data-order='marketprice' data-by='asc'>价格从低到高</div>
+                <div class="nav {if $_GPC['order']=='marketprice' && $_GPC['by']=='desc'}navon{/if}" data-order='marketprice' data-by='desc'>价格从高到低</div>
+                <div class="nav {if $_GPC['order']=='score'}navon{/if}" data-order='score' data-by='asc'>评价从高到低</div>
             </div>
            <!-- <div id="category_group"></div> -->
             <!--商品列表-->

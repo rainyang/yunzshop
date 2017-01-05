@@ -276,10 +276,12 @@ class Sz_DYi_Order
                     $order_update = "id in ({$orderids})";
                     $orderdetail_where = "o.id in ({$orderids})";
                     $goods_where = "og.orderid in ({$orderids})";
+                    $orderids_where = "orderid in ({$orderids})";
                 }else{
                     $order_update = "id = ".$orderid;
                     $orderdetail_where = "o.id = {$orderid}";
                     $goods_where = "og.orderid = {$orderid}";
+                    $orderids_where = "orderid = {$orderid}";
                 }
                 if ($order['status'] == 0) {
                     $pv = p('virtual');
@@ -322,11 +324,10 @@ class Sz_DYi_Order
                                     }
                                 }
                             }else{
+                                $this->setStocksAndCredits($orderid, 1);
                                 if (p('channel')) {
                                     //更改库存
                                     p('channel')->changeStock($orderid);
-                                } else {
-                                    $this->setStocksAndCredits($orderid, 1);
                                 }
                                 if (p('coupon') && !empty($order['couponid'])) {
                                     p('coupon')->backConsumeCoupon($orderid);
@@ -354,7 +355,7 @@ class Sz_DYi_Order
                 //订单信息
                 $print_order = $order;
                 //商品信息
-                $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
+                $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid'] . $orderids_where);
                 $plugin_fund = p('fund');
                     foreach ($ordergoods as $key =>$value) {
                         if($plugin_fund){
@@ -443,9 +444,15 @@ class Sz_DYi_Order
             ':uniacid' => $_W['uniacid'],
             ':orderid' => $orderid
         ));
+
+        //comment:如果是渠道商零售或者采购的订单不走下面的逻辑(造成即扣除了渠道商的库存又扣除了商城的库存,这么改的影响是：只要和渠道商有关的订单都不会赠送积分) edit yangyang date 01-03
+
         $credits = 0;
 
         foreach ($goods as $g) {
+            if (!empty($g['channel_id'])) {
+                return;
+            }
             $stocktype = 0;
             if ($type == 0) {
                 if ($g['totalcnf'] == 0) {

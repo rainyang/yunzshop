@@ -1,0 +1,5 @@
+<div class="ulleft-nav">
+    <ul class="nav nav-tabs">
+        {ifp 'wxapp.index'}<li {if empty($_GPC['method']) || $_GPC['method']=='index'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('wxapp/index')}">基本设置</a></li>{/if}
+    </ul>
+</div>

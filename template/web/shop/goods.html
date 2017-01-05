@@ -32,33 +32,37 @@
         <li><a href="#tab_param">属性</a></li>
         {/if}
         <li><a href="#tab_option">{$lang['shopoption']}</a></li>
-        {if $_GPC['plugin'] != "fund"}
-        <li><a href="#tab_discount">权限折扣</a></li>
-        {/if}
-		<li><a href="#tab_share">分享关注</a></li>
+		{if $supplier_show}
+			{if $_GPC['plugin'] != "fund"}
+			<li><a href="#tab_discount">权限折扣</a></li>
+			{/if}
+			<li><a href="#tab_share">分享关注</a></li>
+		{/if}
         <li><a href="#tab_others">消息通知</a></li>
         {if $_GPC['plugin'] != "fund"}
         {if p('verify')}
 		<li><a href="#tab_verify">线下核销</a></li>
         {/if}
         {/if}
-        {if !empty($com_set['level'])}
-        <li><a href="#tab_sell">分销{if $bonus_start}分红{/if}</a></li>
-        {/if}
-        {if $_GPC['plugin'] != "fund"}
-        {if p('sale')}
-		<li><a href="#tab_sale">营销</a></li>
-        {/if}
-        {/if}
-        {if $isreturn || $isyunbi}
-		<li><a href="#tab_return">返现虚拟币</a></li>
-        {/if}
-        {if $_GPC['plugin'] != "fund"}
-        <li><a href="#tab_detaildiy">店铺</a></li>
-        {/if}
-        {if p('diyform')}
-		<li><a href="#tab_diyform">自定义表单</a></li>
-        {/if}
+		{if $supplier_show}
+			{if !empty($com_set['level'])}
+			<li><a href="#tab_sell">分销{if $bonus_start}分红{/if}</a></li>
+			{/if}
+			{if $_GPC['plugin'] != "fund"}
+			{if p('sale')}
+			<li><a href="#tab_sale">营销</a></li>
+			{/if}
+			{/if}
+			{if $isreturn || $isyunbi}
+			<li><a href="#tab_return">返现虚拟币</a></li>
+			{/if}
+			{if $_GPC['plugin'] != "fund"}
+			<li><a href="#tab_detaildiy">店铺</a></li>
+			{/if}
+			{if p('diyform')}
+			<li><a href="#tab_diyform">自定义表单</a></li>
+			{/if}
+		{/if}
     </ul> 
 </div>
 <div style="padding-top:50px">

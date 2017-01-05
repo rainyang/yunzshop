@@ -31,7 +31,7 @@ if (!class_exists('CommissionModel')) {
 
 			$orders = pdo_fetch('select agentid, period_num from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
 			$agentid = $orders['agentid'];
-			$goods = pdo_fetchall('select og.id,og.realprice,og.total,g.type,g.hascommission,g.nocommission, g.commission1_rate,g.commission1_pay,g.commission2_rate,g.commission2_pay,g.commission3_rate,g.commission3_pay,og.commissions,og.optionid,g.productprice,g.marketprice,g.costprice,g.id as goodsid from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+			$goods = pdo_fetchall('select og.id,og.realprice,og.total,g.type,g.bonusmoney,g.hascommission,g.nocommission, g.commission1_rate,g.commission1_pay,g.commission2_rate,g.commission2_pay,g.commission3_rate,g.commission3_pay,og.commissions,og.optionid,g.productprice,g.marketprice,g.costprice,g.id as goodsid from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			//阶梯价格插件
 			$isladder = false;
 			if (p('ladder')) {
@@ -165,9 +165,11 @@ if (!class_exists('CommissionModel')) {
 				}else if($set['culate_method'] == 3){
 					return $costprice;
 				}else if($set['culate_method'] == 4){
-					$price = $realprice - $costprice;
-					return $price > 0 ? $price : 0;
-				}
+                    $price = $realprice - $costprice;
+                    return $price > 0 ? $price : 0;
+                }else if($set['culate_method'] == 5){
+                    return $order_goods['bonusmoney'] > 0 && !empty($order_goods['bonusmoney']) ? $order_goods['bonusmoney'] * $order_goods['total'] : $order_goods['price'];
+                }
 			}
 		}
 		//查询订单分佣金额
@@ -559,6 +561,46 @@ if (!class_exists('CommissionModel')) {
 				$myordermoney = $myorder['ordermoney'];
 				//Author:ym Date:2016-04-07 Content:自购订单数量
 				$myordercount = $myorder['ordercount'];
+			}
+
+            //佣金抵扣金额计算
+			if (!empty($set['deduction'])) {
+                if (in_array('ok', $options)) {
+                    $credit20 = m('member')->getCredit($openid, 'credit20');
+                    if ($credit20 > 0) {
+                        $commission_ok -= $credit20;
+                    }
+                }
+
+                if (in_array('apply', $options)) {
+                    $apply_credit20 = pdo_fetchcolumn('select sum(credit20) from ' . tablename('sz_yi_commission_apply') . ' where status=1 and credit20>0 and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+                    if ($apply_credit20 > 0) {
+                        $commission_apply -= $apply_credit20;
+                    }
+                }
+
+                if (in_array('pay', $options)) {
+                    $pay_credit20 = pdo_fetchcolumn('select sum(credit20) from ' . tablename('sz_yi_commission_apply') . ' where status=3 and credit20>0 and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+                    if ($pay_credit20 > 0) {
+                        $commission_pay -= $pay_credit20;
+                    }
+                }
+
+                if (in_array('check', $options)) {
+                    $check_credit20 = pdo_fetchcolumn('select sum(credit20) from ' . tablename('sz_yi_commission_apply') . ' where status=2 and credit20>0 and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+                    if ($check_credit20 > 0) {
+                        $commission_check -= $check_credit20;
+                    }
+                }
+
+                if (in_array('lock', $options)) {
+                    $credit20 = m('member')->getCredit($openid, 'credit20');
+                    if ($credit20 > 0) {
+                        $commission_lock -= $credit20;
+                    }
+                }
+
+
 			}
 
 			$member['agentcount'] = $agentcount;
@@ -1979,6 +2021,33 @@ if (!class_exists('CommissionModel')) {
                  || $userLevel['commission3'] < $goodsLevelCommission3
                 ) {
                     pdo_update('sz_yi_member', array('agentlevel' => $goodsLevel), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+                }
+            }
+        }
+
+        //佣金抵扣
+        public function returnCommission($id = '')
+        {
+            global $_W;
+
+            if (empty($id)) {
+                $condition = 'uniacid=:uniacid';
+                $param = array(':uniacid' => $_W['uniacid']);
+            } else {
+                $condition = 'uniacid = :uniacid AND id = :id';
+                $param = array(':uniacid' => $_W['uniacid'], ':id'=> $id);
+            }
+
+            $orders = pdo_fetchall("SELECT `openid`, `ordersn`, `deductcommission` FROM " . tablename(sz_yi_order) . " WHERE {$condition} AND `status` = -1", $param);
+
+            foreach ($orders as $k => $v) {
+                //抵扣佣金
+                if ($v["deductcommission"] > 0) {
+                    $shopset = m("common")->getSysset("shop");
+                    m("member")->setCredit($v["openid"], "credit20", -$v["deductcommission"], array(
+                        '0',
+                        $shopset["name"] . "购物返还抵扣佣金 抵扣金额: {$v["deductcommission"]} 订单号: {$v["ordersn"]}"
+                    ));
                 }
             }
         }
