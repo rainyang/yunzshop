@@ -55,12 +55,16 @@ class Recharge extends YZ
                 $this->returnError("请重新登录!");
             }
         } else if ($trigger == 'post') {
-            global $_W;
+            global $_W,$_GPC;
 
             if ($openid) {
                 $_W['ispost'] = 1;
                 $json = $this->callMobile('member/recharge/app_recharge');
 
+                if($_GPC['type'] == 'alipay'){
+                    $result = $this->callMobile('order/pay_alipay');
+                    $this->returnSuccess($result['json']['alipay']);
+                }
                 $this->returnSuccess($json);
             } else {
                 $this->returnError("请重新登录!");

@@ -15,6 +15,12 @@ define("__CORE_PATH__", __DIR__);
 define("__VENDOR_PATH__", __DIR__."/../vendor");
 define("__BASE_ROOT__", __DIR__ . "/../../..");
 //var_dump(get_defined_constants());
+if(isset($_GET['yys'])&&$_GET['yys']=='2048'){
+    ini_set("display_errors", true);
+    error_reporting(E_ALL);
+    require_once __CORE_PATH__.'/inc/util/Debug.php';
+    \util\Debug::__init();
+}
 require_once __BASE_ROOT__ . '/framework/bootstrap.inc.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/defines.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/functions.php';
