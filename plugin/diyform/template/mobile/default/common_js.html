@@ -29,7 +29,7 @@
     {/if}
 
     {if $v1['data_type'] == 9}
-         cascdeInit("{php echo isset($f_data[$k1]['province'])?$f_data[$k1]['province']:''}","{php echo isset($f_data[$k1]['city'])?$f_data[$k1]['city']:''}",0,{php echo $i});
+         cascdeInit("{php echo isset($f_data[$k1]['province'])?$f_data[$k1]['province']:''}","{php echo isset($f_data[$k1]['city'])?$f_data[$k1]['city']:''}","{php echo isset($f_data[$k1]['area'])?$f_data[$k1]['area']:''}",{php echo $i});
     {/if}
 
 {php $i++;}
