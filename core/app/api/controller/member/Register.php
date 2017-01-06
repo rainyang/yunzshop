@@ -222,8 +222,8 @@ class Register extends YZ
         //小程序session处理
         $random = $this->wx_app_session($user_info);
 
-        $result['session'] = $random;
-        //exit($random);
+        $result = array('session' => $random, 'wx_token' =>session_id());
+
         $this->returnSuccess($result);
     }
 

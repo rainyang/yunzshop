@@ -215,9 +215,9 @@ class Sz_DYi_User
         global $_W, $_GPC;
 
         if ($_GPC['app_type'] == 'wechat') {
+            @session_start();
             if ($_GPC['3rd_session'] && $_SESSION['wx_app'][$_GPC['3rd_session']]) {
                 $wx_app = unserialize($_SESSION['wx_app'][$_GPC['3rd_session']]);
-                
                 if (!empty($wx_app)) {
                     return array('openid' => $wx_app['openid']);
                 } else {
