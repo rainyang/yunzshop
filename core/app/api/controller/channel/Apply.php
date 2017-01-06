@@ -22,15 +22,15 @@ class Apply extends YZ
     {
         $data = $this->callPlugin('channel/apply');
         $result = $data['json'];
-        $result['navs']= [
-            [
+        $result['navs']= array(
+            array(
                 'type'         => 0,
                 'title'      => '提现到余额',
-            ],[
+            ),array(
                 'type'         => 1,
                 'title'      => '提现到微信钱包',
-            ]
-        ];
+            )
+        );
         $result['closetocredit'] = $this->set['closetocredit'];
         //echo "<pre>"; print_r($result);exit;
         $this->returnSuccess($result);

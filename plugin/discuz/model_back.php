@@ -102,11 +102,13 @@ if (!class_exists('discuzModel')) {
             $email    = $_W['member']['email'] ? $_W['member']['email'] : substr(md5(uniqid(mt_rand())), 0, 15) . '@yunzshop.com';
             $password = md5(uniqid(mt_rand()));
 
+            $username = @iconv("utf-8", "gbk", $username);
+
             if (strlen($email) > 32) {
                 $email = substr(md5($email), 0, 15) . '@yunzshop.com';
             }
 
-            $uid = uc_user_register($username, $password, $email);
+            $uid = uc_user_register(stripslashes($username), $password, $email);
 
             if($uid < 0) {
                 if($uid == -1) @message('用户名不合法！', '', 'error');

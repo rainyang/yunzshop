@@ -52,7 +52,7 @@ class AutoLoader
     {
         $dir = '';
         switch ($namespace) {
-            case 'Util':
+            case 'util':
                 $dir = __CORE_PATH__ . '/inc/';
                 break;
             case 'LeanCloud':

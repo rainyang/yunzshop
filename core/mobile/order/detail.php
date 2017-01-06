@@ -63,6 +63,7 @@ if(!empty($orderisyb['ordersn_general']) && $orderisyb['status']==0){
         $order['discountprice'] += $v['discountprice'];
         $order['deductprice'] += $v['deductprice'];
         $order['deductcredit2'] += $v['deductcredit2'];
+        $order['deductcommission'] += $v['deductcommission'];
         $order['deductenough'] += $v['deductenough'];
         $order['changeprice'] += $v['changeprice'];
         $order['changedispatchprice'] += $v['changedispatchprice'];

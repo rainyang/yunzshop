@@ -383,6 +383,10 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
         <%if order.deductcredit2>0%>
         <div class="line">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}抵扣:<span>-￥<span class='deductprice2'><%order.deductcredit2%></span></span></div>
         <%/if%>
+
+        <%if order.deductcommission>0%>
+        <div class="line">佣金抵扣:<span>-￥<span class='deductprice2'><%order.deductcommission%></span></span></div>
+        <%/if%>
         <%if order.deductenough!=0%>
         <div class="line">满额立减：<span><%if order.deductenough>0%>-<%/if%>￥<span class='deductenough'><%order.deductenough%></span></span></div>
         <%/if%>

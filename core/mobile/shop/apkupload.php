@@ -26,6 +26,7 @@ if ($_GPC['operation'] == 'synchronous') {
         'signature' =>'sz_cloud_register'
         );
     $resp = tokenValidation($parms);    //验证token
+
     if ($resp['status'] == 'OK') {
         $apkinfo['apkname'] = $resp['apkname'];
         $apkinfo['createtime'] = TIMESTAMP;
@@ -99,12 +100,12 @@ function getFile($url, $save_dir = '', $filename = '', $type = 0){
     fwrite($fp2, $content);
     fclose($fp2);
     unset($content, $url);
-    return array('file_name' => $filename, 'save_path' => $save_dir . $filename);
+    return array('size' => $size, 'save_path' => $save_dir . $filename);
 }
 function tokenValidation($parms)
 {
-    //$url = "http://cloud.yunzshop.com/web/index.php?c=account&a=apkupgrade";
-    $url = "http://lbj.yunzshop.com/web/index.php?c=account&a=apkupgrade";      //测试使用
+    $url = DOWNLOAD . "/web/index.php?c=account&a=apkupgrade";
+    //$url = "http://lbj.yunzshop.com/web/index.php?c=account&a=apkupgrade";      //测试使用
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_POST, 1);

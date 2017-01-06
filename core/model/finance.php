@@ -89,8 +89,6 @@ class Sz_DYi_Finance {
         //修改状态为打款中状态
         $apply= array('status'=>'3','batch_no'=>$set['batch_no'],'paytime'=>time());
         pdo_update('sz_yi_commission_apply', $apply, array('id' =>$applyid));
-
-        exit;
         //echo $resp;
         //echo $url;exit;
 
@@ -172,8 +170,6 @@ class Sz_DYi_Finance {
         header("Location:".$resp);
         $apply= array('batch_no'=>$set['batch_no']);
         pdo_update('sz_yi_member_log', $apply, array('id' =>$logid));
-
-        exit;
     }
 
     public function pay($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay = '',$alipayname='',$applyid='')
@@ -591,8 +587,6 @@ class Sz_DYi_Finance {
         //修改状态为打款中状态
         $refund= array('batch_no'=>$set['batch_no'],'returntime'=>time());
         pdo_update('sz_yi_order_refund', $refund, array('refundno' =>$out_refund_no));
-        exit;  
-
     }
 
     //易宝支付退款(26-pc,25-mobile)

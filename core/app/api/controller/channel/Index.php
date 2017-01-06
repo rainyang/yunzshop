@@ -27,12 +27,12 @@ class Index extends YZ
         $list = $result['list'];
         $lower_openids = $result['json']['channelinfo']['channel']['lower_openids'];
         if(!empty($lower_openids)){
-            $list[] = [
+            $list[] = array(
                 'id'        => '7',
                 'title'      => '推荐订单',
                 'value'     =>'',
                 'unit'      =>''
-            ];
+            );
         }
         $json['json'] = array(
             'avatar'            => $result['json']['member']['avatar'],
@@ -51,24 +51,24 @@ class Index extends YZ
     private function _getChannelBlockList()
     {
         $result = $this->callPlugin('channel/index/');
-        $result['list'] = [
-            [
+        $result['list'] = array(
+            array(
                 'id'         => 1,
                 'title'      => '提现记录',
                 'value'     =>$result['json']['channelinfo']['channel']['commission_total'],
                 'unit'      =>'元'
-            ], [
+            ), array(
                 'id'        => '2',
                 'title'      => '我的订单',
                 'value'       =>$result['json']['channelinfo']['channel']['ordercount'],
                 'unit'      =>'个订单'
-            ], [
+            ), array(
                 'id'        => '3',
                 'title'      => '我的客户',
                 'value'     =>$result['json']['channelcount'],
                 'unit'      =>'人'
-            ]
-        ];
+            )
+        );
 
         return $result;
     }

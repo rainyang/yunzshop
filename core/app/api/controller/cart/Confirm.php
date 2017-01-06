@@ -107,27 +107,27 @@ class Confirm extends YZ
     private function _getCarrierContactsBlock(){
         $json = $this->json;
         $member = $json['member'];
-        $res[] = [
+        $res[] = array(
             'title'=>'提货人姓名',
             'text'=>$member['realname'],
-        ];
-        $res[] = [
+        );
+        $res[] = array(
             'title'=>'提货人手机',
             'text'=>$member['mobile'],
-        ];
+        );
         return $res;
     }
     private function _getVirtualContactsBlock(){
         $json = $this->json;
         $member = $json['member'];
-        $res[] = [
+        $res[] = array(
             'title'=>'联系人姓名',
             'text'=>$member['realname'],
-        ];
-        $res[] = [
+        );
+        $res[] = array(
             'title'=>'联系人手机',
             'text'=>$member['mobile'],
-        ];
+        );
         return $res;
     }
 
@@ -151,12 +151,12 @@ class Confirm extends YZ
         if($json['isverifysend'] && $json['carrier_list']['length']>0){
             return false;
         }
-        $res = [
+        $res = array(
             'title'=>'收件人',
             'name'=>$address['realname'],
             'mobile'=>$address['mobile'],
             'address'=>$address['address'],
-        ];
+        );
         //false时显示新建
         return $res;
     }
@@ -164,12 +164,12 @@ class Confirm extends YZ
     {
         $json = $this->json;
         $carrier = $json['carrier'];
-        $res = [
+        $res = array(
             'title'=>'自提地点',
             'name'=>$carrier['storename'],
             'mobile'=>$carrier['tel'],
             'address'=>$carrier['address'],
-        ];
+        );
         //false时显示新建
         return $res;
     }

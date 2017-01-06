@@ -157,58 +157,81 @@ class Sz_DYi_User
         //不需要登陆的P方法
         $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'home', 'fund', 'discuz');
 
-        //不需要登陆的do方法
-        $noLoginDoList = array('shop', 'login', 'register');
+//不需要登陆的do方法
+$noLoginDoList = array('shop', 'login', 'register');
 
-        //首页不用判断是否登陆
-        if(!$_GPC['p'] && $_GPC["do"]=='shop'){
-            return;
-        }
+//首页不用判断是否登陆
+if(!$_GPC['p'] && $_GPC["do"]=='shop'){
+    return;
+}
 
-        //帮助中心不需要登录
-        if (!empty($_GPC['is_helper']) && $_GPC['p'] == 'article') {
-            return;
-        }
-        /*
-        if($_GPC["c"]=='entry'){
-            return;
-        }
-         */
-        //需要登陆
-        if((!in_array($_GPC["p"], $noLoginList) && !in_array($_GPC["do"], $noLoginDoList)) or (in_array($_GPC["p"], $needLoginPList))){
-            //小店不需要登陆，否则分享出去别人不能直接看到
-            if(($_GPC['method'] != 'myshop') or ($_GPC['c'] != 'entry')){
-                $openid = $this->isLogin();
-                if(!$openid && $_GPC['p'] != 'cart'){  //未登录
-                    if($_GPC['do'] != 'runtasks'){
-                        setcookie('preUrl', $_W['siteurl']);
-                    }
-                    $mid = ($_GPC['mid']) ? "&mid=".$_GPC['mid'] : "";
-                    $url = "/app/index.php?i={$_W['uniacid']}&c=entry&p=login&do=member&m=sz_yi".$mid;
+//帮助中心不需要登录
+if (!empty($_GPC['is_helper']) && $_GPC['p'] == 'article') {
+    return;
+}
+/*
+if($_GPC["c"]=='entry'){
+    return;
+}
+ */
+//需要登陆
+if((!in_array($_GPC["p"], $noLoginList) && !in_array($_GPC["do"], $noLoginDoList)) or (in_array($_GPC["p"], $needLoginPList))){
+    //小店不需要登陆，否则分享出去别人不能直接看到
+    if(($_GPC['method'] != 'myshop') or ($_GPC['c'] != 'entry')){
+	$openid = $this->isLogin();
+	if(!$openid && $_GPC['p'] != 'cart'){  //未登录
+	    if($_GPC['do'] != 'runtasks'){
+		setcookie('preUrl', $_W['siteurl']);
+	    }
+	    $mid = ($_GPC['mid']) ? "&mid=".$_GPC['mid'] : "";
+	    $url = "/app/index.php?i={$_W['uniacid']}&c=entry&p=login&do=member&m=sz_yi".$mid;
 
-                    redirect($url);
-                }
-                else{
-                    $userinfo = array(
-                        'openid' => $openid,
-                        //'nickname' => '小萝莉',
-                        'headimgurl' => '',
-                    );
+	    redirect($url);
+	}
+	else{
+	    $userinfo = array(
+		'openid' => $openid,
+		//'nickname' => '小萝莉',
+		'headimgurl' => '',
+	    );
 
-                    return $userinfo;
-                }
-            }
-        } elseif (is_app() && $_GPC["p"] == 'index' && $_GPC["do"] == 'shop') {
-            $openid = $this->isLogin();
-            $userinfo = array(
-                'openid' => $openid,
-                //'nickname' => '小萝莉',
-                'headimgurl' => '',
-            );
-
-            return $userinfo;
-        }
+	    return $userinfo;
+	}
     }
+} elseif (is_app() && $_GPC["p"] == 'index' && $_GPC["do"] == 'shop') {
+    $openid = $this->isLogin();
+    $userinfo = array(
+	'openid' => $openid,
+	//'nickname' => '小萝莉',
+	'headimgurl' => '',
+    );
+
+    return $userinfo;
+}
+}
+
+function getInfo($base64 = false, $debug = false)
+{
+global $_W, $_GPC;
+if(!is_weixin()&&!is_app_api() ){
+    return $this->getUserInfo();
+}
+
+        if ($_GPC['app_type'] == 'wechat') {
+            if ($_GPC['3rd_session'] && $_SESSION['wx_app'][$_GPC['3rd_session']]) {
+                $wx_app = unserialize($_SESSION['wx_app'][$_GPC['3rd_session']]);
+
+                if (!empty($wx_app)) {
+                    return array('openid' => $wx_app['openid']);
+                } else {
+                    return false;
+                }
+
+            } else {
+                return false;
+            }
+
+        }
 
     function getInfo($base64 = false, $debug = false)
     {

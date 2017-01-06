@@ -20,25 +20,25 @@ class Detail extends YZ
     }
     private function _getChannelBlockNav()
     {
-        $nav = [
-            [
+        $nav = array(
+            array(
                 'id'		=> 1,
                 'status'	=> '1',
                 'value'		=>'采购'
-            ], [
+            ), array(
                 'id'		=> 2,
                 'status'	=> 2,
                 'value'		=>'出货'
-            ], [
+            ), array(
                 'id'		=> 3,
                 'status'	=> 3,
                 'value'		=>'零售'
-            ], [
+            ), array(
                 'id'		=> 4,
                 'status'	=> 4,
                 'value'		=>'自提'
-            ]
-        ];
+            )
+        );
 
         return $nav;
     }

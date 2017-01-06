@@ -61,4 +61,13 @@ if(!pdo_fieldexists('sz_yi_order', 'plugin')) {
 if(!pdo_fieldexists('sz_yi_member_history', 'utime')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_history')." ADD `utime` int(11) DEFAULT '0' COMMENT '更新时间';");
 }
+
+//1.3 佣金抵扣所需字段
+if(!pdo_fieldexists('sz_yi_goods', 'deductcommission')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `deductcommission` decimal(10, 2) DEFAULT '0.00' COMMENT '佣金抵扣';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'deductcommission')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `deductcommission` decimal(10, 2) DEFAULT '0.00' COMMENT '佣金抵扣';");
+}
 echo 1;

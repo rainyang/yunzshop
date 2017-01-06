@@ -18,11 +18,11 @@ class Operation extends YZ
         //dump($a);exit;
         global $_W;
         $button_id = $_GET['button_id'];
-        if (in_array($button_id, [Order::IN_REFUND, Order::IN_AFTER_SALE])) {
+        if (in_array($button_id, array(Order::IN_REFUND, Order::IN_AFTER_SALE))) {
             $r = new Refund();
             $r->display();
         }
-        if (in_array($button_id, [])) {
+        if (in_array($button_id, array())) {
             $_W['ispost'] = true;
         }
         $route = Order::getButtonApi($button_id);

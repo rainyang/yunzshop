@@ -4,6 +4,9 @@ global $_W, $_GPC;
 $openid 			= m('user')->getOpenid();
 $set 				= $this->getSet();
 $member 			= m('member')->getMember($openid);
+if (empty($member['ischannel']) && empty($member['channel_level'])) {
+    return;
+}
 $_GPC['type'] 		= $_GPC['type'] ? $_GPC['type'] : 0;
 $channelinfo 		= $this->model->getInfo($openid);
 $ordercount 		= $channelinfo['channel']['ordercount'];
