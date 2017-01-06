@@ -55,7 +55,8 @@ if (!class_exists('DiyformModel')) {
                 } else if ($data_type == 9) {
                     $data[$key] = array(
                         'province' => trim($memberdata[$key][0]),
-                        'city' => trim($memberdata[$key][1])
+                        'city' => trim($memberdata[$key][1]),
+                        'area' => trim($memberdata[$key][2])
                     );
                 } else {
                     $data[$key] = trim($memberdata[$key]);
@@ -368,7 +369,7 @@ if (!class_exists('DiyformModel')) {
                             }
                         }
                     } else if ($value['data_type'] == 9) {
-                        $tp_value = ($data[$key]['province'] != '请选择省份' ? $data[$key]['province'] : '') . " - " . ($data[$key]['city'] != '请选择城市' ? $data[$key]['city'] : '');
+                        $tp_value = ($data[$key]['province'] != '请选择省份' ? $data[$key]['province'] : '') . " - " . ($data[$key]['city'] != '请选择城市' ? $data[$key]['city'] : '') . " - " .  ($data[$key]['area'] != '请选择区域' ? $data[$key]['area'] : '');
                     }
                     $diyformfields[] = array(
                         'name' => $value['tp_name'],
