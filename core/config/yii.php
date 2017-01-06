@@ -7,7 +7,7 @@
  */
 global $_W;
 $master_db_config = $_W['config']['db']['master'];
-return array(
+return array();/*array(
     'id' => 'myapp',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],//,'debug'
@@ -45,4 +45,4 @@ return array(
         ],
     ],
     'params' => [],
-);
+);*/

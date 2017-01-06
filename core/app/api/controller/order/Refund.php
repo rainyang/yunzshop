@@ -164,7 +164,7 @@ class Refund extends YZ
         $refund = $this->json['refund'];
         $order = $this->json['refund_button'];
 
-        $button_list = [];
+        $button_list = array();
         if ($refund['rtype'] == 2 && $refund['status'] == 5) {
             $button_list[] = array(
                 'id' => 1,

@@ -119,6 +119,8 @@ if ($operation == 'index') {
 			$c['url'] = $this->createMobileUrl('shop/list', array('tcate' => $c['id']));
 		} else if ($c['level'] == 2) {
 			$c['url'] = $this->createMobileUrl('shop/list', array('ccate' => $c['id']));
+		} else if ($c['level'] == 1) {
+           	        $c['url'] = $this->createMobileUrl('shop/list', array('pcate' => $c['id']));
 		}
 	}
 

@@ -36,7 +36,7 @@ class Base
         //var_dump($_POST);
         Request::initialize();
         //dump($this->para);
-        $log = $this->addLog();
+        //$log = $this->addLog();
     }
     /**
      * 返回解密的参数
