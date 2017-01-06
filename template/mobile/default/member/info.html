@@ -97,7 +97,7 @@
                 };
 
                 $("#birthday").scroller('destroy').scroller($.extend(opt['date'], opt['default']));
-                cascdeInit(data.province,data.city,data.dist);
+                cascdeInit(data.province,data.city,data.area);
                 $('.gender').click(function() {
                     var $this = $(this);
                     var val = $this.data('val');
@@ -165,7 +165,8 @@
                             'birthmonth': $('#birthday').val().length>0?birthday[1]:0,
                             'birthday': $('#birthday').val().length>0?birthday[2]:0,
                             'resideprovince': $('#sel-provance').val(),
-                            'residecity': $('#sel-city').val()
+                            'residecity': $('#sel-city').val(),
+                            'residearea': $('#sel-area').val(),
                         },
                         'withdraw': '{$_GPC["withdraw"]}'
                     }, function(json) {
