@@ -9,6 +9,9 @@ $popenid = m('user')->islogin();
 $openid = $openid ? $openid : $popenid;
 $uniacid = $_W['uniacid'];
 $shopset = m('common')->getSysset('shop');
+if(empty($openid) || strstr($openid, 'http-equiv=refresh')){
+    Header('Location:' . $this->createMobileUrl('member/login')); 
+}
 if ($_W['isajax']) {
 
     if ($operation == 'display') {
