@@ -24,18 +24,23 @@ class Pay extends YZ
     }
     public function index()
     {
-        global $_W;
+        global $_W,$_GPC;
         $_W['ispost']= true;
         //$result = $this->callMobile('order/history/display');
         $result = $this->callMobile('order/pay/pay');
 
-        //dump($result);exit;
         if($result['code'] == -1){
             $this->returnError($result['json']);
         }
         $this->variable = $result['variable'];
         $this->json = $result['json'];
 
+        //alipay 需要请求另一个文件,获取paystr
+        if($_GPC['type'] == 'alipay'){
+            $result = $this->callMobile('order/pay_alipay');
+            $this->returnSuccess($result['json']['alipay']);
+
+        }
         $this->returnSuccess($this->json);
     }
     public function isPay(){
