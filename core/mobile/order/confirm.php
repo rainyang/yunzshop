@@ -2648,7 +2648,9 @@ if ($_W['isajax']) {
             }
             if ($order_row['fromcart'] == 1) {
                 $cartids = $order_row['cartids'];
-                $cartids = implode(',',$cartids);
+                if(is_array($cartids)){
+                    $cartids = implode(',',$cartids);
+                }
                 if (!empty($cartids)) {
                     pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where id in (' . $cartids . ') and openid=:openid and uniacid=:uniacid ', array(
                         ':uniacid' => $uniacid,
