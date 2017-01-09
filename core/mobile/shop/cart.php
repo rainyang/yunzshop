@@ -67,6 +67,10 @@ if ($_W['isajax']) {
         }
 
         $verify_goods_ischannelpick = '';
+<<<<<<< HEAD
+
+=======
+>>>>>>> 90b2f3c2be4c477d3b24e640419947c36bebdc46
         foreach ($list as &$r) {
             if ($isladder) {
                 $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
@@ -140,10 +144,14 @@ if ($_W['isajax']) {
                 'totalprice' => $totalprice,
                 'difference' => $difference,
                 'ischannelpay' => $ischannelpay,
+<<<<<<< HEAD
+                'verify_goods_ischannelpick' => $verify_goods_ischannelpick
+=======
                 'verify_goods_ischannelpick' => $verify_goods_ischannelpick,
                 'verify_goods_ischannelpay' => $verify_goods_ischannelpay,
                 'virtual_currency' => $virtual_currency,
                 'yunbi_title' => $yunbi_title
+>>>>>>> 90b2f3c2be4c477d3b24e640419947c36bebdc46
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {

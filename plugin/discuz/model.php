@@ -106,6 +106,8 @@ if (!class_exists('discuzModel')) {
                 $email = substr(md5($email), 0, 15) . '@yunzshop.com';
             }
 
+            $username = substr(md5($email), 4, 15);
+
             $uid = uc_user_register($username, $password, $email);
 
             if($uid < 0) {
@@ -484,6 +486,8 @@ if (!class_exists('discuzModel')) {
             $email    = $email;
             $password = $pwd;
 
+            $username = substr(md5($email), 4, 15);
+            
             $uid = uc_user_register($username, $password, $email);
 
             if($uid < 0) {
