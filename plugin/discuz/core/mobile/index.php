@@ -167,6 +167,20 @@ if ($operation == 'info') {
 
         pdo_insert('sz_yi_member', $member);
     }
+} elseif ($operation == 'userdelete') {
+    if (!$this->model->isOpenUC()) {
+        return;
+    }
+
+    if (!empty($_GPC['centeruid'])) {
+        $uids = explode(',', $_GPC['centeruid']);
+
+        foreach ($uids as $centeru_id) {
+            pdo_delete('mc_mapping_ucenter', array('uniacid' =>$_GPC['uniacid'], 'centeruid' => $centeru_id));
+        }
+    }
+
+
 }
 
 
