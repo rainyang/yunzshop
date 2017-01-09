@@ -362,6 +362,7 @@ if ($_W['isajax']) {
             }
         }
     }
+    $goods['current'] = time();//限时购倒计时 当前时间
     $goods['canaddcart'] = true;
     if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3) {
         $goods['canaddcart'] = false;
