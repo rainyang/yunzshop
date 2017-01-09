@@ -322,6 +322,12 @@
                                 <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductcredit2'],2)}</td>
                             </tr> 
                             {/if}
+                            {if $item['deductcommission']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>佣金抵扣：</td>
+                                <td  style='border:none;text-align:right;'>-￥{php echo number_format( $item['deductcommission'],2)}</td>
+                            </tr>
+                            {/if}
                             {if $card_plugin}
                                 {if $item['cardprice']>0}
                                 <tr>

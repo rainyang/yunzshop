@@ -18,10 +18,11 @@
     .main .page {width:100%; background:#eee; }
     .main .page .topbar {height:28px; width:100%; background:#f9f9f9; padding:8px 0;}
     .main .page .topbar .list1,    .main .page .topbar .list2 {height:28px; width:10%; float:left; margin-left:3%; line-height:28px; font-size:24px; text-align:left; color:#999;}
+    .main .page .topbar .list1{border: none;padding: 0;margin-top: 0;}
     .main .page .topbar .name {height:28px; width:54%; padding-left:10%; margin:auto; text-align:center; float:left; font-size:16px; line-height:28px; color:#666;}
     .main .page .topbar .sort {height:28px; width:10%; float:right; font-size:18px; line-height:28px; padding-top:5px; text-align:right; color:#999;}
-    .main .page .topbar .search {height:28px; width:10%; float:right; margin-right:3%; font-size:18px; line-height:25px; text-align:right; color:#999;}
-
+    .main .page .topbar .search {  padding-top:7px; width:10%; float:right; margin-right:3%; font-size:18px; line-height:18px; text-align:right; color:#999;}
+ 
     .main .page .goods {height:auto; width:98%; padding:0 1%; margin-top:5px; float:left;}
     .main .page .goods .good {width: 50%;box-sizing: border-box;float: left;    padding: 8px 4px 4px 8px;}
     .main .page .goods .good img {width:100%; }
@@ -62,7 +63,7 @@ span.f12 {
 #fenye{clear:both;margin:15px 0;height:35px; text-align:center; }
 #fenye table{ width:100%}
 #fenye img{ vertical-align:inherit}
-#fenye a,#fenye span{text-decoration:none; font-size:14px;height:30px;display:inline-block; text-align:center; 
+#fenye a,#fenye span{text-decoration:none; font-size:14px;height:30px;display:inline-block; text-align:center;
 line-height:30px;color:#666;border: 1px solid #ccc;padding:0 10px; font-size:12px; margin:0 2px;background:#fff; border-radius:3px; }
 #fenye a.curr{background-color: #EFEFEF; cursor:default;}
 #fenye a:hover{color:#333; background-color: #EFEFEF; }
@@ -78,7 +79,7 @@ div.addinfo{height:18px;}
     font-size: 12px;
     line-height: 14px;
     padding: 1px 5px;
-    display: inline-block; 
+    display: inline-block;
 }
 
 .label-waring {
@@ -92,7 +93,7 @@ div.addinfo{height:18px;}
 }
 </style>
 
- 
+
 <div id='container'></div>
 
 <script id='tpl_main' type='text/html'>
@@ -114,22 +115,22 @@ div.addinfo{height:18px;}
 </div>
     <div class="main">
         <div id='category_container'></div>
-        
+
         <div class='page'>
             <!--排序div-->
-            
+
             <!--topbar-->
             <div class="topbar">
                 {if !empty($myshop['selectcategory']) || empty($myshop)}
                 <div class="list1">
                   <i class="iconfont icon-list-ul" style="font-size: 22px"></i>
-				  
+
                 </div>
                 {else}
                 <div class="list2" onclick='history.back()'>
                   <i class="fa fa-angle-left"></i>
                 </div>
-                
+
                 {/if}
                 <div class="name">{if empty($current_category)}全部商品{else}{$current_category['name']}{/if}</div>
                 <div class="search"><i class="iconfont icon-search" style="font-size: 22px"></i></div>
@@ -147,19 +148,19 @@ div.addinfo{height:18px;}
             </div>
             <div class="copyright">版权所有 © {if !empty($set['copyright'])}{$set['copyright']}{else}{$_W['account']['name']}{/if}</div>
         </div>
-        
+
     </div>
 </script>
- 
+
 <script id='tpl_search_list' type='text/html'>
      <ul>
      <%each list as value%>
         <li><i class="fa fa-angle-right"></i> <a href="{php echo $this->createMobileUrl('shop/detail')}&id=<%value.id%>"><%value.title%></a></li>
         <%/each%>
-    </ul> 
+    </ul>
 </script>
 <script id="tpl_category_group" type="text/html">
-  
+
                 <div class="category_group">
                     <div class='container'>
                     <%each category as c%><a href="javascript:;"
@@ -169,12 +170,12 @@ div.addinfo{height:18px;}
                        <%if c.level==2%>ccate="<%c.id%>"<%/if%>
                        <%if c.level==3%>tcate="<%c.id%>"<%/if%>
                        <%if c.on %>class="on"<%/if%>
-                       
+
                        ><%c.name%></a><%/each%>
      </div>
                </div>
- 
- 
+
+
  </script>
 <script id='tpl_goods_list' type='text/html'>
   <form action="" method="get" id="goodsform">
@@ -277,16 +278,16 @@ div.addinfo{height:18px;}
 
         /*
         function getGoods() {
-             
+
             core.json('shop/list', args, function (json) {
-           
-             
-                 
+
+
+
                 $('#goods_container').html(tpl('tpl_goods_list',json.result));
                 $('#category_group').html("");
                 if(json.result.category && json.result.category.length>0){
                     var category = {category:json.result.category,parent:json.result.parent_category};
-                    $('#category_group').html(tpl('tpl_category_group',category));    
+                    $('#category_group').html(tpl('tpl_category_group',category));
                     $('#category_group a').unbind('click').click(function(){
                         if( $(this).attr('level')=='0'){
                           $('.topbar .name').html('全部商品');
@@ -302,13 +303,13 @@ div.addinfo{height:18px;}
                         loaded =false;
                         getGoods();
                     })
-                }  
-               
+                }
+
                 if(json.result.current_category){
                      $('.topbar .name').html( json.result.current_category.name);
                      document.title = json.result.current_category.name;
                 }
-                
+
                 if (json.result.goods.length <= 0) {
                     loaded = true;
                     $(window).scroll = null;
@@ -318,11 +319,11 @@ div.addinfo{height:18px;}
                 bindEvents();
                 stop =true;
                 bindMore();
-                
+
             }, true);
         }*/
         function getGoodsMore() {
-     
+
             core.json('shop/list', args, function (json) {
                 var result = json.result;
                 $('#goods_container').append(tpl('tpl_goods_list',result));
@@ -335,34 +336,34 @@ div.addinfo{height:18px;}
                         return;
                 }
                 stop=true;
-                bindMore(); 
-                
+                bindMore();
+
             });
         }
 
         function bindEvents() {
             $('.good img').each(function(){
-               $(this).height($(this).width()); 
+               $(this).height($(this).width());
             });
             $('.good').unbind('click').click(function () {
                         location.href = core.getUrl('shop/detail', {id: $(this).data('goodsid'),my:'{$_GPC['my']}'});
             });
         }
-        
+
         function bindMore() {
-     
+
             $(window).scroll(function () {
-  
+
                 if (loaded) {
                     return;
                 }
                 totalheight = parseFloat($(window).height()) + parseFloat($(window).scrollTop());
                 if ($(document).height() <= totalheight) {
-                
+
                     if (stop == true) {
                         stop = false;
                         $('#goods_container').append('<div id="list_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载更多商品</div>');
-                  
+
                         if(args.page=='' || args.page=='undefined'){
                             args.page = 1;
                         }
@@ -372,12 +373,12 @@ div.addinfo{height:18px;}
                 }
             });
         }
- 
+
         function reset() {
             $('#form')[0].reset();
         }
         function bindCategoryEvents(){
-            
+
              $(".category .close").unbind('click').click(function(){
                         $(".category").animate({left:"-60%"},200);
              });
@@ -385,7 +386,7 @@ div.addinfo{height:18px;}
                  var item = $(this);
                      $('#keywords').val(""); $('#search_container').html('');
                      $(".category").animate({left:"-60%"},200);
-                      
+
                       $("#isnew").val(item.data('isnew'));
                       $("#ishot").val(item.data('ishot'));
                       $("#isrecommand").val(item.data('isrecommand'));
@@ -418,9 +419,9 @@ div.addinfo{height:18px;}
                      getGoods();
                      */
              });
-             
+
         }
-        
+
         $('#container').html(tpl('tpl_main'));
         $('.sort').click(function () {
                 var display = $(".sort_list").css('display');
@@ -433,13 +434,13 @@ div.addinfo{height:18px;}
         });
         $('.nav').click(function () {
 
-              
-                
+
+
                 if ($(this).data('order') ==args.order && $(this).data('by') == args.by) {
                     return;
                 }
                 $('.nav').removeClass('navon');
-                
+
                 $(this).addClass('navon');
 
                       $("#order").val($(this).data('order'));
@@ -462,7 +463,7 @@ div.addinfo{height:18px;}
                             by:$(this).data('by'),
                             shopid:args.shopid
                      };
-               
+
                 $(".sort_list").fadeOut(200);
                 getGoods();
                 */
@@ -474,7 +475,7 @@ div.addinfo{height:18px;}
                   bindCategoryEvents();
                   return;
              }
-             
+
              core.json('shop/util',{op:'category'}, function (json) {
                  category = json.result;
                  $('#category_container').append(tpl('tpl_category_list',category));
@@ -483,28 +484,28 @@ div.addinfo{height:18px;}
               }, true);
         });
         $('.search').click(function(){
-            
+
            $(".search1").animate({bottom:"0px"},100);
            $('#keywords').unbind('keyup').keyup(function(){
                     var keywords = $.trim( $(this).val());
                     if(keywords==''){
-                        $('#search_container').html("");         
+                        $('#search_container').html("");
                         return;
                     }
                     core.json('shop/util',{op:'search',keywords:keywords }, function (json) {
                          var result = json.result;
                          if(result.list.length>0){
-                            $('#search_container').html(tpl('tpl_search_list',result));    
+                            $('#search_container').html(tpl('tpl_search_list',result));
                          }
                          else{
-                            $('#search_container').html("");         
+                            $('#search_container').html("");
                          }
 
                       }, true);
             });
             $('.search1 .sub1').unbind('click').click(function(){
                     var keywords = $.trim( $('#keywords').val());
-                  
+
                    args  = {
                             page:1,
                             isnew: args.isnew,
@@ -520,7 +521,7 @@ div.addinfo{height:18px;}
                             by:args.by,
                             shopid:args.shopid
                      };
-               
+
                 $(".sort_list").fadeOut(200);
                  $(".search1").animate({bottom:"-100%"},100);
                  getGoods();
@@ -529,11 +530,11 @@ div.addinfo{height:18px;}
                  $(".search1").animate({bottom:"-100%"},100);
             });
         });
-        
-      
-   
+
+
+
      getGoods();
-        
+
 
     });
 </script>

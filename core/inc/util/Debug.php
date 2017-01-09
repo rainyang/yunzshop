@@ -50,6 +50,9 @@ class Debug
     {
         //debug信息
         $result = $GLOBALS['dbg_stack'];
+        foreach ($result as &$item){
+            unset($item['object']);
+        }
         return $result;
     }
 

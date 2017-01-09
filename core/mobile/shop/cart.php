@@ -14,6 +14,9 @@ if (p('ladder')) {
         $isladder = true;   
     }
 }
+if(empty($openid) || strstr($openid, 'http-equiv=refresh')){
+    Header('Location:' . $this->createMobileUrl('member/login')); 
+}
 if ($_W['isajax']) {
     if(empty($openid) || strstr($openid, 'http-equiv=refresh')){
         return show_json(2, array(
