@@ -597,12 +597,14 @@ $(document).on('click','.deleteopladder',function(){
            {ife 'shop.goods' $item}
         <span class='help-block'>尽量填写完整，有助于于商品销售的数据分析</span>
         {/if}
+        {if $supplier_show}
           <div class="input-group form-group">
               <span class="input-group-addon">分红金额</span>
               <input type="text" name="bonusmoney" class="form-control" value="{$item['bonusmoney']}" />
               <span class="input-group-addon">元</span>
           </div>
           <span class='help-block'>填写分红金额，不填写则为现价计算</span>
+        {/if}
     </div>
 </div>
 {else}

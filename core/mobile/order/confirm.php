@@ -2441,11 +2441,11 @@ if ($_W['isajax']) {
                         $deductcommissionprice += $dispatch_price;  //添加运费金额
                     }
                     $member_commission = $pluginc->getInfo($openid, array('ok'));
-                    $commission_ok = $member_commission['commission_ok'];
-                    if ($commission_ok > $totalprice) {
+                    $deductcommission = $member_commission['commission_ok'];
+                    if ($deductcommission > $totalprice) {
                         $deductcommission = $totalprice;
                     }
-                    if ($commission_ok > $deductcommissionprice) {
+                    if ($deductcommission > $deductcommissionprice) {
                         $deductcommission = $deductcommissionprice;
                     }
                     $totalprice -= $deductcommission;

@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
 #     FileName: category.php
-#         Desc: ÉÌÆ··ÖÀà
+#         Desc: ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½
 #       Author: Yunzhong - http://www.yunzshop.com
 #        Email: 913768135@qq.com
 #     HomePage: http://www.yunzshop.com
@@ -22,6 +22,10 @@ $commission = p('commission');
 if ($commission) {
 	$shopid = intval($_GPC['shopid']);
 	$shop = set_medias($commission->getShop($openid), array('img', 'logo'));
+}
+$tcateid = pdo_fetch('select * from ' . tablename('ims_sz_yi_category2') . ' where uniacid=:uniacid and tcate1>0');
+if (empty($tcateid)) {
+    $shopset['catlevel'] = 2;
 }
 $this->setHeader();
 include $this->template('shop/category2');

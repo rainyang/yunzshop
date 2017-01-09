@@ -17,7 +17,7 @@ if ($yunbi_plugin) {
 if ($_W['isajax']) {
 	if ($operation == 'cancel') {
 		$orderid = intval($_GPC['orderid']);
-		$order   = pdo_fetch('select id,ordersn,openid,status,deductcredit,deductprice,deductyunbi,deductyunbimoney,couponid from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+		$order   = pdo_fetch('select id,ordersn,openid,status,deductcredit,deductprice,deductyunbi,deductyunbimoney,deductcommission,couponid from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
 	            ':id' => $orderid,
 	            ':uniacid' => $uniacid,
 	            ':openid' => $openid

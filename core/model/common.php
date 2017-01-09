@@ -126,8 +126,10 @@ class Sz_DYi_Common
         $string = implode($prepares, '&');
         $string .= $alipay['secret'];
         $set['sign'] = md5($string);
+        $pay_str = http_build_query($set, '', '&');
         return array(
-            'url' => ALIPAY_GATEWAY . '?' . http_build_query($set, '', '&')
+            'url' => ALIPAY_GATEWAY . '?' . $pay_str,
+            'pay_str'=> $pay_str
         );
     }
 	
