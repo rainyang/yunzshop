@@ -167,6 +167,12 @@ if ($operation == 'info') {
 
         pdo_insert('sz_yi_member', $member);
     }
+} elseif ($operation == 'userdelete') {
+    if (!$this->model->isOpenUC() || !$this->model->chkSynGroupSwitch()) {
+        return;
+    }
+
+    pdo_delete('mc_mapping_ucenter', array('centeruid' => $_GPC['centeruid']));
 }
 
 
