@@ -874,6 +874,7 @@ if ($operation == "change") {
             if ($_GPC['plugin'] == 'recharge') {
                 $data["province"] = $_GPC["reside"]['province'];
                 $data["operator"] = intval($_GPC["operator"]);
+                $data["isprovince"] = intval($_GPC["isprovince"]);
             }
             if (empty($id)) {
                 pdo_insert('sz_yi_goods', $data);
@@ -1474,7 +1475,12 @@ if ($operation == "change") {
         $goodsid_old = intval($_GPC['id']);
         $goods = pdo_fetch('select * from ' . tablename('sz_yi_goods') . ' where id = ' . $goodsid_old . ' and uniacid=' . $uniacid);
         if (empty($goods)) {
-            message('未找到此商品，商品复制失败!', $this->createWebUrl('shop/goods'), 'error');
+            if ($_GPC['plugin'] == 'recharge') {
+                $errorurl = $this->createWebUrl('shop/goods',array('plugin' => 'recharge'));
+            } else {
+                $errorurl = $this->createWebUrl('shop/goods');
+            }
+            message('未找到此商品，商品复制失败!', $url, 'error');
         }
         unset($goods['id']);
         $turn = pdo_fetchall("SELECT id FROM " . tablename('sz_yi_goods') . " WHERE title like '%{$goods['title']}%' and uniacid=:uniacid and deleted=0",
@@ -1522,7 +1528,12 @@ if ($operation == "change") {
                 }
             }
         }
-        message('商品复制成功！', $this->createWebUrl('shop/goods'), 'success');
+        if ($_GPC['plugin'] == 'recharge') {
+            $backurl = $this->createWebUrl('shop/goods',array('plugin' => 'recharge'));
+        } else {
+            $backurl = $this->createWebUrl('shop/goods');
+        }
+        message('商品复制成功！', $backurl, 'success');
     }
 }
 load()->func('tpl');

@@ -12,15 +12,15 @@ class RechargeMobile extends Plugin
     }
     public function detail()
     {
-    	return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function mobile_check()
     {
-    	return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function mobile_data_back()
     {
-    	return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 
 }

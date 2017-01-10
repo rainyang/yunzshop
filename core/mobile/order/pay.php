@@ -576,7 +576,7 @@ if ($operation == 'display' && $_W['isajax']) {
 
     if (p('recharge')) {
         if ($order_goods[0]['type'] == 11 || $order_goods[0]['type'] == 12) {
-            $order_goods_recharge = pdo_fetch('select go.title,g.type,o.carrier,o.price from ' . tablename('sz_yi_order') . 'o left join '. tablename('sz_yi_order_goods') .' og ' .' on o.id=og.orderid left join ' . tablename('sz_yi_goods') .' g on og.goodsid=g.id left join'. tablename('sz_yi_goods_option') .' go on og.optionid=go.id where o.id=:id and o.uniacid=:uniacid and o.openid=:openid', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
+            $order_goods_recharge = pdo_fetch('select go.title,g.type,g.isprovince,o.carrier,o.price from ' . tablename('sz_yi_order') . 'o left join '. tablename('sz_yi_order_goods') .' og ' .' on o.id=og.orderid left join ' . tablename('sz_yi_goods') .' g on og.goodsid=g.id left join'. tablename('sz_yi_goods_option') .' go on og.optionid=go.id where o.id=:id and o.uniacid=:uniacid and o.openid=:openid', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
 
             preg_match('/\d+/',$order_goods_recharge['title'],$packcode);
 
@@ -593,6 +593,7 @@ if ($operation == 'display' && $_W['isajax']) {
             }
             $mobile_data_param = array();
             $mobile_data_param['out_order_id']   =   $order['ordersn'];
+            $mobile_data_param['pay_ordersn']   =   $order['pay_ordersn'];
             $mobile_data_param['timetamp'] =   date("YmdHisB",time());
             $mobile_data_param['flow_val']  =   $packcode;
             $mobile_data_param['phone_no']    =   $telephone;
@@ -600,6 +601,7 @@ if ($operation == 'display' && $_W['isajax']) {
             $mobile_data_param['order_id']  =   $orderid;
             $mobile_data_param['apikey']    =   $rechargeset['rechargeapikey'];
             $mobile_data_param['account']    =   $rechargeset['rechargeusername'];
+            $mobile_data_param['scope']    =   $order_goods_recharge['isprovince'];//1：省内，0：国内
         }
     }
 
@@ -927,7 +929,11 @@ if ($operation == 'display' && $_W['isajax']) {
             if (p('recharge') && !empty($mobile_data_param)) {
                 p('recharge')->mobile_submit_api($mobile_data_param);
             } 
-            $set = m('common')->getSysset();
+            $pay_result['time'] = time();
+            file_put_contents(IA_ROOT."/pay_gpc.txt", print_r($pay_result,true),FILE_APPEND);
+            file_put_contents(IA_ROOT."/pay_result.txt", print_r($pay_result,true),FILE_APPEND);
+            show_json(1, $pay_result);
+            /*$set = m('common')->getSysset();
             if (!empty($pay_result['verifycode'])) {
                 if($pset['sms']['type'] == 1){
                     if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){

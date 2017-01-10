@@ -98,6 +98,14 @@ if (!empty($order)) {
             {
                 $order['virtual_url'] = $str[1];
             }
+        } elseif (strstr($value,'https://')) {
+            $str = explode(": ",$value);
+            $order['virtual_strs'][$key]['con'] = $str[0];
+            $order['virtual_strs'][$key]['url'] = $str[1];
+            if(count($virtual_strs) == 1)
+            {
+                $order['virtual_url'] = $str[1];
+            }
         }
     }
     /*
