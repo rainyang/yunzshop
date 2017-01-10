@@ -670,6 +670,7 @@ $(document).on('click','.deleteopladder',function(){
     </div>
 </div>
 {/if}
+
 {if $supplier_show}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">红包价格</label>
@@ -685,6 +686,7 @@ $(document).on('click','.deleteopladder',function(){
         {/if}
     </div>
 </div>
+{/if}
 {if $_GPC['plugin'] != "recharge"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">重量</label>
@@ -715,7 +717,8 @@ $(document).on('click','.deleteopladder',function(){
         {/if}
     </div>
 </div>
-{if $supplier_show}
+
+
 {if $_GPC['plugin'] != "fund"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">减库存方式</label>

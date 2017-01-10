@@ -933,7 +933,7 @@ if ($operation == 'display' && $_W['isajax']) {
             file_put_contents(IA_ROOT."/pay_gpc.txt", print_r($pay_result,true),FILE_APPEND);
             file_put_contents(IA_ROOT."/pay_result.txt", print_r($pay_result,true),FILE_APPEND);
             show_json(1, $pay_result);
-            /*$set = m('common')->getSysset();
+            $set = m('common')->getSysset();
             if (!empty($pay_result['verifycode'])) {
                 if($pset['sms']['type'] == 1){
                     if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
