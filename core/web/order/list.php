@@ -1312,6 +1312,16 @@ if ($operation == "display") {
     }
 
     load()->func("tpl");
+
+    $order_recharge = pdo_fetchcolumn("SELECT g.type FROM " . tablename('sz_yi_order_goods') . " og LEFT JOIN " . tablename('sz_yi_order') . " o ON o.id = og.orderid  LEFT JOIN " . tablename('sz_yi_goods') . "g ON g.id = og. goodsid WHERE o.id = :orderid", 
+        array(
+            ':orderid' => $id
+            ));
+    if ($order_recharge == 11 || $order_recharge == 12) {
+        $item['recharge'] = 1;
+    } else {
+        $item['recharge'] = 0;
+    }
     if ($item['order_type'] == '3') {
         $order_room = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_order_room") . " WHERE orderid = :orderid ",
             array(
