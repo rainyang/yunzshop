@@ -34,7 +34,6 @@ class Sz_DYi_Goods
         $orderby   = !empty($args['by']) ? $args['by'] : '';
         $ids       = !empty($args['ids']) ? trim($args['ids']) : '';
         $id       = !empty($args['id']) ? trim($args['id']) : '0';
-        $goodsid       = !empty($args['goodsid']) ? trim($args['goodsid']) : '0';
         $sup_uid   = !empty($args['supplier_uid']) ? trim($args['supplier_uid']) : '';
         $isopenchannel   = !empty($args['isopenchannel']) ? trim($args['isopenchannel']) : 0;
         $ischannelpick   = !empty($args['ischannelpick']) ? trim($args['ischannelpick']) : 0;
@@ -54,11 +53,6 @@ class Sz_DYi_Goods
         }
         if (!empty($args['isverify']) && $args['isverify'] == 2) {
             $condition .= " and isverify = '2' ";
-        }
-
-        if (!empty($goodsid)) {
-            $condition .= " and id < :goodsid";
-            $params[':goodsid'] = intval($goodsid);
         }
         if (!empty($sup_uid)) {
             $condition .= " and supplier_uid = :supplier_uid ";
@@ -130,8 +124,6 @@ class Sz_DYi_Goods
 
         if($args['plugin'] == 'fund'){
             $condition .= " and plugin='fund'";
-        } elseif ($args['plugin'] == 'recharge') {
-            $condition .= " and plugin='recharge'";
         } else {
             $condition .= " and plugin=''";
         }
