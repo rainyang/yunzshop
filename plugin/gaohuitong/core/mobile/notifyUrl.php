@@ -5,12 +5,12 @@
  * Date: 17/1/11
  * Time: 下午2:50
  */
-require_once (dirname(__FILE__) ."../../../vendor/GatewayNotify.class.php");
+require "../../../vendor/GatewayNotify.class.php";
 
-require '../../../../framework/bootstrap.inc.php';
-require '../../../../addons/sz_yi/defines.php';
-require '../../../../addons/sz_yi/core/inc/functions.php';
-require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
+require '../../../../../../../framework/bootstrap.inc.php';
+require '../../../../../../../addons/sz_yi/defines.php';
+require '../../../../../../../addons/sz_yi/core/inc/functions.php';
+require '../../../../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 
 $dir = dirname(__FILE__);
 $dir_sn = substr($dir,strrpos($dir,'/')+1);
@@ -47,21 +47,18 @@ if($notify->verifySign()) {
     if( "1" == $pay_result ) {
 
         //处理业务开始
-        echo "</br>获取异步通知信息成功!</br></br>";
-        echo " success "."</br></br>";
-        echo "业务代码：".$busi_code."</br>";
-        echo "商户号：".$merchant_no."</br>";
-        echo "终端号：".$terminal_no."</br>";
-        echo "商户系统订单号：".$order_no."</br>";
-        echo "网关系统支付号：".$pay_no."</br>";
-        echo "订单金额：".$amount."</br>";
-        echo "支付结果（1表示成功）：".$pay_result."</br>";
-        echo "支付时间：".$pay_time."</br>";
-        echo "清算日期：".$sett_date."</br>";
-        echo "清算时间：".$sett_time."</br>";
-        echo "订单备注：".$memo."</br>";
-        echo "签名类型：".$sign_type."</br>";
-        echo "签名：".$sign."</br>";
+        $return = array(
+            "业务代码"=>$busi_code,
+            "商户号"=>$merchant_no,
+            "终端号"=>$terminal_no,
+            "商户系统订单号"=>$order_no,
+            "网关系统支付号"=>$pay_no,
+            "订单金额"=>$amount,
+            "支付结果"=>'(1表示成功)' .$pay_result,
+            "支付时间"=>$pay_time,
+            "清算日期"=>$sett_date,
+            "订单备注"=>$memo
+        );
 
         $uniacid = $memo;
         $out_trade_no = $order_no;
@@ -77,7 +74,6 @@ if($notify->verifySign()) {
         m('common')->paylog($paylog);
 
         $type = 0;
-        m('common')->paylog("sign: ok\r\n");
         if (empty($type)) {
             $tid = $out_trade_no;
             if (strexists($tid, 'GJ')) {
