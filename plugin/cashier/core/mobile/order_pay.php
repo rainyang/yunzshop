@@ -287,6 +287,8 @@ if ($operation == 'display' && $_W['isajax']) {
             $options['mchid'] = $pay['wx_native']['wx_mcid'];
             $options['appid'] = $pay['wx_native']['wx_appid'];
             $options['secret'] = $pay['wx_native']['wx_secret'];
+            $options['secret'] = $pay['wx_native']['signkey'];
+
             $params['trade_type'] = 'APP';
             $wechat            = m('common')->wechat_build($params, $options, 0);
             //$wechat['success'] = false;
