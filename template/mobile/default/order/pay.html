@@ -343,7 +343,9 @@
                         }
                          $('.button').attr('submitting',1);
                          var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
-                         core.json('order/pay', {op: 'pay',type: 'weixin', orderid:'{$_GPC['orderid']}',deduct:deduct,telephone:'{$_GPC['telephone']}'}, function (rjson) {
+                         core.json('order/pay', {op: 'pay',type: 'weixin', orderid:'{$_GPC['orderid']}',deduct:deduct,
+                            telephone:'{$_GPC['telephone']}'
+                        }, function (rjson) {
                             if(rjson.status!=1){
                                 $('.button').removeAttr('submitting');
                                 core.tip.show(rjson.result);

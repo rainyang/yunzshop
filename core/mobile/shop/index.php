@@ -14,12 +14,8 @@ $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
 $shopset   = m('common')->getSysset('shop');
 $plugin_yunbi = p('yunbi');
-$plugin_recharge = p('recharge');
 if ($plugin_yunbi) {
 	$yunbi_set = $plugin_yunbi->getSet();
-}
-if ($plugin_recharge) {
-	$recharge_set = $plugin_recharge->getSet();
 }
 if (empty($this->yzShopSet['ispc']) || isMobile()) {
 	if ($designer) {
@@ -203,12 +199,6 @@ if ($operation == 'index') {
 	$type = $_GPC['type'];
 	$args = array('page' => $_GPC['page'], 'pagesize' => 6, 'isrecommand' => 1, 'order' => 'displayorder desc,createtime desc', 'by' => '');
 	$goods = m('goods')->getList($args);
-	if ($recharge_set) {
-		$args = array('page' => $_GPC['page'], 'pagesize' => 6, 'isrecommand' => 0, 'order' => 'displayorder desc,createtime desc', 'by' => '','plugin' => 'recharge') ;
-		$recharge_goods =  m('goods')->getList($args);
-	}
-
-
 }
 if ($_W['isajax']) {
 	if ($operation == 'index') {

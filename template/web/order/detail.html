@@ -599,6 +599,20 @@
                     </div>
                 </div>
             </div>
+            {elseif !empty($item['recharge'])}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    充值信息
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">充值号码 :</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <p class="form-control-static">{$user['carrier_mobile']} </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {/if}
 
 

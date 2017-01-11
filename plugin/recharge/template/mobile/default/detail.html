@@ -4,6 +4,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="target-densitydpi=device-dpi, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script language="javascript" src="../addons/sz_yi/static/js/require.js"></script>
+    <script language="javascript" src="../addons/sz_yi/static/js/app/config.js?v=2"></script>
+    <script language="javascript" src="../addons/sz_yi/static/js/dist/jquery-1.11.1.min.js"></script>
+    <script language="javascript" src="../addons/sz_yi/static/js/dist/jquery.gcjs.js"></script>
     <title></title>
     <script language="javascript" src="../addons/sz_yi/static/js/dist/jquery-1.11.1.min.js"></script>
     <style>
@@ -94,11 +98,44 @@
             text-align:center;
 
         }
+        .banner {overflow:hidden;position:relative;height:auto;}
+        .banner  .main_image{width:100%;position:relative;top:0;left:0;}
+        .banner .main_image ul{}
+        .banner .main_image li{float:left;width: 100%;}
+        .banner .main_image li img{display:block;width:100%; }
+        .banner .main_image li a{display:block;width:100%;}
 
+        div.flicking_con{position:absolute;bottom:10px;z-index:1;width:100%;height:12px;}
+        div.flicking_con .inner { width:100%;height:9px;text-align:center;}
+        div.flicking_con a{position:relative; width:10px;height:9px;background:url('../addons/sz_yi/template/mobile/default/static/images/dot.png') 0 0 no-repeat;display:inline-block;text-indent:-1000px}
+        div.flicking_con a.on{background-position:0 -9px}
+        #index_loading { width:94%;padding:10px;color:#666;text-align: center;float:left;}
 
     </style>
 </head>
 <body style="background:#e6e6e6">
+
+{if count($advs)>0}
+<div class="banner">
+
+    {if count($advs)>1}
+    <div class="flicking_con">
+        <div class="inner">
+        {loop $advs $value $index}
+        <a class="{if $index==0}on{/if}" href="#@">{$index}</a>
+        {/loop}
+        </div>
+    </div>
+    {/if}
+    <div class="main_image" id='banner'>
+        <ul>
+            {loop $advs $adv}
+            <li {if $adv['link']}onclick="location.href='{$adv['link']}'"{/if}> <img src="{$adv['thumb']}"></li>
+            {/loop}
+        </ul>
+    </div>
+</div>
+{/if}
 <h1 class="notice-tit">流量话费充值</h1>
 <p class="notice-p">{php echo $rechargeset['rechargenotice'];}</p>
 <div class="bgfff">
@@ -110,21 +147,29 @@
         <i class="yys-pos" id="catname"></i>
     </div>
 </div>
-<!--<div class="h-not">广东佛山移动 全国可用 立即生效 月结日失效</div>-->
 <div class="bgfff" id="options">
     <div class="tab" id="tab">
-        <a href="#" class="hover" class="type" type='domestic'>国内流量</a>
-        <a href="#" class="type" type='provincial'>省内流量</a>
+        <a href="#" class="type" type='domestic' id="domestic">国内流量</a>
+        <a href="#" class="type" type='provincial' id="provincial">省内流量</a>
     </div>
     <div class="list-pos">
         <ul id="specs">
         </ul>
     </div>
 </div>
-<div class="h-not">充值规则:输入手机号显示价格</div>
+<div class="h-not">{php echo $rechargeset['content'];}</div>
 <div id="loading"><p>数据加载中</p></div>
 </body>
 <script>
+    require(['jquery','jquery.touchslider','swipe'], function ($) {
+        new Swipe($('#banner')[0], {
+            speed:300,
+            auto:4000,
+            callback: function(){
+            $(".flicking_con  .inner  a").removeClass("on").eq(this.index).addClass("on");
+            }
+        }); 
+    })
     $(document).ready(function(){
         $("#tab").hide();
         $('#telephone').bind('input propertychange', function() {
@@ -140,7 +185,7 @@
                         data: {mobile:$("#telephone").val()},
                         dataType: "json",
                         success: function(result){
-                           //console.log(result);return;
+                           console.log(result);
                             var specs = result.spec_datas;
                             $("#catname").html(result.carrier);
                             if (result.code == 1) {
@@ -149,12 +194,16 @@
                                 var html_dom = '';
                                 var provincial =  specs.provincial;
                                 var domestic =  specs.domestic;
+                                if (domestic == undefined) {
+                                    domestic = specs.alldomestic;
+                                }
                                 var goodsid = result.goodsid;
                                 //只有国内或省内
                                 if (provincial != undefined && domestic != undefined) {
                                     $("#tab").show();
+                                    $('#domestic').addClass('hover');
                                     $.each(domestic,function(key,value){ 
-                                            html_dom += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
+                                            html_dom += '<li><a href="#" goodsid="' + value["goodsid"] + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
                                             html_dom += '<p>' + value["itemtitle"] + '</p></li>';
                                         })
                                     $("#specs").html(html_dom);
@@ -164,7 +213,7 @@
                                             $(this).addClass('hover');
                                             $("#tab a").prev().removeClass();
                                             $.each(provincial,function(key,value){    
-                                                html_pro += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
+                                                html_pro += '<li><a href="#" goodsid="' + value["goodsid"] + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
                                                 html_pro += '<p>' + value["itemtitle"] + '</p></li>';
                                             })
                                             $("#specs").html(html_pro);
@@ -173,7 +222,7 @@
                                             $(this).addClass('hover');
                                             $("#tab a").next().removeClass();
                                             $.each(domestic,function(key,value){ 
-                                                html_dom += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
+                                                html_dom += '<li><a href="#" goodsid="' + value["goodsid"] + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
                                                 html_dom += '<p>' + value["itemtitle"] + '</p></li>';
                                             })
                                             $("#specs").html(html_dom);
@@ -181,19 +230,21 @@
                                     })
                                     
                                 } else {
-                                    $("#tab").hide();
+                                    $("#tab").show();
                                     if (provincial != undefined) {
-                                        
+                                        $("#domestic").hide();
+                                        $("#provincial").addClass('hover');
                                         $.each(provincial,function(key,value){ 
-                                            html += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
+                                            html += '<li><a href="#" goodsid="' + value["goodsid"] + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
                                             html += '<p>' + value["itemtitle"] + '</p></li>';
                                         })  
                                         
                                     }
                                     if (domestic != undefined) {
-                                        
+                                        $("#provincial").hide();
+                                        $("#domestic").addClass('hover');
                                         $.each(domestic,function(key,value){ 
-                                            html += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
+                                            html += '<li><a href="#" goodsid="' + value["goodsid"] + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
                                             html += '<p>' + value["itemtitle"] + '</p></li>';
                                         }) 
                                     }

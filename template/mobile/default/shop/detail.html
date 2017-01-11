@@ -1329,11 +1329,12 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
             setTimeHtml(goods);
             window.timer = setInterval(function(){
+                goods.current += 1;
                 setTimeHtml(goods);
             },1000);
         }
         function setTimeHtml(goods){
-            var current = Math.floor(new Date().getTime()/1000);
+            var current = goods.current;//Math.floor(new Date().getTime()/1000);
                 var ts = 0;//计算剩余的毫秒数
                 var prefix = '';
 
@@ -1343,8 +1344,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     if(ts<=0){
                         location.reload();
                     }
-                }
-                else if(goods.timestate=='after'){
+                }else if(goods.timestate=='after'){
                     ts = goods.timeend - current;
 
                     prefix = "限时购结束倒计时:  ";

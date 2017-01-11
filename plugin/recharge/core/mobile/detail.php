@@ -13,6 +13,14 @@ $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
 $goodsid        = intval($_GPC['id']);
 $rechargeset =    p('recharge')->getSet();
+$advs = pdo_fetchall('select id,advname,link,thumb from ' . tablename('sz_yi_recharge_adv') . ' where uniacid=:uniacid and isshow=1 order by displayorder desc', array(':uniacid' => $uniacid));
+foreach($advs as $key => $adv){
+    if(!empty($advs[$key]['thumb'])){
+        $adv[] = $advs[$key];
+    }
+}
+$advs = set_medias($advs, 'thumb');
+    //print_R($advs);exit;
 $params = array(':uniacid' => $_W['uniacid'], ':goodsid' => $goodsid);
 $sql = 'SELECT count(id) FROM ' . tablename('sz_yi_order_comment') . ' where 1 and uniacid = :uniacid and goodsid=:goodsid and deleted=0 ORDER BY `id` DESC';
 $commentcount = pdo_fetchcolumn($sql, $params);
@@ -72,9 +80,9 @@ if ($_W['isajax']) {
 
             }
             if ($a == 0) {
-                return show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
+                show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
             } else {
-                return show_json(1);
+                show_json(1);
             }
         }
 
@@ -84,7 +92,7 @@ if ($_W['isajax']) {
         $ischannelpick  = intval($_GPC['ischannelpick']);
     }
     if (empty($goods)) {
-        return show_json(0);
+        show_json(0);
     }
     $goods              = set_medias($goods, 'thumb');
     if (p('yunbi')) {
@@ -363,6 +371,7 @@ if ($_W['isajax']) {
         $saleset            = $sale_plugin->getSet();
         $saleset['enoughs'] = $sale_plugin->getEnoughs();
     }
+    
     $ret        = array(
         'is_admin' => $_GPC['is_admin'],
         'goods' => $goods,
@@ -418,7 +427,7 @@ if ($_W['isajax']) {
         'btnurl2' => !empty($goods['detail_btnurl2']) ? $goods['detail_btnurl2'] : $shop['url']
     );
 
-    return show_json(1, $ret);
+    show_json(1, $ret);
 
 }
 
