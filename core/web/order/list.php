@@ -107,7 +107,12 @@ $paytype = array(
     "4" => array(
         "css" => "primary",
         "name" => "到店支付"
-    )
+    ),
+    "30" => array(
+        "css" => "warning",
+        "name" => "高汇通支付"
+    ),
+
 );
 $orderstatus = array(
     "-1" => array(
