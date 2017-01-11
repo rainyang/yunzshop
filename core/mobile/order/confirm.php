@@ -758,6 +758,9 @@ if ($_W['isajax']) {
             } else {
                 $order_all[$g['supplier_uid']]['yunbideductprice'] += $g["yunbi_deduct"];
             }
+            if($order_all[$g['supplier_uid']]['yunbideductprice'] > $price){
+                $order_all[$g['supplier_uid']]['yunbideductprice'] += $price;
+            }
             if ($g["deduct2"] == 0.00) {
                 $order_all[$g['supplier_uid']]['deductprice2'] += $price;
             } elseif ($g["deduct2"] > 0) {
@@ -1016,6 +1019,10 @@ if ($_W['isajax']) {
 
                 if (empty($saleset["dispatchnodeduct"])) {
                     $order_all[$val['supplier_uid']]['deductprice2'] += $order_all[$val['supplier_uid']]['dispatch_price'];
+                }
+                //虚拟币抵扣运费
+                if (empty($yunbiset["dispatchnodeduct"])) {
+                    $order_all[$val['supplier_uid']]['yunbideductprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
                 }
             }
             $order_all[$val['supplier_uid']]['hascoupon'] = false;
@@ -1728,6 +1735,7 @@ if ($_W['isajax']) {
             $cash          = 1;
             $deductprice   = 0;
             $deductprice2   = 0;
+            $yunbideductprice = 0;
             $deductcommissionprice   = 0;
             $virtualsales  = 0;
             $dispatch_price = 0;
@@ -2097,7 +2105,6 @@ if ($_W['isajax']) {
                     if (p('channel') && $ischannelpay == 1) {
                         $ggprice = $gprice;
                     }
-
                 }
                 $data["realprice"] = $ggprice;
                 $totalprice += $ggprice;
@@ -2129,40 +2136,6 @@ if ($_W['isajax']) {
 
                 $deductprice += $data["deduct"] * $data["total"];
 
-                //虚拟币抵扣
-                if ($data["yunbi_deduct"]) {
-                    $yunbiprice += $data["yunbi_deduct"] * $data["total"];
-                    $yunbideductprice = $data["yunbi_deduct"] * $data["total"];
-                }
-                //虚拟币抵扣
-                $deductyunbi = 0;
-                $deductyunbimoney = 0;
-
-                if ($yunbi_plugin && $yunbiset['isdeduct']) {
-
-                        if (isset($_GPC['order']) && !empty($_GPC['order'][0]['yunbi'])) {
-                            $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
-                            $ycredit = 1;
-                            $ymoney  = round(floatval($yunbiset['money']), 2);
-                            if ($ycredit > 0 && $ymoney > 0) {
-                                if ($virtual_currency % $ycredit == 0) {
-                                    $deductyunbimoney = round(intval($virtual_currency / $ycredit) * $ymoney * $data["total"], 2);
-                                } else {
-                                    $deductyunbimoney = round((intval($virtual_currency / $ycredit) + 1) * $ymoney * $data["total"], 2);
-                                }
-                            }
-                            if ($deductyunbimoney > $yunbideductprice) {
-                                $deductyunbimoney = $yunbideductprice;
-                            }
-                            if ($deductyunbimoney > $totalprice) {
-                                $deductyunbimoney = $totalprice;
-                            }
-                            $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
-
-                        }
-
-                    $totalprice -= $deductyunbimoney;
-                }
                 $virtualsales += $data["sales"];
                 if ($data["deduct2"] == 0.00) {
                     $deductprice2 += $ggprice;
@@ -2174,7 +2147,15 @@ if ($_W['isajax']) {
                     }
                 }
 
-
+                //虚拟币抵扣
+                if ($data["yunbi_deduct"]) {
+                    $yunbiprice += $data["yunbi_deduct"] * $data["total"];
+                    $data['yunbideductprice'] = $data["yunbi_deduct"] * $data["total"];
+                    if ($data['yunbideductprice'] > $ggprice) {
+                        $data['yunbideductprice'] = $ggprice;
+                    }
+                }
+                $yunbideductprice += $data['yunbideductprice'];
                 if ($data["deductcommission"] == 0.00) {
                     $deductcommissionprice += $ggprice;
                 } else if ($data["deductcommission"] > 0) {
@@ -2435,6 +2416,40 @@ if ($_W['isajax']) {
                 $totalprice -= $deductcredit2;
             }
 
+
+
+
+                if ($yunbiset && empty($yunbiset["dispatchnodeduct"])) {
+                    $yunbideductprice += $dispatch_price;
+                }
+                //虚拟币抵扣
+                $deductyunbi = 0;
+                $deductyunbimoney = 0;
+                if ($yunbi_plugin && $yunbiset['isdeduct']) {
+
+                        if (isset($_GPC['order']) && !empty($_GPC['order'][0]['yunbi'])) {
+                            $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
+                            $ycredit = 1;
+                            $ymoney  = round(floatval($yunbiset['money']), 2);
+                            if ($ycredit > 0 && $ymoney > 0) {
+                                if ($virtual_currency % $ycredit == 0) {
+                                    $deductyunbimoney = round(intval($virtual_currency / $ycredit) * $ymoney * $data["total"], 2);
+                                } else {
+                                    $deductyunbimoney = round((intval($virtual_currency / $ycredit) + 1) * $ymoney * $data["total"], 2);
+                                }
+                            }
+                            if ($deductyunbimoney > $yunbideductprice) {
+                                $deductyunbimoney = $yunbideductprice;
+                            }
+                            if ($deductyunbimoney > $totalprice) {
+                                $deductyunbimoney = $totalprice;
+                            }
+                            $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
+
+                        }
+
+                    $totalprice -= $deductyunbimoney;
+                }
             if ($pluginc && $commission_set['deduction']) {
                 if (isset($_GPC['order']) && !empty($_GPC['order'][0]['commission'])) {
                     if ($deductcredit2 == 0) {
@@ -2503,7 +2518,7 @@ if ($_W['isajax']) {
                 'discountprice' => $discountprice,
                 'deductprice' => $deductmoney,
                 'deductcredit' => $deductcredit,
-                'deductyunbimoney' => $deductyunbi > 0 ? $yunbiprice : 0,
+                'deductyunbimoney' => $deductyunbi > 0 ? $deductyunbimoney : 0,
                 'deductyunbi' => $deductyunbi,
                 'deductcredit2' => $deductcredit2,
                 'deductcommission' => $deductcommission,
@@ -2668,6 +2683,7 @@ if ($_W['isajax']) {
                     'orderid' => $orderid,
                     'goodsid' => $goods['goodsid'],
                     'price' => $goods['marketprice'] * $goods['total'],
+                    'yunbideductprice' => $goods['yunbideductprice'],
                     'total' => $goods['total'],
                     'optionid' => $goods['optionid'],
                     'createtime' => time(),
