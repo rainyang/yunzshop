@@ -2153,7 +2153,7 @@ if ($_W['isajax']) {
                 }
 
                 //虚拟币抵扣
-                if ($data["yunbi_deduct"]) {
+                if ($data["yunbi_deduct"] && !empty($_GPC['order'][0]['yunbi'])) {
                     $yunbiprice += $data["yunbi_deduct"] * $data["total"];
                     $data['yunbideductprice'] = $data["yunbi_deduct"] * $data["total"];
                     if ($data['yunbideductprice'] > $ggprice) {
