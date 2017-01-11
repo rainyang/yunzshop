@@ -930,8 +930,6 @@ if ($operation == 'display' && $_W['isajax']) {
                 p('recharge')->mobile_submit_api($mobile_data_param);
             } 
             $pay_result['time'] = time();
-            file_put_contents(IA_ROOT."/pay_gpc.txt", print_r($pay_result,true),FILE_APPEND);
-            file_put_contents(IA_ROOT."/pay_result.txt", print_r($pay_result,true),FILE_APPEND);
             show_json(1, $pay_result);
             $set = m('common')->getSysset();
             if (!empty($pay_result['verifycode'])) {
