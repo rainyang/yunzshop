@@ -22,6 +22,7 @@
 .order_sub6 {height:44px; margin:14px 5px; background:#07c4d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub7 {height:44px; margin:14px 5px; background:#07c4d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub8 {height:44px; margin:14px 5px; background: #f49c06; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.order_sub9 {height:44px; margin:14px 5px; background: #f4632a; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 
 .order_sub10 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub11 {height:44px; margin:14px 5px; background:#19F95E; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
@@ -54,6 +55,7 @@
     <%if wechat.success%><div class="button order_sub1">微信支付</div><%/if%>
     <%if alipay.success%><div class="button order_sub2" >支付宝支付</div><%/if%>
     <%if yeepay.success%><div class="button order_sub8" >易宝支付</div><%/if%>
+    <%if gaohuitong.success%><div class="button order_sub9" >高汇通支付</div><%/if%>
     <%if paypal.success%><div class="button order_sub11" >paypal支付</div><%/if%>
     
     <%if credit.success %>
@@ -296,6 +298,26 @@
                     },true,true);
                 })
             }
+
+            //高汇通支付
+            if(result.gaohuitong.success){
+
+                $('.order_sub9').click(function(){
+
+                    var deduct = ($('#deductmoney').length>0 && $('#deductmoney').attr('on')=='1' )?1:0 ;
+                    core.pjson('gaohuitong/index', {orderid:'{$_GPC['orderid']}',openid:"{$openid}",deduct:deduct,telephone:'{$_GPC['telephone']}'}, function (rjson) {
+                        if(rjson.status!=1){
+                            $('.button').removeAttr('submitting');
+                            core.tip.show(rjson.result);
+                            return;
+                        }
+
+                        location.href = rjson.result.gaohuitong.url;
+                        return;
+                    },true,true);
+                })
+            }
+
             //paypal支付
             if(result.paypal.success){
 
