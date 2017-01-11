@@ -14,4 +14,9 @@ class gaohuitongMobile extends Plugin
     {
         return $this->_exec_plugin(__FUNCTION__, false);
     }
+
+    public function returnpay()
+    {
+        return $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

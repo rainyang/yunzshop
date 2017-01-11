@@ -29,7 +29,7 @@ if (!class_exists('gaohuitongModel')) {
           $amount = $params['fee'];
 
           /* 交易完成后页面即时通知跳转的URL  */
-          $return_url = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=order&p=pay&op=return&openid=" . $openid;
+          $return_url = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&method=returnpay&p=gaohuitong&m=sz_yi&do=plugin";
 
           $source = "../addons/sz_yi/plugin/gaohuitong/core/mobile/notifyUrl.php";
           $dest =  "../addons/sz_yi/plugin/gaohuitong/core/mobile/{$_W['uniacid']}/notifyUrl.php";
@@ -102,7 +102,7 @@ if (!class_exists('gaohuitongModel')) {
       private function _moveFile($source, $dest)
       {
           if (!is_dir(dirname($dest))) {
-              (@mkdir(dirname($dest), 0777, true));
+              @mkdir(dirname($dest), 0777, true);
           }
           @copy($source, $dest);
       }
