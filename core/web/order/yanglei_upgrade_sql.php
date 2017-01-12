@@ -65,7 +65,7 @@ if (!pdo_fieldexists('sz_yi_order', 'credit1')) {
 
 
 $sql = "CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_tpm')." (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `mid` int(11) NOT NULL,
   `money` decimal(10,2) NOT NULL COMMENT '队列金额',
@@ -73,12 +73,11 @@ $sql = "CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_tpm')." (
   `status` tinyint(1) NOT NULL COMMENT '状态',
   `create_time` varchar(60) NOT NULL COMMENT '创建时间',
   `update_time` varchar(60) NOT NULL COMMENT '更新时间',
-  `queue` int(11) NOT NULL COMMENT '队列ID'
+  `queue` int(11) NOT NULL COMMENT '队列ID',
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='全返队列临时表';
 
-ALTER TABLE ".tablename('sz_yi_return_tpm')." ADD PRIMARY KEY (`id`);
-
-ALTER TABLE ".tablename('sz_yi_return_tpm')." MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;";
+";
 pdo_fetchall($sql);
 
 //2016-11-18 商品阶梯价格
@@ -107,4 +106,11 @@ if (!pdo_fieldexists('sz_yi_goods_option', 'option_ladders')) {
 if (!pdo_fieldexists('sz_yi_order', 'period_num')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `period_num` VARCHAR(145) NOT NULL COMMENT '夺宝分期期号' AFTER `order_type`;");
 }
+
+//云币抵扣 单个商品抵扣金额 2017-01-10
+// if (!pdo_fieldexists('sz_yi_order_goods', 'yunbideductprice')) {
+//     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `yunbideductprice` DECIMAL(10,2) NOT NULL AFTER `price`;");
+// }
+
+
 
