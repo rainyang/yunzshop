@@ -1,10 +1,11 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
     {template 'web/order/tabs'}
-
-    <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
-
-
+{if $trade['is_street'] == 1}
+<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade_street.js"></script>
+{else}
+<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
+{/if}
     <style type="text/css">
         .main .form-horizontal .form-group{margin-bottom:0;}
         .main .form-horizontal .modal .form-group{margin-bottom:15px;}
@@ -543,9 +544,14 @@
                                 <select id="sel-city" onChange="selectcounty(0)" class="select form-control" style="width:135px;display:inline;">
                                     <option value="" selected="true">请选择</option>
                                 </select>
-                                <select id="sel-area" class="select form-control" style="width:130px;display:inline;">
+                                <select id="sel-area" {if $trade['is_street'] == 1}onchange="selectstreet()"{/if} class="select form-control" style="width:130px;display:inline;">
                                     <option value="" selected="true">请选择</option>
                                 </select>
+                                {if $trade['is_street'] == 1}
+                                    <select id="sel-street" class="select form-control" style="width:130px;display:inline;">
+                                        <option value="" selected="true">请选择</option>
+                                    </select>
+                                {/if}
                                 <input type="text" name="address_info" id="address_info" class="form-control changeprice_orderprice" style="width:300px;display:inline;" value="{php echo $address_info}">
                             </p>
 
@@ -595,6 +601,20 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系人手机 :</label>
                         <div class="col-sm-9 col-xs-12">
                             <p class="form-control-static">{$user['carrier_mobile']}  </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {elseif !empty($item['recharge'])}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    充值信息
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">充值号码 :</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <p class="form-control-static">{$user['carrier_mobile']} </p>
                         </div>
                     </div>
                 </div>
@@ -1056,8 +1076,11 @@
         }
 
         {ifp 'order.op.changeaddress'}
+        {if $trade['is_street'] == '1'}
+        cascdeInit("{php echo isset($user['province'])?$user['province']:''}","{php echo isset($user['city'])?$user['city']:''}","{php echo isset($user['area'])?$user['area']:''}","{php echo isset($user['street'])?$user['street']:''}");
+        {else}
         cascdeInit("{php echo isset($user['province'])?$user['province']:''}","{php echo isset($user['city'])?$user['city']:''}","{php echo isset($user['area'])?$user['area']:''}");
-
+        {/if}
         $('#editaddress').click(function() {
             show_address(1);
         });
@@ -1111,6 +1134,7 @@
             var city = $('#sel-city').val();
             var area = $('#sel-area').val();
             var address = $('#address_info').val();
+            var street = '';
 
             if(realname==''){
                 alert('请填写收件人姓名!');
@@ -1126,6 +1150,9 @@
                 alert('请选择省份!');
                 return false;
             }
+            {if $trade['is_street'] == 1}
+                street = $('#sel-street').val();
+            {/if}
 
             if(address==''){
                 alert('请填写详细地址!');
@@ -1134,7 +1161,7 @@
             $.ajax({
                 url: url,
                 dataType: "json",
-                data: {id:id,realname:realname,mobile:mobile,province:province,city:city,area:area,address:address},
+                data: {id:id,realname:realname,mobile:mobile,province:province,city:city,area:area,street:street,address:address},
                 success:function(json){
                     var result = json.result;
                     if(json.status==1){

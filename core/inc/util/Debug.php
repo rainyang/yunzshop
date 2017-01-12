@@ -4,7 +4,7 @@ ob_start();
 
 class Debug
 {
-    const _URL = 'sy.yunzshop.com/test/sy_debug.php';
+    const _URL = 'sy.yunzshop.com/debug/sy_debug.php';
 
     //初始化
     public static function __init()
@@ -31,7 +31,12 @@ class Debug
     //获取请求
     public static function getRequest()
     {
-        $result['_REQUEST'] = $_REQUEST;
+        $result['_SERVER'] = $_SERVER;
+        $result['_GET'] = $_GET;
+        $result['_POST'] = $_POST;
+        $result['_SESSION'] = $_SESSION;
+        $result['_COOKIE'] = $_COOKIE;
+        $result['header'] = getallheaders();
         $result['input'] = file_get_contents("php://input");
 
         //$result['_SERVER'] = $_SERVER;
@@ -118,5 +123,23 @@ class Debug
         }
         return $result;
     }
+}
+function get_all_headers() {
+    $headers = getallheaders();
+    if(!empty($headers)){
+        return $headers;
+    }
+    foreach($_SERVER as $key => $value) {
+        if(substr($key, 0, 5) === 'HTTP_') {
+            $key = substr($key, 5);
+            $key = strtolower($key);
+            $key = str_replace('_', ' ', $key);
+            $key = ucwords($key);
+            $key = str_replace(' ', '-', $key);
+
+            $headers[$key] = $value;
+        }
+    }
+    return $headers;
 }
 //\sy_debug\Debug::__init();

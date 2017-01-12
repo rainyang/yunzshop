@@ -1088,13 +1088,19 @@ if ($operation == "display") {
                 ));
         }
         $address_info = $user["address"];
-        $user["address"] = $user["province"] . " " . $user["city"] . " " . $user["area"] . " " . $user["address"];
+        //是否开启了街道联动
+        if (!empty($user['street']) && $trade['is_street'] == '1') {
+            $user["address"] = $user["province"] . " " . $user["city"] . " " . $user["area"] . " " . $user["street"] . " " . $user["address"];
+        } else {
+            $user["address"] = $user["province"] . " " . $user["city"] . " " . $user["area"] . " " . $user["address"];
+        }
         $item["addressdata"] = array(
             "realname" => $user["realname"],
             "mobile" => $user["mobile"],
             "address" => $user["address"],
         );
     }
+
     $refund = pdo_fetch("SELECT * FROM " . tablename("sz_yi_order_refund") . " WHERE orderid = :orderid and uniacid=:uniacid order by id desc",
         array(
             ":orderid" => $item["id"],
@@ -1312,6 +1318,16 @@ if ($operation == "display") {
     }
 
     load()->func("tpl");
+
+    $order_recharge = pdo_fetchcolumn("SELECT g.type FROM " . tablename('sz_yi_order_goods') . " og LEFT JOIN " . tablename('sz_yi_order') . " o ON o.id = og.orderid  LEFT JOIN " . tablename('sz_yi_goods') . "g ON g.id = og. goodsid WHERE o.id = :orderid", 
+        array(
+            ':orderid' => $id
+            ));
+    if ($order_recharge == 11 || $order_recharge == 12) {
+        $item['recharge'] = 1;
+    } else {
+        $item['recharge'] = 0;
+    }
     if ($item['order_type'] == '3') {
         $order_room = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_order_room") . " WHERE orderid = :orderid ",
             array(
@@ -1357,6 +1373,7 @@ if ($operation == "display") {
     $mobile = $_GPC["mobile"];
     $city = $_GPC["city"];
     $area = $_GPC["area"];
+    $street = $_GPC["street"];
     $address = trim($_GPC["address"]);
     $id = intval($_GPC["id"]);
     if (!empty($id)) {
@@ -1398,6 +1415,7 @@ if ($operation == "display") {
         $address_array["province"] = $province;
         $address_array["city"] = $city;
         $address_array["area"] = $area;
+        $address_array["street"] = $street;
         $address_array["address"] = $address;
         $address_array = iserializer($address_array);
         pdo_query('update ' . tablename('sz_yi_order') . ' set address=:address where ' . $order_where . ' and uniacid=:uniacid ',

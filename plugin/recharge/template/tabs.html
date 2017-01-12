@@ -3,6 +3,7 @@
     <ul class="nav nav-tabs">
         {ifp 'shop.goods.view'}<li {if ($_GPC['p'] == 'goods' || empty($_GPC['p'])) && $_GPC['status'] == 1} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>1, 'plugin' => 'recharge'))}">出售中商品</a></li>{/if}
         {ifp 'shop.goods.view'}<li {if ($_GPC['p'] == 'goods' || empty($_GPC['p'])) && $_GPC['status'] == 0} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>0, 'plugin' => 'recharge'))}">已下架商品</a></li>{/if}
+        {ifp 'recharge.adv.view'}<li {if $_GPC['method'] == 'adv'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('recharge/adv')}">幻灯片设置</a></li>{/if}
         {ifp 'recharge.set.view'}<li {if $_GPC['method'] == 'set'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('recharge/set')}">基础设置</a></li>{/if}
         <li class="step"></li>
     </ul>

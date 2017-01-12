@@ -29,22 +29,38 @@ if (!class_exists('YunbiModel')) {
 			$virtual_currency = 0;
 			$virtual_agent = 0;
 			$declaration = array();
+			$good_price = 0;
 			foreach($order_goods as $good){
+
 				if($good['isyunbi'] == 1 && $good['declaration_mid'] != ''){
-					if ($good['yunbi_consumption'] > 0) {
-						$virtual_currency += ($good['price'] - $good['deductyunbi']) * $good['yunbi_consumption'] / 100;
-					} else {
-						$virtual_currency += ($good['price'] - $good['deductyunbi']) * $set['consumption'] / 100;
-					}
-					$is_goods_return = true;
-					if ($good['yunbi_commission'] > 0) {
-						$virtual_agent += ( $good['price'] - $good['deductyunbi'] ) * $good['yunbi_commission'] / 100;
+					if(count($order_goods) > 1){
+						$good_price += $good['price'];
+						$good_deductyunbi = $good['deductyunbi'];
+					}else{
+						if ($good['yunbi_consumption'] > 0) {
+							$virtual_currency += ($good['price'] - $good['deductyunbi']) * $good['yunbi_consumption'] / 100;
+						} else {
+							$virtual_currency += ($good['price'] - $good['deductyunbi']) * $set['consumption'] / 100;
+						}
+						$is_goods_return = true;
+						if ($good['yunbi_commission'] > 0) {
+							$virtual_agent += ( $good['price'] - $good['deductyunbi'] ) * $good['yunbi_commission'] / 100;
+						}
 					}
 				}
 
 				if ($good['isdeclaration'] == '1') {
 					//$virtual_declaration += $good['virtual_declaration'];
 					$declaration[$good['declaration_mid']] += $good['virtual_declaration'];
+				}
+
+			}
+
+			if(count($order_goods) > 1){
+				$usable = $good_price - $good_deductyunbi;
+				if($usable > 0){
+					$virtual_currency = $usable * $set['consumption'] / 100;
+					$is_goods_return = true;
 				}
 			}
 
@@ -81,8 +97,7 @@ if (!class_exists('YunbiModel')) {
 
 			if ($set['isyunbi'] == 1 && $set['isconsumption'] == 1) {
 				//商品 没有返消费币 返回
-				if(!$is_goods_return)
-				{
+				if(!$is_goods_return){
 					return false;
 				}
 				if ($set['acquisition'] == 0) {
@@ -248,23 +263,25 @@ if (!class_exists('YunbiModel')) {
 					array(':updatetime' => $current_time,':uniacid' => $uniacid
 				));	
 				foreach ($update_member as $key => $value) {
-					$data_log[$key] = array(
-		                'id' 			=> $value['id'],
-		                'openid' 		=> $value['openid'],
-		                'credittype' 	=> 'virtual_currency',
-		                'money' 		=> $value['last_money'],
-						'remark'		=> "待转".$set['yunbi_title']."转入".$set['yunbi_title'].",增加".$value['last_money']
-	                );
-	                //$this->addYunbiLog($uniacid,$data_log,'10');// 10 虚拟币转入云币
-					$messages = array(
-						'keyword1' => array(
-							'value' => $set['yunbi_title'].'转入通知',
-							'color' => '#73a68d'),
-						'keyword2' =>array(
-							'value' => '本次共转入'.$value['last_money'].'到'.$set['yunbi_title'],
-							'color' => '#73a68d')
-						);
-					m('message')->sendCustomNotice($value['openid'], $messages);
+					if($value['last_money'] > 0 ){
+						$data_log[$key] = array(
+			                'id' 			=> $value['id'],
+			                'openid' 		=> $value['openid'],
+			                'credittype' 	=> 'virtual_currency',
+			                'money' 		=> $value['last_money'],
+							'remark'		=> "待转".$set['yunbi_title']."转入".$set['yunbi_title'].",增加".$value['last_money']
+		                );
+		                //$this->addYunbiLog($uniacid,$data_log,'10');// 10 虚拟币转入云币
+						$messages = array(
+							'keyword1' => array(
+								'value' => $set['yunbi_title'].'转入通知',
+								'color' => '#73a68d'),
+							'keyword2' =>array(
+								'value' => '本次共转入'.$value['last_money'].'到'.$set['yunbi_title'],
+								'color' => '#73a68d')
+							);
+						m('message')->sendCustomNotice($value['openid'], $messages);
+					}
 				}
 				$this->addYunbiLogs($uniacid,$data_log,'10');// 10 虚拟币转入云币
 			}

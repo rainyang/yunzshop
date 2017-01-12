@@ -23,7 +23,7 @@ if(!empty($data)){
 }
 
 
-$order = pdo_fetch("SELECT id,openid,redprice,uniacid,status,price FROM ". tablename("sz_yi_order") . "WHERE ordersn = '".$data['ordernum']."'");
+$order = pdo_fetch("SELECT id,openid,redprice,uniacid,status,price,pay_ordersn FROM ". tablename("sz_yi_order") . "WHERE ordersn = '".$data['ordernum']."'");
 $_W['uniacid'] = $order['uniacid'];
 /*
  *  平台返回给下游状态码
@@ -59,8 +59,6 @@ if($data['state'] == 3 && $order['status'] != 3){
     $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
     ':uniacid' => $order['uniacid']));
     $set     = unserialize($setdata['sets']);
-    //file_put_contents(IA_ROOT."/fail_test_1.txt", print_r($set,true));
-    //print_R($set);exit;
     if ($set['data']['auto_refund'] == 1) {
         $refund = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_refund') . " WHERE orderid = :orderid AND uniacid = :uniacid",array(':orderid' => $order['id'],':uniacid' => $order['uniacid']));
         if(empty($refund)){
@@ -80,7 +78,6 @@ if($data['state'] == 3 && $order['status'] != 3){
             pdo_insert('sz_yi_order_refund',$order_refund);
             
             $returnid = pdo_insertid();
-            //file_put_contents(IA_ROOT."/fail_test_2.txt", print_r($order_refund,true));
             pdo_update('sz_yi_order', array(
                 'status' => -1,
                 'refundtime' => time(),
@@ -90,7 +87,7 @@ if($data['state'] == 3 && $order['status'] != 3){
             if($returnid){
                 file_put_contents(IA_ROOT."/data_backurl_refund_log.txt", print_r($order_refund,true),FILE_APPEND);
                 //m("finance")->pay($order['openid'], 1, $order['price'] * 100, $refundno,"流量充值退款: " . $order['price'] . "元 订单号: " . $data['ordernum'],$order['uniacid']);
-                $isrefund= m("finance")->refund($order['openid'], $data['ordernum'], $refundno, $order['price'] * 100, $order['price'] * 100,$order['uniacid']);
+                $isrefund= m("finance")->refund($order['openid'], $data['pay_ordersn'], $refundno, $order['price'] * 100, $order['price'] * 100,$order['uniacid']);
 
                 if($isrefund){
                     file_put_contents(IA_ROOT."/data_backurl_refund_price_log.txt", "订单".$data['ordernum']."充值失败退款成功...",FILE_APPEND);
@@ -121,7 +118,6 @@ if($data['state'] == 3 && $order['status'] != 3){
         }
     }
     return "0";
-    //file_put_contents(IA_ROOT."/fail_test_end.txt", print_r($auto_refund_mess,true));
 
 }
 
