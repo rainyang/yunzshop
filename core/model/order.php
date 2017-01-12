@@ -685,6 +685,20 @@ class Sz_DYi_Order
             foreach ($orders as $o) {
                 $onew = pdo_fetch('select status from ' . tablename('sz_yi_order') . " where id=:id and status=0 and paytype<>3  and createtime + {$daytimes} <=unix_timestamp()  limit 1", array(':id' => $o['id']));
                 if (!empty($onew) && $onew['status'] == 0) {
+                    //订单商品
+                    $order_goods = m('order')->getOrderGodds($o['id']);
+
+                    //商品返库存
+                    foreach ($order_goods as $items) {
+                        if ($items['type'] == 3) {//虚拟产品
+                            m('order')->updateVirtualGoodsRecord($items['orderid'], $items['id']);
+                        } elseif (!empty($items['optionid'])) {//多规格商品
+                            m('order')->updateGoodsOptionStock($items['id'], $items['optionid'], $items['total']);
+                        } else {//无规格商品
+                            m('order')->updateGoodsStock($items['id'], $items['total']);
+                        }
+                    }
+
                     pdo_query('update ' . tablename('sz_yi_order') . ' set status=-1,canceltime=' . time() . ' where id=' . $o['id']);
                     if ($p) {
                         if (!empty($o['couponid'])) {
