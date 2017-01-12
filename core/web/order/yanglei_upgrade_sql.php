@@ -108,9 +108,9 @@ if (!pdo_fieldexists('sz_yi_order', 'period_num')) {
 }
 
 //云币抵扣 单个商品抵扣金额 2017-01-10
-if (!pdo_fieldexists('sz_yi_order_goods', 'yunbideductprice')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `yunbideductprice` DECIMAL(10,2) NOT NULL AFTER `price`;");
-}
+// if (!pdo_fieldexists('sz_yi_order_goods', 'yunbideductprice')) {
+//     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `yunbideductprice` DECIMAL(10,2) NOT NULL AFTER `price`;");
+// }
 
 
 

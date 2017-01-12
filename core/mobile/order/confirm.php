@@ -759,13 +759,16 @@ if ($_W['isajax']) {
             $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"] * $g["total"];
             //虚拟币抵扣
             if ($g["yunbi_deduct"]) {
-                $order_all[$g['supplier_uid']]['yunbideductprice'] += $g["yunbi_deduct"] * $g["total"];
+                if($g["yunbi_deduct"] * $g["total"] > $price){
+                    $order_all[$g['supplier_uid']]['yunbideductprice'] += $price;
+                }else{
+                    $order_all[$g['supplier_uid']]['yunbideductprice'] += $g["yunbi_deduct"] * $g["total"];
+                }
+                
             } else {
                 $order_all[$g['supplier_uid']]['yunbideductprice'] += $g["yunbi_deduct"];
             }
-            if($order_all[$g['supplier_uid']]['yunbideductprice'] > $price){
-                $order_all[$g['supplier_uid']]['yunbideductprice'] += $price;
-            }
+
             if ($g["deduct2"] == 0.00) {
                 $order_all[$g['supplier_uid']]['deductprice2'] += $price;
             } elseif ($g["deduct2"] > 0) {
@@ -786,6 +789,7 @@ if ($_W['isajax']) {
             }
             $order_all[$g['supplier_uid']]['goods'][] = $g;
         }
+
         unset($g);
         //核销
         if ($isverify) {
@@ -1584,6 +1588,7 @@ if ($_W['isajax']) {
                     $deductprice2 += $dispatch_price;
                 }
             }
+
             $deductcredit = 0;
             $deductmoney  = 0;
             if ($sale_plugin) {
@@ -2151,16 +2156,15 @@ if ($_W['isajax']) {
                         $deductprice2 += $data["deduct2"] * $data["total"];
                     }
                 }
-
                 //虚拟币抵扣
                 if ($data["yunbi_deduct"] && !empty($_GPC['order'][0]['yunbi'])) {
                     $yunbiprice += $data["yunbi_deduct"] * $data["total"];
-                    $data['yunbideductprice'] = $data["yunbi_deduct"] * $data["total"];
-                    if ($data['yunbideductprice'] > $ggprice) {
-                        $data['yunbideductprice'] = $ggprice;
+                    if($data["yunbi_deduct"] * $data["total"] > $ggprice){
+                        $yunbideductprice += $ggprice;
+                    }else{
+                        $yunbideductprice += $data["yunbi_deduct"] * $data["total"];
                     }
                 }
-                $yunbideductprice += $data['yunbideductprice'];
                 if ($data["deductcommission"] == 0.00) {
                     $deductcommissionprice += $ggprice;
                 } else if ($data["deductcommission"] > 0) {
@@ -2438,9 +2442,9 @@ if ($_W['isajax']) {
                             $ymoney  = round(floatval($yunbiset['money']), 2);
                             if ($ycredit > 0 && $ymoney > 0) {
                                 if ($virtual_currency % $ycredit == 0) {
-                                    $deductyunbimoney = round(intval($virtual_currency / $ycredit) * $ymoney * $data["total"], 2);
+                                    $deductyunbimoney = round(intval($virtual_currency / $ycredit) * $ymoney, 2);
                                 } else {
-                                    $deductyunbimoney = round((intval($virtual_currency / $ycredit) + 1) * $ymoney * $data["total"], 2);
+                                    $deductyunbimoney = round((intval($virtual_currency / $ycredit) + 1) * $ymoney, 2);
                                 }
                             }
                             if ($deductyunbimoney > $yunbideductprice) {
@@ -2449,10 +2453,10 @@ if ($_W['isajax']) {
                             if ($deductyunbimoney > $totalprice) {
                                 $deductyunbimoney = $totalprice;
                             }
+
                             $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
 
                         }
-
                     $totalprice -= $deductyunbimoney;
                 }
             if ($pluginc && $commission_set['deduction']) {
@@ -2688,7 +2692,6 @@ if ($_W['isajax']) {
                     'orderid' => $orderid,
                     'goodsid' => $goods['goodsid'],
                     'price' => $goods['marketprice'] * $goods['total'],
-                    'yunbideductprice' => $goods['yunbideductprice'],
                     'total' => $goods['total'],
                     'optionid' => $goods['optionid'],
                     'createtime' => time(),
