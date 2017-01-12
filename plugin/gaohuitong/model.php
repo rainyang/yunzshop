@@ -163,6 +163,12 @@ if (!class_exists('gaohuitongModel')) {
               $xml_data = $res['content'];
               $xml = simplexml_load_string($xml_data);
 
+              $paylog = "\r\n-------------------------------------------------\r\n";
+              $paylog .= "orderno: " . $order_no . "\r\n";
+              $paylog .= "paytype: gaohuitong\r\n";
+              $paylog .= "data: " . json_encode($xml) . "\r\n";
+              m('common')->paylog($paylog);
+
               if ($xml->resp_code != '00' && $xml->resp_desc != 'Success') {
                   message("退款失败");
               }
