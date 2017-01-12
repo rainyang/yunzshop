@@ -111,5 +111,62 @@ if (!class_exists('gaohuitongModel')) {
           }
           @copy($source, $dest);
       }
+
+      public function refund($info, $pay_ordersn, $out_refund_no,$refundmoney = 0)
+      {
+          require dirname(__FILE__) . "/vendor/GatewaySubmit.class.php";
+
+          load()->func('communication');
+
+          /* 业务代码 */
+          $busi_code = "REFUND";
+          /* 商户号 */
+          $merchant_no = $info['merchant_no'];
+          /* 终端号 */
+          $terminal_no = $info['terminal_no'];
+          /* 密钥 */
+          $key = $info['merchant_key'];
+
+//商户订单号，这里用当前时间毫秒数作为订单号，商户应当保持订单号在商户系统的唯一性
+          $order_no = $pay_ordersn;
+
+          $refund_no = $out_refund_no;
+
+          /* 商品金额,以元为单位   */
+          $amount = $refundmoney;
+
+          $refund_amount = $refundmoney;
+
+          /* 签名算法（暂时只支持MD5）   */
+          $sign_type = 'SHA256';
+
+          /* 支付请求对象 */
+          $gatewaySubmit = new GatewaySubmit();
+          $gatewaySubmit->setKey($key);
+          $gatewaySubmit->setGateUrl($info['server']);                          //测试服务器
+
+          //设置支付参数
+          $gatewaySubmit->setParameter("busi_code", $busi_code);		        //业务代码
+          $gatewaySubmit->setParameter("merchant_no", $merchant_no);		    //商户号
+          $gatewaySubmit->setParameter("terminal_no", $terminal_no);		    //终端号
+          $gatewaySubmit->setParameter("order_no", $order_no);	   			    //商户订单号
+          $gatewaySubmit->setParameter("refund_no", $refund_no);	   			//商户退款单号
+          $gatewaySubmit->setParameter("amount", $amount);			   	        //订单总金额,以元为单位
+          $gatewaySubmit->setParameter("refund_amount", $refund_amount);	    //退款金额,以元为单位
+          $gatewaySubmit->setParameter("sign_type", $sign_type);			   	//签名算法（暂时只支持SHA256）
+
+          $requestUrl = $gatewaySubmit->getRequestURL();
+
+          $res = ihttp_get($requestUrl);
+
+          if ($res['code'] == 200) {
+              $xml_data = $res['content'];
+              $xml = simplexml_load_string($xml_data);
+
+              if ($xml->resp_code != '00' && $xml->resp_desc != 'Success') {
+                  message("退款失败");
+              }
+          }
+      }
     }
 }
