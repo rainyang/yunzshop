@@ -795,6 +795,11 @@ if ($operation == "display") {
                     "width" => 12
                 ) ,
                 array(
+                    "title" => "商品条码",
+                    "field" => "goods_productsn",
+                    "width" => 12
+                ) ,
+                array(
                     "title" => "商品规格",
                     "field" => "goods_optiontitle",
                     "width" => 12
@@ -1050,7 +1055,8 @@ if ($operation == "display") {
                         $r["order_diyformdata"] = '';
                     }
                     $r["goods_title"] = $g["title"];
-                    $r["goods_goodssn"] = $g["goodssn"];
+                    $r["goods_goodssn"] = $g["option_goodssn"] ? $g["option_goodssn"] : $g["goodssn"];
+                    $r["goods_productsn"] = $g["option_productsn"] ? $g["option_productsn"] : $g["productsn"];
                     $r["goods_optiontitle"] = $g["optiontitle"];
                     $r["goods_total"] = $g["total"];
                     $r["goods_price1"] = $g["price"] / $g["total"];
@@ -1072,7 +1078,7 @@ if ($operation == "display") {
                     $exportlist[] = $r;
                 }
             }
-            unset($r);   
+            unset($r);
             m("excel")->exportOrder($exportlist, array(
                 "title" => "order-" . date("Y-m-d-H-i", time()) ,
                 "columns" => $columns
