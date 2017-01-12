@@ -166,6 +166,7 @@ if (!class_exists('gaohuitongModel')) {
               $paylog = "\r\n-------------------------------------------------\r\n";
               $paylog .= "orderno: " . $order_no . "\r\n";
               $paylog .= "paytype: gaohuitong\r\n";
+              $paylog .= "type: refund\r\n";
               $paylog .= "data: " . json_encode($xml) . "\r\n";
               m('common')->paylog($paylog);
 
