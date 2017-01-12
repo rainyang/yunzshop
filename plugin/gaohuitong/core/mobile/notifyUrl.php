@@ -136,12 +136,9 @@ if($notify->verifySign()) {
         }
     } else {
         //返回通知处理不成功
-        echo "支付失败！</br></br>";
-        echo "商户系统订单号：".$order_no."</br>";
-        echo "网关系统支付号：".$pay_no."</br>";
-        echo "支付结果（0表示未支付，2表示支付失败）：".$pay_result."</br>";
+        die("支付失败!");
     }
 
 } else {
-    echo "<br/>" . "验证签名失败" ;
+    die("验证签名失败");
 }
