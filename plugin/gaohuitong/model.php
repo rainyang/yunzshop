@@ -28,8 +28,13 @@ if (!class_exists('gaohuitongModel')) {
           /* 商品金额,以元为单位   */
           $amount = $params['fee'];
 
+          $resource = "../addons/sz_yi/plugin/gaohuitong/core/mobile/returnUrl.php";
+          $redest =  "../addons/sz_yi/plugin/gaohuitong/core/mobile/{$_W['uniacid']}/returnUrl.php";
+
+          $this->_moveFile($resource, $redest);
+
           /* 交易完成后页面即时通知跳转的URL  */
-          $return_url = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&method=returnpay&p=gaohuitong&m=sz_yi&do=plugin";
+          $return_url = $_W['siteroot'] . "addons/sz_yi/plugin/gaohuitong/core/mobile/{$_W['uniacid']}/returnUrl.php";
 
           $source = "../addons/sz_yi/plugin/gaohuitong/core/mobile/notifyUrl.php";
           $dest =  "../addons/sz_yi/plugin/gaohuitong/core/mobile/{$_W['uniacid']}/notifyUrl.php";
