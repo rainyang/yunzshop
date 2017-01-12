@@ -9,7 +9,13 @@ global $_W, $_GPC;
 $openid         = m('user')->getOpenid();
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
-
+/*
+ *  1.判断手机号码运营商及所属省份
+ *  2.查找对应运营商商品，空则返回，存在则继续筛选
+ *  3.数据筛选出该运营商下的省内流量（省内流量）
+ *  4.数据筛选出该运营商下的国内流量（国内流量）
+ *  5.如果没有对应省份国内流量，则筛选出全国流量作为国内流量
+ */
 if($_GPC['mobile']){
     $url = "http://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=".$_GPC['mobile']."&t=".time();
     $num = 0;
@@ -37,85 +43,92 @@ if($_GPC['mobile']){
         $operator = 3;
     }
     $province = $array['province'];//手机号所属省份
-    if (!empty($operator) && !empty($province)) {
-        $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE operator = :operator AND province like '%{$province}%' AND uniacid = :uniacid AND status = 1 limit 1", 
+    if (!empty($operator)) {//手机号码验证成功
+        $goods = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE operator = :operator AND uniacid = :uniacid AND status = 1 ", 
             array(
             ':operator' => $operator,
             ':uniacid' => $_W['uniacid']
         ));
-        if (empty($goods)) {
-            $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE operator = :operator AND uniacid = :uniacid AND status = 1 limit 1", 
+        if (!empty($goods)) {//有数据
+            //$code = 1;
+            foreach ($goods as $key => $good) {
+                $spec_operator_id = pdo_fetchcolumn("select gsi.id from " . tablename('sz_yi_goods_spec') . " gs 
+                left join " . tablename('sz_yi_goods_spec_item') . " gsi 
+                on gs.id = gsi.specid 
+                where gs.goodsid = " . $good['id'] . " and gsi.title = '" . $array['catName'] . "' and gs.uniacid = " . $_W['uniacid'] ." 
+                order by gs.displayorder asc");//获取用户填写手机号码的商品规格运营商id
+
+                $spec_ids = pdo_fetchall("select gsi.id,gsi.title from " . tablename('sz_yi_goods_spec') . " gs 
+                left join " . tablename('sz_yi_goods_spec_item') . " gsi 
+                on gs.id = gsi.specid 
+                where gs.goodsid = :id and gs.uniacid = :uniacid
+                order by gs.displayorder asc",
                 array(
-                    ':operator' => $operator,
-                    ':uniacid' => $_W['uniacid']
-                ));
-        }
-        if (!empty($goods)) {
-            $code = 1;
-            $goodsid = $goods['id'];
-        } else {
-            $code = 0;
-        }
-        if ($code == 1) {
-            $spec_provincial_id = pdo_fetchcolumn("select gsi.id from " . tablename('sz_yi_goods_spec') . " gs 
-            left join " . tablename('sz_yi_goods_spec_item') . " gsi 
-            on gs.id = gsi.specid 
-            where gs.goodsid = " . $goodsid . " and gsi.title = '省内流量' and gs.uniacid = " . $_W['uniacid'] ." 
-            order by gs.displayorder asc");//省内
-
-            $spec_domestic_id = pdo_fetchcolumn("select gsi.id from " . tablename('sz_yi_goods_spec') . " gs 
-            left join " . tablename('sz_yi_goods_spec_item') . " gsi 
-            on gs.id = gsi.specid 
-            where gs.goodsid = " . $goodsid . " and gsi.title = '国内流量' and gs.uniacid = " . $_W['uniacid'] ." 
-            order by gs.displayorder asc");//国内
-
-            $spec_operator_id = pdo_fetchcolumn("select gsi.id from " . tablename('sz_yi_goods_spec') . " gs 
-            left join " . tablename('sz_yi_goods_spec_item') . " gsi 
-            on gs.id = gsi.specid 
-            where gs.goodsid = " . $goodsid . " and gsi.title = '" . $array['catName'] . "' and gs.uniacid = " . $_W['uniacid'] ." 
-            order by gs.displayorder asc");//获取用户填写手机号码的商品规格运营商id
-
-            $spec_ids = pdo_fetchall("select gsi.id,gsi.title from " . tablename('sz_yi_goods_spec') . " gs 
-            left join " . tablename('sz_yi_goods_spec_item') . " gsi 
-            on gs.id = gsi.specid 
-            where gs.goodsid = :id and gs.uniacid = :uniacid
-            order by gs.displayorder asc",
-                array(
-                    ':id' => $goodsid,
+                    ':id' => $good['id'],
                     ':uniacid' => $_W['uniacid']
                 ));//获取商品所有规格
-            $spec_provincial_data = array();
-            $spec_domestic_data = array();
-            foreach ($spec_ids as $key => $data_id) {
-                $spec_provincial_data = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_option') . " 
-                WHERE specs =  '" . $spec_provincial_id . "_" . $spec_operator_id . "_" . $data_id['id'] . "' 
-                and stock > 0 and uniacid = :uniacid",
+                $spec_data = array();
+                foreach ($spec_ids as $k => $data_id) {
+                    $spec_data[] = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_option') . " 
+                    WHERE specs =  '" . $spec_operator_id . "_" . $data_id['id'] . "' 
+                    and stock > 0 and uniacid = :uniacid",
                     array(
                         ':uniacid' => $_W['uniacid']
                     ));
-                $spec_domestic_data = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_option') . " 
-                WHERE specs =  '" . $spec_domestic_id . "_" . $spec_operator_id . "_" . $data_id['id'] . "' 
-                and stock > 0 and uniacid = :uniacid",
-                    array(
-                        ':uniacid' => $_W['uniacid']
-                    ));
-                if (!empty($spec_provincial_data)) {
-                    $spec_datas['provincial'][$key]['itemid'] = $data_id['id'];
-                    $spec_datas['provincial'][$key]['itemtitle'] = $data_id['title'];
-                    $spec_datas['provincial'][$key]['optionid'] = $spec_provincial_data['id'];
-                    $spec_datas['provincial'][$key]['price'] = $spec_provincial_data['marketprice'];
                 }
-                if (!empty($spec_domestic_data)) {
-                    $spec_datas['domestic'][$key]['itemid'] = $data_id['id'];
-                    $spec_datas['domestic'][$key]['itemtitle'] = $data_id['title'];
-                    $spec_datas['domestic'][$key]['optionid'] = $spec_domestic_data['id'];
-                    $spec_datas['domestic'][$key]['price'] = $spec_domestic_data['marketprice'];
-                }
+                //echo json_encode($spec_data);exit;
+                foreach ($spec_data as $k => $value) {
+                    if ($good['isprovince'] == 1 && strpos($good['province'], $province) !== false && !empty($value)) {//省份省内
+                        $spec_datas['provincial'][$k]['itemid'] = $spec_ids[$k]['id'];
+                        $spec_datas['provincial'][$k]['itemtitle'] = $spec_ids[$k]['title'];
+                        $spec_datas['provincial'][$k]['optionid'] = $value['id'];
+                        $spec_datas['provincial'][$k]['price'] = $value['marketprice'];
+                        $spec_datas['provincial'][$k]['goodsid'] = $good['id'];
+                    }   
+                    if (empty($good['isprovince']) && strpos($good['province'], $province) !== false && !empty($value)) {//省份国内
+                        $spec_datas['domestic'][$k]['itemid'] = $spec_ids[$k]['id'];
+                        $spec_datas['domestic'][$k]['itemtitle'] = $spec_ids[$k]['title'];
+                        $spec_datas['domestic'][$k]['optionid'] = $value['id'];
+                        $spec_datas['domestic'][$k]['price'] = $value['marketprice'];
+                        $spec_datas['domestic'][$k]['goodsid'] = $good['id'];
+                    }
+                    if (empty($good['isprovince']) && empty($good['province']) && !empty($value)) {//全国国内
+                        $spec_datas['alldomestic'][$k]['itemid'] = $spec_ids[$k]['id'];
+                        $spec_datas['alldomestic'][$k]['itemtitle'] = $spec_ids[$k]['title'];
+                        $spec_datas['alldomestic'][$k]['optionid'] = $value['id'];
+                        $spec_datas['alldomestic'][$k]['price'] = $value['marketprice'];
+                        $spec_datas['alldomestic'][$k]['goodsid'] = $good['id'];
+                    }  
+                }   
             }
+            if (!empty($spec_datas)) {
+                $code = 1;
+            } else {
+                $code = 0;
+            }
+            $ret = array(
+                'code' => $code,
+                'carrier' => $array['carrier'],
+                'catname' => $array['catName'],
+                'spec_datas' => $spec_datas,
+                );
+        } else {//无数据
+            $code = 0;
+            $ret = array(
+                'code' => $code,
+                'carrier' => $array['carrier'],
+                'catname' => $array['catName'],
+                'spec_datas' => $spec_datas,
+                );
         }
-        $ret = array('code' => $code,'carrier' => $array['carrier'],'catname' => $array['catName'],'spec_datas' => $spec_datas,'goodsid' => $goodsid);
-        echo json_encode($ret);
-        exit;
+
+    } else {//手机号码验证失败
+       $code = -1; 
+       $ret = array(
+            'code' => $code
+            );
     }
+    echo json_encode($ret);
+    exit;
 }
 

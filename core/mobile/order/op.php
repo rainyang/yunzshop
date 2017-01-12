@@ -208,7 +208,7 @@ if ($_W['isajax']) {
 	            ));
 	            $order_data                = array();
 	            $order_data['refundstate'] = 0;
-	            $order_data['status']      = -1;
+	            $order_data['status']      = 3;
 	            $order_data['refundtime']  = $time;
 	            pdo_update('sz_yi_order', $order_data, array(
 	                'id' => $orderid,

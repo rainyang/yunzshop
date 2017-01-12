@@ -76,7 +76,12 @@ if (p('ladder')) {
 }
 if ($operation == "display" || $operation == "create") {
     $id   = ($operation == "create") ? intval($_GPC["order"][0]["id"]) : intval($_GPC["id"]);
-    $show = 1;
+    //$show = 1;
+    if (p('recharge') && $_GPC['telephone']) {
+        $show = 0;
+    } else {
+        $show = 1;
+    }
     if ($diyform_plugin) {
         if (!empty($id)) {
             $sql         = "SELECT id as goodsid,type,diyformtype,diyformid,diymode FROM " . tablename("sz_yi_goods") . " WHERE id=:id AND uniacid=:uniacid  limit 1";
@@ -1160,8 +1165,8 @@ if ($_W['isajax']) {
 
             }}
         if (p('recharge') && !empty($telephone)) {
-            $member['realname'] = $telephone;
-            $member['membermobile'] = $telephone;
+            // $member['realname'] = $telephone;
+            // $member['membermobile'] = $telephone;
             $changenum = false;
         }
         //echo "<pre>".print_r($changenum);exit;

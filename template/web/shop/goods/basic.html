@@ -312,8 +312,8 @@
     <div class="col-sm-9 col-xs-12">
         {ife 'shop.goods' $item}
         <div style="float: left" id="ttttype">
-            <label for="isshow11" class="radio-inline"><input type="radio" name="type" value="11" id="isshow11" {if empty($item['type']) || $item['type'] == 11}checked="true"{/if} /> 流量商品</label>
-            <!-- <label for="isshow12" class="radio-inline"><input type="radio" name="type" value="12" id="isshow12" {if $item['type'] == 12}checked="true"{/if} /> 话费商品</label> -->
+            <label for="isshow11" class="radio-inline"><input type="radio" name="type" value="11" id="isshow11" {if empty($item['type']) || $item['type'] == 11}checked="true"{/if}  onclick="$('#isprovince').show();"/> 流量商品</label>
+            <!-- <label for="isshow12" class="radio-inline"><input type="radio" name="type" value="12" id="isshow12" {if $item['type'] == 12}checked="true"{/if} onclick="$('#isprovince').hide();"/> 话费商品</label> -->
             <!-- 安装手机充值插件新增 两种类型  话费接口对接后开放话费商品-->
 
         </div>
@@ -328,9 +328,28 @@
         {/if}
     </div>
 </div>
+<div class="form-group" id="isprovince">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">流量类型</label>
+    <div class="col-sm-9 col-xs-12">
+        {ife 'shop.goods' $item}
+        <div style="float: left" id="ttttype">
+            <label for="isprovince1" class="radio-inline"><input type="radio" name="isprovince" value="1" id="isprovince1" {if $item['isprovince'] == 1}checked="true"{/if} /> 省内流量</label>
+            <label for="isprovince0" class="radio-inline"><input type="radio" name="isprovince" value="0" id="isprovince0" {if empty($item['isprovince'])}checked="true"{/if} /> 国内流量</label>
+            <!-- 安装手机充值插件新增 两种类型  话费接口对接后开放话费商品-->
+
+        </div>
+        {else}
+        <div class='form-control-static'>{if $item['isprovince'] == 1}
+            省内流量
+            {elseif empty($item['isprovince'])}
+            国内流量
+            {/if}</div>
+        {/if}
+    </div>
+</div>
 {if p('recharge') && $_GPC['plugin'] == "recharge"}
 <div id="recharge_limit" >
-    <div class="form-group">
+    <div class="form-group" id="limitprovince">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">限制地区</label>
         <div class="col-sm-8 col-xs-12">
             {php echo tpl_fans_form('resideprovince',array('province' => $item['province']));}
@@ -439,7 +458,7 @@
                         {/if}
     </div>
 </div>
-{if $_GPC['plugin'] != "fund"}
+{if $_GPC['plugin'] != "fund" && $_GPC['plugin'] != "recharge"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">其他图片</label>
     <div class="col-sm-9 col-xs-12">
@@ -456,6 +475,7 @@
     </div>
 </div>
 {/if}
+{if $_GPC['plugin'] != "recharge"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$lang['shopnumber']}</label>
     <div class="col-sm-4 col-xs-12">
@@ -466,7 +486,8 @@
         {/if}
     </div>
 </div>
-{if $_GPC['plugin'] != "fund"}
+{/if}
+{if $_GPC['plugin'] != "fund" && $_GPC['plugin'] != "recharge"}
 <div class="form-group">
     <label class=" col-sm-3 col-md-2 control-label">商品条码</label>
     <div class="col-sm-4 col-xs-12">
@@ -649,6 +670,7 @@ $(document).on('click','.deleteopladder',function(){
     </div>
 </div>
 {/if}
+
 {if $supplier_show}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">红包价格</label>
@@ -665,6 +687,7 @@ $(document).on('click','.deleteopladder',function(){
     </div>
 </div>
 {/if}
+{if $_GPC['plugin'] != "recharge"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">重量</label>
     <div class="col-sm-6 col-xs-12">
@@ -679,6 +702,7 @@ $(document).on('click','.deleteopladder',function(){
         {/if}
     </div>
 </div>
+{/if}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">库存</label>
     <div class="col-sm-6 col-xs-12">
@@ -693,7 +717,8 @@ $(document).on('click','.deleteopladder',function(){
         {/if}
     </div>
 </div>
-{if $supplier_show}
+
+
 {if $_GPC['plugin'] != "fund"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">减库存方式</label>
@@ -718,9 +743,7 @@ $(document).on('click','.deleteopladder',function(){
 {else}
     <input type="hidden" name="totalcnf" value='1' />
 {/if}
-{else}
-    <input type="hidden" name="totalcnf" value='1' />
-{/if}
+{if $_GPC['plugin'] != "recharge"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">单次最多购买量</label>
     <div class="col-sm-6 col-xs-12">
@@ -736,6 +759,9 @@ $(document).on('click','.deleteopladder',function(){
         {/if}
     </div>
 </div>
+{else}
+<input type="hidden" name="maxbuy" id="maxbuy" class="form-control" value="1" />
+{/if}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户最多购买量</label>
 
@@ -800,7 +826,7 @@ $(document).on('click','.deleteopladder',function(){
     </div>
 </div>
 {/if}
-
+{if $_GPC['plugin'] != 'recharge'}
 <div class="form-group" id="dispatch_info" {if ($item['type'] == 2 || $item['type'] == 3)}style="display: none;"{/if}>
 <label class="col-xs-12 col-sm-3 col-md-2 control-label">运费设置</label>
 <div class="col-sm-6 col-xs-6">
@@ -832,7 +858,10 @@ $(document).on('click','.deleteopladder',function(){
     {/if}
 </div>
 </div>
-
+{else}
+<input type="hidden" name="dispatchtype" value="1" />
+<input type="hidden" name="dispatchprice" id="dispatchprice" class="form-control" value="0" />
+{/if}
 {if $shoppay['cash']}
 
 <div class="form-group">

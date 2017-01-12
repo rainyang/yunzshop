@@ -306,7 +306,8 @@
       
 
       <%else%>
-        <%if isvirtual || goods.type==2 || type == 11 || type == 12%>
+        
+        <%if isvirtual || goods.type==2%>
           <input type="hidden"  id="dispatchtype" value="0" />
           <div class="carrier_input_info" >
           <div class="row">
@@ -359,7 +360,13 @@
        
         <%/if%>
       <%/if%>
+    {else}
+    <%if type == 11 || type == 12%>
+            <input type="hidden"  id="dispatchtype" value="0" />
+            <input type="hidden"  id="recharge_name" value="{php echo $_GPC['telephone']}" />
+            <input type="hidden"  id="recharge_telephone" value="{php echo $_GPC['telephone']}" />
 
+        <%/if%>
     {/if}
 <input type="hidden" id="supplierids" value="<%supplierids%>">
 <!--订单区分开始-->
@@ -1308,14 +1315,18 @@ var fromcart = 0;
                     order[i].carrierid = carrierid;
                 }
                 order[i].carrier = {
-                    'carrier_realname': carrier_realname,
-                    'carrier_mobile':carrier_mobile,
+                    'carrier_realname': $('#recharge_name').val(),
+                    'carrier_mobile':$('#recharge_telephone').val(),
                     'realname': $('#carrier_realname').html(),
                     'mobile': $('#carrier_mobile').html(),
                     'address': $('#carrier_address').html()
                 };
             }
-
+            //手机流量充值默认存储充值号码
+            order[i].carrier = {
+                'carrier_realname': $('#recharge_name').val(),
+                'carrier_mobile':$('#recharge_telephone').val()
+            };
             if($('.deductcredit[data-id='+supplierarr[i]+']').length>0){
                 if($('.deductcredit[data-id='+supplierarr[i]+']').attr('on')=='1'){
                       order[i].deduct = 1;
@@ -1342,7 +1353,7 @@ var fromcart = 0;
 
           }
            data = {op:'create', order:order, ischannelpay:"{$_GPC['ischannelpay']}", ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:"{$_GPC['isyunbipay']}"};
-          $(this).attr('submitting', '1').html('提交中...');
+          $('.paysub').attr('submitting', '1').html('提交中...');
             core.json('order/confirm', data, function(create_json) {
 
                 if (create_json.status == 1) {

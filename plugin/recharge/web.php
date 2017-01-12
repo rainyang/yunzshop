@@ -35,7 +35,7 @@ class RechargeWeb extends Plugin
 	 
 	public function upgrade()
 	{
-		return $this->_exec_plugin(__FUNCTION__);
+		$this->_exec_plugin(__FUNCTION__);
 	}
 
 	/**
@@ -44,7 +44,7 @@ class RechargeWeb extends Plugin
 	 
 	public function set()
 	{
-		return $this->_exec_plugin(__FUNCTION__);
+		$this->_exec_plugin(__FUNCTION__);
 	}
 
 	/**
@@ -52,7 +52,15 @@ class RechargeWeb extends Plugin
  * 	 	 */
 	public function notice()
 	{
-		return $this->_exec_plugin(__FUNCTION__);
+		$this->_exec_plugin(__FUNCTION__);
+	}
+	/**
+ * 	  * 流量话费充值幻灯片方法
+ * 	  	  */
+	 
+	public function adv()
+	{
+		$this->_exec_plugin(__FUNCTION__);
 	}
 
 }
