@@ -167,7 +167,7 @@
             <a href="javascript:;" data-url="{php echo $this->createPluginMobileUrl('coupon/detail', array('id' => $row['id']))}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
             
                          {ifp 'coupon.coupon.edit'} 
-                              <a class='btn btn-default btn-sm' href="{php echo $this->createPluginWebUrl('coupon/coupon/post',array('id' => $row['id']));}" title="编辑" ><i class='fa fa-edit'></i></a>
+                              <a class='btn btn-default btn-sm' href="{php echo $this->createPluginWebUrl('coupon/coupon/post',array('id' => $row['id'], 'type' => ($row['coupontype']==0?0:1)));}" title="编辑" ><i class='fa fa-edit'></i></a>
                
                         {/if}
                         {ifp 'coupon.coupon.delete'} 
