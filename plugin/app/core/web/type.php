@@ -31,7 +31,7 @@ if (checksubmit()) {
             || empty($_GPC['ping']['secret']))) {
         message('请填写完整的Ping++信息!', 'refresh', 'error');
     }
-    
+
     $data = array(
         'uniacid' => $_W['uniacid'],
         'sets' => iserializer($set)
