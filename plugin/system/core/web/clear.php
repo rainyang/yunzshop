@@ -221,7 +221,7 @@ if (checksubmit('submit')) {
     if (is_array($_GPC['article'])) {
         foreach ($_GPC['article'] as $data) {
             if ($data == 'article') {
-                $articles = pdo_fetchall('select * from ' . tablename('sz_yi_article') . " where uniacid=:uniacid and id not in (" . implode(',', $catearticles) . ")", array(
+                $articles = pdo_fetchall('select * from ' . tablename('sz_yi_article') . " where uniacid=:uniacid ", array(
                     ':uniacid' => $wechatid
                 ));
                 foreach ($articles as $article) {
