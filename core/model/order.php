@@ -686,6 +686,7 @@ class Sz_DYi_Order
                 $onew = pdo_fetch('select status from ' . tablename('sz_yi_order') . " where id=:id and status=0 and paytype<>3  and createtime + {$daytimes} <=unix_timestamp()  limit 1", array(':id' => $o['id']));
                 if (!empty($onew) && $onew['status'] == 0) {
                     //商品返库存
+
                     $this->returnStock($o['id']);
 
                     pdo_query('update ' . tablename('sz_yi_order') . ' set status=-1,canceltime=' . time() . ' where id=' . $o['id']);
@@ -708,7 +709,9 @@ class Sz_DYi_Order
     public function getOrderGodds($orderid)
     {
         global $_W;
+
         $order_goods = pdo_fetchall("select g.id,og.orderid, g.type, og.total,og.optionid, og.totalcnf1 from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ",
+
             array(
                 ":uniacid" => $_W["uniacid"],
                 ":orderid" => $orderid
