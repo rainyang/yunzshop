@@ -218,6 +218,20 @@ if ($operation == 'display' && $_W['isajax']) {
     if (isset($set['pay']) && $set['pay']['yeepay'] == 1) {
         $yeepay['success'] = true;
     }
+
+    //高汇通支付
+    $gaohuitong = array(
+        'success' => false
+    );
+    if (p('gaohuitong')) {
+        $ght = pdo_fetch("select `switch` from " . tablename('sz_yi_gaohuitong') . ' where uniacid=:uniacid limit 1', array(
+            ':uniacid' => $_W['uniacid']
+        ));
+        if ($ght['switch']) {
+            $gaohuitong['success'] = true;
+        }
+    }
+
     //paypal支付
     $paypal = array(
         'success' => false
@@ -281,6 +295,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'cash' => $cash,
         'storecash' => $storecash,
         'yeepay' => $yeepay,
+        'gaohuitong' => $gaohuitong,
         'paypal' => $paypal,
         'isweixin' => is_weixin(),
         'currentcredit' => $currentcredit,
