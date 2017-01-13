@@ -112,5 +112,9 @@ if (!pdo_fieldexists('sz_yi_order', 'period_num')) {
 //     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `yunbideductprice` DECIMAL(10,2) NOT NULL AFTER `price`;");
 // }
 
+//订单商品减库存方式 2017-01-12
+if (!pdo_fieldexists('sz_yi_order_goods', 'totalcnf')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `totalcnf` TINYINT(1) NOT NULL COMMENT '订单商品减库存方式0:拍立减1:付款减2:永不减' AFTER `total`;");
+}
 
 
