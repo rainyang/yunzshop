@@ -9,6 +9,7 @@ $mid        = m('member')->getMid();
 $member = $this->model->getInfo($openid, array());
 $uniacid    = $_W['uniacid'];
 $agentLevel = $this->model->getLevel($openid);
+$isglobal = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_bonus_log') . " where isglobal=1 and openid=:openid and uniacid=:uniacid", array(":openid" => $openid, ":uniacid" => $_W["uniacid"]));
 if ($_W['isajax']) {
 	if ($operation == 'display') {
 		$pindex = max(1, intval($_GPC['page']));
@@ -20,9 +21,11 @@ if ($_W['isajax']) {
         }
 		$params = array(':openid' => $openid, ':uniacid' => $uniacid);
 		$status = intval($_GPC['status']);
-		if($status > 1){
-			$condition .= " and type=".$status;
-		}
+		if ($status > 1 && $status < 4) {
+		    $condition .= " and type=".$status;
+		} elseif ($status == 4) {
+            $condition .= " and isglobal=1";
+        }
 		$commissioncount = 0;
 		$list = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_bonus_log') . " where 1 {$condition}", $params);
