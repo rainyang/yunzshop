@@ -27,6 +27,11 @@ if (checksubmit()) {
     $set['pay']['app_weixin'] = $_GPC['pay']['app_weixin'];
     $set['pay']['app_alipay'] = $_GPC['pay']['app_alipay'];
 
+    if ((!empty($_GPC['pay']['app_weixin']) || !empty($_GPC['pay']['app_alipay'])) && (empty($_GPC['ping']['partner'])
+            || empty($_GPC['ping']['secret']))) {
+        message('请填写完整的Ping++信息!', 'refresh', 'error');
+    }
+
     $data = array(
         'uniacid' => $_W['uniacid'],
         'sets' => iserializer($set)

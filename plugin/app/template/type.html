@@ -7,104 +7,86 @@
             <input type='hidden' name='setid' value="{$set['id']}" />
             <input type='hidden' name='op' value="type" />
             <div class="panel panel-default">
-                <div class='panel-body'>
-                    <div class="alert alert-danger">
-                        此插件为第三方插件,出现资金安全问题本商城不承担任何责任.
-                    </div>
-
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信支付</label>
-                    <div class="col-sm-9 col-xs-12">
-                        {ifp 'sysset.save.pay'}
-                        <label class='radio-inline'><input type='radio' name='pay[app_weixin]' value='1' {if $set['pay']['app_weixin']==1}checked{/if}/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='pay[app_weixin]' value='0' {if $set['pay']['app_weixin']==0}checked{/if} /> 关闭</label>
-                        {else}
-                        <input type="hidden" name="pay[app_weixin]" value="{$set['pay']['app_weixin']}"/>
-                        <div class='form-control-static'> {if $set['pay']['app_weixin']==1}开启{else}关闭{/if}</div>
-                        {/if}
-                    </div>
+                <div class="right-titpos-fixed">
+                    <ul class="add-shopnav" id="myTab">
+                        <li class="active" ><a href="#tab_pay_1">V1.0支付配置</a></li>
+                        <li><a href="#tab_pay_2">V2.0支付配置</a></li>
+                    </ul>
                 </div>
 
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝支付</label>
-                    <div class="col-sm-9 col-xs-12">
-                        {ifp 'sysset.save.pay'}
-                        <label class='radio-inline'><input type='radio' name='pay[app_alipay]' value='1' {if $set['pay']['app_alipay']==1}checked{/if}/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='pay[app_alipay]' value='0' {if $set['pay']['app_alipay']==0}checked{/if} /> 关闭</label>
-                        {else}
-                        <input type="hidden" name="pay[app_alipay]" value="{$set['pay']['app_alipay']}"/>
-                        <div class='form-control-static'> {if $set['pay']['app_alipay']==1}开启{else}关闭{/if}</div>
-                        {/if}
+                <div style="padding-top: 50px;">
+                    <div class='panel-body'>
+                        <div class="alert alert-danger">
+                            此插件为第三方插件,出现资金安全问题本商城不承担任何责任.
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信支付</label>
+                            <div class="col-sm-9 col-xs-12">
+                                {ifp 'sysset.save.pay'}
+                                <label class='radio-inline'><input type='radio' name='pay[app_weixin]' value='1' {if $set['pay']['app_weixin']==1}checked{/if}/> 开启</label>
+                                <label class='radio-inline'><input type='radio' name='pay[app_weixin]' value='0' {if $set['pay']['app_weixin']==0}checked{/if} /> 关闭</label>
+                                {else}
+                                <input type="hidden" name="pay[app_weixin]" value="{$set['pay']['app_weixin']}"/>
+                                <div class='form-control-static'> {if $set['pay']['app_weixin']==1}开启{else}关闭{/if}</div>
+                                {/if}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝支付</label>
+                            <div class="col-sm-9 col-xs-12">
+                                {ifp 'sysset.save.pay'}
+                                <label class='radio-inline'><input type='radio' name='pay[app_alipay]' value='1' {if $set['pay']['app_alipay']==1}checked{/if}/> 开启</label>
+                                <label class='radio-inline'><input type='radio' name='pay[app_alipay]' value='0' {if $set['pay']['app_alipay']==0}checked{/if} /> 关闭</label>
+                                {else}
+                                <input type="hidden" name="pay[app_alipay]" value="{$set['pay']['app_alipay']}"/>
+                                <div class='form-control-static'> {if $set['pay']['app_alipay']==1}开启{else}关闭{/if}</div>
+                                {/if}
+                            </div>
+                        </div>
+
+                        <div class="tab-content">
+                            <div class="tab-pane  active" id="tab_pay_1">{template 'pay/pay_1'}</div>
+                            <div class="tab-pane" id="tab_pay_2">{template 'pay/pay_2'}</div>
+                        </div>
+
+
+                        <div class="form-group"></div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
+                                {ifp 'sysset.save.pay'}
+                                <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+                                <input type="hidden" name="token" value="{$_W['token']}" />
+                                {/if}
+                            </div>
+                        </div>
+
                     </div>
                 </div>
+                <script language="javascript">
+                    $(function () {
+                        $(":radio[name='pay[weixin]']").click(function () {
+                            if ($(this).val() == 1) {
+                                $("#certs").show();
+                            }
+                            else {
+                                $("#certs").hide();
+                            }
+                        })
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">Ping++应用ID</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="ping[partner]" class="form-control" value="{$pay['ping']['partner']}" autocomplete="off">
-                            <span class="help-block">Ping++ 系统中你的应用标识。<br>如果您还未签约，<a href="https://dashboard.pingxx.com/register" target="_blank">请点击这里签约</a>；如果已签约,<a href="https://dashboard.pingxx.com/list" target="_blank">请点击这里获取应用ID</a></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">Ping++交易密钥</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="ping[secret]" class="form-control" value="{$pay['ping']['secret']}" autocomplete="off">
-                            <span class="help-block">Ping++Server端交易密钥,分为测试环境和真实环境2种类型交易密钥</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">新版app 微信MCID</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="wx_native[wx_mcid]" class="form-control" value="{$pay['wx_native']['wx_mcid']}" autocomplete="off">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">新版app 微信APPID</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="wx_native[wx_appid]" class="form-control" value="{$pay['wx_native']['wx_appid']}" autocomplete="off">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">新版app 微信secret</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="wx_native[wx_secret]" class="form-control" value="{$pay['wx_native']['wx_secret']}" autocomplete="off">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">新版app 商户支付密钥(API密钥)</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="wx_native[signkey]" class="form-control" value="{$pay['wx_native']['signkey']}" autocomplete="off">
-                        </div>
-                    </div>
-                <div class="form-group"></div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                    <div class="col-sm-9 col-xs-12">
-                        {ifp 'sysset.save.pay'}
-                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
-                        <input type="hidden" name="token" value="{$_W['token']}" />
-                        {/if}
-                    </div>
-                </div>
-
-            </div>
-            <script language="javascript">
-                $(function () {
-                    $(":radio[name='pay[weixin]']").click(function () {
-                        if ($(this).val() == 1) {
-                            $("#certs").show();
-                        }
-                        else {
-                            $("#certs").hide();
-                        }
                     })
 
-                })
-            </script>
+                    require(['bootstrap'], function () {
+                        $('#myTab a').click(function (e) {
+                            e.preventDefault();
+                            $(this).tab('show');
+                        })
+                    });
+                </script>
+            </div>
+        </form>
     </div>
-    </form>
 </div>
-</div>
-{template 'web/_footer'}     
+{template 'web/_footer'}
