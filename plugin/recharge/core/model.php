@@ -5,11 +5,13 @@ if (!defined('IN_IA')) {
 /**
  * * recharge插件方法类
  * *
- * * 
+ * *
  * * @package   流量话费充值插件公共方法
  * * @author    LuckyStar_D<duanfuxing@yunzshop.com>
  * * @version   v1.0
  * */
+
+
 if (!class_exists('RechargeModel')) {
 	class RechargeModel extends PluginModel
 	{
@@ -30,10 +32,10 @@ if (!class_exists('RechargeModel')) {
 		                    'apikey'  =>  $data['apikey'],
 		                    'sign'    =>  $sign
 		                    );
-		    $blanceurl = 'http://www.tieba8.com/api/web/v1/site/blance'; //账户余额查询接口
+		    //$blanceurl = 'http://www.tieba8.com/api/web/v1/site/blance'; //账户余额查询接口
 		    $ch = curl_init();  
 		    curl_setopt($ch, CURLOPT_POST, 1);  
-		    curl_setopt($ch, CURLOPT_URL, $blanceurl);  
+		    curl_setopt($ch, CURLOPT_URL, $blanceurl);
 		    curl_setopt($ch, CURLOPT_POSTFIELDS, $param);   
 		    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		    $return = curl_exec($ch);  

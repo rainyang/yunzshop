@@ -592,16 +592,17 @@ if ($operation == 'display' && $_W['isajax']) {
                 $carrier = unserialize($order_goods_recharge['carrier']);
             }
             $mobile_data_param = array();
-            $mobile_data_param['out_order_id']   =   $order['ordersn'];
-            $mobile_data_param['pay_ordersn']   =   $order['pay_ordersn'];
-            $mobile_data_param['timetamp'] =   date("YmdHisB",time());
-            $mobile_data_param['flow_val']  =   $packcode;
-            $mobile_data_param['phone_no']    =   $telephone;
-            $mobile_data_param['price']     =   $order['price'];
-            $mobile_data_param['order_id']  =   $orderid;
-            $mobile_data_param['apikey']    =   $rechargeset['rechargeapikey'];
-            $mobile_data_param['account']    =   $rechargeset['rechargeusername'];
-            $mobile_data_param['scope']    =   $order_goods_recharge['isprovince'];//1：省内，0：国内
+            $mobile_data_param['out_order_id'] = $order['ordersn'];
+            $mobile_data_param['pay_ordersn']  = $order['pay_ordersn'];
+            $mobile_data_param['timetamp']     = date("YmdHisB",time());
+            $mobile_data_param['flow_val']     = $packcode;
+            $mobile_data_param['phone_no']     = $telephone;
+            $mobile_data_param['price']        = $order['price'];
+            $mobile_data_param['order_id']     = $orderid;
+            $mobile_data_param['apikey']       = $rechargeset['rechargeapikey'];
+            $mobile_data_param['account']      = $rechargeset['rechargeusername'];
+            $mobile_data_param['scope']        = $order_goods_recharge['isprovince'];//1：省内，0：国内
+            $mobile_data_param['openid']       = $order['openid'];//1：省内，0：国内
         }
     }
 
