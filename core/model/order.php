@@ -710,7 +710,7 @@ class Sz_DYi_Order
     {
         global $_W;
 
-        $order_goods = pdo_fetchall("select g.id,og.orderid, g.type, og.total,og.optionid, og.totalcnf1 from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ",
+        $order_goods = pdo_fetchall("select g.id,og.orderid, g.type, og.total,og.optionid, og.totalcnf from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ",
 
             array(
                 ":uniacid" => $_W["uniacid"],
@@ -789,7 +789,7 @@ class Sz_DYi_Order
     {
         //订单商品
         $order_goods = m('order')->getOrderGodds($orderid);
- g
+
         //商品返库存
         foreach ($order_goods as $items) {
             if ($items['totalcnf'] == 0) {//拍下减库存
