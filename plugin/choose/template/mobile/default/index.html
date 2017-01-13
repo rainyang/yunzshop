@@ -29,16 +29,17 @@ border-left: 0;
 text-align: center;
 margin: 0 4px;
 float: right;
-height: 20px;    margin-top: 4px;}
-.subtract,.add{border-radius: 100px;
-border: 1px {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if} solid;
+height: 20px;    /*margin-top: 4px;*/}
+.subtract,.add{
+    border-radius: 100px;
+    border: 1px {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if} solid;
 width: 20px;
 height: 20px;
 display: inline-block;
 color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};
 text-align: center;
-line-height: 20px;
-float: right;margin-top: 4px;
+line-height: 18px;
+float: right;/*margin-top: 4px;*/
 }
 .fffbg{position: absolute;
 right: 4px;
@@ -269,7 +270,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 .foot-nav span{ width: 30px;height: 30px;border-radius: 100px;border: 1px #fff solid;color: #fff;float: left;margin: 9px;text-align: center;line-height: 30px;font-weight: bold;}
 .foot-nav p{ float: left;line-height: 49px;padding-left:20px ;font-weight: bold;}
 .foot-nav a{float: right;height: 30px;background: #fff;line-height: 30px;color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};text-align: center;padding: 0 14px;margin:9px;border-radius: 18px}
-.right-choose{height: 30px;line-height: 30px;text-align: right;}
+.right-choose{height: 22px;line-height: 22px;text-align: right;}
 
 </style>
 <div class="foot-nav">
@@ -327,9 +328,9 @@ ul, li { list-style:none; margin:0; padding:0 }
                             }
 
                             {if $ischannelpay == 1}
-                            h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                            h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd style="display: inline-block;float: left;"><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
                             {else}
-                            h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
+                            h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd style="display: inline-block;float: left;"><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
                             {/if}
                             if (store[i].hasoption == 1) {
                                 h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';

@@ -250,7 +250,7 @@ if ($operation == 'display' && $_W['isajax']) {
     }else{
         $where_orderid = "og.orderid={$orderid}";
     }
-    $order_goods = pdo_fetchall('select og.id,g.title,g.type, og.goodsid,og.optionid,g.thumb, g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
+    $order_goods = pdo_fetchall('select og.id,og.totalcnf,g.title,g.type, og.goodsid,og.optionid,g.thumb, g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
         ':uniacid' => $_W['uniacid']
     ));
     if (p('recharge')) {
@@ -344,7 +344,7 @@ if ($operation == 'display' && $_W['isajax']) {
         $where_orderid = "og.orderid={$orderid}";
     }
     
-    $order_goods = pdo_fetchall('select og.id,g.type,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
+    $order_goods = pdo_fetchall('select og.id,og.totalcnf,g.type,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
         ':uniacid' => $_W['uniacid']
     ));
     if (p('recharge')) {
@@ -414,23 +414,25 @@ if ($operation == 'display' && $_W['isajax']) {
                 return show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
             }
         }
-        if (!empty($data['optionid'])) {
-            $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,stock,virtual from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
-                ':uniacid' => $uniacid,
-                ':goodsid' => $data['goodsid'],
-                ':id' => $data['optionid']
-            ));
-            if (!empty($option)) {
-                if ($option['stock'] != -1) {
-                    if (empty($option['stock'])  OR ($option['buycount'] > $data['stock'])) {
-                        return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+        if($data['totalcnf']>0) {
+            if (!empty($data['optionid'])) {
+                $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,stock,virtual from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
+                    ':uniacid' => $uniacid,
+                    ':goodsid' => $data['goodsid'],
+                    ':id' => $data['optionid']
+                ));
+                if (!empty($option)) {
+                    if ($option['stock'] != -1) {
+                        if (empty($option['stock'])  OR ($option['buycount'] > $data['stock'])) {
+                            return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+                        }
                     }
                 }
-            }
-        } else {
-            if ($data['stock'] != -1) {
-                if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
-                    return show_json(-1, $data['title'] . "<br/>库存不足!");
+            } else {
+                if ($data['stock'] != -1) {
+                    if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
+                        return show_json(-1, $data['title'] . "<br/>库存不足!");
+                    }
                 }
             }
         }
@@ -587,7 +589,7 @@ if ($operation == 'display' && $_W['isajax']) {
     }else{
         $where_orderid = "og.orderid={$orderid}";
     }
-    $order_goods = pdo_fetchall('select og.id,g.title,g.type, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
+    $order_goods = pdo_fetchall('select og.id,og.totalcnf,g.title,g.type, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
         ':uniacid' => $_W['uniacid']
     ));
 
@@ -662,26 +664,29 @@ if ($operation == 'display' && $_W['isajax']) {
                 return show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
             }
         }
-        if (!empty($data['optionid'])) {
-            $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,stock,virtual from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
-                ':uniacid' => $uniacid,
-                ':goodsid' => $data['goodsid'],
-                ':id' => $data['optionid']
-            ));
-            if (!empty($option)) {
-                if ($option['stock'] != -1) {
-                    if (empty($option['stock']) OR ($option['buycount'] > $data['stock'])) {
-                        return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+        if($data['totalcnf']>0) {
+            if (!empty($data['optionid'])) {
+                $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,stock,virtual from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
+                    ':uniacid' => $uniacid,
+                    ':goodsid' => $data['goodsid'],
+                    ':id' => $data['optionid']
+                ));
+                if (!empty($option)) {
+                    if ($option['stock'] != -1) {
+                        if (empty($option['stock']) OR ($option['buycount'] > $data['stock'])) {
+                            return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+                        }
+                    }
+                }
+            } else {
+                if ($data['stock'] != -1) {
+                    if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
+                        return show_json(-1, $data['title'] . "<br/>库存不足!");
                     }
                 }
             }
-        } else {
-            if ($data['stock'] != -1) {
-                if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
-                    return show_json(-1, $data['title'] . "<br/>库存不足!");
-                }
-            }
         }
+
     }
     if (empty($order)) {
         return show_json(0, '订单未找到!');

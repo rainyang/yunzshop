@@ -1093,13 +1093,19 @@ if ($operation == "display") {
                 ));
         }
         $address_info = $user["address"];
-        $user["address"] = $user["province"] . " " . $user["city"] . " " . $user["area"] . " " . $user["address"];
+        //是否开启了街道联动
+        if (!empty($user['street']) && $trade['is_street'] == '1') {
+            $user["address"] = $user["province"] . " " . $user["city"] . " " . $user["area"] . " " . $user["street"] . " " . $user["address"];
+        } else {
+            $user["address"] = $user["province"] . " " . $user["city"] . " " . $user["area"] . " " . $user["address"];
+        }
         $item["addressdata"] = array(
             "realname" => $user["realname"],
             "mobile" => $user["mobile"],
             "address" => $user["address"],
         );
     }
+
     $refund = pdo_fetch("SELECT * FROM " . tablename("sz_yi_order_refund") . " WHERE orderid = :orderid and uniacid=:uniacid order by id desc",
         array(
             ":orderid" => $item["id"],
@@ -1372,6 +1378,7 @@ if ($operation == "display") {
     $mobile = $_GPC["mobile"];
     $city = $_GPC["city"];
     $area = $_GPC["area"];
+    $street = $_GPC["street"];
     $address = trim($_GPC["address"]);
     $id = intval($_GPC["id"]);
     if (!empty($id)) {
@@ -1413,6 +1420,7 @@ if ($operation == "display") {
         $address_array["province"] = $province;
         $address_array["city"] = $city;
         $address_array["area"] = $area;
+        $address_array["street"] = $street;
         $address_array["address"] = $address;
         $address_array = iserializer($address_array);
         pdo_query('update ' . tablename('sz_yi_order') . ' set address=:address where ' . $order_where . ' and uniacid=:uniacid ',
