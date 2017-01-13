@@ -20,6 +20,12 @@ if($_W['ispost']) {
 
 	$set['app']['base'] = $app;
 
+    if (!empty($_GPC['leancloud']['switch']) && (empty($_GPC['leancloud']['id'])
+          || empty($_GPC['leancloud']['key']) || empty($_GPC['leancloud']['kmasterey'])
+          || empty($_GPC['leancloud']['notify']))) {
+        message('请填写完整的推送信息!', 'refresh', 'error');
+    }
+
 	$leancloud = array_elements(array('switch', 'id', 'key', 'master', 'notify'), $_GPC['leancloud']);
 	$set['app']['base']['leancloud'] = $leancloud;
 
