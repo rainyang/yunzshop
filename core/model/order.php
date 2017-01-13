@@ -789,7 +789,7 @@ class Sz_DYi_Order
     {
         //订单商品
         $order_goods = m('order')->getOrderGodds($orderid);
-
+ g
         //商品返库存
         foreach ($order_goods as $items) {
             if ($items['totalcnf'] == 0) {//拍下减库存
