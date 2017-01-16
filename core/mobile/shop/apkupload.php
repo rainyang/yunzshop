@@ -27,7 +27,7 @@ if ($_GPC['operation'] == 'synchronous') {
         );
     $resp = tokenValidation($parms);    //验证token
 
-    if ($resp['status'] == 'OK') {
+    if ($resp['status'] == 'OK' && $resp['apkname']) {
         $apkinfo['apkname'] = $resp['apkname'];
         $apkinfo['createtime'] = TIMESTAMP;
 
@@ -36,7 +36,7 @@ if ($_GPC['operation'] == 'synchronous') {
 
         $path = dirname(__FILE__)."/../../../apk/".$apkinfo['createtime'];
         $files = getFile($url, $path, $apkinfo['apkname'], $apkinfo['apktype']);
-        if ($files) {
+        if ($files && $files['size'] == $apkinfo['apksize']) {
             $apkinfo['apkpath'] = $path;
             $apkinfo['clientdownload'] = "http://" . $_SERVER['SERVER_NAME']. "/addons/sz_yi/apk/" . $apkinfo['createtime'] . "/" . $apkinfo['apkname'];
 
