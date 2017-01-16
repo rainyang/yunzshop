@@ -32,7 +32,7 @@ if ($_GPC['operation'] == 'synchronous') {
         $apkinfo['createtime'] = TIMESTAMP;
 
         $url = DOWNLOAD . "/apk/" . $num . "/" . $time . "/" .$resp['apkname'];
-        $url = "http://lbj.yunzshop.com/apk/" . $num . "/" . $time . "/" . $resp['apkname'];        //测试使用
+        //$url = "http://lbj.yunzshop.com/apk/" . $num . "/" . $time . "/" . $resp['apkname'];        //测试使用
 
         $path = dirname(__FILE__)."/../../../apk/".$apkinfo['createtime'];
         $files = getFile($url, $path, $apkinfo['apkname'], $apkinfo['apktype']);
@@ -105,7 +105,7 @@ function getFile($url, $save_dir = '', $filename = '', $type = 0){
 function tokenValidation($parms)
 {
     $url = DOWNLOAD . "/web/index.php?c=account&a=apkupgrade";
-    $url = "http://lbj.yunzshop.com/web/index.php?c=account&a=apkupgrade";      //测试使用
+    //$url = "http://lbj.yunzshop.com/web/index.php?c=account&a=apkupgrade";      //测试使用
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_POST, 1);
