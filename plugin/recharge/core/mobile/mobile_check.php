@@ -3,9 +3,6 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-$openid         = m('user')->getOpenid();
-$member         = m('member')->getMember($openid);
-$uniacid        = $_W['uniacid'];
 /*
  *  1.判断手机号码运营商及所属省份
  *  2.查找对应运营商商品，空则返回，存在则继续筛选
@@ -16,9 +13,9 @@ $uniacid        = $_W['uniacid'];
 if ($_GPC['mobile']) {
     $mobile = intval($_GPC['mobile']);
     $array = $this->model->mobileApi($mobile);
-    $catname = !empty(trim($array['catName']))?trim($array['catName']):''; //手机号运营商
-    $province = !empty(trim($array['province']))?trim($array['province']):'';//手机号所属省份
-    $carrier = !empty(trim($array['carrier']))?trim($array['carrier']):'';//手机号完整信息
+    $catname = !empty(trim($array['catName'])) ? trim($array['catName']) : ''; //手机号运营商
+    $province = !empty(trim($array['province'])) ? trim($array['province']) : '';//手机号所属省份
+    $carrier = !empty(trim($array['carrier'])) ? trim($array['carrier']) : '';//手机号完整信息
     if (empty($catname) || empty($province)) {
         $code = -1;
         $ret = array(
@@ -47,7 +44,7 @@ if ($_GPC['mobile']) {
             'code' => $code,
             'carrier' => $carrier,
             'catname' => $catname,
-            'spec_datas' => !empty($spec_datas)?$spec_datas:'',
+            'spec_datas' => !empty($spec_datas) ? $spec_datas : '',
         );
     } else {//手机号码验证失败
        $code = -1; 

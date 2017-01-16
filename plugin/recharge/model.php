@@ -86,11 +86,13 @@ if (!class_exists('RechargeModel')) {
 		            'keyword5' => array('value' => '[失败原因]' . $ret['err_desc'], 'color' => '#73a68d'),
 		            'remark' => array('value' => '您购买的手机流量充值提交失败，如未自动退款到您的微信账户，请联系管理员！')
 		            );
-		        pdo_update('sz_yi_order', array(
-		            'remark' => "流量提交失败,失败原因:" . $ret['err_desc']
-		            ), array(
-		                'ordersn' => $data['out_order_id']
-		        ));
+				$remark_data = array(
+					'uniacid' => $_W['uniacid'],
+					'orderid' => $data['order_id'],
+					'remark' =>  "流量提交失败,失败原因: " . $ret['err_desc'],
+					'createtime' => time()
+				);
+				pdo_insert('sz_yi_recharge_remark', $remark_data);
 		        m('message')->sendCustomNotice($data['openid'], $message);
 				$data['err_desc'] = $ret['err_desc'];
 				$refunddata = array(

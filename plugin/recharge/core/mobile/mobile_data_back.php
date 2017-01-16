@@ -33,11 +33,13 @@ if ($data['state'] == 3 && $order['status'] != 3) {
         }
     }
 } else if ($data['state'] == 4 && $order['status'] != 3) {
-    pdo_update('sz_yi_order', array(
-        'remark' => "流量充值失败,失败原因:" . urldecode($data['desc'])
-    ), array(
-        'ordersn' => $data['ordernum']
-    ));
+    $remark_data = array(
+        'uniacid' => $_W['uniacid'],
+        'orderid' => $order['id'],
+        'remark' =>  "流量充值失败,失败原因: " . urldecode($data['desc']),
+        'createtime' => time()
+    );
+    pdo_insert('sz_yi_recharge_remark', $remark_data);
     $message = array(
         'keyword1' => array('value' => '手机流量充值失败', 'color' => '#73a68d'),
         'keyword2' => array('value' => '[订单编号]' . $order['ordersn'], 'color' => '#73a68d'),

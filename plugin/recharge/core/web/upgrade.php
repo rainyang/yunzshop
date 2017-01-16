@@ -15,10 +15,11 @@ if (empty($result)) {
     $displayorder = $displayorder_max + 1;
     $sql = "INSERT INTO " . tablename('sz_yi_plugin') .
         " (`displayorder`, `identity`, `name`, `version`, `author`, `status`, `category`, `desc`) 
-        VALUES (" . $displayorder . ", 'recharge', '手机充值', '1.0', '官方', '1', 'biz', '手机业务快速充值');";
+        VALUES (" . $displayorder . ", 'recharge', '充值中心', '1.0', '官方', '1', 'biz', '手机业务充值中心');";
   pdo_fetchall($sql);
 }
-$sql = " CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_recharge_adv') . " (
+$sql = " 
+ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_recharge_adv') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `advname` varchar(50) NOT NULL,
@@ -28,7 +29,17 @@ $sql = " CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_recharge_adv') . " (
   `isshow` int(1) NOT NULL DEFAULT '1',
   `createtime` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE = MyISAM DEFAULT CHARSET = utf8 AUTO_INCREMENT = 1 ;";
+) ENGINE = MyISAM DEFAULT CHARSET = utf8 AUTO_INCREMENT = 1 ;
+
+ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_recharge_remark') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `orderid` int(11) NOT NULL,
+  `remark` varchar(255) NOT NULL,
+  `createtime` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = MyISAM DEFAULT CHARSET = utf8 AUTO_INCREMENT = 1 ;
+";
 pdo_query($sql);
 if(!pdo_fieldexists('sz_yi_goods', 'province')) {
     pdo_query("ALTER TABLE " . tablename('sz_yi_goods') .

@@ -19,7 +19,7 @@ if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
     $store_total = true;
 }
 if (p('recharge')) {
-        $telephone =  $_GPC['telephone'];
+        $telephone =  intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
     }
 if (!empty($trade['shareaddress'])  && is_weixin()) {
     if (!$_W['isajax']) {
@@ -76,8 +76,9 @@ if (p('ladder')) {
 }
 if ($operation == "display" || $operation == "create") {
     $id   = ($operation == "create") ? intval($_GPC["order"][0]["id"]) : intval($_GPC["id"]);
+    $telephone = intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
     //$show = 1;
-    if (p('recharge') && $_GPC['telephone']) {
+    if (p('recharge') && $telephone) {
         $show = 0;
     } else {
         $show = 1;
@@ -180,7 +181,7 @@ if ($yunbi_plugin) {
 
 if ($_W['isajax']) {
     if (p('recharge')) {
-        $telephone =  $_GPC['telephone'];
+        $telephone =  intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
     }
     $ischannelpick = intval($_GPC['ischannelpick']);
     //$isyunbipay = intval($_GPC['isyunbipay']);

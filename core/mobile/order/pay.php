@@ -11,23 +11,29 @@ if (empty($openid)) {
 }
 if (p('recharge')) {
     $rechargeset = p('recharge')->getSet();
-    $telephone = $_GPC['telephone'];
+    $telephone = intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
 }
 $set = m('common')->getSysset(array('pay'));
 $member  = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
 $orderid = intval($_GPC['orderid']);
-if(!empty($orderid)){
-	$ordersn_general = pdo_fetchcolumn("select ordersn_general from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+if (!empty($orderid)) {
+	$ordersn_general = pdo_fetchcolumn("SELECT ordersn_general FROM " . tablename('sz_yi_order') .
+        ' WHERE id=:id AND uniacid = :uniacid AND openid = :openid limit 1',
+        array(
             ':id' => $orderid,
             ':uniacid' => $uniacid,
             ':openid' => $openid
-        ));
-    $order_all = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid', array(
+        )
+    );
+    $order_all = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_order') .
+        ' WHERE ordersn_general = :ordersn_general AND uniacid = :uniacid AND openid = :openid',
+        array(
             ':ordersn_general' => $ordersn_general,
             ':uniacid' => $uniacid,
             ':openid' => $openid
-        ));
+        )
+    );
     //合并订单号订单大于1个，执行合并付款
     if(count($order_all) > 1){
         $order = array();
@@ -50,16 +56,22 @@ if(!empty($orderid)){
 }
 // 支付验证库存
 if ( $order['order_type'] == '4' && $_W['ispost'] ) {
-    $goodstotal = pdo_fetchcolumn('SELECT total FROM ' . tablename('sz_yi_order_goods') . ' where uniacid=:uniacid and orderid = :orderid',array(
+    $goodstotal = pdo_fetchcolumn('SELECT total FROM ' . tablename('sz_yi_order_goods') .
+        ' WHERE uniacid = :uniacid AND orderid = :orderid',
+        array(
             ':uniacid'  => $_W['uniacid'],
             ':orderid'  => $order['id']
-        ));
+        )
+    );
 
     // 本期数据
-    $shengyu_codes = pdo_fetchcolumn('SELECT shengyu_codes FROM ' . tablename('sz_yi_indiana_period') . ' where uniacid=:uniacid and period_num = :period_num ',array(
+    $shengyu_codes = pdo_fetchcolumn('SELECT shengyu_codes FROM ' . tablename('sz_yi_indiana_period') .
+        ' WHERE uniacid = :uniacid AND period_num = :period_num ',
+        array(
             ':uniacid'  => $_W['uniacid'],
             ':period_num'  => $order['period_num']
-        ));
+        )
+    );
     if ($goodstotal > $shengyu_codes) {
         return show_json(0, '剩余人次不足!');
     }
@@ -77,11 +89,14 @@ if ($operation == 'display' && $_W['isajax']) {
     } elseif ($order['status'] >= 1) {
         return show_json(-1, '订单已付款, 无需重复支付!');
     }
-    $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
-        ':uniacid' => $uniacid,
-        ':module' => 'sz_yi',
-        ':tid' => $ordersn_general
-    ));
+    $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') .
+        ' WHERE `uniacid` = :uniacid AND `module` = :module AND `tid` = :tid limit 1',
+        array(
+            ':uniacid' => $uniacid,
+            ':module' => 'sz_yi',
+            ':tid' => $ordersn_general
+        )
+    );
     if (!empty($log) && $log['status'] != '0') {
         return show_json(-1, '订单已支付, 无需重复支付!');
     }
@@ -236,11 +251,27 @@ if ($operation == 'display' && $_W['isajax']) {
     }else{
         $where_orderid = "og.orderid={$orderid}";
     }
-    $order_goods = pdo_fetchall('select og.id,g.title,g.type, og.goodsid,og.optionid,g.thumb, g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
-        ':uniacid' => $_W['uniacid']
-    ));
+    $order_goods = pdo_fetchall('SELECT og.id, g.title, g.type, og.goodsid, og.optionid, g.thumb, g.total as stock, 
+        og.total as buycount, g.status, g.deleted, g.maxbuy, g.usermaxbuy, g.istime, g.timestart, g.timeend, 
+        g.buylevels, g.buygroups FROM  ' . tablename('sz_yi_order_goods') . ' og ' .
+        ' LEFT JOIN ' . tablename('sz_yi_goods') . ' g 
+        ON og.goodsid = g.id ' . ' WHERE ' . $where_orderid . ' AND og.uniacid = :uniacid ',
+        array(
+            ':uniacid' => $_W['uniacid']
+        )
+    );
     if (p('recharge')) {
-        $order_goods_recharge = pdo_fetch('select go.title,g.type,o.carrier,o.price from ' . tablename('sz_yi_order') . 'o left join '. tablename('sz_yi_order_goods') .' og ' .' on o.id=og.orderid left join ' . tablename('sz_yi_goods') .' g on og.goodsid=g.id left join'. tablename('sz_yi_goods_option') .' go on og.optionid=go.id where o.id=:id and o.uniacid=:uniacid and o.openid=:openid', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
+        $order_goods_recharge = pdo_fetch('SELECT go.title, g.type, o.carrier, o.price FROM ' . tablename('sz_yi_order') .
+            'o LEFT JOIN '. tablename('sz_yi_order_goods') . ' og ' .
+            ' ON o.id = og.orderid LEFT JOIN ' . tablename('sz_yi_goods')  .' g ' .
+            ' ON og.goodsid = g.id LEFT JOIN' . tablename('sz_yi_goods_option') .' go ' .
+            ' ON og.optionid = go.id WHERE o.id = :id AND o.uniacid = :uniacid AND o.openid = :openid',
+            array(
+                ':id' => $orderid,
+                ':uniacid' => $uniacid,
+                ':openid' => $openid
+            )
+        );
             
         if ($order_goods_recharge['type'] == 11 || $order_goods_recharge['type'] == 12) {
             $order['mobile'] = $_GPC['telephone'];
@@ -250,11 +281,15 @@ if ($operation == 'display' && $_W['isajax']) {
     foreach ($order_goods as $key => &$value) {
         if (!empty($value['optionid'])) {
 
-            $option = pdo_fetch("select id,title,marketprice,goodssn,productsn,stock,virtual,weight from " . tablename("sz_yi_goods_option") . " where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1", array(
-                ":uniacid" => $_W['uniacid'],
-                ":goodsid" => $value['goodsid'],
-                ":id" => $value['optionid']
-            ));
+            $option = pdo_fetch("SELECT id, title, marketprice, goodssn, productsn, stock, virtual, weight FROM " .
+                tablename("sz_yi_goods_option") .
+                " WHERE id = :id AND goodsid = :goodsid AND uniacid = :uniacid  limit 1",
+                array(
+                    ":uniacid" => $_W['uniacid'],
+                    ":goodsid" => $value['goodsid'],
+                    ":id" => $value['optionid']
+                )
+            );
             
             if (!empty($option)) {
                 $value["optionid"]    = $value['optionid'];
@@ -314,11 +349,14 @@ if ($operation == 'display' && $_W['isajax']) {
         return show_json(0, '余额不足，请充值后在试！');
     }
     $pay_ordersn = $order['pay_ordersn'] ? $order['pay_ordersn'] : $ordersn_general;
-    $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
-        ':uniacid' => $uniacid,
-        ':module' => 'sz_yi',
-        ':tid' => $pay_ordersn
-    ));
+    $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') .
+        ' WHERE `uniacid` = :uniacid AND `module` = :module AND `tid` = :tid limit 1 ',
+        array(
+            ':uniacid' => $uniacid,
+            ':module' => 'sz_yi',
+            ':tid' => $pay_ordersn
+        )
+    );
     if (empty($log)) {
         return show_json(0, '支付出错,请重试!');
     }
@@ -329,35 +367,50 @@ if ($operation == 'display' && $_W['isajax']) {
         $where_orderid = "og.orderid={$orderid}";
     }
     
-    $order_goods = pdo_fetchall('select og.id,g.type,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
-        ':uniacid' => $_W['uniacid']
-    ));
+    $order_goods = pdo_fetchall('SELECT og.id, g.type, g.title, og.goodsid, og.optionid, g.total as stock, 
+        og.total as buycount, g.status, g.deleted, g.maxbuy, g.usermaxbuy, g.istime, g.timestart, g.timeend, 
+        g.buylevels, g.buygroups FROM  ' . tablename('sz_yi_order_goods') . ' og ' .
+        ' LEFT JOIN ' . tablename('sz_yi_goods') . ' g ' .
+        ' ON og.goodsid = g.id ' . ' WHERE ' . $where_orderid . ' AND og.uniacid = :uniacid ',
+        array(
+            ':uniacid' => $_W['uniacid']
+        )
+    );
     if (p('recharge')) {
         if ($order_goods['type'] == 11 || $order_goods['type'] == 12) {
-            $order_goods_recharge = pdo_fetch('select go.title,g.type,o.carrier,o.price from ' . tablename('sz_yi_order') . 'o left join '. tablename('sz_yi_order_goods') .' og ' .' on o.id=og.orderid left join ' . tablename('sz_yi_goods') .' g on og.goodsid=g.id left join'. tablename('sz_yi_goods_option') .' go on og.optionid=go.id where o.id=:id and o.uniacid=:uniacid and o.openid=:openid', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
-            $order['mobile'] = $_GPC['telephone'];
-                $order['title'] = $order_goods_recharge['title']; 
-            preg_match('/\d+/',$order_goods_recharge['title'],$packcode);
+            $order_goods_recharge = pdo_fetch('SELECT go.title, g.type, o.carrier, o.price FROM ' .
+                tablename('sz_yi_order') . ' o ' .
+                ' LEFT JOIN ' . tablename('sz_yi_order_goods') . ' og ' .
+                ' ON o.id = og.orderid LEFT JOIN ' . tablename('sz_yi_goods') . ' g ' .
+                ' ON og.goodsid = g.id LEFT JOIN' . tablename('sz_yi_goods_option') . ' go ' .
+                ' ON og.optionid = go.id WHERE o.id = :id AND o.uniacid = :uniacid AND o.openid = :openid',
+                array(
+                    ':id' => $orderid,
+                    ':uniacid' => $uniacid,
+                    ':openid' => $openid
+                )
+            );
+            $order['mobile'] = intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
+            $order['title'] = $order_goods_recharge['title'];
+            preg_match('/\d+/',$order_goods_recharge['title'], $packcode);
 
-            $unit = substr($order_goods_recharge['title'],-1);
+            $unit = substr($order_goods_recharge['title'], -1);
 
             if (strtoupper($unit) == "G") {
-                $packcode = $packcode[0]*1024;
+                $packcode = $packcode[0] * 1024;
             } else {
                 $packcode = $packcode[0];
             }
 
-            if(!empty($order_goods)){
+            if (!empty($order_goods)) {
                 $carrier = unserialize($order_goods['carrier']);
             }
             $mobile_data_param = array();
-            $mobile_data_param['apikey']    =   $rechargeset['rechargeapikey'];
-            $mobile_data_param['username']    =   $rechargeset['rechargeusername'];
-            $mobile_data_param['price']     =   $order_goods_recharge['price'];
+            $mobile_data_param['apikey'] = $rechargeset['rechargeapikey'];
+            $mobile_data_param['username'] = $rechargeset['rechargeusername'];
+            $mobile_data_param['price'] = $order_goods_recharge['price'];
             p('recharge')->mobile_blance_api($mobile_data_param);
         }
-        
-        
     }
 
     foreach ($order_goods as $data) {
@@ -570,31 +623,50 @@ if ($operation == 'display' && $_W['isajax']) {
     }else{
         $where_orderid = "og.orderid={$orderid}";
     }
-    $order_goods = pdo_fetchall('select og.id,g.title,g.type, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
-        ':uniacid' => $_W['uniacid']
-    ));
+    $order_goods = pdo_fetchall('SELECT og.id, g.title, g.type, og.goodsid, og.optionid, g.total as stock, 
+        og.total as buycount, g.status, g.deleted, g.maxbuy, g.usermaxbuy, g.istime, g.timestart, g.timeend, 
+        g.buylevels, g.buygroups FROM  ' . tablename('sz_yi_order_goods') . ' og ' .
+        ' LEFT JOIN ' . tablename('sz_yi_goods') . ' g ' .
+        ' ON og.goodsid = g.id ' .
+        ' WHERE ' . $where_orderid . ' AND og.uniacid = :uniacid ',
+        array(
+            ':uniacid' => $_W['uniacid']
+        )
+    );
 
     if (p('recharge')) {
         if ($order_goods[0]['type'] == 11 || $order_goods[0]['type'] == 12) {
-            $order_goods_recharge = pdo_fetch('select go.title,g.type,g.isprovince,o.carrier,o.price from ' . tablename('sz_yi_order') . 'o left join '. tablename('sz_yi_order_goods') .' og ' .' on o.id=og.orderid left join ' . tablename('sz_yi_goods') .' g on og.goodsid=g.id left join'. tablename('sz_yi_goods_option') .' go on og.optionid=go.id where o.id=:id and o.uniacid=:uniacid and o.openid=:openid', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
+            $order_goods_recharge = pdo_fetch('SELECT go.title, g.type, g.isprovince, o.carrier, o.price FROM ' .
+                tablename('sz_yi_order') . ' o ' .
+                ' LEFT JOIN '. tablename('sz_yi_order_goods') .' og ' .
+                ' ON o.id = og.orderid LEFT JOIN ' . tablename('sz_yi_goods') .' g ' .
+                ' ON og.goodsid = g.id LEFT JOIN' . tablename('sz_yi_goods_option') . ' go ' .
+                ' ON og.optionid = go.id 
+                WHERE o.id = :id AND o.uniacid = :uniacid AND o.openid = :openid',
+                array(
+                    ':id' => $orderid,
+                    ':uniacid' => $uniacid,
+                    ':openid' => $openid
+                )
+            );
 
-            preg_match('/\d+/',$order_goods_recharge['title'],$packcode);
+            preg_match('/\d+/',$order_goods_recharge['title'], $packcode);
 
-            $unit = substr($order_goods_recharge['title'],-1);
+            $unit = substr($order_goods_recharge['title'], -1);
 
             if (strtoupper($unit) == "G") {
-                $packcode = $packcode[0]*1024;
+                $packcode = $packcode[0] * 1024;
             } else {
                 $packcode = $packcode[0];
             }
 
-            if(!empty($order_goods_recharge)){
+            if (!empty($order_goods_recharge)) {
                 $carrier = unserialize($order_goods_recharge['carrier']);
             }
             $mobile_data_param = array();
             $mobile_data_param['out_order_id'] = $order['ordersn'];
             $mobile_data_param['pay_ordersn']  = $order['pay_ordersn'];
-            $mobile_data_param['timetamp']     = date("YmdHisB",time());
+            $mobile_data_param['timetamp']     = date("YmdHisB", time());
             $mobile_data_param['flow_val']     = $packcode;
             $mobile_data_param['phone_no']     = $telephone;
             $mobile_data_param['price']        = $order['price'];
@@ -606,7 +678,6 @@ if ($operation == 'display' && $_W['isajax']) {
         }
     }
 
-    
     foreach ($order_goods as $data) {
         if (empty($data['status']) || !empty($data['deleted'])) {
             return show_json(-1, $data['title'] . '<br/> 已下架!');
@@ -842,7 +913,7 @@ if ($operation == 'display' && $_W['isajax']) {
             }
         }
         
-        $pay_result     = $this->payResult($ret);
+        $pay_result = $this->payResult($ret);
         if (p('recharge') && !empty($mobile_data_param)) {
             p('recharge')->mobile_submit_api($mobile_data_param);
         }
@@ -921,8 +992,7 @@ if ($operation == 'display' && $_W['isajax']) {
                     'address' => $address,
                     'carrier' => $carrier,
                     'virtual' => $order['virtual'],
-                    'goods'=>$orderdetail
-
+                    'goods'=> $orderdetail
                 );
             }else{
                 $pay_result     = $this->payResult($ret);
