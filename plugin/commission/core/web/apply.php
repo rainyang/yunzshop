@@ -102,6 +102,9 @@ if ($operation == 'display') {
 			$row['typestr'] ='支付宝';
 			break;	
 	    }
+	    if ($row['payauto']) {
+            $row['typestr'] .='(自动打款)';
+        }
 		if ($row['diycommissiondata']) {
 
             $row['diycommissiondata'] = iunserializer($row['diycommissiondata']);

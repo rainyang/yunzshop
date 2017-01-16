@@ -70,4 +70,9 @@ if(!pdo_fieldexists('sz_yi_goods', 'deductcommission')) {
 if(!pdo_fieldexists('sz_yi_order', 'deductcommission')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `deductcommission` decimal(10, 2) DEFAULT '0.00' COMMENT '佣金抵扣';");
 }
+
+//1.16自动提现状态字段
+if(!pdo_fieldexists('sz_yi_commission_apply', 'payauto')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `payauto` tinyint(1) DEFAULT '0' COMMENT '自动提现 1为自动提现 0为审核提现';");
+}
 echo 1;
