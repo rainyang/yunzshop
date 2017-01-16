@@ -23,7 +23,7 @@ ul,li {padding:0px; margin:0px;}
 .info1-price span {font-size:12px; color:#999;}
 .good_info1 .price {width:100%;  font-size:18px; color:#f15353; padding-bottom: 10px ; overflow: hidden}
 .good_info1 .price span {font-size:12px; color:#999;}
-.good_info1 .other {/*border-top:1px dashed #f3f3f3; */ height:34px; width:100%;  line-height:34px; font-size:14px; color:#999;}
+.good_info1 .other {/*border-top:1px dashed #f3f3f3; */ height:auto; width:100%;  line-height:34px; font-size:14px; color:#999;overflow: hidden}
 .good_info1 .other .left { float:left; text-align:right;}
 .good_info1 .other .right { float:right; text-align:right;}
 .good_info1 .other1 { border-top:1px dashed #f3f3f3; width:100%;  font-size:14px; color:#999; height:auto; overflow:hidden;line-height:22px;padding:2px 0}
@@ -532,7 +532,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                             添加地址
                         </span>
                     <%/if%>
-                    
+
                 </div>
 
                 <div class="title" style="font-size: 12px;">专区：<span style="float:right;padding-right: 15px;" data-initmoney="<%indiana.initmoney%>" id="initmoney"><%indiana.initmoney%>元专区</span></div>
@@ -743,19 +743,19 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         <%if goods.isladder%>
             <div class="other1">
                 <div class='left'>
-                    <span><i class='iconfont icon-activity'></i> 阶梯价格 </span> 
+                    <span><i class='iconfont icon-activity'></i> 阶梯价格 </span>
                 </div>
                 <div class='right'>
-                    <div class='inner'> 
+                    <div class='inner'>
                         <%each goods.ladders as l i%>
                             <%if i<=1%>
                                 <%if l.minimum == '大于'%>
-                                    <span style='color:#f15353'><%l.minimum%></span> 
-                                    <span style='color:#f15353'><%l.maximum%></span> 
+                                    <span style='color:#f15353'><%l.minimum%></span>
+                                    <span style='color:#f15353'><%l.maximum%></span>
                                     <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/<%goods.unit%> </span>;<br/>
                                 <%else%>
-                                    <span style='color:#f15353'><%l.minimum%></span> 
-                                    至<span style='color:#f15353'><%l.maximum%></span> 
+                                    <span style='color:#f15353'><%l.minimum%></span>
+                                    至<span style='color:#f15353'><%l.maximum%></span>
                                     <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/<%goods.unit%> </span>;<br/>
                                 <%/if%>
                             <%/if%>
@@ -767,22 +767,21 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                             <%each goods.ladders as l i%>
                                 <%if i>1%>
                                     <%if l.minimum == '大于'%>
-                                        <span style='color:#f15353'><%l.minimum%></span> 
-                                        <span style='color:#f15353'><%l.maximum%></span> 
+                                        <span style='color:#f15353'><%l.minimum%></span>
+                                        <span style='color:#f15353'><%l.maximum%></span>
                                         <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/每<%goods.unit%> </span>;<br/>
                                     <%else%>
-                                        <span style='color:#f15353'><%l.minimum%></span> 
-                                        至<span style='color:#f15353'><%l.maximum%></span> 
+                                        <span style='color:#f15353'><%l.minimum%></span>
+                                        至<span style='color:#f15353'><%l.maximum%></span>
                                         <%goods.unit%> ：<span style='color:#f15353'><%l.ladderprice%>元/每<%goods.unit%> </span>;<br/>
                                     <%/if%>
                                 <%/if%>
-                            <%/each%>                     
+                            <%/each%>
                         </div>
                     </div>
                 </div>
             </div>
         <%/if%>
-
        <%if saleset && saleset.enoughfree=='1' %>
       <div class="other">
             <div class='left'>
@@ -1852,7 +1851,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
 <script type="text/javascript">
 
-        //选择地址 
+        //选择地址
         $(document).on('click','#address_select',function() {
             location.href = "{php echo $this->createMobileUrl('shop/address')}&gid={$_GPC['id']}&periodnum={$indiana[period_num]}&indiana=1";
         });

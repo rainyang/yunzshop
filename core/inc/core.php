@@ -40,7 +40,12 @@ class Core extends WeModuleSite
             }
         } else {
             //APP 分销分享地址-用户注册
-            if (isset($_GPC['access']) && $_GPC['access'] == 'app') {
+            $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+                ':uniacid' => $_W['uniacid']
+            ));
+            $set     = unserialize($setdata['sets']);
+
+            if ($set['app']['base']['share']['switch'] == 1 && isset($_GPC['access']) && $_GPC['access'] == 'app') {
                 header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=register&do=member&m=sz_yi&from=app&mid=".$_GPC['mid']);
             }
 

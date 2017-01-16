@@ -73,7 +73,8 @@ $plugins_icon = array(
 	"card" => "gift_card",
     "credits" => "credits",
     "wxapp" => "app",
-	"recharge" => "phone"
+	"recharge" => "phone",
+    "gaohuitong" => "web-price",
 	);
 $plugins_desc = array(
 	"supplier" => "厂家入驻，平台统一销售", 
@@ -112,6 +113,7 @@ $plugins_desc = array(
     "credits"	=> "积分兑换",
     "wxapp"	=> "微信小程序",
 	"recharge"	=> "手机业务充值中心",
+    "gaohuitong"	=> "高汇通收银台",
 );
 
 if(!pdo_fieldexists('sz_yi_plugin', 'desc')) {

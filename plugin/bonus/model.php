@@ -1001,7 +1001,7 @@ if (!class_exists('BonusModel')) {
 				return false;
 			}
 
-			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 left join ".tablename('sz_yi_member')." m on cg.mid=m.id where 1 and m.id!=0 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area=0 ORDER BY o.finishtime DESC,o.status DESC";
+			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 left join ".tablename('sz_yi_member')." m on cg.mid=m.id where 1 and m.id!=0 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$endtime} - o.finishtime > {$day_times}) and cg.bonus_area=0 ORDER BY o.finishtime DESC,o.status DESC";
 			$list = pdo_fetchall($sql);
 			if(empty($list)){
 				return false;
@@ -1015,7 +1015,7 @@ if (!class_exists('BonusModel')) {
 			$islog = false;
 			//定义会员分红明细log
 		    $insert_log_data = array();
-		    $insert_log_key = "INSERT INTO " . tablename('sz_yi_bonus_log') . " (openid, uid, money, uniacid, paymethod, sendpay, goodids, status, ctime, send_bonus_sn) VALUES ";
+		    $insert_log_key = "INSERT INTO " . tablename('sz_yi_bonus_log') . " (openid, uid, money, uniacid, paymethod, sendpay, goodids, status, ctime, send_bonus_sn, type) VALUES ";
 			//余额分红log
 		    $update_log_data = "";
 		    $update_log_key = "UPDATE " . tablename('mc_members') . " SET credit2 = CASE uid";
@@ -1054,7 +1054,7 @@ if (!class_exists('BonusModel')) {
 
 						}
 					}
-					$send_money = pdo_fetchcolumn("select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3  and o.status<>4  and o.status<>5 and o.status<>6 and o.uniacid=:uniacid and cg.mid = :mid and ({$time} - o.finishtime > {$day_times})  and cg.bonus_area=0 ORDER BY o.createtime DESC,o.status DESC", array(':uniacid' => $_W['uniacid'], ":mid" => $member['id']));
+					$send_money = pdo_fetchcolumn("select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3  and o.status<>4  and o.status<>5 and o.status<>6 and o.uniacid=:uniacid and cg.mid = :mid and ({$endtime} - o.finishtime > {$day_times})  and cg.bonus_area=0 ORDER BY o.createtime DESC,o.status DESC", array(':uniacid' => $_W['uniacid'], ":mid" => $member['id']));
 
 					//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
 					if($send_money > 0){
@@ -1103,10 +1103,10 @@ if (!class_exists('BonusModel')) {
 						}
 					}
 					//更新分红订单完成
-					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
+					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$endtime} - o.finishtime > {$day_times}) and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
                     $insert_ids = empty($ids) ? "" : iserializer($ids);
 					//写入日志调整
-			        $insert_log_data[] = " ('".$member['openid']."', '".$member['uid']."', '".$send_money."', '".$_W['uniacid']."', '".$set['paymethod']."', '".$sendpay."', '".$insert_ids."', 1, ".TIMESTAMP.", ".$send_bonus_sn.")";
+			        $insert_log_data[] = " ('".$member['openid']."', '".$member['uid']."', '".$send_money."', '".$_W['uniacid']."', '".$set['paymethod']."', '".$sendpay."', '".$insert_ids."', 1, ".TIMESTAMP.", ".$send_bonus_sn.", 2)";
 			        if ($sql_num % 500 == 0) {
 			            if(!empty($insert_log_data)){
 			                pdo_query($insert_log_key . implode(",", $insert_log_data));
@@ -1205,8 +1205,7 @@ if (!class_exists('BonusModel')) {
 			if($sendtime > $time){
 				return false;
 			}
-			
-			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 left join ".tablename('sz_yi_member')." m on cg.mid=m.id where 1 and m.id!=0 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area!=0 ORDER BY o.finishtime DESC,o.status DESC";
+			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 left join ".tablename('sz_yi_member')." m on cg.mid=m.id where 1 and m.id!=0 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$endtime} - o.finishtime > {$day_times}) and cg.bonus_area!=0 ORDER BY o.finishtime DESC,o.status DESC";
 			$list = pdo_fetchall($sql);
 			if(empty($list)){
 				return false;
@@ -1219,7 +1218,7 @@ if (!class_exists('BonusModel')) {
 			$islog = false;
 			//定义会员分红明细log
 		    $insert_log_data = array();
-		    $insert_log_key = "INSERT INTO " . tablename('sz_yi_bonus_log') . " (openid, uid, money, uniacid, paymethod, sendpay, goodids, status, ctime, send_bonus_sn) VALUES ";
+		    $insert_log_key = "INSERT INTO " . tablename('sz_yi_bonus_log') . " (openid, uid, money, uniacid, paymethod, sendpay, goodids, status, ctime, send_bonus_sn,type) VALUES ";
 			//余额分红log
 		    $update_log_data = "";
 		    $update_log_key = "UPDATE " . tablename('mc_members') . " SET credit2 = CASE uid";
@@ -1258,7 +1257,7 @@ if (!class_exists('BonusModel')) {
 
 						}
 					}
-					$send_money = pdo_fetchcolumn("select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3  and o.status<>4  and o.status<>5 and o.status<>6 and o.uniacid=:uniacid and cg.mid = :mid and ({$time} - o.finishtime > {$day_times})  and cg.bonus_area!=0 ORDER BY o.createtime DESC,o.status DESC", array(':uniacid' => $_W['uniacid'], ":mid" => $member['id']));
+					$send_money = pdo_fetchcolumn("select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3  and o.status<>4  and o.status<>5 and o.status<>6 and o.uniacid=:uniacid and cg.mid = :mid and ({$endtime} - o.finishtime > {$day_times})  and cg.bonus_area!=0 ORDER BY o.createtime DESC,o.status DESC", array(':uniacid' => $_W['uniacid'], ":mid" => $member['id']));
 
 					//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
 					if($send_money > 0){
@@ -1313,10 +1312,10 @@ if (!class_exists('BonusModel')) {
 						}
 					}
 					//更新分红订单完成
-					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area!=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
+					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$endtime} - o.finishtime > {$day_times}) and cg.bonus_area!=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
                     $insert_ids = empty($ids) ? "" : iserializer($ids);
 					//写入日志调整
-			        $insert_log_data[] = " ('".$member['openid']."', '".$member['uid']."', '".$send_money."', '".$_W['uniacid']."', '".$set['paymethod']."', '".$sendpay."', '".$insert_ids."', 1, ".TIMESTAMP.", ".$send_bonus_sn.")";
+			        $insert_log_data[] = " ('".$member['openid']."', '".$member['uid']."', '".$send_money."', '".$_W['uniacid']."', '".$set['paymethod']."', '".$sendpay."', '".$insert_ids."', 1, ".TIMESTAMP.", ".$send_bonus_sn.", 3)";
 			        if ($sql_num % 500 == 0) {
 			            if(!empty($insert_log_data)){
 			                pdo_query($insert_log_key . implode(",", $insert_log_data));
@@ -1373,7 +1372,8 @@ if (!class_exists('BonusModel')) {
 			            "sendpay_error" => $sendpay_error,
 			            'utime' => $daytime,
 			            "send_bonus_sn" => $send_bonus_sn,
-			            "total" => $real_total
+			            "total" => $real_total,
+                        "bonus_area" => 1
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
                 @unlink ($file_bonus_log);
@@ -1475,7 +1475,7 @@ if (!class_exists('BonusModel')) {
 		    $sql_num = 0;
 		    //定义会员分红明细log
 		    $insert_log_data = array();
-		    $insert_log_key = "INSERT INTO " . tablename('sz_yi_bonus_log') . " (openid, uid, money, uniacid, paymethod, sendpay, isglobal, status, ctime, send_bonus_sn) VALUES ";
+		    $insert_log_key = "INSERT INTO " . tablename('sz_yi_bonus_log') . " (openid, uid, money, uniacid, paymethod, sendpay, isglobal, status, ctime, send_bonus_sn, type) VALUES ";
 		    //定义分红会员框架日志
 		    $insert_member_log_data = array();
 		    $insert_member_log_key = "INSERT INTO " . tablename('mc_credits_record') . " (uid, credittype, uniacid, num, createtime, operator, remark) VALUES ";
@@ -1542,7 +1542,7 @@ if (!class_exists('BonusModel')) {
 		        }
 
 		        //写入日志调整
-		        $insert_log_data[] = " ('".$value['openid']."', ".$value['uid'].", '".$send_money."', ".$_W['uniacid'].", ".$paymethod.", ".$sendpay.", 1, 1, ".TIMESTAMP.", ".$send_bonus_sn.")";
+		        $insert_log_data[] = " ('".$value['openid']."', ".$value['uid'].", '".$send_money."', ".$_W['uniacid'].", ".$paymethod.", ".$sendpay.", 1, 1, ".TIMESTAMP.", ".$send_bonus_sn.", 4)";
 		        if ($sql_num % 500 == 0) {
 		            if(!empty($insert_log_data)){
 		                pdo_query($insert_log_key . implode(",", $insert_log_data));

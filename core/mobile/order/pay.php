@@ -233,6 +233,20 @@ if ($operation == 'display' && $_W['isajax']) {
     if (isset($set['pay']) && $set['pay']['yeepay'] == 1) {
         $yeepay['success'] = true;
     }
+
+    //高汇通支付
+    $gaohuitong = array(
+        'success' => false
+    );
+    if (p('gaohuitong')) {
+        $ght = pdo_fetch("select `switch` from " . tablename('sz_yi_gaohuitong') . ' where uniacid=:uniacid limit 1', array(
+            ':uniacid' => $_W['uniacid']
+        ));
+        if ($ght['switch']) {
+            $gaohuitong['success'] = true;
+        }
+    }
+
     //paypal支付
     $paypal = array(
         'success' => false
@@ -316,6 +330,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'cash' => $cash,
         'storecash' => $storecash,
         'yeepay' => $yeepay,
+        'gaohuitong' => $gaohuitong,
         'paypal' => $paypal,
         'isweixin' => is_weixin(),
         'currentcredit' => $currentcredit,
@@ -366,7 +381,7 @@ if ($operation == 'display' && $_W['isajax']) {
     }else{
         $where_orderid = "og.orderid={$orderid}";
     }
-    
+
     $order_goods = pdo_fetchall('SELECT og.id, g.type, g.title, og.goodsid, og.optionid, g.total as stock, 
         og.total as buycount, g.status, g.deleted, g.maxbuy, g.usermaxbuy, g.istime, g.timestart, g.timeend, 
         g.buylevels, g.buygroups FROM  ' . tablename('sz_yi_order_goods') . ' og ' .
@@ -452,23 +467,25 @@ if ($operation == 'display' && $_W['isajax']) {
                 return show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
             }
         }
-        if (!empty($data['optionid'])) {
-            $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,stock,virtual from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
-                ':uniacid' => $uniacid,
-                ':goodsid' => $data['goodsid'],
-                ':id' => $data['optionid']
-            ));
-            if (!empty($option)) {
-                if ($option['stock'] != -1) {
-                    if (empty($option['stock'])  OR ($option['buycount'] > $data['stock'])) {
-                        return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+        if($data['totalcnf']>0) {
+            if (!empty($data['optionid'])) {
+                $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,stock,virtual from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
+                    ':uniacid' => $uniacid,
+                    ':goodsid' => $data['goodsid'],
+                    ':id' => $data['optionid']
+                ));
+                if (!empty($option)) {
+                    if ($option['stock'] != -1) {
+                        if (empty($option['stock'])  OR ($option['buycount'] > $data['stock'])) {
+                            return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+                        }
                     }
                 }
-            }
-        } else {
-            if ($data['stock'] != -1) {
-                if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
-                    return show_json(-1, $data['title'] . "<br/>库存不足!");
+            } else {
+                if ($data['stock'] != -1) {
+                    if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
+                        return show_json(-1, $data['title'] . "<br/>库存不足!");
+                    }
                 }
             }
         }
@@ -549,6 +566,8 @@ if ($operation == 'display' && $_W['isajax']) {
             $options['mchid'] = $pay['wx_native']['wx_mcid'];
             $options['appid'] = $pay['wx_native']['wx_appid'];
             $options['secret'] = $pay['wx_native']['wx_secret'];
+            $options['signkey'] = $pay['wx_native']['signkey'];
+
             $params['trade_type'] = 'APP';
             $wechat            = m('common')->wechat_build($params, $options, 0);
             //$wechat['success'] = false;
@@ -633,7 +652,6 @@ if ($operation == 'display' && $_W['isajax']) {
             ':uniacid' => $_W['uniacid']
         )
     );
-
     if (p('recharge')) {
         if ($order_goods[0]['type'] == 11 || $order_goods[0]['type'] == 12) {
             $order_goods_recharge = pdo_fetch('SELECT go.title, g.type, g.isprovince, o.carrier, o.price FROM ' .
@@ -717,26 +735,29 @@ if ($operation == 'display' && $_W['isajax']) {
                 return show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
             }
         }
-        if (!empty($data['optionid'])) {
-            $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,stock,virtual from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
-                ':uniacid' => $uniacid,
-                ':goodsid' => $data['goodsid'],
-                ':id' => $data['optionid']
-            ));
-            if (!empty($option)) {
-                if ($option['stock'] != -1) {
-                    if (empty($option['stock']) OR ($option['buycount'] > $data['stock'])) {
-                        return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+        if($data['totalcnf']>0) {
+            if (!empty($data['optionid'])) {
+                $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,stock,virtual from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
+                    ':uniacid' => $uniacid,
+                    ':goodsid' => $data['goodsid'],
+                    ':id' => $data['optionid']
+                ));
+                if (!empty($option)) {
+                    if ($option['stock'] != -1) {
+                        if (empty($option['stock']) OR ($option['buycount'] > $data['stock'])) {
+                            return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+                        }
+                    }
+                }
+            } else {
+                if ($data['stock'] != -1) {
+                    if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
+                        return show_json(-1, $data['title'] . "<br/>库存不足!");
                     }
                 }
             }
-        } else {
-            if ($data['stock'] != -1) {
-                if (empty($data['stock']) OR ($data['buycount'] > $data['stock'])) {
-                    return show_json(-1, $data['title'] . "<br/>库存不足!");
-                }
-            }
         }
+
     }
     if (empty($order)) {
         return show_json(0, '订单未找到!');

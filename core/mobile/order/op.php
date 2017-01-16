@@ -35,6 +35,10 @@ if ($_W['isajax']) {
 	            'id' => $order['id'],
 	            'uniacid' => $uniacid
 	        ));
+
+        //取消订单返商品库存
+        m('order')->returnStock($order['id']);
+        
 		m('notice')->sendOrderMessage($orderid);
 	        if ($order['deductprice'] > 0) {
 	            $shop = m('common')->getSysset('shop');
@@ -208,7 +212,7 @@ if ($_W['isajax']) {
 	            ));
 	            $order_data                = array();
 	            $order_data['refundstate'] = 0;
-	            $order_data['status']      = -1;
+	            $order_data['status']      = 3;
 	            $order_data['refundtime']  = $time;
 	            pdo_update('sz_yi_order', $order_data, array(
 	                'id' => $orderid,

@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>{if empty($current_category)}全部商品{else}{$current_category['name']}{/if}</title>
+<title>{if empty($current_category)}{$title}{else}{$current_category['name']}{/if}</title>
 <style type="text/css">
 
     body {margin:0px; width:100%; height:100%; background:#efefef; color:#fff; }
@@ -132,7 +132,7 @@ div.addinfo{height:18px;}
                 </div>
 
                 {/if}
-                <div class="name">{if empty($current_category)}全部商品{else}{$current_category['name']}{/if}</div>
+                <div class="name">{if empty($current_category)}{$title}{else}{$current_category['name']}{/if}</div>
                 <div class="search"><i class="iconfont icon-search" style="font-size: 22px"></i></div>
             </div>
             <div class="sort_list sort_listnew">

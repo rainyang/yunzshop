@@ -29,7 +29,20 @@
                <span class='help-block'>{$set['yunbi_title']}抵扣比例设置</span>
            </div>
        </div>
+       <div class="form-group">
+               <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$set['yunbi_title']}是否可以抵扣运费</label>
+               <div class="col-sm-9 col-xs-12">
 
+                   <label class="radio-inline">
+                       <input type="radio" name="setdata[dispatchnodeduct]" value='0' {if $set['dispatchnodeduct']==0}checked{/if} /> 可以
+                   </label>
+                   <label class="radio-inline">
+                       <input type="radio" name="setdata[dispatchnodeduct]" value='1' {if $set['dispatchnodeduct']==1}checked{/if} /> 不可以
+                   </label>
+                   <span class='help-block'>会员使用{$set['yunbi_title']}抵扣时，能不能抵扣运费</span>
+
+               </div>
+           </div>
 
         <div class="form-group"></div>
         <div class="form-group">

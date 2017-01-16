@@ -116,25 +116,31 @@ $params    = array(
 if (!empty($args['ids'])) {
     $condition .= " and id in ( " .  $args['ids'] . ")";
 }
+$title = "全部商品";
 $isnew = !empty($args['isnew']) ? 1 : 0;
 if (!empty($isnew)) {
     $condition .= " and isnew=1";
+    $title = "新上商品";
 }
 $ishot = !empty($args['ishot']) ? 1 : 0;
 if (!empty($ishot)) {
     $condition .= " and ishot=1";
+    $title = "热销宝贝";
 }
 $isrecommand = !empty($args['isrecommand']) ? 1 : 0;
 if (!empty($isrecommand)) {
     $condition .= " and isrecommand=1";
+    $title = "推荐宝贝";
 }
 $isdiscount = !empty($args['isdiscount']) ? 1 : 0;
 if (!empty($isdiscount)) {
     $condition .= " and isdiscount=1";
+    $title = "促销宝贝";
 }
 $istime = !empty($args['istime']) ? 1 : 0;
 if (!empty($istime)) {
     $condition .= " and istime=1 and " . time() . ">=timestart and " . time() . "<=timeend";
+    $title = "限时秒杀";
 }
 $keywords = !empty($args['keywords']) ? $args['keywords'] : '';
 if (!empty($keywords)) {

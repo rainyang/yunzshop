@@ -23,6 +23,7 @@ if (!class_exists('YunprintModel')) {
             $orderinfo = "";
             $shopname = '';
             $address = unserialize($print_order['address']);
+            $carrier = unserialize($print_order['carrier']);
             if (!empty($offers)) {
                 if ($offers['createtime'] == 1) {
                     $createtime = date('Y-m-d H:i', $print_order['createtime']);
@@ -34,9 +35,19 @@ if (!class_exists('YunprintModel')) {
                 if ($offers['mobile'] == 1) {
                     $orderinfo .= "联系方式：{$address['mobile']}\n";
                 }
-                if ($offers['address'] == 1) {
-                    $orderinfo .= "配送地址：{$address['province']}{$address['city']}{$address['area']}{$address['address']}\n";
+                if($print_order['dispatchtype'] == 1){
+                    if ($offers['address'] == 1) {
+                        $orderinfo .= "提货人信息\n";
+                        $orderinfo .= "姓名:{$carrier['carrier_realname']}\n";
+                        $orderinfo .= "手机:{$carrier['carrier_mobile']}\n";
+                        $orderinfo .= "自提地址：{$carrier['address']}\n";
+                    } 
+                }else{
+                    if ($offers['address'] == 1) {
+                        $orderinfo .= "配送地址：{$address['province']}{$address['city']}{$address['area']}{$address['address']}\n";
+                    }  
                 }
+
                 if ($offers['remark'] == 1) {
                     $orderinfo .= "订单备注：{$print_order['remark']}\n";
                 }
@@ -90,7 +101,14 @@ if (!class_exists('YunprintModel')) {
                     $shopname = "商城：{$print_order['shopname']}\n-------------------------";
                 }
             }
-            $orderinfo .= "实际支付：         {$print_order['price']}\n";
+            if($print_order['paytype'] == 4 ){
+                $orderinfo .= "到店付款（未付款）：    {$print_order['price']}\n";
+            }elseif($print_order['paytype'] == 3){
+                $orderinfo .= "货到付款（未付款）：    {$print_order['price']}\n";
+            }else{
+                $orderinfo .= "实际支付：         {$print_order['price']}\n";
+            }
+            
             if (!empty($offers)) {
                 if ($offers['usersign'] == 1) {
                     $orderinfo .= "-------------------------客户签收：";
@@ -136,6 +154,7 @@ if (!class_exists('YunprintModel')) {
             $orderinfo = "";
             $shopname = '';
             $address = unserialize($print_order['address']);
+            $carrier = unserialize($print_order['carrier']);
             if (!empty($offers)) {
                 if ($offers['logo'] == 1) {
                     $orderinfo .= "<LOGO>";
@@ -156,9 +175,19 @@ if (!class_exists('YunprintModel')) {
                 if ($offers['mobile'] == 1) {
                     $orderinfo .= "联系方式：{$address['mobile']}<BR>";
                 }
-                if ($offers['address'] == 1) {
-                    $orderinfo .= "配送地址：{$address['province']}{$address['city']}{$address['area']}{$address['address']}<BR>";
+                if($print_order['dispatchtype'] == 1){
+                    if ($offers['address'] == 1) {
+                        $orderinfo .= "提货人信息<BR>";
+                        $orderinfo .= "姓名:{$carrier['carrier_realname']}<BR>";
+                        $orderinfo .= "手机:{$carrier['carrier_mobile']}<BR>";
+                        $orderinfo .= "自提地址：{$carrier['address']}<BR>";
+                    } 
+                }else{
+                    if ($offers['address'] == 1) {
+                        $orderinfo .= "配送地址：{$address['province']}{$address['city']}{$address['area']}{$address['address']}<BR>";
+                    }  
                 }
+
                 if ($offers['remark'] == 1 && !empty($print_order['remark'])) {
                     $orderinfo .= "订单备注：{$print_order['remark']}<BR>";
                 }
@@ -209,7 +238,15 @@ if (!class_exists('YunprintModel')) {
                     $orderinfo .= "订单运费：           {$print_order['dispatchprice']}<BR>";
                 }
             }
-            $orderinfo .= "实际支付：           {$print_order['price']}<BR>";
+
+            if( $print_order['paytype'] == 4 ){
+                $orderinfo .= "到店付款（未付款）：    {$print_order['price']}<BR>";
+            }elseif($print_order['paytype'] == 3){
+                $orderinfo .= "货到付款（未付款）：    {$print_order['price']}<BR>";
+            }else{
+                $orderinfo .= "实际支付：           {$print_order['price']}<BR>";
+            }
+
             if (!empty($offers)) {
                 if ($offers['url'] == 1) {
                     $orderinfo .= "================================<BR><QR>{$url}</QR>";
@@ -244,6 +281,7 @@ if (!class_exists('YunprintModel')) {
                 ':uniacid'  => $_W['uniacid'],
                 ':id'       => $orderid
             ));
+            
             $order['shopname'] = $shopset['name'];
             $order['goods'] = pdo_fetchall("SELECT og.goodsid,og.price,og.total,g.title,g.marketprice,og.optionname FROM " . tablename('sz_yi_order_goods') . " og LEFT JOIN " . tablename('sz_yi_goods') . " g ON g.id=og.goodsid WHERE og.uniacid=:uniacid AND og.orderid=:orderid", array(
                 ':uniacid' => $_W['uniacid'],
