@@ -48,7 +48,6 @@ if (checksubmit()) {
     ));
     m('cache')->set('sysset', $setdata);
 
-
     $ping = array_elements(array('partner', 'secret'), $_GPC['ping']);
     $ping['switch'] = 1;
     $ping['partner'] = trim($ping['partner']);

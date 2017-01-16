@@ -25,6 +25,7 @@ foreach ($category as $ck => &$cv) {
 unset($cv);
 //公众号权限设置查询
 $acid_plugins = pdo_fetchcolumn('select plugins from ' . tablename('sz_yi_perm_plugin') . ' where acid=:uniacid',array(":uniacid" => $_W['uniacid']));
+
 if(!empty($acid_plugins)){
 	$plugins_data = explode(',', $acid_plugins);
 }
@@ -72,6 +73,7 @@ $plugins_icon = array(
 	"card" => "gift_card",
     "credits" => "credits",
     "wxapp" => "app",
+	"recharge" => "phone",
     "gaohuitong" => "web-price",
 	);
 $plugins_desc = array(
@@ -110,6 +112,7 @@ $plugins_desc = array(
 	"card"	=> "代金卡",
     "credits"	=> "积分兑换",
     "wxapp"	=> "微信小程序",
+	"recharge"	=> "手机业务充值中心",
     "gaohuitong"	=> "高汇通收银台",
 );
 

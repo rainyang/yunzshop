@@ -356,6 +356,12 @@ class Sz_DYi_Member
 		}
 
         $bindMobile = false;
+
+        $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+            ':uniacid' => $_W['uniacid']
+        ));
+        $set     = unserialize($setdata['sets']);
+
         if (empty($member)) {
             if ($followed) {
                 $uid = mc_openid2uid($openid);
@@ -390,7 +396,7 @@ class Sz_DYi_Member
             /**
              * 分销 绑定app注册用户
              */
-            if (isset($_GPC['access']) && $_GPC['access'] == 'app') {
+            if ($set['app']['base']['share']['switch'] == 1 && isset($_GPC['access']) && $_GPC['access'] == 'app') {
                 /**
                  * 分销商品链接地址
                  */
@@ -399,7 +405,7 @@ class Sz_DYi_Member
 
 
         } else {
-            if (isset($_GPC['access']) && $_GPC['access'] == 'app' && $member['bindapp'] == 0) {
+            if ($set['app']['base']['share']['switch'] == 1 && isset($_GPC['access']) && $_GPC['access'] == 'app' && $member['bindapp'] == 0) {
                 /**
                  * 分销商品链接地址
                  */
