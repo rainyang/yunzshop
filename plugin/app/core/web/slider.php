@@ -59,8 +59,8 @@ if ($operation == 'display') {
         }
 
         //七牛上传图片
-        $accessKey = 's6oWzmS-dB32i-GikfHLrsXzsWNCiApx8FVfamWg';
-        $secretKey = 'izjmJVHjsfE8fSyHD_wnZZsO7XLm8b5bB9SAqJl3';
+        $accessKey = 'zu3fCxIS0VdBsRzmKAUJ8CW9pw_W-25HoDGI-uV3';
+        $secretKey = 'PmloXZr4qcr7nzHJOJ2Kbygh7znOHdUFRJNhSv4A';
         $auth = new Auth($accessKey, $secretKey);
 
         // 空间名
