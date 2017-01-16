@@ -31,7 +31,7 @@ if (!class_exists('CommissionModel')) {
 
 			$orders = pdo_fetch('select agentid, period_num from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
 			$agentid = $orders['agentid'];
-			$goods = pdo_fetchall('select og.id,og.realprice,og.total,g.type,g.bonusmoney,g.hascommission,g.nocommission, g.commission1_rate,g.commission1_pay,g.commission2_rate,g.commission2_pay,g.commission3_rate,g.commission3_pay,og.commissions,og.optionid,g.productprice,g.marketprice,g.costprice,g.id as goodsid from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+			$goods = pdo_fetchall('select og.id,og.realprice,og.total,g.type,g.bonusmoney,g.hascommission,g.nocommission, g.commission1_rate,g.commission1_pay,g.commission2_rate,g.commission2_pay,g.commission3_rate,g.commission3_pay,og.commissions,og.optionid,g.productprice,g.marketprice,g.costprice,g.id as goodsid,g.bonusmoney from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			//阶梯价格插件
 			$isladder = false;
 			if (p('ladder')) {
@@ -2049,6 +2049,28 @@ if (!class_exists('CommissionModel')) {
                         $shopset["name"] . "购物返还抵扣佣金 抵扣金额: {$v["deductcommission"]} 订单号: {$v["ordersn"]}"
                     ));
                 }
+            }
+        }
+
+        //修改order_goods状态与时间
+        public function order_goods_status($orderids, $status = 1) {
+            global $_W;
+            $time = time();
+            foreach ($orderids as $value) {
+                if ($status == 1) {
+                    $data = array(
+                        'status' . $value['level'] => 1,
+                        'applytime' . $value['level'] => $time
+                    );
+                } elseif ($status == 3) {
+                    $data = array(
+                        'status' . $value['level'] => 3,
+                        'applytime' . $value['level'] => $time,
+                        'checktime' . $value['level'] => $time,
+                        'paytime' . $value['level'] => $time,
+                    );
+                }
+                pdo_update("sz_yi_order_goods", $data, array('orderid' => $value['orderid'], 'uniacid' => $_W['uniacid']));
             }
         }
 	}
