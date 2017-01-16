@@ -30,7 +30,7 @@ if ($operation == 'display') {
             'op' => 'display'
         )), 'success');
     }
-    $list = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_banner') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY displayorder DESC");
+    $list = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_banner') . " WHERE uniacid = '{$_W['uniacid']}' AND enabled = '1' ORDER BY displayorder DESC");
 } elseif ($operation == 'post') {
     $id = intval($_GPC['id']);
     if (empty($id)) {
