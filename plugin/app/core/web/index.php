@@ -14,11 +14,19 @@ $app = $set['app']['base'];
 if(!is_array($app)) {
 	$app = array();
 }
+$thumb_pc = pdo_fetchcolumn("SELECT thumb_pc FROM " . tablename('sz_yi_banner') . " WHERE uniacid = '{$_W['uniacid']}' AND enabled = '0' ORDER BY id  DESC LIMIT 1");
+
 if($_W['ispost']) {
 	//app
 	$app = array_elements(array('switch', 'accept', 'useing', 'android_url', 'ios_url'), $_GPC['app']);
 
 	$set['app']['base'] = $app;
+
+    if (!empty($_GPC['leancloud']['switch']) && (empty($_GPC['leancloud']['id'])
+          || empty($_GPC['leancloud']['key']) || empty($_GPC['leancloud']['kmasterey'])
+          || empty($_GPC['leancloud']['notify']))) {
+        message('请填写完整的推送信息!', 'refresh', 'error');
+    }
 
 	$leancloud = array_elements(array('switch', 'id', 'key', 'master', 'notify'), $_GPC['leancloud']);
 	$set['app']['base']['leancloud'] = $leancloud;
@@ -26,6 +34,25 @@ if($_W['ispost']) {
 	$wechat = array_elements(array('switch'), $_GPC['wx']);
 	$set['app']['base']['wx'] = $wechat;
 
+    $share = array_elements(array('switch'), $_GPC['share']);
+    $set['app']['base']['share'] = $share;
+
+    $thumb_pc = pdo_fetchcolumn("SELECT thumb_pc FROM " . tablename('sz_yi_banner') . " WHERE uniacid = '{$_W['uniacid']}' AND enabled = '0' ORDER BY id DESC LIMIT 1");
+    $data = array(
+        'uniacid' => $_W['uniacid'],
+        'advname' => '分享banner',
+        'link' => '',
+        'enabled' => 0,
+        'displayorder' => 0,
+        'thumb_pc' => $_GPC['thumb']
+    );
+    if (!empty($thumb_pc)) {
+        pdo_update('sz_yi_banner', $data, array(
+            'enabled' => 0
+        ));
+    } else {
+        pdo_insert('sz_yi_banner', $data);
+    }
 
 
     if(pdo_update('sz_yi_sysset', array('sets' => iserializer($set)), array('uniacid' => $_W['uniacid'])) !== false) {

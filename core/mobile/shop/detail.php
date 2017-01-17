@@ -6,6 +6,7 @@ global $_W, $_GPC;
 @session_start();
 setcookie('preUrl', $_W['siteurl']);
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
+$recharge = !empty(trim($_GPC['plugin'])) ? trim($_GPC['plugin']) : '';
 $openid = m('user')->getOpenid();
 $popenid = m('user')->islogin();
 $openid = $openid ? $openid : $popenid;
@@ -253,6 +254,11 @@ $_W['shopshare'] = array(
         'id' => $goods['id']
     ))
 );
+
+if (!empty($recharge) && p('recharge')) {
+    $rechargeset = p('recharge')->getSet();
+    $advs = p('recharge')->getShowAdv();
+}
 if ($_W['isajax']) {
     if ($operation == 'can_buy') {
         $id = intval($_GPC['id']);
@@ -766,6 +772,8 @@ if (p('hotel')) { //判断是否开启酒店插件
             }
         }
     }
+} elseif (!empty($recharge) && p('recharge')) {
+    include $this->template('recharge/detail');
 } else {
     include $this->template('shop/detail');
 }

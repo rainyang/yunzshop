@@ -12,6 +12,8 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 
+$thumb_pc = pdo_fetchcolumn("SELECT thumb_pc FROM " . tablename('sz_yi_banner') . " WHERE uniacid = '{$_W['uniacid']}' AND enabled = '0' ORDER BY id  DESC LIMIT 1");
+
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mobile = !empty($_GPC['mobile']) ? $_GPC['mobile'] : show_json(0, '手机号不能为空！');
@@ -38,9 +40,6 @@ if ($_W['isajax']) {
         pdo_update('sz_yi_member',array('mobile'=>$mobile, 'pwd'=>md5($password), 'bindapp'=>1),array('openid'=>$openid));
 
         return show_json(1,  $this->createMobileUrl('shop/download'));
-
-
-
     }
 }
 

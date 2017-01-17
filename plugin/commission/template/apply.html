@@ -185,13 +185,12 @@
                 <b>申请佣金: </b><span style='color:red'>{$apply['commission']}</span> 元  
                 <b>打款方式: </b>
                 {if empty($apply['type'])}
-                <span class='label label-primary'>余额</span>
+                <span class='label label-primary'>余额{if $apply['payauto']}(自动打款){/if}</span>
                 {else if !empty($apply['type']) &&  $apply['type']=='3'}
                 <span class='label label-success'>支付宝</span>
                 <span class='label' style="color:#000">支付宝账号：{$apply['alipay']}  姓名：{$apply['alipayname']}</span>
-
                 {else}
-                <span class='label label-success'>微信</span>
+                <span class='label label-success'>微信{if $apply['payauto']}(自动打款){/if}</span>
                 {/if}
 
       </p>
