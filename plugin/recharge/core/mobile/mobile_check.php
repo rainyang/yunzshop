@@ -13,9 +13,9 @@ global $_W, $_GPC;
 if ($_GPC['mobile']) {
     $mobile = intval($_GPC['mobile']);
     $array = $this->model->mobileApi($mobile);
-    $catname = !empty(trim($array['catName'])) ? trim($array['catName']) : ''; //手机号运营商
-    $province = !empty(trim($array['province'])) ? trim($array['province']) : '';//手机号所属省份
-    $carrier = !empty(trim($array['carrier'])) ? trim($array['carrier']) : '';//手机号完整信息
+    $catname = trim($array['catName']) !== false ? trim($array['catName']) : ''; //手机号运营商
+    $province = trim($array['province']) !== false ? trim($array['province']) : '';//手机号所属省份
+    $carrier = trim($array['carrier']) !== false ? trim($array['carrier']) : '';//手机号完整信息
     if (empty($catname) || empty($province)) {
         $code = -1;
         $ret = array(
