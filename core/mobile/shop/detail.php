@@ -6,7 +6,7 @@ global $_W, $_GPC;
 @session_start();
 setcookie('preUrl', $_W['siteurl']);
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
-$recharge = !empty(trim($_GPC['plugin'])) ? trim($_GPC['plugin']) : '';
+$recharge = trim($_GPC['plugin']) !== false ? trim($_GPC['plugin']) : '';
 $openid = m('user')->getOpenid();
 $popenid = m('user')->islogin();
 $openid = $openid ? $openid : $popenid;
