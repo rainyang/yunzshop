@@ -133,6 +133,9 @@ if ($_W['isajax']) {
 				if ($apply['type'] == 1 || $apply['type'] == 2) {
 					//微信支付方式 钱包或者红包 金额乘100  1为钱包，2为红包
 					$pay *= 100;
+
+                    //提现到微信红包与提现到微信钱包错误问题，提现写入订单状态
+                    $this->model->order_goods_status($orderids);
 				} 
 
 				if ($apply['type'] == 2) {
@@ -153,7 +156,6 @@ if ($_W['isajax']) {
                     $applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
                     pdo_update('sz_yi_commission_apply', array('applyno' => $applyno), array('id' => $id));
                     $this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $typename), TM_COMMISSION_APPLY);
-                    $this->model->order_goods_status($orderids);
                     return show_json(1, '已提交,请等待审核!');
 				}
 
