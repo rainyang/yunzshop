@@ -232,7 +232,7 @@ class Sz_DYi_Excel
         $excel->getActiveSheet()->setTitle($params['title']);
         $filename = $params['title']."-". $page;
         $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
-        if (!is_dir('IA_ROOT . "/addons/sz_yi/data/excel')) {
+        if (!is_dir(IA_ROOT . "/addons/sz_yi/data/excel")) {
             mkdir (IA_ROOT . "/addons/sz_yi/data/excel/");
         }
         $writer->save(IA_ROOT . "/addons/sz_yi/data/excel/" . $filename . ".xls");
