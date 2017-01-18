@@ -439,17 +439,28 @@
                          <input type='checkbox' class='cityall' /> {php echo $value['@attributes']['name']}
                          <span class="citycount" style='color:#ff6600'></span>
                      </label>
-                    {if count($value['city'])>0}
-                    <ul>
-                        {loop $value['city'] $c}
-                        <li>
-                             <label class='checkbox-inline'>
-                                  <input type='checkbox' class='city' style='margin-top:8px;' city="{php echo $c['@attributes']['name']}" /> {php echo $c['@attributes']['name']}
-                            </label>
-                     </li>
-                        {/loop}
-                    </ul>
-                    {/if}
+                        {if !empty($value['city']['0'])}
+                            <ul>
+                                {loop $value['city'] $c}
+                                    <li>
+                                         <label class='checkbox-inline'>
+                                            <input type='checkbox' class='city' style='margin-top:8px;' city="{php echo $c['@attributes']['name']}" /> {php echo $c['@attributes']['name']}
+                                        </label>
+                                    </li>
+                                {/loop}
+                            </ul>
+                        {else}
+                            <ul>
+                               
+                                <li>
+                                     <label class='checkbox-inline'>
+                                        <input type='checkbox' class='city' style='margin-top:8px;' city="{php echo $value['city']['@attributes']['name']}" /> {php echo $value['city']['@attributes']['name']}
+                                    </label>
+                                </li>
+                                
+                            </ul>
+
+                        {/if}
                 </div>
                 {/loop}
             
