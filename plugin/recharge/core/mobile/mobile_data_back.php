@@ -2,10 +2,10 @@
 global $_W, $_GPC;
 set_time_limit(0);
 $data = array (
-    'ordernum' => !empty(trim($_GPC['out_order_id'])) ? trim($_GPC['out_order_id']) : '',
-    'state' => !empty(intval($_GPC['status'])) ? intval($_GPC['status']) : '',
-    'desc' => !empty(intval($_GPC['err_desc'])) ? intval($_GPC['err_desc']) : '',
-    'completion_time' => !empty(intval($_GPC['completion_time'])) ? intval($_GPC['completion_time']) : time(),
+    'ordernum' => trim($_GPC['out_order_id']) !== false ? trim($_GPC['out_order_id']) : '',
+    'state' => intval($_GPC['status']) !== false ? intval($_GPC['status']) : '',
+    'desc' => intval($_GPC['err_desc']) !== false ? intval($_GPC['err_desc']) : '',
+    'completion_time' => intval($_GPC['completion_time']) !== false ? intval($_GPC['completion_time']) : time(),
     );
 $this->model->rechargeLog('api_back_data', print_r($data, true));
 $order = $this->model->getOrderByOrdersn($data['ordernum']);
