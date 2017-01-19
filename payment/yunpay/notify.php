@@ -107,12 +107,6 @@ if (!empty($_POST)) {
                         ), array(
                             'id' => $log['id']
                         ));
-                        if (!empty($log['couponid'])) {
-                            $pc = p('coupon');
-                            if ($pc) {
-                                $pc->useRechargeCoupon($log);
-                            }
-                        }
                         m('member')->setCredit($log['openid'], 'credit2', $log['money'], array(
                             0,
                             '商城会员充值:credit2:' . $log['money']

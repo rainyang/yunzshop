@@ -369,6 +369,9 @@ if ($operation == 'display' && $_W['isajax']) {
         ), array(
             'id' => $log['id']
         ));
+        if (p('coupon')) {
+            p('coupon')->useRechargeCoupon($log);
+        }
         m('member')->setCredit($openid, 'credit2', $log['money']);
         m('member')->setRechargeCredit($openid, $log['money']);
         if (p('sale')) {
@@ -399,6 +402,9 @@ if ($operation == 'display' && $_W['isajax']) {
         ), array(
             'id' => $log['id']
         ));
+        if (p('coupon')) {
+            p('coupon')->useRechargeCoupon($log);
+        }
         m('member')->setCredit($openid, 'credit2', $log['money'], array(0, '会员余额充值' . $log['money'] . " 元"));
         m('member')->setRechargeCredit($openid, $log['money']);
         if (p('sale')) {
