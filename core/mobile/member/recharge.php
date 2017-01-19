@@ -6,6 +6,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $shopset   = m('common')->getSysset('shop');
+$hascoupon = p('coupon');
 if (empty($openid)) {
     $openid = $_GPC['openid'];
 }
