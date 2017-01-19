@@ -322,7 +322,6 @@ if ($operation == 'display' && $_W['isajax']) {
         ':openid' => $openid,
         ':id' => $logid
     ));
-
     if (!empty($log) && empty($log['status'])) {
         //添加并行发送的链接判断处理
         pdo_update('sz_yi_member_log', array(
@@ -339,6 +338,9 @@ if ($operation == 'display' && $_W['isajax']) {
             ), array(
                 'id' => $logid
             ));
+            if (p('coupon')) {
+                p('coupon')->useRechargeCoupon($log);
+            }
             m('member')->setCredit($openid, 'credit2', $log['money'], array(0, '会员充值中心充值：' . $log['money'] . " 元"));
             m('member')->setRechargeCredit($openid, $log['money']);
             if (p('sale')) {
