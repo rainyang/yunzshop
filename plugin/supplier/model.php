@@ -133,12 +133,29 @@ if (!class_exists('SupplierModel')) {
                 $apply_conds = " AND o.finishtime>{$apply_day} ";
                 $supplierinfo['expect_money'] = pdo_fetchcolumn("SELECT sum(so.money) FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_conds}");
             }
-            $supplierinfo['costmoney'] = pdo_fetchcolumn("SELECT sum(so.money) FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 GROUP BY so.id");
+            $supplierinfo['costmoney'] = pdo_fetchall("SELECT so.money FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
             /*if (!empty($costmoney_total)) {
                 foreach ($costmoney_total as $c) {
                     $supplierinfo['costmoney_total'] += $c['money'];
                 }
             }*/
+            $order_ids = pdo_fetchall('SELECT DISTINCT o.id FROM ' . tablename('sz_yi_order_goods') . ' og LEFT JOIN ' . tablename('sz_yi_order') . ' o ON o.id = og.orderid WHERE o.uniacid = :uniacid AND o.status = :status AND og.supplier_uid = :supplier_uid AND og.supplier_apply_status = :supplier_apply_status ' . $apply_cond, array(
+                ':uniacid'                  => $_W['uniacid'],
+                ':status'                   => 3,
+                ':supplier_uid'             => $uid,
+                ':supplier_apply_status'    => 0
+            ));
+            if (empty($order_ids)) {
+                $supplierinfo['costmoney'] = 0;
+            } else {
+                $orderids = array();
+                foreach ($order_ids AS $o) {
+                    $orderids[] = $o['id'];
+                }
+                $supplierinfo['costmoney'] = pdo_fetchcolumn('SELECT ifnull(sum(money), 0) FROM ' . tablename('sz_yi_supplier_order') . ' WHERE uniacid = :uniacid AND orderid in(' . implode(',', $orderids) . ')', array(
+                    ':uniacid'  => $_W['uniacid']
+                ));
+            }
             $order_goods_ids = pdo_fetchall('SELECT og.id AS ogid FROM ' . tablename('sz_yi_order_goods') . ' og LEFT JOIN ' . tablename('sz_yi_order') . ' o ON o.id = og.orderid WHERE o.uniacid = :uniacid AND o.status = :status AND og.supplier_uid = :supplier_uid AND og.supplier_apply_status = :supplier_apply_status ' . $apply_cond, array(
                 ':uniacid'                  => $_W['uniacid'],
                 ':status'                   => 3,
