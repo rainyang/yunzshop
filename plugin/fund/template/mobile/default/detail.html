@@ -335,17 +335,10 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <br><span>众筹列表</span>
         </div>
         <div class="like"  onclick="location.href='{php echo $this->createMobileUrl('member')}'">
-            <i style="padding-left:6px" class="iconfont icon-user" <%if isfavorite==1%>style="color:#f90"<%/if%>></i>
+            <i style="padding-left:6px" class="iconfont icon-user"></i>
             <br><span>会员中心</span>
         </div>
-        <%if shopset.cservice%>
-
-
-            <div class="buy" onclick="choose('buy')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即支持</div>
-
-        <%else%>
-            <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即支持</div>
-        <%/if%>
+        <div class="buy" onclick="choose('buy')" >立即支持</div>
         <input type="hidden" value="<%goods.isdeclaration%>" id='isdeclaration'>
         <input type="hidden" value="<%goods.isforce%>" id='isforce'>
         <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
