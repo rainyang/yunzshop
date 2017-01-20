@@ -6,6 +6,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $shopset   = m('common')->getSysset('shop');
+$hascoupon = p('coupon');
 if (empty($openid)) {
     $openid = $_GPC['openid'];
 }
@@ -321,7 +322,6 @@ if ($operation == 'display' && $_W['isajax']) {
         ':openid' => $openid,
         ':id' => $logid
     ));
-
     if (!empty($log) && empty($log['status'])) {
         //添加并行发送的链接判断处理
         pdo_update('sz_yi_member_log', array(
@@ -338,6 +338,9 @@ if ($operation == 'display' && $_W['isajax']) {
             ), array(
                 'id' => $logid
             ));
+            if (p('coupon')) {
+                p('coupon')->useRechargeCoupon($log);
+            }
             m('member')->setCredit($openid, 'credit2', $log['money'], array(0, '会员充值中心充值：' . $log['money'] . " 元"));
             m('member')->setRechargeCredit($openid, $log['money']);
             if (p('sale')) {
@@ -368,6 +371,9 @@ if ($operation == 'display' && $_W['isajax']) {
         ), array(
             'id' => $log['id']
         ));
+        if (p('coupon')) {
+            p('coupon')->useRechargeCoupon($log);
+        }
         m('member')->setCredit($openid, 'credit2', $log['money']);
         m('member')->setRechargeCredit($openid, $log['money']);
         if (p('sale')) {
@@ -398,6 +404,9 @@ if ($operation == 'display' && $_W['isajax']) {
         ), array(
             'id' => $log['id']
         ));
+        if (p('coupon')) {
+            p('coupon')->useRechargeCoupon($log);
+        }
         m('member')->setCredit($openid, 'credit2', $log['money'], array(0, '会员余额充值' . $log['money'] . " 元"));
         m('member')->setRechargeCredit($openid, $log['money']);
         if (p('sale')) {
