@@ -89,7 +89,18 @@
             <li><a href="#"><span><%member.virtual_currency%></span><br/>{$yunbi_title}</a></li>
         {/if}
         <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
-        <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
+        <li>
+            <a href="#">
+            <span>
+                {if $counts['couponcount'] == 0}
+                0
+                {else}
+                <%counts.couponcount%>
+                {/if}
+            </span>
+            <br/>优惠券
+            </a>
+        </li>
     </ul>
 </div>
 <div class="order">
