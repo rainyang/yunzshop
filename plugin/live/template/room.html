@@ -1,0 +1,247 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+
+    {template 'tabs'}
+    <div class="rightlist">
+        {if $operation=='display'}
+        <!-- 新增加右侧顶部三级菜单结束 -->
+        <div class="panel panel-info">
+            <div class="panel-heading">筛选</div>
+            <div class="panel-body">
+                <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+                    <input type="hidden" name="c" value="site" />
+                    <input type="hidden" name="a" value="entry" />
+                    <input type="hidden" name="m" value="sz_yi" />
+                    <input type="hidden" name="method" value="room" />
+                    <input type="hidden" name="p" value="live" id="form_p" />
+                    <input type="hidden" name="do" value="plugin" id="form_do" />
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>
+                        <div class="col-sm-8 col-lg-9 col-xs-12">
+                            <input type="text" class="form-control"  name="room_id" value="{$_GPC['room_id']}"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
+                        <div class="col-sm-8 col-lg-9 col-xs-12">
+                            <input type="text" class="form-control"  name="keyword" value="{$_GPC['keyword']}" placeholder="可搜索姓名/手机号"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
+                        <div class="col-sm-7 col-lg-9 col-xs-12">
+                            <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                            <input type="hidden" name="token" value="{$_W['token']}" />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                    </div>
+                </form>
+            </div>
+        </div><div class="clearfix">
+
+        <div class="panel panel-default">
+            <div class="panel-heading"> </div>
+            <div class="panel-body">
+                <table class="table table-hover" style="overflow:visible;">
+                    <thead class="navbar-inner">
+                    <tr>
+                        <th style='width:8%;text-align: center;'>房间ID</th>
+                        <th style='width:10%;'>房间名称</th>
+                        <th style='width:12%;'>主播姓名<br/>手机号码</th>
+                        <th style='width:10%;'>创建时间</th>
+                        <th style='width:15%;'>推荐</th>
+                        <th style='width:15%;'>热门</th>
+                        <th style='width:8%'>禁播</th>
+                        <th style='width:8%'>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {loop $list['data']['list'] $row}
+                    <tr>
+                        <td style="text-align: center;">   {$row['room_id']}</td>
+                        <td>{$row['title']}</td>
+                        <td>{$row['nickname']}<br/>{$row['mobile']}</td>
+                        <td>{$row['create_time']}</td>
+                        <td>{if $row['is_recommand'] == 1} 是 {else} 否 {/if}</td>
+                        <td>{if $row['is_hot'] == 1} 是 {else} 否 {/if}</td>
+                        <td>{if $row['status'] == 2} 是 {else} 否 {/if}</td>
+
+                        <td  style="overflow:visible;">
+
+                            <div class="btn-group btn-group-sm">
+                                <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
+                                <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 99999'>
+                                    <li><a href="{php echo $this->createPluginWebUrl('live/room',array('op'=>'detail', 'id' => $row['room_id']));}" title='详细信息'><i class='fa fa-user'></i> 详细信息</a></li>
+                                    <li><a href="{php echo $this->createPluginWebUrl('live/room',array('op'=>'goods', 'id' => $row['room_id']));}" title='详细信息'><i class='fa fa-edit'></i> 商品管理</a>  </li>
+
+                                </ul>
+                            </div>
+
+
+                        </td>
+                    </tr>
+                    {/loop}
+                    </tbody>
+                </table>
+                {$pager}
+            </div>
+        </div>
+    </div>
+    {elseif $operation == 'detail'}
+        <div class="panel panel-info">
+            <div class="panel-heading">更新</div>
+            <div class="panel-body">
+                <form action="" method="post" class="form-horizontal" role="form">
+                    <input type="hidden" name="room_id" value="{$_GPC['id']}">
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">房间名称</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-9 col-xs-12">
+                                <div class="form-control-static">{$info['data']['title']}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">主播姓名</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-9 col-xs-12">
+                                <div class="form-control-static">{$info['data']['nickname']}</div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">手机号</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div class="col-sm-9 col-xs-12">
+                                <div class="form-control-static">{$info['data']['mobile']}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">推荐</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class="radio-inline">
+                                <input type="radio" name="is_recommand" value="1" {if $info['data']['is_recommand'] == 1} checked {/if}> 是
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="is_recommand" value="0" {if empty($info['data']['mobis_recommandile']) || $info['data']['mois_recommandbile'] == 0} checked {/if}> 否
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">热门</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class="radio-inline">
+                                <input type="radio" name="is_hot" value="1" {if $info['data']['is_hot'] == 1} checked {/if}> 是
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="is_hot" value="0" {if empty($info['data']['is_hot']) || $info['data']['is_hot'] == 0} checked {/if}> 是
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">禁播</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class="radio-inline">
+                                <input type="radio" name="status" value="2" {if $info['data']['status'] == 2} checked {/if}> 是
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="status" value="0" {if empty($info['data']['status']) || $info['data']['status']} checked {/if}> 否
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="submit" name="submit" value="保存设置" class="btn btn-primary" data-original-title="" title="">
+                            <input type="hidden" name="token" value="{$_W['token']}">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {elseif $operation == 'goods'}
+                <div class="panel panel-info">
+                    <div class="panel-body">
+                        <div style="float:left;height:auto;overflow: hidden">
+                            <p>房间名称: {$info['data']['title']} </p>
+                            <p>主播姓名: {$info['data']['nickname']}</p>
+                            <p>手机号: {$info['data']['title']}</p>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    .label{cursor:pointer;}
+                </style>
+                <form action="" method="post">
+                    <div class="panel panel-default">
+                        <div class="panel-body table-responsive">
+                            <table class="table table-hover">
+                                <thead class="navbar-inner">
+                                <tr>
+                                    <th width="6%">ID</th>
+                                    <th width="6%">{$lang['good']}</th>
+                                    <th width="26%">&nbsp;</th>
+                                    <th width="16%">{$lang['price']}<br/>{$lang['repertory']}</th>
+
+                                    <th width="10%">销量</th>
+                                    <th width="10%">状态</th>
+                                    <th width="20%">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {loop $list $item}
+                                <tr>
+
+                                    <td width="6%">{$item['id']}</td>
+                                    <td width="6%" title="{$item['title']}">
+                                        <img src="{php echo tomedia($item['thumb'])}" style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"  />
+                                    </td>
+                                    <td title="{$item['title']}" class='tdedit' width="26%">
+                                        {$item['title']}
+                                    </td>
+                                    <td class='tdedit' width="16%">
+                                        {$item['marketprice']}
+                                        <br/>
+                                        {$item['total']}
+
+                                    </td>
+
+                                    <td >{$item['salesreal']}</td>
+                                    <td >
+                                        <label data='{$item['status']}' class='label  label-default {if $item['status']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'status')"{/if}>{if $item['status']==1}上架{else}下架{/if}</label>
+                                    </td>
+                                    <td style="position:relative;" width="20%">
+                                        <a href="{php echo $this->createWebUrl('shop/goods', array('op'=>'post','id'=>$item['id']))}"  class="btn btn-default btn-sm js-clip">详情</a>
+                                    </td>
+                                </tr>
+
+                                {/loop}
+
+                                </tbody>
+                            </table>
+                            {$pager}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+            {/if}
+    </div>
+</div>
+
+{template 'web/_footer'}
+
