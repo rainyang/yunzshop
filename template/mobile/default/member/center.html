@@ -131,6 +131,24 @@
 
 <div class="cart new-ullist">
     <ul>
+        <%if member.isagent !=0%>
+        {if p('live')}
+        <li>
+            <a href="{php echo $live_url}">
+                <i class="fa iconfont icon-shenqing" style="background:#f15353"></i><br/>主播申请
+            </a>
+        </li>
+        {/if}
+        <%/if%>
+
+        {if p('live')}
+        <li>
+            <a href="{php echo $live_list}">
+                <i class="fa iconfont icon-zhibo" style="background:#f15353"></i><br/>直播中心
+            </a>
+        </li>
+        {/if}
+
         {if $hascom && is_weixin_show()}
             <li>
                 <a href="{php echo $this->createPluginMobileUrl('commission')}">
@@ -179,20 +197,13 @@
             </a>
         </li>
         {/if}
-        {if $open_creditshop}
+{if $open_creditshop}
         <li>
-            <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
-                <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>积分商城
-            </a>
+        <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
+        <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>积分商城
+        </a>
         </li>
-        {/if}
-        {if p('card')}
-        <li>
-            <a href="{php echo $this->createPluginMobileUrl('card/center')}">
-                <i class="fa fa-credit-card" style="background:#eeee00"></i><br/>{$card_set['gift_title']}
-            </a>
-        </li>
-        {/if}
+{/if}
     </ul>
 
 </div>
@@ -222,7 +233,7 @@
 
 {if p('recharge')}
     <div class="cart">
-        <a href="{php echo $this->createMobileUrl('shop/detail', array('plugin' => 'recharge'))}">
+        <a href="{php echo $this->createPluginMobileUrl('recharge/detail')}">
             <div class="list1">
                 <i class="fa fa-mobile"></i>充值专区
                 <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right;line-height: 44px; "></i>
@@ -232,9 +243,6 @@
 {/if}
 
 <div class="cart">
-    {if p('credits') && $appset['eblock']['switch']}
-    <a href="{php echo $this->createPluginMobileUrl('credits')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-coindollar"></i>VC积分兑换<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    {/if}
     {if !$member['isbindmobile'] && is_weixin()}
     <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px;"><i class="fa fa-mobile"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}

@@ -49,9 +49,6 @@ $trade['transfer'] 		= $set['trade']['transfer'];
 $hascom = false;
 $supplier_switch = false;
 $supplier_switch_centre = false;
-if (p('card')) {
-    $card_set = p('card')->getSet();
-}
 if (p('merchant')) {
 	if (!empty($member['id'])) {
 		$ismerchant = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member['id']}");
@@ -329,4 +326,20 @@ if ($shopset['term']) {
         $termtime = $shopset['term_time'] * 86400 * 365;
     }
 }
+
+//直播插件
+if (p('live')) {
+    $anchor_info = p('live')->getAnchorInfo($openid);
+
+    if (!empty($anchor_info) && $anchor_info['status'] == 1) {
+        $live_url = $this->createPluginMobileUrl('live/room');
+
+    } else {
+        $live_url = $this->createPluginMobileUrl('live');
+    }
+
+    //直播间列表(直播中心入口)
+    $live_list = $this->createMobileUrl('live', array('p'=>'list')); 
+}
+
 include $this->template('member/center');
