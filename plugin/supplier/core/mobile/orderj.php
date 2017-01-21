@@ -22,7 +22,7 @@ if($_W['isajax']) {
     	if ($status != ''){
         	$conditionq = '  and o.status=' . intval($status);
     	}else {
-    		$conditionq = '  and o.status>=0';	
+    		$conditionq = '  and o.status>=0';
     	}
         if (!empty($_GPC['id'])) {
             $condition .=' AND o.id<:id';
@@ -30,7 +30,9 @@ if($_W['isajax']) {
         }
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 20;
-    	$sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 {$conditionq} and o.uniacid=".$_W['uniacid']." and o.supplier_uid={$uid} ORDER BY o.createtime DESC,o.status DESC  ";
+        //$sql = 'SELECT id,ordersn,price,status,address,createtime FROM ' . tablename('sz_yi_order') . ' WHERE 1 ' . $conditionq . ' AND uniacid = ' . $_W['uniacid'] . ' AND supplier_uid = ' . $uid . ' ORDER BY createtime DESC ';
+        $sql = 'SELECT o.id,o.ordersn,o.price,o.status,o.address,o.createtime FROM ' . tablename('sz_yi_order') . ' o LEFT JOIN ' . tablename('sz_yi_order_refund') . ' r ON r.orderid = o.id AND ifnull(r.status, -1)<>-1 WHERE 1 ' . $condtionq . ' AND o.uniacid = ' . $_W['uniacid'] . ' AND o.supplier_uid = ' . $uid . ' ORDER BY o.createtime DESC, o.status DESC ';
+    	//$sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 {$conditionq} and o.uniacid=".$_W['uniacid']." and o.supplier_uid={$uid} ORDER BY o.createtime DESC,o.status DESC  ";
         $ordercount = pdo_fetchcolumn("select count(o.id) from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 and o.uniacid=".$_W['uniacid']." and o.supplier_uid={$uid}");
         $pageno = ceil($ordercount/$psize);
     	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
