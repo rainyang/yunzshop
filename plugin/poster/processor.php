@@ -91,7 +91,7 @@ class PosterProcessor extends PluginProcessor
                 $url = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=shop&mid=" . $qrmember['id'];
             }
         }
-       
+
 		if (!empty($poster['resptitle'])) {
 			$news = array(array('title' => $poster['resptitle'], 'description' => $poster['respdesc'], 'picurl' => tomedia($poster['respthumb']), 'url' => $url));
 			return $obj->respNews($news);
@@ -169,8 +169,8 @@ class PosterProcessor extends PluginProcessor
                     $pay *= 100;
                 }
                 //如果是微信红包，走红包打款流程
-                if (poster['paytype'] == 2) {
-                    $result = m('finance')->sendredpack($openid, $pay, 0, '感谢您的关注获得红包奖励', '关注奖励', $subpaycontent);
+                if ($poster['paytype'] == 2) {
+                    $result = m('finance')->sendredpack($openid, $pay, 0, '关注获得红包奖励', '关注奖励', $subpaycontent);
                 } else {
                     m('finance')->pay($openid, $poster['paytype'], $pay, '', $subpaycontent);
                 }
@@ -187,8 +187,8 @@ class PosterProcessor extends PluginProcessor
                     $pay *= 100;
                 }
                 //如果是微信红包，走红包打款流程
-                if (poster['paytype'] == 2) {
-                    $result = m('finance')->sendredpack($openid, $pay, 0, '感谢您推荐关注人获得红包奖励', '推荐关注', $recpaycontent);
+                if ($poster['paytype'] == 2) {
+                    $result = m('finance')->sendredpack($openid, $pay, 0, '推荐关注获得红包奖励', '推荐关注', $recpaycontent);
                 } else {
                     m('finance')->pay($qr['openid'], $poster['paytype'], $pay, '', $recpaycontent);
                 }
@@ -337,5 +337,5 @@ class PosterProcessor extends PluginProcessor
 			}
 		}
 	}
-	
+
 }
