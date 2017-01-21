@@ -34,7 +34,7 @@ if ($operation == 'display'){
         $scope = implode(',', $scope);
 
         //查询商品详细信息
-        $goods_info_list = pdo_fetchall('SELECT id, thumb, title, productprice, marketprice FROM ' . tablename('sz_yi_goods') . ' WHERE id IN (' . $scope . ')');
+        $goods_info_list = pdo_fetchall('SELECT id, thumb, title, productprice, marketprice FROM ' . tablename('sz_yi_goods') . ' WHERE id IN (' . $scope . ') ORDER BY FIELD (' . $scope . ')');
         $goods_info_list = set_medias($goods_info_list, "thumb");
       
     }
