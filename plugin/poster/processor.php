@@ -172,7 +172,13 @@ class PosterProcessor extends PluginProcessor
                 if ($poster['paytype'] == 2) {
                     $result = m('finance')->sendredpack($openid, $pay, 0, '关注获得红包奖励', '关注奖励', $subpaycontent);
                 } else {
-                    m('finance')->pay($openid, $poster['paytype'], $pay, '', $subpaycontent);
+                    $result = m('finance')->pay($openid, $poster['paytype'], $pay, '', $subpaycontent);
+                }
+                if (is_error($result)) {
+                    m('member')->setCredit($openid, 'credit2', $poster['submoney'], array(
+                        0,
+                        $subpaycontent
+                    ));
                 }
             }
             if ($poster['reccredit'] > 0) {
@@ -188,9 +194,16 @@ class PosterProcessor extends PluginProcessor
                 }
                 //如果是微信红包，走红包打款流程
                 if ($poster['paytype'] == 2) {
-                    $result = m('finance')->sendredpack($openid, $pay, 0, '推荐关注获得红包奖励', '推荐关注', $recpaycontent);
+                    $result = m('finance')->sendredpack($qr['openid'], $pay, 0, '推荐关注获得红包奖励', '推荐关注', $recpaycontent);
                 } else {
-                    m('finance')->pay($qr['openid'], $poster['paytype'], $pay, '', $recpaycontent);
+                    $result = m('finance')->pay($qr['openid'], $poster['paytype'], $pay, '', $recpaycontent);
+                }
+
+                if (is_error($result)) {
+                    m('member')->setCredit($qr['openid'], 'credit2', $poster['recmoney'], array(
+                        0,
+                        $recpaycontent
+                    ));
                 }
 
             }
