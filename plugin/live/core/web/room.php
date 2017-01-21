@@ -88,16 +88,18 @@ if ($operation == 'display') {
 
     if ($res['code'] == 200 && !empty($res['content'])) {
         $goods = json_decode($res['content'],1);
-        foreach ($goods['data']['list'] as $val) {
-            $item[] = $val['goods_id'];
-        }
+            if(!empty($goods['data']['list'])){
+                foreach ($goods['data']['list'] as $val) {
+                $item[] = $val['goods_id'];
+            }
 
-        $str_gid = implode(',', $item);
-        $sql = 'SELECT * FROM ' . tablename('sz_yi_goods')  . ' WHERE id in (' . $str_gid . ') ORDER BY `status` DESC, `displayorder` DESC,`id` DESC';
-        $sqls = 'SELECT COUNT(id) FROM ' . tablename('sz_yi_goods') . ' WHERE id in (' . $str_gid . ')';
-        $total = pdo_fetchcolumn($sqls, $params);
+            $str_gid = implode(',', $item);
+            $sql = 'SELECT * FROM ' . tablename('sz_yi_goods')  . ' WHERE id in (' . $str_gid . ') ORDER BY `status` DESC, `displayorder` DESC,`id` DESC';
+            $sqls = 'SELECT COUNT(id) FROM ' . tablename('sz_yi_goods') . ' WHERE id in (' . $str_gid . ')';
+            $total = pdo_fetchcolumn($sqls, $params);
 
-        $list = pdo_fetchall($sql, $params);
+            $list = pdo_fetchall($sql, $params);
+        } 
     }
 }
 
