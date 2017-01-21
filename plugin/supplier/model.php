@@ -28,17 +28,18 @@ if (!class_exists('SupplierModel')) {
             if (empty($uid)) {
                 return array();
             }
-            //uid下的所有招商员
-            $merchants = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$uid} ORDER BY id DESC");
-            //循环赋予头像等信息
-            foreach ($merchants as &$value) {
-                $merchants_member = m('member')->getMember($value['openid']);
-                $value['avatar'] = $merchants_member['avatar'];
-                $value['nickname'] = $merchants_member['nickname'];
-                $value['realname'] = $merchants_member['realname'];
-                $value['mobile'] = $merchants_member['mobile'];
-            }
-            unset($value);
+            $params = array(
+                ':uniacid'      => $_W['uniacid'],
+                ':supplier_uid' => $uid
+            );
+            //供应商supplier_uid下的所有招商员
+            $sql  = 'SELECT mc.*, m.avatar, m.nickname, m.realname, m.mobile FROM ' . tablename('sz_yi_merchants');
+            $sql .= ' mc LEFT JOIN ' . tablename('sz_yi_member');
+            $sql .= ' m ON m.openid = mc.openid ';
+            $sql .= ' WHERE mc.uniacid = :uniacid AND mc.supplier_uid = :supplier_uid';
+            $sql .= ' ORDER BY mc.id DESC ';
+            $merchants = pdo_fetchall($sql, $params);
+
             return $merchants;
         }
 
@@ -49,9 +50,14 @@ if (!class_exists('SupplierModel')) {
          * @return int $roleid
          */
         public function getRoleId(){
-            global $_W, $_GPC;
+            global $_W;
             //权限id
-            $roleid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_perm_role') . ' where status1=1');
+            $params = array(
+                ':status'   => 1
+            );
+            $sql    = 'SELECT id FROM ' . tablename('sz_yi_perm_role');
+            $sql   .= ' WHERE status1 = :status';
+            $roleid = pdo_fetchcolumn($sql, $params);
             return $roleid;
         }
 
