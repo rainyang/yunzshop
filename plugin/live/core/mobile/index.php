@@ -22,7 +22,7 @@ $anchor_info = $this->model->getAnchorInfo($openid);
 if ($operation == 'display') {
     //无条件
     if ($anchor_limit['conditions'] == 0) {
-        if(empty($anchorInfo)){
+        if(empty($anchor_info)){
             //本地数据库存储
             $anchor_record_id = $this->model->saveLocalAnchor($openid, $member, 0);
         }
@@ -58,15 +58,13 @@ if ($operation == 'display') {
             show_json(-1);
         }
 
-        $anchorInfo = $this->model->getAnchorInfo($openid);
-
         //本地数据库存储
-        if (empty($anchorInfo)) {
+        if (empty($anchor_info)) {
             $anchor_record_id = $this->model->saveLocalAnchor($openid, $member, 0);
         } else {
-            $uid = $this->model->getUid($anchorInfo['id']);
+            $uid = $this->model->getUid($anchor_info['id']);
             $this->model->updateStatusAnchor($uid, 0);
-            $anchor_record_id = $anchorInfo['id'];
+            $anchor_record_id = $anchor_info['id'];
         }
 
         //审核材料
@@ -99,7 +97,7 @@ if ($diyform_plugin) {
         }
     }
 }
-
+$anchor_info = $this->model->getAnchorInfo($openid);
 if (!empty($anchor_info) && $anchor_info['status'] == 0) {
     //审核中
     include $this->template('reminder');
