@@ -108,8 +108,8 @@ if ($op == 'display') {
             exit;
         }
     }
-    $total           = pdo_fetchcolumn("select count(*) from" . tablename('sz_yi_member') . " dm " . " join " . tablename('sz_yi_live_anchor') . " la on la.openid = dm.openid and la.uniacid = {$_W['uniacid']} and la.status = ' " . $status . "' left join " . tablename('sz_yi_member_group') . " g on dm.groupid=g.id" . " join " . tablename('sz_yi_member_level') . " l on dm.level =l.id" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " where 1 {$condition} ", $params);
-    $pager           = pagination($total, $pindex, $psize);
+    $total = count($list);
+    $pager = pagination($total, $pindex, $psize);
 
 } else if ($op == 'detail') {
     ca('member.member.view');
