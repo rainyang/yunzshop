@@ -15,7 +15,7 @@ $params = array(
         'operation'=>'livedown',
         'signature'=>'sz_cloud_register'
     );
-$result = ihttp_require($url, $params);
+$result = ihttp_request($url, $params);
 $result_array = json_decode($result['content'], true);
 $filename = $result_array['parms']['filename'];
 $path = $result_array['parms']['path'];
