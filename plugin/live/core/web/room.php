@@ -57,6 +57,7 @@ if ($operation == 'display') {
 
         if ($res['code'] == 200 && !empty($res['content'])) {
             $info = json_decode($res['content'],1);
+            // echo("<pre>");print_r($info['data']['status']);exit; 
         } else {
             $info = array();
         }

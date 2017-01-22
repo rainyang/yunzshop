@@ -17,6 +17,8 @@ if ($operation == 'display'){
 
     //获取banner列表
     $banner_list = pdo_fetchall('SELECT advname, link, thumb FROM ' . tablename('sz_yi_live_banner') . ' WHERE enabled = 1 AND uniacid = :uniacid ORDER BY displayorder DESC', array('uniacid' => $uniacid)); //todo 是否需要数量限制
+    $banner_list = set_medias($banner_list, 'thumb');
+
     //获取sig
     if(!empty($openid)){
         $result_02 = ihttp_get('http://live.tbw365.cn/shop_live.php?api=IM/Get/sign&openid='.$openid);
