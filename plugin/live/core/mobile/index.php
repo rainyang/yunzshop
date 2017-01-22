@@ -8,7 +8,7 @@
 
 global $_GPC, $_W;
 
-$operation   = !empty($_GPC['op']) ? $_GPC['op'] : 'dispaly' ;
+$operation   = !empty($_GPC['op']) ? $_GPC['op'] : 'display' ;
 
 $openid = m('user')->getOpenid();
 $member = m('member')->getMember($openid);
@@ -17,28 +17,36 @@ $member = m('member')->getMember($openid);
 $anchor_limit = $this->model->getAnchorConditions();
 // echo '<pre>';print_r($anchor_limit);exit;
 
+$anchor_info = $this->model->getAnchorInfo($openid);
+
 if ($operation == 'display') {
-    //无条件-不需要审核
-    if ($anchor_limit['is_check'] == 1 && $anchor_limit['conditions'] == 0) {
-
-        $has_aid = $this->model->getAid($openid);
-
-        if(empty($has_aid)){
+    //无条件
+    if ($anchor_limit['conditions'] == 0) {
+        if(empty($anchorInfo)){
             //本地数据库存储
-            $this->model->saveLocalAnchor($openid, $member, 1);
-        } else {
-            $uid = $this->model->getUid($has_aid);
-            $this->model->updateStatusAnchor($uid, 0);
+            $anchor_record_id = $this->model->saveLocalAnchor($openid, $member, 0);
         }
 
-        //创建主播默认房间
-        $room_result = $this->model->createRoom($member);
-        if($room_result){
-            $this->model->updateAnchorCloudData($openid, $room_result['cloud_anchor_id'], $room_result['cloud_room_id']);
+        //审核
+        if ($anchor_limit['is_check'] == 0) {
+            $data = array(
+                'aid' => $anchor_record_id,
+                'mobile' => '',
+                'auth_img0' => '',
+                'auth_img1' => ''
+            );
+            $this->model->saveAnchorRemindInfo($data);
         } else {
-            $this->model->updateStatusAnchor($member['uid'], 0);
-            show_json(-1);
+            //创建主播默认房间
+            $room_result = $this->model->createRoom($member);
+            if($room_result){
+                $this->model->updateAnchorCloudData($openid, $room_result['cloud_anchor_id'], $room_result['cloud_room_id']);
+            } else {
+                $this->model->updateStatusAnchor($member['uid'], 0);
+                show_json(-1);
+            }
         }
+
     }
 } elseif ($operation == 'post') {
     if ($_W['ispost']) {
@@ -50,14 +58,15 @@ if ($operation == 'display') {
             show_json(-1);
         }
 
-        $has_aid = $this->model->getAid($openid);
+        $anchorInfo = $this->model->getAnchorInfo($openid);
+
         //本地数据库存储
-        if (empty($has_aid)) {
+        if (empty($anchorInfo)) {
             $anchor_record_id = $this->model->saveLocalAnchor($openid, $member, 0);
         } else {
-            $uid = $this->model->getUid($has_aid);
+            $uid = $this->model->getUid($anchorInfo['id']);
             $this->model->updateStatusAnchor($uid, 0);
-            $anchor_record_id = $has_aid;
+            $anchor_record_id = $anchorInfo['id'];
         }
 
         //审核材料
@@ -90,7 +99,7 @@ if ($diyform_plugin) {
         }
     }
 }
-$anchor_info = $this->model->getAnchorInfo($openid);
+
 if (!empty($anchor_info) && $anchor_info['status'] == 0) {
     //审核中
     include $this->template('reminder');
@@ -103,7 +112,7 @@ if (!empty($anchor_info) && $anchor_info['status'] == 0) {
     //审核被拒, 再次提交申请 (如果再次提交申请sz_yi/plugin/live/template/mobile/default/reminder.html会传参applyAgain)
     include $this->template('index');
     exit;
-} 
+}
 
 //申请
 if ($anchor_limit['conditions'] == 1) {
