@@ -1,6 +1,5 @@
 var identifier = null,
     sig = null,
-    mobile = null,
     nickName = null,
     type = 0;
 

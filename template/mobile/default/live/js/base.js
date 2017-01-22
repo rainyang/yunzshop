@@ -437,6 +437,8 @@ function convertAppMsg(nickSpan, contentSpan, msg){
                 break;
             case 6:
                 //商品置顶
+                nickSpan.innerHTML = '通知: 置顶商品更换' ;
+                
                 var li = $(".lw-goods-list li[data-id="+data.msg+"]");
 
                 var top_img_src = li.find('img').attr('src');
