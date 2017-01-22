@@ -22,5 +22,4 @@ $path = $result_array['parms']['path'];
 
 $apkUrl = REMOTEURL . '/apk/live/' . $path . '/' . $filename;
 
-
 include $this->template('room');
