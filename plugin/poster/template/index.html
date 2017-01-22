@@ -438,7 +438,7 @@
                    <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">奖励现金方式</label>
                     <div class="col-sm-9 col-xs-12">
-                             {ife 'poster' $item}
+                        {ife 'poster' $item}
                         <label class="radio-inline">
                             <input type="radio" name="paytype" value="0" {if empty($item['paytype'])}checked{/if} /> 余额
                         </label>
@@ -446,9 +446,12 @@
                         <label class="radio-inline">
                             <input type="radio" name="paytype" value="1" {if $item['paytype']==1}checked{/if} /> 微信钱包
                         </label>
-                        <span class='help-block'>如果奖励现金，是打到零钱包还是余额( 打到零钱包需要微信支付，并在后台上传证书)</span>
+                        <label class="radio-inline">
+                            <input type="radio" name="paytype" value="2" {if $item['paytype']==2}checked{/if} /> 微信红包
+                        </label>
+                        <span class='help-block'>如果奖励现金，是打到微信红包、零钱包还是余额( 打到红包、零钱包需要微信支付，并在后台上传证书)</span>
                         {else}
-                        <div class='form-control-static'>{if empty($item['paytype'])}余额{else}微信钱包{/if}</div>
+                        <div class='form-control-static'>{if empty($item['paytype'])}余额{else if($item['paytype']==1)}微信钱包{else}微信红包{/if}</div>
                         {/if}
                     </div> 
                 </div>
@@ -621,7 +624,6 @@
             return false;
         }
         if($(':radio[name=type]:checked').val()=='4'){
-            
              if($(':radio[name=paytype]:checked').val()=='1'){
               
                 var recmoney = parseFloat($(':input[name=recmoney]').val());
@@ -638,6 +640,22 @@
                         return false;
                     }
                 }
+             } else if ($(':radio[name=paytype]:checked').val()=='2') {
+
+                 var recmoney = parseFloat($(':input[name=recmoney]').val());
+                 if( recmoney>0 ){
+                     if(recmoney<1 || recmoney>200){
+                         Tip.select($(':input[name=recmoney]'),'微信红包打款金额在1～200之间','bottom');
+                         return false;
+                     }
+                 }
+                 var submoney = parseFloat($(':input[name=submoney]').val());
+                 if(submoney>0){
+                     if(submoney<1 || submoney>200){
+                         Tip.select($(':input[name=submoney]'),'微信红包打款金额在1～200之间','bottom');
+                         return false;
+                     }
+                 }
              }
         }
         var data = [];

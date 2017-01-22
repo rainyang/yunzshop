@@ -80,13 +80,13 @@
                         </td>
                         <td>
                             {if !empty($row['reccredit'])}+积分: {$row['reccredit']}<br/>{/if}
-                            {if $row['recmoney']>0}+余额: {$row['recmoney']}<br/>{/if}
+                            {if $row['recmoney']>0}+{$row['recpaytypename']}: {$row['recmoney']}<br/>{/if}
                         </td>
                         <td><img src='{$row['avatar1']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' /> {$row['nickname1']}
                         ({$row['realname1']}/{$row['mobile1']})</td>
                             <td>
                             {if !empty($row['subcredit'])}+积分: {$row['subcredit']}<br/>{/if}
-                            {if $row['submoney']>0}+余额: {$row['submoney']}<br/>{/if}
+                            {if $row['submoney']>0}+{$row['subpaytypename']}: {$row['submoney']}<br/>{/if}
                         </td>
                         <td>{php echo date('Y-m-d H:i',$row['createtime'])}</td>
                         <td><a class='btn btn-default' href="{php echo $this->createPluginWebUrl('poster/log',array('id'=>$row['posterid'],'keyword'=>$row['nickname']))}" title='吸引关注列表'><i class='fa fa-users'></i></a></td>
