@@ -435,6 +435,19 @@ function convertAppMsg(nickSpan, contentSpan, msg){
                 nickSpan.innerHTML = data.nickName ;
                 contentSpan.innerHTML = data.msg ;
                 break;
+            case 6:
+                //商品置顶
+                nickSpan.innerHTML = '通知: 置顶商品更换' ;
+                
+                var li = $(".lw-goods-list li[data-id="+data.msg+"]");
+
+                var top_img_src = li.find('img').attr('src');
+                var top_href = li.find('a').attr('href');
+                var top_goods_price = li.find('.p1').text();
+                $("#top_img").attr('src', top_img_src);
+                $("#top_href").attr('href', top_href);
+                $("#top_goods_price").text(top_goods_price);
+                break;
         }
     }
 }
@@ -448,7 +461,7 @@ function convertFaceMsgToHtml(content) {
         faceUrl = emotion[1];
     }
     if (faceUrl) {
-        return	"<img src='" + faceUrl + "'/>";
+        return  "<img src='" + faceUrl + "'/>";
     } else {
         return data;
     }
@@ -464,7 +477,7 @@ function convertImageMsgToHtml(content) {
     if (!oriImage) {
         oriImage = smallImage;
     }
-    return	"<img src='" + smallImage.getUrl() + "#" + bigImage.getUrl() + "#" + oriImage.getUrl() + "' style='CURSOR: hand' id='" + content.getImageId() + "' bigImgUrl='" + bigImage.getUrl() + "' onclick='imageClick(this)' />";
+    return  "<img src='" + smallImage.getUrl() + "#" + bigImage.getUrl() + "#" + oriImage.getUrl() + "' style='CURSOR: hand' id='" + content.getImageId() + "' bigImgUrl='" + bigImage.getUrl() + "' onclick='imageClick(this)' />";
 }
 //解析语音消息元素
 function convertSoundMsgToHtml(content) {
@@ -698,14 +711,14 @@ function tlsGetUserSig(res) {
                 showLogoutForm();
 
                 sendData({
-                    Action	:'EnterGroup',
-                    userid	:webim.Tool.getQueryString("identifier"),// string	用户id
-                    liveuserid	:webim.Tool.getQueryString('userid'),// string	主播id
-                    flag	:webim.Tool.getQueryString('type'), // 0:直播 1:点播
+                    Action  :'EnterGroup',
+                    userid  :webim.Tool.getQueryString("identifier"),// string  用户id
+                    liveuserid  :webim.Tool.getQueryString('userid'),// string  主播id
+                    flag    :webim.Tool.getQueryString('type'), // 0:直播 1:点播
                     groupid: webim.Tool.getQueryString('type') == 0 ? avChatRoomId : webim.Tool.getQueryString('fileid'),
                     nickname: loginInfo.identifierNick,
                     headpic: '',
-                    fileid	:webim.Tool.getQueryString('fileid') || '' // 点播的情况下使用，用于区分是哪个视频
+                    fileid  :webim.Tool.getQueryString('fileid') || '' // 点播的情况下使用，用于区分是哪个视频
                 });
 
                 var indexUrl = window.location.search.substr(1);
@@ -963,12 +976,12 @@ function sendGroupLoveMsg() {
         webim.Log.info("点赞成功");
 
         sendData({
-            Action	:'ChangeCount',
-            userid	:webim.Tool.getQueryString('userid'),// string	用户id
-            type	:1, // 0:修改观看数量 1：修改点赞数量
-            optype	:0, // 0:增加 1:减少
-            flag	:webim.Tool.getQueryString('type'), // 0:直播 1:点播
-            fileid	:webim.Tool.getQueryString('fileid') || '' // 点播的情况下使用，用于区分是哪个视频
+            Action  :'ChangeCount',
+            userid  :webim.Tool.getQueryString('userid'),// string  用户id
+            type    :1, // 0:修改观看数量 1：修改点赞数量
+            optype  :0, // 0:增加 1:减少
+            flag    :webim.Tool.getQueryString('type'), // 0:直播 1:点播
+            fileid  :webim.Tool.getQueryString('fileid') || '' // 点播的情况下使用，用于区分是哪个视频
         });
     }, function (err) {
         webim.Log.error("发送点赞消息失败:" + err.ErrorInfo);
@@ -1151,10 +1164,10 @@ function delUrlParam(url,delParam){
 //登出
 function logout() {
     sendData({
-        Action	:'QuitGroup',
-        userid	:webim.Tool.getCookie('identifier'),// string	用户id
-        liveuserid	:webim.Tool.getQueryString('userid'),// string	主播id
-        flag	:webim.Tool.getQueryString('type'), // 0:直播 1:点播
+        Action  :'QuitGroup',
+        userid  :webim.Tool.getCookie('identifier'),// string   用户id
+        liveuserid  :webim.Tool.getQueryString('userid'),// string  主播id
+        flag    :webim.Tool.getQueryString('type'), // 0:直播 1:点播
         groupid: webim.Tool.getQueryString('type') == 0 ? avChatRoomId : webim.Tool.getQueryString('fileid') // flag为0情况下填群组id，为1情况下填fileid
     });
 
