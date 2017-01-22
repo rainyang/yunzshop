@@ -149,14 +149,17 @@
                 <i class="fa iconfont icon-shenqing" style="background:#f15353"></i><br/>主播申请
             </a>
         </li>
+        {/if}
+        <%/if%>
         
+        {if p('live')}
         <li>
             <a href="{php echo $live_list}">
                 <i class="fa iconfont icon-zhibo" style="background:#f15353"></i><br/>直播中心
             </a>
         </li>
         {/if}
-        <%/if%>
+        
 
         {if $hascom && is_weixin_show()}
             <li>
