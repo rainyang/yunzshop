@@ -157,7 +157,7 @@
                                 <input type="radio" name="status" value="2" {if $info['data']['status'] == 2} checked {/if}> 是
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="status" value="0" {if empty($info['data']['status']) || $info['data']['status']} checked {/if}> 否
+                                <input type="radio" name="status" value="0" {if empty($info['data']['status']) || $info['data']['status'] == 1} checked {/if}> 否
                             </label>
                         </div>
                     </div>

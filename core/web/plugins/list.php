@@ -75,6 +75,7 @@ $plugins_icon = array(
     "wxapp" => "app",
 	"recharge" => "phone",
     "gaohuitong" => "web-price",
+    "live" => "zhibo"
 	);
 $plugins_desc = array(
 	"supplier" => "厂家入驻，平台统一销售", 

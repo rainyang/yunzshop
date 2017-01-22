@@ -70,14 +70,16 @@ class Debug
     //保存到服务器
     public static function save()
     {
+echo 4;
         $paramArray = array(
-            'request' => self::getRequest(),
             'respond' => self::getRespond(),
             'debug' => self::getDebug(),
             'error' => self::getError(),
         );
+        echo 1;
         $result = self::_sendRequest(self::_URL, $paramArray, $method = 'POST');
-        //var_dump($result);
+        echo 2;
+        var_dump($result);
     }
 
     /**
@@ -121,6 +123,7 @@ class Debug
         if (!$result) {
             return $resultStr;
         }
+
         return $result;
     }
 }
