@@ -61,8 +61,7 @@ if ($op == 'display') {
 		} else {
 			$goodscount = count(explode(",", $shop['goodsids']));
 		}
-		$advs = pdo_fetchall("select id,advname,link,thumb from " . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
-		$advs = set_medias($advs, 'thumb');
+		$advs = m('shop')->getADs($uniacid);
 		$ret = array('shop' => $shop, 'goodscount' => number_format($goodscount, 0), 'set' => m('common')->getSysset('shop'), 'advs' => $advs);
 		$ret['isme'] = $mid == $member['id'];
 		return show_json(1, $ret);

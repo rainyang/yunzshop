@@ -280,7 +280,8 @@ if ($operation == 'display') {
     }
     pdo_update('sz_yi_member', array(
         'isagent' => 0,
-        'status' => 0
+        'status' => 0,
+        'agenttime' => 0
     ), array(
         'id' => $_GPC['id']
     ));
