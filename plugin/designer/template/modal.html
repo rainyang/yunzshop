@@ -228,22 +228,22 @@
 
                     {if p('live')}
                     <div class="fe-tab-link" id="fe-tab-link-8">
-                        {if !empty($room_list)}
-                        {loop $room_list $index $item}
-
-                        <div class="fe-tab-link-line">
-                            <div class="fe-tab-link-sub">
-                                <a href="javascript:;" ng-click="chooseLink(8, {$item['room_id']})">选择</a>
-                            </div>
-                            <div class="fe-tab-link-text" id="fe-tab-link-li-{$item['room_id']}" data-href="{php echo $this->createMobileUrl('live', array('p'=>'room',  'room_id'=>$item['room_id'], 'groupid'=>$item['chat_room_id'],  'hls'=>$item['hls_downstream_address']))}">
-                                房间: {$item['title']}
-                            </div>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="keyword" value="" id="select-room-kw" placeholder="请输入房间名称进行搜索">
+                            <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="ajaxselect('room');" id="selectroom">搜索</button></span>
                         </div>
+                        <div ng-repeat="room in temp.room">
+                            <div class="fe-tab-link-line" style='height:60px;line-height:60px;float:left;width:100%;'>
+                                <div class="fe-tab-link-sub"><a href="javascript:;" ng-click="chooseLink(8, room.room_id)">选择</a></div>
 
-                        {/loop}
-                        {else}
-                        <p style="padding:0px; margin-top: 120px; font-size: 16px; color: #aaa; text-align: center;">抱歉， 一个房间也没有找到~</p>
-                        {/if}
+                                <div class="fe-tab-link-text" id="fe-tab-link-li-{{room.room_id}}"
+                                     data-href="{php echo $this->createMobileUrl('live')}&p=room&room_id={{room.room_id}}&groupid={{room.chat_room_id}}&hls={{room.hls_downstream_address}}">
+                                    房间名称: {{room.title}}
+                                </div>
+                            </div>
+
+                        </div>
+                        <p ng-show="temp.room == ''" style="padding:0px; margin-top: 120px; font-size: 16px; color: #aaa; text-align: center;">抱歉， 一个房间也没有找到~换个关键词试试~</p>
 
                     </div>
                     {/if}
