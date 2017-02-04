@@ -294,11 +294,11 @@
             {/if}
         {/if}
     {/if}
-    {if is_weixin_show()}
+
     <%if shopset.isreturn%>
     <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     <%/if%>
-    {/if}
+    
         {if $shopset['isbeneficence']}
             <a href="{php echo $this->createPluginMobileUrl('beneficence/beneficence')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-donation" ></i>{$beneficencename}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 
