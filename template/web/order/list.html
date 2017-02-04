@@ -368,8 +368,12 @@
             {if empty($item['statusvalue'])}
                             <tr>
                                 <td style='border:none;text-align:right;'></td>
-                                {if $item['ischangePrice'] == 1}
-                                <td  style='border:none;text-align:right;color:green;'><a href="javascript:;" class="btn btn-link " onclick="changePrice('{$item['id']}')">修改价格</a></td>
+                                {if $perm_role != 1}
+                                    {if $item['ischangePrice'] == 1}
+                                        <td  style='border:none;text-align:right;color:green;'>
+                                            <a href="javascript:;" class="btn btn-link " onclick="changePrice('{$item['id']}')">修改价格</a>
+                                        </td>
+                                    {/if}
                                 {/if}
                             </tr>
                             {/if}  {/if}

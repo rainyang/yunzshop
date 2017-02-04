@@ -44,6 +44,29 @@
 							</div>
 						</div>
 					</div>
+					<div class="panel-heading">分享</div>
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否绑定手机</label>
+							<div class="col-sm-9 col-xs-12">
+								<label class="radio-inline">
+									<input type="radio" name="share[switch]" value="1" {if $set['app']['base']['share']['switch'] == 1} checked {/if}> 开启
+								</label>
+
+								<label class="radio-inline">
+									<input type="radio" name="share[switch]" value="0" {if empty($set['app']['base']['share']['switch']) || $set['app']['base']['share']['switch'] == 0} checked {/if}> 关闭
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义banner</label>
+							<div class="col-sm-9 col-xs-12">
+								{php echo tpl_form_field_image('thumb', $thumb_pc)}
+								<span class='help-block'>建议尺寸:647 * 453</span>
+
+							</div>
+						</div>
+					</div>
 
 					<div class="panel-heading">推送消息</div>
 					<div class="panel-body">

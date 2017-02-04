@@ -685,6 +685,10 @@ class Sz_DYi_Order
             foreach ($orders as $o) {
                 $onew = pdo_fetch('select status from ' . tablename('sz_yi_order') . " where id=:id and status=0 and paytype<>3  and createtime + {$daytimes} <=unix_timestamp()  limit 1", array(':id' => $o['id']));
                 if (!empty($onew) && $onew['status'] == 0) {
+                    //商品返库存
+
+                    $this->returnStock($o['id']);
+
                     pdo_query('update ' . tablename('sz_yi_order') . ' set status=-1,canceltime=' . time() . ' where id=' . $o['id']);
                     if ($p) {
                         if (!empty($o['couponid'])) {
@@ -705,7 +709,9 @@ class Sz_DYi_Order
     public function getOrderGodds($orderid)
     {
         global $_W;
-        $order_goods = pdo_fetchall("select g.id,og.orderid, g.type, og.total,og.optionid from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ",
+
+        $order_goods = pdo_fetchall("select g.id,og.orderid, g.type, og.total,og.optionid, og.totalcnf from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ",
+
             array(
                 ":uniacid" => $_W["uniacid"],
                 ":orderid" => $orderid
@@ -723,11 +729,13 @@ class Sz_DYi_Order
     public function updateGoodsStock($goodsid, $total)
     {
         global $_W;
+        if ($goodsid) {
+            $total = intval($total);
+            $sql = "UPDATE " . tablename('sz_yi_goods') . " SET total = total + " . $total . " 
+                    WHERE uniacid= " . $_W['uniacid'] . " AND id= " . $goodsid;
 
-        $sql = "UPDATE " . tablename('sz_yi_goods') . " SET total = total + " . $total . " 
-                WHERE uniacid= " . $_W['uniacid'] . " AND id= " . $goodsid;
-
-        pdo_query($sql);
+            pdo_query($sql);
+        }
     }
 
     /**
@@ -740,10 +748,11 @@ class Sz_DYi_Order
     public function updateGoodsOptionStock($goodsid, $optionid, $total)
     {
         global $_W;
-
-        $sql = "UPDATE " . tablename('sz_yi_goods_option') . " SET stock = stock + " . $total . " 
+        if ($goodsid && $optionid) {
+            $total = intval($total);
+            $sql = "UPDATE " . tablename('sz_yi_goods_option') . " SET stock = stock + " . $total . " 
                 WHERE uniacid= " . $_W['uniacid'] .  " AND id = " . $optionid . " AND goodsid= " . $goodsid ;
-
+        }
         pdo_query($sql);
     }
 
@@ -772,5 +781,29 @@ class Sz_DYi_Order
 
         pdo_query($sql);
 
+    }
+
+    /**
+     * 订单取消商品返库存
+     *
+     * @param $orderid
+     */
+    public function returnStock($orderid)
+    {
+        //订单商品
+        $order_goods = m('order')->getOrderGodds($orderid);
+
+        //商品返库存
+        foreach ($order_goods as $items) {
+            if ($items['totalcnf'] == 0) {//拍下减库存
+                if ($items['type'] == 3) {//虚拟产品
+                    m('order')->updateVirtualGoodsRecord($items['orderid'], $items['id']);
+                } elseif (!empty($items['optionid'])) {//多规格商品
+                    m('order')->updateGoodsOptionStock($items['id'], $items['optionid'], $items['total']);
+                } else {//无规格商品
+                    m('order')->updateGoodsStock($items['id'], $items['total']);
+                }
+            }
+        }
     }
 }

@@ -94,7 +94,7 @@ if (!class_exists('VerifyModel')) {
             global $_W, $_GPC;
             $store_info = $this->getInfo($storeid);
             $realprice = 0;
-            $store_price = pdo_fetchcolumn("SELECT sum(realprice) FROM ".tablename('sz_yi_order')." WHERE storeid=:storeid and uniacid=:uniacid and status = 3", array(':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
+            $store_price = pdo_fetchcolumn("SELECT sum(realprice) FROM ".tablename('sz_yi_order')." WHERE storeid=:storeid and uniacid=:uniacid and status = 3 and paytype <> 4 ", array(':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
 
 
             return $store_price;

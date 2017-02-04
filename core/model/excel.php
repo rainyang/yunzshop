@@ -232,9 +232,9 @@ class Sz_DYi_Excel
         $excel->getActiveSheet()->setTitle($params['title']);
         $filename = $params['title']."-". $page;
         $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
-        if (!file_exists('IA_ROOT . "/addons/sz_yi/data/excel')) {
+        if (!is_dir(IA_ROOT . "/addons/sz_yi/data/excel")) {
             mkdir (IA_ROOT . "/addons/sz_yi/data/excel/");
-        }  
+        }
         $writer->save(IA_ROOT . "/addons/sz_yi/data/excel/" . $filename . ".xls");
         if ($page == $page_total) {
             load()->func('file');
@@ -247,11 +247,15 @@ class Sz_DYi_Excel
             //$fileNameArr 就是一个存储文件路径的数组 比如 array('/a/1.jpg,/a/2.jpg....');
             $fileNameArr = file_tree(IA_ROOT . "/addons/sz_yi/data/excel");
             foreach ($fileNameArr as $val ) {
-                $zip->addFile ($val,basename($val) ); // 第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                // 当你使用addFile添加到zip包时，必须确保你添加的文件是存在的，否则close时会返回FALSE，而且使用addFile时，即使文件不存在也会返回TRUE
+                if(file_exists(IA_ROOT . "/addons/sz_yi/data/excel/" . basename($val))){
+                    $zip->addFile (IA_ROOT . "/addons/sz_yi/data/excel/" . basename($val), basename($val) ); // 第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                }
             }
+
             $zip->close (); // 关闭
             foreach ($fileNameArr as $val ) {
-                file_delete($val);
+                file_delete(IA_ROOT . "/addons/sz_yi/data/excel/" . basename($val));
             }
             //下面是输出下载;
 

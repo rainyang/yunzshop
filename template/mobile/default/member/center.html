@@ -89,7 +89,18 @@
             <li><a href="#"><span><%member.virtual_currency%></span><br/>{$yunbi_title}</a></li>
         {/if}
         <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
-        <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
+        <li>
+            <a href="#">
+            <span>
+                {if $counts['couponcount'] == 0}
+                0
+                {else}
+                <%counts.couponcount%>
+                {/if}
+            </span>
+            <br/>优惠券
+            </a>
+        </li>
     </ul>
 </div>
 <div class="order">
@@ -131,6 +142,25 @@
 
 <div class="cart new-ullist">
     <ul>
+        <%if member.isagent == 1 && member.status == 1 && member.agentblack == 0 %>
+        {if p('live')}
+        <li>
+            <a href="{php echo $live_url}">
+                <i class="fa iconfont icon-shenqing" style="background:#f15353"></i><br/>主播申请
+            </a>
+        </li>
+        {/if}
+        <%/if%>
+        
+        {if p('live')}
+        <li>
+            <a href="{php echo $live_list}">
+                <i class="fa iconfont icon-zhibo" style="background:#f15353"></i><br/>直播中心
+            </a>
+        </li>
+        {/if}
+        
+
         {if $hascom && is_weixin_show()}
             <li>
                 <a href="{php echo $this->createPluginMobileUrl('commission')}">
@@ -227,7 +257,7 @@
 
 {if p('recharge')}
     <div class="cart">
-        <a href="{php echo $this->createPluginMobileUrl('recharge/detail')}">
+        <a href="{php echo $this->createMobileUrl('shop/detail', array('plugin' => 'recharge'))}">
             <div class="list1">
                 <i class="fa fa-mobile"></i>充值专区
                 <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right;line-height: 44px; "></i>
@@ -269,11 +299,11 @@
             {/if}
         {/if}
     {/if}
-    {if is_weixin_show()}
+
     <%if shopset.isreturn%>
     <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     <%/if%>
-    {/if}
+    
         {if $shopset['isbeneficence']}
             <a href="{php echo $this->createPluginMobileUrl('beneficence/beneficence')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-donation" ></i>{$beneficencename}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 
@@ -299,7 +329,7 @@
      <%if shopset.isranking == 1%>
     <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     <%/if%>
-    {if $allset['verify']}
+    {if !empty($allset['verify'])}
         {if $allset['verify']['centershow'] == 1}
         <a href="{php echo $this->createPluginMobileUrl('verify/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i>门店销售排行榜<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}

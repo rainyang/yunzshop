@@ -8,7 +8,7 @@ a {text-decoration:none;}
 .log_top .num { float:right;color:#666;height:44px;line-height:44px;padding-right:5px;}
     
 .log_menu {height:44px; background:#fff;}
-.log_menu .nav {height:44px; width:20%; border-bottom:1px solid #f1f1f1;background:#fff; border-left:1px solid #f1f1f1; float:left; line-height:44px; font-size:14px; color:#666; text-align:center;}
+.log_menu .nav {height:44px; border-bottom:1px solid #f1f1f1;background:#fff; border-left:1px solid #f1f1f1; float:left; line-height:44px; font-size:14px; color:#666; text-align:center;}
 .log_menu .navon {height:42px; color:#ff771b; border-bottom:2px solid #ff771b;}
 
 .log_title {height:40px; padding:5px; line-height:50px; font-size:16px; color:#666;}
@@ -21,6 +21,12 @@ a {text-decoration:none;}
 .log_list .right span {color:#f90;}
 .log_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
 #log_loading { padding:10px;color:#666;text-align: center;}
+
+{if $isglobal}
+.log_menu .nav{width:24.8%}
+{else}
+.log_menu .nav{width:33%}
+{/if}
 </style>
 
 <div class="log_top">
@@ -29,9 +35,12 @@ a {text-decoration:none;}
 </div>
 {if $member['bonus_area']}
 <div class="log_menu">
-    <div class="nav" data-status='1'  style='width:33%'>全部明细</div>
-    <div class="nav" data-status='2'  style='width:33%'>{php echo $this->set['texts']['team']}明细</div>
-    <div class="nav" data-status='3'  style='width:33%'>{php echo $this->set['texts']['area']}明细</div>
+    <div class="nav" data-status='1'>全部明细</div>
+    <div class="nav" data-status='2'>{php echo $this->set['texts']['team']}明细</div>
+    <div class="nav" data-status='3'>{php echo $this->set['texts']['area']}明细</div>
+    {if $isglobal}
+    <div class="nav" data-status='4'>{php echo $this->set['texts']['global']}明细</div>
+    {/if}
 </div>
 {/if}
 <div id='container'></div>

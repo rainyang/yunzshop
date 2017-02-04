@@ -19,7 +19,7 @@ if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
     $store_total = true;
 }
 if (p('recharge')) {
-        $telephone =  $_GPC['telephone'];
+        $telephone =  intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
     }
 if (!empty($trade['shareaddress'])  && is_weixin()) {
     if (!$_W['isajax']) {
@@ -76,8 +76,9 @@ if (p('ladder')) {
 }
 if ($operation == "display" || $operation == "create") {
     $id   = ($operation == "create") ? intval($_GPC["order"][0]["id"]) : intval($_GPC["id"]);
+    $telephone = intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
     //$show = 1;
-    if (p('recharge') && $_GPC['telephone']) {
+    if (p('recharge') && $telephone) {
         $show = 0;
     } else {
         $show = 1;
@@ -180,7 +181,7 @@ if ($yunbi_plugin) {
 
 if ($_W['isajax']) {
     if (p('recharge')) {
-        $telephone =  $_GPC['telephone'];
+        $telephone =  intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
     }
     $ischannelpick = intval($_GPC['ischannelpick']);
     //$isyunbipay = intval($_GPC['isyunbipay']);
@@ -1613,12 +1614,25 @@ if ($_W['isajax']) {
                 }
                 if (!empty($saleset["moneydeduct"])) {
                     $deductcredit2 = m("member")->getCredit($openid, "credit2");
-                    if ($deductcredit2 > $totalprice) {
-                        $deductcredit2 = $totalprice;
+
+                    if (empty($saleset["dispatchnodeduct"])) {
+                        if ($deductcredit2 > $totalprice + $dispatch_price) {
+                            $deductcredit2 = $totalprice + $dispatch_price;
+                        }
+                        if ($deductcredit2 > $deductprice2 + $dispatch_price) {
+                            $deductcredit2 = $deductprice2 + $dispatch_price;
+                        }
+                    } else {
+                        if ($deductcredit2 > $totalprice) {
+                            $deductcredit2 = $totalprice;
+                        }
+                        if ($deductcredit2 > $deductprice2) {
+                            $deductcredit2 = $deductprice2;
+                        }
                     }
-                    if ($deductcredit2 > $deductprice2) {
-                        $deductcredit2 = $deductprice2;
-                    }
+
+
+
                 }
             }
 
@@ -1790,7 +1804,7 @@ if ($_W['isajax']) {
                 if (p('yunbi')) {
                     $yunbi_condtion = 'isforceyunbi,yunbi_deduct,';
                 }
-                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,deductcommission,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct,bonusmoney,plugin FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,deductcommission,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct,bonusmoney,plugin,totalcnf FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
 
                 $data = pdo_fetch($sql, array(
                     ':uniacid' => $uniacid,
@@ -2516,6 +2530,7 @@ if ($_W['isajax']) {
                     $goodsprice =$_GPC['goodsprice'];
                 }
             }
+            
             $order   = array(
                 'supplier_uid' => $order_row['supplier_uid'],
                 'uniacid' => $uniacid,
@@ -2693,6 +2708,7 @@ if ($_W['isajax']) {
                     'goodsid' => $goods['goodsid'],
                     'price' => $goods['marketprice'] * $goods['total'],
                     'total' => $goods['total'],
+                    'totalcnf' => $goods['totalcnf'],
                     'optionid' => $goods['optionid'],
                     'createtime' => time(),
                     'optionname' => $goods['optiontitle'],

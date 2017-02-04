@@ -214,7 +214,8 @@ if (!empty($_POST)) {
 	            "sendpay_error" => $sendpay_error,
 	            'utime' => $daytime,
 	            "send_bonus_sn" => $send_bonus_sn,
-	            "total" => $real_total
+	            "total" => $real_total,
+                "bonus_area" => 1
 	            );
 	    pdo_insert('sz_yi_bonus', $log);
         @unlink ($file_bonus_log);

@@ -76,11 +76,10 @@ input {-webkit-appearance:none; outline:none;}
                        $('.balance_sub').attr('saving',1).html('正在处理中...');
                         core.pjson('commission/apply',{type:type},function(pjson){
                               if(pjson.status=='1'){
-                                   core.tip.show( pjson.result );
-                                   location.href = core.getUrl('plugin/commission/withdraw');
+                                  core.message(pjson.result,"{php echo $this->createPluginMobileUrl('commission/withdraw')}" ,'success');
                               }else{
-                                   core.message(pjson.result,"{php echo $this->createPluginMobileUrl('commission/apply')}" ,'error');
-                                }
+                                  core.message(pjson.result,"{php echo $this->createPluginMobileUrl('commission/apply')}" ,'error');
+                              }
                                
                        },true,true);
                    });

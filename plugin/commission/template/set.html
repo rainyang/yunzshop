@@ -231,21 +231,19 @@
             </div>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启佣金提现到余额免审核</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启佣金提现免审核</label>
                 <div class="col-sm-9 col-xs-12">
-                    <label class="radio-inline"><input type="radio"  name="setdata[creditnocheck]" value="1" {if $set['creditnocheck'] ==1} checked="checked"{/if} /> 开启</label>
-                    <label class="radio-inline"><input type="radio"  name="setdata[creditnocheck]" value="0" {if $set['creditnocheck'] ==0} checked="checked"{/if} /> 关闭</label>
-                    <span class="help-block">是否允许余额提现免审核</span>
+                    <label class="radio-inline"><input type="radio"  name="setdata[credit_avoid_audit]" value="1" onclick="credit_avoid_audit();" {if $set['credit_avoid_audit'] ==1} checked="checked"{/if} /> 开启</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[credit_avoid_audit]" value="0" onclick="credit_avoid_audit();" {if $set['credit_avoid_audit'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <span class="help-block">是否开启佣金提现到免审核功能（提现到支付宝不能使用此功能）</span>
                 </div>
             </div>
             <!-- 提现免审核金额  不填写则需要审核  填写金额 则0-金额内可免审核自动打款 -->
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现审核限制</label>
+            <div class="form-group form-closewithdrawcheck"{if $set['credit_avoid_audit'] == 0} style="display:none;"{/if} id="">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">佣金提现免审核限制金额</label>
                 <div class="col-sm-9 col-xs-12">
-                    <!-- <label class="radio-inline"><input type="radio"  name="setdata[closewithdrawcheck]" value="0" {if $set['closewithdrawcheck'] ==0} checked="checked"{/if} /> 开启</label>
-                    <label class="radio-inline"><input type="radio"  name="setdata[closewithdrawcheck]" value="1" {if $set['closewithdrawcheck'] ==1} checked="checked"{/if} /> 关闭</label> -->
                     <input type="text" name="setdata[closewithdrawcheck]" class="form-control" value="{$set['closewithdrawcheck']}"  />
-                    <span class="help-block">提现金额少于等于自定义的限制金额，则提现不需要审核。否则需要审核。</span>
+                    <span class="help-block">佣金提现金额少于等于自定义的限制金额，则提现不需要审核。不填写则不限制。</span>
                 </div>
             </div>
 
@@ -308,6 +306,7 @@
                     <span class="help-block">是否开启三级分销订单消息提醒功能，不开启上级有消息</span>
                 </div> 
            </div>
+            {if p('hlag')}
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启佣金抵扣</label>
                 <div class="col-sm-9 col-xs-12">
@@ -316,6 +315,7 @@
                     <span class="help-block">开启佣金抵扣后，分销商提现佣金只有审核通过按钮</span>
                 </div>
             </div>
+            {/if}
         </div>
  
       <div class='panel-heading'>
@@ -640,7 +640,7 @@
 </div>
 </div>
 <script language='javascript'>
-      function search_goods() {
+    function search_goods() {
              if( $.trim($('#search-kwd-goods').val())==''){
                  Tip.focus('#search-kwd-goods','请输入关键词');
                  return;
@@ -667,6 +667,14 @@
             }
         }
         return true;
+    }
+
+    function credit_avoid_audit() {
+        if ($("input[name='setdata[credit_avoid_audit]']:checked").val() == 1) {
+            $(".form-closewithdrawcheck").show();
+        } else {
+            $(".form-closewithdrawcheck").hide();
+        }
     }
 </script>
 {template 'web/_footer'}

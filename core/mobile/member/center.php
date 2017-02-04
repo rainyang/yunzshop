@@ -329,4 +329,20 @@ if ($shopset['term']) {
         $termtime = $shopset['term_time'] * 86400 * 365;
     }
 }
+
+//直播插件
+if (p('live')) {
+    $anchor_info = p('live')->getAnchorInfo($openid);
+
+    if (!empty($anchor_info) && $anchor_info['status'] == 1) {
+        $live_url = $this->createPluginMobileUrl('live/room');
+
+    } else {
+        $live_url = $this->createPluginMobileUrl('live');
+    }
+
+    //直播间列表(直播中心入口)
+    $live_list = $this->createMobileUrl('live', array('p'=>'list')); 
+}
+
 include $this->template('member/center');

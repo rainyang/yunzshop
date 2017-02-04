@@ -33,10 +33,11 @@
 .balance_sub2 {height:44px; margin:14px 5px; background:#f49c06; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .balance_sub10 {height:44px; margin:10px 5px; background:#f15353; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .balance_sub3 {height:44px; margin:10px 5px;background:#e2cb04; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+	.balance_sub0 {height:44px; margin:10px 5px;background:#e2cb04; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 
 </style>
 {if $hascoupon}
-{template 'coupon/chooser'}
+{template 'coupon/chooser_recharge'}
 {/if}
 <div id="container"></div>
 
@@ -234,6 +235,7 @@
                 $('.balance_sub2').click(function () {
                    
                     var money = $('#money').val();
+					var couponid = $('#couponid').val();
                     if (!$('#money').isNumber()) {
                         core.tip.show('请输入数字金额!');
                         return;
@@ -243,8 +245,8 @@
                         core.tip.show('请刷新重试!');
                         return;
                     }
-                    
-                   core.json('member/recharge', {op: 'recharge', openid:"{$openid}",type: 'alipay', money: money, logid: logid}, function (rjson) {
+
+                   core.json('member/recharge', {op: 'recharge', openid:"{$openid}",type: 'alipay', money: money, logid: logid,couponid:couponid}, function (rjson) {
                         if(rjson.status!=1){
                             $('.button').removeAttr('submitting');
                             core.tip.show(rjson.result);
@@ -261,6 +263,7 @@
                 $('.balance_sub10').click(function () {
                    
                     var money = $('#money').val();
+					var couponid = $('#couponid').val();
                     if (!$('#money').isNumber()) {
                         core.tip.show('请输入数字金额!');
                         return;
@@ -271,7 +274,7 @@
                         return;
                     }
                     
-                   core.json('member/recharge', {op: 'recharge', openid:"{$openid}",type: 'yunpay', money: money, logid: logid}, function (rjson) {
+                   core.json('member/recharge', {op: 'recharge', openid:"{$openid}",type: 'yunpay', money: money, logid: logid,couponid:couponid}, function (rjson) {
                         if(rjson.status!=1){
                             $('.button').removeAttr('submitting');
                             core.tip.show(rjson.result);
@@ -291,6 +294,7 @@
 							return;
 						}
 						var money = $('#money').val();
+						var couponid = $('#couponid').val();
 						if (!$('#money').isNumber()) {
 							core.tip.show('请输入数字金额!');
 							return;
@@ -307,7 +311,8 @@
 							openid: "{$openid}",
 							type: 'weixin',
 							money: money,
-							logid: logid
+							logid: logid,
+							couponid:couponid
 						}, function (rjson) {
 							if (rjson.status != 1) {
 								$('.button').removeAttr('submitting');

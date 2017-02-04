@@ -36,6 +36,27 @@ $list = pdo_fetchall('SELECT log.*, m.avatar,m.nickname,m.realname,m.mobile,m1.a
 $total = pdo_fetchcolumn('SELECT count(*)  FROM ' . tablename('sz_yi_poster_log') . ' log ' . ' left join ' . tablename('sz_yi_member') . ' m1 on m1.openid = log.openid and m1.uniacid = log.uniacid ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid = log.from_openid and m.uniacid = log.uniacid ' . " where 1 {$condition}  ", $params);
 foreach ($list as &$row) {
 	$row['times'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_poster_log') . ' where from_openid=:from_openid and posterid=:posterid and uniacid=:uniacid', array(':from_openid' => $row['from_openid'], ':posterid' => intval($_GPC['id']), ':uniacid' => $_W['uniacid']));
+    //关注人获得现金的方式
+    if ($row['submoney'] > 0) {
+        if ($row['subpaytype'] == 1) {
+            $row['subpaytypename'] = "钱包";
+        } elseif ($row['subpaytype'] == 2) {
+            $row['subpaytypename'] = "红包";
+        } else {
+            $row['subpaytypename'] = "余额";
+        }
+    }
+
+    //推荐人获得现金的方式
+    if ($row['recmoney'] > 0) {
+        if ($row['recpaytype'] == 1) {
+            $row['recpaytypename'] = "钱包";
+        } elseif ($row['recpaytype'] == 2) {
+            $row['recpaytypename'] = "红包";
+        } else {
+            $row['recpaytypename'] = "余额";
+        }
+    }
 }
 unset($row);
 $pager = pagination($total, $pindex, $psize);

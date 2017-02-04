@@ -107,7 +107,12 @@ $paytype = array(
     "4" => array(
         "css" => "primary",
         "name" => "到店支付"
-    )
+    ),
+    "30" => array(
+        "css" => "warning",
+        "name" => "高汇通支付"
+    ),
+
 );
 $orderstatus = array(
     "-1" => array(
@@ -2422,7 +2427,20 @@ function order_list_refund($item)
 
                                 } elseif ($item['paytype'] == 29){
                                     message('paypal付款订单，请使用手动退款并到paypal商户处理退款！！！', '', 'error');
-                                }else {
+                                } elseif ($item['paytype'] == 30) {
+                                    $ght = pdo_fetch("select * from " . tablename('sz_yi_gaohuitong') . ' where uniacid=:uniacid limit 1', array(
+                                        ':uniacid' => $_W['uniacid']
+                                    ));
+                                    if (!$ght['switch']) {
+                                        message('您未开启高汇通支付', '', 'error');
+                                    }
+                                    if ($ordersn_count > 1) {
+                                        message('多笔合并付款订单，请使用手动退款。', '', 'error');
+                                    }
+                                    $realprice = round($realprice - $item['deductcredit2'], 2);
+
+                                    p('gaohuitong')->refund($ght, $item['pay_ordersn'], $refund['refundno'], $realprice);
+                                } else {
                                     if ($realprice < 1) {
                                         message('退款金额必须大于1元，才能使用微信企业付款退款!', '', 'error');
                                     }

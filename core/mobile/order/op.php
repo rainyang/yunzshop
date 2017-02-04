@@ -35,6 +35,10 @@ if ($_W['isajax']) {
 	            'id' => $order['id'],
 	            'uniacid' => $uniacid
 	        ));
+
+        //取消订单返商品库存
+        m('order')->returnStock($order['id']);
+        
 		m('notice')->sendOrderMessage($orderid);
 	        if ($order['deductprice'] > 0) {
 	            $shop = m('common')->getSysset('shop');
