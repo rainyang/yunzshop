@@ -1630,6 +1630,9 @@ if ($_W['isajax']) {
                             $deductcredit2 = $deductprice2;
                         }
                     }
+
+
+
                 }
             }
 
