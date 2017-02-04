@@ -624,7 +624,6 @@
             return false;
         }
         if($(':radio[name=type]:checked').val()=='4'){
-            
              if($(':radio[name=paytype]:checked').val()=='1'){
               
                 var recmoney = parseFloat($(':input[name=recmoney]').val());
@@ -642,16 +641,17 @@
                     }
                 }
              } else if ($(':radio[name=paytype]:checked').val()=='2') {
+
                  var recmoney = parseFloat($(':input[name=recmoney]').val());
                  if( recmoney>0 ){
-                     if(recmoney<1 && recmoney>200){
+                     if(recmoney<1 || recmoney>200){
                          Tip.select($(':input[name=recmoney]'),'微信红包打款金额在1～200之间','bottom');
                          return false;
                      }
                  }
                  var submoney = parseFloat($(':input[name=submoney]').val());
                  if(submoney>0){
-                     if(submoney<1 && recmoney>200){
+                     if(submoney<1 || submoney>200){
                          Tip.select($(':input[name=submoney]'),'微信红包打款金额在1～200之间','bottom');
                          return false;
                      }

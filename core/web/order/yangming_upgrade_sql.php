@@ -75,4 +75,12 @@ if(!pdo_fieldexists('sz_yi_order', 'deductcommission')) {
 if(!pdo_fieldexists('sz_yi_commission_apply', 'payauto')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `payauto` tinyint(1) DEFAULT '0' COMMENT '自动提现 1为自动提现 0为审核提现';");
 }
+
+//1.22 关注海报红包打款方式记录到数据库字段
+if(!pdo_fieldexists('sz_yi_poster_log', 'subpaytype')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_poster_log')." ADD `subpaytype` tinyint(1) DEFAULT '0' COMMENT '关注人获得现金方式 0为余额 1为钱包 2为红包';");
+}
+if(!pdo_fieldexists('sz_yi_poster_log', 'recpaytype')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_poster_log')." ADD `recpaytype` tinyint(1) DEFAULT '0' COMMENT '推荐人获得现金方式 0为余额 1为钱包 2为红包';");
+}
 echo 1;

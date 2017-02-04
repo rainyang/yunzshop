@@ -729,11 +729,13 @@ class Sz_DYi_Order
     public function updateGoodsStock($goodsid, $total)
     {
         global $_W;
+        if ($goodsid) {
+            $total = intval($total);
+            $sql = "UPDATE " . tablename('sz_yi_goods') . " SET total = total + " . $total . " 
+                    WHERE uniacid= " . $_W['uniacid'] . " AND id= " . $goodsid;
 
-        $sql = "UPDATE " . tablename('sz_yi_goods') . " SET total = total + " . $total . " 
-                WHERE uniacid= " . $_W['uniacid'] . " AND id= " . $goodsid;
-
-        pdo_query($sql);
+            pdo_query($sql);
+        }
     }
 
     /**
@@ -746,10 +748,11 @@ class Sz_DYi_Order
     public function updateGoodsOptionStock($goodsid, $optionid, $total)
     {
         global $_W;
-
-        $sql = "UPDATE " . tablename('sz_yi_goods_option') . " SET stock = stock + " . $total . " 
+        if ($goodsid && $optionid) {
+            $total = intval($total);
+            $sql = "UPDATE " . tablename('sz_yi_goods_option') . " SET stock = stock + " . $total . " 
                 WHERE uniacid= " . $_W['uniacid'] .  " AND id = " . $optionid . " AND goodsid= " . $goodsid ;
-
+        }
         pdo_query($sql);
     }
 
