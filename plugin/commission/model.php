@@ -981,13 +981,6 @@ if (!class_exists('CommissionModel')) {
 			if ($member['isagent'] == 1) {
 				return;
 			}
-			if ($type == 0) {
-				$first = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where id<:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $member['id']));
-				if ($first <= 0) {
-					pdo_update('sz_yi_member', array('isagent' => 1, 'status' => 1, 'agenttime' => time(), 'agentblack' => 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
-					return;
-				}
-			}
 			$time = time();
 			$become_child = intval($set['become_child']);
 			if ($parent_is_agent && empty($member['agentid'])) {

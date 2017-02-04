@@ -268,6 +268,10 @@ if ($operation == 'display') {
         ':uniacid' => $_W['uniacid'],
         ':id' => $id
     ));
+    //代理商不能直接删除分销商权限
+    if ($member['bonuslevel'] || $member['bonus_area']) {
+        message('需先取消该会员的代理商资格后在取消分销商资格！', '', 'error');
+    }
     if (empty($member)) {
         message('会员不存在，无法取消分销商资格!', $this->createPluginWebUrl('commission/agent'), 'error');
     }
@@ -283,7 +287,7 @@ if ($operation == 'display') {
         'status' => 0,
         'agenttime' => 0
     ), array(
-        'id' => $_GPC['id']
+        'id' => $id
     ));
     plog('commission.agent.delete', "取消分销商资格 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
     message('删除成功！', $this->createPluginWebUrl('commission/agent'), 'success');
