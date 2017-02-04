@@ -40,13 +40,13 @@
     .top .top_2 .disabled { color:#999;border:1px solid #999;}
     .menu {overflow:hidden; background:#fff;}
     .menu .nav { width:33%; float:left;padding-top:10px;padding-bottom:10px; text-align: center;}
-    
+
     .menu .nav .title {height:24px; width:100%; text-align:center; font-size:14px; color:#666;}
     .menu .nav .con {height:20px; width:100%; text-align:center; font-size:12px; color:#999;}
     .menu .nav .con span {color:#f90;}
     .menu .nav1 {border-bottom:1px solid #f1f1f1; border-right:1px solid #f1f1f1;   }
     .menu .nav2 {border-bottom:1px solid #f1f1f1; }
- 
+
 </style>
 <div id='container' style="padding-bottom: 55px"></div>
 <script id='tpl_main' type='text/html'>
@@ -55,11 +55,11 @@
         <div class="user_info">
             <div class="user_name" <%if set.levelurl!=''%>onclick='location.href="<%set.levelurl%>"'<%/if%>><%member.nickname%> <span>[<%if level%><%level.levelname%><%else%>
                     <%if set.levelname!=''%><%set.levelname%><%else%>普通等级<%/if%>
-                    <%/if%>] 
+                    <%/if%>]
                    <%if set.levelurl!=''%><i class='fa fa-question-circle' ></i></span><%/if%></div>
             <div class="user_date">加入时间：<%member.agenttime%></div>
         </div>
-    </div> 
+    </div>
 
 
 <div class="comm-center">
@@ -81,11 +81,11 @@
     </div>-->
 
 
-    <div class="menu">  
+    <div class="menu">
         <a href="{php echo $this->createPluginMobileUrl('commission/withdraw')}"><div class="nav nav1"><i class="fa iconfont icon-cny"  style="background:#BC7BFF;"></i><div class="title">{php echo $this->set['texts']['commission1']}</div><div class="con"><span><%member.commission_total%></span> 元</div></div></a>
         <a href="{php echo $this->createPluginMobileUrl('commission/order')}"><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#F981A7;"></i><div class="title">{php echo $this->set['texts']['order']}</div><div class="con"><span><%member.ordercount0%></span> 个</div></div></a>
         <a href="{php echo $this->createPluginMobileUrl('commission/log')}"><div class="nav nav2"><i class="fa fa-random  fa-3x" style="background:#ff6e03;"></i><div class="title">{php echo $this->set['texts']['commission_detail']}</div><div class="con">{php echo $this->set['texts']['commission']}明细</div></div></a>
-        
+
         <a href="{php echo $this->createPluginMobileUrl('commission/team')}"><div class="nav nav1"><i class="fa iconfont icon-hezuotuandui" style="background:#58d5d9;"></i><div class="title">{php echo $this->set['texts']['myteam']}</div><div class="con"><span><%member.agentcount%></span> 人</div></div></a>
         <a href="{php echo $this->createPluginMobileUrl('commission/customer')}"><div class="nav nav1"><i class="fa iconfont icon-kehu" style="background:#ffb13b;"></i><div class="title">{php echo $this->set['texts']['mycustomer']}</div><div class="con"><span><%member.customercount%></span> 人</div></div></a>
         <a href="{php echo $this->createPluginMobileUrl('commission/shares')}"><div class="nav nav2"><i class="fa fa-qrcode  fa-3x" style="background:#ff3877;"></i><div class="title">二维码</div><div class="con">推广二维码</div></div></a>
@@ -114,21 +114,21 @@
         <%/if%>
         {if p('article') && $isarticle}
             <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="nav nav1"><i class="fa fa-article  fa-3x" style="background:#ff3877;"></i><div class="title">{$article_text}</div><div class="con">{$article_title}</div></div></a>
-        {/if} 
+        {/if}
         <a href="#"><div class="nav nav1"><i class="fa iconfont icon-tongji" style="background:#2886FB;"></i><div class="title">订单总计</div><div class="con"><span><%pricecount%></span> 元</div></div></a>
-        
+
 <%/if%>
       {if p('love')}
         <a href="{php echo $this->createPluginMobileUrl('bonus/agent_info')}"><div class="nav nav1"><i class="fa fa-file-photo-o fa-3x" style="background:#6450db"></i><div class="title">代理申请</div><div class="con">代理商申请</div></div></a>
-        {/if}  
-        
+        {/if}
+
     </div>
 </script>
- 
+
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
-        
-        
+
+
         core.pjson('commission',{},function(json){
             var result = json.result;
             $('#container').html(  tpl('tpl_main',result) );
@@ -136,20 +136,20 @@
                 if(!json.result.mycansettle){
                      if(parseFloat(json.result.mysettlemoney)>0){
                         core.tip.show('您需要自己购买订单完成，共计'+json.result.mysettlemoney+'元才能申请{php echo $this->set['texts']['withdraw']}!');
-                        return false;    
+                        return false;
                      }
                 }
 
                 if(!json.result.cansettle){
                      if(parseFloat(json.result.settlemoney)>0){
                      core.tip.show('需到'+json.result.settlemoney+'元才能申请{php echo $this->set['texts']['withdraw']}!');
-                        return false;    
+                        return false;
                      }else if(parseFloat(json.result.proportion_money)>0){
                         core.tip.show('需在消费'+json.result.proportion_money+'元才能申请提现!');
                         return false;
                      }else{
-                        core.tip.show('无可提{php echo $this->set['texts']['commission']}!'); 
-                        return false;       
+                        core.tip.show('无可提{php echo $this->set['texts']['commission']}!');
+                        return false;
                      }
                 }
             });
