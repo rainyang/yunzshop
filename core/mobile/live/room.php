@@ -12,6 +12,9 @@ $domain = $_SERVER['HTTP_HOST'];
 
 if ($operation == 'display'){
 
+    //生成分销上下级关系("主播"做为上级, "观看者"如果之前没有分销关系, 则做为"主播"的下级)
+    p('commission')->checkAgent();
+
     //curl请求"获取直播间关联商品列表"的API
     load()->func('communication');
     $url = 'http://sy.yunzshop.com/admin_live.php?api=room/Goods&room_id=' . $room_id;
