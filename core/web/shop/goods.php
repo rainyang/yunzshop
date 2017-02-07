@@ -1263,7 +1263,7 @@ if ($operation == "change") {
         );
         if (!empty($_GPC['keyword'])) {
             $_GPC['keyword'] = trim($_GPC['keyword']);
-            $condition .= ' AND `title` LIKE :title';
+            $condition .= ' AND `title` LIKE :title or `goodssn` LIKE :title';
             $params[':title'] = '%' . trim($_GPC['keyword']) . '%';
         }
 
