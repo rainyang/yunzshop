@@ -359,7 +359,7 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键字</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
-                        <input class="form-control" name="keyword" id="" type="text" value="{$_GPC['keyword']}">
+                        <input class="form-control" name="keyword" id="keyword" type="text" value="{if $_GPC['keyword']}{$_GPC['keyword']}{else}商品名称／商品编码{/if}" onclick="value='';" ／>
                     </div>
                 </div>
                 <div class="form-group">
@@ -457,9 +457,40 @@
             </form>
         </div>
     </div>
-    <style>
+
+	<style type="text/css">
         .label{cursor:pointer;}
-    </style>
+
+		.umphp {
+			position: relative;
+		}
+
+		.img {
+
+			display: none;
+			position: absolute;
+			top: -55px;
+			right: 44px;
+			border: 1px solid #d0aaaa;
+			border-radius: 15px;
+			background: #FFF;
+			padding: 10px;margin-left: 10px;
+		}
+
+		.selected .img {
+			display: block;
+		}
+
+		.triangle-left {
+			position: absolute;right: -10px;top:57px;z-index: 999;
+			border-color: #ededed transparent transparent transparent;
+			width: 0;
+			height: 0;
+			border-top: 10px solid transparent;
+			border-bottom: 10px solid transparent;
+			border-left: 10px solid #e7eaec;
+		}
+	</style>
     <form action="" method="post">
 		<div class="panel panel-default">
 			<div class="panel-body table-responsive">
@@ -607,25 +638,38 @@
 								{if !$item['casesceu']}{if $item['allrefund']==0}<br /><a href="{php echo $this->createPluginWebUrl('fund/order', array('id' => $item['id'], 'op' => 'refund'))}"  onclick="return confirm('确定全部退款吗？'); return false;"><label class="label label-danger">全部退款</label></a>{else}<label class="label label-default">全部退款成功</label>{/if}{/if}
 							</td>
 							{/if}
-							<td style="position:relative;" width="20%">
-								<a href="javascript:;" data-url="{php echo $_GPC['plugin'] == 'fund' ? $this->createPluginMobileUrl('fund/detail', array('id' => $item['id'])) : $this->createMobileUrl('shop/detail', array('id' => $item['id']));}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
+							<td style="position:relative; overflow:visible;" width="20%">
+								<!-- yitian_add::商品链接二维码 2017-02-07 qq:751818588 -->
+								<a class="btn btn-sm btn-default umphp" title="商品二维码" data-url="{php echo $this->createMobileUrl('shop/detail', array('id' => $item['id']));}" data-goodsid = "{$item['id']}">
+									<div class="img">
+										<img id="{$item['id']}" src="" style="width:110px;">
+										<div class="arrow-bottom"></div>
+										<div class="triangle-left"></div>
+									</div>
+									<i class="fa fa-qrcode"></i>
+								</a>
 								{ifp 'shop.goods.copy'}
 								{if $_GPC['plugin'] == 'fund'}
-									<a href="{php echo $this->createWebUrl('shop/goods', array('good_id' => $item['id'] ,'plugin' =>'fund', 'status' => 'all'))}"  title="{$lang['copyshop']}" class="btn btn-default btn-smjs-clip"><i class="fa fa-article"></i></a>
+									<a href="{php echo $this->createWebUrl('shop/goods', array('good_id' => $item['id'] ,'plugin' =>'fund', 'status' => 'all'))}"  title="{$lang['copyshop']}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
 								{elseif $_GPC['plugin'] == 'recharge'}
-									<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'] , 'op' =>'copygoods' ,'plugin' =>'recharge', 'status' => 'all'))}"  title="{$lang['copyshop']}" class="btn btn-default btn-smjs-clip"><i class="fa fa-article"></i></a>
+									<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'] , 'op' =>'copygoods' ,'plugin' =>'recharge', 'status' => 'all'))}"  title="{$lang['copyshop']}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
 								{else}
-									<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'] ,'op' =>'copygoods'))}"  title="{$lang['copyshop']}" class="btn btn-default btn-smjs-clip"><i class="fa fa-article"></i></a>
+									<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'] ,'op' =>'copygoods'))}"  title="{$lang['copyshop']}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
 								{/if}
 								{/if}
-								{ifp 'shop.goods.edit|shop.goods.view'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'post', 'plugin' => $_GPC['plugin']))}"class="btn btn-sm btn-default" title="{ifp 'shop.goods.edit'}编辑{else}查看{/if}"><i class="fa fa-pencil"></i></a>{/if}
+								{ifp 'shop.goods.edit|shop.goods.view'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'post', 'plugin' => $_GPC['plugin']))}"class="btn btn-sm btn-default" title="{ifp 'shop.goods.edit'}编辑{else}查看{/if}" target="_blank"><i class="fa fa-edit"></i></a>{/if}
 								{ifp 'shop.goods.delete'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'delete', 'plugin' => $_GPC['plugin']))}" onclick="return confirm('确认删除此商品？');
-										return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-times"></i></a>{/if}
+										return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-trash"></i></a>{/if}
+								<a href="javascript:;" data-url="{php echo $_GPC['plugin'] == 'fund' ? $this->createPluginMobileUrl('fund/detail', array('id' => $item['id'])) : $this->createMobileUrl('shop/detail', array('id' => $item['id']));}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
 							</td>
 						</tr>
 						{if $_GPC['plugin'] != "fund" && $_GPC['plugin'] != "recharge"}
 						<tr>
 						<td  colspan="10" style="text-align: right;padding: 6px 30px;border-top:none;">
+
+						{if $item['goodssn']}
+							<label data='{$item['isnew']}' class='label label-default text-default'>商品编号：</label><span style="font-size:14px;color:#7B7B7B; margin-right:20px;">{$item['goodssn']}</span>
+						{/if}
 						<label data='{$item['isnew']}' class='label label-default text-default {if $item['isnew']==1}label-info text-pinfo{else}{/if}'   {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'new')"{/if}>新品</label>-
 
 						<label data='{$item['ishot']}' class='label label-default text-default {if $item['ishot']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'hot')"{/if}>热卖</label>-
@@ -669,6 +713,26 @@
 </div>
 </div>
 <script type="text/javascript">
+	//鼠标划过显示商品链接二维码
+    $('.umphp').hover(function() {
+        var url = $(this).attr('data-url');
+        var goodsid = $(this).attr('data-goodsid');
+		$.post("{php echo $this->createWebUrl('shop/goods')}"
+			, {'op': 'goods_qrcode', id: goodsid, url: url}
+			, function (qr) {
+                if (qr.img) {
+					var goodsqr = qr.img;
+                    var element = document.getElementById(goodsid);
+                    element.src = goodsqr;
+                }
+			}
+			, "json"
+		);
+		$(this).addClass("selected");
+	},
+	function() {
+		$(this).removeClass("selected");
+	})
 	function fastChange(id, type, value) {
 		
 		$.ajax({
