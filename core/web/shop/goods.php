@@ -176,6 +176,28 @@ if ($plugin_commission) {
 $pv = p('virtual');
 $diyform_plugin = p("diyform");
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
+//yitian_add::商品链接二维码 2017-02-07 qq:751818588
+if ($operation == "goods_qrcode") {
+    $id = intval($_GPC['id']);
+    $url = $_GPC['url'];
+    $goodsqr = IA_ROOT . '/addons/sz_yi/data/qrcode/' . $_W['uniacid'] . "/goodsqr";
+    if (!is_dir($goodsqr)) {
+        load()->func('file');
+        mkdirs($goodsqr);
+    }
+    $qrcodeImg = "goodsqr_" . $id . ".img";
+    $fullPath = $goodsqr . "/" . $qrcodeImg;
+    if (!is_file($fullPath)) {
+        require IA_ROOT . '/framework/library/qrcode/phpqrcode.php';
+        QRcode::png($url, $fullPath, QR_ECLEVEL_H, 4);
+    }
+    $img =  "http://" .$_SERVER['HTTP_HOST'] . "/addons/sz_yi/data/qrcode/" . $_W['uniacid'] . "/goodsqr/" . $qrcodeImg;
+    die(json_encode(array(
+        'result' => 1,
+        'img' => $img
+    )));
+}
+
 if ($operation == "change") {
     $id = intval($_GPC["id"]);
     if (empty($id)) {
