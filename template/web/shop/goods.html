@@ -666,6 +666,10 @@
 						{if $_GPC['plugin'] != "fund" && $_GPC['plugin'] != "recharge"}
 						<tr>
 						<td  colspan="10" style="text-align: right;padding: 6px 30px;border-top:none;">
+
+						{if $item['goodssn']}
+							<label data='{$item['isnew']}' class='label label-default text-default'>商品编号：</label><span style="font-size:14px;color:#7B7B7B; margin-right:20px;">{$item['goodssn']}</span>
+						{/if}
 						<label data='{$item['isnew']}' class='label label-default text-default {if $item['isnew']==1}label-info text-pinfo{else}{/if}'   {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'new')"{/if}>新品</label>-
 
 						<label data='{$item['ishot']}' class='label label-default text-default {if $item['ishot']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'hot')"{/if}>热卖</label>-
