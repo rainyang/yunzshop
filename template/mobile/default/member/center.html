@@ -223,6 +223,11 @@
             </a>
         </li>
         {/if}
+        <li>
+            <a href="{php echo $this->createMobileUrl('member/news')}">
+                <i class="fa iconfont icon-volume-up" style="background:#ff57d2"></i><br/>我的消息
+            </a>
+        </li>
     </ul>
 
 </div>
@@ -433,13 +438,13 @@
         sh=setInterval(FreshTimes,1000);
     }
 
-    function checkTime(i)    
-    {    
-       if (i < 10) {    
-           i = "0" + i;    
-        }    
-       return i;    
-    } 
+    function checkTime(i)
+    {
+       if (i < 10) {
+           i = "0" + i;
+        }
+       return i;
+    }
 });
 
 

@@ -107,8 +107,8 @@ class Sz_DYi_Order
                 $citys = explode(';', $area['citys']);
 
                 //处理运费模版辖区,辖县问题
-                if(mb_strlen($city) == mb_strrpos($city, "市") + 1){
-                    $cityShortName = mb_substr($city, 0, mb_strlen($city) - 1);
+                if(mb_strlen($city, 'utf-8') == mb_strrpos($city, "市", 'utf-8') + 1){
+                    $cityShortName = mb_substr($city, 0, mb_strlen($city, 'utf-8') - 1, 'utf-8');
                     if (!empty($citys) && (in_array($city, $citys) || in_array($cityShortName . "辖区", $citys) || in_array($cityShortName . "辖县", $citys))){
                         return $this->getDispatchPrice($param, $area, $dispatch_data['calculatetype']);
                     }

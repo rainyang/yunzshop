@@ -5,6 +5,17 @@ if (!defined("IN_IA")) {
 global $_W, $_GPC;
 $_GPC['status'] = !isset($_GPC['status']) ? 1 : $_GPC['status'];
 
+//yitian_add::taobao_status  2017-02-06  qq:751818588
+$taobao_stataus = false;
+if(p('taobao')) {
+    //公众号权限设置查询
+    $pulgins = pdo_fetchcolumn('select plugins from ' . tablename('sz_yi_perm_plugin') . ' where acid=:uniacid',array(":uniacid" => $_W['uniacid']));
+    $plugins_data = explode(',', $pulgins);
+    if(in_array('taobao', $plugins_data) || empty($plugins_data)) {
+        $taobao_stataus = true;
+    }
+}
+
 $mt = mt_rand(5, 35);
 if ($mt <= 10) {
     load()->func('communication');
