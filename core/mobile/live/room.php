@@ -61,6 +61,7 @@ if ($operation == 'display'){
         $result_02 = ihttp_get('http://live.tbw365.cn/shop_live.php?api=IM/Get/sign&openid='.$openid.'&domain='.$domain);
         $result_02_array = json_decode($result_02['content'], true);
         $sig = $result_02_array['data']['sign'];
+        $identifier = $result_02_array['data']['identifier'];
     }
 
     //获取昵称(如果没有nickname,就用mobile做为昵称)

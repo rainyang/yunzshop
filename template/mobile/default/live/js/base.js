@@ -136,7 +136,7 @@ function sdkLogin(callback) {
             },
             function (err) {
                 // alert('sdkLogin' + err.ErrorInfo); //因为报错信息非常长,暂替换成更友好的提示
-                alert('无法进入直播间,请尝试重新登录');
+                alert('无法进入直播间,请反馈给网站管理员');
             }
     );//
 }
