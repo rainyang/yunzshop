@@ -286,6 +286,7 @@ if (!class_exists('liveModel')) {
          * 其实就是利用对数的特性确定单位。
         */
         function size2mb($size,$digits=2){ //digits，要保留几位小数
+            $size = $size * 1024;
             $unit= array('','K','M','G','T','P');//单位数组，是必须1024进制依次的哦。
             $base= 1024;//对数的基数
             $i   = floor(log($size,$base));//字节数对1024取对数，值向下取整。
