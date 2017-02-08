@@ -1697,7 +1697,7 @@ if ($_W['isajax']) {
             }
 
             if ($sale_plugin) {
-                if (!empty($saleset['enoughfree']) && !empty(floatval($saleset['enoughorder'])) && $totalprice >= floatval($saleset['enoughorder'])) {
+                if (!empty($saleset['enoughfree']) && !empty($saleset['enoughorder']) && $totalprice >= floatval($saleset['enoughorder'])) {
                     $dispatch_price = 0;
                 }
             }
@@ -1710,13 +1710,9 @@ if ($_W['isajax']) {
 
             $deductcredit = 0;
             $deductmoney  = 0;
+            $totalprice += $dispatch_price;
 
             if ($sale_plugin) {
-                if (!empty($saleset['enoughfree']) && !empty(floatval($saleset['enoughorder'])) && $totalprice >= floatval($saleset['enoughorder'])) {
-                        $dispatch_price = 0;
-                }
-
-                $totalprice += $dispatch_price;
 
 
                 $credit = m("member")->getCredit($openid, "credit1");
