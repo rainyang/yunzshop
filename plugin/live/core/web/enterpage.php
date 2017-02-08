@@ -28,7 +28,7 @@ if (checksubmit('submit')) {
     $rid = pdo_insertid();
     $keyword_data = array('uniacid' => $_W['uniacid'], 'rid' => $rid, 'module' => 'cover', 'content' => trim($data['keyword']), 'type' => 1, 'displayorder' => 0, 'status' => intval($data['status']));
     pdo_insert('rule_keyword', $keyword_data);
-    $cover_data = array('uniacid' => $_W['uniacid'], 'rid' => $rid, 'module' => $this->modulename, 'title' => trim($data['title']), 'description' => trim($data['desc']), 'thumb' => $data['thumb'], 'url' => $this->createPluginMobileUrl('bonus'));
+    $cover_data = array('uniacid' => $_W['uniacid'], 'rid' => $rid, 'module' => $this->modulename, 'title' => trim($data['title']), 'description' => trim($data['desc']), 'thumb' => $data['thumb'], 'url' => $this->createMobileUrl('live/list'));
     pdo_insert('cover_reply', $cover_data);
     plog('bonus.cover', '修改直播入口设置');
     message('直播入口设置成功!', referer(), 'success');

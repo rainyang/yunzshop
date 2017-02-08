@@ -133,7 +133,7 @@
                                 <input type="radio" name="is_recommand" value="1" {if $info['data']['is_recommand'] == 1} checked {/if}> 是
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="is_recommand" value="0" {if empty($info['data']['mobis_recommandile']) || $info['data']['mois_recommandbile'] == 0} checked {/if}> 否
+                                <input type="radio" name="is_recommand" value="0" {if $info['data']['is_recommand'] == 0 || empty($info['data']['is_recommand'])} checked {/if}> 否
                             </label>
                         </div>
                     </div>
@@ -145,7 +145,7 @@
                                 <input type="radio" name="is_hot" value="1" {if $info['data']['is_hot'] == 1} checked {/if}> 是
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="is_hot" value="0" {if empty($info['data']['is_hot']) || $info['data']['is_hot'] == 0} checked {/if}> 是
+                                <input type="radio" name="is_hot" value="0" {if empty($info['data']['is_hot']) || $info['data']['is_hot'] == 0} checked {/if}> 否
                             </label>
                         </div>
                     </div>

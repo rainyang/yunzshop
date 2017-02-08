@@ -40,28 +40,6 @@ if ($op == 'display') {
         ':parentid'=> '0'
     ));
 
-    if (p('live')) {
-        $domain = $_SERVER['HTTP_HOST'];
-        $uniacid = $_W['uniacid'];
-
-        //curl请求"获取直播间列表"的API
-        load()->func('communication');
-        $url = 'http://sy.yunzshop.com/shop_live.php?api=room&domain='.$domain.'&uniacid='.$uniacid;
-
-        $result = ihttp_get($url);
-        $result_array = json_decode($result['content'], true);
-        $room_list = $result_array['data'];
-
-        //获取sig
-        if(!empty($openid)){
-            $result_02 = ihttp_get('http://live.tbw365.cn/shop_live.php?api=IM/Get/sign&openid='.$openid);
-            $result_02_array = json_decode($result_02['content'], true);
-            $sig = $result_02_array['data']['sign'];
-        }
-
-    }
-
-
     if (!empty($pageid)) {
         ca('designer.page.edit');
         $datas = pdo_fetch("SELECT * FROM " . tablename('sz_yi_designer') . " WHERE uniacid= :uniacid and id=:id", array(
@@ -371,6 +349,29 @@ if ($op == 'display') {
 	    	} elseif ($type == 'coupon') {
 	    		$articles = pdo_fetchall('select id,couponname,coupontype from ' . tablename('sz_yi_coupon') . ' where couponname LIKE :title and uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':title' => "%{$kw}%"));
 	    		echo json_encode($articles);
+            } elseif ($type == 'room') {
+                if (p('live')) {
+                    $domain = $_SERVER['HTTP_HOST'];
+                    $uniacid = $_W['uniacid'];
+
+                    //curl请求"获取直播间列表"的API
+                    load()->func('communication');
+
+                    $url = 'http://sy.yunzshop.com/shop_live.php?api=room/Index/search&domain='.$domain.'&uniacid='.$uniacid . '&title=' . $_GPC['kw'];
+
+                    $result = ihttp_get($url);
+                    $result_array = json_decode($result['content'], true);
+
+                    $room_list = $result_array['data'];
+
+                    //获取sig
+                    if(!empty($openid)){
+                        $result_02 = ihttp_get('http://live.tbw365.cn/shop_live.php?api=IM/Get/sign&openid='.$openid.'&domain='.$domain);
+                        $result_02_array = json_decode($result_02['content'], true);
+                        $sig = $result_02_array['data']['sign'];
+                    }
+                    echo json_encode($room_list);
+                }
             } else {
                 exit();
             }

@@ -1614,12 +1614,25 @@ if ($_W['isajax']) {
                 }
                 if (!empty($saleset["moneydeduct"])) {
                     $deductcredit2 = m("member")->getCredit($openid, "credit2");
-                    if ($deductcredit2 > $totalprice) {
-                        $deductcredit2 = $totalprice;
+
+                    if (empty($saleset["dispatchnodeduct"])) {
+                        if ($deductcredit2 > $totalprice + $dispatch_price) {
+                            $deductcredit2 = $totalprice + $dispatch_price;
+                        }
+                        if ($deductcredit2 > $deductprice2 + $dispatch_price) {
+                            $deductcredit2 = $deductprice2 + $dispatch_price;
+                        }
+                    } else {
+                        if ($deductcredit2 > $totalprice) {
+                            $deductcredit2 = $totalprice;
+                        }
+                        if ($deductcredit2 > $deductprice2) {
+                            $deductcredit2 = $deductprice2;
+                        }
                     }
-                    if ($deductcredit2 > $deductprice2) {
-                        $deductcredit2 = $deductprice2;
-                    }
+
+
+
                 }
             }
 

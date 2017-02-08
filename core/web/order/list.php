@@ -322,6 +322,10 @@ if ($operation == "display") {
         $condition .= " AND (sm.realname LIKE '%{$_GPC["saler"]}%' or sm.mobile LIKE '%{$_GPC["saler"]}%' or sm.nickname LIKE '%{$_GPC["saler"]}%' " . " or s.salername LIKE '%{$_GPC["saler"]}%' )";
         $join_table .= " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid ";
     }
+    if (!empty($_GPC['verifycode'])) {
+        $_GPC["verifycode"] = trim($_GPC["verifycode"]);
+        $condition .= " AND o.verifycode=" . intval($_GPC["verifycode"]);
+    }
     if (!empty($_GPC["storeid"])) {
         $_GPC["storeid"] = trim($_GPC["storeid"]);
         $condition .= " AND o.storeid=" . intval($_GPC["storeid"]);

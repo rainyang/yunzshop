@@ -17,7 +17,8 @@ if($_GPC['searchtime']){
 }else{
 	$data = $this->model->getStream();
 }
-
+$data['up_log'] = $data['up_log'] * 1024;
+$data['down_log'] = $data['down_log'] * 1024;
 if($data){
 	$up_log = $this->model->size2mb($data['up_log']);
 	$down_log = $this->model->size2mb($data['down_log']);

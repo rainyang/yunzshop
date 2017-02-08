@@ -98,8 +98,8 @@ if ($diyform_plugin) {
     }
 }
 $anchor_info = $this->model->getAnchorInfo($openid);
-if (!empty($anchor_info) && $anchor_info['status'] == 0) {
-    //审核中
+if (!empty($anchor_info) && ($anchor_info['status'] == 0 || $anchor_info['status'] == 3)) {
+    //审核中或者被禁播
     include $this->template('reminder');
     exit;
 } else if (!empty($anchor_info) && $anchor_info['status'] == 2 && empty($_GPC['applyAgain'])) {
