@@ -734,11 +734,11 @@
 		$(this).removeClass("selected");
 	})
 	function fastChange(id, type, value) {
-		
+        var status = {$_GPC['status']};
 		$.ajax({
 			url: "{php echo $this->createWebUrl('shop/goods')}",
 			type: "post",
-			data: {op: 'change', id: id, type: type, value: value},
+			data: {op: 'change', id: id, type: type, value: value, status: status},
 			cache: false,
 			success: function () {
 				location.reload();

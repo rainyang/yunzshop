@@ -203,7 +203,7 @@ if ($operation == "change") {
     if (empty($id)) {
         exit;
     }
-    $status = 1;
+    $status = trim($_GPC["status"]);
     if (!empty($perm_role)) {
         $status = 0;
     }
