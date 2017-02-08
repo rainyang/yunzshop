@@ -2001,7 +2001,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                   require(['core'],function(core){
                       core.json('shop/detail',{op:'can_buy', id:'{$_GPC['id']}'},function(cret){
                           if(cret.status==1){
-                              location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
+                              location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay + "&fromanchor=" + "{php echo $fromanchor}";
 
                           } else{
                               core.tip.show(cret.result);
