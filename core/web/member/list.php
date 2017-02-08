@@ -284,18 +284,24 @@ if ($op == 'display') {
                             if(empty($reside['province'])){
                                 message('请选择代理的省', '', 'error');
                             }
-                        }else if($bdata['bonus_area'] == 2){
+                        }elseif($bdata['bonus_area'] == 2){
                             if(empty($reside['city'])){
                                 message('请选择代理的市', '', 'error');
                             }
-                        }else if($bdata['bonus_area'] == 3){
+                        }elseif($bdata['bonus_area'] == 3){
                             if(empty($reside['district'])){
                                 message('请选择代理的区', '', 'error');
                             }
+                        } elseif ($bdata['bonus_area'] == 4){
+                            if(empty($reside['street'])){
+                                message('请选择代理的街', '', 'error');
+                            }
                         }
-                        $bdata['bonus_province'] = $reside['province'];
-                        $bdata['bonus_city'] = $reside['city'];
-                        $bdata['bonus_district'] = $reside['district'];
+                        //省市区级代理
+                        $bdata['bonus_province']    = $reside['province'];
+                        $bdata['bonus_city']        = $reside['city'];
+                        $bdata['bonus_district']    = $reside['district'];
+                        $bdata['bonus_street']      = $reside['street'];
                     }
 
                     pdo_update('sz_yi_member', $bdata, array(
