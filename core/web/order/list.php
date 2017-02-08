@@ -288,17 +288,27 @@ if ($operation == "display") {
         $_GPC["member"] = trim($_GPC["member"]);
         $condition.= " AND (m.realname LIKE '%{$_GPC["member"]}%' or m.mobile LIKE '%{$_GPC["member"]}%' or m.membermobile LIKE '%{$_GPC["member"]}%' or m.nickname LIKE '%{$_GPC["member"]}%' " . " or a.realname LIKE '%{$_GPC["member"]}%' or a.mobile LIKE '%{$_GPC["member"]}%' or o.carrier LIKE '%{$_GPC["member"]}%')";
     }*/
-    if (!empty($_GPC["member"])) {
+    if (!empty($_GPC["member"]) || !empty($_GPC["memberid"])) {
         $_GPC["member"] = trim($_GPC["member"]);
-        $sql = 'SELECT m.openid FROM ' . tablename("sz_yi_member") . " m WHERE (m.realname LIKE :member 
+        $id = trim($_GPC["memberid"]);
+        if ($_GPC["member"]) {
+            $sql = 'SELECT m.openid FROM ' . tablename("sz_yi_member") . " m WHERE (m.realname LIKE :member 
                 OR m.mobile LIKE :member OR m.membermobile LIKE :member OR m.nickname LIKE :member) AND m.uniacid = :uniacid 
                 UNION 
                 SELECT a.openid FROM " . tablename("sz_yi_member_address") . " a 
                 WHERE (a.realname LIKE :member OR a.mobile LIKE :member) AND a.uniacid = :uniacid";
-        $member_paras = array(
-            ":uniacid" => $_W["uniacid"],
-            ":member" => '%' . $_GPC["member"] . '%'
-        );
+            $member_paras = array(
+                ":uniacid" => $_W["uniacid"],
+                ":member" => '%' . $_GPC["member"] . '%'
+            );
+        }
+        if ($id) {
+            $sql = 'SELECT openid FROM ' . tablename("sz_yi_member") . 'WHERE id = :id AND uniacid  = :uniacid';
+            $member_paras = array(
+                ":uniacid" => $_W['uniacid'],
+                ":id" => $id
+            );
+        }
         $members = pdo_fetchall($sql, $member_paras);
         $openids = '';
         foreach ($members as $value) {
