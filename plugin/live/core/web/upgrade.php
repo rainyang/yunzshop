@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_live_anchor') . " (
     `openid` VARCHAR(50) NOT NULL DEFAULT '0' COMMENT 'openid' ,
     `cloud_anchor_id` INT NOT NULL DEFAULT '0' COMMENT '云端主播id' ,
     `cloud_room_id` INT NOT NULL DEFAULT '0' COMMENT '云端房间id' , 
-    `status` SET('0','1','2')  NOT NULL DEFAULT '0' COMMENT '是否审核通过,0表示待审核,1表示审核通过,2表示审核被拒绝',
+    `status` SET('0','1','2','3')  NOT NULL DEFAULT '0' COMMENT '是否审核通过,0表示待审核,1表示审核通过,2表示审核被拒绝,3表示被禁播',
     `createtime` DATETIME NOT NULL DEFAULT '0000-00-00' COMMENT '创建日期' ,  
     PRIMARY KEY (`id`)
 ) ENGINE = MyISAM COMMENT = '主播表';";

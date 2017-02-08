@@ -4,7 +4,7 @@
 global $_W, $_GPC;
 
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
-$room_id = $_GPC['room_id']; //必须的参数
+$room_id = $_GPC['room_id'];
 $page = $_GPC['page'];
 $page_size = $_GPC['pagesize'];
 $openid = m('user')->getOpenid();
@@ -12,18 +12,33 @@ $domain = $_SERVER['HTTP_HOST'];
 
 if ($operation == 'display'){
 
-    //curl请求"获取直播间关联商品列表"的API
     load()->func('communication');
-    $url = 'http://sy.yunzshop.com/admin_live.php?api=room/Goods&room_id=' . $room_id;
+
+    //生成分销上下级关系("主播"做为上级, "观看者"如果之前没有分销关系, 则做为"主播"的下级)
+    //获取主播信息
+    $url_01 = 'http://sy.yunzshop.com/shop_live.php?api=room/Get&room_id='.$room_id; //todo
+    $result_01 = ihttp_get($url_01);
+    $result_array_01 = json_decode($result_01['content'], true);
+    $room_info = $result_array_01['data'];
+    $anchor_mobile = $room_info['mobile'];
+
+    //获取主播id
+    $mid = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_member') . ' WHERE mobile = :mobile', array(':mobile' => $anchor_mobile));
+    $_GPC['mid'] = $mid;
+
+    p('commission')->checkAgent();
+
+    //curl请求"获取直播间关联商品列表"的API
+    $url_02 = 'http://sy.yunzshop.com/admin_live.php?api=room/Goods&room_id=' . $room_id;
     if(!empty($page)){
-        $url .= '&page=' . $page;
+        $url_02 .= '&page=' . $page;
     }
     if(!empty($page_size)){
-        $url .= '&pagesize=' . $page_size;
+        $url_02 .= '&pagesize=' . $page_size;
     }
-    $result = ihttp_get($url);
-    $result_array = json_decode($result['content'], true);
-    $goods_list = $result_array['data']['list'];
+    $result_02 = ihttp_get($url_02);
+    $result_array_02 = json_decode($result_02['content'], true);
+    $goods_list = $result_array_02['data']['list'];
 
     if(!empty($goods_list)){
 
@@ -46,6 +61,7 @@ if ($operation == 'display'){
         $result_02 = ihttp_get('http://live.tbw365.cn/shop_live.php?api=IM/Get/sign&openid='.$openid.'&domain='.$domain);
         $result_02_array = json_decode($result_02['content'], true);
         $sig = $result_02_array['data']['sign'];
+        $identifier = $result_02_array['data']['identifier'];
     }
 
     //获取昵称(如果没有nickname,就用mobile做为昵称)

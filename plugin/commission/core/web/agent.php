@@ -289,6 +289,21 @@ if ($operation == 'display') {
     ), array(
         'id' => $id
     ));
+
+    //如果该分销商是主播, 则将其主播状态更改为"禁播"
+    $is_anchor = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_live_anchor') . ' WHERE openid = :openid', array(':openid'=>$member['openid']));
+    if($is_anchor){
+        //将商城本地的主播状态更改为"禁播"
+        pdo_update('sz_yi_live_anchor', array('status'=>3), array('openid'=>$member['openid']));
+        
+        //将云端的主播状态更改为"禁播"
+        load()->func('communication');
+        $cloud_url = 'http://sy.yunzshop.com/shop_live.php?api=room/Set/freeze'; //todo 非正式地址
+        $resp = ihttp_post($cloud_url, array(
+            'mobile' => $member['mobile'],
+            'domain' => $_SERVER['HTTP_HOST']
+        ));
+    }
     plog('commission.agent.delete', "取消分销商资格 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
     message('删除成功！', $this->createPluginWebUrl('commission/agent'), 'success');
 } else if ($operation == 'agentblack') {

@@ -136,7 +136,7 @@ function sdkLogin(callback) {
             },
             function (err) {
                 // alert('sdkLogin' + err.ErrorInfo); //因为报错信息非常长,暂替换成更友好的提示
-                alert('无法进入直播间,请尝试重新登录');
+                alert('无法进入直播间,请反馈给网站管理员');
             }
     );//
 }
@@ -163,12 +163,15 @@ function applyJoinBigGroup(groupId) {
             function (err) {
                 console.log('applyJoinBigGroup: 进群失败', err);
                 if(10010 == err.ErrorCode){
-                    alert('直播已结束('+err.ErrorCode+')');
+                    // alert('直播已结束('+err.ErrorCode+')'); //调试用
+                    alert('直播已结束');
                     hideLoginForm();
                 }else  if(10013 == err.ErrorCode){
-                    alert('进群失败 : ' + err.ErrorInfo);
+                    // alert('进群失败 : ' + err.ErrorInfo); //调试用
+                    alert('进群失败');
                 }else{
-                    alert('进群失败 : ' + err.ErrorInfo);
+                    // alert('进群失败 : ' + err.ErrorInfo); //调试用
+                    alert('进群失败');
                 }
             }
     );
@@ -679,7 +682,7 @@ window.tlsAnoLogin = function(res) {
             location.href = url;
             break;
         default:
-            alert(res.ErrorCode + "=>" + res.ErrorInfo);
+            // alert(res.ErrorCode + "=>" + res.ErrorInfo);
     }
 };
 
@@ -745,7 +748,7 @@ function tlsGetUserSig(res) {
             //tls匿名登录，获取tmpsig
             anoLogin(loginInfo.sdkAppID);
         } else {
-            alert("tlsGetUserSig [" + res.ErrorCode + "]" + res.ErrorInfo);
+            // alert("tlsGetUserSig [" + res.ErrorCode + "]" + res.ErrorInfo);
         }
     }
 }
@@ -832,7 +835,7 @@ function onSendMsg() {
         errInfo = "消息长度超出限制(最多" + Math.round(maxLen / 3) + "汉字)";
     }
     if (msgLen > maxLen) {
-        alert(errInfo);
+        // alert(errInfo);
         return;
     }
 
@@ -911,10 +914,12 @@ function onSendMsg() {
         hideDiscussEmotion();//隐藏表情
     }, function (err) {
         if(10010 == err.ErrorCode) {
-            alert('直播已结束(' + err.ErrorCode + ')');
+            // alert('直播已结束(' + err.ErrorCode + ')');
+            alert('直播已结束');
         }else{
             //webim.Log.error("发消息失败:" + err.ErrorInfo);
-            alert("发消息失败:" + err.ErrorInfo);
+            // alert("发消息失败:" + err.ErrorInfo);
+            alert("发消息失败");
 
         }
     });
@@ -984,8 +989,9 @@ function sendGroupLoveMsg() {
             fileid  :webim.Tool.getQueryString('fileid') || '' // 点播的情况下使用，用于区分是哪个视频
         });
     }, function (err) {
-        webim.Log.error("发送点赞消息失败:" + err.ErrorInfo);
-        alert("发送点赞消息失败:" + err.ErrorInfo);
+        // webim.Log.error("发送点赞消息失败:" + err.ErrorInfo);
+        // alert("发送点赞消息失败:" + err.ErrorInfo);
+        alert("发送点赞消息失败");
     });
 }
 //发送自定义登录消息
@@ -1028,6 +1034,7 @@ function sendCustomLoginMsg(type, callback){
         callback && callback.call();
     }, function (err) {
         //alert("发送消息失败:" + err.ErrorInfo);
+        alert("发送消息失败");
     });
 }
 //切换文本框和工具栏
@@ -1137,7 +1144,7 @@ function quitBigGroup() {
                 //applyJoinBigGroup(avChatRoomId2);//加入大群
             },
             function (err) {
-                alert(err.ErrorInfo);
+                // alert(err.ErrorInfo);
             }
     );
 }
