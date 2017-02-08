@@ -1290,7 +1290,7 @@ if ($_W['isajax']) {
             $cardcount  = $plucard->consumeCardCount($openid);
             $hascard    = $cardcount > 0;
         }
-
+/*
         if ($sale_plugin) {
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
@@ -1343,6 +1343,7 @@ if ($_W['isajax']) {
                 }
             }
         }
+ */
         $goods = trim($_GPC["goods"]);
         if (!empty($goods)) {
             $weight   = 0;
@@ -1694,6 +1695,13 @@ if ($_W['isajax']) {
                     }
                 }
             }
+
+            if ($sale_plugin) {
+                if (!empty($saleset['enoughfree']) && !empty(floatval($saleset['enoughorder'])) && $totalprice >= floatval($saleset['enoughorder'])) {
+                    $dispatch_price = 0;
+                }
+            }
+
             if ($dflag != "true") {
                 if (empty($saleset["dispatchnodeduct"]) && $deductprice2 > 0) {
                     $deductprice2 += $dispatch_price;
@@ -1702,8 +1710,15 @@ if ($_W['isajax']) {
 
             $deductcredit = 0;
             $deductmoney  = 0;
-            $totalprice += $dispatch_price;
+
             if ($sale_plugin) {
+                if (!empty($saleset['enoughfree']) && !empty(floatval($saleset['enoughorder'])) && $totalprice >= floatval($saleset['enoughorder'])) {
+                        $dispatch_price = 0;
+                }
+
+                $totalprice += $dispatch_price;
+
+
                 $credit = m("member")->getCredit($openid, "credit1");
                 if (!empty($saleset["creditdeduct"])) {
                     $pcredit = intval($saleset["credit"]);

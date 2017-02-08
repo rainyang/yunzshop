@@ -943,7 +943,7 @@ var fromcart = 0;
               totalprice = goodsprice - discountprice;
               //重新获取运费
               if( $('.shownum').length>0){
-                  totalprice = parseFloat( $('.marketprice').html() ) * parseInt($('.shownum').val());
+                  //totalprice = parseFloat( $('.marketprice').html() ) * parseInt($('.shownum').val());
                   var goodsinfo = $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val().split('|')[0];
                   var goods = goodsinfo.split(',');
                   var goodsid = goods[0];
