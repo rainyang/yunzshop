@@ -3,12 +3,12 @@ var identifier = null,
     nickName = null,
     type = 0;
 
-var getOpenid = webim.Tool.getQueryString('openid');
-if( getOpenid && getOpenid != 0){
-    identifier = getOpenid;
+var getIdentifier = webim.Tool.getQueryString('identifier');
+if( getIdentifier && getIdentifier != 0){
+    identifier = getIdentifier;
 } else {
-    // identifier = $('#openid').text();
-    identifier = document.getElementById("openid").innerText;
+    // identifier = $('#Identifier').text();
+    identifier = document.getElementById("identifier").innerText;
 }
 
 var getSig = webim.Tool.getQueryString("sig")
