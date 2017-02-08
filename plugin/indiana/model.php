@@ -244,7 +244,7 @@ if (!class_exists('IndianaModel')) {
 				        "color" => "#4a5077"
 				    )
 				);
-				$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
+				$detailurl  = "http://" . $_SERVER['SERVER_NAME'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
 				m('message')->sendCustomNotice($openid, $msg, $detailurl);
 			}
 			if ($shengyu_codes <= 0) {
