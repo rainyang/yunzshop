@@ -244,7 +244,7 @@ if (!class_exists('IndianaModel')) {
 				        "color" => "#4a5077"
 				    )
 				);
-				$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
+				$detailurl  = "http://" . $_SERVER['HTTP_HOST'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
 				m('message')->sendCustomNotice($openid, $msg, $detailurl);
 			}
 			if ($shengyu_codes <= 0) {
@@ -326,7 +326,7 @@ if (!class_exists('IndianaModel')) {
 					        "color" => "#4a5077"
 					    )
 					);
-					$detailurl  = "http://" . $_SERVER['SERVER_NAME'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&p=detail&do=shop&m=sz_yi&id=".$value['goodsid']."&periodnum=".$value['period_num']."&indiana=1";
+					$detailurl  = "http://" . $_SERVER['HTTP_HOST'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&p=detail&do=shop&m=sz_yi&id=".$value['goodsid']."&periodnum=".$value['period_num']."&indiana=1";
 					foreach ($indiana_record as $k => $v) {
 						m('message')->sendCustomNotice($v['openid'], $msg, $detailurl);
 					}
@@ -491,7 +491,7 @@ if (!class_exists('IndianaModel')) {
 				    )
 				);
 				
-				$detailurl  = "http://" . $_SERVER['SERVER_NAME'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&op=lucky&m=sz_yi&do=plugin";
+				$detailurl  = "http://" . $_SERVER['HTTP_HOST'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&op=lucky&m=sz_yi&do=plugin";
 				m('message')->sendCustomNotice($lack_period['openid'], $msg, $detailurl);
 
 			}
