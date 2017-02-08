@@ -185,8 +185,8 @@
 
             var openid = '{php echo $openid}';
             var roomid = '{php echo $room_id}';
-            var in_url = 'http://sy.yunzshop.com/shop_live.php?api=down_log/Set/start';
-            var out_url = 'http://sy.yunzshop.com/shop_live.php?api=down_log/Set/end';
+            var in_url = '{php echo SZ_YI_LIVE_CLOUD_URL}/shop_live.php?api=down_log/Set/start';
+            var out_url = '{php echo SZ_YI_LIVE_CLOUD_URL}/shop_live.php?api=down_log/Set/end';
 
             //设置直播开始计算流量
             $.ajax({

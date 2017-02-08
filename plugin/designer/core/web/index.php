@@ -357,7 +357,7 @@ if ($op == 'display') {
                     //curl请求"获取直播间列表"的API
                     load()->func('communication');
 
-                    $url = 'http://sy.yunzshop.com/shop_live.php?api=room/Index/search&domain='.$domain.'&uniacid='.$uniacid . '&title=' . $_GPC['kw'];
+                    $url = SZ_YI_LIVE_CLOUD_URL . '/shop_live.php?api=room/Index/search&domain='.$domain.'&uniacid='.$uniacid . '&title=' . $_GPC['kw'];
 
                     $result = ihttp_get($url);
                     $result_array = json_decode($result['content'], true);
