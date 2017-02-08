@@ -9,7 +9,6 @@ $page = $_GPC['page'];
 $page_size = $_GPC['pagesize'];
 $openid = m('user')->getOpenid();
 $domain = $_SERVER['HTTP_HOST'];
-define('SZ_YI_LIVE_SIGN_CLOUD_URL','http://live.tbw365.cn'); //云端获取sign签名的服务器
 
 if ($operation == 'display'){
 
@@ -59,7 +58,7 @@ if ($operation == 'display'){
 
     //获取sig
     if(empty($_GPC['sig'])){
-        $result_02 = ihttp_get(SZ_YI_LIVE_SIGN_CLOUD_URL.'/shop_live.php?api=IM/Get/sign&openid='.$openid.'&domain='.$domain);
+        $result_02 = ihttp_get(SZ_YI_LIVE_CLOUD_URL.'/shop_live.php?api=IM/Get/sign&openid='.$openid.'&domain='.$domain);
         $result_02_array = json_decode($result_02['content'], true);
         $sig = $result_02_array['data']['sign'];
         $identifier = $result_02_array['data']['identifier'];
