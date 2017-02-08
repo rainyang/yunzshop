@@ -2187,7 +2187,7 @@ function order_list_close($order)
             "status" => -1,
             'refundstate' => 0,
             "canceltime" => time(),
-            "remark" => $value["remark"] . "" . $_GPC["remark"]
+            "remark" => $value["remark"] . "【商家关闭原因】：" . $_GPC["reson"]
         ), array(
             "id" => $value["id"],
             "uniacid" => $_W["uniacid"]
