@@ -971,7 +971,7 @@ var fromcart = 0;
                       if(zt){
                           $('.dispatchprice[data-id='+getjson.result.supplier_uid+']').html('0.00');
                       } else {
-                          $('.dispatchprice[data-id='+getjson.result.supplier_uid+']').html(getjson.result.price.toFixed(2));
+                          $('.dispatchprice[data-id='+getjson.result.supplier_uid+']').html(parseFloat(getjson.result.price).toFixed(2));
                       }
 
                       if(getjson.result.deductcredit){
