@@ -77,5 +77,9 @@ PRIMARY KEY (`id`)
 ) ENGINE = MyISAM COMMENT = '主播申请资料表';";
 pdo_query($sql);
 
+//订单表增加fromanchor字段 (用于标识是哪个主播引流的订单)
+$sql = "ALTER table " . tablename('sz_yi_order') . " ADD COLUMN fromanchor smallint DEFAULT 0 COMMENT '(值是云端的直播ID)用于标识直播引流, 值为0时表示非直播引流订单' AFTER deductcommission";
+pdo_query($sql);
+
 
 message('芸众视频直播插件安装成功', $this->createPluginWebUrl('live/index'), 'success');
