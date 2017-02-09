@@ -963,7 +963,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <div class="cs" ><i class="fa fa-headphones"></i><br><span>客服</span></div>
 
             <%if goods.canaddcart%>
-            <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa iconfont icon-cart" style="font-size: 18px"></i><br><span>购物车</span>
+            <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart',array('fromanchor'=>$fromanchor))}'"><i class="fa iconfont icon-cart" style="font-size: 18px"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
 
@@ -977,7 +977,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
         <%else%>
             <%if goods.canaddcart%>
-            <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
+            <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart',array('fromanchor'=>$fromanchor))}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
 

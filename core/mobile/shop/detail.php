@@ -11,7 +11,7 @@ $openid = m('user')->getOpenid();
 $popenid = m('user')->islogin();
 $openid = $openid ? $openid : $popenid;
 $member = m('member')->getMember($openid);
-$fromanchor = empty($_GPC['fromanchor']) ? '' : $_GPC['fromanchor']; //主播id(用于标识是从哪个主播的直播过来的)
+$fromanchor = empty($_GPC['fromanchor']) ? 0 : $_GPC['fromanchor'];  //标识引流的主播的memberID;
 $uniacid = $_W['uniacid'];
 $goodsid = intval($_GPC['id']);
 $params = array(':uniacid' => $_W['uniacid'], ':goodsid' => $goodsid);
