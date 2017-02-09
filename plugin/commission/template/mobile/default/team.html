@@ -18,7 +18,7 @@
     
     .team_list .info {overflow: hidden;text-overflow: ellipsis;  white-space: nowrap;height:40px; width:45%; float:left; border-right:1px solid #eaeaea; font-size:16px; color:#666; line-height:20px; text-align:left;}
     .team_list .info span {font-size:14px; color:#999;}
-    .team_list .num {overflow: hidden;text-overflow: ellipsis;  white-space: nowrap;height: 40px;  width: 20%;  float: left;  text-align: right;  font-size: 14px;  color: #666;  line-height: 20px;  border-right: 1px solid #eaeaea;  padding-right: 5px;}
+    .team_list .num {overflow: hidden;text-overflow: ellipsis;  white-space: nowrap;height: 40px;  width: 40%;  float: left;  text-align: right;  font-size: 14px;  color: #666;  line-height: 20px;  /*border-right: 1px solid #eaeaea;  padding-right: 5px;*/}
     .team_list .num span {font-size:14px; color:#999;}
     .team_list .discuss{text-align: center;  display: block;  width: 10%;  background: #f15353;  border-radius: 2px;  color: #fff !important;  font-size: 14px;  padding: 4px 8px;  margin: 5px 0%;  float: right;}
     .team_tab {height:30px; margin:5px; border:1px solid #ff6801; border-radius:5px; overflow:hidden;font-size:13px;background:#fff;padding-right: -2px;}
@@ -51,9 +51,11 @@
         <div class="img"><img src="<%if user.nickname%><%user.avatar%><%else%>../addons/sz_yi/plugin/commission/images/head.jpg<%/if%>"></div>
         <div class="info"><%if user.nickname%><%user.nickname%><%else%>未获取<%/if%><br><span><%user.agenttime%></span></div>
         <div class="num">+<%user.commission_total%><br><span><%user.agentcount%> 个成员</span></div>
+        <!--
         <a class="discuss" href="{php echo $this->createPluginMobileUrl('commission/discuss')};" id="discuss_team" >
             <p style="margin:0;" class="disabled">聊天</p>
         </a>
+        -->
     </div>
     <%/each%>
 </script>

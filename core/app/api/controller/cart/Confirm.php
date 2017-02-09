@@ -34,8 +34,11 @@ class Confirm extends YZ
         $this->_setGoodsData();
         //dump(compact('is_show_dispatch_type_block','contacts_block','address_block'));
         $this->json['cartids'] = $_GPC['cart_ids'];
-        $this->json += compact('is_show_dispatch_type_block','contacts_block','address_block');
-        dump($this->json);
+        $this->json += array(
+            'is_show_dispatch_type_block' => $is_show_dispatch_type_block,
+            'contacts_block' => $contacts_block,
+            'address_block' => $address_block,
+        );
         return $this->returnSuccess($this->json);
     }
     private function _setDiscountWayName(){
