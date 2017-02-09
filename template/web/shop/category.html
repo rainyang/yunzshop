@@ -17,20 +17,11 @@
             <div class="panel-body">
                 
                 {if !empty($item)}
-                 <div class="form-group">
+                <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类连接(点击复制)</label>
                 <div class="col-sm-9 col-xs-12">
-                    <p class='form-control-static'><a href='javascript:;' title='点击复制连接' id='cp'>
-                           {if empty($parent)}
-                           {php echo $this->createMobileUrl('shop/list',array('pcate'=>$item['id']))}
-                           {else}
-                               {if empty($parent1)}
-                                 {php echo $this->createMobileUrl('shop/list',array('ccate'=>$item['id']))}
-                               {else}
-                                 {php echo $this->createMobileUrl('shop/list',array('tcate'=>$item['id']))}
-                               {/if}
-                           {/if}
-                        </a>
+                    <p class='form-control-static'>
+                        <a href='javascript:;' title='点击复制连接' id='cp'>{if empty($parent)}{php echo $this->createMobileUrl('shop/list',array('pcate'=>$item['id']))}{else}{if empty($parent1)}{php echo $this->createMobileUrl('shop/list',array('ccate'=>$item['id']))}{else}{php echo $this->createMobileUrl('shop/list',array('tcate'=>$item['id']))}{/if}{/if}</a>
                     </p>
                 </div>
             </div>

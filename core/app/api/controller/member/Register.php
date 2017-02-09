@@ -216,13 +216,13 @@ class Register extends YZ
         $fan = mc_fansinfo($json_user['openId']);
 
         if (empty($fan)) {
-            $this->regitsterAccount($json_user);
+            $member_info = $this->regitsterAccount($json_user);
         }
 
         //小程序session处理
         $random = $this->wx_app_session($user_info);
 
-        $result = array('session' => $random, 'wx_token' =>session_id());
+        $result = array('session' => $random, 'wx_token' =>session_id(), 'uid' => $member_info['uid']);
 
         $this->returnSuccess($result);
     }
@@ -333,6 +333,7 @@ class Register extends YZ
         );
 
         pdo_insert('sz_yi_member', $member);
+        return $member;
     }
 
     /**

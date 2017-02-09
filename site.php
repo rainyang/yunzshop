@@ -177,6 +177,11 @@ class Sz_yiModuleSite extends Core
     {
         return $this->_exec(__FUNCTION__, 'index', false);
     }
+    //直播
+    public function doMobileLive()
+    {
+        return $this->_exec(__FUNCTION__, 'list', false);
+    }
     //订单
     //支付成功
     public function payResult($params)

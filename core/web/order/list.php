@@ -288,17 +288,27 @@ if ($operation == "display") {
         $_GPC["member"] = trim($_GPC["member"]);
         $condition.= " AND (m.realname LIKE '%{$_GPC["member"]}%' or m.mobile LIKE '%{$_GPC["member"]}%' or m.membermobile LIKE '%{$_GPC["member"]}%' or m.nickname LIKE '%{$_GPC["member"]}%' " . " or a.realname LIKE '%{$_GPC["member"]}%' or a.mobile LIKE '%{$_GPC["member"]}%' or o.carrier LIKE '%{$_GPC["member"]}%')";
     }*/
-    if (!empty($_GPC["member"])) {
+    if (!empty($_GPC["member"]) || !empty($_GPC["memberid"])) {
         $_GPC["member"] = trim($_GPC["member"]);
-        $sql = 'SELECT m.openid FROM ' . tablename("sz_yi_member") . " m WHERE (m.realname LIKE :member 
+        $id = trim($_GPC["memberid"]);
+        if ($_GPC["member"]) {
+            $sql = 'SELECT m.openid FROM ' . tablename("sz_yi_member") . " m WHERE (m.realname LIKE :member 
                 OR m.mobile LIKE :member OR m.membermobile LIKE :member OR m.nickname LIKE :member) AND m.uniacid = :uniacid 
                 UNION 
                 SELECT a.openid FROM " . tablename("sz_yi_member_address") . " a 
                 WHERE (a.realname LIKE :member OR a.mobile LIKE :member) AND a.uniacid = :uniacid";
-        $member_paras = array(
-            ":uniacid" => $_W["uniacid"],
-            ":member" => '%' . $_GPC["member"] . '%'
-        );
+            $member_paras = array(
+                ":uniacid" => $_W["uniacid"],
+                ":member" => '%' . $_GPC["member"] . '%'
+            );
+        }
+        if ($id) {
+            $sql = 'SELECT openid FROM ' . tablename("sz_yi_member") . 'WHERE id = :id AND uniacid  = :uniacid';
+            $member_paras = array(
+                ":uniacid" => $_W['uniacid'],
+                ":id" => $id
+            );
+        }
         $members = pdo_fetchall($sql, $member_paras);
         $openids = '';
         foreach ($members as $value) {
@@ -321,6 +331,10 @@ if ($operation == "display") {
         $_GPC["saler"] = trim($_GPC["saler"]);
         $condition .= " AND (sm.realname LIKE '%{$_GPC["saler"]}%' or sm.mobile LIKE '%{$_GPC["saler"]}%' or sm.nickname LIKE '%{$_GPC["saler"]}%' " . " or s.salername LIKE '%{$_GPC["saler"]}%' )";
         $join_table .= " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid ";
+    }
+    if (!empty($_GPC['verifycode'])) {
+        $_GPC["verifycode"] = trim($_GPC["verifycode"]);
+        $condition .= " AND o.verifycode=" . intval($_GPC["verifycode"]);
     }
     if (!empty($_GPC["storeid"])) {
         $_GPC["storeid"] = trim($_GPC["storeid"]);
@@ -2183,7 +2197,7 @@ function order_list_close($order)
             "status" => -1,
             'refundstate' => 0,
             "canceltime" => time(),
-            "remark" => $value["remark"] . "" . $_GPC["remark"]
+            "remark" => $value["remark"] . "【商家关闭原因】：" . $_GPC["reson"]
         ), array(
             "id" => $value["id"],
             "uniacid" => $_W["uniacid"]

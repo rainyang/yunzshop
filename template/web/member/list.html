@@ -599,7 +599,7 @@
                     </div>
             
                     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <select class="form-control tpl-district" id="sel-area" name="reside[district]"><option value="" selected="true">所在地区</option></select>
+                        <select class="form-control tpl-district" id="sel-area" name="reside[district]" {if $trade['is_street'] == 1}onchange="selectstreet()"{/if}><option value="" selected="true">所在地区</option></select>
                     </div>
 
                         {if $trade['is_street'] == 1}

@@ -76,8 +76,8 @@ class Debug
             'debug' => self::getDebug(),
             'error' => self::getError(),
         );
+
         $result = self::_sendRequest(self::_URL, $paramArray, $method = 'POST');
-        //var_dump($result);
     }
 
     /**
@@ -121,6 +121,7 @@ class Debug
         if (!$result) {
             return $resultStr;
         }
+
         return $result;
     }
 }

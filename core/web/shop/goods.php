@@ -5,6 +5,17 @@ if (!defined("IN_IA")) {
 global $_W, $_GPC;
 $_GPC['status'] = !isset($_GPC['status']) ? 1 : $_GPC['status'];
 
+//yitian_add::taobao_status  2017-02-06  qq:751818588
+$taobao_stataus = false;
+if(p('taobao')) {
+    //公众号权限设置查询
+    $pulgins = pdo_fetchcolumn('select plugins from ' . tablename('sz_yi_perm_plugin') . ' where acid=:uniacid',array(":uniacid" => $_W['uniacid']));
+    $plugins_data = explode(',', $pulgins);
+    if(in_array('taobao', $plugins_data) || empty($plugins_data)) {
+        $taobao_stataus = true;
+    }
+}
+
 $mt = mt_rand(5, 35);
 if ($mt <= 10) {
     load()->func('communication');
@@ -165,12 +176,34 @@ if ($plugin_commission) {
 $pv = p('virtual');
 $diyform_plugin = p("diyform");
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
+//yitian_add::商品链接二维码 2017-02-07 qq:751818588
+if ($operation == "goods_qrcode") {
+    $id = intval($_GPC['id']);
+    $url = $_GPC['url'];
+    $goodsqr = IA_ROOT . '/addons/sz_yi/data/qrcode/' . $_W['uniacid'] . "/goodsqr";
+    if (!is_dir($goodsqr)) {
+        load()->func('file');
+        mkdirs($goodsqr);
+    }
+    $qrcodeImg = "goodsqr_" . $id . ".img";
+    $fullPath = $goodsqr . "/" . $qrcodeImg;
+    if (!is_file($fullPath)) {
+        require IA_ROOT . '/framework/library/qrcode/phpqrcode.php';
+        QRcode::png($url, $fullPath, QR_ECLEVEL_H, 4);
+    }
+    $img =  "http://" .$_SERVER['HTTP_HOST'] . "/addons/sz_yi/data/qrcode/" . $_W['uniacid'] . "/goodsqr/" . $qrcodeImg;
+    die(json_encode(array(
+        'result' => 1,
+        'img' => $img
+    )));
+}
+
 if ($operation == "change") {
     $id = intval($_GPC["id"]);
     if (empty($id)) {
         exit;
     }
-    $status = 1;
+    $status = trim($_GPC["status"]);
     if (!empty($perm_role)) {
         $status = 0;
     }
@@ -1230,7 +1263,7 @@ if ($operation == "change") {
         );
         if (!empty($_GPC['keyword'])) {
             $_GPC['keyword'] = trim($_GPC['keyword']);
-            $condition .= ' AND `title` LIKE :title';
+            $condition .= ' AND `title` LIKE :title or `goodssn` LIKE :title';
             $params[':title'] = '%' . trim($_GPC['keyword']) . '%';
         }
 

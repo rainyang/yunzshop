@@ -43,6 +43,8 @@
                         <input class="form-control" name="good_id" type="text" value="{$_GPC['good_id']}" placeholder="{$lang['good']}ID">
                         <div class='input-group-addon'>快递单号</div>
                         <input class="form-control" name="expresssn" type="text" value="{$_GPC['expresssn']}" placeholder="快递单号">
+                        <div class='input-group-addon'>会员ID</div>
+                        <input class="form-control" name="memberid" type="text" value="{$_GPC['good_id']}" placeholder="会员ID">
                         <div class='input-group-addon'>用户信息</div>
                         <input class="form-control" name="member" type="text" value="{$_GPC['member']}" placeholder="用户手机号/姓名/昵称/绑定手机号, 收件人姓名/手机号 ">
                         <div class='input-group-addon'>支付方式</div>
@@ -57,26 +59,28 @@
             </div> 
             {if $_GPC['plugin'] != "fund"}
             <div class='form-group'>
-                  <div class="col-sm-8 col-lg-12 col-xs-12">
+                <div class="col-sm-8 col-lg-12 col-xs-12">
                     <div class='input-group'>
-                   <div class='input-group-addon'>核销员</div>
+                        <div class='input-group-addon'>核销码</div>
+                        <input class="form-control" name="verifycode" type="text" value="{$_GPC['verifycode']}" placeholder="核销码">
+                        <div class='input-group-addon'>核销员</div>
                         <input class="form-control" name="saler" type="text" value="{$_GPC['saler']}" placeholder="核销员昵称/姓名/手机号/绑定手机号">
                         <div class='input-group-addon'>核销门店</div>
-                        <select name="storeid" class="form-control">
-                            <option value="" ></option>
-             {loop $stores $store}
-            <option value="{$store['id']}" {if $_GPC['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
-            {/loop}
-                        </select>
-                    {if $p_cashier}
+                            <select name="storeid" class="form-control">
+                                <option value="" ></option>
+                                {loop $stores $store}
+                                    <option value="{$store['id']}" {if $_GPC['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
+                                {/loop}
+                            </select>
+                        {if $p_cashier}
                         <div class='input-group-addon'>收银商户</div>
                         <select name="csid" class="form-control">
                             <option value="" ></option>
-             {loop $cashier_stores $cashier_store}
-            <option value="{$cashier_store['id']}" {if $_GPC['csid'] ==$cashier_store['id']} selected="selected" {/if}>{$cashier_store['name']}</option>
-            {/loop}
+                            {loop $cashier_stores $cashier_store}
+                                <option value="{$cashier_store['id']}" {if $_GPC['csid'] ==$cashier_store['id']} selected="selected" {/if}>{$cashier_store['name']}</option>
+                            {/loop}
                         </select>
-                    {/if}
+                        {/if}
                         <div class='input-group-addon'>门店取消订单
                             <label class='radio-inline' style='margin-top:-7px;'>
                                 <input type='radio' value='0' name='cancel' {if $_GPC['cancel']=='0'}checked{/if}>不搜索
@@ -85,8 +89,8 @@
                                 <input type='radio' value='1' name='cancel' {if $_GPC['cancel']=='1'}checked{/if}>搜索
                             </label>
                         </div>
-            </div>
-                  </div>
+                    </div>
+                </div>
             </div>
 
             {if p('supplier')}

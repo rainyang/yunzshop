@@ -943,7 +943,7 @@ var fromcart = 0;
               totalprice = goodsprice - discountprice;
               //重新获取运费
               if( $('.shownum').length>0){
-                  totalprice = parseFloat( $('.marketprice').html() ) * parseInt($('.shownum').val());
+                  //totalprice = parseFloat( $('.marketprice').html() ) * parseInt($('.shownum').val());
                   var goodsinfo = $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val().split('|')[0];
                   var goods = goodsinfo.split(',');
                   var goodsid = goods[0];
@@ -971,7 +971,7 @@ var fromcart = 0;
                       if(zt){
                           $('.dispatchprice[data-id='+getjson.result.supplier_uid+']').html('0.00');
                       } else {
-                          $('.dispatchprice[data-id='+getjson.result.supplier_uid+']').html(getjson.result.price);
+                          $('.dispatchprice[data-id='+getjson.result.supplier_uid+']').html(parseFloat(getjson.result.price).toFixed(2));
                       }
 
                       if(getjson.result.deductcredit){

@@ -91,7 +91,7 @@ class PosterProcessor extends PluginProcessor
                 $url = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=shop&mid=" . $qrmember['id'];
             }
         }
-       
+
 		if (!empty($poster['resptitle'])) {
 			$news = array(array('title' => $poster['resptitle'], 'description' => $poster['respdesc'], 'picurl' => tomedia($poster['respthumb']), 'url' => $url));
 			return $obj->respNews($news);
@@ -132,6 +132,7 @@ class PosterProcessor extends PluginProcessor
             ':posterid' => $poster['id'],
             ':uniacid' => $_W['uniacid']
         ));
+
         if (empty($log) && $openid != $qr['openid']) {
             $log = array(
                 'uniacid' => $_W['uniacid'],
@@ -142,6 +143,8 @@ class PosterProcessor extends PluginProcessor
                 'submoney' => $poster['submoney'],
                 'reccredit' => $poster['reccredit'],
                 'recmoney' => $poster['recmoney'],
+                'subpaytype' => $poster['paytype'],
+                'recpaytype' => $poster['paytype'],
                 'createtime' => time()
             );
             pdo_insert('sz_yi_poster_log', $log);
@@ -165,14 +168,22 @@ class PosterProcessor extends PluginProcessor
             if ($poster['submoney'] > 0) {
                 $pay = $poster['submoney'];
                 //添加微信红包
-                if ($poster['paytype'] == 1 && $poster['paytype'] == 2) {
+                if ($poster['paytype'] == 1 || $poster['paytype'] == 2) {
                     $pay *= 100;
                 }
                 //如果是微信红包，走红包打款流程
-                if (poster['paytype'] == 2) {
-                    $result = m('finance')->sendredpack($openid, $pay, 0, '感谢您的关注获得红包奖励', '关注奖励', $subpaycontent);
+                if ($poster['paytype'] == 2) {
+                    $result = m('finance')->sendredpack($openid, $pay, 0, '关注获得红包奖励', '关注奖励', $subpaycontent);
                 } else {
-                    m('finance')->pay($openid, $poster['paytype'], $pay, '', $subpaycontent);
+                    $result = m('finance')->pay($openid, $poster['paytype'], $pay, '', $subpaycontent);
+                }
+                //file_put_contents(IA_ROOT."/addons/sz_yi/plugin/poster/subpaycontent_log.txt", print_r($result,true));
+                if (is_error($result)) {
+                    m('member')->setCredit($openid, 'credit2', $poster['submoney'], array(
+                        0,
+                        $subpaycontent
+                    ));
+                    pdo_update('sz_yi_poster_log', array('subpaytype' => 0), array('id' => $log['id']));
                 }
             }
             if ($poster['reccredit'] > 0) {
@@ -183,43 +194,52 @@ class PosterProcessor extends PluginProcessor
             }
             if ($poster['recmoney'] > 0) {
                 $pay = $poster['recmoney'];
-                if ($poster['paytype'] == 1 && $poster['paytype'] == 2) {
+                if ($poster['paytype'] == 1 || $poster['paytype'] == 2) {
                     $pay *= 100;
                 }
                 //如果是微信红包，走红包打款流程
-                if (poster['paytype'] == 2) {
-                    $result = m('finance')->sendredpack($openid, $pay, 0, '感谢您推荐关注人获得红包奖励', '推荐关注', $recpaycontent);
+                if ($poster['paytype'] == 2) {
+                    $result = m('finance')->sendredpack($qr['openid'], $pay, 0, '推荐关注获得红包奖励', '推荐关注', $recpaycontent);
                 } else {
-                    m('finance')->pay($qr['openid'], $poster['paytype'], $pay, '', $recpaycontent);
+                    $result = m('finance')->pay($qr['openid'], $poster['paytype'], $pay, '', $recpaycontent);
+                }
+                //file_put_contents(IA_ROOT."/addons/sz_yi/plugin/poster/recpaycontent_log.txt", print_r($result,true));
+
+                if (is_error($result)) {
+                    m('member')->setCredit($qr['openid'], 'credit2', $poster['recmoney'], array(
+                        0,
+                        $recpaycontent
+                    ));
+                    pdo_update('sz_yi_poster_log', array('recpaytype' => 0), array('id' => $log['id']));
                 }
 
             }
-			$isrec = false;
-			$issub = false;
-			$pcoupon = p('coupon');
-			if ($pcoupon) {
-				if (!empty($poster['reccouponid']) && $poster['reccouponnum'] > 0) {
-					$reccoupon = $pcoupon->getCoupon($poster['reccouponid']);
-					if (!empty($reccoupon)) {
-						$isrec = true;
-					}
-				}
-				if (!empty($poster['subcouponid']) && $poster['subcouponnum'] > 0) {
-					$subcoupon = $pcoupon->getCoupon($poster['subcouponid']);
-					if (!empty($subcoupon)) {
-						$issub = true;
-					}
-				}
-			}
+            $isrec = false;
+            $issub = false;
+            $pcoupon = p('coupon');
+            if ($pcoupon) {
+                if (!empty($poster['reccouponid']) && $poster['reccouponnum'] > 0) {
+                    $reccoupon = $pcoupon->getCoupon($poster['reccouponid']);
+                    if (!empty($reccoupon)) {
+                        $isrec = true;
+                    }
+                }
+                if (!empty($poster['subcouponid']) && $poster['subcouponnum'] > 0) {
+                    $subcoupon = $pcoupon->getCoupon($poster['subcouponid']);
+                    if (!empty($subcoupon)) {
+                        $issub = true;
+                    }
+                }
+            }
             if (!empty($poster['subtext'])) {
                 $subtext = $poster['subtext'];
                 $subtext = str_replace("[nickname]", $member['nickname'], $subtext);
                 $subtext = str_replace("[credit]", $poster['reccredit'], $subtext);
                 $subtext = str_replace("[money]", $poster['recmoney'], $subtext);
-				if ($reccoupon) {
-					$subtext = str_replace('[couponname]', $reccoupon['couponname'], $subtext);
-					$subtext = str_replace('[couponnum]', $poster['reccouponnum'], $subtext);
-				}
+                if ($reccoupon) {
+                    $subtext = str_replace('[couponname]', $reccoupon['couponname'], $subtext);
+                    $subtext = str_replace('[couponnum]', $poster['reccouponnum'], $subtext);
+                }
                 if (!empty($poster['templateid'])) {
                     m('message')->sendTplNotice($qr['openid'], $poster['templateid'], array(
                         'first' => array(
@@ -248,10 +268,10 @@ class PosterProcessor extends PluginProcessor
                 $entrytext = str_replace("[nickname]", $qrmember['nickname'], $entrytext);
                 $entrytext = str_replace("[credit]", $poster['subcredit'], $entrytext);
                 $entrytext = str_replace("[money]", $poster['submoney'], $entrytext);
-				if ($subcoupon) {
-					$entrytext = str_replace('[couponname]', $subcoupon['couponname'], $entrytext);
-					$entrytext = str_replace('[couponnum]', $poster['subcouponnum'], $entrytext);
-				}
+                if ($subcoupon) {
+                    $entrytext = str_replace('[couponname]', $subcoupon['couponname'], $entrytext);
+                    $entrytext = str_replace('[couponnum]', $poster['subcouponnum'], $entrytext);
+                }
                 if (!empty($poster['templateid'])) {
                     m('message')->sendTplNotice($openid, $poster['templateid'], array(
                         'first' => array(
@@ -275,21 +295,21 @@ class PosterProcessor extends PluginProcessor
                     m('message')->sendCustomNotice($openid, $entrytext);
                 }
             }
-			$update = array();
-			if ($isrec) {
-				$update['reccouponid'] = $poster['reccouponid'];
-				$update['reccouponnum'] = $poster['reccouponnum'];
-				$pcoupon->poster($qrmember, $poster['reccouponid'], $poster['reccouponnum']);
-			}
-			if ($issub) {
-				$update['subcouponid'] = $poster['subcouponid'];
-				$update['subcouponnum'] = $poster['subcouponnum'];
-				$pcoupon->poster($member, $poster['subcouponid'], $poster['subcouponnum']);
-			}
-			if (!empty($update)) {
-				pdo_update('sz_yi_poster_log', $update, array('id' => $log['id']));
-			}
-		}
+            $update = array();
+            if ($isrec) {
+                $update['reccouponid'] = $poster['reccouponid'];
+                $update['reccouponnum'] = $poster['reccouponnum'];
+                $pcoupon->poster($qrmember, $poster['reccouponid'], $poster['reccouponnum']);
+            }
+            if ($issub) {
+                $update['subcouponid'] = $poster['subcouponid'];
+                $update['subcouponnum'] = $poster['subcouponnum'];
+                $pcoupon->poster($member, $poster['subcouponid'], $poster['subcouponnum']);
+            }
+            if (!empty($update)) {
+                pdo_update('sz_yi_poster_log', $update, array('id' => $log['id']));
+            }
+        }
         $this->commission($poster, $member, $qrmember);
         $url = trim($poster['respurl']);
         if (empty($url)) {
@@ -337,5 +357,5 @@ class PosterProcessor extends PluginProcessor
 			}
 		}
 	}
-	
+
 }

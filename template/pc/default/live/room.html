@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+    <title>小直播</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="小直播——直播分享">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-tap-highlight" content="no">
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/1.0.2/weui.min.css">
+    <link rel="stylesheet" href="../addons/sz_yi/template/pc/default/live/css/mobile.css">
+    <link rel="stylesheet" href="../addons/sz_yi/template/pc/default/live/css/style.fn.min.css">
+</head>
+<body>
+    <div class="lw-goods-list-close j-btn-logout">退出</div>
+    <div id="identifier" style="display:none;">{php echo $identifier}</div>
+    <div id="sig" style="display:none;">{php echo $sig}</div>
+    <div id="nickName" style="display:none;">{php echo $nickName}</div>
+    <div class="lw-mask" onclick="closeGoodsList()"></div>
+    <div class="lw-goods-list">
+        <ul>
+
+            {loop $goods_info_list $index $item}
+            <li>
+                <a href="<?php echo $this->createMobileUrl('shop/detail', array('id' => $item['id']));?>" target="_self">
+                    <img src="{$item['thumb']}"/>
+                    <div class="text">
+                        <div class="name">{$item['title']}</div>
+                        <div class="price">
+                            <span class="p1">￥{$item['marketprice']}</span>
+                            <span class="p2">￥{$item['productprice']}</span>
+                        </div>
+                        <div class="button">
+                            <span>立即购买</span>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {/loop}
+
+        </ul>
+    </div>
+    <div id="j-video-page" class="video-page" style="display: block">
+        <!--视频部分 start-->
+        <div id="PlayerContainer" class="video-play">
+
+        </div>
+        <!--视频部分 end-->
+
+        <!--聊天部分 start-->
+        <div class="video-pane">
+            <div class="video-pane-head">
+                <div class="video-pane-info">
+                    <div class="video-info">
+                        <div class="user-img j-user-avatar">
+                        </div>
+                        <div class="user-info-text">
+                            <div class="user-info-name j-user-name">&nbsp;</div>
+                            <div class="user-info-num">
+                                <i class="user-icon-fans"></i><span id="user-icon-fans">0</span>
+                                <!-- <i class="user-icon-like"></i><span id="user-icon-like">0</span> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="j-btn-logout btn btn-logout" style="display: none;">退出</a>
+            </div>
+            <div class="video-pane-body">
+                <div class="video-discuss">
+                    <ul class="video-sms-list" id="video_sms_list">
+
+                    </ul>
+                    <div class="video-discuss-pane">
+                        <div class="video-discuss-tool" id="video-discuss-tool" style="display: block">
+                            <span class="like-icon zoomIn green"></span>
+                            <a class="video-discuss-sms j-btn-sms"></a>
+                            <a class="video-discuss-like j-btn-like"></a>
+                            <div class="video-discuss-goods" onclick="openGoodsList()">
+                                <img class="img1" src="../addons/sz_yi/template/pc/default/live/img/icon_goods.png"/>
+                                <img class="img2" src="../addons/sz_yi/template/pc/default/live/img/icon_goods_in.png"/>
+                            </div>
+                        </div> 
+                        <div class="video-discuss-form" id="video-discuss-form" style="display: block">
+                            <input type="text" class="video-discuss-input" id="send_msg_text">
+                            <!--<a class="video-discuss-face j-btn-show-emotion"></a>-->
+                            <button class="video-discuss-button j-btn-send-msg">发送</button>
+                        </div>
+                        <div class="video-discuss-emotion" id="video-discuss-emotion" style="display: none">
+                            <div class="video-emotion-pane">
+                                <ul id="emotionUL">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--聊天部分 end-->
+    </div>
+
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+    <script type="text/javascript" src="../addons/sz_yi/template/pc/default/live/js/lib.js"></script>
+    <!--引入webim sdk-->
+    <script type="text/javascript" src="../addons/sz_yi/template/pc/default/live/sdk/webim.js"></script>
+    <script type="text/javascript" src="../addons/sz_yi/template/pc/default/live/sdk/json2.js"></script>
+    <!--encrypt.min.js 只在需要直接调用访客登录接口时需要引用-->
+    <!-- <script type="text/javascript" src="https://tls.qcloud.com/libs/encrypt.min.js"></script> -->
+
+    <!--webim demo js-->
+    <script type="text/javascript" src="../addons/sz_yi/template/pc/default/live/js/base.js"></script>
+    <script type="text/javascript" src="../addons/sz_yi/template/pc/default/live/js/config.js"></script>
+    
+    <script type="text/javascript" src="../addons/sz_yi/template/pc/default/live/js/xzb.js"></script>
+
+    <script type="text/javascript">
+        if(UA.wx){
+            document.write('<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"><\/script>');
+        }else if(UA.qq){
+            document.write('<script src="http://open.mobile.qq.com/sdk/qqapi.js?_bid=152"><\/script>');
+        }
+
+
+        $(function(){
+            var openid = '{php echo $openid}';
+            var roomid = '{php echo $room_id}';
+
+            var in_url = 'http://sy.yunzshop.com/shop_live.php?api=down_log/Set/start';
+            var out_url = 'http://sy.yunzshop.com/shop_live.php?api=down_log/Set/end';
+
+            //设置直播结束计算流量
+            var getting = {
+                url: out_url,
+                type: 'post',
+                dataType: 'json',
+                data: {'openid': openid, 'room_id': roomid},
+            };
+
+            setInterval(function() {$.ajax(getting)},20000);
+
+            //设置直播开始计算流量
+            $.ajax({
+                url: in_url,
+                type: 'post',
+                dataType: 'json',
+                data: {'openid': openid, 'room_id': roomid},
+            });
+
+            //关闭页面
+            $(window).unload(function(){
+                $.ajax(getting);
+            });
+        });
+
+
+        function openGoodsList(){
+            $(".lw-goods-list").stop().fadeIn(500);
+            $(".video-discuss-goods").addClass("in");
+            $(".video-discuss").stop().fadeOut(500);
+            $(".lw-mask").stop().fadeIn(500);
+        }
+        function closeGoodsList(){
+            $(".lw-goods-list").stop().fadeOut(500);
+            $(".video-discuss-goods").removeClass("in");
+            $(".video-discuss").stop().fadeIn(500);
+            $(".lw-mask").stop().fadeOut(500);
+        }
+        document.querySelector(".lw-goods-list-close").onclick = function(){
+            var _data = {
+                "GroupId": webim.Tool.getQueryString('groupid')
+            };
+            webim.quitGroup(_data, function(resp){
+                console.log('resp:'+JSON.stringify(resp))
+            },function (err){
+                console.log('err:'+JSON.stringify(err));
+            });
+        };
+    </script>
+
+</body>
+</html>

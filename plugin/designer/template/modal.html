@@ -32,6 +32,7 @@
                     <li id="fe-tab-link-nav-5"><a href="javascript:switchtab('fe-tab-link',5);">DIY页面</a></li>
                     {if p('article')}<li id="fe-tab-link-nav-6"><a href="javascript:switchtab('fe-tab-link',6);">文章营销页面</a></li>{/if}
 		{if p('coupon')}<li id="fe-tab-link-nav-7"><a href="javascript:switchtab('fe-tab-link',7);">超级券页面</a></li>{/if}
+                    {if p('live')}<li id="fe-tab-link-nav-8"><a href="javascript:switchtab('fe-tab-link',8);">直播页面</a></li>{/if}
                 </ul>
                 <div>
                     <div class="fe-tab-link" id="fe-tab-link-1" style="display: block;">
@@ -43,7 +44,7 @@
                         <div id="fe-tab-link-li-13" class="btn btn-default" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>
                         <div id="fe-tab-link-li-14" class="btn btn-default" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>
                         <div class="page-header">
-                            <h4><i class="fa fa-folder-open-o"></i> 会员中心链接</h4>
+                            <h4><i class="fa fa-folder-open-o"></i> modg会员中心链接</h4>
                         </div>
                         <div id="fe-tab-link-li-21" class="btn btn-default" ng-click="chooseLink(1, 21)" data-href="{php echo $this->createMobileUrl('member')}">会员中心</div>
                         <div id="fe-tab-link-li-22" class="btn btn-default" ng-click="chooseLink(1, 22)" data-href="{php echo $this->createMobileUrl('order')}">我的订单</div>
@@ -111,6 +112,10 @@
                             {if p('recharge')}
                              <div id="fe-tab-link-li-53" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 53)" data-href="{php echo $this->createPluginMobileUrl('recharge/detail')}">充值专区</div>
                             {/if}
+                            {if p('live')}
+                            <div id="fe-tab-link-li-54" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 54)" data-href="{php echo $this->createMobileUrl('live/list')}">直播专区</div>
+                            {/if}
+
                     </div>
 
                     <div class="fe-tab-link" id="fe-tab-link-2">
@@ -220,6 +225,28 @@
                         <p ng-show="temp.coupon == ''" style="padding:0px; margin-top: 120px; font-size: 16px; color: #aaa; text-align: center;">抱歉， 一个优惠券也没有找到~换个关键词试试~</p>
                     </div>
                       {/if}
+
+                    {if p('live')}
+                    <div class="fe-tab-link" id="fe-tab-link-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="keyword" value="" id="select-room-kw" placeholder="请输入房间名称进行搜索">
+                            <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="ajaxselect('room');" id="selectroom">搜索</button></span>
+                        </div>
+                        <div ng-repeat="room in temp.room">
+                            <div class="fe-tab-link-line" style='height:60px;line-height:60px;float:left;width:100%;'>
+                                <div class="fe-tab-link-sub"><a href="javascript:;" ng-click="chooseLink(8, room.room_id)">选择</a></div>
+
+                                <div class="fe-tab-link-text" id="fe-tab-link-li-{{room.room_id}}"
+                                     data-href="{php echo $this->createMobileUrl('live')}&p=room&room_id={{room.room_id}}&groupid={{room.chat_room_id}}&hls={{room.hls_downstream_address}}">
+                                    房间名称: {{room.title}}
+                                </div>
+                            </div>
+
+                        </div>
+                        <p ng-show="temp.room == ''" style="padding:0px; margin-top: 120px; font-size: 16px; color: #aaa; text-align: center;">抱歉， 一个房间也没有找到~换个关键词试试~</p>
+
+                    </div>
+                    {/if}
                     
                 </div>
             </div>
