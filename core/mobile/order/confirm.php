@@ -2639,6 +2639,7 @@ if ($_W['isajax']) {
                     $goodsprice =$_GPC['goodsprice'];
                 }
             }
+            
             $order   = array(
                 'supplier_uid' => $order_row['supplier_uid'],
                 'uniacid' => $uniacid,
@@ -2723,6 +2724,9 @@ if ($_W['isajax']) {
 
             if($issale == false){
                 $order["plugin"]   = 'fund';
+            }
+            if (!empty($address)) {
+                $order['address'] = iserializer($address);
             }
 
             pdo_insert('sz_yi_order',$order);
