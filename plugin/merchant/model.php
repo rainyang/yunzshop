@@ -145,7 +145,7 @@ if (!class_exists('MerchantModel')) {
 			if (!empty($childs)) {
 				$data = array();
 				foreach ($childs as $key => $value) {
-					$this->child_centers[$value['id']] = $value;
+					$this->child_centers[] = $value;
 				}
 				foreach ($childs as $val) {
 					return $this->getChildCenters($val['openid']);
@@ -327,5 +327,16 @@ if (!class_exists('MerchantModel')) {
 		{
 			return array('merchant' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cover' => array('text' => '入口设置'), 'merchants' => array('text' => '招商员', 'view' => '浏览'))));
 		}
+
+        function page_array($count,$page,$array,$order){
+            $page=(empty($page))?'1':$page; #判断当前页面是否为空 如果为空就表示为第一页面
+            $start=($page-1)*$count; #计算每次分页的开始位置
+            if($order==1){
+                $array=array_reverse($array);
+            }
+            $pagedata=array();
+            $pagedata=array_slice($array,$start,$count);
+            return $pagedata; #返回查询数据
+        }
 	}
 }
