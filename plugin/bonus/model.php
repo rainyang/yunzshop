@@ -100,7 +100,8 @@ if (!class_exists('BonusModel')) {
 			$set = $this->getSet();
 			$levels = $this->getLevels();
 			$time = time();
-			$order = pdo_fetch('select openid, address, period_num from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
+			$order = pdo_fetch('select openid, address, period_num, cashier, cashierid, goodsprice from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
+			
 			$openid = $order['openid'];
 			$address = unserialize($order['address']);
 			
@@ -116,6 +117,7 @@ if (!class_exists('BonusModel')) {
 			        $isladder = true;   
 			    }
 			}
+
 			foreach ($goods as $cinfo) {
 				//计算阶梯价格
 	            if ($isladder) {
@@ -128,7 +130,20 @@ if (!class_exists('BonusModel')) {
 	                    $cinfo['marketprice'] = $laddermoney > 0 ? $laddermoney : $cinfo['marketprice'];
 	                }
 	            }
-				$price_all = $this->calculate_method($cinfo, $order['period_num']);
+
+				//夺宝订单与收银台订单直接使用真实金额计算
+	          	if ($order['period_num']) {
+	          		$price_all = $cinfo['realprice'];
+	          	//收银台分红金额
+	          	} elseif ($order['cashier']) {
+	          		$price_all = p('cashier')->calculate_method($cinfo, $order['cashierid']);
+	          	//酒店订单直接使用商品金额计算
+	          	} elseif (p('hotel')&& $cinfo['type']=='99') {		
+					$price_all = $order['goodsprice'];
+				} else {
+	          		$price_all = $this->calculate_method($cinfo);
+	          	}
+
 				if (empty($cinfo['nobonus']) && $price_all > 0) {
 					if(empty($set['selfbuy'])){
 						$masid = $member['agentid'];
