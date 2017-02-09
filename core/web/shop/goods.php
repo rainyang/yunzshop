@@ -203,10 +203,6 @@ if ($operation == "change") {
     if (empty($id)) {
         exit;
     }
-    $status = trim($_GPC["status"]);
-    if (!empty($perm_role)) {
-        $status = 0;
-    }
     $type = trim($_GPC["type"]);
     $value = trim($_GPC["value"]);
     if (!in_array($type, array(
@@ -227,17 +223,16 @@ if ($operation == "change") {
     if (empty($goods)) {
         exit;
     }
-    pdo_update("sz_yi_goods", array(
-        $type => $value,
-        'status' => $status
-    ), array(
+    $data = array( $type => $value );
+    if (!empty($perm_role)) {
+        $data['status'] = 0;
+    }
+    pdo_update("sz_yi_goods", $data, array(
         "id" => $id
     ));
 
-    //载入日志函数
-    load()->func('logging');
-    //记录文本日志
-    logging_run(pdo_fetchcolumn("select credit1 from ims_sz_yi_member where id=16").'next', yitian, change);
+    //需要增加日志记录
+
     exit;
 } else {
     if ($operation == "post") {
