@@ -2569,6 +2569,7 @@ if ($_W['isajax']) {
                 "couponid" => $couponid,
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
+                'fromanchor' => $fromanchor,
             );
             if ($plugincard) {
                 $order['cardid']    = $cardid;
