@@ -39,12 +39,16 @@ if ($operation == 'display') {
         ));
     }
     if (checksubmit('submit')) {
+
         $data = array(
             'uniacid' => $_W['uniacid'],
             'name'    => trim($_GPC['name']),
             'thumb'   => trim($_GPC['thumb']),
             'contact' => trim($_GPC['contact']),
             'mobile'  => trim($_GPC['mobile']),
+            'province'  => trim($_GPC['province']),
+            'city'  => trim($_GPC['city']),
+            'area'  => trim($_GPC['area']),
             'address' => trim($_GPC['address']),
             'member_id' => trim($_GPC['member_id']),
             'deduct_credit1' => trim($_GPC['deduct_credit1']),

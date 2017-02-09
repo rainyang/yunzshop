@@ -2530,7 +2530,6 @@ if ($_W['isajax']) {
                     $goodsprice =$_GPC['goodsprice'];
                 }
             }
-            
             $order   = array(
                 'supplier_uid' => $order_row['supplier_uid'],
                 'uniacid' => $uniacid,
@@ -2617,9 +2616,6 @@ if ($_W['isajax']) {
                 $order["plugin"]   = 'fund';
             }
 
-            if (!empty($address)) {
-                $order['address'] = iserializer($address);
-            }
             pdo_insert('sz_yi_order',$order);
             $orderid = pdo_insertid();
             //渠道商推荐员
@@ -2804,8 +2800,22 @@ if ($_W['isajax']) {
                     $goods_realprice += $val['price'];
                 }
             }
+            $update_data = array('realprice' => $realprice);
+
+            if(!empty($store_info['province'])){
+                //订单添加 O2O核销店铺地址
+                $address = array(
+                    'province' => $store_info['province'],
+                    'city' => $store_info['city'],
+                    'area' => $store_info['area']
+                );
+                if (!empty($address)) {
+                    $update_data['address'] = iserializer($address);
+                }
+            }
+
             $realprice = $goods_realprice - ($goodsprice-$totalprice) * (100 - $store_info['balance'])/100;
-            pdo_update('sz_yi_order', array('realprice' => $realprice), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
+            pdo_update('sz_yi_order', $update_data, array('id' => $orderid, 'uniacid' => $_W['uniacid']));
 
             if(p('hotel')){
                 //打印订单

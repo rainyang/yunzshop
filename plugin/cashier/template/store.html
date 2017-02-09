@@ -1,4 +1,5 @@
 {template 'web/_header'}
+<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade_street.js"></script>
 <div class="w1200 m0a">
 {template 'tabs'}
 <div class="rightlist">
@@ -163,6 +164,36 @@
                     {/if}
                 </div>
             </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红地址</label>
+                        <div class="col-sm-9 col-xs-12">
+                            {ife 'shop.refundaddress' $item}
+                            <p class="form-control-static ad2" id="e_address">
+                                <select id="sel-provance" name="province" onChange="selectCity();" class="select form-control" style="width:130px;display:inline;">
+                                    <option value="" selected="true">省/直辖市</option>
+                                </select>
+                                <select id="sel-city" name="city" onChange="selectcounty(0)" class="select form-control" style="width:135px;display:inline;">
+                                    <option value="" selected="true">请选择</option>
+                                </select>
+                                <select id="sel-area" name="area" onChange="selectstreet(0)"class="select form-control" style="width:130px;display:inline;">
+                                    <option value="" selected="true">请选择</option>
+                                </select>
+<!--                                 <select id="sel-street" name="street" class="select form-control" style="width:130px;display:inline;">
+                                    <option value="" selected="true">请选择</option>
+                                </select> -->
+                            </p>
+                            {/if}
+
+                        </div>
+                    </div>
+
+            <script language='javascript'>
+                $(function(){
+                    cascdeInit("{php echo $item['province']}","{php echo $item['city']}","{php echo $item['area']}","{php echo $item['street']}");
+                });
+            </script>
+            
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">地址</label>
                 <div class="col-sm-9 col-xs-12">
@@ -173,6 +204,7 @@
                     {/if}
                 </div>
             </div>
+
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单时是否填写联系人信息</label>
                 <div class="col-sm-9 col-xs-12">

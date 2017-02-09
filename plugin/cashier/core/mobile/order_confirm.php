@@ -168,6 +168,13 @@ if ($operation == 'display') {
         redirect($this->createMobileUrl('member'));
     }
     $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $sid, ':uniacid' => $_W['uniacid']));
+
+    $address = array(
+        'province' => $store['province'],
+        'city' => $store['city'],
+        'area' => $store['area']
+    );
+
     $store=set_medias($store,'thumb');
     if (!$store) {
         redirect($this->createMobileUrl('member'));
@@ -326,7 +333,7 @@ if ($operation == 'display') {
     if($totalprice>=$store['redpack_min'] && $store['deredpack']==1){
         $realtotalprice = $realtotalprice - $totalprice*($store['redpack']/100);
     }
-    
+
     $order   = array(
         'uniacid' => $_W['uniacid'],
         'openid' => $openid,
@@ -366,6 +373,9 @@ if ($operation == 'display') {
         'ordersn_general' =>  $ordersn,
         'pay_ordersn' => $ordersn
     );
+    if (!empty($address)) {
+        $order['address'] = iserializer($address);
+    }
     if ($store['deredpack'] == 1) {
         $order['deredpack'] = 1;
     }

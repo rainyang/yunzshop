@@ -117,4 +117,8 @@ if (!pdo_fieldexists('sz_yi_order_goods', 'totalcnf')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `totalcnf` TINYINT(1) NOT NULL COMMENT '订单商品减库存方式0:拍立减1:付款减2:永不减' AFTER `total`;");
 }
 
+//门店添加地址（省市区） 2017-02-07
+if (!pdo_fieldexists('sz_yi_cashier_store', 'province')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `province` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `mobile`, ADD `city` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `province`, ADD `area` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `city`;");
+}
 
