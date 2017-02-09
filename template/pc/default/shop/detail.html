@@ -372,13 +372,12 @@ div.flicking_con a.on{background-position:0 -9px}
             {/if}
         </div>
     <%/if%>
-
-	<div class="good_bottom">
     {if $goods['hidecommission'] == 0}
-	<div class="fx_sub1" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id']))}'"><i class="fa fa-cny"></i><%commission_text%></div>
-    {/if}
-	<div class="fx_num">您的下级购买此商品后,您将获得分销佣金：<em>{$commissionprice}</em>元</div>
+	<div class="good_bottom">
+        <div class="fx_sub1" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id']))}'"><i class="fa fa-cny"></i><%commission_text%></div>
+        <div class="fx_num">您的下级购买此商品后,您将获得分销佣金：<em>{$commissionprice}</em>元</div>
 	</div>
+    {/if}
 	
        
 
