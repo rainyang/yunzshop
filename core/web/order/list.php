@@ -243,6 +243,13 @@ if ($operation == "display") {
         }
     }
 
+    //直播间引流的订单搜索
+    $cloudAnchorId = $_GPC['cloudAnchorId'];
+    if ( $cloudAnchorId !='') {
+        $condition .= ' AND o.fromanchor = :fromanchor';
+        $paras['fromanchor'] = $cloudAnchorId;
+    }
+
     //门店取消订单搜索
     if (empty($_W['isagent'])) {
         if ($_GPC['cancel'] == 1) {
