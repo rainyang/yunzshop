@@ -28,6 +28,17 @@
         <div class="title">我的资料</div>
     </div>
     <div class="info_main">
+        <div class="line">
+            <div class="title">我的头像</div>
+            <div class='info'>
+                <div class='inner'>
+                <a style="float: right; padding: 0px;color: #f15353;text-decoration: none; display:flex;" href='{php echo $this->createMobileUrl('member/editmobile')}'>
+                <img src="../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg" style="width:41px; height:41px; border-radius: 50%"/>
+                <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:41px; margin-left: 6px;"></i>
+                </a>
+                </div>
+            </div>
+        </div>
         <div class="line"><div class="title">姓名</div><div class='info'><div class='inner'><input type="text" id='realname' placeholder="请输入您的姓名"  value="<%realname%>" /></div></div></div>
         {if is_app()}
         <div class="line"><div class="title">昵称</div><div class='info'><div class='inner'><input type="text" id='nickname' placeholder="请输入您的昵称"  value="<%nickname%>" /></div></div></div>
