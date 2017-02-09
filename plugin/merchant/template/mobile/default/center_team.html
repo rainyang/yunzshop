@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>我的供应商</title>
+<title>我的下级</title>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
     a {text-decoration:none;}
@@ -28,11 +28,11 @@
 
 </style>
 <div class="team_top">
-    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 我的供应商({$total})</div>
+    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 我的下级({$total})</div>
 </div>
 <div class="team_list_head">
         <div class="info">成员信息</div>
-        <div class="num">TA的佣金</div>
+        <div class="num">TA的信息</div>
 </div>
 <div id='container'></div>
 
@@ -40,13 +40,14 @@
 
     <%each list as user%>
     <div class="team_list" data-center_id='<%user.id%>'>
-        <div class="info"><%if user.username%><%user.username%><%else%>未获取<%/if%><br><span><%user.username%></span></div>
-        <div class="num">+<%user.commission_total%><br><span><%user.ordercount%> 个订单</span></div>
+        <div class="img"><img src="<%if user.member%><%user.member.avatar%><%else%>../addons/sz_yi/plugin/commission/images/head.jpg<%/if%>"></div>
+        <div class="info"><%user.member.nickname%><br><span><%user.member.mobile%></span></div>
+        <div class="num"><%user.level.level_name%><br><span><%user.level.commission%>%</span></div>
     </div>
     <%/each%>
 </script>
 <script id='tpl_empty' type='text/html'>
-    <div class="team_no"><i class="fa fa-users" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您没有供应商~</span></div>
+    <div class="team_no"><i class="fa fa-users" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您没有{if empty($_GPC['iscenter'])}供应商{else}下级信息{/if}~</span></div>
 </script>
 
 <script language="javascript">
@@ -72,7 +73,7 @@ function bindScroller(){
                     stop = false;
                     $('#container').append('<div id="team_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                     page++;
-                    core.pjson('merchant/team', {page: page}, function (morejson) {
+                    core.pjson('merchant/center_team', {page: page}, function (morejson) {
                         stop = true;
                         $('#team_loading').remove();
                         $("#container").append(tpl('tpl_team', morejson.result));
@@ -90,7 +91,7 @@ function bindScroller(){
         function getTeam(level) {
             $('.team_nav').removeClass('team_navon');
             $('.team_nav[data-level=' + level + ']').addClass('team_navon');
-            core.pjson('merchant/team', {page: page}, function (json) {
+            core.pjson('merchant/center_team', {page: page}, function (json) {
                 if (json.result.list.length <= 0) {
                     $('#container').html(tpl('tpl_empty'));
                     return;
@@ -98,7 +99,7 @@ function bindScroller(){
                 $('#container').html(tpl('tpl_team', json.result));
                 $('.team_list').click(function(){
                     var center_id = $(this).closest('.team_list').data('center_id');
-                    core.pjson('merchant/team', {center_id:center_id}, function (json) {
+                    core.pjson('merchant/center_team', {center_id:center_id}, function (json) {
                         if (json.result.list.length <= 0) {
                             $('#container').html(tpl('tpl_empty'));
                             return;

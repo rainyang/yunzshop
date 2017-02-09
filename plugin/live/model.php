@@ -188,7 +188,7 @@ if (!class_exists('liveModel')) {
             load()->func('communication');
 
             //创建主播
-            $create_anchor_url = 'http://sy.yunzshop.com/admin_live.php?api=anchor/Add';
+            $create_anchor_url = SZ_YI_LIVE_CLOUD_URL . '/admin_live.php?api=anchor/Add';
                 
                 //主播信息
                 $anchor_data = array(
@@ -205,7 +205,7 @@ if (!class_exists('liveModel')) {
 
             //创建直播间
             $domain = $_SERVER['HTTP_HOST'];
-            $anchor_room_url = 'http://sy.yunzshop.com/shop_live.php?api=room/Add';
+            $anchor_room_url = SZ_YI_LIVE_CLOUD_URL . '/shop_live.php?api=room/Add';
 
             $name = pdo_fetchcolumn('SELECT `name` FROM ' . tablename('uni_account') . " WHERE uniacid = :uniacid LIMIT 1", array(':uniacid' => $member['uniacid']));
 
@@ -263,7 +263,7 @@ if (!class_exists('liveModel')) {
 
             $domain = $_SERVER['HTTP_HOST'];
             $uniacid = $_W['uniacid'];
-            $getUrl = "http://sy.yunzshop.com/shop_live.php?api=stream_log/Get&domain=".$domain."&uniacid=".$uniacid."&start_time=".$start_time."&end_time=".$end_time;
+            $getUrl = SZ_YI_LIVE_CLOUD_URL . "/shop_live.php?api=stream_log/Get&domain=".$domain."&uniacid=".$uniacid."&start_time=".$start_time."&end_time=".$end_time;
 
             $ch = curl_init();  
             curl_setopt($ch, CURLOPT_URL, $getUrl);  

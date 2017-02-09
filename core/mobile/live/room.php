@@ -16,7 +16,7 @@ if ($operation == 'display'){
 
     //生成分销上下级关系("主播"做为上级, "观看者"如果之前没有分销关系, 则做为"主播"的下级)
     //获取主播信息
-    $url_01 = 'http://sy.yunzshop.com/shop_live.php?api=room/Get&room_id='.$room_id; //todo
+    $url_01 = SZ_YI_LIVE_CLOUD_URL . '/shop_live.php?api=room/Get&room_id='.$room_id; //todo
     $result_01 = ihttp_get($url_01);
     $result_array_01 = json_decode($result_01['content'], true);
     $room_info = $result_array_01['data'];
@@ -29,7 +29,7 @@ if ($operation == 'display'){
     p('commission')->checkAgent();
 
     //curl请求"获取直播间关联商品列表"的API
-    $url_02 = 'http://sy.yunzshop.com/admin_live.php?api=room/Goods&room_id=' . $room_id;
+    $url_02 = SZ_YI_LIVE_CLOUD_URL . '/admin_live.php?api=room/Goods&room_id=' . $room_id;
     if(!empty($page)){
         $url_02 .= '&page=' . $page;
     }
@@ -58,7 +58,7 @@ if ($operation == 'display'){
 
     //获取sig
     if(empty($_GPC['sig'])){
-        $result_02 = ihttp_get('http://live.tbw365.cn/shop_live.php?api=IM/Get/sign&openid='.$openid.'&domain='.$domain);
+        $result_02 = ihttp_get(SZ_YI_LIVE_CLOUD_URL.'/shop_live.php?api=IM/Get/sign&openid='.$openid.'&domain='.$domain);
         $result_02_array = json_decode($result_02['content'], true);
         $sig = $result_02_array['data']['sign'];
         $identifier = $result_02_array['data']['identifier'];

@@ -298,7 +298,7 @@ if ($operation == 'display') {
         
         //将云端的主播状态更改为"禁播"
         load()->func('communication');
-        $cloud_url = 'http://sy.yunzshop.com/shop_live.php?api=room/Set/freeze'; //todo 非正式地址
+        $cloud_url = SZ_YI_LIVE_CLOUD_URL . '/shop_live.php?api=room/Set/freeze';
         $resp = ihttp_post($cloud_url, array(
             'mobile' => $member['mobile'],
             'domain' => $_SERVER['HTTP_HOST']
