@@ -50,8 +50,11 @@
         <div class="title">主播申请</div>
     </div>
     <div class="info_main">
-
-        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text"  id='mobile' placeholder="请输入您的手机号" value="{$member['mobile']}"/></div></div></div>
+        {if !empty($member['mobile'])}
+        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'>{$member['mobile']}</div></div></div>
+        {else}
+        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text"  id='mobile' placeholder="请输入您的手机号" value=""/></div></div></div>
+        {/if}
         {if empty($member['mobile'])}
         <div class="line" style="position: relative"><div class="title">验证码</div><div class='info'><div class='inner'><input type="text" id='code' placeholder="请输入验证码"  value="" /><input id="btnSendCode" style="position: absolute;right: 0;top: 0;" type="button" value="发送验证码"  /></div></div></div>
         {/if}
