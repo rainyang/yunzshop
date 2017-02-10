@@ -5,6 +5,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 load()->func('file');
 $op = !empty($_GPC['op']) ? $_GPC['op'] : 'upload';
+$attribute = $_GPC['attribute'];
 if ($op == 'upload') {
 	$field = $_GPC['file'];
 	if (!empty($_FILES[$field]['name'])) {
@@ -12,7 +13,11 @@ if ($op == 'upload') {
 			$result['message'] = '图片上传失败，请重试！';
 			exit(json_encode($result));
 		}
-		$path = '/images/sz_yi/' . $_W['uniacid'];
+        $path = '/images/sz_yi/' . $_W['uniacid'];
+		if ($attribute == 'member') {
+		    $memberid = $_GPC['memberid'];
+		    $path = "/images/sz_yi/" . $_W['uniacid'] . "/member";
+        }
 		if (!is_dir(ATTACHMENT_ROOT . $path)) {
 			mkdirs(ATTACHMENT_ROOT . $path);
 		}
@@ -20,7 +25,13 @@ if ($op == 'upload') {
 		$_W['uploadset']['image']['folder'] = $path;
 		$_W['uploadset']['image']['extentions'] = $_W['config']['upload']['image']['extentions'];
 		$_W['uploadset']['image']['limit'] = $_W['config']['upload']['image']['limit'];
-		$file = file_upload($_FILES[$field], 'image');
+		if ($memberid) {
+		    $name = $path . "/member" . $memberid;
+            $file = file_upload($_FILES[$field], 'image', $name);
+            pdo_update('sz_yi_member', array('isactivity' => $file['path'] ), array('id' => $memberid));
+        } else {
+            $file = file_upload($_FILES[$field], 'image');
+        }
 		if (is_error($file)) {
 			$result['message'] = $file['message'];
 			exit(json_encode($result));
