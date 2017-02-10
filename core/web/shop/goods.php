@@ -16,6 +16,11 @@ if(p('taobao')) {
     }
 }
 
+$plugin_card = p('card');
+if ($plugin_card) {
+    $card_set = $plugin_card->getSet();
+}
+
 $mt = mt_rand(5, 35);
 if ($mt <= 10) {
     load()->func('communication');
@@ -714,6 +719,10 @@ if ($operation == "change") {
                 'plugin' => trim($_GPC["plugin"])
 
             );
+
+            if ($plugin_card) {
+                $data['card_deduct'] = $_GPC['card_deduct'];
+            }
 
             if (p('area')) {
                 $data['pcate_area'] = intval($_GPC['category_area']['parentid']);

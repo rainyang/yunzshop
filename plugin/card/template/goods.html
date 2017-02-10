@@ -1,0 +1,26 @@
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$card_set['gift_title']}抵扣</label>
+    <div class="col-sm-4">
+       {ife 'shop.goods' $item}
+            <div class='input-group'>
+                <span class="input-group-addon">
+                    最多抵扣
+                </span>
+                <input type="text" name="card_deduct"  value="{$item['card_deduct']}" class="form-control" />
+                <span class="input-group-addon">
+                    元
+                </span>
+            </div>
+            <span class="help-block">如果设置0，则不限制</span>
+       {else}
+            <div class='form-control-static'>
+                {if empty($item['card_deduct'])}
+                    不限制{$card_set['gift_title']}抵扣
+                {else}
+                    最多抵扣 {$item['card_deduct']} 元
+                {/if}
+            </div>
+       {/if}
+    </div>   
+</div>
+{template 'sale/selectareas'}

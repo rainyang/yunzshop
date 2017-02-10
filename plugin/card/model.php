@@ -125,6 +125,51 @@ if (!class_exists('CardModel')) {
         }
 
         /**
+         * @name 计算订单金额
+         * @author yangyang
+         * @param $totalprice $cardid $card_deduct_total
+         * $return int $totalprice
+         */
+        public function calculateTotalPrice($totalprice, $cardid, $card_deduct_total)
+        {
+            global $_W;
+            if (empty($cardid)) {
+                return;
+            }
+            $cardinfo = $this->getCradInfo($cardid);
+            if (empty($cardinfo)) {
+                return;
+            }
+            if (!empty($card_deduct_total)) {
+                if ($cardinfo['balance'] >= $card_deduct_total) {
+                    $cardprice = $card_deduct_total;
+                } else {
+                    $cardprice = $cardinfo['balance'];
+                }
+            } else {
+                if ($cardinfo['balance'] >= $totalprice) {
+                    $cardprice = $totalprice;
+                } else {
+                    $cardprice = $cardinfo['balance'];
+                }
+            }
+            //代金卡剩余金额
+            $balance = $cardinfo['balance'] - $cardprice;
+            pdo_update('sz_yi_card_data',
+                array('balance' => $balance),
+                array('uniacid' => $_W['uniacid'], 'id' => $cardid)
+            );
+            $totalprice -= $cardprice;
+            if ($totalprice < 0) {
+                $totalprice = 0;
+            }
+            return array(
+                'totalprice'   => $totalprice,
+                'cardprice'     => $cardprice
+            );
+        }
+
+        /**
          * @name 获取满足条件的代金卡数量
          * @author yangyang
          * @param $openid

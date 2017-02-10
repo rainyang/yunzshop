@@ -67,6 +67,9 @@
 			{/if}
 			{/if}
 		{/if}
+		{if $plugin_card}
+			<li><a href="#tab_card">{$card_set['gift_title']}抵扣</a></li>
+		{/if}
     </ul> 
 </div>
 <div style="padding-top:50px">
@@ -108,6 +111,9 @@
                     {if p('diyform')}
                     <div class="tab-pane" id="tab_diyform">{template 'diyform/goods'}</div>
                     {/if}
+					{if p('card')}
+					<div class="tab-pane" id="tab_card">{template 'card/goods'}</div>
+					{/if}
 
                 </div> 
 		        <div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
