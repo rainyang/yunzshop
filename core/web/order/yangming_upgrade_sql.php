@@ -83,4 +83,21 @@ if(!pdo_fieldexists('sz_yi_poster_log', 'subpaytype')) {
 if(!pdo_fieldexists('sz_yi_poster_log', 'recpaytype')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_poster_log')." ADD `recpaytype` tinyint(1) DEFAULT '0' COMMENT '推荐人获得现金方式 0为余额 1为钱包 2为红包';");
 }
+
+//2.9 收银台添加独立分销佣金比例判断字段
+if(!pdo_fieldexists('sz_yi_cashier_store', 'hascommission')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `hascommission` tinyint(1) DEFAULT '1' COMMENT '是否为独立佣金 0 不是 1 是';");
+}
+if(!pdo_fieldexists('sz_yi_cashier_store', 'province')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `province` varchar(30) DEFAULT '' COMMENT '地址：省';");
+}
+if(!pdo_fieldexists('sz_yi_cashier_store', 'city')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `city` varchar(30) DEFAULT '' COMMENT '地址：市';");
+}
+if(!pdo_fieldexists('sz_yi_cashier_store', 'area')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `area` varchar(30) DEFAULT '' COMMENT '地址：区';");
+}
+if(!pdo_fieldexists('sz_yi_cashier_store', 'street')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `street` varchar(30) DEFAULT '' COMMENT '地址：街';");
+}
 echo 1;
