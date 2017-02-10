@@ -190,7 +190,7 @@ if (!class_exists('CardModel')) {
          * $author yangyang
          * $param $cardid   $cardprice
          */
-        public function cardRefund($cardid,$cardprice)
+        public function cardRefund($cardid, $cardprice)
         {
             global $_W;
             $card_info = $this->getCradInfo($cardid);

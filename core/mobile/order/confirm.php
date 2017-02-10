@@ -2511,8 +2511,10 @@ if ($_W['isajax']) {
             $cardid = intval($order_row['cardid']);
             //使用金额
             if ($plugincard) {
-                $carddata = $plugincard->calculateTotalPrice($totalprice, $cardid, $card_deduct_total);
-                $totalprice = $carddata['totalprice'];
+                if (!empty($cardid)) {
+                    $carddata = $plugincard->calculateTotalPrice($totalprice, $cardid, $card_deduct_total);
+                    $totalprice = $carddata['totalprice'];
+                }
             }
 
             if ($saleset && empty($saleset["dispatchnodeduct"])) {
@@ -2649,7 +2651,7 @@ if ($_W['isajax']) {
                     $goodsprice =$_GPC['goodsprice'];
                 }
             }
-            
+
             $order   = array(
                 'supplier_uid' => $order_row['supplier_uid'],
                 'uniacid' => $uniacid,

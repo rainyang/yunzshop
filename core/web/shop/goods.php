@@ -722,6 +722,9 @@ if ($operation == "change") {
 
             if ($plugin_card) {
                 $data['card_deduct'] = $_GPC['card_deduct'];
+                if ($data['card_deduct'] < 0) {
+                    $data['card_deduct'] = 0;
+                }
             }
 
             if (p('area')) {
