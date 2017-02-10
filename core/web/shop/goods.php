@@ -720,6 +720,14 @@ if ($operation == "change") {
 
             );
 
+            if ($_GPC['deduct'] < 0) {
+                $_GPC['deduct'] = 0;
+            }
+
+            if ($_GPC['deduct2'] < 0) {
+                $_GPC['deduct2'] = 0;
+            }
+
             if ($plugin_card) {
                 $data['card_deduct'] = $_GPC['card_deduct'];
                 if ($data['card_deduct'] < 0) {
