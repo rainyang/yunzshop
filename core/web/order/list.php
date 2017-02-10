@@ -177,7 +177,14 @@ if ($operation == "display") {
         $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
         $suppliers = p('supplier')->AllSuppliers();
     }
-
+    if (p('live')) {
+        //获取直播间列表
+        load()->func('communication');
+        $url = SZ_YI_LIVE_CLOUD_URL.'/shop_live.php?api=room&domain='.$_SERVER['HTTP_HOST'].'&uniacid='.$_W['uniacid'];
+        $result = ihttp_get($url);
+        $result_array = json_decode($result['content'], true);
+        $liveRooms = $result_array['data'];
+    }
     $pindex = max(1, intval($_GPC["page"]));
     $psize = SZ_YI_PSIZE;
     $status = $_GPC["status"] == "" ? 1 : $_GPC["status"];
