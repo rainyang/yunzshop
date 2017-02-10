@@ -21,6 +21,7 @@ if ($operation == 'display'){
     $result_array_01 = json_decode($result_01['content'], true);
     $room_info = $result_array_01['data'];
     $anchor_mobile = $room_info['mobile'];
+    $anchor_id = $room_info['anchor_id'];
 
     //获取主播id
     $mid = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_member') . ' WHERE mobile = :mobile', array(':mobile' => $anchor_mobile));
