@@ -11,7 +11,7 @@ if (!defined('IN_IA')) {
  * * @author    LuckyStar_D<duanfuxing@yunzshop.com>
  * * @version   v1.0
  * */
-!defined('REACHARGE_API_URL') && define('REACHARGE_API_URL', "https://www.tieba8.com/api/web/v1/site/");
+!defined('REACHARGE_API_URL') && define('REACHARGE_API_URL', "https://www.tieba8.com/api/web/v1/site/");//https://www.tieba8.com/api/web/v1/site/
 !defined('MOBILE_API_URL') && define('MOBILE_API_URL', "http://tcc.taobao.com/cc/json/mobile_tel_segment.htm");//手机号码验证接口
 !defined('API_SUBMIT') && define('API_SUBMIT', REACHARGE_API_URL . "submit");//订单提交接口
 !defined('API_BLANCE') && define('API_BLANCE', REACHARGE_API_URL . "blance");//账户余额查询接口
@@ -48,6 +48,8 @@ if (!class_exists('RechargeModel')) {
 		function mobile_submit_api($data)
 		{
 			global $_W, $_GPC;
+			$set = $this->getSet();
+			$notice_set = $set['tm'];
 			load()->func('communication');
 			$sign  = $this->getSign($data['apikey'], $data['account']);
 		    $param  =   array(
@@ -62,43 +64,39 @@ if (!class_exists('RechargeModel')) {
 			$resp = ihttp_post(API_SUBMIT, $param);
 			$ret = @json_decode($resp['content'], true);
 			$ret['createtime'] = date('Y-m-d H:i:s', time());
-		    if (empty($ret)) {
-				$ret['desc'] = '没收到充值接口返回信息...';
-		    }
-			$this->rechargeLog('api_submit_return', print_r($ret,true));
-		    if (!empty($ret['out_order_id']) && $ret['result'] == "0") {
+			$this->rechargeLog('api_submit_return', print_r($resp,true));
+		    if (!empty($ret['data']['out_order_id']) && $ret['code'] == "0") {
 		        $message = array(
 		            'keyword1' => array('value' => '手机流量提交成功', 'color' => '#73a68d'),
 		            'keyword2' => array('value' => '[订单编号]' . $data['out_order_id'], 'color' => '#73a68d'),
 		            'keyword3' => array('value' => '[手机号码]' . $data['phone_no'], 'color' => '#73a68d'),
 		            'keyword4' => array('value' => '[充值流量]' . $data['flow_val'] . 'M', 'color' => '#73a68d'),
-		            'remark' => array('value' => '您购买的流量已经提交成功.请留意订单的状态.如果24小时未发货.联系售后处理.
-		            如果已经发货.请短信查询流量到账情况.部分流量需要在网厅查询.关注订阅号《优惠一线》优惠早知道.')
+		            'remark' => array('value' => $notice_set['submit_success'])
 		            );
 		        m('message')->sendCustomNotice($data['openid'], $message);
 		        return true;
-		    } else if (empty($ret['out_order_id']) && $ret['result'] != "0") {
+		    } else if (empty($ret['data']['out_order_id']) && $ret['code'] != "0") {
 				$message = array(
 		            'keyword1' => array('value' => '手机流量提交失败', 'color' => '#73a68d'),
 		            'keyword2' => array('value' => '[订单编号]' . $data['out_order_id'], 'color' => '#73a68d'),
 		            'keyword3' => array('value' => '[手机号码]' . $data['phone_no'], 'color' => '#73a68d'),
 		            'keyword4' => array('value' => '[充值流量]' . $data['flow_val'] . 'M', 'color' => '#73a68d'),
-		            'keyword5' => array('value' => '[失败原因]' . $ret['err_desc'], 'color' => '#73a68d'),
-		            'remark' => array('value' => '您购买的手机流量充值提交失败，如未自动退款到您的微信账户，请联系管理员！')
+		            'keyword5' => array('value' => '[失败原因]' . $ret['message'], 'color' => '#73a68d'),
+		            'remark' => array('value' => $notice_set['submit_fail'])
 		            );
 				$remark_data = array(
 					'uniacid' => $_W['uniacid'],
 					'orderid' => $data['order_id'],
-					'remark' =>  "流量提交失败,失败原因: " . $ret['err_desc'],
+					'remark' =>  "流量提交失败,失败原因: " . $ret['message'],
 					'createtime' => time()
 				);
 				pdo_insert('sz_yi_recharge_remark', $remark_data);
 		        m('message')->sendCustomNotice($data['openid'], $message);
-				$data['err_desc'] = $ret['err_desc'];
+				$data['message'] = $ret['message'];
 				$refunddata = array(
 					'orderid' => $data['order_id'],
 					'price' => $data['price'],
-					'content' => $data['err_desc'],
+					'content' => $data['message'],
 					'openid' => $data['openid'],
 					'pay_ordersn' => $data['pay_ordersn'],
 					'ordersn' => $data['out_order_id']
@@ -116,6 +114,8 @@ if (!class_exists('RechargeModel')) {
 		function autoRefund($data)
 		{
 			global $_W, $_GPC;
+			$set = $this->getSet();
+			$notice_set = $set['tm'];
 			$refundno = m("common")->createNO("order_refund", "refundno", "SR");
 			$order_refund = array(
 				"uniacid" => $_W['uniacid'],
@@ -150,8 +150,7 @@ if (!class_exists('RechargeModel')) {
 						'keyword3'  => array('value' => '[退单编号]' . $refundno, 'color' => '#73a68d'),
 						'keyword4'  => array('value' => '[退款金额]' . $data['price'], 'color' => '#73a68d'),
 						'keyword5'  => array('value' => '[退款方式]微信钱包', 'color' => '#73a68d'),
-						'remark'    => array('value' => '您的流量充值失败，已经自动给您退款成功，退款到您的微信钱包，
-						请根据订单编号查看确认退款金额是否正确！')
+						'remark'    => array('value' => $notice_set['refund_success'])
 					);
 					m('message')->sendCustomNotice($data['openid'], $auto_refund_mess);
 					return true;

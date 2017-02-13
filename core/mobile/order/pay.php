@@ -692,7 +692,7 @@ if ($operation == 'display' && $_W['isajax']) {
             $mobile_data_param['apikey']       = $rechargeset['rechargeapikey'];
             $mobile_data_param['account']      = $rechargeset['rechargeusername'];
             $mobile_data_param['scope']        = $order_goods_recharge['isprovince'];//1：省内，0：国内
-            $mobile_data_param['openid']       = $order['openid'];//1：省内，0：国内
+            $mobile_data_param['openid']       = $openid;
         }
     }
 
@@ -1020,6 +1020,7 @@ if ($operation == 'display' && $_W['isajax']) {
             }
             if (p('recharge') && !empty($mobile_data_param)) {
                 p('recharge')->mobile_submit_api($mobile_data_param);
+
             } 
             $pay_result['time'] = time();
             show_json(1, $pay_result);
