@@ -56,4 +56,8 @@ if(!pdo_fieldexists('sz_yi_cashier_store', 'debonus')) {
 if(!pdo_fieldexists('sz_yi_order', 'debonus')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `debonus` tinyint(1) DEFAULT '0' COMMENT '结算扣除分红，1开启，0关闭';");
 }
+//2017-02-13  yitian_add
+if(!pdo_fieldexists('sz_yi_member', 'isactivity')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `isactivity` VARCHAR(255) DEFAULT NULL COMMENT '会员自定义头像';");
+}
 echo  "运行成功";
