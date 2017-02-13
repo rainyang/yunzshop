@@ -98,7 +98,11 @@ if ($diyform_plugin) {
     }
 }
 $anchor_info = $this->model->getAnchorInfo($openid);
-if (!empty($anchor_info) && ($anchor_info['status'] == 0 || $anchor_info['status'] == 3)) {
+//如果主播之前被禁播, 如果再次能够申请, 将其状态更改为0
+if ($anchor_info['status'] == 3) {
+    pdo_update('sz_yi_live_anchor', array('status'=>0), array('openid'=>$openid, 'uid'=>$uid));
+}
+if (!empty($anchor_info) && ($anchor_info['status'] == 0)) {
     //审核中或者被禁播
     include $this->template('reminder');
     exit;

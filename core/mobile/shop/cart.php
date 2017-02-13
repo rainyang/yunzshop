@@ -152,6 +152,7 @@ if ($_W['isajax']) {
         $is    = $_GPC['is'] ? $_GPC['is'] : '';
         $total = $_GPC['total'];
         $type = $_GPC['type'];
+        $fromanchor = empty($_GPC['fromanchor'])? 0 : $_GPC['fromanchor']; //云端的主播ID(用于标识订单是从哪个主播引流过来的, 这里值是从前端ajax发送的参数中获取)
         if (!strpos($total, '|')) {
             if ($total <= 0) {
                 $old_total = pdo_fetchcolumn( "SELECT total FROM ".tablename('sz_yi_member_cart')." where goodsid=:id and uniacid=:uniacid and openid=:openid",array(':id' => $id, ':uniacid' => $uniacid, ':openid' => $openid) );

@@ -1,5 +1,10 @@
 {template 'web/_header'}
+
+{if $trade['is_street'] == 1}
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade_street.js"></script>
+{else}
+<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
+{/if}
 <div class="w1200 m0a">
 {template 'tabs'}
 <div class="rightlist">
@@ -59,7 +64,7 @@
                         <td>{$row['name']}</td>
                         <td>{$row['contact']}</td>
                         <td>{$row['mobile']}</td>
-                        <td>{$row['address']}</td>
+                        <td>{$row['province']}{$row['city']}{$row['area']}{$row['street']}{$row['address']}</td>
                         <td>{$row['member_id']}</td>
                         <td>
                             {ifp 'cashier.store.qrcode'} 
@@ -165,28 +170,28 @@
                 </div>
             </div>
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红地址</label>
-                        <div class="col-sm-9 col-xs-12">
-                            {ife 'shop.refundaddress' $item}
-                            <p class="form-control-static ad2" id="e_address">
-                                <select id="sel-provance" name="province" onChange="selectCity();" class="select form-control" style="width:130px;display:inline;">
-                                    <option value="" selected="true">省/直辖市</option>
-                                </select>
-                                <select id="sel-city" name="city" onChange="selectcounty(0)" class="select form-control" style="width:135px;display:inline;">
-                                    <option value="" selected="true">请选择</option>
-                                </select>
-                                <select id="sel-area" name="area" onChange="selectstreet(0)"class="select form-control" style="width:130px;display:inline;">
-                                    <option value="" selected="true">请选择</option>
-                                </select>
-<!--                                 <select id="sel-street" name="street" class="select form-control" style="width:130px;display:inline;">
-                                    <option value="" selected="true">请选择</option>
-                                </select> -->
-                            </p>
-                            {/if}
 
-                        </div>
-                    </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红地址</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                    <p class="form-control-static ad2" id="e_address">
+                        <select id="sel-provance" name="province" onChange="selectCity();" class="select form-control" style="width:130px;display:inline;">
+                            <option value="" selected="true">省/直辖市</option>
+                        </select>
+                        <select id="sel-city" name="city" onChange="selectcounty(0)" class="select form-control" style="width:135px;display:inline;">
+                            <option value="" selected="true">所在城市</option>
+                        </select>
+                        <select id="sel-area" name="area" {if $trade['is_street'] == 1}onchange="selectstreet()"{/if} class="select form-control" style="width:130px;display:inline;">
+                            <option value="" selected="true">所在地区</option>
+                        </select>
+                        {if $trade['is_street'] == 1}
+                        <select id="sel-street" name="street"><option value="" selected="true">所在街道</option></select>
+                        {/if}
+                    </p>
+                    {/if}
+                </div>
+            </div>
 
             <script language='javascript'>
                 $(function(){
@@ -302,17 +307,33 @@
         <div class='panel-heading'>
             分销佣金设置
         </div>
-        {if $com_set['level'] >= 1}
-        <div class='panel-body'>    
-            
+        
+        <div class='panel-body'> 
+            {if $com_set['level'] >= 1} 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">佣金比例%</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">独立分销佣金</label>
+                <div class="col-sm-9 col-xs-12">
+                      {ife 'cashier.store' $item}
+                   <label class="checkbox-inline">
+                    <input type="checkbox" id="hascommission" value="1" name="hascommission" {if $item['hascommission']==1}checked{/if} />启用独立佣金比例
+                </label>
+                    <span class="help-block">启用独立佣金设置，此商品拥有独自的佣金比例,不受分销商等级比例及默认设置限制</span>
+                    {else}
+                    <div class='form-control-static'>{if $item['hascommission']==1}启用独立佣金设置{else}不启用独立佣金设置{/if}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group" id="commission_div" {if empty($item['hascommission'])}style="display:none"{/if} >
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">佣金比例</label>
                 <div class="col-sm-9 col-xs-12">
                     <div class="input-group">
                         {if $com_set['level'] >= 1}
                         <span class="input-group-addon">一级分销</span>
                         {ife 'cashier.store' $item}
-                            <input type="text" name="commission1_rate" class="form-control" value="{$item['commission1_rate']}">
+                            <div class='input-group' style='border:none;margin-left:-12px;'>
+                                <input type='text' class='form-control' name='commission1_rate' value="{$item['commission1_rate']}" />
+                                <div class='input-group-addon'  style='border:none;background:#fff;'>%</div>
+                            </div>
                         {else}
                             <div class='form-control-static'>{$item['commission1_rate']}</div>
                         {/if}
@@ -320,7 +341,10 @@
                         {if $com_set['level'] >= 2}
                         <span class="input-group-addon">二级分销</span>
                         {ife 'cashier.store' $item}
-                            <input type="text" name="commission2_rate" class="form-control" value="{$item['commission2_rate']}">
+                            <div class='input-group' style='border:none;margin-left:-12px;'>
+                                <input type='text' class='form-control' name='commission2_rate' value="{$item['commission2_rate']}" />
+                                <div class='input-group-addon'  style='border:none;background:#fff;'>%</div>
+                            </div>
                         {else}
                             <div class='form-control-static'>{$item['commission2_rate']}</div>
                         {/if}
@@ -328,7 +352,10 @@
                         {if $com_set['level'] >= 3}
                         <span class="input-group-addon">三级分销</span>
                         {ife 'cashier.store' $item}
-                            <input type="text" name="commission3_rate" class="form-control" value="{$item['commission3_rate']}">
+                            <div class='input-group' style='border:none;margin-left:-12px;'>
+                                <input type='text' class='form-control' name='commission3_rate' value="{$item['commission3_rate']}" />
+                                <div class='input-group-addon'  style='border:none;background:#fff;'>%</div>
+                            </div>
                         {else}
                             <div class='form-control-static'>{$item['commission3_rate']}</div>
                         {/if}
@@ -336,20 +363,24 @@
                     </div>
                 </div>
             </div>
+            {/if} 
             {if p('bonus')}
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红金额%</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红比例</label>
                 <div class="col-sm-9 col-xs-12">
                     {ife 'cashier.store' $item}
-                        <input type="text" name="bonus" class="form-control" value="{$item['bonus']}" placeholder="消费者在商家支付完成后，代理商获得的分红奖励百分比">
+                        <div class='input-group' style='border:none;margin-left:-12px;'>
+                            <input type='text' class='form-control' name='bonus' value="{$item['bonus']}" />
+                            <div class='input-group-addon'  style='border:none;background:#fff;'>%</div>
+                        </div>
+                        <span class="help-block">填写比例则按照实际付款金额比例计算分红金额，不填写则为实付金额</span>
                     {else}
-                        <div class='form-control-static'>{$item['bonus']}</div>
+                        <div class='form-control-static'>{$item['bonus']}%</div>
                     {/if}
                 </div>
             </div>
             {/if}
         </div>
-        {/if}    
         <div class='panel-heading'>
             奖励设置
         </div>
@@ -652,6 +683,16 @@ function select_member(o) {
     $("#member").val(o.nickname);
     $("#modal-members .close").click();
 }
+$(function() {
+    $("#hascommission").click(function() {
+        var obj = $(this);
+        if (obj.get(0).checked) {
+            $("#commission_div").show();
+        } else {
+            $("#commission_div").hide();
+        }
+    });
+})
 </script>
 
 {template 'web/_footer'}

@@ -9,8 +9,8 @@ if ($operation == 'display'){
 
     //curl请求"获取直播间列表"的API
     load()->func('communication');
-    $url = 'http://sy.yunzshop.com/shop_live.php?api=room&domain='.$domain.'&uniacid='.$uniacid;
-    // $url = 'http://sy.yunzshop.com/test/shop_live.php?api=room&domain=demo.yunzshop.com&uniacid=3'; //测试用 todo
+    $url = SZ_YI_LIVE_CLOUD_URL.'/shop_live.php?api=room&domain='.$domain.'&uniacid='.$uniacid;
+    // $url = SZ_YI_LIVE_CLOUD_URL . '/test/shop_live.php?api=room&domain=demo.yunzshop.com&uniacid=3'; //测试用 todo
     $result = ihttp_get($url);
     $result_array = json_decode($result['content'], true);
     $room_list = $result_array['data'];
@@ -21,7 +21,7 @@ if ($operation == 'display'){
 
     //获取sig
     if(!empty($openid)){
-        $result_02 = ihttp_get('http://live.tbw365.cn/shop_live.php?api=IM/Get/sign&openid='.$openid.'&domain='.$domain);
+        $result_02 = ihttp_get( SZ_YI_LIVE_CLOUD_URL.'/shop_live.php?api=IM/Get/sign&openid='.$openid.'&domain='.$domain);
         $result_02_array = json_decode($result_02['content'], true);
         $sig = $result_02_array['data']['sign'];
     }

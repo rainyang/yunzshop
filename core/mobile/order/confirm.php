@@ -1811,6 +1811,9 @@ if ($_W['isajax']) {
 
     }
     elseif ($operation == 'create' && $_W['ispost']) {
+        if ( p('live') ) {
+            $fromanchor = empty($_GPC['fromanchor']) ? NULL : intval($_GPC['fromanchor']); //云端的主播ID(用于后面生成订单时标识是从哪个主播引流过来的)
+        }
         $ischannelpay = intval($_GPC['ischannelpay']);
         $ischannelpick = intval($_GPC['ischannelpick']);
         //$isyunbipay = intval($_GPC['isyunbipay']);
@@ -2678,6 +2681,10 @@ if ($_W['isajax']) {
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
             );
+
+            if ( p('live') ) {
+                $order['fromanchor'] = $fromanchor;
+            }
             if ($plugincard) {
                 $order['cardid']    = $cardid;
                 $order['cardprice'] = $cardprice;

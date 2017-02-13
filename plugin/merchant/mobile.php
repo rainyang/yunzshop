@@ -43,4 +43,8 @@ class MerchantMobile extends Plugin
     {
     	return $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function center_team()
+    {
+        return $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

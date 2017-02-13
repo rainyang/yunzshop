@@ -44,7 +44,7 @@
 <script id="member_center" type="text/html">
     <div class="header">
         <div class="user">
-            <div class="user-head">
+            <div class="user-head" onclick='location.href="{php echo $this->createMobileUrl('member/info')}"'>
                 <%if member.avatar.length > 0%>
                 <img src="<%member.avatar%>" />
                 <%else%>

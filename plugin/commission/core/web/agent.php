@@ -290,15 +290,15 @@ if ($operation == 'display') {
         'id' => $id
     ));
 
-    //如果该分销商是主播, 则将其主播状态更改为"禁播"
+    //如果该分销商是主播, 则将其主播状态更改为"3(禁播)"
     $is_anchor = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_live_anchor') . ' WHERE openid = :openid', array(':openid'=>$member['openid']));
     if($is_anchor){
-        //将商城本地的主播状态更改为"禁播"
+        //将商城本地的主播状态更改为"3"
         pdo_update('sz_yi_live_anchor', array('status'=>3), array('openid'=>$member['openid']));
         
-        //将云端的主播状态更改为"禁播"
+        //将云端的主播状态更改为"3(已删除)"
         load()->func('communication');
-        $cloud_url = 'http://sy.yunzshop.com/shop_live.php?api=room/Set/freeze'; //todo 非正式地址
+        $cloud_url = SZ_YI_LIVE_CLOUD_URL . '/shop_live.php?api=room/Set/deleted';
         $resp = ihttp_post($cloud_url, array(
             'mobile' => $member['mobile'],
             'domain' => $_SERVER['HTTP_HOST']

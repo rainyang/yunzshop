@@ -2,9 +2,10 @@ var _provinceNetworkData =null;
 var _cityNetworkData =null;
 var _districtNetworkData =null;
 var _streetNetworkData =null;
-var _reg = new RegExp("(^|&)i=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-var _r = window.location.search.substr(1).match(_reg);  //匹配目标参数
-
+// var _reg = new RegExp("(^|&)i=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+// console.log(_reg);
+// var _r = window.location.search.substr(1).match(_reg);  //匹配目标参数
+// var uniacid = _r[2] ? _r[2] : '';
 function cascdeInit(v1,v2,v3,v4){
    getProvinceData(v1,v2,v3,v4);
 }
@@ -12,7 +13,7 @@ function cascdeInit(v1,v2,v3,v4){
 // 获取省数据
 function getProvinceData(v1,v2,v3,v4){
     $.ajax({
-        url:'/app/index.php?i='+_r[2]+'&c=entry&p=address&do=api&m=sz_yi',
+        url:'/app/index.php?c=entry&p=address&do=api&m=sz_yi',
         data:{type:'province'},
         type:'GET', //GET
         async:true,    //或false,是否异步
@@ -29,7 +30,7 @@ function getProvinceData(v1,v2,v3,v4){
 // 获取城市数据
 function getCityData(v1,v2,v3,v4){
     $.ajax({
-        url:'/app/index.php?i='+_r[2]+'&c=entry&p=address&do=api&m=sz_yi',
+        url:'/app/index.php?c=entry&p=address&do=api&m=sz_yi',
         data:{type:'city',v1:v1},
         type:'GET', //GET
         async:true,    //或false,是否异步
@@ -46,7 +47,7 @@ function getCityData(v1,v2,v3,v4){
 // 获取区数据
 function getDistrictData(v1,v2,v3,v4){
     $.ajax({
-        url:'/app/index.php?i='+_r[2]+'&c=entry&p=address&do=api&m=sz_yi',
+        url:'/app/index.php?c=entry&p=address&do=api&m=sz_yi',
         data:{type:'district',v2:v2},
         type:'GET', //GET
         async:true,    //或false,是否异步
@@ -63,7 +64,7 @@ function getDistrictData(v1,v2,v3,v4){
 // 获取街道
 function getStreetData(v1,v2,v3,v4){
     $.ajax({
-        url:'/app/index.php?i='+_r[2]+'&c=entry&p=address&do=api&m=sz_yi',
+        url:'/app/index.php?c=entry&p=address&do=api&m=sz_yi',
         data:{type:'street',v3:v3},
         type:'GET', //GET
         async:true,    //或false,是否异步
@@ -153,7 +154,6 @@ function selectstreet() {
     var _provanceid = $("#sel-provance").val();
     var _cityid = $("#sel-city").val();
     var _areaid = $("#sel-area").val();
-    alert(_areaid);
     getDistrictData(_provanceid,_cityid,_areaid);
     setProvinceData(_provanceid,_cityid,_areaid);
 }

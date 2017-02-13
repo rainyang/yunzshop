@@ -108,6 +108,23 @@
                 </div>
             </div>
             {/if}
+            {if p('live')}
+            <div class='form-group'>
+                <div class="col-sm-8 col-lg-12 col-xs-12">
+                    <div class='input-group'>
+                        <div class='input-group-addon'>直播间</div>
+                        <select name="cloudAnchorId" class="form-control">
+                            <option value="" ></option>
+                            {loop $liveRooms $liveRoom}
+                                {if $liveRoom['status'] !=2 }
+                                    <option value="{$liveRoom['anchor_id']}">{$liveRoom['title']}</option>
+                                {/if}
+                            {/loop}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {/if}
             {/if}
             <div class="form-group">
                     <div class="col-sm-12 col-lg-6">

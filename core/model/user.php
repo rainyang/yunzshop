@@ -151,6 +151,10 @@ class Sz_DYi_User
         if($_GPC['p'] == 'verify' && $_GPC["method"]=='store_detail'){
             return;
         }
+
+        if($_GPC['p'] == 'address' && $_GPC["do"]=='api'){
+            return;
+        }
         //需要登陆的P方法                  
         $needLoginPList = array('address', 'commission','cart');
 

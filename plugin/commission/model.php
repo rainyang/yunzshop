@@ -29,7 +29,7 @@ if (!class_exists('CommissionModel')) {
 			$set = $this->getSet();
 			$levels = $this->getLevels();
 
-			$orders = pdo_fetch('select agentid, period_num from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
+			$orders = pdo_fetch('select agentid, period_num, cashier, cashierid, goodsprice from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
 			$agentid = $orders['agentid'];
 			$goods = pdo_fetchall('select og.id,og.realprice,og.total,g.type,g.bonusmoney,g.hascommission,g.nocommission, g.commission1_rate,g.commission1_pay,g.commission2_rate,g.commission2_pay,g.commission3_rate,g.commission3_pay,og.commissions,og.optionid,g.productprice,g.marketprice,g.costprice,g.id as goodsid,g.bonusmoney from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			//阶梯价格插件
@@ -40,6 +40,8 @@ if (!class_exists('CommissionModel')) {
 			        $isladder = true;   
 			    }
 			}
+			//收银台
+			$plugin_cashier = p('cashier');
 			if ($set['level'] > 0) {			
 				foreach ($goods as &$cinfo) {
 					//计算阶梯价格
@@ -53,12 +55,18 @@ if (!class_exists('CommissionModel')) {
 		                    $cinfo['marketprice'] = $laddermoney > 0 ? $laddermoney : $cinfo['marketprice'];
 		                }
 		            }
-					$price = $this->calculate_method($cinfo,$orders['period_num']);
-					if(p('hotel')&& $goods[0]['type']=='99'){
-				    	$order = pdo_fetch('select id,goodsprice from ' . tablename('sz_yi_order').' where id=:id and uniacid=:uniacid', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
-				    	$price =$order['goodsprice'];
-			        }
-					//$price = $cinfo['realprice'];
+		            //收银台分销佣金独立计算
+		            if ($plugin_cashier && $orders['cashier']) {
+						$cinfo = $plugin_cashier->order_goods($cinfo, $orders['cashierid']);
+					}
+		            //夺宝订单与收银台订单直接使用真实金额计算
+		          	if ($orders['period_num'] || $orders['cashier']) {
+		          		$price = $cinfo['realprice'];
+		          	} elseif (p('hotel')&& $cinfo['type']=='99') {		//酒店订单直接使用商品金额计算
+						$price = $orders['goodsprice'];
+					} else {
+		          		$price = $this->calculate_method($cinfo);
+		          	}
 					if (empty($cinfo['nocommission']) && $price > 0) {
 						if ($cinfo['hascommission'] == 1) {
 							$cinfo['commission1'] = array('default' => $set['level'] >= 1 ? ($cinfo['commission1_rate'] > 0 ? round($cinfo['commission1_rate'] * $price / 100, 2) . "" : round($cinfo['commission1_pay'] * $cinfo['total'], 2)) : 0);
@@ -128,11 +136,11 @@ if (!class_exists('CommissionModel')) {
 		}
 
 		//Author:ym Date:2016-05-06 Content:分成方式计算		
-		public function calculate_method($order_goods, $period_num = ''){
+		public function calculate_method($order_goods){
 			global $_W;
 			$set = $this->getSet();
 			$realprice = $order_goods['realprice'];
-			if(empty($set['culate_method']) || $period_num){
+			if(empty($set['culate_method'])){
 				return $realprice;
 			}else{
 				

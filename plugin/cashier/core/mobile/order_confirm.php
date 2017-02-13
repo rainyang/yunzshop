@@ -406,18 +406,7 @@ if ($operation == 'display') {
         "oldprice" => $orig_price,
         "openid" => $openid
     );
-    if (p('bonus')) {
-        //小于0.01的分红是无法计算的    yitian_add //2016-12-22:qq:751818588
-        //$bonusmoney = round($totalprice * ($store['bonus']/100), 2);
-        if ($store['bonus']) {
-            $order_goods['bonusmoney'] = $totalprice * ($store['bonus']/100);
-            $this->model->calculateBonus($orderid);
-        } else {
-            $order_goods['bonusmoney'] = 0;
-        }
-    }
     pdo_insert('sz_yi_order_goods', $order_goods);
-    $this->model->calculateCommission($orderid);
     //是否开启下单时填写联系人信息  yitian_add::2016-22-23::qq:751818588
     if($store['iscontact'] == 1){
         if (is_array($carrier)) {
@@ -451,8 +440,9 @@ if ($operation == 'display') {
     }
     m('notice')->sendOrderMessage($orderid);
     //$orderid
-    if($commission['become_child']==1){
-        p('commission')->checkOrderConfirm($orderid);
+    $plugin_commission = p('commission');
+    if($plugin_commission){
+        $plugin_commission->checkOrderConfirm($orderid);
     }
     return show_json(1, array('orderid' => $orderid));
 }
