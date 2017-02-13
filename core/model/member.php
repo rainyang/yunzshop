@@ -84,6 +84,9 @@ class Sz_DYi_Member
             ));
         }
 
+        if (!empty($info['isactivity'])) {
+            $info['avatar'] = $info['isactivity'];
+        }
 		if (!empty($info)) {
 
 			$openid = $info['openid'];

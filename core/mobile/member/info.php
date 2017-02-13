@@ -7,13 +7,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $openid         = m('user')->getOpenid();
 $member         = m('member')->getInfo($openid);
-
-if ($member['isactivity']) {
-    $member['isactivity'] ="http://" . $_SERVER["HTTP_HOST"] .  "/attachment" . $member['isactivity'];
-} elseif ($member['avatar']) {
-    $member['isactivity'] = $member['avatar'];
-}
-
+//echo '<pre>'; print_r($member); exit;
 $template_flag  = 0;
 $diyform_plugin = p('diyform');
 if ($diyform_plugin) {

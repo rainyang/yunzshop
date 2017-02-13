@@ -28,7 +28,8 @@ if ($op == 'upload') {
 		if ($memberid) {
 		    $name = $path . "/member" . $memberid;
             $file = file_upload($_FILES[$field], 'image', $name);
-            pdo_update('sz_yi_member', array('isactivity' => $file['path'] ), array('id' => $memberid));
+            $data['isactivity'] = "http://" . $_SERVER["HTTP_HOST"] .  "/attachment" . $file['path'];
+            pdo_update('sz_yi_member', array('isactivity' => $data['isactivity'] ), array('id' => $memberid));
         } else {
             $file = file_upload($_FILES[$field], 'image');
         }
