@@ -62,6 +62,7 @@ if ($op == 'display') {
     }
     $list = pdo_fetchall($sql, $params);
     foreach ($list as &$row) {
+        $row['avatar'] = m('member')->getHeadimg($row);
         $row['levelname']  = empty($row['levelname']) ? (empty($shop['levelname']) ? '普通会员' : $shop['levelname']) : $row['levelname'];
         $row['ordercount'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where uniacid=:uniacid and openid=:openid and status=3', array(
             ':uniacid' => $_W['uniacid'],

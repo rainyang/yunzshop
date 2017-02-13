@@ -311,6 +311,7 @@ if (checksubmit()) {
         plog('sysset.save.template', '修改系统设置-模板设置');
     } elseif ($op == 'member') {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
+        $set['shop']['headimg'] = trim($shop['headimg']);
         $set['shop']['levelname'] = trim($shop['levelname']);
         $set['shop']['levelurl']  = trim($shop['levelurl']);
         $set['shop']['leveltype']  = trim($shop['leveltype']);
