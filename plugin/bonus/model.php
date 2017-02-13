@@ -125,8 +125,9 @@ if (!class_exists('BonusModel')) {
 			//是否为极差分红
 			$isdistinction = empty($set['isdistinction']) ? 0 : 1;
 			//查询分红人员
-			$parentAgents = $this->getParentAgents($masid, $isdistinction);
-
+			if (!empty($masid)) {
+				$parentAgents = $this->getParentAgents($masid, $isdistinction);
+			}
 			foreach ($goods as $cinfo) {
 				//计算阶梯价格
 	            if ($isladder) {
