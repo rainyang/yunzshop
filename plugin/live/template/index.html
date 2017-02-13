@@ -178,7 +178,7 @@
                         </td>
 
                         <td  style="overflow:visible;">
-                            {if !empty($_GPC['status']) && $_GPC['status'] == 0}
+                            {if isset($_GPC['status']) && $_GPC['status'] == 0}
                             <a class="btn btn-default" href="{php echo $this->createPluginWebUrl('live/apply',array('id' => $row['id']));}" data-original-title="" title="">审核</a>
                             {else}
                             <a class="btn btn-default" href="{php echo $this->createWebUrl('member',array('op'=>'detail','id' => $row['id']));}" data-original-title="" title="">会员详情</a>

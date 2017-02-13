@@ -69,7 +69,7 @@
         <ul>
             {loop $goods_info_list $index $item}
             <li data-id="{$item['id']}">
-                <a href="<?php echo $this->createMobileUrl('shop/detail', array('id' => $item['id'], 'fromanchor'=>$mid));?>" target="_self">
+                <a href="<?php echo $this->createMobileUrl('shop/detail', array('id' => $item['id'], 'fromanchor'=>$anchor_id));?>" target="_self">
                     <img src="{$item['thumb']}"/>
                     <div class="text">
                         <div class="name">{$item['title']}</div>
