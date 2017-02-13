@@ -634,4 +634,21 @@ class Sz_DYi_Member
             }
         }
     }
+    /**
+     * Author：yitian::2017-02-13  qq:751818588
+     *
+     * @param $memberinfo 会员信息
+     *
+     * @return avatar
+     */
+    public function getHeadimg($memberinfo)
+    {
+        $shop   = m('common')->getSysset('shop');
+        if ($shop['headimg']) {
+            $shop['headimg'] = "http://" . $_SERVER['HTTP_HOST'] . "/attachment/" . $shop['headimg'];
+        }
+        $avatar = empty($memberinfo['isactivity']) ? (empty($memberinfo['avatar']) ? $shop['headimg'] : $memberinfo['avatar']) : $memberinfo['isactivity'];
+
+        return $avatar;
+    }
 }
