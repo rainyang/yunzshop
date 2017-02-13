@@ -51,7 +51,7 @@
     </div>
     <div class="info_main">
         {if !empty($member['mobile'])}
-        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'>{$member['mobile']}</div></div></div>
+        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner' id='mobile'>{$member['mobile']}</div></div></div>
         {else}
         <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text"  id='mobile' placeholder="请输入您的手机号" value=""/></div></div></div>
         {/if}
@@ -209,7 +209,7 @@
                         core.pjson("live/index", {
                             'op': 'post',
                             'memberdata':{
-                                'membermobile': $("#mobile").val(),
+                                'membermobile': $("#mobile").text(),
                                 'auth_img0': $("#img0").val(),
                                 'auth_img1': $("#img1").val()
                             }
