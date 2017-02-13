@@ -27,9 +27,9 @@ class Login extends YZ
 
         if(!empty($info)){
             if(p("bonus")){
-                $member['commission_level'] = p("bonus")->getLevel($info['openid'])?:'普通等级';
+                $member['commission_level'] = p("bonus")->getLevel($info['openid'])?:array('level_name'=>'普通等级');
             }else{
-                $member['commission_level'] = '普通等级';
+                $member['commission_level'] = array('level_name'=>'普通等级');
             }
         }
         return $member;
