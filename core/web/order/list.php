@@ -1038,6 +1038,13 @@ if ($operation == "display") {
         ":id" => $id,
         ":uniacid" => $_W["uniacid"]
     ));
+    if (p('recharge')) {
+        $recharge_remark = pdo_fetch("SELECT * FROM " . tablename("sz_yi_recharge_remark") . " WHERE orderid = :orderid and uniacid=:uniacid", array(
+            ":orderid" => $id,
+            ":uniacid" => $_W["uniacid"]
+        ));
+        $item['recharge_remark'] = !empty($recharge_remark) ? $recharge_remark['remark'] : '';
+    }
     $item["statusvalue"] = $item["status"];
     $shopset = m("common")->getSysset("shop");
     if (empty($item)) {
@@ -1371,7 +1378,6 @@ if ($operation == "display") {
             ));
         $item['order_room'] = $order_room;
         include $this->template("web/order/detail_hotel");
-
     } elseif ($indiana_plugin && $_GPC['isindiana']) {
         include p('indiana')->ptemplate("detail");
     }else{
