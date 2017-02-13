@@ -44,6 +44,7 @@ class Sz_DYi_Member
                 'residecity',
                 'nickname'
             ));
+            $info['avatar'] = $this->getHeadimg($info);
             $info['credit1']    = $fans['credit1'];
             $info['credit2']    = $fans['credit2'];
             $info['birthyear']  = empty($info['birthyear']) ? $fans['birthyear'] : $info['birthyear'];
@@ -120,6 +121,8 @@ class Sz_DYi_Member
 			$info['credit1'] = $credits['credit1'];
 			$info['credit2'] = $credits['credit2'];
             $info['credit20'] = $credits['credit20'];
+
+            $info['avatar'] = $this->getHeadimg($info);
 		}
         return $info;
     }
