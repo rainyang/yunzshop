@@ -24,7 +24,7 @@ $sql = "
 CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_live_base'). " (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL DEFAULT '0',
-  `conditions` TINYINT(4) NOT NULL COMMENT '主播条件',
+  `conditions` TINYINT(4) NOT NULL DEFUALT '1' COMMENT '主播条件',
   `is_check` SET('0','1') NOT NULL  DEFAULT '0' COMMENT '主播是否审核',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 COMMENT= '基础设置' DEFAULT CHARSET=utf8;
@@ -78,8 +78,9 @@ PRIMARY KEY (`id`)
 pdo_query($sql);
 
 //订单表增加fromanchor字段 (用于标识是哪个主播引流的订单)
-$sql = "ALTER table " . tablename('sz_yi_order') . " ADD COLUMN fromanchor smallint DEFAULT 0 COMMENT '(值是云端的主播ID)用于标识直播引流, 值为0时表示非直播引流订单' AFTER deductcommission";
-pdo_query($sql);
-
+if(!pdo_fieldexists('sz_yi_order', 'fromanchor')) {
+  $sql = "ALTER table " . tablename('sz_yi_order') . " ADD COLUMN fromanchor smallint DEFAULT 0 COMMENT '(值是云端的主播ID)用于标识直播引流, 值为0时表示非直播引流订单' AFTER deductcommission";
+  pdo_query($sql);
+}
 
 message('芸众视频直播插件安装成功', $this->createPluginWebUrl('live/index'), 'success');
