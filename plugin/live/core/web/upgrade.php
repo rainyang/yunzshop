@@ -24,7 +24,7 @@ $sql = "
 CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_live_base'). " (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL DEFAULT '0',
-  `conditions` TINYINT(4) NOT NULL COMMENT '主播条件',
+  `conditions` TINYINT(4) NOT NULL DEFUALT '1' COMMENT '主播条件',
   `is_check` SET('0','1') NOT NULL  DEFAULT '0' COMMENT '主播是否审核',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 COMMENT= '基础设置' DEFAULT CHARSET=utf8;
