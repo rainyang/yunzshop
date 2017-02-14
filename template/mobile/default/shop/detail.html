@@ -562,7 +562,9 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                  <%if specs_nums != 2 %>
                  <div class="stock">库存:<span id='option_stock'><%goods.total%></span>件</span> </div>
                  <%/if%>
+                 <%if goods.hasoption == '1'%>
                    <div class="option">请选择规格</div>
+                 <%/if%>
              </div>
             <div class="close" onClick="closechoose()"><i class="fa fa-remove-o"></i></div>
         </div>
@@ -890,10 +892,10 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
    <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1'  && goods.groupbuy=='1'  && goods.levelbuy=='1'%>
     <div class="good_speci" onClick="choose()">
-                <span id="optiondiv">请选择商品规格及数量</span>
+                <span id="optiondiv">请选择<%if goods.hasoption == '1'%>商品规格及<%/if%><%if goods.hasoption == '0'%>购买<%/if%>数量</span>
                 <i class="fa fa-angle-right" style="float:right; line-height:44px; font-size:26px;"></i>
     </div>
-     <%/if%>
+    <%/if%>
 
     <div class="good_shop">
         <div class="shop1" onclick="location.href='<%detail.btnurl2%>'">
