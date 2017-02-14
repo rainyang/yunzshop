@@ -1650,7 +1650,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             {template 'diyform/common_js'}
             {/if}
 
-            $(".option").click(function() {
+            $(".other .option").click(function() {
                 var specid = $(this).attr("specid");
                 var oid = $(this).attr("oid");
                 $(".optionid_"+specid).val(oid);
