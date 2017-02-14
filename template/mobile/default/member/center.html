@@ -44,7 +44,7 @@
 <script id="member_center" type="text/html">
     <div class="header">
         <div class="user">
-            <div class="user-head">
+            <div class="user-head" onclick='location.href="{php echo $this->createMobileUrl('member/info')}"'>
                 <%if member.avatar.length > 0%>
                 <img src="<%member.avatar%>" />
                 <%else%>
@@ -261,7 +261,7 @@
     <div class="cart">
         <a href="{php echo $this->createMobileUrl('shop/detail', array('plugin' => 'recharge'))}">
             <div class="list1">
-                <i class="fa fa-mobile"></i>充值专区
+                <i class="fa fa-mobile"></i>充值中心
                 <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right;line-height: 44px; "></i>
             </div>
         </a>

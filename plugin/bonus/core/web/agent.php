@@ -103,6 +103,7 @@ if ($operation == 'display') {
         $row['commission_total'] = $info['commission_total'];
         $row['commission_pay']   = $info['commission_pay'];
         $row['followed']         = m('user')->followed($row['openid']);
+        $row['avatar'] = m('member')->getHeadimg($row);
     }
     unset($row);
     if ($_GPC['export'] == '1') {

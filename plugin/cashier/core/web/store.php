@@ -6,7 +6,12 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
-
+$plugin_bonus = p('bonus');
+$plugin_commission = p('commission');
+$trade     = m('common')->getSysset('trade');
+if ($plugin_commission) {
+    $com_set = p('commission')->getSet();
+}
 if ($operation == 'display') {
     ca('cashier.store.view');
     $page      = max(1, intval($_GPC['page']));
@@ -45,6 +50,10 @@ if ($operation == 'display') {
             'thumb'   => trim($_GPC['thumb']),
             'contact' => trim($_GPC['contact']),
             'mobile'  => trim($_GPC['mobile']),
+            'province'  => trim($_GPC['province']),
+            'city'  => trim($_GPC['city']),
+            'area'  => trim($_GPC['area']),
+            'street' => trim($_GPC['street']),
             'address' => trim($_GPC['address']),
             'member_id' => trim($_GPC['member_id']),
             'deduct_credit1' => trim($_GPC['deduct_credit1']),
@@ -67,8 +76,8 @@ if ($operation == 'display') {
             'isreturn' => intval($_GPC['isreturn']),
             'centercan' => intval($_GPC['centercan'])
         );
-        if (p('bonus')) {
-            $data['bonus'] = trim($_GPC['bonus']);
+        if ($plugin_bonus) {
+            $data['bonus'] = floatval($_GPC['bonus']);
         }
         if ($pcoupon) {
             $data['coupon_id'] = trim($_GPC['coupon_id']);
@@ -106,9 +115,7 @@ if ($operation == 'display') {
             message('添加商户成功！', $this->createPluginWebUrl('cashier/store'), 'success');
         }
     }
-    if (p('commission')) {
-        $com_set = p('commission')->getSet();
-    }
+    
     $item = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_cashier_store') . ' WHERE id =:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
     $member = pdo_fetch('SELECT id,nickname FROM ' . tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND id=:id",
         array(':uniacid' => $_W['uniacid'], ':id' => $item['member_id'])

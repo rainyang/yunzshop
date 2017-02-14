@@ -1506,7 +1506,7 @@ var fromcart = 0;
               {/if}
 
           }
-           data = {op:'create', order:order, ischannelpay:"{$_GPC['ischannelpay']}", ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:"{$_GPC['isyunbipay']}"};
+           data = {op:'create', order:order, ischannelpay:"{$_GPC['ischannelpay']}", ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:"{$_GPC['isyunbipay']}", fromanchor:"{$_GPC['fromanchor']}"};
           $(this).attr('submitting', '1').html('提交中...');
             core.json('order/confirm', data, function(create_json) {
 

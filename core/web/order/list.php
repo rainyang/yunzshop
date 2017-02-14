@@ -177,7 +177,14 @@ if ($operation == "display") {
         $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
         $suppliers = p('supplier')->AllSuppliers();
     }
-
+    if (p('live')) {
+        //获取直播间列表
+        load()->func('communication');
+        $url = SZ_YI_LIVE_CLOUD_URL.'/shop_live.php?api=room&domain='.$_SERVER['HTTP_HOST'].'&uniacid='.$_W['uniacid'];
+        $result = ihttp_get($url);
+        $result_array = json_decode($result['content'], true);
+        $liveRooms = $result_array['data'];
+    }
     $pindex = max(1, intval($_GPC["page"]));
     $psize = SZ_YI_PSIZE;
     $status = $_GPC["status"] == "" ? 1 : $_GPC["status"];
@@ -240,6 +247,16 @@ if ($operation == "display") {
             $condition .= " AND ( o.paytype =21 or o.paytype=22 or o.paytype=23 )";
         } else {
             $condition .= " AND o.paytype =" . intval($_GPC["paytype"]);
+        }
+    }
+
+
+    //直播间引流的订单搜索
+    if ( p('live') ) {
+        $cloudAnchorId = $_GPC['cloudAnchorId'];
+        if ( isset($cloudAnchorId) && $cloudAnchorId !=0) {
+            $condition .= ' AND o.fromanchor = :fromanchor';
+            $paras['fromanchor'] = $cloudAnchorId;
         }
     }
 
@@ -1021,6 +1038,13 @@ if ($operation == "display") {
         ":id" => $id,
         ":uniacid" => $_W["uniacid"]
     ));
+    if (p('recharge')) {
+        $recharge_remark = pdo_fetch("SELECT * FROM " . tablename("sz_yi_recharge_remark") . " WHERE orderid = :orderid and uniacid=:uniacid", array(
+            ":orderid" => $id,
+            ":uniacid" => $_W["uniacid"]
+        ));
+        $item['recharge_remark'] = !empty($recharge_remark) ? $recharge_remark['remark'] : '';
+    }
     $item["statusvalue"] = $item["status"];
     $shopset = m("common")->getSysset("shop");
     if (empty($item)) {
@@ -1354,7 +1378,6 @@ if ($operation == "display") {
             ));
         $item['order_room'] = $order_room;
         include $this->template("web/order/detail_hotel");
-
     } elseif ($indiana_plugin && $_GPC['isindiana']) {
         include p('indiana')->ptemplate("detail");
     }else{

@@ -437,6 +437,12 @@
                                 <button type='submit' name='saveremark' class='btn btn-default'>保存备注</button>
                             </div>
                         </div>
+                        {if p('recharge') && !empty($item['recharge_remark'])}
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">充值接口备注 :</label>
+                            <div class="col-sm-9 col-xs-12"><textarea style="height:150px;" class="form-control" name="recharge_remark" cols="70" readonly>{$item['recharge_remark']}</textarea></div>
+                        </div>
+                        {/if}
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">红包发送备注 :</label>
                             <div class="col-sm-9 col-xs-12"><textarea style="height:150px;" class="form-control" name="redstatus" cols="70" readonly>{php echo !empty($item['redstatus'])?$item['redstatus']:"发送成功!"}&nbsp;&nbsp;|&nbsp;&nbsp;应发送金额:{$item['redprice']}</textarea></div>

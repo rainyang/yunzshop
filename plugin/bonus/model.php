@@ -100,14 +100,15 @@ if (!class_exists('BonusModel')) {
 			$set = $this->getSet();
 			$levels = $this->getLevels();
 			$time = time();
-			$order = pdo_fetch('select openid, address, period_num from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
+			$order = pdo_fetch('select openid, address, period_num, cashier, cashierid, goodsprice from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
+			
 			$openid = $order['openid'];
 			$address = unserialize($order['address']);
 			
 			$goods = pdo_fetchall('select og.id,og.realprice,og.price,og.goodsid,og.total,og.optionname,og.optionid,g.hascommission,g.nocommission,g.nobonus,g.bonusmoney,g.productprice,g.marketprice,g.costprice,g.id as goodsid from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			$member = m('member')->getInfo($openid);
 			$levels = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY level asc");
-			$isdistinction = empty($set['isdistinction']) ? 0 : 1;
+			
 			//阶梯价格插件
 			$isladder = false;
 			if (p('ladder')) {
@@ -115,6 +116,17 @@ if (!class_exists('BonusModel')) {
 			    if ($ladder_set['isladder']) {
 			        $isladder = true;   
 			    }
+			}
+			if(empty($set['selfbuy'])){
+				$masid = $member['agentid'];
+			}else{
+				$masid = $member['id'];
+			}
+			//是否为极差分红
+			$isdistinction = empty($set['isdistinction']) ? 0 : 1;
+			//查询分红人员
+			if (!empty($masid)) {
+				$parentAgents = $this->getParentAgents($masid, $isdistinction);
 			}
 			foreach ($goods as $cinfo) {
 				//计算阶梯价格
@@ -128,16 +140,22 @@ if (!class_exists('BonusModel')) {
 	                    $cinfo['marketprice'] = $laddermoney > 0 ? $laddermoney : $cinfo['marketprice'];
 	                }
 	            }
-				$price_all = $this->calculate_method($cinfo, $order['period_num']);
+
+				//夺宝订单与收银台订单直接使用真实金额计算
+	          	if ($order['period_num']) {
+	          		$price_all = $cinfo['realprice'];
+	          	//收银台分红金额
+	          	} elseif ($order['cashier']) {
+	          		$price_all = p('cashier')->calculate_method($cinfo, $order['cashierid']);
+	          	//酒店订单直接使用商品金额计算
+	          	} elseif (p('hotel')&& $cinfo['type']=='99') {		
+					$price_all = $order['goodsprice'];
+				} else {
+	          		$price_all = $this->calculate_method($cinfo);
+	          	}
+
 				if (empty($cinfo['nobonus']) && $price_all > 0) {
-					if(empty($set['selfbuy'])){
-						$masid = $member['agentid'];
-					}else{
-						$masid = $member['id'];
-					}
-					//查询分红人员
 					if(!empty($masid) && !empty($set['start'])){
-						$parentAgents = $this->getParentAgents($masid, $isdistinction);
 						$range_money = 0;
 						foreach ($levels as $key => $level) {
 							$levelid = $level['id'];

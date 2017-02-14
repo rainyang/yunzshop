@@ -11,7 +11,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $operation   = !empty($_GPC['op']) ? $_GPC['op'] : 'display' ;
 
-$domain = 'http://sy.yunzshop.com';
+$domain = SZ_YI_LIVE_CLOUD_URL ;
 
 load()->func('communication');
 if ($operation == 'display') {

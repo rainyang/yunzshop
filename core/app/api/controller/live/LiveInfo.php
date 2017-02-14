@@ -19,7 +19,7 @@ class LiveInfo extends YZ
         $room_id = $_GPC['room_id'];
 
         //获取直播间信息
-        $url = 'http://sy.yunzshop.com/shop_live.php?api=room/Get&room_id='.$room_id; //todo
+        $url = SZ_YI_LIVE_CLOUD_URL . '/shop_live.php?api=room/Get&room_id='.$room_id;
         $result_01 = ihttp_get($url);
         $result_01_array = json_decode($result_01['content'], true);
         $room_info = $result_01_array['data'];

@@ -11,13 +11,13 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为主播条件</label>
                             <div class="col-sm-9 col-xs-12">
-                                <label class="radio-inline"><input type="radio" name="setdata[conditions]" value="0" {if empty($setdata[conditions]) || $setdata[conditions] == 0} checked {/if}> 无条件</label>
+                                <label class="radio-inline"><input type="radio" name="setdata[conditions]" value="0" {if $setdata[conditions] == 0} checked {/if}> 无条件</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
-                                <label class="radio-inline"><input type="radio" name="setdata[conditions]" value="1" {if $setdata[conditions] == 1} checked {/if}> 申请</label>
+                                <label class="radio-inline"><input type="radio" name="setdata[conditions]" value="1" {if empty($setdata[conditions]) || $setdata[conditions] == 1} checked {/if}> 需要申请</label>
                             </div>
                         </div>
 

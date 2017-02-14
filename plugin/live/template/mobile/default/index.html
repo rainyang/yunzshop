@@ -50,9 +50,12 @@
         <div class="title">主播申请</div>
     </div>
     <div class="info_main">
-
-        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text"  id='mobile' placeholder="请输入您的手机号" value="{$member['mobile']}"/></div></div></div>
         {if !empty($member['mobile'])}
+        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner' id='mobile'>{$member['mobile']}</div></div></div>
+        {else}
+        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text"  id='mobile' placeholder="请输入您的手机号" value=""/></div></div></div>
+        {/if}
+        {if empty($member['mobile'])}
         <div class="line" style="position: relative"><div class="title">验证码</div><div class='info'><div class='inner'><input type="text" id='code' placeholder="请输入验证码"  value="" /><input id="btnSendCode" style="position: absolute;right: 0;top: 0;" type="button" value="发送验证码"  /></div></div></div>
         {/if}
         <input type="hidden" id="img0" value="" />
@@ -117,7 +120,6 @@
             core.json('member/sendcode', {
                 'mobile': $('#mobile').val(),
                 'op':'sendcode',
-                'anchorFlag':'1'
             }, function(json) {
                 if(json.status==1){
                     //设置button效果，开始计时
@@ -150,17 +152,18 @@
                         return;
                     }
 
-                    if(!$('#mobile').isMobile()){
-                        core.tip.show('请输入正确手机号码!');
-                        return;
-                    }
-
                     if($("#img0").val() == '' || $("#img1").val() == ''){
                         core.tip.show('请上传身份证文件');
                         return;
                     }
 
+                    //如果数据库中该用户没有注册手机号, 则需要验证手机号
+                    {if empty($member['mobile'])}
 
+                    if(!$('#mobile').isMobile()){
+                        core.tip.show('请输入正确手机号码!');
+                        return;
+                    }
 
                     //检验验证码
                     core.json('member/sendcode', {
@@ -168,18 +171,45 @@
                         'op':'checkcode'
                     }, function(json) {
 
-                        if(json.status == 0)
-                        {
+                        if(json.status == 0) {
                             core.tip.show(json.result);
                             return;
+                        } else {                         
+                            $(this).html('正在处理...').attr('saving',1);
+
+                            core.pjson("live/index", {
+                                'op': 'post',
+                                'memberdata':{
+                                    'membermobile': $("#mobile").val(),
+                                    'auth_img0': $("#img0").val(),
+                                    'auth_img1': $("#img1").val()
+                                }
+                            }, function(json) {
+
+                                if(json.status==1){
+                                    core.tip.show('保存成功');
+
+                                    // location.href="{php echo $this->createMobileUrl('member')}";
+                                    window.setTimeout(location.reload(), 2000);
+                                }
+                                else{
+                                    $('.info_sub').html('确认修改').removeAttr('saving');
+                                    core.tip.show('保存失败!');
+                                }
+
+                            },true,true);
                         }
 
-                        $(this).html('正在处理...').attr('saving',1);
+
+                    },true,true);
+
+                    {else}
+                    //如果数据库中该用户已经有手机号, 则不需要验证手机号, 只需要上传身份证即可
 
                         core.pjson("live/index", {
                             'op': 'post',
                             'memberdata':{
-                                'membermobile': $("#mobile").val(),
+                                'membermobile': $("#mobile").text(),
                                 'auth_img0': $("#img0").val(),
                                 'auth_img1': $("#img1").val()
                             }
@@ -198,8 +228,7 @@
 
                         },true,true);
 
-                    },true,true);
-
+                    {/if}
 
 
                 })

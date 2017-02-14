@@ -7,6 +7,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $openid         = m('user')->getOpenid();
 $member         = m('member')->getInfo($openid);
+//echo '<pre>'; print_r($member); exit;
 $template_flag  = 0;
 $diyform_plugin = p('diyform');
 if ($diyform_plugin) {
