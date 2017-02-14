@@ -120,7 +120,6 @@
             core.json('member/sendcode', {
                 'mobile': $('#mobile').val(),
                 'op':'sendcode',
-                'anchorFlag':'1'
             }, function(json) {
                 if(json.status==1){
                     //设置button效果，开始计时
@@ -158,7 +157,7 @@
                         return;
                     }
 
-                    //如果数据库中该用户已经有手机号, 则不用验证手机号
+                    //如果数据库中该用户没有注册手机号, 则需要验证手机号
                     {if empty($member['mobile'])}
 
                     if(!$('#mobile').isMobile()){
@@ -205,6 +204,7 @@
                     },true,true);
 
                     {else}
+                    //如果数据库中该用户已经有手机号, 则不需要验证手机号, 只需要上传身份证即可
 
                         core.pjson("live/index", {
                             'op': 'post',

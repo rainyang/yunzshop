@@ -5,10 +5,8 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 
 $mc = $_GPC['memberdata'];  //'18646588292';
-$openid = m('user')->isLogin();
 $uniacid = $_W['uniacid'];
 $op      = empty($_GPC['op']) ? 'sendcode' : trim($_GPC['op']);
-$anchorFlag = $_GPC['anchorFlag']; //用于标记是否是用于"主播申请"的验证码发送 (从plugin/live/template/mobile/default/index.html发送)
 
 session_start();
 if($op == 'sendcode'){
@@ -16,27 +14,13 @@ if($op == 'sendcode'){
     if(empty($mobile)){
         return show_json(0, '请填入手机号');
     }
-    if(empty($anchorFlag)){
-        $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid limit 1', array(
-                    ':uniacid' => $_W['uniacid'],
-                    ':mobile' => $mobile
-                ));
-        if(!empty($info))
-        {
-            return show_json(0, '该手机号已被注册！不能获取验证码。');
-        }
-    } else {
-        
-        //如果已经通过申请, 就不会打开发送验证码的页面, 不过这里仍然保留逻辑
-
-        $info = pdo_fetchcolumn('select COUNT(*) from ' . tablename('sz_yi_live_anchor') . ' where openid=:openid and uniacid=:uniacid and status = 1', array(
-                    ':uniacid' => $uniacid,
-                    ':openid' => $openid
-                ));
-        if(!empty($info))
-        {
-            return show_json(0, '该手机号已通过主播申请,不需要再次申请。');
-        }
+    $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid limit 1', array(
+                ':uniacid' => $_W['uniacid'],
+                ':mobile' => $mobile
+            ));
+    if(!empty($info))
+    {
+        return show_json(0, '该手机号已被注册！不能获取验证码。');
     }
     $code = rand(1000, 9999);
     $_SESSION['codetime'] = time();
