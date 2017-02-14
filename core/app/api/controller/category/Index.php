@@ -22,7 +22,7 @@ class Index extends YZ
     }
     private function _getGoodsListUrl(){
         global $_W;
-        $result = "http://demo.yunzshop.com/app_api.php?uniacid={$_W['uniacid']}&api=goods/Display";
+        $result = $_W['siteroot']."/app_api.php?uniacid={$_W['uniacid']}&api=goods/Display";
         return $result;
     }
 }
