@@ -39,9 +39,10 @@ if ($_W['isajax']) {
 
         $total     = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_store') . " where status =1 and uniacid = ".$_W['uniacid']);
         foreach ($stores as $k => &$row) {
-            $row['number'] = ($k+1) + ($pindex - 1) * $psize;
+            $row['number'] = ($k+1);
             $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
         }
+        $stores =  array_slice($stores, ($pindex - 1) * $psize, $psize);
         unset($row);
         return show_json(1, array(
             'total' => $total,
