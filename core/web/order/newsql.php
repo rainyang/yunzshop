@@ -1767,10 +1767,6 @@ if (!pdo_fieldexists('sz_yi_order', 'deductyunbi')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `deductyunbi` DECIMAL(10,2) NOT NULL AFTER `deductyunbimoney`;");
 }
 
-if(!pdo_fieldexists('sz_yi_member', 'referrer')) {
-    pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `referrer`  VARCHAR(11)  AFTER `bonus_street`;");
-}
-
 pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_yunbi_log') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
