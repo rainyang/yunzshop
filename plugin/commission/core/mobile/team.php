@@ -50,6 +50,6 @@ if ($_W['isajax']) {
 		}
 	}
 	unset($row);
-	return show_json(1, array('list' => $list, 'pagesize' => $psize));
+	return show_json(1, array('list' => $list, 'pagesize' => $psize),array('set' => $this->set, 'total' => $total, 'level1' => $level1, 'level2' => $level2, 'level3' => $level3));
 }
 include $this->template('team');

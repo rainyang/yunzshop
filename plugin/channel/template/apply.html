@@ -47,7 +47,7 @@
             <thead class="navbar-inner">
                 <tr>
                     <th style='width:80px;'>ID</th>
-                    <th style='width:80px;'>会员姓名</th>
+                    <th style='width:80px;'>会员</th>
                     <th style='width:120px;'>电话</th>
                     <th style='width:120px;'>详情</th>
                     <th style='width:120px;'>操作</th>
@@ -57,7 +57,7 @@
                 {loop $list $row}
                 <tr>
                     <td>{$row['id']}</td>
-                    <td>{$row['realname']}</td>
+                    <td><img src='{$row['avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' /><br>{$row['realname']}</td>
                     <td>{$row['mobile']}</td>
                     <td><a href="{php echo $this->createWebUrl('member',array('op'=>'detail', 'id' => $row['mid']));}" title="会员详情"><i class='fa fa-edit'></i></a></td>
                     <td><a class="label label-default " href="{php echo $this->createPluginWebUrl('channel/apply',array('op' => 'reviewed', 'id' => $row['id'], 'status' => 1));}">驳回审核</a><a class="label label-default label-info" href="{php echo $this->createPluginWebUrl('channel/apply',array('op' => 'reviewed', 'id' => $row['id'], 'status' => 2));}">审核通过</a>
