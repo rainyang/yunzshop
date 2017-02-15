@@ -41,6 +41,9 @@
             </a>
         </div>
         <div class="line"><div class="title">姓名</div><div class='info'><div class='inner'><input type="text" id='realname' placeholder="请输入您的姓名"  value="<%realname%>" /></div></div></div>
+        <%if referrer %>
+        <div class="line"><div class="title">推荐人</div><div class='info'><div class='inner'><input type="text" id='referrer'  value="<%referrer%>" readonly /></div></div></div>
+        <%/if%>
         {if is_app()}
         <div class="line"><div class="title">昵称</div><div class='info'><div class='inner'><input type="text" id='nickname' placeholder="请输入您的昵称"  value="<%nickname%>" /></div></div></div>
         {/if}

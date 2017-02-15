@@ -35,6 +35,9 @@
         <div class="line"><div class="title">验证码</div><div class='info'><div class='inner'><input type="text" id='code' placeholder="请输入验证码"  value="" /><input id="btnSendCode" type="button" style="position: absolute;right: 0;top: 0;" value="发送验证码"  /></div></div></div>
         <div class="line"><div class="title">设置密码</div><div class='info'><div class='inner'><input type="password" id='password' placeholder="请输入您的密码"  value="" /></div></div></div>
         <div class="line"><div class="title">确认密码</div><div class='info'><div class='inner'><input type="password" id='cpassword' placeholder="请确认密码"  value="" /></div></div></div>
+        {if !empty($mid)}
+        <div class="line"><div class="title">推荐人</div><div class='info'><div class='inner'><input type="referrer" id='referrer' name="referrer" placeholder="请输入推荐人"  value="{$referrer_mobile}" /></div></div></div>
+        {/if}
         
     </div>
     <div class="register">注册</div>
@@ -113,6 +116,12 @@
                        return;
                   }
 
+                {if $mid}
+                  if(!$('#referrer').isEmpty() && !$('#referrer').isMobile()){
+                      core.tip.show('请输入正确的推荐人手机号码!');
+                      return;
+                  }
+                {/if}
 
                   if( $('#password').isEmpty()){
                        core.tip.show('请输入密码!');
@@ -142,6 +151,7 @@
                                 'mobile': $('#mobile').val(),
                                 'password': $('#password').val(),
                                 'code': $('#code').val(),
+                                'referrer': $('#referrer').val(),
                            }, function(json) {
                             if(json.status==1){
                                  core.tip.show('注册成功');
