@@ -108,4 +108,17 @@ class Sz_DYi_Shop
         $result = set_medias($result, 'thumb,thumb_pc');
         return $result;
     }
+
+    public function getAddress($level = 1, $parentid = '')
+    {
+        global $_W;
+
+        $condition = '';
+        if(!empty($parentid)){
+            $condition = " and parentid = '".$parentid."'";
+        }
+        $result = pdo_fetchall(" select id, areaname from " . tablename('sz_yi_address') . " where level =:level ".$condition, array(':level' => $level));
+        return $result;
+    }
+
 }
