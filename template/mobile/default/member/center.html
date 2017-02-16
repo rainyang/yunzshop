@@ -45,7 +45,7 @@
     <div class="header">
         <div class="user">
             <div class="user-head" onclick='location.href="{php echo $this->createMobileUrl('member/info')}"'>
-                <%if member.avatar.length > 0%>
+                <%if member.avatar && member.avatar.length > 0%>
                 <img src="<%member.avatar%>" />
                 <%else%>
                 <img src="../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg" />
