@@ -230,7 +230,7 @@ if (!class_exists('liveModel')) {
             if(!empty($anchor_id) && !empty($room_id)){
                 return array('cloud_anchor_id'=>$anchor_id, 'cloud_room_id'=>$room_id);
             } else {
-                return 66;
+                return false;
             }
 
         }

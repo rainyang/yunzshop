@@ -7,6 +7,11 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $openid         = m('user')->getOpenid();
 $member         = m('member')->getInfo($openid);
+
+if (!empty($member['agentid'])) {
+    $member['referrer'] = pdo_fetchcolumn("SELECT mobile FROM " . tablename('sz_yi_member') . " WHERE uniacid =:uniacid AND id=:id", array(':uniacid'=>$_W['uniacid'], ':id'=>$member['agentid']));
+}
+
 //echo '<pre>'; print_r($member); exit;
 $template_flag  = 0;
 $diyform_plugin = p('diyform');

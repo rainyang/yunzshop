@@ -898,7 +898,7 @@ if (!class_exists('ChannelModel')) {
                         'paytime'             => time(),
                         'type'                => 1,
                         'surplus_stock'       => $surplus_stock,
-                        'mid'                 => $member['id']
+                        'mid'                 => $value['channel_id']
                     );
                     pdo_insert('sz_yi_channel_stock_log', $stock_log);
                 }

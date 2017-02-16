@@ -104,6 +104,7 @@ if ($operation == 'display') {
         $row['commission_total'] = $info['commission_total'];
         $row['commission_pay']   = $info['commission_pay'];
         $row['followed']         = m('user')->followed($row['openid']);
+        $row['avatar'] = m('member')->getHeadimg($row);
     }
     unset($row);
     if ($_GPC['export'] == '1') {
@@ -290,19 +291,21 @@ if ($operation == 'display') {
         'id' => $id
     ));
 
-    //如果该分销商是主播, 则将其主播状态更改为"3(禁播)"
-    $is_anchor = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_live_anchor') . ' WHERE openid = :openid', array(':openid'=>$member['openid']));
-    if($is_anchor){
-        //将商城本地的主播状态更改为"3"
-        pdo_update('sz_yi_live_anchor', array('status'=>3), array('openid'=>$member['openid']));
-        
-        //将云端的主播状态更改为"3(已删除)"
-        load()->func('communication');
-        $cloud_url = SZ_YI_LIVE_CLOUD_URL . '/shop_live.php?api=room/Set/deleted';
-        $resp = ihttp_post($cloud_url, array(
-            'mobile' => $member['mobile'],
-            'domain' => $_SERVER['HTTP_HOST']
-        ));
+    if ( p('live') ) {
+        //如果该分销商是主播, 则将其主播状态更改为"3(禁播)"
+        $is_anchor = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_live_anchor') . ' WHERE openid = :openid', array(':openid'=>$member['openid']));
+        if($is_anchor){
+            //将商城本地的主播状态更改为"3"
+            pdo_update('sz_yi_live_anchor', array('status'=>3), array('openid'=>$member['openid']));
+            
+            //将云端的主播状态更改为"3(已删除)"
+            load()->func('communication');
+            $cloud_url = SZ_YI_LIVE_CLOUD_URL . '/shop_live.php?api=room/Set/deleted';
+            $resp = ihttp_post($cloud_url, array(
+                'mobile' => $member['mobile'],
+                'domain' => $_SERVER['HTTP_HOST']
+            ));
+        }
     }
     plog('commission.agent.delete', "取消分销商资格 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
     message('删除成功！', $this->createPluginWebUrl('commission/agent'), 'success');

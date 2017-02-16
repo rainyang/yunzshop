@@ -22,14 +22,29 @@ if(!is_array($pay)) {
 }
 
 
-if (checksubmit()) {
-
+if (checksubmit('submit')) {
     $set['pay']['app_weixin'] = $_GPC['pay']['app_weixin'];
     $set['pay']['app_alipay'] = $_GPC['pay']['app_alipay'];
+    $set['pay']['version']    = $_GPC['pay']['version'];
 
-    if ((!empty($_GPC['pay']['app_weixin']) || !empty($_GPC['pay']['app_alipay'])) && (empty($_GPC['ping']['partner'])
-            || empty($_GPC['ping']['secret']))) {
-        message('请填写完整的Ping++信息!', 'refresh', 'error');
+    if ($set['pay']['version'] == 1) {
+        if ((!empty($_GPC['pay']['app_weixin']) || !empty($_GPC['pay']['app_alipay'])) && (empty($_GPC['ping']['partner'])
+                || empty($_GPC['ping']['secret']))) {
+
+            message('请填写完整的Ping++信息!', 'refresh', 'error');
+        }
+    } else {
+        if (!empty($_GPC['pay']['app_weixin']) && (empty($_GPC['wx_native']['wx_appid'])
+                        || empty($_GPC['wx_native']['wx_secret'])
+                        || empty($_GPC['wx_native']['wx_mcid'])
+                        || empty($_GPC['wx_native']['signkey']))) {
+
+            message('请填写完整的微信支付参数信息!', 'refresh', 'error');
+        }
+
+        if (!empty($_GPC['pay']['app_alipay']) && $setting['payment']['alipay']['switch'] != 1) {
+            message('请填写完整的支付宝支付参数信息!', 'refresh', 'error');
+        }
     }
 
     $data = array(

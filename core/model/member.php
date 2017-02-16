@@ -44,6 +44,7 @@ class Sz_DYi_Member
                 'residecity',
                 'nickname'
             ));
+            $info['avatar'] = $this->getHeadimg($info);
             $info['credit1']    = $fans['credit1'];
             $info['credit2']    = $fans['credit2'];
             $info['birthyear']  = empty($info['birthyear']) ? $fans['birthyear'] : $info['birthyear'];
@@ -120,6 +121,8 @@ class Sz_DYi_Member
 			$info['credit1'] = $credits['credit1'];
 			$info['credit2'] = $credits['credit2'];
             $info['credit20'] = $credits['credit20'];
+
+            $info['avatar'] = $this->getHeadimg($info);
 		}
         return $info;
     }
@@ -633,5 +636,22 @@ class Sz_DYi_Member
                 ));
             }
         }
+    }
+    /**
+     * Author：yitian::2017-02-13  qq:751818588
+     *
+     * @param $memberinfo 会员信息
+     *
+     * @return avatar
+     */
+    public function getHeadimg($memberinfo)
+    {
+        $shop   = m('common')->getSysset('shop');
+        if ($shop['headimg']) {
+            $shop['headimg'] = "http://" . $_SERVER['HTTP_HOST'] . "/attachment/" . $shop['headimg'];
+        }
+        $avatar = empty($memberinfo['isactivity']) ? (empty($memberinfo['avatar']) ? $shop['headimg'] : $memberinfo['avatar']) : $memberinfo['isactivity'];
+
+        return $avatar;
     }
 }

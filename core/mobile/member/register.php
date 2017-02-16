@@ -3,6 +3,11 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+$mid = !empty($_GPC['mid']) ? intval($_GPC['mid']) : '' ;
+if ($mid) {
+    $referrer_mobile = pdo_fetchcolumn("SELECT mobile FROM " . tablename('sz_yi_member') . " WHERE uniacid =:uniacid AND id=:id", array(':uniacid'=>$_W['uniacid'], ':id'=>$mid));
+}
+
 $preUrl = $_COOKIE['preUrl'];
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 
@@ -82,6 +87,7 @@ if ($_W['isajax']) {
                 'createtime' => time(),
                 'status' => 0,
                 'regtype' => 2,
+                'referrer' => $_GPC['referrer']
             );
 
             if (is_app()) {

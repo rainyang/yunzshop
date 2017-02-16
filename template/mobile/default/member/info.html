@@ -13,6 +13,28 @@
     .select { border:1px solid #ccc;height:25px;}
 
     .fa-angle-right { color:#999; font-size:26px; float:right; line-height:41px; margin-left:6px;}
+
+    .plus {
+        float: left;
+        width: 60px;
+        height: 60px;
+        border: 1px solid #efefef;
+        color: #efefef;
+        font-size: 45px;
+        line-height: 55px;
+        text-align: center;
+    }
+    .preview0{
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        z-index: 2;
+    }
+    .preview0 img {
+        width: 100%;
+        height: 100%;
+    }
+
 </style>
 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2.js" type="text/javascript"></script>
 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script>
@@ -32,15 +54,21 @@
         <div class="title">我的资料</div>
     </div>
     <div class="info_main">
-        <div class="line">
-            <div class="title">我的头像</div>
-            <input type="file" name='imgFile' id='imgFile' style="display: none;" memberid = '<%id%>'>
-            <a style="float: right; padding: 0px;color: #f15353;text-decoration: none; display:block; height: 41px; width: 70px;" onclick="$('#imgFile').click()">
-                <img src="<%isactivity%>" style="width:41px; height:41px; border-radius: 50%;" id="isactivty"/>
-                <i class="fa fa-angle-right"></i>
-            </a>
+
+        <input type="hidden" id="img0" value="<%avatar%>" />
+        <div class="line"  style="height: 80px;"><div class="title" style="padding-top: 17px;">头像</div><div class="info"><div class="inner" style="padding-top: 10px;">
+        <div class="plus" style="position:relative;">
+            <input type="file" data-tag="0" name='imgFile0' id='imgFile0' style="position:absolute;left:0;z-index:3;width:60px;height:60px;-webkit-tap-highlight-color: transparent;filter:alpha(Opacity=0); opacity: 0;" />
+            <i class="fa fa-plus"  style="position:absolute;top:10px;right:12px;z-index:1"></i>
+            <div id="preview0" class="preview0">
+                <%if avatar!=''%><img src='<%avatar%>'/><%/if%>
+            </div>
         </div>
+        </div></div></div>
         <div class="line"><div class="title">姓名</div><div class='info'><div class='inner'><input type="text" id='realname' placeholder="请输入您的姓名"  value="<%realname%>" /></div></div></div>
+        <%if referrer %>
+        <div class="line"><div class="title">推荐人</div><div class='info'><div class='inner'><input type="text" id='referrer'  value="<%referrer%>" readonly /></div></div></div>
+        <%/if%>
         {if is_app()}
         <div class="line"><div class="title">昵称</div><div class='info'><div class='inner'><input type="text" id='nickname' placeholder="请输入您的昵称"  value="<%nickname%>" /></div></div></div>
         {/if}
@@ -87,7 +115,10 @@
     </div>
     <div class="info_sub">确认修改</div>
 </script>
-
+<script id="tpl_img" type="text/html">
+    <img src='<%url%>' tag="<%tag%>" img='<%filename%>'/>
+</script>
+<script src="../addons/sz_yi/static/js/dist/ajaxfileupload.js" type="text/javascript"></script>
 <script language="javascript">
 
     require(['tpl', 'core'], function(tpl, core) {
@@ -121,30 +152,33 @@
                     $(this).find('i').removeClass('fa-circle-o').addClass('fa-check-circle-o').css('color', '#0c9');
                     $('#gender').val(val);
                 });
-                $('#imgFile').change(function() {
+
+                //上传图片
+                $('input[type=file]').change(function() {
 
                     core.loading('正在上传');
-                    var memberid = $(this).attr('memberid');
-                    //alert(memberid);
+
+                    var tag= $(this).data('tag');
+
                     $.ajaxFileUpload({
                         url: core.getUrl('util/uploader'),
-                        data: {attribute: 'member', memberid: memberid, file: 'imgFile'},
-                        secureuri: false,
-                        fileElementId: 'imgFile',
-                        dataType: 'json',
+                        data: {file: "imgFile" + tag},
+                        secureuri: false, //异步
+                        fileElementId: 'imgFile'+ tag, //上传控件ID
+                        dataType: 'json', //返回的数据信息格式
                         success: function(res, status) {
                             core.removeLoading();
-                            var element = document.getElementById('isactivty');
-                            element.src = res.url + '?v=' + Math.random();
-                            core.tip.show('上传成功!');
-                            //location.reload();
+                            var obj = $(tpl('tpl_img', res));
+                            $('.preview' + tag).html(obj);
+                            $('#img' + tag).val(res.url );
+                            console.log(res);alert(1)
                         }, error: function(data, status, e) {
                             core.removeLoading();
                             core.tip.show('上传失败!');
                         }
                     });
+                })
 
-                });
                 $('.info_sub').click(function() {
                     if($(this).attr('saving')=='1')
                     {
@@ -181,6 +215,7 @@
                         'memberdata':{
                             'realname': $('#realname').val(),
                             'nickname': $("#nickname").val(),
+                            'avatar': $("#img0").val(),
                             'membermobile': $('#membermobile').val(),
                             'weixin': $('#weixin').val(),
                             'gender': $('#gender').val(),
@@ -199,6 +234,7 @@
                         'mcdata':{
                             'realname': $('#realname').val(),
                             'nickname': $("#nickname").val(),
+                            'avatar':$("#img0").val(),
                             'membermobile': $('#membermobile').val(),
                             'gender': $('#gender').val(),
                             'birthyear': $('#birthday').val().length>0?birthday[0]:0,

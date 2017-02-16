@@ -277,4 +277,9 @@ if (pdo_fieldexists('sz_yi_af_supplier', 'mobile')) {
 if (pdo_fieldexists('sz_yi_af_supplier', 'realname')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `realname` `realname` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
 }
+
+//2017-02-10
+if (!pdo_fieldexists('sz_yi_goods', 'card_deduct')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `card_deduct` decimal(10,2) DEFAULT 0;");
+}
 echo 'ok...';

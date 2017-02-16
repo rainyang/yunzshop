@@ -14,14 +14,19 @@ $yunbi_plugin   = p('yunbi');
 if ($yunbi_plugin) {
     $yunbiset = $yunbi_plugin->getSet();
 }
+$plugin_card = p('card');
 if ($_W['isajax']) {
 	if ($operation == 'cancel') {
+	    $card_cond = '';
+        if ($plugin_card) {
+            $card_cond = ', cardprice, cardid';
+        }
 		$orderid = intval($_GPC['orderid']);
-		$order   = pdo_fetch('select id,ordersn,openid,status,deductcredit,deductprice,deductyunbi,deductyunbimoney,deductcommission,couponid from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+		$order   = pdo_fetch('select id,ordersn,openid,status,deductcredit,deductprice,deductyunbi,deductyunbimoney,deductcommission,couponid ' . $card_cond . ' from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
 	            ':id' => $orderid,
 	            ':uniacid' => $uniacid,
 	            ':openid' => $openid
-	        ));		
+	        ));
 		if (empty($order)) {
 			return show_json(0, '订单未找到!');
 		}
@@ -38,40 +43,45 @@ if ($_W['isajax']) {
 
         //取消订单返商品库存
         m('order')->returnStock($order['id']);
-        
+
 		m('notice')->sendOrderMessage($orderid);
-	        if ($order['deductprice'] > 0) {
-	            $shop = m('common')->getSysset('shop');
-	            m('member')->setCredit($order['openid'], 'credit1', $order['deductcredit'], array(
-	                '0',
-	                $shop['name'] . "购物返还抵扣积分 积分: {$order['deductcredit']} 抵扣金额: {$order['deductprice']} 订单号: {$order['ordersn']}"
-	            ));
-	        }
-            if ($order['deductcommission'] > 0) {
-                m('member')->setCredit($order['openid'], 'credit20', -$order['deductcommission'], array(
-                    '0',
-                    $this->yzShopSet['name'] . "购物返还抵扣佣金 抵扣金额: {$order['deductcommission']} 订单号: {$order['ordersn']}"
-                ));
-            }
 
-	       	if ($order['deductyunbimoney'] > 0) {
-	            $shop = m('common')->getSysset('shop');
-	            p('yunbi')->setVirtualCurrency($order['openid'],$order['deductyunbi']);
-		        //虚拟币抵扣记录 
-	            $data_log = array(
-	                'id'           => $member['id'],
-	                'openid'        => $openid,
-	                'credittype'    => 'virtual_currency',
-	                'money'         => $order['deductyunbi'],
-	                'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$order['deductyunbi']} 抵扣金额: {$order['deductyunbimoney']} 订单号: {$order['ordersn']}"
-	            );
-	           	p('yunbi')->addYunbiLog($uniacid,$data_log,'4');
-            }
+        if ($order['cardprice'] > 0) {
+            $plugin_card->cardRefund($order['cardid'], $order['cardprice']);
+        }
 
-	        if (p('coupon') && !empty($order['couponid'])) {
-	            p('coupon')->returnConsumeCoupon($orderid);
-	        }
-	        return show_json(1);
+        if ($order['deductprice'] > 0) {
+            $shop = m('common')->getSysset('shop');
+            m('member')->setCredit($order['openid'], 'credit1', $order['deductcredit'], array(
+                '0',
+                $shop['name'] . "购物返还抵扣积分 积分: {$order['deductcredit']} 抵扣金额: {$order['deductprice']} 订单号: {$order['ordersn']}"
+            ));
+        }
+        if ($order['deductcommission'] > 0) {
+            m('member')->setCredit($order['openid'], 'credit20', -$order['deductcommission'], array(
+                '0',
+                $this->yzShopSet['name'] . "购物返还抵扣佣金 抵扣金额: {$order['deductcommission']} 订单号: {$order['ordersn']}"
+            ));
+        }
+
+        if ($order['deductyunbimoney'] > 0) {
+            $shop = m('common')->getSysset('shop');
+            p('yunbi')->setVirtualCurrency($order['openid'],$order['deductyunbi']);
+            //虚拟币抵扣记录
+            $data_log = array(
+                'id'           => $member['id'],
+                'openid'        => $openid,
+                'credittype'    => 'virtual_currency',
+                'money'         => $order['deductyunbi'],
+                'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$order['deductyunbi']} 抵扣金额: {$order['deductyunbimoney']} 订单号: {$order['ordersn']}"
+            );
+            p('yunbi')->addYunbiLog($uniacid,$data_log,'4');
+        }
+
+        if (p('coupon') && !empty($order['couponid'])) {
+            p('coupon')->returnConsumeCoupon($orderid);
+        }
+        return show_json(1);
 	    } else if ($operation == 'complete') {
 	        $orderid = intval($_GPC['orderid']);
 	        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(

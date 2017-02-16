@@ -184,7 +184,7 @@ if (!class_exists('discuzModel')) {
 
             $info = pdo_fetch('SELECT nickname, email FROM ' . tablename('mc_members') . ' WHERE `uniacid`=:uniacid AND `uid`=:uid', array(':uniacid' => $_W['uniacid'], ':uid' => $uid));
 
-            $nickname = $info['nickname']  . substr($info['email'],0,4);
+            $nickname = $info['nickname'];
             return $nickname;
         }
 
@@ -253,7 +253,7 @@ if (!class_exists('discuzModel')) {
          *
          * @param array $data
          */
-        public function updateUserInfo($uid ,$data = array())
+        public function updateUserInfo($uid ,$data = array(), $flag='')
         {
             global $_W;
 
@@ -265,7 +265,9 @@ if (!class_exists('discuzModel')) {
             $exist = pdo_fetch('SELECT * FROM ' . tablename('mc_mapping_ucenter') . ' WHERE `uniacid`=:uniacid AND `uid`=:uid', array(':uniacid' => $_W['uniacid'], 'uid' => $uid));
 
                 if (!empty($exist)) {
-                    mc_init_uc();
+                    if (empty($flag)) {
+                        mc_init_uc();
+                    }
 
                     $prefix = $this->_dz_db_prefix();
 

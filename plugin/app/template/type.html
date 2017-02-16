@@ -21,6 +21,14 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">版本</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'><input type='radio' name='pay[version]' value='1' {if empty($set['pay']['version']) || $set['pay']['version']==1}checked{/if}/> 旧版</label>
+                                <label class='radio-inline'><input type='radio' name='pay[version]' value='2' {if $set['pay']['version']==2}checked{/if} /> 新版</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信支付</label>
                             <div class="col-sm-9 col-xs-12">
                                 {ifp 'sysset.save.pay'}

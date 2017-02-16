@@ -56,7 +56,7 @@ if (!empty($_GPC['realname'])) {
     $condition .= ' AND m.realname LIKE :realname';
     $params[':realname'] = "%{$_GPC['realname']}%";
 }
-$sql = "SELECT af.*,m.realname,m.nickname,m.mobile FROM " . tablename('sz_yi_af_channel') . " af LEFT JOIN " . tablename('sz_yi_member') . " m ON af.openid = m.openid WHERE af.status=0 {$condition}";
+$sql = "SELECT af.*,m.realname,m.nickname,m.mobile,m.avatar FROM " . tablename('sz_yi_af_channel') . " af LEFT JOIN " . tablename('sz_yi_member') . " m ON af.openid = m.openid WHERE af.status=0 {$condition}";
 $list = pdo_fetchall($sql, $params);
 $total           = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_af_channel') . "af LEFT JOIN " . tablename('sz_yi_member') . " m ON af.openid = m.openid WHERE af.status=0 {$condition}",$params);
 $pager           = pagination($total, $pindex, $psize);

@@ -124,15 +124,18 @@ if ($operation == 'index') {
     }
 
     //discuz会员注册
-    $email = substr(md5($userinfo['openid']), 0, 15) .'@yunzshop.com';
-    $pwd = md5(uniqid(mt_rand()));
+    //$email = substr(md5($userinfo['openid']), 0, 15) .'@yunzshop.com';
+    //$pwd = md5(uniqid(mt_rand()));
 
     mc_init_uc();
 
     $exist = $this->model->hasId($uid);
 
     if (empty($exist)) {
+        /*
         $this->model->userScanRegister($uid, $userinfo['nickname'] . substr($userinfo['openid'], 0, 4), $email, $pwd);
+        */
+        header('location: ' . $this->createPluginMobileUrl('discuz/synlogin', array('op' => 'uc_register')));
     }
 
     $this->model->userLogin($uid);
