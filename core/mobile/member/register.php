@@ -86,8 +86,7 @@ if ($_W['isajax']) {
                 'pwd' => md5($password),   //md5
                 'createtime' => time(),
                 'status' => 0,
-                'regtype' => 2,
-                'referrer' => $_GPC['referrer']
+                'regtype' => 2
             );
 
             if (is_app()) {

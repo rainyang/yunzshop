@@ -150,8 +150,7 @@
                         core.json('member/register', {
                                 'mobile': $('#mobile').val(),
                                 'password': $('#password').val(),
-                                'code': $('#code').val(),
-                                'referrer': $('#referrer').val(),
+                                'code': $('#code').val()
                            }, function(json) {
                             if(json.status==1){
                                  core.tip.show('注册成功');
