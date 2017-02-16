@@ -36,7 +36,8 @@ class Core extends WeModuleSite
 
             //discuz论坛一键登录
             if (!empty($_GPC['refer']) && $_GPC['refer'] == 'bbs' && p('discuz')) {
-                p('discuz')->synLogin();
+                //p('discuz')->synLogin();
+                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&method=synlogin&p=discuz&m=sz_yi&do=plugin");
             }
         } else {
             //APP 分销分享地址-用户注册

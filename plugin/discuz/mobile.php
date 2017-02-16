@@ -30,4 +30,9 @@ class DiscuzMobile extends Plugin
     {
     	return $this->_exec_plugin(__FUNCTION__, false);
     }
+
+    public function synlogin()
+    {
+        return $this->_exec_plugin(__FUNCTION__, false);
+    }
 }
