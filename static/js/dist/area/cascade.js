@@ -1,8 +1,17 @@
+/**
+ * @name        jQuery Cascdejs plugin
+ * @author      rayyang
+ * @version     1.0 
+ * @level       3级 
+ */
+
+//首先需要初始化
 var _provinceNetworkData =null;
 var _cityNetworkData =null;
 var _districtNetworkData =null;
-// var _reg = new RegExp("(^|&)i=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
-// var _r = window.location.search.substr(1).match(_reg);  //匹配目标参数
+var _reg = new RegExp("(^|&)i=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+var _r = window.location.search.substr(1).match(_reg);  //匹配目标参数
+var uniacid = _r['2'] ? _r['2'] : '0';
 
 function cascdeInit(v1,v2,v3){
    getProvinceData(v1,v2,v3);
@@ -11,7 +20,7 @@ function cascdeInit(v1,v2,v3){
 // 获取省数据
 function getProvinceData(v1,v2,v3){
     $.ajax({
-        url:'/app/index.php?c=entry&p=address&do=api&m=sz_yi',
+        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=sz_yi',
         data:{type:'province'},
         type:'GET', //GET
         async:true,    //或false,是否异步
@@ -27,9 +36,15 @@ function getProvinceData(v1,v2,v3){
 
 // 获取城市数据
 function getCityData(v1,v2,v3){
+    var parentid = '';
+    for (var i = 0; i < _provinceNetworkData.length; i++) {
+        if (v1 == _provinceNetworkData[i].areaname) {
+            parentid = _provinceNetworkData[i].id;
+        }
+    }
     $.ajax({
-        url:'/app/index.php?c=entry&p=address&do=api&m=sz_yi',
-        data:{type:'city',v1:v1},
+        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=sz_yi',
+        data:{type:'city',parentid:parentid},
         type:'GET', //GET
         async:true,    //或false,是否异步
         timeout:5000,    //超时时间
@@ -44,9 +59,15 @@ function getCityData(v1,v2,v3){
 
 // 获取区数据
 function getDistrictData(v1,v2,v3){
+    var parentid = '';
+    for (var i = 0; i < _cityNetworkData.length; i++) {
+        if (v2 == _cityNetworkData[i].areaname) {
+            parentid = _cityNetworkData[i].id;
+        }
+    }
     $.ajax({
-        url:'/app/index.php?c=entry&p=address&do=api&m=sz_yi',
-        data:{type:'district',v2:v2},
+        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=sz_yi',
+        data:{type:'district',parentid:parentid},
         type:'GET', //GET
         async:true,    //或false,是否异步
         timeout:5000,    //超时时间

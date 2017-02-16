@@ -152,9 +152,10 @@ class Sz_DYi_User
             return;
         }
 
-        if($_GPC['p'] == 'address' && $_GPC["do"]=='api'){
+        if($_GPC['p'] == 'getaddress' && $_GPC["do"]=='shop'){
             return;
         }
+
         //需要登陆的P方法                  
         $needLoginPList = array('address', 'commission','cart');
 
