@@ -171,7 +171,7 @@
                             var obj = $(tpl('tpl_img', res));
                             $('.preview' + tag).html(obj);
                             $('#img' + tag).val(res.url );
-                            console.log(res);alert(1)
+                            console.log(res);
                         }, error: function(data, status, e) {
                             core.removeLoading();
                             core.tip.show('上传失败!');
