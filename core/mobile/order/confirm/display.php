@@ -4,18 +4,21 @@ class Display extends Base
 {
     private function _isFromCart()
     {
-        global $_GPC;
-
-        $id = intval($_GPC["id"]);
-        if (empty($id)) {
+        $goods_id = $this->getGoodsId();
+        if (empty($goods_id)) {
             return true;
         }
         return false;
     }
-    private function getGoods(){
-        if($this->_isFromCart()){
+    private function getGoodsId(){
+        global $_GPC;
+        return intval($_GPC["id"]);
+    }
+    private function getGoods()
+    {
+        if ($this->_isFromCart()) {
             $goods = $this->_getCartBuyGoods();
-        }else{
+        } else {
             $goods = $this->_getDirectBuyGoods();
 
         }
@@ -30,10 +33,22 @@ class Display extends Base
         $goods = set_medias($goods, 'thumb');
         return $goods;
     }
-    private function suppliers(){
 
+    private function suppliers()
+    {
+        if($this->_isFromCart()){
+            return pdo_fetchall('SELECT distinct g.supplier_uid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc", array(
+                ':uniacid' => $this->getUniacid(),
+                ':openid' => $this->getOpenid()
+            ), 'supplier_uid');
+        }else{
+            $data = $this->getGoodsFromGoodsModel();
+            return array($data['supplier_uid'] => array("supplier_uid" => $data['supplier_uid']));
+        }
     }
-    private function getGoodsFromGoodsModel(){
+
+    private function getGoodsFromGoodsModel()
+    {
         $card_cond = '';
         if ($plugincard) {
             $card_cond = ', card_deduct';
@@ -45,10 +60,11 @@ class Display extends Base
         }
         $data = pdo_fetch($sql, array(
             ':uniacid' => $this->getUniacid(),
-            ':id' => $id
+            ':id' => $this->getGoodsId()
         ));
         return $data;
     }
+
     private function _getDirectBuyGoods()
     {
         $data = $this->getGoodsFromGoodsModel();
@@ -63,7 +79,6 @@ class Display extends Base
                 $data['marketprice'] = $laddermoney > 0 ? $laddermoney : $data['marketprice'];
             }
         }
-        $suppliers = array($data['supplier_uid'] => array("supplier_uid" => $data['supplier_uid']));
 
         //新规格
         if (is_int($total) && is_int($optionid)) {
@@ -72,7 +87,7 @@ class Display extends Base
             if (!empty($optionid)) {
                 $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight,option_ladders from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
                     ':uniacid' => $this->getUniacid(),
-                    ':goodsid' => $id,
+                    ':goodsid' => $this->getGoodsId(),
                     ':id' => $optionid
                 ));
                 //阶梯价格
@@ -154,7 +169,7 @@ class Display extends Base
                         }
                     }
                     $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
-                    $params2 = array(':goodsid' => $id);
+                    $params2 = array(':goodsid' => $this->getGoodsId());
                     $room = pdo_fetch($sql2, $params2);
 
                     $sql = 'SELECT `id`, `roomdate`, `num`, `status` FROM ' . tablename('sz_yi_hotel_room_price') . ' WHERE `roomid` = :roomid
@@ -205,7 +220,7 @@ class Display extends Base
                 if (!empty($data['optionid'])) {
                     $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
                         ':uniacid' => $this->getUniacid(),
-                        ':goodsid' => $id,
+                        ':goodsid' => $this->getGoodsId(),
                         ':id' => $data['optionid']
                     ));
                     if (!empty($option)) {
@@ -273,10 +288,7 @@ class Display extends Base
             $condition = ' and c.id in (' . $cartids . ')';
         }
 
-        $suppliers = pdo_fetchall('SELECT distinct g.supplier_uid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc", array(
-            ':uniacid' => $this->getUniacid(),
-            ':openid' => $this->getOpenid()
-        ), 'supplier_uid');
+        
 
         $card_cond = '';
         if ($plugincard) {
@@ -320,28 +332,36 @@ class Display extends Base
         }
         return $goods;
     }
-    function isverify($goods){
+
+    function isverify($goods)
+    {
         foreach ($goods as &$g) {
             if ($g['isverify'] == 2) {
                 return true;
             }
         }
     }
-    function isverifysend($goods){
+
+    function isverifysend($goods)
+    {
         foreach ($goods as &$g) {
             if ($g['isverifysend'] == 1) {
                 return true;
             }
         }
     }
-    function dispatchsend($goods){
+
+    function dispatchsend($goods)
+    {
         foreach ($goods as &$g) {
             if ($g['dispatchsend'] == 1) {
                 return true;
             }
         }
     }
-    function isvirtual($goods){
+
+    function isvirtual($goods)
+    {
         foreach ($goods as &$g) {
             if (!empty($g['virtual']) || $g['type'] == 2) {
                 return true;
@@ -353,27 +373,31 @@ class Display extends Base
             }
         }
     }
-    function issale($goods){
+
+    function issale($goods)
+    {
         foreach ($goods as &$g) {
             if ($g['plugin'] == 'fund') {
                 return false;
             }
         }
     }
-    function hascouponplugin($goods){
+
+    function hascouponplugin($goods)
+    {
         foreach ($goods as &$g) {
             if ($g['plugin'] == 'fund') {
                 return false;
             }
         }
     }
+
     public function index()
     {
         global $_GPC;
 
-        $id = intval($_GPC["id"]);
         $telephone = intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
-        $id = intval($_GPC["id"]);
+
         if (strpos($_GPC['optionid'], '|')) {
             $optionid = rtrim($_GPC['optionid'], '|');
             $optionid = explode('|', $optionid);
@@ -398,14 +422,14 @@ class Display extends Base
         } else {
             $buytotal = $total;
         }
-        
+
         $changenum = false;
-        
+
         $goods = $this->getGoods();
 
 
         //多店值分开初始化
-        foreach ($suppliers as $key => $val) {
+        foreach ($this->suppliers() as $key => $val) {
             $order_all[$val['supplier_uid']]['weight'] = 0;
             $order_all[$val['supplier_uid']]['total'] = 0;
             $order_all[$val['supplier_uid']]['goodsprice'] = 0;
@@ -419,9 +443,9 @@ class Display extends Base
             $order_all[$val['supplier_uid']]['dispatch_array'] = array();
             $order_all[$val['supplier_uid']]['supplier_uid'] = $val['supplier_uid'];
             if ($val['supplier_uid'] == 0) {
-                $order_all[$val['supplier_uid']]['supplier_name'] = $shopset['name'];
+                $order_all[$val['supplier_uid']]['supplier_name'] = $this->getShopSet('name');
             } else {
-                $supplier_names = pdo_fetch('select username, brandname from ' . tablename('sz_yi_perm_user') . ' where uid=' . $val['supplier_uid'] . " and uniacid=" . $_W['uniacid']);
+                $supplier_names = pdo_fetch('select username, brandname from ' . tablename('sz_yi_perm_user') . ' where uid=' . $val['supplier_uid'] . " and uniacid=" . $this->getUniacid());
                 if (!empty($supplier_names)) {
                     $order_all[$val['supplier_uid']]['supplier_name'] = $supplier_names['brandname'] ? $supplier_names['brandname'] : "";
                 } else {
@@ -429,33 +453,15 @@ class Display extends Base
                 }
             }
         }
+        //购买人信息,等级
         $member = m('member')->getMember($this->getOpenid());
         $level = m("member")->getLevel($this->getOpenid());
-        //$weight         = 0;
-        //$total          = 0;
-        //$goodsprice     = 0;
-        //$realprice      = 0;
-        //$deductprice    = 0;
-        //$discountprice  = 0;
-        //$deductprice2   = 0;
+        
         $stores = array();
         $stores_send = array();
-        $address = false;
-        $carrier = false;
-        $carrier_list = array();
         $dispatch_list = false;
 
-        //$dispatch_price = 0;
-        //$dispatch_array = array();
 
-        //$carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 and type in(1,3)", array(
-        $carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 AND myself_support=1 ", array(
-            ":uniacid" => $_W["uniacid"]
-        ));
-
-        if (!empty($carrier_list)) {
-            $carrier = $carrier_list[0];
-        }
         if (p('channel')) {
             $my_info = p('channel')->getInfo($this->getOpenid());
         }
@@ -598,7 +604,7 @@ class Display extends Base
             //商品为酒店时候的价格
             if (p('hotel') && $data['type'] == '99') {
                 $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
-                $params2 = array(':goodsid' => $id);
+                $params2 = array(':goodsid' => $this->getGoodsId());
                 $room = pdo_fetch($sql2, $params2);
                 $pricefield = 'oprice';
                 $r_sql = 'SELECT `roomdate`, `num`, `oprice`, `status`, ' . $pricefield . ' AS `m_price` FROM ' . tablename('sz_yi_hotel_room_price') .
@@ -686,7 +692,7 @@ class Display extends Base
                 }
             }
 
-            foreach ($suppliers as $key => $val) {
+            foreach ($this->suppliers() as $key => $val) {
                 if (empty($order_all[$val['supplier_uid']]['storeids'])) {
                     $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 and myself_support=1', array(
                         ':uniacid' => $_W['uniacid']
@@ -831,7 +837,7 @@ class Display extends Base
                 }
             }
 
-            foreach ($suppliers as $key => $val) {
+            foreach ($this->suppliers() as $key => $val) {
                 if (!empty($order_all[$val['supplier_uid']]['dispatch_array'])) {
                     foreach ($order_all[$val['supplier_uid']]['dispatch_array'] as $k => $v) {
                         $order_all[$val['supplier_uid']]['dispatch_data'] = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["data"];
@@ -860,7 +866,7 @@ class Display extends Base
 
         //订单总价
         $realprice_total = 0;
-        foreach ($suppliers as $key => $val) {
+        foreach ($this->suppliers() as $key => $val) {
             if ($saleset) {
                 //满额包邮
                 if (!empty($saleset["enoughfree"])) {
@@ -1013,11 +1019,11 @@ class Display extends Base
             $order_all[$val['supplier_uid']]['dispatch_price'] = number_format($order_all[$val['supplier_uid']]['dispatch_price'], 2);
 
         }
-        $supplierids = implode(',', array_keys($suppliers));
+        $supplierids = implode(',', array_keys($this->suppliers()));
         if (p('hotel')) {
             if ($data['type'] == '99') {
                 $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
-                $params2 = array(':goodsid' => $id);
+                $params2 = array(':goodsid' => $this->getGoodsId());
                 $room = pdo_fetch($sql2, $params2);
                 $pricefield = 'oprice';
                 $r_sql = 'SELECT `roomdate`, `num`, `oprice`, `status`, ' . $pricefield . ' AS `m_price` FROM ' . tablename('sz_yi_hotel_room_price') .
@@ -1076,26 +1082,23 @@ class Display extends Base
 
         return show_json(1, array(
             'member' => $member,
-            //'deductcredit' => $deductcredit,
             'deductmoney' => $deductmoney,
             'deductcredit2' => $deductcredit2,
             'saleset' => $saleset,
             'goods' => $goods,
             'has' => $has,
             'weight' => $weight / $buytotal,
-            'set' => $shopset,
+            'set' => $this->getShopSet(),
             'fromcart' => $this->_isFromCart(),
             'haslevel' => !empty($level) && $level['discount'] > 0 && $level['discount'] < 10,
             'total' => $total,
-            //"dispatchprice" => number_format($dispatch_price, 2),
             'totalprice' => number_format($totalprice, 2),
             'goodsprice' => number_format($goodsprice, 2),
             'discountprice' => number_format($discountprice, 2),
             'discount' => $level['discount'],
             'realprice_total' => number_format($realprice_total, 2),
             'address' => $address,
-            //'carrier' => $carrier,
-            //'carrier_list' => $carrier_list,
+
             'carrier' => $stores[0],
             'carrier_list' => $stores,
             'carrier_send' => $stores_send[0],
@@ -1108,8 +1111,7 @@ class Display extends Base
             'stores_send' => $stores_send,
             'isvirtual' => $this->isvirtual(),
             'changenum' => $changenum,
-            //'hascoupon' => $hascoupon,
-            //'couponcount' => $couponcount,
+
             'order_all' => $order_all,
             'supplierids' => $supplierids,
             "deposit" => number_format($deposit, 2),
