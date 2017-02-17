@@ -71,7 +71,7 @@ $isladder = false;
 if (p('ladder')) {
     $ladder_set = p('ladder')->getSet();
     if ($ladder_set['isladder']) {
-        $isladder = true;   
+        $isladder = true;
     }
 }
 if ($operation == "display" || $operation == "create") {
@@ -262,12 +262,12 @@ if ($_W['isajax']) {
                             ));
                             $ladders = unserialize($ladders['ladders']);
                         }
-                        
+
                         if ($ladders) {
                             $laddermoney = m('goods')->getLaderMoney($ladders,$v['total']);
                             $goods[$k]['marketprice'] = $laddermoney > 0 ? $laddermoney : $v['marketprice'];
                         }
-                    } 
+                    }
                 }
             }
             $fromcart = 1;
@@ -780,7 +780,7 @@ if ($_W['isajax']) {
                 }else{
                     $order_all[$g['supplier_uid']]['yunbideductprice'] += $g["yunbi_deduct"] * $g["total"];
                 }
-                
+
             } else {
                 $order_all[$g['supplier_uid']]['yunbideductprice'] += $g["yunbi_deduct"];
             }
@@ -1956,7 +1956,7 @@ if ($_W['isajax']) {
                         $laddermoney = m('goods')->getLaderMoney($ladders,$goodstotal);
                         $data['marketprice'] = $laddermoney > 0 ? $laddermoney : $data['marketprice'];
                     }
-                } 
+                }
                 if (p('channel')) {
                     if ($ischannelpay == 1) {
                         if (empty($data['isopenchannel'])) {
