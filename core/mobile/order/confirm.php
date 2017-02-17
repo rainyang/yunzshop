@@ -839,7 +839,7 @@ if ($_W['isajax']) {
                 $stores_send = $order_all[$val['supplier_uid']]['stores_send'];
             }
             //是否开启街道联动
-            if ($trade['is_street'] == '1') {
+            if (['is_street'] == '1') {
                 $address      = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
 
                     ':uniacid' => $uniacid,
@@ -1192,8 +1192,6 @@ if ($_W['isajax']) {
 
             }}
         if (p('recharge') && !empty($telephone)) {
-            // $member['realname'] = $telephone;
-            // $member['membermobile'] = $telephone;
             $changenum = false;
         }
         //echo "<pre>".print_r($changenum);exit;

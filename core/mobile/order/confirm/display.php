@@ -10,10 +10,37 @@ class Display extends Base
         }
         return false;
     }
-    private function getGoodsId(){
+    function goodid(){
+        global $_GPC;
+        $goodid = $_GPC['id'] ? intval($_GPC['id']) : 0;
+        return $goodid;
+    }
+    function cartid(){
+        global $_GPC;
+        $cartid = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
+        return $cartid;
+    }
+    private function isHotelGoods()
+    {
+        if (!p('hotel')) {
+            return false;
+        }
+        if (!$this->_isFromCart()) {
+            return false;
+        }
+        $goods = $this->getGoods();
+        if ($goods['type'] == 99) {
+            return true;
+        }
+        return false;
+    }
+
+    private function getGoodsId()
+    {
         global $_GPC;
         return intval($_GPC["id"]);
     }
+
     private function getGoods()
     {
         if ($this->_isFromCart()) {
@@ -36,12 +63,19 @@ class Display extends Base
 
     private function suppliers()
     {
-        if($this->_isFromCart()){
+        global $_GPC;
+        $condition = '';
+        //check var. cart store in db.
+        $cartids = $_GPC['cartids'];
+        if (!empty($cartids)) {
+            $condition = ' and c.id in (' . $cartids . ')';
+        }
+        if ($this->_isFromCart()) {
             return pdo_fetchall('SELECT distinct g.supplier_uid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc", array(
                 ':uniacid' => $this->getUniacid(),
                 ':openid' => $this->getOpenid()
             ), 'supplier_uid');
-        }else{
+        } else {
             $data = $this->getGoodsFromGoodsModel();
             return array($data['supplier_uid'] => array("supplier_uid" => $data['supplier_uid']));
         }
@@ -50,7 +84,7 @@ class Display extends Base
     private function getGoodsFromGoodsModel()
     {
         $card_cond = '';
-        if ($plugincard) {
+        if (p('card')) {
             $card_cond = ', card_deduct';
         }
         if (p('hotel')) {
@@ -65,41 +99,67 @@ class Display extends Base
         return $data;
     }
 
+    private function isladder()
+    {
+        if (p('ladder')) {
+            $ladder_set = p('ladder')->getSet();
+            if ($ladder_set['isladder']) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function optionid($key = null)
+    {
+        global $_GPC;
+        if (strpos($_GPC['optionid'], '|')) {
+            $result = rtrim($_GPC['optionid'], '|');
+            $result = explode('|', $result);
+        } else {
+            $result = intval($_GPC['optionid']);
+        }
+        if (isset($key)) {
+            return $result[$key];
+        }
+        return $result;
+    }
+
     private function _getDirectBuyGoods()
     {
         $data = $this->getGoodsFromGoodsModel();
         //阶梯价格
-        if ($isladder) {
+        if ($this->isladder()) {
             $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
                 ':id' => $data['goodsid']
             ));
             if ($ladders) {
                 $ladders = unserialize($ladders['ladders']);
-                $laddermoney = m('goods')->getLaderMoney($ladders, $total);
+                $laddermoney = m('goods')->getLaderMoney($ladders, $this->getTotal());
                 $data['marketprice'] = $laddermoney > 0 ? $laddermoney : $data['marketprice'];
             }
         }
 
         //新规格
-        if (is_int($total) && is_int($optionid)) {
-            $data['total'] = $total;
-            $data['optionid'] = $optionid;
-            if (!empty($optionid)) {
+        if (is_int($this->getTotal()) && is_int($this->optionid())) {
+            $data['total'] = $this->getTotal();
+            $data['optionid'] = $this->optionid();
+            if (!$this->optionid()) {
                 $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight,option_ladders from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
                     ':uniacid' => $this->getUniacid(),
                     ':goodsid' => $this->getGoodsId(),
-                    ':id' => $optionid
+                    ':id' => $this->optionid()
                 ));
                 //阶梯价格
-                if ($isladder) {
+                if ($this->isladder()) {
                     $ladders = unserialize($option['option_ladders']);
                     if ($ladders) {
-                        $laddermoney = m('goods')->getLaderMoney($ladders, $total);
+                        $laddermoney = m('goods')->getLaderMoney($ladders, $this->getTotal());
                         $option['marketprice'] = $laddermoney > 0 ? $laddermoney : $option['marketprice'];
                     }
                 }
                 if (!empty($option)) {
-                    $data['optionid'] = $optionid;
+                    $data['optionid'] = $this->optionid();
                     $data['optiontitle'] = $option['title'];
                     if (p('supplier')) {
                         if ($option['marketprice'] != 0) {
@@ -115,7 +175,6 @@ class Display extends Base
                     }
                 }
             }
-            $changenum = true;
             $totalmaxbuy = $data['stock'];
             if ($data['maxbuy'] > 0) {
                 if ($totalmaxbuy != -1) {
@@ -145,8 +204,7 @@ class Display extends Base
                 }
             }
             $data['totalmaxbuy'] = $totalmaxbuy;
-            if (p('hotel')) {
-                if ($data['type'] == '99') {
+            if ($this->isHotelGoods()) {
                     $btime = $_SESSION['data']['btime'];
                     $bdate = $_SESSION['data']['bdate'];
                     // 住几天
@@ -207,16 +265,15 @@ class Display extends Base
                         }
                     }
                     $data['totalmaxbuy'] = $list['num'];
-                }
             }
             $goods[] = $data;
         } else {
-            if (count($total) != count($optionid)) {
+            if (count($this->getTotal()) != count($this->optionid())) {
                 return show_json(0);
             }
-            foreach ($optionid as $key => $val) {
-                $data['total'] = $total[$key];
-                $data['optionid'] = $optionid[$key];
+            foreach ($this->optionid() as $key => $val) {
+                $data['total'] = $this->getTotal($key);
+                $data['optionid'] = $this->optionid($key);
                 if (!empty($data['optionid'])) {
                     $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
                         ':uniacid' => $this->getUniacid(),
@@ -281,6 +338,7 @@ class Display extends Base
 
     private function _getCartBuyGoods()
     {
+        global $_GPC;
         $condition = '';
         //check var. cart store in db.
         $cartids = $_GPC['cartids'];
@@ -288,10 +346,9 @@ class Display extends Base
             $condition = ' and c.id in (' . $cartids . ')';
         }
 
-        
 
         $card_cond = '';
-        if ($plugincard) {
+        if (p('card')) {
             $card_cond = ', g.card_deduct';
         }
         $sql = 'SELECT c.goodsid, c.total, g.maxbuy, g.type, g.issendfree, g.isnodiscount, g.weight, o.weight as optionweight, g.title, g.thumb, ifnull(o.marketprice, g.marketprice) as marketprice, o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2, g.deductcommission, g.virtual, o.virtual as optionvirtual, discounts, discounts2, discounttype, discountway, g.supplier_uid, g.dispatchprice, g.dispatchtype, g.dispatchid, g.yunbi_deduct, g.isforceyunbi, o.option_ladders, g.plugin ' . $card_cond . ' FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
@@ -313,7 +370,7 @@ class Display extends Base
                     $goods[$k]["weight"] = $v["optionweight"];
                 }
                 //阶梯价格
-                if ($isladder) {
+                if ($this->isladder()) {
                     if ($v['option_ladders']) {
                         $ladders = unserialize($v['option_ladders']);
                     } else {
@@ -360,6 +417,13 @@ class Display extends Base
         }
     }
 
+    private function ischannelpay()
+    {
+        global $_GPC;
+        return intval($_GPC['ischannelpay']);
+
+    }
+
     function isvirtual($goods)
     {
         foreach ($goods as &$g) {
@@ -367,7 +431,7 @@ class Display extends Base
                 return true;
             }
             if (p('channel')) {
-                if ($ischannelpay == 1 && empty($ischannelpick)) {
+                if ($this->ischannelpay() == 1 && empty($ischannelpick)) {
                     return true;
                 }
             }
@@ -392,38 +456,37 @@ class Display extends Base
         }
     }
 
+    function getTotal($key = null)
+    {
+        global $_GPC;
+        if (strpos($_GPC['total'], '|')) {
+            $result = rtrim($_GPC['total'], '|');
+            $result = explode('|', $result);
+        } else {
+            $result = intval($_GPC['total']);
+        }
+        if ($result < 1) {
+            $result = 1;
+        }
+        if (isset($key)) {
+            return $result[$key];
+        }
+        return $result;
+    }
+
     public function index()
     {
         global $_GPC;
 
         $telephone = intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
 
-        if (strpos($_GPC['optionid'], '|')) {
-            $optionid = rtrim($_GPC['optionid'], '|');
-            $optionid = explode('|', $optionid);
-        } else {
-            $optionid = intval($_GPC['optionid']);
-        }
-        if (strpos($_GPC['total'], '|')) {
-            $total = rtrim($_GPC['total'], '|');
-            $total = explode('|', $total);
-        } else {
-            $total = intval($_GPC['total']);
-        }
 
-        $ischannelpay = intval($_GPC['ischannelpay']);
-        $ids = '';
-        if ($total < 1) {
-            $total = 1;
-        }
-
-        if (is_array($total)) {
+        if (is_array($this->getTotal())) {
             $buytotal = 1;
         } else {
-            $buytotal = $total;
+            $buytotal = $this->getTotal();
         }
 
-        $changenum = false;
 
         $goods = $this->getGoods();
 
@@ -456,7 +519,7 @@ class Display extends Base
         //购买人信息,等级
         $member = m('member')->getMember($this->getOpenid());
         $level = m("member")->getLevel($this->getOpenid());
-        
+
         $stores = array();
         $stores_send = array();
         $dispatch_list = false;
@@ -470,7 +533,7 @@ class Display extends Base
 
         foreach ($goods as &$g) {
 
-            if ($plugincard) {
+            if (p('card')) {
                 $card_deduct_total += $g['card_deduct'];
             }
 
@@ -478,7 +541,7 @@ class Display extends Base
                 $g["total"] = 1;
             }
             if (p('channel')) {
-                if ($ischannelpay == 1) {
+                if ($this->ischannelpay() == 1) {
                     $g['marketprice'] = $g['marketprice'] * $my_info['my_level']['purchase_discount'] / 100;
                 }
             }
@@ -515,7 +578,7 @@ class Display extends Base
                     }
                 } else {
                     //分销商等级折扣
-                    $level = $pluginc->getLevel($this->getOpenid());
+                    $level = p('commission')->getLevel($this->getOpenid());
                     $discounts = json_decode($g['discounts2'], true);
                     //是分销商
                     $level["discount"] = 0;
@@ -533,7 +596,7 @@ class Display extends Base
                         }
                     }
                 }
-                if (p('channel') && $ischannelpay == 1) {
+                if (p('channel') && $this->ischannelpay() == 1) {
                     $level["discount"] = 10;
                 }
                 if (empty($g["isnodiscount"]) && floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
@@ -566,7 +629,7 @@ class Display extends Base
                     }
                 } else {
                     //分销商等级立减
-                    $level = $pluginc->getLevel($this->getOpenid());
+                    $level = p('commission')->getLevel($this->getOpenid());
                     $discounts = json_decode($g['discounts2'], true);
                     //是分销商
                     $level["discount"] = 0;
@@ -591,7 +654,7 @@ class Display extends Base
                 } else {
                     $price = $gprice;
                 }
-                if (p('channel') && $ischannelpay == 1) {
+                if (p('channel') && $this->ischannelpay() == 1) {
                     $price = $gprice;
                 }
             }
@@ -602,7 +665,7 @@ class Display extends Base
             $order_all[$g['supplier_uid']]['realprice'] += $price;
             $order_all[$g['supplier_uid']]['goodsprice'] += $gprice;
             //商品为酒店时候的价格
-            if (p('hotel') && $data['type'] == '99') {
+            if ($this->isHotelGoods()) {
                 $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
                 $params2 = array(':goodsid' => $this->getGoodsId());
                 $room = pdo_fetch($sql2, $params2);
@@ -714,45 +777,10 @@ class Display extends Base
                 $stores = $order_all[$val['supplier_uid']]['stores'];
                 $stores_send = $order_all[$val['supplier_uid']]['stores_send'];
             }
-            //是否开启街道联动
-            if ($trade['is_street'] == '1') {
-                $address = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
-
-                    ':uniacid' => $this->getUniacid(),
-                    ':openid' => $this->getOpenid()
-                ));
-            } else {
-                $address = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
-
-                    ':uniacid' => $this->getUniacid(),
-                    ':openid' => $this->getOpenid()
-                ));
-            }
-
-        } else {
-            //是否开启街道联动
-            if ($trade['is_street'] == '1') {
-                $address = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
-
-                    ':uniacid' => $this->getUniacid(),
-                    ':openid' => $this->getOpenid()
-                ));
-            } else {
-                $address = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
-
-                    ':uniacid' => $this->getUniacid(),
-                    ':openid' => $this->getOpenid()
-                ));
-            }
         }
 
-        //如果开启核销并且不支持配送，则没有运费
-        $isDispath = true;
-        if ($this->isverify() && !$this->isverifysend() && !$this->dispatchsend()) {
-            $isDispath = false;
-        }
 
-        if (!$this->isvirtual() && $isDispath) {
+        if (!$this->isvirtual() && $this->isDispath()) {
             //购买的商品是否都是统一运费的,如果是,取最低统一运费价
             foreach ($goods as $g) {
                 $sendfree = false;
@@ -765,8 +793,8 @@ class Display extends Base
                         if (empty($gareas)) {
                             $sendfree = true;
                         } else {
-                            if (!empty($address)) {
-                                if (!in_array($address["city"], $gareas)) {
+                            if (!($this->address())) {
+                                if (!in_array($this->address('city'), $gareas)) {
                                     $sendfree = true;
                                 }
                             } else if (!empty($member["city"])) {
@@ -783,8 +811,8 @@ class Display extends Base
                         if (empty($gareas)) {
                             $sendfree = true;
                         } else {
-                            if (!empty($address)) {
-                                if (!in_array($address["city"], $gareas)) {
+                            if (!($this->address())) {
+                                if (!in_array($this->address("city"), $gareas)) {
                                     $sendfree = true;
                                 }
                             } else if (!empty($member["city"])) {
@@ -843,8 +871,8 @@ class Display extends Base
                         $order_all[$val['supplier_uid']]['dispatch_data'] = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["data"];
                         $param = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["param"];
                         $areas = unserialize($order_all[$val['supplier_uid']]['dispatch_data']["areas"]);
-                        if (!empty($address)) {
-                            $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
+                        if (!($this->address())) {
+                            $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $this->address("city"), $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
                         } else if (!empty($member["city"])) {
                             $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
                         } else {
@@ -878,8 +906,8 @@ class Display extends Base
                                 $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
                             } else {
                                 $areas = explode(";", $saleset["enoughareas"]);
-                                if (!empty($address)) {
-                                    if (!in_array($address["city"], $areas)) {
+                                if (!($this->address())) {
+                                    if (!in_array($this->address("city"), $areas)) {
                                         $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
                                     }
                                 }
@@ -887,11 +915,11 @@ class Display extends Base
                         }
                     }
                 }
-                if (p('hotel') && $data['type'] == '99') {
+                if ($this->isHotelGoods()) {
                     $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
                 }
                 $order_all[$val['supplier_uid']]['saleset'] = $saleset;
-                if (p('channel') && $ischannelpay == 1) {
+                if (p('channel') && $this->ischannelpay() == 1) {
                     $saleset = array();
                 }
                 if (!empty($saleset["enoughs"])) {
@@ -928,11 +956,11 @@ class Display extends Base
             }
             $order_all[$val['supplier_uid']]['hascoupon'] = false;
             if ($this->hascouponplugin()) {
-                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($this->getOpenid(), $order_all[$val['supplier_uid']]['goodsprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
+                $order_all[$val['supplier_uid']]['couponcount'] = p("coupon")->consumeCouponCount($this->getOpenid(), $order_all[$val['supplier_uid']]['goodsprice'], $val['supplier_uid'], 0, 0, $this->goodid(), $this->cartid());
                 $order_all[$val['supplier_uid']]['hascoupon'] = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
-            if ($hascard) {
-                $order_all[$val['supplier_uid']]['cardcount'] = $plugincard->consumeCardCount($this->getOpenid());
+            if (p('card')) {
+                $order_all[$val['supplier_uid']]['cardcount'] = p('card')->consumeCardCount($this->getOpenid());
             }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
             $realprice_total += $order_all[$val['supplier_uid']]['realprice'];
@@ -972,23 +1000,26 @@ class Display extends Base
 
             //佣金抵扣
             $order_all[$val['supplier_uid']]['deductcommission'] = 0;
-            if ($pluginc && $commission_set['deduction']) {
-                $member_commission = $pluginc->getInfo($this->getOpenid(), array('ok'));
-                $order_all[$val['supplier_uid']]['deductcommission_money'] = $member_commission['commission_ok'];
-                if ($order_all[$val['supplier_uid']]['deductcommission_money'] > $order_all[$val['supplier_uid']]['deductcommissionprice']) {
-                    $order_all[$val['supplier_uid']]['deductcommission_money'] = $order_all[$val['supplier_uid']]['deductcommissionprice'];
+            if (p('commission')) {
+                $commission_set = p('commission')->getSet();
+                if($commission_set['deduction']){
+                    $member_commission = p('commission')->getInfo($this->getOpenid(), array('ok'));
+                    $order_all[$val['supplier_uid']]['deductcommission_money'] = $member_commission['commission_ok'];
+                    if ($order_all[$val['supplier_uid']]['deductcommission_money'] > $order_all[$val['supplier_uid']]['deductcommissionprice']) {
+                        $order_all[$val['supplier_uid']]['deductcommission_money'] = $order_all[$val['supplier_uid']]['deductcommissionprice'];
+                    }
+                    if ($order_all[$val['supplier_uid']]['deductcommission_money'] > $order_all[$val['supplier_uid']]['realprice']) {
+                        $order_all[$val['supplier_uid']]['deductcommission_money'] = $order_all[$val['supplier_uid']]['realprice'];
+                    }
+                    $order_all[$val['supplier_uid']]['deductcommission'] = $order_all[$val['supplier_uid']]['deductcommission_money'];
                 }
-                if ($order_all[$val['supplier_uid']]['deductcommission_money'] > $order_all[$val['supplier_uid']]['realprice']) {
-                    $order_all[$val['supplier_uid']]['deductcommission_money'] = $order_all[$val['supplier_uid']]['realprice'];
-                }
-                $order_all[$val['supplier_uid']]['deductcommission'] = $order_all[$val['supplier_uid']]['deductcommission_money'];
             }
 
 
             //虚拟币抵扣
             $order_all[$val['supplier_uid']]['deductyunbi'] = 0;
             $order_all[$val['supplier_uid']]['deductyunbimoney'] = 0;
-            if ($yunbi_plugin && $yunbiset['isdeduct']) {
+            if (p('yunbi') && $yunbiset['isdeduct']) {
                 $virtual_currency = $member['virtual_currency'];//m('member')->getCredit($this->getOpenid(), 'virtual_currency');
                 $ycredit = 1;
                 $ymoney = round(floatval($yunbiset['money']), 2);
@@ -1011,7 +1042,7 @@ class Display extends Base
             }
             $order_all[$val['supplier_uid']]['goodsprice'] = number_format($order_all[$val['supplier_uid']]['goodsprice'], 2);
             $order_all[$val['supplier_uid']]['totalprice'] = number_format($order_all[$val['supplier_uid']]['totalprice'], 2);
-            if (p('channel') && $ischannelpay == 1) {
+            if (p('channel') && $this->ischannelpay() == 1) {
                 $order_all[$val['supplier_uid']]['discountprice'] = 0;
             }
             $order_all[$val['supplier_uid']]['discountprice'] = number_format($order_all[$val['supplier_uid']]['discountprice'], 2);
@@ -1020,8 +1051,7 @@ class Display extends Base
 
         }
         $supplierids = implode(',', array_keys($this->suppliers()));
-        if (p('hotel')) {
-            if ($data['type'] == '99') {
+        if ($this->isHotelGoods()) {
                 $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
                 $params2 = array(':goodsid' => $this->getGoodsId());
                 $room = pdo_fetch($sql2, $params2);
@@ -1066,38 +1096,37 @@ class Display extends Base
                 $order_all[$g['supplier_uid']]['realprice'] = $goodsprice;
                 $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
 
-            }
+
         }
         if (p('recharge') && !empty($telephone)) {
             // $member['realname'] = $telephone;
             // $member['membermobile'] = $telephone;
             $changenum = false;
         }
-        //echo "<pre>".print_r($changenum);exit;
         $variable = array(
             'show' => $show,
-            'diyform_flag' => $diyform_flag,
+            //'diyform_flag' => $diyform_flag,
             'goods' => $goods,
         );
 
         return show_json(1, array(
             'member' => $member,
-            'deductmoney' => $deductmoney,
-            'deductcredit2' => $deductcredit2,
+            //'deductmoney' => $deductmoney,//以前就没有赋值
+            //'deductcredit2' => $deductcredit2,//以前就没有赋值
             'saleset' => $saleset,
             'goods' => $goods,
             'has' => $has,
-            'weight' => $weight / $buytotal,
+            //'weight' => $weight / $buytotal,//以前就没有赋值
             'set' => $this->getShopSet(),
             'fromcart' => $this->_isFromCart(),
             'haslevel' => !empty($level) && $level['discount'] > 0 && $level['discount'] < 10,
-            'total' => $total,
+            'total' => $this->getTotal(),
             'totalprice' => number_format($totalprice, 2),
             'goodsprice' => number_format($goodsprice, 2),
-            'discountprice' => number_format($discountprice, 2),
+            //'discountprice' => number_format($discountprice, 2),//以前就没有赋值
             'discount' => $level['discount'],
             'realprice_total' => number_format($realprice_total, 2),
-            'address' => $address,
+            'address' => $this->address(),
 
             'carrier' => $stores[0],
             'carrier_list' => $stores,
@@ -1121,5 +1150,62 @@ class Display extends Base
             'type' => $goods[0]['type'],
             'card_deduct_total' => $card_deduct_total,
         ), $variable);
+    }
+    private function getTelephone(){
+        global $_GPC;
+        $telephone = intval($_GPC['telephone']) ? intval($_GPC['telephone']) : '';
+        return $telephone;
+
+    }
+    private function getGoodsType(){
+        if(p('recharge') && $this->getTelephone()){
+            return 'recharge';
+        }
+    }
+    //预下单时可以更新商品数量
+    private function changenum(){
+        if($this->_isFromCart()){
+             return false;
+        }
+        //充值
+        if($this->getGoodsType() == 'recharge'){
+            return false;
+        }
+        //规格和数量为数字
+        if( is_int($this->getTotal()) && is_int($this->optionid())){
+            return true;
+        }
+        //规格和数量为非空数组
+        if(count($this->getTotal()) && count($this->getTotal())){
+            return true;
+        }
+        return false;
+    }
+    private function isDispath()
+    {
+        //如果开启核销并且不支持配送，则没有运费
+        if ($this->isverify() && !$this->isverifysend() && !$this->dispatchsend()) {
+            return false;
+        }
+
+    }
+
+    private function address($key = null)
+    {
+        $fields = 'id,realname,mobile,address,province,city,area';
+        //是否开启街道联动
+        $trade = m('common')->getSysset('trade');
+        if ($trade['is_street'] == '1') {
+            $fields .= ',street';
+        }
+        $result = pdo_fetch('select ' . $fields . ' from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
+
+            ':uniacid' => $this->getUniacid(),
+            ':openid' => $this->getOpenid()
+        ));
+        if (isset($key)) {
+            return $result[$key];
+        }
+        return $result;
     }
 }
