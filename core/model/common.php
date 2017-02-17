@@ -143,7 +143,11 @@ class Sz_DYi_Common
         if ($set['pay']['weixin_jie'] == 1) {
             $signkey = $set['pay']['weixin_jie_apikey'];
         } else {
-            $signkey = $setting['payment']['wechat']['signkey'];
+            if($package['mch_id'] == $setting['payment']['wechat']['mchid']){
+                $signkey = $setting['payment']['wechat']['signkey'];
+            }else{
+                $signkey = $setting['payment']['wx_native']['signkey'];
+            }
         }
 
         unset($package['sign']);

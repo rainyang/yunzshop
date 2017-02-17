@@ -36,9 +36,9 @@ if ($type == 0) {
 ';
 	$paylog .= 'orderno: ' . $get['out_trade_no'] . '
 ';
-	$paylog .= 'paytype: alipay
+	$paylog .= 'paytype: wechat
 ';
-	$paylog .= 'data: ' . json_encode($_POST) . '
+	$paylog .= 'data: ' . json_encode($get) . '
 ';
 	m('common')->paylog($paylog);
 }
@@ -52,17 +52,20 @@ if (is_array($setting['payment']) || $set['pay']['weixin_jie'] == 1) {
 	}
 	if (!empty($wechat)) {
 		m('common')->paylog('setting: ok');
-		ksort($get);
-		$string1 = '';
-		foreach ($get as $k => $v) {
-			if ($v != '' && $k != 'sign') {
-				$string1 .= "{$k}={$v}&";
-			}
-		}
-		//m('common')->paylog(print_r($wechat,1));
-		//m('common')->paylog(print_r($get,1));
-		$wechat['signkey'] = ($wechat['version'] == 1) ? $wechat['key'] : $wechat['signkey'];
-		$sign = strtoupper(md5($string1 . "key={$wechat['signkey']}"));
+        if($get['mch_id'] == $setting['payment']['wx_native']['wx_mcid']){
+            $sign = m('common')->get_wechat_sign($get);
+        }else{
+            ksort($get);
+            $string1 = '';
+            foreach ($get as $k => $v) {
+                if ($v != '' && $k != 'sign') {
+                    $string1 .= "{$k}={$v}&";
+                }
+            }
+            $wechat['signkey'] = ($wechat['version'] == 1) ? $wechat['key'] : $wechat['signkey'];
+            $sign = strtoupper(md5($string1 . "key={$wechat['signkey']}"));
+        }
+
 		if ($sign == $get['sign']) {
 			m('common')->paylog('sign: ok');
 			if (empty($type)) {
