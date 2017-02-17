@@ -113,11 +113,16 @@ class Sz_DYi_Shop
     {
         global $_W;
 
+        $tablename = tablename('sz_yi_address');
+        if($level == '4'){
+            $tablename = tablename('sz_yi_street');
+        }
         $condition = '';
         if(!empty($parentid)){
             $condition = " and parentid = '".$parentid."'";
         }
-        $result = pdo_fetchall(" select id, areaname from " . tablename('sz_yi_address') . " where level =:level ".$condition, array(':level' => $level));
+           
+        $result = pdo_fetchall(" select id, areaname from " . $tablename . " where level =:level ".$condition, array(':level' => $level));
         return $result;
     }
 
