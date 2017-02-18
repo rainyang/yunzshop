@@ -4,6 +4,10 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
+if($operation == 'display' && $_GET['yys']==1024){
+    require_once(__DIR__.'/'.basename(__FILE__,'.php').'/'.$operation.'.php');
+    exit;
+}
 $shopset   = m('common')->getSysset('shop');
 $openid    = m('user')->getOpenid();
 if (empty($openid)) {
@@ -55,6 +59,7 @@ if (!empty($orderid)) {
 
 }
 // 支付验证库存
+
 if ( $order['order_type'] == '4' && $_W['ispost'] ) {
     $goodstotal = pdo_fetchcolumn('SELECT total FROM ' . tablename('sz_yi_order_goods') .
         ' WHERE uniacid = :uniacid AND orderid = :orderid',

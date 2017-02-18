@@ -16,3 +16,12 @@ Array
     [version] => 1
     [file] => 9280c354a40b34069b96d89346aea7be.png
 )
+Array
+(
+    [openid] => o5yWLwYsHRERYCo5Lh34Hlc7GGno
+    [goodsid] => 0
+    [bg] => images/2/2016/08/VAUau9CU9yJXUUj55XNvxCUVxZ955H.jpg
+    [data] => [{"left":"109px","top":"316px","type":"qr","width":"110px","height":"110px","size":""}]
+    [version] => 1
+    [file] => cb46dedda9dd2057edac2c2829a07862.png
+)
