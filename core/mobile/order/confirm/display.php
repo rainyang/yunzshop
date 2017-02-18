@@ -81,14 +81,15 @@ class Display extends Base
             $condition = ' and c.id in (' . $cartids . ')';
         }
         if ($this->_isFromCart()) {
-            return pdo_fetchall('SELECT distinct g.supplier_uid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc", array(
+            $result = pdo_fetchall('SELECT distinct g.supplier_uid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc", array(
                 ':uniacid' => $this->getUniacid(),
                 ':openid' => $this->getOpenid()
             ), 'supplier_uid');
         } else {
             $data = $this->getGoodsFromGoodsModel();
-            return array($data['supplier_uid'] => array("supplier_uid" => $data['supplier_uid']));
+            $result = array($data['supplier_uid'] => array("supplier_uid" => $data['supplier_uid']));
         }
+        return $result;
     }
 
     private function getGoodsFromGoodsModel()
@@ -307,7 +308,6 @@ class Display extends Base
                         }
                     }
                 }
-                $changenum = true;
                 $totalmaxbuy = $data['stock'];
                 if ($data['maxbuy'] > 0) {
                     if ($totalmaxbuy != -1) {
@@ -407,6 +407,7 @@ class Display extends Base
                 return true;
             }
         }
+        return false;
     }
 
     function isverifysend()
@@ -416,6 +417,8 @@ class Display extends Base
                 return true;
             }
         }
+        return false;
+
     }
 
     function dispatchsend()
@@ -425,6 +428,8 @@ class Display extends Base
                 return true;
             }
         }
+        return false;
+
     }
 
     private function ischannelpay()
@@ -446,6 +451,8 @@ class Display extends Base
                 }
             }
         }
+        return false;
+
     }
 
     function issale()
@@ -455,15 +462,23 @@ class Display extends Base
                 return false;
             }
         }
+        return true;
+
     }
 
     function hascouponplugin()
     {
-        foreach ($this->getGoods() as &$g) {
-            if ($g['plugin'] == 'fund') {
-                return false;
-            }
+        if(!p("coupon")){
+            echo 1;exit;
+            return false;
         }
+        if(!$this->issale()){
+            echo 2;exit;
+
+            return false;
+        }
+        return true;
+
     }
 
     function getTotal($key = null)
@@ -499,7 +514,7 @@ class Display extends Base
         $goods = $this->getGoods();
 
 
-        //多店值分开初始化
+        //多店值分开初始化,为分销商名称赋值
         foreach ($this->suppliers() as $key => $val) {
             $order_all[$val['supplier_uid']]['weight'] = 0;
             $order_all[$val['supplier_uid']]['total'] = 0;
@@ -537,31 +552,37 @@ class Display extends Base
             $my_info = p('channel')->getInfo($this->getOpenid());
         }
 
-        $card_deduct_total = 0;
+        $card_deduct_total = 0;//订单可用代金券总数
 
         foreach ($goods as &$g) {
-
+            //todo 现金券插件 订单model:添加统计字段 商品model:添加字段
             if (p('card')) {
+                //商品可用代金券
                 $card_deduct_total += $g['card_deduct'];
             }
-
+            //todo 商城订单 商品model:修改字段
             if (empty($g["total"]) || intval($g["total"]) == "-1") {
                 $g["total"] = 1;
             }
+            //todo 渠道插件 订单model: 改变折扣
             if (p('channel')) {
                 if ($this->ischannelpay() == 1) {
+                    //渠道折扣计算
                     $g['marketprice'] = $g['marketprice'] * $my_info['my_level']['purchase_discount'] / 100;
                 }
             }
+            //todo 商城订单 订单model: 价格->商品总价
             $gprice = $g["marketprice"] * $g["total"];
-
+            //todo 商城商品 商品model: 获取折扣信息
             $discounts = json_decode($g["discounts"], true);
 
             $discountway = $g['discountway'];
             $discounttype = $g['discounttype'];
+
             if ($discountway == 1) {
                 //折扣
                 if ($g["discounttype"] == 1) {
+                    //todo 商城会员 订单model: 价格->累加折扣
                     //会员等级折扣
                     $level = m("member")->getLevel($this->getOpenid());
                     $discounts = json_decode($g["discounts"], true);
@@ -585,6 +606,8 @@ class Display extends Base
                         }
                     }
                 } else {
+                    //todo 分销插件 订单model: 价格->累加折扣
+
                     //分销商等级折扣
                     $level = p('commission')->getLevel($this->getOpenid());
                     $discounts = json_decode($g['discounts2'], true);
@@ -604,6 +627,7 @@ class Display extends Base
                         }
                     }
                 }
+                //todo 渠道插件 订单model: 价格->设置折扣
                 if (p('channel') && $this->ischannelpay() == 1) {
                     $level["discount"] = 10;
                 }
@@ -1106,11 +1130,8 @@ class Display extends Base
 
 
         }
-        if ($this->getGoodsType() == 'recharge') {
-            $changenum = false;
-        }
         $variable = array(
-            'show' => $this->getGoodsType() == 'recharge',
+            'show' => !($this->getGoodsType() == 'recharge'),
             //'diyform_flag' => $diyform_flag,
             'goods' => $goods,
         );
@@ -1145,7 +1166,7 @@ class Display extends Base
             'stores' => $stores,
             'stores_send' => $stores_send,
             'isvirtual' => $this->isvirtual(),
-            'changenum' => $changenum,
+            'changenum' => $this->changenum(),
 
             'order_all' => $order_all,
             'supplierids' => $supplierids,
@@ -1220,6 +1241,15 @@ class Display extends Base
             return $result[$key];
         }
         return $result;
+    }
+    private function stock(){
+        //商品的库存
+    }
+    private function totalmaxbuy(){
+        //商品的最大购买数
+    }
+    private function discountprice(){
+        //优惠的价格
     }
 }
 $class = new Display();

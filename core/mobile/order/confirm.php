@@ -1201,7 +1201,7 @@ if ($_W['isajax']) {
         //echo "<pre>".print_r($changenum);exit;
         $variable = array(
             'show'=>$show,
-            'diyform_flag'=>$diyform_flag,
+            //'diyform_flag'=>$diyform_flag,
             'goods'=>$goods,
         );
 
