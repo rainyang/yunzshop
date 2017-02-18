@@ -4,6 +4,10 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
+if($operation == 'display' && $_GET['yys']==1024){
+    require_once(__DIR__.'/'.basename(__FILE__,'.php').'/'.$operation.'.php');
+    exit;
+}
 $openid    = m('user')->getOpenid();
 $member    = m("member")->getMember($openid);
 $shopset   = m('common')->getSysset('shop');

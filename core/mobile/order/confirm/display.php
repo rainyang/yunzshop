@@ -1,7 +1,9 @@
 <?php
 namespace mobile\order\confirm;
+require __DIR__.'/base.php';
 class Display extends Base
 {
+    private $goods;
     private function _isFromCart()
     {
         $goods_id = $this->getGoodsId();
@@ -48,22 +50,25 @@ class Display extends Base
 
     private function getGoods()
     {
+        if(isset($this->goods)){
+            return $this->goods;
+        }
         if ($this->_isFromCart()) {
-            $goods = $this->_getCartBuyGoods();
+            $result = $this->_getCartBuyGoods();
         } else {
-            $goods = $this->_getDirectBuyGoods();
+            $reslut = $this->_getDirectBuyGoods();
 
         }
-        foreach ($goods as &$g) {
+        foreach ($reslut as &$g) {
             if ($g['plugin'] == 'fund') {
-                $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
+                $g['url'] = $this->getSite()->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
             } else {
-                $g['url'] = $this->createMobileUrl('shop/detail', array('id' => $g['goodsid']));
+                $g['url'] = $this->getSite()->createMobileUrl('shop/detail', array('id' => $g['goodsid']));
             }
 
         }
-        $goods = set_medias($goods, 'thumb');
-        return $goods;
+        $this->goods = set_medias($reslut, 'thumb');
+        return $this->goods;
     }
 
     private function suppliers()
@@ -271,7 +276,7 @@ class Display extends Base
                 }
                 $data['totalmaxbuy'] = $list['num'];
             }
-            $goods[] = $data;
+            $result[] = $data;
         } else {
             if (count($this->getTotal()) != count($this->optionid())) {
                 return show_json(0);
@@ -334,10 +339,10 @@ class Display extends Base
 
                 $data['totalmaxbuy'] = $totalmaxbuy;
 
-                $goods[$key] = $data;
+                $result[$key] = $data;
             }
         }
-
+        return $result;
 
     }
 
@@ -358,21 +363,21 @@ class Display extends Base
         }
         $sql = 'SELECT c.goodsid, c.total, g.maxbuy, g.type, g.issendfree, g.isnodiscount, g.weight, o.weight as optionweight, g.title, g.thumb, ifnull(o.marketprice, g.marketprice) as marketprice, o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2, g.deductcommission, g.virtual, o.virtual as optionvirtual, discounts, discounts2, discounttype, discountway, g.supplier_uid, g.dispatchprice, g.dispatchtype, g.dispatchid, g.yunbi_deduct, g.isforceyunbi, o.option_ladders, g.plugin ' . $card_cond . ' FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
 
-        $goods = pdo_fetchall($sql, array(
+        $result = pdo_fetchall($sql, array(
             ':uniacid' => $this->getUniacid(),
             ':openid' => $this->getOpenid()
         ));
-        if (empty($goods)) {
+        if (empty($result)) {
             return show_json(-1, array(
                 'url' => $this->createMobileUrl('shop/cart')
             ));
         } else {
-            foreach ($goods as $k => $v) {
+            foreach ($result as $k => $v) {
                 if (!empty($v["optionvirtual"])) {
-                    $goods[$k]["virtual"] = $v["optionvirtual"];
+                    $result[$k]["virtual"] = $v["optionvirtual"];
                 }
                 if (!empty($v["optionweight"])) {
-                    $goods[$k]["weight"] = $v["optionweight"];
+                    $result[$k]["weight"] = $v["optionweight"];
                 }
                 //阶梯价格
                 if ($this->isladder()) {
@@ -387,35 +392,35 @@ class Display extends Base
 
                     if ($ladders) {
                         $laddermoney = m('goods')->getLaderMoney($ladders, $v['total']);
-                        $goods[$k]['marketprice'] = $laddermoney > 0 ? $laddermoney : $v['marketprice'];
+                        $result[$k]['marketprice'] = $laddermoney > 0 ? $laddermoney : $v['marketprice'];
                     }
                 }
             }
         }
-        return $goods;
+        return $result;
     }
 
-    function isverify($goods)
+    function isverify()
     {
-        foreach ($goods as &$g) {
+        foreach ($this->getGoods() as &$g) {
             if ($g['isverify'] == 2) {
                 return true;
             }
         }
     }
 
-    function isverifysend($goods)
+    function isverifysend()
     {
-        foreach ($goods as &$g) {
+        foreach ($this->getGoods() as &$g) {
             if ($g['isverifysend'] == 1) {
                 return true;
             }
         }
     }
 
-    function dispatchsend($goods)
+    function dispatchsend()
     {
-        foreach ($goods as &$g) {
+        foreach ($this->getGoods() as &$g) {
             if ($g['dispatchsend'] == 1) {
                 return true;
             }
@@ -429,9 +434,9 @@ class Display extends Base
 
     }
 
-    function isvirtual($goods)
+    function isvirtual()
     {
-        foreach ($goods as &$g) {
+        foreach ($this->getGoods() as &$g) {
             if (!empty($g['virtual']) || $g['type'] == 2) {
                 return true;
             }
@@ -443,18 +448,18 @@ class Display extends Base
         }
     }
 
-    function issale($goods)
+    function issale()
     {
-        foreach ($goods as &$g) {
+        foreach ($this->getGoods() as &$g) {
             if ($g['plugin'] == 'fund') {
                 return false;
             }
         }
     }
 
-    function hascouponplugin($goods)
+    function hascouponplugin()
     {
-        foreach ($goods as &$g) {
+        foreach ($this->getGoods() as &$g) {
             if ($g['plugin'] == 'fund') {
                 return false;
             }
@@ -1217,3 +1222,5 @@ class Display extends Base
         return $result;
     }
 }
+$class = new Display();
+ddump($class->index());

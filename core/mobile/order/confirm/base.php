@@ -9,7 +9,9 @@ class Base{
     public function __construct()
     {
         global $_W, $_GPC;
-
+        require_once SZ_YI_PATH.'/site.php';
+        $this->site = new \Sz_yiModuleSite();
+        require_once SZ_YI_INC.'util/Debug.php';
         $this->openid = m("user")->getOpenid();
         $this->uniacid = $_W["uniacid"];
         $this->orderid = intval($_GPC["id"]);
@@ -21,6 +23,9 @@ class Base{
             return $this->shopset;
         }
         return $this->shopset[$key];
+    }
+    protected function getSite(){
+        return $this->site;
     }
     protected function getOpenid(){
         return $this->openid;

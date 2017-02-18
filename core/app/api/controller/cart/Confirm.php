@@ -18,6 +18,7 @@ class Confirm extends YZ
         $_GPC['cartids'] = $_GPC['cart_ids'];
 
         $result = $this->callMobile('order/confirm');
+        ddump($result);exit;
         $_W['ispost'] = true;
         $this->variable = $result['variable'];
         $this->json = $result['json'];
