@@ -3,9 +3,7 @@
 /core/model/user.php
 sh.exe.stackdump
 /core/inc/plugin/vendor/phpunit
-/vendor/sebastian
-/vendor/phpunit
-/vendor/phpdocumentor
-/vendor/yii
+/vendor/
 tmp/
 .idea/
+composer.lock

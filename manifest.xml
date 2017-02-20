@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns="http://www.we7.cc" versionCode="0.6">
+<manifest xmlns="http://www.yunzshop.com" versionCode="0.6">
 	<application setting="true">
 		<name><![CDATA[商城]]></name>
-		<identifie><![CDATA[sz_yi]]></identifie>
+		<identifie><![CDATA[yzshop]]></identifie>
 		<version><![CDATA[1.0]]></version>
 		<type><![CDATA[biz]]></type>
 		<ability><![CDATA[商城]]></ability>
 		<description><![CDATA[商城]]></description>
 		<author><![CDATA[YunZhong]]></author>
-		<url><![CDATA[http://bbs.we7.cc/]]></url>
+		<url><![CDATA[http://bbs.yunzshop.com/]]></url>
 	</application>
 	<platform>
 		<subscribes>

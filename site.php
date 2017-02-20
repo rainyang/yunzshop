@@ -2,7 +2,7 @@
 /**
  * 芸众商城模块微站定义
  *
- * @url http://bbs.we7.cc/
+ * @url http://bbs.yunzshop.com/
  */
 defined('IN_IA') or exit('Access Denied');
 
