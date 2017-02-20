@@ -553,7 +553,6 @@ class Display extends Base
         }
 
         $card_deduct_total = 0;//订单可用代金券总数
-
         foreach ($goods as &$g) {
             //todo 现金券插件 订单model:添加统计字段 商品model:添加字段
             if (p('card')) {
@@ -576,13 +575,11 @@ class Display extends Base
             //todo 商城商品 商品model: 获取折扣信息
             $discounts = json_decode($g["discounts"], true);
 
-            $discountway = $g['discountway'];
-            $discounttype = $g['discounttype'];
 
-            if ($discountway == 1) {
+            if ($g['discountway'] == 1) {
                 //折扣
                 if ($g["discounttype"] == 1) {
-                    //todo 商城会员 订单model: 价格->累加折扣
+                    //todo 商城会员 商品model: 价格->累加折扣
                     //会员等级折扣
                     $level = m("member")->getLevel($this->getOpenid());
                     $discounts = json_decode($g["discounts"], true);
@@ -606,7 +603,7 @@ class Display extends Base
                         }
                     }
                 } else {
-                    //todo 分销插件 订单model: 价格->累加折扣
+                    //todo 分销插件 商品model: 价格->累加折扣
 
                     //分销商等级折扣
                     $level = p('commission')->getLevel($this->getOpenid());
@@ -627,10 +624,11 @@ class Display extends Base
                         }
                     }
                 }
-                //todo 渠道插件 订单model: 价格->设置折扣
+                //todo 渠道插件 商品model: 价格->设置折扣
                 if (p('channel') && $this->ischannelpay() == 1) {
                     $level["discount"] = 10;
                 }
+                //todo 商城订单 商品model:价格->获取总价 ,获取优惠价
                 if (empty($g["isnodiscount"]) && floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
                     $price = round(floatval($level["discount"]) / 10 * $gprice, 2);
                     $order_all[$g['supplier_uid']]['discountprice'] += $gprice - $price;
@@ -638,6 +636,8 @@ class Display extends Base
                     $price = $gprice;
                 }
             } else {
+                //todo 分销插件 商品model: 价格->累加立减
+
                 //立减
                 if ($g["discounttype"] == 1) {
                     //会员等级立减
@@ -660,6 +660,7 @@ class Display extends Base
                         }
                     }
                 } else {
+                    //todo 分销插件 商品model: 价格->累加立减
                     //分销商等级立减
                     $level = p('commission')->getLevel($this->getOpenid());
                     $discounts = json_decode($g['discounts2'], true);
@@ -679,7 +680,7 @@ class Display extends Base
                         }
                     }
                 }
-
+                //todo 同上
                 if (empty($g["isnodiscount"]) && floatval($level["discount"]) < $g['marketprice']) {
                     $price = round(floatval($gprice - $level["discount"] * $g["total"]), 2);
                     $order_all[$g['supplier_uid']]['discountprice'] += $gprice - $price;
@@ -693,7 +694,7 @@ class Display extends Base
 
             $g["discount"] = $level["discount"];
             $g["ggprice"] = $price;
-
+            //todo 商城订单 添加统计字段 (商品总价,订单总价)
             $order_all[$g['supplier_uid']]['realprice'] += $price;
             $order_all[$g['supplier_uid']]['goodsprice'] += $gprice;
             //商品为酒店时候的价格
@@ -742,9 +743,11 @@ class Display extends Base
                 $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
                 $price = $goodsprice;
             }
+            //todo 商城订单 添加统计字段 (商品总数,优惠价格)
             $order_all[$g['supplier_uid']]['total'] += $g["total"];
             $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"] * $g["total"];
             //虚拟币抵扣
+            //todo 虚拟币插件 添加统计字段 (云币抵扣价格:取商品总价与抵扣总价 最小值) ps:不存在时加了个0
             if ($g["yunbi_deduct"]) {
                 if ($g["yunbi_deduct"] * $g["total"] > $price) {
                     $order_all[$g['supplier_uid']]['yunbideductprice'] += $price;

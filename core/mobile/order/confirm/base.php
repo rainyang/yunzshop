@@ -1,5 +1,7 @@
 <?php
 namespace mobile\order\confirm;
+use app\modules\goods\frontend\model\Goods;
+
 class Base{
     protected $operation;
     protected $openid;
@@ -16,7 +18,6 @@ class Base{
         $this->uniacid = $_W["uniacid"];
         $this->orderid = intval($_GPC["id"]);
         $this->shopset = m('common')->getSysset('shop');
-
     }
     protected function getShopSet($key=''){
         if(empty($key)){
