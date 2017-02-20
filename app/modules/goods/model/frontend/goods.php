@@ -1,5 +1,5 @@
 <?php
-namespace app\modules\goods\frontend\model;
+namespace app\modules\goods\model\frontend;
 class Goods
 {
     private $db_goods;

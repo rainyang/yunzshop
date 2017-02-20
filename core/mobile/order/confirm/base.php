@@ -1,6 +1,6 @@
 <?php
 namespace mobile\order\confirm;
-use app\modules\goods\frontend\model\Goods;
+use app\modules\goods\model\frontend\Goods;
 
 class Base{
     protected $operation;

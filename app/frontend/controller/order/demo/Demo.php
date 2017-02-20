@@ -1,6 +1,6 @@
 <?php
 namespace app\frontend\controller\order\confirm;
-use app\modules\goods\frontend\model\Goods;
+use app\modules\goods\model\frontend\Goods;
 
 class Display extends Base
 {
