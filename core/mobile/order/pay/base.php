@@ -12,13 +12,17 @@ class Base
     public function __construct()
     {
         global $_W, $_GPC;
-
+        require_once SZ_YI_PATH.'/site.php';
+        $this->site = new \Sz_yiModuleSite();
         $this->openid = m("user")->getOpenid();
         $this->uniacid = $_W["uniacid"];
         $this->orderid = intval($_GPC["orderid"]);
-        $this->shopset = m('common')->getSysset('shop');
-        $this->payset = m('common')->getSysset(array('pay'));
+        $this->payset = m('common')->getSysset(array('pay','shop'));
         load()->model('payment');
+    }
+
+    protected function getSite(){
+        return $this->site;
     }
 
     protected function getOrderId()
@@ -36,17 +40,16 @@ class Base
         return $this->uniacid;
     }
 
-    protected function getShopSet()
-    {
-        return $this->shopset;
-    }
-
-    protected function getPaySet($key)
+    protected function getPaySet($key = null)
     {
         $payset = $this->payset;
-        if (isset($payset)) {
+        if ($payset) {
             if (isset($key)) {
-                return $payset[$key];
+                $data = explode('.', $key);
+                foreach ($data as $v) {
+                    $payset = $payset[$v];
+                }
+                return $payset;
             }
             return $payset;
         } else {
@@ -73,7 +76,7 @@ class Base
         return $ordersn_general;
     }
 
-    protected function getOrder($key)
+    protected function getOrder($key = null)
     {
         $orderid = $this->getOrderId();
         if (!empty($orderid)) {

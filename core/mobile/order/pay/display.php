@@ -1,10 +1,10 @@
 <?php
 namespace mobile\order\pay;
-
-class Display extends Dase
+require __DIR__.'/base.php';
+class Display extends Base
 {
 
-    private function getLog($key)
+    private function getLog($key = null)
     {
         $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') .
             ' WHERE `uniacid` = :uniacid AND `module` = :module AND `tid` = :tid limit 1',
@@ -22,7 +22,7 @@ class Display extends Dase
 
     private function getLogId()
     {
-        if (empty($this->getLog())) {
+        if (!$this->getLog()) {
             $log = array(
                 'uniacid' => $this->getUniacid(),
                 'openid' => $this->getOpenid,
@@ -44,7 +44,7 @@ class Display extends Dase
         $app_alipay = array(
             'success' => false
         );
-        if ($this->getPaySet() && $this->getPaySet('app_alipay') == 1) {
+        if ($this->getPaySet('pay') && $this->getPaySet('pay.app_alipay') == 1) {
             $app_alipay['success'] = true;
         }
         return $app_alipay;
@@ -55,8 +55,8 @@ class Display extends Dase
         $credit_pay = array(
             'success' => false
         );
-        if ($this->getPaySet() && $this->getPaySet('credit') == 1) {
-            if ($this->getOrder['deductcredit2'] <= 0) {
+        if ($this->getPaySet('pay') && $this->getPaySet('pay.credit') == 1) {
+            if ($this->getOrder('deductcredit2') <= 0) {
                 $credit_pay = array(
                     'success' => true,
                     'current' => m('member')->getCredit($this->getOpenid(),
@@ -72,22 +72,22 @@ class Display extends Dase
         $app_wechat = array(
             'success' => false
         );
-        if ($this->getPaySet() && $this->getPaySet('app_weixin') == 1) {
+        if ($this->getPaySet('pay') && $this->getPaySet('pay.app_weixin') == 1) {
             $app_wechat['success'] = true;
         }
+        return $app_wechat;
     }
 
-    private function getPatmentSet($key)
+    private function getPatmentSet($key = null)
     {
-        $result = uni_setting($this->getUniacid(), array(
-            'payment'
-        ));
+        //$key = 'payment.wechat.switch';
+        $result = uni_setting($this->getUniacid(), array('payment'));
         if (isset($key)) {
             $data = explode('.', $key);
             foreach ($data as $v) {
                 $result = $result[$v];
             }
-            return $result[$key];
+            return $result;
         }
         return $result;
     }
@@ -99,8 +99,8 @@ class Display extends Dase
             'qrcode' => false
         );
         if (is_weixin()) {
-            if ($this->getPaySet() && ($this->getPaySet('weixin') == 1) && ($this->getPaySet('weixin_jie') != 1)) {
-                if (is_array($this->getPatmentSet('wechat')) && $this->getPatmentSet('wechat.switch')) {
+            if ($this->getPaySet('pay') && ($this->getPaySet('pay.weixin') == 1) && ($this->getPaySet('pay.weixin_jie') != 1)) {
+                if (is_array($this->getPatmentSet('payment.wechat')) && $this->getPatmentSet('payment.wechat.switch')) {
                     $wechat['success'] = true;
                     $wechat['weixin'] = true;
                     $wechat['weixin_jie'] = false;
@@ -108,17 +108,17 @@ class Display extends Dase
             }
         }
         if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
-            if (($this->getPaySet() && ($this->getPaySet('weixin_jie') == 1) && !$wechat['success']) || ($this->getPaySet('weixin_jie') == 1)) {
+            if (($this->getPaySet('pay') && ($this->getPaySet('pay.weixin_jie') == 1) && !$wechat['success']) || ($this->getPaySet('pay.weixin_jie') == 1)) {
                 $wechat['success'] = true;
                 $wechat['weixin_jie'] = true;
                 $wechat['weixin'] = false;
             }
         }
-        $wechat['jie'] = $this->getPaySet('weixin_jie');
+        $wechat['jie'] = $this->getPaySet('pay.weixin_jie');
         //扫码
-        if (!isMobile() && $this->getPaySet() && $this->getPaySet('weixin') == 1) {
-            if ($this->getPaySet() && $this->getPaySet('weixin') == 1) {
-                if (is_array($this->getPatmentSet('wechat')) && $this->getPatmentSet('wechat.switch')) {
+        if (!isMobile() && $this->getPaySet('pay') && $this->getPaySet('pay.weixin') == 1) {
+            if ($this->getPaySet('pay') && $this->getPaySet('pay.weixin') == 1) {
+                if (is_array($this->getPatmentSet('payment.wechat')) && $this->getPatmentSet('payment.wechat.switch')) {
                     $wechat['qrcode'] = true;
                 }
             }
@@ -131,11 +131,12 @@ class Display extends Dase
         $alipay = array(
             'success' => false
         );
-        if ($this->getPaySet() && $this->getPaySet('alipay') == 1) {
-            if (is_array($this->getPatmentSet('alipay')) && $this->getPatmentSet('alipay.switch')) {
+        if ($this->getPaySet('pay') && $this->getPaySet('pay.alipay') == 1) {
+            if (is_array($this->getPatmentSet('payment.alipay')) && $this->getPatmentSet('payment.alipay.switch')) {
                 $alipay['success'] = true;
             }
         }
+        return $alipay;
     }
 
     private function getUnionPay()
@@ -143,8 +144,8 @@ class Display extends Dase
         $unionpay = array(
             'success' => false
         );
-        if ($this->getPaySet() && $this->getPaySet('unionpay') == 1) {
-            if (is_array($this->getPatmentSet('unionpay')) && $this->getPatmentSet('unionpay.switch')) {
+        if ($this->getPaySet('pay') && $this->getPaySet('pay.unionpay') == 1) {
+            if (is_array($this->getPatmentSet('payment.unionpay')) && $this->getPatmentSet('payment.unionpay.switch')) {
                 $unionpay['success'] = true;
             }
         }
@@ -155,7 +156,7 @@ class Display extends Dase
     {
 
         $cash = array(
-            'success' => $this->getOrder('cash') == 1 && $this->getPaySet() && $this->getPaySet('cash') == 1 && $this->getOrder('dispatchtype') == 0
+            'success' => $this->getOrder('cash') == 1 && $this->getPaySet('pay') && $this->getPaySet('pay.cash') == 1 && $this->getOrder('dispatchtype') == 0
         );
         return $cash;
     }
@@ -163,7 +164,7 @@ class Display extends Dase
     private function getStoreCash()
     {
         $storecash = array(
-            'success' => $this->getOrder('cash') == 1 && $this->getPaySet() && $this->getPaySet('cash') == 1 && $this->getOrder('dispatchtype') == 1
+            'success' => $this->getOrder('cash') == 1 && $this->getPaySet('pay') && $this->getPaySet('pay.cash') == 1 && $this->getOrder('dispatchtype') == 1
         );
         return $storecash;
     }
@@ -174,7 +175,7 @@ class Display extends Dase
         $yeepay = array(
             'success' => false
         );
-        if ($this->getPaySet() && $this->getPaySet('yeepay') == 1) {
+        if ($this->getPaySet('pay') && $this->getPaySet('pay.yeepay') == 1) {
             $yeepay['success'] = true;
         }
         return $yeepay;
@@ -203,7 +204,7 @@ class Display extends Dase
         $paypal = array(
             'success' => false
         );
-        if ($this->getPaySet() && $this->getPaySet('paypalstatus') == 1) {
+        if ($this->getPaySet('pay') && $this->getPaySet('pay.paypalstatus') == 1) {
             $paypal['success'] = true;
         }
         return $paypal;
@@ -211,7 +212,7 @@ class Display extends Dase
 
     private function getReturnUrl()
     {
-        $returnurl = urlencode($this->createMobileUrl('order/pay', array(
+        $returnurl = urlencode($this->getSite()->createMobileUrl('order/pay', array(
             'orderid' => $this->getOrderId()
         )));
         return $returnurl;
@@ -268,10 +269,10 @@ class Display extends Dase
     function index()
     {
         global $_GPC;
-        if (empty($this->getOrderId())) {
+        if (!$this->getOrderId()) {
             return show_json(0, '参数错误!');
         }
-        if (empty($this->getOrder)) {
+        if (!$this->getOrder()) {
             return show_json(0, '订单未找到!');
         }
         if ($this->getOrder('status') == -1) {
@@ -279,10 +280,10 @@ class Display extends Dase
         } elseif ($this->getOrder('status') >= 1) {
             return show_json(-1, '订单已付款, 无需重复支付!');
         }
-        if (!empty($this->getLog()) && $this->getLog('status') != '0') {
+        if ($this->getLog() && $this->getLog('status') != '0') {
             return show_json(-1, '订单已支付, 无需重复支付!');
         }
-        if (!empty($this->getLog()) && $this->getLog('status') == '0') {
+        if ($this->getLog() && $this->getLog('status') == '0') {
             pdo_delete('core_paylog', array(
                 'plid' => $this->getLog('plid')
             ));
