@@ -11,7 +11,8 @@ class Url
 {
 
     /**
-     * 生成后台相对Url  路由   api.v1.test.index  为  app/backend/moduels/api/modules/v1/TestController   index
+     * 生成后台相对Url
+     *      路由   api.v1.test.index  为  app/backend/moduels/api/modules/v1/TestController   index
      * @param $route
      * @param array $params
      * @return string
@@ -25,7 +26,8 @@ class Url
     }
 
     /**
-     * 生成前台相对Url  路由   api.v1.test.index  为  app/frontend/moduels/api/modules/v1/TestController   index
+     * 生成前台相对Url
+     *      路由   api.v1.test.index  为  app/frontend/moduels/api/modules/v1/TestController   index
      * @param $route
      * @param array $params
      * @return string
@@ -40,7 +42,9 @@ class Url
 
     /**
      * 生成后台绝对地址
-     * @param $route  路由   api.v1.test.index  为  app/backend/moduels/api/modules/v1/TestController   index
+     *  路由   api.v1.test.index  为  app/backend/moduels/api/modules/v1/TestController   index
+     *
+     * @param $route
      * @param array $params
      * @param string $domain
      * @return string
@@ -52,7 +56,8 @@ class Url
     }
 
     /**
-     * 生成前台绝对地址  路由   api.v1.test.index  为  app/frontend/moduels/api/modules/v1/TestController   index
+     * 生成前台绝对地址
+     *      路由   api.v1.test.index  为  app/frontend/moduels/api/modules/v1/TestController   index
      * @param $route
      * @param array $params
      * @param string $domain
