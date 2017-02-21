@@ -1,6 +1,7 @@
 <?php
 namespace app\backend\modules\order\controllers;
 
+use app\common\helpers\Url;
 /**
  * Created by PhpStorm.
  * User: jan
@@ -19,8 +20,10 @@ class TestController
         echo "<pre>";
         //$_W;
 
-        dfasdfa
         print_r(\YunShop::app()->config['db']);
         echo "</pre>";
+
+        echo '<a href="'. Url::web('api.v1.test.index',['id'=>1]) .'" >api</a>';
+
     }
 }
