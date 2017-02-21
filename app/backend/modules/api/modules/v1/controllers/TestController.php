@@ -4,7 +4,6 @@ namespace app\backend\modules\api\modules\v1\controllers;
 
 
 use app\common\models\Member;
-use app\common\helpers\View;
 use app\common\components\BaseController;
 
 
