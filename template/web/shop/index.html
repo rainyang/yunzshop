@@ -1,4 +1,4 @@
-{template 'web/_header'}
+{template '_header',$data}
 <script type="text/javascript" src="../addons/sz_yi/static/js/ZeroClipboard.js"></script>
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/shop.css">
 <div class="w-shop">
@@ -7,7 +7,7 @@
 			<img src="{php echo tomedia('headimg_'.$_W['uniacid']. '.jpg')}"/>
 		</div>
 		<div class="shop-intro">
-			<h2 class="ng-binding">{$_W['account']['name']}</h2>
+			<h2 class="ng-binding">{$var['account']['name']}</h2>
 			<p class="ng-binding ng-scope">当前版本: {php echo SZ_YI_VERSION;}</p>
 		</div>
 		<div class="shop-shortcut">
@@ -212,4 +212,4 @@ $(function () {
     });
 });</script>
 
-{template 'web/_footer'}
+{template '_footer'}

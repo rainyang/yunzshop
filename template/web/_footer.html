@@ -19,7 +19,8 @@
 </script>
 <script type="text/javascript">
     require(['bootstrap']);
-    {if $_W['isfounder'] && !defined('IN_MESSAGE')}
+    {
+        if $var['isfounder'] && !defined('IN_MESSAGE')}
     function check_sz_yi_upgrade() {
   
         require(['util'], function (util) {

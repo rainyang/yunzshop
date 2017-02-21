@@ -2,7 +2,10 @@
 
 namespace app\backend\modules\api\modules\v1\controllers;
 
+
 use app\common\models\Member;
+use app\common\components\BaseController;
+
 
 /**
  * Created by PhpStorm.
@@ -10,7 +13,7 @@ use app\common\models\Member;
  * Date: 21/02/2017
  * Time: 11:50
  */
-class TestController
+class TestController extends BaseController
 {
     public function index()
     {
@@ -24,9 +27,8 @@ class TestController
         echo "<br/>";
         echo "<br/>";
         $member = Member::first();
-        $member->nickname = "janpan";
-        $member->save();
-        print_r($members);
+
+        print_r($member);
 
         $id = \YunShop::request()->id;
 
@@ -35,5 +37,8 @@ class TestController
 
     public function view()
     {
+        $this->render('shop/index', ['a' => '']);
     }
+
+
 }

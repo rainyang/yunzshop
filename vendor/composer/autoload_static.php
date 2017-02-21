@@ -34,6 +34,15 @@ class ComposerStaticInit01ad426e57bf2cd69517f61a2314cf60
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Finder\\' => 25,
         ),
+        'P' =>
+            array(
+                'Psr\\Log\\' => 8,
+                'PhpConsole\\' => 11,
+            ),
+        'M' =>
+            array(
+                'Monolog\\' => 8,
+            ),
         'I' => 
         array (
             'Illuminate\\Validation\\' => 22,
@@ -95,6 +104,18 @@ class ComposerStaticInit01ad426e57bf2cd69517f61a2314cf60
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
         ),
+        'Psr\\Log\\' =>
+            array(
+                0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+            ),
+        'PhpConsole\\' =>
+            array(
+                0 => __DIR__ . '/..' . '/php-console/php-console/src/PhpConsole',
+            ),
+        'Monolog\\' =>
+            array(
+                0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+            ),
         'Illuminate\\Validation\\' => 
         array (
             0 => __DIR__ . '/..' . '/illuminate/validation',
