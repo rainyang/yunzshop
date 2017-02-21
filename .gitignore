@@ -3,7 +3,7 @@
 /core/model/user.php
 sh.exe.stackdump
 /core/inc/plugin/vendor/phpunit
-/vendor/
+vendor/
 tmp/
 .idea/
 composer.lock
