@@ -154,14 +154,19 @@ class YunShop
         $path = self::getAppPath();
         $namespace = self::getAppNamespace();
         $action = '';
+        $controllerName = '';
+        $modules = [];
         if ($routes) {
             $length = count($routes);
             foreach ($routes as $k => $r) {
-                $controllerFile = $path . '/controllers/' . self::getUcfirstName($r) . 'Controller.php';
+                $ucFirstRoute = self::getUcfirstName($r);
+                $controllerFile = $path . '/controllers/' . $ucFirstRoute . 'Controller.php';
                 if (file_exists($controllerFile)) {
-                    $namespace .= '\\controllers\\' . self::getUcfirstName($r) . 'Controller';
+                    $namespace .= '\\controllers\\' . $ucFirstRoute . 'Controller';
+                    $controllerName = $ucFirstRoute;
                 } elseif (is_dir($path .= '/modules/' . $r)) {
                     $namespace .= '\\modules\\' . $r;
+                    $modules[] = $r;
                 } else {
                     if ($length !== $k + 1) {
                         exit('no found route:' . self::request()->route);
@@ -175,10 +180,17 @@ class YunShop
         if (!class_exists($namespace)) {
             exit(" no exists class: " . $namespace);
         }
+        if (empty($action)) {
+            $action = 'index';
+            self::app()->action = $action;
+        }
         if (!method_exists($namespace, $action)) {
             exit('no exists method: ' . $action);
         }
         $controller = new $namespace;
+        $controller->modules = $modules;
+        $controller->controller = $controllerName;
+        $controller->action = $action;
         $controller->$action();
     }
 
@@ -236,6 +248,7 @@ class App extends Component
     {
         global $_W;
         $this->values = $_W;
+        $this->var = $_W;
     }
 
 }
