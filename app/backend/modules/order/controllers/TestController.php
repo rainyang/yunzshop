@@ -13,9 +13,13 @@ class TestController
     {
             echo __CLASS__;
         echo "<pre>";
-        print_r(\YunShop::request());
+        //$_GPC
+        print_r(\YunShop::request()->route);
         echo "</pre>";
         echo "<pre>";
+        //$_W;
+
+        dfasdfa
         print_r(\YunShop::app()->config['db']);
         echo "</pre>";
     }

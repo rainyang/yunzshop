@@ -23,7 +23,17 @@ class TestController
         print_r($arr2);
         echo "<br/>";
         echo "<br/>";
-        $members = Member::first();
+        $member = Member::first();
+        $member->nickname = "janpan";
+        $member->save();
         print_r($members);
+
+        $id = \YunShop::request()->id;
+
+
+    }
+
+    public function view()
+    {
     }
 }

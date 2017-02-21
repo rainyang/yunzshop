@@ -55,11 +55,11 @@ class YunShop
             'prefix' => self::app()->config['db']['master']['tablepre'],
         ];
         $capsule = new Capsule;
-// 创建链接
+        // 创建链接
         $capsule->addConnection($database);
-// 设置全局静态可访问
+        // 设置全局静态可访问
         $capsule->setAsGlobal();
-// 启动Eloquent
+        // 启动Eloquent
         $capsule->bootEloquent();
 
         self::parseRoute();
