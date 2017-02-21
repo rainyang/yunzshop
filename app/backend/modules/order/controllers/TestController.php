@@ -16,7 +16,7 @@ class TestController
         print_r(\YunShop::request());
         echo "</pre>";
         echo "<pre>";
-        print_r(\YunShop::config()->db);
+        print_r(\YunShop::app()->config['db']);
         echo "</pre>";
     }
 }

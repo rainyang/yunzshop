@@ -24,7 +24,7 @@ define('SHOP_ROOT', dirname(__FILE__));
 class YunShop
 {
     private static $_req;
-    private static $_config;
+    private static $_app;
 
     public function __construct()
     {
@@ -36,7 +36,7 @@ class YunShop
         /*
        * php错误调度
        */
-        if (self::config()->setting['development'] == 1) {
+        if (self::app()->config['setting']['development'] == 1) {
             $whoops = new \Whoops\Run;
             $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
             $whoops->register();
@@ -46,13 +46,13 @@ class YunShop
          */
         $database = [
             'driver' => 'mysql',
-            'host' => self::config()->db['master']['host'],
-            'database' => self::config()->db['master']['database'],
-            'username' => self::config()->db['master']['username'],
-            'password' => self::config()->db['master']['password'],
-            'charset' => self::config()->db['master']['charset'],
+            'host' => self::app()->config['db']['master']['host'],
+            'database' => self::app()->config['db']['master']['database'],
+            'username' => self::app()->config['db']['master']['username'],
+            'password' => self::app()->config['db']['master']['password'],
+            'charset' => self::app()->config['db']['master']['charset'],
             'collation' => 'utf8_unicode_ci',
-            'prefix' => self::config()->db['master']['tablepre'],
+            'prefix' => self::app()->config['db']['master']['tablepre'],
         ];
         $capsule = new Capsule;
 // 创建链接
@@ -137,12 +137,12 @@ class YunShop
         }
     }
 
-    public static function config()
+    public static function app()
     {
-        if (self::$_config !== null) {
-            return self::$_config;
+        if (self::$_app !== null) {
+            return self::$_app;
         } else {
-            return new Config();
+            return new App();
         }
     }
 
@@ -151,7 +151,6 @@ class YunShop
     {
         $routes = explode('.', self::request()->route);
 
-        self::config()->modules = [];
         $path = self::getAppPath();
         $namespace = self::getAppNamespace();
         $action = '';
@@ -229,14 +228,14 @@ class Request extends Component
 
 }
 
-class Config extends Component
+class App extends Component
 {
     protected $values;
 
     public function __construct()
     {
         global $_W;
-        $this->values = $_W['config'];
+        $this->values = $_W;
     }
 
 }
