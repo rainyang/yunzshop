@@ -37,7 +37,7 @@ class BaseController
     public function render($filename, $data = [], $return = false)
     {
         if (strpos($filename, '/') === false) {
-            $filename = $this->controller . '/' . $filename;
+            $filename = strtolower($this->controller) . '/' . $filename;
             $this->modules && $filename = implode('/', $this->modules) . '/' . $filename;
         }
 

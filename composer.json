@@ -14,8 +14,7 @@
     "illuminate/validation":"*",
     "illuminate/events":"*",
     "filp/whoops": "^2.1",
-    "monolog/monolog": "^1.22",
-    "php-console/php-console": "^3.1"
+    "monolog/monolog": "^1.22"
   },
   "config": {
     "process-timeout": 1800

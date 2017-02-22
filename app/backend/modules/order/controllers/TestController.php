@@ -3,6 +3,7 @@ namespace app\backend\modules\order\controllers;
 
 use app\common\helpers\Logger;
 use app\common\helpers\Url;
+use app\common\services\TestContract;
 
 /**
  * Created by PhpStorm.
@@ -12,8 +13,11 @@ use app\common\helpers\Url;
  */
 class TestController
 {
+
     public function index()
     {
+       // $this->test->callMe('TestController');
+
         echo __CLASS__;
         echo "<pre>";
         //$_GPC

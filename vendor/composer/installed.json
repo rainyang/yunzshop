@@ -2319,6 +2319,7 @@
             "psr",
             "psr-3"
         ]
+
     },
     {
         "name": "monolog/monolog",
@@ -2456,6 +2457,7 @@
             "errors",
             "google chrome",
             "php"
+
         ]
     }
 ]
