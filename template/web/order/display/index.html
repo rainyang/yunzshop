@@ -30,8 +30,8 @@
             <input type="hidden" name="do" value="order" id="form_do" />
             <input type="hidden" name="status" value="{$status}" />
             <input type="hidden" name="agentid" value="{$request['agentid']}" />
-            <input type="hidden" name="refund" value="{$request['refund']}" />  
-            <input type="hidden" name="plugin" value="{$request['plugin']}" /> 
+            <input type="hidden" name="refund" value="{$request['refund']}" />
+            <input type="hidden" name="plugin" value="{$request['plugin']}" />
             <div class="form-group">
                 <div class="col-sm-8 col-lg-12 col-xs-12">
                     <div class='input-group'>
@@ -56,7 +56,7 @@
                         </select>
                     </div>
                 </div>
-            </div> 
+            </div>
             {if $request['plugin'] != "fund"}
             <div class='form-group'>
                 <div class="col-sm-8 col-lg-12 col-xs-12">
@@ -184,7 +184,7 @@
 
             </div>
             <div class="form-group">
-                {if !empty($agentid) && $level>0}   
+                {if !empty($agentid) && $level>0}
                 <div class="col-sm-3">
                     <div class='input-group'>
                         <div class='input-group-addon'>分销订单级数</div>
@@ -209,7 +209,7 @@
                 </div>
 
             </div>
-     
+
         </form>
     </div>
 </div>
@@ -217,7 +217,7 @@
         <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                  <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
-                        订单数: <span id="total">--</span>  订单金额: <span id="totalmoney" style="color:red">--</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>{if !empty($shopset['weixin'])}<a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{/if}{else}没有可提现金额{/if}{/if}                        
+                        订单数: <span id="total">--</span>  订单金额: <span id="totalmoney" style="color:red">--</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>{if !empty($shopset['weixin'])}<a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{/if}{else}没有可提现金额{/if}{/if}
                     </td>
                 </tr>
         </table>
@@ -227,24 +227,24 @@
                     <td style='text-align:left;'>单价/数量</td>
                     <td>买家</td>
                     <td>支付方式/配送方式</td>
-                    <td>价格</td>             
+                    <td>价格</td>
                     <td>状态</td>
                     <td>操作</td>
                 </tr>
             </table>
-          
+
                 {loop $list $item}
   <table class='table' style='float:left;border:1px solid #ccc;margin-top:5px;margin-bottom:0px;table-layout: fixed;'>
                 <tr >
-                    <td colspan='8'  style='border-bottom:1px solid #ccc;background:#f8f8f8;' > 
-                        <b>订单编号:</b>  {$item['ordersn_general']} 
+                    <td colspan='8'  style='border-bottom:1px solid #ccc;background:#f8f8f8;' >
+                        <b>订单编号:</b>  {$item['ordersn_general']}
                         {if $item['pay_ordersn']}
-                        <b>支付单号:</b>  {$item['pay_ordersn']} 
+                        <b>支付单号:</b>  {$item['pay_ordersn']}
                         {/if}
                         <b>下单时间:  </b>{php echo date('Y-m-d H:i:s', $item['createtime'])}
                         {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
                         {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
-                        
+
                         <label class="label label-info">{$item['vendor']}</label>
                         {if !empty($item['storename'])}
                         <label class="label label-primary">所属门店：{$item['storename']}</label>
@@ -264,7 +264,7 @@
                     </td>
                     {/if}
 
-                         
+
                 </tr>
   </table>
       <table class='table' style='float:left;border:1px solid #ccc;border-top:none;table-layout: fixed;'>
@@ -272,16 +272,16 @@
 {loop $item['goods'] $k $g}
                 <tr class='trbody'>
                     <td class="goods_info">
-                         <img src="{if $item['cashier']==1}{$item['name']['thumb']}{else}{php echo tomedia($g['thumb'])}{/if}"> 
+                         <img src="{if $item['cashier']==1}{$item['name']['thumb']}{else}{php echo tomedia($g['thumb'])}{/if}">
                     </td>
                     <td valign='top'  style='border-left:none;text-align: left;/*width:400px*/;'  >
                         {if $item['cashier']==1}{$item['name']['name']}{else}{$g['title']}{/if}{if !empty($g['optiontitle'])}<br/><span class="label label-primary sizebg">{$g['optiontitle']}</span>{/if}
                         <br/>{$g['goodssn']}
                     </td>
                     <td style='border-left:none;text-align:left;/*width:150px*/'>{if $request['plugin'] != "fund"}原价: {php echo number_format( $g['price']/$g['total'],2)} {/if}<br />应付: {php echo number_format($g['realprice']/$g['total'],2)}
-        <br/>数量: {$g['total']}           
+        <br/>数量: {$g['total']}
                     </td>
-                    
+
                     {if $k==0}
                     <td rowspan="{php echo count($item['goods'])}" >
                          {ifp 'member.member.edit'}
@@ -289,7 +289,7 @@
                          {else}
                              {$item['nickname']}
                              {/if}
-                             
+
                              <br/>
                         {$item['addressdata']['realname']}<br/>{$item['addressdata']['mobile']}</td>
                     <td rowspan="{php echo count($item['goods'])}"    >
@@ -341,7 +341,7 @@
                             <tr>
                                 <td  style='border:none;text-align:right;'>余额抵扣：</td>
                                 <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductcredit2'],2)}</td>
-                            </tr> 
+                            </tr>
                             {/if}
                             {if $item['deductcommission']>0}
                             <tr>
@@ -354,7 +354,7 @@
                                 <tr>
                                     <td  style='border:none;text-align:right;'>{$card_set['gift_title']}抵扣：</td>
                                     <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['cardprice'],2)}</td>
-                                </tr> 
+                                </tr>
                                 {/if}
                             {/if}
                             {if $item['deductenough']>0}
@@ -380,7 +380,7 @@
                                 <td  style='border:none;text-align:right;'>卖家改运费：</td>
                                 <td  style='border:none;text-align:right;;'><span style="{if 0<$item['changedispatchprice']}color:green{else}color:red{/if}">{if 0<$item['changedispatchprice']}+{else}-{/if}￥{php echo abs($item['changedispatchprice'])}</span></td>
                             </tr>
-                                 {/if} 
+                                 {/if}
                         <tr>
                                 <td style='border:none;text-align:right;'>应收款：</td>
                                 <td  style='border:none;text-align:right;color:green;'>￥{php echo number_format($item['price'],2)}</td>
@@ -399,18 +399,18 @@
                             </tr>
                             {/if}  {/if}
                         </table>
-                 
-                 
-     
+
+
+
                     </td>
                     <td   rowspan="{php echo count($item['goods'])}" ><label class='label label-{$item['statuscss']}'>{$item['status']}</label><br />
                     <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id'], 'plugin' => $request['plugin'], 'openid' => $request['openid']))}">查看详情</a></td>
                      <td   rowspan="{php echo count($item['goods'])}" width="10%">
                     {template 'web/order/ops'}
                      </td>
-            {/if} 
+            {/if}
         </tr>
-        
+
     {/loop}
         <tr>
             <td colspan="4">
@@ -429,7 +429,7 @@
                     <a href='javascript:;' class='btn btn-default' onclick="commission_change('{$item['id']}')">修改佣金</a>
                     {/if}
                       {/if}
-                 
+
                  {/if}
             </td>
             <td colspan="4">
@@ -444,13 +444,13 @@
                     {/if}
                     {if $item['bonus_range_money'] > 0 && $item['bonus_area_money'] > 0}
                         <b>订单总分红:</b> {$item['bonus_money_all']}元
-                    {/if} 
-                {/if} 
+                    {/if}
+                {/if}
             </td>
         </tr>
    </table>
 {/loop}
-            
+
 {else}
 <div class="panel panel-default">
     <div class="panel-heading"></div>
@@ -492,12 +492,12 @@
         </table>
     </div>
 </div>
-{/if}  
+{/if}
 <div id="pager"></div>
 </div>
-</div>                                                      
+</div>
 <script language="javascript">
-    
+
 
     function send(btn){
         var modal =$('#modal-confirmsend');
@@ -523,7 +523,7 @@
         })
         $('#export').click(function(){
             $('#form_p').val("exportOrder");
-            $('#form1').submit();   
+            $('#form1').submit();
             $('#form_p').val("list");
         });
         $('.select2').select2({
@@ -537,11 +537,11 @@
         var itemid = $(btn).parent().find('.itemid').val();
         modal.find(':input[name=id]').val( itemid );
     }
-</script> 
-                    
+</script>
+
          {template 'web/order/modals'}
           {if  p('commission')}
-          
+
            {template 'commission/changecommission'}
           {/if}
         {template 'web/_footer'}

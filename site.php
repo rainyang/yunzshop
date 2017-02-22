@@ -146,7 +146,18 @@ class YunShop
         }
     }
 
-
+    /**
+     * 解析路由
+     *
+     * 后台访问  /web/index.php?c=site&a=entry&m=sz_yi&do=xxx&route=module.controller.action
+     * 前台      /app/index.php....
+     *
+     * 多字母的路由用中划线隔开 比如：
+     *      TestCacheController
+     *          function testClean()
+     * 路由写法为   test-cache.test-clean
+     *
+     */
     public static function parseRoute()
     {
         $routes = explode('.', self::request()->route);
@@ -171,7 +182,7 @@ class YunShop
                     if ($length !== $k + 1) {
                         exit('no found route:' . self::request()->route);
                     }
-                    $action = $r;
+                    $action = strpos($r, '-') === false ? $r : lcfirst(self::getUcfirstName($r));
                 }
 
             }
