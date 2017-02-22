@@ -2319,7 +2319,6 @@
             "psr",
             "psr-3"
         ]
-
     },
     {
         "name": "monolog/monolog",
@@ -2399,65 +2398,6 @@
             "log",
             "logging",
             "psr-3"
-        ]
-    },
-    {
-        "name": "php-console/php-console",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/barbushin/php-console.git",
-            "reference": "d46db9661b934fb5fa9c6164db72b32a419348a5"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://packagist.phpcomposer.com/files/barbushin/php-console/d46db9661b934fb5fa9c6164db72b32a419348a5.zip",
-            "reference": "d46db9661b934fb5fa9c6164db72b32a419348a5",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.0"
-        },
-        "require-dev": {
-            "ext-mbstring": "*",
-            "phpunit/phpunit": "^4.8",
-            "psr/log": "^1.0"
-        },
-        "time": "2016-11-04T07:26:13+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "PhpConsole\\": "src/PhpConsole"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Sergey Barbushin",
-                "email": "barbushin@gmail.com",
-                "homepage": "http://linkedin.com/in/barbushin"
-            }
-        ],
-        "description": "PHP library for Google Chrome extension \"PHP Console\".",
-        "homepage": "https://github.com/barbushin/php-console",
-        "keywords": [
-            "chrome",
-            "debug",
-            "error handler",
-            "errors",
-            "google chrome",
-            "php"
-
         ]
     }
 ]
