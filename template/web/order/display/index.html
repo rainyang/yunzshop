@@ -88,8 +88,7 @@
                                     <option value="" {if $_GPC[
                                     'paytype']==''}selected{/if}>不限</option>
                                     {loop $paytype $key $type}
-                                    <option value="{$key}" {if $_GPC[
-                                    'paytype'] == "$key"} selected="selected" {/if}>{$type['name']}</option>
+                                    <option value="{$key}" {if $_GPC['paytype'] == "$key"} selected="selected" {/if}>{$type['name']}</option>
                                     {/loop}
                                 </select>
                             </div>
@@ -109,8 +108,7 @@
                                 <select name="storeid" class="form-control">
                                     <option value=""></option>
                                     {loop $stores $store}
-                                    <option value="{$store['id']}" {if $_GPC[
-                                    'storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
+                                    <option value="{$store['id']}" {if $_GPC['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
                                     {/loop}
                                 </select>
                                 {if $p_cashier}
@@ -118,8 +116,7 @@
                                 <select name="csid" class="form-control">
                                     <option value=""></option>
                                     {loop $cashier_stores $cashier_store}
-                                    <option value="{$cashier_store['id']}" {if $_GPC[
-                                    'csid'] ==$cashier_store['id']} selected="selected"
+                                    <option value="{$cashier_store['id']}" {if $_GPC['csid'] ==$cashier_store['id']} selected="selected"
                                     {/if}>{$cashier_store['name']}</option>
                                     {/loop}
                                 </select>
