@@ -2,6 +2,7 @@
 
 namespace app\common\components;
 
+use app\common\helpers\StringHelper;
 use app\common\helpers\Url;
 
 /**
@@ -31,27 +32,21 @@ class BaseController
      * ```
      * @param $filename     模板名
      * @param array $data 模板变量
-     * @param bool $return 是否返回模板内容
      * @return mixed
      */
-    public function render($filename, $data = [], $return = false)
+    public function render($filename, $data = [])
     {
         if (strpos($filename, '/') === false) {
-            $filename = strtolower($this->controller) . '/' . $filename;
-            $this->modules && $filename = implode('/', $this->modules) . '/' . $filename;
+            $filename = strtolower(StringHelper::camelToMiddleLine($this->controller)) . '/' . $filename;
+            $this->modules && $filename = StringHelper::camelToMiddleLine(implode('/', $this->modules)) . '/' . $filename;
         }
 
         $dataVar = ['var' => objectArray(\YunShop::app()), 'request' => objectArray(\YunShop::request())];
         is_array($data) && $dataVar = array_merge($data, $dataVar);
         extract($dataVar);
 
-        $content = include $this->template($filename, $data);
-        if ($return == true) {
-            return $content;
-        } else {
-            echo $content;
-        }
-
+        include $this->template($filename, $data);
+        return ;
     }
 
     /**
