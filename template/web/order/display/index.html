@@ -1,93 +1,136 @@
-﻿{template 'web/_header'}
+﻿﻿{template 'web/_header'}
 <div class="w1200 m0a">
-{template 'web/order/tabs'}
-<link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
-<link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
-<script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
-<script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2_locale_zh-CN.js"></script>
-<style type='text/css'>
-.trhead td {  background:#f8f8f8;text-align: center}
-.trbody td {  text-align: center; vertical-align:top;border-left:1px solid #DEDEDE;overflow: hidden;}
-.goods_info{position:relative;width:60px;}
-.goods_info img {width:50px;background:#fff;border:1px solid #DEDEDE;padding:1px;}
-.goods_info:hover {z-index:1;position:absolute;width:auto;}
-.goods_info:hover img{width:320px; height:320px;}
-.form-control .select2-choice {
-        border: 0 none;
-        border-radius: 2px;
-        height: 32px;    line-height: 32px;
-    }
-</style>
-<div class="rightlist">
-{if $status != 9}
-<div class="panel panel-default" style='margin-top:60px'>
-    <div class="panel-body sx-border">
-        <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
-            <input type="hidden" name="c" value="site" />
-            <input type="hidden" name="a" value="entry" />
-            <input type="hidden" name="m" value="sz_yi" />
-            <input type="hidden" name="p" value="list" id="form_p" />
-            <input type="hidden" name="do" value="order" id="form_do" />
-            <input type="hidden" name="status" value="{$status}" />
-            <input type="hidden" name="agentid" value="{$request['agentid']}" />
-            <input type="hidden" name="refund" value="{$request['refund']}" />
-            <input type="hidden" name="plugin" value="{$request['plugin']}" />
-            <div class="form-group">
-                <div class="col-sm-8 col-lg-12 col-xs-12">
-                    <div class='input-group'>
-                        <div class='input-group-addon'>订单号</div>
-                        <input class="form-control" name="keyword" type="text" value="{$request['keyword']}" placeholder="订单号/支付单号">
-                        <div class='input-group-addon'>{$lang['good']}名称</div>
-                        <input class="form-control" name="good_name" type="text" value="{$request['good_name']}" placeholder="{$lang['good']}名称">
-                        <div class='input-group-addon'>{$lang['good']}ID</div>
-                        <input class="form-control" name="good_id" type="text" value="{$request['good_id']}" placeholder="{$lang['good']}ID">
-                        <div class='input-group-addon'>快递单号</div>
-                        <input class="form-control" name="expresssn" type="text" value="{$request['expresssn']}" placeholder="快递单号">
-                        <div class='input-group-addon'>会员ID</div>
-                        <input class="form-control" name="memberid" type="text" value="{$request['good_id']}" placeholder="会员ID">
-                        <div class='input-group-addon'>用户信息</div>
-                        <input class="form-control" name="member" type="text" value="{$request['member']}" placeholder="用户手机号/姓名/昵称/绑定手机号, 收件人姓名/手机号 ">
-                        <div class='input-group-addon'>支付方式</div>
-                        <select name="paytype" class="form-control">
-                            <option value="" {if $request['paytype']==''}selected{/if}>不限</option>
-                            {loop $paytype $key $type}
-                            <option value="{$key}" {if $request['paytype'] == "$key"} selected="selected" {/if}>{$type['name']}</option>
-                            {/loop}
-                        </select>
+    {template 'web/order/tabs'}
+    <link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
+    <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
+    <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
+    <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2_locale_zh-CN.js"></script>
+    <style type='text/css'>
+        .trhead td {
+            background: #f8f8f8;
+            text-align: center
+        }
+
+        .trbody td {
+            text-align: center;
+            vertical-align: top;
+            border-left: 1px solid #DEDEDE;
+            overflow: hidden;
+        }
+
+        .goods_info {
+            position: relative;
+            width: 60px;
+        }
+
+        .goods_info img {
+            width: 50px;
+            background: #fff;
+            border: 1px solid #DEDEDE;
+            padding: 1px;
+        }
+
+        .goods_info:hover {
+            z-index: 1;
+            position: absolute;
+            width: auto;
+        }
+
+        .goods_info:hover img {
+            width: 320px;
+            height: 320px;
+        }
+
+        .form-control .select2-choice {
+            border: 0 none;
+            border-radius: 2px;
+            height: 32px;
+            line-height: 32px;
+        }
+    </style>
+    <div class="rightlist">
+        {if $status != 9}
+        <div class="panel panel-default" style='margin-top:60px'>
+            <div class="panel-body sx-border">
+                <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+                    <input type="hidden" name="c" value="site"/>
+                    <input type="hidden" name="a" value="entry"/>
+                    <input type="hidden" name="m" value="sz_yi"/>
+                    <input type="hidden" name="p" value="list" id="form_p"/>
+                    <input type="hidden" name="do" value="order" id="form_do"/>
+                    <input type="hidden" name="status" value="{$status}"/>
+                    <input type="hidden" name="agentid" value="{$_GPC['agentid']}"/>
+                    <input type="hidden" name="refund" value="{$_GPC['refund']}"/>
+                    <input type="hidden" name="plugin" value="{$_GPC['plugin']}"/>
+                    <div class="form-group">
+                        <div class="col-sm-8 col-lg-12 col-xs-12">
+                            <div class='input-group'>
+                                <div class='input-group-addon'>订单号</div>
+                                <input class="form-control" name="keyword" type="text" value="{$_GPC['keyword']}"
+                                       placeholder="订单号/支付单号">
+                                <div class='input-group-addon'>{$lang['good']}名称</div>
+                                <input class="form-control" name="good_name" type="text" value="{$_GPC['good_name']}"
+                                       placeholder="{$lang['good']}名称">
+                                <div class='input-group-addon'>{$lang['good']}ID</div>
+                                <input class="form-control" name="good_id" type="text" value="{$_GPC['good_id']}"
+                                       placeholder="{$lang['good']}ID">
+                                <div class='input-group-addon'>快递单号</div>
+                                <input class="form-control" name="expresssn" type="text" value="{$_GPC['expresssn']}"
+                                       placeholder="快递单号">
+                                <div class='input-group-addon'>会员ID</div>
+                                <input class="form-control" name="memberid" type="text" value="{$_GPC['good_id']}"
+                                       placeholder="会员ID">
+                                <div class='input-group-addon'>用户信息</div>
+                                <input class="form-control" name="member" type="text" value="{$_GPC['member']}"
+                                       placeholder="用户手机号/姓名/昵称/绑定手机号, 收件人姓名/手机号 ">
+                                <div class='input-group-addon'>支付方式</div>
+                                <select name="paytype" class="form-control">
+                                    <option value="" {if $_GPC[
+                                    'paytype']==''}selected{/if}>不限</option>
+                                    {loop $paytype $key $type}
+                                    <option value="{$key}" {if $_GPC['paytype'] == "$key"} selected="selected" {/if}>{$type['name']}</option>
+                                    {/loop}
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            {if $request['plugin'] != "fund"}
-            <div class='form-group'>
-                <div class="col-sm-8 col-lg-12 col-xs-12">
-                    <div class='input-group'>
-                        <div class='input-group-addon'>核销码</div>
-                        <input class="form-control" name="verifycode" type="text" value="{$request['verifycode']}" placeholder="核销码">
-                        <div class='input-group-addon'>核销员</div>
-                        <input class="form-control" name="saler" type="text" value="{$request['saler']}" placeholder="核销员昵称/姓名/手机号/绑定手机号">
-                        <div class='input-group-addon'>核销门店</div>
-                            <select name="storeid" class="form-control">
-                                <option value="" ></option>
-                                {loop $stores $store}
-                                    <option value="{$store['id']}" {if $request['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
-                                {/loop}
-                            </select>
-                        {if $p_cashier}
-                        <div class='input-group-addon'>收银商户</div>
-                        <select name="csid" class="form-control">
-                            <option value="" ></option>
-                            {loop $cashier_stores $cashier_store}
-                                <option value="{$cashier_store['id']}" {if $request['csid'] ==$cashier_store['id']} selected="selected" {/if}>{$cashier_store['name']}</option>
-                            {/loop}
-                        </select>
-                        {/if}
-                        <div class='input-group-addon'>门店取消订单
-                            <label class='radio-inline' style='margin-top:-7px;'>
-                                <input type='radio' value='0' name='cancel' {if $request['cancel']=='0'}checked{/if}>不搜索
-                            </label>
-                            <label class='radio-inline'  style='margin-top:-7px;'>
-                                <input type='radio' value='1' name='cancel' {if $request['cancel']=='1'}checked{/if}>搜索
-                            </label>
+                    {if $_GPC['plugin'] != "fund"}
+                    <div class='form-group'>
+                        <div class="col-sm-8 col-lg-12 col-xs-12">
+                            <div class='input-group'>
+                                <div class='input-group-addon'>核销码</div>
+                                <input class="form-control" name="verifycode" type="text" value="{$_GPC['verifycode']}"
+                                       placeholder="核销码">
+                                <div class='input-group-addon'>核销员</div>
+                                <input class="form-control" name="saler" type="text" value="{$_GPC['saler']}"
+                                       placeholder="核销员昵称/姓名/手机号/绑定手机号">
+                                <div class='input-group-addon'>核销门店</div>
+                                <select name="storeid" class="form-control">
+                                    <option value=""></option>
+                                    {loop $stores $store}
+                                    <option value="{$store['id']}" {if $_GPC['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
+                                    {/loop}
+                                </select>
+                                {if $p_cashier}
+                                <div class='input-group-addon'>收银商户</div>
+                                <select name="csid" class="form-control">
+                                    <option value=""></option>
+                                    {loop $cashier_stores $cashier_store}
+                                    <option value="{$cashier_store['id']}" {if $_GPC['csid'] ==$cashier_store['id']} selected="selected"
+                                    {/if}>{$cashier_store['name']}</option>
+                                    {/loop}
+                                </select>
+                                {/if}
+                                <div class='input-group-addon'>门店取消订单
+                                    <label class='radio-inline' style='margin-top:-7px;'>
+                                        <input type='radio' value='0' name='cancel' {if $_GPC['cancel']=='0'}checked{/if}>不搜索
+                                    </label>
+                                    <label class='radio-inline' style='margin-top:-7px;'>
+                                        <input type='radio' value='1' name='cancel' {if $_GPC['cancel']=='1'}checked{/if}>搜索
+                                    </label>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -184,7 +227,7 @@
 
             </div>
             <div class="form-group">
-                {if !empty($agentid) && $level>0}
+                {if !empty($agentid) && $level>0}   
                 <div class="col-sm-3">
                     <div class='input-group'>
                         <div class='input-group-addon'>分销订单级数</div>
@@ -209,7 +252,7 @@
                 </div>
 
             </div>
-
+     
         </form>
     </div>
 </div>
@@ -217,7 +260,7 @@
         <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                  <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
-                        订单数: <span id="total">--</span>  订单金额: <span id="totalmoney" style="color:red">--</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>{if !empty($shopset['weixin'])}<a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{/if}{else}没有可提现金额{/if}{/if}
+                        订单数: <span id="total">--</span>  订单金额: <span id="totalmoney" style="color:red">--</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>{if !empty($shopset['weixin'])}<a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{/if}{else}没有可提现金额{/if}{/if}                        
                     </td>
                 </tr>
         </table>
@@ -227,24 +270,24 @@
                     <td style='text-align:left;'>单价/数量</td>
                     <td>买家</td>
                     <td>支付方式/配送方式</td>
-                    <td>价格</td>
+                    <td>价格</td>             
                     <td>状态</td>
                     <td>操作</td>
                 </tr>
             </table>
-
+          
                 {loop $list $item}
   <table class='table' style='float:left;border:1px solid #ccc;margin-top:5px;margin-bottom:0px;table-layout: fixed;'>
                 <tr >
-                    <td colspan='8'  style='border-bottom:1px solid #ccc;background:#f8f8f8;' >
-                        <b>订单编号:</b>  {$item['ordersn_general']}
+                    <td colspan='8'  style='border-bottom:1px solid #ccc;background:#f8f8f8;' > 
+                        <b>订单编号:</b>  {$item['ordersn_general']} 
                         {if $item['pay_ordersn']}
-                        <b>支付单号:</b>  {$item['pay_ordersn']}
+                        <b>支付单号:</b>  {$item['pay_ordersn']} 
                         {/if}
                         <b>下单时间:  </b>{php echo date('Y-m-d H:i:s', $item['createtime'])}
                         {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
                         {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
-
+                        
                         <label class="label label-info">{$item['vendor']}</label>
                         {if !empty($item['storename'])}
                         <label class="label label-primary">所属门店：{$item['storename']}</label>
@@ -264,7 +307,7 @@
                     </td>
                     {/if}
 
-
+                         
                 </tr>
   </table>
       <table class='table' style='float:left;border:1px solid #ccc;border-top:none;table-layout: fixed;'>
@@ -272,16 +315,16 @@
 {loop $item['goods'] $k $g}
                 <tr class='trbody'>
                     <td class="goods_info">
-                         <img src="{if $item['cashier']==1}{$item['name']['thumb']}{else}{php echo tomedia($g['thumb'])}{/if}">
+                         <img src="{if $item['cashier']==1}{$item['name']['thumb']}{else}{php echo tomedia($g['thumb'])}{/if}"> 
                     </td>
                     <td valign='top'  style='border-left:none;text-align: left;/*width:400px*/;'  >
                         {if $item['cashier']==1}{$item['name']['name']}{else}{$g['title']}{/if}{if !empty($g['optiontitle'])}<br/><span class="label label-primary sizebg">{$g['optiontitle']}</span>{/if}
                         <br/>{$g['goodssn']}
                     </td>
                     <td style='border-left:none;text-align:left;/*width:150px*/'>{if $request['plugin'] != "fund"}原价: {php echo number_format( $g['price']/$g['total'],2)} {/if}<br />应付: {php echo number_format($g['realprice']/$g['total'],2)}
-        <br/>数量: {$g['total']}
+        <br/>数量: {$g['total']}           
                     </td>
-
+                    
                     {if $k==0}
                     <td rowspan="{php echo count($item['goods'])}" >
                          {ifp 'member.member.edit'}
@@ -289,7 +332,7 @@
                          {else}
                              {$item['nickname']}
                              {/if}
-
+                             
                              <br/>
                         {$item['addressdata']['realname']}<br/>{$item['addressdata']['mobile']}</td>
                     <td rowspan="{php echo count($item['goods'])}"    >
@@ -341,7 +384,7 @@
                             <tr>
                                 <td  style='border:none;text-align:right;'>余额抵扣：</td>
                                 <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductcredit2'],2)}</td>
-                            </tr>
+                            </tr> 
                             {/if}
                             {if $item['deductcommission']>0}
                             <tr>
@@ -354,7 +397,7 @@
                                 <tr>
                                     <td  style='border:none;text-align:right;'>{$card_set['gift_title']}抵扣：</td>
                                     <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['cardprice'],2)}</td>
-                                </tr>
+                                </tr> 
                                 {/if}
                             {/if}
                             {if $item['deductenough']>0}
@@ -380,7 +423,7 @@
                                 <td  style='border:none;text-align:right;'>卖家改运费：</td>
                                 <td  style='border:none;text-align:right;;'><span style="{if 0<$item['changedispatchprice']}color:green{else}color:red{/if}">{if 0<$item['changedispatchprice']}+{else}-{/if}￥{php echo abs($item['changedispatchprice'])}</span></td>
                             </tr>
-                                 {/if}
+                                 {/if} 
                         <tr>
                                 <td style='border:none;text-align:right;'>应收款：</td>
                                 <td  style='border:none;text-align:right;color:green;'>￥{php echo number_format($item['price'],2)}</td>
@@ -399,18 +442,18 @@
                             </tr>
                             {/if}  {/if}
                         </table>
-
-
-
+                 
+                 
+     
                     </td>
                     <td   rowspan="{php echo count($item['goods'])}" ><label class='label label-{$item['statuscss']}'>{$item['status']}</label><br />
                     <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id'], 'plugin' => $request['plugin'], 'openid' => $request['openid']))}">查看详情</a></td>
                      <td   rowspan="{php echo count($item['goods'])}" width="10%">
                     {template 'web/order/ops'}
                      </td>
-            {/if}
+            {/if} 
         </tr>
-
+        
     {/loop}
         <tr>
             <td colspan="4">
@@ -429,7 +472,7 @@
                     <a href='javascript:;' class='btn btn-default' onclick="commission_change('{$item['id']}')">修改佣金</a>
                     {/if}
                       {/if}
-
+                 
                  {/if}
             </td>
             <td colspan="4">
@@ -444,13 +487,13 @@
                     {/if}
                     {if $item['bonus_range_money'] > 0 && $item['bonus_area_money'] > 0}
                         <b>订单总分红:</b> {$item['bonus_money_all']}元
-                    {/if}
-                {/if}
+                    {/if} 
+                {/if} 
             </td>
         </tr>
    </table>
 {/loop}
-
+            
 {else}
 <div class="panel panel-default">
     <div class="panel-heading"></div>
@@ -492,12 +535,12 @@
         </table>
     </div>
 </div>
-{/if}
+{/if}  
 <div id="pager"></div>
 </div>
-</div>
+</div>                                                      
 <script language="javascript">
-
+    
 
     function send(btn){
         var modal =$('#modal-confirmsend');
@@ -523,7 +566,7 @@
         })
         $('#export').click(function(){
             $('#form_p').val("exportOrder");
-            $('#form1').submit();
+            $('#form1').submit();   
             $('#form_p').val("list");
         });
         $('.select2').select2({
@@ -537,11 +580,11 @@
         var itemid = $(btn).parent().find('.itemid').val();
         modal.find(':input[name=id]').val( itemid );
     }
-</script>
-
+</script> 
+                    
          {template 'web/order/modals'}
           {if  p('commission')}
-
+          
            {template 'commission/changecommission'}
           {/if}
         {template 'web/_footer'}
