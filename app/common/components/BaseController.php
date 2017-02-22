@@ -37,8 +37,8 @@ class BaseController
     public function render($filename, $data = [])
     {
         if (strpos($filename, '/') === false) {
-            $filename = strtolower(StringHelper::camelToMiddleLine($this->controller)) . '/' . $filename;
-            $this->modules && $filename = StringHelper::camelToMiddleLine(implode('/', $this->modules)) . '/' . $filename;
+            $filename = strtolower(StringHelper::camelCaseToSplit($this->controller)) . '/' . $filename;
+            $this->modules && $filename = StringHelper::camelCaseToSplit(implode('/', $this->modules)) . '/' . $filename;
         }
 
         $dataVar = ['var' => objectArray(\YunShop::app()), 'request' => objectArray(\YunShop::request())];
