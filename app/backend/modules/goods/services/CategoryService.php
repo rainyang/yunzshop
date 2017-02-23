@@ -29,7 +29,7 @@ class CategoryService
     /**
      * @param $categorys array
      * @param $uniacid
-     * @param string $parent_id
+     * @return mixed
      */
     public static function saveCategory($categorys, $uniacid)
     {
