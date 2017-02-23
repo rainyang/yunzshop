@@ -313,7 +313,7 @@ function xml_to_array($xml)
     return $arr;
 }
 
-function redirect($url, $sec = 0)
+function YZredirect($url, $sec = 0)
 {
     echo "<meta http-equiv=refresh content='{$sec}; url={$url}'>";
     exit;
@@ -1127,19 +1127,5 @@ if (!function_exists("getExitInfo")) {
 
         register_tick_function('write_dbg_stack');
         declare(ticks = 1);
-    }
-}
-if (! function_exists('array_get')) {
-    /**
-     * Get an item from an array using "dot" notation.
-     *
-     * @param  \ArrayAccess|array  $array
-     * @param  string  $key
-     * @param  mixed   $default
-     * @return mixed
-     */
-    function array_get($array, $key, $default = null)
-    {
-        return \util\Arr::get($array, $key, $default);
     }
 }
