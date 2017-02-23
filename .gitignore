@@ -9,3 +9,5 @@ composer.lock
 /vendor/
 /tests/
 .env
+/.phpstorm.meta.php
+/_ide_helper.php
