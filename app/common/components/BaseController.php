@@ -67,31 +67,34 @@ class BaseController
 
     /**
      * 生成后台url
-     * @param $route
+     * @param $route  路由
+     * @param $params 参数
      * @return string
      */
-    public function createWebUrl($route)
+    public function createWebUrl($route, $params = [])
     {
-        return Url::web($route);
+        return Url::web($route, $params);
     }
 
     /**
      * 生成插件url
-     * @param $route
+     * @param $route  路由
+     * @param $params 参数
      * @return string
      */
-    public function createPluginWebUrl($route)
+    public function createPluginWebUrl($route, $params = [])
     {
-        return Url::web($route);
+        return Url::web($route, $params);
     }
 
     /**
      * 生成前台Url
-     * @param $route
+     * @param $route  路由
+     * @param $params 参数
      * @return string
      */
-    public function createMobileUrl($route)
+    public function createMobileUrl($route, $params = [])
     {
-        return Url::app($route);
+        return Url::app($route, $params);
     }
 }
