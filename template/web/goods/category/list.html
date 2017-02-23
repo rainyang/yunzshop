@@ -59,7 +59,7 @@
                                                     </span>
                                             </div>
 
-                                            {if count($list['childrens'][$child['id']])>0 && 1}
+                                            {if count($list['childrens'][$child['id']])>0 && intval($shopset['catlevel'])==3}
                                             <!--if &&1 = intval($shopset['catlevel'])==3-->
                                             <ol class="dd-list"  style='width:100%;'>
                                                 {loop $list['childrens'][$child['id']] $third}
@@ -91,7 +91,7 @@
                                 <tr>
                                     <td>
                                         {ifp 'shop.category.add'}
-                                        <a href="#" class="btn btn-primary"><i class="fa fa-plus"></i> 添加新分类</a>
+                                        <a href="{php echo $this->createWebUrl('goods.category.add-category', ['parent_id'=>'2']);}" class="btn btn-primary"><i class="fa fa-plus"></i> 添加新分类</a>
                                         {/if}
                                         {ifp 'shop.category.edit'}
                                         <input id="save_category" type="button" class="btn btn-default" value="保存分类修改">
@@ -112,7 +112,7 @@
 <script language='javascript'>
 
     $(function(){
-        var depth = 3;//{php echo intval($shopset['catlevel'])};
+        var depth = {php echo intval($shopset['catlevel'])};
         if(depth<=0) {
             depth =2;
         }

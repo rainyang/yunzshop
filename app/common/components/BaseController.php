@@ -70,9 +70,9 @@ class BaseController
      * @param $route
      * @return string
      */
-    public function createWebUrl($route)
+    public function createWebUrl($route, $params = [])
     {
-        return Url::web($route);
+        return Url::web($route, $params);
     }
 
     /**
