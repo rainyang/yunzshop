@@ -26,8 +26,11 @@ class TestMemberController extends BaseController
 
     public function testLogin()
     {
+        //表单数据交验
         $validator = TestMember::validator(Input::get());
         print_r($validator->messages());
+
+
         $this->render('test', ['a' => '123456']);
     }
 
