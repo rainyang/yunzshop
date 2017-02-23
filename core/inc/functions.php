@@ -349,7 +349,7 @@ function isEnablePlugin($name)
             }
         }
     } else {
-        return pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_plugin') . ' where identity=:identity and status=1', array(
+        return pdo_fetchcolumn("select count(*) from " . tablename('yz_plugin') . ' where identity=:identity and status=1', array(
             ':identity' => $name
         ));
 

@@ -136,7 +136,7 @@ if (!class_exists('PermModel')) {
 			global $_W, $_GPC;
 			$permset = m('cache')->getString('permset', 'global');
 			$acid = pdo_fetchcolumn("SELECT acid FROM " . tablename('account_wechats') . " WHERE `uniacid`=:uniacid LIMIT 1", array(':uniacid' => $_W['uniacid']));
-			$ac_perm = pdo_fetch('select  plugins from ' . tablename('sz_yi_perm_plugin') . ' where acid=:acid limit 1', array(':acid' => $acid));
+			$ac_perm = pdo_fetch('select  plugins from ' . tablename('yz_perm_plugin') . ' where acid=:acid limit 1', array(':acid' => $acid));
 			if (empty($permset) && empty($ac_perm)) {
 				return true;
 			}
