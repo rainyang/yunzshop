@@ -9,6 +9,8 @@
 namespace app\common\models;
 
 
+use Illuminate\Contracts\Validation\Validator;
+
 class TestMemberValidator
 {
     public static function rule()
@@ -18,5 +20,10 @@ class TestMemberValidator
             'email'=>'required|email|max:25',
             'password'=>'required|min:6|confirmed',
         ];
+    }
+
+    public static function validator(array $data)
+    {
+        return Validator::make($data, self::rule());
     }
 }

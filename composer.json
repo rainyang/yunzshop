@@ -8,13 +8,12 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=5.5.9",
+    "laravel/framework": "5.3.*",
     "phpunit/phpunit": "^5.5",
     "tencentyun-api/qcloudapi-sdk-php":"*",
-    "illuminate/database":"*",
-    "illuminate/validation":"*",
-    "illuminate/events":"*",
     "filp/whoops": "^2.1",
-    "monolog/monolog": "^1.22"
+    "monolog/monolog": "^1.22",
+    "prettus/laravel-validation": "1.1.*"
   },
   "config": {
     "process-timeout": 1800
@@ -25,7 +24,8 @@
   "autoload": {
 
     "psr-4": {
-      "app\\": "app/"
+      "app\\": "app/",
+      "App\\": "app/"
     }
   },
   "repositories": {

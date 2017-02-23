@@ -10,11 +10,19 @@ namespace app\backend\modules\member\controllers;
 
 
 use app\common\components\BaseController;
+use Illuminate\Validation\Validator;
+
 
 class TestMemberController extends  BaseController
 {
+
     public function testLogin()
     {
         $this->render('test',['a'=>'123456']);
+    }
+
+    public function testStore()
+    {
+
     }
 }

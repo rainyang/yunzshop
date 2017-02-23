@@ -9,9 +9,8 @@
 namespace app\backend\modules\member\models;
 
 
-use app\common\models\Member;
 
-class TestMember extends Member
+class TestMember extends \app\common\models\TestMember
 {
 
 }

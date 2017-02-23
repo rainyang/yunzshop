@@ -13,10 +13,13 @@ require_once SZ_YI_INC . 'core.php';
 require_once SZ_YI_INC . 'plugin/plugin.php';
 require_once SZ_YI_INC . 'plugin/plugin_model.php';
 
+//include __DIR__ . '/app/index.php';
+//exit;
+
 // 载入composer的autoload文件
 include __DIR__ . '/vendor/autoload.php';
 
-use Illuminate\Database\Capsule\Manager as Capsule; //如果你不喜欢这个名称，as DB;就好
+use Illuminate\Database\Capsule\Manager as DB;
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
@@ -54,7 +57,7 @@ class YunShop
             'collation' => 'utf8_unicode_ci',
             'prefix' => self::app()->config['db']['master']['tablepre'],
         ];
-        $capsule = new Capsule;
+        $capsule = new DB;
         // 创建链接
         $capsule->addConnection($database);
         // 设置全局静态可访问
@@ -63,6 +66,8 @@ class YunShop
         $capsule->bootEloquent();
 
         self::parseRoute();
+
+
     }
 
     public static function arrayMerge($a, $b)
@@ -235,6 +240,15 @@ class Component
             $this->values[$name] = null;
         }
         return $this->values[$name];
+    }
+
+    public function set($name, $value){
+        $this->values[$name] = $value;
+        return $this;
+    }
+
+    public function get(){
+        return $this->values;
     }
 }
 
