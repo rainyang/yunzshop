@@ -8,8 +8,9 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\modules\McMemberModel;
 
-class BaseMember
+class McMemberService
 {
     protected $id;
     protected $openid;

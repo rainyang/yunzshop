@@ -6,11 +6,14 @@
  * Time: 下午4:53
  */
 
-namespace app\frontend\modules\member\models;
+/**
+ * 会员表
+ */
+namespace app\modules;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Member extends Model
+class McMemberModel extends Model
 {
     public $table = 'mc_members';
 }

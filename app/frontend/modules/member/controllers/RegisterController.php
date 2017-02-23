@@ -9,7 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
-use app\frontend\modules\member\services\OfficeAccountMember;
+use app\frontend\modules\member\services\OfficeAccountMemberService;
 
 class RegisterController extends BaseController
 {
@@ -17,11 +17,10 @@ class RegisterController extends BaseController
 
     public function index()
     {
-        $oa_wetcha = new OfficeAccountMember();
+        $oa_wetcha = new OfficeAccountMemberService();
 
         $info = $oa_wetcha->getUserInfo();
-    echo '<pre>';print_r(\YunShop::request());exit;
-        echo 1;exit;
+    echo '<pre>';print_r($info);exit;
     }
 
     private function validate()

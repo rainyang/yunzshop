@@ -8,10 +8,10 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\BaseMember;
-use app\frontend\modules\member\models\Member;
+use app\frontend\modules\member\services\McMemberService;
+use app\frontend\modules\member\models\McMappingFansModel;
 
-class OfficeAccountMember extends BaseMember
+class OfficeAccountMemberService extends McMemberService
 {
     public function __construct()
     {
@@ -19,6 +19,6 @@ class OfficeAccountMember extends BaseMember
 
     public function getUserInfo()
     {
-        return  Member::first();
+        return  McMappingFansModel::first();
     }
 }
