@@ -9,12 +9,15 @@
 namespace app\backend\modules\member\controllers;
 
 
+use app\backend\modules\member\models\TestMember;
 use app\common\components\BaseController;
 use app\common\events\TestFailEvent;
 use app\common\events\UserActionEvent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use Validator;
+use Schema;
 
 
 class TestMemberController extends BaseController
@@ -23,6 +26,8 @@ class TestMemberController extends BaseController
 
     public function testLogin()
     {
+        $validator = TestMember::validator(Input::get());
+        print_r($validator->messages());
         $this->render('test', ['a' => '123456']);
     }
 
@@ -36,12 +41,20 @@ class TestMemberController extends BaseController
 
         //数据检验
         $messages = [
-            'required' => 'The {field} has to be 6 chars long!'
+            'required' => ' :attribute不能为空!',
+            'min' => ' :attribute不能少于:min!',
         ];
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|unique:posts|max:255',
-            'body' => 'required',
+            'body' => 'required|min:3',
         ],$messages);
+
+        //自定义字段名
+        $niceNames =['title' => '标题',];
+        $validator->setAttributeNames($niceNames);
+
+
         //获取单个错误信息
         print_r($validator->messages()->get('title'));
         echo "<br/>";
