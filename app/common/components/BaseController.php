@@ -4,6 +4,9 @@ namespace app\common\components;
 
 use app\common\helpers\StringHelper;
 use app\common\helpers\Url;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller;
+use Validator;
 
 /**
  * controller基类
@@ -12,14 +15,21 @@ use app\common\helpers\Url;
  * Date: 21/02/2017
  * Time: 21:20
  */
-class BaseController
+class BaseController extends  Controller
 {
+    use ValidatesRequests;
+
     //当前模块名数组
     public $modules = [];
     //当前控制器
     public $controller = '';
     //当前action
     public $action = '';
+
+    protected function formatValidationErrors(Validator $validator)
+    {
+        return $validator->errors()->all();
+    }
 
     /**
      * 渲染视图

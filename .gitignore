@@ -3,9 +3,9 @@
 /core/model/user.php
 sh.exe.stackdump
 /core/inc/plugin/vendor/phpunit
-vendor/
 tmp/
 .idea/
 composer.lock
 /vendor/
-/vendor/composer/
+/tests/
+.env

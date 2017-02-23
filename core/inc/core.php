@@ -195,7 +195,7 @@ class Core extends WeModuleSite
                 if (empty($member) || $member['mobile'] == ""){
                     if ($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode') {
                         $bindmobileurl = $this->createMobileUrl('member/bindmobile');
-                        redirect($bindmobileurl);
+                        YZredirect($bindmobileurl);
                         exit();
                     }
                 }
@@ -321,7 +321,7 @@ class Core extends WeModuleSite
         }
         
     }
-    public function createMobileUrl($do, $query = array(), $noredirect = true)
+    public function createMobileUrl($do, $query = array(), $noYZredirect = true)
     {
         global $_W, $_GPC;
         $do = explode('/', $do);
