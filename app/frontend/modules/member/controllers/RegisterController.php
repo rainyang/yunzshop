@@ -10,9 +10,9 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
 use app\frontend\modules\member\services\factory\MemberFactory;
-use app\modules\MemberMcModel;
-use app\modules\SyssetModel;
-use app\modules\MemberModel;
+use app\frontend\modules\member\models\MemberModel;
+use app\backend\modules\system\modules\SyssetModel;
+use app\frontend\modules\member\models\SubMemberModel;
 
 class RegisterController extends BaseController
 {
@@ -32,6 +32,7 @@ class RegisterController extends BaseController
         $oa_wetcha = MemberFactory::create('OfficeAccount');
 
         $info = $oa_wetcha->getUserInfo();
+
     echo '<pre>';print_r($info);exit;
     }
 
@@ -44,13 +45,15 @@ class RegisterController extends BaseController
         //访问来自app分享
         $from = !empty(\YunShop::request()->from) ? \YunShop::request()->from : '';
 
+        $yzShopSet = array('isreferral'=>0); //m('common')->getSysset('shop');
+
                //islogined;
 
         $app = $this->getAppSet();
 
         if (!(\YunShop::app()->isajax) && !(\YunShop::app()->ispost) && $this->_validate()) {
 
-            $member_info = MemberMcModel::getId($uniacid, $mobile);
+            $member_info = MemberModel::getId($uniacid, $mobile);
 
             if (!empty($member_info)) {
                 return show_json(0, '该手机号已被注册！');
@@ -59,10 +62,12 @@ class RegisterController extends BaseController
             //判断APP,PC是否开启推荐码功能
             if (is_app()) {
                 $isreferral = $app['accept'];
+            } else {
+                $isreferral = $yzShopSet['isreferral'];
             }
 
             if ($isreferral == 1 && !empty(\YunShop::request()->referral)) {
-                $referral = MemberModel::getInfo($uniacid, \YunShop::request()->referral);
+                $referral = SubMemberModel::getInfo($uniacid, \YunShop::request()->referral);
 
                 if (!$referral) {
                     return show_json(0, '推荐码无效！');
@@ -71,7 +76,7 @@ class RegisterController extends BaseController
                 }
             }
 
-            $member = new MemberMcModel();
+            $member = new MemberModel();
             $member->uniacid = $uniacid;
             $member->openid  = 'u'.md5($mobile);
             $member->mobile  = $mobile;
@@ -91,7 +96,7 @@ class RegisterController extends BaseController
                         'isagent' => 1
                     );
                     if($referral['member_id'] != 0){
-                        p('commission')->model->upgradeLevelByAgent($referral['id']);
+                        //todo //p('commission')->model->upgradeLevelByAgent($referral['id']);
                     }
 
                     $referral->agentid = $referral['id'];
@@ -101,7 +106,8 @@ class RegisterController extends BaseController
 
                     $referral->save();
 
-                    m('member')->responseReferral($this->yzShopSet, $referral, $member);
+                    $yzShopSet = m('common')->getSysset('shop');
+                     //todo   //m('member')->responseReferral($yzShopSet, $referral, $member);
                 }
             }
 
@@ -113,11 +119,11 @@ class RegisterController extends BaseController
             setcookie($cookieid, base64_encode($member->openid));
             if(empty($preUrl))
             {
-                $preUrl = $this->createMobileUrl('shop');
+                $preUrl =Url::app('shop.index');
             }
 
             if ($from == 'app') {
-                $preUrl = $this->createMobileUrl('shop/download');
+                $preUrl = Url::app('shop.download');
             }
 
             return show_json(1, $preUrl);

@@ -9,7 +9,7 @@
 /**
  * 微信平台配置信息表
  */
-namespace app\modules;
+namespace app\backend\modules\system\modules;
 
 use Illuminate\Database\Eloquent\Model;
 

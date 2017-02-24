@@ -9,17 +9,16 @@
 /**
  * 会员表
  */
-namespace app\modules;
+namespace app\frontend\modules\member\models;
 
-use app\frontend\models\Member;
 use Illuminate\Database\Eloquent\Model;
 
-class MemberMcModel extends Model
+class MemberModel extends Model
 {
     public $table = 'mc_members';
 
     public static function getId($uniacid, $mobile)
     {
-        return MemberMcModel::where('uniacid', $uniacid)->where('mobile', $mobile)->get();
+        return self::where('uniacid', $uniacid)->where('mobile', $mobile)->get();
     }
 }

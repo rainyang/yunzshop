@@ -9,7 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
-use app\modules\MemberMcModel;
+use app\frontend\modules\member\models\MemberModel;
 
 class LoginController extends BaseController
 {
@@ -26,14 +26,14 @@ class LoginController extends BaseController
             $password = $memberdata['password'];
             $uniacid  = \YunShop::app()->uniacid;
 
-            $info = MemberMcModel::where('uniacid', $uniacid)
+            $info = MemberModel::where('uniacid', $uniacid)
                                    ->where('mobile', $mobile)
                                    ->where('password', md5($password))->first;
 
             if(isMobile()){
-                $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] : $this->createMobileUrl('member');
+                $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] :  Url::app('member.index');
             }else{
-                $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] : $this->createMobileUrl('order');
+                $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] : Url::app('order.index');
             }
 
             if($info){
@@ -47,19 +47,17 @@ class LoginController extends BaseController
                 $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
 
                 if (is_app()) {
-                    setcookie($cookieid, base64_encode($info['openid']), time()+3600*24*7);
+                    setcookie($cookieid, base64_encode($info['uid']), time()+3600*24*7);
                 } else {
-                    setcookie($cookieid, base64_encode($info['openid']));
+                    setcookie($cookieid, base64_encode($info['uid']));
                 }
 
                 setcookie('member_mobile', $info['mobile']);
 
                 if(!isMobile()){
                     $openid = base64_decode($_COOKIE[$cookieid]);
-                    $member_info = pdo_fetch('select realname,nickname,mobile from ' . tablename('sz_yi_member') . ' where   uniacid=:uniacid and openid=:openid limit 1', array(
-                            ':uniacid' => $uniacid,
-                            ':openid' => $openid,
-                    ));
+                    $member_info = MemberModel::select(array('realname', 'nickname', 'mobile'))->where('uniacid', $uniacid)->where('mobile', $mobile)->get();
+
                     $member_name = !empty($member_info['realname']) ? $member_info['realname'] : $member_info['nickname'];
                     $member_name = !empty($member_name) ? $member_name : "未知";
                     setcookie('member_name', base64_encode($member_name));

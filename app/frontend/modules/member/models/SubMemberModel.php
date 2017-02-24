@@ -9,16 +9,16 @@
 /**
  * 会员辅助表
  */
-namespace app\modules;
+namespace app\frontend\modules\member\models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MemberModel extends Model
+class SubMemberModel extends Model
 {
     public $table = 'yz_member';
 
     public static function getInfo($uniacid, $referralsn)
     {
-        return MemberModel::where('uniacid', $uniacid)->where('referralsn', $referralsn)->first();
+        return self::where('uniacid', $uniacid)->where('referralsn', $referralsn)->first();
     }
 }

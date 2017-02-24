@@ -9,7 +9,7 @@
 /**
  * QQ平台配置表
  */
-namespace app\modules;
+namespace app\backend\modules\system\modules;
 
 use Illuminate\Database\Eloquent\Model;
 
