@@ -24,14 +24,14 @@ class TestMember extends  Model
      *
      * @var array
      */
-    protected $fillable = ['name'];
+    //protected $fillable = [''];
 
     /**
      *  不可填充字段.
      *
      * @var array
      */
-    protected $guarded = ['price'];
+    protected $guarded = [''];
 
     /**
      * 定义结果中隐藏字段.
@@ -73,6 +73,18 @@ class TestMember extends  Model
     }
 
     /**
+     * 字段规则
+     * @return array
+     */
+    public static function rules()
+    {
+        return [
+            'title' => 'required|unique:posts|max:255',
+            'body' => 'required|min:3',
+        ];
+    }
+
+    /**
      * 校验表单数据
      *
      * @param $data
@@ -80,10 +92,7 @@ class TestMember extends  Model
      */
     public static function validator($data)
     {
-        $validator = Validator::make($data, [
-            'title' => 'required|unique:posts|max:255',
-            'body' => 'required|min:3',
-        ],self::validationMessages());
+        $validator = Validator::make($data, self::rules(), self::validationMessages());
 
         //自定义字段名
         $validator->setAttributeNames(self::atributeNames());
