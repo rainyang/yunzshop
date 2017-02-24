@@ -1,6 +1,6 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
-    {template 'web/shop/tabs'}
+
     <div class="main rightlist">
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">
@@ -70,7 +70,7 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类图片</label>
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.category' $item}
-                        {php echo tpl_form_field_image('category[thumb]', $item['thumb'])}
+                            {php echo app\common\helpers\ImageHelper::tplFormFieldImage('category[thumb]', $item['thumb'])}
                             <span class="help-block">建议尺寸: 100*100，或正方型图片 </span>
                         {else}
                             {if !empty($item['thumb'])}
@@ -98,7 +98,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">移动端分类广告</label>
                         <div class="col-sm-9 col-xs-12">
                             {ife 'shop.category' $item}
-                                {php echo tpl_form_field_image('category[adv_img]', $item['adv_img'])}
+                                {php echo app\common\helpers\ImageHelper::tplFormFieldImage('category[adv_img]', $item['adv_img'])}
                                 <span class="help-block">建议尺寸: 640*320</span>
                             {else}
                                 {if !empty($item['advimg'])}

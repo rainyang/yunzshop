@@ -28,20 +28,21 @@
                 <a class="dropdown-toggle" href=""><i class='iconfont icon-heart'></i> 模块名</a>
 
             </li>
+
             {ifp 'shop.goods.view'}<li><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle">商品</a></li>{/if}
-            </li>
+
 
 
 
             {ifp 'member'}
-            <li {if $request['do'] == 'member'} class="active" {/if}>
+            <li >
             <a href='{php echo $this->createWebUrl('member/list')}' class="dropdown-toggle" > 会员 <i class="fa fa-angle-down"></i></a>
             </li>
             {/if}
 
 
             {ifp 'statistics'}
-            <li {if $request['do'] == 'statistics' && empty($request['plugin'])} class="active" {/if}>
+            <li >
             <a href='{php echo $this->createWebUrl('statistics/sale')}' class="dropdown-toggle" > 数据 <i class="fa fa-angle-down"></i></a>
             </li>
             {/if}

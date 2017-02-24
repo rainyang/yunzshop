@@ -27,8 +27,18 @@ class CategoryController extends BaseController
 
     public function addCategory()
     {
-        $item = ['display_order' => 0];
-        
+        $item = [
+            'id'            => '',
+            'name'          => '',
+            'thumb'         => '',
+            'description'   => '',
+            'adv_img'       => '',
+            'adv_url'       => '',
+            'is_home'       => 0,
+            'enabled'       => 0,
+            'display_order' => 0
+        ];
+
         $this->render('info', [
             'item' => $item,
             'level' => '1'

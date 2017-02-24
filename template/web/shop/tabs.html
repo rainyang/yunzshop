@@ -1,35 +1,12 @@
 <div class="ulleft-nav">
 <div class="addtit-name"><a  class="btn btn-success ng-scope"  href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class="fa fa-plus"></i> 发布商品</a></div>
 <ul class="nav nav-tabs">
-    {ifp 'shop.goods.view'}<li {if ($request['p'] == 'goods' || empty($request['p'])) && $request['status'] == 1} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>1))}">出售中商品</a></li>{/if}
-    {ifp 'shop.goods.view'}<li {if ($request['p'] == 'goods' || empty($request['p'])) && $request['status'] == 0} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>0))}">已下架商品</a></li>{/if}
-    {ifp 'shop.category.view'}<li {if $request['p'] == 'category'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/category')}">商品分类</a></li>{/if}
-    {if $shopset['category2']==1}{ifp 'shop.category.view'}<li {if $request['p'] == 'category2'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/category2')}">{php echo $shopset['category2name']}分类</a></li>{/if}{/if}
-    {ifp 'shop.comment.view'}<li {if $request['p'] == 'comment'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/comment')}">评价管理</a></li>{/if}
+    {ifp 'shop.goods.view'}<li class="active" ><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>1))}">出售中商品</a></li>{/if}
+    {ifp 'shop.goods.view'}<li ><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>0))}">已下架商品</a></li>{/if}
+    {ifp 'shop.category.view'}<li ><a href="{php echo $this->createWebUrl('shop/category')}">商品分类</a></li>{/if}
+    {ifp 'shop.comment.view'}<li ><a href="{php echo $this->createWebUrl('shop/comment')}">评价管理</a></li>{/if}
     <li class="step"></li>
 
-	{ifp 'virtual.temp'}<li {if $request['method']=='temp' && $request['p'] == 'virtual' }class="active"{/if}><a href="{php echo $this->createPluginWebUrl('virtual/temp')}" style="cursor: pointer;">虚拟卡密</a></li>{/if}
-    {ifp 'virtual.category'}<li {if $request['method']=='category' && $request['p'] == 'virtual'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('virtual/category')}" style="cursor: pointer;">卡密分类</a></li>{/if}
-     {ifp 'virtual.data'}
-    {if $request['method']=='data' && $operation=='post' && $request['p'] == 'virtual'}<li class="active"><a href="javascript:;" style="cursor: pointer;">添加数据</a></li>{/if}
-    {if $request['method']=='data' && $operation=='display' && $request['p'] == 'virtual'}<li class="active"><a href="javascript:;" style="cursor: pointer;">数据列表</a></li>{/if} 
-    {/if}
-     {ifp 'virtual.set'}<li {if $request['method']=='set' && $request['p'] == 'virtual'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('virtual/set')}" style="cursor: pointer;">卡密设置</a></li>{/if}
 
-    <li class="step"></li>
-    {if $taobao_stataus}
-    <li {if $request['p'] == 'taobao' && $request['method'] == 'index'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('taobao')}">淘宝商品导入</a></li>
-    <li {if $request['p'] == 'taobao' && $request['method'] == 'jingdong'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('taobao/jingdong')}">京东商品导入</a></li>
-    <li {if $request['p'] == 'taobao' && $request['method'] == 'one688'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('taobao/one688')}">1688商品导入</a></li>
-    <li {if $request['p'] == 'taobao' && $request['method'] == 'kumei'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('taobao/kumei')}">酷美乐购商品导入</a></li>
-    {/if}
-<!--
-    {ifp 'shop.dispatch.view'}<li {if $request['p'] == 'dispatch'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/dispatch')}">配送方式</a></li>{/if}
-    {ifp 'shop.adv.view'}<li {if $request['p'] == 'adv'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adv')}">幻灯片管理</a></li>{/if}
-    {ifp 'shop.notice.view'}<li {if $request['p'] == 'notice'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/notice')}">公告管理</a></li>{/if}
-    {ifp 'shop.comment.view'}<li {if $request['p'] == 'comment'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/comment')}">评价管理</a></li>{/if}
-    {ifp 'shop.adpc.view'}<li {if $request['p'] == 'adpc'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adpc')}">广告管理</a></li>{/if}
-    {ifp 'shop.refundaddress.view'}<li {if $request['p'] == 'refundaddress'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/refundaddress')}">退货地址</a></li>{/if}
--->
 </ul>
 </div>
