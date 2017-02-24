@@ -54,7 +54,9 @@ class BaseController extends  Controller
         $dataVar = ['var' => objectArray(\YunShop::app()), 'request' => objectArray(\YunShop::request())];
         is_array($data) && $dataVar = array_merge($data, $dataVar);
         extract($dataVar);
-
+        $var =array_shift($var);
+        $request =array_shift($request);
+        
         include $this->template($filename, $data);
         return ;
     }

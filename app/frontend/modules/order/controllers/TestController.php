@@ -1,5 +1,5 @@
 <?php
-namespace app\backend\modules\order\controllers;
+namespace app\frontend\modules\order\controllers;
 
 use app\common\helpers\Url;
 /**
