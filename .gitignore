@@ -11,3 +11,8 @@ composer.lock
 .env
 /.phpstorm.meta.php
 /_ide_helper.php
+/vendor/composer/autoload_static.php
+/vendor/autoload.php
+/vendor/composer/installed.json
+/vendor/composer/autoload_real.php
+/vendor/composer/ClassLoader.php
