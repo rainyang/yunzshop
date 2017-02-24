@@ -184,8 +184,6 @@ class YunRequest extends YunComponent
         global $_GPC;
         $this->values = $_GPC;
     }
-
-
 }
 
 class YunApp extends YunComponent
@@ -196,7 +194,7 @@ class YunApp extends YunComponent
     {
         global $_W;
         $this->values = $_W;
-        $this->var = $_W;
+        //$this->var = $_W;
     }
 
 }
