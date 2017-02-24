@@ -172,6 +172,8 @@ return [
         app\common\providers\EventServiceProvider::class,
         app\common\providers\RouteServiceProvider::class,
 
+        Laracasts\Flash\FlashServiceProvider::class,
+
     ],
 
     /*

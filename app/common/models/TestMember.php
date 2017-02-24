@@ -11,10 +11,8 @@ namespace app\common\models;
 
 use app\common\observers\TestMemberObserver;
 use Eloquent;
-use Illuminate\Database\Eloquent\Model;
-use Validator;
 
-class TestMember extends  Model
+class TestMember extends  BaseModel
 {
     public $table = 'mc_members';
 
@@ -48,18 +46,6 @@ class TestMember extends  Model
     protected $visible = ['first_name', 'last_name'];
 
     /**
-     * 自定义显示错误信息
-     * @return array
-     */
-    public static function validationMessages()
-    {
-        return [
-            'required' => ' :attribute不能为空!',
-            'min' => ' :attribute不能少于:min!',
-        ];
-    }
-
-    /**
      * 自定义字段名
      * 可使用
      * @return array
@@ -82,22 +68,6 @@ class TestMember extends  Model
             'title' => 'required|unique:posts|max:255',
             'body' => 'required|min:3',
         ];
-    }
-
-    /**
-     * 校验表单数据
-     *
-     * @param $data
-     * @return \Illuminate\Validation\Validator
-     */
-    public static function validator($data)
-    {
-        $validator = Validator::make($data, self::rules(), self::validationMessages());
-
-        //自定义字段名
-        $validator->setAttributeNames(self::atributeNames());
-
-        return $validator;
     }
 
     /**
