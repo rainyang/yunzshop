@@ -11,41 +11,38 @@ namespace app\backend\modules\goods\models;
  */
 class Category extends \app\common\models\Category
 {
-
-    /**
-     * @param $category 分类数组
-     * @param $uniacid
-     */
-    public static function editAllCategorys($categorys, $uniacid)
+    public $timestamps = false;
+    
+    public static function saveAddCategory($category)
     {
-        //@todo 事务处理
-        foreach ($categorys as $category) {
-            self::where('uniacid', $uniacid)
-                ->where('id', $category['id'])
-                ->update(['parent_id' => $category['parent_id'], 'display_order' => $category['display_order'], 'level' => $category['level']]);
-        }
-    }
-
-    /**
-     * @param $ids array
-     * @param $uniacid
-     * @return mixed
-     */
-    public static function delCategorys($ids, $uniacid)
-    {
-        $data = self::whereNotIn('id', $ids)
-            ->where('uniacid', $uniacid)
-            ->delete();
-        return $data;
+        return self::insert($category);
     }
 
     /**
      * @param $category
+     * @param $id
      * @return mixed
      */
-    public static function saveAddCategory($category)
+    public static function saveEditCategory($category, $id)
     {
-        $data = self::insert($category);
-        return $data;
+        return self::where('id', $id)->update($category);
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Model|null|static
+     */
+    public static function getCategory($id)
+    {
+        return self::where('id', $id)->first();
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public static function daletedCategory($id)
+    {
+        return self::where('id', $id)->orWhere('parent_id', $id)->delete();
     }
 }
