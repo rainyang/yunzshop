@@ -4,6 +4,9 @@ namespace app\common\components;
 
 use app\common\helpers\StringHelper;
 use app\common\helpers\Url;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller;
+use Validator;
 
 /**
  * controller基类
@@ -12,14 +15,21 @@ use app\common\helpers\Url;
  * Date: 21/02/2017
  * Time: 21:20
  */
-class BaseController
+class BaseController extends  Controller
 {
+    use ValidatesRequests;
+
     //当前模块名数组
     public $modules = [];
     //当前控制器
     public $controller = '';
     //当前action
     public $action = '';
+
+    protected function formatValidationErrors(Validator $validator)
+    {
+        return $validator->errors()->all();
+    }
 
     /**
      * 渲染视图
@@ -37,14 +47,16 @@ class BaseController
     public function render($filename, $data = [])
     {
         if (strpos($filename, '/') === false) {
-            $filename = strtolower(StringHelper::camelToMiddleLine($this->controller)) . '/' . $filename;
-            $this->modules && $filename = StringHelper::camelToMiddleLine(implode('/', $this->modules)) . '/' . $filename;
+            $filename = strtolower(StringHelper::camelCaseToSplit($this->controller)) . '/' . $filename;
+            $this->modules && $filename = StringHelper::camelCaseToSplit(implode('/', $this->modules)) . '/' . $filename;
         }
 
         $dataVar = ['var' => objectArray(\YunShop::app()), 'request' => objectArray(\YunShop::request())];
         is_array($data) && $dataVar = array_merge($data, $dataVar);
         extract($dataVar);
-
+        $var =array_shift($var);
+        $request =array_shift($request);
+        
         include $this->template($filename, $data);
         return ;
     }
@@ -67,7 +79,8 @@ class BaseController
 
     /**
      * 生成后台url
-     * @param $route
+     * @param $route  路由
+     * @param $params 参数
      * @return string
      */
     public function createWebUrl($route, $params = [])
@@ -77,21 +90,23 @@ class BaseController
 
     /**
      * 生成插件url
-     * @param $route
+     * @param $route  路由
+     * @param $params 参数
      * @return string
      */
-    public function createPluginWebUrl($route)
+    public function createPluginWebUrl($route, $params = [])
     {
-        return Url::web($route);
+        return Url::web($route, $params);
     }
 
     /**
      * 生成前台Url
-     * @param $route
+     * @param $route  路由
+     * @param $params 参数
      * @return string
      */
-    public function createMobileUrl($route)
+    public function createMobileUrl($route, $params = [])
     {
-        return Url::app($route);
+        return Url::app($route, $params);
     }
 }

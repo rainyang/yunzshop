@@ -25,42 +25,13 @@
     <div class="topmenu_header">
         <ul class="nav navbar-nav">
             <li style="margin-right:40px">
-                <a class="dropdown-toggle" href="{php echo url('home/welcome/ext',array('m'=>'sz_yi'))}"><i class='iconfont icon-heart'></i> {php echo $this->module['title']}</a>
+                <a class="dropdown-toggle" href=""><i class='iconfont icon-heart'></i> 模块名</a>
 
             </li>
-            {ifp 'shop.goods.view'}<li {if ($request['p'] == 'goods' || empty($request['p'])) && $request['do'] != 'order' && empty($request['plugin'])} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle">商品</a></li>{/if}
+            {ifp 'shop.goods.view'}<li><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle">商品</a></li>{/if}
             </li>
-            {if p('commission')}
-            {ifpp 'commission'}
-            {ifp 'commission'}
-            <li {if $request['p'] == 'commission'} class="active" {/if}>
-            <a href='{php echo $this->createPluginWebUrl('commission')}' class="dropdown-toggle" > <span>分销</span> <i class="fa fa-angle-down"></i></a>
-            </li>
-            {/if}
-            {/if}
-            {/if}
-            {if p('bonus')}
-            {ifpp 'bonus'}
-            {ifp 'bonus'}
-            <li {if $request['p'] == 'bonus'} class="active" {/if}>
-            <a href='{php echo $this->createPluginWebUrl('bonus')}' class="dropdown-toggle" ><span>分红</span><i class="fa fa-angle-down"></i></a>
-            </li>
-            {/if}
-            {/if}
-            {/if}
 
-            {if p('supplier')}
-            <?php $perm_role = p('supplier')->verifyUserIsSupplier($var['uid'])?>
-            {if empty($perm_role)}
-            {ifpp 'supplier'}
-            {ifpp 'supplier'}
-            <li {if $request['p'] == 'supplier'} class="active" {/if}>
-            <a href='{php echo $this->createPluginWebUrl('supplier')}' class="dropdown-toggle" ><span>供应商</span><i class="fa fa-angle-down"></i></a>
-            </li>
-            {/if}
-            {/if}
-            {/if}
-            {/if}
+
 
             {ifp 'member'}
             <li {if $request['do'] == 'member'} class="active" {/if}>
@@ -68,50 +39,13 @@
             </li>
             {/if}
 
-            {ifp 'order'}
-            <li {if $request['do'] == 'order' && empty($request['plugin'])} class="active" {/if}>
-            <a href='{php echo $this->createWebUrl('order', array('op' => 'display'))}' class="dropdown-toggle" > 订单 <i class="fa fa-angle-down"></i></a>
-            </li>
-            {/if}
-            {ifp 'finance'}
-            <li {if $request['do'] == 'finance'} class="active" {/if}>
-            <a href='{php echo $this->createWebUrl('finance/log',array('type'=>0))}' class="dropdown-toggle" > 财务 <i class="fa fa-angle-down"></i></a>
-            </li>
-            {/if}
 
             {ifp 'statistics'}
             <li {if $request['do'] == 'statistics' && empty($request['plugin'])} class="active" {/if}>
             <a href='{php echo $this->createWebUrl('statistics/sale')}' class="dropdown-toggle" > 数据 <i class="fa fa-angle-down"></i></a>
             </li>
             {/if}
-            {if $var['role'] != 'operator'}
-            <li class="dropdown">
-                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-group"></i>{$var['account']['name']} <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="{url 'account/post' array('uniacid' => $var['uniacid'])}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 编辑当前账号资料</a></li>
-                    <li><a href="{url 'account/display'}" target="_blank"><i class="fa fa-cogs fa-fw"></i> 管理其它公众号</a></li>
-                    <li><a href="{url 'utility/emulator'}" target="_blank"><i class="fa fa-mobile fa-fw"></i> 模拟测试</a></li>
-                </ul>
-            </li>
-            {/if}
-            <li class="dropdown" style="float:right;margin-right:15px">
-                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:185px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-user"></i>{$var['user']['username']} ({if $var['role'] == 'founder'}系统管理员{elseif $var['role'] == 'manager'}公众号管理员{else}公众号操作员{/if}) <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    {if $var['role'] != 'operator'}
-                    <li><a href="{url 'user/profile/profile'}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 我的账号</a></li>
-                    <li class="divider"></li>
-                    <li><a href="{url 'system/welcome'}" target="_blank"><i class="fa fa-sitemap fa-fw"></i> 系统选项</a></li>
-                    <li><a href="{url 'system/welcome'}" target="_blank"><i class="fa fa-cloud-download fa-fw"></i> 自动更新</a></li>
-                    <li><a href="{url 'system/updatecache'}" target="_blank"><i class="fa fa-refresh fa-fw"></i> 更新缓存</a></li>
-                    <li class="divider"></li>
-                    {/if}
-                    {if empty($perm_role)}
-                    <li><a href="{url 'user/logout'}"><i class="fa fa-sign-out fa-fw"></i> 退出系统</a></li>
-                    {else}
-                    <li><a href="{php echo $this->createWebUrl('order/logout')}"><i class="fa fa-sign-out fa-fw"></i> 退出系统</a></li>
-                    {/if}
-                </ul>
-            </li>
+
         </ul>
     </div>
 </div>
