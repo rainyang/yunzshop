@@ -15,5 +15,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberWechatModel extends Model
 {
-
+    public $table = 'yz_member_wechat';
 }

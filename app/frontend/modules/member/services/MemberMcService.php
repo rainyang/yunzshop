@@ -8,21 +8,10 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\modules\McMemberModel;
+use app\modules\MemberMcModel;
 
-class McMemberService
+class MemberMcService
 {
-    protected $id;
-    protected $openid;
-    protected $mobile;
-    protected $nickname;
-    protected $avatar;
-    protected $unionid;
-
-    public function __construct()
-    {
-    }
-
     public function login()
     {}
 
@@ -32,8 +21,10 @@ class McMemberService
     public function isLogged()
     {}
 
-    public function getId()
-    {}
+    public function getMemberId()
+    {
+
+    }
 
     public function getOpenId()
     {}

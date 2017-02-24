@@ -15,5 +15,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class QQConfigModel extends Model
 {
-
+    public $table = 'yz_config';
 }

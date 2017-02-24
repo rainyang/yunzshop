@@ -15,5 +15,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberModel extends Model
 {
+    public $table = 'yz_member';
 
+    public static function getInfo($uniacid, $referralsn)
+    {
+        return MemberModel::where('uniacid', $uniacid)->where('referralsn', $referralsn)->first();
+    }
 }

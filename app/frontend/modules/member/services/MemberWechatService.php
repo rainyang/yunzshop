@@ -8,10 +8,14 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\McMemberService;
+use app\frontend\modules\member\services\MemberMcService;
 use app\frontend\modules\member\models\MemberWechatModel;
 
-class MemberWechatService extends McMemberService
+class MemberWechatService extends MemberMcService
 {
+    public function __construct()
+    {}
 
+    public function login()
+    {}
 }

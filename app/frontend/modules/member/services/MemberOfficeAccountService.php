@@ -8,17 +8,19 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\McMemberService;
+use app\frontend\modules\member\services\MemberMcService;
 use app\frontend\modules\member\models\McMappingFansModel;
 
-class OfficeAccountMemberService extends McMemberService
+class MemberOfficeAccountService extends MemberMcService
 {
     public function __construct()
-    {
-    }
+    {}
 
     public function getUserInfo()
     {
         return  McMappingFansModel::first();
     }
+
+    public function login()
+    {}
 }

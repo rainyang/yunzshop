@@ -16,5 +16,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberMiniAppModel extends Model
 {
-
+    public $table = 'yz_member_mini_app';
 }

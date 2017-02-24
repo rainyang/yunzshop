@@ -15,5 +15,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class McMappingFansModel extends Model
 {
-    public $table = 'mc_members';
+    public $table = 'mc_mapping_fans';
 }

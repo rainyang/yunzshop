@@ -15,5 +15,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class AccountOpenConfigModel extends Model
 {
-
+    public $table = 'yz_account_open_config';
 }
