@@ -28,27 +28,6 @@
         }
 
         window.sysinfo = {
-        {if !empty($var['uniacid'])}
-        'uniacid': '{$var['uniacid']}',
-        {/if}
-        {if !empty($var['acid'])}
-        'acid': '{$var['acid']}',
-        {/if}
-        {if !empty($var['openid'])}
-        'openid': '{$var['openid']}',
-        {/if}
-        {if !empty($var['uid'])}
-        'uid': '{$var['uid']}',
-        {/if}
-        'siteroot': '{$var['siteroot']}',
-            'siteurl': '{$var['siteurl']}',
-            'attachurl': '{$var['attachurl']}',
-            'attachurl_local': '{isset($var['attachurl_local']) ? $var['attachurl_local'] : ""}',
-            'attachurl_remote': '{isset($var['attachurl_remote']) ? $var['attachurl_remote'] : ""}',
-            {if defined('MODULE_URL')}
-        'MODULE_URL': '{MODULE_URL}',
-        {/if}
-        'cookie' : {'pre': '{$var['config']['cookie']['pre']}'}
         };
 	</script>
 </head>
@@ -68,12 +47,12 @@
 			</div>
 			<div class="col-xs-12 col-sm-8 col-md-9 col-lg-10">
 				{if is_array($msg)}
-				<h2>MYSQL 错误：</h2>
-				<p>{php echo cutstr($msg['sql'], 300, 1);}</p>
-				<p><b>{$msg['error'][0]} {$msg['error'][1]}：</b>{$msg['error'][2]}</p>
+					<h2>MYSQL 错误：</h2>
+					<p>{php echo cutstr($msg['sql'], 300, 1);}</p>
+					<p><b>{$msg['error'][0]} {$msg['error'][1]}：</b>{$msg['error'][2]}</p>
 				{else}
-				<h2>{$caption}</h2>
-				<p>{$msg}</p>
+					<h2>{$caption}</h2>
+					<p>{$msg}</p>
 				{/if}
 				{if $redirect}
 				<p><a href="{$redirect}">如果你的浏览器没有自动跳转，请点击此链接</a></p>

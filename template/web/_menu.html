@@ -11,60 +11,38 @@
             <a href="{php echo $this->createWebUrl('shop/index')}" class="dropdown-toggle"><i class='fa fa-tachometer'></i>
                 <span>概况</span> <i class="fa fa-angle-down"></i></a>
         </li>
-        {ifp 'shop'}
         <li>
             <a href="{php echo $this->createWebUrl('shop/goods', array('status'=>1))}" class="dropdown-toggle"><i class='fa fa-tasks'></i>
                 <span>商品</span> <i class="fa fa-angle-down"></i></a>
         </li>
-        {/if}
-        {ifp 'order'}
         <li>
             <a href='{php echo $this->createWebUrl(' order.display')}' class="dropdown-toggle" ><i
                 class='fa fa-archive'></i> <span>订单</span> <i class="fa fa-angle-down"></i></a>
         </li>
-        {/if}
 
-		{ifp 'shop.dispatch.view'}
 		<li>
 			<a href="{php echo $this->createWebUrl('shop/dispatch')}" class="dropdown-toggle"><i class='fa fa-truck' style="margin-top: 2px"></i> <span>配送</span></a> 
         </li> 
-		{/if}
 
-        {if p('sale')}
-            {ifpp 'sale'}
-                {ifp 'sale'}
          <li>
             <a href='{php echo $this->createPluginWebUrl('sale')}' class="dropdown-toggle" ><i class='fa fa-gift' style="margin-top: 2px"></i> <span>营销</span> <i class="fa fa-angle-down"></i></a>
         </li> 
-                {/if} 
-            {/if}        
-		{/if}
 
-	   {if p('designer')}
-            {ifpp 'designer'}
-                {ifp 'designer'}
 		<li>
             <a href='{php echo $this->createPluginWebUrl('designer')}' class="dropdown-toggle" ><i class='fa fa-gavel'></i> <span>装修</span><i class="fa fa-angle-down"></i></a>
         </li>
-                {/if}
-            {/if}        
-		{/if}
-        
+
 
         <li>
            <a href='{php echo $this->createWebUrl('plugins',array('op'=>'list'))}' class="dropdown-toggle" ><i class='fa fa-cubes'></i> <span>应用</span> <i class="fa fa-angle-down"></i></a>
         </li>
-          {ifp 'finance'}
          <li>
             <a href='{php echo $this->createWebUrl('finance/log',array('type'=>0))}' class="dropdown-toggle" ><i class='iconfont icon-web-price' style="margin-top: 2px"></i> <span>财务</span> <i class="fa fa-angle-down"></i></a>
         </li> 
-        {/if} 
-          {ifp 'sysset'}
          <li>
             <a href='{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}' class="dropdown-toggle"><i class='iconfont icon-cog' style="margin-top: 2px"></i> <span>设置</span> <i class="fa fa-angle-down"></i></a>
 
         </li>
-        {/if}
     </ul>
 </div>
 </div>
