@@ -68,12 +68,12 @@
 			</div>
 			<div class="col-xs-12 col-sm-8 col-md-9 col-lg-10">
 				{if is_array($msg)}
-				<h2>MYSQL 错误：</h2>
-				<p>{php echo cutstr($msg['sql'], 300, 1);}</p>
-				<p><b>{$msg['error'][0]} {$msg['error'][1]}：</b>{$msg['error'][2]}</p>
+					<h2>MYSQL 错误：</h2>
+					<p>{php echo cutstr($msg['sql'], 300, 1);}</p>
+					<p><b>{$msg['error'][0]} {$msg['error'][1]}：</b>{$msg['error'][2]}</p>
 				{else}
-				<h2>{$caption}</h2>
-				<p>{$msg}</p>
+					<h2>{$caption}</h2>
+					<p>{$msg}</p>
 				{/if}
 				{if $redirect}
 				<p><a href="{$redirect}">如果你的浏览器没有自动跳转，请点击此链接</a></p>

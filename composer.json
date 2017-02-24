@@ -11,7 +11,8 @@
   "require": {
     "php": ">=5.5.9",
     "laravel/framework": "5.3.*",
-    "monolog/monolog": "^1.22"
+    "monolog/monolog": "^1.22",
+    "laracasts/flash": "^2.0"
   },
   "require-dev": {
     "filp/whoops": "^2.1",
