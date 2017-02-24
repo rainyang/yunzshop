@@ -3,9 +3,11 @@
 /core/model/user.php
 sh.exe.stackdump
 /core/inc/plugin/vendor/phpunit
-vendor/
 tmp/
 .idea/
 composer.lock
 /vendor/
-/vendor/composer/
+/tests/
+.env
+/.phpstorm.meta.php
+/_ide_helper.php
