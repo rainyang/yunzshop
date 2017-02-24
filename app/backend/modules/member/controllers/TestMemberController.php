@@ -13,6 +13,7 @@ use app\backend\modules\member\models\TestMember;
 use app\common\components\BaseController;
 use app\common\events\TestFailEvent;
 use app\common\events\UserActionEvent;
+use app\common\helpers\Url;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -30,7 +31,8 @@ class TestMemberController extends BaseController
         $validator = TestMember::validator(Input::get());
         print_r($validator->messages());
 
-
+        flash('Welcome Aboard!','danger');
+        //flash()->overlay('Notice', 'You are now a Laracasts member!');
         $this->render('test', ['a' => '123456']);
     }
 
