@@ -1,5 +1,9 @@
 <?php
 
+namespace app\common\models;
+
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Created by PhpStorm.
  * User: yangyang
