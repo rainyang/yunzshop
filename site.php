@@ -172,6 +172,7 @@ class YunShop
             foreach ($routes as $k => $r) {
                 $ucFirstRoute = self::getUcfirstName($r);
                 $controllerFile = $path . '/controllers/' . $ucFirstRoute . 'Controller.php';
+
                 if (file_exists($controllerFile)) {
                     $namespace .= '\\controllers\\' . $ucFirstRoute . 'Controller';
                     $controllerName = $ucFirstRoute;
