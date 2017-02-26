@@ -60,7 +60,7 @@ class Sz_DYi_Common
         }
         $set = m('cache')->getArray('sysset', $uniacid);
         if (empty($set)) {
-            $set = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+            $set = pdo_fetch("select * from " . tablename('yz_sysset') . ' where uniacid=:uniacid limit 1', array(
                 ':uniacid' => $uniacid
             ));
             if (empty($set)) {
@@ -68,6 +68,7 @@ class Sz_DYi_Common
             }
             m('cache')->set('sysset', $set, $uniacid);
         }
+
         return $set;
     }
     public function getSysset($key = '', $uniacid = 0)

@@ -28,27 +28,6 @@
         }
 
         window.sysinfo = {
-        {if !empty($var['uniacid'])}
-        'uniacid': '{$var['uniacid']}',
-        {/if}
-        {if !empty($var['acid'])}
-        'acid': '{$var['acid']}',
-        {/if}
-        {if !empty($var['openid'])}
-        'openid': '{$var['openid']}',
-        {/if}
-        {if !empty($var['uid'])}
-        'uid': '{$var['uid']}',
-        {/if}
-        'siteroot': '{$var['siteroot']}',
-            'siteurl': '{$var['siteurl']}',
-            'attachurl': '{$var['attachurl']}',
-            'attachurl_local': '{$var['attachurl_local']}',
-            'attachurl_remote': '{$var['attachurl_remote']}',
-            {if defined('MODULE_URL')}
-        'MODULE_URL': '{MODULE_URL}',
-        {/if}
-        'cookie' : {'pre': '{$var['config']['cookie']['pre']}'}
         };
 	</script>
 </head>
@@ -56,71 +35,7 @@
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/webstyle.css">
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/font/iconfont.css">
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/common.css">
-<!--
-	<div class="navbar navbar-inverse navbar-static-top" role="navigation" style="position:static;">
-		<div class="container-fluid">
-			{if defined('IN_SOLUTION')}
-			<ul class="nav navbar-nav">
-				{php global $solution,$solutions;}
-				{if $var['role'] != 'operator'}
-				<li><a href="{url 'home/welcome/ext'}"><i class="fa fa-reply-all"></i>返回公众号功能管理</a></li>
-				{/if}
-				{loop $solutions $row}
-				<li{if $row['name'] == $solution['name']} class="active"{/if}><a href="{url 'home/welcome/solution' array('m' => $row['name'])}"><i class="fa fa-cog"></i>{$row['title']}</a></li>
-				{/loop}
-			</ul>
-			{else}
-			<ul class="nav navbar-nav">
-				<li><a href="./?refresh"><i class="fa fa-reply-all"></i>返回系统</a></li>
-				{if !empty($var['isfounder']) || empty($var['setting']['permurls']['sections']) || in_array('platform', $var['setting']['permurls']['sections'])}<li{if FRAME == 'platform'} class="active"{/if}><a href="{url 'home/welcome/platform'}"><i class="fa fa-cog"></i>基础设置</a></li>{/if}
-				{if !empty($var['isfounder']) || empty($var['setting']['permurls']['sections']) || in_array('site', $var['setting']['permurls']['sections'])}<li{if FRAME == 'site'} class="active"{/if}><a href="{url 'home/welcome/site'}"><i class="fa fa-life-bouy"></i>微站功能</a></li>{/if}
-				{if !empty($var['isfounder']) || empty($var['setting']['permurls']['sections']) || in_array('mc', $var['setting']['permurls']['sections'])}<li{if FRAME == 'mc'} class="active"{/if}><a href="{url 'home/welcome/mc'}"><i class="fa fa-gift"></i>粉丝营销</a></li>{/if}
-				{if !empty($var['isfounder']) || empty($var['setting']['permurls']['sections']) || in_array('setting', $var['setting']['permurls']['sections'])}<li{if FRAME == 'setting'} class="active"{/if}><a href="{url 'home/welcome/setting'}"><i class="fa fa-umbrella"></i>功能选项</a></li>{/if}
 
-                                {php $eid =intval($request['eid'])}
-                                {if !empty($eid)}
-                                   {php $binding_module = pdo_fetchcolumn('select module from '.tablename('modules_bindings').' where eid=:eid limit 1',array(':eid'=>$eid))}
-                                {/if}
-                                {if $request['m']=='sz_yi' || !empty($binding_module)}
-                    <li class="active"><a href="{php echo url('home/welcome/ext',array('m'=>'sz_yi'))}"><i class="fa fa-shopping-cart"></i>{php echo $this->module['title']}</a></li>
-                    {if !empty($var['isfounder']) || empty($var['setting']['permurls']['sections']) || in_array('ext', $var['setting']['permurls']['sections'])}<li><a href="{url 'home/welcome/ext'}"><i class="fa fa-cubes"></i>其他扩展</a></li>{/if}
-    {else}
-    {if !empty($var['isfounder']) || empty($var['setting']['permurls']['sections']) || in_array('ext', $var['setting']['permurls']['sections'])}<li{if FRAME == 'ext' } class="active"{/if}><a href="{url 'home/welcome/ext'}"><i class="fa fa-cubes"></i>其他扩展</a></li>{/if}
-    {/if}
-
-				{if FRAME == 'solution'}<li class="active"><a href="{url 'home/welcome/solution' array('m' => $m)}"><i class="fa fa-comments"></i>行业功能 - {$solution['title']}</a></li>{/if}
-
-			</ul>
-			{/if}
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-group"></i>{$var['account']['name']} <b class="caret"></b></a>
-					<ul class="dropdown-menu">
-						{if $var['role'] != 'operator'}
-						<li><a href="{url 'account/post' array('uniacid' => $var['uniacid'])}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 编辑当前账号资料</a></li>
-						{/if}
-						<li><a href="{url 'account/display'}" target="_blank"><i class="fa fa-cogs fa-fw"></i> 管理其它公众号</a></li>
-						<li><a href="{url 'utility/emulator'}" target="_blank"><i class="fa fa-mobile fa-fw"></i> 模拟测试</a></li>
-					</ul>
-				</li>
-				<li class="dropdown">
-					<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:185px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-user"></i>{$var['user']['username']} ({if $var['role'] == 'founder'}系统管理员{elseif $var['role'] == 'manager'}公众号管理员{else}公众号操作员{/if}) <b class="caret"></b></a>
-					<ul class="dropdown-menu">
-						<li><a href="{url 'user/profile/profile'}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 我的账号</a></li>
-						{if $var['role'] != 'operator'}
-						<li class="divider"></li>
-						<li><a href="{url 'system/welcome'}" target="_blank"><i class="fa fa-sitemap fa-fw"></i> 系统选项</a></li>
-						<li><a href="{url 'system/welcome'}" target="_blank"><i class="fa fa-cloud-download fa-fw"></i> 自动更新</a></li>
-						<li><a href="{url 'system/updatecache'}" target="_blank"><i class="fa fa-refresh fa-fw"></i> 更新缓存</a></li>
-						<li class="divider"></li>
-						{/if}
-						<li><a href="{url 'user/logout'}"><i class="fa fa-sign-out fa-fw"></i> 退出系统</a></li>
-					</ul>
-				</li>
-			</ul>
-		</div>
-	</div>
-    -->
 
 <div class="container-fluid">
 	{if defined('IN_MESSAGE')}
@@ -132,12 +47,12 @@
 			</div>
 			<div class="col-xs-12 col-sm-8 col-md-9 col-lg-10">
 				{if is_array($msg)}
-				<h2>MYSQL 错误：</h2>
-				<p>{php echo cutstr($msg['sql'], 300, 1);}</p>
-				<p><b>{$msg['error'][0]} {$msg['error'][1]}：</b>{$msg['error'][2]}</p>
+					<h2>MYSQL 错误：</h2>
+					<p>{php echo cutstr($msg['sql'], 300, 1);}</p>
+					<p><b>{$msg['error'][0]} {$msg['error'][1]}：</b>{$msg['error'][2]}</p>
 				{else}
-				<h2>{$caption}</h2>
-				<p>{$msg}</p>
+					<h2>{$caption}</h2>
+					<p>{$msg}</p>
 				{/if}
 				{if $redirect}
 				<p><a href="{$redirect}">如果你的浏览器没有自动跳转，请点击此链接</a></p>

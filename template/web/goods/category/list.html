@@ -1,0 +1,144 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+    {template 'web/shop/tabs'}
+    <script language="javascript" src="../addons/sz_yi/static/js/dist/nestable/jquery.nestable.js"></script>
+    <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/js/dist/nestable/nestable.css" />
+    <style type='text/css'>
+        .dd-handle { height: 40px; line-height: 30px}
+    </style>
+    <div class="main rightlist">
+        <!-- 新增加右侧顶部三级菜单 -->
+        <div class="right-titpos">
+            <ul class="add-snav">
+                <li class="active"><a href="#">商品分类</a></li>
+            </ul>
+        </div>
+        <!-- 新增加右侧顶部三级菜单结束 -->
+        <div class="category">
+            <form action="{php echo $this->createWebUrl('goods.category.save-all');}" method="post">
+                <div class="panel panel-default">
+                    <div class="panel-body table-responsive">
+
+                        <div class="dd" id="div_nestable">
+                            <ol class="dd-list">
+                                {loop $list[parents] $parent}
+                                {if empty($parent->parent_id)}
+                                <li class="dd-item" data-id="{$parent['id']}">
+                                    <div class="dd-handle"  style='width:100%;'>
+                                        [ID: {$parent['id']}] {php echo $parent['name']}
+                                            <span class="pull-right">
+                                                {ifp 'shop.category.add'}
+                                                    <a class='btn btn-default btn-sm' href="#" title='添加子分类' ><i class="fa fa-plus"></i></a>
+                                                {/if}
+                                                {ifp 'shop.category.edit|shop.category.view'}
+                                                 <a class='btn btn-default btn-sm' href="#" title="{ifp 'shop.category.edit'}修改{else}查看{/if}" >
+                                                     <i class="fa fa-edit"></i>
+                                                 </a>
+                                                {/if}
+                                                {ifp 'shop.category.delete'}
+                                                    <a class='btn btn-default btn-sm' href="#" title='删除' onclick="return confirm('确认删除此分类吗？');return false;">
+                                                        <i class="fa fa-remove"></i>
+                                                    </a>
+                                                {/if}
+                                            </span>
+                                    </div>
+                                    {if count($list['childrens'][$parent['id']])>0}
+
+                                    <ol class="dd-list"  style='width:100%;'>
+                                        {loop $list['childrens'][$parent['id']] $child}
+                                        <li class="dd-item" data-id="{$child['id']}">
+                                            <div class="dd-handle">
+                                                <img src="{php echo tomedia($child['thumb']);}" width='30' height="30" onerror="$(this).remove()" style='padding:1px;border: 1px solid #ccc;float:left;' /> &nbsp;
+                                                [ID: {$child['id']}] {$child['name']}
+                                                    <span class="pull-right">
+                                                        {if intval($shopset['catlevel'])==3}
+                                                         {ifp 'shop.category.add'}<a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('shop/category', array('parentid' => $child['id'], 'op' => 'post'))}" title='添加子分类' ><i class="fa fa-plus"></i></a>{/if}
+                                                         {/if}
+                                                          {ifp 'shop.category.edit|shop.category.view'}<a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('shop/category', array('id' => $child['id'], 'op' => 'post'))}" title="{ifp 'shop.category.edit'}修改{else}查看{/if}" ><i class="fa fa-edit"></i></a>{/if}
+                                                          {ifp 'shop.category.delete'} <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('shop/category', array('id' => $child['id'], 'op' => 'delete'))}" title='删除' onclick="return confirm('确认删除此分类吗？');return false;"><i class="fa fa-remove"></i></a>{/if}
+                                                    </span>
+                                            </div>
+
+                                            {if count($list['childrens'][$child['id']])>0 && intval($shopset['catlevel'])==3}
+                                            <!--if &&1 = intval($shopset['catlevel'])==3-->
+                                            <ol class="dd-list"  style='width:100%;'>
+                                                {loop $list['childrens'][$child['id']] $third}
+                                                <li class="dd-item" data-id="{$third['id']}">
+                                                    <div class="dd-handle">
+                                                        <img src="{php echo tomedia($third['thumb']);}" width='30' height="30" onerror="$(this).remove()" style='padding:1px;border: 1px solid #ccc;float:left;' /> &nbsp;
+                                                        [ID: {$third['id']}] {$third['name']}
+                                                                    <span class="pull-right">
+                                                                            {ifp 'shop.category.edit|shop.category.view'}<a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('shop/category', array('id' => $third['id'], 'op' => 'post'))}" title="{ifp 'shop.category.edit'}修改{else}查看{/if}" ><i class="fa fa-edit"></i></a>{/if}
+                                                                          {ifp 'shop.category.delete'}<a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('shop/category', array('id' => $third['id'], 'op' => 'delete'))}" title='删除' onclick="return confirm('确认删除此分类吗？');return false;"><i class="fa fa-remove"></i></a>{/if}
+                                                                    </span>
+                                                    </div>
+                                                </li>
+                                                {/loop}
+                                            </ol>
+                                            {/if}
+                                        </li>
+                                        {/loop}
+                                    </ol>
+                                    {/if}
+
+                                </li>
+                                {/if}
+                                {/loop}
+
+                            </ol>
+
+                            <table class='table'>
+                                <tr>
+                                    <td>
+                                        {ifp 'shop.category.add'}
+                                        <a href="{php echo $this->createWebUrl('goods.category.add-category', ['parent_id'=>'2']);}" class="btn btn-primary"><i class="fa fa-plus"></i> 添加新分类</a>
+                                        {/if}
+                                        {ifp 'shop.category.edit'}
+                                        <input id="save_category" type="button" class="btn btn-default" value="保存分类修改">
+                                        {/if}
+                                        <input type="hidden" name="token" value="{$var['token']}" />
+                                        <input type="hidden" name="datas" value="" />
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script language='javascript'>
+
+    $(function(){
+        var depth = {php echo intval($shopset['catlevel'])};
+        if(depth<=0) {
+            depth =2;
+        }
+        $('#div_nestable').nestable({maxDepth: depth });
+
+        $(".dd-handle a,dd-handle embed,dd-handle div").mousedown(function (e) {
+            e.stopPropagation();
+        });
+        var $expand = false;
+        $('#nestableMenu').on('click', function(e)
+        {
+            if ($expand) {
+                $expand = false;
+                $('.dd').nestable('expandAll');
+            }else {
+                $expand = true;
+                $('.dd').nestable('collapseAll');
+            }
+        });
+
+        $("#save_category").click(function(){
+            var json = window.JSON.stringify($('#div_nestable').nestable("serialize"));
+            $(':input[name=datas]').val(json);
+            $('form').submit();
+        })
+
+    })
+</script>
+{template 'web/_footer'}

@@ -249,7 +249,7 @@ if (!class_exists('SupplierModel')) {
                 ':uniacid'  => $_W['uniacid'],
                 ':uid'      => $uid
             );
-            $role_sql  = 'SELECT roleid FROM ' . tablename('sz_yi_perm_user');
+            $role_sql  = 'SELECT roleid FROM ' . tablename('yz_perm_user');
             $role_sql .= ' WHERE uniacid = :uniacid AND uid = :uid';
             $roleid    = pdo_fetchcolumn($role_sql, $params);
             if ($roleid != 0) {
