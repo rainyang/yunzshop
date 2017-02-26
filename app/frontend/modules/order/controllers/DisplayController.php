@@ -19,6 +19,6 @@ class DisplayController
         $member_model = MemberService::getCurrentMemberModel();
         $goods_group_model = GoodsService::getGoodsGroupModel([['goods_id'=>1,'total'=>2]]);
         $order_data = OrderService::getPreCreateOrder($goods_group_model,$member_model);
-        dump($order_data);
+        ddump($order_data);
     }
 }

@@ -313,7 +313,7 @@ function xml_to_array($xml)
     return $arr;
 }
 
-function redirect($url, $sec = 0)
+function YZredirect($url, $sec = 0)
 {
     echo "<meta http-equiv=refresh content='{$sec}; url={$url}'>";
     exit;
@@ -349,7 +349,7 @@ function isEnablePlugin($name)
             }
         }
     } else {
-        return pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_plugin') . ' where identity=:identity and status=1', array(
+        return pdo_fetchcolumn("select count(*) from " . tablename('yz_plugin') . ' where identity=:identity and status=1', array(
             ':identity' => $name
         ));
 
@@ -361,7 +361,7 @@ function p($name = '')
     if (!isEnablePlugin($name)) {
         return false;
     }
-    if ($name != 'perm' && !IN_MOBILE) {
+    if ($name != 'perm' && !is_app()) {
         static $_perm_model;
         if (!$_perm_model) {
             $perm_model_file = SZ_YI_PLUGIN . 'perm/model.php';
@@ -1127,19 +1127,5 @@ if (!function_exists("getExitInfo")) {
 
         register_tick_function('write_dbg_stack');
         declare(ticks = 1);
-    }
-}
-if (! function_exists('array_get')) {
-    /**
-     * Get an item from an array using "dot" notation.
-     *
-     * @param  \ArrayAccess|array  $array
-     * @param  string  $key
-     * @param  mixed   $default
-     * @return mixed
-     */
-    function array_get($array, $key, $default = null)
-    {
-        return \util\Arr::get($array, $key, $default);
     }
 }

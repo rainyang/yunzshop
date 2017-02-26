@@ -13,4 +13,5 @@ class Member extends Model
 {
     public $table = 'mc_members';
 
+
 }

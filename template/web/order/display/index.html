@@ -1,590 +1,136 @@
 ﻿{template 'web/_header'}
 <div class="w1200 m0a">
-    {template 'web/order/tabs'}
-    <link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
-    <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
-    <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
-    <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2_locale_zh-CN.js"></script>
-    <style type='text/css'>
-        .trhead td {
-            background: #f8f8f8;
-            text-align: center
-        }
+    {template 'web/sysset/tabs'}
+    <div class="main rightlist">
+        <!-- 新增加右侧顶部三级菜单 -->
+        <div class="right-titpos">
+            <ul class="add-shopnav">
+                {ifp 'sysset.view.shop'}<li {if $_GPC['op']=='shop'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">商城设置</a></li>{/if}
+                {ifp 'shop.notice.view'}<li {if $_GPC['p'] == 'notice'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/notice')}">公告管理</a></li>{/if}
+                {ifp 'shop.adpc.view'}<li {if $_GPC['p'] == 'adpc'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adpc')}">广告管理</a></li>{/if}
+                {ifp 'sysset.view.member'}<li  {if $_GPC['op']=='member'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'member'))}">会员设置</a></li>{/if}
+                {ifp 'sysset.view.template'}<li  {if $_GPC['op']=='template'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'template'))}">模板设置</a></li>{/if}
+                {ifp 'shop.adv.view'}<li {if $_GPC['p'] == 'adv'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adv')}">幻灯片管理</a></li>{/if}
+                {ifp 'sysset.view.category'}<li  {if $_GPC['op']=='category'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'category'))}">分类层级</a></li>{/if}
+                {ifp 'sysset.view.contact'}<li  {if $_GPC['op']=='contact'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'contact'))}">联系方式</a></li>{/if}
+                {ifp 'sysset.view.sms'}<li  {if $_GPC['op']=='sms'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'sms'))}">短信设置</a></li>{/if}
+            </ul>
+        </div>
+        <!-- 新增加右侧顶部三级菜单结束 -->
 
-        .trbody td {
-            text-align: center;
-            vertical-align: top;
-            border-left: 1px solid #DEDEDE;
-            overflow: hidden;
-        }
-
-        .goods_info {
-            position: relative;
-            width: 60px;
-        }
-
-        .goods_info img {
-            width: 50px;
-            background: #fff;
-            border: 1px solid #DEDEDE;
-            padding: 1px;
-        }
-
-        .goods_info:hover {
-            z-index: 1;
-            position: absolute;
-            width: auto;
-        }
-
-        .goods_info:hover img {
-            width: 320px;
-            height: 320px;
-        }
-
-        .form-control .select2-choice {
-            border: 0 none;
-            border-radius: 2px;
-            height: 32px;
-            line-height: 32px;
-        }
-    </style>
-    <div class="rightlist">
-        {if $status != 9}
-        <div class="panel panel-default" style='margin-top:60px'>
-            <div class="panel-body sx-border">
-                <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
-                    <input type="hidden" name="c" value="site"/>
-                    <input type="hidden" name="a" value="entry"/>
-                    <input type="hidden" name="m" value="sz_yi"/>
-                    <input type="hidden" name="p" value="list" id="form_p"/>
-                    <input type="hidden" name="do" value="order" id="form_do"/>
-                    <input type="hidden" name="status" value="{$status}"/>
-                    <input type="hidden" name="agentid" value="{$_GPC['agentid']}"/>
-                    <input type="hidden" name="refund" value="{$_GPC['refund']}"/>
-                    <input type="hidden" name="plugin" value="{$_GPC['plugin']}"/>
-                    <div class="form-group">
-                        <div class="col-sm-8 col-lg-12 col-xs-12">
-                            <div class='input-group'>
-                                <div class='input-group-addon'>订单号</div>
-                                <input class="form-control" name="keyword" type="text" value="{$_GPC['keyword']}"
-                                       placeholder="订单号/支付单号">
-                                <div class='input-group-addon'>{$lang['good']}名称</div>
-                                <input class="form-control" name="good_name" type="text" value="{$_GPC['good_name']}"
-                                       placeholder="{$lang['good']}名称">
-                                <div class='input-group-addon'>{$lang['good']}ID</div>
-                                <input class="form-control" name="good_id" type="text" value="{$_GPC['good_id']}"
-                                       placeholder="{$lang['good']}ID">
-                                <div class='input-group-addon'>快递单号</div>
-                                <input class="form-control" name="expresssn" type="text" value="{$_GPC['expresssn']}"
-                                       placeholder="快递单号">
-                                <div class='input-group-addon'>会员ID</div>
-                                <input class="form-control" name="memberid" type="text" value="{$_GPC['good_id']}"
-                                       placeholder="会员ID">
-                                <div class='input-group-addon'>用户信息</div>
-                                <input class="form-control" name="member" type="text" value="{$_GPC['member']}"
-                                       placeholder="用户手机号/姓名/昵称/绑定手机号, 收件人姓名/手机号 ">
-                                <div class='input-group-addon'>支付方式</div>
-                                <select name="paytype" class="form-control">
-                                    <option value="" {if $_GPC[
-                                    'paytype']==''}selected{/if}>不限</option>
-                                    {loop $paytype $key $type}
-                                    <option value="{$key}" {if $_GPC['paytype'] == "$key"} selected="selected" {/if}>{$type['name']}</option>
-                                    {/loop}
-                                </select>
+        <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
+            <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
+                <input type='hidden' name='setid' value="{$set['id']}" />
+                <input type='hidden' name='op' value="category" />
+                <div class="panel panel-default">
+                    <div class='panel-body'>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类级别</label>
+                            <div class="col-sm-9 col-xs-12">
+                                {ifp 'sysset.save.category'}
+                                <label class="radio-inline">
+                                    <input type="radio" name="shop[catlevel]" value="2" {if $set['shop']['catlevel']==2 || empty($set['shop']['catlevel'])}checked{/if} /> 二级
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="shop[catlevel]" value="3" {if $set['shop']['catlevel']==3}checked{/if}/> 三级
+                                </label>
+                                {else}
+                                <input type="hidden" name="shop[catlevel]" value="{$set['shop']['catlevel']}" />
+                                <div class='form-control-static'>{if $set['shop']['catlevel']==2 || empty($set['shop']['catlevel'])}二级{else}三级{/if}</div>
+                                {/if}
                             </div>
                         </div>
-                    </div>
-                    {if $_GPC['plugin'] != "fund"}
-                    <div class='form-group'>
-                        <div class="col-sm-8 col-lg-12 col-xs-12">
-                            <div class='input-group'>
-                                <div class='input-group-addon'>核销码</div>
-                                <input class="form-control" name="verifycode" type="text" value="{$_GPC['verifycode']}"
-                                       placeholder="核销码">
-                                <div class='input-group-addon'>核销员</div>
-                                <input class="form-control" name="saler" type="text" value="{$_GPC['saler']}"
-                                       placeholder="核销员昵称/姓名/手机号/绑定手机号">
-                                <div class='input-group-addon'>核销门店</div>
-                                <select name="storeid" class="form-control">
-                                    <option value=""></option>
-                                    {loop $stores $store}
-                                    <option value="{$store['id']}" {if $_GPC['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
-                                    {/loop}
-                                </select>
-                                {if $p_cashier}
-                                <div class='input-group-addon'>收银商户</div>
-                                <select name="csid" class="form-control">
-                                    <option value=""></option>
-                                    {loop $cashier_stores $cashier_store}
-                                    <option value="{$cashier_store['id']}" {if $_GPC['csid'] ==$cashier_store['id']} selected="selected"
-                                    {/if}>{$cashier_store['name']}</option>
-                                    {/loop}
-                                </select>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">三级分类显示形式</label>
+                            <div class="col-sm-9 col-xs-12">
+                                {ifp 'sysset.save.category'}
+                                <label class="radio-inline">
+                                    <input type="radio" name="shop[catshow]" value="0" {if empty($set['shop']['catshow'])}checked{/if} /> 单页
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="shop[catshow]" value="1" {if $set['shop']['catshow']==1}checked{/if}/> 多页
+                                </label>
+                                {else}
+                                <input type="hidden" name="shop[catshow]" value="{$set['shop']['catshow']}" />
+                                <div class='form-control-static'>{if empty($set['shop']['catshow'])}单页{else}多页{/if}</div>
                                 {/if}
-                                <div class='input-group-addon'>门店取消订单
-                                    <label class='radio-inline' style='margin-top:-7px;'>
-                                        <input type='radio' value='0' name='cancel' {if $_GPC['cancel']=='0'}checked{/if}>不搜索
-                                    </label>
-                                    <label class='radio-inline' style='margin-top:-7px;'>
-                                        <input type='radio' value='1' name='cancel' {if $_GPC['cancel']=='1'}checked{/if}>搜索
-                                    </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">推荐分类广告</label>
+                            <div class="col-sm-9 col-xs-12">
+                                {ifp 'sysset.save.category'}
+                                {php echo tpl_form_field_image('shop[catadvimg]', $set['shop']['catadvimg'])}
+                                <span class='help-block'>分类页面中，推荐分类的广告图，建议尺寸640*320</span>
+                                {else}
+                                <input type="hidden" name="shop[catadvimg]" value="{$set['shop']['catadvimg']}" />
+                                {if !empty($set['shop']['catadvimg'])}
+                                <a href='{php echo tomedia($set['shop']['catadvimg'])}' target='_blank'>
+                                <img src="{php echo tomedia($set['shop']['catadvimg'])}" style='width:200px;border:1px solid #ccc;padding:1px' />
+                                </a>
+                                {/if}
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">推荐分类广告连接</label>
+                            <div class="col-sm-9 col-xs-12">
+                                {ifp 'sysset.save.category'}
+                                <div class="input-group ">
+                                    <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$set['shop']['catadvurl']}" name="shop[catadvurl]">
+                                    <span class="input-group-btn">
+                                <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
+                            </span>
                                 </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {if p('supplier')}
-            <div class='form-group'>
-                <div class="col-sm-8 col-lg-12 col-xs-12">
-                    <div class='input-group'>
-                        <div class='input-group-addon'>供应商</div>
-                        <select name="supplier_uid" class="form-control">
-                            <option value="" ></option>
-                            {loop $suppliers $supplier}
-                            <option value="{$supplier['uid']}" {if $request['supplier_uid'] ==$supplier['uid']} selected="selected" {/if}>{$supplier['username']}</option>
-                            {/loop}
-                        </select>
-                    </div>
-                </div>
-            </div>
-            {/if}
-            {if p('live')}
-            <div class='form-group'>
-                <div class="col-sm-8 col-lg-12 col-xs-12">
-                    <div class='input-group'>
-                        <div class='input-group-addon'>直播间</div>
-                        <select name="cloudAnchorId" class="form-control">
-                            <option value="" ></option>
-                            {loop $liveRooms $liveRoom}
-                                {if $liveRoom['status'] !=2 }
-                                    <option value="{$liveRoom['anchor_id']}">{$liveRoom['title']}</option>
+                                {else}
+                                <input type="hidden" name="shop[catadvurl]" value="{$set['shop']['catadvurl']}" />
+                                <div class='form-control-static'>{$set['shop']['catadvurl']}</div>
                                 {/if}
-                            {/loop}
-                        </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启自定义分类</label>
+                            <div class="col-sm-9 col-xs-12">
+                                {ifp 'sysset.save.category'}
+                                <label class="radio-inline">
+                                    <input type="radio" name="shop[category2]" value="1" {if $set['shop']['category2']==1}checked{/if} /> 是
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="shop[category2]" value="0" {if $set['shop']['category2']==0 || empty($set['shop']['category2'])}checked{/if}/> 否
+                                </label>
+                                {else}
+                                <input type="hidden" name="shop[category2]" value="{$set['shop']['category2']}" />
+                                <div class='form-control-static'>{if $set['shop']['category2']==0 || empty($set['shop']['category2'])}否{else}是{/if}</div>
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义分类前缀</label>
+                            <div class="col-sm-9 col-xs-12">
+                                {ifp 'sysset.save.category'}
+                                <input type="text" name="shop[category2name]" class="form-control" value="{$set['shop']['category2name']}" />
+                                <span class='help-block'>设置分类2的自定义名称功能，例如品牌，用途等。</span>
+                                {else}
+                                <input type="hidden" name="shop[category2name]" value="{$set['shop']['category2name']}" />
+                                <div class='form-control-static'>{$set['shop']['category2name']}</div>
+                                {/if}
+                            </div>
+                        </div>
+                        <div class="form-group"></div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
+                                {ifp 'sysset.save.category'}
+                                <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+                                <input type="hidden" name="token" value="{$_W['token']}" />
+                                {/if}
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            </div>
-            {/if}
-            {/if}
-            <div class="form-group">
-                    <div class="col-sm-12 col-lg-6">
-                        <div class='input-group'>
-                            <div class='input-group-addon'>下单时间
-                                <label class='radio-inline' style='margin-top:-7px;'>
-                                    <input type='radio' value='0' name='searchtime' {if $request['searchtime']=='0'}checked{/if}>不搜索
-                                </label>
-                                <label class='radio-inline'  style='margin-top:-7px;'>
-                                    <input type='radio' value='1' name='searchtime' {if $request['searchtime']=='1'}checked{/if}>搜索
-                                </label>
-                            </div>
-                            {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d H:i', $endtime)),true);}
-                        </div>
-                        <div class='input-group'>
-                          <div class='input-group-addon'>完成时间
-                            <label class='radio-inline' style='margin-top:-7px;'>
-                                <input type='radio' value='0' name='fsearchtime' {if $request['fsearchtime']=='0'}checked{/if}>不搜索
-                            </label>
-                            <label class='radio-inline'  style='margin-top:-7px;'>
-                                <input type='radio' value='1' name='fsearchtime' {if $request['fsearchtime']=='1'}checked{/if}>搜索
-                            </label>
-                        </div>
-                        {php echo tpl_form_field_daterange('ftime', array('starttime'=>date('Y-m-d H:i', $fstarttime),'endtime'=>date('Y-m-d H:i', $fendtime)),true);}
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-lg-6">
-                        <div class='input-group'>
-                            <div class='input-group-addon'>付款时间
-                                <label class='radio-inline' style='margin-top:-7px;'>
-                                    <input type='radio' value='0' name='psearchtime' {if $request['psearchtime']=='0'}checked{/if}>不搜索
-                                </label>
-                                <label class='radio-inline'  style='margin-top:-7px;'>
-                                    <input type='radio' value='1' name='psearchtime' {if $request['psearchtime']=='1'}checked{/if}>搜索
-                                </label>
-                            </div>
-                            {php echo tpl_form_field_daterange('ptime', array('starttime'=>date('Y-m-d H:i', $pstarttime),'endtime'=>date('Y-m-d H:i', $pendtime)),true);}
-                        </div>
-                        <div class='input-group'>
-                            <div class='input-group-addon'>发货时间
-                                <label class='radio-inline' style='margin-top:-7px;'>
-                                    <input type='radio' value='0' name='ssearchtime' {if $request['ssearchtime']=='0'}checked{/if}>不搜索
-                                </label>
-                                <label class='radio-inline'  style='margin-top:-7px;'>
-                                    <input type='radio' value='1' name='ssearchtime' {if $request['ssearchtime']=='1'}checked{/if}>搜索
-                                </label>
-                            </div>
-                            {php echo tpl_form_field_daterange('stime', array('starttime'=>date('Y-m-d H:i', $sstarttime),'endtime'=>date('Y-m-d H:i', $sendtime)),true);}
-                        </div>
-                    </div>
-
-                    <div class='input-group'>
-
-
-                    </div>
-
-
-            </div>
-            <div class="form-group">
-                {if !empty($agentid) && $level>0}   
-                <div class="col-sm-3">
-                    <div class='input-group'>
-                        <div class='input-group-addon'>分销订单级数</div>
-                        <select name="olevel" class="form-control">
-                            <option value="" >不限</option>
-                            <option value="1" {if $request['olevel'] ==1} selected="selected" {/if}>一级订单</option>
-                            <option value="2" {if $request['olevel'] ==2} selected="selected" {/if}>二级订单</option>
-                            <option value="3" {if $request['olevel'] ==3} selected="selected" {/if}>三级订单</option>
-                        </select>
-                    </div>    </div>
-                {/if}
-            </div>
-            <div class="form-group">
-
-                <div class="col-sm-7 col-lg-9 col-xs-12">
-                    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
-                    <input type="hidden" name="token" value="{$var['token']}" />
-                    <button type="button" name="export" value="1" id="export" class="btn btn-primary">导出 Excel</button>
-                    {if $request['plugin'] != "fund"}
-                    <a class="btn btn-warning" href="{php echo $this->createWebUrl('order/export')}">自定义导出</a>
-                    {/if}
-                </div>
-
-            </div>
-     
-        </form>
+            </form>
     </div>
 </div>
-
-        <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
-                 <tr class='trhead'>
-                    <td colspan='8' style="text-align: left;">
-                        订单数: <span id="total">--</span>  订单金额: <span id="totalmoney" style="color:red">--</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>{if !empty($shopset['weixin'])}<a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{/if}{else}没有可提现金额{/if}{/if}                        
-                    </td>
-                </tr>
-        </table>
-        <table class='table' style='float:left;margin-bottom:5px;table-layout: fixed;line-height: 40px;height: 40px'>
-                <tr class='trhead' style='line-height: 40px'>
-                    <td colspan='2'style="width: 19%;text-align:left;">商品</td>
-                    <td style='text-align:left;'>单价/数量</td>
-                    <td>买家</td>
-                    <td>支付方式/配送方式</td>
-                    <td>价格</td>             
-                    <td>状态</td>
-                    <td>操作</td>
-                </tr>
-            </table>
-          
-                {loop $list $item}
-  <table class='table' style='float:left;border:1px solid #ccc;margin-top:5px;margin-bottom:0px;table-layout: fixed;'>
-                <tr >
-                    <td colspan='8'  style='border-bottom:1px solid #ccc;background:#f8f8f8;' > 
-                        <b>订单编号:</b>  {$item['ordersn_general']} 
-                        {if $item['pay_ordersn']}
-                        <b>支付单号:</b>  {$item['pay_ordersn']} 
-                        {/if}
-                        <b>下单时间:  </b>{php echo date('Y-m-d H:i:s', $item['createtime'])}
-                        {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
-                        {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
-                        
-                        <label class="label label-info">{$item['vendor']}</label>
-                        {if !empty($item['storename'])}
-                        <label class="label label-primary">所属门店：{$item['storename']}</label>
-                        {/if}
-                    <td style='border-bottom:1px solid #ccc;background:#f8f8f8;text-align: center' >
-                          {if empty($item['statusvalue'])}
-                           {ifp 'order.op.close'}
-                                  <a class="btn btn-default btn-sm" href="javascript:;" onclick="$('#modal-close').find(':input[name=id]').val('{$item['id']}')" data-toggle="modal" data-target="#modal-close">关闭订单</a>
-                            {/if}
-                            {/if}
-                    </td>
-
-                    {if empty($var['isagent']) && $item['isempty'] == 1 && $item['ismaster'] == 1}
-                    <td style="...">
-                        <input class='itemid'  type='hidden' value="{$item['id']}"  />
-                        <a class="btn btn-primary btn-sm" href="javascript:;" onclick="sendagent(this)" data-toggle="modal" data-target="#modal-changeagent">选择门店</a>
-                    </td>
-                    {/if}
-
-                         
-                </tr>
-  </table>
-      <table class='table' style='float:left;border:1px solid #ccc;border-top:none;table-layout: fixed;'>
-
-{loop $item['goods'] $k $g}
-                <tr class='trbody'>
-                    <td class="goods_info">
-                         <img src="{if $item['cashier']==1}{$item['name']['thumb']}{else}{php echo tomedia($g['thumb'])}{/if}"> 
-                    </td>
-                    <td valign='top'  style='border-left:none;text-align: left;/*width:400px*/;'  >
-                        {if $item['cashier']==1}{$item['name']['name']}{else}{$g['title']}{/if}{if !empty($g['optiontitle'])}<br/><span class="label label-primary sizebg">{$g['optiontitle']}</span>{/if}
-                        <br/>{$g['goodssn']}
-                    </td>
-                    <td style='border-left:none;text-align:left;/*width:150px*/'>{if $request['plugin'] != "fund"}原价: {php echo number_format( $g['price']/$g['total'],2)} {/if}<br />应付: {php echo number_format($g['realprice']/$g['total'],2)}
-        <br/>数量: {$g['total']}           
-                    </td>
-                    
-                    {if $k==0}
-                    <td rowspan="{php echo count($item['goods'])}" >
-                         {ifp 'member.member.edit'}
-                         <a href="{php echo $this->createWebUrl('member/list',array('op'=>'detail', 'id'=>$item['mid']))}"> {$item['nickname']}</a>
-                         {else}
-                             {$item['nickname']}
-                             {/if}
-                             
-                             <br/>
-                        {$item['addressdata']['realname']}<br/>{$item['addressdata']['mobile']}</td>
-                    <td rowspan="{php echo count($item['goods'])}"    >
-                    {if $item['statusvalue'] > 0}
-                    <label class='label label-{$item['css']}'>{$item['paytype']}</label><br/>
-                    {else if $item['statusvalue'] == 0}
-                    {if $item['paytypevalue'] == 3}
-                    <label class='label label-default'>货到付款</label><br/>
-                    {else}
-                    <label class='label label-default'>未支付</label><br/>
-                    {/if}
-                    {else if $item['statusvalue'] == -1}
-                    <label class='label label-default'>{$item['paytype']}</label><br/>
-                    {/if}
-                                       {$item['dispatchname']}
-                                       {if $item['addressid']!=0 && $item['statusvalue']>=2}<br/>
-                                       <button type='button' class='btn btn-default btn-sm' onclick='express_find(this,"{$item['id']}")' >查看物流</button>
-                                       {/if}
-                    </td>
-                    <td  rowspan="{php echo count($item['goods'])}" style='width:18%;'>
-                        <table style='width:100%;'>
-                            <tr>
-                                <td  style='border:none;text-align:right;'>商品小计：</td>
-                                <td  style='border:none;text-align:right;;'>￥{php echo number_format( $item['goodsprice'] ,2)}</td>
-                            </tr>
-                            <tr>
-                                <td  style='border:none;text-align:right;'>运费：</td>
-                                <td  style='border:none;text-align:right;;'>￥{php echo number_format( $item['olddispatchprice'],2)}</td>
-                            </tr>
-                            {if $item['discountprice']>0}
-                            <tr>
-                                <td  style='border:none;text-align:right;'>会员折扣：</td>
-                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['discountprice'],2)}</td>
-                            </tr>
-                            {/if}
-                            {if $item['deductyunbimoney']>0}
-                            <tr>
-                                <td  style='border:none;text-align:right;'>{if !empty($yunbiset['yunbi_title'])}{php echo $yunbiset['yunbi_title']}{else}云币{/if}抵扣：</td>
-                                <td  style='border:none;text-align:right;;'>-￥{php echo $item['deductyunbimoney']}</td>
-                            </tr>
-                            {/if}
-                            {if $item['deductprice']>0}
-                            <tr>
-                                <td  style='border:none;text-align:right;'>积分抵扣：</td>
-                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductprice'],2)}</td>
-                            </tr>
-                            {/if}
-                            {if $item['deductcredit2']>0}
-                            <tr>
-                                <td  style='border:none;text-align:right;'>余额抵扣：</td>
-                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductcredit2'],2)}</td>
-                            </tr> 
-                            {/if}
-                            {if $item['deductcommission']>0}
-                            <tr>
-                                <td  style='border:none;text-align:right;'>佣金抵扣：</td>
-                                <td  style='border:none;text-align:right;'>-￥{php echo number_format( $item['deductcommission'],2)}</td>
-                            </tr>
-                            {/if}
-                            {if $card_plugin}
-                                {if $item['cardprice']>0}
-                                <tr>
-                                    <td  style='border:none;text-align:right;'>{$card_set['gift_title']}抵扣：</td>
-                                    <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['cardprice'],2)}</td>
-                                </tr> 
-                                {/if}
-                            {/if}
-                            {if $item['deductenough']>0}
-                            <tr>
-                                <td  style='border:none;text-align:right;'>满额立减：</td>
-                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductenough'],2)}</td>
-                            </tr>
-                            {/if}
-                            {if $item['couponprice']>0}
-                            <tr>
-                                <td  style='border:none;text-align:right;'>优惠券优惠：</td>
-                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['couponprice'],2)}</td>
-                            </tr>
-                            {/if}
-                            {if intval($item['changeprice'])!=0}
-                            <tr>
-                                <td  style='border:none;text-align:right;'>卖家改价：</td>
-                                <td  style='border:none;text-align:right;;'><span style="{if 0<$item['changeprice']}color:green{else}color:red{/if}">{if 0<$item['changeprice']}+{else}-{/if}￥{php echo number_format(abs($item['changeprice']),2)}</span></td>
-                            </tr>
-                                 {/if}
-                            {if intval($item['changedispatchprice'])!=0}
-                            <tr>
-                                <td  style='border:none;text-align:right;'>卖家改运费：</td>
-                                <td  style='border:none;text-align:right;;'><span style="{if 0<$item['changedispatchprice']}color:green{else}color:red{/if}">{if 0<$item['changedispatchprice']}+{else}-{/if}￥{php echo abs($item['changedispatchprice'])}</span></td>
-                            </tr>
-                                 {/if} 
-                        <tr>
-                                <td style='border:none;text-align:right;'>应收款：</td>
-                                <td  style='border:none;text-align:right;color:green;'>￥{php echo number_format($item['price'],2)}</td>
-                            </tr>
-                                    {ifp 'order.op.changeprice'}
-            {if empty($item['statusvalue'])}
-                            <tr>
-                                <td style='border:none;text-align:right;'></td>
-                                {if $perm_role != 1}
-                                    {if $item['ischangePrice'] == 1}
-                                        <td  style='border:none;text-align:right;color:green;'>
-                                            <a href="javascript:;" class="btn btn-link " onclick="changePrice('{$item['id']}')">修改价格</a>
-                                        </td>
-                                    {/if}
-                                {/if}
-                            </tr>
-                            {/if}  {/if}
-                        </table>
-                 
-                 
-     
-                    </td>
-                    <td   rowspan="{php echo count($item['goods'])}" ><label class='label label-{$item['statuscss']}'>{$item['status']}</label><br />
-                    <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id'], 'plugin' => $request['plugin'], 'openid' => $request['openid']))}">查看详情</a></td>
-                     <td   rowspan="{php echo count($item['goods'])}" width="10%">
-                    {template 'web/order/ops'}
-                     </td>
-            {/if} 
-        </tr>
-        
-    {/loop}
-        <tr>
-            <td colspan="4">
-                {if !empty($level)}
-                    {if !empty($item['agentid']) && (!empty($item['commission1']) || !empty($item['commission2']) || !empty($item['commission3']) )}
-                    <i class="iconfont icon-sitemap biz" style="color:#fff;background-color: #3366FF;"></i>
-                     <b style="color:#3366FF">分销佣金:</b>
-                     {/if}
-                      {if empty($agentid)}
-                      {if $item['commission1']>0}<b>1级佣金:</b> {$item['commission1']} 元 {/if}
-                      {if $item['commission2']>0}<b>2级佣金:</b> {$item['commission2']} 元 {/if}
-                      {if $item['commission3']>0}<b>3级佣金:</b> {$item['commission3']} 元 {/if}
-                      {/if}
-                      {if !empty($item['agentid'])}
-                    {ifp 'commission.changecommission'}
-                    <a href='javascript:;' class='btn btn-default' onclick="commission_change('{$item['id']}')">修改佣金</a>
-                    {/if}
-                      {/if}
-                 
-                 {/if}
-            </td>
-            <td colspan="4">
-                {if $item['bonus_range_money'] > 0 || $item['bonus_area_money'] > 0}
-                    <i class="iconfont icon-fh biz" style="color:#fff;background-color: #FF3300;"></i>
-                    <b style="color:#FF3300">分红佣金:</b>
-                    {if $item['bonus_range_money'] > 0}
-                        <b>订单代理分红:</b> {$item['bonus_range_money']}元
-                    {/if}
-                    {if $item['bonus_area_money'] > 0}
-                        <b>订单区域分红:</b> {$item['bonus_area_money']}元
-                    {/if}
-                    {if $item['bonus_range_money'] > 0 && $item['bonus_area_money'] > 0}
-                        <b>订单总分红:</b> {$item['bonus_money_all']}元
-                    {/if} 
-                {/if} 
-            </td>
-        </tr>
-   </table>
-{/loop}
-            
-{else}
-<div class="panel panel-default">
-    <div class="panel-heading"></div>
-    <div class="panel-body">
-        <table class="table table-hover table-responsive">
-            <thead class="navbar-inner" >
-                <tr>
-                    <th style='width:8%;'>供应商ID</th>
-                    <th style='width:22%;'>提现单号</th>
-                    <th style='width:20%;'>提现金额</th>
-                    <th style='width:10%;'>提现方式<br>手动/微信</th>
-                    <th style='width:22%;'>申请时间<br>完成时间</th>
-                    <th style='width:29%;'>状态</th>
-                </tr>
-            </thead>
-            <tbody>
-                {loop $supplierapply $row}
-                    {if !empty($row['uid'])}
-                        <tr>
-                            <td>{$row['uid']}</td>
-                            <td>{$row['applysn']}</td>
-                            <td><a class="btn btn-danger" href="{if $row['status'] == 0}{php echo $this->createPluginWebUrl('supplier/supplier_list',array('apply_id' => $row['id']));}{else}#{/if}">金额：{$row['apply_money']}元{if $row['status'] == 0}(点击查看订单){/if}</a></td>
-                            <td>{if $row['type']==1}<button type="button" class="btn btn-warning">手动提现</button>{elseif $row['type']==2}<button type="button" class="btn btn-success">微信提现</button>{/if}</td>
-                            {if $row['status'] == 0}
-                            <td><?php echo date('Y-m-d H:i:s',$row['apply_time']);?></td>
-                            <td  style="overflow:visible;">
-                                <button type="button" class="btn btn-info">申请中，等待审核</button>
-                            </td>
-                            {else}
-                            <td><?php echo date('Y-m-d H:i:s',$row['finish_time']);?></td>
-                            <td  style="overflow:visible;">
-                                <button type="button" class="btn btn-danger">已打款，审核通过</button>
-                            </td>
-                            {/if}
-                        </tr>
-                    {/if}
-                {/loop}
-            </tbody>
-        </table>
-    </div>
-</div>
-{/if}  
-<div id="pager"></div>
-</div>
-</div>                                                      
-<script language="javascript">
-    
-
-    function send(btn){
-        var modal =$('#modal-confirmsend');
-        var itemid = $(btn).parent().find('.itemid').val();
-            modal.find(':input[name=id]').val( itemid );
-            var addressdata  = eval('(' +$(btn).parent().find('.addressdata').val()+')');
-            modal.find('.realname').html(addressdata.realname);
-            modal.find('.mobile').html(addressdata.mobile);
-            modal.find('.address').html(addressdata.address);
-    }
-    $(function () {
-        $.ajax({
-            url: window.location.href,
-            type: 'post',
-            success: function (serverData) {
-                if(serverData){
-                    eval("var data=" + serverData + "");
-                    $("#pager").html(data.result.pager);
-                    $("#total").html(data.result.total);
-                    $("#totalmoney").html(data.result.totalmoney);
-                }
-            }
-        })
-        $('#export').click(function(){
-            $('#form_p').val("exportOrder");
-            $('#form1').submit();   
-            $('#form_p').val("list");
-        });
-        $('.select2').select2({
-            search: true,
-            placeholder: "请选择门店",
-            allowClear: true
-        });
-    });
-    function sendagent(btn){
-        var modal =$('#modal-changeagent');
-        var itemid = $(btn).parent().find('.itemid').val();
-        modal.find(':input[name=id]').val( itemid );
-    }
-</script> 
-                    
-         {template 'web/order/modals'}
-          {if  p('commission')}
-          
-           {template 'commission/changecommission'}
-          {/if}
-        {template 'web/_footer'}
+{template 'web/sysset/mylink'}
+{template 'web/_footer'}
