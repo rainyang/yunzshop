@@ -74,4 +74,23 @@ class Order extends Model
             ->get();
         return $order_goods;
     }
+
+    //购买个数
+    public static function getBuyCount($goodsid, $uniacid, $openid)
+    {
+        $order_goods_count = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' where og.goodsid=:goodsid and  o.status>=1 and o.openid=:openid  and og.uniacid=:uniacid ', array(
+            ':goodsid' => $goodsid,
+            ':uniacid' => $uniacid,
+            ':openid' => $openid
+        ));
+        return $order_goods_count;
+    }
+
+    //支付修改订单
+    public static function payUpdateOrder($condition, $uniacid, $pay_type)
+    {
+        self::update(['paytype' => $pay_type])
+            ->where($condition)
+            ->where('uniacid', '=', $uniacid);
+    }
 }

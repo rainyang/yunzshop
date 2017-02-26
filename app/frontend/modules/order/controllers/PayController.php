@@ -95,6 +95,24 @@ class PayController
         return $plid;
     }
 
+    private function _getPayWays()
+    {
+        return array(
+            'weixin',
+            'alipay',
+            'app_alipay',
+            'app_weixin',
+            'unionpay',
+            'yunpay',
+            'yeepay',
+            'paypal',
+            'yeepay_wy',
+            'credit',
+            'cash',
+            'storecash'
+        );
+    }
+
     private function _getOrderGoodsSqlCondition()
     {
         if(is_array($this->_getOrderId())){
@@ -106,6 +124,17 @@ class PayController
         return $condition;
     }
 
+    private function _getOrderSqlCondition()
+    {
+        if(is_array($this->_getOrderId())){
+            $orderids = implode(',', $this->_getOrderId());
+            $condition = "id in ({$orderids})";
+        }else{
+            $condition = "id={$this->_getOrderId()}";
+        }
+        return $condition;
+    }
+
     //下面支付动作能用到，但是两个处理方式不同。这里只做查询
     private function _getOrderGoods()
     {
@@ -113,15 +142,57 @@ class PayController
         return $order_goods;
     }
 
+    //公共的地方 pay与complete
+    private function _codeBlock()
+    {
+        $order = $this->_getOrder();
+        //验证当前支付方式是否存在
+        OrderService::vetifyPay(
+            \YunShop::request()->type,
+            $this->_getPayWays()
+        );
+        //验证用户余额是否足够
+        OrderService::verifyMemberCredit(
+            $this->openid,
+            $order
+        );
+        //获取支付号
+        $pay_ordersn = OrderService::getOrderSnGeneral(
+            $order,
+            $this->_getOrdersnGeneral()
+        );
+        //获取log,并验证是否为空
+        OrderService::verifyLogIsEmpty(
+            Order::getLog(
+                $pay_ordersn,
+                \YunShop::app()->uniacid
+            )
+        );
+        //获取order_goods 并验证
+        OrderService::verifyOrderGoods(
+            $this->_getOrderGoods(),
+            \YunShop::app()->uniacid,
+            $this->openid
+        );
+    }
+
+
     public function display()
     {
         $order = $this->_getOrder();
-        $pay_ways = OrderService::getAllPayWay($order, $this->openid, \YunShop::app()->uniacid);
+        $pay_ways = OrderService::getAllPayWay(
+            $order,
+            $this->openid,
+            \YunShop::app()->uniacid
+        );
         /*$returnurl = urlencode($this->createMobileUrl('order/pay', array(
             'orderid' => $order['id']
         )));*/
         $returnurl = '';
-        $order_goods = OrderService::getOrderGoods($this->_getOrderGoods(), $this->uniacid);
+        $order_goods = OrderService::getOrderGoods(
+            $this->_getOrderGoods(),
+            $this->uniacid
+        );
         return show_json(1, array(
             'order' => $order,
             'set' => $this->set,
@@ -142,5 +213,49 @@ class PayController
             'returnurl' => $returnurl,
             'goods'=>$order_goods
         ));
+    }
+
+    //支付
+    public function pay()
+    {
+        //调用公共的代码块
+        $this->_codeBlock();
+        //支付标题
+        $param_title = $this->set()['shop']['name'] . "订单: " . $this->_getOrder()['ordersn'];
+        //处理支付handle
+        OrderService::handlePay(
+            \YunShop::request()->type,
+            $this->_getPlId(),
+            $this->openid,
+            $param_title,
+            \YunShop::app(),
+            $this->_getOrder(),
+            $this->_getOrderSqlCondition()
+            );
+    }
+
+    public function complete()
+    {
+        //$verify_set = m('common')->getSetData();
+        //$allset = iunserializer($verify_set['plugins']);
+        $verify_set = array();
+        $allset = array();
+        //调用公共的代码块
+        $this->_codeBlock();
+        OrderService::completeHandlePay(
+            \YunShop::request()->type,
+            \YunShop::app()->uniacid,
+            $this->_getOrderSqlCondition(),
+            $this->getOrder(),
+            Order::getLog(
+                $this->uniacid,
+                $this->_getOrdersnGeneral()
+            ),
+            $this->openid,
+            OrderService::getOrderSnGeneral(
+                $this->getOrder(),
+                $this->_getOrdersnGeneral()
+            )
+        );
     }
 }
