@@ -21,7 +21,7 @@
             "doctrine/collections": "1.*",
             "phpunit/phpunit": "~4.1"
         },
-        "time": "2017-01-26T22:05:40+00:00",
+        "time": "2017-01-26 22:05:40",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -67,7 +67,7 @@
         "suggest": {
             "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
         },
-        "time": "2016-11-07T23:38:38+00:00",
+        "time": "2016-11-07 23:38:38",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -111,9 +111,9 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-07-22T08:24:20+00:00",
+        "time": "2016-07-22 08:24:20",
         "type": "library",
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/QcloudApi/QcloudApi.php"
@@ -155,14 +155,14 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-        "time": "2017-02-18T17:35:19+00:00",
+        "time": "2017-02-18 17:35:19",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "3.3-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\Yaml\\": ""
@@ -206,14 +206,14 @@
         "require": {
             "php": ">=5.6"
         },
-        "time": "2016-10-03T07:35:21+00:00",
+        "time": "2016-10-03 07:35:21",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "2.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -251,14 +251,14 @@
         "require": {
             "php": ">=5.6.0"
         },
-        "time": "2016-10-03T07:43:09+00:00",
+        "time": "2016-10-03 07:43:09",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -298,14 +298,14 @@
         "require-dev": {
             "phpunit/phpunit": "~4.4"
         },
-        "time": "2016-11-19T07:33:16+00:00",
+        "time": "2016-11-19 07:33:16",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "2.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -354,14 +354,14 @@
         "require-dev": {
             "phpunit/phpunit": "^5.7"
         },
-        "time": "2017-02-18T16:04:11+00:00",
+        "time": "2017-02-18 16:04:11",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "2.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -404,14 +404,14 @@
         "suggest": {
             "ext-uopz": "*"
         },
-        "time": "2016-10-03T07:46:22+00:00",
+        "time": "2016-10-03 07:46:22",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.0-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -456,14 +456,14 @@
             "ext-mbstring": "*",
             "phpunit/phpunit": "~4.4"
         },
-        "time": "2016-11-19T08:54:04+00:00",
+        "time": "2016-11-19 08:54:04",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "2.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -523,14 +523,14 @@
         "require-dev": {
             "phpunit/phpunit": "^5.0"
         },
-        "time": "2016-11-26T07:53:53+00:00",
+        "time": "2016-11-26 07:53:53",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "2.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -575,14 +575,14 @@
         "require-dev": {
             "phpunit/phpunit": "~4.8"
         },
-        "time": "2016-10-03T07:45:03+00:00",
+        "time": "2016-10-03 07:45:03",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.4-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -631,14 +631,14 @@
         "require-dev": {
             "phpunit/phpunit": "~4.4"
         },
-        "time": "2017-01-29T09:50:25+00:00",
+        "time": "2017-01-29 09:50:25",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.2.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -699,14 +699,14 @@
             "phpunit/phpunit": "~4.0",
             "squizlabs/php_codesniffer": "~2.0"
         },
-        "time": "2017-02-16T16:15:51+00:00",
+        "time": "2017-02-16 16:15:51",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
@@ -748,7 +748,7 @@
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2015-06-21T13:50:34+00:00",
+        "time": "2015-06-21 13:50:34",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -803,14 +803,14 @@
         "suggest": {
             "ext-soap": "*"
         },
-        "time": "2016-12-08T20:27:08+00:00",
+        "time": "2016-12-08 20:27:08",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "3.2.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -855,7 +855,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4|~5"
         },
-        "time": "2016-05-12T18:03:57+00:00",
+        "time": "2016-05-12 18:03:57",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -898,14 +898,14 @@
         "require": {
             "php": ">=5.3.3"
         },
-        "time": "2016-10-03T07:40:28+00:00",
+        "time": "2016-10-03 07:40:28",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.4.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -950,14 +950,14 @@
         "require-dev": {
             "phpunit/phpunit": "~5"
         },
-        "time": "2016-12-06T20:05:00+00:00",
+        "time": "2016-12-06 20:05:00",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -998,14 +998,14 @@
         "require-dev": {
             "phpunit/phpunit": "~4.2"
         },
-        "time": "2016-11-15T14:06:22+00:00",
+        "time": "2016-11-15 14:06:22",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.4-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1060,14 +1060,14 @@
             "ext-xdebug": ">=2.4.0",
             "ext-xmlwriter": "*"
         },
-        "time": "2017-01-24T16:35:00+00:00",
+        "time": "2017-01-24 16:35:00",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "4.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1114,14 +1114,14 @@
             "phpunit/phpunit": "^4.6",
             "sebastian/version": "^1.0.1"
         },
-        "time": "2016-11-23T20:04:41+00:00",
+        "time": "2016-11-23 20:04:41",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.3-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Webmozart\\Assert\\": "src/"
@@ -1165,14 +1165,14 @@
         "require-dev": {
             "phpunit/phpunit": "^4.6"
         },
-        "time": "2015-12-27T11:43:31+00:00",
+        "time": "2015-12-27 11:43:31",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "phpDocumentor\\Reflection\\": [
@@ -1223,7 +1223,7 @@
             "mockery/mockery": "^0.9.4",
             "phpunit/phpunit": "^5.2||^4.8.24"
         },
-        "time": "2016-11-25T06:54:22+00:00",
+        "time": "2016-11-25 06:54:22",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1274,7 +1274,7 @@
             "mockery/mockery": "^0.9.4",
             "phpunit/phpunit": "^4.4"
         },
-        "time": "2016-09-30T07:12:33+00:00",
+        "time": "2016-09-30 07:12:33",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1322,14 +1322,14 @@
             "phpspec/phpspec": "^2.0",
             "phpunit/phpunit": "^4.8 || ^5.6.5"
         },
-        "time": "2016-11-21T14:58:47+00:00",
+        "time": "2016-11-21 14:58:47",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.6.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-0": {
                 "Prophecy\\": "src/"
@@ -1410,7 +1410,7 @@
             "ext-xdebug": "*",
             "phpunit/php-invoker": "~1.1"
         },
-        "time": "2017-02-19T07:22:16+00:00",
+        "time": "2017-02-19 07:22:16",
         "bin": [
             "phpunit"
         ],
@@ -1420,7 +1420,7 @@
                 "dev-master": "5.7.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"
@@ -1466,14 +1466,14 @@
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2016-11-14T01:06:16+00:00",
+        "time": "2016-11-14 01:06:16",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.3-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Symfony\\Polyfill\\Mbstring\\": ""
@@ -1539,14 +1539,14 @@
             "symfony/config": "",
             "symfony/yaml": ""
         },
-        "time": "2017-02-18T17:35:19+00:00",
+        "time": "2017-02-18 17:35:19",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "3.3-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\Translation\\": ""
@@ -1595,7 +1595,7 @@
             "friendsofphp/php-cs-fixer": "~2",
             "phpunit/phpunit": "~4.0 || ~5.0"
         },
-        "time": "2017-02-06T22:02:47+00:00",
+        "time": "2017-02-06 22:02:47",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1645,14 +1645,14 @@
         "require": {
             "php": ">=5.6.4"
         },
-        "time": "2017-02-11T22:25:34+00:00",
+        "time": "2017-02-11 22:25:34",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "5.4-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Illuminate\\Contracts\\": ""
@@ -1692,14 +1692,14 @@
         "require-dev": {
             "phpunit/phpunit": "4.*"
         },
-        "time": "2016-05-12T17:23:41+00:00",
+        "time": "2016-05-12 17:23:41",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.1.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-0": {
                 "Doctrine\\Common\\Inflector\\": "lib/"
@@ -1770,7 +1770,7 @@
             "symfony/process": "Required to use the composer class (~3.2).",
             "symfony/var-dumper": "Required to use the dd function (~3.2)."
         },
-        "time": "2017-02-15T19:29:24+00:00",
+        "time": "2017-02-15 19:29:24",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1818,14 +1818,14 @@
             "illuminate/contracts": "5.4.*",
             "php": ">=5.6.4"
         },
-        "time": "2017-01-28T17:55:54+00:00",
+        "time": "2017-01-28 17:55:54",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "5.4-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Illuminate\\Container\\": ""
@@ -1874,14 +1874,14 @@
             "illuminate/filesystem": "Required to use the migrations (5.4.*).",
             "illuminate/pagination": "Required to paginate the result set (5.4.*)."
         },
-        "time": "2017-02-16T13:54:55+00:00",
+        "time": "2017-02-16 13:54:55",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "5.4-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Illuminate\\Database\\": ""
@@ -1928,14 +1928,14 @@
         "require-dev": {
             "symfony/expression-language": "~2.8|~3.0"
         },
-        "time": "2017-02-18T17:35:19+00:00",
+        "time": "2017-02-18 17:35:19",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "3.3-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\HttpFoundation\\": ""
@@ -1979,14 +1979,14 @@
         "require": {
             "php": ">=5.5.9"
         },
-        "time": "2017-02-18T17:35:19+00:00",
+        "time": "2017-02-18 17:35:19",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "3.3-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Symfony\\Component\\Finder\\": ""
@@ -2038,14 +2038,14 @@
             "league/flysystem-aws-s3-v3": "Required to use the Flysystem S3 driver (~1.0).",
             "league/flysystem-rackspace": "Required to use the Flysystem Rackspace driver (~1.0)."
         },
-        "time": "2017-01-03T14:19:43+00:00",
+        "time": "2017-01-03 14:19:43",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "5.4-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Illuminate\\Filesystem\\": ""
@@ -2084,14 +2084,14 @@
             "illuminate/support": "5.4.*",
             "php": ">=5.6.4"
         },
-        "time": "2017-02-08T14:50:07+00:00",
+        "time": "2017-02-08 14:50:07",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "5.4-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Illuminate\\Translation\\": ""
@@ -2136,14 +2136,14 @@
         "suggest": {
             "illuminate/database": "Required to use the database presence verifier (5.4.*)."
         },
-        "time": "2017-02-17T13:56:11+00:00",
+        "time": "2017-02-17 13:56:11",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "5.4-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Illuminate\\Validation\\": ""
@@ -2183,14 +2183,14 @@
             "illuminate/support": "5.4.*",
             "php": ">=5.6.4"
         },
-        "time": "2017-02-10T21:05:38+00:00",
+        "time": "2017-02-10 21:05:38",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "5.4-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Illuminate\\Events\\": ""
@@ -2236,7 +2236,7 @@
             "symfony/var-dumper": "Pretty print complex values better with var-dumper available",
             "whoops/soap": "Formats errors as SOAP responses"
         },
-        "time": "2017-02-18T14:22:27+00:00",
+        "time": "2017-02-18 14:22:27",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2289,14 +2289,14 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-10-10T12:19:37+00:00",
+        "time": "2016-10-10 12:19:37",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Psr\\Log\\": "Psr/Log/"
@@ -2319,7 +2319,6 @@
             "psr",
             "psr-3"
         ]
-
     },
     {
         "name": "monolog/monolog",
@@ -2369,14 +2368,14 @@
             "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
             "sentry/sentry": "Allow sending log messages to a Sentry server"
         },
-        "time": "2017-01-11T16:17:39+00:00",
+        "time": "2017-01-11 16:17:39",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "2.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Monolog\\": "src/Monolog"
@@ -2399,65 +2398,6 @@
             "log",
             "logging",
             "psr-3"
-        ]
-    },
-    {
-        "name": "php-console/php-console",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/barbushin/php-console.git",
-            "reference": "d46db9661b934fb5fa9c6164db72b32a419348a5"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://packagist.phpcomposer.com/files/barbushin/php-console/d46db9661b934fb5fa9c6164db72b32a419348a5.zip",
-            "reference": "d46db9661b934fb5fa9c6164db72b32a419348a5",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.0"
-        },
-        "require-dev": {
-            "ext-mbstring": "*",
-            "phpunit/phpunit": "^4.8",
-            "psr/log": "^1.0"
-        },
-        "time": "2016-11-04T07:26:13+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "PhpConsole\\": "src/PhpConsole"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Sergey Barbushin",
-                "email": "barbushin@gmail.com",
-                "homepage": "http://linkedin.com/in/barbushin"
-            }
-        ],
-        "description": "PHP library for Google Chrome extension \"PHP Console\".",
-        "homepage": "https://github.com/barbushin/php-console",
-        "keywords": [
-            "chrome",
-            "debug",
-            "error handler",
-            "errors",
-            "google chrome",
-            "php"
-
         ]
     }
 ]

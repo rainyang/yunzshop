@@ -8,6 +8,6 @@
 
 return [
     'modules'=>[
-        'api'
+        'order'
     ]
 ];
