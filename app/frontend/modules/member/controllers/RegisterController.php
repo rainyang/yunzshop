@@ -23,17 +23,17 @@ class RegisterController extends BaseController
         // 1-公众号;2-小程序;3-微信app;4-pc扫码;4-手机号/app;
         $type = \YunShop::request()->type;
 
-        switch ($type) {
-            case '4':
-                $this->_mobileIndex();
-                break;
+        //islogined;
+
+        if ($type == 5) {
+            $this->_mobileIndex();
         }
 
-        $oa_wetcha = MemberFactory::create('OfficeAccount');
+        //$oa_wetcha = MemberFactory::create('OfficeAccount');
 
-        $info = $oa_wetcha->getUserInfo();
+        //$info = $oa_wetcha->getUserInfo();
 
-    echo '<pre>';print_r($info);exit;
+    //echo '<pre>';print_r($info);exit;
     }
 
     private function _mobileIndex()
@@ -46,8 +46,6 @@ class RegisterController extends BaseController
         $from = !empty(\YunShop::request()->from) ? \YunShop::request()->from : '';
 
         $yzShopSet = array('isreferral'=>0); //m('common')->getSysset('shop');
-
-               //islogined;
 
         $app = $this->getAppSet();
 

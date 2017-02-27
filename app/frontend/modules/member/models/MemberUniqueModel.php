@@ -16,4 +16,9 @@ use Illuminate\Database\Eloquent\Model;
 class MemberUniqueModel extends Model
 {
     public $table = 'yz_member_unique';
+
+    public static function getUnionidInfo($uniacid, $unionid)
+    {
+        return self::where('uncaid', $uniacid)->where('unionid', $unionid)->get();
+    }
 }
