@@ -65,158 +65,6 @@ class OrderService
         return show_json(0, '参数错误');
     }
 
-    //验证log是否为空
-    public static function verifyLogIsEmpty($log)
-    {
-        if (empty($log)) {
-            return show_json(0, '支付出错,请重试!');
-        }
-    }
-
-    //验证log 并返回plid
-    public static function verifyLog($log, $uniacid, $openid, $ordersn_general, $price, $status)
-    {
-        if (!empty($log) && $log['status'] != '0') {
-            return show_json(-1, '订单已支付, 无需重复支付!');
-        }
-        if (!empty($log) && $log['status'] == '0') {
-            Order::deleteLog($log['plid']);
-            $log = null;
-        }
-        $plid = $log['plid'];
-        if (empty($log)) {
-            $log = array(
-                'uniacid' => $uniacid,
-                'openid' => $openid,
-                'module' => "sz_yi",
-                'tid' => $ordersn_general,
-                'fee' => $price,
-                'status' => $status
-            );
-            $plid = Order::insertLog($log);
-        }
-        return $plid;
-    }
-
-    //获取所有的支付方式
-    public static function getAllPayWay($order, $openid, $uniacid)
-    {
-        //$set      = m('common')->getSysset();
-        //load()->model('payment');
-        //$setting = uni_setting($_W['uniacid'], array('payment'));
-        $set = array();
-        $setting = array();
-        $pay_ways = array();
-
-        //余额支付
-        $credit        = array(
-            'success' => false
-        );
-        if (isset($set['pay']) && $set['pay']['credit'] == 1) {
-            if ($order['deductcredit2'] <= 0) {
-                $credit = array(
-                    'success' => true,
-                    //'current' => m('member')->getCredit($openid, 'credit2')
-                    'current' => '100000'
-                );
-            }
-        }
-        $pay_ways[] = $credit;
-
-        //app阿里支付
-        $app_alipay = array(
-            'success' => false
-        );
-        if (isset($set['pay']) && $set['pay']['app_alipay'] == 1) {
-            $app_alipay['success'] = true;
-        }
-        $pay_ways[] = $app_alipay;
-
-        //app微信支付
-        $app_wechat = array(
-            'success' => false
-        );
-        if (isset($set['pay']) && $set['pay']['app_weixin'] == 1) {
-            $app_wechat['success'] = true;
-        }
-        $pay_ways[] = $app_wechat;
-
-        //微信支付
-        $wechat  = array(
-            'success' => false,
-            'qrcode' => false
-        );
-        $jie = $set['pay']['weixin_jie'];
-        if (is_weixin()) {
-            if (isset($set['pay']) && ($set['pay']['weixin'] == 1) && ($jie != 1)) {
-                if (is_array($setting['payment']['wechat']) && $setting['payment']['wechat']['switch']) {
-                    $wechat['success'] = true;
-                    $wechat['weixin'] = true;
-                    $wechat['weixin_jie'] = false;
-                }
-            }
-        }
-        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {
-            if ((isset($set['pay']) && ($set['pay']['weixin_jie'] == 1) && !$wechat['success']) || ($jie == 1)) {
-                $wechat['success'] = true;
-                $wechat['weixin_jie'] = true;
-                $wechat['weixin'] = false;
-            }
-        }
-        $wechat['jie'] = $jie;
-        //扫码
-        if (!isMobile() && isset($set['pay']) && $set['pay']['weixin'] == 1) {
-            if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
-                if (is_array($setting['payment']['wechat']) && $setting['payment']['wechat']['switch']) {
-                    $wechat['qrcode'] = true;
-                }
-            }
-        }
-        $pay_ways[] = $app_alipay;
-
-        //阿里支付
-        $alipay = array(
-            'success' => false
-        );
-        if (isset($set['pay']) && $set['pay']['alipay'] == 1) {
-            if (is_array($setting['payment']['alipay']) && $setting['payment']['alipay']['switch']) {
-                $alipay['success'] = true;
-            }
-        }
-        $pay_ways[] = $app_alipay;
-
-        //银联支付
-        $unionpay = array(
-            'success' => false
-        );
-        if (isset($set['pay']) && $set['pay']['unionpay'] == 1) {
-            if (is_array($setting['payment']['unionpay']) && $setting['payment']['unionpay']['switch']) {
-                $unionpay['success'] = true;
-            }
-        }
-        $pay_ways[] = $app_alipay;
-
-        //易宝支付
-        $yeepay = array(
-            'success' => false
-        );
-        if (isset($set['pay']) && $set['pay']['yeepay'] == 1) {
-            $yeepay['success'] = true;
-        }
-        $pay_ways[] = $app_alipay;
-
-        //paypal支付
-        $paypal = array(
-            'success' => false
-        );
-        if (isset($set['pay']) && $set['pay']['paypalstatus'] == 1){
-            $paypal['success'] = true;
-        }
-        $pay_ways[] = $app_alipay;
-
-        return $pay_ways;
-    }
-
     //处理订单商品
     public static function getOrderGoods($order_goods, $uniacid)
     {
@@ -244,24 +92,6 @@ class OrderService
         unset($value);
         $order_goods = set_medias($order_goods, 'thumb');
         return $order_goods;
-    }
-
-    //验证当前支付方式
-    public static function verifyPay($pay_type, $pay_way)
-    {
-        if (!in_array($pay_type, $pay_way)) {
-            return show_json(0, '未找到支付方式');
-        }
-    }
-
-    //验证用户余额是否足够
-    public static function verifyMemberCredit($openid, $order)
-    {
-        //$member = m('member')->getInfo($openid);
-        $member = array();
-        if($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0){
-            return show_json(0, '余额不足，请充值后在试！');
-        }
     }
 
     public static function getOrderSnGeneral($order, $ordersn_general)
@@ -487,8 +317,11 @@ class OrderService
     //
     public static function completeHandlePay($pay_type, $uniacid, $condition, $order, $log, $openid, $pay_ordersn)
     {
-        //set 等接口
+        //set pset 等接口
         $set = array();
+        $pset = array();
+        $allset = array();
+        $setting = array();
         if ($pay_type == 'cash') {
             if (!$set['pay']['cash']) {
                 return show_json(0, '当前支付方式未开启,请重试!');
@@ -508,7 +341,7 @@ class OrderService
             $ret['weid']    = $uniacid;
             $ret['uniacid'] = $uniacid;
             //////////////////
-            $pay_result      = $this->payResult($ret);
+            //$pay_result      = $this->payResult($ret);
             $set = m('common')->getSysset();
             //互亿无线
             if (!empty($pay_result['verifycode'])) {
@@ -555,7 +388,7 @@ class OrderService
             $ret['fee']     = $order['price'];
             $ret['weid']    = $uniacid;
             $ret['uniacid'] = $uniacid;
-            $pay_result      = $this->payResult($ret);
+            //$pay_result      = $this->payResult($ret);
             $set = m('common')->getSysset();
             //互亿无线
             if (!empty($pay_result['verifycode'])) {
@@ -594,7 +427,7 @@ class OrderService
             }
             $fee    = floatval($ps['fee']);
             $result = m('member')->setCredit($openid, 'credit2', -$fee, array(
-                $_W['member']['uid'],
+                \YunShop::app()->member['uid'],
                 '消费' . $setting['creditbehaviors']['currency'] . ':' . $fee
             ));
             if (is_error($result)) {
@@ -620,7 +453,7 @@ class OrderService
             $ret['fee']     = $log['fee'];
             $ret['weid']    = $log['weid'];
             $ret['uniacid'] = $log['uniacid'];
-            $pay_result = $this->payResult($ret);
+            //$pay_result = $this->payResult($ret);
             //互亿无线
             if (!empty($pay_result['verifycode'])) {
                 if($pset['sms']['type'] == 1){
@@ -693,7 +526,7 @@ class OrderService
                         //'goods'=> $orderdetail  这个值没有
                     );
                 }else{
-                    $pay_result     = $this->payResult($ret);
+                    //$pay_result     = $this->payResult($ret);
                 }
                 $pay_result['time'] = time();
                 show_json(1, $pay_result);
