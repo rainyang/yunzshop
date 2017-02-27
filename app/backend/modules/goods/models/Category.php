@@ -25,7 +25,8 @@ class Category extends \app\common\models\Category
      */
     public static function saveEditCategory($category, $id)
     {
-        return self::where('id', $id)->update($category);
+        return self::where('id', $id)
+            ->update($category);
     }
 
     /**
@@ -34,7 +35,8 @@ class Category extends \app\common\models\Category
      */
     public static function getCategory($id)
     {
-        return self::where('id', $id)->first();
+        return self::where('id', $id)
+            ->first();
     }
 
     /**
@@ -43,6 +45,13 @@ class Category extends \app\common\models\Category
      */
     public static function daletedCategory($id)
     {
-        return self::where('id', $id)->orWhere('parent_id', $id)->delete();
+        return self::where('id', $id)
+            ->orWhere('parent_id', $id)
+            ->delete();
+    }
+    
+    public static function parentCategory()
+    {
+        
     }
 }

@@ -4,6 +4,7 @@ namespace app\backend\modules\goods\controllers;
 use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\services\CategoryService;
 use app\common\components\BaseController;
+use app\common\helpers\PaginationHelper;
 
 /**
  * Created by PhpStorm.
@@ -18,12 +19,27 @@ class CategoryController extends BaseController
     public function index()
     {
         $shopset   = m('common')->getSysset('shop');
-        $list = CategoryService::getLists(Category::getCategorys(\YunShop::app()->uniacid));
+        $pindex = max(1, intval(\YunShop::request()->page));
+        $psize = 10;
+
+        $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
+        $total = Category::getCategoryTotal(\YunShop::app()->uniacid, $parent_id);
+        $list = Category::getCategorys(\YunShop::app()->uniacid, $pindex, $psize, $parent_id);
+        $pager = PaginationHelper::pagination($total, $pindex, $psize);
+
+        $parent = [];
+        if($parent_id > 0) {
+            $parent = Category::getCategory($parent_id);
+        }
+
         $this->render('list', [
             'list' => $list,
+            'pager' => $pager,
+            'parent' => $parent,
             'shopset' => $shopset
         ]);
     }
+
 
     public function addCategory()
     {

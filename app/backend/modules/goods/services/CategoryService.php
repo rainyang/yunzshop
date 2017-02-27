@@ -10,22 +10,7 @@ namespace app\backend\modules\goods\services;
 
 class CategoryService
 {
-    /**
-     * @param $categorys array
-     * @return mixed
-     */
-    public static function getLists($categorys)
-    {
 
-        foreach ($categorys as $row) {
-            if (empty($row->parent_id)) {
-                $data['parents'][] =   $row;
-            } else {
-                $data['childrens'][$row['parent_id']][] = $row;
-            }
-        }
-        return $data;
-    }
 
     /**
      * @param $categorys array
