@@ -14,6 +14,9 @@ use app\common\helpers\PaginationHelper;
  */
 class BrandController extends BaseController
 {
+    /**
+     * 商品品牌列表
+     */
     public function index()
     {
         $shopset   = m('common')->getSysset('shop');
@@ -31,10 +34,13 @@ class BrandController extends BaseController
         ]);
     }
 
+    /**
+     * 添加品牌
+     */
     public function addBrand()
     {
         ca('shop.brand.add');
-
+        
         $item = [
             'id'            => '',
             'name'          => '',
@@ -48,8 +54,13 @@ class BrandController extends BaseController
         ]);
     }
 
+    /**
+     * 保存添加品牌
+     */
     public function addSave()
     {
+        ca('shop.brand.add');
+        
         $brand = \YunShop::request()->brand;
         $brand['uniacid'] = \YunShop::app()->uniacid;
         $validator = Brand::validator($brand);
@@ -63,12 +74,15 @@ class BrandController extends BaseController
                 //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
             }
         }
-
     }
 
+    /**
+     * 编辑商品品牌
+     */
     public function editBrand()
     {
         ca('shop.brand.edit');
+        
         $brand = Brand::getBrand(\YunShop::request()->id);
 
         $this->render('info', [
@@ -76,9 +90,13 @@ class BrandController extends BaseController
         ]);
     }
 
+    /**
+     * 保存编辑品牌
+     */
     public function editSave()
     {
         ca('shop.brand.edit');
+        
         $brand = \YunShop::request()->brand;
         $brand['uniacid'] = \YunShop::app()->uniacid;
         $validator = Brand::validator($brand);
@@ -93,6 +111,10 @@ class BrandController extends BaseController
             }
         }
     }
+
+    /**
+     * 删除商品品牌
+     */
     public function deletedBrand()
     {
         ca('shop.brand.delete');

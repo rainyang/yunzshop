@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Input;
 
 class CategoryController extends BaseController
 {
-    
+    /**
+     * 商品分类列表
+     */
     public function index()
     {
         $shopset   = m('common')->getSysset('shop');
@@ -41,7 +43,9 @@ class CategoryController extends BaseController
         ]);
     }
 
-
+    /**
+     * 添加商品分类
+     */
     public function addCategory()
     {
         ca('shop.category.add');
@@ -68,10 +72,13 @@ class CategoryController extends BaseController
         ]);
     }
 
-    
+    /**
+     * 保存添加分类
+     */
     public function addSave()
     {
         ca('shop.category.view');
+        
         $category = \YunShop::request()->category;
         $category['uniacid'] = \YunShop::app()->uniacid;
 
@@ -84,25 +91,31 @@ class CategoryController extends BaseController
             if ($result) {
                 Header("Location: " . $this->createWebUrl('goods.category.index'));
                 exit;
-                //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
             }
         }
     }
 
+    /**
+     * 修改分类
+     */
     public function editCategory()
     {
         ca('shop.category.edit');
+        
         $category = Category::getCategory(\YunShop::request()->id);
         $this->render('info', [
             'item' => $category,
             'level' => $category['level']
         ]);
-
     }
-    
+
+    /**
+     * 保存修改分类
+     */
     public function editSave()
     {
         ca('shop.category.edit');
+        
         $category = \YunShop::request()->category;
         $category['uniacid'] = \YunShop::app()->uniacid;
         
@@ -117,11 +130,14 @@ class CategoryController extends BaseController
             }
         }
     }
-    
+
+    /**
+     * 删除商品分类
+     */
     public function deletedCategory()
     {
         ca('shop.category.delete');
-
+        
         $category = Category::getCategory(\YunShop::request()->id);
         if( empty($category) ) {
             Header("Location: ".$this->createWebUrl('goods.category.index'));exit;

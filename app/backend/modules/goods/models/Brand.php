@@ -85,6 +85,7 @@ class Brand extends \app\common\models\Brand
             'name'=> '品牌名称',
         ];
     }
+    
     /**
      * 字段规则
      * @return array */

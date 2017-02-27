@@ -21,6 +21,13 @@ class Category extends BaseModel
      */
     protected $guarded = [''];
 
+    /**
+     * @param $uniacid
+     * @param $pindex
+     * @param $psize
+     * @param $parent_id
+     * @return mixed
+     */
     public static function getCategorys($uniacid, $pindex, $psize, $parent_id)
     {
         $data = self::where('uniacid', $uniacid)
@@ -32,7 +39,12 @@ class Category extends BaseModel
             ->toArray();
         return $data;
     }
-    
+
+    /**
+     * @param $uniacid
+     * @param $parent_id
+     * @return mixed
+     */
     public static function getCategoryTotal($uniacid,  $parent_id)
     {
         return self::where('uniacid', $uniacid)
