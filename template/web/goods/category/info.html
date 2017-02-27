@@ -184,19 +184,5 @@
 
         </form>
     </div>
-    <script language='javascript'>
-        require(['util'],function(u){
-            $('#cp').each(function(){
-                u.clip(this, $(this).text());
-            });
-        })
-        $('form').submit(function(){
-            if($(':input[name=catename]').isEmpty()){
-                Tip.focus(':input[name=category[name]]','请输入分类名称!');
-                return false;
-            }
-            return true;
-        });
-    </script>
     {template 'web/_footer'}
 

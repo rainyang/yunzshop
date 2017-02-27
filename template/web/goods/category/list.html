@@ -10,7 +10,10 @@
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">
             <ul class="add-snav">
-                <li class="active"><a href="#">商品分类</a></li>
+                <li class="active"><a href="{php echo $this->createWebUrl('goods.category.index');}">商品分类 </a></li>
+                {if !empty($parent)}
+                    <li class="active"><a href="{php echo $this->createWebUrl('goods.category.index', ['parent_id'=>$parent['parent_id'], 'level'=>$parent['level']]);}">返回上一级 </a></li>
+                {/if}
             </ul>
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->
@@ -19,69 +22,36 @@
                 <div class="panel-body table-responsive">
                     <div class="dd" id="div_nestable">
                         <ol class="dd-list">
-                            {loop $list[parents] $parent}
-                            {if empty($parent->parent_id)}
-                            <li class="dd-item" data-id="{$parent['id']}">
-                                <div class="dd-handle"  style='width:100%;'>
-                                    [ID: {$parent['id']}] {php echo $parent['name']}
-                                        <span class="pull-right">
-                                            {ifp 'shop.category.add'}
-                                                <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.add-category', ['parent_id'=>$parent['id'], 'level'=>'2']);}" title='添加子分类' ><i class="fa fa-plus"></i></a>
-                                            {/if}
-                                            {ifp 'shop.category.edit|shop.category.view'}
-                                             <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.edit-category', ['id'=>$parent['id']]);}" title="{ifp 'shop.category.edit'}修改{else}查看{/if}" >
-                                                 <i class="fa fa-edit"></i>
-                                             </a>
-                                            {/if}
-                                            {ifp 'shop.category.delete'}
-                                                <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.deleted-category', ['id'=>$parent['id']]);}" title='删除' onclick="return confirm('确认删除此分类吗？');return false;">
-                                                    <i class="fa fa-remove"></i>
-                                                </a>
-                                            {/if}
-                                        </span>
-                                </div>
-                                {if !empty($list['childrens'][$parent['id']]) && count($list['childrens'][$parent['id']]) > 0}
-                                <ol class="dd-list"  style='width:100%;'>
-                                    {loop $list['childrens'][$parent['id']] $child}
-                                    <li class="dd-item" data-id="{$child['id']}">
-                                        <div class="dd-handle">
-                                            <img src="{php echo tomedia($child['thumb']);}" width='30' height="30" onerror="$(this).remove()" style='padding:1px;border: 1px solid #ccc;float:left;' /> &nbsp;
-                                            [ID: {$child['id']}] {$child['name']}
-                                                <span class="pull-right">
-                                                    {if intval($shopset['catlevel'])==3}
-                                                     {ifp 'shop.category.add'}<a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.add-category', ['parent_id'=>$child['id'], 'level'=>'3']);}" title='添加子分类' ><i class="fa fa-plus"></i></a>{/if}
-                                                     {/if}
-                                                      {ifp 'shop.category.edit|shop.category.view'}<a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.edit-category', ['id'=>$child['id']]);}" title="{ifp 'shop.category.edit'}修改{else}查看{/if}" ><i class="fa fa-edit"></i></a>{/if}
-                                                      {ifp 'shop.category.delete'} <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.deleted-category', ['id'=>$child['id']]);}" title='删除' onclick="return confirm('确认删除此分类吗？');return false;"><i class="fa fa-remove"></i></a>{/if}
-                                                </span>
-                                        </div>
+                            {loop $list $category}
+                                <li class="dd-item" data-id="{$category['id']}">
+                                    <div class="dd-handle"  style='width:100%;'>
+                                        <img src="{php echo tomedia($category['thumb']);}" width='30' height="30" onerror="$(this).remove()" style='padding:1px;border: 1px solid #ccc;float:left;' /> &nbsp;
+                                        [ID: {php echo $category['id'];}] {php echo $category['name'];}
+                                            <span class="pull-right">
+                                                {if $category['level'] < 3}
+                                                    <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.index', ['parent_id'=>$category['id']]);}" title='子分类' >子分类</a>
 
-                                        {if !empty($list['childrens'][$child['id']]) && count($list['childrens'][$child['id']])>0 && intval($shopset['catlevel'])==3}
-                                        <ol class="dd-list"  style='width:100%;'>
-                                            {loop $list['childrens'][$child['id']] $third}
-                                            <li class="dd-item" data-id="{$third['id']}">
-                                                <div class="dd-handle">
-                                                    <img src="{php echo tomedia($third['thumb']);}" width='30' height="30" onerror="$(this).remove()" style='padding:1px;border: 1px solid #ccc;float:left;' /> &nbsp;
-                                                    [ID: {$third['id']}] {$third['name']}
-                                                                <span class="pull-right">
-                                                                        {ifp 'shop.category.edit|shop.category.view'}<a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.edit-category', ['id'=>$third['id']]);}" title="{ifp 'shop.category.edit'}修改{else}查看{/if}" ><i class="fa fa-edit"></i></a>{/if}
-                                                                      {ifp 'shop.category.delete'}<a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.deleted-category', ['id'=>$third['id']]);}" title='删除' onclick="return confirm('确认删除此分类吗？');return false;"><i class="fa fa-remove"></i></a>{/if}
-                                                                </span>
-                                                </div>
-                                            </li>
-                                            {/loop}
-                                        </ol>
-                                        {/if}
-                                    </li>
-                                    {/loop}
-                                </ol>
-                                {/if}
+                                                    {ifp 'shop.category.add'}
+                                                        <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.add-category', ['parent_id'=>$category['id'], 'level'=>$category['level']+1]);}" title='添加子分类' ><i class="fa fa-plus"></i></a>
 
-                            </li>
-                            {/if}
+                                                    {/if}
+                                                {/if}
+                                                {ifp 'shop.category.edit|shop.category.view'}
+                                                 <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.edit-category', ['id'=>$category['id']]);}" title="{ifp 'shop.category.edit'}修改{else}查看{/if}" >
+                                                     <i class="fa fa-edit"></i>
+                                                 </a>
+                                                {/if}
+                                                {ifp 'shop.category.delete'}
+                                                    <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.category.deleted-category', ['id'=>$category['id']]);}" title='删除' onclick="return confirm('确认删除此分类吗？');return false;">
+                                                        <i class="fa fa-remove"></i>
+                                                    </a>
+                                                {/if}
+                                            </span>
+                                    </div>
+                                </li>
                             {/loop}
                         </ol>
-
+{$pager}
                         <table class='table'>
                             <tr>
                                 <td>

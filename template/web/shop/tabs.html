@@ -3,7 +3,8 @@
 <ul class="nav nav-tabs">
     {ifp 'shop.goods.view'}<li class="active" ><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>1))}">出售中商品</a></li>{/if}
     {ifp 'shop.goods.view'}<li ><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>0))}">已下架商品</a></li>{/if}
-    {ifp 'shop.category.view'}<li ><a href="{php echo $this->createWebUrl('shop/category')}">商品分类</a></li>{/if}
+    {ifp 'shop.category.view'}<li ><a href="{php echo $this->createWebUrl('goods.category.index')}">商品分类</a></li>{/if}
+    {ifp 'shop.brand.view'}<li ><a href="{php echo $this->createWebUrl('goods.brand.index')}">商品品牌</a></li>{/if}
     {ifp 'shop.comment.view'}<li ><a href="{php echo $this->createWebUrl('shop/comment')}">评价管理</a></li>{/if}
     <li class="step"></li>
 

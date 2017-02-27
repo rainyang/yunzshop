@@ -25,7 +25,8 @@ class Category extends \app\common\models\Category
      */
     public static function saveEditCategory($category, $id)
     {
-        return self::where('id', $id)->update($category);
+        return self::where('id', $id)
+            ->update($category);
     }
 
     /**
@@ -34,7 +35,9 @@ class Category extends \app\common\models\Category
      */
     public static function getCategory($id)
     {
-        return self::where('id', $id)->first();
+        return self::where('id', $id)
+            ->first()
+            ->toArray();
     }
 
     /**
@@ -43,6 +46,26 @@ class Category extends \app\common\models\Category
      */
     public static function daletedCategory($id)
     {
-        return self::where('id', $id)->orWhere('parent_id', $id)->delete();
+        return self::where('id', $id)
+            ->orWhere('parent_id', $id)
+            ->delete();
+    }
+
+    /**
+     *  定义字段名
+     * 可使
+     * @return array */
+    public static function atributeNames() {
+        return [
+            'name'=> '分类名称',
+        ];
+    }
+    /**
+     * 字段规则
+     * @return array */
+    public static function rules() {
+        return [
+            'name' => 'required',
+        ];
     }
 }

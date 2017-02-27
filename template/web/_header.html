@@ -43,8 +43,8 @@
         'siteroot': '{$var['siteroot']}',
             'siteurl': '{$var['siteurl']}',
             'attachurl': '{$var['attachurl']}',
-            'attachurl_local': '{isset($var['attachurl_local']) ? $var['attachurl_local'] : ""}',
-            'attachurl_remote': '{isset($var['attachurl_remote']) ? $var['attachurl_remote'] : ""}',
+            'attachurl_local': '{php isset($var['attachurl_local']) ? $var['attachurl_local'] : ""}',
+            'attachurl_remote': '{php isset($var['attachurl_remote']) ? $var['attachurl_remote'] : ""}',
             {if defined('MODULE_URL')}
         'MODULE_URL': '{MODULE_URL}',
         {/if}
@@ -56,6 +56,7 @@
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/webstyle.css">
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/font/iconfont.css">
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/common.css">
+
 
 
 <div class="container-fluid">
@@ -92,3 +93,4 @@
 
 			{template 'web/_common'}
 			{template 'web/_menu'}
+			{template 'web/message_flash'}
