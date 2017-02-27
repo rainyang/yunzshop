@@ -67,7 +67,7 @@ class MemberGroup extends \app\common\models\MemberGroup
      **/
     public static function deleteMemberGroup($group_id)
     {
-        $id = static::where('id', $group_id)->delete();
-        return $id;
+        $status = static::where('id', $group_id)->delete();
+        return $status;
     }
 }

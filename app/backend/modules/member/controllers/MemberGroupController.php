@@ -78,7 +78,11 @@ class MemberGroupController extends BaseController
      **/
     protected function getData()
     {
-
+        $post = \YunShop::request()->get();
+        $data = array(
+            'uniacid' => \YunShop::app()->uniacid,
+            'group_name' => $post['group_name']
+        );
         return $data;
     }
     /**

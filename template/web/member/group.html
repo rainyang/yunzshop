@@ -31,25 +31,33 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach($groups_list as $group){ ?>
-                            <tr>
-                                {if p('discuz') && $uc['status'] == 1}
-                                <td>
-                                    {if !empty($row['id'])}
-                                    <input type="checkbox" name="syn[]" value="{php echo $row['id']; }">
+                                <tr>
+
+                                    <td>无分组</td>
+                                    <td>1231</td>
+                                    <td>
+                                        <a class='btn btn-default' href=""><i class='fa fa-users'></i></a>
+                                    </td>
+                                </tr>
+                                <?php foreach($groups_list as $group){ ?>
+                                <tr>
+                                    {if p('discuz') && $uc['status'] == 1}
+                                    <td>
+                                        {if !empty($row['id'])}
+                                        <input type="checkbox" name="syn[]" value="{php echo $row['id']; }">
+                                        {/if}
+                                    </td>
                                     {/if}
-                                </td>
-                                {/if}
-                                <td><?php echo $group->group_name ?></td>
-                                <td>1231</td>
-                                <td>
-                                    <a class='btn btn-default' href=""><i class='fa fa-users'></i></a>
-                                    <a class='btn btn-default' href=""><i class='fa fa-edit'></i></a>
-                                    <a class='btn btn-default'  href="{php echo $this->createWebUrl('member.membergroup.delete-member-group', array('id' => $group->id))}" onclick="return confirm('确认删除此会员分组吗？');return false;"><i class='fa fa-remove'></i></a></td>
+                                    <td><?php echo $group->group_name ?></td>
+                                    <td>1231</td>
+                                    <td>
+                                        <a class='btn btn-default' href=""><i class='fa fa-users'></i></a>
+                                        <a class='btn btn-default' href=""><i class='fa fa-edit'></i></a>
+                                        <a class='btn btn-default'  href="{php echo $this->createWebUrl('member.membergroup.delete-member-group', array('id' => $group->id))}" onclick="return confirm('确认删除此会员分组吗？');return false;"><i class='fa fa-remove'></i></a></td>
 
 
-                            </tr>
-                            <?php } ?>
+                                </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
 
