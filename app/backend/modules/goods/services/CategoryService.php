@@ -10,43 +10,5 @@ namespace app\backend\modules\goods\services;
 
 class CategoryService
 {
-
-
-    /**
-     * @param $categorys array
-     * @param $uniacid
-     * @return mixed
-     */
-    public static function saveCategory($categorys, $uniacid)
-    {
-        if( isset($categorys['parent_id']) ) {
-            //子分类
-            $categorys['uniacid'] = $uniacid;
-        } else {
-            $categorys['uniacid'] = $uniacid;
-        }
-        return $categorys;
-    }
-
-    /**
-     * @param $category
-     * @return array
-     */
-    public static function editCategory($category)
-    {
-        return $item = [
-            'id'            => $category->id,
-            'name'          => $category->name,
-            'thumb'         => $category->thumb,
-            'description'   => $category->description,
-            'adv_img'       => $category->adv_img,
-            'adv_url'       => $category->adv_url,
-            'is_home'       => $category->is_home,
-            'enabled'       => $category->enabled,
-            'display_order' => $category->display_order,
-            'level'         => $category->level,
-            'parent_id'     => $category->parent_id
-        ];
-    }
-
+    
 }

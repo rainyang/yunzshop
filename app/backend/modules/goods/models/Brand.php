@@ -32,7 +32,65 @@ class Brand extends \app\common\models\Brand
             ->skip(($pindex - 1) * $psize)
             ->take($psize)
             ->get()
-            ->toArray();;
+            ->toArray();
     }
 
+    /**
+     * @param $brand
+     * @return mixed
+     */
+    public static function saveAddBrand($brand)
+    {
+        return self::insert($brand);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public static function getBrand($id)
+    {
+        return self::where('id', $id)
+            ->first()
+            ->toArray();
+    }
+
+    /**
+     * @param $brand
+     * @param $id
+     * @return mixed
+     */
+    public static function saveEditBrand($brand, $id)
+    {
+        return self::where('id', $id)
+            ->update($brand);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public static function daletedBrand($id)
+    {
+        return self::where('id', $id)
+            ->delete();
+    }
+
+    /**
+     *  定义字段名
+     * 可使
+     * @return array */
+    public static function atributeNames() {
+        return [
+            'name'=> '品牌名称',
+        ];
+    }
+    /**
+     * 字段规则
+     * @return array */
+    public static function rules() {
+        return [
+            'name' => 'required',
+        ];
+    }
 }

@@ -5,6 +5,7 @@ use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\services\CategoryService;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
+use Illuminate\Support\Facades\Input;
 
 /**
  * Created by PhpStorm.
@@ -71,10 +72,20 @@ class CategoryController extends BaseController
     public function addSave()
     {
         ca('shop.category.view');
-        $result = Category::saveAddCategory(CategoryService::saveCategory(\YunShop::request()->category, \YunShop::app()->uniacid));
-        if($result) {
-            Header("Location: ".$this->createWebUrl('goods.category.index'));exit;
-            //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
+        $category = \YunShop::request()->category;
+        $category['uniacid'] = \YunShop::app()->uniacid;
+
+        $validator = Category::validator($category);
+
+        if($validator->fails()){
+            print_r($validator->messages());
+        }else {
+            $result = Category::saveAddCategory($category);
+            if ($result) {
+                Header("Location: " . $this->createWebUrl('goods.category.index'));
+                exit;
+                //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
+            }
         }
     }
 
@@ -82,10 +93,9 @@ class CategoryController extends BaseController
     {
         ca('shop.category.edit');
         $category = Category::getCategory(\YunShop::request()->id);
-        $item = CategoryService::editCategory($category);
         $this->render('info', [
-            'item' => $item,
-            'level' => $category->level
+            'item' => $category,
+            'level' => $category['level']
         ]);
 
     }
@@ -93,10 +103,18 @@ class CategoryController extends BaseController
     public function editSave()
     {
         ca('shop.category.edit');
-        $result = Category::saveEditCategory(CategoryService::saveCategory(\YunShop::request()->category, \YunShop::app()->uniacid), \YunShop::request()->id);
-        if($result) {
-            Header("Location: ".$this->createWebUrl('goods.category.index'));exit;
-            //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
+        $category = \YunShop::request()->category;
+        $category['uniacid'] = \YunShop::app()->uniacid;
+        
+        $validator = Category::validator($category);
+        if($validator->fails()) {
+            print_r($validator->messages());
+        }else{
+            $result = Category::saveEditCategory($category, \YunShop::request()->id);
+            if($result) {
+                Header("Location: ".$this->createWebUrl('goods.category.index'));exit;
+                //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
+            }
         }
     }
     

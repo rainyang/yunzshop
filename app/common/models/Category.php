@@ -14,6 +14,13 @@ class Category extends BaseModel
 {
     public $table = 'yz_category';
 
+    /**
+     *  不可填充字段.
+     *
+     * @var array
+     */
+    protected $guarded = [''];
+
     public static function getCategorys($uniacid, $pindex, $psize, $parent_id)
     {
         $data = self::where('uniacid', $uniacid)

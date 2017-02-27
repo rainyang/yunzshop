@@ -36,7 +36,8 @@ class Category extends \app\common\models\Category
     public static function getCategory($id)
     {
         return self::where('id', $id)
-            ->first();
+            ->first()
+            ->toArray();
     }
 
     /**
@@ -49,9 +50,22 @@ class Category extends \app\common\models\Category
             ->orWhere('parent_id', $id)
             ->delete();
     }
-    
-    public static function parentCategory()
-    {
-        
+
+    /**
+     *  定义字段名
+     * 可使
+     * @return array */
+    public static function atributeNames() {
+        return [
+            'name'=> '分类名称',
+        ];
+    }
+    /**
+     * 字段规则
+     * @return array */
+    public static function rules() {
+        return [
+            'name' => 'required',
+        ];
     }
 }
