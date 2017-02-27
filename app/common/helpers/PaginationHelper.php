@@ -53,7 +53,7 @@ class PaginationHelper
         $pdata['nindex'] = $cindex < $pdata['tpage'] ? $cindex + 1 : $pdata['tpage'];
         $pdata['lindex'] = $pdata['tpage'];
 
-        if (isset($context['isajax'])) {
+        if ($context['isajax'] === true) {
             if (empty($url)) {
                 $url = \YunShop::app()->script_name . '?' . http_build_query($_GET);
             }
@@ -101,7 +101,7 @@ class PaginationHelper
                 $range['start'] = max(1, $range['end'] - $context['before'] - $context['after']);
             }
             for ($i = $range['start']; $i <= $range['end']; $i++) {
-                if (isset($context['isajax'])) {
+                if (true === $context['isajax']) {
                     $aa = 'href="javascript:;" page="' . $i . '" '. ($callbackfunc ? 'onclick="'.$callbackfunc.'(\'' . $url . '\', \'' . $i . '\', this);return false;"' : '');
                 } else {
                     if ($url) {
