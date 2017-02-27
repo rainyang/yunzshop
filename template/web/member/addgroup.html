@@ -1,0 +1,57 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+{template 'web/member/tabs'}
+<div class="rightlist">
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">会员管理</a></li>
+		<li><a href="#">分组设置</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
+
+<div class="main"> 
+
+    <form action="{php echo $this->createWebUrl('member.membergroup.create-member-group')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="" />
+        <div class='panel panel-default'>
+            <div class='panel-body'>
+               
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 分组名称</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" name="group_name" class="form-control" value="" />
+                        <div class='form-control-static'></div>
+                    </div>
+                </div>
+                
+                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <div class="col-sm-9 col-xs-12">
+                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+                            <input type="hidden" name="uniacid" value="<?php echo \YunShop::app()->uniacid; ?>" />
+                       <input type="button" name="back" onclick='history.back()' {ifp 'member.group.add|member.group.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+  
+    </form>
+    
+</div>
+<script language='javascript'>
+    $('form').submit(function(){
+        if($(':input[name=group_name]').isEmpty()){
+            Tip.focus($(':input[name=group_name]'),'请输入分组名称!');
+            return false;
+        }
+        return true;
+    })
+    </script>
+
+</div>
+</div>
+{template 'web/_footer'}

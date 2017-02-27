@@ -185,8 +185,6 @@ class YunRequest extends YunComponent
         global $_GPC;
         $this->values = $_GPC;
     }
-
-
 }
 
 class YunApp extends YunComponent
