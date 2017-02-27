@@ -101,7 +101,7 @@ class YunShop
                 if (file_exists($controllerFile)) {
                     $namespace .= '\\controllers\\' . $ucFirstRoute . 'Controller';
                     $controllerName = $ucFirstRoute;
-                    $path .= $controllerFile;
+                    $path = $controllerFile;
                 } elseif (is_dir($path .= '/modules/' . $r)) {
                     $namespace .= '\\modules\\' . $r;
                     $modules[] = $r;
