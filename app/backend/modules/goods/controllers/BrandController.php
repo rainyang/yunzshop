@@ -18,11 +18,11 @@ class BrandController extends BaseController
     {
         $shopset   = m('common')->getSysset('shop');
         $pindex = max(1, intval(\YunShop::request()->page));
-        $psize = 10;
+        $psize = 5;
         
         $total = Brand::getBrandTotal(\YunShop::app()->uniacid);
         $list = Brand::getBrands(\YunShop::app()->uniacid, $pindex, $psize);
-        $pager = PaginationHelper::pagination($total, $pindex, $psize);
+        $pager = PaginationHelper::show($total, $pindex, $psize);
         
         $this->render('list', [
             'list' => $list,

@@ -25,7 +25,7 @@ class CategoryController extends BaseController
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
         $total = Category::getCategoryTotal(\YunShop::app()->uniacid, $parent_id);
         $list = Category::getCategorys(\YunShop::app()->uniacid, $pindex, $psize, $parent_id);
-        $pager = PaginationHelper::pagination($total, $pindex, $psize);
+        $pager = PaginationHelper::show($total, $pindex, $psize);
 
         $parent = [];
         if($parent_id > 0) {

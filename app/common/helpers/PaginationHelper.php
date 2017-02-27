@@ -17,7 +17,7 @@ class PaginationHelper
      * @param array $context
      * @return string
      */
-    public static function pagination($total, $pageIndex, $pageSize = 15, $url = '', $context = array('before' => 5, 'after' => 4, 'ajaxcallback' => '', 'callbackfuncname' => '')) {
+    public static function show($total, $pageIndex, $pageSize = 15, $url = '', $context = array('before' => 5, 'after' => 4, 'ajaxcallback' => '', 'callbackfuncname' => '')) {
         global $_W;
         $pdata = array(
             'tcount' => 0,
