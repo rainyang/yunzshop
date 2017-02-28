@@ -21,4 +21,9 @@ class MemberModel extends Model
     {
         return self::where('uniacid', $uniacid)->where('mobile', $mobile)->get();
     }
+
+    public static function insertData($data)
+    {
+        return self::insertGetId($data);
+    }
 }

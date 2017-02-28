@@ -18,41 +18,44 @@ class LoginController extends BaseController
 
     public function index()
     {
-        //islogined;
-
         // 1-公众号;2-小程序;3-微信app;4-pc扫码;5-手机号/app;6-QQ
         $type = \YunShop::request()->type;
 
         switch ($type) {
             case '1':
                 $member = MemberFactory::create('OfficeAccount');
-                $member->login();
                 break;
             case '2':
                 $member = MemberFactory::create('MiniApp');
-                $member->login();
                 break;
             case '3':
                 $member = MemberFactory::create('AppWechat');
-                $member->login();
                 break;
             case '4':
                 $member = MemberFactory::create('Wechat');
-                $member->login();
                 break;
             case '5':
                 if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost && $this->_validate())) {
                     $member = MemberFactory::create('Mc');
-                    $member->login();
                 }
-
-                include $this->template('member/login');
                 break;
             case '6':
                 $member = MemberFactory::create('QQ');
-                $member->login();
                 break;
         }
+
+        $member->login();
+    }
+
+    /**
+     * pc端微信扫码登录
+     */
+    public function pcWechatLogin()
+    {
+        $member = MemberFactory::create('Wechat');
+        $userinfo = $member->getUserInfo();
+
+
     }
 
     private function validate()

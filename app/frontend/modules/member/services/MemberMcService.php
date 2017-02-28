@@ -81,6 +81,7 @@ class MemberMcService
     public function getMemberId()
     {
 
+        return $member_id;
     }
 
     public function getOpenId()

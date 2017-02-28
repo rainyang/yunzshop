@@ -21,4 +21,25 @@ class MemberUniqueModel extends Model
     {
         return self::where('uncaid', $uniacid)->where('unionid', $unionid)->get();
     }
+
+    public static function insertData($data)
+    {
+        $default = array(
+            'uniacid' => 0,
+            'unionid' => 0,
+            'member_id' => 0,
+            'type' => '',
+            'created_at' => time()
+        );
+
+        $data = array_merge($default, $data);
+
+        self::insert($data);
+    }
+
+    public static function updateData($data)
+    {
+        self::where('unique_id', $data['unique_id'])
+            ->update(array('type', $data['type']));
+    }
 }

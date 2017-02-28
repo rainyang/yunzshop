@@ -26,6 +26,10 @@ class MemberOfficeAccountService extends MemberMcService
 
     public function login()
     {
+        if ($this->isLogged()) {
+            show_json(1, array('member_id'=> $_SESSION['member_id'], 'url'=>Url::app('account.index')));
+        }
+
         $uniacid      = \YunShop::app()->uniacid;
 
         $appId        = \YunShop::app()->account['key'];
@@ -56,12 +60,24 @@ class MemberOfficeAccountService extends MemberMcService
                 if ($UnionidInfo['unionid']) {
                      if (!in_array($this->_login_type, $types)) {
                          //更新ims_yz_member_unique表
-                         //添加ims_yz_member_office_account表
+                         MemberUniqueModel::updateData(array(
+                             'unque_id'=>$UnionidInfo['unque_id'],
+                             'type' => $UnionidInfo['type'] . '|' . $this->_login_type
+                         ));
                      }
+
+                     $_SESSION['member_id'] = $UnionidInfo['member_id'];
                 } else {
-                         //添加ims_mc_member表
-                         //更新ims_yz_member_unique表
-                         //添加ims_yz_member_office_account表
+                        $member_id = McMappingFansModel::getUId($uniacid, $token['openid']);
+                         //添加ims_yz_member_unique表
+                        MemberUniqueModel::insertData(array(
+                            'uniacid' => $uniacid,
+                            'unionid' => $token['unionid'],
+                            'member_id' => $member_id,
+                            'type' => $this->_login_type
+                        ));
+
+                        $_SESSION['member_id'] = $member_id;
                 }
             } else {
                 $querys = explode('&', $_SERVER['QUERY_STRING']);
@@ -79,9 +95,14 @@ class MemberOfficeAccountService extends MemberMcService
                 header('location: ' . $authurl);
                 exit;
             }
-
-
         }
+
+        show_json(1, array('member_id', $_SESSION['member_id']));
+    }
+
+    public function isLogged()
+    {
+        return !empty($_SESSION['member_id']);
     }
 
     private function _getAuthUrl($appId, $url)

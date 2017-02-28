@@ -16,4 +16,25 @@ use Illuminate\Database\Eloquent\Model;
 class McMappingFansModel extends Model
 {
     public $table = 'mc_mapping_fans';
+
+    public function getOauthUserInfo()
+    {
+        return mc_oauth_userinfo();
+    }
+
+    public function getMemberId($uniacid)
+    {
+        $user_info = $this->getOauthUserInfo();
+
+        self::wherr('uniacid', $uniacid)
+            ->where('openid', $user_info['openid'])
+            ->get('uid');
+    }
+
+    public function getUId($uniacid, $openid)
+    {
+        self::wherr('uniacid', $uniacid)
+            ->where('openid', $openid)
+            ->get('uid');
+    }
 }
