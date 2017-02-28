@@ -11,10 +11,8 @@ namespace app\common\models;
 
 use app\common\observers\TestMemberObserver;
 use Eloquent;
-use Illuminate\Database\Eloquent\Model;
-use Validator;
 
-class TestMember extends  Model
+class TestMember extends  BaseModel
 {
     public $table = 'mc_members';
 
@@ -24,14 +22,14 @@ class TestMember extends  Model
      *
      * @var array
      */
-    protected $fillable = ['name'];
+    //protected $fillable = [''];
 
     /**
      *  不可填充字段.
      *
      * @var array
      */
-    protected $guarded = ['price'];
+    protected $guarded = [''];
 
     /**
      * 定义结果中隐藏字段.
@@ -46,18 +44,6 @@ class TestMember extends  Model
      * @var array
      */
     protected $visible = ['first_name', 'last_name'];
-
-    /**
-     * 自定义显示错误信息
-     * @return array
-     */
-    public static function validationMessages()
-    {
-        return [
-            'required' => ' :attribute不能为空!',
-            'min' => ' :attribute不能少于:min!',
-        ];
-    }
 
     /**
      * 自定义字段名
@@ -81,19 +67,16 @@ class TestMember extends  Model
     }
 
     /**
-     * 校验表单数据
-     *
-     * @param $data
-     * @return \Illuminate\Validation\Validator
+     * 字段规则
+     * @return array
      */
-    public static function validator($data)
+    public static function rules()
     {
-        $validator = Validator::make($data, self::rules(),self::validationMessages());
 
-        //自定义字段名
-        $validator->setAttributeNames(self::atributeNames());
-
-        return $validator;
+        return [
+            'title' => 'required|unique:posts|max:255',
+            'body' => 'required|min:3',
+        ];
     }
 
     /**

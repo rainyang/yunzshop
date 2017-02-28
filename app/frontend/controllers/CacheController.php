@@ -1,5 +1,5 @@
 <?php
-namespace  app\backend\controllers;
+namespace  app\frontend\controllers;
 /**
  * Created by PhpStorm.
  * User: jan

@@ -30,7 +30,6 @@ class ImageHelper
      * @return string
      */
     public static function tplFormFieldImage($name, $value = '', $default = '', $options = array()) {
-        global $_W;
         if (empty($default)) {
             $default = './resource/images/nopic.jpg';
         }
@@ -56,7 +55,7 @@ class ImageHelper
         if (isset($options['thumb'])) {
             $options['thumb'] = !empty($options['thumb']);
         }
-        $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['image']['limit']) * 1024;
+        $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
             $s = '
