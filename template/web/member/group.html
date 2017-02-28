@@ -13,50 +13,63 @@
         <!-- 新增加右侧顶部三级菜单结束 -->
         {if p('discuz') && $uc['status'] == 1}
         <form action="{php echo $this->createWebUrl('member/group', array('op' => 'syn'))}" method="post"  id="syn_form">
-            {else}
-            <form action="" method="post" onsubmit="return formcheck(this)">
-                {/if}
-                <div class='panel panel-default'>
-                    <div class='panel-body'>
-
-                        <table class="table">
-                            <thead>
+        {else}
+        <form action="" method="post" onsubmit="return formcheck(this)">
+        {/if}
+            <div class='panel panel-default'>
+                <div class='panel-body'>
+                    <table class="table">
+                        <thead>
                             <tr>
-                                {if p('discuz') && $uc['status'] == 1}
+                            {if p('discuz') && $uc['status'] == 1}
                                 <th style="width: 100px;"><input type="checkbox" name="all" id="all" value=""> 全选</th>
-                                {/if}
+                            {/if}
                                 <th>分组名称</th>
                                 <th>会员数</th>
                                 <th>操作</th>
                             </tr>
-                            </thead>
-                            <tbody>
-                            <?php foreach($groups_list as $group){ ?>
-                            <tr>
-                                {if p('discuz') && $uc['status'] == 1}
-                                <td>
-                                    {if !empty($row['id'])}
-                                    <input type="checkbox" name="syn[]" value="{php echo $row['id']; }">
-                                    {/if}
-                                </td>
-                                {/if}
-                                <td><?php echo $group->group_name ?></td>
-                                <td>1231</td>
-                                <td>
-                                    <a class='btn btn-default' href=""><i class='fa fa-users'></i></a>
-                                    <a class='btn btn-default' href=""><i class='fa fa-edit'></i></a>
-                                    <a class='btn btn-default'  href="{php echo $this->createWebUrl('member.membergroup.delete-member-group', array('id' => $group->id))}" onclick="return confirm('确认删除此会员分组吗？');return false;"><i class='fa fa-remove'></i></a></td>
+                        </thead>
+                    <tbody>
+                    <tr>
+                        {if p('discuz') && $uc['status'] == 1}
+                        <td>
+                            {if !empty($row['id'])}
+                            <input type="checkbox" name="syn[]" value="{php echo $row['id']; }">
+                            {/if}
+                        </td>
+                        {/if}
+                        <td>无分组</td>
+                        <td>会员数</td>
+                        <td>
+                            <a class='btn btn-default' href=""><i class='fa fa-users'></i></a>
+                        </td>
+                    </tr>
+                    <?php foreach($groups_list as $group) { ?>
+                        <tr>
+                        {if p('discuz') && $uc['status'] == 1}
+                            <td>
+                            {if !empty($row['id'])}
+                                <input type="checkbox" name="syn[]" value="{php echo $row['id']; }">
+                            {/if}
+                            </td>
+                        {/if}
+                            <td><?php echo $group->group_name; ?></td>
+                            <td>会员数</td>
+                            <td>
+                                <a class='btn btn-default' href=""><i class='fa fa-users'></i></a>
+                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.membergroup.update-member-group', array('id' => $group->id))}"><i class='fa fa-edit'></i></a>
+                                <a class='btn btn-default'  href="{php echo $this->createWebUrl('member.membergroup.delete-member-group', array('id' => $group->id))}" onclick="return confirm('确认删除此会员分组吗？');return false;"><i class='fa fa-remove'></i></a>
+                            </td>
+                        </tr>
+                    <?php } ?>
 
-
-                            </tr>
-                            <?php } ?>
                             </tbody>
                         </table>
 
                     </div>
                     {if 'member.group.add'}
                     <div class='panel-footer'>
-                        <a class='btn btn-primary' href="{php echo $this->createWebUrl('member.membergroup.add-member-group')}"><i class="fa fa-plus"></i> 添加新分组</a>
+                        <a class='btn btn-primary' href="{php echo $this->createWebUrl('member.membergroup.update-member-group')}"><i class="fa fa-plus"></i> 添加新分组</a>
                         {if p('discuz') && $uc['status'] == 1}
                         <a class='btn btn-default' href="javascript:;" id="syn_btn"><i class="fa fa-group"></i> 同步用户组</a>
                         {/if}
@@ -72,7 +85,6 @@
                     {/if}
                 </div>
             </form>
-
     </div>
 </div>
 {template 'web/_footer'}

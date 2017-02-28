@@ -26,73 +26,65 @@ class MemberGroupController extends BaseController
         //所在会员组会员人数
         //echo '<pre>'; print_r($groups_list); exit;
         $this->render('member/group', [
-            'groups_list' => $groups_list,
-            'aaaa' => 'aaa'
+            'operation' => 'display',
+            'groups_list' => $groups_list
         ]);
     }
     /**
-     * 跳转更新会员分组页面
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public
-     **/
-    public function addMemberGroup()
-    {
-
-        $this->render('member/addgroup', []);
-    }
-    /**
-     * 添加会员分组列表
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public
-     **/
-    public function createMemberGroup()
-    {
-        $data = $this->getData();
-        $result = MemberGroup::createMembergroup($data);
-        return $this->sendMessage($result);
-    }
-    /**
-     * 修改会员分组
+     * 更新会员分组数据
      * @Author::yitian 2017-02-24 qq:751818588
      * @access public
      **/
     public function updateMemberGroup()
     {
-
+        $groupId = \YunShop::request()->id;
+        if($groupId) {
+            $group = MemberGroup::getMemberGroupByGroupID($groupId);
+        }else{
+            $group = array(
+                'id'        => '',
+                'group_name' => '',
+                'uniacid'   => ''
+            );
+        }
+        $this->render('member/add_group', [
+            'group'     => $group
+        ]);
     }
     /**
-     * 删除会员分组
+     * 添加会员分组列表【增】
+     * @Author::yitian 2017-02-24 qq:751818588
+     * @access public
+     **/
+    public function createMemberGroup()
+    {
+        $group = \YunShop::request()->group;
+        $result = MemberGroup::createMembergroup($group);
+
+        return $this->sendMessage($result);
+    }
+    /**
+     * 删除会员分组【删】
      * @Author::yitian 2017-02-24 qq:751818588
      * @access public
      **/
     public function deleteMemberGroup()
     {
-        $post = \YunShop::request()->get();
-        $result = MemberGroup::deleteMemberGroup($post['id']);
+        $group_id = \YunShop::request()->id;
+        $result = MemberGroup::deleteMemberGroup($group_id);
         return $this->sendMessage($result);
     }
     /**
-     * 获取提交值
+     * 修改会员分组【改】
      * @Author::yitian 2017-02-24 qq:751818588
-     * @access protected
+     * @access public
      **/
-    protected function getData()
+    public function reviseMemberGroup()
     {
-
-        return $data;
-    }
-    /**
-     * 数据处理
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access protected
-     **/
-    protected function dataFiltering($post)
-    {
-        $data = array(
-            'group_name'    => $post['group_name'],
-            'uniacid'       => $post['uniacid']
-        );
-        return $data;
+        $group = \YunShop::request()->group;
+        $result = MemberGroup::updateMemberGroupNameByGroupId($group['id'], $group['group_name']);
+        echo '<pre>'; print_r($result); exit;
+        $this->sendMessage($result);
     }
     /**
      * 反馈结果
