@@ -51,7 +51,7 @@ class Url
      */
     public static function absoluteWeb($route, $params = [], $domain = '')
     {
-        //@todo 获取默认当前域名
+        empty($domain) && $domain = request()->getSchemeAndHttpHost();
         return $domain . self::web($route,$params);
     }
 
@@ -65,7 +65,7 @@ class Url
      */
     public static function absoluteApp($route, $params = [], $domain = '')
     {
-        //@todo 获取默认当前域名
+        empty($domain) && $domain = request()->getSchemeAndHttpHost();
         return $domain . self::app($route,$params);
     }
 }

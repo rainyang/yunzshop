@@ -13,6 +13,8 @@ use app\backend\modules\member\models\TestMember;
 use app\common\components\BaseController;
 use app\common\events\TestFailEvent;
 use app\common\events\UserActionEvent;
+use app\common\helpers\ImageHelper;
+use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,9 +33,21 @@ class TestMemberController extends BaseController
         $validator = TestMember::validator(Input::get());
         print_r($validator->messages());
 
-        flash('Welcome Aboard!','danger');
-        //flash()->overlay('Notice', 'You are now a Laracasts member!');
         $this->render('test', ['a' => '123456']);
+    }
+
+    public function testMessage()
+    {
+        $validator = TestMember::validator(Input::get());
+
+        //flash('这里将跳转','danger');
+        //flash($validator->messages(),'danger');
+       // return redirect(Url::absoluteWeb('member.test-member.test-login'));
+        //flash()->overlay('Notice', Url::absoluteWeb('member.test-member.test-login'));
+        //$this->error($validator->messages())->important();
+        $this->overlay($validator->messages(), 'Modal Title');
+        $this->render('test-message', ['a' => '123456']);
+
     }
 
 
@@ -86,5 +100,21 @@ class TestMemberController extends BaseController
             //触发事件
             event(new UserActionEvent('app\backend\modules\member\models\TestMember', 22, 1, '添加了会员'));
         }
+    }
+
+    public function testFactory()
+    {
+        $members = factory(TestMember::class,3)->create();
+        print_r($members);
+    }
+
+    public function testUpload()
+    {
+        echo ImageHelper::tplFormFieldImage('image');
+    }
+
+    public function testPage()
+    {
+        echo PaginationHelper::show(18,1);
     }
 }

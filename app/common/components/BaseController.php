@@ -4,7 +4,7 @@ namespace app\common\components;
 
 use app\common\helpers\StringHelper;
 use app\common\helpers\Url;
-use Illuminate\Foundation\Validation\ValidatesRequests;
+use app\common\traits\MessageTrait;
 use Illuminate\Routing\Controller;
 use Validator;
 
@@ -17,7 +17,7 @@ use Validator;
  */
 class BaseController extends  Controller
 {
-    use ValidatesRequests;
+    use MessageTrait;
 
     //当前模块名数组
     public $modules = [];
@@ -29,6 +29,11 @@ class BaseController extends  Controller
     protected function formatValidationErrors(Validator $validator)
     {
         return $validator->errors()->all();
+    }
+
+    public function message($message, $url = '', $type = '')
+    {
+        return message();
     }
 
     /**

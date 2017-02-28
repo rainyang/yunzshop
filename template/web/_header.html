@@ -28,6 +28,27 @@
         }
 
         window.sysinfo = {
+        {if !empty($var['uniacid'])}
+        'uniacid': '{$var['uniacid']}',
+        {/if}
+        {if !empty($var['acid'])}
+        'acid': '{$var['acid']}',
+        {/if}
+        {if !empty($var['openid'])}
+        'openid': '{$var['openid']}',
+        {/if}
+        {if !empty($var['uid'])}
+        'uid': '{$var['uid']}',
+        {/if}
+        'siteroot': '{$var['siteroot']}',
+            'siteurl': '{$var['siteurl']}',
+            'attachurl': '{$var['attachurl']}',
+            'attachurl_local': '{php isset($var['attachurl_local']) ? $var['attachurl_local'] : ""}',
+            'attachurl_remote': '{php isset($var['attachurl_remote']) ? $var['attachurl_remote'] : ""}',
+            {if defined('MODULE_URL')}
+        'MODULE_URL': '{MODULE_URL}',
+        {/if}
+        'cookie' : {'pre': '{$var['config']['cookie']['pre']}'}
         };
 	</script>
 </head>
@@ -35,6 +56,7 @@
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/webstyle.css">
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/font/iconfont.css">
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/common.css">
+
 
 
 <div class="container-fluid">
@@ -71,3 +93,4 @@
 
 			{template 'web/_common'}
 			{template 'web/_menu'}
+			{template 'web/message_flash'}
