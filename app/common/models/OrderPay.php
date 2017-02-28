@@ -9,10 +9,7 @@
 
 namespace app\common\models;
 
-use app\frontend\modules\order\model\OrderModel;
-use Illuminate\Database\Eloquent\Model;
-
-class OrderPay extends Model
+class OrderPay
 {
     public $order_model;
 
@@ -23,7 +20,7 @@ class OrderPay extends Model
 
     public function pay()
     {
-        self::update(['status' => 1])
+        Order::update(['status' => 1])
             ->where('shop_id', '=', $this->order_model['shop_id'])
             ->where('id', '=', $this->order_model['id']);
     }

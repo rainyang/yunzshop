@@ -9,10 +9,7 @@
 
 namespace app\common\models;
 
-use app\frontend\modules\order\model\OrderModel;
-use Illuminate\Database\Eloquent\Model;
-
-class OrderCancelPay extends Model
+class OrderCancelPay
 {
     public $order_model;
 
@@ -21,14 +18,14 @@ class OrderCancelPay extends Model
         $this->order_model = $order_model->getData();
     }
 
-    public function pay()
+    public function cancelPay()
     {
-        self::update(['status' => 0])
+        Order::update(['status' => 0])
             ->where('shop_id', '=', $this->order_model['shop_id'])
             ->where('id', '=', $this->order_model['id']);
     }
 
-    public function payable()
+    public function cancelable()
     {
         if ($this->order_model['status'] == 1) {
             return true;
