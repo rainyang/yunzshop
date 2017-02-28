@@ -14,6 +14,12 @@ use app\common\components\BaseController;
 
 class MemberLevelController extends BaseController
 {
+
+    /**
+     * 会员等级列表
+     * @Author::yitian 2017-02-27 qq:751818588
+     * @access public
+     **/
     public function index()
     {
         $level_list = MemberLevel::getMemberLevelList();
@@ -40,11 +46,11 @@ class MemberLevelController extends BaseController
         }
     }
     /**
-     * 添加会员等级
+     * 添加会员等级【增】
      * @Author::yitian 2017-02-27 qq:751818588
      * @access public
      **/
-    public function saveMemberLevel()
+    public function createMemberLevel()
     {
         $shopset = m('common')->getSysset('shop');
         $post = \YunShop::request()->get();
@@ -69,7 +75,7 @@ class MemberLevelController extends BaseController
 
     }
     /**
-     * 删除会员等级通过id
+     * 删除会员等级【删】
      * @Author::yitian 2017-02-27 qq:751818588
      * @access public
      **/
