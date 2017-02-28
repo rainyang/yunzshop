@@ -8,11 +8,7 @@
  */
 
 namespace app\common\models;
-
-use app\frontend\modules\order\model\OrderModel;
-use Illuminate\Database\Eloquent\Model;
-
-class OrderDelete extends Model
+class OrderDelete
 {
     public $order_model;
 
@@ -21,14 +17,14 @@ class OrderDelete extends Model
         $this->order_model = $order_model->getData();
     }
 
-    public function pay()
+    public function delete()
     {
-        self::where('shop_id', '=', $this->order_model['shop_id'])
+        Order::where('shop_id', '=', $this->order_model['shop_id'])
             ->where('id', '=', $this->order_model['id'])
             ->delete();
     }
 
-    public function payable()
+    public function deleteable()
     {
         if ($this->order_model['status'] == -1 || $this->order_model['status'] == 3) {
             return true;

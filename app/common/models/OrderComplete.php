@@ -8,11 +8,7 @@
  */
 
 namespace app\common\models;
-
-use app\frontend\modules\order\model\OrderModel;
-use Illuminate\Database\Eloquent\Model;
-
-class OrderComplete extends Model
+class OrderComplete
 {
     public $order_model;
 
@@ -21,7 +17,7 @@ class OrderComplete extends Model
         $this->order_model = $order_model->getData();
     }
 
-    public function payable()
+    public function completeable()
     {
         if ($this->order_model['status'] == 3) {
             return true;

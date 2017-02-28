@@ -9,10 +9,7 @@
 
 namespace app\common\models;
 
-use app\frontend\modules\order\model\OrderModel;
-use Illuminate\Database\Eloquent\Model;
-
-class OrderReceive extends Model
+class OrderReceive
 {
     public $order_model;
 
@@ -21,14 +18,14 @@ class OrderReceive extends Model
         $this->order_model = $order_model->getData();
     }
 
-    public function pay()
+    public function receive()
     {
-        self::update(['status' => 3])
+        Order::update(['status' => 3])
             ->where('shop_id', '=', $this->order_model['shop_id'])
             ->where('id', '=', $this->order_model['id']);
     }
 
-    public function payable()
+    public function receiveable()
     {
         if ($this->order_model['status'] == 2) {
             return true;
