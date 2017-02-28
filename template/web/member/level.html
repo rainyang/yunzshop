@@ -14,15 +14,18 @@
 
 
         <div class="main">
-
+            {if empty($level['id'])}
             <form action="{php echo $this->createWebUrl('member.memberlevel.create-member-level',array('op'=>'member'))}" method="post" class="form-horizontal form" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="levelid" />
+            {else}
+            <form action="{php echo $this->createWebUrl('member.memberlevel.revise-member-level',array('op'=>'member'))}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+            <input type="hidden" name="level[id]" value="{$level['id']}">
+            {/if}
             <div class='panel panel-default'>
                 <div class='panel-body'>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">等级权重</label>
                         <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="level" class="form-control" value="" />
+                            <input type="text" name="level[level]" class="form-control" value="{$level['level']}" />
                             <span class='help-block'>等级权重，数字越大越高级</span>
                             <!--<div class='form-control-static'>权重</div>-->
                         </div>
@@ -30,8 +33,8 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 等级名称</label>
                         <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="levelname" class="form-control" value="" />
-                            <!--<div class='form-control-static'>等级名称</div>-->
+                            <input type="text" name="level[level_name]" class="form-control" value="{$level['level_name']}" />
+
                         </div>
                     </div>
                     <div class="form-group">
@@ -40,17 +43,17 @@
                             <div class='input-group'>
                                 {if empty($shopset['leveltype'])}
                                 <span class='input-group-addon'>完成订单金额满</span>
-                                <input type="text" name="ordermoney" class="form-control" value="" />
+                                <input type="text" name="level[order_money]" class="form-control" value="{$level['order_money']}" />
                                 <span class='input-group-addon'>元</span>
                                 {/if}
                                 {if $shopset['leveltype']==1}
                                 <span class='input-group-addon'>完成订单数量满</span>
-                                <input type="text" name="ordercount" class="form-control" value="" />
+                                <input type="text" name="level[order_count]" class="form-control" value="{$level['order_count']}" />
                                 <span class='input-group-addon'>个</span>
                                 {/if}
                                 {if $shopset['leveltype']==2}
                                 <div class="col-sm-12">
-                                    <input type='hidden' class='form-control' id='goodsid' name='goods_id' value="" />
+                                    <input type='hidden' class='form-control' id='goodsid' name='level[goods_id]' value="" />
                                     <div class='input-group'>
                                         <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'> 购买指定商品</label></div>
                                         <input type='text' class='form-control' id='goods' value="{if !empty($level[goodsid])}[{$goods['id']}]{$goods['title']}{/if}" readonly />
@@ -69,7 +72,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣</label>
                         <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="discount" class="form-control" value="" />
+                            <input type="text" name="level[discount]" class="form-control" value="{$level['discount']}" />
                             <span class='help-block'>请输入0.1~10之间的数字,值为空代表不设置折扣</span>
                         </div>
                     </div>
@@ -129,7 +132,7 @@
             }
 
             $('form').submit(function(){
-                if($(':input[name=levelname]').isEmpty()){
+                if($(':input[name=level[leve_lname]]').isEmpty()){
                     Tip.focus($(':input[name=levelname]'),'请输入等级名称!');
                     return false;
                 }
@@ -163,25 +166,25 @@
                         ?>
                         <tr>
                             <td><?php echo $level->level; ?></td>
-                            <td><?php echo $level->levelname; ?></td>
+                            <td><?php echo $level->level_name; ?></td>
                             <td>
                                 {if empty($shopset['leveltype'])}
                                     {if $level->ordermoney > 0}
-                                        完成订单金额满<?php echo $level->ordermoney; ?>元
+                                        完成订单金额满<?php echo $level->order_money; ?>元
                                     {else}
                                         不自动升级
                                     {/if}
                                 {/if}
                                 {if $shopset['leveltype']==1}
                                     {if $level->ordercount > 0}
-                                        完成订单数量满<?php echo $level->ordercount; ?>个
+                                        完成订单数量满<?php echo $level->order_count; ?>个
                                     {else}
                                         不自动升级
                                     {/if}
                                 {/if}
                             </td>
                             <td>
-                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.memberlevel.update-member-level', array('op' => 'post', 'id' => $level->id))}" title="编辑／查看"><i class='fa fa-edit'></i></a>
+                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.memberlevel.update-member-level', array('id' => $level->id))}" title="编辑／查看"><i class='fa fa-edit'></i></a>
                                 <a class='btn btn-default' href="{php echo $this->createWebUrl('member.memberlevel.delete-member-level', array('id' => $level->id))}" onclick="return confirm('确认删除此等级吗？');return false;"><i class='fa fa-remove'></i></a>
                             </td>
                         </tr>
@@ -192,7 +195,7 @@
                 </div>
                 {ifp 'member.level.add'}
                 <div class='panel-footer'>
-                    <a class='btn btn-primary' href="{php echo $this->createWebUrl('member.memberlevel.add-member-level', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新等级</a>
+                    <a class='btn btn-primary' href="{php echo $this->createWebUrl('member.memberlevel.add-member-level', array('id' => '0'))}"><i class="fa fa-plus"></i> 添加新等级</a>
                 </div>
                 {/if}
             </div>

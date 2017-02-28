@@ -83,7 +83,6 @@ class MemberGroupController extends BaseController
     {
         $group = \YunShop::request()->group;
         $result = MemberGroup::updateMemberGroupNameByGroupId($group['id'], $group['group_name']);
-        echo '<pre>'; print_r($result); exit;
         $this->sendMessage($result);
     }
     /**

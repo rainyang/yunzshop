@@ -13,5 +13,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberLevel extends Model
 {
-    public $table = 'sz_yi_member_level';
+    public $table = 'yz_member_level';
 }

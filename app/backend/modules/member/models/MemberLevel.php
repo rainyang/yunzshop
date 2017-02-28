@@ -11,6 +11,7 @@ namespace app\backend\modules\member\models;
 
 class MemberLevel extends \app\common\models\MemberLevel
 {
+    public $timestamps = false;
     /**
      *  不可填充字段.
      *
@@ -56,6 +57,17 @@ class MemberLevel extends \app\common\models\MemberLevel
     /****************************       后台数据操作       ****************************/
 
     /**
+     * 通过等级id获取等级信息
+     * @Author::yitian 2017-02-28 qq:751818588
+     * @access public
+     *
+     * @return
+     **/
+    public static function getMemberLevelInfoById($levelId)
+    {
+        return static::where('id', $levelId)->first()->toArray();
+    }
+    /**
      * 获取等级列表
      * @Author::yitian 2017-02-27 qq:751818588
      * @access public
@@ -65,35 +77,44 @@ class MemberLevel extends \app\common\models\MemberLevel
     public static function getMemberLevelList()
     {
         $uniacid = \YunShop::app()->uniacid;
-        $level_list = MemberLevel::where('uniacid', $uniacid)->get();
-
-        return $level_list;
+        return MemberLevel::where('uniacid', $uniacid)->get();
     }
     /**
      * 添加会员等级
      * @Author::yitian 2017-02-27 qq:751818588
      * @access public
-     * @param array $data 会员组信息
+     * @param array $levelInfo 会员组信息
      *
      * @return int $id
      **/
-    public static function createMemberLevel($data)
+    public static function createMemberLevel($levelInfo)
     {
-        $id = static::insert($data);
-        return $id;
+        return static::insert($levelInfo);
     }
     /**
      * 删除会员等级通过等级ID
      * @Author::yitian 2017-02-27 qq:751818588
      * @access public
-     * @param int $level_id 等级id
+     * @param int $levelId 等级id
      *
      * @return
      **/
-    public static function deleteMemberLevel($level_id)
+    public static function deleteMemberLevel($levelId)
     {
-        $status = static::where('id', $level_id)->delete();
-        return $status;
+        return  static::where('id', $levelId)->delete();
+    }
+    /**
+     * 修改会员等级信息通过等级ID
+     * @Author::yitian 2017-02-27 qq:751818588
+     * @access public
+     * @param int $levelId 等级id
+     * @param array $levelInfo
+     *
+     * @return
+     **/
+    public static function updateMemberLevelInfoById($levelId, $levelInfo)
+    {
+        return static::where('id', $levelId)->update($levelInfo);
     }
 
 }

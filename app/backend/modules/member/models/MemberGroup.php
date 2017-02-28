@@ -12,6 +12,7 @@ namespace app\backend\modules\member\models;
 class MemberGroup extends \app\common\models\MemberGroup
 {
 
+    public $timestamps = false;
     /**
      *  不可填充字段.
      *
