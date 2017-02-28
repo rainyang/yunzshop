@@ -70,7 +70,6 @@ class PaginationHelper
                 $pdata['naa'] = 'href="?' . str_replace('*', $pdata['nindex'], $url) . '"';
                 $pdata['laa'] = 'href="?' . str_replace('*', $pdata['lindex'], $url) . '"';
             } else {
-                echo "aaa";
                 $_GET['page'] = $pdata['findex'];
                 $pdata['faa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_GET) . '"';
                 $_GET['page'] = $pdata['pindex'];
