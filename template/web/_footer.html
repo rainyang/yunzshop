@@ -19,6 +19,7 @@
 </script>
 <script type="text/javascript">
     require(['bootstrap']);
+<<<<<<< HEAD
     {if $var['isfounder'] && !defined('IN_MESSAGE')}
     function check_sz_yi_upgrade() {
   
@@ -40,16 +41,8 @@
             });
         });
     }
+=======
+>>>>>>> master
 
-    function check_sz_yi_upgrade_hide() {
-        require(['util'], function (util) {
-            util.cookie.set('checksz_yiupgrade_sys', 1, 3600);
-            $('#sz-yi-upgrade-tips').hide();
-        });
-    }
-    $(function () {
-        check_sz_yi_upgrade();
-    });
-    {/if}
 </script>
 
