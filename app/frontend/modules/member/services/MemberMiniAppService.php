@@ -72,6 +72,8 @@ class MemberMiniAppService extends MemberMcService
             $types = expload($UnionidInfo['type'], '|');
 
             if ($UnionidInfo['unionid']) {
+                $member_id = $UnionidInfo['member_id'];
+
                 if (!in_array($this->_login_type, $types)) {
                     //更新ims_yz_member_unique表
                     MemberUniqueModel::updateData(array(
@@ -130,6 +132,31 @@ class MemberMiniAppService extends MemberMcService
                     'created_at' => time()
                 ));
             }
+
+            $random = $this->wx_app_session($user_info);
+
+            $result = array('session' => $random, 'wx_token' =>session_id(), 'uid' => $member_id);
+
+            show_json(1, $result);
         }
+    }
+
+    /**
+     * 小程序登录态
+     *
+     * @param $user_info
+     * @return string
+     */
+    function wx_app_session($user_info)
+    {
+        if (empty($user_info['session_key']) || empty($user_info['openid'])) {
+            $this->returnError('登录认证失败！');
+        }
+
+        $random = md5(uniqid(mt_rand()));
+
+        $_SESSION['wx_app'] = array($random => iserializer(array('session_key'=>$user_info['session_key'], 'openid'=>$user_info['openid'])));
+
+        return $random;
     }
 }

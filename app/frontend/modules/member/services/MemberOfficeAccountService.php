@@ -27,74 +27,62 @@ class MemberOfficeAccountService extends MemberMcService
     public function login()
     {
         if ($this->isLogged()) {
-            show_json(1, array('member_id'=> $_SESSION['member_id'], 'url'=>Url::app('account.index')));
+            show_json(1, array('member_id'=> $_SESSION['member_id']));
         }
 
         $uniacid      = \YunShop::app()->uniacid;
 
         $appId        = \YunShop::app()->account['key'];
         $appSecret    = \YunShop::app()->account['secret'];
-        $code         = \YunShop::request()-code;
+        $code         = \YunShop::request()->code;
         $url          = \YunShop::app()->siteroot . 'app/index.php?' . $_SERVER['QUERY_STRING'];
 
         $authurl = $this->_getAuthUrl($appId, $url);
-
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
-        if (empty($code)) {
-            header('location: ' . $authurl);
-            exit();
-        } else {
+        if (!empty($code)) {
             $resp     = ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
+
             if (!empty($token) && is_array($token) && $token['errmsg'] == 'invalid code') {
-                header('location: ' . $authurl);
-                exit();
+                show_json(0, array('msg'=>'请求错误'));
             }
 
-            if (is_array($token) && !empty($token['unionid'])) {
-                $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $token['unionid']);
+            $userinfo_url = $this->_getUserInfoUrl($token['accesstoken'], $token['openid']);
+            $userinfo = ihttp_get($userinfo_url);
+
+            if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+                $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid']);
 
                 $types = expload($UnionidInfo['type'], '|');
 
                 if ($UnionidInfo['unionid']) {
-                     if (!in_array($this->_login_type, $types)) {
-                         //更新ims_yz_member_unique表
-                         MemberUniqueModel::updateData(array(
-                             'unque_id'=>$UnionidInfo['unque_id'],
-                             'type' => $UnionidInfo['type'] . '|' . $this->_login_type
-                         ));
-                     }
-
-                     $_SESSION['member_id'] = $UnionidInfo['member_id'];
-                } else {
-                        $member_id = McMappingFansModel::getUId($uniacid, $token['openid']);
-                         //添加ims_yz_member_unique表
-                        MemberUniqueModel::insertData(array(
-                            'uniacid' => $uniacid,
-                            'unionid' => $token['unionid'],
-                            'member_id' => $member_id,
-                            'type' => $this->_login_type
+                    if (!in_array($this->_login_type, $types)) {
+                        //更新ims_yz_member_unique表
+                        MemberUniqueModel::updateData(array(
+                            'unque_id'=>$UnionidInfo['unque_id'],
+                            'type' => $UnionidInfo['type'] . '|' . $this->_login_type
                         ));
+                    }
 
-                        $_SESSION['member_id'] = $member_id;
+                    $_SESSION['member_id'] = $UnionidInfo['member_id'];
+                } else {
+                    $member_id = McMappingFansModel::getUId($uniacid, $token['openid']);
+                    //添加ims_yz_member_unique表
+                    MemberUniqueModel::insertData(array(
+                        'uniacid' => $uniacid,
+                        'unionid' => $token['unionid'],
+                        'member_id' => $member_id,
+                        'type' => $this->_login_type
+                    ));
+
+                    $_SESSION['member_id'] = $member_id;
                 }
             } else {
-                $querys = explode('&', $_SERVER['QUERY_STRING']);
-                $newq   = array();
-
-                foreach ($querys as $q) {
-                    if (!strexists($q, 'code=') && !strexists($q, 'state=') && !strexists($q, 'from=') && !strexists($q, 'isappinstalled=')) {
-                        $newq[] = $q;
-                    }
-                }
-
-                $rurl    = \YunShop::app()->siteroot . 'app/index.php?' . implode('&', $newq);
-                $authurl = $this->_getAuthUrl($appId, $rurl);
-
-                header('location: ' . $authurl);
-                exit;
+                show_json(0, array('url'=> $authurl));
             }
+        } else {
+            show_json(0, array('url'=> $authurl));
         }
 
         show_json(1, array('member_id', $_SESSION['member_id']));
@@ -113,5 +101,10 @@ class MemberOfficeAccountService extends MemberMcService
     private function _getTokenUrl($appId, $appSecret, $code)
     {
        return "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appId . "&secret=" . $appSecret . "&code=" . $code . "&grant_type=authorization_code";
+    }
+
+    private function _getUserInfoUrl($accesstoken, $openid)
+    {
+        return "https://api.weixin.qq.com/sns/userinfo?access_token={$accesstoken}&openid={$openid}&lang=zh_CN";
     }
 }

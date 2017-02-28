@@ -15,6 +15,7 @@ class MemberWechatService extends MemberMcService
 {
     private $_app_id;
     private $_appSecret;
+    private $_login_type    = 4;
 
     public function __construct()
     {
@@ -29,6 +30,12 @@ class MemberWechatService extends MemberMcService
 
     public function login()
     {
+        if ($this->isLogged()) {
+            show_json(1, array('member_id'=> $_SESSION['member_id']));
+        }
+
+        $uniacid = \YunApp::app()->uniacid;
+
         $callback  =  $this->createPluginMobileUrl('discuz/login', array('op'=>'register')); //回调地址
 
         //微信登录
@@ -40,8 +47,81 @@ class MemberWechatService extends MemberMcService
 
         $wxurl = "https://open.weixin.qq.com/connect/qrconnect?appid=".$this->_app_id."&redirect_uri={$callback}&response_type=code&scope=snsapi_login&state={$state}#wechat_redirect";
 
-        header("Location: $wxurl");
-        exit;
+        if (!empty(\YunShop::request()->code)) {
+            $user_info = $this->getUserInfo(\YunShop::request()->code);
+
+            if (is_array($user_info) && !empty($userinfo['unionid'])) {
+                $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid']);
+
+                $types = expload($UnionidInfo['type'], '|');
+
+                if ($UnionidInfo['unionid']) {
+                    $member_id = $UnionidInfo['member_id'];
+
+                    if (!in_array($this->_login_type, $types)) {
+                        //更新ims_yz_member_unique表
+                        MemberUniqueModel::updateData(array(
+                            'unque_id'=>$UnionidInfo['unque_id'],
+                            'type' => $UnionidInfo['type'] . '|' . $this->_login_type
+                        ));
+
+                        //添加ims_yz_member_mini_app表
+                        MemberMiniAppModel::insertData(array(
+                            'uniacid' => $uniacid,
+                            'member_id' => $UnionidInfo['member_id'],
+                            'openid' => $user_info['openid'],
+                            'nickname' => $user_info['nickname'],
+                            'avatar' => $user_info['headimgurl'],
+                            'gender' => $user_info['sex'],
+                            'nationality' => $user_info['country'],
+                            'resideprovince' => $user_info['province'] . '省',
+                            'residecity' => $user_info['city'] . '市',
+                            'created_at' => time()
+                        ));
+                    }
+                } else {
+                    //添加ims_mc_member表
+                    $member_id = MemberModel::insertData(array(
+                        'uniacid' => $uniacid,
+                        'groupid' => $user_info['unionid'],
+                        'createtime' => TIMESTAMP,
+                        'nickname' => $user_info['nickname'],
+                        'avatar' => $user_info['headimgurl'],
+                        'gender' => $user_info['sex'],
+                        'nationality' => $user_info['country'],
+                        'resideprovince' => $user_info['province'] . '省',
+                        'residecity' => $user_info['city'] . '市'
+                    ));
+
+
+                    //添加ims_yz_member_unique表
+                    MemberUniqueModel::insertData(array(
+                        'uniacid' => $uniacid,
+                        'unionid' => $user_info['unionid'],
+                        'member_id' => $member_id,
+                        'type' => $this->_login_type
+                    ));
+
+                    //添加ims_yz_member_mini_app表
+                    MemberMiniAppModel::insertData(array(
+                        'uniacid' => $uniacid,
+                        'member_id' => $member_id,
+                        'openid' => $user_info['openid'],
+                        'nickname' => $user_info['nickname'],
+                        'avatar' => $user_info['headimgurl'],
+                        'gender' => $user_info['sex'],
+                        'nationality' => $user_info['country'],
+                        'resideprovince' => $user_info['province'] . '省',
+                        'residecity' => $user_info['city'] . '市',
+                        'created_at' => time()
+                    ));
+                }
+            } else {
+                show_json(0, array('url'=> $wxurl));
+            }
+        } else {
+            show_json(0, array('url'=> $wxurl));
+        }
     }
 
     /**
@@ -49,32 +129,25 @@ class MemberWechatService extends MemberMcService
      *
      * @return array|mixed|stdClass
      */
-    public function getUserInfo()
+    public function getUserInfo($code)
     {
-        global $_W;
-
-        if ($_GET['state'] != $_SESSION["wx_state"]) {
+        if (\YunShop::request()->state != $_SESSION["wx_state"]) {
             exit("5001");
         }
 
-        $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' . $this->_app_id . '&secret=' . $this->_appSecret . '&code=' . $_GET['code'] . '&grant_type=authorization_code';
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        $json = curl_exec($ch);
-        curl_close($ch);
-        $arr = json_decode($json, 1);
+        $token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' . $this->_app_id . '&secret=' . $this->_appSecret . '&code=' . $code . '&grant_type=authorization_code';
+        $resp     = ihttp_get($token_url);
+        $token      = @json_decode($resp['content'], true);
 
-        $url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $arr['access_token'] . '&openid=' . $arr['openid'] . '&lang=zh_CN';
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        $json = curl_exec($ch);
-        curl_close($ch);
-        $arr = json_decode($json, 1);
+        $userinfo_url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token['access_token'] . '&openid=' . $token['openid'] . '&lang=zh_CN';
+        $resp     = ihttp_get($userinfo_url);
+        $arr      = @json_decode($resp['content'], true);
 
         return $arr;
+    }
+
+    public function isLogged()
+    {
+        return !empty($_SESSION['member_id']);
     }
 }

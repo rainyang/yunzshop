@@ -29,11 +29,11 @@ class RegisterController extends BaseController
             $this->_mobileIndex();
         }
 
-        //$oa_wetcha = MemberFactory::create('OfficeAccount');
+        $oa_wetcha = MemberFactory::create('OfficeAccount');
 
-        //$info = $oa_wetcha->getUserInfo();
+        $info = $oa_wetcha->getUserInfo();
 
-    //echo '<pre>';print_r($info);exit;
+    echo '<pre>';print_r($info);exit;
     }
 
     private function _mobileIndex()
