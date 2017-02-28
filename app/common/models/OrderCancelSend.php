@@ -3,7 +3,7 @@
 namespace app\common\models;
 
 use Illuminate\Database\Eloquent\Model;
-use app\common\modules;
+use app\common\models\Order;
 
 /*
  * 取消发货
@@ -24,10 +24,12 @@ class OrderCancelSent
             ->update(['status' => 1]);
     }
 
-    public function cancelSendable()
+    public function cancelSendable()  //todo isValid()?
     {
         if ($this->order_model['status'] == 2) {
             return true;
+        } else {
+            return false;
         }
     }
 }

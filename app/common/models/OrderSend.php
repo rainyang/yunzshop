@@ -3,7 +3,7 @@
 namespace app\common\models;
 
 use Illuminate\Database\Eloquent\Model;
-use app\common\modules;
+use app\common\models\Order;
 
 /*
  * 确认发货
@@ -24,10 +24,12 @@ class OrderSent
             ->update(['status' => 2]);
     }
 
-    public function sendable()
+    public function sendable() //todo isValid()?
     {
         if ($this->order_model['status'] == 1) {
             return true;
+        } else {
+            return false;
         }
     }
 }
