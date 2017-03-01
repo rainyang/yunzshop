@@ -13,5 +13,7 @@ class GoodsParam extends \app\common\models\BaseModel
 {
     public $table = 'yz_goods_param';
 
+    public $guarded = [];
 
+    public $timestamps = false;
 }

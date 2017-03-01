@@ -9,10 +9,10 @@
 namespace app\common\models;
 
 
-class GoodsSpec extends \app\common\models\BaseModel
+class GoodsSpecItem extends \app\common\models\BaseModel
 {
-    public $table = 'yz_goods_spec';
-    
+    public $table = 'yz_goods_spec_item';
+
     public $guarded = [];
 
     public $timestamps = false;

@@ -25,9 +25,9 @@ class Goods extends BaseModel
 
     public $guarded = [];
 
-    public static function getList()
+    public static function getList($uniacid)
     {
-        return parent::find();
+        return parent::where('uniacid', '=', $uniacid)->get();
     }
 
     public static function getGoodsById($id)
