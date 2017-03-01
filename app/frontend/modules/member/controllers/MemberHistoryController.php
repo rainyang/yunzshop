@@ -17,14 +17,28 @@ class MemberHistoryController extends BaseController
 {
     public function index()
     {
-        $member_id = 62;
-        $uniacid = 6;
+        $memberId = 96;
+        $uniacid = 8;
 
-        //$history = new MemberHistory();
-        //$list = $history->getMemberHistoryList($member_id);
-        $list = MemberHistory::getMemberHistoryList($member_id, $uniacid);
 
-        //echo '<pre>'; print_r($list); exit;
-        $this->render('mobile/member/cart', ['a' => 'entry']);
+        $list = MemberHistory::getMemberHistoryList($memberId, $uniacid);
+
+
+        echo '<pre>'; print_r($list); exit;
+    }
+    /**
+     * 添加浏览记录【增】
+     * @Author::yitian 2017-03-01 qq:751818588
+     * @access public
+     * @param int $memberId 会员ID
+     * @param int $goodsId 商品ID
+     **/
+    public function create()
+    {
+        $memberId = 96;
+        $goodsId = 100;
+        $result = MemberHistory::saveMemberHistory($memberId, $goodsId);
+
+        dd($result);
     }
 }

@@ -37,12 +37,14 @@ class GoodsCommentService
             'reply_images' => is_array($reply['reply_images']) 
                 ? iserializer($reply['reply_images']) 
                 : iserializer(array()),
-            'append_reply_content' => isset($reply['append_reply_content']) ? $reply['append_reply_content'] : '',
+            'append_reply_content' => isset($reply['append_reply_content']) 
+                ? $reply['append_reply_content'] 
+                : '',
             'append_reply_images' => isset($reply['append_reply_images']) && is_array($reply['append_reply_images'])
                 ? iserializer($reply['append_reply_images']) 
                 : iserializer(array())
         ];
- 
     }
+
 
 }

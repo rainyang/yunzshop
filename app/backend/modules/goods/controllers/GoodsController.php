@@ -190,4 +190,16 @@ class GoodsController extends BaseController
         ]);
     }
 
+    /**
+     * 获取搜索商品
+     * @return html
+     */
+    public function getSearchGoods()
+    {
+        $keyword = \YunShop::request()->keyword;
+        $goods = Goods::getGoodsByName($keyword);
+        $goods = set_medias($goods, array('thumb', 'share_icon'));
+        include $this->template('web/shop/query');
+    }
+
 }

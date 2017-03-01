@@ -1,22 +1,15 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
-
     {template 'web/shop/tabs'}
-    <style type='text/css'>
-        .multi-item { height:110px;}
-        .img-thumbnail { width:100px;}
-        .img-nickname { position: absolute;bottom:0px;line-height:25px;height:25px;
-            color:#fff;text-align:center;width:90px;bottom:55px;background:rgba(0,0,0,0.8);left:5px;}
-        .multi-img-details { padding:5px;}
-    </style>
+
     <!-- 新增加右侧顶部三级菜单 -->
+    <div class="main rightlist">
     <div class="right-titpos">
         <ul class="add-snav">
             <li class="active"><a href="#">评价管理</a></li>
         </ul>
     </div>
-    <!-- 新增加右侧顶部三级菜单结束 -->
-    <div class="main">
+
         <form id="dataform" action="{php echo $this->createWebUrl('goods.goods-comment.save-reply')}" method="post" class="form-horizontal form" onsubmit='return formcheck()' >
             <input type="hidden" name="reply[id]" value="{$comment['id']}" />
             <div class='panel panel-default'>

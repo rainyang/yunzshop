@@ -35,6 +35,7 @@ class Goods extends BaseModel
         return parent::find($id);
     }
 
+
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
@@ -57,5 +58,16 @@ class Goods extends BaseModel
     public function hasManyOptions()
     {
 
+    }
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getGoodsByName($keyword)
+    {
+        return parent::where('title', 'like', $keyword.'%')
+            ->get()
+            ->toArray();
     }
 }
