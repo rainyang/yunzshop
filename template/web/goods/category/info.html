@@ -1,6 +1,6 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
-
+    {template 'web/shop/tabs'}
     <div class="main rightlist">
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">
@@ -9,7 +9,13 @@
             </ul>
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->
-        <form  {ife 'shop.category' $item} action="{php echo $this->createWebUrl('goods.category.add-save');}" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
+        {if isset($item['id']) && !empty($item['id'])}
+            <form  {ife 'shop.category' $item} action="{php echo $this->createWebUrl('goods.category.edit-save');}" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
+        <input type="hidden" name="id" class="form-control" value="{$item['id']}" />
+
+        {else}
+            <form  {ife 'shop.category' $item} action="{php echo $this->createWebUrl('goods.category.add-save');}" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
+        {/if}
 
         <div class="panel panel-default">
             <div class="panel-body">
@@ -164,6 +170,8 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
+                        <input type="hidden" name="category[parent_id]" class="form-control" value="{$item['parent_id']}" />
+                        <input type="hidden" name="category[level]" class="form-control" value="{$item['level']}" />
                         {ife 'shop.category' $item}
                         <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick="return formcheck()" />
                         {/if}
@@ -176,19 +184,5 @@
 
         </form>
     </div>
-    <script language='javascript'>
-        require(['util'],function(u){
-            $('#cp').each(function(){
-                u.clip(this, $(this).text());
-            });
-        })
-        $('form').submit(function(){
-            if($(':input[name=catename]').isEmpty()){
-                Tip.focus(':input[name=category[name]]','请输入分类名称!');
-                return false;
-            }
-            return true;
-        });
-    </script>
     {template 'web/_footer'}
 

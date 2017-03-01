@@ -14,7 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberHistory extends Model
 {
-    public $table = 'sz_yi_member_history';
+    //public $timestamps = false;
+    protected $table = 'yz_member_history';
 
     /**
      *  不可填充字段.
@@ -33,9 +34,9 @@ class MemberHistory extends Model
      **/
     public static function getMemberHistoryList($memberId, $uniacid)
     {
-        $list = MemberHistory::where('goodsid', $memberId)
+        $list = MemberHistory::where('member_id', $memberId)
             ->where('uniacid', $uniacid)
-            ->orderBy('createtime', 'desc')
+            //->orderBy('createtime', 'desc')
             ->take(10)
             ->get();
 
@@ -50,12 +51,28 @@ class MemberHistory extends Model
      **/
     public static function createMemberHistory($memberId, $goodsId)
     {
-        $id = MemberLevel::insertGetId([
+        $id = MemberHistory::insert([
             'member_id' => $memberId,
             'goods_id' => $goodsId,
             'uniacid' => \YunShop::app()->uniacid
         ]);
         return $id;
+    }
+    public static function saveMemberHistory($memberId, $goodsId)
+    {
+        $result = static::updateOrCreate(
+            array(
+                'member_id' => $memberId,
+                'uniacid' => \YunShop::app()->uniacid,
+                'goods_id' => $goodsId
+            ),
+            array(
+                'member_id' => $memberId,
+                'uniacid' => \YunShop::app()->uniacid,
+                'goods_id' => $goodsId
+            )
+        );
+        return $result;
     }
     /**
      * 更新浏览记录【改】

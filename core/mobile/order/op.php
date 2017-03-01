@@ -508,7 +508,7 @@ if ($_W['isajax']) {
 		if ($order['status'] != 3 && $order['status'] != -1) {
 			return show_json(0, '订单无交易，不能删除!');
 		}
- if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
+        if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
             $change_refund               = array();
             $change_refund['status']     = -2;
             $change_refund['refundtime'] = time();
