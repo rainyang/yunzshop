@@ -1,6 +1,6 @@
 <?php
 /**
- * 商品分享权限操作
+ * 商品分享关注操作
  * Created by PhpStorm.
  * User: luckystar_D
  * Date: 2017/2/24
@@ -15,7 +15,7 @@ use app\common\components\BaseController;
 class ShareController extends BaseController
 {
     /**
-     * 商品分享权限详情页
+     * 商品分享关注详情页
      * @return array $item
      */
     public function index()
@@ -31,7 +31,7 @@ class ShareController extends BaseController
         ]);
     }
     /**
-     * 商品分享权限信息保存
+     * 商品分享关注信息保存
      * @return
      */
     public function save()
@@ -58,7 +58,7 @@ class ShareController extends BaseController
     }
 
     /**
-     * 商品分享权限信息添加方法
+     * 商品分享关注信息添加方法
      * @return
      */
     public function create($shareInfo)
@@ -71,7 +71,7 @@ class ShareController extends BaseController
     }
 
     /**
-     * 商品分享权限信息更新方法
+     * 商品分享关注信息更新方法
      * @return
      */
     public function update($shareInfo)
@@ -86,7 +86,7 @@ class ShareController extends BaseController
     }
 
     /**
-     * 商品分享权限信息删除方法
+     * 商品分享关注信息删除方法
      * @return
      */
     public function delete()

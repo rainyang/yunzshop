@@ -2,24 +2,26 @@
 
 namespace app\common\models\goods;
 
+use app\common\models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\lValidator;
+
 /**
  * Created by PhpStorm.
- * User: yanglei
+ * User: luckystar_D
  * Date: 2017/2/22
  * Time: 下午5:54
  */
-class Share extends Model
+class Share extends BaseModel
 {
     public $table = 'yz_goods_share';
 
 
     /**
- *  不可填充字段.
- *
- * @var array
- */
+     *  不可填充字段.
+     *
+     * @var array
+     */
     protected $guarded = [''];
 
 
@@ -30,7 +32,7 @@ class Share extends Model
     public static function getGoodsShareInfo($goodsId)
     {
         $goodsShareInfo = self::where('goods_id', $goodsId)
-        ->first();
+            ->first();
         return $goodsShareInfo;
     }
 
