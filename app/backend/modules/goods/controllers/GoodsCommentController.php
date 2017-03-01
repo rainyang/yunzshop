@@ -46,7 +46,8 @@ class GoodsCommentController extends BaseController
         ca('shop.comment.edit');
         $id    = intval(\YunShop::request()->id);
         $comment = GoodsComment::getComment($id);
-        $goods = Goods::getGoods($comment['goods_id'], \YunShop::app()->uniacid);
+        $goods = Goods::getGoodsById($comment['goods_id'])->toArray();
+
         //$order = Order::getOrder($comment['order_id'], \YunShop::app()->uniacid);
 
         $this->render('reply', [
@@ -76,7 +77,28 @@ class GoodsCommentController extends BaseController
      */
     public function addComment()
     {
-        dd('添加评论');
+        $goods_id = \YunShop::request()->goods_id;
+        $goods = [];
+        if (!empty($goods_id)) {
+            $goods = Goods::getGoodsById($goods_id)->toArray();
+        }
+        $comment['goods_id'] = '';
+        $comment['head_img_url'] = '';
+        $comment['nick_name'] = '';
+        $comment['level'] = '';
+        $comment['content'] = '';
+        $comment['images'] = '';
+        $comment['reply_content'] = '';
+        $comment['reply_images'] = '';
+        $comment['append_content'] = '';
+        $comment['append_images'] = '';
+        $comment['append_reply_content'] = '';
+        $comment['append_reply_images'] = '';
+
+        $this->render('add_info', [
+            'comment' => $comment,
+            'goods' => $goods
+        ]);
     }
 
     /**

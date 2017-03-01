@@ -13,13 +13,36 @@ use app\common\models\BaseModel;
 class Goods extends BaseModel
 {
     public $table = 'yz_goods';
-    
-    public static function getGoods($goods_id, $uniacid)
+
+    //public $fillable = ['display_order'];
+
+    public $guarded = [];
+
+    public static function getList()
     {
-        
-        return self::where('id', $goods_id)
-            ->where('uniacid', $uniacid)
-            ->first()
-            ->toArray();
+        return parent::find();
+    }
+
+    public static function getGoodsById($id)
+    {
+        return parent::find($id);
+    }
+    
+    public function hasManyParams()
+    {
+        return $this->hasMany('app\common\models\GoodsParam');
     }
 }
+//class Goods extends BaseModel
+//{
+//    public $table = 'yz_goods';
+//
+//    public static function getGoods($goods_id, $uniacid)
+//    {
+//
+//        return self::where('id', $goods_id)
+//            ->where('uniacid', $uniacid)
+//            ->first()
+//            ->toArray();
+//    }
+//}
