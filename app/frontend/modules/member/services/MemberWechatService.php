@@ -53,9 +53,8 @@ class MemberWechatService extends MemberMcService
             if (is_array($user_info) && !empty($userinfo['unionid'])) {
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid']);
 
-                $types = expload($UnionidInfo['type'], '|');
-
                 if ($UnionidInfo['unionid']) {
+                    $types = expload($UnionidInfo['type'], '|');
                     $member_id = $UnionidInfo['member_id'];
 
                     if (!in_array($this->_login_type, $types)) {
@@ -65,8 +64,8 @@ class MemberWechatService extends MemberMcService
                             'type' => $UnionidInfo['type'] . '|' . $this->_login_type
                         ));
 
-                        //添加ims_yz_member_mini_app表
-                        MemberMiniAppModel::insertData(array(
+                        //添加yz_member_wechat表
+                        MemberWechatModel::insertData(array(
                             'uniacid' => $uniacid,
                             'member_id' => $UnionidInfo['member_id'],
                             'openid' => $user_info['openid'],
@@ -102,8 +101,8 @@ class MemberWechatService extends MemberMcService
                         'type' => $this->_login_type
                     ));
 
-                    //添加ims_yz_member_mini_app表
-                    MemberMiniAppModel::insertData(array(
+                    //添加yz_member_wechat表
+                    MemberWechatModel::insertData(array(
                         'uniacid' => $uniacid,
                         'member_id' => $member_id,
                         'openid' => $user_info['openid'],
@@ -116,6 +115,8 @@ class MemberWechatService extends MemberMcService
                         'created_at' => time()
                     ));
                 }
+
+                $_SESSION['member_id'] = $member_id;
             } else {
                 show_json(0, array('url'=> $wxurl));
             }

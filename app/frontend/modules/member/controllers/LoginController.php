@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\models\MemberModel;
@@ -50,19 +51,24 @@ class LoginController extends BaseController
         $member->login();
     }
 
-    /**
-     * pc端微信扫码登录
-     */
-    public function pcWechatLogin()
+    private function _validate()
     {
-        $member = MemberFactory::create('Wechat');
-        $userinfo = $member->getUserInfo();
+        $data = array(
+            'mobile' => \YunShop::request()->mobile,
+            'password' => \YunShop::request()->password,
+        );
+        $validator = \Validator::make($data, array(
+            'mobile' => array('required',
+                'digits:11',
+                'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
+            ),
+            'password' => 'required'
+        ));
 
-
-    }
-
-    private function validate()
-    {
-        return true;
+        if ($validator->fails()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

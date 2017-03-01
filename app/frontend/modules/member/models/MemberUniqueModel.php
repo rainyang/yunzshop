@@ -17,11 +17,26 @@ class MemberUniqueModel extends Model
 {
     public $table = 'yz_member_unique';
 
+    /**
+     * 检查是否存在unionid
+     *
+     * @param $uniacid
+     * @param $unionid
+     * @return mixed
+     */
     public static function getUnionidInfo($uniacid, $unionid)
     {
-        return self::where('uniacid', $uniacid)->where('unionid', $unionid)->get();
+        return self::where('uniacid', $uniacid)
+            ->where('unionid', $unionid)
+            ->first()
+            ->toArray();
     }
 
+    /**
+     * 添加数据
+     *
+     * @param $data
+     */
     public static function insertData($data)
     {
         $default = array(
@@ -37,6 +52,11 @@ class MemberUniqueModel extends Model
         self::insert($data);
     }
 
+    /**
+     * 更新登录类型
+     *
+     * @param $data
+     */
     public static function updateData($data)
     {
         self::where('unique_id', $data['unique_id'])

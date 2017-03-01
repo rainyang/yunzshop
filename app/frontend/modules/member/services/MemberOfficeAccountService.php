@@ -53,7 +53,7 @@ class MemberOfficeAccountService extends MemberMcService
 
                 if (!empty($UnionidInfo['unionid'])) {
                     $types = expload($UnionidInfo['type'], '|');
-                    $member_id = $UnionidInfo['member_id'];;
+                    $member_id = $UnionidInfo['member_id'];
 
                     if (!in_array($this->_login_type, $types)) {
                         //更新ims_yz_member_unique表
