@@ -11,8 +11,9 @@ namespace app\frontend\modules\member\model;
 
 class MemberModel
 {
-    private $data;
-    private $_initial_data;
+    //private $data;
+    public $uid=1;
+    /*private $_initial_data;
     public function __construct($data)
     {
         $this->data = $data;
@@ -23,5 +24,5 @@ class MemberModel
     public function getData()
     {
         return $this->data;
-    }
+    }*/
 }

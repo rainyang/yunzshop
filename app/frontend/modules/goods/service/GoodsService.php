@@ -10,8 +10,8 @@ use app\frontend\modules\goods\model\factory\GoodsModelFactory;
  */
 class GoodsService
 {
-    public static function getGoodsModels(){
-        return GoodsModelFactory::createModels();
+    public static function getGoodsModels($goods_id_arr){
+        return GoodsModelFactory::createModels($goods_id_arr);
     }
     public static function getGoodsModel($goods_id){
         return GoodsModelFactory::createModel($goods_id);

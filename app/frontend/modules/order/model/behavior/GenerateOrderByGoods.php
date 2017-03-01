@@ -35,21 +35,6 @@ class GenerateOrderByGoods
         $this->shop_model = $shop_model;
 
     }
-    public function create(){
-        $this->createOrder();
-        $this->createOrderGoods();
 
-    }
-    private function createOrder(){
-        $data = array(
-            'shop_id'=>$this->shop_model->getShopId(),
-            'member_id'=>$this->member_model->getMemberId(),
-            'order_sn'=>OrderService::createOrderSn(),
-            'order_price'=>$this->order_model->getPrice(),
-            'goods_price'=>$this->order_model->getGoodsPrice(),
-            'create_time'=>time(),
-        );
-        return Order::insertGetId($data);
-    }
 
 }

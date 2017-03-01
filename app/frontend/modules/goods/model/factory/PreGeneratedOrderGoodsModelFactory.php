@@ -9,21 +9,21 @@
 namespace app\frontend\modules\goods\model\factory;
 
 
-use app\frontend\modules\goods\model\PreGeneratedOrderGoods;
+use app\frontend\modules\goods\model\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\goods\service\GoodsService;
 
 class PreGeneratedOrderGoodsModelFactory
 {
+    //todo 数组传入参数调用困难
     public function createOrderGoodsModels(array $param){
         $result = [];
         $goods_models = $this->getGoodsModels($param);
 
         foreach ($goods_models as $goods_model){
 
-            $total = $this->getTotal($goods_model,$param);
-            $order_goods_model =new PreGeneratedOrderGoods();
-            $order_goods_model->setGoodsModel($goods_model);
-            $order_goods_model->setTotal($total);
+            $total = $this->getTotal($goods_model->id,$param);
+
+            $order_goods_model =new PreGeneratedOrderGoodsModel($goods_model,$total);
 
             $result[] = $order_goods_model;
 
@@ -31,19 +31,26 @@ class PreGeneratedOrderGoodsModelFactory
 
         return $result;
     }
-    public function createOrderGoodsModel( $goods_model,$total=1){
-        $order_goods_model =new PreGeneratedOrderGoods();
+    public function createOrderGoodsModel($goods_model,$total=1){
+        $order_goods_model =new PreGeneratedOrderGoodsModel();
         $order_goods_model->setGoodsModel($goods_model);
         $order_goods_model->setTotal($total);
         return $order_goods_model;
     }
-    //todo 待实现
-    private function getTotal($goods_model,$param){
-        return $param[$goods_model->id][1];
+    //todo 待完善(缓存)
+    private function getTotal($goods_id,$param){
+        $goods_total_arr = array_column($param,'total','goods_id');
+
+        return $goods_total_arr[$goods_id];
     }
-    //todo 待实现
+    private function getGoodsModels($param){
+        $goods_id_arr = array_column($param,'goods_id');
+        return GoodsService::getGoodsModels($goods_id_arr);
+    }
+    //todo 待完善
     private function getGoodsModel($item){
-        return GoodsService::getGoodsModel();
+        $goods_id = $item['goods_id'];
+        return GoodsService::getGoodsModel($goods_id);
     }
 
 }

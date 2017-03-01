@@ -45,4 +45,7 @@ class OrderService
         return (new PreGeneratedOrderGoodsModelFactory())->createOrderGoodsModel($goods_model);
 
     }
+    public static function createOrderSN(){
+        return m('common')->createNO('order', 'ordersn', 'SH');
+    }
 }

@@ -9,12 +9,14 @@
 namespace app\frontend\modules\shop\service;
 
 
+use app\frontend\modules\shop\model\ShopModel;
+
 class ShopService
 {
     private static $_current_shop;
-
+    //todo 待实现
     public static function getCurrentShopModel(){
 
-        return self::$_current_shop;
+        return new ShopModel();
     }
 }

@@ -12,19 +12,21 @@ use app\frontend\modules\goods\model\GoodsModel;
 
 class GoodsModelFactory
 {
-    public static function createModels($para){
-        $result = [];
-        foreach (self::getFromOrm($para) as $goods_model){
+    public static function createModels($goods_id_arr){
+        return self::getFromOrm($goods_id_arr);
+        /*$result = [];
+        foreach (self::getFromOrm($goods_id_arr) as $goods_model){
             $result[] = new GoodsModel($goods_model);
         }
-        return $result;
+        return $result;*/
     }
     public static function createModel($goods_id){
-        $result = new GoodsModel(Goods::find($goods_id));
-        return $result;
+        return Goods::find($goods_id);
+        /*$result = new GoodsModel(Goods::find($goods_id));
+        return $result;*/
 
     }
-    public static function getFromOrm($para){
-        return Goods::all()->take(2);
+    public static function getFromOrm($goods_id_arr){
+        return Goods::select()->whereIn('id',$goods_id_arr)->get();
     }
 }

@@ -9,5 +9,5 @@ namespace app\frontend\modules\shop\model;
  */
 class ShopModel
 {
-
+    public $uniacid=1;
 }

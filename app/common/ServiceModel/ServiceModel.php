@@ -11,25 +11,21 @@ namespace app\common\ServiceModel;
 
 class ServiceModel
 {
-    private $_initial_data;
 
-
-    public function __construct($db_goods)
+    public function __construct()
     {
-        $this->_initial_data = $db_goods;
-    }
-    public function getInitialData(){
-        return $this->_initial_data;
     }
 
     public function __get($name)
     {
+        echo '----';
+        var_dump($name);
+
+        echo '----';
         if(isset($this->$name)){
             return $this->$name;
         }
-        if(isset($this->_initial_data[$name])){
-            return $this->_initial_data[$name];
-        }
+
         return null;
     }
 }
