@@ -2,7 +2,6 @@
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
-use Illuminate\Database\Capsule\Manager as DB;
 
 class YunShop
 {
