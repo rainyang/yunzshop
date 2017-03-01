@@ -1,4 +1,3 @@
-{ife 'shop.goods' $item}
 <div class="spec_item_item" style="float:left;margin:0 5px 10px 0;width:250px;">
 	<input type="hidden" class="form-control spec_item_show" name="spec_item_show_{$spec['id']}[]" VALUE="{$specitem['show']}" />
 	<input type="hidden" class="form-control spec_item_id" name="spec_item_id_{$spec['id']}[]" VALUE="{$specitem['id']}" />
@@ -15,7 +14,7 @@
 		</span>
 	</div>
   
-                         <div class="input-group choosetemp" style='margin-bottom: 10px;{if $item['type']!=3}display:none{/if}'> 
+                         <div class="input-group choosetemp" style='margin-bottom: 10px;{if $goods['type']!=3}display:none{/if}'>
                         <input type="hidden" name="spec_item_virtual_{$spec['id']}[]" value="{$specitem['virtual']}" class="form-control spec_item_virtual"  id="temp_id_{$specitem['id']}">
                         <input type="text" name="spec_item_virtualname_{$spec['id']}[]" value="{if empty($specitem['virtual'])}未选择{else}{$specitem['title2']}{/if}" class="form-control spec_item_virtualname" readonly="" id="temp_name_{$specitem['id']}">
                         <div class="input-group-btn">
@@ -24,14 +23,9 @@
                     </div>
   
 	<div>
-		{php echo tpl_form_field_image('spec_item_thumb_'.$spec['id']."[]",$specitem['thumb'])}
+		{php echo app\common\helpers\ImageHelper::tplFormFieldImage('spec_item_thumb_'.$spec['id']."[]",$specitem['thumb'])}
 	</div>
 </div>
-{else}
-   <div class="multi-item" style='float:left' >
-                                    <img class="img-responsive img-thumbnail" src='{php echo tomedia($specitem['thumb'])}' onerror="this.src='./resource/images/nopic.jpg'; this.title='图片未找到.'">
-                                     <div class='img-nickname'>{$specitem['title']}</div>
-                                </div>
-{/if}
+
 
 
