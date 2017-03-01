@@ -15,5 +15,31 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberUniqueModel extends Model
 {
+    public $table = 'yz_member_unique';
 
+    public static function getUnionidInfo($uniacid, $unionid)
+    {
+        return self::where('uniacid', $uniacid)->where('unionid', $unionid)->get();
+    }
+
+    public static function insertData($data)
+    {
+        $default = array(
+            'uniacid' => 0,
+            'unionid' => 0,
+            'member_id' => 0,
+            'type' => '',
+            'created_at' => time()
+        );
+
+        $data = array_merge($default, $data);
+
+        self::insert($data);
+    }
+
+    public static function updateData($data)
+    {
+        self::where('unique_id', $data['unique_id'])
+            ->update(array('type', $data['type']));
+    }
 }

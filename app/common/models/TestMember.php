@@ -64,6 +64,7 @@ class TestMember extends  BaseModel
      */
     public static function rules()
     {
+
         return [
             'title' => 'required|unique:posts|max:255',
             'body' => 'required|min:3',

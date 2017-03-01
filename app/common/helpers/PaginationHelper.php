@@ -17,9 +17,11 @@ class PaginationHelper
      * @param array $context
      * @return string
      */
+
     public static function show($total, $pageIndex, $pageSize = 15, $url = '', $context = []) {
         !$context && $context = ['before' => 5, 'after' => 4, 'ajaxcallback' => '', 'callbackfuncname' => ''];
         $pdata = [
+
             'tcount' => 0,
             'tpage' => 0,
             'cindex' => 0,
@@ -53,7 +55,7 @@ class PaginationHelper
         $pdata['nindex'] = $cindex < $pdata['tpage'] ? $cindex + 1 : $pdata['tpage'];
         $pdata['lindex'] = $pdata['tpage'];
 
-        if (isset($context['isajax'])) {
+        if ($context['isajax'] === true) {
             if (empty($url)) {
                 $url = \YunShop::app()->script_name . '?' . http_build_query($_GET);
             }
@@ -101,7 +103,7 @@ class PaginationHelper
                 $range['start'] = max(1, $range['end'] - $context['before'] - $context['after']);
             }
             for ($i = $range['start']; $i <= $range['end']; $i++) {
-                if (isset($context['isajax'])) {
+                if ($context['isajax'] === true) {
                     $aa = 'href="javascript:;" page="' . $i . '" '. ($callbackfunc ? 'onclick="'.$callbackfunc.'(\'' . $url . '\', \'' . $i . '\', this);return false;"' : '');
                 } else {
                     if ($url) {

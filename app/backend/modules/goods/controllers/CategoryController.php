@@ -4,6 +4,8 @@ namespace app\backend\modules\goods\controllers;
 use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\services\CategoryService;
 use app\common\components\BaseController;
+use app\common\helpers\PaginationHelper;
+use Illuminate\Support\Facades\Input;
 
 /**
  * Created by PhpStorm.
@@ -14,19 +16,44 @@ use app\common\components\BaseController;
 
 class CategoryController extends BaseController
 {
-    
+    /**
+     * 商品分类列表
+     */
     public function index()
     {
+
         $shopset   = m('common')->getSysset('shop');
-        $list = CategoryService::getLists(Category::getCategorys(\YunShop::app()->uniacid));
+        $pindex = max(1, intval(\YunShop::request()->page));
+        $psize = 10;
+
+        $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
+        $total = Category::getCategoryTotal(\YunShop::app()->uniacid, $parent_id);
+        $list = Category::getCategorys(\YunShop::app()->uniacid, $pindex, $psize, $parent_id);
+        $pager = PaginationHelper::show($total, $pindex, $psize);
+
+        $parent = [];
+        if($parent_id > 0) {
+            $parent = Category::getCategory($parent_id);
+        }
+
         $this->render('list', [
             'list' => $list,
+            'pager' => $pager,
+            'parent' => $parent,
             'shopset' => $shopset
         ]);
     }
 
+    /**
+     * 添加商品分类
+     */
     public function addCategory()
     {
+        ca('shop.category.add');
+
+        $level = \YunShop::request()->level ? \YunShop::request()->level : '1';
+        $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
+
         $item = [
             'id'            => '',
             'name'          => '',
@@ -36,40 +63,92 @@ class CategoryController extends BaseController
             'adv_url'       => '',
             'is_home'       => 0,
             'enabled'       => 0,
-            'display_order' => 0
+            'display_order' => 0,
+            'level'         => $level,
+            'parent_id'     => $parent_id
         ];
-
         $this->render('info', [
             'item' => $item,
-            'level' => '1'
+            'level' => $level
         ]);
     }
 
+    /**
+     * 保存添加分类
+     */
     public function addSave()
-    {
-
-        $result = Category::saveAddCategory(CategoryService::saveCategory(\YunShop::request()->category, \YunShop::app()->uniacid));
-        if($result) {
-            message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
-        }
-    }
-
-    public function saveAll()
     {
         ca('shop.category.view');
         
-        $categorys = CategoryService::processCategory(\YunShop::request()->datas);
-        
-        //编辑一级分类
-        Category::editAllCategorys($categorys['parents'], \YunShop::app()->uniacid);
-        //编辑二级分类
-        Category::editAllCategorys($categorys['childrens'], \YunShop::app()->uniacid);
-        //编辑三级分类
-        Category::editAllCategorys($categorys['thirds'], \YunShop::app()->uniacid);
-        
-        //删除未保存分类
-        Category::delCategorys($categorys['cateids'], \YunShop::app()->uniacid);
+        $category = \YunShop::request()->category;
+        $category['uniacid'] = \YunShop::app()->uniacid;
 
-        message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
+        $validator = Category::validator($category);
+
+        if($validator->fails()){
+            print_r($validator->messages());
+        }else {
+            $result = Category::saveAddCategory($category);
+            if ($result) {
+                Header("Location: " . $this->createWebUrl('goods.category.index'));
+                exit;
+            }
+        }
     }
+
+    /**
+     * 修改分类
+     */
+    public function editCategory()
+    {
+        ca('shop.category.edit');
+        
+        $category = Category::getCategory(\YunShop::request()->id);
+        $this->render('info', [
+            'item' => $category,
+            'level' => $category['level']
+        ]);
+    }
+
+    /**
+     * 保存修改分类
+     */
+    public function editSave()
+    {
+        ca('shop.category.edit');
+        
+        $category = \YunShop::request()->category;
+        $category['uniacid'] = \YunShop::app()->uniacid;
+        
+        $validator = Category::validator($category);
+        if($validator->fails()) {
+            print_r($validator->messages());
+        }else{
+            $result = Category::saveEditCategory($category, \YunShop::request()->id);
+            if($result) {
+                Header("Location: ".$this->createWebUrl('goods.category.index'));exit;
+                //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
+            }
+        }
+    }
+
+    /**
+     * 删除商品分类
+     */
+    public function deletedCategory()
+    {
+        ca('shop.category.delete');
+        
+        $category = Category::getCategory(\YunShop::request()->id);
+        if( empty($category) ) {
+            Header("Location: ".$this->createWebUrl('goods.category.index'));exit;
+        }
+
+        $result = Category::daletedCategory(\YunShop::request()->id);
+        if($result) {
+            Header("Location: ".$this->createWebUrl('goods.category.index'));exit;
+            //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
+        }
+    }
+
 }
