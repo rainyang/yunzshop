@@ -6,8 +6,10 @@
  * Time: 下午2:58
  */
 
-namespace app\frontend\modules\goods\model;
+namespace app\frontend\modules\goods\model\price\preferential;
 
+
+use app\frontend\modules\goods\model\GoodsModel;
 
 class Price
 {
@@ -20,7 +22,8 @@ class Price
     }
 
     public function getDiscountWay(){
-        return Goods::getLastDBGoods()["discountway"];
+        //ddump($this->goods_model->getInitialData());exit;
+        return $this->goods_model->getInitialData()["discountway"];
     }
     public function setDiscountWay(){
         switch ($this->getDiscountWay()) {
@@ -31,7 +34,7 @@ class Price
                 $this->_instance = new MoneyOff($this->goods_model);
                 break;
             default:
-                $this->_instance = false;
+                $this->_instance = new NoDiscount($this->goods_model);
                 break;
         }
     }

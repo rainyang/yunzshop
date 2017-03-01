@@ -7,25 +7,26 @@
  */
 namespace app\frontend\modules\goods\model\factory;
 
+use app\common\models\Goods;
 use app\frontend\modules\goods\model\GoodsModel;
 
 class GoodsModelFactory
 {
-    private $_processing_model;
-    protected $source;
-    public function getGoodsModel($total){
-        $this->source = $this->_getSourceByORM();
-        if(is_array($this->source)){
-            foreach ($this->source as $source_item){
-                $this->_processing_model = (new GoodsModel($source_item,$total));
-                $result[] = $this->_processing_model;
-            }
-            return $result;
+    public static function createModels($goods_id_arr){
+        return self::getFromOrm($goods_id_arr);
+        /*$result = [];
+        foreach (self::getFromOrm($goods_id_arr) as $goods_model){
+            $result[] = new GoodsModel($goods_model);
         }
-        return (new GoodsModel($this->source));
+        return $result;*/
     }
+    public static function createModel($goods_id){
+        return Goods::find($goods_id);
+        /*$result = new GoodsModel(Goods::find($goods_id));
+        return $result;*/
 
-    public function getProcessingModel(){
-        return $this->_processing_model;
+    }
+    public static function getFromOrm($goods_id_arr){
+        return Goods::select()->whereIn('id',$goods_id_arr)->get();
     }
 }

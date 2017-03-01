@@ -17,14 +17,15 @@ class MemberService
     private static $_instance;
 
     public static function getCurrentMemberModel(){
-        if(isset($_instance)){
+        if(isset(self::$_instance)){
+            self::setCurrentMember('67');
             return self::$_current_member;
         }
         self::$_instance = new MemberService();
         return self::$_instance->getCurrentMemberModel();
     }
 
-    public function setCurrentMember($member_id)
+    public static function setCurrentMember($member_id)
     {
         self::$_current_member = (new MemberModelFactory())->getMemberModel($member_id);
     }

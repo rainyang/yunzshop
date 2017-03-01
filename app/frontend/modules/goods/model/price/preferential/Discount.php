@@ -6,10 +6,10 @@
  * Time: 下午2:54
  */
 
-namespace app\frontend\modules\goods\model;
+namespace app\frontend\modules\goods\model\price\preferential;
 
 use app\frontend\modules\goods\model\factory\GoodsModelFactory;
-use app\frontend\modules\goods\service\MemberService;
+use app\frontend\modules\member\service\MemberService;
 
 
 

@@ -5,9 +5,8 @@
  * Date: 2017/2/21
  * Time: 下午2:55
  */
-namespace app\frontend\modules\goods\model;
-use app\frontend\modules\goods\model\factory\GoodsModelFactory;
-use app\frontend\modules\goods\service\MemberService;
+namespace app\frontend\modules\goods\model\price\preferential;
+use app\frontend\modules\member\service\MemberService;
 
 
 class MoneyOff

@@ -15,10 +15,17 @@ use app\frontend\modules\order\service\OrderService;
 class DisplayController
 {
     public function index(){
+
+        $order_goods_models = OrderService::getOrderGoodsModel($goods_model);
+        var_dump($order_goods_models->price);
+        exit;
+        exit;
         //$member = Member::getMember();
         $member_model = MemberService::getCurrentMemberModel();
-        $goods_group_model = GoodsService::getGoodsGroupModel([['goods_id'=>1,'total'=>2]]);
-        $order_data = OrderService::getPreCreateOrder($goods_group_model,$member_model);
+
+        $goods_models = GoodsService::getGoodsModels([1,2]);
+        $pre_generated_order_goods_models = OrderService::getPreGeneratedOrderGoodsModels();
+        $order_data = OrderService::getPreCreateOrder($goods_group_model,$member_model)->getData();
         ddump($order_data);
     }
 }

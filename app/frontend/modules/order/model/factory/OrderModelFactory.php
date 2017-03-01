@@ -9,9 +9,5 @@ namespace app\frontend\modules\order\model\factory;
 
 abstract class OrderModelFactory
 {
-    protected $source;
-    abstract function getOrderModel();
-    function getSourceByORM(){
-
-    }
+    abstract function createOrderModel();
 }
