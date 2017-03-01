@@ -26,15 +26,17 @@ class McMappingFansModel extends Model
     {
         $user_info = $this->getOauthUserInfo();
 
-        self::wherr('uniacid', $uniacid)
+        return self::where('uniacid', $uniacid)
             ->where('openid', $user_info['openid'])
-            ->get('uid');
+            ->get();
     }
 
-    public function getUId($uniacid, $openid)
+    public static function getUId($uniacid, $openid)
     {
-        self::wherr('uniacid', $uniacid)
+        return self::select('uid')
+            ->where('uniacid', $uniacid)
             ->where('openid', $openid)
-            ->get('uid');
+            ->first()
+            ->toArray();
     }
 }

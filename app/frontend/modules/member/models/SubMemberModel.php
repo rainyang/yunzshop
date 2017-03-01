@@ -19,6 +19,16 @@ class SubMemberModel extends Model
 
     public static function getInfo($uniacid, $referralsn)
     {
-        return self::where('uniacid', $uniacid)->where('referralsn', $referralsn)->first();
+        return self::where('uniacid', $uniacid)
+            ->where('referralsn', $referralsn)
+            ->first()
+            ->toArray();
+    }
+
+    public function updateDate($data, $where)
+    {
+        self::where('mobile', $where['mobile'])
+            ->where('uniacid', $where['uniacid'])
+            ->update($data);
     }
 }

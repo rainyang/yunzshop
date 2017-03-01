@@ -38,6 +38,9 @@ class LoginController extends BaseController
                 if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost && $this->_validate())) {
                     $member = MemberFactory::create('Mc');
                 }
+                if (SZ_YI_DEBUG) {
+                    $member = MemberFactory::create('Mc');
+                }
                 break;
             case '6':
                 $member = MemberFactory::create('QQ');
@@ -59,5 +62,7 @@ class LoginController extends BaseController
     }
 
     private function validate()
-    {}
+    {
+        return true;
+    }
 }

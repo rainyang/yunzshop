@@ -19,7 +19,7 @@ class MemberUniqueModel extends Model
 
     public static function getUnionidInfo($uniacid, $unionid)
     {
-        return self::where('uncaid', $uniacid)->where('unionid', $unionid)->get();
+        return self::where('uniacid', $uniacid)->where('unionid', $unionid)->get();
     }
 
     public static function insertData($data)

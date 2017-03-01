@@ -12,18 +12,29 @@ use app\frontend\modules\member\models\MemberModel;
 
 class MemberMcService
 {
+    private $_login_type    = 5;
+
     public function login()
     {
+        if ($this->isLogged()) {
+            show_json(1, array('member_id'=> $_SESSION['member_id']));
+        }
+
         $memberdata= \YunShop::request()->memberdata;
 
         $mobile   = $memberdata['mobile'];
         $password = $memberdata['password'];
         $uniacid  = \YunShop::app()->uniacid;
 
+        if (SZ_YI_DEBUG) {
+            $mobile   = '15046101656';
+            $password = '123456';
+        }
+
         $info = MemberModel::where('uniacid', $uniacid)
             ->where('mobile', $mobile)
-            ->where('password', md5($password))->first;
-
+            ->where('password', md5($password))->first();
+echo '<pre>';print_r($info);exit;
         if(isMobile()){
             $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] :  Url::app('member.index');
         }else{
@@ -76,26 +87,8 @@ class MemberMcService
     {}
 
     public function isLogged()
-    {}
-
-    public function getMemberId()
     {
-
-        return $member_id;
+        return !empty($_SESSION['member_id']);
     }
 
-    public function getOpenId()
-    {}
-
-    public function getMobile()
-    {}
-
-    public function getNickName()
-    {}
-
-    public function getAvatar()
-    {}
-
-    public function getUnionId()
-    {}
 }
