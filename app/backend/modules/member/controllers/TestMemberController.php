@@ -116,8 +116,4 @@ class TestMemberController extends BaseController
         echo PaginationHelper::show(18,1);
     }
 
-    public function testConfig()
-    {
-        DbConfig::set('test','testvalue');
-    }
 }

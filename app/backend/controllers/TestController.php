@@ -17,6 +17,12 @@ class TestController extends BaseController
         echo __CLASS__;
     }
 
+
+    public function testPlugin()
+    {
+
+    }
+
     public function testSetting()
     {
         Setting::$uniqueAccountId = 1;
