@@ -1,4 +1,3 @@
-{php $mylink_data = m('common')->mylink();}
 <link href="../addons/sz_yi/plugin/article/template/imgsrc/article.css" rel="stylesheet">
 <!-- mylink start -->
     <div id="modal-mylink" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -223,7 +222,7 @@
             }
         });
     })
-    
+
     $(document).on("click",".nav-link",function(){
         var id = $(this).data("id");
         if(id){
@@ -253,7 +252,7 @@
                 ue.execCommand('link', {href:href});
             }
             $("#modal-mylink .close").click();
-            $("textarea[name=mylink_href").val(""); 
+            $("textarea[name=mylink_href").val("");
         }else{
             $("textarea[name=mylink_href").focus();
             alert("链接不能为空!");
@@ -286,7 +285,7 @@
                               html+='</div>'
                               html+='</div>';
                         $("#select-goods").append(html);
-                    }); 
+                    });
                 }
            }
         });
@@ -314,5 +313,5 @@
                 }
             }
         });
-    }); 
+    });
 </script>

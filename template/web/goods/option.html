@@ -8,24 +8,24 @@
 <div class="form-group">
        <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用{$lang['shopoption']}</label>
         <div class="col-sm-9 col-xs-12">
-       {ife 'shop.goods' $item}
+       {ife 'shop.goods' $goods}
 	<label class="checkbox-inline">
-		<input type="checkbox" id="hasoption" value="1" name="hasoption" {if $item['hasoption']==1}checked{/if} />启用{$lang['shopoption']}
+		<input type="checkbox" id="hasoption" value="1" name="hasoption" {if $goods['hasoption']==1}checked{/if} />启用{$lang['shopoption']}
 	</label>
 	  <span class="help-block">启用{$lang['shopoption']}后，商品的价格及库存以商品规格为准,库存设置为0则不显示,-1为不限制</span>
 	 
        {else}
       
-           <div class='form-control-static'>{if $item['hasoption']==1}启用{else}不启用{/if} </div>
+           <div class='form-control-static'>{if $goods['hasoption']==1}启用{else}不启用{/if} </div>
            
        {/if}
            </div>
 
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用新规格模板</label>
     <div class="col-sm-9 col-xs-12">
-        {ife 'shop.goods' $item}
+        {ife 'shop.goods' $goods}
         <label class="checkbox-inline">
-            <input type="checkbox" id="opt_switch" value="1" name="opt_switch" {if $item['opt_switch']==1}checked{/if} />启用规格模板
+            <input type="checkbox" id="opt_switch" value="1" name="opt_switch" {if $goods['opt_switch']==1}checked{/if} />启用规格模板
         </label>
 
         <span class="help-block">新规格模板只在设置2组规格及不支持线下核销时显示</span>
@@ -33,13 +33,13 @@
 
         {else}
 
-        <div class='form-control-static'>{if $item['opt_switch']==1}启用{else}不启用{/if} </div>
+        <div class='form-control-static'>{if $goods['opt_switch']==1}启用{else}不启用{/if} </div>
 
         {/if}
     </div>
 </div>
  
-<div id='tboption' style="{if $item['hasoption']!=1}display:none{/if}">
+<div id='tboption' style="{if $goods['hasoption']!=1}display:none{/if}">
 	<div class="alert alert-info">
 		1. 拖动规格可调整规格显示顺序, 更改规格及规格项后请点击下方的【刷新规格项目表】来更新数据。<br/>
 		2. 每一种规格代表不同型号，例如颜色为一种规格，尺寸为一种规格，如果设置多规格，手机用户必须每一种规格都选择一个规格项，才能添加购物车或购买。
@@ -49,15 +49,12 @@
 		{php include $this->template('web/shop/tpl/spec')}
 		{/loop}
 	</div>
-    {ife 'shop.goods' $item}
+    {ife 'shop.goods' $goods}
 	<table class="table">
 		<tr>
 			<td>
 				<h4><a href="javascript:;" class='btn btn-primary' id='add-spec' onclick="addSpec()" style="margin-top:10px;margin-bottom:10px;" title="添加规格"><i class='fa fa-plus'></i> 添加规格</a> 
 				<a href="javascript:;" onclick="calc()" title="刷新规格项目表" class="btn btn-primary"><i class="fa fa-refresh"></i> 刷新规格项目表</a>
-					{if p('recharge') && $_GPC['plugin'] == "recharge"}
-					<a href="javascript:;" class='btn btn-primary' id='add-spec' onclick="addDataSpec()" style="margin-top:10px;margin-bottom:10px;" title="一键添加流量规格"><i class='fa fa-plus'></i> 一键添加流量规格</a>
-					{/if}
 			</h4>
 			</td>
 		</tr>
@@ -144,7 +141,7 @@
         }
                     
 		$("#add-spec").html("正在处理...").attr("disabled", "true").toggleClass("btn-primary");
-		var url = "{php echo $this->createWebUrl('shop/tpl',array('tpl'=>'spec'))}";
+		var url = "{php echo $this->createWebUrl('goods.goods.getSpecTpl',array('tpl'=>'spec'))}";
 		$.ajax({
 			"url": url,
 			success:function(data){
@@ -165,7 +162,7 @@
 	}
 	function addSpecItem(specid){
 	$("#add-specitem-" + specid).html("正在处理...").attr("disabled", "true");
-		var url = "{php echo$this->createWebUrl('shop/tpl',array('tpl'=>'specitem'))}" + "&specid=" + specid;
+		var url = "{php echo$this->createWebUrl('goods.goods.getSpecItemTpl',array('tpl'=>'specitem'))}" + "&specid=" + specid;
 		$.ajax({
 			"url": url,
 			success:function(data){
@@ -246,16 +243,12 @@
 		html += '<th class="info" style="width:13%;"><div><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div><div class="input-group"><input type="text" class="form-control option_stock_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_stock\');"></a></span></div></div></th>';
 
 		html += '<th class="success" style="width:30%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">{$lang['marketprice']}</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
-		{if $_GPC['plugin'] != 'fund'}
 		html+='<th class="warning" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_productprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
-		{/if}
 		html+='<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
 		
 		html+='<th class="warning" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">红包价格</div><div class="input-group"><input type="text" class="form-control option_redprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_redprice\');"></a></span></div></div></th>';
 	    html+='<th class="primary" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">{$lang['shopnumber']}</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
-	    {if $_GPC['plugin'] != 'fund'}
 	    html+='<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
-	    {/if}
 		html+='<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
 
 		html+='</tr></thead>';
@@ -319,48 +312,14 @@
 	        hh += '<input name="option_virtual_' + ids +'[]"type="hidden" class="form-control option_title option_title_' + ids +'" value="' +(val.virtual=='undefined'?'':val.virtual )+'"/></td>';
 			hh += '</td>';
 			hh += '<td class="success"><input name="option_marketprice_' + ids+'[]" type="text" class="form-control option_marketprice option_marketprice_' + ids +'" value="' +(val.marketprice=='undefined'?'':val.marketprice )+'"/>';
-			{if $isladder}
-			hh += '<div style="padding-bottom:10px;text-align:center;font-size:14px;">阶梯价格&nbsp;<a class="btn-success ng-scope addopladder" data-ids="' + ids +'" href="javascript:;"><i class="fa fa-plus" style="width: 20px;height: auto;"></i></a></div>';
-			hh += '<div id="ladderop_' + ids +'">';
-			ladder_len = $("#ladderop_" + ids).children('.input-group');
-			//alert(ladder_len.children('.option_maximum_' + ids).val());
-			if( ladder_len.length > 0 ) {
-				for(var li=0;li<ladder_len.length;li++){
-					option_minimum = ladder_len.children('.option_minimum_' + ids ).eq(li).val();
-					option_maximum = ladder_len.children('.option_maximum_' + ids ).eq(li).val();
-					option_ladderprice = ladder_len.children('.option_ladderprice_' + ids ).eq(li).val();
-					hh += '<div class="input-group">';
-					hh += '	<input type="text" style="padding: 6px 2px;" class="form-control option_minimum_' + ids + '" value="'+option_minimum+'" name="option_minimum_' + ids+'[]"/>';
-					hh += '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >至</span>';
-					hh += '	<input type="text" style="padding: 6px 2px;" class="form-control option_maximum_' + ids + '" value="'+option_maximum+'" name="option_maximum_' + ids+'[]"/>';
-					hh += '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >=</span>';
-					hh += '	<input type="text" style="padding: 6px 2px;" class="form-control option_ladderprice_' + ids + '" value="'+option_ladderprice+'" name="option_ladderprice_' + ids+'[]"/>';
-					hh += '	<span style="width: 10px;padding: 6px 1px;" class="input-group-addon"> &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteopladder" title="删除"><i class="fa fa-times"></i></a> </span>';
-					hh += '</div>';
-				}
-			} else {
-				hh += '<div class="input-group">';
-				hh += '	<input type="text" style="padding: 6px 2px;" class="form-control option_minimum_' + ids +'" value="" name="option_minimum_' + ids+'[]"/>';
-				hh += '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >至</span>';
-				hh += '	<input type="text" style="padding: 6px 2px;" class="form-control option_maximum_' + ids +'" value="" name="option_maximum_' + ids+'[]"/>';
-				hh += '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >=</span>';
-				hh += '	<input type="text" style="padding: 6px 2px;" class="form-control option_ladderprice_' + ids +'" value="" name="option_ladderprice_' + ids+'[]"/>';
-				hh += '	<span style="width: 10px;padding: 6px 1px;" class="input-group-addon"> &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteopladder" title="删除"><i class="fa fa-times"></i></a> </span>';
-				hh += '</div>';
-			}
-			hh += '</div>';	
-			{/if}
+
 			hh += '</td>';
-			{if $_GPC['plugin'] != 'fund'}
 			hh += '<td class="warning"><input name="option_productprice_' + ids+'[]" type="text" class="form-control option_productprice option_productprice_' + ids +'" " value="' +(val.productprice=='undefined'?'':val.productprice )+'"/></td>';
-			{/if}
 			hh += '<td class="danger"><input name="option_costprice_' +ids+'[]" type="text" class="form-control option_costprice option_costprice_' + ids +'" " value="' +(val.costprice=='undefined'?'':val.costprice )+'"/></td>';
 			
 			hh += '<td class="warning"><input name="option_redprice_' +ids+'[]" type="text" class="form-control option_redprice option_redprice_' + ids +'" " value="' +(val.redprice=='undefined'?'':val.redprice )+'"/></td>';
 	        hh += '<td class="primary"><input name="option_goodssn_' +ids+'[]" type="text" class="form-control option_goodssn option_goodssn_' + ids +'" " value="' +(val.goodssn=='undefined'?'':val.goodssn )+'"/></td>';
-	        {if $_GPC['plugin'] != 'fund'}
 	        hh += '<td class="danger"><input name="option_productsn_' +ids+'[]" type="text" class="form-control option_productsn option_productsn_' + ids +'" " value="' +(val.productsn=='undefined'?'':val.productsn )+'"/></td>';
-	        {/if}
 			hh += '<td class="info"><input name="option_weight_' + ids +'[]" type="text" class="form-control option_weight option_weight_' + ids +'" " value="' +(val.weight=='undefined'?'':val.weight )+'"/></td>';
 			hh += "</tr>";
 		}

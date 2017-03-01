@@ -105,6 +105,17 @@ class BaseController extends  Controller
     }
 
     /**
+     * 生成插件url
+     * @param $route  路由
+     * @param $params 参数
+     * @return string
+     */
+    public function createPluginMobileUrl($route, $params = [])
+    {
+        return Url::app($route, $params);
+    }
+
+    /**
      * 生成前台Url
      * @param $route  路由
      * @param $params 参数

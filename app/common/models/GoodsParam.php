@@ -8,9 +8,8 @@
 
 namespace app\common\models;
 
-use Illuminate\Database\Eloquent\Model;
 
-class GoodsParam extends Model
+class GoodsParam extends \app\common\models\BaseModel
 {
     public $table = 'yz_goods_param';
 

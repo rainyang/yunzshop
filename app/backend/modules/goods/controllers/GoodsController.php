@@ -11,22 +11,25 @@ namespace app\backend\modules\goods\controllers;
 use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\services\GoodsService;
 use app\common\components\BaseController;
+use app\common\models\Category;
 
 class GoodsController extends BaseController
 {
     private $goods_id = null;
     private $shopset;
     private $shoppay;
+    private $goods;
 
     public function __construct()
     {
         $this->goods_id = (int)\YunShop::request()->id;
+        $this->shopset   = m('common')->getSysset('shop');
         $this->init();
     }
 
     public function init()
     {
-
+        $this->goods = new Goods();
     }
 
     public function index()
@@ -73,11 +76,22 @@ class GoodsController extends BaseController
             'shopsubmit' => "发布商品"
         );
         //print_r(\YunShop::app());exit;
-        $goods = new Goods();
+        $goods = Goods::getGoodsById(2);
+        $params = $goods->hasManyParams;
+
+        $a = $goods->hasManySpecs;
+        dd($a);exit;
+        exit;
+        $allspecs = [];
         //print_r($goods);exit;
-        $this->render('goods', [
-            'goods' => $goods,
+        $this->render('goods/goods', [
+            'goods' => $this->goods,
             'lang'  => $lang,
+            'params'  => $params,
+            'allspecs'  => $allspecs,
+            'html'  => '',
+            'virtual_types' => [],
+            'shopset' => $this->shopset
         ]);
     }
 
@@ -86,9 +100,8 @@ class GoodsController extends BaseController
         $post = \YunShop::request()->goods;
         //print_r($post);exit;
 
-        $goods = new Goods;
-        $goods->fill($post);
-        $goods->saveOrFail();
+        $this->goods->fill($post);
+        $this->goods->saveOrFail();
         echo 'insert ok!';
 
     }
@@ -106,6 +119,54 @@ class GoodsController extends BaseController
     public function destroy($id)
     {
 
+    }
+
+    /**
+     * 获取参数模板
+     */
+    public function getParamTpl()
+    {
+        $tag = random(32);
+        $this->render('goods/tpl/param', [
+            'tag' => $tag,
+        ]);
+        //include $this->template('web/shop/tpl/param');
+    }
+
+    public function getSpecTpl()
+    {
+        $spec = array(
+            "id" => random(32),
+            "title" => '',
+            'items' => [
+                /*"id" => random(32),
+                "title" => 'test',
+                "show" => 1*/
+            ],
+        );
+        $this->render('goods/tpl/spec', [
+            'spec' => $spec,
+        ]);
+    }
+
+    public function getSpecItemTpl()
+    {
+        $spec     = array(
+            "id" => \YunShop::request()->specid,
+        );
+        $specitem = array(
+            "id" => random(32),
+            "title" => \YunShop::request()->title,
+            "show" => 1,
+            'virtual' => '',
+            'title2' => '',
+            'thumb' => '',
+        );
+        $this->render('goods/tpl/spec_item', [
+            'spec' => $spec,
+            'goods' => $this->goods,
+            'specitem' => $specitem,
+        ]);
     }
 
 }

@@ -11,13 +11,13 @@
             {loop $params $p}
             <tr>
                 <td>
-                   {ife 'shop.goods' $item}
+                   {ife 'shop.goods' $goods}
                     <a href="javascript:;" class="fa fa-move" title="拖动调整此显示顺序"><i class="fa fa-arrows"></i></a>&nbsp;
                     <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;" title="删除"><i class='fa fa-remove'></i></a>
                     {/if}
                 </td>
                 <td>
-                      {ife 'shop.goods' $item}
+                      {ife 'shop.goods' $goods}
                     <input name="param_title[]" type="text" class="form-control param_title" value="{$p['title']}"/>
                     {else}
                       {$p['title']}
@@ -25,7 +25,7 @@
                     <input name="param_id[]" type="hidden" class="form-control" value="{$p['id']}"/>
                 </td>
                 <td>
-                       {ife 'shop.goods' $item}
+                       {ife 'shop.goods' $goods}
                     <input name="param_value[]" type="text" class="form-control param_value" value="{$p['value']}"/>
                 {else}   {$p['value']}
                     {/if}
@@ -33,7 +33,7 @@
             </tr>
             {/loop}
         </tbody>
-           {ife 'shop.goods' $item}
+           {ife 'shop.goods' $goods}
         <tbody>
             <tr>
                 <td>&nbsp;</td>
@@ -62,7 +62,7 @@
         });
     })
     function addParam() {
-        var url = "{php echo $this->createWebUrl('shop/tpl',array('tpl'=>'param'))}";
+        var url = "{php echo $this->createWebUrl('goods.goods.getParamTpl')}";
         $.ajax({
             "url": url,
             success: function(data) {

@@ -13,9 +13,9 @@
 
 
     <form action="{php echo $this->createWebUrl('goods.goods.save')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
-        <div class="panel panel-default panel-center">
+        <div class="panel-default panel-center">
 <!--             <div class="panel-heading">
-                {if empty($item['id'])}添加商品{else}编辑商品{/if}
+                {if empty($goods['id'])}添加商品{else}编辑商品{/if}
             </div> -->
 
 <div class="right-titpos-fixed">
@@ -33,16 +33,15 @@
             <div class="panel-body">
                 <div class="tab-content">
                     <div class="tab-pane  active" id="tab_basic">{template 'web/goods/basic'}</div>
-                    <!--<div class="tab-pane" id="tab_des">{template 'web/goods/des'}</div>-->
-                    <!--<div class="tab-pane" id="tab_param">{template 'web/goods/param'}</div>-->
-                    <!--<div class="tab-pane" id="tab_option">{template 'web/goods/option'}</div>-->
-
+                    <div class="tab-pane" id="tab_des">{template 'web/goods/des'}</div>
+                    <div class="tab-pane" id="tab_param">{template 'web/goods/param'}</div>
+					<div class="tab-pane" id="tab_option">{template 'web/goods/option'}</div>
 
                 </div>
 		        <div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
-					{ife 'shop.goods' $item}
+					{ife 'shop.goods' $goods}
 					<input type="submit" name="submit" value="{$lang['shopsubmit']}" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
-					<input type="hidden" name="token" value="{$_W['token']}" />
+					<input type="hidden" name="token" value="{$var['token']}" />
 					{/if}
 					<input type="button" name="back"  {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
 
@@ -54,8 +53,8 @@
 </div>
 
 <script type="text/javascript">
-	window.type = "{$item['type']}";
-	window.virtual = "{$item['virtual']}";
+	window.type = "{$goods['type']}";
+	window.virtual = "{$goods['virtual']}";
 
 	$(function () {
 
@@ -73,17 +72,11 @@
 				}
 			}
 		})
-		{if p('recharge') && $_GPC['plugin']}
-		$("input[name='back']").click(function () {
-			location.href = "{php echo $this->createWebUrl('shop/goods', array('plugin' => $_GPC['plugin']))}";
-		});
-		{else}
+
 		$("input[name='back']").click(function () {
 			location.href = "{php echo $this->createWebUrl('shop/goods')}";
 		});
-		{/if}
 	})
-			var category = {php echo json_encode($children)};
 	window.optionchanged = false;
 	require(['bootstrap'], function () {
 		$('#myTab a').click(function (e) {
@@ -269,7 +262,6 @@
 	}
 
 </script>
-{template 'web/sysset/mylink'}
 
 <script type="text/javascript">
 	//鼠标划过显示商品链接二维码
@@ -346,11 +338,10 @@
 			});
 		})
 	})
-			var category = {php echo json_encode($children)};
 	function setProperty(obj, id, type) {
 		$(obj).html($(obj).html() + "...");
 		$.post("{php echo $this->createWebUrl('shop/goods')}"
-				, {'op': 'setgoodsproperty', id: id, type: type, plugin: "{$_GPC['plugin']}", data: obj.getAttribute("data")}
+				, {'op': 'setgoodsproperty', id: id, type: type, plugin: "", data: obj.getAttribute("data")}
 		, function (d) {
 			$(obj).html($(obj).html().replace("...", ""));
 			if (type == 'type') {
@@ -370,4 +361,3 @@
 
 </script>
 {template 'web/_footer'}
-
