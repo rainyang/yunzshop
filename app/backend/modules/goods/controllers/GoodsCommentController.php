@@ -7,7 +7,7 @@ use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 
 use app\common\models\Goods;
-use app\common\models\Order;
+use app\common\models\Member;
 /**
  * Created by PhpStorm.
  * User: yanglei
@@ -22,7 +22,7 @@ class GoodsCommentController extends BaseController
     public function index()
     {
         $pindex = max(1, intval(\YunShop::request()->page));
-        $psize = 2;
+        $psize = 5;
         
         $search = GoodsCommentService::Search(\YunShop::request()->search);
         
@@ -64,7 +64,8 @@ class GoodsCommentController extends BaseController
 
         $data = \YunShop::request()->reply;
         $reply = GoodsCommentService::reply($data);
-        $result = GoodsComment::reply($reply, $data['id']);
+        $result = GoodsComment::updatedComment($reply, $data['id']);
+
         if ($result){
             Header("Location: " . $this->createWebUrl('goods.goods-comment.reply', ['id' => $data['id']]));
             exit;
@@ -82,7 +83,7 @@ class GoodsCommentController extends BaseController
         if (!empty($goods_id)) {
             $goods = Goods::getGoodsById($goods_id)->toArray();
         }
-        $comment['goods_id'] = '';
+        $comment['goods_id'] = $goods_id;
         $comment['head_img_url'] = '';
         $comment['nick_name'] = '';
         $comment['level'] = '';
@@ -102,11 +103,52 @@ class GoodsCommentController extends BaseController
     }
 
     /**
+     * 保存添加评论
+     */
+    public function saveComment()
+    {
+
+        $id = \YunShop::request()->id;
+        $comment = \YunShop::request()->comment;
+        $comment['uniacid'] = \YunShop::app()->uniacid;
+
+
+        if (empty($comment['nick_name'])) {
+            $nick_names = Member::getRandNickName();
+            $comment['nick_name'] = $nick_names['nick_name'];
+        }
+        if (empty($comment['head_img_url'])) {
+            $head_img_urls = Member::getRandAvatar();
+            $comment['head_img_url'] = $head_img_urls['avatar'];
+        }
+        if (empty($id)) {
+            $comment['created_at'] = time();
+            $result = GoodsComment::saveComment($comment);
+        } else {
+            $result = GoodsComment::updatedComment($comment, $id);
+        }
+        if ($result) {
+            Header("Location: " . $this->createWebUrl('goods.goods-comment.index'));exit;
+        }
+
+    }
+    /**
      * 修改评论
      */
     public function updated()
     {
-        echo "<pre>"; print_r('修改评论');exit;
+        $id = \YunShop::request()->id;
+        $comment = GoodsComment::getComment($id);
+
+        if (!empty($comment['goods_id'])) {
+            $goods = Goods::getGoodsById($comment['goods_id'])->toArray();
+        }
+        $this->render('add_info', [
+            'id' => $id,
+            'comment' => $comment,
+            'goods' => $goods
+        ]);
+
     }
 
     /**

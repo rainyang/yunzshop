@@ -59,4 +59,15 @@ class Goods extends BaseModel
     {
 
     }
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getGoodsByName($keyword)
+    {
+        return parent::where('title', 'like', $keyword.'%')
+            ->get()
+            ->toArray();
+    }
 }

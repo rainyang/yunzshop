@@ -56,9 +56,20 @@ class GoodsComment extends \app\common\models\GoodsComment
      * @param $id
      * @return mixed
      */
-    public static function reply($reply, $id)
+    public static function updatedComment($data, $id)
     {
         return self::where('id', $id)
-        ->update($reply);
+        ->update($data);
     }
+
+    /**
+     * @param $comment
+     * @return bool
+     */
+    public static function saveComment($comment)
+    {
+        return self::insert($comment);
+    }
+
+
 }
