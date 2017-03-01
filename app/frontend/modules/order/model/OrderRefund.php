@@ -3,10 +3,10 @@
  * Created by PhpStorm.
  * User: yangyang
  * Date: 2017/3/1
- * Time: 下午5:00
+ * Time: 下午5:02
  */
 
-namespace app\common\models;
+namespace app\frontend\modules\order\model;
 
 
 class OrderRefund
