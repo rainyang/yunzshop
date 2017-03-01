@@ -7,16 +7,16 @@
  */
 namespace app\frontend\modules\order\model\factory;
 
-use app\frontend\modules\order\model\OrderModel;
+use app\frontend\modules\order\model\PreGeneratedOrderModel;
+use app\frontend\modules\order\model\PreGeneratedOrderGoodsModel;
 
-class PreCreateOrderModelFactory extends OrderModelFactory
+
+class PreGeneratedOrderModelFactory extends OrderModelFactory
 {
-    protected $source;
-    public function getOrderModel(){
-        $this->source = $this->getSourceByORM();
-        return (new OrderModel($this->source));
-    }
-    function getSourceByORM(){
 
+    public function createOrderModel(array $pre_generated_order_goods_models=null){
+
+        return (new PreGeneratedOrderModel($pre_generated_order_goods_models));
     }
+
 }

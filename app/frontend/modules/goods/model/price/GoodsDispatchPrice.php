@@ -6,10 +6,10 @@
  * Time: 下午5:45
  */
 
-namespace app\modules\goods\model\frontend;
+namespace app\frontend\modules\goods\model\price;
 
 use app\frontend\modules\goods\model\GoodsModel;
-use app\frontend\modules\goods\service\MemberService;
+use app\frontend\modules\member\service\MemberService;
 
 class GoodsDispatchPrice
 {
@@ -48,10 +48,10 @@ class GoodsDispatchPrice
             }
 
             $areas = unserialize($_goods['dispatch_data']["areas"]);
-            if (!($this->address())) {
-                $_goods['dispatch_price'] = m("order")->getCityDispatchPrice($areas, $this->address("city"), $_goods['param'], $_goods['dispatch_data']);
-            } else if (!empty($this->address("city"))) {
-                $_goods['dispatch_price'] = m("order")->getCityDispatchPrice($areas, $this->address("city"), $_goods['param'], $_goods['dispatch_data']);
+            if (!($this->_address())) {
+                $_goods['dispatch_price'] = m("order")->getCityDispatchPrice($areas, $this->_address("city"), $_goods['param'], $_goods['dispatch_data']);
+            } else if (!empty($this->_address("city"))) {
+                $_goods['dispatch_price'] = m("order")->getCityDispatchPrice($areas, $this->_address("city"), $_goods['param'], $_goods['dispatch_data']);
             } else {
                 $_goods['dispatch_price'] = m("order")->getDispatchPrice($_goods['param'], $_goods['dispatch_data'], -1);
             }

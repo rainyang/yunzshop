@@ -12,6 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Goods extends Model
 {
-    public $table = 'sz_yi_goods';
+    public $table = 'yz_goods';
 
 }

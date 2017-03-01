@@ -1,6 +1,6 @@
 <?php
 namespace app\frontend\modules\goods\service;
-use app\frontend\modules\goods\model\factory\GoodsGroupModelFactory;
+use app\frontend\modules\goods\model\factory\GoodsModelFactory;
 
 /**
  * Created by PhpStorm.
@@ -10,7 +10,10 @@ use app\frontend\modules\goods\model\factory\GoodsGroupModelFactory;
  */
 class GoodsService
 {
-    public static function getGoodsGroupModel(){
-        return GoodsGroupModelFactory::getGoodsGroupModel();
+    public static function getGoodsModels(){
+        return GoodsModelFactory::createModels();
+    }
+    public static function getGoodsModel($goods_id){
+        return GoodsModelFactory::createModel($goods_id);
     }
 }

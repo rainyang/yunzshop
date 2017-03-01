@@ -1,4 +1,5 @@
 <?php
+namespace app\frontend\modules\shop\model;
 
 /**
  * Created by PhpStorm.

@@ -9,15 +9,15 @@
 namespace app\frontend\modules\member\model\factory;
 
 
-use app\api\model\Member;
+use app\common\models\Member;
 use app\frontend\modules\member\model\MemberModel;
 
 class MemberModelFactory
 {
-    public function getMemberModel(){
-        return new MemberModel($this->getFromOrm());
+    public function getMemberModel($member_id){
+        return new MemberModel($this->getFromOrm($member_id));
     }
-    private function getFromOrm(){
+    private function getFromOrm($member_id){
         return Member::first();
     }
 }
