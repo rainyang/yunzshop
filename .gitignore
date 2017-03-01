@@ -6,7 +6,7 @@ sh.exe.stackdump
 tmp/
 .idea/
 composer.lock
-/vendor/
+/vendor/*
 /tests/
 .env
 /.phpstorm.meta.php
