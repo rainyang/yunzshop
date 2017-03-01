@@ -1,13 +1,53 @@
 <div class="container">
 
-    {if session()->has('flash_notification.message')}
-    <div class="alert alert-{php echo session('flash_notification.level') }">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        {php echo session('flash_notification.message') }
+
+    <div class="row">
+        <div class="col-md-9 col-md-offset-3" style="{php echo (session()->has('flash_notification.overlay')) ? '':'margin-top:50px;z-index: 999'}">
+
+            {if (session()->has('flash_notification.message'))}
+                {if (session()->has('flash_notification.overlay'))}
+
+                <div id="flash-overlay-modal" class="modal fade flash-modal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+                                <h4 class="modal-title">{php echo session('flash_notification.title')  }</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>{php echo session('flash_notification.message') }</p>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {else}
+                <div class="alert alert-{php echo  session('flash_notification.level') }
+                            {php echo session()->has('flash_notification.important') ? 'alert-important' : '' }"
+                >
+                        {if (session()->has('flash_notification.important'))}
+                        <button type="button"
+                                class="close"
+                                data-dismiss="alert"
+                                aria-hidden="true"
+                        >&times;</button>
+                        {/if}
+                    {php echo session('flash_notification.message') }
+                </div>
+                {/if}
+            {/if}
+        </div>
     </div>
-    {/if}
 </div>
 <script>
-    $('#flash-overlay-modal').modal();
-    $('div.alert').not('.alert-important').delay(3000).fadeOut(350);
+    require(['bootstrap'],function($){
+        $('#flash-overlay-modal').modal();
+        $('div.alert').not('.alert-important').delay(3000).fadeOut(350);
+    });
+
 </script>

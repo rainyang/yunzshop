@@ -9,8 +9,6 @@
 namespace app\backend\modules\member\models;
 
 
-use Watson\Validating\ValidatingTrait;
-
 class TestMember extends \app\common\models\TestMember
 {
 

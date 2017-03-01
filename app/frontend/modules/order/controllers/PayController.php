@@ -11,6 +11,8 @@ namespace app\frontend\modules\order\controllers;
 use app\common\helpers\Url;
 use app\common\models\Order;
 use app\frontend\modules\services\order\OrderService;
+use app\frontend\modules\services\order\OrderLogService;
+use app\frontend\modules\services\order\PayTypeService;
 
 class PayController
 {
@@ -81,7 +83,7 @@ class PayController
     //获取log ID
     private function _getPlId()
     {
-        $plid = OrderService::verifyLog(
+        $plid = OrderLogService::verifyLog(
             Order::getLog(
                 $this->uniacid,
                 $this->_getOrdersnGeneral()
@@ -147,12 +149,12 @@ class PayController
     {
         $order = $this->_getOrder();
         //验证当前支付方式是否存在
-        OrderService::vetifyPay(
+        PayTypeService::verifyPay(
             \YunShop::request()->type,
             $this->_getPayWays()
         );
         //验证用户余额是否足够
-        OrderService::verifyMemberCredit(
+        PayTypeService::verifyMemberCredit(
             $this->openid,
             $order
         );
@@ -162,7 +164,7 @@ class PayController
             $this->_getOrdersnGeneral()
         );
         //获取log,并验证是否为空
-        OrderService::verifyLogIsEmpty(
+        OrderLogService::verifyLogIsEmpty(
             Order::getLog(
                 $pay_ordersn,
                 \YunShop::app()->uniacid
@@ -180,7 +182,7 @@ class PayController
     public function display()
     {
         $order = $this->_getOrder();
-        $pay_ways = OrderService::getAllPayWay(
+        $pay_ways = PayTypeService::getAllPayWay(
             $order,
             $this->openid,
             \YunShop::app()->uniacid
@@ -188,6 +190,7 @@ class PayController
         /*$returnurl = urlencode($this->createMobileUrl('order/pay', array(
             'orderid' => $order['id']
         )));*/
+        Url::absoluteApp('sss.sdfasd.dfd',[]);
         $returnurl = '';
         $order_goods = OrderService::getOrderGoods(
             $this->_getOrderGoods(),
