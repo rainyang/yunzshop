@@ -3,12 +3,12 @@ namespace app\frontend\modules\order\model;
 
 use app\common\models\Order;
 use app\frontend\modules\member\model\MemberModel;
-use app\frontend\modules\order\model\behavior\GenerateOrderByGoods;
 use app\frontend\modules\order\service\OrderService;
 use app\frontend\modules\shop\model\ShopModel;
 
 class PreGeneratedOrderModel extends OrderModel
 {
+    private $id;
     private $total;
     private $price;
     private $goods_price;
@@ -126,8 +126,10 @@ class PreGeneratedOrderModel extends OrderModel
             'goods_price' => $this->goods_price,
             'create_time' => time(),
         );
-        echo '插入的数据为:';
-        var_dump($data);exit;
+        echo '订单插入的数据为:';
+        $this->id = 1;
+        return var_dump($data);
+
         return Order::insert($data);
     }
 
