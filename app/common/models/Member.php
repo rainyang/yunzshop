@@ -13,6 +13,7 @@ class Member extends Model
 {
     public $table = 'mc_members';
 
+
     /**
      * @return mixed
      */
@@ -24,7 +25,7 @@ class Member extends Model
             ->first()
             ->toArray();
     }
-
+    
     /**
      * @return mixed
      */
