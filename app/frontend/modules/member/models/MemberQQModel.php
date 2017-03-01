@@ -15,5 +15,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberQQModel extends Model
 {
-
+    public $table = 'yz_member_qq';
 }

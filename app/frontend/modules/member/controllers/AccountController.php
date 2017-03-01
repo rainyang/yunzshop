@@ -14,5 +14,7 @@ use app\frontend\modules\member\services\BaseCustomer;
 class AccountController extends BaseController
 {
      public function index()
-     {}
+     {
+
+     }
 }

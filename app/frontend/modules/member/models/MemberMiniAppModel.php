@@ -16,5 +16,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberMiniAppModel extends Model
 {
+    public $table = 'yz_member_mini_app';
 
+    public static function insertData($data)
+    {
+        self::insert($data);
+    }
+
+    public function getUserInfo()
+    {}
+
+    public function getMemberId()
+    {}
 }
