@@ -5,9 +5,8 @@
     {ifp 'shop.goods.view'}<li ><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>0))}">已下架商品</a></li>{/if}
     {ifp 'shop.category.view'}<li ><a href="{php echo $this->createWebUrl('goods.category.index')}">商品分类</a></li>{/if}
     {ifp 'shop.brand.view'}<li ><a href="{php echo $this->createWebUrl('goods.brand.index')}">商品品牌</a></li>{/if}
-    {ifp 'shop.comment.view'}<li ><a href="{php echo $this->createWebUrl('shop/comment')}">评价管理</a></li>{/if}
+    {ifp 'shop.comment.view'}<li ><a href="{php echo $this->createWebUrl('goods.goods-comment.index')}">评价管理</a></li>{/if}
     <li class="step"></li>
-
 
 </ul>
 </div>

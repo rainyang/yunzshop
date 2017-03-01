@@ -11,11 +11,7 @@
 	<div class="form-group">
 		<label class="col-xs-12 col-sm-3 col-md-2 control-label">规格名</label>
 	<div class="col-sm-9 col-xs-12">
-            {ife 'shop.goods' $item}
 			<input name="spec_title[{$spec['id']}]" type="text" class="form-control  spec_title" value="{$spec['title']}" placeholder="(比如: 颜色)"/>
-                        {else}
-                        <div class='form-control-static'>{$spec['title']}</div>
-                        {/if}
 		</div>
 	</div>
 	<div class="form-group">
@@ -24,12 +20,12 @@
 			<div id='spec_item_{$spec['id']}' class='spec_item_items'>
 			{loop $spec['items'] $specitem}
                       
-			     {template 'web/shop/tpl/spec_item'}
+			     {template 'web/goods/tpl/spec_item'}
                           
 			{/loop}
 			</div>
 		</div>
-	</div>   {ife 'shop.goods' $item}
+	</div>
           <div class="form-group">
 			<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
 			<div class="col-sm-9 col-xs-12">
@@ -37,6 +33,6 @@
 				<a href="javascript:void(0);" class='btn btn-danger' onclick="removeSpec('{$spec['id']}')"><i class="fa fa-plus"></i> 删除规格</a>
 			</div>
 		 
-	</div>{/if}
+	</div>
    </div> 
 </div>

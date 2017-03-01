@@ -21,6 +21,12 @@ class Category extends BaseModel
      */
     protected $guarded = [''];
 
+    public static function getCategoryList($uniacid, $parent_id)
+    {
+        return self::where('uniacid', $uniacid)
+            ->where('parent_id', $parent_id)
+            ->orderBy('id', 'asc');
+    }
     /**
      * @param $uniacid
      * @param $pindex

@@ -21,6 +21,7 @@ class CategoryController extends BaseController
      */
     public function index()
     {
+
         $shopset   = m('common')->getSysset('shop');
         $pindex = max(1, intval(\YunShop::request()->page));
         $psize = 10;
