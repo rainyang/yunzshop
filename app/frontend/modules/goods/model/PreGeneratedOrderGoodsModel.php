@@ -59,20 +59,22 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     {
         return $this->total * $this->goods_model->price;
     }
-    public function generate()
+    public function generate(OrderModel $order_model = null)
     {
-        $this->order_model->id;
+        if(isset($order_model)){
+            $this->setOrderModel($order_model);
+        }
         $data = array(
-            'shop_id' => $this->order_model->shop_model->id,
+            'uniacid' => $this->order_model->shop_model->uniacid,
             'order_id' => $this->order_model->id,
             'goods_id' => $this->goods_model->id,
             'goods_sn' => $this->goods_model->goods_sn,
-            'member_id' => $this->order_model->member_model->id(),
+            'member_id' => $this->order_model->member_model->uid,
             'price' => $this->price,
             'total' => $this->total,
 
         );
-        echo '插入数据为';
+        echo '订单商品插入数据为';
         return var_dump($data);
         return Goods::insertGetId($data);
     }

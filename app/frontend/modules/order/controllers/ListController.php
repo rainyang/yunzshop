@@ -11,5 +11,5 @@ namespace app\frontend\modules\order\controllers;
 
 class ListController
 {
-
+    public function index(){}
 }
