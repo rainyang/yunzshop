@@ -6,6 +6,7 @@ use app\common\helpers\StringHelper;
 use app\common\helpers\Url;
 use app\common\traits\MessageTrait;
 use Illuminate\Routing\Controller;
+use Setting;
 use Validator;
 
 /**
@@ -26,15 +27,16 @@ class BaseController extends  Controller
     //当前action
     public $action = '';
 
+    public function __construct()
+    {
+        Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+    }
+
     protected function formatValidationErrors(Validator $validator)
     {
         return $validator->errors()->all();
     }
 
-    public function message($message, $url = '', $type = '')
-    {
-        return message();
-    }
 
     /**
      * 渲染视图

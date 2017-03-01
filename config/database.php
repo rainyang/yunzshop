@@ -49,7 +49,7 @@ return [
             'password' => env('DB_PASSWORD', $_W['config']['db']['master']['password']),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => $_W['config']['db']['master']['tablepre'],
+            'prefix' => env('DB_PREFIX',$_W['config']['db']['master']['tablepre']),
             'strict' => true,
             'engine' => null,
         ],

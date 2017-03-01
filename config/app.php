@@ -172,7 +172,7 @@ return [
         app\common\providers\EventServiceProvider::class,
         app\common\providers\RouteServiceProvider::class,
 
-        Laracasts\Flash\FlashServiceProvider::class,
+        Laracasts\Flash\FlashServiceProvider::class, //提示消息
 
     ],
 
@@ -222,6 +222,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        'Setting' => \app\common\facades\Setting::class,
 
     ],
 
