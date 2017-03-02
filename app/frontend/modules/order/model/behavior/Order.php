@@ -6,7 +6,7 @@
  * Time: 下午10:31
  */
 
-namespace app\frontend\modules\order\model\behavior;
+namespace app\frontend\modules\order\services\model\behavior;
 
 
 class Order extends \app\common\models\Order
@@ -20,7 +20,7 @@ class Order extends \app\common\models\Order
 
     public static function getDbOrder($order_id)
     {
-        \app\common\models\Order::where('id', '=', $order_id)
+        return \app\common\models\Order::where('id', '=', $order_id)
             ->where('uniacid', '=', \YunShop::app()->uniacid)
             ->get();
     }

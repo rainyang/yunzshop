@@ -1,9 +1,9 @@
 <?php
-namespace app\frontend\modules\order\model;
+namespace app\frontend\modules\order\services\model;
 
 use app\common\models\Order;
 use app\frontend\modules\member\model\MemberModel;
-use app\frontend\modules\order\service\OrderService;
+use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\model\ShopModel;
 
 class PreGeneratedOrderModel extends OrderModel
@@ -124,7 +124,7 @@ class PreGeneratedOrderModel extends OrderModel
         );
         echo '订单插入的数据为:';
         $this->id = 1;
-        return var_dump($data);
+         var_dump($data);
 
         return Order::insert($data);
     }
