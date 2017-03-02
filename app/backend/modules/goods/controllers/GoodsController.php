@@ -69,20 +69,20 @@ class GoodsController extends BaseController
             'isnodiscount' => '不参与折扣'
         ];
 
-        $total = Goods::getList(\YunShop::app()->uniacid)->toArray();
+        //$total = Goods::getList()->toArray();
 
-        $pindex = max(1, intval(\YunShop::request()->page));
-        $psize = 10;
-        $pager = PaginationHelper::show($total, $pindex, $psize);
+        //$pindex = max(1, intval(\YunShop::request()->page));
+        //$psize = 10;
+        //$pager = PaginationHelper::show($total, $pindex, $psize);
 
-        $list = Goods::getList(\YunShop::app()->uniacid)->toArray();
+        $list = Goods::getList()->toArray();
         //或者模板路径可写全  $this->render('order/display/index',['list'=>$list]);
         //以下为简写
         $this->render('goods/index', [
             'list' => $list,
             'shopset' => $this->shopset,
             'lang' => $this->lang,
-            'pager' => $pager,
+            //'pager' => $pager,
             'product_attr_list' => $product_attr_list,
         ]);
     }

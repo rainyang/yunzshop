@@ -25,14 +25,14 @@ class Goods extends BaseModel
 
     public $guarded = [];
 
-    public static function getList($uniacid)
+    public static function getList()
     {
-        return parent::where('uniacid', '=', $uniacid)->get();
+        return static::where('uniacid', '=', static::getUniacid())->get();
     }
 
     public static function getGoodsById($id)
     {
-        return parent::find($id);
+        return static::find($id);
     }
 
 
@@ -66,7 +66,7 @@ class Goods extends BaseModel
      */
     public static function getGoodsByName($keyword)
     {
-        return parent::where('title', 'like', $keyword.'%')
+        return static::where('title', 'like', $keyword.'%')
             ->get()
             ->toArray();
     }
