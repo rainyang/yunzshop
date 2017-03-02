@@ -29,16 +29,6 @@ class OrderService
         }
         return $order_model;
     }
-    //订单详情
-    public static function getOrderModel($order_status,$order_id){
-        $order_model = OrderModelFactory::createOrderModel($order_status,$order_id);
-        return $order_model;
-    }
-    //订单列表
-    public static function getOrderModels($db_order_models){
-        $order_list_models = OrderModelFactory::createOrderModels($db_order_models);
-        return $order_list_models;
-    }
     public static function getOrderGoodsModels($param){
         return (new PreGeneratedOrderGoodsModelFactory())->createOrderGoodsModels($param);
     }

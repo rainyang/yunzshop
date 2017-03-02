@@ -8,9 +8,13 @@
 
 namespace app\common\models;
 
+
+use app\frontend\modules\order\services\status\StatusServiceFactory;
+
 class Order extends BaseModel
 {
     public $table = 'yz_order';
+    private $StatusService;
     
     public static function getOrder($order_id, $uniacid)
     {
@@ -40,6 +44,19 @@ class Order extends BaseModel
     public function hasManyOrderGoods()
     {
         return $this->hasMany('\app\common\models\OrderGoods', 'order_id', 'id');
-
+    }
+    public function getStatusService(){
+        if(!isset($this->StatusService)){
+            $this->StatusService = StatusServiceFactory::createStatusService($this->StatusService);
+        }
+        return $this->StatusService;
+    }
+    public function getStatusNameAttribute()
+    {
+        return $this->getStatusService()->getStatusName($this->status);
+    }
+    public function getButtonModelsAttribute()
+    {
+        return $this->getStatusService()->getButtonModels($this->status);
     }
 }

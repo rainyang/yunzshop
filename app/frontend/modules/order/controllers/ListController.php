@@ -8,24 +8,15 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\common\models\Goods;
 use app\common\models\Order;
-use app\frontend\modules\order\service\OrderService;
-use Illuminate\Support\Facades\DB;
 
 class ListController
 {
     public function index(){
-        DB::listen(function($sql) {
-            var_dump($sql);
-        });
-        $param = [];
-        $db_order_models = Order::waitPay()->get();
-        Goods::first();
+        $db_order_models = Order::waitPay()->with('hasManyOrderGoods')->get();
         //dd($db_order_models);
-        $order_models = OrderService::getOrderModels($db_order_models);
-        //$order_models[0]->orm_model->hasManyOrderGoods();
-
+        $order_models = $db_order_models;
+        dd($order_models[0]->button_models);
         exit;
     }
 }
