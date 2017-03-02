@@ -27,17 +27,8 @@
     <div class="col-sm-8 col-xs-12">
         {if $shopset['catlevel']==3}
         {php echo tpl_form_field_category_level3('category', $parent, $children, $item['pcate'], $item['ccate'], $item['tcate'])}
-        {/if}
-
         {else}
-        {ife 'shop.goods' $item}
         {php echo tpl_form_field_category_level2('category', $parent, $children, $item['pcate'], $item['ccate'])}
-        {else}
-        <div class='form-control-static'>
-            {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category').' where id=:id limit 1',array(':id'=>$item['pcate']))} -
-            {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category').' where id=:id limit 1',array(':id'=>$item['ccate']))}
-        </div>
-        {/if}
         {/if}
     </div>
 </div>
