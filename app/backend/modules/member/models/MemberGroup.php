@@ -13,16 +13,9 @@ class MemberGroup extends \app\common\models\MemberGroup
 {
 
     public $timestamps = false;
+    public $guarded = [''];
     /**
-     *  不可填充字段.
-     *
-     * @var array
-     */
-    protected $guarded = [''];
-    /**
-     *  获取会员组信息通过会员组ID
-     * @Author::yitian 2017-02-03 qq:751818588
-     * @access public static
+     *  Get membership information through member group ID
      *
      * @param int $groupId
      *
@@ -30,60 +23,50 @@ class MemberGroup extends \app\common\models\MemberGroup
      * */
     public static function getMemberGroupByGroupID($groupId)
     {
-        $group = MemberGroup::where('id', $groupId)->first()->toArray();
-
-        return $group;
+        return  MemberGroup::where('id', $groupId)->first()->toArray();
     }
     /**
-     * 获取当前公众号会员分组列表
-     * @Author::yitian 2017-02-23 qq:751818588
-     * @access public static
-     * @param int $uniacid 公众号id
+     * Get a list of members of the current public number
      *
-     * @return object
+     * @param int $uniacid
+     *
+     * @return array
      **/
     public static function getMemberGroupList($uniacid)
     {
-        $group_list = MemberGroup::where('uniacid', $uniacid)->get();
-        return $group_list;
+        return  MemberGroup::where('uniacid', $uniacid)->get()->toArray();
     }
     /**
-     * 添加会员分组列表
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public static
-     * @param array $data 会员组信息
+     * Add member list
      *
-     * @return int $result
+     * @param array $data
+     *
+     * @return 1 or 0
      **/
     public static function createMemberGroup($data)
     {
-        $result = static::insert($data);
-        return $result;
+        return  static::insert($data);
     }
     /**
-     * 修改会员分组列表通过会员组ID
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public static
-     * @param int $group_id 会员组ID
+     * Modify membership list by member group ID
      *
-     * @return
+     * @param int $groupId
+     *
+     * @return 1 or 0
      **/
     public static function updateMemberGroupNameByGroupId($groupId, $groupName)
     {
-        $result = static::where('id', $groupId)->update(['group_name' => $groupName]);
-        return $result;
+        return  static::where('id', $groupId)->update(['group_name' => $groupName]);
     }
     /**
-     * 删除会员分组列表
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public static
-     * @param int $group_id 会员组ID
+     * Delete member list
      *
-     * @return
+     * @param int $groupId
+     *
+     * @return 1 or 0
      **/
-    public static function deleteMemberGroup($group_id)
+    public static function deleteMemberGroup($groupId)
     {
-        $status = static::where('id', $group_id)->delete();
-        return $status;
+        return static::where('id', $groupId)->delete();
     }
 }
