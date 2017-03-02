@@ -32,6 +32,15 @@ class OrderDetail
             case 'refund':
                 service\OrderRefundService::orderRefund($order);
                 break;
+            case 'cancepay':
+                $data = service\OrderCancelPayService::orderCancelPay($order);
+                behavior\Order::updateOrder($order['id'], $data);
+                break;
+            case 'close':
+                service\OrderCloseService::orderClose($order);
+                $data = service\OrderCloseService::getUpdateOrderData($order);
+                behavior\Order::updateOrder($order['id'], $data);
+                break;
         }
     }
 }
