@@ -22,7 +22,7 @@ class OrderCloseService
 
     public function getUpdateOrderData($order)
     {
-        $data = [
+        return [
             'status'    => -1,
             'refundstate'   => 0,
             'cenceltime'    => time(),
