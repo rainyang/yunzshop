@@ -13,5 +13,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberGroup extends Model
 {
-    public $table = 'yz_member_group';
+    protected $table = 'yz_member_group';
+
+    protected $uniacid;
+
+    public function __construct()
+    {
+        $this->uniacid = \YunShop::app()->uniacid;
+    }
 }

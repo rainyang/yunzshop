@@ -8,7 +8,7 @@ use app\common\models\Order;
 /*
  * 确认发货
  */
-class OrderSent
+class OrderSend
 {
     public $order_model;
 

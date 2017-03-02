@@ -8,13 +8,9 @@ use app\frontend\modules\shop\model\ShopModel;
 
 class PreGeneratedOrderModel extends OrderModel
 {
-    private $id;
-    private $total;
-    private $price;
-    private $goods_price;
+
     private $_pre_order_goods_models;
-    private $member_model;
-    private $shop_model;
+
     private $_has_calculated;
 
     public function __construct(array $pre_order_goods_models = null)

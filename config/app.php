@@ -173,7 +173,11 @@ return [
         app\common\providers\EventServiceProvider::class,
         app\common\providers\RouteServiceProvider::class,
 
+        /**
+         * Third-party libraries
+         */
         Laracasts\Flash\FlashServiceProvider::class, //提示消息
+        Yajra\Datatables\DatatablesServiceProvider::class,
 
     ],
 

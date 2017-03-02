@@ -6,8 +6,11 @@ use app\backend\modules\goods\services\GoodsCommentService;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 
+use app\common\helpers\Url;
 use app\common\models\Goods;
 use app\common\models\Member;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 /**
  * Created by PhpStorm.
  * User: yanglei
@@ -83,18 +86,10 @@ class GoodsCommentController extends BaseController
         if (!empty($goods_id)) {
             $goods = Goods::getGoodsById($goods_id)->toArray();
         }
-        $comment['goods_id'] = $goods_id;
-        $comment['head_img_url'] = '';
-        $comment['nick_name'] = '';
-        $comment['level'] = '';
-        $comment['content'] = '';
-        $comment['images'] = '';
-        $comment['reply_content'] = '';
-        $comment['reply_images'] = '';
-        $comment['append_content'] = '';
-        $comment['append_images'] = '';
-        $comment['append_reply_content'] = '';
-        $comment['append_reply_images'] = '';
+        $comment = new GoodsComment();
+        $comment->goods_id = $goods_id;
+        $comment->toArray();
+
 
         $this->render('add_info', [
             'comment' => $comment,
@@ -156,6 +151,13 @@ class GoodsCommentController extends BaseController
      */
     public function deleted()
     {
+
+        if(1) {
+            throw new NotFoundHttpException('no found');
+        }else{
+            Header("Location: " . $this->createWebUrl('goods.goods-comment.index'));exit;
+        }
+
         echo "<pre>"; print_r('删除评论');exit;
     }
 
