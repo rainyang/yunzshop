@@ -14,9 +14,5 @@ use app\common\models\BaseModel;
 class BackendModel extends BaseModel
 {
 
-    //后台全局筛选统一账号scope
-    public function scopeUniacid($query)
-    {
-        return $query->where('uniacid', \YunShop::app()->uniacid);
-    }
+
 }

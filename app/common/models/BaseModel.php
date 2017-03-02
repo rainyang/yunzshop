@@ -20,4 +20,11 @@ class BaseModel extends Model
     {
         return \YunShop::app()->uniacid;
     }
+
+    //后台全局筛选统一账号scope
+    public function scopeUniacid($query)
+    {
+        return $query->where('uniacid', \YunShop::app()->uniacid);
+    }
+
 }
