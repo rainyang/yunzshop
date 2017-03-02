@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6
+class ComposerStaticInit078160f4c749b93c2ae5f68f5bce81e9
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -379,6 +379,7 @@ class ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6
         'ClassPreloader\\Parser\\FileVisitor' => __DIR__ . '/..' . '/classpreloader/classpreloader/src/Parser/FileVisitor.php',
         'ClassPreloader\\Parser\\NodeTraverser' => __DIR__ . '/..' . '/classpreloader/classpreloader/src/Parser/NodeTraverser.php',
         'ClassPreloader\\Parser\\StrictTypesVisitor' => __DIR__ . '/..' . '/classpreloader/classpreloader/src/Parser/StrictTypesVisitor.php',
+        'CreateCommentsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_02_050819_create_comments_table.php',
         'CreateYzSettingTable' => __DIR__ . '/../..' . '/database/migrations/2017_02_27_144603_create_yz_setting_table.php',
         'Cron\\AbstractField' => __DIR__ . '/..' . '/mtdowling/cron-expression/src/Cron/AbstractField.php',
         'Cron\\CronExpression' => __DIR__ . '/..' . '/mtdowling/cron-expression/src/Cron/CronExpression.php',
@@ -3171,23 +3172,25 @@ class ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6
         'Yajra\\Datatables\\Processors\\RowProcessor' => __DIR__ . '/..' . '/printempw/laravel-datatables-lite/src/Processors/RowProcessor.php',
         'Yajra\\Datatables\\Request' => __DIR__ . '/..' . '/printempw/laravel-datatables-lite/src/Request.php',
         'Yajra\\Datatables\\Transformers\\DataTransformer' => __DIR__ . '/..' . '/printempw/laravel-datatables-lite/src/Transformers/DataTransformer.php',
+        'app\\Comment' => __DIR__ . '/../..' . '/app/Comment.php',
         'app\\Kernel' => __DIR__ . '/../..' . '/app/Kernel.php',
         'app\\backend\\controllers\\CacheController' => __DIR__ . '/../..' . '/app/backend/controllers/CacheController.php',
         'app\\backend\\controllers\\TestCacheController' => __DIR__ . '/../..' . '/app/frontend/controllers/TestCacheController.php',
         'app\\backend\\controllers\\TestController' => __DIR__ . '/../..' . '/app/backend/controllers/TestController.php',
+        'app\\backend\\models\\BackendModel' => __DIR__ . '/../..' . '/app/backend/models/BackendModel.php',
         'app\\backend\\modules\\api\\modules\\v1\\controllers\\TestController' => __DIR__ . '/../..' . '/app/backend/modules/api/modules/v1/controllers/TestController.php',
         'app\\backend\\modules\\api\\services\\Member' => __DIR__ . '/../..' . '/app/backend/modules/api/services/Member.php',
         'app\\backend\\modules\\goods\\controllers\\BrandController' => __DIR__ . '/../..' . '/app/backend/modules/goods/controllers/BrandController.php',
         'app\\backend\\modules\\goods\\controllers\\CategoryController' => __DIR__ . '/../..' . '/app/backend/modules/goods/controllers/CategoryController.php',
-        'app\\backend\\modules\\goods\\controllers\\GoodsCommentController' => __DIR__ . '/../..' . '/app/backend/modules/goods/controllers/GoodsCommentController.php',
+        'app\\backend\\modules\\goods\\controllers\\CommentController' => __DIR__ . '/../..' . '/app/backend/modules/goods/controllers/CommentController.php',
         'app\\backend\\modules\\goods\\controllers\\GoodsController' => __DIR__ . '/../..' . '/app/backend/modules/goods/controllers/GoodsController.php',
         'app\\backend\\modules\\goods\\controllers\\ShareController' => __DIR__ . '/../..' . '/app/backend/modules/goods/controllers/ShareController.php',
         'app\\backend\\modules\\goods\\models\\Brand' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/Brand.php',
         'app\\backend\\modules\\goods\\models\\Category' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/Category.php',
+        'app\\backend\\modules\\goods\\models\\Comment' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/Comment.php',
         'app\\backend\\modules\\goods\\models\\Discount' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/Discount.php',
         'app\\backend\\modules\\goods\\models\\DiscountDetail' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/DiscountDetail.php',
         'app\\backend\\modules\\goods\\models\\Goods' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/Goods.php',
-        'app\\backend\\modules\\goods\\models\\GoodsComment' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/GoodsComment.php',
         'app\\backend\\modules\\goods\\models\\GoodsParam' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/GoodsParam.php',
         'app\\backend\\modules\\goods\\models\\GoodsSpec' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/GoodsSpec.php',
         'app\\backend\\modules\\goods\\models\\GoodsSpecItem' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/GoodsSpecItem.php',
@@ -3196,8 +3199,8 @@ class ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6
         'app\\backend\\modules\\goods\\observers\\GoodsObserver' => __DIR__ . '/../..' . '/app/backend/modules/goods/observers/GoodsObserver.php',
         'app\\backend\\modules\\goods\\services\\BrandService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/BrandService.php',
         'app\\backend\\modules\\goods\\services\\CategoryService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/CategoryService.php',
+        'app\\backend\\modules\\goods\\services\\CommentService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/CommentService.php',
         'app\\backend\\modules\\goods\\services\\DiscountDetailService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/DiscountDetailService.php',
-        'app\\backend\\modules\\goods\\services\\GoodsCommentService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/GoodsCommentService.php',
         'app\\backend\\modules\\goods\\services\\GoodsService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/GoodsService.php',
         'app\\backend\\modules\\goods\\services\\PrivilegeService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/PrivilegeService.php',
         'app\\backend\\modules\\member\\controllers\\MemberGroupController' => __DIR__ . '/../..' . '/app/backend/modules/member/controllers/MemberGroupController.php',
@@ -3243,8 +3246,8 @@ class ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6
         'app\\common\\models\\BaseModel' => __DIR__ . '/../..' . '/app/common/models/BaseModel.php',
         'app\\common\\models\\Brand' => __DIR__ . '/../..' . '/app/common/models/Brand.php',
         'app\\common\\models\\Category' => __DIR__ . '/../..' . '/app/common/models/Category.php',
+        'app\\common\\models\\Comment' => __DIR__ . '/../..' . '/app/common/models/Comment.php',
         'app\\common\\models\\Goods' => __DIR__ . '/../..' . '/app/common/models/Goods.php',
-        'app\\common\\models\\GoodsComment' => __DIR__ . '/../..' . '/app/common/models/GoodsComment.php',
         'app\\common\\models\\GoodsOption' => __DIR__ . '/../..' . '/app/common/models/GoodsOption.php',
         'app\\common\\models\\GoodsParam' => __DIR__ . '/../..' . '/app/common/models/GoodsParam.php',
         'app\\common\\models\\GoodsSpec' => __DIR__ . '/../..' . '/app/common/models/GoodsSpec.php',
@@ -3310,8 +3313,8 @@ class ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6
         'app\\frontend\\modules\\goods\\model\\price\\preferential\\NoDiscount' => __DIR__ . '/../..' . '/app/frontend/modules/goods/model/price/preferential/NoDiscount.php',
         'app\\frontend\\modules\\goods\\model\\price\\preferential\\Price' => __DIR__ . '/../..' . '/app/frontend/modules/goods/model/price/preferential/Price.php',
         'app\\frontend\\modules\\goods\\service\\GoodsService' => __DIR__ . '/../..' . '/app/frontend/modules/goods/service/GoodsService.php',
-        'app\\frontend\\modules\\member\\controllers\\AccountController' => __DIR__ . '/../..' . '/app/frontend/modules/member/controllers/AccountController.php',
         'app\\frontend\\modules\\member\\controllers\\LoginController' => __DIR__ . '/../..' . '/app/frontend/modules/member/controllers/LoginController.php',
+        'app\\frontend\\modules\\member\\controllers\\LogoutController' => __DIR__ . '/../..' . '/app/frontend/modules/member/controllers/LogoutController.php',
         'app\\frontend\\modules\\member\\controllers\\MemberCartController' => __DIR__ . '/../..' . '/app/frontend/modules/member/controllers/MemberCartController.php',
         'app\\frontend\\modules\\member\\controllers\\MemberController' => __DIR__ . '/../..' . '/app/frontend/modules/member/controllers/MemberController.php',
         'app\\frontend\\modules\\member\\controllers\\MemberHistoryController' => __DIR__ . '/../..' . '/app/frontend/modules/member/controllers/MemberHistoryController.php',
@@ -3325,7 +3328,6 @@ class ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6
         'app\\frontend\\modules\\member\\models\\MemberHistory' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberHistory.php',
         'app\\frontend\\modules\\member\\models\\MemberMiniAppModel' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberMiniAppModel.php',
         'app\\frontend\\modules\\member\\models\\MemberModel' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberModel.php',
-        'app\\frontend\\modules\\member\\models\\MemberOfficeAccount' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberOfficeAccount.php',
         'app\\frontend\\modules\\member\\models\\MemberQQModel' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberQQModel.php',
         'app\\frontend\\modules\\member\\models\\MemberUniqueModel' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberUniqueModel.php',
         'app\\frontend\\modules\\member\\models\\MemberWechatModel' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberWechatModel.php',
@@ -3428,10 +3430,10 @@ class ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit078160f4c749b93c2ae5f68f5bce81e9::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit078160f4c749b93c2ae5f68f5bce81e9::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit078160f4c749b93c2ae5f68f5bce81e9::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit078160f4c749b93c2ae5f68f5bce81e9::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -10,15 +10,6 @@ namespace app\backend\modules\goods\models;
 class Brand extends \app\common\models\Brand
 {
     public $timestamps = false;
-    /**
-     * @param $uniacid
-     * @return mixed
-     */
-    public static function getBrandTotal($uniacid)
-    {
-        return self::where('uniacid', $uniacid)
-            ->count();
-    }
 
     /**
      * @param $pageSize
@@ -31,14 +22,6 @@ class Brand extends \app\common\models\Brand
             ->toArray();
     }
 
-    /**
-     * @param $brand
-     * @return mixed
-     */
-    public static function saveAddBrand($brand)
-    {
-        return self::insert($brand);
-    }
 
     /**
      * @param $id
@@ -50,16 +33,6 @@ class Brand extends \app\common\models\Brand
             ->first();
     }
 
-    /**
-     * @param $brand
-     * @param $id
-     * @return mixed
-     */
-    public static function saveEditBrand($brand, $id)
-    {
-        return self::where('id', $id)
-            ->update($brand);
-    }
 
     /**
      * @param $id

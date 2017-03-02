@@ -27,18 +27,16 @@ class CommentController extends BaseController
      */
     public function index()
     {
-        $pindex = max(1, intval(\YunShop::request()->page));
-        $psize = 10;
+        $pageSize = 5;
         
         $search = CommentService::Search(\YunShop::request()->search);
-        
-        $total = Comment::getCommentTotal(\YunShop::app()->uniacid);
-        $list = Comment::getComments(\YunShop::app()->uniacid, $pindex, $psize)->toArray();
 
-        $pager = PaginationHelper::show($total, $pindex, $psize);
+        $list = Comment::getComments($pageSize);
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+
         $this->render('list', [
-            'list' => $list,
-            'total' => $total,
+            'list' => $list['data'],
+            'total' => $list['total'],
             'pager' => $pager,
             'search' => $search,
         ]);
@@ -185,14 +183,18 @@ class CommentController extends BaseController
      */
     public function deleted()
     {
-
-        if(1) {
-            throw new NotFoundHttpException('no found');
-        }else{
-            Header("Location: " . $this->createWebUrl('goods.comment.index'));exit;
+        $comment = Comment::getComment(\YunShop::request()->id);
+        if(!$comment) {
+            return $this->message('无此评论或已经删除','','error');
         }
 
-        echo "<pre>"; print_r('删除评论');exit;
+        $result = Comment::daletedComment(\YunShop::request()->id);
+        if($result) {
+            return $this->message('删除评论成功',Url::absoluteWeb('goods.comment.index'));
+        }else{
+            return $this->message('删除评论失败','','error');
+        }
+
     }
 
 

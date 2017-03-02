@@ -31,16 +31,17 @@ class Comment extends \app\common\models\Comment
      * @param $psize
      * @return array
      */
-    public static function getComments($uniacid, $pindex, $psize)
+    public static function getComments($pageSize)
     {
-        return self::select('yz_comment.*', 'yz_goods.title', 'yz_goods.thumb')
-            ->where('yz_comment.uniacid', $uniacid)
+        return self::uniacid()
             ->where('comment_id', '0')
-            ->leftJoin('yz_goods', 'yz_comment.goods_id', '=', 'yz_goods.id')
-            ->orderBy('yz_comment.created_at', 'desc')
-            ->skip(($pindex - 1) * $psize)
-            ->take($psize)
-            ->get();
+            ->with(['goods'=>function($query){
+                return $query->select(['id', 'title', 'thumb']);
+            }])
+            ->orderBy('created_at', 'desc')
+            ->paginate($pageSize)
+            ->toArray();
+
     }
 
     /**
@@ -79,6 +80,26 @@ class Comment extends \app\common\models\Comment
         ->orderBy('created_at', 'asc')
         ->get();
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public static function daletedComment($id)
+    {
+        return self::where('id', $id)
+            ->delete();
+    }
+
+    /**
+     *
+     * @return mixed
+     */
+    public function goods()
+    {
+        return $this->belongsTo('app\backend\modules\goods\models\Goods');
+    }
+
     /**
      *  定义字段名
      * 可使
