@@ -44,8 +44,8 @@ class TestMemberController extends BaseController
         //flash($validator->messages(),'danger');
        // return redirect(Url::absoluteWeb('member.test-member.test-login'));
         //flash()->overlay('Notice', Url::absoluteWeb('member.test-member.test-login'));
-        //$this->error($validator->messages())->important();
-        $this->overlay($validator->messages(), 'Modal Title');
+        $this->error($validator->messages())->important();
+        //$this->overlay($validator->messages(), 'Modal Title');
         $this->render('test-message', ['a' => '123456']);
 
     }

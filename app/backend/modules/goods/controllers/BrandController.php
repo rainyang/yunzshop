@@ -41,13 +41,27 @@ class BrandController extends BaseController
     {
         ca('shop.brand.add');
         
-        $item = [
-            'id'            => '',
-            'name'          => '',
-            'alias'         => '',
-            'logo'          => '',
-            'desc'          => ''
-        ];
+        $item = new Brand();
+
+        $brand = \YunShop::request()->brand;
+        if($brand) {
+            $brand['uniacid'] = \YunShop::app()->uniacid;
+            $validator = Brand::validator($brand);
+
+            $item = new Brand($brand);
+            if ($validator->fails()) {
+                $this->error($validator->messages());
+            } else {
+                $result = $item->save();
+                if ($result) {
+                    $this->success('保存成功');
+                    Header("Location: " . $this->createWebUrl('goods.brand.index'));
+                    exit;
+                }else{
+                    $this->error('error');
+                }
+            }
+        }
 
         $this->render('info', [
             'item' => $item
