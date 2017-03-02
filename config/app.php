@@ -167,12 +167,13 @@ return [
          * Application Service Providers...
          */
         app\common\providers\AppServiceProvider::class,
+        app\common\providers\PluginServiceProvider::class,
         //app\common\providers\AuthServiceProvider::class,
         // app\common\providers\BroadcastServiceProvider::class,
         app\common\providers\EventServiceProvider::class,
         app\common\providers\RouteServiceProvider::class,
 
-        Laracasts\Flash\FlashServiceProvider::class,
+        Laracasts\Flash\FlashServiceProvider::class, //提示消息
 
     ],
 
@@ -223,6 +224,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Setting' => app\common\facades\Setting::class,
+        'Option'    => app\common\facades\Option::class,
     ],
 
 ];

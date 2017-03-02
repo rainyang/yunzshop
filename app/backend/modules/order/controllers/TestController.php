@@ -35,4 +35,5 @@ class TestController
         Logger::warning('aaa');
         Logger::error('bbbb', ['a' => 1]);
     }
+
 }

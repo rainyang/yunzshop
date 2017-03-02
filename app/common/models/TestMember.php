@@ -45,6 +45,8 @@ class TestMember extends  BaseModel
      */
     protected $visible = ['first_name', 'last_name'];
 
+    public $goodsForm = [];
+
     /**
      * 自定义字段名
      * 可使用

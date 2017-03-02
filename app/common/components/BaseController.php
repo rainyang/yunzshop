@@ -5,7 +5,10 @@ namespace app\common\components;
 use app\common\helpers\StringHelper;
 use app\common\helpers\Url;
 use app\common\traits\MessageTrait;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
+use Setting;
 use Validator;
 
 /**
@@ -17,7 +20,7 @@ use Validator;
  */
 class BaseController extends  Controller
 {
-    use MessageTrait;
+    use DispatchesJobs,MessageTrait,ValidatesRequests;
 
     //当前模块名数组
     public $modules = [];
@@ -26,15 +29,16 @@ class BaseController extends  Controller
     //当前action
     public $action = '';
 
+    public function __construct()
+    {
+        Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+    }
+
     protected function formatValidationErrors(Validator $validator)
     {
         return $validator->errors()->all();
     }
 
-    public function message($message, $url = '', $type = '')
-    {
-        return message();
-    }
 
     /**
      * 渲染视图
@@ -61,7 +65,7 @@ class BaseController extends  Controller
         extract($dataVar);
         $var =array_shift($var);
         $request =array_shift($request);
-        
+
         include $this->template($filename, $data);
         return ;
     }
