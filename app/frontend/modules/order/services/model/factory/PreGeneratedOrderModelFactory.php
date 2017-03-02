@@ -5,13 +5,13 @@
  * Date: 2017/2/23
  * Time: 上午11:16
  */
-namespace app\frontend\modules\order\model\factory;
+namespace app\frontend\modules\order\services\model\factory;
 
-use app\frontend\modules\order\model\PreGeneratedOrderModel;
-use app\frontend\modules\order\model\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\order\services\model\PreGeneratedOrderModel;
+use app\frontend\modules\order\services\model\PreGeneratedOrderGoodsModel;
 
 
-class PreGeneratedOrderModelFactory extends OrderModelFactory
+class PreGeneratedOrderModelFactory
 {
 
     public function createOrderModel(array $pre_generated_order_goods_models=null){
