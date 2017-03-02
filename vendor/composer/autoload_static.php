@@ -4,7 +4,11 @@
 
 namespace Composer\Autoload;
 
+<<<<<<< HEAD
 class ComposerStaticInita7f36829ccd58d720d8d3971c88ea537
+=======
+class ComposerStaticInitabb95eaf781ce094d957b0c131e31b85
+>>>>>>> member_master
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -3209,6 +3213,7 @@ class ComposerStaticInita7f36829ccd58d720d8d3971c88ea537
         'app\\backend\\modules\\member\\models\\MemberGroup' => __DIR__ . '/../..' . '/app/backend/modules/member/models/MemberGroup.php',
         'app\\backend\\modules\\member\\models\\MemberInfo' => __DIR__ . '/../..' . '/app/backend/modules/member/models/MemberInfo.php',
         'app\\backend\\modules\\member\\models\\MemberLevel' => __DIR__ . '/../..' . '/app/backend/modules/member/models/MemberLevel.php',
+        'app\\backend\\modules\\member\\models\\MemberShopInfo' => __DIR__ . '/../..' . '/app/backend/modules/member/models/MemberShopInfo.php',
         'app\\backend\\modules\\member\\models\\TestMember' => __DIR__ . '/../..' . '/app/backend/modules/member/models/TestMember.php',
         'app\\backend\\modules\\member\\models\\TestMemberCart' => __DIR__ . '/../..' . '/app/backend/modules/member/models/TestMemberCart.php',
         'app\\backend\\modules\\member\\models\\TestMemberValidator' => __DIR__ . '/../..' . '/app/backend/modules/member/models/TestMemberValidator.php',
@@ -3260,8 +3265,12 @@ class ComposerStaticInita7f36829ccd58d720d8d3971c88ea537
         'app\\common\\models\\MemberFavorite' => __DIR__ . '/../..' . '/app/common/models/MemberFavorite.php',
         'app\\common\\models\\MemberGroup' => __DIR__ . '/../..' . '/app/common/models/MemberGroup.php',
         'app\\common\\models\\MemberHistory' => __DIR__ . '/../..' . '/app/common/models/MemberHistory.php',
+<<<<<<< HEAD
         'app\\common\\models\\MemberInfo' => __DIR__ . '/../..' . '/app/common/models/MemberInfo.php',
+=======
+>>>>>>> member_master
         'app\\common\\models\\MemberLevel' => __DIR__ . '/../..' . '/app/common/models/MemberLevel.php',
+        'app\\common\\models\\MemberShopInfo' => __DIR__ . '/../..' . '/app/common/models/MemberShopInfo.php',
         'app\\common\\models\\Order' => __DIR__ . '/../..' . '/app/common/models/Order.php',
         'app\\common\\models\\OrderCancelPay' => __DIR__ . '/../..' . '/app/common/models/OrderCancelPay.php',
         'app\\common\\models\\OrderCancelSend' => __DIR__ . '/../..' . '/app/common/models/OrderCancelSend.php',
@@ -3438,10 +3447,17 @@ class ComposerStaticInita7f36829ccd58d720d8d3971c88ea537
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+<<<<<<< HEAD
             $loader->prefixLengthsPsr4 = ComposerStaticInita7f36829ccd58d720d8d3971c88ea537::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInita7f36829ccd58d720d8d3971c88ea537::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInita7f36829ccd58d720d8d3971c88ea537::$prefixesPsr0;
             $loader->classMap = ComposerStaticInita7f36829ccd58d720d8d3971c88ea537::$classMap;
+=======
+            $loader->prefixLengthsPsr4 = ComposerStaticInitabb95eaf781ce094d957b0c131e31b85::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitabb95eaf781ce094d957b0c131e31b85::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitabb95eaf781ce094d957b0c131e31b85::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitabb95eaf781ce094d957b0c131e31b85::$classMap;
+>>>>>>> member_master
 
         }, null, ClassLoader::class);
     }
