@@ -19,7 +19,7 @@
                 <div class="panel-body table-responsive">
                     <div class="dd" id="div_nestable">
                         <ol class="dd-list">
-                            {loop $list $brand}
+                            {loop $list['data'] $brand}
                             <li class="dd-item" data-id="{$brand['id']}">
                                 <div class="dd-handle"  style='width:100%;'>
                                     <img src="{php echo tomedia($brand['logo']);}" width='30' height="30"  style='padding:1px;border: 1px solid #ccc;float:left;' /> &nbsp;
