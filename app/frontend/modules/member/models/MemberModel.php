@@ -80,4 +80,19 @@ class MemberModel extends Model
             ->first()
             ->toArray();
     }
+
+    /**
+     * 获取用户信息
+     *
+     * @param $uniacid
+     * @param $member_id
+     * @return mixed
+     */
+    public static function getUserInfos($uniacid, $member_id)
+    {
+        return self::where('uniacid', $uniacid)
+            ->where('uid', $member_id)
+            ->first()
+            ->toArray();
+    }
 }

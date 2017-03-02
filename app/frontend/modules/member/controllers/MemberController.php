@@ -10,11 +10,17 @@ namespace app\frontend\modules\member\controllers;
 
 use app\frontend\modules\member\models\Member;
 use app\common\components\BaseController;
+use app\frontend\modules\member\models\MemberModel;
 
 class MemberController extends BaseController
 {
     public function index()
     {
         dd(Member::getNickNnme());
+    }
+
+    public function getUserInfo()
+    {
+        MemberModel::getUserInfos();
     }
 }
