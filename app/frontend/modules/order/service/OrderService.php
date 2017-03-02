@@ -1,13 +1,13 @@
 <?php
-namespace app\frontend\modules\order\service;
+namespace app\frontend\modules\order\services;
 
 use app\frontend\modules\goods\model\factory\PreGeneratedOrderGoodsModelFactory;
 use app\frontend\modules\goods\model\GoodsModel;
 use app\frontend\modules\member\model\MemberModel;
-use app\frontend\modules\order\model\factory\OrderModelFactory;
-use app\frontend\modules\order\model\factory\PreGeneratedOrderModelFactory;
+use app\frontend\modules\order\services\model\factory\OrderModelFactory;
+use app\frontend\modules\order\services\model\factory\PreGeneratedOrderModelFactory;
 use app\frontend\modules\goods\model\Goods;
-use app\frontend\modules\order\model\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\order\services\model\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\shop\model\ShopModel;
 
 /**

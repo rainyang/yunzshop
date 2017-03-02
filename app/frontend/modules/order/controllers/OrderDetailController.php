@@ -8,9 +8,7 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\common\models\Order;
-use app\common\models\OrderRefund;
-use app\common\models\Setting;
+use app\frontend\modules\order\services\model\behavior;
 use app\frontend\modules\order\services;
 
 class OrderDetailController

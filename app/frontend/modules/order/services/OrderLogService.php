@@ -6,7 +6,7 @@
  * Time: 上午9:55
  */
 
-namespace app\frontend\modules\services\order;
+namespace app\frontend\modules\order\services;
 
 use app\common\models\Order;
 

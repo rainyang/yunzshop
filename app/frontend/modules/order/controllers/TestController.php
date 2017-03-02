@@ -4,7 +4,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\helpers\Url;
 use app\frontend\modules\goods\service\GoodsService;
 use app\frontend\modules\member\service\MemberService;
-use app\frontend\modules\order\service\OrderService;
+use app\frontend\modules\order\services\OrderService;
 
 /**
  * Created by PhpStorm.
