@@ -17,6 +17,11 @@ class MemberWechatModel extends Model
 {
     public $table = 'yz_member_wechat';
 
+    public static function insertData($data)
+    {
+        self::insert($data);
+    }
+
     public function getMemberId()
     {
 

@@ -69,9 +69,8 @@ class MemberMiniAppService extends MemberMcService
         if (!empty($json_user) && !empty($json_user['unionid'])) {
             $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $json_user['unionid']);
 
-            $types = expload($UnionidInfo['type'], '|');
-
             if ($UnionidInfo['unionid']) {
+                $types = expload($UnionidInfo['type'], '|');
                 $member_id = $UnionidInfo['member_id'];
 
                 if (!in_array($this->_login_type, $types)) {

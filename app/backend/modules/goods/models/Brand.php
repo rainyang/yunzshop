@@ -51,8 +51,7 @@ class Brand extends \app\common\models\Brand
     public static function getBrand($id)
     {
         return self::where('id', $id)
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**

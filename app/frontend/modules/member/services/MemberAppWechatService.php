@@ -41,31 +41,74 @@ class MemberAppWechatService extends MemberMcService
             }
 
             $userinfo_url = $this->_getUserInfoUrl($token['accesstoken'], $token['openid']);
-            $userinfo = ihttp_get($userinfo_url);
+            $user_info = ihttp_get($userinfo_url);
 
-            if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-                $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid']);
-
-                $types = expload($UnionidInfo['type'], '|');
+            if (is_array($user_info) && !empty($user_info['unionid'])) {
+                $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid']);
 
                 if ($UnionidInfo['unionid']) {
+                    $types = expload($UnionidInfo['type'], '|');
+                    $member_id = $UnionidInfo['member_id'];
+
                     if (!in_array($this->_login_type, $types)) {
                         //更新ims_yz_member_unique表
                         MemberUniqueModel::updateData(array(
                             'unque_id'=>$UnionidInfo['unque_id'],
                             'type' => $UnionidInfo['type'] . '|' . $this->_login_type
                         ));
+
+                        //添加yz_member_app_wechat表
+                        MemberWechatModel::insertData(array(
+                            'uniacid' => $uniacid,
+                            'member_id' => $member_id,
+                            'openid' => $user_info['openid'],
+                            'nickname' => $user_info['nickname'],
+                            'avatar' => $user_info['headimgurl'],
+                            'gender' => $user_info['sex'],
+                            'nationality' => $user_info['country'],
+                            'resideprovince' => $user_info['province'] . '省',
+                            'residecity' => $user_info['city'] . '市',
+                            'created_at' => time()
+                        ));
                     }
 
                     $_SESSION['member_id'] = $UnionidInfo['member_id'];
                 } else {
                     $member_id = McMappingFansModel::getUId($uniacid, $token['openid']);
+
+                    //添加ims_mc_member表
+                    $member_id = MemberModel::insertData(array(
+                        'uniacid' => $uniacid,
+                        'groupid' => $user_info['unionid'],
+                        'createtime' => TIMESTAMP,
+                        'nickname' => $user_info['nickname'],
+                        'avatar' => $user_info['headimgurl'],
+                        'gender' => $user_info['sex'],
+                        'nationality' => $user_info['country'],
+                        'resideprovince' => $user_info['province'] . '省',
+                        'residecity' => $user_info['city'] . '市'
+                    ));
+
                     //添加ims_yz_member_unique表
                     MemberUniqueModel::insertData(array(
                         'uniacid' => $uniacid,
                         'unionid' => $token['unionid'],
                         'member_id' => $member_id,
                         'type' => $this->_login_type
+                    ));
+
+                    //添加yz_member_app_wechat表
+                    MemberWechatModel::insertData(array(
+                        'uniacid' => $uniacid,
+                        'member_id' => $member_id,
+                        'openid' => $user_info['openid'],
+                        'nickname' => $user_info['nickname'],
+                        'avatar' => $user_info['headimgurl'],
+                        'gender' => $user_info['sex'],
+                        'nationality' => $user_info['country'],
+                        'resideprovince' => $user_info['province'] . '省',
+                        'residecity' => $user_info['city'] . '市',
+                        'created_at' => time()
                     ));
 
                     $_SESSION['member_id'] = $member_id;

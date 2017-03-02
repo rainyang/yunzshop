@@ -16,4 +16,9 @@ use Illuminate\Database\Eloquent\Model;
 class MemberQQModel extends Model
 {
     public $table = 'yz_member_qq';
+
+    public static function insertData($data)
+    {
+        self::insert($data);
+    }
 }

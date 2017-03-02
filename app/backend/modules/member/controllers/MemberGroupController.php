@@ -14,17 +14,18 @@ use app\common\components\BaseController;
 
 class MemberGroupController extends BaseController
 {
-    /**
-     * 会员分组列表
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public
-     **/
+    protected $uniacid;
+
+    public function __construct()
+    {
+        $this->uniacid = \Yunshop::app()->uniacid;
+    }
+
     public function index()
     {
-        $uniacid = \YunShop::app()->uniacid;
-        $groups_list = MemberGroup::getMemberGroupList($uniacid);
+        $groups_list = MemberGroup::getMemberGroupList($this->uniacid);
         //所在会员组会员人数
-        //echo '<pre>'; print_r($groups_list); exit;
+        echo '<pre>'; print_r($groups_list); exit;
         $this->render('member/group', [
             'operation' => 'display',
             'groups_list' => $groups_list

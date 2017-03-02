@@ -8,8 +8,9 @@
 
 namespace app\common\models;
 
+use Illuminate\Database\Eloquent\Model;
 
-class OrderRefund
+class OrderRefund extends Model
 {
-
+    public $table = 'yz_order_refund';
 }

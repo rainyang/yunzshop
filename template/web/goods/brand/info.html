@@ -9,11 +9,11 @@
             </ul>
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->
-        {if isset($item['id']) && !empty($item['id'])}
+        {if isset($item->id) && !empty($item->id)}
         <form  {ife 'shop.brand' $item} action="{php echo $this->createWebUrl('goods.brand.edit-save');}" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
-        <input type="hidden" name="id" class="form-control" value="{$item['id']}" />
+        <input type="hidden" name="id" class="form-control" value="{php echo $item->id}" />
         {else}
-        <form  {ife 'shop.brand' $item} action="{php echo $this->createWebUrl('goods.brand.add-save');}" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
+        <form  {ife 'shop.brand' $item} action="{php echo $this->createWebUrl('goods.brand.add-brand');}" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
         {/if}
 
         <div class="panel panel-default">
@@ -25,9 +25,9 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>品牌名称</label>
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.brand' $item}
-                        <input type="text" name="brand[name]" class="form-control" value="{$item['name']}" />
+                        <input type="text" name="brand[name]" class="form-control" value="{php echo $item->name}" />
                         {else}
-                        <div class='form-control-static'>{$item['name']}</div>
+                        <div class='form-control-static'>{php echo $item->name}</div>
                         {/if}
                     </div>
                 </div>
@@ -36,9 +36,9 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌别名</label>
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.brand' $item}
-                        <input type="text" name="brand[alias]" class="form-control" value="{$item['alias']}" />
+                        <input type="text" name="brand[alias]" class="form-control" value="{php echo $item->alias}" />
                         {else}
-                        <div class='form-control-static'>{$item['alias']}</div>
+                        <div class='form-control-static'>{php echo $item->alias}</div>
                         {/if}
                     </div>
                 </div>
@@ -47,12 +47,12 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">LOGO</label>
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.brand' $item}
-                        {php echo app\common\helpers\ImageHelper::tplFormFieldImage('brand[logo]', $item['logo'])}
+                        {php echo app\common\helpers\ImageHelper::tplFormFieldImage('brand[logo]', $item->logo)}
                         <span class="help-block">建议尺寸: 100*100，或正方型图片 </span>
                         {else}
-                        {if !empty($item['logo'])}
-                        <a href='{php echo tomedia($item['logo'])}' target='_blank'>
-                        <img src="{php echo tomedia($item['logo'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                        {if !empty($item->logo)}
+                        <a href='{php echo tomedia($item->logo)}' target='_blank'>
+                        <img src="{php echo tomedia($item->logo)}" style='width:100px;border:1px solid #ccc;padding:1px' />
                         </a>
                         {/if}
                         {/if}
@@ -63,9 +63,9 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌描述</label>
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.brand' $item}
-                        <textarea name="brand[desc]" class="form-control" cols="70">{$item['desc']}</textarea>
+                        <textarea name="brand[desc]" class="form-control" cols="70">{php echo $item->desc}</textarea>
                         {else}
-                        <div class='form-control-static'>{$item['descr']}</div>
+                        <div class='form-control-static'>{php echo $item->desc}</div>
                         {/if}
 
                     </div>
