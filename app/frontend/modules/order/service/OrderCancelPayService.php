@@ -6,7 +6,7 @@
  * Time: 上午11:44
  */
 
-namespace app\frontend\modules\order\service;
+namespace app\frontend\modules\order\services;
 
 
 class OrderCancelPayService

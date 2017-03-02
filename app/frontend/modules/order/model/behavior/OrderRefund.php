@@ -6,7 +6,7 @@
  * Time: 下午5:18
  */
 
-namespace app\frontend\modules\order\model\behavior;
+namespace app\frontend\modules\order\services\model\behavior;
 
 
 class OrderRefund extends \app\common\models\OrderRefund

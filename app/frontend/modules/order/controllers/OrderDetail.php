@@ -8,8 +8,8 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\frontend\modules\order\model\behavior;
-use app\frontend\modules\order\service;
+use app\frontend\modules\order\services\model\behavior;
+use app\frontend\modules\order\services;
 
 class OrderDetail
 {

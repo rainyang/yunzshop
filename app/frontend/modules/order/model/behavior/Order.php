@@ -6,7 +6,7 @@
  * Time: 下午10:31
  */
 
-namespace app\frontend\modules\order\model\behavior;
+namespace app\frontend\modules\order\services\model\behavior;
 
 
 class Order extends \app\common\models\Order

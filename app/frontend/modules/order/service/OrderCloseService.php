@@ -6,7 +6,7 @@
  * Time: 下午2:15
  */
 
-namespace app\frontend\modules\order\service;
+namespace app\frontend\modules\order\services;
 
 
 class OrderCloseService
