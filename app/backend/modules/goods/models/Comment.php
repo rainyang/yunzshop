@@ -8,7 +8,7 @@ namespace app\backend\modules\goods\models;
  * Time: 下午5:10
  */
 
-class GoodsComment extends \app\common\models\GoodsComment
+class Comment extends \app\common\models\Comment
 {
     public $timestamps = false;
 
@@ -19,6 +19,7 @@ class GoodsComment extends \app\common\models\GoodsComment
     public static function getCommentTotal($uniacid)
     {
         return self::where('uniacid', $uniacid)
+            ->where('comment_id', '0')
             ->count();
     }
 
@@ -30,14 +31,14 @@ class GoodsComment extends \app\common\models\GoodsComment
      */
     public static function getComments($uniacid, $pindex, $psize)
     {
-        return self::select('yz_goods_comment.*', 'yz_goods.title', 'yz_goods.thumb')
-            ->where('yz_goods_comment.uniacid', $uniacid)
-            ->leftJoin('yz_goods', 'yz_goods_comment.goods_id', '=', 'yz_goods.id')
-            ->orderBy('yz_goods_comment.created_at', 'desc')
+        return self::select('yz_comment.*', 'yz_goods.title', 'yz_goods.thumb')
+            ->where('yz_comment.uniacid', $uniacid)
+            ->where('comment_id', '0')
+            ->leftJoin('yz_goods', 'yz_comment.goods_id', '=', 'yz_goods.id')
+            ->orderBy('yz_comment.created_at', 'desc')
             ->skip(($pindex - 1) * $psize)
             ->take($psize)
-            ->get()
-            ->toArray();
+            ->get();
     }
 
     /**
@@ -47,8 +48,7 @@ class GoodsComment extends \app\common\models\GoodsComment
     public static function getComment($id)
     {
         return self::where('id', $id)
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**
@@ -71,5 +71,30 @@ class GoodsComment extends \app\common\models\GoodsComment
         return self::insert($comment);
     }
 
+    public static function getReplysByCommentId($comment_id)
+    {
+        return self::where('comment_id',$comment_id)
+        ->orderBy('created_at', 'asc')
+        ->get();
+    }
+    /**
+     *  定义字段名
+     * 可使
+     * @return array */
+    public static function atributeNames() {
+        return [
+            'goods_id'=> '评论商品',
+            'content'=> '评论内容',
+        ];
+    }
 
+    /**
+     * 字段规则
+     * @return array */
+    public static function rules() {
+        return [
+            'goods_id'=> 'required',
+            'content'=> 'required'
+        ];
+    }
 }

@@ -8,9 +8,9 @@ use app\common\models\BaseModel;
  * Date: 2017/2/27
  * Time: 下午5:07
  */
-class GoodsComment extends BaseModel
+class Comment extends BaseModel
 {
-    public $table = 'yz_goods_comment';
+    public $table = 'yz_comment';
 
     protected $guarded = [''];
 

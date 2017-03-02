@@ -13,7 +13,11 @@ class Member extends Model
 {
     public $table = 'mc_members';
 
-
+    public static function getMemberById($uid)
+    {
+        return self::where('uid', $uid)
+            ->first();
+    }
     /**
      * @return mixed
      */

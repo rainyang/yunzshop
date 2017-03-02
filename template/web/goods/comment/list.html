@@ -82,12 +82,10 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th style='width:12%;'>订单号</th>
                             <th style='width:24%;'>商品信息</th>
                             <th style='width:6%;'>评价者</th>
                             <th style='width:10%;' >评分等级</th>
                             <th style='width:10%;'>评价状态</th>
-                            <th style='width:10%;'>回复状态</th>
                             <th style='width:14%;'>评价时间</th>
                             <th style='width:14%;'>操作</th>
                         </tr>
@@ -96,14 +94,7 @@
                         {loop $list $row}
 
                         <tr>
-                            <td>
-                                {if empty($row['openid'])}
-                                    <label class='label label-default'>模拟评价</label>
-                                {else}
-                                    {$row['ordersn']}
-                                {/if}
 
-                            </td>
                             <td><img src="{php echo tomedia($row['thumb'])}" style="width: 30px; height: 30px;border:1px solid #ccc;padding:1px;">
                                 {$row['title']}
                             </td>
@@ -119,45 +110,29 @@
                                 {if $row['level'] >= 5 }<i class='fa fa-star'></i>{else}<i class='fa fa-star-o'></i>{/if}
                             </td>
                             <td>
-                                {if !empty($row['append_content'])}
-                                    <label class='label label-warning'>追加了评价</label>
-                                {else}
-                                    <label class='label label-primary'>首次评论</label>
-                                {/if}
+                                <label class='label label-primary'>首次评论</label>
                             </td>
-                            <td>
-                                {if empty($row['reply_content'])}
-                                    <label class='label label-danger'>未回复</label>
-                                {else}
-                                    <label class='label label-danger'>已回复</label>
-                                {/if}
 
-                                {if !empty($row['append_content'])}
-                                    {if empty($row['append_reply_content'])}
-                                        <label class='label label-warning'>未追加回复</label>
-                                    {/if}
-                                {/if}
-                            </td>
                             <td >{php echo date('Y-m-d H:i:s', $row['created_at'])}</td>
                             <td>
                                 {if !empty($row['uid'])}
                                     {ifp 'shop.comment.edit'}
-                                        <a class='btn btn-default' href="{php echo $this->createWebUrl('goods.goods-comment.reply', ['id' => $row['id']])}" title='进行回复'><i class="fa fa-reply"></i>
+                                        <a class='btn btn-default' href="{php echo $this->createWebUrl('goods.comment.reply', ['id' => $row['id']])}" title='进行回复'><i class="fa fa-reply"></i>
                                         </a>
                                     {/if}
                                 {else}
                                     {ifp 'shop.comment.add'}
-                                        <a class='btn btn-default'  href="{php echo $this->createWebUrl('goods.goods-comment.updated', ['id' => $row['id']])}" title='修改评价'><i class="fa fa-edit"></i>
+                                        <a class='btn btn-default'  href="{php echo $this->createWebUrl('goods.comment.updated', ['id' => $row['id']])}" title='修改评价'><i class="fa fa-edit"></i>
                                         </a>
                                     {/if}
                                 {/if}
 
                                 {ifp 'shop.comment.add'}
-                                    <a class='btn btn-default'  href="{php echo $this->createWebUrl('goods.goods-comment.add-comment', ['goods_id' => $row['goods_id']])}" title='添加此商品评价'><i class="fa fa-plus"></i>
+                                    <a class='btn btn-default'  href="{php echo $this->createWebUrl('goods.comment.add-comment', ['goods_id' => $row['goods_id']])}" title='添加此商品评价'><i class="fa fa-plus"></i>
                                     </a>
                                 {/if}
                                 {ifp 'shop.comment.delete'}
-                                    <a class='btn btn-default'  href="{php echo $this->createWebUrl('goods.goods-comment.deleted', ['id' => $row['id']])}" onclick="return confirm('确认删除此评价吗？');return false;"><i class="fa fa-remove"></i>
+                                    <a class='btn btn-default'  href="{php echo $this->createWebUrl('goods.comment.deleted', ['id' => $row['id']])}" onclick="return confirm('确认删除此评价吗？');return false;"><i class="fa fa-remove"></i>
                                     </a>
                                 {/if}
                             </td>
@@ -170,7 +145,7 @@
                 </div>
                 {ifp 'shop.comment.add'}
                 <div class='panel-footer'>
-                    <a class='btn btn-primary' href="{php echo $this->createWebUrl('goods.goods-comment.add-comment')}"><i class='fa fa-plus'></i> 添加评价</a>
+                    <a class='btn btn-primary' href="{php echo $this->createWebUrl('goods.comment.add-comment')}"><i class='fa fa-plus'></i> 添加评价</a>
                 </div>
                 {/if}
             </div>
