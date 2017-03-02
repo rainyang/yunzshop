@@ -20,7 +20,7 @@ class Order extends \app\common\models\Order
 
     public static function getDbOrder($order_id)
     {
-        \app\common\models\Order::where('id', '=', $order_id)
+        return \app\common\models\Order::where('id', '=', $order_id)
             ->where('uniacid', '=', \YunShop::app()->uniacid)
             ->get();
     }

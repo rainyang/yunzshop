@@ -13,7 +13,7 @@ class OrderRefund extends \app\common\models\OrderRefund
 {
     public static function getDbRefund($id)
     {
-        \app\common\models\OrderRefund::where('id', '=', $id)
+        return \app\common\models\OrderRefund::where('id', '=', $id)
             ->Where('status', '=', 0)
             ->orWhere('status', '>', 1)
             ->get();
