@@ -8,6 +8,7 @@
 
 namespace app\backend\modules\goods\controllers;
 
+use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\services\GoodsService;
 use app\common\components\BaseController;
@@ -98,10 +99,13 @@ class GoodsController extends BaseController
         $a = $goods->hasManySpecs;
         dd($a);exit;
         exit;*/
-        $catetorys = CategoryService::tpl_form_field_category_level3(
-            'category', Category::getCategoryList(0), $children, $item['pcate'], $item['ccate'], $item['tcate']
+
+        $catetorys = Category::getAllCategoryGroup();
+        //dd($catetorys);
+        $catetory_menus = CategoryService::tpl_form_field_category_level3(
+            'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
         );
-        //$catetorys = Category::getCategoryList(0);
+
         $allspecs = [];
         $this->render('goods/goods', [
             'goods' => $this->goods,
@@ -109,6 +113,7 @@ class GoodsController extends BaseController
             'params'  => $params,
             'allspecs'  => $allspecs,
             'html'  => '',
+            'catetory_menus'  => $catetory_menus,
             'virtual_types' => [],
             'shopset' => $this->shopset
         ]);
