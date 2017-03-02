@@ -55,6 +55,7 @@ return [
             'prefix' => env('DB_PREFIX',$config['db']['master']['tablepre']),
             'strict' => true,
             'engine' => null,
+            'loggingQueries'=>true,
         ],
 
         'pgsql' => [
