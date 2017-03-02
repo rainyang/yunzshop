@@ -15,4 +15,9 @@ use Illuminate\Database\Eloquent\Model;
 class BaseModel extends Model
 {
     use ValidatorTrait;
+
+    public static function getUniacid()
+    {
+        return \YunShop::app()->uniacid;
+    }
 }

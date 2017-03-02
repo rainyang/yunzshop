@@ -21,6 +21,8 @@ class Comment extends \app\common\models\Comment
         return self::where('uniacid', $uniacid)
             ->where('comment_id', '0')
             ->count();
+
+        $test = 1;
     }
 
     /**
