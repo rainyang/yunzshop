@@ -15,12 +15,10 @@ use app\common\events\TestFailEvent;
 use app\common\events\UserActionEvent;
 use app\common\helpers\ImageHelper;
 use app\common\helpers\PaginationHelper;
-use app\common\helpers\Url;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Validator;
-use Schema;
 
 
 class TestMemberController extends BaseController
@@ -117,4 +115,5 @@ class TestMemberController extends BaseController
     {
         echo PaginationHelper::show(18,1);
     }
+
 }
