@@ -11,7 +11,7 @@ use app\frontend\modules\order\model\PreGeneratedOrderModel;
 use app\frontend\modules\order\model\PreGeneratedOrderGoodsModel;
 
 
-class PreGeneratedOrderModelFactory extends OrderModelFactory
+class PreGeneratedOrderModelFactory
 {
 
     public function createOrderModel(array $pre_generated_order_goods_models=null){

@@ -9,7 +9,10 @@
 namespace app\common\models;
 
 
-class OrderGoods
+use Illuminate\Database\Eloquent\Model;
+
+class OrderGoods extends Model
 {
+    public $table = 'yz_order_goods';
 
 }
