@@ -8,6 +8,8 @@
 
 namespace app\common\models;
 
+use app\frontend\modules\order\service\OrderService;
+
 class Order extends BaseModel
 {
     public $table = 'yz_order';
@@ -40,6 +42,13 @@ class Order extends BaseModel
     public function hasManyOrderGoods()
     {
         return $this->hasMany('\app\common\models\OrderGoods', 'order_id', 'id');
-
+    }
+    public function getStatusNameAttribute()
+    {
+        return OrderService::getOrderStatusName($this->status);
+    }
+    public function getButtonModelsAttribute()
+    {
+        return OrderService::getButtonModels($this->status);
     }
 }

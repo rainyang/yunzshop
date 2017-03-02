@@ -49,4 +49,23 @@ class OrderService
     public static function createOrderSN(){
         return m('common')->createNO('order', 'ordersn', 'SH');
     }
+    public static function getOrderStatusName($status){
+        $status_name_mapping = [
+            '-1' => "已关闭",
+            "0" => "待付款",
+            "1" => "待发货",
+            "2" => "待收货",
+            "3" => "已完成",
+        ];
+        if(isset($status_name_mapping[$status])){
+            return $status_name_mapping[$status];
+        }
+        return '';
+    }
+
+    public static function getButtonModels($status){
+
+    }
+
+
 }
