@@ -1,7 +1,7 @@
 <div class="ulleft-nav">
-<div class="addtit-name"><a  class="btn btn-success ng-scope"  href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class="fa fa-plus"></i> 发布商品</a></div>
+<div class="addtit-name"><a  class="btn btn-success ng-scope"  href="{php echo $this->createWebUrl('goods.goods.create')}"><i class="fa fa-plus"></i> 发布商品</a></div>
 <ul class="nav nav-tabs">
-    {ifp 'shop.goods.view'}<li class="active" ><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>1))}">出售中商品</a></li>{/if}
+    {ifp 'shop.goods.view'}<li class="active" ><a href="{php echo $this->createWebUrl('goods.goods.index')}">出售中商品</a></li>{/if}
     {ifp 'shop.goods.view'}<li ><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>0))}">已下架商品</a></li>{/if}
     {ifp 'shop.category.view'}<li ><a href="{php echo $this->createWebUrl('goods.category.index')}">商品分类</a></li>{/if}
     {ifp 'shop.brand.view'}<li ><a href="{php echo $this->createWebUrl('goods.brand.index')}">商品品牌</a></li>{/if}
