@@ -2,7 +2,7 @@
 
 include_once dirname(dirname(dirname(__DIR__))) . '/data/config.php';
 global $_W;
-$_W && $config = $_W;
+$_W && $config = $_W['config'];
 
 return [
 

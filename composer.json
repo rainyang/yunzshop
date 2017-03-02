@@ -12,7 +12,8 @@
     "php": ">=5.5.9",
     "laravel/framework": "5.3.*",
     "monolog/monolog": "^1.22",
-    "laracasts/flash": "^2.0"
+    "laracasts/flash": "^2.0",
+    "printempw/laravel-datatables-lite": "^1.0"
   },
   "require-dev": {
     "filp/whoops": "^2.1",
