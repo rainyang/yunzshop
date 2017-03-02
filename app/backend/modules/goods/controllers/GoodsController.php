@@ -11,7 +11,7 @@ namespace app\backend\modules\goods\controllers;
 use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\services\GoodsService;
 use app\common\components\BaseController;
-use app\common\models\Category;
+use app\backend\modules\goods\services\CategoryService;
 use app\backend\modules\goods\models\GoodsParam;
 use app\backend\modules\goods\models\GoodsSpec;
 use app\common\helpers\PaginationHelper;
@@ -60,29 +60,27 @@ class GoodsController extends BaseController
     {
         //增加商品属性搜索
         $product_attr_list = [
-            'isnew' => '新品',
-            'ishot' => '热卖',
-            'isrecommand' => '推荐',
-            'isdiscount' => '促销',
-            'issendfree' => '包邮',
-            'istime' => '限时',
-            'isnodiscount' => '不参与折扣'
+            'is_new' => '新品',
+            'is_hot' => '热卖',
+            'is_recommand' => '推荐',
+            'is_discount' => '促销',
         ];
 
-        //$total = Goods::getList()->toArray();
+/*        $total = Goods::getList()->toArray();
 
-        //$pindex = max(1, intval(\YunShop::request()->page));
-        //$psize = 10;
-        //$pager = PaginationHelper::show($total, $pindex, $psize);
+        $pindex = max(1, intval(\YunShop::request()->page));
+        $psize = 10;
+        $pager = PaginationHelper::show($total, $pindex, $psize);*/
 
         $list = Goods::getList()->toArray();
+        //$list->links();
+        //dd($list);
         //或者模板路径可写全  $this->render('order/display/index',['list'=>$list]);
         //以下为简写
         $this->render('goods/index', [
             'list' => $list,
             'shopset' => $this->shopset,
             'lang' => $this->lang,
-            //'pager' => $pager,
             'product_attr_list' => $product_attr_list,
         ]);
     }
@@ -100,6 +98,10 @@ class GoodsController extends BaseController
         $a = $goods->hasManySpecs;
         dd($a);exit;
         exit;*/
+        $catetorys = CategoryService::tpl_form_field_category_level3(
+            'category', Category::getCategoryList(0), $children, $item['pcate'], $item['ccate'], $item['tcate']
+        );
+        //$catetorys = Category::getCategoryList(0);
         $allspecs = [];
         $this->render('goods/goods', [
             'goods' => $this->goods,
