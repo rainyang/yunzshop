@@ -83,7 +83,7 @@ class MemberOfficeAccountService extends MemberMcService
             show_json(0, array('url'=> $authurl));
         }
 
-        show_json(1, array('member_id', $_SESSION['member_id']));
+        show_json(1, array('member_id', session('member_id')));
     }
 
     /**

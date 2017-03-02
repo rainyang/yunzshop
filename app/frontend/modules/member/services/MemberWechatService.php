@@ -33,7 +33,7 @@ class MemberWechatService extends MemberMcService
     {
         $uniacid = \YunApp::app()->uniacid;
 
-        $callback  =  $this->createPluginMobileUrl('discuz/login', array('op'=>'register')); //回调地址
+        $callback  =  \YunShop::app()->siteroot . 'app/index.php?' . $_SERVER['QUERY_STRING'];
 
         //微信登录
         //-------生成唯一随机串防CSRF攻击
@@ -47,10 +47,10 @@ class MemberWechatService extends MemberMcService
         if (!empty(\YunShop::request()->code)) {
             $user_info = $this->getUserInfo(\YunShop::request()->code);
 
-            if (is_array($user_info) && !empty($userinfo['unionid'])) {
+            if (is_array($user_info) && !empty($user_info['unionid'])) {
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid']);
 
-                if ($UnionidInfo['unionid']) {
+                if (!empty($UnionidInfo['unionid'])) {
                     $types = expload($UnionidInfo['type'], '|');
                     $member_id = $UnionidInfo['member_id'];
 
@@ -134,11 +134,11 @@ class MemberWechatService extends MemberMcService
         }
 
         $token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' . $this->_app_id . '&secret=' . $this->_appSecret . '&code=' . $code . '&grant_type=authorization_code';
-        $resp     = ihttp_get($token_url);
+        $resp     = @ihttp_get($token_url);
         $token      = @json_decode($resp['content'], true);
 
         $userinfo_url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token['access_token'] . '&openid=' . $token['openid'] . '&lang=zh_CN';
-        $resp     = ihttp_get($userinfo_url);
+        $resp     = @ihttp_get($userinfo_url);
         $arr      = @json_decode($resp['content'], true);
 
         return $arr;

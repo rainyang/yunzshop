@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\models\MemberModel;
+use Illuminate\Session\Store;
 
 class LoginController extends BaseController
 {

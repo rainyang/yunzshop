@@ -66,7 +66,7 @@ class MemberMiniAppService extends MemberMcService
         if (!empty($json_user) && !empty($json_user['unionid'])) {
             $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $json_user['unionid']);
 
-            if ($UnionidInfo['unionid']) {
+            if (!empty($UnionidInfo['unionid'])) {
                 $types = expload($UnionidInfo['type'], '|');
                 $member_id = $UnionidInfo['member_id'];
 
@@ -133,7 +133,9 @@ class MemberMiniAppService extends MemberMcService
 
             $result = array('session' => $random, 'wx_token' =>session_id(), 'uid' => $member_id);
 
-            show_json(1, $result);
+            return show_json(1, $result);
+        } else {
+            return show_json(0);
         }
     }
 
