@@ -16,16 +16,5 @@ class ServiceModel
     {
     }
 
-    public function __get($name)
-    {
-        echo '----';
-        var_dump($name);
 
-        echo '----';
-        if(isset($this->$name)){
-            return $this->$name;
-        }
-
-        return null;
-    }
 }

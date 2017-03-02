@@ -124,7 +124,7 @@ class PreGeneratedOrderModel extends OrderModel
         );
         echo '订单插入的数据为:';
         $this->id = 1;
-        return var_dump($data);
+         var_dump($data);
 
         return Order::insert($data);
     }

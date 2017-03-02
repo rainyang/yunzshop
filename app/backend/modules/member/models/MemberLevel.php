@@ -103,6 +103,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     {
         return  static::where('id', $levelId)->delete();
     }
+
     /**
      * 修改会员等级信息通过等级ID
      * @Author::yitian 2017-02-27 qq:751818588

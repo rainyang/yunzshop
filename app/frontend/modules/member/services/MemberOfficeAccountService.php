@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\services;
 use app\frontend\modules\member\services\MemberMcService;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
+use Illuminate\Session\Store;
 
 class MemberOfficeAccountService extends MemberMcService
 {
@@ -21,10 +22,6 @@ class MemberOfficeAccountService extends MemberMcService
 
     public function login()
     {
-        if ($this->isLogged()) {
-            show_json(1, array('member_id'=> $_SESSION['member_id']));
-        }
-
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
 
@@ -75,7 +72,7 @@ class MemberOfficeAccountService extends MemberMcService
                     ));
                 }
 
-                $_SESSION['member_id'] = $member_id;
+                session()->put('member_id',$member_id);
             } else {
                 show_json(0, array('url'=> $authurl));
             }
@@ -86,17 +83,7 @@ class MemberOfficeAccountService extends MemberMcService
             show_json(0, array('url'=> $authurl));
         }
 
-        show_json(1, array('member_id', $_SESSION['member_id']));
-    }
-
-    /**
-     * 是否登录
-     *
-     * @return bool
-     */
-    public function isLogged()
-    {
-        return !empty($_SESSION['member_id']);
+        show_json(1, array('member_id', session('member_id')));
     }
 
     /**

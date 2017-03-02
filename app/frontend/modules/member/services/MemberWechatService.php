@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\services;
 
 use app\frontend\modules\member\services\MemberMcService;
 use app\frontend\modules\member\models\MemberWechatModel;
+use Illuminate\Session\Store;
 
 class MemberWechatService extends MemberMcService
 {
@@ -30,18 +31,14 @@ class MemberWechatService extends MemberMcService
 
     public function login()
     {
-        if ($this->isLogged()) {
-            show_json(1, array('member_id'=> $_SESSION['member_id']));
-        }
-
         $uniacid = \YunApp::app()->uniacid;
 
-        $callback  =  $this->createPluginMobileUrl('discuz/login', array('op'=>'register')); //回调地址
+        $callback  =  \YunShop::app()->siteroot . 'app/index.php?' . $_SERVER['QUERY_STRING'];
 
         //微信登录
         //-------生成唯一随机串防CSRF攻击
         $state  = md5(uniqid(rand(), TRUE));
-        $_SESSION["wx_state"]    =   $state; //存到SESSION
+        session()->put("wx_state", $state);
 
         $callback = urlencode($callback);
 
@@ -50,10 +47,10 @@ class MemberWechatService extends MemberMcService
         if (!empty(\YunShop::request()->code)) {
             $user_info = $this->getUserInfo(\YunShop::request()->code);
 
-            if (is_array($user_info) && !empty($userinfo['unionid'])) {
+            if (is_array($user_info) && !empty($user_info['unionid'])) {
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid']);
 
-                if ($UnionidInfo['unionid']) {
+                if (!empty($UnionidInfo['unionid'])) {
                     $types = expload($UnionidInfo['type'], '|');
                     $member_id = $UnionidInfo['member_id'];
 
@@ -116,7 +113,7 @@ class MemberWechatService extends MemberMcService
                     ));
                 }
 
-                $_SESSION['member_id'] = $member_id;
+                session()->put('member_id',$member_id);
             } else {
                 show_json(0, array('url'=> $wxurl));
             }
@@ -132,23 +129,18 @@ class MemberWechatService extends MemberMcService
      */
     public function getUserInfo($code)
     {
-        if (\YunShop::request()->state != $_SESSION["wx_state"]) {
+        if (\YunShop::request()->state != session("wx_state")) {
             exit("5001");
         }
 
         $token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' . $this->_app_id . '&secret=' . $this->_appSecret . '&code=' . $code . '&grant_type=authorization_code';
-        $resp     = ihttp_get($token_url);
+        $resp     = @ihttp_get($token_url);
         $token      = @json_decode($resp['content'], true);
 
         $userinfo_url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token['access_token'] . '&openid=' . $token['openid'] . '&lang=zh_CN';
-        $resp     = ihttp_get($userinfo_url);
+        $resp     = @ihttp_get($userinfo_url);
         $arr      = @json_decode($resp['content'], true);
 
         return $arr;
-    }
-
-    public function isLogged()
-    {
-        return !empty($_SESSION['member_id']);
     }
 }

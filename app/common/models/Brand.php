@@ -15,5 +15,5 @@ class Brand extends BaseModel
 
     protected $guarded = [''];
 
-    protected $fillable = ['name'];
+    //protected $fillable = ['name'];
 }

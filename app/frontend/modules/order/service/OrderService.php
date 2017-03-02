@@ -4,6 +4,7 @@ namespace app\frontend\modules\order\service;
 use app\frontend\modules\goods\model\factory\PreGeneratedOrderGoodsModelFactory;
 use app\frontend\modules\goods\model\GoodsModel;
 use app\frontend\modules\member\model\MemberModel;
+use app\frontend\modules\order\model\factory\OrderModelFactory;
 use app\frontend\modules\order\model\factory\PreGeneratedOrderModelFactory;
 use app\frontend\modules\goods\model\Goods;
 use app\frontend\modules\order\model\PreGeneratedOrderGoodsModel;
@@ -29,13 +30,13 @@ class OrderService
         return $order_model;
     }
     //订单详情
-    public static function getOrderModel(){
-        $order_model = (new OrderModelFactory)->getOrderModel($order_id);
+    public static function getOrderModel($order_status,$order_id){
+        $order_model = OrderModelFactory::createOrderModel($order_status,$order_id);
         return $order_model;
     }
     //订单列表
-    public static function getOrderModels(){
-        $order_list_models = (new OrderModelFactory)->getOrderModels($para);
+    public static function getOrderModels($db_order_models){
+        $order_list_models = OrderModelFactory::createOrderModels($db_order_models);
         return $order_list_models;
     }
     public static function getOrderGoodsModels($param){
