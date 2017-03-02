@@ -20,6 +20,8 @@ class GoodsComment extends \app\common\models\GoodsComment
     {
         return self::where('uniacid', $uniacid)
             ->count();
+
+        $test = 1;
     }
 
     /**
