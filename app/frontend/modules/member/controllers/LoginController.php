@@ -15,10 +15,12 @@ use app\frontend\modules\member\models\MemberModel;
 
 class LoginController extends BaseController
 {
-    private $error = array();
-
     public function index()
     {
+        if ($this->isLogged()) {
+            show_json(1, array('member_id'=> session('member_id')));
+        }
+
         // 1-公众号;2-小程序;3-微信app;4-pc扫码;5-手机号/app;6-QQ
         $type = \YunShop::request()->type;
 
@@ -70,5 +72,10 @@ class LoginController extends BaseController
         } else {
             return true;
         }
+    }
+
+    public function isLogged()
+    {
+        return !empty(session('member_id'));
     }
 }

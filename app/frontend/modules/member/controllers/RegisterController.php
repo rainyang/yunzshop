@@ -247,32 +247,4 @@ class RegisterController extends BaseController
             return $set['app']['base'];
         }
     }
-
-    /**
-     * 使用推荐码
-     *
-     * @param $isreferraltrue
-     * @param $member_info
-     * @param $referral
-     */
-    private function referral($isreferraltrue, $member_info, $referral)
-    {
-        if ($isreferraltrue) {
-            if (!$member_info['agentid']) {
-                $m_data = array(
-                    'agentid' => $referral['id'],
-                    'agenttime' => time(),
-                    'status' => 1,
-                    'isagent' => 1
-                );
-                if($referral['member_id'] != 0){
-                    //todo //p('commission')->model->upgradeLevelByAgent($referral['id']);
-                }
-
-                SubMemberModel::updateDate($m_data, array("mobile" => $this->mobile, "uniacid" => $this->uniacid));
-                $yzShopSet = m('common')->getSysset('shop');
-                //todo   //m('member')->responseReferral($yzShopSet, $referral, $member);
-            }
-        }
-    }
 }

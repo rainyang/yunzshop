@@ -27,9 +27,6 @@ class MemberMiniAppService extends MemberMcService
 
         $uniacid = \YunApp::app()->uniacid;
 
-        session_start();
-        load()->func('communication');
-
         $setdata = pdo_fetch("select * from " . tablename('sz_yi_wxapp') . ' where uniacid=:uniacid limit 1', array(
             ':uniacid' => $uniacid
         ));
@@ -47,7 +44,7 @@ class MemberMiniAppService extends MemberMcService
         );
 
         $url = 'https://api.weixin.qq.com/sns/jscode2session';
-        $res = ihttp_request($url, $data);
+        $res = @ihttp_request($url, $data);
 
         $user_info = json_decode($res['content'], true);
 

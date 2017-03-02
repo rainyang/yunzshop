@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\services;
 
 use app\frontend\modules\member\services\MemberMcService;
 use app\frontend\modules\member\models\MemberWechatModel;
+use Illuminate\Session\Store;
 
 class MemberWechatService extends MemberMcService
 {
@@ -30,10 +31,6 @@ class MemberWechatService extends MemberMcService
 
     public function login()
     {
-        if ($this->isLogged()) {
-            show_json(1, array('member_id'=> $_SESSION['member_id']));
-        }
-
         $uniacid = \YunApp::app()->uniacid;
 
         $callback  =  $this->createPluginMobileUrl('discuz/login', array('op'=>'register')); //回调地址
@@ -41,7 +38,7 @@ class MemberWechatService extends MemberMcService
         //微信登录
         //-------生成唯一随机串防CSRF攻击
         $state  = md5(uniqid(rand(), TRUE));
-        $_SESSION["wx_state"]    =   $state; //存到SESSION
+        session()->put("wx_state", $state);
 
         $callback = urlencode($callback);
 
@@ -116,7 +113,7 @@ class MemberWechatService extends MemberMcService
                     ));
                 }
 
-                $_SESSION['member_id'] = $member_id;
+                session()->put('member_id',$member_id);
             } else {
                 show_json(0, array('url'=> $wxurl));
             }
@@ -132,7 +129,7 @@ class MemberWechatService extends MemberMcService
      */
     public function getUserInfo($code)
     {
-        if (\YunShop::request()->state != $_SESSION["wx_state"]) {
+        if (\YunShop::request()->state != session("wx_state")) {
             exit("5001");
         }
 
@@ -145,10 +142,5 @@ class MemberWechatService extends MemberMcService
         $arr      = @json_decode($resp['content'], true);
 
         return $arr;
-    }
-
-    public function isLogged()
-    {
-        return !empty($_SESSION['member_id']);
     }
 }
