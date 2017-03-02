@@ -29,14 +29,14 @@ class OrderService
         return $order_model;
     }
     //订单详情
-    public static function getOrder(){
-        $order_model = (new OrderModelFactory)->getOrderModel();
-        return $order_model->getData();
+    public static function getOrderModel(){
+        $order_model = (new OrderModelFactory)->getOrderModel($order_id);
+        return $order_model;
     }
     //订单列表
-    public static function getOrderList(){
-        $order_list_model = (new OrderModelFactory)->getOrderListModel();
-        return $order_list_model->getData();
+    public static function getOrderModels(){
+        $order_list_models = (new OrderModelFactory)->getOrderModels($para);
+        return $order_list_models;
     }
     public static function getOrderGoodsModels($param){
         return (new PreGeneratedOrderGoodsModelFactory())->createOrderGoodsModels($param);

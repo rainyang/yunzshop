@@ -8,7 +8,7 @@ use app\common\models\Order;
 /*
  * 取消发货
  */
-class OrderCancelSent
+class OrderCancelSend
 {
     public $order_model;
 
