@@ -8,10 +8,12 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\frontend\modules\order\model\behavior;
-use app\frontend\modules\order\service;
+use app\common\models\Order;
+use app\common\models\OrderRefund;
+use app\common\models\Setting;
+use app\frontend\modules\order\services;
 
-class OrderDetail
+class OrderDetailController
 {
     private $order_id;
     private $to;
@@ -19,10 +21,21 @@ class OrderDetail
     function __construct()
     {
         $this->order_id = \YunShop::request()->id;
-        $this->to = trim(\YunShop::request()->to);
+        $this->to = ucfirst(trim(\YunShop::request()->to));
     }
 
-    function orderDetail()
+    public function detail()
+    {
+        $order = Order::find($this->order_id);
+        if (empty($order)) {
+            message("抱歉，订单不存在!", referer(), "error");
+        }
+        $order_refund = OrderRefund::find($order['refund_id']);
+        $refund_class = ('service\\Order' . $this->to . 'Service');
+        $refund_class::orderRefund($order, $order_refund);
+    }
+
+    /*function orderDetail()
     {
         $order = behavior\Order::getDbOrder($this->order_id);
         service\OrderEmpty::isEmpty($order);
@@ -42,5 +55,5 @@ class OrderDetail
                 behavior\Order::updateOrder($order['id'], $data);
                 break;
         }
-    }
+    }*/
 }
