@@ -10,7 +10,7 @@ namespace app\frontend\models;
 
 use app\frontend\modules\member\models\smsSendLimitModel;
 
-class Member extends \app\common\models\Member
+class MemberModel extends \app\common\models\Member
 {
     /**
      * 用户是否登录

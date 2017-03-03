@@ -33,12 +33,7 @@ class MemberController extends BaseController
             }])
             ->paginate($pageSize)
             ->toArray();
-        echo '<pre>'; print_r($list['data']);exit;
-        dd($list);
 
-        $memberList = MemberServices::getMemberList($uniacid);
-
-        echo '<pre>'; print_r($memberList); exit;
         $this->render('member/member_list');
     }
 }
