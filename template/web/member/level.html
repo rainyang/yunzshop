@@ -46,8 +46,8 @@
                                 {/if}
                             </td>
                             <td>
-                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.memberlevel.update', array('id' => $level['id']))}" title="编辑／查看"><i class='fa fa-edit'></i></a>
-                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.memberlevel.delete', array('id' => $level['id']))}" onclick="return confirm('确认删除此等级吗？');return false;"><i class='fa fa-remove'></i></a>
+                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.memberlevel.edit', array('id' => $level['id']))}" title="编辑／查看"><i class='fa fa-edit'></i></a>
+                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.memberlevel.destroy', array('id' => $level['id']))}" onclick="return confirm('确认删除此等级吗？');return false;"><i class='fa fa-remove'></i></a>
                             </td>
                         </tr>
                         <?php } ?>
@@ -57,7 +57,7 @@
                 </div>
                 {ifp 'member.level.add'}
                 <div class='panel-footer'>
-                    <a class='btn btn-primary' href="{php echo $this->createWebUrl('member.memberlevel.add', array('id' => '0'))}"><i class="fa fa-plus"></i> 添加新等级</a>
+                    <a class='btn btn-primary' href="{php echo $this->createWebUrl('member.memberlevel.create', array('id' => '0'))}"><i class="fa fa-plus"></i> 添加新等级</a>
                 </div>
                 {/if}
             </div>

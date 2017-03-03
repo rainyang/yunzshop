@@ -13,9 +13,9 @@
 
         <div class="main">
             {if empty($level['id'])}
-            <form action="{php echo $this->createWebUrl('member.memberlevel.create')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+            <form action="{php echo $this->createWebUrl('member.memberlevel.store')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
                 {else}
-                <form action="{php echo $this->createWebUrl('member.memberlevel.revise')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+                <form action="{php echo $this->createWebUrl('member.memberlevel.update')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
                     <input type="hidden" name="level[id]" value="{$level['id']}">
                     {/if}
                     <div class='panel panel-default'>
