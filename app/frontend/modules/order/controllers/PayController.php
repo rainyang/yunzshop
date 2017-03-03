@@ -10,9 +10,9 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\helpers\Url;
 use app\common\models\Order;
-use app\frontend\modules\services\order\OrderService;
-use app\frontend\modules\services\order\OrderLogService;
-use app\frontend\modules\services\order\PayTypeService;
+use app\frontend\modules\order\services\OrderService;
+use app\frontend\modules\order\services\OrderLogService;
+use app\frontend\modules\order\services\PayTypeService;
 
 class PayController
 {

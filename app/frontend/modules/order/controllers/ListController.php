@@ -8,14 +8,15 @@
 
 namespace app\frontend\modules\order\controllers;
 
-
-use app\frontend\modules\order\service\OrderService;
+use app\common\models\Order;
 
 class ListController
 {
     public function index(){
-        $param = [];
-        $order_models = OrderService::getOrderModels();
-        var_dump($order_models);
+        $db_order_models = Order::waitPay()->with('hasManyOrderGoods')->get();
+        //dd($db_order_models);
+        $order_models = $db_order_models;
+        dd($order_models[0]->button_models);
+        exit;
     }
 }

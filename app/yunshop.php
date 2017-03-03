@@ -128,9 +128,10 @@ class YunShop
         $controller->modules = $modules;
         $controller->controller = $controllerName;
         $controller->action = $action;
-        $controller->$action(
+        $content = $controller->$action(
            Illuminate\Http\Request::capture()
         );
+        exit($content);
     }
 
     public static function getUcfirstName($name)

@@ -6,14 +6,14 @@
  * Time: 下午5:18
  */
 
-namespace app\frontend\modules\order\model\behavior;
+namespace app\frontend\modules\order\services\model\behavior;
 
 
 class OrderRefund extends \app\common\models\OrderRefund
 {
     public static function getDbRefund($id)
     {
-        \app\common\models\OrderRefund::where('id', '=', $id)
+        return \app\common\models\OrderRefund::where('id', '=', $id)
             ->Where('status', '=', 0)
             ->orWhere('status', '>', 1)
             ->get();

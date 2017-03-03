@@ -39,6 +39,23 @@ class BaseController extends  Controller
         return $validator->errors()->all();
     }
 
+    /**
+     * 显示信息并跳转
+     *
+     * @param $message
+     * @param string $redirect
+     * @param string $status  success  error danger warning  info
+     * @return mixed
+     */
+    public function message($message,$redirect = '',$status = 'success')
+    {
+        return $this->render('web/message',[
+            'redirect'=>$redirect,
+            'message'=>$message,
+            'status'=>$status
+        ]);
+    }
+
 
     /**
      * 渲染视图

@@ -1,12 +1,13 @@
 <?php
-namespace app\frontend\modules\order\service;
+namespace app\frontend\modules\order\services;
 
 use app\frontend\modules\goods\model\factory\PreGeneratedOrderGoodsModelFactory;
 use app\frontend\modules\goods\model\GoodsModel;
 use app\frontend\modules\member\model\MemberModel;
-use app\frontend\modules\order\model\factory\PreGeneratedOrderModelFactory;
+use app\frontend\modules\order\services\model\factory\OrderModelFactory;
+use app\frontend\modules\order\services\model\factory\PreGeneratedOrderModelFactory;
 use app\frontend\modules\goods\model\Goods;
-use app\frontend\modules\order\model\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\order\services\model\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\shop\model\ShopModel;
 
 /**
@@ -27,16 +28,6 @@ class OrderService
             $order_model->setShopModel($shop_model);
         }
         return $order_model;
-    }
-    //订单详情
-    public static function getOrderModel(){
-        $order_model = (new OrderModelFactory)->getOrderModel($order_id);
-        return $order_model;
-    }
-    //订单列表
-    public static function getOrderModels(){
-        $order_list_models = (new OrderModelFactory)->getOrderModels($para);
-        return $order_list_models;
     }
     public static function getOrderGoodsModels($param){
         return (new PreGeneratedOrderGoodsModelFactory())->createOrderGoodsModels($param);
