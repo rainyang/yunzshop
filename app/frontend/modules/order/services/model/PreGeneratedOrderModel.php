@@ -2,7 +2,8 @@
 namespace app\frontend\modules\order\services\model;
 
 use app\common\models\Order;
-use app\frontend\modules\member\model\MemberModel;
+use app\common\models\Member;
+
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\model\ShopModel;
 
@@ -29,7 +30,7 @@ class PreGeneratedOrderModel extends OrderModel
 
     }
 
-    public function setMemberModel(MemberModel $member_model)
+    public function setMemberModel(Member $member_model)
     {
         $this->member_model = $member_model;
     }
