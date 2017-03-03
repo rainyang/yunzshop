@@ -9,9 +9,8 @@
 namespace app\common\models;
 
 
-use Illuminate\Database\Eloquent\Model;
 
-class MemberLevel extends Model
+class MemberLevel extends BaseModel
 {
     public $table = 'yz_member_level';
 }
