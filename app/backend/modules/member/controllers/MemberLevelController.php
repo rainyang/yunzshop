@@ -32,32 +32,7 @@ class MemberLevelController extends BaseController
             'shopset' => $this->shopset
         ]);
     }
-    public function update()
-    {
-        $levelId = \YunShop::request()->id;
-        $level = MemberLevel::getMemberLevelInfoById($levelId);
-
-        $this->render('member/edit_level',[
-            'shopset' => $this->shopset,
-            'level' => $level
-        ]);
-    }
-    public function reviseMemberLevel()
-    {
-
-        $level = \YunShop::request()->level;
-        $level_id = $level['id'];
-        unset($level['id']);
-        $result = MemberLevel::updateMemberLevelInfoById($level_id, $level);
-        if ($result) {
-            Header("Location: ".$this->createWebUrl('member.memberlevel.index'));
-            exit;
-            //return $this->message('品牌创建成功', Url::absoluteWeb('goods.brand.index'));
-        }
-
-    }
-
-    public function add()
+    public function create()
     {
         $level = array(
             'id'    => '',
@@ -73,7 +48,7 @@ class MemberLevelController extends BaseController
             'level' => $level
         ]);
     }
-    public function create()
+    public function store()
     {
         $level = \YunShop::request()->level;
         $level['uniacid'] = \YunShop::app()->uniacid;
@@ -83,7 +58,29 @@ class MemberLevelController extends BaseController
         }
 
     }
-    public function deleteMemberLevel()
+    public function edit()
+    {
+        $levelId = \YunShop::request()->id;
+        $level = MemberLevel::getMemberLevelInfoById($levelId);
+
+        $this->render('member/edit_level',[
+            'shopset' => $this->shopset,
+            'level' => $level
+        ]);
+    }
+    public function update()
+    {
+
+        $level = \YunShop::request()->level;
+        $level_id = $level['id'];
+        unset($level['id']);
+        $result = MemberLevel::updateMemberLevelInfoById($level_id, $level);
+        if ($result) {
+            return $this->message('品牌创建成功', Url::absoluteWeb('goods.brand.index'));
+        }
+
+    }
+    public function destroy()
     {
         $post = \YunShop::request()->get();
         if($post['id']) {
