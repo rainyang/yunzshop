@@ -72,7 +72,7 @@ class GoodsController extends BaseController
             'is_discount' => '促销',
         ];
         
-        $list = Goods::getList()->toArray();
+        $list = Goods::getList()->toJson();
         \Event::fire(new TestGoodsEvent(['haha' => '哈哈哈']));
         //$list->links();
         //dd($list);

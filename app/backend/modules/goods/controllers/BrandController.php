@@ -5,6 +5,7 @@ use app\backend\modules\goods\models\Brand;
 use app\backend\modules\goods\services\BrandService;
 use app\backend\modules\member\models\TestMember;
 use app\common\components\BaseController;
+use app\common\events\TestGoodsEvent;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use Setting;
@@ -34,6 +35,15 @@ class BrandController extends BaseController
             'pager' => $pager,
             'shopset' => $shopset
         ]);
+    }
+
+    public function handle(TestGoodsEvent $event)
+    {
+        echo "<br/>";
+        var_dump($event);
+
+        echo "BBBBB*****!";
+        echo "<br/>";
     }
 
     /**
