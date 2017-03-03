@@ -26,7 +26,6 @@ class RefundOrderService
 
     public function refund($order)
     {
-        $this->order_id = $order->id;
         if (empty($order['refundstate'])) {
             message('订单未申请退款，不需处理');
         }
