@@ -10,8 +10,10 @@ namespace app\frontend\modules\goods\model;
 
 
 use app\common\models\Goods;
+use app\common\models\OrderGoods;
+
 use app\common\ServiceModel\ServiceModel;
-use app\frontend\modules\order\model\OrderModel;
+use app\frontend\modules\order\services\model\OrderModel;
 
 class PreGeneratedOrderGoodsModel extends ServiceModel
 {
@@ -22,46 +24,55 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     private $goods_price;
     private $_has_calculated;
 
-    public function __construct(Goods $goods_model,$total=1)
+    public function __construct(Goods $goods_model, $total = 1)
     {
         $this->goods_model = $goods_model;
         $this->total = $total;
         $this->_has_calculated = false;
 
     }
-    public function setTotal($total){
+
+    public function setTotal($total)
+    {
 
         $this->total = $total;
         $this->_has_calculated = false;
 
     }
-    public function setOrderModel(OrderModel $order_model){
+
+    public function setOrderModel(OrderModel $order_model)
+    {
         $this->order_model = $order_model;
 
     }
+
     /*public function setGoodsModel($goods_model){
         $this->goods_model = $goods_model;
 
         $this->_has_calculated = false;
 
     }*/
-    private function calculate(){
+    private function calculate()
+    {
         $this->price = $this->calculatePrice();
 
         $this->goods_price = $this->calculateGoodsPrice();
 
     }
+
     private function calculatePrice()
     {
         return $this->total * $this->goods_model->price;
     }
+
     private function calculateGoodsPrice()
     {
         return $this->total * $this->goods_model->price;
     }
+
     public function generate(OrderModel $order_model = null)
     {
-        if(isset($order_model)){
+        if (isset($order_model)) {
             $this->setOrderModel($order_model);
         }
         $data = array(
@@ -75,15 +86,16 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
 
         );
         echo '订单商品插入数据为';
-        return var_dump($data);
-        return Goods::insertGetId($data);
+        var_dump($data);
+        return OrderGoods::insertGetId($data);
     }
+
     public function __get($name)
     {
-        if($this->_has_calculated==false){
+        if ($this->_has_calculated == false) {
             $this->calculate();
         }
-        if(isset($this->$name)){
+        if (isset($this->$name)) {
             return $this->$name;
         }
 

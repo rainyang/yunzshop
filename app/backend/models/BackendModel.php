@@ -13,6 +13,5 @@ use app\common\models\BaseModel;
 
 class BackendModel extends BaseModel
 {
-
-
+    
 }
