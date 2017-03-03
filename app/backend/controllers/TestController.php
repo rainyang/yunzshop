@@ -1,19 +1,41 @@
 <?php
 namespace  app\backend\controllers;
 
+use app\backend\modules\member\models\TestMember;
 use app\common\components\BaseController;
 use Illuminate\Support\Str;
 use Setting;
 use app\common\services\PluginManager;
 use Datatables;
 use Cookie;
+use iscms\Alisms\SendsmsPusher as Sms;
 
 class TestController extends BaseController
 {
+    public function __construct(Sms $sms)
+    {
+        $this->sms=$sms;
+    }
     public function index()
     {
 
+        return $this->render('index');
+
+    }
+
+    public function test()
+    {
+        return widget('app\backend\widgets\MenuWidget',['test'=>'bbbbb']);
+    }
+
+    public function view()
+    {
         return view('test.index',['a'=>Str::random(10)]);
+    }
+
+    public function testSms()
+    {
+        $result=$this->sms->send("phone","name","content","code");
     }
 
 

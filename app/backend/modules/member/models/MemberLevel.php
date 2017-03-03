@@ -69,9 +69,10 @@ class MemberLevel extends \app\common\models\MemberLevel
      *
      * @return
      **/
-    public static function getMemberLevelList($uniacid)
+    public static function getMemberLevelList()
     {
-        return MemberLevel::where('uniacid', $uniacid)->get();
+        return static::uniacid()->get()->toArray();
+        //return MemberLevel::where('uniacid', $uniacid)->get();
     }
     /**
      * Add member level
