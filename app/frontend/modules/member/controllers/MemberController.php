@@ -19,8 +19,28 @@ class MemberController extends BaseController
         dd(Member::getNickNnme());
     }
 
+    /**
+     * 获取用户信息
+     *
+     * @return array
+     */
     public function getUserInfo()
     {
-        MemberModel::getUserInfos();
+        $uniacid = \YunShop::app()->uniacid;
+        $member_id = \YunShop::request()->uid;
+
+        if (!empty($member_id)) {
+            $member_info = MemberModel::getUserInfos($uniacid, $member_id);
+
+            if (!empty($member_info)) {
+                return show_json(1, array($member_info));
+            } else {
+                return show_json(0, array("msg" => '用户不存在'));
+            }
+
+        } else {
+            return show_json(0, array("msg" => '缺少member_id参数'));
+        }
+
     }
 }

@@ -11,9 +11,10 @@ namespace app\frontend\modules\order\services\behavior;
 
 class OrderRefund
 {
+    //传order对象
     public function refund($order, $to)
     {
-        $refund_class = ('services\\' . $this->to . 'Service');
+        $refund_class = (ucwords($this->to) . 'OrderService');
         $refund_class::refund($order);
     }
 }

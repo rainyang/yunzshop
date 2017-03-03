@@ -14,7 +14,6 @@
 
 namespace app\common\models;
 
-use app\common\models\BaseModel;
 use app\common\models\GoodsParam;
 
 class Goods extends BaseModel
@@ -25,9 +24,10 @@ class Goods extends BaseModel
 
     public $guarded = [];
 
-    public static function getList()
+    public static function getList($condition = [])
     {
-        return static::where('uniacid', '=', static::getUniacid())->get();
+        return static::uniacid()
+            ->get();
     }
 
     public static function getGoodsById($id)

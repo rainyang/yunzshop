@@ -14,11 +14,16 @@ use Illuminate\Database\Eloquent\Model;
 class MemberGroup extends Model
 {
     protected $table = 'yz_member_group';
-
-    protected $uniacid;
-
-    public function __construct()
+    /**
+     * Get member group information by groupId
+     *
+     * @param array $data
+     *
+     * @return 1 or 0
+     * */
+    protected static function getMemberGroupByGroupID($groupId)
     {
-        $this->uniacid = \YunShop::app()->uniacid;
+        return static::where('id', $groupId)->first(1)->toArray();
     }
+
 }

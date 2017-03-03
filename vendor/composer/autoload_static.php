@@ -4,12 +4,12 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d
+class ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
+        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
@@ -3175,6 +3175,7 @@ class ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d
         'app\\backend\\controllers\\CacheController' => __DIR__ . '/../..' . '/app/backend/controllers/CacheController.php',
         'app\\backend\\controllers\\TestCacheController' => __DIR__ . '/../..' . '/app/frontend/controllers/TestCacheController.php',
         'app\\backend\\controllers\\TestController' => __DIR__ . '/../..' . '/app/backend/controllers/TestController.php',
+        'app\\backend\\models\\BackendModel' => __DIR__ . '/../..' . '/app/backend/models/BackendModel.php',
         'app\\backend\\modules\\api\\modules\\v1\\controllers\\TestController' => __DIR__ . '/../..' . '/app/backend/modules/api/modules/v1/controllers/TestController.php',
         'app\\backend\\modules\\api\\services\\Member' => __DIR__ . '/../..' . '/app/backend/modules/api/services/Member.php',
         'app\\backend\\modules\\goods\\controllers\\BrandController' => __DIR__ . '/../..' . '/app/backend/modules/goods/controllers/BrandController.php',
@@ -3200,11 +3201,14 @@ class ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d
         'app\\backend\\modules\\goods\\services\\GoodsCommentService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/GoodsCommentService.php',
         'app\\backend\\modules\\goods\\services\\GoodsService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/GoodsService.php',
         'app\\backend\\modules\\goods\\services\\PrivilegeService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/PrivilegeService.php',
+        'app\\backend\\modules\\member\\controllers\\MemberController' => __DIR__ . '/../..' . '/app/backend/modules/member/controllers/MemberController.php',
         'app\\backend\\modules\\member\\controllers\\MemberGroupController' => __DIR__ . '/../..' . '/app/backend/modules/member/controllers/MemberGroupController.php',
         'app\\backend\\modules\\member\\controllers\\MemberLevelController' => __DIR__ . '/../..' . '/app/backend/modules/member/controllers/MemberLevelController.php',
         'app\\backend\\modules\\member\\controllers\\TestMemberController' => __DIR__ . '/../..' . '/app/backend/modules/member/controllers/TestMemberController.php',
+        'app\\backend\\modules\\member\\models\\Member' => __DIR__ . '/../..' . '/app/backend/modules/member/models/Member.php',
         'app\\backend\\modules\\member\\models\\MemberGroup' => __DIR__ . '/../..' . '/app/backend/modules/member/models/MemberGroup.php',
         'app\\backend\\modules\\member\\models\\MemberLevel' => __DIR__ . '/../..' . '/app/backend/modules/member/models/MemberLevel.php',
+        'app\\backend\\modules\\member\\models\\MemberShopInfo' => __DIR__ . '/../..' . '/app/backend/modules/member/models/MemberShopInfo.php',
         'app\\backend\\modules\\member\\models\\TestMember' => __DIR__ . '/../..' . '/app/backend/modules/member/models/TestMember.php',
         'app\\backend\\modules\\member\\models\\TestMemberCart' => __DIR__ . '/../..' . '/app/backend/modules/member/models/TestMemberCart.php',
         'app\\backend\\modules\\member\\models\\TestMemberValidator' => __DIR__ . '/../..' . '/app/backend/modules/member/models/TestMemberValidator.php',
@@ -3250,8 +3254,13 @@ class ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d
         'app\\common\\models\\GoodsSpec' => __DIR__ . '/../..' . '/app/common/models/GoodsSpec.php',
         'app\\common\\models\\GoodsSpecItem' => __DIR__ . '/../..' . '/app/common/models/GoodsSpecItem.php',
         'app\\common\\models\\Member' => __DIR__ . '/../..' . '/app/common/models/Member.php',
+        'app\\common\\models\\MemberAddress' => __DIR__ . '/../..' . '/app/common/models/MemberAddress.php',
+        'app\\common\\models\\MemberCart' => __DIR__ . '/../..' . '/app/common/models/MemberCart.php',
+        'app\\common\\models\\MemberFavorite' => __DIR__ . '/../..' . '/app/common/models/MemberFavorite.php',
         'app\\common\\models\\MemberGroup' => __DIR__ . '/../..' . '/app/common/models/MemberGroup.php',
+        'app\\common\\models\\MemberHistory' => __DIR__ . '/../..' . '/app/common/models/MemberHistory.php',
         'app\\common\\models\\MemberLevel' => __DIR__ . '/../..' . '/app/common/models/MemberLevel.php',
+        'app\\common\\models\\MemberShopInfo' => __DIR__ . '/../..' . '/app/common/models/MemberShopInfo.php',
         'app\\common\\models\\Order' => __DIR__ . '/../..' . '/app/common/models/Order.php',
         'app\\common\\models\\OrderCancelPay' => __DIR__ . '/../..' . '/app/common/models/OrderCancelPay.php',
         'app\\common\\models\\OrderCancelSend' => __DIR__ . '/../..' . '/app/common/models/OrderCancelSend.php',
@@ -3322,6 +3331,7 @@ class ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d
         'app\\frontend\\modules\\member\\models\\McMappingFansModel' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/McMappingFansModel.php',
         'app\\frontend\\modules\\member\\models\\Member' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/Member.php',
         'app\\frontend\\modules\\member\\models\\MemberAppWechatModel' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberAppWechatModel.php',
+        'app\\frontend\\modules\\member\\models\\MemberCart' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberCart.php',
         'app\\frontend\\modules\\member\\models\\MemberFavorite' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberFavorite.php',
         'app\\frontend\\modules\\member\\models\\MemberHistory' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberHistory.php',
         'app\\frontend\\modules\\member\\models\\MemberMiniAppModel' => __DIR__ . '/../..' . '/app/frontend/modules/member/models/MemberMiniAppModel.php',
@@ -3343,24 +3353,30 @@ class ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d
         'app\\frontend\\modules\\order\\controllers\\DisplayController' => __DIR__ . '/../..' . '/app/frontend/modules/order/controllers/DisplayController.php',
         'app\\frontend\\modules\\order\\controllers\\ListController' => __DIR__ . '/../..' . '/app/frontend/modules/order/controllers/ListController.php',
         'app\\frontend\\modules\\order\\controllers\\OrderDetail' => __DIR__ . '/../..' . '/app/frontend/modules/order/controllers/OrderDetail.php',
+        'app\\frontend\\modules\\order\\controllers\\OrderDetailController' => __DIR__ . '/../..' . '/app/frontend/modules/order/controllers/OrderDetailController.php',
         'app\\frontend\\modules\\order\\controllers\\PayController' => __DIR__ . '/../..' . '/app/frontend/modules/order/controllers/PayController.php',
         'app\\frontend\\modules\\order\\controllers\\TestController' => __DIR__ . '/../..' . '/app/frontend/modules/order/controllers/TestController.php',
         'app\\frontend\\modules\\order\\model\\OrderGroupModel' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/OrderGroupModel.php',
-        'app\\frontend\\modules\\order\\model\\OrderModel' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/OrderModel.php',
-        'app\\frontend\\modules\\order\\model\\PreGeneratedOrderModel' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/PreGeneratedOrderModel.php',
         'app\\frontend\\modules\\order\\model\\WaitPayOrderModel' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/WaitPayOrderModel.php',
         'app\\frontend\\modules\\order\\model\\behavior\\GenerateOrderByGoods' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/behavior/GenerateOrderByGoods.php',
-        'app\\frontend\\modules\\order\\model\\behavior\\OrderRefund' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/behavior/OrderRefund.php',
         'app\\frontend\\modules\\order\\model\\factory\\OrderModelFactory' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/factory/OrderModelFactory.php',
-        'app\\frontend\\modules\\order\\model\\factory\\PreGeneratedOrderModelFactory' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/factory/PreGeneratedOrderModelFactory.php',
-        'app\\frontend\\modules\\order\\model\\factory\\WaiPayOrderModelFactory' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/factory/WaiPayOrderModelFactory.php',
-        'app\\frontend\\modules\\order\\service\\OrderCancelPayService' => __DIR__ . '/../..' . '/app/frontend/modules/order/service/OrderCancelPayService.php',
-        'app\\frontend\\modules\\order\\service\\OrderCloseService' => __DIR__ . '/../..' . '/app/frontend/modules/order/service/OrderCloseService.php',
-        'app\\frontend\\modules\\order\\service\\OrderRefundService' => __DIR__ . '/../..' . '/app/frontend/modules/order/service/OrderRefundService.php',
-        'app\\frontend\\modules\\order\\service\\OrderService' => __DIR__ . '/../..' . '/app/frontend/modules/order/service/OrderService.php',
-        'app\\frontend\\modules\\services\\order\\OrderLogService' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/OrderLogService.php',
-        'app\\frontend\\modules\\services\\order\\OrderService' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/OrderService.php',
-        'app\\frontend\\modules\\services\\order\\PayTypeService' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/PayTypeService.php',
+        'app\\frontend\\modules\\order\\services\\OrderCancelPayService' => __DIR__ . '/../..' . '/app/frontend/modules/order/service/OrderCancelPayService.php',
+        'app\\frontend\\modules\\order\\services\\OrderCloseService' => __DIR__ . '/../..' . '/app/frontend/modules/order/service/OrderCloseService.php',
+        'app\\frontend\\modules\\order\\services\\OrderEmpty' => __DIR__ . '/../..' . '/app/frontend/modules/order/service/OrderEmpty.php',
+        'app\\frontend\\modules\\order\\services\\OrderLogService' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/OrderLogService.php',
+        'app\\frontend\\modules\\order\\services\\OrderRefundService' => __DIR__ . '/../..' . '/app/frontend/modules/order/service/OrderRefundService.php',
+        'app\\frontend\\modules\\order\\services\\OrderService' => __DIR__ . '/../..' . '/app/frontend/modules/order/service/OrderService.php',
+        'app\\frontend\\modules\\order\\services\\PayTypeService' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/PayTypeService.php',
+        'app\\frontend\\modules\\order\\services\\model\\OrderGroupModel' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/model/OrderGroupModel.php',
+        'app\\frontend\\modules\\order\\services\\model\\OrderModel' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/model/OrderModel.php',
+        'app\\frontend\\modules\\order\\services\\model\\PreGeneratedOrderModel' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/model/PreGeneratedOrderModel.php',
+        'app\\frontend\\modules\\order\\services\\model\\behavior\\Order' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/behavior/Order.php',
+        'app\\frontend\\modules\\order\\services\\model\\behavior\\OrderRefund' => __DIR__ . '/../..' . '/app/frontend/modules/order/model/behavior/OrderRefund.php',
+        'app\\frontend\\modules\\order\\services\\model\\factory\\PreGeneratedOrderModelFactory' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/model/factory/PreGeneratedOrderModelFactory.php',
+        'app\\frontend\\modules\\order\\services\\status\\StatusService' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/status/StatusService.php',
+        'app\\frontend\\modules\\order\\services\\status\\StatusServiceFactory' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/status/StatusServiceFactory.php',
+        'app\\frontend\\modules\\order\\services\\status\\WaitPay' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/status/WaitPay.php',
+        'app\\frontend\\modules\\services\\order\\OrderRefundService' => __DIR__ . '/../..' . '/app/frontend/modules/order/services/OrderRefundService.php',
         'app\\frontend\\modules\\shop\\model\\ShopModel' => __DIR__ . '/../..' . '/app/frontend/modules/shop/model/ShopModel.php',
         'app\\frontend\\modules\\shop\\service\\ShopService' => __DIR__ . '/../..' . '/app/frontend/modules/shop/service/ShopService.php',
         'phpDocumentor\\Reflection\\DocBlock' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock.php',
@@ -3429,10 +3445,10 @@ class ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit6ef6d29bbfcd641f2eadb591d7c5164d::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit47dd6bd9bed163cac62fe812eb7521f6::$classMap;
 
         }, null, ClassLoader::class);
     }
