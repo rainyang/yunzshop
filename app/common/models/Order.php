@@ -48,7 +48,7 @@ class Order extends BaseModel
     }
     public function getStatusService(){
         if(!isset($this->StatusService)){
-            $this->StatusService = StatusServiceFactory::createStatusService($this->status);
+            $this->StatusService = StatusServiceFactory::createStatusService($this);
         }
         return $this->StatusService;
     }
