@@ -15,6 +15,7 @@ class Order extends BaseModel
 {
     public $table = 'yz_order';
     private $StatusService;
+
     
     public static function getOrder($order_id, $uniacid)
     {
@@ -47,7 +48,7 @@ class Order extends BaseModel
     }
     public function getStatusService(){
         if(!isset($this->StatusService)){
-            $this->StatusService = StatusServiceFactory::createStatusService($this->StatusService);
+            $this->StatusService = StatusServiceFactory::createStatusService($this->status);
         }
         return $this->StatusService;
     }
