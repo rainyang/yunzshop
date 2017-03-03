@@ -178,6 +178,8 @@ return [
          */
         Laracasts\Flash\FlashServiceProvider::class, //提示消息
         Yajra\Datatables\DatatablesServiceProvider::class,
+        Orangehill\Iseed\IseedServiceProvider::class,
+        Adamkearsley\ConvertMigrations\ConvertMigrationsServiceProvider::class,
 
     ],
 

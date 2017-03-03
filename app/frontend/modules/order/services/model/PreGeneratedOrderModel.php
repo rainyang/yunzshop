@@ -2,9 +2,10 @@
 namespace app\frontend\modules\order\services\model;
 
 use app\common\models\Order;
-use app\frontend\modules\member\model\MemberModel;
+use app\common\models\Member;
+
 use app\frontend\modules\order\services\OrderService;
-use app\frontend\modules\shop\model\ShopModel;
+use app\frontend\modules\shop\services\models\ShopModel;
 
 class PreGeneratedOrderModel extends OrderModel
 {
@@ -29,7 +30,7 @@ class PreGeneratedOrderModel extends OrderModel
 
     }
 
-    public function setMemberModel(MemberModel $member_model)
+    public function setMemberModel(Member $member_model)
     {
         $this->member_model = $member_model;
     }
@@ -124,7 +125,7 @@ class PreGeneratedOrderModel extends OrderModel
         );
         echo '订单插入的数据为:';
         $this->id = 1;
-         var_dump($data);
+         var_dump($data);exit;
 
         return Order::insert($data);
     }

@@ -1,6 +1,7 @@
 <?php
 namespace  app\backend\controllers;
 
+use app\backend\modules\member\models\TestMember;
 use app\common\components\BaseController;
 use Illuminate\Support\Str;
 use Setting;
@@ -13,6 +14,17 @@ class TestController extends BaseController
     public function index()
     {
 
+        return $this->render('index');
+
+    }
+
+    public function test()
+    {
+        return widget('app\backend\widgets\MenuWidget',['test'=>'bbbbb']);
+    }
+
+    public function view()
+    {
         return view('test.index',['a'=>Str::random(10)]);
     }
 

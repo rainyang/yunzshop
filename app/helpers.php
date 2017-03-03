@@ -4,6 +4,12 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
 
+if(!function_exists('widget')){
+    function widget($class, $params = [])
+    {
+        return (new $class($params))->run();
+    }
+}
 if (! function_exists('assets')) {
 
     function assets($relativeUri)

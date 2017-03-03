@@ -92,10 +92,6 @@ class RegisterController extends BaseController
             return show_json(0, array('msg'=> '请填入手机号'));
         }
 
-        if (!$this->smsSendLimit()) {
-            return show_json(-1, array("msg" => "发送短信数量达到今日上限"));
-        }
-
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
         if(!empty($info))
@@ -109,13 +105,19 @@ class RegisterController extends BaseController
         session()->put('code_mobile', $mobile);
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
-        $issendsms = $this->sendSms($mobile, $code);
+
+        if (!$this->smsSendLimit()) {
+            return show_json(-1, array("msg" => "发送短信数量达到今日上限"));
+        } else {
+            $issendsms = $this->sendSms($mobile, $code);
+        }
         //print_r($issendsms);
 
         $set = m('common')->getSysset();
         //互亿无线
         if($set['sms']['type'] == 1){
             if($issendsms['SubmitResult']['code'] == 2){
+                $this->udpateSmsSendTotal();
                 return show_json(1);
             }
             else{
@@ -124,6 +126,7 @@ class RegisterController extends BaseController
         }
         else{
             if(isset($issendsms['result']['success'])){
+                $this->udpateSmsSendTotal();
                 return show_json(1);
             }
             else{
@@ -167,10 +170,6 @@ class RegisterController extends BaseController
      */
     private function _validate()
     {
-        if (!$this->smsSendLimit()) {
-             return show_json(-1, array("msg" => "发送短信数量达到今日上限"));
-        }
-
         $data = array(
             'mobile' => $this->mobile,
             'password' => $this->password,
@@ -204,6 +203,42 @@ class RegisterController extends BaseController
         $uniacid = \YunShop::app()->uniacid;
         $mobile = \YunShop::request()->mobile;
 
+        $mobile_info = smsSendLimitModel::getDaySmsSendNum($uniacid, $mobile);
+
+        if (!empty($mobile_info)) {
+            $update_time = $mobile_info['created_at'];
+            $total = $mobile_info['total'];
+
+            if (($update_time <= $curr_time)
+                && (data('Ymd', $curr_time) == data('Ymd', $update_time))
+                && $total < 5) {
+
+                return true;
+            }
+        } else {
+            $total = 0;
+        }
+
+        if ($total < 5) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * 更新发送短信条数
+     *
+     * 每天最多5条
+     */
+    private function udpateSmsSendTotal()
+    {
+        $curr_time = time();
+
+        $uniacid = \YunShop::app()->uniacid;
+        $mobile = \YunShop::request()->mobile;
+
         $mobile_info = smsSendLimitModel::getMobileInfo($uniacid, $mobile);
 
         if (!empty($mobile_info)) {
@@ -214,23 +249,26 @@ class RegisterController extends BaseController
                 if (data('Ymd', $curr_time) == data('Ymd', $update_time)) {
                     if ($total <= 4) {
                         ++$total;
-                        smsSendLimitModel::updateTotal(array($uniacid, $mobile), array($total));
-
-                        return true;
+                        smsSendLimitModel::updateData(array(
+                            'uniacid' => $uniacid,
+                            'mobile' => $mobile), array(
+                            'total' => $total));
                     }
                 } else {
-                    smsSendLimitModel::updateData(array($uniacid, $mobile), array(1, $curr_time));
-
-                    return true;
+                    smsSendLimitModel::updateData(array(
+                        'uniacid' => $uniacid,
+                        'mobile' => $mobile), array(
+                        'total' => 1,
+                        'created_at' => $curr_time));
                 }
             }
-
         } else {
-            smsSendLimitModel::insertData(array($uniacid, $mobile, 1, $curr_time));
-
-            return true;
+            smsSendLimitModel::insertData(array(
+                   'uniaid' => $uniacid,
+                   'mobile' => $mobile,
+                   'total' => 1,
+                   'created_at' => $curr_time)
+            );
         }
-
-        return false;
     }
 }
