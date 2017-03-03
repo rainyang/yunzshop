@@ -10,15 +10,9 @@ namespace app\frontend\modules\member\controllers;
 
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
-use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\models\MemberModel;
-use app\backend\modules\system\modules\SyssetModel;
-use app\frontend\modules\member\models\SubMemberModel;
+use app\frontend\modules\member\models\smsSendLimitModel;
 use Illuminate\Support\Str;
-use Illuminate\Cookie\CookieJar;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-
 
 class RegisterController extends BaseController
 {
@@ -33,14 +27,7 @@ class RegisterController extends BaseController
             show_json(1, array('member_id'=> session('member_id')));
         }
 
-        $type = \YunShop::request()->type;
-
-        //手机号注册
-        if ($type == 5) {
-            $this->process();
-        } else {
-            return show_json(0, 'api请求错误');
-        }
+        $this->process();
     }
 
     private function process()
@@ -56,38 +43,11 @@ class RegisterController extends BaseController
             $this->confirm_password = '123456';
         }
 
-        //访问来自app分享
-        $from = !empty(\YunShop::request()->from) ? \YunShop::request()->from : '';
-
-        $yzShopSet = array('isreferral'=>0); //m('common')->getSysset('shop');
-
-        $app = $this->getAppSet();
-
-        if (!(\YunShop::app()->isajax) && !(\YunShop::app()->ispost) && $this->_validate()) {
+        if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost) && $this->_validate()) {
             $member_info = MemberModel::getId($this->uniacid, $this->mobile);
 
             if (!empty($member_info)) {
-               // $cookieJar = new CookieJar();
-               // $cookieJar->queue(cookie('user_id', '00001'));
-             //   Cookie::queue('test', null , -1); // 销毁
-                return show_json(0, '该手机号已被注册！');
-            }
-
-            //判断APP,PC是否开启推荐码功能
-            if (is_app()) {
-                $isreferral = $app['accept'];
-            } else {
-                $isreferral = $yzShopSet['isreferral'];
-            }
-
-            if ($isreferral == 1 && !empty(\YunShop::request()->referral)) {
-                $referral = SubMemberModel::getInfo($this->uniacid, \YunShop::request()->referral);
-
-                if (!$referral) {
-                    return show_json(0, '推荐码无效！');
-                } else {
-                    $isreferraltrue = true;
-                }
+                return show_json(0, array('msg' => '该手机号已被注册'));
             }
 
             $default_groupid = pdo_fetchcolumn('SELECT groupid FROM ' .tablename('mc_groups') . ' WHERE uniacid = :uniacid AND isdefault = 1', array(':uniacid' => $this->uniacid));
@@ -98,7 +58,7 @@ class RegisterController extends BaseController
                 'groupid' => $default_groupid,
                 'createtime' => TIMESTAMP,
                 'nickname' => $this->mobile,
-                'avatar' => "http://".$_SERVER ['HTTP_HOST']. '/addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg',
+                'avatar' => SZ_YI_URL . 'template/mobile/default/static/images/photo-mr.jpg',
                 'gender' => 0,
                 'nationality' => '',
                 'resideprovince' => '',
@@ -108,28 +68,15 @@ class RegisterController extends BaseController
 
             $data['password'] = md5($this->password. $data['salt'] . \YunShop::app()->config['setting']['authkey']);
 
-            MemberModel::insertData($data);
+            $member_id = MemberModel::insertData($data);
 
-            //使用推荐码 SH20160520172508468878
-            $this->referral($isreferraltrue, $member_info, $referral);
-
-            $lifeTime = 24 * 3600 * 3;
             $cookieid = "__cookie_sz_yi_userid_{$this->uniacid}";
-            $response = new Response();
-            $response->withCookie(Cookie::make($cookieid, $member_info['uid'], $lifeTime));
+            Cookie::queue($cookieid, $member_id);
+            session()->put('member_id', $member_id);
 
-            if(empty($preUrl))
-            {
-                $preUrl =Url::app('shop.index');
-            }
-
-            if ($from == 'app') {
-                $preUrl = Url::app('shop.download');
-            }
-
-            return show_json(1, $preUrl);
+            return show_json(1, array('member_id', $member_id));
         } else {
-            return show_json(0, '手机号或密码格式错误！');
+            return show_json(0, array('msg' => '手机号或密码格式错误'));
         }
     }
 
@@ -138,24 +85,28 @@ class RegisterController extends BaseController
      *
      * @return array
      */
-    public function sendcode()
+    public function sendCode()
     {
         $mobile = \YunShop::request()->mobile;
         if(empty($mobile)){
-            return show_json(0, '请填入手机号');
+            return show_json(0, array('msg'=> '请填入手机号'));
+        }
+
+        if (!$this->smsSendLimit()) {
+            return show_json(-1, array("msg" => "发送短信数量达到今日上限"));
         }
 
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
         if(!empty($info))
         {
-            return show_json(0, '该手机号已被注册！不能获取验证码。');
+            return show_json(0, array('msg' => '该手机号已被注册！不能获取验证码'));
         }
         $code = rand(1000, 9999);
 
-        session(['codetime'=>time()]);
-        session(['code'=>$code]);
-        session(['code_mobile'=>$mobile]);
+        session()->put('codetime', time());
+        session()->put('code', $code);
+        session()->put('code_mobile', $mobile);
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
         $issendsms = $this->sendSms($mobile, $code);
@@ -168,7 +119,7 @@ class RegisterController extends BaseController
                 return show_json(1);
             }
             else{
-                return show_json(0, $issendsms['SubmitResult']['msg']);
+                return show_json(0, array('msg' => $issendsms['SubmitResult']['msg']));
             }
         }
         else{
@@ -176,7 +127,7 @@ class RegisterController extends BaseController
                 return show_json(1);
             }
             else{
-                return show_json(0, $issendsms['msg']. '/' . $issendsms['sub_msg']);
+                return show_json(0, array('msg' => $issendsms['msg']. '/' . $issendsms['sub_msg']));
             }
         }
     }
@@ -186,11 +137,11 @@ class RegisterController extends BaseController
      *
      * @return array
      */
-    public function checkcode()
+    public function checkCode()
     {
         $code = \YunShop::request()->code;
 
-        if((session(codetime)+60*5) < time()){
+        if((session('codetime')+60*5) < time()){
             return show_json(0, '验证码已过期,请重新获取');
         }
         if(session('code') != $code){
@@ -209,8 +160,17 @@ class RegisterController extends BaseController
         return !empty(session('member_id'));
     }
 
+    /**
+     * 验证手机号和密码
+     *
+     * @return bool
+     */
     private function _validate()
     {
+        if (!$this->smsSendLimit()) {
+             return show_json(-1, array("msg" => "发送短信数量达到今日上限"));
+        }
+
         $data = array(
             'mobile' => $this->mobile,
             'password' => $this->password,
@@ -233,18 +193,44 @@ class RegisterController extends BaseController
     }
 
     /**
-     * 获取app设置信息
+     * 短信发送限制
      *
-     * @return mixed
+     * 每天最多5条
      */
-    private function getAppSet()
+    private function smsSendLimit()
     {
-        //获取APP参数设置
-        if (is_app()) {
-            $setdata = SyssetModel::getSysInfo(\YunShop::app()->uniacid);
-            $set     = unserialize($setdata['sets']);
+        $curr_time = time();
 
-            return $set['app']['base'];
+        $uniacid = \YunShop::app()->uniacid;
+        $mobile = \YunShop::request()->mobile;
+
+        $mobile_info = smsSendLimitModel::getMobileInfo($uniacid, $mobile);
+
+        if (!empty($mobile_info)) {
+            $update_time = $mobile_info['created_at'];
+            $total = $mobile_info['total'];
+
+            if ($update_time <= $curr_time) {
+                if (data('Ymd', $curr_time) == data('Ymd', $update_time)) {
+                    if ($total <= 4) {
+                        ++$total;
+                        smsSendLimitModel::updateTotal(array($uniacid, $mobile), array($total));
+
+                        return true;
+                    }
+                } else {
+                    smsSendLimitModel::updateData(array($uniacid, $mobile), array(1, $curr_time));
+
+                    return true;
+                }
+            }
+
+        } else {
+            smsSendLimitModel::insertData(array($uniacid, $mobile, 1, $curr_time));
+
+            return true;
         }
+
+        return false;
     }
 }

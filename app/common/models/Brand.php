@@ -1,7 +1,7 @@
 <?php
 namespace app\common\models;
 
-use app\common\models\BaseModel;
+use app\backend\models\BackendModel;
 /**
  * Created by PhpStorm.
  * User: yanglei
@@ -9,7 +9,7 @@ use app\common\models\BaseModel;
  * Time: 上午9:11
  */
 
-class Brand extends BaseModel
+class Brand extends BackendModel
 {
     public $table = 'yz_brand';
 
