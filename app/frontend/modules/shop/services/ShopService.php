@@ -6,10 +6,10 @@
  * Time: 下午5:52
  */
 
-namespace app\frontend\modules\shop\service;
+namespace app\frontend\modules\shop\services;
 
 
-use app\frontend\modules\shop\model\ShopModel;
+use app\frontend\modules\shop\services\models\ShopModel;
 
 class ShopService
 {

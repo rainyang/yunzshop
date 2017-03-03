@@ -10,9 +10,10 @@
 namespace app\frontend\modules\order\services;
 
 use app\common\models\Order;
+use app\common\models\Member;
+
 use app\frontend\modules\goods\model\factory\PreGeneratedOrderGoodsModelFactory;
 use app\frontend\modules\goods\model\GoodsModel;
-use app\frontend\modules\member\model\MemberModel;
 use app\frontend\modules\order\services\model\factory\OrderModelFactory;
 use app\frontend\modules\order\services\model\factory\PreGeneratedOrderModelFactory;
 use app\frontend\modules\goods\model\Goods;
@@ -22,7 +23,7 @@ use app\frontend\modules\shop\model\ShopModel;
 class OrderService
 {
     //预下单
-    public static function getPreCreateOrder(array $order_goods_models,MemberModel $member_model=null,ShopModel $shop_model=null){
+    public static function getPreCreateOrder(array $order_goods_models,Member $member_model=null,ShopModel $shop_model=null){
         $order_model = (new PreGeneratedOrderModelFactory())->createOrderModel($order_goods_models);
         if(isset($member_model)){
             $order_model->setMemberModel($member_model);
