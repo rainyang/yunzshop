@@ -15,19 +15,16 @@ class Discount extends BaseModel
 {
     public $table = 'yz_goods_discount';
 
-    public static function getGoodsDiscountInfo($goodsId)
+    public static function getGoodsDiscountList($goodsId)
     {
         $goodsDiscountInfo = self::where('goods_id', $goodsId)
-            ->first();
+            ->get();
         return $goodsDiscountInfo;
     }
 
     public static function validationMessages()
     {
         return [
-            'required' => ' :attribute不能为空!',
-
-
 
         ];
     }
@@ -41,9 +38,8 @@ class Discount extends BaseModel
     public static function validator($data)
     {
         $validator = Validator::make($data, [
-            'goods_id' => 'required',
-            'level_discount_type' => 'integer',
-            'discount_method' => 'integer',
+            'level_discount_type' => 'confirmed',
+            'discount_method' => 'confirmed',
         ], self::validationMessages());
 
         return $validator;
