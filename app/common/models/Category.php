@@ -2,8 +2,6 @@
 
 namespace app\common\models;
 
-use app\common\models\BaseModel;
-
 /**
  * Created by PhpStorm.
  * User: yanglei
@@ -23,9 +21,10 @@ class Category extends BaseModel
 
     public static function getCategoryList($uniacid, $parent_id)
     {
-        return self::where('uniacid', $uniacid)
+        return static::where('uniacid', $uniacid)
             ->where('parent_id', $parent_id)
-            ->orderBy('id', 'asc');
+            ->orderBy('id', 'asc')
+            ->get();
     }
     /**
      * @param $uniacid

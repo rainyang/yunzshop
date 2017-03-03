@@ -11,9 +11,14 @@ namespace app\backend\modules\member\models;
 
 class Member extends \app\common\models\Member
 {
-    public static function getMemberlist($uniacid)
+    public static function getMemberlist()
     {
-        $memberList = Member::where('uniacid', $uniacid)->get()->toArray();
+        $memberList = Member::where('uniacid', \YunShop::app()->uniacid)->get()->toArray();
         return $memberList;
+    }
+
+    public function yzMember()
+    {
+        return $this->hasOne('app\backend\modules\member\models\MemberShopInfo','member_id','uid');
     }
 }

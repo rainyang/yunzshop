@@ -250,7 +250,7 @@ function send_sms($account, $pwd, $mobile, $code, $type = 'check', $name = '', $
 function send_sms_alidayu($mobile, $code, $templateType)
 {
     $set = m('common')->getSysset();
-    include IA_ROOT . "/addons/sz_yi/alifish/TopSdk.php";
+    include IA_ROOT . "/addons/sz_yi/core/alifish/TopSdk.php";
     //$appkey = '23355246';
     //$secret = '0c34a4887d2f52a6365a266bb3b38d25';
 
