@@ -16,6 +16,7 @@ class RefundOrderService
     public $raid;
     public $message;
     public $order;
+    public $order_refund;
 
     function __construct()
     {
@@ -25,17 +26,17 @@ class RefundOrderService
 
     public function refund($order)
     {
-        $this->order_id = $order['id'];
+        $this->order_id = $order->id;
         if (empty($order['refundstate'])) {
             message('订单未申请退款，不需处理');
         }
-        $this->order = Order::find($order['id']);
-        $order_refund = OrderRefund::find($order['refundid']);
-        if (empty($order_refund)) {
+        $this->order = $order;
+        $this->order_refund = OrderRefund::find($order->refundid);
+        if (!$this->order_refund) {
             $this->order->refundstate = 0;
             $this->order->save();
         }
-        if (empty($order_refund['refundno'])) {
+        if ($this->order_refund->refundno) {
             $this->order->refundno = m('common')->createNO('order_refund', 'refundno', 'SR');
             $this->order->save();
         }
@@ -47,13 +48,13 @@ class RefundOrderService
                 $this->waitingHandle();
                 break;
             case '3':
-                $this->refundAndReturnGoods($order['refundid']);
+                $this->refundAndReturnGoods();
                 break;
             case '-1':
-                $this->rejectApply($refundcontent, $order['refundid']);
+                $this->rejectApply($refundcontent);
                 break;
             case '1':
-                $this->passRefund($order['refundid']);
+                $this->passRefund();
                 break;
             case '2':
                 $this->manualRefund();
@@ -68,40 +69,37 @@ class RefundOrderService
     }
 
     //同意退款，并要求客户把商品寄回
-    private function refundAndReturnGoods($order_refund_id)
+    private function refundAndReturnGoods()
     {
-        $order_refund = OrderRefund::find($order_refund_id);
-        $order_refund->reply = '';
-        $order_refund->refundaddressid = $this->raid;
-        $order_refund->message = $this->message;
-        if (empty($order_refund['operatetime'])) {
-            $order_refund->operatetime = time();
+        $this->order_refund->reply = '';
+        $this->order_refund->refundaddressid = $this->raid;
+        $this->order_refund->message = $this->message;
+        if (!$this->order_refund->operatetime) {
+            $this->order_refund->operatetime = time();
         }
-        if ($order_refund['status'] != 4) {
-            $order_refund->status = 3;
+        if ($this->order_refund['status'] != 4) {
+            $this->order_refund->status = 3;
         }
-        $order_refund->save();
+        $this->order_refund->save();
     }
 
     //驳回申请
-    private function rejectApply($refundcontent, $order_refund_id)
+    private function rejectApply($refundcontent)
     {
-        $order_refund = OrderRefund::find($order_refund_id);
-        $order_refund->reply = $refundcontent;
-        $order_refund->status = -1;
-        $order_refund->save();
+        $this->order_refund->reply = $refundcontent;
+        $this->order_refund->status = -1;
+        $this->order_refund->save();
     }
 
     //手动退款
-    private function manualRefund($order_refund_id)
+    private function manualRefund()
     {
-        $order_refund = OrderRefund::find($order_refund_id);
-        $order_refund->reply = '';
-        $order_refund->status = 1;
-        $order_refund->refundtype = 2;
-        $order_refund->price = $order_refund['applyprice'];
-        $order_refund->refundtime = time();
-        $order_refund->save();
+        $this->order_refund->reply = '';
+        $this->order_refund->status = 1;
+        $this->order_refund->refundtype = 2;
+        $this->order_refund->price = $this->order_refund->applyprice;
+        $this->order_refund->refundtime = time();
+        $this->order_refund->save();
 
         $this->order->refundstate = 0;
         $this->order->status = -1;
@@ -111,16 +109,15 @@ class RefundOrderService
     }
 
     //同意退款
-    private function passRefund($order_refund_id)
+    private function passRefund()
     {
         //退款需要支付接口，扣除积分，扣除余额
-        $order_refund = OrderRefund::find($order_refund_id);
-        $order_refund->reply = '';
-        $order_refund->status = 1;
-        $order_refund->refundtype = 0;
-        $order_refund->price = $order_refund->applyprice;
-        $order_refund->refundtime = time();
-        $order_refund->save();
+        $this->order_refund->reply = '';
+        $this->order_refund->status = 1;
+        $this->order_refund->refundtype = 0;
+        $this->order_refund->price = $this->order_refund->applyprice;
+        $this->order_refund->refundtime = time();
+        $this->order_refund->save();
         //通过订单id去查order_goods表和goods表  取出g.id,g.credit, o.total,o.realprice，给商品加库存
     }
 }
