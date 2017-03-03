@@ -22,9 +22,8 @@ class OrderReceive
 
     public function receive()
     {
-        Order::update(['status' => 3])
-            ->where('shop_id', '=', $this->order_model['shop_id'])
-            ->where('id', '=', $this->order_model['id']);
+        $this->order_model->status = 3;
+        return $this->order_model->save();
     }
 
     public function receiveable()
@@ -32,5 +31,6 @@ class OrderReceive
         if ($this->order_model['status'] == 2) {
             return true;
         }
+        return false;
     }
 }

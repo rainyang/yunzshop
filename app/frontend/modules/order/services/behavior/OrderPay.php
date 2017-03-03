@@ -22,9 +22,8 @@ class OrderPay
 
     public function pay()
     {
-        Order::update(['status' => 1])
-            ->where('shop_id', '=', $this->order_model['shop_id'])
-            ->where('id', '=', $this->order_model['id']);
+        $this->order_model->status = 1;
+        return $this->order_model->save();
     }
 
     public function payable()
@@ -32,5 +31,6 @@ class OrderPay
         if ($this->order_model['status'] == 0) {
             return true;
         }
+        return false;
     }
 }

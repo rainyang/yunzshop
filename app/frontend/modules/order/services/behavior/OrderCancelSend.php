@@ -18,17 +18,15 @@ class OrderCancelSend
 
     public function cancelSend()
     {
-        Order::where('shop_id', $this->order_model['shop_id'])
-            ->where('id', $this->order_model['id'])
-            ->update(['status' => 1]);
+        $this->order_model->status = 1;
+        return $this->order_model->save();
     }
 
     public function cancelSendable()  //todo isValid()?
     {
         if ($this->order_model['status'] == 2) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

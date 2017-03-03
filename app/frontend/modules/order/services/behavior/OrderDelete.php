@@ -21,9 +21,7 @@ class OrderDelete
 
     public function delete()
     {
-        Order::where('shop_id', '=', $this->order_model['shop_id'])
-            ->where('id', '=', $this->order_model['id'])
-            ->delete();
+        return $this->order_model->destroy($this->order_model->id);
     }
 
     public function deleteable()
@@ -31,5 +29,6 @@ class OrderDelete
         if ($this->order_model['status'] == -1 || $this->order_model['status'] == 3) {
             return true;
         }
+        return false;
     }
 }

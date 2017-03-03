@@ -21,9 +21,8 @@ class OrderClose
 
     public function close()
     {
-        Order::update(['status' => -1])
-            ->where('shop_id', '=', $this->order_model['shop_id'])
-            ->where('id', '=', $this->order_model['id']);
+        $this->order_model->status = -1;
+        return $this->order_model->save();
     }
 
     public function closeable()
@@ -31,5 +30,6 @@ class OrderClose
         if ($this->order_model['status'] == 0) {
             return true;
         }
+        return false;
     }
 }
