@@ -13,5 +13,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberGroup extends Model
 {
-    public $table = 'yz_member_group';
+    protected $table = 'yz_member_group';
+    /**
+     * Get member group information by groupId
+     *
+     * @param array $data
+     *
+     * @return 1 or 0
+     * */
+    protected static function getMemberGroupByGroupID($groupId)
+    {
+        return static::where('id', $groupId)->first(1)->toArray();
+    }
+
 }

@@ -11,41 +11,88 @@ namespace app\backend\modules\goods\models;
  */
 class Category extends \app\common\models\Category
 {
+    public $timestamps = false;
 
-    /**
-     * @param $category 分类数组
-     * @param $uniacid
-     */
-    public static function editAllCategorys($categorys, $uniacid)
+    public static function getAllCategory()
     {
-        //@todo 事务处理
-        foreach ($categorys as $category) {
-            self::where('uniacid', $uniacid)
-                ->where('id', $category['id'])
-                ->update(['parent_id' => $category['parent_id'], 'display_order' => $category['display_order'], 'level' => $category['level']]);
-        }
+        return self::uniacid()
+            ->orderBy('id', 'asc')
+            ->get();
     }
 
-    /**
-     * @param $ids array
-     * @param $uniacid
-     * @return mixed
-     */
-    public static function delCategorys($ids, $uniacid)
+    public static function getAllCategoryGroup()
     {
-        $data = self::whereNotIn('id', $ids)
-            ->where('uniacid', $uniacid)
-            ->delete();
-        return $data;
+        $categorys = self::getAllCategory();
+
+        $categoryMenus['parent'] = $categoryMenus['children'] = [];
+        foreach ($categorys as $category)
+        {
+            !empty($category['parent_id']) ?
+                $categoryMenus['children'][$category['parent_id']][] = $category :
+                $categoryMenus['parent'][$category['id']] = $category;
+        }
+
+        return $categoryMenus;
+    }
+
+    public static function saveAddCategory($category)
+    {
+        return self::insert($category);
     }
 
     /**
      * @param $category
+     * @param $id
      * @return mixed
      */
-    public static function saveAddCategory($category)
+    public static function saveEditCategory($category, $id)
     {
-        $data = self::insert($category);
-        return $data;
+        return self::where('id', $id)
+            ->update($category);
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Model|null|static
+     */
+    public static function getCategory($id)
+    {
+        return self::where('id', $id)
+            ->first()
+            ->toArray();
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public static function daletedCategory($id)
+    {
+        return self::where('id', $id)
+            ->orWhere('parent_id', $id)
+            ->delete();
+    }
+
+    /**
+     *  定义字段名
+     * 可使
+     * @return array
+     */
+    public static function atributeNames()
+    {
+        return [
+            'name' => '分类名称',
+        ];
+    }
+
+    /**
+     * 字段规则
+     * @return array
+     */
+    public static function rules()
+    {
+        return [
+            'name' => 'required',
+        ];
     }
 }

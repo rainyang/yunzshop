@@ -10,87 +10,150 @@ namespace app\backend\modules\goods\services;
 
 class CategoryService
 {
-    /**
-     * @param $categorys array
-     * @return mixed
-     */
-    public static function getLists($categorys)
+
+    public static function tpl_form_field_category_level3($name, $parents, $children, $parentid, $childid, $thirdid)
     {
-        foreach ($categorys as $row) {
-            if (empty($row->parent_id)) {
-                $data[parents][] = $row;
-            } else {
-                $data[childrens][$row['parent_id']][] = $row;
+        $html = '
+<script type="text/javascript">
+	window._' . $name . ' = ' . json_encode($children) . ';
+</script>';
+        if (!defined('TPL_INIT_CATEGORY_THIRD')) {
+            $html .= '
+<script type="text/javascript">
+	function renderCategoryThird(obj, name){
+		var index = obj.options[obj.selectedIndex].value;
+		require([\'jquery\', \'util\'], function($, u){
+			$selectChild = $(\'#\'+name+\'_child\');
+                                                      $selectThird = $(\'#\'+name+\'_third\');
+			var html = \'<option value="0">请选择二级分类</option>\';
+                                                      var html1 = \'<option value="0">请选择三级分类</option>\';
+			if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
+				$selectChild.html(html);
+                                                                        $selectThird.html(html1);
+				return false;
+			}
+			for(var i=0; i< window[\'_\'+name][index].length; i++){
+				html += \'<option value="\'+window[\'_\'+name][index][i][\'id\']+\'">\'+window[\'_\'+name][index][i][\'name\']+\'</option>\';
+			}
+			$selectChild.html(html);
+                                                    $selectThird.html(html1);
+		});
+	}
+        function renderCategoryThird1(obj, name){
+		var index = obj.options[obj.selectedIndex].value;
+		require([\'jquery\', \'util\'], function($, u){
+			$selectChild = $(\'#\'+name+\'_third\');
+			var html = \'<option value="0">请选择三级分类</option>\';
+			if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
+				$selectChild.html(html);
+				return false;
+			}
+			for(var i=0; i< window[\'_\'+name][index].length; i++){
+				html += \'<option value="\'+window[\'_\'+name][index][i][\'id\']+\'">\'+window[\'_\'+name][index][i][\'name\']+\'</option>\';
+			}
+			$selectChild.html(html);
+		});
+	}
+</script>
+			';
+            define('TPL_INIT_CATEGORY_THIRD', true);
+        }
+        $html .= '<div class="row row-fix tpl-category-container">
+	<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+		<select class="form-control tpl-category-parent" id="' . $name . '_parent" name="' . $name . '[parentid]" onchange="renderCategoryThird(this,\'' . $name . '\')">
+			<option value="0">请选择一级分类</option>';
+        $ops = '';
+        foreach ($parents as $row) {
+            $html .= '
+			<option value="' . $row['id'] . '" ' . (($row['id'] == $parentid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
+        }
+        $html .= '
+		</select>
+	</div>
+	<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+		<select class="form-control tpl-category-child" id="' . $name . '_child" name="' . $name . '[childid]" onchange="renderCategoryThird1(this,\'' . $name . '\')">
+			<option value="0">请选择二级分类</option>';
+        if (!empty($parentid) && !empty($children[$parentid])) {
+            foreach ($children[$parentid] as $row) {
+                $html .= '
+			<option value="' . $row['id'] . '"' . (($row['id'] == $childid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
             }
         }
-        return $data;
+        $html .= '
+		</select>
+	</div>
+                  <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+		<select class="form-control tpl-category-child" id="' . $name . '_third" name="' . $name . '[thirdid]">
+			<option value="0">请选择三级分类</option>';
+        if (!empty($childid) && !empty($children[$childid])) {
+            foreach ($children[$childid] as $row) {
+                $html .= '
+			<option value="' . $row['id'] . '"' . (($row['id'] == $thirdid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
+            }
+        }
+        $html .= '</select>
+	</div>
+</div>';
+        return $html;
     }
 
-    /**
-     * @param $categorys array
-     * @param $uniacid
-     * @return mixed
-     */
-    public static function saveCategory($categorys, $uniacid)
+    public static function tpl_form_field_category_level2($name, $parents, $children, $parentid, $childid)
     {
-        if( isset($categorys['parent_id']) ) {
-            //子分类
-        } else {
-            $categorys['uniacid'] = $uniacid;
-            $categorys['level'] = '1';
-        }
-        return $categorys;
-    }
-    
-    /**
-     * @param $categorys json [{"id":1,"children":[{"id":8}]}]
-     * @return mixed
-     */
-    public static function processCategory($categorys)
-    {
-        ca('shop.category.edit');
-        if (empty($categorys)) {
-            message('分类保存失败，请重试!', '', 'error');
-        }
-        $categorys = json_decode(html_entity_decode($categorys), true);
-        if (!is_array($categorys)) {
-            message('分类保存失败，请重试!', '', 'error');
-        }
-        $displayorder = count($categorys);
-        $datas = [];
-        foreach ($categorys as $category) {
-            $datas['cateids'][] = $category['id'];
-            $datas['parents'][$category['id']]['id'] = $category['id'];
-            $datas['parents'][$category['id']]['parent_id'] = '0';
-            $datas['parents'][$category['id']]['display_order'] = $displayorder;
-            $datas['parents'][$category['id']]['level'] = '1';
-
-            if ($category['children'] && is_array($category['children'])) {
-                $displayorder_child = count($category['children']);
-                foreach ($category['children'] as $child) {
-                    $datas['cateids'][] = $child['id'];
-                    $datas['childrens'][$child['id']]['id'] = $child['id'];
-                    $datas['childrens'][$child['id']]['parent_id'] = $category['id'];
-                    $datas['childrens'][$child['id']]['display_order'] = $displayorder_child;
-                    $datas['childrens'][$child['id']]['level'] = '2';
-
-                    if ($child['children'] && is_array($child['children'])) {
-                        $displayorder_third = count($child['children']);
-                        foreach ($child['children'] as $third) {
-                            $datas['cateids'][] = $third['id'];
-                            $datas['thirds'][$third['id']]['id'] = $third['id'];
-                            $datas['thirds'][$third['id']]['parent_id'] = $child['id'];
-                            $datas['thirds'][$third['id']]['display_order'] = $displayorder_third;
-                            $datas['thirds'][$third['id']]['level'] = '3';
-                            $displayorder_third--;
-                        }
+        $html = '
+        <script type="text/javascript">
+            window._' . $name . ' = ' . json_encode($children) . ';
+        </script>';
+        if (!defined('TPL_INIT_CATEGORY')) {
+            $html .= '
+        <script type="text/javascript">
+            function renderCategory(obj, name){
+                var index = obj.options[obj.selectedIndex].value;
+                require([\'jquery\', \'util\'], function($, u){
+                    $selectChild = $(\'#\'+name+\'_child\');
+                    var html = \'<option value="0">请选择二级分类</option>\';
+                    if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
+                        $selectChild.html(html);
+                        return false;
                     }
-                    $displayorder_child--;
-                }
+                    for(var i=0; i< window[\'_\'+name][index].length; i++){
+                        html += \'<option value="\'+window[\'_\'+name][index][i][\'id\']+\'">\'+window[\'_\'+name][index][i][\'name\']+\'</option>\';
+                    }
+                    $selectChild.html(html);
+                });
             }
-            $displayorder--;
+        </script>
+                    ';
+            define('TPL_INIT_CATEGORY', true);
         }
-        return $datas;
 
+        $html .=
+            '<div class="row row-fix tpl-category-container">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <select class="form-control tpl-category-parent" id="' . $name . '_parent" name="' . $name . '[parentid]" onchange="renderCategory(this,\'' . $name . '\')">
+                    <option value="0">请选择一级分类</option>';
+        $ops = '';
+        foreach ($parents as $row) {
+            $html .= '
+                    <option value="' . $row['id'] . '" ' . (($row['id'] == $parentid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
+        }
+        $html .= '
+                </select>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <select class="form-control tpl-category-child" id="' . $name . '_child" name="' . $name . '[childid]">
+                    <option value="0">请选择二级分类</option>';
+        if (!empty($parentid) && !empty($children[$parentid])) {
+            foreach ($children[$parentid] as $row) {
+                $html .= '
+                    <option value="' . $row['id'] . '"' . (($row['id'] == $childid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
+            }
+        }
+        $html .= '
+                </select>
+            </div>
+        </div>
+    ';
+        return $html;
     }
+
 }

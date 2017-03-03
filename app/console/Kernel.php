@@ -1,6 +1,7 @@
 <?php
 
 namespace app\console;
+defined('IN_IA') or define('IN_IA',true);
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;

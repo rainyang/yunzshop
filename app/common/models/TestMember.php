@@ -45,6 +45,8 @@ class TestMember extends  BaseModel
      */
     protected $visible = ['first_name', 'last_name'];
 
+    public $goodsForm = [];
+
     /**
      * 自定义字段名
      * 可使用
@@ -64,6 +66,7 @@ class TestMember extends  BaseModel
      */
     public static function rules()
     {
+
         return [
             'title' => 'required|unique:posts|max:255',
             'body' => 'required|min:3',

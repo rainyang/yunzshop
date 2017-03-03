@@ -108,4 +108,67 @@ class ImageHelper
 		</div>';
         return $s;
     }
+    
+    /**
+     * 批量上传图片
+     * @param string $name 表单input名称
+     * @param array $value 附件路径信息
+     * @param array $options  自定义图片上传路径
+     * @return string
+     */
+    public static function tplFormFieldMultiImage($name, $value = array(), $options = array()) {
+        global $_W;
+        $options['multiple'] = true;
+        $options['direct'] = false;
+        $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['image']['limit']) * 1024;
+        if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
+            if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
+                exit('图片上传目录错误,只能指定最多两级目录,如: "we7_store","we7_store/d1"');
+            }
+        }
+        $s = '';
+        if (!defined('TPL_INIT_MULTI_IMAGE')) {
+            $s = '
+<script type="text/javascript">
+	function uploadMultiImage(elm) {
+		var name = $(elm).next().val();
+		util.image( "", function(urls){
+			$.each(urls, function(idx, url){
+				$(elm).parent().parent().next().append(\'<div class="multi-item"><img onerror="this.src=\\\'./resource/images/nopic.jpg\\\'; this.title=\\\'图片未找到.\\\'" src="\'+url.url+\'" class="img-responsive img-thumbnail"><input type="hidden" name="\'+name+\'[]" value="\'+url.attachment+\'"><em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em></div>\');
+			});
+		}, ' . json_encode($options) . ');
+	}
+	function deleteMultiImage(elm){
+		require(["jquery"], function($){
+			$(elm).parent().remove();
+		});
+	}
+</script>';
+            define('TPL_INIT_MULTI_IMAGE', true);
+        }
+
+        $s .= <<<EOF
+<div class="input-group">
+	<input type="text" class="form-control" readonly="readonly" value="" placeholder="批量上传图片" autocomplete="off">
+	<span class="input-group-btn">
+		<button class="btn btn-default" type="button" onclick="uploadMultiImage(this);">选择图片</button>
+		<input type="hidden" value="{$name}" />
+	</span>
+</div>
+<div class="input-group multi-img-details">
+EOF;
+        if (is_array($value) && count($value) > 0) {
+            foreach ($value as $row) {
+                $s .= '
+<div class="multi-item">
+	<img src="' . tomedia($row) . '" onerror="this.src=\'./resource/images/nopic.jpg\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail">
+	<input type="hidden" name="' . $name . '[]" value="' . $row . '" >
+	<em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em>
+</div>';
+            }
+        }
+        $s .= '</div>';
+
+        return $s;
+    }
 }
