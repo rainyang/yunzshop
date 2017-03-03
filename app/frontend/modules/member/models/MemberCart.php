@@ -11,6 +11,10 @@ namespace app\frontend\modules\member\models;
 
 class MemberCart extends \app\common\models\MemberCart
 {
+    public static function getMemberCartList($memberId)
+    {
+        return static::uniacid()->where('member_id', $memberId)->get()->toArray();
+    }
     /**
      * Add merchandise to shopping cart
      *
