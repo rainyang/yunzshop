@@ -11,7 +11,7 @@ namespace app\frontend\modules\member\controllers;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\frontend\modules\member\models\MemberModel;
-use app\frontend\models\Member;
+use app\frontend\models\MemberModel as Member;
 use app\common\models\MemberGroup;
 use Illuminate\Support\Str;
 use Setting;
@@ -20,7 +20,7 @@ class RegisterController extends BaseController
 {
     public function index()
     {
-        if ($this->isLogged()) {
+        if (Member::isLogged()) {
             show_json(1, array('member_id'=> session('member_id')));
         }
 
@@ -30,8 +30,6 @@ class RegisterController extends BaseController
         $uniacid  = \YunShop::app()->uniacid;
 
         if (SZ_YI_DEBUG) {
-            $value = Setting::get('shop.sms');
-            echo '<pre>';print_r($value);exit;
             $mobile   = '15046101651';
             $password = '123456';
             $confirm_password = '123456';
@@ -100,32 +98,10 @@ class RegisterController extends BaseController
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
-        if (!Memeber::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
+        if (!Member::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return show_json(-1, array("msg" => "发送短信数量达到今日上限"));
         } else {
-            $issendsms = $this->sendSms($mobile, $code);
-        }
-        //print_r($issendsms);
-
-        $set = m('common')->getSysset();
-        //互亿无线
-        if($set['sms']['type'] == 1){
-            if($issendsms['SubmitResult']['code'] == 2){
-                Member::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
-                return show_json(1);
-            }
-            else{
-                return show_json(0, array('msg' => $issendsms['SubmitResult']['msg']));
-            }
-        }
-        else{
-            if(isset($issendsms['result']['success'])){
-                Member::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
-                return show_json(1);
-            }
-            else{
-                return show_json(0, array('msg' => $issendsms['msg']. '/' . $issendsms['sub_msg']));
-            }
+            $this->sendSms($mobile, $code);
         }
     }
 
@@ -148,22 +124,39 @@ class RegisterController extends BaseController
     }
 
     /**
-     * 用户是否登录
+     * 发送短信
      *
-     * @return bool
+     * @param $mobile
+     * @param $code
+     * @param string $templateType
+     * @return array|mixed
      */
-    public function isLogged()
-    {
-        return !empty(session('member_id'));
-    }
-
     public function sendSms($mobile, $code, $templateType = 'reg')
     {
-        $set = m('common')->getSysset();
-        if ($set['sms']['type'] == 1) {
-            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code);
+        $sms = Setting::get('shop.sms');
+
+        //互亿无线
+        if ($sms['type'] == 1) {
+            $issendsms = send_sms($sms['account'], $sms['password'], $mobile, $code);
+
+            if($issendsms['SubmitResult']['code'] == 2){
+                Member::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
+                return show_json(1);
+            }
+            else{
+                return show_json(0, array('msg' => $issendsms['SubmitResult']['msg']));
+            }
+
         } else {
-            return send_sms_alidayu($mobile, $code, $templateType);
+            $issendsms = Member::send_sms_alidayu($sms, $mobile, $code, $templateType);
+
+            if(isset($issendsms['result']['success'])){
+                Member::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
+                return show_json(1);
+            }
+            else{
+                return show_json(0, array('msg' => $issendsms['msg']. '/' . $issendsms['sub_msg']));
+            }
         }
     }
 }
