@@ -9,9 +9,8 @@
 namespace app\common\models;
 
 
-use Illuminate\Database\Eloquent\Model;
 
-class MemberGroup extends Model
+class MemberGroup extends BaseModel
 {
     protected $table = 'yz_member_group';
     /**
