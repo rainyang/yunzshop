@@ -180,6 +180,7 @@ return [
         Yajra\Datatables\DatatablesServiceProvider::class,
         Orangehill\Iseed\IseedServiceProvider::class,
         Adamkearsley\ConvertMigrations\ConvertMigrationsServiceProvider::class,
+        iscms\Alisms\AlidayuServiceProvider::class,//阿里大鱼
 
     ],
 
