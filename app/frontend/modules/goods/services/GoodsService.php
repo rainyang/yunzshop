@@ -1,6 +1,6 @@
 <?php
-namespace app\frontend\modules\goods\service;
-use app\frontend\modules\goods\model\factory\GoodsModelFactory;
+namespace app\frontend\modules\goods\services;
+use app\frontend\modules\goods\services\models\factory\GoodsModelFactory;
 
 /**
  * Created by PhpStorm.

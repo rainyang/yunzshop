@@ -12,13 +12,13 @@ namespace app\frontend\modules\order\services;
 use app\common\models\Order;
 use app\common\models\Member;
 
-use app\frontend\modules\goods\model\factory\PreGeneratedOrderGoodsModelFactory;
-use app\frontend\modules\goods\model\GoodsModel;
+use app\frontend\modules\goods\services\models\factory\PreGeneratedOrderGoodsModelFactory;
+use app\frontend\modules\goods\services\models\GoodsModel;
 use app\frontend\modules\order\services\model\factory\OrderModelFactory;
 use app\frontend\modules\order\services\model\factory\PreGeneratedOrderModelFactory;
-use app\frontend\modules\goods\model\Goods;
+use app\frontend\modules\goods\services\models\Goods;
 use app\frontend\modules\order\services\model\PreGeneratedOrderGoodsModel;
-use app\frontend\modules\shop\model\ShopModel;
+use app\frontend\modules\shop\services\models\ShopModel;
 
 class OrderService
 {

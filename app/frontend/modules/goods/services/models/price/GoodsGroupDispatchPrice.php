@@ -5,7 +5,7 @@
  * Date: 2017/2/24
  * Time: 下午2:03
  */
-namespace app\frontend\modules\goods\model\Price;
+namespace app\frontend\modules\goods\services\models\Price;
 
 class GoodsGroupDispatchPrice
 {

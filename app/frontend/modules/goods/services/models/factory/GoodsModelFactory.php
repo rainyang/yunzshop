@@ -5,10 +5,10 @@
  * Date: 2017/2/23
  * Time: 上午11:16
  */
-namespace app\frontend\modules\goods\model\factory;
+namespace app\frontend\modules\goods\services\models\factory;
 
 use app\common\models\Goods;
-use app\frontend\modules\goods\model\GoodsModel;
+use app\frontend\modules\goods\services\models\GoodsModel;
 
 class GoodsModelFactory
 {

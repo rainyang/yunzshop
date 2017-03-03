@@ -25,6 +25,7 @@ class CreateController
             ]
         ];
         $member_model = MemberService::getCurrentMemberModel();
+
         $shop_model = ShopService::getCurrentShopModel();
         //todo 根据参数
         $order_goods_models = OrderService::getOrderGoodsModels($param);
