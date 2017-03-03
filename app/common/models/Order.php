@@ -54,10 +54,10 @@ class Order extends BaseModel
     }
     public function getStatusNameAttribute()
     {
-        return $this->getStatusService()->getStatusName($this->status);
+        return $this->getStatusService()->getStatusName();
     }
     public function getButtonModelsAttribute()
     {
-        return $this->getStatusService()->getButtonModels($this->status);
+        return $this->getStatusService()->getButtonModels();
     }
 }
