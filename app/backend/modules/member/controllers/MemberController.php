@@ -12,13 +12,12 @@ namespace app\backend\modules\member\controllers;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
-
+use Illuminate\Support;
 class MemberController extends BaseController
 {
     public function index()
     {
         $uniacid = \YunShop::app()->uniacid;
-
 
         $pageSize = 1;
         $list = Member::select(['uid','nickname'])
@@ -34,6 +33,7 @@ class MemberController extends BaseController
             ->paginate($pageSize)
             ->toArray();
 
-        $this->render('member/member_list');
+        $opencommission  = false;
+        $this->render('member/member_list',['list'=>$list, 'opencommission'=>$opencommission]);
     }
 }
