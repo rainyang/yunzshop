@@ -20,4 +20,27 @@ class smsSendLimitModel
                    ->first()
                    ->toArray();
     }
+
+    /**
+     * 添加数据
+     *
+     * @param $data
+     */
+    public function insertData($data)
+    {
+        self::insert($data);
+    }
+
+    /**
+     * 更新更新短信条数，时间
+     *
+     * @param $where
+     * @param $data
+     */
+    public function updateData($where, $data)
+    {
+        self::where('uniacid', $where['uniacid'])
+            ->where('mobile', $where['mobile'])
+            ->update($data);
+    }
 }
