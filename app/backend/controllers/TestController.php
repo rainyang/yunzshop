@@ -9,17 +9,16 @@ use app\common\components\BaseController;
  * Date: 21/02/2017
  * Time: 16:46
  */
-class TestCacheController extends BaseController
+class TestController extends BaseController
 {
     public function index()
     {
-        echo __CLASS__;
+       $this->render('index');
     }
 
-    public function testIndex()
+    public function form()
     {
-        echo __CLASS__;
-        echo $this->action;
+        $this->render('form');
     }
 
 }

@@ -9,9 +9,13 @@
 	<meta name="description" content="{if empty($var['page']['copyright']['description'])}{if IMS_FAMILY != 'x'}{$var['account']['name']}{/if}{else}{$var['page']['copyright']['description']}{/if}" />
 	<link rel="shortcut icon" href="{$var['siteroot']}{$var['config']['upload']['attachdir']}/{if !empty($var['setting']['copyright']['icon'])}{$var['setting']['copyright']['icon']}{else}images/global/wechat.jpg{/if}" />
 	<link href="../addons/sz_yi/static/resource/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../addons/sz_yi/static/resource/css/bootstrap-theme.min.css" rel="stylesheet">
 	<link href="../addons/sz_yi/static/resource/css/font-awesome.min.css" rel="stylesheet">
+	<link href="../addons/sz_yi/static/resource/css/style.min.css" rel="stylesheet">
+	<link href="../addons/sz_yi/static/font/iconfont.css" rel="stylesheet">
 	<script>var require = { urlArgs: 'v={php echo date('YmdH');}' };</script>
 	<script src="./resource/js/lib/jquery-1.11.1.min.js"></script>
+	<script src="./resource/js/index.js"></script>
 
 	<script src="./resource/js/app/util.js"></script>
 	<script src="./resource/js/require.js"></script>
@@ -21,6 +25,7 @@
 	<script src="../addons/sz_yi/static/resource/js/respond.min.js"></script>
 	<![endif]-->
 	<script type="text/javascript">
+
         if(navigator.appName == 'Microsoft Internet Explorer'){
             if(navigator.userAgent.indexOf("MSIE 5.0")>0 || navigator.userAgent.indexOf("MSIE 6.0")>0 || navigator.userAgent.indexOf("MSIE 7.0")>0) {
                 alert('您使用的 IE 浏览器版本过低, 推荐使用 Chrome 浏览器或 IE8 及以上版本浏览器.');
@@ -93,4 +98,3 @@
 
 			{template 'web/_common'}
 			{template 'web/_menu'}
-			{template 'web/message_flash'}
