@@ -44,7 +44,7 @@
                             <a class='btn btn-default' href=""><i class='fa fa-users'></i></a>
                         </td>
                     </tr>
-                    <?php foreach($groups_list as $group) { ?>
+                    <?php foreach($groups_list as $key=>$group) { ?>
                         <tr>
                         {if p('discuz') && $uc['status'] == 1}
                             <td>
@@ -53,12 +53,15 @@
                             {/if}
                             </td>
                         {/if}
-                            <td><?php echo $group->group_name; ?></td>
-                            <td>会员数</td>
+                            <td>{$group['group_name']}</td>
+                            <td>
+                                <?php echo count($group['member']); ?>
+
+                            </td>
                             <td>
                                 <a class='btn btn-default' href=""><i class='fa fa-users'></i></a>
-                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.membergroup.update-member-group', array('id' => $group->id))}"><i class='fa fa-edit'></i></a>
-                                <a class='btn btn-default'  href="{php echo $this->createWebUrl('member.membergroup.delete-member-group', array('id' => $group->id))}" onclick="return confirm('确认删除此会员分组吗？');return false;"><i class='fa fa-remove'></i></a>
+                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.membergroup.update-member-group', array('id' => $group['id']))}"><i class='fa fa-edit'></i></a>
+                                <a class='btn btn-default'  href="{php echo $this->createWebUrl('member.membergroup.delete-member-group', array('id' => $group['id']))}" onclick="return confirm('确认删除此会员分组吗？');return false;"><i class='fa fa-remove'></i></a>
                             </td>
                         </tr>
                     <?php } ?>

@@ -34,7 +34,20 @@ class MemberGroup extends \app\common\models\MemberGroup
      **/
     public static function getMemberGroupList($uniacid)
     {
-        return  MemberGroup::where('uniacid', $uniacid)->get()->toArray();
+        $memberGroup = MemberGroup::select('id', 'group_name', 'uniacid')
+            ->where(['uniacid' => $uniacid])
+            ->with(['member' => function($query){
+                return $query->select(['uniacid','group_id'])->count();
+            }])
+            ->get()
+            ->toArray();
+        return $memberGroup;
+        //return  MemberGroup::where('uniacid', $uniacid)->get()->toArray();
+    }
+
+    public function member()
+    {
+        return $this->hasMany('app\backend\modules\member\models\MemberShopInfo','group_id','id');
     }
     /**
      * Add member list

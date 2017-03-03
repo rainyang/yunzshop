@@ -22,6 +22,7 @@ class MemberLevelController extends BaseController
      **/
     public function index()
     {
+        uniacid();
         $level_list = MemberLevel::getMemberLevelList();
         //echo '<pre>'; print_r($shopset); exit;
         $this->render('member/level', [

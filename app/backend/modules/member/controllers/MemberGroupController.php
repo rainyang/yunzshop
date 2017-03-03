@@ -24,19 +24,16 @@ class MemberGroupController extends BaseController
     public function index()
     {
         $groupsList = MemberGroup::getMemberGroupList($this->uniacid);
+
         //所在会员组会员人数
-        echo '<pre>'; print_r($groupsList); exit;
+        //echo '<pre>'; print_r($groupsList); exit;
         $this->render('member/group', [
             'operation' => 'display',
             'groups_list' => $groupsList
         ]);
     }
-    /**
-     * 更新会员分组数据
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public
-     **/
-    public function updateMemberGroup()
+
+    public function update()
     {
         $groupId = \YunShop::request()->id;
         if($groupId) {
@@ -52,7 +49,7 @@ class MemberGroupController extends BaseController
             'group'     => $group
         ]);
     }
-    public function createMemberGroup()
+    public function create()
     {
         $group = \YunShop::request()->group;
         $result = MemberGroup::createMembergroup($group);
@@ -64,7 +61,7 @@ class MemberGroupController extends BaseController
      * @Author::yitian 2017-02-24 qq:751818588
      * @access public
      **/
-    public function deleteMemberGroup()
+    public function delete()
     {
         $group_id = \YunShop::request()->id;
         $result = MemberGroup::deleteMemberGroup($group_id);

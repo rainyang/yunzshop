@@ -9,10 +9,9 @@
 namespace app\common\models;
 
 
-use Illuminate\Database\Eloquent\Model;
 
-class MemberAddress extends Model
+class MemberAddress extends BaseModel
 {
-    protected $table = 'yz_member_address';
+    protected $table = 'mc_member_address';
 
 }
