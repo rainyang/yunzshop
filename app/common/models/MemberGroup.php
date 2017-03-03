@@ -26,4 +26,13 @@ class MemberGroup extends Model
         return static::where('id', $groupId)->first(1)->toArray();
     }
 
+    public static function getDefaultGroupI($uniacid)
+    {
+        return self::select('id')
+            ->where('uniacid', $uniacid)
+            ->where('isdefault', 1)
+            ->first()
+            ->toArray();
+    }
+
 }

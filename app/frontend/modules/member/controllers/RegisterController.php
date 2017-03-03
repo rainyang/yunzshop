@@ -11,53 +11,47 @@ namespace app\frontend\modules\member\controllers;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\frontend\modules\member\models\MemberModel;
-use app\frontend\modules\member\models\smsSendLimitModel;
+use app\frontend\models\Member;
+use app\common\models\MemberGroup;
 use Illuminate\Support\Str;
+use Setting;
 
 class RegisterController extends BaseController
 {
-    private $mobile;
-    private $password;
-    private $confirm_password;
-    private $uniacid;
-
     public function index()
     {
         if ($this->isLogged()) {
             show_json(1, array('member_id'=> session('member_id')));
         }
 
-        $this->process();
-    }
-
-    private function process()
-    {
-        $this->mobile   = \YunShop::request()->mobile;
-        $this->password = \YunShop::request()->password;
-        $this->confirm_password = \YunShop::request()->confirm_password;
-        $this->uniacid  = \YunShop::app()->uniacid;
+        $mobile   = \YunShop::request()->mobile;
+        $password = \YunShop::request()->password;
+        $confirm_password = \YunShop::request()->confirm_password;
+        $uniacid  = \YunShop::app()->uniacid;
 
         if (SZ_YI_DEBUG) {
-            $this->mobile   = '15046101651';
-            $this->password = '123456';
-            $this->confirm_password = '123456';
+            $value = Setting::get('shop.sms');
+            echo '<pre>';print_r($value);exit;
+            $mobile   = '15046101651';
+            $password = '123456';
+            $confirm_password = '123456';
         }
 
-        if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost) && $this->_validate()) {
-            $member_info = MemberModel::getId($this->uniacid, $this->mobile);
+        if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost) && Member::validate($mobile, $password, $confirm_password)) {
+            $member_info = MemberModel::getId($uniacid, $mobile);
 
             if (!empty($member_info)) {
                 return show_json(0, array('msg' => '该手机号已被注册'));
             }
 
-            $default_groupid = pdo_fetchcolumn('SELECT groupid FROM ' .tablename('mc_groups') . ' WHERE uniacid = :uniacid AND isdefault = 1', array(':uniacid' => $this->uniacid));
+            $default_groupid = MemberGroup::getDefaultGroupI($uniacid);
 
             $data = array(
-                'uniacid' => $this->uniacid,
-                'mobile' => $this->mobile,
-                'groupid' => $default_groupid,
+                'uniacid' => $uniacid,
+                'mobile' => $mobile,
+                'groupid' => $default_groupid['id'],
                 'createtime' => TIMESTAMP,
-                'nickname' => $this->mobile,
+                'nickname' => $mobile,
                 'avatar' => SZ_YI_URL . 'template/mobile/default/static/images/photo-mr.jpg',
                 'gender' => 0,
                 'nationality' => '',
@@ -66,11 +60,11 @@ class RegisterController extends BaseController
             );
             $data['salt']  = Str::random(8);
 
-            $data['password'] = md5($this->password. $data['salt'] . \YunShop::app()->config['setting']['authkey']);
+            $data['password'] = md5($password. $data['salt'] . \YunShop::app()->config['setting']['authkey']);
 
             $member_id = MemberModel::insertData($data);
 
-            $cookieid = "__cookie_sz_yi_userid_{$this->uniacid}";
+            $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);
             session()->put('member_id', $member_id);
 
@@ -106,7 +100,7 @@ class RegisterController extends BaseController
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
-        if (!$this->smsSendLimit()) {
+        if (!Memeber::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return show_json(-1, array("msg" => "发送短信数量达到今日上限"));
         } else {
             $issendsms = $this->sendSms($mobile, $code);
@@ -117,7 +111,7 @@ class RegisterController extends BaseController
         //互亿无线
         if($set['sms']['type'] == 1){
             if($issendsms['SubmitResult']['code'] == 2){
-                $this->udpateSmsSendTotal();
+                Member::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return show_json(1);
             }
             else{
@@ -126,7 +120,7 @@ class RegisterController extends BaseController
         }
         else{
             if(isset($issendsms['result']['success'])){
-                $this->udpateSmsSendTotal();
+                Member::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return show_json(1);
             }
             else{
@@ -163,112 +157,13 @@ class RegisterController extends BaseController
         return !empty(session('member_id'));
     }
 
-    /**
-     * 验证手机号和密码
-     *
-     * @return bool
-     */
-    private function _validate()
+    public function sendSms($mobile, $code, $templateType = 'reg')
     {
-        $data = array(
-            'mobile' => $this->mobile,
-            'password' => $this->password,
-            'confirm_password' => $this->confirm_password
-        );
-        $validator = \Validator::make($data, array(
-            'mobile' => array('required',
-                              'digits:11',
-                               'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
-            ),
-            'password' => 'required',
-            'confirm_password' => 'same:password'
-        ));
-
-        if ($validator->fails()) {
-            return false;
+        $set = m('common')->getSysset();
+        if ($set['sms']['type'] == 1) {
+            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code);
         } else {
-            return true;
-        }
-    }
-
-    /**
-     * 短信发送限制
-     *
-     * 每天最多5条
-     */
-    private function smsSendLimit()
-    {
-        $curr_time = time();
-
-        $uniacid = \YunShop::app()->uniacid;
-        $mobile = \YunShop::request()->mobile;
-
-        $mobile_info = smsSendLimitModel::getDaySmsSendNum($uniacid, $mobile);
-
-        if (!empty($mobile_info)) {
-            $update_time = $mobile_info['created_at'];
-            $total = $mobile_info['total'];
-
-            if (($update_time <= $curr_time)
-                && (data('Ymd', $curr_time) == data('Ymd', $update_time))
-                && $total < 5) {
-
-                return true;
-            }
-        } else {
-            $total = 0;
-        }
-
-        if ($total < 5) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    /**
-     * 更新发送短信条数
-     *
-     * 每天最多5条
-     */
-    private function udpateSmsSendTotal()
-    {
-        $curr_time = time();
-
-        $uniacid = \YunShop::app()->uniacid;
-        $mobile = \YunShop::request()->mobile;
-
-        $mobile_info = smsSendLimitModel::getMobileInfo($uniacid, $mobile);
-
-        if (!empty($mobile_info)) {
-            $update_time = $mobile_info['created_at'];
-            $total = $mobile_info['total'];
-
-            if ($update_time <= $curr_time) {
-                if (data('Ymd', $curr_time) == data('Ymd', $update_time)) {
-                    if ($total <= 4) {
-                        ++$total;
-                        smsSendLimitModel::updateData(array(
-                            'uniacid' => $uniacid,
-                            'mobile' => $mobile), array(
-                            'total' => $total));
-                    }
-                } else {
-                    smsSendLimitModel::updateData(array(
-                        'uniacid' => $uniacid,
-                        'mobile' => $mobile), array(
-                        'total' => 1,
-                        'created_at' => $curr_time));
-                }
-            }
-        } else {
-            smsSendLimitModel::insertData(array(
-                   'uniaid' => $uniacid,
-                   'mobile' => $mobile,
-                   'total' => 1,
-                   'created_at' => $curr_time)
-            );
+            return send_sms_alidayu($mobile, $code, $templateType);
         }
     }
 }
