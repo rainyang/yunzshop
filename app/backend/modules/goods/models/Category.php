@@ -1,8 +1,5 @@
 <?php
-
 namespace app\backend\modules\goods\models;
-
-
 /**
  * Created by PhpStorm.
  * User: yanglei
@@ -13,6 +10,9 @@ class Category extends \app\common\models\Category
 {
     public $timestamps = false;
 
+    /**
+     * @return mixed
+     */
     public static function getAllCategory()
     {
         return self::uniacid()
@@ -20,11 +20,15 @@ class Category extends \app\common\models\Category
             ->get();
     }
 
+    /**
+     * @return mixed
+     */
     public static function getAllCategoryGroup()
     {
         $categorys = self::getAllCategory();
 
         $categoryMenus['parent'] = $categoryMenus['children'] = [];
+        
         foreach ($categorys as $category)
         {
             !empty($category['parent_id']) ?
@@ -34,22 +38,7 @@ class Category extends \app\common\models\Category
 
         return $categoryMenus;
     }
-
-    public static function saveAddCategory($category)
-    {
-        return self::insert($category);
-    }
-
-    /**
-     * @param $category
-     * @param $id
-     * @return mixed
-     */
-    public static function saveEditCategory($category, $id)
-    {
-        return self::where('id', $id)
-            ->update($category);
-    }
+    
 
     /**
      * @param $id
@@ -57,9 +46,7 @@ class Category extends \app\common\models\Category
      */
     public static function getCategory($id)
     {
-        return self::where('id', $id)
-            ->first()
-            ->toArray();
+        return self::find($id);
     }
 
     /**

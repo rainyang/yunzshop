@@ -15,5 +15,5 @@ class Brand extends BackendModel
 
     protected $guarded = [''];
 
-    //protected $fillable = ['name'];
+    protected $fillable = [''];
 }

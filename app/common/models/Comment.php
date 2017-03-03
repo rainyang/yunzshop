@@ -11,8 +11,9 @@ use app\backend\models\BackendModel;
 class Comment extends BackendModel
 {
     public $table = 'yz_comment';
-
+    
     protected $guarded = [''];
-
     protected $fillable = [''];
+
+
 }

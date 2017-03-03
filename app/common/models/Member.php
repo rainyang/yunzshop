@@ -26,8 +26,7 @@ class Member extends Model
         return self::select('nick_name')
             ->whereNotNull('nick_name')
             ->inRandomOrder()
-            ->first()
-            ->toArray();
+            ->first();
     }
     
     /**
@@ -38,7 +37,6 @@ class Member extends Model
         return self::select('avatar')
             ->whereNotNull('avatar')
             ->inRandomOrder()
-            ->first()
-            ->toArray();
+            ->first();
     }
 }

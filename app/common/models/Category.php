@@ -11,6 +11,11 @@ namespace app\common\models;
 class Category extends BaseModel
 {
     public $table = 'yz_category';
+    public $display_order = '0';
+    public $thumb = '';
+    public $description = '';
+    public $adv_img = '';
+    public $adv_url = '';
 
     /**
      *  不可填充字段.
@@ -19,28 +24,19 @@ class Category extends BaseModel
      */
     protected $guarded = [''];
 
-    public static function getCategoryList($uniacid, $parent_id)
-    {
-        return static::where('uniacid', $uniacid)
-            ->where('parent_id', $parent_id)
-            ->orderBy('id', 'asc')
-            ->get();
-    }
+    protected $fillable = [''];
+
     /**
-     * @param $uniacid
-     * @param $pindex
-     * @param $psize
      * @param $parent_id
+     * @param $pageSize
      * @return mixed
      */
-    public static function getCategorys($uniacid, $pindex, $psize, $parent_id)
+    public static function getCategorys($parent_id, $pageSize)
     {
-        $data = self::where('uniacid', $uniacid)
+        $data = self::uniacid()
             ->where('parent_id', $parent_id)
             ->orderBy('id', 'asc')
-            ->skip(($pindex - 1) * $psize)
-            ->take($psize)
-            ->get()
+            ->paginate($pageSize)
             ->toArray();
         return $data;
     }

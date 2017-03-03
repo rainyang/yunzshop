@@ -27,7 +27,7 @@ class CommentController extends BaseController
      */
     public function index()
     {
-        $pageSize = 5;
+        $pageSize = 10;
         
         $search = CommentService::Search(\YunShop::request()->search);
 
@@ -42,6 +42,7 @@ class CommentController extends BaseController
         ]);
     }
 
+
     /**
      * 添加评论
      */
@@ -53,39 +54,40 @@ class CommentController extends BaseController
             $goods = Goods::getGoodsById($goods_id)->toArray();
         }
 
-        $item = new Comment();
-        $item->goods_id = $goods_id;
+        $commentModel = new Comment();
+        $commentModel->goods_id = $goods_id;
 
-        $comment = \YunShop::request()->comment;
-        if ($comment) {
-            $comment['uniacid'] = \YunShop::app()->uniacid;
+        $requestComment = \YunShop::request()->comment;
+        if ($requestComment) {
 
-            if (empty($comment['nick_name'])) {
-                $nick_names = Member::getRandNickName();
-                $comment['nick_name'] = $nick_names['nick_name'];
+            //将数据赋值到model
+            $commentModel->setRawAttributes($requestComment);
+            //其他字段赋值
+            $commentModel->uniacid = \YunShop::app()->uniacid;
+            if (empty($commentModel->nick_name)) {
+                $commentModel->nick_name = Member::getRandNickName()->nick_name;
             }
-            if (empty($comment['head_img_url'])) {
-                $head_img_urls = Member::getRandAvatar();
-                $comment['head_img_url'] = $head_img_urls['avatar'];
+            if (empty($commentModel->head_img_url)) {
+                $commentModel->head_img_url = Member::getRandAvatar()->avatar;
             }
-
-            $comment = CommentService::comment($comment);
-
-            $validator = Comment::validator($comment);
-            $item = new Comment($comment);
+            $commentModel = CommentService::comment($commentModel);
+            //字段检测
+            $validator = Comment::validator($commentModel->getAttributes());
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
-                $result = Comment::saveComment($comment);
-                if ($result) {
-                    Header("Location: " . $this->createWebUrl('goods.comment.index'));
-                    exit;
+                //数据保存
+                if ($commentModel->save()) {
+                    //显示信息并跳转
+                    return $this->message('评论创建成功', Url::absoluteWeb('goods.comment.index'));
+                }else{
+                    $this->error('评论创建失败');
                 }
             }
         }
 
         $this->render('add_info', [
-            'comment' => $item,
+            'comment' => $commentModel,
             'goods' => $goods
         ]);
     }
@@ -96,42 +98,46 @@ class CommentController extends BaseController
     public function updated()
     {
         $id = \YunShop::request()->id;
-        $item = Comment::getComment($id);
-        if (!empty($item['goods_id'])) {
-            $goods = Goods::getGoodsById($item['goods_id']);
+        $commentModel = Comment::getComment($id);
+        if(!$commentModel){
+            return $this->message('无此记录或已被删除','','error');
         }
 
-        $comment = \YunShop::request()->comment;
-        if ($comment) {
-            $comment['uniacid'] = \YunShop::app()->uniacid;
+        if (!empty($commentModel->goods_id)) {
+            $goods = Goods::getGoodsById($commentModel->goods_id);
+        }
+        $requesComment = \YunShop::request()->comment;
 
-            if (empty($comment['nick_name'])) {
-                $nick_names = Member::getRandNickName();
-                $comment['nick_name'] = $nick_names['nick_name'];
+        if ($requesComment) {
+            //将数据赋值到model
+            $commentModel->setRawAttributes($requesComment);
+
+            if (empty($commentModel->nick_name)) {
+                $commentModel->nick_name = Member::getRandNickName()->nick_name;
             }
-            if (empty($comment['head_img_url'])) {
-                $head_img_urls = Member::getRandAvatar();
-                $comment['head_img_url'] = $head_img_urls['avatar'];
+            if (empty($commentModel->head_img_url)) {
+                $commentModel->head_img_url = Member::getRandAvatar()->avatar;
             }
+            $commentModel = CommentService::comment($commentModel);
 
-            $comment = CommentService::comment($comment);
-
-            $validator = Comment::validator($comment);
-            $item = new Comment($comment);
+            //字段检测
+            $validator = Comment::validator($commentModel->getAttributes());
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
-                $result = Comment::updatedComment($comment, $id);
-                if ($result) {
-                    Header("Location: " . $this->createWebUrl('goods.comment.index'));
-                    exit;
+                //数据保存
+                if ($commentModel->save()) {
+                    //显示信息并跳转
+                    return $this->message('评论保存成功', Url::absoluteWeb('goods.comment.index'));
+                }else{
+                    $this->error('评论保存失败');
                 }
             }
         }
 
         $this->render('add_info', [
             'id' => $id,
-            'comment' => $item,
+            'comment' => $commentModel,
             'goods' => $goods
         ]);
 
@@ -142,40 +148,41 @@ class CommentController extends BaseController
      */
     public function reply()
     {
-        ca('shop.comment.edit');
         $id    = intval(\YunShop::request()->id);
-        $item = Comment::getComment($id);
-        $goods = Goods::getGoodsById($item['goods_id']);
+        $commentModel = Comment::getComment($id);
+        if(!$commentModel){
+            return $this->message('无此记录或已被删除','','error');
+        }
 
+        $goods = Goods::getGoodsById($commentModel->goods_id);
         $replys = Comment::getReplysByCommentId($id)->toArray();
-
-        $reply = \YunShop::request()->reply;
-        if ($reply) {
-            $member = Member::getMemberById($reply['reply_id']);
-            
-            $reply = CommentService::reply($reply, $item, $member);
-
-            $validator = Comment::validator($reply);
-
+        $requestReply = \YunShop::request()->reply;
+        if ($requestReply) {
+            $member = Member::getMemberById($requestReply['reply_id']);
+            $requestReply = CommentService::reply($requestReply, $commentModel, $member);
+            //将数据赋值到model
+            $commentModel->setRawAttributes($requestReply);
+            $validator = Comment::validator($commentModel->getAttributes());
+            //字段检测
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
-                $result = Comment::saveComment($reply);
-                if ($result) {
-                    Header("Location: " . $this->createWebUrl('goods.comment.reply', ['id'=>$id]));
-                    exit;
+                //数据保存
+                if (Comment::saveComment($commentModel->getAttributes())) {
+                    //显示信息并跳转
+                    return $this->message('评论回复保存成功', Url::absoluteWeb('goods.comment.reply', ['id' => $id]));
+                }else{
+                    $this->error('评论回复保存失败');
                 }
             }
         }
 
         $this->render('reply', [
-            'comment' => $item,
+            'comment' => $commentModel,
             'replys' => $replys,
             'goods' => $goods
         ]);
     }
-
-
 
 
     /**

@@ -13,23 +13,8 @@ class Comment extends \app\common\models\Comment
     public $timestamps = false;
 
     /**
-     * @param $uniacid
-     * @return int
-     */
-    public static function getCommentTotal($uniacid)
-    {
-        return self::where('uniacid', $uniacid)
-            ->where('comment_id', '0')
-            ->count();
-
-        $test = 1;
-    }
-
-    /**
-     * @param $uniacid
-     * @param $pindex
-     * @param $psize
-     * @return array
+     * @param $pageSize
+     * @return mixed
      */
     public static function getComments($pageSize)
     {
@@ -41,7 +26,6 @@ class Comment extends \app\common\models\Comment
             ->orderBy('created_at', 'desc')
             ->paginate($pageSize)
             ->toArray();
-
     }
 
     /**
@@ -50,20 +34,10 @@ class Comment extends \app\common\models\Comment
      */
     public static function getComment($id)
     {
-        return self::where('id', $id)
-            ->first();
+        return self::find($id);
     }
 
-    /**
-     * @param $reply
-     * @param $id
-     * @return mixed
-     */
-    public static function updatedComment($data, $id)
-    {
-        return self::where('id', $id)
-        ->update($data);
-    }
+
 
     /**
      * @param $comment
@@ -74,6 +48,10 @@ class Comment extends \app\common\models\Comment
         return self::insert($comment);
     }
 
+    /**
+     * @param $comment_id
+     * @return mixed
+     */
     public static function getReplysByCommentId($comment_id)
     {
         return self::where('comment_id',$comment_id)

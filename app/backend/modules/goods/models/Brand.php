@@ -21,8 +21,7 @@ class Brand extends \app\common\models\Brand
             ->paginate($pageSize)
             ->toArray();
     }
-
-
+    
     /**
      * @param $id
      * @return mixed
@@ -32,8 +31,7 @@ class Brand extends \app\common\models\Brand
         return self::where('id', $id)
             ->first();
     }
-
-
+    
     /**
      * @param $id
      * @return mixed

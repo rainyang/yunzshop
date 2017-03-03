@@ -10,13 +10,7 @@
                 <li class="active"><a href="#">添加评价</a></li>
             </ul>
         </div>
-        {if isset($id)}
-            <form id="dataform" action="{php echo $this->createWebUrl('goods.comment.updated')}"
-              method="post" class="form-horizontal form" onsubmit='return formcheck()'>
-        {else}
-            <form id="dataform" action="{php echo $this->createWebUrl('goods.comment.add-comment')}"
-                      method="post" class="form-horizontal form" onsubmit='return formcheck()'>
-        {/if}
+        <form id="dataform" action="" method="post" class="form-horizontal form" onsubmit='return formcheck()'>
 
                 <input type="hidden" name="id" value="{php echo isset($id) ? $id : ''}">
             <div class='panel panel-default'>

@@ -32,11 +32,11 @@ class CommentService
      */
     public static function comment($comment)
     {
-        $comment['created_at'] = time();
-        if (isset($comment['images']) && is_array($comment['images'])) {
-            $comment['images'] = iserializer($comment['images']);
+        $comment->created_at = time();
+        if (isset($comment->images) && is_array($comment->images)) {
+            $comment->images = iserializer($comment->images);
         } else {
-            $comment['images'] = iserializer([]);
+            $comment->images = iserializer([]);
         }
         return $comment;
     }
@@ -60,7 +60,6 @@ class CommentService
         } else {
             $data['images'] = iserializer([]);
         }
-        
         return $data;
     }
 
