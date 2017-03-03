@@ -6,9 +6,9 @@
  * Time: 下午10:42
  */
 
-namespace app\frontend\modules\order\service;
+namespace app\frontend\modules\order\services;
 
-use app\frontend\modules\order\model\behavior;
+use app\frontend\modules\order\services\model\behavior;
 
 class OrderEmpty
 {

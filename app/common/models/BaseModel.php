@@ -16,8 +16,10 @@ class BaseModel extends Model
 {
     use ValidatorTrait;
 
-    public static function getUniacid()
+    //后台全局筛选统一账号scope
+    public function scopeUniacid($query)
     {
-        return \YunShop::app()->uniacid;
+        return $query->where('uniacid', \YunShop::app()->uniacid);
     }
+
 }

@@ -23,12 +23,12 @@ class MemberGroupController extends BaseController
 
     public function index()
     {
-        $groups_list = MemberGroup::getMemberGroupList($this->uniacid);
+        $groupsList = MemberGroup::getMemberGroupList($this->uniacid);
         //所在会员组会员人数
-        echo '<pre>'; print_r($groups_list); exit;
+        echo '<pre>'; print_r($groupsList); exit;
         $this->render('member/group', [
             'operation' => 'display',
-            'groups_list' => $groups_list
+            'groups_list' => $groupsList
         ]);
     }
     /**
@@ -52,16 +52,11 @@ class MemberGroupController extends BaseController
             'group'     => $group
         ]);
     }
-    /**
-     * 添加会员分组列表【增】
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public
-     **/
     public function createMemberGroup()
     {
         $group = \YunShop::request()->group;
         $result = MemberGroup::createMembergroup($group);
-
+        echo $result;exit;
         return $this->sendMessage($result);
     }
     /**
@@ -87,7 +82,7 @@ class MemberGroupController extends BaseController
         $this->sendMessage($result);
     }
     /**
-     * 反馈结果
+     * 反馈结果Combined data
      * @Author::yitian 2017-02-24 qq:751818588
      * @access protected
      **/
@@ -96,5 +91,9 @@ class MemberGroupController extends BaseController
         if($result) {
             Header("Location: ".$this->createWebUrl('member.membergroup.index'));exit;
         }
+    }
+    protected function combinedDate()
+    {
+
     }
 }

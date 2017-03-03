@@ -2,6 +2,7 @@
 namespace  app\backend\controllers;
 
 use app\common\components\BaseController;
+use Illuminate\Support\Str;
 use Setting;
 use app\common\services\PluginManager;
 use Datatables;
@@ -11,9 +12,8 @@ class TestController extends BaseController
 {
     public function index()
     {
-        echo __CLASS__;
-        echo \Request::cookie('test','a');
 
+        return view('test.index',['a'=>Str::random(10)]);
     }
 
 
