@@ -11,5 +11,11 @@ namespace app\backend\modules\member\models;
 
 class TestMember extends \app\common\models\TestMember
 {
-
+    protected $casts = [
+        'ext' => 'string',
+    ];
+    public function getExtAttribute()
+    {
+        return 'a';
+    }
 }

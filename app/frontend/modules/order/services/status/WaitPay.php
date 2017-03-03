@@ -9,8 +9,16 @@
 namespace app\frontend\modules\order\services\status;
 
 
+use app\common\models\Order;
+
 class WaitPay implements StatusService
 {
+    private $order;
+    public function __construct(Order $order)
+    {
+        $this->order = $order;
+    }
+
     public function getStatusName()
     {
         return '待付款';
