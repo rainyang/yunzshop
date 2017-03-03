@@ -6,7 +6,7 @@
  * Time: 下午1:44
  */
 
-namespace app\frontend\modules\goods\model;
+namespace app\frontend\modules\goods\services\models;
 
 
 use app\common\models\Goods;

@@ -6,11 +6,11 @@
  * Time: 下午3:32
  */
 
-namespace app\frontend\modules\goods\model\factory;
+namespace app\frontend\modules\goods\services\models\factory;
 
 
-use app\frontend\modules\goods\model\PreGeneratedOrderGoodsModel;
-use app\frontend\modules\goods\service\GoodsService;
+use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\goods\services\GoodsService;
 
 class PreGeneratedOrderGoodsModelFactory
 {

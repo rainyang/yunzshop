@@ -6,10 +6,10 @@
  * Time: 上午9:50
  */
 
-namespace app\frontend\modules\goods\model\price\preferential;
+namespace app\frontend\modules\goods\services\models\price\preferential;
 
 
-use app\frontend\modules\goods\model\GoodsModel;
+use app\frontend\modules\goods\services\models\GoodsModel;
 
 class NoDiscount
 {
