@@ -178,9 +178,10 @@ return [
          */
         Laracasts\Flash\FlashServiceProvider::class, //提示消息
         Yajra\Datatables\DatatablesServiceProvider::class,
-        Orangehill\Iseed\IseedServiceProvider::class,
-        Adamkearsley\ConvertMigrations\ConvertMigrationsServiceProvider::class,
+        Orangehill\Iseed\IseedServiceProvider::class,//数据生成
+        Adamkearsley\ConvertMigrations\ConvertMigrationsServiceProvider::class,//转换migration
         iscms\Alisms\AlidayuServiceProvider::class,//阿里大鱼
+        Maatwebsite\Excel\ExcelServiceProvider::class,//Excel组合
 
     ],
 
@@ -231,8 +232,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Setting' => app\common\facades\Setting::class,
+        'Setting' => app\common\facades\Setting::class,//设置
         'Option'    => app\common\facades\Option::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,//Excel 组件
     ],
 
 ];

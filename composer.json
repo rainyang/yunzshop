@@ -14,7 +14,8 @@
     "monolog/monolog": "^1.22",
     "laracasts/flash": "^2.0",
     "printempw/laravel-datatables-lite": "^1.0",
-    "iscms/alisms-for-laravel": "^0.0.3"
+    "iscms/alisms-for-laravel": "^0.0.3",
+    "maatwebsite/excel": "~2.1.0"
   },
   "require-dev": {
     "filp/whoops": "^2.1",
