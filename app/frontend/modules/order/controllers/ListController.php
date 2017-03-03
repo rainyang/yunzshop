@@ -16,7 +16,7 @@ class ListController
         $db_order_models = Order::waitPay()->with('hasManyOrderGoods')->get();
         //dd($db_order_models);
         $order_models = $db_order_models;
-        dd($order_models[0]->button_models);
+        dd($order_models->toArray());
         exit;
     }
     public function waitPay(){
