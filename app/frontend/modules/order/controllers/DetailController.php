@@ -15,5 +15,7 @@ class DetailController
     public function waitPay(){
         $db_order_models = Order::waitPay()->with('hasManyOrderGoods')->find(1);
         $order = $db_order_models->toArray();
+
+        dd($order);
     }
 }

@@ -2,7 +2,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\helpers\Url;
-use app\frontend\modules\goods\service\GoodsService;
+use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
 

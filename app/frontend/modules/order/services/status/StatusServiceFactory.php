@@ -11,15 +11,15 @@ namespace app\frontend\modules\order\services\status;
 
 class StatusServiceFactory
 {
-    public static function createStatusService($status_code){
-        switch ($status_code){
+    public static function createStatusService($order){
+        switch ($order->stauts){
             case -1:
                 break;
             case 0:
-                return new WaitPay();
+                return new WaitPay($order);
                 break;
             case 1:
-                return new WaitSend();
+                return new WaitSend($order);
                 break;
             case 2:
                 //new WaitSend();

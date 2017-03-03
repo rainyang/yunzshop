@@ -11,5 +11,5 @@ namespace app\frontend\modules\shop\services\models;
 
 class ShopModel
 {
-    private $uid=1;
+    public $uniacid=1;
 }

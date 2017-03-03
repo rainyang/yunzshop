@@ -6,9 +6,9 @@
  * Time: 下午5:45
  */
 
-namespace app\frontend\modules\goods\model\price;
+namespace app\frontend\modules\goods\services\models\price;
 
-use app\frontend\modules\goods\model\GoodsModel;
+use app\frontend\modules\goods\services\models\GoodsModel;
 use app\frontend\modules\member\service\MemberService;
 
 class GoodsDispatchPrice

@@ -3,17 +3,13 @@
  * Created by PhpStorm.
  * User: shenyang
  * Date: 2017/2/21
- * Time: 下午2:54
+ * Time: 下午2:55
  */
-
-namespace app\frontend\modules\goods\model\price\preferential;
-
-use app\frontend\modules\goods\model\factory\GoodsModelFactory;
+namespace app\frontend\modules\goods\services\models\price\preferential;
 use app\frontend\modules\member\service\MemberService;
 
 
-
-class Discount
+class MoneyOff
 {
     private $_goods_model;
 
@@ -23,42 +19,41 @@ class Discount
 
     }
 
-    public function getDiscountPrice()
-    {
-        return $this->_goods_model['marketprice'] * $this->_getDiscount();
+    public function getDiscountPrice(){
+        return $this->_goods_model - $this->_getMoneyOff();
+
     }
     //折扣设置是商品的一部分
-
     private function _getDiscountSetting()
     {
         //todo 根据表结构调整
         return $this->_goods_model["discounts"];
     }
+
+    private function _getMarketPrice(){
+        return $this->_market_price;
+    }
     //从用户服务中获取当前用户等级设置
     private function _getMemberLevel(){
         return MemberService::getCurrentMemberModel()->getLevel();
     }
-    //获取折扣金额
-    private function _getDiscount()
+    //获取满减金额
+    private function _getMoneyOff()
     {
-        if (is_array($this->_getDiscountSetting())) {
+        if (!is_array($this->_getDiscountSetting())) {
             return 0;
         }
         if (!empty($this->_getMemberLevel()["id"])) {
-            if (floatval($this->_getDiscountSetting()["level" . $this->_getMemberLevel()["id"]]) > 0 && floatval($this->_getDiscountSetting()["level" . $this->_getMemberLevel()["id"]]) < 10) {
+            if (floatval($this->_getDiscountSetting()["level" . $this->_getMemberLevel()["id"]]) < $this->_getMarketPrice()) {
                 $result = floatval($this->_getDiscountSetting()["level" . $this->_getMemberLevel()["id"]]);
-            } else if (floatval($this->_getMemberLevel()["discount"]) > 0 && floatval($this->_getMemberLevel()["discount"]) < 10) {
+            } elseif (floatval($this->_getMemberLevel()["discount"]) < $this->_getMarketPrice()) {
                 $result = floatval($this->_getMemberLevel()["discount"]);
-            } else {
-                $result = 0;
             }
         } else {
-            if (floatval($this->_getDiscountSetting()["default"]) > 0 && floatval($this->_getDiscountSetting()["default"]) < 10) {
+            if (floatval($this->_getDiscountSetting()["default"]) > 0 && floatval($this->_getDiscountSetting()["default"]) < $this->_getMarketPrice()) {
                 $result = floatval($this->_getDiscountSetting()["default"]);
-            } else if (floatval($this->_getMemberLevel()["discount"]) > 0 && floatval($this->_getMemberLevel()["discount"]) < 10) {
+            } elseif (floatval($this->_getMemberLevel()["discount"]) > 0 && floatval($this->_getMemberLevel()["discount"]) < $this->_getMarketPrice()) {
                 $result = floatval($this->_getMemberLevel()["discount"]);
-            } else {
-                $result = 0;
             }
         }
 
