@@ -143,7 +143,7 @@ class GoodsController extends BaseController
     {
         $this->goods_id = \YunShop::request()->id;
         $requestGoods = \YunShop::request()->goods;
-        $goodsModel = Goods::getGoodsById($this->goods_id);
+        $goodsModel = Goods::find($this->goods_id);
         $goodsModel->piclist = unserialize($goodsModel->thumb_url);
         $params = $goodsModel->hasManyParams;
         $catetorys = Category::getAllCategoryGroup();

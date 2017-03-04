@@ -19,6 +19,7 @@ use app\common\models\GoodsParam;
 class Goods extends BaseModel
 {
     public $table = 'yz_goods';
+    //protected $appends = ['status'];
 
     //public $fillable = ['display_order'];
 
@@ -35,7 +36,6 @@ class Goods extends BaseModel
         return static::find($id);
     }
 
-
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
@@ -43,8 +43,8 @@ class Goods extends BaseModel
 
     public function hasManySpecs()
     {
-        $allspecs = $this->hasMany('app\common\models\GoodsSpec');
-        return $allspecs;
+        return $this->hasMany('app\common\models\GoodsSpec');
+        //return $allspecs;
 
         /*foreach ($allspecs as &$s) {
             $s['items'] = pdo_fetchall("select a.id,a.specid,a.title,a.thumb,a.show,a.displayorder,a.valueId,a.virtual,b.title as title2 from " . tablename('sz_yi_goods_spec_item') . " a left join " . tablename('sz_yi_virtual_type') . " b on b.id=a.virtual  where a.specid=:specid order by a.displayorder asc",
@@ -55,10 +55,6 @@ class Goods extends BaseModel
         unset($s);*/
     }
 
-    public function hasManyOptions()
-    {
-
-    }
 
     /**
      * @param $keyword
