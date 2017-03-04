@@ -14,7 +14,9 @@ class MemberCartController extends BaseController
     public function index()
     {
         $memberId = '1';
-        $cartList = MemberCart::getMemberCartList($memberId);
+        $pageSize = '2';
+        $cartList = MemberCart::getMemberCartList($memberId, $pageSize);
+        dd($cartList);
         $msg = '';
         return $this->successResult($msg, $cartList);
     }
