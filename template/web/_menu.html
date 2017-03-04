@@ -1,48 +1,213 @@
-<style type='text/css'>
-    .topmenu .dropdown-menu li a { color:#666}
-    .topmenu ul li { content:'|'}
-	.splitter { text-align: center;background:#ccc;color:#039702;padding-top:10px; padding-bottom:10px;font-size:12px;}
-	.splitter{background:#fff;}
+
+<!-- start: Main Menu -->
+<style type="text/css">
+
+    .nav.nav-sidebar li a .fa-angle-down{display: block !important;}
 </style>
-<div class="topmenubg">
-<div class='topmenu'>
-    <ul class="nav navbar-nav">
-        <li>
-            <a href="{php echo $this->createWebUrl('shop/index')}" class="dropdown-toggle"><i class='fa fa-tachometer'></i>
-                <span>概况</span> <i class="fa fa-angle-down"></i></a>
-        </li>
-        <li>
-            <a href="{php echo $this->createWebUrl('shop/goods', array('status'=>1))}" class="dropdown-toggle"><i class='fa fa-tasks'></i>
-                <span>商品</span> <i class="fa fa-angle-down"></i></a>
-        </li>
-        <li>
-            <a href='{php echo $this->createWebUrl(' order.display')}' class="dropdown-toggle" ><i
-                class='fa fa-archive'></i> <span>订单</span> <i class="fa fa-angle-down"></i></a>
-        </li>
 
-		<li>
-			<a href="{php echo $this->createWebUrl('shop/dispatch')}" class="dropdown-toggle"><i class='fa fa-truck' style="margin-top: 2px"></i> <span>配送</span></a> 
-        </li> 
+<div class="sidebar ">
 
-         <li>
-            <a href='{php echo $this->createPluginWebUrl('sale')}' class="dropdown-toggle" ><i class='fa fa-gift' style="margin-top: 2px"></i> <span>营销</span> <i class="fa fa-angle-down"></i></a>
-        </li> 
+    <div class="sidebar-collapse">
+        <div class="sidebar-header t-center">
+            <a><img class="text-logo" src="../addons/sz_yi/static/resource/images/logo.png"></a>
+        </div>
+        <div class="sidebar-menu">
+            <ul class="nav nav-sidebar">
+                <li >
+                    <a href="javascript:;" i=system><i class="iconfont icon-huiyuan"></i><span class="text">会员</span><span class="fa fa-angle-down pull-right"></a>
+                    <ul class="nav sub">
+                        <li><a href="javascript:;" ><i class="iconfont icon-huiyuanguanli"></i><span class="text"> 会员管理</span></a></li>
+                        <li><a href="javascript:;"><i class="iconfont icon-huiyuandengji"></i><span class="text">会员等级</span></a></li>
+                        <li><a href="javascript:;"><i class="iconfont icon-huiyuanfenzu"></i><span class="text">会员分组</span></a></li>
+                        <li><a href="javascript:;"><i class="iconfont icon-huiyuanguanxi"></i><span class="text"> 会员关系</span></a></li>
+                        <li><a href="javascript:;"><i class="iconfont icon-jifenguanli"></i><span class="text"> 积分管理</span></a></li>
+                        <li><a href="javascript:;"><i class="iconfont icon-jifenmingxi"></i><span class="text"> 积分明细</span></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" i=system><i class="fa fa-tasks"></i><span class="text">商品</span> <span class="fa fa-angle-down pull-right"></span></a>
+                    <ul class="nav sub">
+                        <li><a href=""><i class="fa fa-list-ul"></i><span class="text"> 商品列表</span></a></li>
+                        <li><a href=""><i class="fa fa-indent"></i><span class="text">商品分类</span></a></li>
+                        <li><a href=""><i class="fa fa-credit-card"></i><span class="text">虚拟商品</span></a></li>
+                        <li><a href=""><i class="fa fa-heart-o"></i><span class="text"> 商品导入</span></a></li>
+                        <li><a href=""><i class="fa fa-columns"></i><span class="text">评价管理</span></a></li>
+                        <li><a href=""><i class="iconfont icon-iconjieti"></i><span class="text">阶梯价格</span></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" i=system><i class="fa fa-archive"></i><span class="text">订单</span> <span class="fa fa-angle-down pull-right"></span></a>
+                    <ul class="nav sub">
+                        <li><a href="javascript:;" i=system><i class="iconfont icon-duobaodingdan"></i><span class="text">所有订单</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> 全部订单</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> 待付款</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">待发货</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> 待收货</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> 已完成</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> 已关闭</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">退款申请</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> 已退款</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href=""><i class="iconfont icon-web-price"></i><span class="text"> 收银台订单</span></a></li>
+                        <li><a href=""><i class="iconfont icon-shouhou"></i><span class="text"> 售后订单</span></a></li>
+                        <li><a href=""><i class="iconfont icon-street-view"></i><span class="text"> 快递助手</span></a></li>
+                        <li><a href=""><i class="iconfont icon-print"></i><span class="text"> 云打印</span></a></li>
+                    </ul>
+                </li>
+                <li><a href="javascript:;" i=system><i class="fa fa-cny"></i><span class="text">财务</span> <span class="fa fa-angle-down pull-right"></span> </a>
+                    <ul class="nav sub">
+                        <li><a href=""><i class="iconfont icon-yueguanli"></i><span class="text"> 余额管理</span></a></li>
+                        <li><a href=""><i class="iconfont icon-wuyuemingxi"></i><span class="text">余额明细</span></a></li>
+                        <li><a href=""><i class="iconfont icon-chongdianjilu"></i><span class="text">充值记录</span></a></li>
+                        <li><a href="javascript:;" i=system><i class="icon icon-tixian"></i><span class="text"> 余额提现</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">待审核提现</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">待打款提现</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">已打款提现</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">已到款提现</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">无效提现</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href=""><i class="iconfont icon-zhuanzhang"></i><span class="text">余额转让记录</span></a></li>
+                        <li><a href=""><i class="iconfont icon-xiazai"></i><span class="text">下载对账单</span></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" i=system ><i class="iconfont icon-w-sale"></i><span class="text"> 营销</span> <span class="fa fa-angle-down pull-right"></span></a>
+                    <ul class="nav sub">
+                        <li><a href=""><i class="iconfont icon-baoyou"></i><span class="text"> 满额包邮</span></a></li>
+                        <li><a href=""><i class="iconfont icon-manejian"></i><span class="text"> 满额减</span></a></li>
+                        <li><a href=""><i class="iconfont icon-chongzhisong"></i><span class="text"> 充值满送</span></a></li>
+                        <li><a href="javascript:;" i=system ><i class="iconfont icon-return"></i><span class="text"> 消费返现</span></a><span class="fa fa-angle-down pull-right"></span>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">排列返现</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">单笔订单返现</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">订单累计金额返现</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">订单分红池返现</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:;" i=system><i class="fa fa-picture-o"></i><span class="text"> 海报</span></a><span class="fa fa-angle-down pull-right"></span>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-poster"></i><span class="text">超级海报</span></a></li>
+                                <li><a href=""><i class="iconfont icon-postera"></i><span class="text">活动海报</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href=""><i class="iconfont icon-tags"></i><span class="text"> 超级券</span></a><span class="fa fa-angle-down pull-right"></span></li>
+                        <li><a href=""><i class="iconfont icon-qia"></i><span class="text"> 代金卡</span></a><span class="fa fa-angle-down pull-right"></span></li>
+                        <li><a href=""><i class="iconfont icon-coin"></i><span class="text"> 云币</span></a><span class="fa fa-angle-down pull-right"></span></li>
+                        <li><a href="javascript:;" i=system><i class="iconfont icon-baojilu"></i><span class="text"> 一元夺宝</span></a><span class="fa fa-angle-down pull-right"></span>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">夺宝商品</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">夺宝订单</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">基础设置</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">夺宝入口</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" i=system><i class="iconfont icon-qudao"></i><span class="text"> 供应渠道</span> <span class="fa fa-angle-down pull-right"></span></a>
+                    <ul class="nav sub">
+                        <li><a href="javascript:;" i=system ><i class="iconfont icon-supplier"></i><span class="text"> 供货商</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">供应商管理</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">供应商分组</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">入驻管理</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">供应商设置</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:;" i=system><i class="iconfont icon-zhaoshangt"></i><span class="text"> 招商中心</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">招商中心管理</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">招商中心等级</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:;" i=system><i class="iconfont icon-zhaoshangyuan"></i><span class="text"> 招商员</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">招商员管理</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">招商员订单</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href=""><i class="iconfont icon-jichushezhi"></i><span class="text"> 招商基础设置</span></a></li>
+                    </ul>
+                </li>
+                <li><a href="javascript:;" i=system><i class="iconfont icon-qudao1"></i><span class="text"> 销售渠道</span><span class="fa fa-angle-down pull-right"></span></a>
+                    <ul class="nav sub">
+                        <li><a href="javascript:;" i=system><i class="iconfont icon-channel"></i><span class="text"> 渠道商</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">渠道商管理</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">渠道商入驻</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">渠道商等级</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">渠道商设置</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:;" i=system><i class="iconfont icon-iconfontdaili"></i><span class="text"> 股东代理商</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">股东代理管理</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">股东代理等级</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">股东代理设置</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">团队分红</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">股权分红</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">地区分红</span></a></li>
+                            </ul>
 
-		<li>
-            <a href='{php echo $this->createPluginWebUrl('designer')}' class="dropdown-toggle" ><i class='fa fa-gavel'></i> <span>装修</span><i class="fa fa-angle-down"></i></a>
-        </li>
+                        </li>
+                        <li><a href="javascript:;" i=system ><i class="iconfont icon-sitemap"></i><span class="text"> 分销商</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">分销商管理</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">分销商申请</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">分销商等级</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">分销商设置</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="javascript:;" i=system><i class="iconfont icon-heart"></i><span class="text"> 店铺</span><span class="fa fa-angle-down pull-right"></span></a>
+                    <ul class="nav sub">
+                        <li><a href="javascript:;" i=system ><i class="iconfont icon-shop"></i><span class="text"> 店铺设置</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">店铺信息</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">模板设置</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">广告管理</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">幻灯片设置</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">pc端设置</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text">统计设置</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href=""><i class="iconfont icon-w-designer"></i><span class="text"> 店铺装修</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> 店铺装修</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> 自定义菜单</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:;" i=system ><i class="iconfont icon-o2o"></i><span class="text"> O2O门店</span><span class="fa fa-angle-down pull-right"></span></a>
+                            <ul class="nav sub third">
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> 门店列表</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> O2O分类</span></a></li>
+                                <li><a href=""><i class="iconfont icon-dian"></i><span class="text"> O2O设置</span></a></li>
+                            </ul>
+                        </li>
+                        <li><a href=""><i class="iconfont icon-choose"></i><span class="text"> 快速选购</span><span class="fa fa-angle-down pull-right"></span></a></li>
+                        <li><a href=""><i class="iconfont icon-shouyintai"></i><span class="text"> 收银台</span></a></li>
+                        <li><a href=""><i class="icon icon-app"></i><span class="text"> APP客户端</span><span class="fa fa-angle-down pull-right"></span></a></li>
+                    </ul>
+                </li>
+
+                <li><a href=""><i class="fa fa-gear"></i><span class="text"> 系统</span></a></li>
+                <li><a href="javascript:;" i=system><i class="fa fa-cubes"></i><span class="text"> 插件中心</span><span class="fa fa-angle-down pull-right"></span></a></li>
+            </ul>
+        </div>
+    </div>
 
 
-        <li>
-           <a href='{php echo $this->createWebUrl('plugins',array('op'=>'list'))}' class="dropdown-toggle" ><i class='fa fa-cubes'></i> <span>应用</span> <i class="fa fa-angle-down"></i></a>
-        </li>
-         <li>
-            <a href='{php echo $this->createWebUrl('finance/log',array('type'=>0))}' class="dropdown-toggle" ><i class='iconfont icon-web-price' style="margin-top: 2px"></i> <span>财务</span> <i class="fa fa-angle-down"></i></a>
-        </li> 
-         <li>
-            <a href='{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}' class="dropdown-toggle"><i class='iconfont icon-cog' style="margin-top: 2px"></i> <span>设置</span> <i class="fa fa-angle-down"></i></a>
-
-        </li>
-    </ul>
 </div>
-</div>
+<!-- end: Main Menu -->
+
+<script language='javascript'>
+        $("[i=system]").click(function(){
+            $(this).next().fadeToggle();
+        });
+
+</script>
