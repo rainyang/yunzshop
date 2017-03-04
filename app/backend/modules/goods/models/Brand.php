@@ -7,9 +7,9 @@ namespace app\backend\modules\goods\models;
  * Time: 上午9:18
  */
 
+
 class Brand extends \app\common\models\Brand
 {
-    public $timestamps = false;
     
     /**
      * @param $id

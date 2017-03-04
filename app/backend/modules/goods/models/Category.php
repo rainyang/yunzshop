@@ -8,7 +8,6 @@ namespace app\backend\modules\goods\models;
  */
 class Category extends \app\common\models\Category
 {
-    public $timestamps = false;
 
     /**
      * @return mixed

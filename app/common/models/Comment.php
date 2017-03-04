@@ -1,5 +1,6 @@
 <?php
 namespace app\common\models;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Created by PhpStorm.
@@ -9,6 +10,7 @@ namespace app\common\models;
  */
 class Comment extends BaseModel
 {
+    use SoftDeletes;
     public $table = 'yz_comment';
     
     protected $guarded = [''];

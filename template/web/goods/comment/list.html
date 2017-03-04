@@ -63,7 +63,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"> </label>
                         <div class="col-xs-12 col-sm-2 col-lg-2">
-                            <input type="submit" class="btn " value="搜2索">
+                            <input type="submit" class="btn " value="搜索">
                         </div>
                     </div>
 
@@ -112,7 +112,7 @@
                                 <label class='label label-primary'>首次评论</label>
                             </td>
 
-                            <td >{php echo date('Y-m-d H:i:s', $row['created_at'])}</td>
+                            <td >{php echo $row['created_at']}</td>
                             <td>
                                 {if !empty($row['uid'])}
                                     {ifp 'shop.comment.edit'}

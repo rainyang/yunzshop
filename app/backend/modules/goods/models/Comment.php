@@ -10,7 +10,6 @@ namespace app\backend\modules\goods\models;
 
 class Comment extends \app\common\models\Comment
 {
-    public $timestamps = false;
 
     /**
      * @param $pageSize

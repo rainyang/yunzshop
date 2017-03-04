@@ -1,6 +1,7 @@
 <?php
 
 namespace app\common\models;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Created by PhpStorm.
@@ -10,7 +11,10 @@ namespace app\common\models;
  */
 class Category extends BaseModel
 {
+    use SoftDeletes;
+
     public $table = 'yz_category';
+    
     public $display_order = '0';
     public $thumb = '';
     public $description = '';
