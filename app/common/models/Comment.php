@@ -1,19 +1,30 @@
 <?php
 namespace app\common\models;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-use app\backend\models\BackendModel;
 /**
  * Created by PhpStorm.
  * User: yanglei
  * Date: 2017/2/27
  * Time: 下午5:07
  */
-class Comment extends BackendModel
+class Comment extends BaseModel
 {
+    use SoftDeletes;
     public $table = 'yz_comment';
     
     protected $guarded = [''];
     protected $fillable = [''];
+
+    public function subComments()
+    {
+        return $this->hasMany('app\common\models\Comment','comment_id','id');
+    }
+
+    public function getImagesAttribute($value)
+    {
+        return $value ? unserialize($value) : $value;
+    }
 
 
 }
