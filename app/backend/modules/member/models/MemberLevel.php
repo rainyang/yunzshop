@@ -11,10 +11,22 @@ namespace app\backend\modules\member\models;
 
 class MemberLevel extends \app\common\models\MemberLevel
 {
+    /****************************       需要考虑。注意！！！      *******************
+     *
+     * 默认分组的完善，
+     * 每次添加新公众号需要自动创建一条对应公众号uniacid的默认分组
+     *
+     *
+     *****************************************************************************/
+
+
+
+
     //public $timestamps = false;
     public $guarded = [''];
 
     /****************************       对外接口       ****************************/
+
 
     /**
      * 查询等级名称通过等级ID
@@ -52,15 +64,15 @@ class MemberLevel extends \app\common\models\MemberLevel
     /****************************       后台数据操作       ****************************/
 
     /**
-     * 通过等级id获取等级信息
-     * @Author::yitian 2017-02-28 qq:751818588
-     * @access public
+     * Get rank information by level ID
      *
-     * @return
+     * @param int $levelId
+     *
+     * @return array
      **/
-    public static function getMemberLevelInfoById($levelId)
+    public static function getMemberLevelById($levelId)
     {
-        return static::where('id', $levelId)->first()->toArray();
+        return static::where('id', $levelId)->first();
     }
     /**
      * Get membership list
@@ -69,20 +81,9 @@ class MemberLevel extends \app\common\models\MemberLevel
      *
      * @return
      **/
-    public static function getMemberLevelList($uniacid)
+    public static function getMemberLevelList()
     {
-        return MemberLevel::where('uniacid', $uniacid)->get();
-    }
-    /**
-     * Add member level
-     *
-     * @param array $levelInfo
-     *
-     * @return 1 or 0
-     **/
-    public static function createMemberLevel($levelInfo)
-    {
-        return static::insert($levelInfo);
+        return static::uniacid()->get()->toArray();
     }
     /**
      * Delete member level by level ID
@@ -94,20 +95,6 @@ class MemberLevel extends \app\common\models\MemberLevel
     public static function deleteMemberLevel($levelId)
     {
         return  static::where('id', $levelId)->delete();
-    }
-
-    /**
-     * 修改会员等级信息通过等级ID
-     * @Author::yitian 2017-02-27 qq:751818588
-     * @access public
-     * @param int $levelId 等级id
-     * @param array $levelInfo
-     *
-     * @return
-     **/
-    public static function updateMemberLevelInfoById($levelId, $levelInfo)
-    {
-        return static::where('id', $levelId)->update($levelInfo);
     }
 
 }

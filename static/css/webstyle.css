@@ -1,5 +1,5 @@
 html,div,table,th,td,ul,.app li.panel-body,.app .panel,.app .app-preview .app-region .app-add-filed a{padding:0; margin:0;}
-html,body{background: #fff !important;min-width: 1200px;
+html,body{min-width: 1000px;
 /*    font-size: 12px;*/
     line-height: 1.5em;
     font-family: "Helvetica Neue",STHeiti,"Microsoft YaHei",Verdana,Arial,Tahoma,sans-serif;
