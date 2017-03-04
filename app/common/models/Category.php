@@ -36,21 +36,9 @@ class Category extends BaseModel
         $data = self::uniacid()
             ->where('parent_id', $parent_id)
             ->orderBy('id', 'asc')
-            ->paginate($pageSize)
-            ->toArray();
+            ->paginate($pageSize);
         return $data;
     }
 
-    /**
-     * @param $uniacid
-     * @param $parent_id
-     * @return mixed
-     */
-    public static function getCategoryTotal($uniacid,  $parent_id)
-    {
-        return self::where('uniacid', $uniacid)
-            ->where('parent_id', $parent_id)
-            ->count();
-    }
 
 }

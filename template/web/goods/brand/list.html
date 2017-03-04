@@ -24,19 +24,19 @@
                                 <div class="dd-handle"  style='width:100%;'>
                                     <img src="{php echo tomedia($brand['logo']);}" width='30' height="30"  style='padding:1px;border: 1px solid #ccc;float:left;' /> &nbsp;
                                     [ID: {php echo $brand['id'];}] {php echo $brand['name'];}
-                                            <span class="pull-right">
+                                        <span class="pull-right">
 
-                                                {ifp 'shop.brand.edit|shop.brand.view'}
-                                                 <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.brand.edit-brand', ['id'=>$brand['id']]);}" title="{ifp 'shop.brand.edit'}修改{else}查看{/if}" >
-                                                     <i class="fa fa-edit"></i>
-                                                 </a>
-                                                {/if}
-                                                {ifp 'shop.brand.delete'}
-                                                    <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.brand.deleted-brand', ['id'=>$brand['id']]);}" title='删除' onclick="return confirm('确认删除此品牌吗？');return false;">
-                                                        <i class="fa fa-remove"></i>
-                                                    </a>
-                                                {/if}
-                                            </span>
+                                            {ifp 'shop.brand.edit|shop.brand.view'}
+                                             <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.brand.edit', ['id'=>$brand['id']]);}" title="{ifp 'shop.brand.edit'}修改{else}查看{/if}" >
+                                                 <i class="fa fa-edit"></i>
+                                             </a>
+                                            {/if}
+                                            {ifp 'shop.brand.delete'}
+                                                <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.brand.deleted-brand', ['id'=>$brand['id']]);}" title='删除' onclick="return confirm('确认删除此品牌吗？');return false;">
+                                                    <i class="fa fa-remove"></i>
+                                                </a>
+                                            {/if}
+                                        </span>
                                 </div>
                             </li>
                             {/loop}

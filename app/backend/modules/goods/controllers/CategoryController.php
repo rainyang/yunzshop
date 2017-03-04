@@ -27,12 +27,12 @@ class CategoryController extends BaseController
 
         $shopset   = Setting::get('shop');
         
-        $pageSize = 10;
+        $pageSize = 3;
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
 
         $list = Category::getCategorys($parent_id, $pageSize);
+        $list = $list->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-        
         $this->render('list', [
             'list' => $list['data'],
             'pager' => $pager,

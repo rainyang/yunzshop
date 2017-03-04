@@ -10,27 +10,6 @@ namespace app\backend\modules\goods\models;
 class Brand extends \app\common\models\Brand
 {
     public $timestamps = false;
-
-    /**
-     * @param $pageSize
-     * @return mixed
-     */
-    public static function getBrands( $pageSize)
-    {
-        return self::uniacid()
-            ->paginate($pageSize)
-            ->toArray();
-    }
-    
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public static function getBrand($id)
-    {
-        return self::where('id', $id)
-            ->first();
-    }
     
     /**
      * @param $id

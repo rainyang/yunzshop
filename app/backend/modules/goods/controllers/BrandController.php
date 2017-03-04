@@ -25,6 +25,7 @@ class BrandController extends BaseController
         $shopset   = Setting::get('shop');
         $pageSize = 5;
         $list = Brand::getBrands($pageSize);
+        $list = $list->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         $this->render('list', [

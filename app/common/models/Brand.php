@@ -16,4 +16,24 @@ class Brand extends BackendModel
     protected $guarded = [''];
 
     protected $fillable = [''];
+    
+    /**
+     * @param $pageSize
+     * @return mixed
+     */
+    public static function getBrands( $pageSize)
+    {
+        return self::uniacid()
+            ->paginate($pageSize);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public static function getBrand($id)
+    {
+        return self::where('id', $id)
+            ->first();
+    }
 }

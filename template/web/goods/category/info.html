@@ -9,7 +9,8 @@
             </ul>
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->
-        <form   action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
+
+            <form  {ife 'shop.category' $item} action="{php echo $this->createWebUrl('goods.category.edit-save');}" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
 
         <input type="hidden" name="id" class="form-control" value="{php echo $item->id}" />
         <div class="panel panel-default">
