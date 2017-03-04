@@ -19,7 +19,7 @@
     }
 </style>
 <div class="rightlist">
-
+{if $status != 9}
 <div class="panel panel-default" style='margin-top:60px'>
     <div class="panel-body sx-border">
         <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
@@ -28,44 +28,48 @@
             <input type="hidden" name="m" value="sz_yi" />
             <input type="hidden" name="p" value="list" id="form_p" />
             <input type="hidden" name="do" value="order" id="form_do" />
+            <input type="hidden" name="status" value="{$status}" />
+            <input type="hidden" name="agentid" value="{$_GPC['agentid']}" />
+            <input type="hidden" name="refund" value="{$_GPC['refund']}" />
+            <input type="hidden" name="plugin" value="{$_GPC['plugin']}" />
             <div class="form-group">
                 <div class="col-sm-8 col-lg-12 col-xs-12">
                     <div class='input-group'>
                         <div class='input-group-addon'>订单号</div>
-                        <input class="form-control" name="keyword" type="text" value="{@$request['keyword']}" placeholder="订单号/支付单号">
+                        <input class="form-control" name="keyword" type="text" value="{$_GPC['keyword']}" placeholder="订单号/支付单号">
                         <div class='input-group-addon'>{$lang['good']}名称</div>
-                        <input class="form-control" name="good_name" type="text" value="{@$request['good_name']}" placeholder="{$lang['good']}名称">
+                        <input class="form-control" name="good_name" type="text" value="{$_GPC['good_name']}" placeholder="{$lang['good']}名称">
                         <div class='input-group-addon'>{$lang['good']}ID</div>
-                        <input class="form-control" name="good_id" type="text" value="{@$request['good_id']}" placeholder="{$lang['good']}ID">
+                        <input class="form-control" name="good_id" type="text" value="{$_GPC['good_id']}" placeholder="{$lang['good']}ID">
                         <div class='input-group-addon'>快递单号</div>
-                        <input class="form-control" name="expresssn" type="text" value="{@$request['expresssn']}" placeholder="快递单号">
+                        <input class="form-control" name="expresssn" type="text" value="{$_GPC['expresssn']}" placeholder="快递单号">
                         <div class='input-group-addon'>会员ID</div>
-                        <input class="form-control" name="memberid" type="text" value="{@$request['good_id']}" placeholder="会员ID">
+                        <input class="form-control" name="memberid" type="text" value="{$_GPC['good_id']}" placeholder="会员ID">
                         <div class='input-group-addon'>用户信息</div>
-                        <input class="form-control" name="member" type="text" value="{@$request['member']}" placeholder="用户手机号/姓名/昵称/绑定手机号, 收件人姓名/手机号 ">
+                        <input class="form-control" name="member" type="text" value="{$_GPC['member']}" placeholder="用户手机号/姓名/昵称/绑定手机号, 收件人姓名/手机号 ">
                         <div class='input-group-addon'>支付方式</div>
                         <select name="paytype" class="form-control">
-                            <option value="" {if defined_or_null($request['paytype'])==''}selected{/if}>不限</option>
+                            <option value="" {if $_GPC['paytype']==''}selected{/if}>不限</option>
                             {loop $paytype $key $type}
-                            <option value="{$key}" {if defined_or_null($request['paytype']) == "$key"} selected="selected" {/if}>{$type['name']}</option>
+                            <option value="{$key}" {if $_GPC['paytype'] == "$key"} selected="selected" {/if}>{$type['name']}</option>
                             {/loop}
                         </select>
                     </div>
                 </div>
             </div>
-            {if $request['plugin'] != "fund"}
+            {if $_GPC['plugin'] != "fund"}
             <div class='form-group'>
                 <div class="col-sm-8 col-lg-12 col-xs-12">
                     <div class='input-group'>
                         <div class='input-group-addon'>核销码</div>
-                        <input class="form-control" name="verifycode" type="text" value="{@$request['verifycode']}" placeholder="核销码">
+                        <input class="form-control" name="verifycode" type="text" value="{$_GPC['verifycode']}" placeholder="核销码">
                         <div class='input-group-addon'>核销员</div>
-                        <input class="form-control" name="saler" type="text" value="{@$request['saler']}" placeholder="核销员昵称/姓名/手机号/绑定手机号">
+                        <input class="form-control" name="saler" type="text" value="{$_GPC['saler']}" placeholder="核销员昵称/姓名/手机号/绑定手机号">
                         <div class='input-group-addon'>核销门店</div>
                             <select name="storeid" class="form-control">
                                 <option value="" ></option>
                                 {loop $stores $store}
-                                    <option value="{$store['id']}" {if $request['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
+                                    <option value="{$store['id']}" {if $_GPC['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
                                 {/loop}
                             </select>
                         {if $p_cashier}
@@ -73,16 +77,16 @@
                         <select name="csid" class="form-control">
                             <option value="" ></option>
                             {loop $cashier_stores $cashier_store}
-                                <option value="{$cashier_store['id']}" {if $request['csid'] ==$cashier_store['id']} selected="selected" {/if}>{$cashier_store['name']}</option>
+                                <option value="{$cashier_store['id']}" {if $_GPC['csid'] ==$cashier_store['id']} selected="selected" {/if}>{$cashier_store['name']}</option>
                             {/loop}
                         </select>
                         {/if}
                         <div class='input-group-addon'>门店取消订单
                             <label class='radio-inline' style='margin-top:-7px;'>
-                                <input type='radio' value='0' name='cancel' {if $request['cancel']=='0'}checked{/if}>不搜索
+                                <input type='radio' value='0' name='cancel' {if $_GPC['cancel']=='0'}checked{/if}>不搜索
                             </label>
                             <label class='radio-inline'  style='margin-top:-7px;'>
-                                <input type='radio' value='1' name='cancel' {if $request['cancel']=='1'}checked{/if}>搜索
+                                <input type='radio' value='1' name='cancel' {if $_GPC['cancel']=='1'}checked{/if}>搜索
                             </label>
                         </div>
                     </div>
@@ -97,7 +101,7 @@
                         <select name="supplier_uid" class="form-control">
                             <option value="" ></option>
                             {loop $suppliers $supplier}
-                            <option value="{$supplier['uid']}" {if $request['supplier_uid'] ==$supplier['uid']} selected="selected" {/if}>{$supplier['username']}</option>
+                            <option value="{$supplier['uid']}" {if $_GPC['supplier_uid'] ==$supplier['uid']} selected="selected" {/if}>{$supplier['username']}</option>
                             {/loop}
                         </select>
                     </div>
@@ -127,10 +131,10 @@
                         <div class='input-group'>
                             <div class='input-group-addon'>下单时间
                                 <label class='radio-inline' style='margin-top:-7px;'>
-                                    <input type='radio' value='0' name='searchtime' {if $request['searchtime']=='0'}checked{/if}>不搜索
+                                    <input type='radio' value='0' name='searchtime' {if $_GPC['searchtime']=='0'}checked{/if}>不搜索
                                 </label>
                                 <label class='radio-inline'  style='margin-top:-7px;'>
-                                    <input type='radio' value='1' name='searchtime' {if $request['searchtime']=='1'}checked{/if}>搜索
+                                    <input type='radio' value='1' name='searchtime' {if $_GPC['searchtime']=='1'}checked{/if}>搜索
                                 </label>
                             </div>
                             {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d H:i', $endtime)),true);}
@@ -138,10 +142,10 @@
                         <div class='input-group'>
                           <div class='input-group-addon'>完成时间
                             <label class='radio-inline' style='margin-top:-7px;'>
-                                <input type='radio' value='0' name='fsearchtime' {if $request['fsearchtime']=='0'}checked{/if}>不搜索
+                                <input type='radio' value='0' name='fsearchtime' {if $_GPC['fsearchtime']=='0'}checked{/if}>不搜索
                             </label>
                             <label class='radio-inline'  style='margin-top:-7px;'>
-                                <input type='radio' value='1' name='fsearchtime' {if $request['fsearchtime']=='1'}checked{/if}>搜索
+                                <input type='radio' value='1' name='fsearchtime' {if $_GPC['fsearchtime']=='1'}checked{/if}>搜索
                             </label>
                         </div>
                         {php echo tpl_form_field_daterange('ftime', array('starttime'=>date('Y-m-d H:i', $fstarttime),'endtime'=>date('Y-m-d H:i', $fendtime)),true);}
@@ -151,10 +155,10 @@
                         <div class='input-group'>
                             <div class='input-group-addon'>付款时间
                                 <label class='radio-inline' style='margin-top:-7px;'>
-                                    <input type='radio' value='0' name='psearchtime' {if $request['psearchtime']=='0'}checked{/if}>不搜索
+                                    <input type='radio' value='0' name='psearchtime' {if $_GPC['psearchtime']=='0'}checked{/if}>不搜索
                                 </label>
                                 <label class='radio-inline'  style='margin-top:-7px;'>
-                                    <input type='radio' value='1' name='psearchtime' {if $request['psearchtime']=='1'}checked{/if}>搜索
+                                    <input type='radio' value='1' name='psearchtime' {if $_GPC['psearchtime']=='1'}checked{/if}>搜索
                                 </label>
                             </div>
                             {php echo tpl_form_field_daterange('ptime', array('starttime'=>date('Y-m-d H:i', $pstarttime),'endtime'=>date('Y-m-d H:i', $pendtime)),true);}
@@ -162,10 +166,10 @@
                         <div class='input-group'>
                             <div class='input-group-addon'>发货时间
                                 <label class='radio-inline' style='margin-top:-7px;'>
-                                    <input type='radio' value='0' name='ssearchtime' {if $request['ssearchtime']=='0'}checked{/if}>不搜索
+                                    <input type='radio' value='0' name='ssearchtime' {if $_GPC['ssearchtime']=='0'}checked{/if}>不搜索
                                 </label>
                                 <label class='radio-inline'  style='margin-top:-7px;'>
-                                    <input type='radio' value='1' name='ssearchtime' {if $request['ssearchtime']=='1'}checked{/if}>搜索
+                                    <input type='radio' value='1' name='ssearchtime' {if $_GPC['ssearchtime']=='1'}checked{/if}>搜索
                                 </label>
                             </div>
                             {php echo tpl_form_field_daterange('stime', array('starttime'=>date('Y-m-d H:i', $sstarttime),'endtime'=>date('Y-m-d H:i', $sendtime)),true);}
@@ -186,9 +190,9 @@
                         <div class='input-group-addon'>分销订单级数</div>
                         <select name="olevel" class="form-control">
                             <option value="" >不限</option>
-                            <option value="1" {if $request['olevel'] ==1} selected="selected" {/if}>一级订单</option>
-                            <option value="2" {if $request['olevel'] ==2} selected="selected" {/if}>二级订单</option>
-                            <option value="3" {if $request['olevel'] ==3} selected="selected" {/if}>三级订单</option>
+                            <option value="1" {if $_GPC['olevel'] ==1} selected="selected" {/if}>一级订单</option>
+                            <option value="2" {if $_GPC['olevel'] ==2} selected="selected" {/if}>二级订单</option>
+                            <option value="3" {if $_GPC['olevel'] ==3} selected="selected" {/if}>三级订单</option>
                         </select>
                     </div>    </div>
                 {/if}
@@ -199,7 +203,7 @@
                     <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                     <input type="hidden" name="token" value="{$_W['token']}" />
                     <button type="button" name="export" value="1" id="export" class="btn btn-primary">导出 Excel</button>
-                    {if $request['plugin'] != "fund"}
+                    {if $_GPC['plugin'] != "fund"}
                     <a class="btn btn-warning" href="{php echo $this->createWebUrl('order/export')}">自定义导出</a>
                     {/if}
                 </div>
@@ -274,7 +278,7 @@
                         {if $item['cashier']==1}{$item['name']['name']}{else}{$g['title']}{/if}{if !empty($g['optiontitle'])}<br/><span class="label label-primary sizebg">{$g['optiontitle']}</span>{/if}
                         <br/>{$g['goodssn']}
                     </td>
-                    <td style='border-left:none;text-align:left;/*width:150px*/'>{if $request['plugin'] != "fund"}原价: {php echo number_format( $g['price']/$g['total'],2)} {/if}<br />应付: {php echo number_format($g['realprice']/$g['total'],2)}
+                    <td style='border-left:none;text-align:left;/*width:150px*/'>{if $_GPC['plugin'] != "fund"}原价: {php echo number_format( $g['price']/$g['total'],2)} {/if}<br />应付: {php echo number_format($g['realprice']/$g['total'],2)}
         <br/>数量: {$g['total']}
                     </td>
 
@@ -400,7 +404,7 @@
 
                     </td>
                     <td   rowspan="{php echo count($item['goods'])}" ><label class='label label-{$item['statuscss']}'>{$item['status']}</label><br />
-                    <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id'], 'plugin' => $request['plugin'], 'openid' => $request['openid']))}">查看详情</a></td>
+                    <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id'], 'plugin' => $_GPC['plugin'], 'openid' => $_GPC['openid']))}">查看详情</a></td>
                      <td   rowspan="{php echo count($item['goods'])}" width="10%">
                     {template 'web/order/ops'}
                      </td>
@@ -447,6 +451,48 @@
    </table>
 {/loop}
 
+{else}
+<div class="panel panel-default">
+    <div class="panel-heading"></div>
+    <div class="panel-body">
+        <table class="table table-hover table-responsive">
+            <thead class="navbar-inner" >
+                <tr>
+                    <th style='width:8%;'>供应商ID</th>
+                    <th style='width:22%;'>提现单号</th>
+                    <th style='width:20%;'>提现金额</th>
+                    <th style='width:10%;'>提现方式<br>手动/微信</th>
+                    <th style='width:22%;'>申请时间<br>完成时间</th>
+                    <th style='width:29%;'>状态</th>
+                </tr>
+            </thead>
+            <tbody>
+                {loop $supplierapply $row}
+                    {if !empty($row['uid'])}
+                        <tr>
+                            <td>{$row['uid']}</td>
+                            <td>{$row['applysn']}</td>
+                            <td><a class="btn btn-danger" href="{if $row['status'] == 0}{php echo $this->createPluginWebUrl('supplier/supplier_list',array('apply_id' => $row['id']));}{else}#{/if}">金额：{$row['apply_money']}元{if $row['status'] == 0}(点击查看订单){/if}</a></td>
+                            <td>{if $row['type']==1}<button type="button" class="btn btn-warning">手动提现</button>{elseif $row['type']==2}<button type="button" class="btn btn-success">微信提现</button>{/if}</td>
+                            {if $row['status'] == 0}
+                            <td><?php echo date('Y-m-d H:i:s',$row['apply_time']);?></td>
+                            <td  style="overflow:visible;">
+                                <button type="button" class="btn btn-info">申请中，等待审核</button>
+                            </td>
+                            {else}
+                            <td><?php echo date('Y-m-d H:i:s',$row['finish_time']);?></td>
+                            <td  style="overflow:visible;">
+                                <button type="button" class="btn btn-danger">已打款，审核通过</button>
+                            </td>
+                            {/if}
+                        </tr>
+                    {/if}
+                {/loop}
+            </tbody>
+        </table>
+    </div>
+</div>
+{/if}
 <div id="pager"></div>
 </div>
 </div>

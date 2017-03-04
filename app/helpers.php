@@ -3,6 +3,14 @@
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
+if (! function_exists('defined_or_null')) {
+    function defined_or_null($value){
+        if(isset($value)){
+            return $value;
+        }
+        return null;
+    }
+}
 
 if (! function_exists('assets')) {
 
