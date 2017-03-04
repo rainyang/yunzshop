@@ -1,18 +1,19 @@
 <?php
 namespace app\common\models;
 
-use app\common\models\BaseModel;
+use app\backend\models\BackendModel;
 /**
  * Created by PhpStorm.
  * User: yanglei
  * Date: 2017/2/27
  * Time: 下午5:07
  */
-class GoodsComment extends BaseModel
+class Comment extends BackendModel
 {
-    public $table = 'yz_goods_comment';
-
+    public $table = 'yz_comment';
+    
     protected $guarded = [''];
-
     protected $fillable = [''];
+
+
 }

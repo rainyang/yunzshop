@@ -3,7 +3,6 @@ namespace app\backend\modules\goods\controllers;
 
 use app\backend\modules\goods\models\Brand;
 use app\backend\modules\goods\services\BrandService;
-use app\backend\modules\member\models\TestMember;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
@@ -24,7 +23,6 @@ class BrandController extends BaseController
     public function index()
     {
         $shopset   = Setting::get('shop');
-
         $pageSize = 5;
         $list = Brand::getBrands($pageSize);
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
@@ -110,7 +108,6 @@ class BrandController extends BaseController
      */
     public function deletedBrand()
     {
-
         $brand = Brand::getBrand(\YunShop::request()->id);
         if(!$brand) {
             return $this->message('无此品牌或已经删除','','error');

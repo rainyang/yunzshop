@@ -10,15 +10,16 @@
                 <li class="active"><a href="#">添加评价</a></li>
             </ul>
         </div>
-        <form id="dataform" action="{php echo $this->createWebUrl('goods.goods-comment.save-comment')}" method="post" class="form-horizontal form" onsubmit='return formcheck()'>
-            <input type="hidden" name="id" value="{php echo isset($id) ? $id : ''}">
+        <form id="dataform" action="" method="post" class="form-horizontal form" onsubmit='return formcheck()'>
+
+                <input type="hidden" name="id" value="{php echo isset($id) ? $id : ''}">
             <div class='panel panel-default'>
                 <div class='panel-body'>
 
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>  选择商品</label>
                         <div class="col-sm-9">
-                            <input type='hidden' id='goodsid' name='comment[goods_id]' value="{$comment['goods_id']}" />
+                            <input type='hidden' id='goodsid' name='comment[goods_id]' value="{php echo $comment->goods_id}" />
                             <div class='input-group'>
                                 <input type="text" name="goods" maxlength="30" value="{if !empty($goods)}[{$goods['id']}]{$goods['title']}{/if}" id="goods" class="form-control" readonly />
                                 <div class='input-group-btn'>
@@ -51,77 +52,36 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户头像</label>
                         <div class="col-sm-9 col-xs-12">
-                            {php echo app\common\helpers\ImageHelper::tplFormFieldImage('comment[head_img_url]',$comment['head_img_url'])}
+                            {php echo app\common\helpers\ImageHelper::tplFormFieldImage('comment[head_img_url]',$comment->head_img_url)}
                             <span class='help-block'>用户头像，如果不选择，默认从粉丝表中随机读取</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户昵称</label>
                         <div class="col-sm-9 col-xs-12">
-                            <input type='text' class='form-control' name='comment[nick_name]' value='{$comment['nick_name']}' />
+                            <input type='text' class='form-control' name='comment[nick_name]' value='{php echo $comment->nick_name}' />
                             <span class='help-block'>用户昵称，如果不填写，默认从粉丝表中随机读取</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 评分等级</label>
                         <div class="col-sm-9 col-xs-12">
-                            <input value="{php echo intval($comment['level'])}" type="number" name='comment[level]'  id="level" class="rating" min=0 max=5 step=1 data-size="xs" >
+                            <input value="{php echo intval($comment->level)}" type="number" name='comment[level]'  id="level" class="rating" min=0 max=5 step=1 data-size="xs" >
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 首次评价</label>
                         <div class="col-sm-9 col-xs-12">
-                            <textarea name='comment[content]' id="content" class="form-control">{$comment['content']}</textarea>
+                            <textarea name='comment[content]' id="content" class="form-control">{php echo $comment->content}</textarea>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
-                            {php echo app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[images]',iunserializer($comment['images']))}
+                            {php echo app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[images]',iunserializer($comment->images))}
                         </div>
                     </div>
-
-
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">首次回复</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <textarea name='comment[reply_content]' class="form-control">{$comment['reply_content']}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                        <div class="col-sm-9 col-xs-12">
-                            {php echo app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[reply_images]',iunserializer($comment['reply_images']))}
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">追加评价</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <textarea name='comment[append_content]' id="append_content" class="form-control">{$comment['append_content']}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                        <div class="col-sm-9 col-xs-12">
-                            {php echo app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[append_images]',iunserializer($comment['append_images']))}
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">追加回复</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <textarea name='commeent[append_reply_content]' id="append_reply_content" class="form-control">{php echo $comment['append_reply_content']}</textarea>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                        <div class="col-sm-9 col-xs-12">
-                            {php echo app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[append_reply_images]',iunserializer($comment['append_reply_images']))}
-                        </div>
-                    </div>
-
 
                     <div class="form-group"></div>
                     <div class="form-group">
@@ -157,12 +117,7 @@
                 $('#content').focus();
                 return false;
             }
-            if($.trim($('#append_content').val())==''){
-                if($.trim($('#append_reply_content').val())!=''){
-                    alert('请填写追加评价后才能添加追加回复!');
-                    return false;
-                }
-            }
+
             return true;
         }
         function search_goods() {
