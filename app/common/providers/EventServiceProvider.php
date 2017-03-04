@@ -17,6 +17,11 @@ class EventServiceProvider extends ServiceProvider
             'app\common\listeners\EventListener', //侦听类1
             'app\common\listeners\EventListenerOther', //侦听类2
         ],
+        'app\common\events\OrderCreatedEvent'=>[
+            'app\common\listeners\EventListener', //侦听类1
+            'app\common\listeners\EventListenerOther', //侦听类2
+        ],
+
     ];
 
     /**

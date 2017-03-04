@@ -40,11 +40,11 @@ trait TemplateTrait
             $this->modules && $filename = StringHelper::camelCaseToSplit(implode('/', $this->modules)) . '/' . $filename;
         }
 
-        $dataVar = ['var' => objectArray(\YunShop::app()), 'request' => objectArray(\YunShop::request())];
+        $dataVar = ['var' => objectArray(\YunShop::app()), 'request' => (\YunShop::request())];
         is_array($data) && $dataVar = array_merge($data, $dataVar);
         extract($dataVar);
         $var =array_shift($var);
-        $request =array_shift($request);
+        /*$request =array_shift($request);*/
 
         include $this->template($filename, $data);
         return ;

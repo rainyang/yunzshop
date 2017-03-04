@@ -22,7 +22,8 @@ class BrandController extends BaseController
      */
     public function index()
     {
-        $shopset   = Setting::get('shop');
+        //$shopset   = Setting::get('shop');
+
         $pageSize = 5;
         $list = Brand::getBrands($pageSize);
         $list = $list->toArray();
@@ -31,7 +32,7 @@ class BrandController extends BaseController
         $this->render('list', [
             'list' => $list,
             'pager' => $pager,
-            'shopset' => $shopset
+            //'shopset' => $shopset
         ]);
     }
 

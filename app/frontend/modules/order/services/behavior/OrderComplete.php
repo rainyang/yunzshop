@@ -7,26 +7,22 @@
  * comment: 订单完成
  */
 
-namespace app\common\models;
+namespace app\frontend\modules\order\services\behavior;
+use app\common\models\Order;
+
 class OrderComplete
 {
     public $order_model;
 
-    public function __construct(OrderModel $order_model)
+    public function __construct(Order $order_model)
     {
         $this->order_model = $order_model->getData();
     }
 
-    public function complete()
-    {
-        $this->order_model->status = 3;
-        $this->order_model->save();
-    }
-
     public function completeable()
     {
-        if ($this->order_model['status'] == 2) {
-            $this->complete();
+        if ($this->order_model['status'] == 3) {
+            return true;
         }
     }
 }
