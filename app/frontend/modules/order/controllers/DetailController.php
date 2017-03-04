@@ -7,18 +7,16 @@
  */
 
 namespace app\frontend\modules\order\controllers;
-use app\common\components\BaseController;
 use app\common\models\Order;
-use Setting;
 
-class DetailController extends BaseController
+
+class DetailController
 {
-    public function waitPay(){
-        $db_order_models = Order::waitPay()->with('hasManyOrderGoods')->first();
+    public function index(){
+        $db_order_models = Order::with('hasManyOrderGoods')->first();
         $order = $db_order_models->toArray();
-        $this->render('detail', [
-            'order' => $order
-        ]);
         dd($order);
+
+        echo json_encode($db_order_models,JSON_UNESCAPED_UNICODE);
     }
 }
