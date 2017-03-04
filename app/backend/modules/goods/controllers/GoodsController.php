@@ -90,6 +90,7 @@ class GoodsController extends BaseController
     {
         $params = new GoodsParam();
         $goods = new Goods();
+        dd($goods);
         //$params = new GoodsParam();
 
         /*//print_r(\YunShop::app());exit;
@@ -112,7 +113,8 @@ class GoodsController extends BaseController
             );
         }
         //echo $catetory_menus;exit;
-
+        widget('app\backend\widgets\goods\DiscountWidget',['test'=>'test']);
+        exit;
         $allspecs = [];
         $this->render('goods/goods', [
             'goods' => $goods,
