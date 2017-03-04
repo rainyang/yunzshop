@@ -50,13 +50,13 @@
                     <td><label class='label  label-default {if $dispatch->is_default == 1 }label-info{/if}' >{if $dispatch->is_default == 1 }是{else}否{/if}</label></td>
                     <td style="text-align:left;">
                          {ifp 'shop.dispatch.view|shop.dispatch.edit'}<a href="{php echo $this->createWebUrl('goods.dispatch.edit-dispatch', ['id'=>$dispatch->id]);}" class="btn btn-default btn-sm" title="{ifp 'shop.dispatch.edit'}修改{else}查看{/if}"><i class="fa fa-pencil"></i></a>{/if}
-                         {ifp 'shop.dispatch.delete'}<a href="{php echo $this->createWebUrl('goods.dispatch.delete-dispatch', ['id'=>$dispatch->id]);}" class="btn btn-default btn-sm" onclick="return confirm('确认删除此配送方式?')" title="删除"><i class="fa fa-times"></i></a>{/if}
+                         {ifp 'shop.dispatch.delete'}<a href="{php echo $this->createWebUrl('goods.dispatch.delete', ['id'=>$dispatch->id]);}" class="btn btn-default btn-sm" onclick="return confirm('确认删除此配送方式?')" title="删除"><i class="fa fa-times"></i></a>{/if}
                     </td>
                 </tr>
                 {/loop}
                 <tr>
                     <td colspan='9'>
-                        <a class='btn btn-primary' href="{php echo $this->createWebUrl('goods.dispatch.add-dispatch');}"><i class='fa fa-plus'></i> 添加配送方式</a>
+                        <a class='btn btn-primary' href="{php echo $this->createWebUrl('goods.dispatch.add');}"><i class='fa fa-plus'></i> 添加配送方式</a>
                         <input name="submit" type="submit" class="btn btn-default" value="提交排序">
                     </td>
                 </tr>
