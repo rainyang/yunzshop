@@ -1,3 +1,4 @@
+{template 'web/_header'}
 <div class="main rightlist">
     <!-- 新增加右侧顶部三级菜单 -->
     <div class="right-titpos">
@@ -57,10 +58,10 @@
                 <div class="col-sm-9 col-xs-12">
                     {ife 'shop.dispatch' $dispatch}
                     <label class='radio-inline'>
-                        <input type='radio' name='calculatetype' value='0' {if $dispatch->calculate_type==0}checked{/if} /> 按重量计费
+                        <input type='radio' name='dispatch[calculate_type]' value='0' {if $dispatch->calculate_type==0}checked{/if} /> 按重量计费
                     </label>
                     <label class='radio-inline'>
-                        <input type='radio' name='calculatetype' value='1' {if $dispatch->calculate_type==1}checked{/if} /> 按件计费
+                        <input type='radio' name='dispatch[calculate_type]' value='1' {if $dispatch->calculate_type==1}checked{/if} /> 按件计费
                     </label>
                     {else}
                     <div class='form-control-static'>{if empty($dispatch->calculate_type)}按重量计费{else}按件计费{/if}</div>
@@ -312,21 +313,21 @@
             <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择区域</h3></div>
             <div class="modal-body" style='height:280px;;' >
 
-                {loop $areas['address']['province'] $value}
-                {if $value['@attributes']['name']=='请选择省份'}
+                {loop $areas $value}
+                {if $value->areaname=='请选择省份'}
                 {php continue;}
                 {/if}
                 <div class='province'>
                     <label class='checkbox-inline' style='margin-left:20px;'>
-                        <input type='checkbox' class='cityall' /> {php echo $value['@attributes']['name']}
+                        <input type='checkbox' class='cityall' /> {php echo $value->areaname}
                         <span class="citycount" style='color:#ff6600'></span>
                     </label>
-                    {if !empty($value['city']['0'])}
+                    {if !empty($value->city['0'])}
                     <ul>
-                        {loop $value['city'] $c}
+                        {loop $value->city $c}
                         <li>
                             <label class='checkbox-inline'>
-                                <input type='checkbox' class='city' style='margin-top:8px;' city="{php echo $c['@attributes']['name']}" /> {php echo $c['@attributes']['name']}
+                                <input type='checkbox' class='city' style='margin-top:8px;' city="{php echo $c->areaname}" /> {php echo $c->name}
                             </label>
                         </li>
                         {/loop}
@@ -336,7 +337,7 @@
 
                         <li>
                             <label class='checkbox-inline'>
-                                <input type='checkbox' class='city' style='margin-top:8px;' city="{php echo $value['city']['@attributes']['name']}" /> {php echo $value['city']['@attributes']['name']}
+                                <input type='checkbox' class='city' style='margin-top:8px;' city="{php echo $value->city['areaname']}" /> {php echo $value->city['areaname']}
                             </label>
                         </li>
 

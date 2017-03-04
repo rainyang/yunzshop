@@ -13,7 +13,11 @@ class Member extends Model
 {
     public $table = 'mc_members';
 
-
+    public static function getMemberById($uid)
+    {
+        return self::where('uid', $uid)
+            ->first();
+    }
     /**
      * @return mixed
      */
@@ -22,8 +26,7 @@ class Member extends Model
         return self::select('nick_name')
             ->whereNotNull('nick_name')
             ->inRandomOrder()
-            ->first()
-            ->toArray();
+            ->first();
     }
     
     /**
@@ -34,7 +37,6 @@ class Member extends Model
         return self::select('avatar')
             ->whereNotNull('avatar')
             ->inRandomOrder()
-            ->first()
-            ->toArray();
+            ->first();
     }
 }
