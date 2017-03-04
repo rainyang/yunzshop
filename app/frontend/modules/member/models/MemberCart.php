@@ -23,6 +23,10 @@ class MemberCart extends \app\common\models\MemberCart
     {
         return static::uniacid()->where('member_id', $memberId)->get()->toArray();
     }
+    public static function getMemberCartById($cartId)
+    {
+        return static::uniacid()->where('id', $cartId)->get()->toArray();
+    }
     /**
      * Add merchandise to shopping cart
      *
@@ -42,10 +46,8 @@ class MemberCart extends \app\common\models\MemberCart
      *
      * @return 1 or 0
      * */
-    public static function destroyGoodsToMemberCartById($cartId)
+    public static function destroyMemberCart($cartId)
     {
-        //直接删除数据
-        //return static::destroy($cartId);
         return static::uniacid()->where('id', $cartId)->delete();
     }
 }
