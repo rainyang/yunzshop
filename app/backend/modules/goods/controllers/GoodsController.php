@@ -277,7 +277,8 @@ class GoodsController extends BaseController
         $keyword = \YunShop::request()->keyword;
         $goods = Goods::getGoodsByName($keyword);
         $goods = set_medias($goods, array('thumb', 'share_icon'));
-        include $this->template('web/shop/query');
+       return $this->render('web/shop/query',['goods'=>$goods]);
+
     }
 
 }

@@ -6,6 +6,9 @@ use app\backend\modules\goods\services\CategoryService;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use Illuminate\Support\Facades\Input;
+use app\common\helpers\Url;
+use Setting;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Created by PhpStorm.
@@ -22,24 +25,17 @@ class CategoryController extends BaseController
     public function index()
     {
 
-        $shopset   = m('common')->getSysset('shop');
-        $pindex = max(1, intval(\YunShop::request()->page));
-        $psize = 10;
-
+        $shopset   = Setting::get('shop');
+        
+        $pageSize = 3;
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
-        $total = Category::getCategoryTotal(\YunShop::app()->uniacid, $parent_id);
-        $list = Category::getCategorys(\YunShop::app()->uniacid, $pindex, $psize, $parent_id);
-        $pager = PaginationHelper::show($total, $pindex, $psize);
 
-        $parent = [];
-        if($parent_id > 0) {
-            $parent = Category::getCategory($parent_id);
-        }
-
+        $list = Category::getCategorys($parent_id, $pageSize);
+        $list = $list->toArray();
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         $this->render('list', [
-            'list' => $list,
+            'list' => $list['data'],
             'pager' => $pager,
-            'parent' => $parent,
             'shopset' => $shopset
         ]);
     }
@@ -54,82 +50,77 @@ class CategoryController extends BaseController
         $level = \YunShop::request()->level ? \YunShop::request()->level : '1';
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
 
-        $item = [
-            'id'            => '',
-            'name'          => '',
-            'thumb'         => '',
-            'description'   => '',
-            'adv_img'       => '',
-            'adv_url'       => '',
-            'is_home'       => 0,
-            'enabled'       => 0,
-            'display_order' => 0,
-            'level'         => $level,
-            'parent_id'     => $parent_id
-        ];
+        $categoryModel = new Category();
+        $categoryModel->level = $level;
+        $categoryModel->parent_id = $parent_id;
+        $parent = [];
+        if($parent_id > 0) {
+            $parent = Category::getCategory($parent_id);
+        }
+        
+        $requestCategory = \YunShop::request()->category;
+        if ($requestCategory) {
+            //将数据赋值到model
+            $categoryModel->setRawAttributes($requestCategory);
+            //其他字段赋值
+            $categoryModel->uniacid = \YunShop::app()->uniacid;
+            //字段检测
+            $validator = Category::validator($categoryModel->getAttributes());
+            if ($validator->fails()) {
+                //检测失败
+                $this->error($validator->messages());
+            } else {
+                //数据保存
+                if ($categoryModel->save()) {
+                    //显示信息并跳转
+                    return $this->message('分类创建成功', Url::absoluteWeb('goods.category.index'));
+                }else{
+                    $this->error('分类创建失败');
+                }
+            }
+        }
+
         $this->render('info', [
-            'item' => $item,
+            'item' => $categoryModel,
+            'parent' => $parent,
             'level' => $level
         ]);
     }
-
-    /**
-     * 保存添加分类
-     */
-    public function addSave()
-    {
-        ca('shop.category.view');
-        
-        $category = \YunShop::request()->category;
-        $category['uniacid'] = \YunShop::app()->uniacid;
-
-        $validator = Category::validator($category);
-
-        if($validator->fails()){
-            print_r($validator->messages());
-        }else {
-            $result = Category::saveAddCategory($category);
-            if ($result) {
-                Header("Location: " . $this->createWebUrl('goods.category.index'));
-                exit;
-            }
-        }
-    }
-
+    
     /**
      * 修改分类
      */
     public function editCategory()
     {
         ca('shop.category.edit');
-        
-        $category = Category::getCategory(\YunShop::request()->id);
-        $this->render('info', [
-            'item' => $category,
-            'level' => $category['level']
-        ]);
-    }
+        $categoryModel = Category::getCategory(\YunShop::request()->id);
+        if(!$categoryModel){
+            return $this->message('无此记录或已被删除','','error');
+        }
 
-    /**
-     * 保存修改分类
-     */
-    public function editSave()
-    {
-        ca('shop.category.edit');
-        
-        $category = \YunShop::request()->category;
-        $category['uniacid'] = \YunShop::app()->uniacid;
-        
-        $validator = Category::validator($category);
-        if($validator->fails()) {
-            print_r($validator->messages());
-        }else{
-            $result = Category::saveEditCategory($category, \YunShop::request()->id);
-            if($result) {
-                Header("Location: ".$this->createWebUrl('goods.category.index'));exit;
-                //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
+        $requestCategory = \YunShop::request()->category;
+        if($requestCategory) {
+            //将数据赋值到model
+            $categoryModel->setRawAttributes($requestCategory);
+            //字段检测
+            $validator = Category::validator($categoryModel->getAttributes());
+            if ($validator->fails()) {//检测失败
+                $this->error($validator->messages());
+            } else {
+                //数据保存
+                if ($categoryModel->save()) {
+                    //显示信息并跳转
+                    return $this->message('分类保存成功', Url::absoluteWeb('goods.category.index'));
+                }else{
+                    $this->error('分类保存失败');
+                }
             }
         }
+
+        $this->render('info', [
+            'item' => $categoryModel,
+            'level' => $categoryModel->level
+        ]);
     }
 
     /**
@@ -137,17 +128,16 @@ class CategoryController extends BaseController
      */
     public function deletedCategory()
     {
-        ca('shop.category.delete');
-        
         $category = Category::getCategory(\YunShop::request()->id);
-        if( empty($category) ) {
-            Header("Location: ".$this->createWebUrl('goods.category.index'));exit;
+        if(!$category) {
+            return $this->message('无此分类或已经删除','','error');
         }
 
         $result = Category::daletedCategory(\YunShop::request()->id);
         if($result) {
-            Header("Location: ".$this->createWebUrl('goods.category.index'));exit;
-            //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
+            return $this->message('删除分类成功',Url::absoluteWeb('goods.category.index'));
+        }else{
+            return $this->message('删除分类失败','','error');
         }
     }
 
