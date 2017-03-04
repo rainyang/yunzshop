@@ -21,4 +21,24 @@ class Member extends \app\common\models\Member
     {
         return $this->hasOne('app\backend\modules\member\models\MemberShopInfo','member_id','uid');
     }
+
+    public static function getMembers($pageSize)
+    {
+        return self::select(['uid','nickname'])
+            ->uniacid()
+            ->with(['yzMember'=>function($query){
+                return $query->select(['member_id','agentid', 'group_id','level_id'])
+                    ->with(['group'=>function($query1){
+                        return $query1->select(['id','group_name']);
+                    },'level'=>function($query2){
+                        return $query2->select(['id','level_name']);
+                    }, 'agent'=>function($query3){
+                        return $query3->select(['uid', 'nickname']);
+                    }]);
+            }])
+            ->paginate($pageSize)
+            ->toArray();
+    }
+
+
 }

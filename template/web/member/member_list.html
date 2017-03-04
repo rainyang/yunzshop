@@ -182,25 +182,20 @@
                                 <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
                                 <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 9999'>
 
-                                    {ifp 'member.member.view|member.member.edit'}<li><a href="{php echo $this->createWebUrl('member',array('op'=>'detail','id' => $row['id']));}" title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>{/if}
-                                    {ifp 'order'}<li><a  href="{php echo $this->createWebUrl('order', array('op' => 'display','openid'=>$row['openid']))}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>{/if}
-                                    {ifp 'finance.recharge.credit1'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit1','id'=>$row['id']))}" title='充值{php echo SZ_YI_INTEGRAL}'><i class='fa fa-credit-card'></i> 充值{php echo SZ_YI_INTEGRAL}</a></li>{/if}
-                                    {ifp 'finance.recharge.credit2'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit2','id'=>$row['id']))}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>{/if}
-                                    {if p('yunbi')}
-                                    <?php $yunbi_set = p('yunbi')->getSet()?>
-                                    <li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'virtual_currency','id'=>$row['id']))}" title='充值{if $yunbi_set['yunbi_title'] }{$yunbi_set['yunbi_title']}{else}云币{/if}'><i class='fa fa-money'></i> 充值{if $yunbi_set['yunbi_title'] }{$yunbi_set['yunbi_title']}{else}云币{/if} </a></li>
-                                    {/if}
-                                    {if p('love')}
-                                    <li><a href="{php echo $this->createWebUrl('finance/aging_recharge', array('id'=>$row['id']))}" title='分期充值'><i class='fa fa-money'></i> 分期充值 </a></li>
-                                    {/if}
-                                    {ifp 'member.member.black'}
+                                    <li><a href="{php echo $this->createWebUrl('member',array('op'=>'detail','id' => $row['id']));}" title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>
+                                    <li><a  href="{php echo $this->createWebUrl('order', array('op' => 'display','openid'=>$row['openid']))}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
+                                    <li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit1','id'=>$row['id']))}" title='充值{php echo SZ_YI_INTEGRAL}'><i class='fa fa-credit-card'></i> 充值{php echo SZ_YI_INTEGRAL}</a></li>
+                                    <li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit2','id'=>$row['id']))}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
+
+
+
                                     {if $row['isblack']==1}
                                     <li><a href="{php echo $this->createWebUrl('member/list',array('op'=>'setblack','id' => $row['id'],'black'=>0));}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                                     {else}
                                     <li><a href="{php echo $this->createWebUrl('member/list',array('op'=>'setblack','id' => $row['id'],'black'=>1));}" title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a></li>
                                     {/if}
-                                    {/if}
-                                    {ifp 'member.member.delete'}<li><a  href="{php echo $this->createWebUrl('member',array('op'=>'delete','id' => $row['id']));}" title='删除会员' onclick="return confirm('确定要删除该会员吗？');"><i class='fa fa-remove'></i> 删除会员</a></li>{/if}
+
+                                    <li><a  href="{php echo $this->createWebUrl('member',array('op'=>'delete','id' => $row['id']));}" title='删除会员' onclick="return confirm('确定要删除该会员吗？');"><i class='fa fa-remove'></i> 删除会员</a></li>
                                 </ul>
                             </div>
 
@@ -250,43 +245,23 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
                         <select name='data[level]' class='form-control'>
                             <option value=''>{php echo empty($shop['levelname'])?'普通会员':$shop['levelname']}</option>
                             {loop $levels $level}
                             <option value='{$level['id']}' {if $member['level']==$level['id']}selected{/if}>{$level['levelname']}</option>
                             {/loop}
                         </select>
-                        {else}
-                        <div class='form-control-static'>
-                            {if empty($member['level'])}
-                            {php echo empty($shop['levelname'])?'普通会员':$shop['levelname']}
-                            {else}
-                            {php echo pdo_fetchcolumn('select levelname from '.tablename('sz_yi_member_level').' where id=:id limit 1',array(':id'=>$member['level']))}
-                            {/if}
-                        </div>
-                        {/if}
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员分组</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
                         <select name='data[groupid]' class='form-control'>
                             <option value=''>无分组</option>
                             {loop $groups $group}
                             <option value='{$group['id']}' {if $member['groupid']==$group['id']}selected{/if}>{$group['groupname']}</option>
                             {/loop}
                         </select>
-                        {else}
-                        <div class='form-control-static'>
-                            {if empty($member['groupid'])}
-                            无分组
-                            {else}
-                            {php echo pdo_fetchcolumn('select groupname from '.tablename('sz_yi_member_group').' where id=:id limit 1',array(':id'=>$member['groupid']))}
-                            {/if}
-                        </div>
-                        {/if}
                     </div>
                 </div>
 
@@ -294,107 +269,55 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">真实姓名</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
                         <input type="text" name="data[realname]" class="form-control" value="{$member['realname']}"  />
-                        {else}
-                        <div class='form-control-static'>{$member['realname']}</div>
-                        {/if}
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系电话</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
                         <input type="text" name="data[membermobile]" class="form-control" value="{$member['membermobile']}"  />
-                        {else}
-                        <div class='form-control-static'>{$member['membermobile']}</div>
-                        {/if}
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">绑定手机</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
                         <div class='form-control-static'>{$member['mobile']}</div>
-                        {else}
-                        <div class='form-control-static'>{$member['mobile']}</div>
-                        {/if}
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信号</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
                         <input type="text" name="data[weixin]" class="form-control" value="{$member['weixin']}"  />
-                        {else}
-                        <div class='form-control-static'>{$member['weixin']}</div>
-                        {/if}
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝姓名</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
                         <input type="text" name="data[alipayname]" class="form-control" value="{$member['alipayname']}"  />
-                        {else}
-                        <div class='form-control-static'>{$member['alipayname']}</div>
-                        {/if}
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝帐号</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
                         <input type="text" name="data[alipay]" class="form-control" value="{$member['alipay']}"  />
-                        {else}
-                        <div class='form-control-static'>{$member['alipay']}</div>
-                        {/if}
                     </div>
                 </div>
-
-                {if p('hlag')}
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户行</label>
-                    <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
-                        <input type="text" name="data[bank]" class="form-control" value="{$member['bank']}"  />
-                        {else}
-                        <div class='form-control-static'>{$member['bank']}</div>
-                        {/if}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">银行卡</label>
-                    <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
-                        <input type="text" name="data[bank_num]" class="form-control" value="{$member['bank_num']}"  />
-                        {else}
-                        <div class='form-control-static'>{$member['bank_num']}</div>
-                        {/if}
-                    </div>
-                </div>
-                {/if}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo SZ_YI_INTEGRAL}</label>
                     <div class="col-sm-3">
-                        {ifp 'finance.recharge.credit1'}
                         <div class='input-group'>
                             <div class=' input-group-addon'  style='width:200px;text-align: left;'>{$member['credit1']}</div>
                             <div class='input-group-btn'>
                                 <a class='btn btn-primary' href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit1','id'=>$member['id']))}">充值</a>
                             </div>
                         </div>
-                        {else}
-                        <div class='form-control-static'>{$member['credit1']}</div>
-                        {/if}
 
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额</label>
                     <div class="col-sm-3">
-                        {ifp 'finance.recharge.credit2'}
                         <div class='input-group'>
                             <div class=' input-group-addon' style='width:200px;text-align: left;'>{$member['credit2']}</div>
 
@@ -402,9 +325,6 @@
                             </div>
 
                         </div>
-                        {else}
-                        <div class='form-control-static'>{$member['credit2']}</div>
-                        {/if}
                     </div>
                 </div>
                 <div class="form-group">
@@ -446,25 +366,16 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">黑名单</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
                         <label class="radio-inline"><input type="radio" name="data[isblack]" value="1" {if $member['isblack']==1}checked{/if}>是</label>
                         <label class="radio-inline" ><input type="radio" name="data[isblack]" value="0" {if $member['isblack']==0}checked{/if}>否</label>
                         <span class="help-block">设置黑名单后，此会员无法访问商城</span>
-                        {else}
-                        <input type='hidden' name='data[isblack]' value='{$member['isblack']}' />
-                        <div class='form-control-static'>{if $member['isblack']==1}是{else}否{/if}</div>
-                        {/if}
 
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ifp 'member.member.edit'}
                         <textarea name="data[content]" class='form-control'>{$member['content']}</textarea>
-                        {else}
-                        <div class='form-control-static'>{$member['content']}</div>
-                        {/if}
                     </div>
                 </div>
             </div>
@@ -529,103 +440,6 @@
             {else}
             <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
             {/if}
-            <div class='panel-heading'>
-                设置代理商 <small>注意: 成为分销商后才可设置成为代理等级与代理地区</small>
-            </div>
-            <div class='panel-body'>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理商等级</label>
-                    <div class="col-sm-9 col-xs-12">
-                        {ifp 'bonus.agent.edit'}
-                        <select name='bdata[bonuslevel]' class='form-control'>
-                            <option value='0'>{php echo empty($plugin_bonus_set['levelname'])?'普通等级':$plugin_bonus_set['levelname']}</option>
-                            {loop $bonuslevels $level}
-                            <option value='{$level['id']}' {if $member['bonuslevel']==$level['id']}selected{/if}>{$level['levelname']}</option>
-                            {/loop}
-                        </select>
-                        {else}
-                        <input type="hidden" name="data[bonuslevel]" class="form-control" value="{$member['bonuslevel']}"  />
-
-                        {if empty($member['agentlevel'])}
-                        {php echo empty($plugin_bonus_set['levelname'])?'普通等级':$plugin_bonus_set['levelname']}
-                        {else}
-                        {php echo pdo_fetchcolumn('select levelname from '.tablename('sz_yi_bonus_level').' where id=:id limit 1',array(':id'=>$member['bonuslevel']))}
-                        {/if}
-                        {/if}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">区域代理</label>
-                    <div class="col-sm-4">
-                        {ifp 'bonus.agent.edit'}
-                        <select  class="form-control" id="bonus_area" name="bdata[bonus_area]">
-                            <option value="0" {if empty($member['bonus_area'])}selected{/if}>不选择</option>
-                            <option value="1" {if $member['bonus_area']==1}selected{/if}>省级代理</option>
-                            <option value="2" {if $member['bonus_area']==2}selected{/if} >市级代理</option>
-                            <option value="3" {if $member['bonus_area']==3}selected{/if} >区级代理</option>
-                            {if $trade['is_street'] == 1}
-                            <option value="4" {if $member['bonus_area']==4}selected{/if} >街级代理</option>
-                            {/if}
-                        </select>
-                        {else}
-                        <input type="hidden" name="data[bonus_area]" class="form-control" value="{$member['bonus_area']}"  />
-                        <div class='form-control-static'>{if empty($member['bonus_area'])}无{/if}{if $member['bonus_area']==1}省级代理{/if}{if $member['bonus_area']==2}市级代理{/if}{if $member['bonus_area']==3}区级代理{/if}{if $member['bonus_area']==4}街级代理{/if}</div>
-                        {/if}
-                    </div>
-                </div>
-                <div class="form-group form-area" {if empty($member['bonus_area'])}style="display:none;"{/if}>
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理区域</label>
-                <div class="col-sm-9 col-xs-12">
-                    {ifp 'bonus.agent.edit'}
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <select class="form-control tpl-province" id="sel-provance" onchange="selectCity();" name="reside[province]">
-                            <option value="" selected="true">所在省份</option>
-                        </select>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <select class="form-control tpl-city" id="sel-city" onchange="selectcounty()" name="reside[city]"><option value="" selected="true">所在城市</option></select>
-                    </div>
-
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <select class="form-control tpl-district" id="sel-area" name="reside[district]" {if $trade['is_street'] == 1}onchange="selectstreet()"{/if}><option value="" selected="true">所在地区</option></select>
-                    </div>
-
-                    {if $trade['is_street'] == 1}
-                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                        <select class="form-control tpl-street" id="sel-street" name="reside[street]"><option value="" selected="true">所在街道</option></select>
-                    </div>
-                    {/if}
-
-                    {else}
-                    <input type="hidden" name="reside[province]" class="form-control" value="{$member['bonus_province']}"  />
-                    <div class='form-control-static'>{$member['bonus_province']}</div>
-                    <input type="hidden" name="reside[city]" class="form-control" value="{$member['bonus_city']}"  />
-                    <div class='form-control-static'>{$member['bonus_city']}</div>
-                    <input type="hidden" name="reside[district]" class="form-control" value="{$member['bonus_area']}"  />
-                    <div class='form-control-static'>{$member['bonus_area']}</div>
-                    <input type="hidden" name="reside[street]" class="form-control" value="{$member['bonus_street']}"  />
-                    <div class='form-control-static'>{$member['bonus_street']}</div>
-                    {/if}
-                </div>
-            </div>
-        </div>
-        <div class="form-group form-area">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-            <div class="col-sm-4">
-                {ifp 'bonus.agent.edit'}
-                <div class="input-group">
-                    <div class="input-group-addon">区域代理</div>
-                    <input type="text" name="bdata[bonus_area_commission]" class="form-control" value="{$member['bonus_area_commission']}"  />
-                    <div class="input-group-addon">%</div>
-                </div>
-                <span class='help-block'>如不设置，则为基础设置中默认比例值</span>
-                {else}
-                <input type="hidden" name="bdata[bonus_area_commission]" class="form-control" value="{$member['bonus_area_commission']}"  />
-                <div class='form-control-static'>{$member['bonus_area_commission']}</div>
-                {/if}
-
-            </div>
         </div>
         <script type="text/javascript">
             $(document).ready(function(){
@@ -678,187 +492,14 @@
             cascdeInit("{$member['bonus_province']}", "{$member['bonus_city']}", "{$member['bonus_district']}", "{$member['bonus_street']}");
         </script>
         {/if}
-        {else}
-        {if $hascommission && cv('commission.agent.changeagent')}
-        <div class='panel-heading'>
-            设置分销商 <small>注意: 分销商设置后，无法再此进行修改，如果要修改，请联系系统管理员</small>
-        </div>
-        <div class='panel-body'>
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">上级分销商</label>
-                <div class="col-sm-4">
-                    <input type="hidden" value="{$member['agentid']}" id='agentid' name='adata[agentid]' class="form-control"  />
-
-                    {ifp 'commission.agent.edit'}
-                    <div class='input-group'>
-                        <input type="text" name="parentagent" maxlength="30" value="{if !empty($parentagent)}{$parentagent['nickname']}/{$parentagent['realname']}/{$parentagent['membermobile']}{/if}" id="parentagent" class="form-control" readonly />
-                        <div class='input-group-btn'>
-                            <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus-notice').modal();">选择上级分销商</button>
-                            <button class="btn btn-danger" type="button" onclick="$('#agentid').val('');$('#parentagent').val('');$('#parentagentavatar').hide()">清除选择</button>
-                        </div>
-                    </div>
-                    <span id="parentagentavatar" class='help-block' {if empty($parentagent)}style="display:none"{/if}><img  style="width:100px;height:100px;border:1px solid #ccc;padding:1px" src="{$parentagent['avatar']}"/></span>
-
-                    <div id="modal-module-menus-notice"  class="modal fade" tabindex="-1">
-                        <div class="modal-dialog" style='width: 920px;'>
-                            <div class="modal-content">
-                                <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择上级分销商</h3></div>
-                                <div class="modal-body" >
-                                    <div class="row">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="keyword" value="" id="search-kwd-notice" placeholder="请输入分销商昵称/姓名/手机号" />
-                                            <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_members();">搜索</button></span>
-                                        </div>
-                                    </div>
-                                    <div id="module-menus-notice" style="padding-top:5px;"></div>
-                                </div>
-                                <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <span class="help-block">修改后， 只有关系链改变, 以往的订单佣金都不会改变,新的订单才按新关系计算佣金 ,请谨慎选择</span>
-                    {else}
-                    <div class='form-control-static'>
-                        {if !empty($parentagent)}<img  style="width:100px;height:100px;border:1px solid #ccc;padding:1px" src="{$parentagent['avatar']}"/>{else}无{/if}
-                    </div>
-                    {/if}
-
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否固定上级</label>
-                <div class="col-sm-9 col-xs-12">
-                    {ifp 'commission.agent.check'}
-                    <label class="radio-inline"><input type="radio" name="adata[fixagentid]" value="1" {if $member['fixagentid']==1}checked{/if}>是</label>
-                    <label class="radio-inline" ><input type="radio" name="adata[fixagentid]" value="0" {if $member['fixagentid']==0}checked{/if}>否</label>
-                    <span class="help-block">固定上级后，任何条件也无法改变其上级，如果不选择上级分销商，且固定上级，则上级永远为总店（是分销商）或无上线（非分销商）</span>
-                    {else}
-                    <input type='hidden' name='adata[fixagentid]' value='{$member['fixagentid']}' />
-                    <div class='form-control-static'>{if $member['fixagentid']==1}是{else}否{/if}</div>
-                    {/if}
-
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商等级</label>
-                <div class="col-sm-9 col-xs-12">
-                    {ifp 'commission.agent.edit'}
-                    <select name='adata[agentlevel]' class='form-control'>
-                        <option value='0'>{php echo empty($plugin_com_set['levelname'])?'普通等级':$plugin_com_set['levelname']}</option>
-                        {loop $agentlevels $level}
-                        <option value='{$level['id']}' {if $member['agentlevel']==$level['id']}selected{/if}>{$level['levelname']}</option>
-                        {/loop}
-                    </select>
-                    {else}
-                    <input type="hidden" name="adata[agentlevel]" class="form-control" value="{$member['agentlevel']}"  />
-
-                    {if empty($member['agentlevel'])}
-                    {php echo empty($plugin_com_set['levelname'])?'普通等级':$plugin_com_set['levelname']}
-                    {else}
-                    {php echo pdo_fetchcolumn('select levelname from '.tablename('sz_yi_commission_level').' where id=:id limit 1',array(':id'=>$member['agentlevel']))}
-                    {/if}
-                    {/if}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计佣金</label>
-                <div class="col-sm-9 col-xs-12">
-                    <div class='form-control-static'> {$member['commission_total']}</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">已打款佣金</label>
-                <div class="col-sm-9 col-xs-12">
-                    <div class='form-control-static'> {$member['commission_pay']}</div>
-                </div>
-            </div>
-            {if $member['agenttime']!='1970-01-01 08:00'}
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为分销商时间</label>
-                <div class="col-sm-9 col-xs-12">
-                    <div class='form-control-static'>{$member['agenttime']}</div>
-                </div>
-            </div>
-            {/if}
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商权限</label>
-                <div class="col-sm-9 col-xs-12">
-                    {ifp 'commission.agent.check'}
-                    <label class="radio-inline"><input type="radio" name="adata[isagent]" value="1" {if $member['isagent']==1}checked{/if}>是</label>
-                    <label class="radio-inline" ><input type="radio" name="adata[isagent]" value="0" {if $member['isagent']==0}checked{/if}>否</label>
-                    {else}
-                    <input type='hidden' name='adata[isagent]' value='{$member['isagent']}' />
-                    <div class='form-control-static'>{if $member['isagent']==1}是{else}否{/if}</div>
-                    {/if}
-
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">审核通过</label>
-                <div class="col-sm-9 col-xs-12">
-                    {ifp 'commission.agent.check'}
-                    <label class="radio-inline"><input type="radio" name="adata[status]" value="1" {if $member['status']==1}checked{/if}>是</label>
-                    <label class="radio-inline" ><input type="radio" name="adata[status]" value="0" {if $member['status']==0}checked{/if}>否</label>
-                    <input type='hidden' name='oldstatus' value="{$member['status']}" />
-                    {else}
-                    <input type='hidden' name='adata[status]' value='{$member['status']}' />
-                    <div class='form-control-static'>{if $member['status']==1}是{else}否{/if}</div>
-                    {/if}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">强制不自动升级</label>
-                <div class="col-sm-9 col-xs-12">
-                    {ifp 'commission.agent.edit'}
-                    <label class="radio-inline" ><input type="radio" name="adata[agentnotupgrade]" value="0" {if $member['agentnotupgrade']==0}checked{/if}>允许自动升级</label>
-                    <label class="radio-inline"><input type="radio" name="adata[agentnotupgrade]" value="1" {if $member['agentnotupgrade']==1}checked{/if}>强制不自动升级</label>
-                    <span class="help-block">如果强制不自动升级，满足任何条件，此分销商的级别也不会改变</span>
-                    {else}
-                    <input type="hidden" name="adata[agentnotupgrade]" class="form-control" value="{$member['agentnotupgrade']}"  />
-                    <div class='form-control-static'>{if $member['agentnotupgrade']==1}强制不自动升级{else}允许自动升级{/if}</div>
-                    {/if}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">自选商品</label>
-                <div class="col-sm-9 col-xs-12">
-                    {ifp 'commission.agent.edit'}
-                    <label class="radio-inline" ><input type="radio" name="adata[agentselectgoods]" value="0" {if $member['agentselectgoods']==0}checked{/if}>系统设置</label>
-                    <label class="radio-inline"><input type="radio" name="adata[agentselectgoods]" value="1" {if $member['agentselectgoods']==1}checked{/if}>强制禁止</label>
-                    <label class="radio-inline"><input type="radio" name="adata[agentselectgoods]" value="2" {if $member['agentselectgoods']==2}checked{/if}>强制开启</label>
-                    <span class="help-block">系统设置： 跟随系统设置，系统关闭自选则为禁止，系统开启自选则为允许</span>
-                    <span class="help-block">强制禁止： 无论系统自选商品是否关闭或开启，此分销商永不能自选商品</span>
-                    <span class="help-block">强制允许： 无论系统自选商品是否关闭或开启，此分销商永可以自选商品</span>
-                    {else}
-                    <input type="hidden" name="adata[agentselectgoods]" class="form-control" value="{$member['agentselectgoods']}"  />
-                    <div class='form-control-static'>{if $member['agentnotselectgoods']==1}
-                        强制禁止
-                        {elseif $member['agentselectgoods']==2}
-                        强制允许
-                        {else}
-                        {if $plugin_com_set['select_goods']==1}系统允许{else}系统禁止{/if}
-                        {/if}</div>
-                    {/if}
-                </div>
-            </div>
-        </div>
-        {/if}
-        {/if}
         <div class='panel-body'>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                 <div class="col-sm-9 col-xs-12">
-                    {ifp 'member.member.edit'}
                     <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
-                    <input type="hidden" name="token" value="{$var['token']}" />
-                    {/if}
-                    <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回列表" {ifp 'member.member.edit'}style='margin-left:10px;'{/if} />
+                    <input type="hidden" name="token" value="{$_W['token']}" />
+
+                    <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回列表" />
                 </div>
             </div>
         </div>
