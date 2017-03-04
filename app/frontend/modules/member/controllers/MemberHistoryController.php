@@ -18,23 +18,16 @@ class MemberHistoryController extends BaseController
     public function index()
     {
         $memberId = 96;
-        $uniacid = 8;
+
+        $historyList = MemberHistory::getMemberHistoryList($memberId);
 
 
-        $list = MemberHistory::getMemberHistoryList($memberId, $uniacid);
-
-
-        echo '<pre>'; print_r($list); exit;
+        echo '<pre>'; print_r($historyList); exit;
     }
-    /**
-     * 添加浏览记录【增】
-     * @Author::yitian 2017-03-01 qq:751818588
-     * @access public
-     * @param int $memberId 会员ID
-     * @param int $goodsId 商品ID
-     **/
+
     public function create()
     {
+        //需要考虑添加过的只修改时间，不重复添加记录
         $memberId = 96;
         $goodsId = 100;
         $result = MemberHistory::saveMemberHistory($memberId, $goodsId);
