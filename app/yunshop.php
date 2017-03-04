@@ -141,6 +141,7 @@ class YunShop
         $content = $controller->$action(
            Illuminate\Http\Request::capture()
         );
+
         exit($content);
     }
 

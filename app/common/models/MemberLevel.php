@@ -9,9 +9,14 @@
 namespace app\common\models;
 
 
-use Illuminate\Database\Eloquent\Model;
 
-class MemberLevel extends Model
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class MemberLevel extends BaseModel
 {
+    use SoftDeletes;
+
     public $table = 'yz_member_level';
+
+    protected $guarded = [''];
 }
