@@ -13,7 +13,7 @@ use app\common\components\Widget;
 
 class MenuWidget extends Widget
 {
-    public $test;
+    public $test = '';
 
     public function run()
     {

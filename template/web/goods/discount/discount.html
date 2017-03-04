@@ -1,11 +1,3 @@
-{php
-    use app\backend\modules\goods\models\Discount;
-    use app\backend\modules\goods\models\DiscountDetail;
-    $discount = Discount::getInfo($goodsId);
-    $discountDetail = DiscountDetail::getList($discountId);
-    $levels = Level::getList($uniacId);
-    $groups = Level::getList($uniacId);
-}
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -24,7 +16,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣类型</label>
     <div class="col-sm-6 col-xs-6">
       <label class="radio-inline">
-        <input type="radio" name="discount[level_discount_type]" value="1" {if $discount->level_discount_type == 1} checked="true" {/if} /> 会员等级
+        <input type="radio" name="discount[level_discount_type]" value="1" {if $discount[0]->level_discount_type == 1} checked="true" {/if} /> 会员等级
       </label>
     </div>
 </div>   
@@ -34,33 +26,23 @@
       <div class="col-sm-6 col-xs-6">
         <div class='input-group'>
          <label class="radio-inline">
-             <input type="radio" name="discount[discount_method]" value="1" {if $discount->discount_method == 1} checked="true" {/if} /> 折扣
+             <input type="radio" name="discount[discount_method]" value="1" {if $discount[0]->discount_method == 1} checked="true" {/if} /> 折扣
            </label>
              <label class="radio-inline">
-               <input type="radio" name="discount[discount_method]" value="2" {if $discount->discount_method == 2} checked="true" {/if} /> 固定金额
+               <input type="radio" name="discount[discount_method]" value="2" {if $discount[0]->discount_method == 2} checked="true" {/if} /> 固定金额
              </label>
         </div>
       </div> 
     </div> 
     <div id="ismember"  {if $discount->level_discount_type != 1} style="display:none" {/if}>
-      <div class="form-group">
-         <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级折扣</label>
-         <div class="col-sm-6 col-xs-6">
-             <div class='input-group'>
-                <div class='input-group-addon'>默认等级</div>
-                <input type='text' name='discounts[default]' class="form-control discounts" value="{php echo $discounts['default']}" />
-                <div class='input-group-addon waytxt'>{if $discountway == 1}折{else}元{/if}</div>
-            </div>
-         </div>
-      </div>   
-      {loop $levels $level}
+      {loop $levels $level $key}
         <div class="form-group">
            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
            <div class="col-sm-6 col-xs-6">
                <div class='input-group'>
                   <div class='input-group-addon'>{php echo $level->level_name}</div>
-                  <input type='text' name='discount_detail[{php echo $level->id}]' class="form-control discounts"  value="" />
-                  <div class='input-group-addon waytxt'>{if $discount->discount_method == 1}折{else}元{/if}</div>
+                  <input type='text' name='discount[discount_value][{php echo $level->id}]' class="form-control discounts"  value="{if $level->level_id == $discount[$key]->level_id echo $discount[$key]->discount_value}" />
+                  <div class='input-group-addon waytxt'>{if $discount[0]->discount_method == 1}折{else}元{/if}</div>
               </div>
            </div>
         </div>   

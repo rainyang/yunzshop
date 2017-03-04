@@ -34,6 +34,7 @@ class MemberCartController extends BaseController
             'price'     => '100',
             'option_id' => '123'
         );
+
         $result = MemberCart::storeGoodsToMemberCart($data);
         dd($result);
     }
