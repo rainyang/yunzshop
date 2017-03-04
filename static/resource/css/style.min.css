@@ -50,7 +50,7 @@ hr {
 }
 .main {  	
   background:#e6e8ea;
-  padding: 70px 19px 10px 260px;
+  padding: 70px 19px 10px 240px;
 }
 .page-header-new {
   margin: 12px 0 20px;
@@ -492,7 +492,7 @@ border-color : #79859b;
 =================================================================== */
 .navbar {
   margin: 0;
-  padding: 0 0 0 240px;
+  padding: 0 0 0 220px;
   height: 60px;
   border: none;
   border-bottom: 1px solid #f2f2f2;
@@ -502,7 +502,7 @@ border-color : #79859b;
   color: #414141;
   line-height: 60px;
   background: #ffffff;  
-  position: fixed;
+  position: absolute;
   width: 100%;
   z-index: 11;
 }
@@ -565,11 +565,11 @@ border-color : #79859b;
   margin: 0 10px 0 0;
 }
 .navbar .navbar-nav li a i {
-  margin: 22px 0 0 0;
   width: 32px;
   text-align: center;
   color: #c8c8c8;
   font-size: 18px;
+  line-height: 60px;
 }
 .navbar .navbar-nav li a:hover {
   background: none !important;
@@ -606,6 +606,10 @@ border-color : #79859b;
   -moz-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.125);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.125);
   padding: 0;
+}
+.nav.navbar-nav.navbar-right .dropdown-menu li a i {
+  line-height: 50px;
+
 }
 .navbar .navbar-nav li .dropdown-menu:active {
   background: black;
@@ -770,11 +774,11 @@ border-color : #79859b;
 .sidebar {
   background: #181d20;  
   color: #cccccc;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   height: 100%;
-  width: 240px;
+  width: 220px;
   z-index: 12;
   overflow: hidden;
 }
@@ -833,12 +837,12 @@ border-color : #79859b;
 .sidebar .sidebar-menu {
   overflow-x: hidden;
   overflow-y: scroll;
-  width: 270px;
+  width: 250px;
   padding-bottom: 100px;
 }
 .sidebar ul.nav.nav-sidebar {
   margin: 0;
-  width: 250px;
+  width: 230px;
   padding: 5px 0;
 }
 .sidebar ul.nav.nav-sidebar li {
@@ -2722,7 +2726,7 @@ ul.profile-details li div i {
     overflow: visible !important;
   }
 }
-@media (max-width: 767px) {
+/*@media (max-width: 767px) {
   .container-fluid.content {
     overflow: hidden;
   }
@@ -2744,13 +2748,13 @@ ul.profile-details li div i {
   .navbar .navbar-right {
     float: right;
   }
-}
+}*/
 @media (min-width: 768px) and (max-width: 991px) {
   .navbar-form input[type=text] {
     width: 260px !important;
   }
 }
-@media (max-width: 991px) {
+/*@media (max-width: 991px) {
   .sidebar {
     z-index: 1;
   }
@@ -2777,7 +2781,8 @@ ul.profile-details li div i {
   #usage-blank  {
     display: none;
   }
-}
+}*/
+/*
 @media (min-width: 992px) and (max-width: 1199px) {
   
 }
@@ -2792,3 +2797,4 @@ ul.profile-details li div i {
 @media (min-width: 1200px) {
   
 }
+*/

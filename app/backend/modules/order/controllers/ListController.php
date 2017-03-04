@@ -18,12 +18,12 @@ class ListController extends BaseController
     public function index()
     {
         $pageSize = 5;
-        $list = Order::waitPay()->with('hasManyOrderGoods')->paginate($pageSize);
+        $list = Order::with('hasManyOrderGoods')->paginate($pageSize);
         //dd($db_order_models);
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-
+        dd($pager);
         $this->render('order/list', [
-            'order_list' => $list,
+            'list' => $list,
             'lang' => $this->_lang(),
             'totals'=> $this->_totals(),
             'pager' => $pager,

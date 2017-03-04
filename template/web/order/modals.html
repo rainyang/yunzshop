@@ -1,32 +1,4 @@
-<!--选择门店-->
-<div id="modal-changeagent" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
-	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
-		<input type='hidden' name='id' value='' />
-		<input type='hidden' name='op' value='changeagent' />
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-					<h3>选择门店</h3>
-				</div>
-				<div class="form-group">
-					<label class="col-xs-10 col-sm-3 col-md-3 control-label">门店</label>
-					<div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-						<select class="form-control" name="changeagent" id="express">
-							{loop $store_list $row}
-							<option value="{$row['id']}" data-name="">{$row['storename']}</option>
-							{/loop}
-						</select>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary" name="close" value="yes">确定</button>
-					<a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
-				</div>
-			</div>
-		</div>
-	</form>
-</div>
+
 <!-- 关闭原因 -->
 <div id="modal-close" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
 	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
@@ -52,35 +24,7 @@
 		</div>
 	</form>
 </div>
-<!-- 异常退房-->
-<div id="modal-abnormalroom" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
-	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
-		<input type='hidden' name='id' class="id" value='' />
-		<input type='hidden' name='op' value='deal' />
-		<input type='hidden' name='to' value='room' />
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-					<h3>房间</h3>
-				</div>
-				<div class="modal-body">			
-					<div class="form-group">
-						<label class="col-xs-10 col-sm-3 col-md-3 control-label">房间号</label>
-						<div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-							<input type="text" name="expresssn" class="form-control" />
-						</div>
-					</div>
-					<div id="module-menus"></div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary span2" name="abnormalroom" value="yes">确认订单</button>
-					<a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
-				</div>
-			</div>
-		</div>
-	</form>
-</div>
+
 <!-- 确认发货 -->
 <div id="modal-confirmsend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
 	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
@@ -219,123 +163,7 @@
 		</div>
 	</form>
 </div>
-<!-- 确认房间 -->
-<div id="modal-room" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
-	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
-		<input type='hidden' name='id' class="id" value='' />
-		<input type='hidden' name='op' value='deal' />
-		<input type='hidden' name='to' value='room' />
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-					<h3>房间</h3>
-				</div>
-				<div class="modal-body">			
-					<div class="form-group">
-						<label class="col-xs-10 col-sm-3 col-md-3 control-label">房间号</label>
-						<div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-							<input type="text" name="expresssn" class="form-control" />
-						</div>
-					</div>
-					<div id="module-menus"></div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary span2" name="room" value="yes">确认订单</button>
-					<a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
-				</div>
-			</div>
-		</div>
-	</form>
-</div>
-<!-- 取消入住 -->
-<div id="modal-cancelsendroom" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
-	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
-		<input type='hidden' name='id' class="id" value='' />
-		<input type='hidden' name='op' value='deal' />
-		<input type='hidden' name='to' value='cancelsendroom' />
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-					<h3>取消</h3>
-				</div>
-				<div class="modal-body">
-					<label>取消原因</label>
-					<textarea style="height:150px;" class="form-control" name="cancelreson" autocomplete="off"></textarea>
-					<div id="module-menus"></div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary span2" name="cancelsendroom" value="yes">取消</button>
-					<a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
-				</div>
-			</div>
-		</div>
-	</form>
-</div>
-<!-- 退押金
- --><div id="modal-depositprice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
-	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
-		<input type='hidden' name='id' class="id" value='' />
-		<input type='hidden' name='op' value='deal' />
-		<input type='hidden' name='to' value='depositprice' />
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-					<h3>押金</h3>
-				</div>
-				<div class="modal-body">			
-					<div class="form-group">
-						<label class="col-xs-10 col-sm-3 col-md-3 control-label">押金金额</label>
-						<div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-							<input type="text" name="expresssn" class="form-control" />
-						</div>
-					</div>
-					<div id="module-menus"></div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary span2" name="depositprice" value="yes">确认</button>
-					<a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
-				</div>
-			</div>
-		</div>
-	</form>
-</div>
-<!-- 确认核销 -->
-<div id="modal-confirmsend1" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
-	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
-		<input type='hidden' name='id' value='' />
-		<input type='hidden' name='op' value='deal' />
-		<input type='hidden' name='to' value='confirmsend1' />
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-					<h3>自提信息</h3>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label class="col-xs-10 col-sm-3 col-md-3 control-label">自提人信息</label>
-						<div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-							<div class="form-control-static">
-								自提人: <span class="realname"></span> / <span class="mobile"></span><br>
-								自提地址: <span class="address"></span>
-							</div>
-						</div>
-					</div>
 
-					
-					<div id="module-menus"></div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary span2" name="confirmsend1" value="yes">确认核销</button>
-					<a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
-				</div>
-			</div>
-		</div>
-	</form>
-</div>
 <!-- 取消发货 -->
 <div id="modal-cancelsend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
 	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
