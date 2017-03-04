@@ -20,7 +20,12 @@ class EventServiceProvider extends ServiceProvider
         'app\common\events\TestGoodsEvent'=>[
             'app\common\listeners\EventListenerGoods', //侦听类1
             'app\backend\modules\goods\controllers\BrandController', //侦听类1
-        ]
+        ],
+        'app\common\events\OrderCreatedEvent'=>[
+            'app\common\listeners\EventListener', //侦听类1
+            'app\common\listeners\EventListenerOther', //侦听类2
+        ],
+
     ];
 
     /**

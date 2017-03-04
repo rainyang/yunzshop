@@ -11,127 +11,105 @@ namespace app\backend\modules\member\controllers;
 
 use app\backend\modules\member\models\MemberLevel;
 use app\common\components\BaseController;
+use app\common\helpers\Url;
 
 class MemberLevelController extends BaseController
 {
+    public $shopset;
 
+    public function __construct()
+    {
+        $this->shopset = m('common')->getSysset('shop');
+    }
     /**
-     * 会员等级列表
-     * @Author::yitian 2017-02-27 qq:751818588
-     * @access public
-     **/
+     *  Membership list
+     */
     public function index()
     {
         $level_list = MemberLevel::getMemberLevelList();
-        //echo '<pre>'; print_r($shopset); exit;
+
         $this->render('member/level', [
-            'operation' => 'display',
             'level_list' => $level_list,
-            'shopset' => m('common')->getSysset('shop')
+            'shopset' => $this->shopset
         ]);
     }
     /**
-     * 跳转修改会员等级页面
-     * @Author::yitian 2017-02-28 qq:751818588
-     * @access public
-     **/
-    public function updateMemberLevel()
+     * Add member level
+     */
+    public function store()
     {
-        $post = \YunShop::request()->get();
-        if($post['id']) {
-            $level = MemberLevel::getMemberLevelInfoById($post['id']);
-        }
-        $this->render('member/level',[
-            'operation' => 'post',
-            'shopset' => m('common')->getSysset('shop'),
-            'level' => $level
-        ]);
-    }
-    public function reviseMemberLevel()
-    {
+        $levelModel = new memberLevel();
 
-        $level = \YunShop::request()->level;
-        $level_id = $level['id'];
-        unset($level['id']);
-        $result = MemberLevel::updateMemberLevelInfoById($level_id, $level);
-        if ($result) {
-            Header("Location: ".$this->createWebUrl('member.memberlevel.index'));
-            exit;
-        }
+        $requestLevel = \YunShop::request()->level;
+        if($requestLevel) {
+            //将数据赋值到model
+            $levelModel->setRawAttributes($requestLevel);
+            //其他字段赋值
+            $levelModel->uniacid = \YunShop::app()->uniacid;
 
-    }
-    /**
-     * 跳转添加会员等级页面
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public
-     **/
-    public function addMemberLevel()
-    {
-
-        $level = array(
-            'id'    => '',
-            'level' => '',
-            'level_name' => '',
-            'order_money' => '',
-            'order_count' => '',
-            'goods_id' => '',
-            'discount' => ''
-        );
-        //echo '<pre>'; print_r($level); exit;
-        $this->render('member/level',[
-            'operation' => 'post',
-            'shopset' => m('common')->getSysset('shop'),
-            'level' => $level
-        ]);
-    }
-    /**
-     * 添加会员等级【增】
-     * @Author::yitian 2017-02-27 qq:751818588
-     * @access public
-     **/
-    public function createMemberLevel()
-    {
-        //$shopset = m('common')->getSysset('shop');
-        $level = \YunShop::request()->level;
-        $level['uniacid'] = \YunShop::app()->uniacid;
-        //echo '<pre>'; print_r($level); exit;
-        /*if($shopset['leveltype'] == '2') {
-            $goodsid = $post['goodsid'];
-        } else {
-            $goodsid = '0';
-        }
-        $data = array(
-            'uniacid'   => \YunShop::app()->uniacid,
-            'level'     => $post['level'],
-            'level_name' => $post['level_name'],
-            'order_money'=> $post['order_money'],
-            'order_count' => $post['order_count'],
-            'discount'  => $post['discount'],
-            'goodsid'   => $goodsid
-        );*/
-        $result = MemberLevel::createMemberLevel($level);
-        //echo '<pre>'; print_r($result); exit;
-        if($result) {
-            Header("Location:" . $this->createWebUrl('member.memberlevel.index'));
-            exit;
-        }
-
-    }
-    /**
-     * 删除会员等级【删】
-     * @Author::yitian 2017-02-27 qq:751818588
-     * @access public
-     **/
-    public function deleteMemberLevel()
-    {
-        $post = \YunShop::request()->get();
-        if($post['id']) {
-            $result = MemberLevel::deleteMemberLevel($post['id']);
-            if ($result) {
-                Header("Location: ".$this->createWebUrl('member.memberlevel.index'));
-                exit;
+            //字段检测
+            $validator = MemberLevel::validator($levelModel->getAttributes());
+            if ($validator->fails()) {//检测失败
+                $this->error($validator->messages());
+            } else {
+                //数据保存
+                if ($levelModel->save()) {
+                    //显示信息并跳转
+                    return $this->message('添加会员等级成功', Url::absoluteWeb('member.member-level.index'));
+                }else{
+                    $this->error('添加会员等级失败');
+                }
             }
         }
-        exit("删除失败！");
+        $this->render('member/edit_level', [
+            'level' => $levelModel,
+            'shopset' => $this->shopset
+        ]);
+    }
+    /**
+     * Modify membership level
+     */
+    public function update()
+    {
+        $levelModel = MemberLevel::getMemberLevelById(\YunShop::request()->id);
+        if(!$levelModel){
+            return $this->message('无此记录或已被删除','','error');
+        }
+        $requestLevel = \YunShop::request()->level;
+        if($requestLevel) {
+            $levelModel->setRawAttributes($requestLevel);
+            $validator = MemberLevel::validator($levelModel->getAttributes());
+            if ($validator->fails()) {//检测失败
+                $this->error($validator->messages());
+            } else {
+                if ($levelModel->save()) {
+                    return $this->message('修改会员等级信息成功', Url::absoluteWeb('member.member-level.index'));
+                }else{
+                    $this->error('修改会员等级信息失败');
+                }
+            }
+        }
+
+        $this->render('member/edit_level', [
+            'level'     => $levelModel,
+            'shopset'   => $this->shopset
+        ]);
+    }
+    /**
+     * Delete membership
+     */
+    public function destroy()
+    {
+        $level = MemberLevel::getMemberLevelById(\YunShop::request()->id);
+        if(!$level) {
+            return $this->message('无此品牌或已经删除','','error');
+        }
+
+        $result = MemberLevel::deleteMemberLevel(\YunShop::request()->id);
+        if($result) {
+            return $this->message('删除品牌成功',Url::absoluteWeb('member.member-level.index'));
+        }else{
+            return $this->message('删除品牌失败','','error');
+        }
     }
 }

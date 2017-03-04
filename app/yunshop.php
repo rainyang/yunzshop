@@ -141,6 +141,7 @@ class YunShop
         $content = $controller->$action(
            Illuminate\Http\Request::capture()
         );
+
         exit($content);
     }
 
@@ -186,7 +187,7 @@ class YunComponent
     }
 }
 
-class YunRequest extends YunComponent
+class YunRequest extends YunComponent implements ArrayAccess
 {
     protected $values;
 
@@ -195,6 +196,25 @@ class YunRequest extends YunComponent
         global $_GPC;
         $this->values = $_GPC;
     }
+    public function offsetUnset($offset){
+        unset($this->values[$offset]);
+    }
+    public function offsetSet($offset, $value){
+        $this->values[$offset] = $value;
+    }
+    public function offsetGet($offset){
+        if(isset($this->values[$offset])){
+            return $this->values[$offset];
+        }
+        return null;
+    }
+    public function offsetExists($offset){
+        if(isset($this->values[$offset])){
+            return true;
+        }
+        return false;
+    }
+
 }
 
 class YunApp extends YunComponent

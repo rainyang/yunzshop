@@ -8,9 +8,14 @@ use Setting;
 use app\common\services\PluginManager;
 use Datatables;
 use Cookie;
+use iscms\Alisms\SendsmsPusher as Sms;
 
 class TestController extends BaseController
 {
+    public function __construct(Sms $sms)
+    {
+        $this->sms=$sms;
+    }
     public function index()
     {
 
@@ -26,6 +31,11 @@ class TestController extends BaseController
     public function view()
     {
         return view('test.index',['a'=>Str::random(10)]);
+    }
+
+    public function testSms()
+    {
+        $result=$this->sms->send("phone","name","content","code");
     }
 
 

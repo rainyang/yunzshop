@@ -9,9 +9,8 @@
 namespace app\common\models;
 
 
-use Illuminate\Database\Eloquent\Model;
 
-class MemberCart extends Model
+class MemberCart extends BaseModel
 {
     protected $table = 'yz_member_cart';
 

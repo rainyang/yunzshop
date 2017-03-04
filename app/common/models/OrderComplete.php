@@ -17,10 +17,16 @@ class OrderComplete
         $this->order_model = $order_model->getData();
     }
 
+    public function complete()
+    {
+        $this->order_model->status = 3;
+        $this->order_model->save();
+    }
+
     public function completeable()
     {
-        if ($this->order_model['status'] == 3) {
-            return true;
+        if ($this->order_model['status'] == 2) {
+            $this->complete();
         }
     }
 }

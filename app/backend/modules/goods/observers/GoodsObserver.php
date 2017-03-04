@@ -4,6 +4,7 @@ namespace app\backend\modules\goods\observers;
 
 use app\backend\modules\goods\models\Discount;
 use app\backend\modules\goods\models\Share;
+use app\backend\modules\goods\services\DiscountService;
 use app\backend\modules\goods\services\Privilege;
 use app\backend\modules\goods\services\PrivilegeService;
 
@@ -19,9 +20,9 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function __construct($model)
     {
-        $model->share['id'] = $model->goodsId;
-        $model->privilege['id'] = $model->goodsId;
-        $model->discount['id'] = $model->goodsId;
+        $model->share['goods_id'] = $model->goodsId;
+        $model->privilege['goods_id'] = $model->goodsId;
+        $model->discount['goods_id'] = $model->goodsId;
     }
 
     public function creating(Eloquent $model)
@@ -31,7 +32,6 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
         if ($model->privilege) {
             $model->privilege['show_levels'] = PrivilegeService::arrayToSting($model->privilege['show_levels']);
-            $model->privilege['goods_id'] = $this->goodsId;
             return Privilege::validator($model->privilege);
         }
         if ($model->discount) {
@@ -49,7 +49,10 @@ class GoodsObserver extends \app\common\observers\BaseObserver
             Privilege::createdPrivilege($model->privilege);
         }
         if ($model->discount) {
-            Discount::createdDiscount($model->discount);
+            $discounts = DiscountService::resetArray($model->discount);
+            foreach ($discounts as $discount) {
+                Discount::createdDiscount($discount);
+            }
         }
     }
 
@@ -60,7 +63,6 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
         if ($model->privilege) {
             $model->privilege['show_levels'] = PrivilegeService::arrayToSting($model->privilege['show_levels']);
-            $model->privilege['goods_id'] = $this->goodsId;
             return Privilege::validator($model->privilege);
         }
         if ($model->discount) {
@@ -78,7 +80,12 @@ class GoodsObserver extends \app\common\observers\BaseObserver
             Privilege::updatedPrivilege($model->privilege);
         }
         if ($model->discount) {
-            Discount::updatedDiscount($model->discount);
+            Discount::deletedDiscount($model->goodsId);
+            $discounts = DiscountService::resetArray($model->discount);
+            foreach ($discounts as $discount) {
+                Discount::createdDiscount($discount);
+            }
+
         }
     }
 
