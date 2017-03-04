@@ -15,8 +15,8 @@ class Order extends BaseModel
 {
     public $table = 'yz_order';
     private $StatusService;
+    protected $appends = ['status_name','button_models'];
 
-    
     public static function getOrder($order_id, $uniacid)
     {
         return self::where('id', $order_id)
@@ -60,4 +60,5 @@ class Order extends BaseModel
     {
         return $this->getStatusService()->getButtonModels();
     }
+
 }

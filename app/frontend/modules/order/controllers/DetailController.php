@@ -12,10 +12,11 @@ use app\common\models\Order;
 
 class DetailController
 {
-    public function waitPay(){
-        $db_order_models = Order::waitPay()->with('hasManyOrderGoods')->find(1);
+    public function index(){
+        $db_order_models = Order::with('hasManyOrderGoods')->first();
         $order = $db_order_models->toArray();
-
         dd($order);
+
+        echo json_encode($db_order_models,JSON_UNESCAPED_UNICODE);
     }
 }
