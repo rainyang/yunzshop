@@ -4,6 +4,7 @@ namespace app\backend\modules\goods\observers;
 
 use app\backend\modules\goods\models\Discount;
 use app\backend\modules\goods\models\Share;
+use app\backend\modules\goods\models\Notices;
 use app\backend\modules\goods\services\Privilege;
 use app\backend\modules\goods\services\PrivilegeService;
 
@@ -22,6 +23,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         $model->share['id'] = $model->goodsId;
         $model->privilege['id'] = $model->goodsId;
         $model->discount['id'] = $model->goodsId;
+        $model->notices['goods_id'] = $model->goodsId;
     }
 
     public function creating(Eloquent $model)
@@ -37,6 +39,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         if ($model->discount) {
             return Discount::validator($model->discount);
         }
+
     }
 
     public function created(Eloquent $model)
@@ -50,6 +53,9 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
         if ($model->discount) {
             Discount::createdDiscount($model->discount);
+        }
+        if ($model->notices) {
+            Notices::createdNotices($model->notices);
         }
     }
 
@@ -66,6 +72,9 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         if ($model->discount) {
             return Discount::validator($model->discount);
         }
+        if ($model->notices) {
+            return Notices::validator($model->notices);
+        }
     }
 
     public function updated(Eloquent $model)
@@ -80,6 +89,9 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         if ($model->discount) {
             Discount::updatedDiscount($model->discount);
         }
+        if ($model->notices) {
+            Notices::updatedNotices($model->notices);
+        }
     }
 
     public function deleted(Eloquent $model)
@@ -92,6 +104,9 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
         if (!empty(Discount::getInfo($model->goodsId))) {
             Discount::deletedDiscount($model->goodsId);
+        }
+        if (!empty(Notices::getInfo($model->goodsId))) {
+            Notices::deletedNotices($model->goodsId);
         }
     }
 }
