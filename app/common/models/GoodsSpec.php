@@ -12,4 +12,8 @@ namespace app\common\models;
 class GoodsSpec extends \app\common\models\BaseModel
 {
     public $table = 'yz_goods_spec';
+    
+    public $guarded = [];
+
+    public $timestamps = false;
 }

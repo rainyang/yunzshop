@@ -21,17 +21,13 @@ class Brand extends \app\common\models\Brand
     }
 
     /**
-     * @param $uniacid
-     * @param $pindex
-     * @param $psize
+     * @param $pageSize
      * @return mixed
      */
-    public static function getBrands($uniacid, $pindex, $psize)
+    public static function getBrands( $pageSize)
     {
-        return self::where('uniacid', $uniacid)
-            ->skip(($pindex - 1) * $psize)
-            ->take($psize)
-            ->get()
+        return self::uniacid()
+            ->paginate($pageSize)
             ->toArray();
     }
 
@@ -51,8 +47,7 @@ class Brand extends \app\common\models\Brand
     public static function getBrand($id)
     {
         return self::where('id', $id)
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**

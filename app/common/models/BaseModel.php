@@ -15,4 +15,11 @@ use Illuminate\Database\Eloquent\Model;
 class BaseModel extends Model
 {
     use ValidatorTrait;
+
+    //后台全局筛选统一账号scope
+    public function scopeUniacid($query)
+    {
+        return $query->where('uniacid', \YunShop::app()->uniacid);
+    }
+
 }

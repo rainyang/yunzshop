@@ -27,9 +27,6 @@ class MemberMiniAppService extends MemberMcService
 
         $uniacid = \YunApp::app()->uniacid;
 
-        session_start();
-        load()->func('communication');
-
         $setdata = pdo_fetch("select * from " . tablename('sz_yi_wxapp') . ' where uniacid=:uniacid limit 1', array(
             ':uniacid' => $uniacid
         ));
@@ -47,7 +44,7 @@ class MemberMiniAppService extends MemberMcService
         );
 
         $url = 'https://api.weixin.qq.com/sns/jscode2session';
-        $res = ihttp_request($url, $data);
+        $res = @ihttp_request($url, $data);
 
         $user_info = json_decode($res['content'], true);
 
@@ -69,9 +66,8 @@ class MemberMiniAppService extends MemberMcService
         if (!empty($json_user) && !empty($json_user['unionid'])) {
             $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $json_user['unionid']);
 
-            $types = expload($UnionidInfo['type'], '|');
-
-            if ($UnionidInfo['unionid']) {
+            if (!empty($UnionidInfo['unionid'])) {
+                $types = expload($UnionidInfo['type'], '|');
                 $member_id = $UnionidInfo['member_id'];
 
                 if (!in_array($this->_login_type, $types)) {
@@ -137,7 +133,9 @@ class MemberMiniAppService extends MemberMcService
 
             $result = array('session' => $random, 'wx_token' =>session_id(), 'uid' => $member_id);
 
-            show_json(1, $result);
+            return show_json(1, $result);
+        } else {
+            return show_json(0);
         }
     }
 

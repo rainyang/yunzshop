@@ -9,23 +9,29 @@
 namespace app\frontend\modules\member\models;
 
 
-use Illuminate\Database\Eloquent\Model;
 
-class MemberFavorite extends Model
+class MemberFavorite extends \app\common\models\MemberFavorite
 {
-    public $table = 'yz_member_favorite';
     /**
-     * 添加收藏
-     * @Author::yitian 2017-03-01 qq:751818588
-     * @access public static
+     * Add collection
      *
-     * @param int $groupId
+     * @param array $data
      *
-     * @return array
+     * @return 1 or 0
      * */
-    public static function createMemberFavorite()
+    public static function createMemberFavorite($data = array())
     {
-
+        return static::insert($data);
     }
-
+    /**
+     * remove collection
+     *
+     * @param array $data
+     *
+     * @return 1 or 0
+     * */
+    public static function deleteMemberFavorite($favoriteId)
+    {
+        return static::where('id', $favoriteId)->delete();
+    }
 }

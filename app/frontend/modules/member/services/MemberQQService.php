@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\services;
 
 use app\frontend\modules\member\services\MemberMcService;
 use app\frontend\modules\member\models\MemberQQModel;
+use Illuminate\Session\Store;
 
 class MemberQQService extends MemberMcService
 {
@@ -20,10 +21,6 @@ class MemberQQService extends MemberMcService
 
     public function login()
     {
-        if ($this->isLogged()) {
-            show_json(1, array('member_id'=> $_SESSION['member_id']));
-        }
-
         $uniacid      = \YunShop::app()->uniacid;
 
         $appId        = \YunShop::app()->account['key'];
@@ -43,10 +40,10 @@ class MemberQQService extends MemberMcService
             }
 
             $openid_url = $this->_getOpenIdUrl($token['accesstoken'], $token['openid']);
-            ihttp_get($openid_url);
+            @ihttp_get($openid_url);
 
             $userinfo_url = $this->_getUserInfoUrl($token['accesstoken'], $token['openid']);
-            $userinfo = ihttp_get($userinfo_url);
+            $userinfo = @ihttp_get($userinfo_url);
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid']);
@@ -73,7 +70,7 @@ class MemberQQService extends MemberMcService
                         'type' => $this->_login_type
                     ));
 
-                    $_SESSION['member_id'] = $member_id;
+                    session()->put('member_id',$member_id);
                 }
             } else {
                 show_json(0, array('url'=> $authurl));
@@ -83,11 +80,6 @@ class MemberQQService extends MemberMcService
         }
 
         show_json(1, array('member_id', $_SESSION['member_id']));
-    }
-
-    public function isLogged()
-    {
-        return !empty($_SESSION['member_id']);
     }
 
     private function _getAuthUrl($app_id, $url)

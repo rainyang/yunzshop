@@ -8,9 +8,9 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\frontend\modules\member\service\MemberService;
-use app\frontend\modules\order\service\OrderService;
-use app\frontend\modules\shop\service\ShopService;
+use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\services\OrderService;
+use app\frontend\modules\shop\services\ShopService;
 
 class CreateController
 {
@@ -25,6 +25,7 @@ class CreateController
             ]
         ];
         $member_model = MemberService::getCurrentMemberModel();
+
         $shop_model = ShopService::getCurrentShopModel();
         //todo 根据参数
         $order_goods_models = OrderService::getOrderGoodsModels($param);

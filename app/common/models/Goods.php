@@ -14,7 +14,6 @@
 
 namespace app\common\models;
 
-use app\common\models\BaseModel;
 use app\common\models\GoodsParam;
 
 class Goods extends BaseModel
@@ -25,14 +24,15 @@ class Goods extends BaseModel
 
     public $guarded = [];
 
-    public static function getList()
+    public static function getList($condition = [])
     {
-        return parent::find();
+        return static::uniacid()
+            ->get();
     }
 
     public static function getGoodsById($id)
     {
-        return parent::find($id);
+        return static::find($id);
     }
 
 
@@ -66,7 +66,7 @@ class Goods extends BaseModel
      */
     public static function getGoodsByName($keyword)
     {
-        return parent::where('title', 'like', $keyword.'%')
+        return static::where('title', 'like', $keyword.'%')
             ->get()
             ->toArray();
     }

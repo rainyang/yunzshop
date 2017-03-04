@@ -28,7 +28,8 @@ class McMappingFansModel extends Model
 
         return self::where('uniacid', $uniacid)
             ->where('openid', $user_info['openid'])
-            ->get();
+            ->first()
+            ->toArray();
     }
 
     public static function getUId($uniacid, $openid)

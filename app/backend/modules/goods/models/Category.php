@@ -12,7 +12,29 @@ namespace app\backend\modules\goods\models;
 class Category extends \app\common\models\Category
 {
     public $timestamps = false;
-    
+
+    public static function getAllCategory()
+    {
+        return self::uniacid()
+            ->orderBy('id', 'asc')
+            ->get();
+    }
+
+    public static function getAllCategoryGroup()
+    {
+        $categorys = self::getAllCategory();
+
+        $categoryMenus['parent'] = $categoryMenus['children'] = [];
+        foreach ($categorys as $category)
+        {
+            !empty($category['parent_id']) ?
+                $categoryMenus['children'][$category['parent_id']][] = $category :
+                $categoryMenus['parent'][$category['id']] = $category;
+        }
+
+        return $categoryMenus;
+    }
+
     public static function saveAddCategory($category)
     {
         return self::insert($category);
@@ -54,16 +76,21 @@ class Category extends \app\common\models\Category
     /**
      *  定义字段名
      * 可使
-     * @return array */
-    public static function atributeNames() {
+     * @return array
+     */
+    public static function atributeNames()
+    {
         return [
-            'name'=> '分类名称',
+            'name' => '分类名称',
         ];
     }
+
     /**
      * 字段规则
-     * @return array */
-    public static function rules() {
+     * @return array
+     */
+    public static function rules()
+    {
         return [
             'name' => 'required',
         ];

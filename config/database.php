@@ -1,5 +1,8 @@
 <?php
+
+include_once dirname(dirname(dirname(__DIR__))) . '/data/config.php';
 global $_W;
+$_W && $config = $_W['config'];
 
 return [
 
@@ -42,16 +45,17 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', $_W['config']['db']['master']['host']),
-            'port' => env('DB_PORT', $_W['config']['db']['master']['port']),
-            'database' => env('DB_DATABASE', $_W['config']['db']['master']['database']),
-            'username' => env('DB_USERNAME', $_W['config']['db']['master']['username']),
-            'password' => env('DB_PASSWORD', $_W['config']['db']['master']['password']),
+            'host' => env('DB_HOST', $config['db']['master']['host']),
+            'port' => env('DB_PORT', $config['db']['master']['port']),
+            'database' => env('DB_DATABASE', $config['db']['master']['database']),
+            'username' => env('DB_USERNAME', $config['db']['master']['username']),
+            'password' => env('DB_PASSWORD', $config['db']['master']['password']),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => $_W['config']['db']['master']['tablepre'],
-            'strict' => false,
+            'prefix' => env('DB_PREFIX',$config['db']['master']['tablepre']),
+            'strict' => true,
             'engine' => null,
+            'loggingQueries'=>true,
         ],
 
         'pgsql' => [

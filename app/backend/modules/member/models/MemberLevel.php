@@ -11,13 +11,8 @@ namespace app\backend\modules\member\models;
 
 class MemberLevel extends \app\common\models\MemberLevel
 {
-    public $timestamps = false;
-    /**
-     *  不可填充字段.
-     *
-     * @var array
-     */
-    protected $guarded = [''];
+    //public $timestamps = false;
+    public $guarded = [''];
 
     /****************************       对外接口       ****************************/
 
@@ -68,34 +63,31 @@ class MemberLevel extends \app\common\models\MemberLevel
         return static::where('id', $levelId)->first()->toArray();
     }
     /**
-     * 获取等级列表
-     * @Author::yitian 2017-02-27 qq:751818588
-     * @access public
+     * Get membership list
+     *
+     * @param int $uniacid
      *
      * @return
      **/
-    public static function getMemberLevelList()
+    public static function getMemberLevelList($uniacid)
     {
-        $uniacid = \YunShop::app()->uniacid;
         return MemberLevel::where('uniacid', $uniacid)->get();
     }
     /**
-     * 添加会员等级
-     * @Author::yitian 2017-02-27 qq:751818588
-     * @access public
-     * @param array $levelInfo 会员组信息
+     * Add member level
      *
-     * @return int $id
+     * @param array $levelInfo
+     *
+     * @return 1 or 0
      **/
     public static function createMemberLevel($levelInfo)
     {
         return static::insert($levelInfo);
     }
     /**
-     * 删除会员等级通过等级ID
-     * @Author::yitian 2017-02-27 qq:751818588
-     * @access public
-     * @param int $levelId 等级id
+     * Delete member level by level ID
+     *
+     * @param int $levelId
      *
      * @return
      **/
@@ -103,6 +95,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     {
         return  static::where('id', $levelId)->delete();
     }
+
     /**
      * 修改会员等级信息通过等级ID
      * @Author::yitian 2017-02-27 qq:751818588

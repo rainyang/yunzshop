@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\services;
 
 use app\frontend\modules\member\services\MemberMcService;
 use app\frontend\modules\member\models\MemberAppWechatModel;
+use Illuminate\Session\Store;
 
 class MemberAppWechatService extends MemberMcService
 {
@@ -29,37 +30,64 @@ class MemberAppWechatService extends MemberMcService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if ($this->isLogged()) {
-            show_json(1, array('member_id'=> $_SESSION['member_id']));
+            return show_json(1, array('member_id'=> session('member_id')));
         }
 
         if (!empty($code)) {
-            $resp     = ihttp_get($tokenurl);
+            $resp     = @ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
 
             if (!empty($token) && is_array($token) && $token['errmsg'] == 'invalid code') {
-                show_json(0, array('msg'=>'请求错误'));
+                return show_json(0, array('msg'=>'请求错误'));
             }
 
             $userinfo_url = $this->_getUserInfoUrl($token['accesstoken'], $token['openid']);
-            $userinfo = ihttp_get($userinfo_url);
+            $user_info = @ihttp_get($userinfo_url);
 
-            if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-                $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid']);
-
-                $types = expload($UnionidInfo['type'], '|');
+            if (is_array($user_info) && !empty($user_info['unionid'])) {
+                $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid']);
 
                 if ($UnionidInfo['unionid']) {
+                    $types = expload($UnionidInfo['type'], '|');
+                    $member_id = $UnionidInfo['member_id'];
+
                     if (!in_array($this->_login_type, $types)) {
                         //更新ims_yz_member_unique表
                         MemberUniqueModel::updateData(array(
                             'unque_id'=>$UnionidInfo['unque_id'],
                             'type' => $UnionidInfo['type'] . '|' . $this->_login_type
                         ));
-                    }
 
-                    $_SESSION['member_id'] = $UnionidInfo['member_id'];
+                        //添加yz_member_app_wechat表
+                        MemberWechatModel::insertData(array(
+                            'uniacid' => $uniacid,
+                            'member_id' => $member_id,
+                            'openid' => $user_info['openid'],
+                            'nickname' => $user_info['nickname'],
+                            'avatar' => $user_info['headimgurl'],
+                            'gender' => $user_info['sex'],
+                            'nationality' => $user_info['country'],
+                            'resideprovince' => $user_info['province'] . '省',
+                            'residecity' => $user_info['city'] . '市',
+                            'created_at' => time()
+                        ));
+                    }
                 } else {
                     $member_id = McMappingFansModel::getUId($uniacid, $token['openid']);
+
+                    //添加ims_mc_member表
+                    $member_id = MemberModel::insertData(array(
+                        'uniacid' => $uniacid,
+                        'groupid' => $user_info['unionid'],
+                        'createtime' => TIMESTAMP,
+                        'nickname' => $user_info['nickname'],
+                        'avatar' => $user_info['headimgurl'],
+                        'gender' => $user_info['sex'],
+                        'nationality' => $user_info['country'],
+                        'resideprovince' => $user_info['province'] . '省',
+                        'residecity' => $user_info['city'] . '市'
+                    ));
+
                     //添加ims_yz_member_unique表
                     MemberUniqueModel::insertData(array(
                         'uniacid' => $uniacid,
@@ -68,7 +96,21 @@ class MemberAppWechatService extends MemberMcService
                         'type' => $this->_login_type
                     ));
 
-                    $_SESSION['member_id'] = $member_id;
+                    //添加yz_member_app_wechat表
+                    MemberWechatModel::insertData(array(
+                        'uniacid' => $uniacid,
+                        'member_id' => $member_id,
+                        'openid' => $user_info['openid'],
+                        'nickname' => $user_info['nickname'],
+                        'avatar' => $user_info['headimgurl'],
+                        'gender' => $user_info['sex'],
+                        'nationality' => $user_info['country'],
+                        'resideprovince' => $user_info['province'] . '省',
+                        'residecity' => $user_info['city'] . '市',
+                        'created_at' => time()
+                    ));
+
+                    session()->put('member_id',$member_id);
                 }
             } else {
                 show_json(0, array('msg'=> '请求错误'));
@@ -77,12 +119,7 @@ class MemberAppWechatService extends MemberMcService
             show_json(0, array('msg'=> '请求错误'));
         }
 
-        show_json(1, array('member_id', $_SESSION['member_id']));
-    }
-
-    public function isLogged()
-    {
-        return !empty($_SESSION['member_id']);
+        show_json(1, array('member_id', session('member_id')));
     }
 
     private function _getTokenUrl($appId, $appSecret, $code)

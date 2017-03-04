@@ -3,8 +3,12 @@ namespace app\backend\modules\goods\controllers;
 
 use app\backend\modules\goods\models\Brand;
 use app\backend\modules\goods\services\BrandService;
+use app\backend\modules\member\models\TestMember;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
+use app\common\helpers\Url;
+use Setting;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Created by PhpStorm.
@@ -19,14 +23,12 @@ class BrandController extends BaseController
      */
     public function index()
     {
-        $shopset   = m('common')->getSysset('shop');
-        $pindex = max(1, intval(\YunShop::request()->page));
-        $psize = 5;
-        
-        $total = Brand::getBrandTotal(\YunShop::app()->uniacid);
-        $list = Brand::getBrands(\YunShop::app()->uniacid, $pindex, $psize);
-        $pager = PaginationHelper::show($total, $pindex, $psize);
-        
+        $shopset   = Setting::get('shop');
+
+        $pageSize = 5;
+        $list = Brand::getBrands($pageSize);
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+
         $this->render('list', [
             'list' => $list,
             'pager' => $pager,
@@ -37,79 +39,70 @@ class BrandController extends BaseController
     /**
      * 添加品牌
      */
-    public function addBrand()
+    public function add()
     {
-        ca('shop.brand.add');
-        
-        $item = [
-            'id'            => '',
-            'name'          => '',
-            'alias'         => '',
-            'logo'          => '',
-            'desc'          => ''
-        ];
+        $brandModel = new Brand();
+
+        $requestBrand = \YunShop::request()->brand;
+        if($requestBrand) {
+            //将数据赋值到model
+            $brandModel->setRawAttributes($requestBrand);
+            //其他字段赋值
+            $brandModel->uniacid = \YunShop::app()->uniacid;
+
+            //字段检测
+            $validator = Brand::validator($brandModel->getAttributes());
+            if ($validator->fails()) {//检测失败
+                $this->error($validator->messages());
+            } else {
+                //数据保存
+                if ($brandModel->save()) {
+                    //显示信息并跳转
+                    return $this->message('品牌创建成功', Url::absoluteWeb('goods.brand.index'));
+                }else{
+                    $this->error('品牌创建失败');
+                }
+            }
+        }
 
         $this->render('info', [
-            'item' => $item
+            'brandModel' => $brandModel
         ]);
     }
 
-    /**
-     * 保存添加品牌
-     */
-    public function addSave()
-    {
-        ca('shop.brand.add');
-        
-        $brand = \YunShop::request()->brand;
-        $brand['uniacid'] = \YunShop::app()->uniacid;
-        $validator = Brand::validator($brand);
-
-        if($validator->fails()){
-            print_r($validator->messages());
-        }else{
-            $result = Brand::saveAddBrand($brand);
-            if($result) {
-                Header("Location: ".$this->createWebUrl('goods.brand.index'));exit;
-                //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
-            }
-        }
-    }
 
     /**
      * 编辑商品品牌
      */
-    public function editBrand()
+    public function edit()
     {
-        ca('shop.brand.edit');
-        
-        $brand = Brand::getBrand(\YunShop::request()->id);
 
-        $this->render('info', [
-            'item' => $brand
-        ]);
-    }
-
-    /**
-     * 保存编辑品牌
-     */
-    public function editSave()
-    {
-        ca('shop.brand.edit');
-        
-        $brand = \YunShop::request()->brand;
-        $brand['uniacid'] = \YunShop::app()->uniacid;
-        $validator = Brand::validator($brand);
-
-        if($validator->fails()){
-            print_r($validator->messages());
-        }else{
-            $result = Brand::saveEditBrand($brand, \YunShop::request()->id);
-            if($result) {
-                Header("Location: ".$this->createWebUrl('goods.brand.index'));exit;
-                //message('分类保存成功!', $this->createWebUrl('goods.category.index'), 'success');
+        $brandModel = Brand::getBrand(\YunShop::request()->id);
+        if(!$brandModel){
+            return $this->message('无此记录或已被删除','','error');
+        }
+        $requestBrand = \YunShop::request()->brand;
+        if($requestBrand) {
+            //将数据赋值到model
+            $brandModel->setRawAttributes($requestBrand);
+            //字段检测
+            $validator = Brand::validator($brandModel->getAttributes());
+            if ($validator->fails()) {//检测失败
+                $this->error($validator->messages());
+            } else {
+                //数据保存
+                if ($brandModel->save()) {
+                    //显示信息并跳转
+                    return $this->message('品牌保存成功', Url::absoluteWeb('goods.brand.index'));
+                }else{
+                    $this->error('品牌保存失败');
+                }
             }
         }
+
+        $this->render('info', [
+            'brandModel' => $brandModel
+        ]);
     }
 
     /**
@@ -117,16 +110,17 @@ class BrandController extends BaseController
      */
     public function deletedBrand()
     {
-        ca('shop.brand.delete');
 
         $brand = Brand::getBrand(\YunShop::request()->id);
-        if( empty($brand) ) {
-            Header("Location: ".$this->createWebUrl('goods.brand.index'));exit;
+        if(!$brand) {
+            return $this->message('无此品牌或已经删除','','error');
         }
 
         $result = Brand::daletedBrand(\YunShop::request()->id);
         if($result) {
-            Header("Location: ".$this->createWebUrl('goods.brand.index'));exit;
+           return $this->message('删除品牌成功',Url::absoluteWeb('goods.brand.index'));
+        }else{
+            return $this->message('删除品牌失败','','error');
         }
     }
 

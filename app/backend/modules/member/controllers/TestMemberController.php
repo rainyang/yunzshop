@@ -15,12 +15,10 @@ use app\common\events\TestFailEvent;
 use app\common\events\UserActionEvent;
 use app\common\helpers\ImageHelper;
 use app\common\helpers\PaginationHelper;
-use app\common\helpers\Url;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Validator;
-use Schema;
 
 
 class TestMemberController extends BaseController
@@ -44,8 +42,8 @@ class TestMemberController extends BaseController
         //flash($validator->messages(),'danger');
        // return redirect(Url::absoluteWeb('member.test-member.test-login'));
         //flash()->overlay('Notice', Url::absoluteWeb('member.test-member.test-login'));
-        //$this->error($validator->messages())->important();
-        $this->overlay($validator->messages(), 'Modal Title');
+        $this->error($validator->messages())->important();
+        //$this->overlay($validator->messages(), 'Modal Title');
         $this->render('test-message', ['a' => '123456']);
 
     }
@@ -117,4 +115,5 @@ class TestMemberController extends BaseController
     {
         echo PaginationHelper::show(18,1);
     }
+
 }
