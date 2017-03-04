@@ -6,6 +6,11 @@ $_W && $config = $_W['config'];
 
 return [
 
+    /**
+     * 数据查询结果集返回模式
+     */
+    'fetch' => \PDO::FETCH_ASSOC,
+
     /*
     |--------------------------------------------------------------------------
     | Default Database Connection Name
@@ -56,6 +61,7 @@ return [
             'strict' => true,
             'engine' => null,
             'loggingQueries'=>true,
+
         ],
 
         'pgsql' => [
