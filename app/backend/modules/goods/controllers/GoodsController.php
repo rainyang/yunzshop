@@ -89,17 +89,20 @@ class GoodsController extends BaseController
     public function create()
     {
         $params = new GoodsParam();
-        $goods = new Goods();
-        dd($goods);
+        $goodsModel = new Goods();
         //$params = new GoodsParam();
-
-        /*//print_r(\YunShop::app());exit;
-        $goods = Goods::getGoodsById(2);
-        $params = $goods->hasManyParams;
-
-        $a = $goods->hasManySpecs;
-        dd($a);exit;
-        exit;*/
+        $requestGoods = \YunShop::request()->goods;
+        if ($requestGoods) {
+            $sharePost = \YunShop::request()->share;
+            $goodsModel->setRawAttributes($requestGoods);
+            $goodsModel->uniacid = \YunShop::app()->uniacid;;
+            //$goodsModel->sharePost = $sharePost;
+            //$goodsModel->fill($requestGoods);
+            $goodsModel->save();
+            GoodsParam::saveParam(\YunShop::request());
+            GoodsSpec::saveSpec(\YunShop::request());
+            echo 'insert ok!';
+        }
 
         $catetorys = Category::getAllCategoryGroup();
         //dd($catetorys);
@@ -113,11 +116,10 @@ class GoodsController extends BaseController
             );
         }
         //echo $catetory_menus;exit;
-        widget('app\backend\widgets\goods\DiscountWidget',['test'=>'test']);
-        exit;
+        //widget('app\backend\widgets\goods\ShareWidget');
         $allspecs = [];
         $this->render('goods/goods', [
-            'goods' => $goods,
+            'goods' => $goodsModel,
             'lang'  => $this->lang,
             'params'  => $params,
             'allspecs'  => $allspecs,
@@ -131,8 +133,11 @@ class GoodsController extends BaseController
     public function store()
     {
         $requestGoods = \YunShop::request()->goods;
+        $sharePost = \YunShop::request()->share;
         $goodsModel = new Goods();
-        $goodsModel->fill($requestGoods);
+        $goodsModel->setRawAttributes($requestGoods);
+        $goodsModel->sharePost = $sharePost;
+        //$goodsModel->fill($requestGoods);
         $goodsModel->saveOrFail();
         GoodsParam::saveParam(\YunShop::request());
         GoodsSpec::saveSpec(\YunShop::request());

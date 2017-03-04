@@ -19,6 +19,7 @@ use app\common\models\GoodsParam;
 class Goods extends BaseModel
 {
     public $table = 'yz_goods';
+    public $display_order = 0;
     //protected $appends = ['status'];
 
     //public $fillable = ['display_order'];
