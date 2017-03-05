@@ -60,8 +60,8 @@
                             </td>
                             <td>
                                 <a class='btn btn-default' href=""><i class='fa fa-users'></i></a>
-                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.membergroup.update-member-group', array('id' => $group['id']))}"><i class='fa fa-edit'></i></a>
-                                <a class='btn btn-default'  href="{php echo $this->createWebUrl('member.membergroup.delete-member-group', array('id' => $group['id']))}" onclick="return confirm('确认删除此会员分组吗？');return false;"><i class='fa fa-remove'></i></a>
+                                <a class='btn btn-default' href="{php echo $this->createWebUrl('member.membergroup.update', array('id' => $group['id']))}"><i class='fa fa-edit'></i></a>
+                                <a class='btn btn-default'  href="{php echo $this->createWebUrl('member.membergroup.destroy', array('id' => $group['id']))}" onclick="return confirm('确认删除此会员分组吗？');return false;"><i class='fa fa-remove'></i></a>
                             </td>
                         </tr>
                     <?php } ?>
@@ -72,7 +72,7 @@
                     </div>
                     {if 'member.group.add'}
                     <div class='panel-footer'>
-                        <a class='btn btn-primary' href="{php echo $this->createWebUrl('member.membergroup.update-member-group')}"><i class="fa fa-plus"></i> 添加新分组</a>
+                        <a class='btn btn-primary' href="{php echo $this->createWebUrl('member.membergroup.store')}"><i class="fa fa-plus"></i> 添加新分组</a>
                         {if p('discuz') && $uc['status'] == 1}
                         <a class='btn btn-default' href="javascript:;" id="syn_btn"><i class="fa fa-group"></i> 同步用户组</a>
                         {/if}
