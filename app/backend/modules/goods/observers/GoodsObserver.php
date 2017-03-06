@@ -31,7 +31,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function saving(Model $model)
     {
-        dd($model);
+        //dd($model);
         if ($model->share) {
             return Share::validator($model->share);
         }

@@ -91,7 +91,7 @@ class Goods extends BaseModel
      */
     public static function boot()
     {
-        parent::boot();
+        //parent::boot();
 
         //static::$booted[get_class($this)] = true;
         // 开始事件的绑定...
@@ -104,6 +104,6 @@ class Goods extends BaseModel
         });*/
 
         //注册观察者
-        static::observe(new GoodsObserver);
+        //static::observe(new GoodsObserver);
     }
 }

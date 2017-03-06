@@ -10,5 +10,5 @@ namespace app\backend\modules\goods\models;
 
 class Goods extends \app\common\models\Goods
 {
-    
+    public $widgets = [];
 }

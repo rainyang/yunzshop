@@ -90,7 +90,9 @@ class GoodsController extends BaseController
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
             $goodsModel->uniacid = \YunShop::app()->uniacid;
+
             if ($goodsModel->save()) {
+                //dd($goodsModel);
                 GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
                 GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
                 GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
@@ -99,9 +101,7 @@ class GoodsController extends BaseController
                 $this->error('商品修改失败');
             }
         }
-
-
-
+        
         $catetorys = Category::getAllCategoryGroup();
         //dd($catetorys);
         if ($this->shopset['catlevel'] == 3) {
@@ -150,6 +150,7 @@ class GoodsController extends BaseController
             $goodsModel->uniacid = \YunShop::app()->uniacid;
             $goodsModel->id = $this->goods_id;
             //数据保存
+            //dd($goodsModel);
             if ($goodsModel->save()) {
                 GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
                 GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
