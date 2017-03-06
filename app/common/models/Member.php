@@ -13,7 +13,7 @@ class Member extends BackendModel
 {
     public $table = 'mc_members';
 
-
+    public $timestamps = false;
     /**
      * @return mixed
      */

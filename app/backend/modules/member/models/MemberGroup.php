@@ -32,10 +32,10 @@ class MemberGroup extends \app\common\models\MemberGroup
      *
      * @return array
      **/
-    public static function getMemberGroupList($uniacid)
+    public static function getMemberGroupList()
     {
         $memberGroup = MemberGroup::select('id', 'group_name', 'uniacid')
-            ->where(['uniacid' => $uniacid])
+            ->uniacid()
             ->with(['member' => function($query){
                 return $query->select(['uniacid','group_id'])->count();
             }])

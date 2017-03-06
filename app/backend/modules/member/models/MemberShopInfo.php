@@ -12,12 +12,6 @@ namespace app\backend\modules\member\models;
 
 class MemberShopInfo extends \app\common\models\MemberShopInfo
 {
-    public static function getAllMemberShopInfo()
-    {
-        //会员列表分页使用，需要改建
-        return static::where('uniacid', \YunShop::app()->uniacid)->get()->toArray();
-    }
-
     public function group()
     {
         return $this->belongsTo('app\backend\modules\member\models\MemberGroup');
@@ -30,7 +24,46 @@ class MemberShopInfo extends \app\common\models\MemberShopInfo
 
     public function agent()
     {
-        return $this->belongsTo('app\backend\modules\member\models\Member', 'agentid', 'uid');
+        return $this->belongsTo('app\backend\modules\member\models\Member', 'agent_id', 'uid');
     }
 
+    /**
+     * 更新会员信息
+     *
+     * @param $data
+     * @param $id
+     * @return mixed
+     */
+    public static function updateMemberInfoById($data, $id)
+    {
+        return self::uniacid()
+            ->where('member_id', $id)
+            ->update($data);
+    }
+
+    /**
+     * 删除会员信息
+     *
+     * @param $id
+     */
+    public static function  deleteMemberInfoById($id)
+    {
+        return self::uniacid()
+            ->where('member_id', $id)
+            ->delete();
+    }
+
+    /**
+     * 设置会员黑名单
+     *
+     * @param $id
+     * @param $data
+     * @return mixed
+     */
+    public static function setMemberBlack($id, $data)
+    {
+        return self::uniacid()
+            ->where('member_id', $id)
+            ->update($data);
+    }
 }
