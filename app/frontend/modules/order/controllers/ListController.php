@@ -16,14 +16,15 @@ class ListController extends BaseController
 {
     public function index(){
         $pageSize=5;
-        $list = Order::waitPay()->with('hasManyOrderGoods')->paginate($pageSize);
-        //dd($db_order_models);
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-
-        $this->render('order/list', [
-            'list' => $list,
-            'pager' => $pager,
-        ]);
+        
+        $list = Order::with(['hasManyOrderGoods'=>function($query){
+            return $query->select(['id','order_id','goods_id','goods_price','total','price'])
+                            ->with(['belongsToGood'=>function($query1){
+                                return $query1->select(['id','price']);
+                            }]);
+        }])->get(['id','order_sn','goods_price','price','status'])->toArray();
+        
+        dd($list);
 
     }
     public function waitPay(){
