@@ -20,18 +20,21 @@ class NoticeWidget extends Widget
     public function run()
     {
         $noticetype = [];
-        $salerMember = new Member;
-        $notice = Notice::getList($this->goodsId);
-        if ($notice) {
-            $noticetype = explode(',', $notice->type);
-            $saler = Member::getMemberById($notice->uid);
-            $salerMember->setRawAttributes($saler);
+        $saler = [];
+        $uid = '';
+        $notices = Notice::getList($this->goodsId);
+        if ($notices) {
+            foreach ($notices as $notice) {
+                $noticetype[] = $notice['type'];
+                $uid = $notice['uid'];
+            }
+            $saler = Member::getMemberById($uid);
         }
         
         return $this->render('goods/notice/notice', [
-            'item'=>$notice,
+            'uid'=>$uid,
             'noticetype'=>$noticetype,
-            'saler'=>$salerMember
+            'saler'=>$saler
         ]);
     }
 }

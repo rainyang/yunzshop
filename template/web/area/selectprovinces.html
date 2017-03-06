@@ -11,26 +11,18 @@
     <div class="modal-dialog" style='width: 920px;'>
         <div class="modal-content">
             <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择区域</h3></div>
-            <div class="modal-body" style='height:280px;;' >
+            <div class="modal-body" style='height:280px;' >
 
-                {loop $areas['address']['province'] $value}
-				{if $value['@attributes']['name']=='请选择省份'}{php continue;}{/if}
-                <div class='province'>
+                {loop $parents $value}
+				{if $value['areaname']=='请选择省份'}{php continue;}{/if}
+                <div class='province' data-parent-id="{php echo $value['id']}">
                      <label class='checkbox-inline' style='margin-left:20px;'>
-                         <input type='checkbox' class='cityall' /> {php echo $value['@attributes']['name']}
+                         <input type='checkbox' class='cityall' /> {php echo $value['areaname']}
                          <span class="citycount" style='color:#ff6600'></span>
                      </label>
-                    {if count($value['city'])>0}
-                    <ul>
-                        {loop $value['city'] $c}
-                        <li>
-                             <label class='checkbox-inline'>
-                                  <input type='checkbox' class='city' style='margin-top:8px;' city="{php echo $c['@attributes']['name']}" /> {php echo $c['@attributes']['name']}
-                            </label>
-                     </li>
-                        {/loop}
-                    </ul>
-                    {/if}
+
+                    <ul></ul>
+
                 </div>
                 {/loop}
 
@@ -46,7 +38,16 @@
     $(function(){
 
         $('.province').mouseover(function(){
-              $(this).find('ul').show();
+            var _this = $(this);
+            if(_this.find('ul').text().length == 0){
+                $.get('{php echo $this->createWebUrl("area.area.select-city")}', {
+                    parent_id: $(this).data('parent-id')
+                }, function(dat){
+                    _this.find('ul').html(dat);
+                });
+            }
+            _this.find('ul').show();
+
         }).mouseout(function(){
               $(this).find('ul').hide();
         });

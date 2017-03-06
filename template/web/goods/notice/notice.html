@@ -5,9 +5,7 @@
     <div class="col-sm-4">
 
 
-        {ife 'shop.goods' $item}
-
-        <input type='hidden' id='uid' name='widgets[notice][uid]' value="{$item->uid}" />
+        <input type='hidden' id='uid' name='widgets[notice][uid]' value="{$uid}" />
         <div class='input-group'>
             <input type="text" name="saler" maxlength="30" value="{if !empty($saler)}{$saler['nick_name']}/{$saler['real_name']}/{$saler['mobile']}{/if}" id="saler" class="form-control" readonly />
             <div class='input-group-btn'>
@@ -36,11 +34,7 @@
 
             </div>
         </div>
-        {else}
-        <div class='form-control-static'>
-            {if !empty($saler)}<img  style="width:100px;height:100px;border:1px solid #ccc;padding:1px" src="{$saler['avatar']}"/>{else}无{/if}
-        </div>
-        {/if}
+
 
     </div>
 </div>
@@ -49,7 +43,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知方式</label>
     <div class="col-sm-9 col-xs-12">
 
-        {ife 'shop.goods' $item}
+
             <label class="checkbox-inline">
                 <input type="checkbox" value="0" name='widgets[notice][type][]' {if in_array(0,$noticetype)}checked{/if} /> 下单通知
             </label>
@@ -60,9 +54,7 @@
                 <input type="checkbox" value="2" name='widgets[notice][type][]' {if in_array(2,$noticetype)}checked{/if} /> 买家收货通知
             </label>
             <div class="help-block">通知商家方式</div>
-        {else}
-            <div class='form-control-static'>{if in_array(0,$noticetype)}下单通知;{/if}{if in_array(1,$noticetype)}付款通知;{/if}{if in_array(2,$noticetype)}买家收货通知;{/if}</div>
-        {/if}
+
     </div>
 </div>
 

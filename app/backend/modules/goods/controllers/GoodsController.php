@@ -146,16 +146,25 @@ class GoodsController extends BaseController
 
     public function test()
     {
+        
         $request = [
             'goods' =>
                 ['title'=>'title1',],
             'widgets'=>[
-                'notices'=>['xxxx1','xxxxx2']
+                'notice'=>[
+                    'uid'=>7,'type'=>[0,2]
+                ],
+                'sale'=>[
+                    'love_money' => 1,
+                    'max_point_deduct' => 2,
+                    'max_balance_deduct' => 3,
+                    'ed_num' => 4,
+                    'ed_money' => 5,
+                    'ed_areas' => '太原市;大同市;阳泉市;长治市;晋城市;朔州市;晋中市;运城市;忻州市;临汾市;吕梁市'
+                ]
+
             ]
         ];
-
-        //<input name="widgets[notices]['id']"
-
         $goods = new Goods($request['goods']);
         $goods->setRawAttributes($request['goods']);
         $goods->widgets = $request['widgets'];

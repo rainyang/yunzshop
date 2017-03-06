@@ -6,7 +6,7 @@
  * Time: 上午11:24
  */
 
-namespace app\backend\modules\goods\models;
+namespace app\backend\modules\area\models;
 
 
 class Area  extends \app\common\models\Area

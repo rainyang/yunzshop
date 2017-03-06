@@ -49,9 +49,44 @@ class Notice extends \app\common\models\Notice
         return self::where('goods_id', $goodsId)->delete();
     }
     
-    public static function getList($goods_id)
+    public static function getList($goodsId)
     {
-        return self::where('goods_id',$goods_id)
-            ->first();
+        return self::where('goods_id',$goodsId)
+            ->get();
+    }
+
+    public static function relationSave($goodsId, $data, $operate)
+    {
+        if(!$goodsId){
+            return false;
+        }
+        $saleModel = self::getModel($goodsId, $operate);
+        //判断deleted
+        if ($operate == 'deleted') {
+            return $saleModel->delete();
+        }
+
+        $notices_data = [
+            'goods_id' => $goodsId,
+            'uid' => $data['uid']
+        ];
+        $request = false;
+        foreach ($data['type'] as $type) {
+            $notices_data['type'] = $type;
+            $saleModel->setRawAttributes($notices_data);
+            $request = $saleModel->save();
+        }
+        return $request;
+    }
+
+    public static function getModel($goodsId,$operate)
+    {
+        $model = false;
+        if($operate != 'created') {
+            $model = static::where(['goods_id' => $goodsId])->first();
+        }
+        !$model && $model =  new static;
+
+        return $model;
     }
 }

@@ -52,9 +52,7 @@ class BrandController extends BaseController
     public function add()
     {
         $brandModel = new Brand();
-        if (\YunShop::request()->widgets) {
-            dd(\YunShop::request()->widgets);
-        }
+
         $requestBrand = \YunShop::request()->brand;
 
         if($requestBrand) {
