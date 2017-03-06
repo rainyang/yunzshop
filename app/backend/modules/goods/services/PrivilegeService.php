@@ -34,7 +34,7 @@ class PrivilegeService
         if (empty($string)) {
             return $string;
         } else {
-            return implode(',', $string);
+            return explode(',', $string);
         }
     }
 }
