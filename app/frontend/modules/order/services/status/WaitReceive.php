@@ -36,9 +36,9 @@ class WaitReceive implements StatusService
                     'value' => static::PAY
                 ],
                 [
-                    'name' => '查看物流',
-                    'api' => '/order/op/', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
-                    'value' => static::EXPRESS
+                    'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
+                    'api' => '/order/op/', //todo 
+                    'value' => static::EXPRESS //todo
                 ],
             ];
         return $result;
