@@ -4,7 +4,6 @@ namespace app\backend\modules\goods\observers;
 
 use app\backend\modules\goods\models\Discount;
 use app\backend\modules\goods\models\Share;
-use app\backend\modules\goods\models\Notices;
 use app\backend\modules\goods\services\DiscountService;
 use app\backend\modules\goods\services\Privilege;
 use app\backend\modules\goods\services\PrivilegeService;
@@ -20,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class GoodsObserver extends \app\common\observers\BaseObserver
 {
+
 
     public function saving(Model $model)
     {
@@ -39,6 +39,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
 
     }
+
 
     public function saved(Model $model)
     {
@@ -70,22 +71,36 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function created(Model $model)
     {
-        if ($model->share) {
-            Share::createdShare($model->share);
-        }
-        if ($model->privilege) {
-            $model->privilege['show_levels'] = PrivilegeService::stringToArray($model->privilege['show_levels']);
-            Privilege::createdPrivilege($model->privilege);
-        }
-        if ($model->discount) {
-            $discounts = DiscountService::resetArray($model->discount);
-            foreach ($discounts as $discount) {
-                Discount::createdDiscount($discount);
-            }
-        }
-        if ($model->notices) {
-            Notices::createdNotices($model->notices);
-        }
+//        if ($model->share) {
+//            Share::createdShare($model->share);
+//        }
+//        if ($model->privilege) {
+//            $model->privilege['show_levels'] = PrivilegeService::stringToArray($model->privilege['show_levels']);
+//            Privilege::createdPrivilege($model->privilege);
+//        }
+//        if ($model->discount) {
+//            $discounts = DiscountService::resetArray($model->discount);
+//            foreach ($discounts as $discount) {
+//                Discount::createdDiscount($discount);
+//            }
+//        }
+//        if ($model->widgets['notices']) {
+//            $notices_data = [
+//                'goods_id' => $model->id,
+//                'uid' => $model->widgets['notices']['uid']
+//            ];
+//            foreach ($model->widgets['notices']['type'] as $type) {
+//                $notices_data['type'] = $type;
+//                Notice::createdNotices($notices_data);
+//            }
+//        }
+//        if (isset($model->widgets['sale']) && $model->widgets['sale']) {
+//
+//            Sale::relationSave($model->id,$model->widgets['sale']);
+//
+//        }
+        $this->_pluginObserver($model,'created');
+        
     }
 
     public function updating(Model $model)
@@ -100,46 +115,79 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         if ($model->discount) {
             return Discount::validator($model->discount);
         }
-        if ($model->notices) {
-            return Notices::validator($model->notices);
-        }
+
     }
 
     public function updated(Model $model)
     {
-        if ($model->share) {
-            Share::updatedShare($model->share);
-        }
-        if ($model->privilege) {
-            $model->privilege['show_levels'] = PrivilegeService::stringToArray($model->privilege['show_levels']);
-            Privilege::updatedPrivilege($model->privilege);
-        }
-        if ($model->discount) {
-            Discount::deletedDiscount($model->goodsId);
-            $discounts = DiscountService::resetArray($model->discount);
-            foreach ($discounts as $discount) {
-                Discount::createdDiscount($discount);
-            }
-
-        }
-        if ($model->notices) {
-            Notices::updatedNotices($model->notices);
-        }
+//        if ($model->share) {
+//            Share::updatedShare($model->share);
+//        }
+//        if ($model->privilege) {
+//            $model->privilege['show_levels'] = PrivilegeService::stringToArray($model->privilege['show_levels']);
+//            Privilege::updatedPrivilege($model->privilege);
+//        }
+//        if ($model->discount) {
+//            Discount::deletedDiscount($model->goodsId);
+//            $discounts = DiscountService::resetArray($model->discount);
+//            foreach ($discounts as $discount) {
+//                Discount::createdDiscount($discount);
+//            }
+//
+//        }
+//
+//        if ($model->widgets['notices']) {
+//            Notices::deletedNotices($model->id);
+//            $notices_data = [
+//                'goods_id' => $model->id,
+//                'uid' => $model->widgets['notices']['uid']
+//            ];
+//            foreach ($model->widgets['notices']['type'] as $type) {
+//                $notices_data['type'] = $type;
+//                Notice::createdNotices($notices_data);
+//            }
+//
+//            //Notice::relationSave($model->id,$model->widgets['notice'],true);
+//        }
+//        if (isset($model->widgets['sale']) && $model->widgets['sale']) {
+//            Sale::relationSave($model->id,$model->widgets['sale'],true);
+//
+//        }
+        $this->_pluginObserver($model,'updated');
     }
 
     public function deleted(Model $model)
     {
-        if (!empty(Share::getInfo($model->goodsId))) {
-            Share::deletedShare($model->goodsId);
-        }
-        if (!empty(Privilege::getInfo($model->goodsId))) {
-            Privilege::deletedPrivilege($model->goodsId);
-        }
-        if (!empty(Discount::getInfo($model->goodsId))) {
-            Discount::deletedDiscount($model->goodsId);
-        }
-        if (!empty(Notices::getInfo($model->goodsId))) {
-            Notices::deletedNotices($model->goodsId);
+//        if (!empty(Share::getInfo($model->goodsId))) {
+//            Share::deletedShare($model->goodsId);
+//        }
+//        if (!empty(Privilege::getInfo($model->goodsId))) {
+//            Privilege::deletedPrivilege($model->goodsId);
+//        }
+//        if (!empty(Discount::getInfo($model->goodsId))) {
+//            Discount::deletedDiscount($model->goodsId);
+//        }
+//        if (!empty(Notices::getInfo($model->id))) {
+//            Notices::deletedNotices($model->id);
+//        }
+
+        $this->_pluginObserver($model,'deleted');
+    }
+
+    private function _pluginObserver($model, $operate = 'created')
+    {
+        $observerGoods = \Config::get('observer.goods');
+        if($observerGoods){
+            foreach ($observerGoods as $pluginName=>$pluginOperators){
+                if(isset($pluginOperators) && $pluginOperators) {
+                    $class = array_get($pluginOperators,'class');
+                    $function =array_get($pluginOperators,'function');
+                    $data = array_get($model->widgets,$pluginName,[]);
+                    if(class_exists($class) && method_exists($class,$function)){
+                        $class::$function($model->id, $data, $operate);
+                    }
+                }
+            }
         }
     }
 }

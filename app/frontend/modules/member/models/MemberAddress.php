@@ -46,18 +46,12 @@ class MemberAddress extends \app\common\models\MemberAddress
         return static::where('id', $addressId)->delete();
     }
     /*
+     *  Cancel the default address
      *
+     *  @param int $memberId
+     *
+     *  @return int 0or 1
      * */
-    public static function updateDefaultAddress($memberId, $addressId)
-    {
-        $noDefault = static::uniacid()
-            ->where('uid', $memberId)
-            ->where('isdefault', '1')
-            ->update(['isdefault'=>'0']);
-        $isDefault = static::uniacid()->where('id', $addressId)->update(['isdefault'=>'1']);
-
-        return $isDefault;
-    }
     public static function cancelDefaultAddress($memberId)
     {
         return static::uniacid()->where('uid', $memberId)->where('isdefault', '1')->update('isdefault', '0');

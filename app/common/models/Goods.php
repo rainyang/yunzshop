@@ -22,9 +22,14 @@ class Goods extends BaseModel
     public $display_order = 0;
     //protected $appends = ['status'];
 
-    //public $fillable = ['display_order'];
+    public $fillable = ['title'];
 
-    public $guarded = [];
+    protected $guarded = ['widgets'];
+
+    public $appends = [''];
+
+    public $widgets = [];
+    
 
     public static function getList($pagesize=20, $condition = [])
     {

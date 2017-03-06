@@ -22,6 +22,17 @@ class Member extends \app\common\models\Member
     }
 
     /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getMemberByName($keyword)
+    {
+        return static::where('realname', 'like', $keyword . '%')
+            ->orWhere('nick_name', 'like', $keyword . '%')
+            ->orWhere('mobile', 'like', $keyword . '%')
+            ->get();
+    }
+    /**
      * 获取会员列表
      *
      * @param $pageSize

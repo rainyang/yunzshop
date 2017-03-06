@@ -9,7 +9,7 @@ use app\backend\models\BackendModel;
  * Time: 上午9:11
  */
 
-class Notices extends BackendModel
+class Notice extends BackendModel
 {
     public $table = 'yz_goods_notices';
 

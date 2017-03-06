@@ -198,4 +198,18 @@ class MemberController extends BaseController
         ]);
 
     }
+
+    /**
+     * 获取搜索会员
+     * @return html
+     */
+    public function getSearchMember()
+    {
+
+        $keyword = \YunShop::request()->keyword;
+        $member = Member::getMemberByName($keyword);
+        $member = set_medias($member, array('avatar', 'share_icon'));
+        return $this->render('web/member/query',['ds'=>$member->toArray()]);
+
+    }
 }
