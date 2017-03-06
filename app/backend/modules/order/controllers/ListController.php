@@ -18,7 +18,7 @@ class ListController extends BaseController
     public function index()
     {
         $pageSize = 2;
-        $list = Order::with('belongsToMember','hasManyOrderGoods.hasOneGoods')->paginate($pageSize)->toArray();
+        $list = Order::with('belongsToMember','hasOneOrderDispatch','hasManyOrderGoods.hasOneGoods')->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         //dd($list);
         $data = [
@@ -32,7 +32,7 @@ class ListController extends BaseController
 
     }
     public function test(){
-        $list = Order::with('belongsToMember')->first();
+        $list = Order::with('hasOneOrderDispatch')->first();
 
         dd($list);
 

@@ -245,7 +245,7 @@
                     {if 0&&!empty($order['refundstate'])}<label class='label label-danger'>{$r_type[$order['rtype']]}申请</label>{/if}
                     {if 0&&$order['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
 
-                    <label class="label label-info">{$order['vendor']=0}</label>
+                    <label class="label label-info">总店</label>
                     {if 0&&!empty($order['storename'])}
                     <label class="label label-primary">所属门店：{$order['storename']}</label>
                     {/if}
@@ -304,7 +304,7 @@
                     {else if 0&&$order['statusvalue'] == -1}
                     <label class='label label-default'>{$order['paytype']}</label><br/>
                     {/if}
-                    {$order['dispatchname']=0}
+                    {$order['has_one_order_dispatch']['dispatch_type_name']}
                     {if 0&&$order['addressid']!=0 && $order['statusvalue']>=2}<br/>
                     <button type='button' class='btn btn-default btn-sm' onclick='express_find(this,"{$order['id']}")' >查看物流</button>
                     {/if}
@@ -403,7 +403,7 @@
 
 
                 </td>
-                <td   rowspan="{php echo count($order['has_many_order_goods'])}" ><label class='label label-{$order['statuscss']=0}'>{$order['status']}</label><br />
+                <td   rowspan="{php echo count($order['has_many_order_goods'])}" ><label class='label label-{$order['statuscss']=0}'>{$order['status_name']}</label><br />
                     <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $order['id'], 'plugin' => $request['plugin'], 'openid' => $request['openid']))}">查看详情</a></td>
                 <td   rowspan="{php echo count($order['has_many_order_goods'])}" width="10%">
                     {template 'web/order/ops'}
