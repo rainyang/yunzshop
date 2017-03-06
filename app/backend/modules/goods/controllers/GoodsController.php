@@ -15,7 +15,11 @@ use app\common\components\BaseController;
 use app\backend\modules\goods\services\CategoryService;
 use app\backend\modules\goods\models\GoodsParam;
 use app\backend\modules\goods\models\GoodsSpec;
+use app\common\events\Event;
+use app\common\events\TestGoodsEvent;
 use app\common\helpers\PaginationHelper;
+use app\common\helpers\Url;
+use Setting;
 
 
 class GoodsController extends BaseController
@@ -23,7 +27,7 @@ class GoodsController extends BaseController
     private $goods_id = null;
     private $shopset;
     private $shoppay;
-    private $goods;
+    //private $goods;
     private $lang = null;
 
     public function __construct()
@@ -48,17 +52,18 @@ class GoodsController extends BaseController
             'shopsubmit' => "发布商品"
         );
         $this->goods_id = (int)\YunShop::request()->id;
-        $this->shopset   = m('common')->getSysset('shop');
+        $this->shopset = Setting::get('shop');
         $this->init();
     }
 
     public function init()
     {
-        $this->goods = new Goods();
+        //$this->goods = new Goods();
     }
 
     public function index()
     {
+
         //增加商品属性搜索
         $product_attr_list = [
             'is_new' => '新品',
@@ -66,14 +71,9 @@ class GoodsController extends BaseController
             'is_recommand' => '推荐',
             'is_discount' => '促销',
         ];
-
-/*        $total = Goods::getList()->toArray();
-
-        $pindex = max(1, intval(\YunShop::request()->page));
-        $psize = 10;
-        $pager = PaginationHelper::show($total, $pindex, $psize);*/
-
-        $list = Goods::getList()->toArray();
+        
+        $list = Goods::getList()->toJson();
+        \Event::fire(new TestGoodsEvent(['haha' => '哈哈哈']));
         //$list->links();
         //dd($list);
         //或者模板路径可写全  $this->render('order/display/index',['list'=>$list]);
@@ -88,27 +88,38 @@ class GoodsController extends BaseController
 
     public function create()
     {
-
         $params = new GoodsParam();
+        $goodsModel = new Goods();
         //$params = new GoodsParam();
-
-        /*//print_r(\YunShop::app());exit;
-        $goods = Goods::getGoodsById(2);
-        $params = $goods->hasManyParams;
-
-        $a = $goods->hasManySpecs;
-        dd($a);exit;
-        exit;*/
+        $requestGoods = \YunShop::request()->goods;
+        if ($requestGoods) {
+            $sharePost = \YunShop::request()->share;
+            $goodsModel->setRawAttributes($requestGoods);
+            $goodsModel->uniacid = \YunShop::app()->uniacid;;
+            //$goodsModel->sharePost = $sharePost;
+            //$goodsModel->fill($requestGoods);
+            $goodsModel->save();
+            GoodsParam::saveParam(\YunShop::request());
+            GoodsSpec::saveSpec(\YunShop::request());
+            echo 'insert ok!';
+        }
 
         $catetorys = Category::getAllCategoryGroup();
         //dd($catetorys);
-        $catetory_menus = CategoryService::tpl_form_field_category_level3(
-            'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
-        );
-
+        if ($this->shopset['catlevel'] == 3) {
+            $catetory_menus = CategoryService::tpl_form_field_category_level3(
+                'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
+            );
+        } else {
+            $catetory_menus = CategoryService::tpl_form_field_category_level2(
+                'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
+            );
+        }
+        //echo $catetory_menus;exit;
+        //widget('app\backend\widgets\goods\ShareWidget');
         $allspecs = [];
         $this->render('goods/goods', [
-            'goods' => $this->goods,
+            'goods' => $goodsModel,
             'lang'  => $this->lang,
             'params'  => $params,
             'allspecs'  => $allspecs,
@@ -121,20 +132,79 @@ class GoodsController extends BaseController
 
     public function store()
     {
-        $post = \YunShop::request();
-
-        //$this->goods->fill($post->goods);
-        //$this->goods->saveOrFail();
-        //GoodsParam::saveParam($post);
-        GoodsSpec::saveSpec($post);
+        $requestGoods = \YunShop::request()->goods;
+        $sharePost = \YunShop::request()->share;
+        $goodsModel = new Goods();
+        $goodsModel->setRawAttributes($requestGoods);
+        $goodsModel->sharePost = $sharePost;
+        //$goodsModel->fill($requestGoods);
+        $goodsModel->saveOrFail();
+        GoodsParam::saveParam(\YunShop::request());
+        GoodsSpec::saveSpec(\YunShop::request());
         echo 'insert ok!';
     }
 
 
 
-    public function edit($id)
+    public function edit()
     {
+        $this->goods_id = \YunShop::request()->id;
+        $requestGoods = \YunShop::request()->goods;
+        $goodsModel = Goods::find($this->goods_id);
+        $goodsModel->piclist = unserialize($goodsModel->thumb_url);
+        $params = $goodsModel->hasManyParams;
+        $catetorys = Category::getAllCategoryGroup();
+        //dd($catetorys);
+        if ($requestGoods) {
+            //将数据赋值到model
+            $goodsModel->setRawAttributes($requestGoods);
+            //其他字段赋值
+            $goodsModel->uniacid = \YunShop::app()->uniacid;
+            $goodsModel->id = $this->goods_id;
+            //数据保存
+            if ($goodsModel->save()) {
+                //显示信息并跳转
+                return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
+            }else{
+                $this->error('商品修改失败');
+            }
+            /*
+            //字段检测
+            //$validator = Brand::validator($brandModel->getAttributes());
+            if ($validator->fails()) {//检测失败
+                $this->error($validator->messages());
+            } else {
+                //数据保存
+                if ($brandModel->save()) {
+                    //显示信息并跳转
+                    return $this->message('品牌创建成功', Url::absoluteWeb('goods.brand.index'));
+                }else{
+                    $this->error('品牌创建失败');
+                }
+            }*/
+        }
+        if ($this->shopset['catlevel'] == 3) {
+            $catetory_menus = CategoryService::tpl_form_field_category_level3(
+                'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
+            );
+        } else {
+            $catetory_menus = CategoryService::tpl_form_field_category_level2(
+                'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
+            );
+        }
+        //echo $catetory_menus;exit;
 
+        $allspecs = [];
+        $this->render('goods/goods', [
+            'goods' => $goodsModel,
+            'lang'  => $this->lang,
+            'params'  => $params,
+            'allspecs'  => $allspecs,
+            'html'  => '',
+            'catetory_menus'  => $catetory_menus,
+            'virtual_types' => [],
+            'shopset' => $this->shopset
+        ]);
     }
 
     public function update($id)

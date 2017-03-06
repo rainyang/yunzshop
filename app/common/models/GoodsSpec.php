@@ -16,4 +16,6 @@ class GoodsSpec extends \app\common\models\BaseModel
     public $guarded = [];
 
     public $timestamps = false;
+
+    
 }

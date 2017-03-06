@@ -19,9 +19,32 @@ class MemberCart extends \app\common\models\MemberCart
      *
      * @return array
      * */
-    public static function getMemberCartList($memberId)
+    public static function getMemberCartList($memberId, $pageSize)
     {
-        return static::uniacid()->where('member_id', $memberId)->get()->toArray();
+        $list = static::select('id', 'goods_id', 'total', 'option_id')
+            ->where('member_id', $memberId)
+            ->uniacid()
+            ->with(['getGoods' => function($query) {
+                return $query->select('id', 'title');
+            }])
+            ->paginate($pageSize)
+            ->toArray();
+        return $list;
+        //return static::uniacid()->where('member_id', $memberId)->get()->toArray();
+    }
+    public function getGoods(){
+        return $this->hasOne('app\common\models\Goods','id','goods_id');
+    }
+    /**
+     * Get a list of members shopping cart through member ID
+     *
+     * @param int $cartId
+     *
+     * @return array
+     * */
+    public static function getMemberCartById($cartId)
+    {
+        return static::uniacid()->where('id', $cartId)->get()->toArray();
     }
     /**
      * Add merchandise to shopping cart
@@ -42,10 +65,8 @@ class MemberCart extends \app\common\models\MemberCart
      *
      * @return 1 or 0
      * */
-    public static function destroyGoodsToMemberCartById($cartId)
+    public static function destroyMemberCart($cartId)
     {
-        //直接删除数据
-        //return static::destroy($cartId);
         return static::uniacid()->where('id', $cartId)->delete();
     }
 }

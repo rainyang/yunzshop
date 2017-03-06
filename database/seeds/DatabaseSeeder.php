@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,7 +12,12 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
+        //配置
         $this->call(SettingSeeder::class);
+        //权限
+        $this->call(YzPermissionSeeder::class);
+        //用户角色
+        $this->call(YzUserRoleSeeder::class);
 
     }
 }

@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: jan
- * Date: 02/03/2017
- * Time: 18:28
+ * Date: 04/03/2017
+ * Time: 14:25
  */
 
 namespace app\common\models\user;
@@ -11,7 +11,7 @@ namespace app\common\models\user;
 
 use app\common\models\BaseModel;
 
-class YzUser extends BaseModel
+class YzUserRole extends BaseModel
 {
-    public $table = 'yz_perm_user';
+    public $table = 'yz_user_role';
 }
