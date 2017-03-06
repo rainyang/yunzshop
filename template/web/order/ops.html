@@ -1,10 +1,10 @@
-{if $order['status']=0}
+{if $order['status'] == 0}
 <a class="btn btn-primary btn-sm disbut"
    href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'confirmpay','id' => $order['id']))}"
    onclick="return confirm('确认此订单已付款吗？');return false;">确认付款</a>
 <a class="label label-default">等待付款</a>
 {/if}
-{if $order['status']=1}
+{if $order['status'] == 1}
 
 <div>
     <input class='itemid' type='hidden' value="{$order['id']}"/>
@@ -12,7 +12,7 @@
        data-target="#modal-confirmsend">确认发货</a>
 </div>
 {/if}
-{if $order['status']=2}
+{if $order['status'] == 2}
 <a class="btn btn-danger btn-sm disbut" href="javascript:;"
    onclick="$('#modal-cancelsend').find(':input[name=id]').val('{$order['id']}')" data-toggle="modal"
    data-target="#modal-cancelsend">取消发货</a>
