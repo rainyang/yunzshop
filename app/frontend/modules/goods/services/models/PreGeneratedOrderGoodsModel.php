@@ -83,6 +83,8 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
             'member_id' => $this->order_model->member_model->uid,
             'price' => $this->price,
             'total' => $this->total,
+            'title' => $this->goods_model->id,
+            'thumb' => $this->goods_model->thumb,
 
         );
         echo '订单商品插入数据为';

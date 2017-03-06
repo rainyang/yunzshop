@@ -8,15 +8,14 @@
 
 namespace app\backend\modules\member\models;
 
-
 class Member extends \app\common\models\Member
 {
-    public static function getMemberlist()
-    {
-        $memberList = Member::where('uniacid', \YunShop::app()->uniacid)->get()->toArray();
-        return $memberList;
-    }
 
+    /**
+     * 主从表1:1
+     *
+     * @return mixed
+     */
     public function yzMember()
     {
         return $this->hasOne('app\backend\modules\member\models\MemberShopInfo','member_id','uid');
@@ -26,11 +25,169 @@ class Member extends \app\common\models\Member
      * @param $keyword
      * @return mixed
      */
-    public static function getGoodsByName($keyword)
+    public static function getMemberByName($keyword)
     {
-        return static::where('realname', 'like', $keyword.'%')
-            ->orWhere('nick_name', 'like', $keyword.'%')
-            ->orWhere('mobile', 'like', $keyword.'%')
+        return static::where('realname', 'like', $keyword . '%')
+            ->orWhere('nick_name', 'like', $keyword . '%')
+            ->orWhere('mobile', 'like', $keyword . '%')
             ->get();
+    }
+    /**
+     * 获取会员列表
+     *
+     * @param $pageSize
+     * @return mixed
+     */
+    public static function getMembers($pageSize)
+    {
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid()
+            ->with(['yzMember'=>function($query){
+                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])
+                    ->with(['group'=>function($query1){
+                        return $query1->select(['id','group_name']);
+                    },'level'=>function($query2){
+                        return $query2->select(['id','level_name']);
+                    }, 'agent'=>function($query3){
+                        return $query3->select(['uid', 'avatar', 'nickname']);
+                    }]);
+            }, 'hasOneFans' => function($query4) {
+                return $query4->select(['uid', 'follow as followed']);
+            }])
+            ->paginate($pageSize)
+            ->toArray();
+    }
+
+    /**
+     * 会员－订单一对一关系
+     *
+     * @return mixed
+     */
+    public function hasOneOrder()
+    {
+        //return $this->hasOne('app\backend\modules\order\models\order','member_id','uid');
+    }
+
+    /**
+     * 会员－粉丝一对一关系
+     *
+     * @return mixed
+     */
+    public function hasOneFans()
+    {
+        return $this->hasOne('app\common\models\McMappingFans','uid','uid');
+    }
+
+    /**
+     * 获取会员信息
+     *
+     * @param $id
+     * @return mixed
+     */
+    public static function getMemberInfoById($id)
+    {
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid()
+            ->where('uid', $id)
+            ->with(['yzMember'=>function($query){
+                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content']);
+            }, 'hasOneFans' => function($query2) {
+                return $query2->select(['uid', 'follow as followed']);
+            }
+            ])
+            ->first()
+            ->toArray();
+    }
+
+    /**
+     * 更新会员信息
+     *
+     * @param $data
+     * @param $id
+     * @return mixed
+     */
+    public static function updateMemberInfoById($data, $id)
+    {
+        return self::uniacid()
+            ->where('uid', $id)
+            ->update($data);
+    }
+
+    /**
+     * 删除会员信息
+     *
+     * @param $id
+     */
+    public static function  deleteMemberInfoById($id)
+    {
+        return self::uniacid()
+               ->where('uid', $id)
+               ->delete();
+    }
+
+    /**
+     * 检索会员信息
+     *
+     * @param $pageSize
+     * @return mixed
+     */
+    public static function searchMembers($pageSize, $parame)
+    {
+        $result = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid();
+
+        if (!empty($parame['mid'])) {
+            $result = $result->where('uid', $parame['mid']);
+        }
+
+        if (!empty($parame['realname'])) {
+            $result = $result->where(function ($w) use ($parame) {
+               $w->where('nickname', 'like', '%' . $parame['realname'] . '%')
+                    ->orWhere('realname', 'like', '%' . $parame['realname'] . '%')
+                    ->orWhere('mobile', 'like', $parame['realname'] . '%');
+            });
+        }
+
+        if (!empty($parame['groupid']) || !empty($parame['level']) || !empty($parame['isblack'])) {
+            $result = $result->whereHas('yzMember', function($q) use ($parame){
+                if (!empty($parame['groupid'])) {
+                    $q = $q->where('group_id', $parame['groupid']);
+                }
+
+                if (!empty($parame['level'])) {
+                    $q = $q->where('level_id',$parame['level']);
+                }
+
+                if (!empty($parame['isblack'])) {
+                    $q->where('is_black', $parame['isblack']);
+                }
+            });
+        }
+
+        if ($parame['followed'] != '') {
+            $result = $result->whereHas('hasOneFans', function ($q2) use ($parame) {
+                $q2->where('follow', $parame['followed']);
+            });
+        }
+
+        $result = $result->with(['yzMember'=>function($query){
+                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])
+                    ->with(['group'=>function($query1){
+                        return $query1->select(['id','group_name']);
+                    },'level'=>function($query2){
+                        return $query2->select(['id','level_name']);
+                    }, 'agent'=>function($query3){
+                        return $query3->select(['uid', 'avatar', 'nickname']);
+                    }]);
+            }, 'hasOneFans' => function($query4) {
+                return $query4->select(['uid', 'follow as followed']);
+            }])
+            ->paginate($pageSize)
+            ->toArray();
+
+        return $result;
     }
 }

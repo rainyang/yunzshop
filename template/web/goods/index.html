@@ -186,8 +186,6 @@
 											{$item['stock']}
 											{/if}
 										{else}
-											{ifp 'shop.goods.edit'}
-
 											<span class=' fa-edit-item' style='cursor:pointer'><i class='fa fa-pencil' style="display:none"></i> <span class="title">{$item['stock']}</span> </span>
 											<div class="input-group" style="display:none" data-goodsid="{$item['id']}">
 												<input type='text' class='form-control' value="{$item['stock']}"   />
@@ -195,9 +193,6 @@
 													<button type="button" class="btn btn-default" data-goodsid='{$item['id']}' data-type="total"><i class="fa fa-check"></i></button>
 												</div>
 											</div>
-											{else}
-											{$item['stock']}
-											{/if}
 										{/if}
 
 
@@ -278,7 +273,7 @@
 							</tr>
 							</tbody>
 						</table>
-
+						{$pager}
 						<!--分页-->
 					</div>
 				</div>

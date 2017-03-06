@@ -17,4 +17,5 @@ class Goods extends \app\common\models\Goods
         parent::boot();
         self::observe(new GoodsObserver());
     }
+    public $widgets = [];
 }

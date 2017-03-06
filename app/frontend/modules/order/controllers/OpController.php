@@ -18,7 +18,7 @@ use app\frontend\modules\order\services\behavior\OrderSend;
 class OpController
 {
     public function pay(){
-        $order = Order::first();
+        $order = Order::find(\YunShop::request()->order_id);
         $order_pay = new OrderPay($order);
         if (!$order_pay->payable()) {
             echo '状态不正确';exit;
@@ -26,7 +26,7 @@ class OpController
         $order_pay->pay();
     }
     public function cancelPay(){
-        $order = Order::first();
+        $order = Order::find(\YunShop::request()->order_id);
         $cancel_pay = new OrderCancelPay($order);
         if (!$cancel_pay->cancelable()) {
             echo '状态不正确';exit;
@@ -34,7 +34,7 @@ class OpController
         $cancel_pay->cancelPay();
     }
     public function send(){
-        $order = Order::first();
+        $order = Order::find(\YunShop::request()->order_id);
         $order_send = new OrderSend($order);
         if (!$order_send) {
             echo '状态不正确';exit;
@@ -42,7 +42,7 @@ class OpController
         $order_send->send();
     }
     public function cancelSend(){
-        $order = Order::first();
+        $order = Order::find(\YunShop::request()->order_id);
         $cancel_send = new OrderCancelSend($order);
         if (!$cancel_send->sendable()) {
             echo '状态不正确';exit;
@@ -50,7 +50,7 @@ class OpController
         $cancel_send->cancelSend();
     }
     public function Receive(){
-        $order = Order::first();
+        $order = Order::find(\YunShop::request()->order_id);
         $order_receive = new OrderReceive($order);
         if (!$order_receive->receiveable()) {
             echo '状态不正确';exit;
@@ -59,7 +59,7 @@ class OpController
     }
     public function Delete()
     {
-        $order = Order::first();
+        $order = Order::find(\YunShop::request()->order_id);
         $order_delete = new OrderDelete($order);
         if (!$order_delete->deleteable()) {
             echo '状态不正确';exit;

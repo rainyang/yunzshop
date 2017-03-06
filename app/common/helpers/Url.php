@@ -34,7 +34,7 @@ class Url
      */
     public static function app($route, $params = [])
     {
-        $defaultParams = ['c'=>'site','a'=>'entry','m'=>'sz_yi','do'=>random(4),'route'=>$route];
+        $defaultParams = ['c'=>'entry','m'=>'sz_yi','do'=>random(4),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
         return   '/app/index.php?'. http_build_query($params);

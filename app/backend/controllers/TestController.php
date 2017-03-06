@@ -3,6 +3,7 @@ namespace  app\backend\controllers;
 
 use app\backend\modules\member\models\TestMember;
 use app\common\components\BaseController;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
 use Setting;
 use app\common\services\PluginManager;
@@ -12,15 +13,21 @@ use iscms\Alisms\SendsmsPusher as Sms;
 
 class TestController extends BaseController
 {
-    public function __construct(Sms $sms)
-    {
-        $this->sms=$sms;
-    }
+
     public function index()
     {
-
         return $this->render('index');
 
+    }
+
+    public function testJson()
+    {
+        return $this->successJson($data = []);
+    }
+
+    public function testErrorJson()
+    {
+        return $this->errorJson($message = '错误提示', $data = []);
     }
 
     public function test()
