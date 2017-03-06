@@ -272,10 +272,10 @@
             <div class="col-sm-9 col-xs-12">
                 {ife 'shop.dispatch' $dispatch}
                 <label class='radio-inline'>
-                    <input type='radio' name='dispatch[enabled]' value=1' {if $dispatch->enabled==1}checked{/if} /> 是
+                    <input type='radio' name='dispatch[enabled]' value='1' {if $dispatch->enabled==1}checked{/if} /> 是
                 </label>
                 <label class='radio-inline'>
-                    <input type='radio' name='dispatch[enabled]' value=0' {if $dispatch->enabled==0}checked{/if} /> 否
+                    <input type='radio' name='dispatch[enabled]' value='0' {if $dispatch->enabled==0}checked{/if} /> 否
                 </label>
                 {else}
                 <div class='form-control-static'>{if empty($dispatch->enabled)}否{else}是{/if}</div>

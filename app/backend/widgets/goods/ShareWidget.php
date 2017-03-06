@@ -6,7 +6,7 @@
  * Time: 12:19
  */
 
-namespace app\backend\widgets;
+namespace app\backend\widgets\goods;
 
 
 use app\common\components\Widget;
@@ -18,7 +18,10 @@ class ShareWidget extends Widget
 
     public function run()
     {
-        $share = Share::getInfo($this->goodsId);
+        $share = new Share();
+        if ($this->goodsId && Share::getInfo($this->goodsId)) {
+            $share = Share::getInfo($this->goodsId);
+        }
         return $this->render('goods/share/share',
             [
                 'share'=> $share,
