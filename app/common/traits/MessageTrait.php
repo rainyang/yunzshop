@@ -76,6 +76,7 @@ trait MessageTrait
     {
         $messageStr = '';
         if ($message instanceof MessageBag) {
+            dd($message);
             $msgs = $message->toArray();
             $messageStr = '<ul style="list-style-type:disc;margin-left:10px">';
             foreach ($msgs as $fields) {
