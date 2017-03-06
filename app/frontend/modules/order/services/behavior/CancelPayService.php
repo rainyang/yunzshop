@@ -11,7 +11,7 @@ use app\common\models\Order;
 
 class CancelPayService
 {
-    public function refund($order)
+    public static function refund($order)
     {
         if ($order->status != 1) {
             message("订单未付款，不需取消！");
@@ -22,6 +22,6 @@ class CancelPayService
         $order->save();
         // log
 
-        message("取消订单付款操作成功！", order_list_backurl(), "success");
+        //message("取消订单付款操作成功！", order_list_backurl(), "success");
     }
 }

@@ -13,7 +13,7 @@ class OrderCancelSend
 
     public function __construct(Order $order_model)
     {
-        $this->order_model = $order_model->getData();
+        $this->order_model = $order_model;
     }
 
     public function cancelSend()
@@ -24,7 +24,7 @@ class OrderCancelSend
 
     public function cancelSendable()  //todo isValid()?
     {
-        if ($this->order_model['status'] == 2) {
+        if ($this->order_model->status == 2) {
             return true;
         }
         return false;
