@@ -33,6 +33,7 @@ class MemberGroupController extends BaseController
         $groupModel = new MemberGroup();
 
         $requestGroup = \YunShop::request()->group;
+        dd($requestGroup);
         if ($requestGroup) {
             $groupModel->setRawAttributes($requestGroup);
             $groupModel->uniacid = \YunShop::app()->uniacid;

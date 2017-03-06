@@ -11,12 +11,56 @@ namespace app\frontend\modules\member\models;
 
 class MemberAddress extends \app\common\models\MemberAddress
 {
-    public static function getMemberAddressByMemberId($memberId)
+    /*
+     *  Get a list of members receiving addresses
+     *
+     *  @param int $memberId
+     *
+     *  @return array
+     * */
+    public static function getAddressList($memberId)
     {
-        $uniacid = '8';
-        return static::where('uniacid', $uniacid)
-            ->where('uid', $memberId)
-            ->get()
-            ->toArray();
+        return static::select('id', 'username', 'zipcode', 'province', 'city', 'district', 'address', 'isdefault')
+            ->uniacid()->where('uid', $memberId)->get()->toArray();
     }
+    /*
+     *  Get the receiving address information through the receiving address ID
+     *
+     *  @param int $addressId
+     *
+     *  @return array
+     * */
+    public static function getAddressById($addressId)
+    {
+        return static::where('id', $addressId)->first();
+    }
+    /*
+     *  Delete the receiving address by receiving address ID
+     *
+     *  @param int $addressId
+     *
+     *  @return int 0 or 1
+     * */
+    public static function destroyAddress($addressId)
+    {
+        return static::where('id', $addressId)->delete();
+    }
+    /*
+     *
+     * */
+    public static function updateDefaultAddress($memberId, $addressId)
+    {
+        $noDefault = static::uniacid()
+            ->where('uid', $memberId)
+            ->where('isdefault', '1')
+            ->update(['isdefault'=>'0']);
+        $isDefault = static::uniacid()->where('id', $addressId)->update(['isdefault'=>'1']);
+
+        return $isDefault;
+    }
+    public static function cancelDefaultAddress($memberId)
+    {
+        return static::uniacid()->where('uid', $memberId)->where('isdefault', '1')->update('isdefault', '0');
+    }
+
 }
