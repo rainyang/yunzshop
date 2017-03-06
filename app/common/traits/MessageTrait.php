@@ -76,10 +76,14 @@ trait MessageTrait
     {
         $messageStr = '';
         if ($message instanceof MessageBag) {
+            dd($message);
             $msgs = $message->toArray();
             $messageStr = '<ul style="list-style-type:disc;margin-left:10px">';
-            foreach ($msgs as $field) {
-                $messageStr .= '<li>' . implode('</li><li>', $field) . '</li>';
+            foreach ($msgs as $fields) {
+                foreach ($fields as $field){
+                    is_array($field) && $messageStr .= '<li>' . implode('</li><li>', $field) . '</li>';
+                    is_string($field) && $messageStr .= '<li>' . $field . '</li>';
+                }
             }
             $messageStr .= '</ul>';
         } else {
