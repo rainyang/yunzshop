@@ -8,17 +8,18 @@
 
 namespace app\frontend\modules\member\models;
 
+use Illuminate\Database\Eloquent\Model;
 
-class smsSendLimitModel
+class smsSendLimitModel extends Model
 {
     public $table = 'yz_sms_send_limit';
+    public $timestamps = false;
 
-    public function getMobileInfo($uniacid, $mobile)
+    public static function getMobileInfo($uniacid, $mobile)
     {
         return self::where('uniacid', $uniacid)
                    ->where('mobile', $mobile)
-                   ->first()
-                   ->toArray();
+                   ->first();
     }
 
     /**
@@ -26,7 +27,7 @@ class smsSendLimitModel
      *
      * @param $data
      */
-    public function insertData($data)
+    public static function insertData($data)
     {
         self::insert($data);
     }
@@ -37,7 +38,7 @@ class smsSendLimitModel
      * @param $where
      * @param $data
      */
-    public function updateData($where, $data)
+    public static function updateData($where, $data)
     {
         self::where('uniacid', $where['uniacid'])
             ->where('mobile', $where['mobile'])

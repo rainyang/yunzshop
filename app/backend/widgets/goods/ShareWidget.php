@@ -8,7 +8,6 @@
 
 namespace app\backend\widgets\goods;
 
-
 use app\common\components\Widget;
 use app\backend\modules\goods\models\Share;
 
@@ -18,14 +17,13 @@ class ShareWidget extends Widget
 
     public function run()
     {
-        $shareModel = new Share();
-        if ($this->goodsId) {
-            $shareModel = Share::getInfo($this->goodsId);
+        $share = new Share();
+        if ($this->goodsId && Share::getInfo($this->goodsId)) {
+            $share = Share::getInfo($this->goodsId);
         }
-
         return $this->render('goods/share/share',
             [
-                'share'=> $shareModel,
+                'share'=> $share,
             ]
         );
     }

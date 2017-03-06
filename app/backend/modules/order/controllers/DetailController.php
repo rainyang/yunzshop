@@ -35,7 +35,7 @@ class DetailController extends BaseController
                 }
             ]
         )->find($order_id)->toArray();
-        //dd($db_order_models);
+        //dd($db_order_models['status']);
         $this->render('detail', [
             'order' => $db_order_models,
             'lang' => $this->_lang(),

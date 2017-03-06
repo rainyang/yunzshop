@@ -6,23 +6,26 @@
  * Time: 12:19
  */
 
-namespace app\backend\widgets;
+namespace app\backend\widgets\goods;
 
 
 use app\common\components\Widget;
 use app\backend\modules\goods\models\Dispatch;
 
-class ShareWidget extends Widget
+class DispatchWidget extends Widget
 {
     public $goodsId = '';
 
     public function run()
     {
-        $dispatch = Dispatch::getInfo($this->goodsId);
-        return $this->render('goods/dispatch/dispatch',
+        /*$dispatch = new Dispatch();
+        if ($this->goodsId && Dispatch::getInfo($this->goodsId)) {
+            $dispatch = Dispatch::getInfo($this->goodsId);
+        }
+        return $this->render('list',
             [
                 'dispatch'=> $dispatch,
             ]
-        );
+        );*/
     }
 }

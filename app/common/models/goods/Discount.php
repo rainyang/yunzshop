@@ -22,26 +22,30 @@ class Discount extends BaseModel
         return $goodsDiscountInfo;
     }
 
-    public static function validationMessages()
+
+    /**
+     * 自定义字段名
+     * 可使用
+     * @return array
+     */
+    public static function atributeNames()
     {
         return [
-
+            'level_discount_type' => '等级方式',
+            'discount_method' => '折扣方式',
+            'level_id' => '会员等级id',
+            'discount_value' => '折扣或金额数值'
         ];
     }
 
-    /**
-     * 校验表单数据
-     *
-     * @param $data
-     * @return \Illuminate\Validation\Validator
-     */
-    public static function validator($data)
-    {
-        $validator = Validator::make($data, [
-            'level_discount_type' => 'confirmed',
-            'discount_method' => 'confirmed',
-        ], self::validationMessages());
 
-        return $validator;
+    public static function rules()
+    {
+        return [
+            'level_discount_type' => '',
+            'discount_method' => '',
+            'level_id' => '',
+            'discount_value' => ''
+        ];
     }
 }

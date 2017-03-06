@@ -13,10 +13,10 @@
 
 <div class="main"> 
     {if empty($group['id'])}
-    <form action="{php echo $this->createWebUrl('member.membergroup.create-member-group')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+    <form action="{php echo $this->createWebUrl('member.membergroup.store')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
     {else}
-    <form action="{php echo $this->createWebUrl('member.membergroup.revise-member-group')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
-        <input type="hidden" name="group[id]" value="{$group['id']}" />
+    <form action="{php echo $this->createWebUrl('member.membergroup.update')}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="{$group['id']}" />
     {/if}
         <div class='panel panel-default'>
             <div class='panel-body'>
