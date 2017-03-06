@@ -41,4 +41,18 @@ class MemberController extends BaseController
         echo '<pre>'; print_r($memberList); exit;
         $this->render('member/member_list');
     }
+
+    /**
+     * 获取搜索会员
+     * @return html
+     */
+    public function getSearchMember()
+    {
+
+        $keyword = \YunShop::request()->keyword;
+        $member = Member::getGoodsByName($keyword);
+        $member = set_medias($member, array('avatar', 'share_icon'));
+        return $this->render('web/member/query',['ds'=>$member->toArray()]);
+
+    }
 }

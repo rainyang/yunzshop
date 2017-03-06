@@ -21,4 +21,16 @@ class Member extends \app\common\models\Member
     {
         return $this->hasOne('app\backend\modules\member\models\MemberShopInfo','member_id','uid');
     }
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getGoodsByName($keyword)
+    {
+        return static::where('realname', 'like', $keyword.'%')
+            ->orWhere('nick_name', 'like', $keyword.'%')
+            ->orWhere('mobile', 'like', $keyword.'%')
+            ->get();
+    }
 }

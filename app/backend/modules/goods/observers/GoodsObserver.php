@@ -8,6 +8,7 @@ use app\backend\modules\goods\models\Notices;
 use app\backend\modules\goods\services\DiscountService;
 use app\backend\modules\goods\services\Privilege;
 use app\backend\modules\goods\services\PrivilegeService;
+use Illuminate\Database\Eloquent\Model;
 
 
 /**
@@ -19,17 +20,12 @@ use app\backend\modules\goods\services\PrivilegeService;
 class GoodsObserver extends \app\common\observers\BaseObserver
 {
 
-    public function __construct($model)
-    {
 
-        $model->notices['goods_id'] = $model->goodsId;
-        $model->share['goods_id'] = $model->goodsId;
-        $model->privilege['goods_id'] = $model->goodsId;
-        $model->discount['goods_id'] = $model->goodsId;
-    }
 
-    public function creating(Eloquent $model)
+    public function creating(Model $model)
     {
+        echo "creating " . $model->id;
+
         if ($model->share) {
             return Share::validator($model->share);
         }
@@ -43,8 +39,12 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     }
 
-    public function created(Eloquent $model)
+    public function created(Model $model)
     {
+        echo $model->id;
+        //echo $model->getWidgetsAttribute();
+       dd($model->widgets);
+
         if ($model->share) {
             Share::createdShare($model->share);
         }
@@ -63,7 +63,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
     }
 
-    public function updating(Eloquent $model)
+    public function updating(Model $model)
     {
         if ($model->share) {
             return Share::validator($model->share);
@@ -80,7 +80,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
     }
 
-    public function updated(Eloquent $model)
+    public function updated(Model $model)
     {
         if ($model->share) {
             Share::updatedShare($model->share);
@@ -102,7 +102,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
     }
 
-    public function deleted(Eloquent $model)
+    public function deleted(Model $model)
     {
         if (!empty(Share::getInfo($model->goodsId))) {
             Share::deletedShare($model->goodsId);

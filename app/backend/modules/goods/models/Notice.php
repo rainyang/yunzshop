@@ -7,7 +7,7 @@ namespace app\backend\modules\goods\models;
  * Time: 上午9:18
  */
 
-class Notices extends \app\common\models\Notices
+class Notice extends \app\common\models\Notice
 {
     public $timestamps = false;
 
@@ -47,5 +47,11 @@ class Notices extends \app\common\models\Notices
     public static function deletedNotices($goodsId)
     {
         return self::where('goods_id', $goodsId)->delete();
+    }
+    
+    public static function getList($goods_id)
+    {
+        return self::where('goods_id',$goods_id)
+            ->first();
     }
 }

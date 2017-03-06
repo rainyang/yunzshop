@@ -130,6 +130,24 @@ class GoodsController extends BaseController
         echo 'insert ok!';
     }
 
+    public function test()
+    {
+        $request = [
+            'goods' =>
+                ['title'=>'title1',],
+            'widgets'=>[
+                'notices'=>['xxxx1','xxxxx2']
+            ]
+        ];
+
+        //<input name="widgets[notices]['id']"
+
+        $goods = new Goods($request['goods']);
+        $goods->setRawAttributes($request['goods']);
+        $goods->widgets = $request['widgets'];
+        $goods->save();
+    }
+
 
 
     public function edit($id)

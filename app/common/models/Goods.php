@@ -20,9 +20,14 @@ class Goods extends BaseModel
 {
     public $table = 'yz_goods';
 
-    //public $fillable = ['display_order'];
+    public $fillable = ['title'];
 
-    public $guarded = [];
+    protected $guarded = ['widgets'];
+
+    public $appends = [''];
+
+    public $widgets = [];
+    
 
     public static function getList($condition = [])
     {
