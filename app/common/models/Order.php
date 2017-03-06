@@ -54,6 +54,10 @@ class Order extends BaseModel
         return $this->belongsTo('\app\common\models\Member', 'member_id', 'uid');
 
     }
+    public function hasOneOrderDispatch(){
+        return $this->hasOne('\app\common\models\OrderDispatch', 'order_id', 'id');
+
+    }
     public function getStatusService(){
         if(!isset($this->StatusService)){
             $this->StatusService = StatusServiceFactory::createStatusService($this);
