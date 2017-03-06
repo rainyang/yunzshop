@@ -1,7 +1,7 @@
 <?php
 namespace app\common\models;
 
-use Illuminate\Database\Eloquent\Model;
+use app\backend\models\BackendModel;
 
 /**
  * Created by PhpStorm.
@@ -9,15 +9,19 @@ use Illuminate\Database\Eloquent\Model;
  * Date: 21/02/2017
  * Time: 12:58
  */
-class Member extends Model
+class Member extends BackendModel
 {
     public $table = 'mc_members';
+
+
+    public $timestamps = false;
 
     public static function getMemberById($uid)
     {
         return self::where('uid', $uid)
             ->first();
     }
+
     /**
      * @return mixed
      */

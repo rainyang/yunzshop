@@ -30,6 +30,6 @@ class CreateYzSettingTable extends Migration
      */
     public function down()
     {
-        Schema::drop('yz_setting');
+        Schema::dropIfExists('yz_setting');
     }
 }

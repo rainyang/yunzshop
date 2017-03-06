@@ -12,6 +12,10 @@ namespace app\frontend\modules\member\models;
 
 class MemberFavorite extends \app\common\models\MemberFavorite
 {
+    public static function getFavoriteById($favoriteId)
+    {
+        return static::uniacid()->where('id', $favoriteId)->first();
+    }
     /**
      * Add collection
      *
@@ -30,7 +34,7 @@ class MemberFavorite extends \app\common\models\MemberFavorite
      *
      * @return 1 or 0
      * */
-    public static function deleteMemberFavorite($favoriteId)
+    public static function destroyFavorite($favoriteId)
     {
         return static::where('id', $favoriteId)->delete();
     }

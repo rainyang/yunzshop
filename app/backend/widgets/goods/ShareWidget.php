@@ -18,13 +18,21 @@ class ShareWidget extends Widget
 
     public function run()
     {
+<<<<<<< HEAD
         $share = new Share();
         if ($this->goodsId && Share::getInfo($this->goodsId)) {
             $share = Share::getInfo($this->goodsId);
         }
+=======
+        $shareModel = new Share();
+        if ($this->goodsId) {
+            $shareModel = Share::getInfo($this->goodsId);
+        }
+
+>>>>>>> 25ce58a8762d4fdadcde1c263ba98759dde91c5d
         return $this->render('goods/share/share',
             [
-                'share'=> $share,
+                'share'=> $shareModel,
             ]
         );
     }

@@ -9,11 +9,13 @@
 namespace app\common\models;
 
 
-use Illuminate\Database\Eloquent\Model;
+use app\backend\models\BackendModel;
 
-class MemberShopInfo extends Model
+class MemberShopInfo extends BackendModel
 {
     protected $table = 'yz_member';
+
+    public $timestamps = false;
 
     public static function getMemberShopInfo($memberId)
     {
