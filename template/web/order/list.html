@@ -217,7 +217,7 @@
         <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
             <tr class='trhead'>
                 <td colspan='8' style="text-align: left;">
-                    订单数: <span id="total">--</span>  订单金额: <span id="totalmoney" style="color:red">--</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>{if !empty($shopset['weixin'])}<a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{/if}{else}没有可提现金额{/if}{/if}
+                    订单数: <span id="total">{$list['total']}</span>  订单金额: <span id="totalmoney" style="color:red">{$total_price}</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>{if !empty($shopset['weixin'])}<a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{/if}{else}没有可提现金额{/if}{/if}
                 </td>
             </tr>
         </table>
@@ -233,7 +233,7 @@
             </tr>
         </table>
 
-        {loop $list $order}
+        {loop $list['data'] $order}
         <table class='table' style='float:left;border:1px solid #ccc;margin-top:5px;margin-bottom:0px;table-layout: fixed;'>
             <tr >
                 <td colspan='8'  style='border-bottom:1px solid #ccc;background:#f8f8f8;' >
@@ -276,7 +276,7 @@
                 </td>
                 <td valign='top'  style='border-left:none;text-align: left;/*width:400px*/;'  >
                     {if 0&&$order['cashier']==1}{$order['name']['name']}{else}{$order_goods['title']}{/if}{if !empty($order_goods['optiontitle'])}<br/><span class="label label-primary sizebg">{$order_goods['optiontitle']}</span>{/if}
-                    <br/>{$order_goods['goods_sn']}{$order_goods_index}{$order_goods['goods_id']}
+                    <br/>{$order_goods['goods_sn']}
                 </td>
                 <td style='border-left:none;text-align:left;/*width:150px*/'>{if $request['plugin'] != "fund"}原价: {php echo number_format( $order_goods['goods_price']/$order_goods['total'],2)} {/if}<br />应付: {php echo number_format($order_goods['price']/$order_goods['total'],2)}
                     <br/>数量: {$order_goods['total']}
@@ -495,7 +495,7 @@
             </div>
         </div>
         {/if}
-        <div id="pager"></div>
+        <div id="pager">{$pager}</div>
     </div>
 </div>
 <script language="javascript">
