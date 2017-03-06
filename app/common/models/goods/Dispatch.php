@@ -4,7 +4,7 @@ namespace app\common\models\goods;
 
 use app\common\models\BaseModel;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\lValidator;
+use Illuminate\Contracts\Validation\Validator;
 
 /**
  * Created by PhpStorm.

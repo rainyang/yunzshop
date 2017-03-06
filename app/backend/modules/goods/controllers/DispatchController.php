@@ -43,34 +43,28 @@ class DispatchController extends BaseController
     function add()
     {
         $dispatchModel = new Dispatch();
-        $areas = [];
-        $citysList = [];
-        $areasList = [];
-        $provincesList = Area::getProvinces(0);
-        foreach ($provincesList as $key => $province) {
-            $citysList = Area::getCitysByProvince($province['id']);
-        }
-        foreach ($citysList) {
-            
+        $areas = Area::getProvinces(0);
+        foreach ($areas as &$province) {
+            $province['city'] = Area::getCitysByProvince($province['id']);
         }
         $requestDispatch = \YunShop::request()->dispatch;
         if ($requestDispatch) {
             //将数据赋值到model
             $dispatchModel->setRawAttributes($requestDispatch);
             //其他字段赋值
-            $brandModel->uniacid = \YunShop::app()->uniacid;
+            $dispatchModel->uniacid = \YunShop::app()->uniacid;
 
             //字段检测
-            $validator = Brand::validator($brandModel->getAttributes());
+            $validator = Dispatch::validator($dispatchModel->getAttributes());
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {
                 //数据保存
-                if ($brandModel->save()) {
+                if ($dispatchModel->save()) {
                     //显示信息并跳转
-                    return $this->message('品牌创建成功', Url::absoluteWeb('goods.brand.index'));
+                    return $this->message('配送模板创建成功', Url::absoluteWeb('goods.dispatch.index'));
                 } else {
-                    $this->error('品牌创建失败');
+                    $this->error('配送模板创建失败');
                 }
             }
         }
@@ -88,7 +82,40 @@ class DispatchController extends BaseController
     public
     function edit()
     {
+        $dispatchModel = Dispatch::getOne(\YunShop::request()->id);
+        if(!$dispatchModel){
+            return $this->message('无此记录或已被删除','','error');
+        }
+        $areas = Area::getProvinces(0);
+        foreach ($areas as &$province) {
+            $province['city'] = Area::getCitysByProvince($province['id']);
+        }
+        $requestDispatch = \YunShop::request()->dispatch;
+        if ($requestDispatch) {
+            //将数据赋值到model
+            $dispatchModel->setRawAttributes($requestDispatch);
+            //其他字段赋值
+            $dispatchModel->uniacid = \YunShop::app()->uniacid;
 
+            //字段检测
+            $validator = Dispatch::validator($dispatchModel->getAttributes());
+            if ($validator->fails()) {//检测失败
+                $this->error($validator->messages());
+            } else {
+                //数据保存
+                if ($dispatchModel->save()) {
+                    //显示信息并跳转
+                    return $this->message('配送模板更新成功', Url::absoluteWeb('goods.dispatch.index'));
+                } else {
+                    $this->error('配送模板更新失败');
+                }
+            }
+        }
+
+        $this->render('info', [
+            'dispatch' => $dispatchModel,
+            'areas'  => $areas,
+        ]);
     }
 
     /**
@@ -98,7 +125,17 @@ class DispatchController extends BaseController
     public
     function delete()
     {
+        $dispatch = Dispatch::getOne(\YunShop::request()->id);
+        if(!$dispatch) {
+            return $this->message('无此配送模板或已经删除','','error');
+        }
 
+        $result = Dispatch::deletedDispatch(\YunShop::request()->id);
+        if($result) {
+            return $this->message('删除品牌成功',Url::absoluteWeb('goods.dispatch.index'));
+        }else{
+            return $this->message('删除品牌失败','','error');
+        }
     }
 
     /**

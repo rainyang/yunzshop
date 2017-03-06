@@ -9,14 +9,10 @@
             </ul>
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->
-        {if isset($item['id']) && !empty($item['id'])}
+
             <form  {ife 'shop.category' $item} action="{php echo $this->createWebUrl('goods.category.edit-save');}" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
-        <input type="hidden" name="id" class="form-control" value="{$item['id']}" />
 
-        {else}
-            <form  {ife 'shop.category' $item} action="{php echo $this->createWebUrl('goods.category.add-save');}" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
-        {/if}
-
+        <input type="hidden" name="id" class="form-control" value="{php echo $item->id}" />
         <div class="panel panel-default">
             <div class="panel-body">
                 {if !empty($item)}
@@ -26,12 +22,12 @@
                             <p class='form-control-static'>
                                 <a href='javascript:;' title='点击复制连接' id='cp'>
                                     {if empty($parent)}
-                                        {php echo $this->createMobileUrl('goods.category.index', ['pcate'=>$item['id']])}
+                                        {php echo $this->createMobileUrl('goods.category.index', ['pcate'=>$item->id])}
                                     {else}
                                         {if empty($parent1)}
-                                            {php echo $this->createMobileUrl('goods.category.index', ['ccate'=>$item['id']])}
+                                            {php echo $this->createMobileUrl('goods.category.index', ['ccate'=>$item->id])}
                                         {else}
-                                            {php echo $this->createMobileUrl('goods.category.index', ['tcate'=>$item['id']])}
+                                            {php echo $this->createMobileUrl('goods.category.index', ['tcate'=>$item->id])}
                                         {/if}
                                     {/if}
                                 </a>
@@ -40,12 +36,11 @@
                     </div>
                 {/if}
 
-                {if !empty($parentid)}
+                {if !empty($parent)}
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">上级分类</label>
                         <div class="col-sm-9 col-xs-12 control-label" style="text-align:left;">
-                            {if !empty($parent1)}{$parent1['name']} >> {/if}
-                            {$parent['name']}
+                            {if !empty($parent)}{php echo $parent->name}  {/if}
                         </div>
                     </div>
                 {/if}
@@ -54,9 +49,9 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.category' $item}
-                            <input type="text" name="category[display_order]" class="form-control" value="{$item['display_order']}" />
+                            <input type="text" name="category[display_order]" class="form-control" value="{php echo $item->display_order}" />
                         {else}
-                            <div class='form-control-static'>{$item['display_order']}</div>
+                            <div class='form-control-static'>{php echo $item->display_order}</div>
                         {/if}
                     </div>
                 </div>
@@ -65,9 +60,9 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>分类名称</label>
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.category' $item}
-                            <input type="text" name="category[name]" class="form-control" value="{$item['name']}" />
+                            <input type="text" name="category[name]" class="form-control" value="{php echo $item->name}" />
                         {else}
-                            <div class='form-control-static'>{$item['name']}</div>
+                            <div class='form-control-static'>{php echo $item->name}</div>
                         {/if}
                     </div>
                 </div>
@@ -76,12 +71,12 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类图片</label>
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.category' $item}
-                            {php echo app\common\helpers\ImageHelper::tplFormFieldImage('category[thumb]', $item['thumb'])}
+                            {php echo app\common\helpers\ImageHelper::tplFormFieldImage('category[thumb]', $item->thumb)}
                             <span class="help-block">建议尺寸: 100*100，或正方型图片 </span>
                         {else}
                             {if !empty($item['thumb'])}
-                                <a href='{php echo tomedia($item['thumb'])}' target='_blank'>
-                                    <img src="{php echo tomedia($item['thumb'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                                <a href='{php echo tomedia($item->thumb)}' target='_blank'>
+                                    <img src="{php echo tomedia($item->thumb)}" style='width:100px;border:1px solid #ccc;padding:1px' />
                                 </a>
                             {/if}
                         {/if}
@@ -92,9 +87,9 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类描述</label>
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.category' $item}
-                            <textarea name="category[description]" class="form-control" cols="70">{$item['description']}</textarea>
+                            <textarea name="category[description]" class="form-control" cols="70">{php echo $item->description}</textarea>
                         {else}
-                            <div class='form-control-static'>{$item['description']}</div>
+                            <div class='form-control-static'>{php echo $item->description}</div>
                         {/if}
 
                     </div>
@@ -104,12 +99,12 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">移动端分类广告</label>
                         <div class="col-sm-9 col-xs-12">
                             {ife 'shop.category' $item}
-                                {php echo app\common\helpers\ImageHelper::tplFormFieldImage('category[adv_img]', $item['adv_img'])}
+                                {php echo app\common\helpers\ImageHelper::tplFormFieldImage('category[adv_img]', $item->adv_img)}
                                 <span class="help-block">建议尺寸: 640*320</span>
                             {else}
                                 {if !empty($item['advimg'])}
-                                    <a href='{php echo tomedia($item['adv_img'])}' target='_blank'>
-                                        <img src="{php echo tomedia($item['adv_img'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                                    <a href='{php echo tomedia($item->adv_img)}' target='_blank'>
+                                        <img src="{php echo tomedia($item->adv_img)}" style='width:100px;border:1px solid #ccc;padding:1px' />
                                     </a>
                                 {/if}
                             {/if}
@@ -121,13 +116,13 @@
                         <div class="col-sm-9 col-xs-12">
                             {ife 'shop.category' $item}
                                 <div class="input-group ">
-                                    <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$item['adv_url']}" name="category[adv_url]">
+                                    <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{php echo $item->adv_url}" name="category[adv_url]">
                                         <span class="input-group-btn">
                                             <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
                                         </span>
                                 </div>
                             {else}
-                                <div class='form-control-static'>{$item['adv_url']}</div>
+                                <div class='form-control-static'>{php echo $item->adv_url}</div>
                             {/if}
                         </div>
                     </div>
@@ -139,13 +134,13 @@
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.category' $item}
                         <label class='radio-inline'>
-                            <input type='radio' name='category[is_home]' value='1' {if $item['is_home']==1}checked{/if} /> 是
+                            <input type='radio' name='category[is_home]' value='1' {if $item->is_home==1}checked{/if} /> 是
                         </label>
                         <label class='radio-inline'>
-                            <input type='radio' name='category[is_home]' value='0' {if $item['is_home']==0}checked{/if} /> 否
+                            <input type='radio' name='category[is_home]' value='0' {if $item->is_home==0}checked{/if} /> 否
                         </label>
                         {else}
-                        <div class='form-control-static'>{if empty($item['is_home'])}否{else}是{/if}</div>
+                        <div class='form-control-static'>{if empty($item->is_home)}否{else}是{/if}</div>
                         {/if}
                     </div>
                 </div>
@@ -155,13 +150,13 @@
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.category' $item}
                         <label class='radio-inline'>
-                            <input type='radio' name='category[enabled]' value='1' {if $item['enabled']==1}checked{/if} /> 是
+                            <input type='radio' name='category[enabled]' value='1' {if $item->enabled==1}checked{/if} /> 是
                         </label>
                         <label class='radio-inline'>
-                            <input type='radio' name='category[enabled]' value='0' {if $item['enabled']==0}checked{/if} /> 否
+                            <input type='radio' name='category[enabled]' value='0' {if $item->enabled==0}checked{/if} /> 否
                         </label>
                         {else}
-                        <div class='form-control-static'>{if empty($item['enabled'])}否{else}是{/if}</div>
+                        <div class='form-control-static'>{if empty($item->enabled)}否{else}是{/if}</div>
                         {/if}
                     </div>
                 </div>
@@ -170,8 +165,8 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
-                        <input type="hidden" name="category[parent_id]" class="form-control" value="{$item['parent_id']}" />
-                        <input type="hidden" name="category[level]" class="form-control" value="{$item['level']}" />
+                        <input type="hidden" name="category[parent_id]" class="form-control" value="{php echo $item->parent_id}" />
+                        <input type="hidden" name="category[level]" class="form-control" value="{php echo $item->level}" />
                         {ife 'shop.category' $item}
                         <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick="return formcheck()" />
                         {/if}
