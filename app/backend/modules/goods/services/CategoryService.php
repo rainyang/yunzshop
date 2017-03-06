@@ -17,29 +17,29 @@ class CategoryService
 <script type="text/javascript">
 	window._' . $name . ' = ' . json_encode($children) . ';
 </script>';
-        if (!defined('TPL_INIT_CATEGORY_THIRD')) {
-            $html .= '
+if (!defined('TPL_INIT_CATEGORY_THIRD')) {
+    $html .= '
 <script type="text/javascript">
-	function renderCategoryThird(obj, name){
-		var index = obj.options[obj.selectedIndex].value;
-		require([\'jquery\', \'util\'], function($, u){
-			$selectChild = $(\'#\'+name+\'_child\');
-                                                      $selectThird = $(\'#\'+name+\'_third\');
-			var html = \'<option value="0">请选择二级分类</option>\';
-                                                      var html1 = \'<option value="0">请选择三级分类</option>\';
-			if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
-				$selectChild.html(html);
-                                                                        $selectThird.html(html1);
-				return false;
-			}
-			for(var i=0; i< window[\'_\'+name][index].length; i++){
-				html += \'<option value="\'+window[\'_\'+name][index][i][\'id\']+\'">\'+window[\'_\'+name][index][i][\'name\']+\'</option>\';
-			}
-			$selectChild.html(html);
-                                                    $selectThird.html(html1);
-		});
-	}
-        function renderCategoryThird1(obj, name){
+    function renderCategoryThird(obj, name){
+        var index = obj.options[obj.selectedIndex].value;
+        require([\'jquery\', \'util\'], function($, u){
+            $selectChild = $(\'#\'+name+\'_child\');
+            $selectThird = $(\'#\'+name+\'_third\');
+            var html = \'<option value="0">请选择二级分类</option>\';
+            var html1 = \'<option value="0">请选择三级分类</option>\';
+            if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
+                $selectChild.html(html);
+                $selectThird.html(html1);
+                return false;
+            }
+            for(var i=0; i< window[\'_\'+name][index].length; i++){
+                html += \'<option value="\'+window[\'_\'+name][index][i][\'id\']+\'">\'+window[\'_\'+name][index][i][\'name\']+\'</option>\';
+            }
+            $selectChild.html(html);
+            $selectThird.html(html1);
+        });
+    }
+    function renderCategoryThird1(obj, name){
 		var index = obj.options[obj.selectedIndex].value;
 		require([\'jquery\', \'util\'], function($, u){
 			$selectChild = $(\'#\'+name+\'_third\');
@@ -55,9 +55,9 @@ class CategoryService
 		});
 	}
 </script>
-			';
-            define('TPL_INIT_CATEGORY_THIRD', true);
-        }
+    ';
+    define('TPL_INIT_CATEGORY_THIRD', true);
+}
         $html .= '<div class="row row-fix tpl-category-container">
 	<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
 		<select class="form-control tpl-category-parent" id="' . $name . '_parent" name="' . $name . '[parentid]" onchange="renderCategoryThird(this,\'' . $name . '\')">
