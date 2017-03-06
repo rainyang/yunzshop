@@ -133,9 +133,11 @@ class Member extends \app\common\models\Member
         }
 
         if (!empty($parame['realname'])) {
-            $result = $result->where('nickname', 'like', '%' . $parame['realname'] . '%')
-                ->orWhere('realname', 'like', '%' . $parame['realname'] . '%')
-                ->orWhere('mobile', 'like', $parame['realname'] . '%');
+            $result = $result->where(function ($w) use ($parame) {
+               $w->where('nickname', 'like', '%' . $parame['realname'] . '%')
+                    ->orWhere('realname', 'like', '%' . $parame['realname'] . '%')
+                    ->orWhere('mobile', 'like', $parame['realname'] . '%');
+            });
         }
 
         if (!empty($parame['groupid']) || !empty($parame['level']) || !empty($parame['isblack'])) {
@@ -154,7 +156,7 @@ class Member extends \app\common\models\Member
             });
         }
 
-        if (isset($parame['followed'])) {
+        if ($parame['followed'] != '') {
             $result = $result->whereHas('hasOneFans', function ($q2) use ($parame) {
                 $q2->where('follow', $parame['followed']);
             });

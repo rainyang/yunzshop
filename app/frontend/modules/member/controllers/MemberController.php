@@ -33,7 +33,7 @@ class MemberController extends BaseController
             $member_info = MemberModel::getUserInfos($uniacid, $member_id);
 
             if (!empty($member_info)) {
-                return show_json(1, array($member_info));
+                return $this->successJson($member_info);
             } else {
                 return show_json(0, array("msg" => '用户不存在'));
             }

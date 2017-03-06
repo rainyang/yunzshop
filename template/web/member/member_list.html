@@ -14,12 +14,13 @@
         <div class="panel panel-info">
             <div class="panel-heading">筛选</div>
             <div class="panel-body">
-                <form action="{php echo $this->createWebUrl('member.member.search')}" method="post" class="form-horizontal" role="form" id="form1">
+                <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
                     <input type="hidden" name="c" value="site" />
                     <input type="hidden" name="a" value="entry" />
                     <input type="hidden" name="m" value="sz_yi" />
                     <input type="hidden" name="p" value="list" id="form_p" />
                     <input type="hidden" name="do" value="member" id="form_do" />
+                    <input type="hidden" name="route" value="member.member.search" id="route" />
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>
                         <div class="col-sm-8 col-lg-9 col-xs-12">
