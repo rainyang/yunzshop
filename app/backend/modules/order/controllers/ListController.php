@@ -17,9 +17,10 @@ class ListController extends BaseController
 {
     public function index()
     {
+        $params = [];
         $pageSize = 2;
-        $total_price = Order::sum('price');
-        $list = Order::with('belongsToMember', 'hasOneOrderDispatch', 'hasManyOrderGoods.hasOneGoods')->paginate($pageSize)->toArray();
+        $total_price = Order::whereForSearch($params)->sum('price');
+        $list = Order::whereForSearch($params)->with('belongsToMember', 'hasOneOrderDispatch', 'hasManyOrderGoods.hasOneGoods')->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         //dd($list);
         $data = [
@@ -36,7 +37,13 @@ class ListController extends BaseController
 
     public function test()
     {
-        $list = Order::with('hasOneOrderDispatch')->first();
+        $params =[];
+        $params = [
+            'id'=>1,
+            'order_sn'=>'08',
+            'create_time'=>[1488425047,1488425047]
+        ];
+        $list = Order::whereForSearch($params)->first();
 
         dd($list);
 
