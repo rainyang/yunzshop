@@ -69,7 +69,7 @@ class Dispatch extends BaseModel
             'dispatch_name' => 'required|max:50',
             'display_order' => '',
             'is_default' => 'digits_between:0,1',
-            'enabled' => 'integer|min:0|max:1',
+            'enabled' => 'integer',
             'calculate_type' => 'digits_between:0,1',
             'first_piece' => 'numeric',
             'another_piece' => 'numeric',

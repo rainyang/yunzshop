@@ -20,18 +20,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class GoodsObserver extends \app\common\observers\BaseObserver
 {
-/*
-    public function __construct($model)
-    {
-        $model->notices['goods_id'] = $model->goodsId;
-        $model->share['goods_id'] = $model->goodsId;
-        $model->privilege['goods_id'] = $model->goodsId;
-        $model->discount['goods_id'] = $model->goodsId;
-    }*/
 
     public function saving(Model $model)
     {
-        //dd($model);
+
         if ($model->share) {
             return Share::validator($model->share);
         }
@@ -42,7 +34,38 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         if ($model->discount) {
             return Discount::validator($model->discount);
         }
+        if ($model->notices) {
+            return Notices::validator($model->notices);
+        }
 
+    }
+
+    public function saved(Model $model)
+    {
+        if ($model->share) {
+            $share = new Share();
+            $share->setRawAttributes($model->share);
+            $share->save();
+        }
+        if ($model->privilege) {
+            $privilege = new Privilege();
+            $model->privilege['show_levels'] = PrivilegeService::stringToArray($model->privilege['show_levels']);
+            $privilege->setRawAttributes($model->privilege);
+            $privilege->save();
+        }
+        if ($model->discount) {
+            $discounts = DiscountService::resetArray($model->discount);
+            foreach ($discounts as $discount) {
+                $discountModel = new Discount();
+                $discountModel->setRawAttributes($discount);
+                $discountModel->save();
+            }
+        }
+        if ($model->notices) {
+            $notice = new Notices();
+            $notice->setRawAttributes($model->notices);
+            $notice->save();
+        }
     }
 
     public function created(Model $model)
@@ -65,7 +88,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
     }
 
-    public function updating(Eloquent $model)
+    public function updating(Model $model)
     {
         if ($model->share) {
             return Share::validator($model->share);

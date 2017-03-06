@@ -11,8 +11,8 @@ namespace app\backend\widgets\goods;
 
 use app\common\components\Widget;
 use app\backend\modules\goods\models\Privilege;
-use app\backend\modules\member\models\Level;
-use app\backend\modules\member\models\Group;
+use app\backend\modules\member\models\MemberLevel;
+use app\backend\modules\member\models\MemberGroup;
 
 
 class PrivilegeWidget extends Widget
@@ -29,7 +29,7 @@ class PrivilegeWidget extends Widget
         $groups = MemberGroup::getMemberGroupList();
         return $this->render('goods/privilege/privilege',
             [
-                'discount' => $privilege,
+                'privilege' => $privilege,
                 'levels' => $levels,
                 'groups' => $groups
             ]

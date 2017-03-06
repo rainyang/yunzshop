@@ -86,7 +86,8 @@ class GoodsController extends BaseController
         $goodsModel = new Goods();
         $requestGoods = \YunShop::request()->goods;
         if ($requestGoods) {
-            $sharePost = \YunShop::request()->share;
+            $widgetPost = \YunShop::request()->widget;
+            //dd($widgetPost);
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
             $goodsModel->uniacid = \YunShop::app()->uniacid;
@@ -140,7 +141,7 @@ class GoodsController extends BaseController
         }
         
         $optionsHtml = GoodsOptionService::getOptions($this->goods_id, $goodsModel->hasManySpecs);
-        $goodsModel->piclist = unserialize($goodsModel->thumb_url);
+        $goodsModel->piclist = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
         $catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
             //将数据赋值到model
