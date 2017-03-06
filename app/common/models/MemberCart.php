@@ -10,8 +10,13 @@ namespace app\common\models;
 
 
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class MemberCart extends BaseModel
 {
+    use SoftDeletes;
+
     protected $table = 'yz_member_cart';
+
 
 }

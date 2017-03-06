@@ -25,6 +25,16 @@ class Dispatch extends \app\common\models\goods\Dispatch
             ->paginate($pageSize)
             ->toArray();
     }
+    /**
+     * 获取配送模板单条数据
+     * @param int $goodsId
+     * @return array
+     */
+    public static function getOne($id)
+    {
+        return self::where('id', $id)
+            ->first();
+    }
 
     /**
      * 配送模板数据添加
@@ -41,9 +51,9 @@ class Dispatch extends \app\common\models\goods\Dispatch
      * @param array $DispatchInfo
      * @return mixed
      */
-    public static function updatedDispatch($goodsId, $DispatchInfo)
+    public static function updatedDispatch($dispatchId, $DispatchInfo)
     {
-        return self::where('goods_id', $goodsId)->update($DispatchInfo);
+        return self::where('id', $dispatchId)->update($DispatchInfo);
     }
 
     /**
@@ -51,9 +61,9 @@ class Dispatch extends \app\common\models\goods\Dispatch
      * @param int $goodsId
      * @return mixed
      */
-    public static function deletedShare($goodsId)
+    public static function deletedDispatch($dispatchId)
     {
-        return self::where('goods_id', $goodsId)->delete();
+        return self::where('id', $dispatchId)->delete();
     }
 
 }

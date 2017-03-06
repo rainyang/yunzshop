@@ -238,7 +238,7 @@
 									</a>
 
 									<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'] ,'op' =>'copygoods'))}"  title="{$lang['copyshop']}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
-									{ifp 'shop.goods.edit|shop.goods.view'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'post'))}"class="btn btn-sm btn-default" title="{ifp 'shop.goods.edit'}编辑{else}查看{/if}" target="_blank"><i class="fa fa-edit"></i></a>{/if}
+									{ifp 'shop.goods.edit|shop.goods.view'}<a href="{php echo $this->createWebUrl('goods.goods.edit', array('id' => $item['id']))}"class="btn btn-sm btn-default" title="{ifp 'shop.goods.edit'}编辑{else}查看{/if}" target="_blank"><i class="fa fa-edit"></i></a>{/if}
 									{ifp 'shop.goods.delete'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'delete'))}" onclick="return confirm('确认删除此商品？');
 										return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-trash"></i></a>{/if}
 									<a href="javascript:;" data-url="{php echo $this->createMobileUrl('shop/detail', array('id' => $item['id']));}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
