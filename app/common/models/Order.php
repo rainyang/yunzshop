@@ -56,7 +56,11 @@ class Order extends BaseModel
     }
     public function hasOneOrderDispatch(){
         return $this->hasOne('\app\common\models\OrderDispatch', 'order_id', 'id');
-
+    }
+    //订单评价
+    public function hasOneOrderRemark()
+    {
+        return $this->hasOne('\app\common\models\order\Remark', 'order_id', 'id');
     }
     public function getStatusService(){
         if(!isset($this->StatusService)){
