@@ -4,12 +4,12 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86
+class ComposerStaticInit0306c8cd736cb682224755498e46d769
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
+        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
@@ -128,9 +128,9 @@ class ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86
     public static $prefixDirsPsr4 = array (
         'phpDocumentor\\Reflection\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
         'iscms\\Alisms\\' => 
         array (
@@ -349,6 +349,13 @@ class ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86
             'Orangehill\\Iseed' => 
             array (
                 0 => __DIR__ . '/..' . '/orangehill/iseed/src',
+            ),
+        ),
+        'N' => 
+        array (
+            'Nwidart\\DbExporter' => 
+            array (
+                0 => __DIR__ . '/..' . '/nwidart/db-exporter/src',
             ),
         ),
         'M' => 
@@ -2199,6 +2206,20 @@ class ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86
         'Monolog\\Processor\\UidProcessor' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Processor/UidProcessor.php',
         'Monolog\\Processor\\WebProcessor' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Processor/WebProcessor.php',
         'Monolog\\Registry' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Registry.php',
+        'Nwidart\\DbExporter\\Commands\\CopyToRemoteCommand' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/Commands/CopyToRemoteCommand.php',
+        'Nwidart\\DbExporter\\Commands\\GeneratorCommand' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/Commands/GeneratorCommand.php',
+        'Nwidart\\DbExporter\\Commands\\MigrationsGeneratorCommand' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/Commands/MigrationsGeneratorCommand.php',
+        'Nwidart\\DbExporter\\Commands\\SeedGeneratorCommand' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/Commands/SeedGeneratorCommand.php',
+        'Nwidart\\DbExporter\\DbExportHandler' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/DbExportHandler.php',
+        'Nwidart\\DbExporter\\DbExportHandlerServiceProvider' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/DbExportHandlerServiceProvider.php',
+        'Nwidart\\DbExporter\\DbExporter' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/DbExporter.php',
+        'Nwidart\\DbExporter\\DbMigrations' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/DbMigrations.php',
+        'Nwidart\\DbExporter\\DbMigrationsServiceProvider' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/DbMigrationsServiceProvider.php',
+        'Nwidart\\DbExporter\\DbSeeding' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/DbSeeding.php',
+        'Nwidart\\DbExporter\\Exceptions\\InvalidDatabaseException' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/Exceptions/InvalidDatabaseException.php',
+        'Nwidart\\DbExporter\\Facades\\DbExportHandler' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/facades/DbExportHandler.php',
+        'Nwidart\\DbExporter\\Facades\\DbMigrations' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/facades/DbMigrations.php',
+        'Nwidart\\DbExporter\\Server' => __DIR__ . '/..' . '/nwidart/db-exporter/src/Nwidart/DbExporter/Server.php',
         'Orangehill\\Iseed\\Facades\\Iseed' => __DIR__ . '/..' . '/orangehill/iseed/src/Orangehill/Iseed/Facades/Iseed.php',
         'Orangehill\\Iseed\\Iseed' => __DIR__ . '/..' . '/orangehill/iseed/src/Orangehill/Iseed/Iseed.php',
         'Orangehill\\Iseed\\IseedCommand' => __DIR__ . '/..' . '/orangehill/iseed/src/Orangehill/Iseed/IseedCommand.php',
@@ -3952,6 +3973,7 @@ class ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86
         'app\\backend\\modules\\goods\\models\\Discount' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/Discount.php',
         'app\\backend\\modules\\goods\\models\\Dispatch' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/Dispatch.php',
         'app\\backend\\modules\\goods\\models\\Goods' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/Goods.php',
+        'app\\backend\\modules\\goods\\models\\GoodsOption' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/GoodsOption.php',
         'app\\backend\\modules\\goods\\models\\GoodsParam' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/GoodsParam.php',
         'app\\backend\\modules\\goods\\models\\GoodsSpec' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/GoodsSpec.php',
         'app\\backend\\modules\\goods\\models\\GoodsSpecItem' => __DIR__ . '/../..' . '/app/backend/modules/goods/models/GoodsSpecItem.php',
@@ -3964,9 +3986,9 @@ class ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86
         'app\\backend\\modules\\goods\\services\\CommentService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/CommentService.php',
         'app\\backend\\modules\\goods\\services\\DiscountDetailService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/DiscountDetailService.php',
         'app\\backend\\modules\\goods\\services\\DiscountService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/DiscountService.php',
+        'app\\backend\\modules\\goods\\services\\GoodsOptionService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/GoodsOptionService.php',
         'app\\backend\\modules\\goods\\services\\GoodsService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/GoodsService.php',
         'app\\backend\\modules\\goods\\services\\PrivilegeService' => __DIR__ . '/../..' . '/app/backend/modules/goods/services/PrivilegeService.php',
-        'app\\backend\\modules\\goods\\widgets\\Discount' => __DIR__ . '/../..' . '/app/backend/modules/goods/widgets/Discount.php',
         'app\\backend\\modules\\member\\controllers\\MemberController' => __DIR__ . '/../..' . '/app/backend/modules/member/controllers/MemberController.php',
         'app\\backend\\modules\\member\\controllers\\MemberGroupController' => __DIR__ . '/../..' . '/app/backend/modules/member/controllers/MemberGroupController.php',
         'app\\backend\\modules\\member\\controllers\\MemberLevelController' => __DIR__ . '/../..' . '/app/backend/modules/member/controllers/MemberLevelController.php',
@@ -3987,9 +4009,9 @@ class ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86
         'app\\backend\\modules\\system\\modules\\QQConfigModel' => __DIR__ . '/../..' . '/app/backend/modules/system/models/QQConfigModel.php',
         'app\\backend\\modules\\system\\modules\\SyssetModel' => __DIR__ . '/../..' . '/app/backend/modules/system/models/SyssetModel.php',
         'app\\backend\\widgets\\MenuWidget' => __DIR__ . '/../..' . '/app/backend/widgets/MenuWidget.php',
-        'app\\backend\\widgets\\PrivilegeWidget' => __DIR__ . '/../..' . '/app/backend/widgets/goods/PrivilegeWidget.php',
-        'app\\backend\\widgets\\ShareWidget' => __DIR__ . '/../..' . '/app/backend/widgets/goods/DispatchWidget.php',
         'app\\backend\\widgets\\goods\\DiscountWidget' => __DIR__ . '/../..' . '/app/backend/widgets/goods/DiscountWidget.php',
+        'app\\backend\\widgets\\goods\\DispatchWidget' => __DIR__ . '/../..' . '/app/backend/widgets/goods/DispatchWidget.php',
+        'app\\backend\\widgets\\goods\\PrivilegeWidget' => __DIR__ . '/../..' . '/app/backend/widgets/goods/PrivilegeWidget.php',
         'app\\backend\\widgets\\goods\\ShareWidget' => __DIR__ . '/../..' . '/app/backend/widgets/goods/ShareWidget.php',
         'app\\common\\ServiceModel\\ServiceModel' => __DIR__ . '/../..' . '/app/common/ServiceModel/ServiceModel.php',
         'app\\common\\components\\BaseController' => __DIR__ . '/../..' . '/app/common/components/BaseController.php',
@@ -4099,6 +4121,7 @@ class ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86
         'app\\frontend\\modules\\goods\\controllers\\BrandController' => __DIR__ . '/../..' . '/app/frontend/modules/goods/controllers/BrandController.php',
         'app\\frontend\\modules\\goods\\controllers\\CategoryController' => __DIR__ . '/../..' . '/app/frontend/modules/goods/controllers/categoryController.php',
         'app\\frontend\\modules\\goods\\controllers\\CommentController' => __DIR__ . '/../..' . '/app/frontend/modules/goods/controllers/CommentController.php',
+        'app\\frontend\\modules\\goods\\controllers\\GoodsController' => __DIR__ . '/../..' . '/app/frontend/modules/goods/controllers/GoodsController.php',
         'app\\frontend\\modules\\goods\\models\\Brand' => __DIR__ . '/../..' . '/app/frontend/modules/goods/models/Brand.php',
         'app\\frontend\\modules\\goods\\models\\Category' => __DIR__ . '/../..' . '/app/frontend/modules/goods/models/Category.php',
         'app\\frontend\\modules\\goods\\models\\Comment' => __DIR__ . '/../..' . '/app/frontend/modules/goods/models/Comment.php',
@@ -4255,10 +4278,10 @@ class ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit125fee9f0cdb0882fb0ec903e22d0d86::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit0306c8cd736cb682224755498e46d769::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit0306c8cd736cb682224755498e46d769::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit0306c8cd736cb682224755498e46d769::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit0306c8cd736cb682224755498e46d769::$classMap;
 
         }, null, ClassLoader::class);
     }
