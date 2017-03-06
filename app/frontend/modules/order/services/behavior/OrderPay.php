@@ -17,7 +17,7 @@ class OrderPay
 
     public function __construct(Order $order_model)
     {
-        $this->order_model = $order_model->getData();
+        $this->order_model = $order_model;
     }
 
     public function pay()
@@ -28,7 +28,7 @@ class OrderPay
 
     public function payable()
     {
-        if ($this->order_model['status'] == 0) {
+        if ($this->order_model->status == 0) {
             return true;
         }
         return false;

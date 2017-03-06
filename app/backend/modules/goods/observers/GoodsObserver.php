@@ -8,6 +8,8 @@ use app\backend\modules\goods\models\Notices;
 use app\backend\modules\goods\services\DiscountService;
 use app\backend\modules\goods\services\Privilege;
 use app\backend\modules\goods\services\PrivilegeService;
+use app\common\models\Goods;
+use Illuminate\Database\Eloquent\Model;
 
 
 /**
@@ -18,6 +20,7 @@ use app\backend\modules\goods\services\PrivilegeService;
  */
 class GoodsObserver extends \app\common\observers\BaseObserver
 {
+
 
     public function saving(Eloquent $model)
     {
@@ -65,22 +68,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
     }
 
-    public function creating(Eloquent $model)
-    {
-        if ($model->share) {
-            return Share::validator($model->share);
-        }
-        if ($model->privilege) {
-            $model->privilege['show_levels'] = PrivilegeService::arrayToSting($model->privilege['show_levels']);
-            return Privilege::validator($model->privilege);
-        }
-        if ($model->discount) {
-            return Discount::validator($model->discount);
-        }
-
-    }
-
-    public function created(Eloquent $model)
+    public function created(Model $model)
     {
         if ($model->share) {
             Share::createdShare($model->share);
@@ -117,7 +105,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
     }
 
-    public function updated(Eloquent $model)
+    public function updated(Model $model)
     {
         if ($model->share) {
             Share::updatedShare($model->share);
@@ -139,7 +127,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
     }
 
-    public function deleted(Eloquent $model)
+    public function deleted(Model $model)
     {
         if (!empty(Share::getInfo($model->goodsId))) {
             Share::deletedShare($model->goodsId);

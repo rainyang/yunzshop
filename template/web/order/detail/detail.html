@@ -21,128 +21,42 @@
         <!-- 新增加右侧顶部三级菜单结束 -->
         <div class="main">
             <form class="form-horizontal form" action="" method="post">
-                {if $item['transid']}<div  class="alert alert-error"><i class="fa fa-lightbulb"></i> 此为微信支付订单，必须要提交发货状态！</div>{/if}
-                <input type="hidden" name="id" value="{$item['id']}" />
-                <input type="hidden" name="token" value="{$_W['token']}" />
+                <input type="hidden" name="id" value="{$order['id']}" />
+                <input type="hidden" name="token" value="{$var['token']}" />
                 <input type="hidden" name="dispatchid" value="{$dispatch['id']}" />
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <img src='{$member['avatar']}' style='width:100px;height:100px;padding:1px;border:1px solid #ccc' />
-                                {$member['nickname']}
+                                <img src='{$order['be_longs_to_member']['avatar']}' style='width:100px;height:100px;padding:1px;border:1px solid #ccc' />
+                                {$order['be_longs_to_member']['nickname']}
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员信息 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <div class='form-control-static'>ID: {$member['id']} 姓名: {$member['realname']} / 手机号: {$member['mobile']} /微信号: {$member['weixin']}</div>
+                                <div class='form-control-static'>ID: {$order['be_longs_to_member']['uid']} 姓名: {$order['be_longs_to_member']['realname']} / 手机号: {$order['be_longs_to_member']['mobile']}</div>
                             </div>
                         </div>
-
-                        {if $item['transid']}
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信交易号 :</label>
-                            <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{$item['transid']}</p>
-                            </div>
-                        </div>
-                        {/if}
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单编号 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{$item['ordersn_general']} </p>
+                                <p class="form-control-static">{$order['order_sn']} </p>
                             </div>
                         </div>
-                        {if $item['pay_ordersn']}
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付单号 :</label>
-                            <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{$item['pay_ordersn']} </p>
-                            </div>
-                        </div>
-                        {/if}
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单金额 :</label>
                             <div class="col-sm-9 col-xs-12">
                                 <div class="form-control-static"><table cellspacing="0" cellpadding="0">
                                     <tr>
                                         <td  style='border:none;text-align:right;'>商品小计：</td>
-                                        <td  style='border:none;text-align:right;;'>￥{php echo number_format( $item['goodsprice'] ,2)}</td>
+                                        <td  style='border:none;text-align:right;;'>￥{php echo number_format( $order['goods_price'] ,2)}</td>
                                     </tr>
-                                    <tr>
-                                        <td  style='border:none;text-align:right;'>运费：</td>
-                                        <td  style='border:none;text-align:right;;'>￥{php echo number_format( $item['olddispatchprice'],2)}</td>
-                                    </tr>
-
-                                    {if $item['deductyunbimoney']>0}
-                                    <tr>
-                                        <td  style='border:none;text-align:right;'>{if !empty($yunbiset['yunbi_title'])}{php echo $yunbiset['yunbi_title']}{else}云币{/if}抵扣：</td>
-                                        <td  style='border:none;text-align:right;;'>-￥{php echo $item['deductyunbimoney']}</td>
-                                    </tr>
-                                    {/if}
-
-                                    {if $item['discountprice']>0}
-                                    <tr>
-                                        <td  style='border:none;text-align:right;'>会员折扣：</td>
-                                        <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['discountprice'],2)}</td>
-                                    </tr>
-                                    {/if}
-
-                                    {if $item['deductprice']>0}
-                                    <tr>
-                                        <td  style='border:none;text-align:right;'>{php echo SZ_YI_INTEGRAL}抵扣：</td>
-                                        <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductprice'],2)}</td>
-                                    </tr>
-                                    {/if}
-                                    {if $item['deductcredit2']>0}
-                                    <tr>
-                                        <td  style='border:none;text-align:right;'>余额抵扣：</td>
-                                        <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductcredit2'],2)}</td>
-                                    </tr>
-                                    {/if}
-                                    {if $item['deductcommission']>0}
-                                    <tr>
-                                        <td  style='border:none;text-align:right;'>佣金抵扣：</td>
-                                        <td  style='border:none;text-align:right;'>-￥{php echo number_format( $item['deductcommission'],2)}</td>
-                                    </tr>
-                                    {/if}
-                                    {if $item['deductenough']>0}
-                                    <tr>
-                                        <td  style='border:none;text-align:right;'>满额立减：</td>
-                                        <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductenough'],2)}</td>
-                                    </tr>
-                                    {/if}
-                                    {if $item['couponprice']>0}
-                                    <tr>
-                                        <td  style='border:none;text-align:right;'>优惠券优惠：</td>
-                                        <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['couponprice'],2)}</td>
-                                    </tr>
-                                    {/if}
-                                    {if intval($item['changeprice'])!=0}
-                                    <tr>
-                                        <td  style='border:none;text-align:right;'>卖家改价：</td>
-                                        <td  style='border:none;text-align:right;;'><span style="{if 0<$item['changeprice']}color:green{else}color:red{/if}">{if 0<$item['changeprice']}+{else}-{/if}￥{php echo number_format(abs($item['changeprice']),2)}</span></td>
-                                    </tr>
-                                    {/if}
-                                    {if intval($item['changedispatchprice'])!=0}
-                                    <tr>
-                                        <td  style='border:none;text-align:right;'>卖家改运费：</td>
-                                        <td  style='border:none;text-align:right;;'><span style="{if 0<$item['changedispatchprice']}color:green{else}color:red{/if}">{if 0<$item['changedispatchprice']}+{else}-{/if}￥{php echo abs($item['changedispatchprice'])}</span></td>
-                                    </tr>
-                                    {/if}
                                     <tr>
                                         <td style='border:none;text-align:right;'>应收款：</td>
-                                        <td  style='border:none;text-align:right;color:green;'>￥{php echo number_format($item['price'],2)}</td>
+                                        <td  style='border:none;text-align:right;color:green;'>￥{php echo number_format($order['price'],2)}</td>
                                     </tr>
-                                    {ifp 'order.op.changeprice'}
-                                    {if empty($item['statusvalue'])}
-                                    <tr>
-                                        <td style='border:none;text-align:right;'></td>
-                                        <td  style='border:none;text-align:right;color:green;'><a href="javascript:;" class="btn btn-link " onclick="changePrice('{$item['id']}')">修改价格</a></td>
-                                    </tr>
-                                    {/if}  {/if}
                                 </table></div>
                             </div>
                         </div>
@@ -150,11 +64,11 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单状态 :</label>
                             <div class="col-sm-9 col-xs-12">
                                 <p class="form-control-static">
-                                    {if $item['status'] == 0}<span class="label label-info">待付款</span>{/if}
-                                    {if $item['status'] == 1}<span class="label label-info">待发货</span>{/if}
-                                    {if $item['status'] == 2}<span class="label label-info">待收货</span>{/if}
-                                    {if $item['status'] == 3}<span class="label label-success">已完成</span>{/if}
-                                    {if $item['status'] == -1}
+                                    {if $order['status'] == 0}<span class="label label-info">待付款</span>{/if}
+                                    {if $order['status'] == 1}<span class="label label-info">待发货</span>{/if}
+                                    {if $order['status'] == 2}<span class="label label-info">待收货</span>{/if}
+                                    {if $order['status'] == 3}<span class="label label-success">已完成</span>{/if}
+                                    {if $order['status'] == -1}
                                     {if !empty($refund) && $refund['status']==1}
                                     <span class="label label-default">已{$r_type[$refund['rtype']]}</span> {if !empty($refund['refundtime'])}完成时间: {php echo date('Y-m-d H:i:s',$refund['refundtime'])}{/if}
                                     {else}
@@ -168,7 +82,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款时间 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <div class="form-control-static">{php echo date('Y-m-d H:i:s',$item['refundtime'])}</div>
+                                <div class="form-control-static">{php echo date('Y-m-d H:i:s',$order['refundtime'])}</div>
                             </div>
                         </div>
                         {/if}
@@ -176,33 +90,21 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单日期 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{php echo date('Y-m-d H:i:s', $item['createtime'])}</p>
+                                <p class="form-control-static">{php echo date('Y-m-d H:i:s', $order['create_time'])}</p>
                             </div>
                         </div>
-                        {if $item['status']>=1}
+                        {if $order['status']>=1}
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">付款时间 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{php echo date('Y-m-d H:i:s', $item['paytime'])}</p>
+                                <p class="form-control-static">{php echo date('Y-m-d H:i:s', $order['pay_time'])}</p>
                             </div>
                         </div>
                         {/if}
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">完成时间 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{php echo date('Y-m-d H:i:s', $item['finishtime'])}</p>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注 :</label>
-                            <div class="col-sm-9 col-xs-12"><textarea style="height:150px;" class="form-control" name="remark" cols="70">{$item['remark']}</textarea></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                            <div class="col-sm-9 col-xs-12">
-                                <br/>
-                                <button type='submit' name='saveremark' class='btn btn-default'>保存备注</button>
+                                <p class="form-control-static">{php echo date('Y-m-d H:i:s', $order['finish_time'])}</p>
                             </div>
                         </div>
                     </div>
@@ -259,12 +161,12 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款时间 :</label>
                         <div class="col-sm-9 col-xs-12">
-                            <div class="form-control-static">{php echo date('Y-m-d H:i:s',$item['refundtime'])}</div>
+                            <div class="form-control-static">{php echo date('Y-m-d H:i:s',$order['refundtime'])}</div>
                         </div>
                     </div>
                     {/if}
 
-                    {if $item['paytype'] == 26 || $item['paytype'] == 25}
+                    {if $order['paytype'] == 26 || $order['paytype'] == 25}
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">到账时间 :</label>
                         <div class="col-sm-9 col-xs-12">
@@ -273,7 +175,7 @@
                     </div>
                     {/if}
 
-                    {if ($item['paytype'] == 27 || $item['paytype'] == 28) && empty($item['trade_no'])}
+                    {if ($order['paytype'] == 27 || $order['paytype'] == 28) && empty($order['trade_no'])}
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款操作 :</label>
                         <div class="col-sm-9 col-xs-12">
@@ -287,7 +189,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
                             {if $refund['status']==0 || $refund['status']>=3}
-                            <a class="btn btn-danger btn-sm" href="javascript:;" onclick="$('#modal-refund').find(':input[name=id]').val('{$item['id']}')" data-toggle="modal" data-target="#modal-refund">处理{$r_type[$refund['rtype']]}申请</a>
+                            <a class="btn btn-danger btn-sm" href="javascript:;" onclick="$('#modal-refund').find(':input[name=id]').val('{$order['id']}')" data-toggle="modal" data-target="#modal-refund">处理{$r_type[$refund['rtype']]}申请</a>
                             {elseif $refund['status']==-1 || $refund['status']==2}
                             <span class='label label-default'>已拒绝</span>
                             {elseif $refund['status']==-2}
@@ -328,7 +230,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">快递单号 :</label>
                         <div class="col-sm-9 col-xs-12">
-                            <div class="form-control-static">{$refund['expresssn']} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='button' class='btn btn-default' onclick='refundexpress_find(this,"{$item['id']}",1)' >查看物流</button>
+                            <div class="form-control-static">{$refund['expresssn']} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='button' class='btn btn-default' onclick='refundexpress_find(this,"{$order['id']}",1)' >查看物流</button>
                             </div>
                         </div>
                     </div>
@@ -364,7 +266,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">快递单号 :</label>
                         <div class="col-sm-9 col-xs-12">
-                            <div class="form-control-static">{$refund['rexpresssn']} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='button' class='btn btn-default' onclick='refundexpress_find(this,"{$item['id']}",2)' >查看物流</button></div>
+                            <div class="form-control-static">{$refund['rexpresssn']} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type='button' class='btn btn-default' onclick='refundexpress_find(this,"{$order['id']}",2)' >查看物流</button></div>
                         </div>
                     </div>
 
@@ -390,7 +292,6 @@
                         <tr>
                             <th style="width:8%;">ID</th>
                             <th style="width:16%;">商品标题</th>
-                            <th style="width:22%;">商品规格</th>
                             <th style="width:10%;">商品编号</th>
                             <th style="width:16%;">现价/原价/成本价</th>
                             <th style="width:8%;">购买数量</th>
@@ -398,38 +299,26 @@
                             <th style="width:10%;">操作</th>
                         </tr>
                         </thead>
-                        {loop $item['goods'] $goods}
+                        {loop $order['has_many_order_goods'] $goods}
                         <tr>
-                            <td>{$goods['id']}</td>
-                            <td>
-                                {if $category[$goods['pcate']]['name']}
-                                <span class="text-error">[{$category[$goods['pcate']]['name']}] </span>{/if}{if $children[$goods['pcate']][$goods['ccate']][1]}
-                                <span class="text-info">[{$children[$goods['pcate']][$goods['ccate']][1]}] </span>
-                                {/if}
-                                {$goods['title']}
-                            </td>
-                            <td><span class="label label-info">{$goods['optionname']}</span></td>
-                            <td>{$goods['goodssn']}{if $_GPC['plugin'] != 'fund'}<br/>{$goods['productsn']}{/if}</td>
-                            <td>{$goods['marketprice']}元{if $_GPC['plugin'] != 'fund'}<br/>{$goods['productprice']}元 <br/>{$goods['costprice']}元{/if}</td>
+                            <td>{$goods['belongs_to_good']['id']}</td>
+                            <td>{$goods['belongs_to_good']['title']}</td>
+                            <td>{$goods['belongs_to_good']['goods_sn']}</td>
+                            <td>{$goods['belongs_to_good']['market_price']}元</td>
                             <td>{$goods['total']}</td>
-                            <td style='color:red;font-weight:bold;'>{$goods['orderprice']}<br/>{$goods['realprice']}
-                                {if intval($goods['changeprice'])!=0}
-                                <br/>(改价{if $goods['changeprice']>0}+{/if}{php echo number_format(abs($goods['changeprice']),2)})
-                                {/if}
+                            <td style='color:red;font-weight:bold;'>{$order['goods_price']}<br/>{$order['price']}
                             </td>
                             <td>
-                                <a href="{php echo $this->createWebUrl('shop/goods', array('id' => $goods['id'], 'op' => 'post', 'plugin' => $_GPC['plugin']))}" class="btn btn-default btn-sm" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;
+                                <a href="{php echo $this->createWebUrl('shop/goods', array('id' => $goods['belongs_to_good']['id'], 'op' => 'post', 'plugin' => $request['plugin']))}" class="btn btn-default btn-sm" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;
                             </td>
                         </tr>
                         <tr style="text-align: right;padding: 6px 0;border-top:none;">
-                            <td colspan="8">{if $goods['status']==1}<label data="1" class="label label-default text-default label-info text-pinfo">上架</label>{else}<label data="1" class="label label-default text-default label-info text-pinfo">下架</label>{/if}<label data="1" class="label label-default text-default label-info text-pinfo">{if $goods['type'] == 1}实体商品{else}虚拟商品{/if}</label></td>
+                            <td colspan="8">{if $goods['belongs_to_good']['status']==1}<label data="1" class="label label-default text-default label-info text-pinfo">上架</label>{else}<label data="1" class="label label-default text-default label-info text-pinfo">下架</label>{/if}<label data="1" class="label label-default text-default label-info text-pinfo">{if $goods['belongs_to_good']['type'] == 1}实体商品{else}虚拟商品{/if}</label></td>
                         </tr>
                         {/loop}
                         <tr>
                             <td colspan="2">
-
                                 {template 'web/order/ops'}
-
                             </td>
                             <td colspan="8">
                             </td>
@@ -440,13 +329,6 @@
         </div>
     </div>
     <script language="javascript">
-        $("select[name=eexpress]").val("{$item['express']}");
-
-        $("#eexpress").change(function () {
-            var obj = $(this);
-            var sel = obj.find("option:selected").attr("data-name");
-            $("#eexpresscom").val(sel);
-        });
         function showDiyInfo(obj){
             var hide = $(obj).attr('hide');
             if(hide=='1'){
@@ -458,12 +340,8 @@
             $(obj).attr('hide',hide=='1'?'0':'1');
         }
 
-        {ifp 'order.op.changeaddress'}
-        {if $trade['is_street'] == '1'}
-        cascdeInit("{php echo isset($user['province'])?$user['province']:''}","{php echo isset($user['city'])?$user['city']:''}","{php echo isset($user['area'])?$user['area']:''}","{php echo isset($user['street'])?$user['street']:''}");
-        {else}
         cascdeInit("{php echo isset($user['province'])?$user['province']:''}","{php echo isset($user['city'])?$user['city']:''}","{php echo isset($user['area'])?$user['area']:''}");
-        {/if}
+
         $('#editaddress').click(function() {
             show_address(1);
         });
@@ -480,81 +358,7 @@
             show_express(0);
         });
 
-        $('#saveexpress').click(function() {
-            var url = "{php echo $this->createWebUrl('order/list',array('op'=>'saveexpress'))}";
-            var id ={php echo $id};
 
-            var express = $('#eexpress').val();
-            var expresscom = $('#eexpresscom').val();
-            var expresssn = $('#eexpresssn').val();
-
-            if(expresssn==''){
-                alert('请填写快递单号!');
-                return false;
-            }
-
-            $.ajax({
-                url: url,
-                dataType: "json",
-                data: {id:id,express:express,expresscom:expresscom,expresssn:expresssn},
-                success:function(json){
-                    var result = json.result;
-                    if(json.status==1){
-                        location.reload();
-                    } else {
-                        alert(result);
-                    }
-                }
-            });
-        });
-
-        $('#saveaddress').click(function() {
-            var url = "{php echo $this->createWebUrl('order/list',array('op'=>'saveaddress'))}";
-            var id ={php echo $id};
-            var realname = $('#realname').val();
-            var mobile = $('#mobile').val();
-            var province = $('#sel-provance').val();
-            var city = $('#sel-city').val();
-            var area = $('#sel-area').val();
-            var address = $('#address_info').val();
-            var street = '';
-
-            if(realname==''){
-                alert('请填写收件人姓名!');
-                return false;
-            }
-
-            if(mobile==''){
-                alert('请填写收件人手机!');
-                return false;
-            }
-
-            if(province=='请选择省份'){
-                alert('请选择省份!');
-                return false;
-            }
-            {if $trade['is_street'] == 1}
-                street = $('#sel-street').val();
-            {/if}
-
-            if(address==''){
-                alert('请填写详细地址!');
-                return false;
-            }
-            $.ajax({
-                url: url,
-                dataType: "json",
-                data: {id:id,realname:realname,mobile:mobile,province:province,city:city,area:area,street:street,address:address},
-                success:function(json){
-                    var result = json.result;
-                    if(json.status==1){
-                        location.reload();
-                    } else {
-                        alert(result);
-                    }
-                }
-            });
-        });
 
         function show_address(flag) {
             if (flag == 1) {
@@ -574,14 +378,9 @@
                 $('.ex2').hide();
             }
         }
-        {/if}
 
     </script>
     {template 'web/order/modals'}
-    {if  p('commission')}
-
-    {template 'commission/changecommission'}
-    {/if}
 
     {template 'web/_footer'}
 

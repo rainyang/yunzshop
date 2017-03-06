@@ -28,14 +28,11 @@ class WaitSend implements StatusService
     {
         $result =
             [
-                ['name' => '付款',
-                    'api' => '/order/pay',//
-                    'value' => static::PAY],
                 [
-                    'name' => '取消订单',
-                    'api' => 'cancel',
-                    'value' => static::CANCEL
-                ],
+                    'name' => '申请退款',
+                    'api' => '/order/op/refund', //todo
+                    'value' => static::REFUND
+                ]
             ];
         return $result;
     }

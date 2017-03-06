@@ -14,7 +14,7 @@
 
 namespace app\common\models;
 
-use app\common\models\GoodsParam;
+use app\backend\modules\goods\observers\GoodsObserver;
 
 class Goods extends BaseModel
 {
@@ -44,17 +44,33 @@ class Goods extends BaseModel
     public function hasManySpecs()
     {
         return $this->hasMany('app\common\models\GoodsSpec');
-        //return $allspecs;
-
-        /*foreach ($allspecs as &$s) {
-            $s['items'] = pdo_fetchall("select a.id,a.specid,a.title,a.thumb,a.show,a.displayorder,a.valueId,a.virtual,b.title as title2 from " . tablename('sz_yi_goods_spec_item') . " a left join " . tablename('sz_yi_virtual_type') . " b on b.id=a.virtual  where a.specid=:specid order by a.displayorder asc",
-                array(
-                    ":specid" => $s['id']
-                ));
-        }
-        unset($s);*/
     }
 
+    public function scopeSearch($query, $filters)
+    {
+        foreach ($filters as $key => $value) {
+            switch ($key) {
+                case 'category':
+                    $category[] = ['id' => $value * 1];
+                    $query->where('category_id', $category);
+                    break;
+                case 'conditions':
+                    $query->where('condition', 'LIKE', $value);
+                    break;
+                case 'brands':
+                    $query->where('brand_id', '=', $value);
+                    break;
+                default:
+                    if ($key != 'category_name' && $key != 'search' && $key != 'page') {
+                        //changing url encoded character by the real ones
+                        $value = urldecode($value);
+                        //applying filter to json field
+                        $query->whereRaw("features LIKE '%\"".$key.'":%"%'.str_replace('/', '%', $value)."%\"%'");
+                    }
+                    break;
+            }
+        }
+    }
 
     /**
      * @param $keyword
@@ -65,5 +81,29 @@ class Goods extends BaseModel
         return static::where('title', 'like', $keyword.'%')
             ->get()
             ->toArray();
+    }
+
+    /**
+     * 在boot()方法里注册下模型观察类
+     * boot()和observe()方法都是从Model类继承来的
+     * 主要是observe()来注册模型观察类，可以用TestMember::observe(new TestMemberObserve())
+     * 并放在代码逻辑其他地方如路由都行，这里放在这个TestMember Model的boot()方法里自启动。
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        //static::$booted[get_class($this)] = true;
+        // 开始事件的绑定...
+        //creating, created, updating, updated, saving, saved,  deleting, deleted, restoring, restored.
+        /*static::creating(function (Eloquent $model) {
+            if ( ! $model->isValid()) {
+                // Eloquent 事件监听器中返回的是 false ，将取消 save / update 操作
+                return false;
+            }
+        });*/
+
+        //注册观察者
+        static::observe(new GoodsObserver);
     }
 }
