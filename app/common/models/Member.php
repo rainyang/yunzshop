@@ -13,15 +13,15 @@ class Member extends BackendModel
 {
     public $table = 'mc_members';
 
-<<<<<<< HEAD
+
     public $timestamps = false;
-=======
+
     public static function getMemberById($uid)
     {
         return self::where('uid', $uid)
             ->first();
     }
->>>>>>> e405cb907776c144df7a34685650ac71fbc5c880
+
     /**
      * @return mixed
      */
