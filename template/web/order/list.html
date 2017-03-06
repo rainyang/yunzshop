@@ -245,7 +245,7 @@
                     {if 0&&!empty($order['refundstate'])}<label class='label label-danger'>{$r_type[$order['rtype']]}申请</label>{/if}
                     {if 0&&$order['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
 
-                    <label class="label label-info">{$order['vendor']=0}</label>
+                    <label class="label label-info">总店</label>
                     {if 0&&!empty($order['storename'])}
                     <label class="label label-primary">所属门店：{$order['storename']}</label>
                     {/if}
@@ -276,7 +276,7 @@
                 </td>
                 <td valign='top'  style='border-left:none;text-align: left;/*width:400px*/;'  >
                     {if 0&&$order['cashier']==1}{$order['name']['name']}{else}{$order_goods['title']}{/if}{if !empty($order_goods['optiontitle'])}<br/><span class="label label-primary sizebg">{$order_goods['optiontitle']}</span>{/if}
-                    <br/>{$order_goods['goods_sn']}
+                    <br/>{$order_goods['goods_sn']}{$order_goods_index}{$order_goods['goods_id']}
                 </td>
                 <td style='border-left:none;text-align:left;/*width:150px*/'>{if $request['plugin'] != "fund"}原价: {php echo number_format( $order_goods['goods_price']/$order_goods['total'],2)} {/if}<br />应付: {php echo number_format($order_goods['price']/$order_goods['total'],2)}
                     <br/>数量: {$order_goods['total']}
@@ -285,13 +285,13 @@
                 {if $order_goods_index==0}
                 <td rowspan="{php echo count($order['has_many_order_goods'])}" >
                     {ifp 'member.member.edit'}
-                    <a href="{php echo $this->createWebUrl('member/list',array('op'=>'detail'))}"> {$order['member_id']}</a>
+                    <a href="{php echo $this->createWebUrl('member/list',array('op'=>'detail'))}"> {$order['belongs_to_member']['nickname']}</a>
                     {else}
-                    {$order['member_id']}
+                    {$order['belongs_to_member']['nickname']}
                     {/if}
 
                     <br/>
-                    {$order['member_id']}<br/>{$order['member_id']}</td>
+                    {$order['belongs_to_member']['realname']}<br/>{$order['belongs_to_member']['mobile']}</td>
                 <td rowspan="{php echo count($order['has_many_order_goods'])}"    >
                     {if 0&&$order['statusvalue'] > 0}
                     <label class='label label-{$order['css']}'>{$order['paytype']}</label><br/>
@@ -304,7 +304,7 @@
                     {else if 0&&$order['statusvalue'] == -1}
                     <label class='label label-default'>{$order['paytype']}</label><br/>
                     {/if}
-                    {$order['dispatchname']=0}
+                    {$order['has_one_order_dispatch']['dispatch_type_name']}
                     {if 0&&$order['addressid']!=0 && $order['statusvalue']>=2}<br/>
                     <button type='button' class='btn btn-default btn-sm' onclick='express_find(this,"{$order['id']}")' >查看物流</button>
                     {/if}
@@ -403,7 +403,7 @@
 
 
                 </td>
-                <td   rowspan="{php echo count($order['has_many_order_goods'])}" ><label class='label label-{$order['statuscss']=0}'>{$order['status']}</label><br />
+                <td   rowspan="{php echo count($order['has_many_order_goods'])}" ><label class='label label-{$order['statuscss']=0}'>{$order['status_name']}</label><br />
                     <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $order['id'], 'plugin' => $request['plugin'], 'openid' => $request['openid']))}">查看详情</a></td>
                 <td   rowspan="{php echo count($order['has_many_order_goods'])}" width="10%">
                     {template 'web/order/ops'}
