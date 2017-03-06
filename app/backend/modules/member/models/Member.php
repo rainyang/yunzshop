@@ -124,21 +124,43 @@ class Member extends \app\common\models\Member
      */
     public static function searchMembers($pageSize, $parame)
     {
-        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+        $result = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
             'credit1', 'credit2'])
-            ->uniacid()
-            ->where('uid', $parame['mid'])
-            ->where('nickname', 'like', '%' . $parame['realname'] . '%')
-            ->orWhere('realname', 'like', '%' . $parame['realname'] . '%')
-            ->orWhere('mobile', 'like', $parame['realname'] . '%')
-            ->whereHas('yzMember', function($q) use ($parame){
-                $q->where('group_id', $parame['groupid'])->where('level_id',$parame['level'])->where('is_black', $parame['isblack']);
+            ->uniacid();
 
-            })
-            ->whereHas('hasOneFans', function ($q2) use ($parame) {
+        if (!empty($parame['mid'])) {
+            $result = $result->where('uid', $parame['mid']);
+        }
+
+        if (!empty($parame['realname'])) {
+            $result = $result->where('nickname', 'like', '%' . $parame['realname'] . '%')
+                ->orWhere('realname', 'like', '%' . $parame['realname'] . '%')
+                ->orWhere('mobile', 'like', $parame['realname'] . '%');
+        }
+
+        if (!empty($parame['groupid']) || !empty($parame['level']) || !empty($parame['isblack'])) {
+            $result = $result->whereHas('yzMember', function($q) use ($parame){
+                if (!empty($parame['groupid'])) {
+                    $q = $q->where('group_id', $parame['groupid']);
+                }
+
+                if (!empty($parame['level'])) {
+                    $q = $q->where('level_id',$parame['level']);
+                }
+
+                if (!empty($parame['isblack'])) {
+                    $q->where('is_black', $parame['isblack']);
+                }
+            });
+        }
+
+        if (isset($parame['followed'])) {
+            $result = $result->whereHas('hasOneFans', function ($q2) use ($parame) {
                 $q2->where('follow', $parame['followed']);
-            })
-            ->with(['yzMember'=>function($query){
+            });
+        }
+
+        $result = $result->with(['yzMember'=>function($query){
                 return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])
                     ->with(['group'=>function($query1){
                         return $query1->select(['id','group_name']);
@@ -152,5 +174,7 @@ class Member extends \app\common\models\Member
             }])
             ->paginate($pageSize)
             ->toArray();
+
+        return $result;
     }
 }
