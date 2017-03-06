@@ -28,7 +28,7 @@ class DiscountWidget extends Widget
         $groups = MemberGroup::getMemberGroupList();
         return $this->render('goods/discount/discount',
             [
-                'discount'=>$discounts,
+                'discount' => $discounts,
                 'levels' => $levels,
                 'groups' => $groups
             ]

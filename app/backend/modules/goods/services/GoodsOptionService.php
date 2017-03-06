@@ -16,6 +16,7 @@ class GoodsOptionService
     {
         $options = GoodsOption::where('goods_id', $goods_id)->get();
         $specs = [];
+        $html = '';
         if (count($options) > 0) {
             $specitemids = explode("_", $options[0]['specs']);
             foreach ($specitemids as $itemid) {
@@ -29,7 +30,7 @@ class GoodsOptionService
                     }
                 }
             }
-            $html = '';
+
             $html .= '<table class="table table-bordered table-condensed">';
             $html .= '<thead>';
             $html .= '<tr class="active">';
