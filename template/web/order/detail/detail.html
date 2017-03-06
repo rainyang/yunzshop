@@ -29,14 +29,14 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <img src='{$member['avatar']}' style='width:100px;height:100px;padding:1px;border:1px solid #ccc' />
-                                {$member['nickname']}
+                                <img src='{$order['be_longs_to_member']['avatar']}' style='width:100px;height:100px;padding:1px;border:1px solid #ccc' />
+                                {$order['be_longs_to_member']['nickname']}
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员信息 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <div class='form-control-static'>ID: {$member['id']} 姓名: {$member['realname']} / 手机号: {$member['mobile']} /微信号: {$member['weixin']}</div>
+                                <div class='form-control-static'>ID: {$order['be_longs_to_member']['uid']} 姓名: {$order['be_longs_to_member']['realname']} / 手机号: {$order['be_longs_to_member']['mobile']}</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -292,7 +292,6 @@
                         <tr>
                             <th style="width:8%;">ID</th>
                             <th style="width:16%;">商品标题</th>
-                            <th style="width:22%;">商品规格</th>
                             <th style="width:10%;">商品编号</th>
                             <th style="width:16%;">现价/原价/成本价</th>
                             <th style="width:8%;">购买数量</th>
@@ -300,31 +299,21 @@
                             <th style="width:10%;">操作</th>
                         </tr>
                         </thead>
-                        {loop $order['goods'] $goods}
+                        {loop $order['has_many_order_goods'] $goods}
                         <tr>
-                            <td>{$goods['id']}</td>
-                            <td>
-                                {if $category[$goods['pcate']]['name']}
-                                <span class="text-error">[{$category[$goods['pcate']]['name']}] </span>{/if}{if $children[$goods['pcate']][$goods['ccate']][1]}
-                                <span class="text-info">[{$children[$goods['pcate']][$goods['ccate']][1]}] </span>
-                                {/if}
-                                {$goods['title']}
-                            </td>
-                            <td><span class="label label-info">{$goods['optionname']}</span></td>
-                            <td>{$goods['goodssn']}{if $_GPC['plugin'] != 'fund'}<br/>{$goods['productsn']}{/if}</td>
-                            <td>{$goods['marketprice']}元{if $_GPC['plugin'] != 'fund'}<br/>{$goods['productprice']}元 <br/>{$goods['costprice']}元{/if}</td>
+                            <td>{$goods['belongs_to_good']['id']}</td>
+                            <td>{$goods['belongs_to_good']['title']}</td>
+                            <td>{$goods['belongs_to_good']['goods_sn']}</td>
+                            <td>{$goods['belongs_to_good']['market_price']}元</td>
                             <td>{$goods['total']}</td>
-                            <td style='color:red;font-weight:bold;'>{$goods['orderprice']}<br/>{$goods['realprice']}
-                                {if intval($goods['changeprice'])!=0}
-                                <br/>(改价{if $goods['changeprice']>0}+{/if}{php echo number_format(abs($goods['changeprice']),2)})
-                                {/if}
+                            <td style='color:red;font-weight:bold;'>{$order['goods_price']}<br/>{$order['price']}
                             </td>
                             <td>
-                                <a href="{php echo $this->createWebUrl('shop/goods', array('id' => $goods['id'], 'op' => 'post', 'plugin' => $_GPC['plugin']))}" class="btn btn-default btn-sm" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;
+                                <a href="{php echo $this->createWebUrl('shop/goods', array('id' => $goods['belongs_to_good']['id'], 'op' => 'post', 'plugin' => $request['plugin']))}" class="btn btn-default btn-sm" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;
                             </td>
                         </tr>
                         <tr style="text-align: right;padding: 6px 0;border-top:none;">
-                            <td colspan="8">{if $goods['status']==1}<label data="1" class="label label-default text-default label-info text-pinfo">上架</label>{else}<label data="1" class="label label-default text-default label-info text-pinfo">下架</label>{/if}<label data="1" class="label label-default text-default label-info text-pinfo">{if $goods['type'] == 1}实体商品{else}虚拟商品{/if}</label></td>
+                            <td colspan="8">{if $goods['belongs_to_good']['status']==1}<label data="1" class="label label-default text-default label-info text-pinfo">上架</label>{else}<label data="1" class="label label-default text-default label-info text-pinfo">下架</label>{/if}<label data="1" class="label label-default text-default label-info text-pinfo">{if $goods['belongs_to_good']['type'] == 1}实体商品{else}虚拟商品{/if}</label></td>
                         </tr>
                         {/loop}
                         <tr>

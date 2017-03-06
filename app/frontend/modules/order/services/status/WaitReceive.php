@@ -29,13 +29,15 @@ class WaitReceive implements StatusService
         //            $button_id_arr[] = static::COMPLETE;//收货
         $result =
             [
-                ['name' => '付款',
-                    'api' => '/order/pay',//
-                    'value' => static::PAY],
                 [
-                    'name' => '取消订单',
-                    'api' => 'cancel',
-                    'value' => static::CANCEL
+                    'name' => '确认收货',
+                    'api' => '/order/pay',
+                    'value' => static::PAY
+                ],
+                [
+                    'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
+                    'api' => '/order/op/', //todo 
+                    'value' => static::EXPRESS //todo
                 ],
             ];
         return $result;

@@ -13,24 +13,34 @@ use app\common\models\Order;
 
 class DetailController extends BaseController
 {
-    public function index()
+    public function index($order_id)
     {
-        $db_order_models = Order::WaitPay()->with('hasManyOrderGoods')->first();
-        $order = $db_order_models->toArray();
-        $order['goods'] = [];
+        $order_id = 1;
+        $db_order_models = Order::with(
+            [
+                'hasManyOrderGoods' => function($order_goods)
+                {
+                    return $order_goods->select()
+                        ->with(
+                            [
+                                'belongsToGood' => function($goods) {
+                                    return $goods->select();
+                                }
+                            ]
+                        );
+                },
+                'beLongsToMember' => function($member)
+                {
+                    return $member->select();
+                }
+            ]
+        )->find($order_id)->toArray();
+        //dd($db_order_models);
         $this->render('detail', [
-            'order' => $order,
+            'order' => $db_order_models,
             'lang' => $this->_lang(),
             'totals'=> $this->_totals(),
             'dispatch' => ['id' => 1],
-            'member' => [
-                'avatar' => '',
-                'nickname' => '',
-                'id' => '',
-                'mobile' => '',
-                'realname' => '',
-                'weixin' => ''
-            ]
         ]);
     }
 
