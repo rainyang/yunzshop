@@ -1,6 +1,6 @@
 {if $order['status'] == 0}
 <a class="btn btn-primary btn-sm disbut"
-   href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'confirmpay','id' => $order['id']))}"
+   href="{php echo $this->createMobileUrl('order.op.pay', array('order_id' => $order['id']))}"
    onclick="return confirm('确认此订单已付款吗？');return false;">确认付款</a>
 <a class="label label-default">等待付款</a>
 {/if}
