@@ -15,7 +15,7 @@ class DetailController extends BaseController
 {
     public function index()
     {
-        $db_order_models = Order::waitPay()->with('hasManyOrderGoods')->first();
+        $db_order_models = Order::WaitPay()->with('hasManyOrderGoods')->first();
         $order = $db_order_models->toArray();
         $order['goods'] = [];
         $this->render('detail', [
