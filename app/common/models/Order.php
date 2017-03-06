@@ -42,9 +42,21 @@ class Order extends BaseModel
     {
         return $query->where(['status' => 3]);
     }
+    public function scopeCancelled($query)
+    {
+        return $query->where(['status' => -1]);
+    }
     public function hasManyOrderGoods()
     {
         return $this->hasMany('\app\common\models\OrderGoods', 'order_id', 'id');
+    }
+    public function belongsToMember(){
+        return $this->belongsTo('\app\common\models\Member', 'member_id', 'uid');
+
+    }
+    public function hasOneOrderDispatch(){
+        return $this->hasOne('\app\common\models\OrderDispatch', 'order_id', 'id');
+
     }
     public function getStatusService(){
         if(!isset($this->StatusService)){

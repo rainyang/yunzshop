@@ -15,7 +15,7 @@ class OrderSend
 
     public function __construct(Order $order_model)
     {
-        $this->order_model = $order_model->getData();
+        $this->order_model = $order_model;
     }
 
     public function send()
@@ -26,7 +26,7 @@ class OrderSend
 
     public function sendable()
     {
-        if ($this->order_model['status'] == 1) {
+        if ($this->order_model->status == 1) {
             return true;
         }
         return false;

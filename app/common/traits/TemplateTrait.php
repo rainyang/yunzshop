@@ -107,6 +107,7 @@ trait TemplateTrait
      */
     public function createMobileUrl($route, $params = [])
     {
+        $params = array_merge($params,['i'=>\YunShop::app()->uniacid]);
         return Url::app($route, $params);
     }
 }
