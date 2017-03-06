@@ -89,8 +89,11 @@ class MemberHistory extends \app\common\models\MemberHistory
      * @access public
      * @param int $goodsId 商品ID
      **/
-    public static function hasMemberHistory($goodsId)
+    public static function hasMemberHistory($memberId, $goodsId)
     {
-
+        return static::uniacid()
+            ->where('member_id', $memberId)
+            ->where('goods_id', $goodsId)
+            ->first();
     }
 }
