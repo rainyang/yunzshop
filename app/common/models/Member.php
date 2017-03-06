@@ -13,7 +13,15 @@ class Member extends BackendModel
 {
     public $table = 'mc_members';
 
+<<<<<<< HEAD
     public $timestamps = false;
+=======
+    public static function getMemberById($uid)
+    {
+        return self::where('uid', $uid)
+            ->first();
+    }
+>>>>>>> e405cb907776c144df7a34685650ac71fbc5c880
     /**
      * @return mixed
      */
@@ -22,8 +30,7 @@ class Member extends BackendModel
         return self::select('nick_name')
             ->whereNotNull('nick_name')
             ->inRandomOrder()
-            ->first()
-            ->toArray();
+            ->first();
     }
     
     /**
@@ -34,7 +41,6 @@ class Member extends BackendModel
         return self::select('avatar')
             ->whereNotNull('avatar')
             ->inRandomOrder()
-            ->first()
-            ->toArray();
+            ->first();
     }
 }

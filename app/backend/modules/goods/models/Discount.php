@@ -19,9 +19,9 @@ class Discount extends \app\common\models\goods\Discount
      * @param int $goodsId
      * @return array
      */
-    public static function getInfo($goodsId)
+    public static function getList($goodsId)
     {
-        return self::getGoodsDiscountInfo($goodsId);
+        return self::getGoodsDiscountList($goodsId);
     }
 
     /**
