@@ -16,3 +16,4 @@ composer.lock
 /vendor/composer/installed.json
 /vendor/composer/autoload_real.php
 /vendor/composer/ClassLoader.php
+vendor/
