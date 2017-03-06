@@ -36,7 +36,7 @@ class TestMemberController extends BaseController
 
     public function testMessage()
     {
-        $validator = TestMember::validator(Input::get());
+        $validator = TestMember::validator(['title'=>'','body'=>'1']);
 
         //flash('这里将跳转','danger');
         //flash($validator->messages(),'danger');

@@ -39,8 +39,7 @@ class DispatchController extends BaseController
      * 配送模板添加
      * @return array $item
      */
-    public
-    function add()
+    public function add()
     {
         $dispatchModel = new Dispatch();
         $areas = Area::getProvinces(0);
@@ -71,7 +70,7 @@ class DispatchController extends BaseController
 
         $this->render('info', [
             'dispatch' => $dispatchModel,
-            'areas'  => $areas,
+            'areas' => $areas,
         ]);
     }
 
@@ -79,12 +78,11 @@ class DispatchController extends BaseController
      * 配送模板编辑
      * @return array $item
      */
-    public
-    function edit()
+    public function edit()
     {
         $dispatchModel = Dispatch::getOne(\YunShop::request()->id);
-        if(!$dispatchModel){
-            return $this->message('无此记录或已被删除','','error');
+        if (!$dispatchModel) {
+            return $this->message('无此记录或已被删除', '', 'error');
         }
         $areas = Area::getProvinces(0);
         foreach ($areas as &$province) {
@@ -114,7 +112,7 @@ class DispatchController extends BaseController
 
         $this->render('info', [
             'dispatch' => $dispatchModel,
-            'areas'  => $areas,
+            'areas' => $areas,
         ]);
     }
 
@@ -122,19 +120,18 @@ class DispatchController extends BaseController
      * 配送模板删除
      * @return array $item
      */
-    public
-    function delete()
+    public function delete()
     {
         $dispatch = Dispatch::getOne(\YunShop::request()->id);
-        if(!$dispatch) {
-            return $this->message('无此配送模板或已经删除','','error');
+        if (!$dispatch) {
+            return $this->message('无此配送模板或已经删除', '', 'error');
         }
 
         $result = Dispatch::deletedDispatch(\YunShop::request()->id);
-        if($result) {
-            return $this->message('删除品牌成功',Url::absoluteWeb('goods.dispatch.index'));
-        }else{
-            return $this->message('删除品牌失败','','error');
+        if ($result) {
+            return $this->message('删除品牌成功', Url::absoluteWeb('goods.dispatch.index'));
+        } else {
+            return $this->message('删除品牌失败', '', 'error');
         }
     }
 
@@ -142,8 +139,7 @@ class DispatchController extends BaseController
      * 配送模板排序
      * @return array $item
      */
-    public
-    function sort()
+    public function sort()
     {
 
     }
