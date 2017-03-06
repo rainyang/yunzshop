@@ -20,18 +20,50 @@ class MemberHistoryController extends BaseController
         $memberId = 96;
 
         $historyList = MemberHistory::getMemberHistoryList($memberId);
-
-
-        echo '<pre>'; print_r($historyList); exit;
+        return $this->successResult('', $historyList);
     }
 
-    public function create()
+    public function store()
     {
         //需要考虑添加过的只修改时间，不重复添加记录
         $memberId = 96;
         $goodsId = 100;
-        $result = MemberHistory::saveMemberHistory($memberId, $goodsId);
 
-        dd($result);
+        $requestHistory = MemberHistory::hasMemberHistory($memberId, $goodsId);
+        if ($requestHistory) {
+            //修改updated_at
+        } else {
+            $result = MemberHistory::saveMemberHistory($memberId, $goodsId);
+            if ($result) {
+                return $this->successResult();
+            }
+        }
+        return $this->errorResult();
+    }
+    public function update()
+    {
+
+    }
+    public function destory()
+    {}
+    protected function errorResult($msg, $data='')
+    {
+        $result = array(
+            'result' => '0',
+            'msg' => $msg,
+            'data' => $data
+        );
+        echo json_encode($result);
+        exit;
+    }
+    protected function successResult($msg, $data='')
+    {
+        $result = array(
+            'result' => '1',
+            'msg' => $msg,
+            'data' => $data
+        );
+        echo json_encode($result);
+        exit;
     }
 }

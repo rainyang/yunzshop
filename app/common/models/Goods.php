@@ -26,10 +26,9 @@ class Goods extends BaseModel
 
     public $guarded = [];
 
-    public static function getList($condition = [])
+    public static function getList($pagesize=20, $condition = [])
     {
-        return static::uniacid()
-            ->get();
+        return static::uniacid()->paginate($pagesize);
     }
 
     public static function getGoodsById($id)

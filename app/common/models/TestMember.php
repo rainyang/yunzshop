@@ -68,8 +68,8 @@ class TestMember extends  BaseModel
     {
 
         return [
-            'title' => 'required|unique:posts|max:255',
-            'body' => 'required|min:3',
+            'title' => 'required|string|max:255',
+            'body' => 'required|image|Min:3',
         ];
     }
 

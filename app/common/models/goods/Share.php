@@ -36,41 +36,35 @@ class Share extends BaseModel
         return $goodsShareInfo;
     }
 
+
     /**
-     * @param int $goodsId
-     * @return array $goodsShareInfo
+     * 自定义字段名
+     * 可使用
+     * @return array
      */
-    public static function validationMessages()
+    public static function atributeNames()
     {
         return [
-            'required' => ' :attribute不能为空!',
-            'min' => ' :attribute不能少于:min!',
-            'max' => ' :attribute不能少于:max!',
-            'image' => ':attribute必须是图片格式',
-
-
+            'need_follow' => '强制关注',
+            'no_follow_message' => '未关注提示信息',
+            'follow_message' => '关注引导信息',
+            'share_title' => '分享标题',
+            'share_thumb' => '分享图片',
+            'share_desc' => '分享描述',
         ];
     }
 
-    /**
-     * 校验表单数据
-     *
-     * @param $data
-     * @return \Illuminate\Validation\Validator
-     */
-    public static function validator($data)
-    {
-        $validator = Validator::make($data, [
-            'goods_id' => 'required',
-            'need_follow' => 'integer',
-            'no_follow_message' => 'accepted|max:255',
-            'follow_message' => 'accepted|max:255',
-            'share_title' => 'accepted|max:50',
-            'share_thumb' => 'image',
-            'share_desc' => 'accepted',
-        ], self::validationMessages());
 
-        return $validator;
+    public static function rules()
+    {
+        return [
+            'need_follow' => 'required|digits_between:0,1',
+            'no_follow_message' => 'max:255',
+            'follow_message' => 'max:255',
+            'share_title' => 'max:50',
+            'share_thumb' => 'image',
+            'share_desc' => '',
+        ];
     }
 
 

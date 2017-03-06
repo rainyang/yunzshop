@@ -14,6 +14,8 @@ use app\common\models\BaseModel;
 class Privilege extends BaseModel
 {
     public $table = 'yz_goods_privilege';
+    public $once_buy_limit = '0';
+    public $total_buy_limit = '0';
 
 
     /**
@@ -26,7 +28,7 @@ class Privilege extends BaseModel
 
     /**
      * 获取商品权限信息
-     * @param int  $goodsId
+     * @param int $goodsId
      * @return array  $goodsPrivilegeInfo
      */
     public static function getGoodsPrivilegeInfo($goodsId)
@@ -36,40 +38,38 @@ class Privilege extends BaseModel
         return $goodsPrivilegeInfo;
     }
 
-    public static function validationMessages()
+
+    /**
+     * 自定义字段名
+     * 可使用
+     * @return array
+     */
+    public static function atributeNames()
     {
         return [
-            'required' => ' :attribute不能为空!',
-            'min' => ' :attribute不能少于:min!',
-            'max' => ' :attribute不能少于:max!',
-            'image' => ':attribute必须是图片格式',
-            'numeric' => ':attribute必须填写数字',
-            'timezone' => ':attribute必须填写时间格式'
-
-
+            'show_levels' => '会员浏览等级',
+            'show_groups' => '会员浏览分组',
+            'buy_levels' => '会员购买等级',
+            'buy_groups' => '会员购买分组',
+            'once_buy_limit' => '单次购买限制',
+            'total_buy_limit' => '总购买限制',
+            'time_begin_limit' => '限时起始时间',
+            'time_end_limit' => '限时结束时间',
         ];
     }
 
-    /**
-     * 校验表单数据
-     *
-     * @param $data
-     * @return \Illuminate\Validation\Validator
-     */
-    public static function validator($data)
+
+    public static function rules()
     {
-        $validator = Validator::make($data, [
-            'goods_id' => 'required',
-            'show_levels' => 'confirmed',
-            'show_groups' => 'confirmed',
-            'buy_levels' => 'confirmed',
-            'buy_groups' => 'confirmed',
+        return [
+            'show_levels' => '',
+            'show_groups' => '',
+            'buy_levels' => '',
+            'buy_groups' => '',
             'once_buy_limit' => 'numeric',
             'total_buy_limit' => 'numeric',
-            'time_begin_limit' => 'timezone',
-            'time_end_limit' => 'timezone',
-        ], self::validationMessages());
-
-        return $validator;
+            'time_begin_limit' => '',
+            'time_end_limit' => '',
+        ];
     }
 }
