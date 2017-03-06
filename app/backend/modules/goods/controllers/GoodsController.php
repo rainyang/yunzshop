@@ -86,7 +86,7 @@ class GoodsController extends BaseController
         $goodsModel = new Goods();
         $requestGoods = \YunShop::request()->goods;
         if ($requestGoods) {
-            $widgetPost = \YunShop::request()->widget;
+            //$widgetPost = \YunShop::request()->widget;
             //dd($widgetPost);
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
@@ -114,7 +114,7 @@ class GoodsController extends BaseController
                 'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
             );
         }
-
+        //dd($goodsModel);
         $allspecs = [];
         $this->render('goods/goods', [
             'goods' => $goodsModel,
