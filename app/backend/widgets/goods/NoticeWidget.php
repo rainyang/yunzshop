@@ -15,14 +15,13 @@ use app\common\models\Member;
 
 class NoticeWidget extends Widget
 {
-    public $goodsId = '';
 
     public function run()
     {
         $noticetype = [];
         $saler = [];
         $uid = '';
-        $notices = Notice::getList($this->goodsId);
+        $notices = Notice::getList($this->goods_id);
         if ($notices) {
             foreach ($notices as $notice) {
                 $noticetype[] = $notice['type'];
@@ -30,7 +29,6 @@ class NoticeWidget extends Widget
             }
             $saler = Member::getMemberById($uid);
         }
-        
         return $this->render('goods/notice/notice', [
             'uid'=>$uid,
             'noticetype'=>$noticetype,

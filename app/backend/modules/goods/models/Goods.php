@@ -12,10 +12,6 @@ use app\backend\modules\goods\observers\GoodsObserver;
 
 class Goods extends \app\common\models\Goods
 {
-    protected static function boot()
-    {
-        parent::boot();
-        self::observe(new GoodsObserver());
-    }
+
     public $widgets = [];
 }

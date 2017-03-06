@@ -69,8 +69,8 @@ class GoodsController extends BaseController
         ];
         
         $list = Goods::getList()->toArray();
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         $this->render('goods/index', [
             'list' => $list['data'],
             'pager' => $pager,

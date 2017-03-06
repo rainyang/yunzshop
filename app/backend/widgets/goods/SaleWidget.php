@@ -14,13 +14,12 @@ use app\common\models\Area;
 
 class SaleWidget extends Widget
 {
-    public $goodsId = '';
 
     public function run()
     {
         $saleModel = new Sale();
         $parents = Area::getProvinces(0);
-        $sale = Sale::getList($this->goodsId);
+        $sale = Sale::getList($this->goods_id);
         $sale = $sale->toArray();
         if ($sale) {
             $saleModel->setRawAttributes($sale);

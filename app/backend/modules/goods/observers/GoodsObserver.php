@@ -153,7 +153,6 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 //            Sale::relationSave($model->id,$model->widgets['sale'],true);
 //
 //        }
-
         $this->_pluginObserver($model,'updated');
     }
 

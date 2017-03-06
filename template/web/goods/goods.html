@@ -39,10 +39,12 @@
                     <div class="tab-pane" id="tab_des">{template 'web/goods/des'}</div>
                     <div class="tab-pane" id="tab_param">{template 'web/goods/tpl/param'}</div>
 					<div class="tab-pane" id="tab_option">{template 'web/goods/tpl/option'}</div>
-					<div class="tab-pane" id="tab_share">{php widget('app\backend\widgets\goods\ShareWidget')}</div>
-					<div class="tab-pane" id="tab_privilege">{php widget('app\backend\widgets\goods\PrivilegeWidget')}</div>
-					<div class="tab-pane" id="tab_notice">{php widget('app\backend\widgets\goods\NoticeWidget', ['goods_id', $goods->id])}</div>
-					<div class="tab-pane" id="tab_sale">{php widget('app\backend\widgets\goods\SaleWidget')}</div>
+					<!--页面报错-->
+					<div class="tab-pane" id="tab_share">{php //widget('app\backend\widgets\goods\ShareWidget')}</div>
+					<div class="tab-pane" id="tab_privilege">{php //widget('app\backend\widgets\goods\PrivilegeWidget')}</div>
+					<!--结束-->
+					<div class="tab-pane" id="tab_notice">{php widget('app\backend\widgets\goods\NoticeWidget', ['goods_id'=> $goods['id']])}</div>
+					<div class="tab-pane" id="tab_sale">{php widget('app\backend\widgets\goods\SaleWidget', ['goods_id'=> $goods['id']])}</div>
 
                 </div>
 		        <div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
