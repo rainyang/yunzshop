@@ -20,8 +20,8 @@ class ListController extends BaseController
         
         $list = Order::with(['hasManyOrderGoods'=>function($query){
             return $query->select(['id','order_id','goods_id','goods_price','total','price'])
-                            ->with(['belongsToGood'=>function($query1){
-                                return $query1->select(['id','price','title']);
+                            ->with(['belongsToGood'=>function($query){
+                                return $query->select(['id','price','title']);
                             }]);
         }])->get(['id','status','order_sn','goods_price','price'])->toArray();
         
@@ -34,8 +34,8 @@ class ListController extends BaseController
         
         $list = Order::waitPay()->with(['hasManyOrderGoods'=>function($query){
             return $query->select(['id','order_id','goods_id','goods_price','total','price'])
-                            ->with(['belongsToGood'=>function($query1){
-                                return $query1->select(['id','price','title']);
+                            ->with(['belongsToGood'=>function($query){
+                                return $query->select(['id','price','title']);
                             }]);
         }])->get(['id','status','order_sn','goods_price','price'])->toArray();
         
