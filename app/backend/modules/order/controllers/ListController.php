@@ -17,20 +17,35 @@ class ListController extends BaseController
 {
     public function index()
     {
-        $pageSize = 5;
-        $list = Order::with('hasManyOrderGoods')->paginate($pageSize);
-        //dd($db_order_models);
+        $pageSize = 2;
+        $list = Order::with('hasManyOrderGoods.hasOneGoods')->paginate($pageSize)->toArray();
+
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-        dd($pager);
+        //dd($list);
+        $data = [
+            'list' => $list['data'],
+            'lang' => $this->_lang(),
+            'totals'=> $this->_totals(),
+            'pager' => $pager,
+        ];
+        $data+=$this->fakeData();
+        $this->render('order/list', $data);
+
+    }
+    public function test(){
+        $pageSize = 2;
+        $list = Order::with('hasManyOrderGoods.hasOneGoods')->paginate($pageSize)->toArray();
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+        dd($list);
         $this->render('order/list', [
-            'list' => $list,
+            'list' => $list['data'],
             'lang' => $this->_lang(),
             'totals'=> $this->_totals(),
             'pager' => $pager,
         ]);
 
     }
-
     public function waitPay()
     {
         $db_order_models = Order::waitPay()->with('hasManyOrderGoods')->get();
@@ -40,6 +55,43 @@ class ListController extends BaseController
         exit;
     }
 
+    private function fakeData(){
+        return array(
+            'supplierapply'=>'',
+            'stores'=>'',
+            'list'=>'',
+            'yunbiset'=>'',
+            'card_plugin'=>'',
+            'perm_role'=>'',
+            'sstarttime'=>0,
+            'r_type'=>'',
+            'costmoney'=>'',
+            'card_set'=>'',
+            'liveRooms'=>'',
+            'paytype'=>'',
+            'sendtime'=>0,
+            'cashier_stores'=>'',
+            'supplier'=>'',
+            'type'=>'',
+            'store'=>'',
+            'status'=>'',
+            'pendtime'=>0,
+            'p_cashier'=>'',
+            'liveRoom'=>'',
+            'cashier_store'=>'',
+            'key'=>'',
+            'endtime'=>0,
+            'fendtime'=>0,
+            'shopset'=>'',
+            'pstarttime'=>0,
+            'level'=>'',
+            'suppliers'=>'',
+            'request'=>'',
+            'fstarttime'=>0,
+            'starttime'=>0,
+            'agentid'=>'',
+        );
+    }
     private function _lang()
     {
         return array(
