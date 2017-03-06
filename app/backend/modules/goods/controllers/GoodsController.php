@@ -88,6 +88,7 @@ class GoodsController extends BaseController
         if ($requestGoods) {
             $sharePost = \YunShop::request()->share;
             $goodsModel->setRawAttributes($requestGoods);
+            $goodsModel->widgets = \YunShop::request()->widgets;
             $goodsModel->uniacid = \YunShop::app()->uniacid;
             if ($goodsModel->save()) {
                 GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
@@ -98,6 +99,8 @@ class GoodsController extends BaseController
                 $this->error('商品修改失败');
             }
         }
+
+
 
         $catetorys = Category::getAllCategoryGroup();
         //dd($catetorys);
@@ -142,6 +145,7 @@ class GoodsController extends BaseController
         if ($requestGoods) {
             //将数据赋值到model
             $goodsModel->setRawAttributes($requestGoods);
+            $goodsModel->widgets = \YunShop::request()->widgets;
             //其他字段赋值
             $goodsModel->uniacid = \YunShop::app()->uniacid;
             $goodsModel->id = $this->goods_id;
@@ -167,14 +171,12 @@ class GoodsController extends BaseController
             );
         }
 
-        //规格及规格项
-        $allspecs = $goodsModel->hasManySpecs->toArray();
         //dd($goodsModel);
         $this->render('goods/goods', [
             'goods' => $goodsModel,
             'lang'  => $this->lang,
             'params'  => $goodsModel->hasManyParams->toArray(),
-            'allspecs'  => $allspecs,
+            'allspecs'  => $goodsModel->hasManySpecs->toArray(),
             'html'  => $optionsHtml,
             'catetory_menus'  => $catetory_menus,
             'virtual_types' => [],
