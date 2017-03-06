@@ -27,7 +27,6 @@ class WaitReceive implements StatusService
     public function getButtonModels()
     {
         //            $button_id_arr[] = static::COMPLETE;//收货
-
         $result =
             [
                 ['name' => '付款',

@@ -18,8 +18,7 @@ class ListController extends BaseController
     public function index()
     {
         $pageSize = 2;
-        $list = Order::with('hasManyOrderGoods.hasOneGoods')->paginate($pageSize)->toArray();
-
+        $list = Order::with('belongsToMember','hasManyOrderGoods.hasOneGoods')->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         //dd($list);
         $data = [
@@ -33,17 +32,10 @@ class ListController extends BaseController
 
     }
     public function test(){
-        $pageSize = 2;
-        $list = Order::with('hasManyOrderGoods.hasOneGoods')->paginate($pageSize)->toArray();
+        $list = Order::with('belongsToMember')->first();
 
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         dd($list);
-        $this->render('order/list', [
-            'list' => $list['data'],
-            'lang' => $this->_lang(),
-            'totals'=> $this->_totals(),
-            'pager' => $pager,
-        ]);
+
 
     }
     public function waitPay()

@@ -50,6 +50,10 @@ class Order extends BaseModel
     {
         return $this->hasMany('\app\common\models\OrderGoods', 'order_id', 'id');
     }
+    public function belongsToMember(){
+        return $this->belongsTo('\app\common\models\Member', 'member_id', 'uid');
+
+    }
     public function getStatusService(){
         if(!isset($this->StatusService)){
             $this->StatusService = StatusServiceFactory::createStatusService($this);
