@@ -25,11 +25,11 @@ class Member extends \app\common\models\Member
      * @param $keyword
      * @return mixed
      */
-    public static function getMemberByName($keyword)
+    public static function getMemberByName($keyWord)
     {
-        return static::where('realname', 'like', $keyword . '%')
-            ->orWhere('nick_name', 'like', $keyword . '%')
-            ->orWhere('mobile', 'like', $keyword . '%')
+        return self::where('realname', 'like', $keyWord . '%')
+            ->orWhere('nick_name', 'like', $keyWord . '%')
+            ->orWhere('mobile', 'like', $keyWord . '%')
             ->get();
     }
     /**
