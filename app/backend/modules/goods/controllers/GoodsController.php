@@ -128,20 +128,6 @@ class GoodsController extends BaseController
         ]);
     }
 
-    public function store()
-    {
-        $requestGoods = \YunShop::request()->goods;
-        $sharePost = \YunShop::request()->share;
-        $goodsModel = new Goods();
-        $goodsModel->setRawAttributes($requestGoods);
-        $goodsModel->sharePost = $sharePost;
-        //$goodsModel->fill($requestGoods);
-        $goodsModel->saveOrFail();
-        GoodsParam::saveParam(\YunShop::request());
-        GoodsSpec::saveSpec(\YunShop::request());
-        echo 'insert ok!';
-    }
-
 
     public function edit()
     {
