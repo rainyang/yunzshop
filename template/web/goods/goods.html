@@ -20,47 +20,48 @@
                 {if empty($goods['id'])}添加商品{else}编辑商品{/if}
             </div> -->
 
-<div class="right-titpos-fixed">
-	<ul class="add-shopnav" id="myTab">
-    	<li class="active" ><a href="#tab_basic">基本信息</a></li>
-        <li><a href="#tab_des">{$lang['shopdesc']}</a></li>
-        <li><a href="#tab_param">属性</a></li>
-        <li><a href="#tab_option">{$lang['shopoption']}</a></li>
-		<li><a href="#tab_share">分享关注</a></li>
-		<li><a href="#tab_privilege">权限</a></li>
-		<li><a href="#tab_discount">折扣</a></li>
-		<li><a href="#tab_sale">营销</a></li>
-		<li><a href="#tab_dispatch">配送</a></li>
-        <li><a href="#tab_notice">消息通知</a></li>
-    </ul>
-</div>
-<div style="padding-top:50px">
-            <div class="panel-body">
-                <div class="tab-content">
-                    <div class="tab-pane  active" id="tab_basic">{template 'web/goods/basic'}</div>
-                    <div class="tab-pane" id="tab_des">{template 'web/goods/des'}</div>
-                    <div class="tab-pane" id="tab_param">{template 'web/goods/tpl/param'}</div>
-					<div class="tab-pane" id="tab_option">{template 'web/goods/tpl/option'}</div>
-					<div class="tab-pane" id="tab_share">{php widget('app\backend\widgets\goods\ShareWidget', ['goods_id' => $goods->id])}</div>
-					<div class="tab-pane" id="tab_privilege">{php widget('app\backend\widgets\goods\PrivilegeWidget', ['goods_id' => $goods->id])}</div>
-					<div class="tab-pane" id="tab_discount">{php widget('app\backend\widgets\goods\DiscountWidget', ['goods_id' => $goods->id])}</div>
-					<div class="tab-pane" id="tab_sale">{php widget('app\backend\widgets\goods\SaleWidget', ['goods_id'=> $goods->id])}</div>
-					<div class="tab-pane" id="tab_dispatch">{php widget('app\backend\widgets\goods\DispatchWidget', ['goods_id' => $goods->id])}</div>
-					<div class="tab-pane" id="tab_notice">{php widget('app\backend\widgets\goods\NoticeWidget', ['goods_id'=> $goods->id])}</div>
+			<div class="right-titpos-fixed">
+				<ul class="add-shopnav" id="myTab">
+					<li class="active" ><a href="#tab_basic">基本信息</a></li>
+					<li><a href="#tab_des">{$lang['shopdesc']}</a></li>
+					<li><a href="#tab_param">属性</a></li>
+					<li><a href="#tab_option">{$lang['shopoption']}</a></li>
+					<li><a href="#tab_share">分享关注</a></li>
+					<li><a href="#tab_privilege">权限</a></li>
+					<li><a href="#tab_discount">折扣</a></li>
+					<li><a href="#tab_sale">营销</a></li>
+					<li><a href="#tab_dispatch">配送</a></li>
+					<li><a href="#tab_notice">消息通知</a></li>
+				</ul>
+			</div>
+			<div style="padding-top:50px">
+				<div class="panel-body">
+					<div class="tab-content">
+						<div class="tab-pane  active" id="tab_basic">{template 'web/goods/basic'}</div>
+						<div class="tab-pane" id="tab_des">{template 'web/goods/des'}</div>
+						<div class="tab-pane" id="tab_param">{template 'web/goods/tpl/param'}</div>
+						<div class="tab-pane" id="tab_option">{template 'web/goods/tpl/option'}</div>
+						<div class="tab-pane" id="tab_share">{php widget('app\backend\widgets\goods\ShareWidget', ['goods_id' => $goods->id])}</div>
+						<div class="tab-pane" id="tab_privilege">{php widget('app\backend\widgets\goods\PrivilegeWidget', ['goods_id' => $goods->id])}</div>
+						<div class="tab-pane" id="tab_discount">{php widget('app\backend\widgets\goods\DiscountWidget', ['goods_id' => $goods->id])}</div>
+						<div class="tab-pane" id="tab_dispatch">{php widget('app\backend\widgets\goods\DispatchWidget', ['goods_id' => $goods->id])}</div>
+
+						<div class="tab-pane" id="tab_sale">{php widget('app\backend\widgets\goods\SaleWidget', ['goods_id'=> $goods->id])}</div>
+						<div class="tab-pane" id="tab_notice">{php widget('app\backend\widgets\goods\NoticeWidget', ['goods_id'=> $goods->id])}</div>
 
 
 
-                </div>
-		        <div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
-					<input type="submit" name="submit" value="{$lang['shopsubmit']}" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
-					<input type="hidden" name="token" value="{$var['token']}" />
-					<input type="button" name="back"  {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+					</div>
+					<div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
+						<input type="submit" name="submit" value="{$lang['shopsubmit']}" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
+						<input type="hidden" name="token" value="{$var['token']}" />
+						<input type="button" name="back"  style='margin-left:10px;' value="返回列表" class="btn btn-default" />
 
-        		</div>
-            </div>
-        </div>
-
-    </form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 </div>
 
 <script type="text/javascript">
