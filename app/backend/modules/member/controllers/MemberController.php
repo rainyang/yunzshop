@@ -26,8 +26,8 @@ class MemberController extends BaseController
 
     public function __construct()
     {
-        $this->groups = MemberGroup::getMemberGroupList();
-        $this->levels = MemberLevel::getMemberLevelList();
+       // $this->groups = MemberGroup::getMemberGroupList();
+        //$this->levels = MemberLevel::getMemberLevelList();
     }
 
     /**
