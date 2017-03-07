@@ -21,7 +21,8 @@ class RegisterController extends BaseController
     public function index()
     {
         if (MemberService::isLogged()) {
-            show_json(1, array('member_id'=> session('member_id')));
+            return $this->errorJson('会员已登录');
+            exit;
         }
 
         $mobile   = \YunShop::request()->mobile;
@@ -39,7 +40,8 @@ class RegisterController extends BaseController
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             if (!empty($member_info)) {
-                return show_json(0, array('msg' => '该手机号已被注册'));
+                return $this->errorJson('该手机号已被注册');
+                exit;
             }
 
             $default_groupid = MemberGroup::getDefaultGroupI($uniacid);
@@ -66,9 +68,9 @@ class RegisterController extends BaseController
             Cookie::queue($cookieid, $member_id);
             session()->put('member_id', $member_id);
 
-            return show_json(1, array('member_id', $member_id));
+            return $this->successJson(['member_id'=>$member_id]);
         } else {
-            return show_json(0, array('msg' => '手机号或密码格式错误'));
+            return $this->errorJson('手机号或密码格式错误');
         }
     }
 
@@ -81,14 +83,16 @@ class RegisterController extends BaseController
     {
         $mobile = \YunShop::request()->mobile;
         if(empty($mobile)){
-            return show_json(0, array('msg'=> '请填入手机号'));
+            return $this->errorJson('请填入手机号');
+            exit;
         }
 
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
         if(!empty($info))
         {
-            return show_json(0, array('msg' => '该手机号已被注册！不能获取验证码'));
+            return $this->errorJson('该手机号已被注册！不能获取验证码');
+            exit;
         }
         $code = rand(1000, 9999);
 
@@ -99,7 +103,7 @@ class RegisterController extends BaseController
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
-            return show_json(-1, array("msg" => "发送短信数量达到今日上限"));
+            return $this->errorJson('发送短信数量达到今日上限');
         } else {
             $this->sendSms($mobile, $code);
         }
@@ -115,12 +119,12 @@ class RegisterController extends BaseController
         $code = \YunShop::request()->code;
 
         if((session('codetime')+60*5) < time()){
-            return show_json(0, '验证码已过期,请重新获取');
+            return $this->errorJson('验证码已过期,请重新获取');
         }
         if(session('code') != $code){
-            return show_json(0, '验证码错误,请重新获取');
+            return $this->errorJson('验证码错误,请重新获取');
         }
-        return show_json(1);
+        return $this->successJson();
     }
 
     /**
@@ -141,10 +145,10 @@ class RegisterController extends BaseController
 
             if($issendsms['SubmitResult']['code'] == 2){
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
-                return show_json(1);
+                return $this->successJson();
             }
             else{
-                return show_json(0, array('msg' => $issendsms['SubmitResult']['msg']));
+                return $this->errorJson($issendsms['SubmitResult']['msg']);
             }
 
         } else {
@@ -152,10 +156,10 @@ class RegisterController extends BaseController
 
             if(isset($issendsms['result']['success'])){
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
-                return show_json(1);
+                return $this->successJson();
             }
             else{
-                return show_json(0, array('msg' => $issendsms['msg']. '/' . $issendsms['sub_msg']));
+                return $this->errorJson($issendsms['msg']. '/' . $issendsms['sub_msg']);
             }
         }
     }

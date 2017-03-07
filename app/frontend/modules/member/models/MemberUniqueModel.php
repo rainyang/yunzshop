@@ -11,9 +11,9 @@
  */
 namespace app\frontend\modules\member\models;
 
-use Illuminate\Database\Eloquent\Model;
+use app\backend\models\BackendModel;
 
-class MemberUniqueModel extends Model
+class MemberUniqueModel extends BackendModel
 {
     public $table = 'yz_member_unique';
 
@@ -28,10 +28,8 @@ class MemberUniqueModel extends Model
      */
     public static function getUnionidInfo($uniacid, $unionid)
     {
-        return self::where('uniacid', $uniacid)
-            ->where('unionid', $unionid)
-            ->first()
-            ->toArray();
+        return self::uniacid()
+            ->where('unionid', $unionid);
     }
 
     /**

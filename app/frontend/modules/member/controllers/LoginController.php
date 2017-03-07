@@ -18,7 +18,8 @@ class LoginController extends BaseController
     public function index()
     {
         if (MemberService::isLogged()) {
-           show_json(1, array('member_id'=> session('member_id')));
+            return $this->errorJson('会员已登录');
+            exit;
         }
 
         // 1-公众号;2-小程序;3-微信app;4-pc扫码;5-手机号/app;6-QQ
@@ -57,7 +58,13 @@ class LoginController extends BaseController
             }
 
             try{
-                $member->login();
+                $msg = $member->login();
+
+                if ($msg->status == 1) {
+                    $this->successJson($msg->result);
+                } else {
+                    $this->errorJson($msg->result);
+                }
             } catch (Exception $e) {
                 if ($e->getHttpStatus() != NULL) {
                     header('Status: ' . $e->getHttpStatus());
@@ -65,7 +72,7 @@ class LoginController extends BaseController
                 }
             }
         } else {
-            return show_json(0, array('msg' => '登录失败'));
+            return $this->successJson(array('msg' => '登录失败'));
         }
     }
 }

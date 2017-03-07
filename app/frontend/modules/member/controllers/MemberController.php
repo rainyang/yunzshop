@@ -35,11 +35,11 @@ class MemberController extends BaseController
             if (!empty($member_info)) {
                 return $this->successJson($member_info);
             } else {
-                return show_json(0, array("msg" => '用户不存在'));
+                return $this->errorJson('用户不存在');
             }
 
         } else {
-            return show_json(0, array("msg" => '缺少member_id参数'));
+            return $this->errorJson('缺少访问参数');
         }
 
     }

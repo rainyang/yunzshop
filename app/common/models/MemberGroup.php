@@ -25,13 +25,16 @@ class MemberGroup extends BaseModel
         return static::where('id', $groupId)->first(1)->toArray();
     }
 
-    public static function getDefaultGroupI($uniacid)
+    /**
+     * 获取默认组
+     *
+     * @return mixed
+     */
+    public static function getDefaultGroupI()
     {
         return self::select('id')
-            ->where('uniacid', $uniacid)
-            ->where('isdefault', 1)
-            ->first()
-            ->toArray();
+            ->uniacid()
+            ->where('is_default', 1);
     }
 
 }

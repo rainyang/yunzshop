@@ -8,9 +8,9 @@
 
 namespace app\frontend\modules\member\models;
 
-use Illuminate\Database\Eloquent\Model;
+use app\backend\models\BackendModel;
 
-class smsSendLimitModel extends Model
+class smsSendLimitModel extends BackendModel
 {
     public $table = 'yz_sms_send_limit';
     public $timestamps = false;
