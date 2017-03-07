@@ -10,15 +10,15 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
 use app\frontend\modules\member\services\factory\MemberFactory;
-use app\frontend\models\Member;
+use app\frontend\modules\member\services\MemberService;
 use League\Flysystem\Exception;
 
 class LoginController extends BaseController
 {
     public function index()
     {
-        if (Member::isLogged()) {
-            show_json(1, array('member_id'=> session('member_id')));
+        if (MemberService::isLogged()) {
+           show_json(1, array('member_id'=> session('member_id')));
         }
 
         // 1-公众号;2-小程序;3-微信app;4-pc扫码;5-手机号/app;6-QQ
@@ -42,7 +42,7 @@ class LoginController extends BaseController
                     $mobile   = \YunShop::request()->mobile;
                     $password = \YunShop::request()->password;
 
-                    if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost && Member::validate($mobile, $password))) {
+                    if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost && MemberService::validate($mobile, $password))) {
                         $member = MemberFactory::create('Mc');
                     }
                     if (SZ_YI_DEBUG) {

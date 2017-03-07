@@ -44,6 +44,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function saved(Model $model)
     {
+<<<<<<< HEAD
         /*if ($model->share) {
             $share = new Share();
             $share->setRawAttributes($model->share);
@@ -74,37 +75,35 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function created(Model $model)
     {
+=======
+>>>>>>> bb1f3138d074f58cb9045f84fc7fce5d7617389d
 //        if ($model->share) {
-//            Share::createdShare($model->share);
+//            $share = new Share();
+//            $share->setRawAttributes($model->share);
+//            $share->save();
 //        }
 //        if ($model->privilege) {
+//            $privilege = new Privilege();
 //            $model->privilege['show_levels'] = PrivilegeService::stringToArray($model->privilege['show_levels']);
-//            Privilege::createdPrivilege($model->privilege);
+//            $privilege->setRawAttributes($model->privilege);
+//            $privilege->save();
 //        }
 //        if ($model->discount) {
 //            $discounts = DiscountService::resetArray($model->discount);
 //            foreach ($discounts as $discount) {
-//                Discount::createdDiscount($discount);
+//                $discountModel = new Discount();
+//                $discountModel->setRawAttributes($discount);
+//                $discountModel->save();
 //            }
 //        }
-//        if ($model->widgets['notices']) {
-//            $notices_data = [
-//                'goods_id' => $model->id,
-//                'uid' => $model->widgets['notices']['uid']
-//            ];
-//            foreach ($model->widgets['notices']['type'] as $type) {
-//                $notices_data['type'] = $type;
-//                Notice::createdNotices($notices_data);
-//            }
-//        }
-//        if (isset($model->widgets['sale']) && $model->widgets['sale']) {
-//
-//            Sale::relationSave($model->id,$model->widgets['sale']);
-//
+//        if ($model->notices) {
+//            $notice = new Notices();
+//            $notice->setRawAttributes($model->notices);
+//            $notice->save();
 //        }
         $this->_pluginObserver($model,'created');
-        
     }
+<<<<<<< HEAD
 
     public function updating(Model $model)
     {
@@ -160,6 +159,9 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         $this->_pluginObserver($model,'updated');
     }
 
+=======
+    
+>>>>>>> bb1f3138d074f58cb9045f84fc7fce5d7617389d
     public function deleted(Model $model)
     {
 //        if (!empty(Share::getInfo($model->goodsId))) {

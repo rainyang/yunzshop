@@ -16,7 +16,7 @@ class Sale extends \app\common\models\Sale
     public static function getList($goodsId)
     {
         return self::where('goods_id', $goodsId)
-            ->get();
+            ->first();
     }
 
 

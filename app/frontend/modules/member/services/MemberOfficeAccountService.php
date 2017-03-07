@@ -15,7 +15,7 @@ use Illuminate\Session\Store;
 
 class MemberOfficeAccountService extends MemberMcService
 {
-    private $_login_type    = 1;
+    private $_login_type    = '1';
 
     public function __construct()
     {}
@@ -49,19 +49,24 @@ class MemberOfficeAccountService extends MemberMcService
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid']);
 
                 if (!empty($UnionidInfo['unionid'])) {
-                    $types = expload($UnionidInfo['type'], '|');
+                    $types = explode('|', $UnionidInfo['type']);
                     $member_id = $UnionidInfo['member_id'];
 
                     if (!in_array($this->_login_type, $types)) {
                         //更新ims_yz_member_unique表
                         MemberUniqueModel::updateData(array(
-                            'unque_id'=>$UnionidInfo['unque_id'],
+                            'unique_id'=>$UnionidInfo['unique_id'],
                             'type' => $UnionidInfo['type'] . '|' . $this->_login_type
                         ));
                     }
                 } else {
                     $member_info = McMappingFansModel::getUId($uniacid, $userinfo['openid']);
                     $member_id = $member_info['uid'];
+
+                    //添加mc_members表
+                    //添加yz_member表
+                    //添加mapping_fans表
+
 
                     //添加ims_yz_member_unique表
                     MemberUniqueModel::insertData(array(
