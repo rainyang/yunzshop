@@ -1,14 +1,14 @@
 <?php
 return [
     'goods'=>[
-        'sale'=>[
+        /*'sale'=>[
             'class'=>'app\backend\modules\goods\models\Sale',
             'function'=>'relationSave'
         ],
         'notice'=>[
             'class'=>'app\backend\modules\goods\models\Notice',
             'function'=>'relationSave'
-        ],
+        ],*/
         'share'=>[
             'class'=>'app\backend\modules\goods\models\Share',
             'function'=>'relationSave'

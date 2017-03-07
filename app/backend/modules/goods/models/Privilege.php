@@ -30,16 +30,19 @@ class Privilege extends \app\common\models\goods\Privilege
             return false;
         }
         $privilegeModel = self::getModel($goodsId, $operate);
-        //判断deleted
-        if ($operate == 'deleted') {
-            return $privilegeModel->delete();
-        }
-        $data['goods_id'] = $goodsId;
-        $data['show_levels'] = implode(',', $data['show_levels']);
-        $data['buy_levels'] = implode(',', $data['buy_levels']);
-        $data['show_groups'] = implode(',', $data['show_groups']);
-        $data['buy_groups'] = implode(',', $data['buy_groups']);
+        $privilege = self::getInfo($goodsId);
         $privilegeModel->setRawAttributes($data);
+        $privilegeModel->goods_id = $goodsId;
+        if ($privilege) {
+            $privilegeModel->id =  $privilege['id'];
+            if ($operate == 'deleted') {
+                return $privilegeModel->delete();
+            }
+        }
+        $privilegeModel['show_levels'] = !empty($data['show_levels']) ? implode(',', $data['show_levels']) : '';
+        $privilegeModel['buy_levels'] = !empty($data['buy_levels']) ? implode(',', $data['buy_levels']) : '';
+        $privilegeModel['show_groups'] = !empty($data['show_groups']) ? implode(',', $data['show_groups']) : '';
+        $privilegeModel['buy_groups'] = !empty($data['buy_groups']) ? implode(',', $data['buy_groups']) : '';
         return $privilegeModel->save();
     }
 

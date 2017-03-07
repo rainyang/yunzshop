@@ -32,18 +32,35 @@ class Discount extends \app\common\models\goods\Discount
             return false;
         }
         $discountModel = self::getModel($goodsId, $operate);
-        //判断deleted
-        if ($operate == 'deleted') {
-            return $discountModel->delete();
+        $discounts = self::getList($goodsId);
+        $request = false;
+        $discount_data = [];
+        foreach ($data['discount_value'] as $key => $value) {
+            $discount_data[] = [
+                'level_discount_type' => !empty($data['level_discount_type']) ? $data['level_discount_type'] : '1',
+                'discount_method' =>  !empty($data['discount_method']) ? $data['discount_method'] : '1',
+                'level_id' => $key,
+                'discount_value' => $value ,
+                'goods_id' => $goodsId
+            ];
+        }
+        if ($discounts) {
+            if ($operate == 'deleted') {
+                return self::deletedDiscount($goodsId);
+            }
+            foreach ($discount_data as $discount) {
+
+                $discount['goods_id'] = $goodsId;
+                dd($discount);
+                $discountModel->setRawAttributes($discount);
+                $request = $discountModel->save();
+            }
         }
 
-        $notices_data = [
-            'goods_id' => $goodsId,
-        ];
-        $request = false;
-        $discount_data = DiscountService::resetArray($data);
         foreach ($discount_data as $discount) {
+
             $discount['goods_id'] = $goodsId;
+            dd($discount);
             $discountModel->setRawAttributes($discount);
             $request = $discountModel->save();
         }

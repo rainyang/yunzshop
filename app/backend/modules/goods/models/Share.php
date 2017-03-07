@@ -30,12 +30,16 @@ class Share extends \app\common\models\goods\Share
             return false;
         }
         $shareModel = self::getModel($goodsId, $operate);
-        //判断deleted
-        if ($operate == 'deleted') {
-            return $shareModel->delete();
-        }
-        $data['goods_id'] = $goodsId;
+        $share = self::getInfo($goodsId);
         $shareModel->setRawAttributes($data);
+        $shareModel->goods_id = $goodsId;
+        if ($share) {
+            $shareModel->id = $share['id'];
+            //判断deleted
+            if ($operate == 'deleted') {
+                return $shareModel->delete();
+            }
+        }
         return $shareModel->save();
     }
 

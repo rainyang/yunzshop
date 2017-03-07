@@ -24,7 +24,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
     public function saving(Model $model)
     {
 
-        if ($model->share) {
+        /*if ($model->share) {
             return Share::validator($model->share);
         }
         if ($model->privilege) {
@@ -36,14 +36,15 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
         if ($model->notices) {
             return Notices::validator($model->notices);
-        }
+        }*/
+        $this->_pluginObserver($model,'saving');
 
     }
 
 
     public function saved(Model $model)
     {
-        if ($model->share) {
+        /*if ($model->share) {
             $share = new Share();
             $share->setRawAttributes($model->share);
             $share->save();
@@ -66,7 +67,9 @@ class GoodsObserver extends \app\common\observers\BaseObserver
             $notice = new Notices();
             $notice->setRawAttributes($model->notices);
             $notice->save();
-        }
+        }*/
+
+        $this->_pluginObserver($model,'saved');
     }
 
     public function created(Model $model)
@@ -105,7 +108,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function updating(Model $model)
     {
-        if ($model->share) {
+        /*if ($model->share) {
             return Share::validator($model->share);
         }
         if ($model->privilege) {
@@ -114,7 +117,8 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         }
         if ($model->discount) {
             return Discount::validator($model->discount);
-        }
+        }*/
+        $this->_pluginObserver($model,'updating');
 
     }
 
