@@ -28,19 +28,19 @@
     </div>
     <div id="ismember">
       {loop $levels $key $level}
-        {loop $discount $d}
+
         <div class="form-group">
            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
            <div class="col-sm-6 col-xs-6">
                <div class='input-group'>
                   <div class='input-group-addon'>{php echo $level['level_name']}</div>
-                  <input type='text' name='widgets[discount][discount_value][{php echo $level["id"]}]' class="form-control discounts"  value="{if !empty($d) && $level['id'] == $d['level_id']}  {php echo $d['discount_value']}{/if}" />
+                  <input type='text' name='widgets[discount][discount_value][{php echo $level["id"]}]' class="form-control discounts"  value="{loop $discount $d}{if !empty($d) && $level['id'] == $d['level_id']}  {php echo $d['discount_value']}{/if}{/loop}" />
                   <div class='input-group-addon waytxt'>{if !empty($discount) && $discount[0]['discount_method'] == 1}折{else}元{/if}</div>
               </div>
            </div>
         </div>
       {/loop}
-        {/loop}
+
     </div>
 
 
