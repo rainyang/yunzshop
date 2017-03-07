@@ -85,7 +85,7 @@ class GoodsController extends BaseController
     {
         $params = new GoodsParam();
         $goodsModel = new Goods();
-        $brands = Brand::getBrands(20);
+        $brands = Brand::getBrands()->get();
 
         $requestGoods = \YunShop::request()->goods;
         if ($requestGoods) {
@@ -118,7 +118,7 @@ class GoodsController extends BaseController
                 'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
             );
         }
-        dd($brands->toArray());
+        //dd($brands->toArray());
         $allspecs = [];
         $this->render('goods/goods', [
             'goods' => $goodsModel,

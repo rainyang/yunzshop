@@ -35,6 +35,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
     <div class="col-sm-8 col-xs-12">
         <select name="goods[brand_id]">
+            <option value="0">请选择品牌</option>
             {if !empty($brands)}
             {loop $brands $brand}
             <option value="{php echo $brand['id']}">{php echo $brand['name']}</option>
