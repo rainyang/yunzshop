@@ -60,20 +60,21 @@ class Notice extends \app\common\models\Notice
         if(!$goodsId){
             return false;
         }
-
         self::deleteAllByGoodsId($goodsId);
-
+        if(!$data['uid'] || !isset($data['type'])){
+            return false;
+        }
         $noticesData = [
             'goods_id' => $goodsId,
             'uid' => $data['uid']
         ];
         return self::addByGoodsId($data, $noticesData);
-
     }
 
     public static function deleteAllByGoodsId($goodsId)
     {
-        return static::where(['goods_id' => $goodsId])->delete();
+        return static::where('goods_id', $goodsId)
+            ->delete();
     }
 
     public static function addByGoodsId($data,$noticesData)
@@ -84,7 +85,6 @@ class Notice extends \app\common\models\Notice
             $saleModel->setRawAttributes($noticesData);
              $saleModel->save();
         }
-
         return true;
     }
 
