@@ -12,7 +12,11 @@
             <ul class="add-snav">
                 <li class="active"><a href="{php echo $this->createWebUrl('goods.category.index');}">商品分类 </a></li>
                 {if !empty($parent)}
-                    <li class="active"><a href="{php echo $this->createWebUrl('goods.category.index', ['parent_id'=>$parent['parent_id'], 'level'=>$parent['level']]);}">返回上一级 </a></li>
+                <li>上级分类:{php echo $parent->name}</li>
+                    <li class="active">
+
+                        <a href="{php echo $this->createWebUrl('goods.category.index', ['parent_id'=>$parent['parent_id'], 'level'=>$parent['level']]);}">返回上一级 </a>
+                    </li>
                 {/if}
             </ul>
         </div>
