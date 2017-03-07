@@ -23,7 +23,7 @@ class DispatchWidget extends Widget
         if ($this->goodsId && GoodsDispatch::getInfo($this->goodsId)) {
             $dispatch = GoodsDispatch::getInfo($this->goodsId);
         }
-        $dispatch_templates = Dispatch::getList();
+        $dispatch_templates = Dispatch::getAll();
         return $this->render('goods/dispatch/goods_dispatch_info',
             [
                 'dispatch' => $dispatch,
