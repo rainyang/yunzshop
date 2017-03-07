@@ -174,7 +174,7 @@ class GoodsController extends BaseController
             );
         }
 
-        //dd($goodsModel);
+        //dd($goodsModel->id);
         $this->render('goods/goods', [
             'goods' => $goodsModel,
             'lang'  => $this->lang,
