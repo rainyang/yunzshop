@@ -25,7 +25,9 @@ class MemberController extends BaseController
     private $pageSize = 20;
 
     public function __construct()
-    {}
+    {
+
+    }
 
     /**
      * 列表
