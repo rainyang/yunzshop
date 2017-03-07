@@ -23,46 +23,71 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function saving(Model $model)
     {
-        $this->_pluginObserver($model, 'saving');
+
+        if ($model->share) {
+            return Share::validator($model->share);
+        }
+        if ($model->privilege) {
+            $model->privilege['show_levels'] = PrivilegeService::arrayToSting($model->privilege['show_levels']);
+            return Privilege::validator($model->privilege);
+        }
+        if ($model->discount) {
+            return Discount::validator($model->discount);
+        }
+        if ($model->notices) {
+            return Notices::validator($model->notices);
+        }
+        $this->_pluginObserver($model,'saving');
+
     }
 
 
     public function saved(Model $model)
     {
-        $this->_pluginObserver($model, 'saved');
+        $this->_pluginObserver($model,'saved');
     }
 
     public function created(Model $model)
     {
-
-        $this->_pluginObserver($model, 'created');
+        $this->_pluginObserver($model,'created');
     }
 
     public function updating(Model $model)
     {
-        $this->_pluginObserver($model, 'updating');
+        if ($model->share) {
+            return Share::validator($model->share);
+        }
+        if ($model->privilege) {
+            $model->privilege['show_levels'] = PrivilegeService::arrayToSting($model->privilege['show_levels']);
+            return Privilege::validator($model->privilege);
+        }
+        if ($model->discount) {
+            return Discount::validator($model->discount);
+        }
+        $this->_pluginObserver($model,'updating');
+
     }
 
     public function updated(Model $model)
     {
-        $this->_pluginObserver($model, 'updated');
+        $this->_pluginObserver($model,'updated');
     }
 
     public function deleted(Model $model)
     {
-        $this->_pluginObserver($model, 'deleted');
+        $this->_pluginObserver($model,'deleted');
     }
 
     private function _pluginObserver($model, $operate = 'created')
     {
         $observerGoods = \Config::get('observer.goods');
-        if ($observerGoods) {
-            foreach ($observerGoods as $pluginName => $pluginOperators) {
-                if (isset($pluginOperators) && $pluginOperators) {
-                    $class = array_get($pluginOperators, 'class');
-                    $function = array_get($pluginOperators, 'function');
-                    $data = array_get($model->widgets, $pluginName, []);
-                    if (class_exists($class) && method_exists($class, $function)) {
+        if($observerGoods){
+            foreach ($observerGoods as $pluginName=>$pluginOperators){
+                if(isset($pluginOperators) && $pluginOperators) {
+                    $class = array_get($pluginOperators,'class');
+                    $function =array_get($pluginOperators,'function');
+                    $data = array_get($model->widgets,$pluginName,[]);
+                    if(class_exists($class) && method_exists($class,$function)){
                         $class::$function($model->id, $data, $operate);
                     }
                 }
