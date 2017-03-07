@@ -29,28 +29,27 @@
             <tbody>
                 {loop $list['data'] $dispatch}
                 <tr>
-                    <td>{php echo $dispatch->id;}</td>
+                    <td>{php echo $dispatch['id'];}</td>
                     <td>
-                        {ifp 'shop.dispatch.edit'}
-                        <input type="text" class="form-control" name="display_order[{php echo $dispatch->id;}]" value="{php echo $dispatch->display_order;}">
-                        {/if}
+                        <input type="text" class="form-control" name="display_order[{php echo $dispatch['id'];}]" value="{php echo $dispatch['display_order'];}">
+
                     </td>
-                    <td>{php echo $dispatch->dispatch_name;}</td>
-                    {if $dispatch->calculate_type==0}
+                    <td>{php echo $dispatch['dispatch_name'];}</td>
+                    {if $dispatch['calculate_type']==0}
                     <td>按重量计费</td>
-                    <td>{php echo $dispatch->first_weight_price}</td>
-                    <td>{php echo $dispatch->another_weight_price}</td>
+                    <td>{php echo $dispatch['first_weight_price']}</td>
+                    <td>{php echo $dispatch['another_weight_price']}</td>
                     {else}
                     <td>按件计费</td>
-                    <td>{php echo $dispatch->first_piece_price}</td>
-                    <td>{php echo $dispatch->another_piece_price}</td>
+                    <td>{php echo $dispatch['first_piece_price']}</td>
+                    <td>{php echo $dispatch['another_piece_price']}</td>
                     {/if}
 
-                    <td><label class='label  label-default {if $dispatch->enabled == 1 }label-info{/if}' >{if $dispatch-> enabled == 1 }显示{else}隐藏{/if}</label></td>
-                    <td><label class='label  label-default {if $dispatch->is_default == 1 }label-info{/if}' >{if $dispatch->is_default == 1 }是{else}否{/if}</label></td>
+                    <td><label class='label  label-default {if $dispatch["enabled"] == 1 }label-info{/if}' >{if $dispatch['enabled'] == 1 }显示{else}隐藏{/if}</label></td>
+                    <td><label class='label  label-default {if $dispatch["is_default"] == 1 }label-info{/if}' >{if $dispatch['is_default'] == 1 }是{else}否{/if}</label></td>
                     <td style="text-align:left;">
-                         {ifp 'shop.dispatch.view|shop.dispatch.edit'}<a href="{php echo $this->createWebUrl('goods.dispatch.edit-dispatch', ['id'=>$dispatch->id]);}" class="btn btn-default btn-sm" title="{ifp 'shop.dispatch.edit'}修改{else}查看{/if}"><i class="fa fa-pencil"></i></a>{/if}
-                         {ifp 'shop.dispatch.delete'}<a href="{php echo $this->createWebUrl('goods.dispatch.delete', ['id'=>$dispatch->id]);}" class="btn btn-default btn-sm" onclick="return confirm('确认删除此配送方式?')" title="删除"><i class="fa fa-times"></i></a>{/if}
+                         {ifp 'shop.dispatch.view|shop.dispatch.edit'}<a href="{php echo $this->createWebUrl('goods.dispatch.edit', ['id'=>$dispatch['id']]);}" class="btn btn-default btn-sm" title="{ifp 'shop.dispatch.edit'}修改{else}查看{/if}"><i class="fa fa-pencil"></i></a>{/if}
+                         {ifp 'shop.dispatch.delete'}<a href="{php echo $this->createWebUrl('goods.dispatch.delete', ['id'=>$dispatch['id']]);}" class="btn btn-default btn-sm" onclick="return confirm('确认删除此配送方式?')" title="删除"><i class="fa fa-times"></i></a>{/if}
                     </td>
                 </tr>
                 {/loop}

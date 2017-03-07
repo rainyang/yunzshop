@@ -1,0 +1,27 @@
+<?php
+namespace app\backend\modules\area\controllers;
+
+use app\backend\modules\area\models\Area;
+use app\common\components\BaseController;
+
+/**
+ * Created by PhpStorm.
+ * User: yanglei
+ * Date: 2017/2/27
+ * Time: 上午9:17
+ */
+class AreaController extends BaseController
+{
+    /**
+     * 商品品牌列表
+     */
+    public function selectCity()
+    {
+        $citys = Area::getAreasByCity(\YunShop::request()->parent_id);
+        
+        return $this->render('area/selectcitys', [
+            'citys' => $citys->toArray()
+        ]);
+    }
+
+}

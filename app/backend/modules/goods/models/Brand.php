@@ -1,5 +1,6 @@
 <?php
 namespace app\backend\modules\goods\models;
+
 /**
  * Created by PhpStorm.
  * User: yanglei
@@ -10,7 +11,7 @@ namespace app\backend\modules\goods\models;
 
 class Brand extends \app\common\models\Brand
 {
-    
+
     /**
      * @param $id
      * @return mixed

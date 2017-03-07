@@ -69,8 +69,8 @@ class GoodsController extends BaseController
         ];
         
         $list = Goods::getList()->toArray();
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         $this->render('goods/index', [
             'list' => $list['data'],
             'pager' => $pager,
@@ -86,10 +86,14 @@ class GoodsController extends BaseController
         $goodsModel = new Goods();
         $requestGoods = \YunShop::request()->goods;
         if ($requestGoods) {
-            $sharePost = \YunShop::request()->share;
+            //$widgetPost = \YunShop::request()->widget;
+            //dd($widgetPost);
             $goodsModel->setRawAttributes($requestGoods);
+            $goodsModel->widgets = \YunShop::request()->widgets;
             $goodsModel->uniacid = \YunShop::app()->uniacid;
+
             if ($goodsModel->save()) {
+                //dd($goodsModel);
                 GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
                 GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
                 GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
@@ -98,7 +102,7 @@ class GoodsController extends BaseController
                 $this->error('商品修改失败');
             }
         }
-
+        
         $catetorys = Category::getAllCategoryGroup();
         //dd($catetorys);
         if ($this->shopset['catlevel'] == 3) {
@@ -110,7 +114,7 @@ class GoodsController extends BaseController
                 'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
             );
         }
-
+        //dd($goodsModel);
         $allspecs = [];
         $this->render('goods/goods', [
             'goods' => $goodsModel,
@@ -123,6 +127,7 @@ class GoodsController extends BaseController
             'shopset' => $this->shopset
         ]);
     }
+
 
     public function edit()
     {
@@ -137,15 +142,17 @@ class GoodsController extends BaseController
         }
         
         $optionsHtml = GoodsOptionService::getOptions($this->goods_id, $goodsModel->hasManySpecs);
-        $goodsModel->piclist = unserialize($goodsModel->thumb_url);
+        $goodsModel->piclist = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
         $catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
             //将数据赋值到model
             $goodsModel->setRawAttributes($requestGoods);
+            $goodsModel->widgets = \YunShop::request()->widgets;
             //其他字段赋值
             $goodsModel->uniacid = \YunShop::app()->uniacid;
             $goodsModel->id = $this->goods_id;
             //数据保存
+            //dd($goodsModel);
             if ($goodsModel->save()) {
                 GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
                 GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
@@ -167,14 +174,12 @@ class GoodsController extends BaseController
             );
         }
 
-        //规格及规格项
-        $allspecs = $goodsModel->hasManySpecs->toArray();
         //dd($goodsModel);
         $this->render('goods/goods', [
             'goods' => $goodsModel,
             'lang'  => $this->lang,
             'params'  => $goodsModel->hasManyParams->toArray(),
-            'allspecs'  => $allspecs,
+            'allspecs'  => $goodsModel->hasManySpecs->toArray(),
             'html'  => $optionsHtml,
             'catetory_menus'  => $catetory_menus,
             'virtual_types' => [],
@@ -258,4 +263,29 @@ class GoodsController extends BaseController
 
     }
 
+    public function test()
+    {
+        $request = [
+            'goods' =>
+                ['title'=>'title1',],
+            'widgets'=>[
+                'notice'=>[
+                    'uid'=>7,'type'=>[0,2]
+                ],
+                'sale'=>[
+                    'love_money' => 1,
+                    'max_point_deduct' => 2,
+                    'max_balance_deduct' => 3,
+                    'ed_num' => 4,
+                    'ed_money' => 5,
+                    'ed_areas' => '太原市;大同市;阳泉市;长治市;晋城市;朔州市;晋中市;运城市;忻州市;临汾市;吕梁市'
+                ]
+
+            ]
+        ];
+        $goods = new Goods($request['goods']);
+        $goods->setRawAttributes($request['goods']);
+        $goods->widgets = $request['widgets'];
+        $goods->save();
+    }
 }

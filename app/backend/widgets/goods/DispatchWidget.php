@@ -10,6 +10,7 @@ namespace app\backend\widgets\goods;
 
 
 use app\common\components\Widget;
+use app\backend\modules\goods\models\GoodsDispatch;
 use app\backend\modules\goods\models\Dispatch;
 
 class DispatchWidget extends Widget
@@ -18,14 +19,16 @@ class DispatchWidget extends Widget
 
     public function run()
     {
-        /*$dispatch = new Dispatch();
-        if ($this->goodsId && Dispatch::getInfo($this->goodsId)) {
-            $dispatch = Dispatch::getInfo($this->goodsId);
+        $dispatch = new GoodsDispatch();
+        if ($this->goodsId && GoodsDispatch::getInfo($this->goodsId)) {
+            $dispatch = GoodsDispatch::getInfo($this->goodsId);
         }
-        return $this->render('list',
+        $dispatch_templates = Dispatch::getAll();
+        return $this->render('goods/dispatch/goods_dispatch_info',
             [
-                'dispatch'=> $dispatch,
+                'dispatch' => $dispatch,
+                'dispatch_templates' => $dispatch_templates
             ]
-        );*/
+        );
     }
 }

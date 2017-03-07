@@ -54,6 +54,7 @@ class BrandController extends BaseController
         $brandModel = new Brand();
 
         $requestBrand = \YunShop::request()->brand;
+
         if($requestBrand) {
             //将数据赋值到model
             $brandModel->setRawAttributes($requestBrand);
