@@ -22,4 +22,10 @@ class GoodsCategory extends BaseModel
 
     public $guarded = [];
 
+
+    public function hasManyGoods()
+    {
+        //return $this->hasMany('app\common\models\Goods', 'goods_id', );
+    }
+
 }

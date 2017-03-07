@@ -3,6 +3,7 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\common\components\BaseController;
 use app\common\models\Goods;
+use app\common\models\GoodsCategory;
 use app\common\models\GoodsSpecItem;
 
 /**
@@ -30,4 +31,12 @@ class GoodsController extends BaseController
         //return $this->successJson($goodsModel);
         $this->successJson($goodsModel);
     }
+
+    public function getGoodsList()
+    {
+        //$category_id = \YunShop::request()->category_id;
+        $goods  = GoodsCategory::find(2)->hasManyGoods;
+        dd($goods);
+    }
+
 }
