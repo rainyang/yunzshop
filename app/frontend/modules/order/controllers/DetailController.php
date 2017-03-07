@@ -13,7 +13,12 @@ use app\common\models\Order;
 class DetailController
 {
     public function index(){
-        $db_order_models = Order::with('hasManyOrderGoods')->first();
+        $db_order_models = Order::with(['hasManyOrderGoods'=>function($query){
+            return $query->select(['id','order_id','goods_id','goods_price','total','price'])
+                        ->with(['belongsToGood'=>function($query){
+                            return $query->select(['id','title','thumb_url','price']);
+                        }]);
+        }])->get(['id','order_sn'])->first();
         $order = $db_order_models->toArray();
         dd($order);
 
