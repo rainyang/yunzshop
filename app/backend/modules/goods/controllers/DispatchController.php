@@ -69,7 +69,7 @@ class DispatchController extends BaseController
 
         $this->render('info', [
             'dispatch' => $dispatchModel,
-            'areas' => $areas,
+            'parents' => $areas->toArray()
         ]);
     }
 

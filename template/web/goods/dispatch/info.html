@@ -197,58 +197,25 @@
                         </thead>
                         <tbody id='tbody-areas'>
                         <tr>
-                            <td style="padding:10px;">全国 [默认运费]</td>
+                            <td style="padding:10px;" id="areas">全国 [默认运费]</td>
                             <td class="show_h text-center">
-                                {ife 'shop.dispatch' $dispatch}
                                 <input type="number" value="{php echo empty($dispatch->first->weight)?1000:$dispatch->first_weight}" class="form-control" name="dispatch[first_weight]" style="width:100px;"></td>
-                            {else}
-                            <div class='show_h form-control-static'>{php echo empty($dispatch->first_weight)?1000:$dispatch->first_weight}</div>
-                            {/if}
                             <td class="show_h text-center">
-                                {ife 'shop.dispatch' $dispatch}
                                 <input type="text" value="{php echo $dispatch->first_weight_price}" class="form-control" name="dispatch[first_weight_price]"  style="width:100px;"></td>
-                            {else}
-                            <div class='show_h form-control-static'>{php echo $dispatch->first_weight_price}</div>
-                            {/if}
                             <td class="show_h text-center">
-                                {ife 'shop.dispatch' $dispatch}
                                 <input type="number" value="{php echo empty($dispatch->another_weight)?1000:$dispatch->another_weight}" class="form-control" name="dispatch[another_weight]"  style="width:100px;"></td>
-                            {else}
-                            <div class='show_h form-control-static'>{php echo empty($dispatch->another_weight)?1000:$dispatch->another_weight}</div>
-                            {/if}
                             <td class="show_h text-center">
-                                {ife 'shop.dispatch' $dispatch}
                                 <input type="text" value="{php echo $dispatch->another_weight_price}" class="form-control" name="dispatch[another_weight_price]"  style="width:100px;"></td>
-                            {else}
-                            <div class='show_h form-control-static'>{php echo $dispatch->another_weight_price}</div>
-                            {/if}
-
                             <td class="show_h"></td>
 
                             <td class="show_n text-center">
-                                {ife 'shop.dispatch' $dispatch}
                                 <input type="number" value="{php echo empty($dispatch->first_piece)?1:$dispatch->first_piece}" class="form-control" name="dispatch[first_piece]" style="width:100px;"></td>
-                            {else}
-                            <div class='show_n form-control-static'>{php echo empty($dispatch->first_piece)?1:$dispatch->first_piece}</div>
-                            {/if}
                             <td class="show_n text-center">
-                                {ife 'shop.dispatch' $dispatch}
                                 <input type="text" value="{php echo $dispatch->first_piece_price}" class="form-control" name="dispatch[first_piece_price]"  style="width:100px;"></td>
-                            {else}
-                            <div class='show_n form-control-static'>{php echo $dispatch->first_piece_price}</div>
-                            {/if}
                             <td class="show_n text-center">
-                                {ife 'shop.dispatch' $dispatch}
                                 <input type="number" value="{php echo empty($dispatch->another_piece)?1:$dispatch->another_piece}" class="form-control" name="dispatch[another_piece]"  style="width:100px;"></td>
-                            {else}
-                            <div class='show_n form-control-static'>{php echo empty($dispatch->another_piece)?1:$dispatch->another_piece}</div>
-                            {/if}
                             <td class="show_n text-center">
-                                {ife 'shop.dispatch' $dispatch}
                                 <input type="text" value="{php echo $dispatch->another_piece_price}" class="form-control" name="dispatch[another_piece_price]"  style="width:100px;"></td>
-                            {else}
-                            <div class='show_n form-control-static'>{php echo $dispatch->another_piece_price}</div>
-                            {/if}
 
                             <td class="show_n"></td>
                         </tr>
@@ -299,4 +266,33 @@
 
 </form>
 </div>
+<script>
+    function show_type(flag){
+        if (flag == 1) {
+            $('.weight').css("display", "none");
+            $('.fnum').css("display", "");
+            $('.show_h').hide();
+            $('.show_n').show();
+        } else {
+            $('.weight').css("display", "");
+            $('.fnum').css("display", "none");
+            $('.show_h').show();
+            $('.show_n').hide();
+        }
+    }
+    $(function(){
+        show_type({php echo $dispatch['calculate_type']});
+
+        $(':radio[name="dispatch[calculate_type]"]').click(function(){
+            var val = $(this).val();
+            show_type(val);
+        })
+        $(':radio[name="dispatch[dispatch_type]"]').click(function(){
+            var val = $(this).val();
+            $(".dispatch0,.dispatch1").hide();
+            $(".dispatch" + val ).show();
+        })
+
+    });
+</script>
 {template 'web/area/selectprovinces'}

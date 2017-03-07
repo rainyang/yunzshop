@@ -30,31 +30,6 @@ class Dispatch extends \app\common\models\goods\Dispatch
         return self::getDispatchList();
     }
 
-    public static function relationSave($goodsId, $data, $operate)
-    {
-        if(!$goodsId){
-            return false;
-        }
-        $dispatchModel = self::getModel($goodsId, $operate);
-        //判断deleted
-        if ($operate == 'deleted') {
-            return $dispatchModel->delete();
-        }
-        $data['goods_id'] = $goodsId;
-        $dispatchModel->setRawAttributes($data);
-        return $dispatchModel->save();
-    }
-
-    public static function getModel($goodsId,$operate)
-    {
-        $model = false;
-        if($operate != 'created') {
-            $model = static::where(['goods_id' => $goodsId])->first();
-        }
-        !$model && $model =  new static;
-
-        return $model;
-    }
     /**
      * 获取配送模板单条数据
      * @param int $goodsId
