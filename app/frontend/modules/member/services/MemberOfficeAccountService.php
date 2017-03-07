@@ -63,6 +63,11 @@ class MemberOfficeAccountService extends MemberMcService
                     $member_info = McMappingFansModel::getUId($uniacid, $userinfo['openid']);
                     $member_id = $member_info['uid'];
 
+                    //添加mc_members表
+                    //添加yz_member表
+                    //添加mapping_fans表
+
+
                     //添加ims_yz_member_unique表
                     MemberUniqueModel::insertData(array(
                         'uniacid' => $uniacid,

@@ -25,10 +25,7 @@ class MemberController extends BaseController
     private $pageSize = 20;
 
     public function __construct()
-    {
-        $this->groups = MemberGroup::getMemberGroupList();
-        $this->levels = MemberLevel::getMemberLevelList();
-    }
+    {}
 
     /**
      * 列表
@@ -36,6 +33,9 @@ class MemberController extends BaseController
      */
     public function index()
     {
+        $groups = MemberGroup::getMemberGroupList();
+        $levels = MemberLevel::getMemberLevelList();
+
         $list = Member::getMembers($this->pageSize);
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
@@ -47,8 +47,8 @@ class MemberController extends BaseController
 
         $this->render('member/member_list',[
             'list' => $list,
-            'levels' => $this->levels,
-            'groups' => $this->groups,
+            'levels' => $levels,
+            'groups' => $groups,
             'endtime' => $endtime,
             'starttime' => $starttime,
             'total' => $list['total'],
@@ -63,6 +63,9 @@ class MemberController extends BaseController
      */
     public function detail()
     {
+        $groups = MemberGroup::getMemberGroupList();
+        $levels = MemberLevel::getMemberLevelList();
+
         $uid = \YunShop::request()->id ? intval(\YunShop::request()->id) : 0;
 
         if ($uid == 0 || !is_int($uid)) {
@@ -74,8 +77,8 @@ class MemberController extends BaseController
 
         $this->render('member/member_detail',[
             'member' => $member,
-            'levels' => $this->levels,
-            'groups' => $this->groups,
+            'levels' => $levels,
+            'groups' => $groups,
         ]);
     }
 
@@ -175,6 +178,9 @@ class MemberController extends BaseController
 
     public function search()
     {
+        $groups = MemberGroup::getMemberGroupList();
+        $levels = MemberLevel::getMemberLevelList();
+
         $parames = \YunShop::request();
 
         $list = Member::searchMembers($this->pageSize, $parames);
@@ -188,8 +194,8 @@ class MemberController extends BaseController
 
         $this->render('member/member_list',[
             'list' => $list,
-            'levels' => $this->levels,
-            'groups' => $this->groups,
+            'levels' => $levels,
+            'groups' => $groups,
             'endtime' => $endtime,
             'starttime' => $starttime,
             'total' => $list['total'],
