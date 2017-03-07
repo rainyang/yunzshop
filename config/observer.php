@@ -22,7 +22,7 @@ return [
             'function'=>'relationSave'
         ],
         'dispatch'=>[
-            'class'=>'app\backend\modules\goods\models\Dispatch',
+            'class'=>'app\backend\modules\goods\models\GoodsDispatch',
             'function'=>'relationSave'
         ],
 

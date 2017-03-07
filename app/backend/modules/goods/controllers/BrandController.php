@@ -26,8 +26,8 @@ class BrandController extends BaseController
         //$shopset   = Setting::get('shop');
 
         $pageSize = 5;
-        $list = Brand::getBrands($pageSize);
-        $list = $list->toArray();
+        $list = Brand::getBrands()->paginate($pageSize)->toArray();
+        
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         $this->render('list', [
@@ -35,15 +35,6 @@ class BrandController extends BaseController
             'pager' => $pager,
             //'shopset' => $shopset
         ]);
-    }
-
-    public function handle(TestGoodsEvent $event)
-    {
-        echo "<br/>";
-        var_dump($event);
-
-        echo "BBBBB*****!";
-        echo "<br/>";
     }
 
     /**

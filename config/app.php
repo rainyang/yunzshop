@@ -181,7 +181,9 @@ return [
         Orangehill\Iseed\IseedServiceProvider::class,//数据生成
         Adamkearsley\ConvertMigrations\ConvertMigrationsServiceProvider::class,//转换migration
         iscms\Alisms\AlidayuServiceProvider::class,//阿里大鱼
-        Maatwebsite\Excel\ExcelServiceProvider::class,//Excel组合
+        Maatwebsite\Excel\ExcelServiceProvider::class,//Excel组合,
+        Way\Generators\GeneratorsServiceProvider::class,
+        Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
         
     ],
 

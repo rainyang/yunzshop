@@ -35,19 +35,21 @@ class Category extends BaseModel
      * @param $pageSize
      * @return mixed
      */
-    public static function getCategorys($parentId, $pageSize)
+    public static function getCategorys($parentId)
     {
-        $key = 'goods.ategory.' . $parentId . '.' .$pageSize;
-        $data = \Cache::get($key);
-        if(!$data){
-            $data = self::uniacid()
-                ->where('parent_id', $parentId)
-                ->orderBy('id', 'asc')
-                ->paginate($pageSize);
-            \Cache::put($key,$data,36000);
-        }
+//        $key = 'goods.category.' . $parentId . '.' .$pageSize;
+//        $data = \Cache::get($key);
+//        if(!$data){
+//            $data = self::uniacid()
+//                ->where('parent_id', $parentId)
+//                ->orderBy('id', 'asc')
+//                ->paginate($pageSize);
+//            \Cache::put($key,$data,36000);
+//        }
 
-        return $data;
+        return $data = self::uniacid()
+            ->where('parent_id', $parentId)
+            ->orderBy('id', 'asc');
     }
 
 

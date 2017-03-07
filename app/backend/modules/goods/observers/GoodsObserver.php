@@ -37,54 +37,44 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         if ($model->notices) {
             return Notices::validator($model->notices);
         }
+        $this->_pluginObserver($model,'saving');
 
     }
 
 
     public function saved(Model $model)
     {
-//        if ($model->share) {
-//            $share = new Share();
-//            $share->setRawAttributes($model->share);
-//            $share->save();
-//        }
-//        if ($model->privilege) {
-//            $privilege = new Privilege();
-//            $model->privilege['show_levels'] = PrivilegeService::stringToArray($model->privilege['show_levels']);
-//            $privilege->setRawAttributes($model->privilege);
-//            $privilege->save();
-//        }
-//        if ($model->discount) {
-//            $discounts = DiscountService::resetArray($model->discount);
-//            foreach ($discounts as $discount) {
-//                $discountModel = new Discount();
-//                $discountModel->setRawAttributes($discount);
-//                $discountModel->save();
-//            }
-//        }
-//        if ($model->notices) {
-//            $notice = new Notices();
-//            $notice->setRawAttributes($model->notices);
-//            $notice->save();
-//        }
+        $this->_pluginObserver($model,'saved');
+    }
+
+    public function created(Model $model)
+    {
         $this->_pluginObserver($model,'created');
     }
-    
+
+    public function updating(Model $model)
+    {
+        if ($model->share) {
+            return Share::validator($model->share);
+        }
+        if ($model->privilege) {
+            $model->privilege['show_levels'] = PrivilegeService::arrayToSting($model->privilege['show_levels']);
+            return Privilege::validator($model->privilege);
+        }
+        if ($model->discount) {
+            return Discount::validator($model->discount);
+        }
+        $this->_pluginObserver($model,'updating');
+
+    }
+
+    public function updated(Model $model)
+    {
+        $this->_pluginObserver($model,'updated');
+    }
+
     public function deleted(Model $model)
     {
-//        if (!empty(Share::getInfo($model->goodsId))) {
-//            Share::deletedShare($model->goodsId);
-//        }
-//        if (!empty(Privilege::getInfo($model->goodsId))) {
-//            Privilege::deletedPrivilege($model->goodsId);
-//        }
-//        if (!empty(Discount::getInfo($model->goodsId))) {
-//            Discount::deletedDiscount($model->goodsId);
-//        }
-//        if (!empty(Notices::getInfo($model->id))) {
-//            Notices::deletedNotices($model->id);
-//        }
-
         $this->_pluginObserver($model,'deleted');
     }
 
