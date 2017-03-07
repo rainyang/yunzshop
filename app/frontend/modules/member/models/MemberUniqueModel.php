@@ -17,6 +17,8 @@ class MemberUniqueModel extends Model
 {
     public $table = 'yz_member_unique';
 
+    public $dateFormat  = 'U';
+
     /**
      * 检查是否存在unionid
      *
@@ -60,6 +62,6 @@ class MemberUniqueModel extends Model
     public static function updateData($data)
     {
         self::where('unique_id', $data['unique_id'])
-            ->update(array('type', $data['type']));
+            ->update(['type'=>$data['type']]);
     }
 }

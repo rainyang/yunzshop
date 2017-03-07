@@ -9,9 +9,8 @@
 namespace app\common\models;
 
 
-use Illuminate\Database\Eloquent\Model;
 
-class MemberHistory extends Model
+class MemberHistory extends BaseModel
 {
     protected $table = 'yz_member_history';
 

@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Str;
+
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
 
@@ -105,7 +107,7 @@ class YunShop
         if ($routes) {
             $length = count($routes);
             foreach ($routes as $k => $r) {
-                $ucFirstRoute = self::getUcfirstName($r);
+                $ucFirstRoute = ucfirst(Str::camel($r));
                 $controllerFile = $path . '/controllers/' . $ucFirstRoute . 'Controller.php';
                 if (file_exists($controllerFile)) {
                     $namespace .= '\\controllers\\' . $ucFirstRoute . 'Controller';
@@ -118,7 +120,7 @@ class YunShop
                     if ($length !== $k + 1) {
                         exit('no found route:' . self::request()->route);
                     }
-                    $action = strpos($r, '-') === false ? $r : lcfirst(self::getUcfirstName($r));
+                    $action = strpos($r, '-') === false ? $r : Str::camel($r);
                 }
 
             }
@@ -187,7 +189,7 @@ class YunComponent
     }
 }
 
-class YunRequest extends YunComponent
+class YunRequest extends YunComponent implements ArrayAccess
 {
     protected $values;
 
@@ -196,6 +198,25 @@ class YunRequest extends YunComponent
         global $_GPC;
         $this->values = $_GPC;
     }
+    public function offsetUnset($offset){
+        unset($this->values[$offset]);
+    }
+    public function offsetSet($offset, $value){
+        $this->values[$offset] = $value;
+    }
+    public function offsetGet($offset){
+        if(isset($this->values[$offset])){
+            return $this->values[$offset];
+        }
+        return null;
+    }
+    public function offsetExists($offset){
+        if(isset($this->values[$offset])){
+            return true;
+        }
+        return false;
+    }
+
 }
 
 class YunApp extends YunComponent

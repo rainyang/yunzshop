@@ -10,12 +10,18 @@ namespace app\backend\modules\goods\controllers;
 
 use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\models\Goods;
+use app\backend\modules\goods\models\GoodsOption;
+use app\backend\modules\goods\models\GoodsSpecItem;
+use app\backend\modules\goods\services\GoodsOptionService;
 use app\backend\modules\goods\services\GoodsService;
 use app\common\components\BaseController;
 use app\backend\modules\goods\services\CategoryService;
 use app\backend\modules\goods\models\GoodsParam;
 use app\backend\modules\goods\models\GoodsSpec;
+use app\common\components\Widget;
 use app\common\helpers\PaginationHelper;
+use app\common\helpers\Url;
+use Setting;
 
 
 class GoodsController extends BaseController
@@ -23,7 +29,7 @@ class GoodsController extends BaseController
     private $goods_id = null;
     private $shopset;
     private $shoppay;
-    private $goods;
+    //private $goods;
     private $lang = null;
 
     public function __construct()
@@ -48,13 +54,8 @@ class GoodsController extends BaseController
             'shopsubmit' => "发布商品"
         );
         $this->goods_id = (int)\YunShop::request()->id;
-        $this->shopset   = m('common')->getSysset('shop');
-        $this->init();
-    }
-
-    public function init()
-    {
-        $this->goods = new Goods();
+        $this->shopset = Setting::get('shop');
+        //$this->init();
     }
 
     public function index()
@@ -66,20 +67,13 @@ class GoodsController extends BaseController
             'is_recommand' => '推荐',
             'is_discount' => '促销',
         ];
-
-/*        $total = Goods::getList()->toArray();
-
-        $pindex = max(1, intval(\YunShop::request()->page));
-        $psize = 10;
-        $pager = PaginationHelper::show($total, $pindex, $psize);*/
-
+        
         $list = Goods::getList()->toArray();
-        //$list->links();
-        //dd($list);
-        //或者模板路径可写全  $this->render('order/display/index',['list'=>$list]);
-        //以下为简写
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         $this->render('goods/index', [
-            'list' => $list,
+            'list' => $list['data'],
+            'pager' => $pager,
             'shopset' => $this->shopset,
             'lang' => $this->lang,
             'product_attr_list' => $product_attr_list,
@@ -88,27 +82,42 @@ class GoodsController extends BaseController
 
     public function create()
     {
-
         $params = new GoodsParam();
-        //$params = new GoodsParam();
+        $goodsModel = new Goods();
+        $requestGoods = \YunShop::request()->goods;
+        if ($requestGoods) {
+            //$widgetPost = \YunShop::request()->widget;
+            //dd($widgetPost);
+            $goodsModel->setRawAttributes($requestGoods);
+            $goodsModel->widgets = \YunShop::request()->widgets;
+            $goodsModel->uniacid = \YunShop::app()->uniacid;
 
-        /*//print_r(\YunShop::app());exit;
-        $goods = Goods::getGoodsById(2);
-        $params = $goods->hasManyParams;
-
-        $a = $goods->hasManySpecs;
-        dd($a);exit;
-        exit;*/
-
+            if ($goodsModel->save()) {
+                //dd($goodsModel);
+                GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
+            } else {
+                $this->error('商品修改失败');
+            }
+        }
+        
         $catetorys = Category::getAllCategoryGroup();
         //dd($catetorys);
-        $catetory_menus = CategoryService::tpl_form_field_category_level3(
-            'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
-        );
-
+        if ($this->shopset['catlevel'] == 3) {
+            $catetory_menus = CategoryService::tpl_form_field_category_level3(
+                'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
+            );
+        } else {
+            $catetory_menus = CategoryService::tpl_form_field_category_level2(
+                'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
+            );
+        }
+        //dd($goodsModel);
         $allspecs = [];
         $this->render('goods/goods', [
-            'goods' => $this->goods,
+            'goods' => $goodsModel,
             'lang'  => $this->lang,
             'params'  => $params,
             'allspecs'  => $allspecs,
@@ -119,27 +128,63 @@ class GoodsController extends BaseController
         ]);
     }
 
-    public function store()
+
+    public function edit()
     {
-        $post = \YunShop::request();
+        $this->goods_id = \YunShop::request()->id;
+        $requestGoods = \YunShop::request()->goods;
+        $goodsModel = Goods::with('hasManyParams')->with('hasManySpecs')->find($this->goods_id);//->getGoodsById(2);
+        //dd($goodsModel->hasManyParams->toArray());
 
-        //$this->goods->fill($post->goods);
-        //$this->goods->saveOrFail();
-        //GoodsParam::saveParam($post);
-        GoodsSpec::saveSpec($post);
-        echo 'insert ok!';
-    }
+        foreach ($goodsModel->hasManySpecs as &$spec)
+        {
+            $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->get()->toArray();
+        }
+        
+        $optionsHtml = GoodsOptionService::getOptions($this->goods_id, $goodsModel->hasManySpecs);
+        $goodsModel->piclist = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
+        $catetorys = Category::getAllCategoryGroup();
+        if ($requestGoods) {
+            //将数据赋值到model
+            $goodsModel->setRawAttributes($requestGoods);
+            $goodsModel->widgets = \YunShop::request()->widgets;
+            //其他字段赋值
+            $goodsModel->uniacid = \YunShop::app()->uniacid;
+            $goodsModel->id = $this->goods_id;
+            //数据保存
+            //dd($goodsModel);
+            if ($goodsModel->save()) {
+                GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                //显示信息并跳转
+                return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
+            } else {
+                $this->error('商品修改失败');
+            }
+        }
+        //获取分类2/3级联动
+        if ($this->shopset['catlevel'] == 3) {
+            $catetory_menus = CategoryService::tpl_form_field_category_level3(
+                'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
+            );
+        } else {
+            $catetory_menus = CategoryService::tpl_form_field_category_level2(
+                'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
+            );
+        }
 
-
-
-    public function edit($id)
-    {
-
-    }
-
-    public function update($id)
-    {
-
+        //dd($goodsModel);
+        $this->render('goods/goods', [
+            'goods' => $goodsModel,
+            'lang'  => $this->lang,
+            'params'  => $goodsModel->hasManyParams->toArray(),
+            'allspecs'  => $goodsModel->hasManySpecs->toArray(),
+            'html'  => $optionsHtml,
+            'catetory_menus'  => $catetory_menus,
+            'virtual_types' => [],
+            'shopset' => $this->shopset
+        ]);
     }
 
     public function destroy($id)
@@ -183,6 +228,8 @@ class GoodsController extends BaseController
      */
     public function getSpecItemTpl()
     {
+        $goodsModel = Goods::find($this->goods_id);
+
         $spec     = array(
             "id" => \YunShop::request()->specid,
         );
@@ -198,7 +245,7 @@ class GoodsController extends BaseController
 
         $this->render('goods/tpl/spec_item', [
             'spec' => $spec,
-            'goods' => $this->goods,
+            'goods' => $goodsModel,
             'specitem' => $specitem,
         ]);
     }
@@ -212,7 +259,33 @@ class GoodsController extends BaseController
         $keyword = \YunShop::request()->keyword;
         $goods = Goods::getGoodsByName($keyword);
         $goods = set_medias($goods, array('thumb', 'share_icon'));
-        include $this->template('web/shop/query');
+       return $this->render('web/shop/query',['goods'=>$goods]);
+
     }
 
+    public function test()
+    {
+        $request = [
+            'goods' =>
+                ['title'=>'title1',],
+            'widgets'=>[
+                'notice'=>[
+                    'uid'=>7,'type'=>[0,2]
+                ],
+                'sale'=>[
+                    'love_money' => 1,
+                    'max_point_deduct' => 2,
+                    'max_balance_deduct' => 3,
+                    'ed_num' => 4,
+                    'ed_money' => 5,
+                    'ed_areas' => '太原市;大同市;阳泉市;长治市;晋城市;朔州市;晋中市;运城市;忻州市;临汾市;吕梁市'
+                ]
+
+            ]
+        ];
+        $goods = new Goods($request['goods']);
+        $goods->setRawAttributes($request['goods']);
+        $goods->widgets = $request['widgets'];
+        $goods->save();
+    }
 }

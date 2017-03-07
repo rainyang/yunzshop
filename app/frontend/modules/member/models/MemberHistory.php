@@ -9,13 +9,10 @@
 namespace app\frontend\modules\member\models;
 
 
-use app\backend\modules\member\models\MemberLevel;
-use Illuminate\Database\Eloquent\Model;
 
-class MemberHistory extends Model
+class MemberHistory extends \app\common\models\MemberHistory
 {
     //public $timestamps = false;
-    protected $table = 'yz_member_history';
 
     /**
      *  不可填充字段.
@@ -24,23 +21,15 @@ class MemberHistory extends Model
      */
     protected $guarded = [''];
     /**
-     * 获取会员浏览记录
-     * @Author::yitian 2017-02-27 qq:751818588
-     * @access public
+     * Get member browsing records
+     *
      * @param int $memberId 会员ID
-     * @param int $uniacid 公众号ID
      *
      * @return object $list
      **/
-    public static function getMemberHistoryList($memberId, $uniacid)
+    public static function getMemberHistoryList($memberId)
     {
-        $list = MemberHistory::where('member_id', $memberId)
-            ->where('uniacid', $uniacid)
-            //->orderBy('createtime', 'desc')
-            ->take(10)
-            ->get();
-
-        return $list;
+        return MemberHistory::uniacid()->where('member_id', $memberId)->get()->toArray();
     }
     /**
      * 添加浏览记录【增】
@@ -100,8 +89,11 @@ class MemberHistory extends Model
      * @access public
      * @param int $goodsId 商品ID
      **/
-    public static function hasMemberHistory($goodsId)
+    public static function hasMemberHistory($memberId, $goodsId)
     {
-
+        return static::uniacid()
+            ->where('member_id', $memberId)
+            ->where('goods_id', $goodsId)
+            ->first();
     }
 }

@@ -58,9 +58,9 @@ class BaseModel extends Model
      *
      * @return string
      */
-    public function getDateFormat() {
-        return 'U';
-    }
+    //public function getDateFormat() {
+   //     return 'U';
+   // }
 
     //后台全局筛选统一账号scope
     public function scopeUniacid($query)

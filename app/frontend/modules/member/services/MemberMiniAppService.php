@@ -67,13 +67,13 @@ class MemberMiniAppService extends MemberMcService
             $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $json_user['unionid']);
 
             if (!empty($UnionidInfo['unionid'])) {
-                $types = expload($UnionidInfo['type'], '|');
+                $types = explode('|',$UnionidInfo['type']);
                 $member_id = $UnionidInfo['member_id'];
 
                 if (!in_array($this->_login_type, $types)) {
                     //更新ims_yz_member_unique表
                     MemberUniqueModel::updateData(array(
-                        'unque_id'=>$UnionidInfo['unque_id'],
+                        'unique_id'=>$UnionidInfo['unique_id'],
                         'type' => $UnionidInfo['type'] . '|' . $this->_login_type
                     ));
 

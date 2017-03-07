@@ -11,86 +11,89 @@ namespace app\backend\modules\member\controllers;
 
 use app\backend\modules\member\models\MemberGroup;
 use app\common\components\BaseController;
+use app\common\helpers\Url;
 
 class MemberGroupController extends BaseController
 {
-    protected $uniacid;
-
-    public function __construct()
-    {
-        $this->uniacid = \Yunshop::app()->uniacid;
-    }
-
+    /**
+     *  Member group list
+     */
     public function index()
     {
-        $groupsList = MemberGroup::getMemberGroupList($this->uniacid);
-
-        //所在会员组会员人数
-        //echo '<pre>'; print_r($groupsList); exit;
+        $groupsList = MemberGroup::getMemberGroupList();
         $this->render('member/group', [
-            'operation' => 'display',
             'groups_list' => $groupsList
         ]);
     }
+    /*
+     * Add member group
+     * */
+    public function store()
+    {
+        $groupModel = new MemberGroup();
 
+        $requestGroup = \YunShop::request()->group;
+        dd($requestGroup);
+        if ($requestGroup) {
+            $groupModel->setRawAttributes($requestGroup);
+            $groupModel->uniacid = \YunShop::app()->uniacid;
+
+            $validator = MemberGroup::validator($groupModel->getAttributes());
+            if ($validator->fails()) {
+                $this->error($validator->messages());
+            } else {
+                if ($groupModel->save()) {
+                    return $this->message("添加会员分组成功",Url::absoluteWeb('member.membergroup.index'));
+                } else {
+                    $this->error("添加会员分组失败");
+                }
+            }
+        }
+
+        $this->render('member/edit_group', ['group' => $requestGroup]);
+    }
+    /*
+     *  Update member group
+     * */
     public function update()
     {
-        $groupId = \YunShop::request()->id;
-        if($groupId) {
-            $group = MemberGroup::getMemberGroupByGroupID($groupId);
-        }else{
-            $group = array(
-                'id'        => '',
-                'group_name' => '',
-                'uniacid'   => ''
-            );
+        $groupModel = MemberGroup::getMemberGroupByGroupID(\YunShop::request()->id);
+        if(!$groupModel) {
+            return $this->message('未找到会员分组或已删除', Url::absoluteWeb('member.member-group.index'));
         }
-        $this->render('member/add_group', [
-            'group'     => $group
+        $requestGroup = \YunShop::request()->group;
+        if ($requestGroup) {
+            $groupModel->setRawAttributes($requestGroup);
+
+            $validator = MemberGroup::validator($requestGroup);
+            if ($validator->fails()) {
+                $this->error($validator->messages());
+            } else {
+                if ($groupModel->save()) {
+                    return $this->message('修改会员分组信息成功。', Url::absoluteWeb('member.member-group.index'));
+                } else {
+                    $this->error('修改会员分组信息失败！！！');
+                }
+            }
+        }
+        $this->render('member/edit_group', [
+            'group'     => $groupModel
         ]);
     }
-    public function create()
+    /*
+     * Destory member group
+     * */
+    public function destroy()
     {
-        $group = \YunShop::request()->group;
-        $result = MemberGroup::createMembergroup($group);
-        echo $result;exit;
-        return $this->sendMessage($result);
-    }
-    /**
-     * 删除会员分组【删】
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public
-     **/
-    public function delete()
-    {
-        $group_id = \YunShop::request()->id;
-        $result = MemberGroup::deleteMemberGroup($group_id);
-        return $this->sendMessage($result);
-    }
-    /**
-     * 修改会员分组【改】
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access public
-     **/
-    public function reviseMemberGroup()
-    {
-        $group = \YunShop::request()->group;
-        $result = MemberGroup::updateMemberGroupNameByGroupId($group['id'], $group['group_name']);
-        $this->sendMessage($result);
-    }
-    /**
-     * 反馈结果Combined data
-     * @Author::yitian 2017-02-24 qq:751818588
-     * @access protected
-     **/
-    protected function sendMessage($result)
-    {
-        if($result) {
-            Header("Location: ".$this->createWebUrl('member.membergroup.index'));exit;
+        $requestGroup = MemberGroup::getMemberGroupByGroupID(\YunShop::request()->id);
+        if (!$requestGroup) {
+            $this->error('未找到会员分组或已删除', Url::absoluteWeb('member.membergroup.index'));
         }
-    }
-    protected function combinedDate()
-    {
-
+        $result = MemberGroup::deleteMemberGroup(\YunShop::request()->id);
+        if ($result) {
+            return $this->message("删除会员分组成功。", Url::absoluteWeb('member.membergroup.index'));
+        } else {
+            $this->error("删除会员分组失败");
+        }
     }
 }

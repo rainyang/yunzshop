@@ -9,6 +9,8 @@
 namespace app\common\observers;
 
 
+use app\common\events\Event;
+use app\common\events\OrderCreatedEvent;
 use Eloquent;
 
 class TestMemberObserver extends BaseObserver
@@ -21,6 +23,7 @@ class TestMemberObserver extends BaseObserver
 
     public function created(Eloquent $model)
     {
+        \Event::fire(new OrderCreatedEvent($model));
 
     }
 

@@ -16,4 +16,6 @@ class GoodsService
     public static function getGoodsModel($goods_id){
         return GoodsModelFactory::createModel($goods_id);
     }
+
+    
 }

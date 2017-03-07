@@ -8,19 +8,17 @@
 
 namespace app\frontend\modules\member\controllers;
 
-use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\frontend\modules\member\services\factory\MemberFactory;
-use app\frontend\modules\member\models\MemberModel;
-use Illuminate\Session\Store;
+use app\frontend\modules\member\services\MemberService;
 use League\Flysystem\Exception;
 
 class LoginController extends BaseController
 {
     public function index()
     {
-        if ($this->isLogged()) {
-            show_json(1, array('member_id'=> session('member_id')));
+        if (MemberService::isLogged()) {
+           show_json(1, array('member_id'=> session('member_id')));
         }
 
         // 1-公众号;2-小程序;3-微信app;4-pc扫码;5-手机号/app;6-QQ
@@ -41,7 +39,10 @@ class LoginController extends BaseController
                     $member = MemberFactory::create('Wechat');
                     break;
                 case '5':
-                    if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost && $this->_validate())) {
+                    $mobile   = \YunShop::request()->mobile;
+                    $password = \YunShop::request()->password;
+
+                    if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost && MemberService::validate($mobile, $password))) {
                         $member = MemberFactory::create('Mc');
                     }
                     if (SZ_YI_DEBUG) {
@@ -66,31 +67,5 @@ class LoginController extends BaseController
         } else {
             return show_json(0, array('msg' => '登录失败'));
         }
-    }
-
-    private function _validate()
-    {
-        $data = array(
-            'mobile' => \YunShop::request()->mobile,
-            'password' => \YunShop::request()->password,
-        );
-        $validator = \Validator::make($data, array(
-            'mobile' => array('required',
-                'digits:11',
-                'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
-            ),
-            'password' => 'required'
-        ));
-
-        if ($validator->fails()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public function isLogged()
-    {
-        return !empty(session('member_id'));
     }
 }

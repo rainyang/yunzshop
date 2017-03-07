@@ -15,37 +15,37 @@ class Discount extends BaseModel
 {
     public $table = 'yz_goods_discount';
 
-    public static function getGoodsDiscountInfo($goodsId)
+    public static function getGoodsDiscountList($goodsId)
     {
         $goodsDiscountInfo = self::where('goods_id', $goodsId)
-            ->first();
+            ->get();
         return $goodsDiscountInfo;
     }
 
-    public static function validationMessages()
+
+    /**
+     * 自定义字段名
+     * 可使用
+     * @return array
+     */
+    public static function atributeNames()
     {
         return [
-            'required' => ' :attribute不能为空!',
-
-
-
+            'level_discount_type' => '等级方式',
+            'discount_method' => '折扣方式',
+            'level_id' => '会员等级id',
+            'discount_value' => '折扣或金额数值'
         ];
     }
 
-    /**
-     * 校验表单数据
-     *
-     * @param $data
-     * @return \Illuminate\Validation\Validator
-     */
-    public static function validator($data)
-    {
-        $validator = Validator::make($data, [
-            'goods_id' => 'required',
-            'level_discount_type' => 'integer',
-            'discount_method' => 'integer',
-        ], self::validationMessages());
 
-        return $validator;
+    public static function rules()
+    {
+        return [
+            'level_discount_type' => '',
+            'discount_method' => '',
+            'level_id' => '',
+            'discount_value' => ''
+        ];
     }
 }

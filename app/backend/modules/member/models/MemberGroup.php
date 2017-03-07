@@ -9,10 +9,13 @@
 namespace app\backend\modules\member\models;
 
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class MemberGroup extends \app\common\models\MemberGroup
 {
+    use SoftDeletes;
 
-    public $timestamps = false;
+    //public $timestamps = false;
     public $guarded = [''];
     /**
      *  Get membership information through member group ID
@@ -23,7 +26,7 @@ class MemberGroup extends \app\common\models\MemberGroup
      * */
     public static function getMemberGroupByGroupID($groupId)
     {
-        return  MemberGroup::where('id', $groupId)->first()->toArray();
+        return  MemberGroup::where('id', $groupId)->first();
     }
     /**
      * Get a list of members of the current public number
@@ -32,12 +35,12 @@ class MemberGroup extends \app\common\models\MemberGroup
      *
      * @return array
      **/
-    public static function getMemberGroupList($uniacid)
+    public static function getMemberGroupList()
     {
         $memberGroup = MemberGroup::select('id', 'group_name', 'uniacid')
-            ->where(['uniacid' => $uniacid])
+            ->uniacid()
             ->with(['member' => function($query){
-                return $query->select(['uniacid','group_id'])->count();
+                return $query->select(['group_id'])->where('uniacid', \YunShop::app()->uniacid);
             }])
             ->get()
             ->toArray();
@@ -48,28 +51,6 @@ class MemberGroup extends \app\common\models\MemberGroup
     public function member()
     {
         return $this->hasMany('app\backend\modules\member\models\MemberShopInfo','group_id','id');
-    }
-    /**
-     * Add member list
-     *
-     * @param array $data
-     *
-     * @return 1 or 0
-     **/
-    public static function createMemberGroup($data)
-    {
-        return  static::insert($data);
-    }
-    /**
-     * Modify membership list by member group ID
-     *
-     * @param int $groupId
-     *
-     * @return 1 or 0
-     **/
-    public static function updateMemberGroupNameByGroupId($groupId, $groupName)
-    {
-        return  static::where('id', $groupId)->update(['group_name' => $groupName]);
     }
     /**
      * Delete member list

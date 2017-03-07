@@ -1,6 +1,7 @@
 <?php
 
 namespace app\common\models;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Created by PhpStorm.
@@ -10,7 +11,15 @@ namespace app\common\models;
  */
 class Category extends BaseModel
 {
+    use SoftDeletes;
+
     public $table = 'yz_category';
+    
+    public $display_order = '0';
+    public $thumb = '';
+    public $description = '';
+    public $adv_img = '';
+    public $adv_url = '';
 
     /**
      *  不可填充字段.
@@ -19,42 +28,27 @@ class Category extends BaseModel
      */
     protected $guarded = [''];
 
-    public static function getCategoryList($uniacid, $parent_id)
-    {
-        return static::where('uniacid', $uniacid)
-            ->where('parent_id', $parent_id)
-            ->orderBy('id', 'asc')
-            ->get();
-    }
+    protected $fillable = [''];
+
     /**
-     * @param $uniacid
-     * @param $pindex
-     * @param $psize
      * @param $parent_id
+     * @param $pageSize
      * @return mixed
      */
-    public static function getCategorys($uniacid, $pindex, $psize, $parent_id)
+    public static function getCategorys($parentId, $pageSize)
     {
-        $data = self::where('uniacid', $uniacid)
-            ->where('parent_id', $parent_id)
-            ->orderBy('id', 'asc')
-            ->skip(($pindex - 1) * $psize)
-            ->take($psize)
-            ->get()
-            ->toArray();
+        $key = 'goods.ategory.' . $parentId . '.' .$pageSize;
+        $data = \Cache::get($key);
+        if(!$data){
+            $data = self::uniacid()
+                ->where('parent_id', $parentId)
+                ->orderBy('id', 'asc')
+                ->paginate($pageSize);
+            \Cache::put($key,$data,36000);
+        }
+
         return $data;
     }
 
-    /**
-     * @param $uniacid
-     * @param $parent_id
-     * @return mixed
-     */
-    public static function getCategoryTotal($uniacid,  $parent_id)
-    {
-        return self::where('uniacid', $uniacid)
-            ->where('parent_id', $parent_id)
-            ->count();
-    }
 
 }
