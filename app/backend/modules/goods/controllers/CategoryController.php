@@ -26,7 +26,6 @@ class CategoryController extends BaseController
     {
 
         $shopset   = Setting::get('shop');
-        
         $pageSize = 3;
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
 
