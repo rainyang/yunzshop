@@ -24,6 +24,32 @@ class Share extends \app\common\models\goods\Share
         return self::getGoodsShareInfo($goodsId);
     }
 
+    public static function relationSave($goodsId, $data, $operate)
+    {
+        if(!$goodsId){
+            return false;
+        }
+        $shareModel = self::getModel($goodsId, $operate);
+        //判断deleted
+        if ($operate == 'deleted') {
+            return $shareModel->delete();
+        }
+        $data['goods_id'] = $goodsId;
+        $shareModel->setRawAttributes($data);
+        return $shareModel->save();
+    }
+
+    public static function getModel($goodsId,$operate)
+    {
+        $model = false;
+        if($operate != 'created') {
+            $model = static::where(['goods_id' => $goodsId])->first();
+        }
+        !$model && $model =  new static;
+
+        return $model;
+    }
+
     /**
      * 商品分享关注数据添加
      * @param array $shareInfo

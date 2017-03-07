@@ -11,7 +11,7 @@ namespace app\frontend\modules\member\controllers;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\frontend\modules\member\models\MemberModel;
-use app\frontend\models\MemberModel as Member;
+use app\frontend\modules\member\services\MemberService;
 use app\common\models\MemberGroup;
 use Illuminate\Support\Str;
 use Setting;
@@ -20,7 +20,7 @@ class RegisterController extends BaseController
 {
     public function index()
     {
-        if (Member::isLogged()) {
+        if (MemberService::isLogged()) {
             show_json(1, array('member_id'=> session('member_id')));
         }
 
@@ -35,7 +35,7 @@ class RegisterController extends BaseController
             $confirm_password = '123456';
         }
 
-        if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost) && Member::validate($mobile, $password, $confirm_password)) {
+        if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost) && MemberService::validate($mobile, $password, $confirm_password)) {
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             if (!empty($member_info)) {
@@ -98,7 +98,7 @@ class RegisterController extends BaseController
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
-        if (!Member::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
+        if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
             return show_json(-1, array("msg" => "发送短信数量达到今日上限"));
         } else {
             $this->sendSms($mobile, $code);
@@ -140,7 +140,7 @@ class RegisterController extends BaseController
             $issendsms = send_sms($sms['account'], $sms['password'], $mobile, $code);
 
             if($issendsms['SubmitResult']['code'] == 2){
-                Member::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
+                MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return show_json(1);
             }
             else{
@@ -148,10 +148,10 @@ class RegisterController extends BaseController
             }
 
         } else {
-            $issendsms = Member::send_sms_alidayu($sms, $mobile, $code, $templateType);
+            $issendsms = MemberService::send_sms_alidayu($sms, $mobile, $code, $templateType);
 
             if(isset($issendsms['result']['success'])){
-                Member::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
+                MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return show_json(1);
             }
             else{

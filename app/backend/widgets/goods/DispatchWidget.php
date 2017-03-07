@@ -11,7 +11,7 @@ namespace app\backend\widgets\goods;
 
 use app\common\components\Widget;
 use app\backend\modules\goods\models\GoodsDispatch;
-use ClassesWithParents\G;
+use app\backend\modules\goods\models\Dispatch;
 
 class DispatchWidget extends Widget
 {
@@ -21,11 +21,13 @@ class DispatchWidget extends Widget
     {
         $dispatch = new GoodsDispatch();
         if ($this->goodsId && GoodsDispatch::getInfo($this->goodsId)) {
-            $dispatch = Dispatch::getInfo($this->goodsId);
+            $dispatch = GoodsDispatch::getInfo($this->goodsId);
         }
-        return $this->render('list',
+        $dispatch_templates = Dispatch::getAll();
+        return $this->render('goods/dispatch/goods_dispatch_info',
             [
-                'dispatch'=> $dispatch,
+                'dispatch' => $dispatch,
+                'dispatch_templates' => $dispatch_templates
             ]
         );
     }
