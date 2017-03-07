@@ -35,7 +35,7 @@ class Category extends BaseModel
      * @param $pageSize
      * @return mixed
      */
-    public static function getCategorys($parentId, $pageSize)
+    public static function getCategorys($parentId)
     {
 //        $key = 'goods.category.' . $parentId . '.' .$pageSize;
 //        $data = \Cache::get($key);
@@ -49,8 +49,7 @@ class Category extends BaseModel
 
         return $data = self::uniacid()
             ->where('parent_id', $parentId)
-            ->orderBy('id', 'asc')
-            ->paginate($pageSize);
+            ->orderBy('id', 'asc');
     }
 
 

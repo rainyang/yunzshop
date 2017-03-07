@@ -15,16 +15,14 @@ class Comment extends \app\common\models\Comment
      * @param $pageSize
      * @return mixed
      */
-    public static function getComments($pageSize)
+    public static function getComments()
     {
         return self::uniacid()
             ->where('comment_id', '0')
             ->with(['goods'=>function($query){
                 return $query->select(['id', 'title', 'thumb']);
             }])
-            ->orderBy('created_at', 'desc')
-            ->paginate($pageSize)
-            ->toArray();
+            ->orderBy('created_at', 'desc');
     }
 
     /**
