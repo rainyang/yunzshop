@@ -25,8 +25,8 @@ class DispatchController extends BaseController
     public function index()
     {
         $shopset = Setting::get('shop');
-        $pageSize = 5;
-        $list = Dispatch::getList($pageSize);
+        $pageSize = 10;
+        $list = Dispatch::uniacid()->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         $this->render('list', [
             'list' => $list,
