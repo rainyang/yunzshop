@@ -12,6 +12,8 @@ use app\backend\modules\goods\models\GoodsOption;
 
 class GoodsOptionService
 {
+
+
     public static function getOptions($goods_id, $allSpecs)
     {
         $options = GoodsOption::where('goods_id', $goods_id)->get();

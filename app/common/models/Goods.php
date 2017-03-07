@@ -16,7 +16,7 @@ class Goods extends BaseModel
     public $display_order = 0;
     //protected $appends = ['status'];
 
-    public $fillable = ['title'];
+    public $fillable = [];
 
     protected $guarded = ['widgets'];
 
@@ -25,9 +25,9 @@ class Goods extends BaseModel
     public $widgets = [];
     
 
-    public static function getList($pagesize=20, $condition = [])
+    public static function getList()
     {
-        return static::uniacid()->paginate($pagesize);
+        return static::uniacid();
     }
 
     public static function getGoodsById($id)
@@ -38,6 +38,16 @@ class Goods extends BaseModel
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
+    }
+
+    public function hasManyGoodsCategory()
+    {
+        return $this->hasOne('app\common\models\GoodsCategory');
+    }
+
+    public function hasManyCategoryGoods()
+    {
+        return $this->belongsTo('app\common\models\GoodsCategory');
     }
 
     public function hasManySpecs()

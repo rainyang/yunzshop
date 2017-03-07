@@ -3,6 +3,7 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\common\components\BaseController;
 use app\common\models\Goods;
+use app\common\models\GoodsCategory;
 use app\common\models\GoodsSpecItem;
 
 /**
@@ -13,17 +14,29 @@ use app\common\models\GoodsSpecItem;
  */
 class GoodsController extends BaseController
 {
-    public function getGoodsById()
+    public function getGoods()
     {
-        $id = \YunShop::request()->goods_id;
+        $id = \YunShop::request()->id;
         //$goods = new Goods();
         $goodsModel = Goods::with('hasManyParams')->with('hasManySpecs')->find($id);//->getGoodsById(2);
+        if (!$goodsModel) {
+            $this->errorJson('商品不存在.');
+        }
 
         foreach ($goodsModel->hasManySpecs as &$spec)
         {
             $spec['specitem'] = GoodsSpecItem::where('specid', $spec['id'])->get();
         }
 
-        dd($goodsModel->toJson());
+        //return $this->successJson($goodsModel);
+        $this->successJson($goodsModel);
     }
+
+    public function getGoodsList()
+    {
+        //$category_id = \YunShop::request()->category_id;
+        $goods  = GoodsCategory::find(2)->hasManyGoods;
+        dd($goods);
+    }
+
 }
