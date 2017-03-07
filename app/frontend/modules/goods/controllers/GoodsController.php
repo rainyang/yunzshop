@@ -42,11 +42,11 @@ class GoodsController extends BaseController
                 return $query->select(['goods_id', 'category_id'])->with(
                     [
                         'goods' => function ($query1) {
-                            return $query1->select(['id', 'title', 'thumb'])->where('status', '1');
+                            return $query1->select(['id', 'title', 'thumb', 'price'])->where('status', '1');
                         }
                     ]);
             }])->first();
-        dd($goodsList);
+        //dd($goodsList);
         // goodsList[0]中的0能否去掉?
         $goodsList = $goodsList->goodsCategories->filter(function($item){
             return $item->goods != null;
@@ -64,10 +64,12 @@ class GoodsController extends BaseController
      * @param null $option_id
      * @return bool|\Illuminate\Database\Eloquent\Model|null|static
      */
-    public function getGoodsCart($goods_id, $option_id = null)
+    public function getGoodsCart()
     {
+
+
         $goodsService = new GoodsService();
-        $goods = $goodsService->getGoodsByCart($goods_id, $option_id);
+        $goods = $goodsService->getGoodsByCart(\YunShop::request()->goods_id, \YunShop::request()->option_id);
         if (!$goods) {
             return false;
         }

@@ -9,9 +9,13 @@
 namespace app\common\models;
 
 use app\backend\modules\goods\observers\GoodsObserver;
+use HaoLi\LaravelAmount\Traits\AmountTrait;
+
 
 class Goods extends BaseModel
 {
+    use AmountTrait;
+
     public $table = 'yz_goods';
     public $display_order = 0;
     //protected $appends = ['status'];
@@ -23,7 +27,9 @@ class Goods extends BaseModel
     public $appends = [''];
 
     public $widgets = [];
-    
+
+    protected $amountFields = ['price', 'market_price', 'cost_price'];
+
 
     public static function getList()
     {

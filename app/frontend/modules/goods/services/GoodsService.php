@@ -49,6 +49,7 @@ class GoodsService
             })->first()->toArray();
         }
 
+        //dd($goodsModel->price);
         return $goodsModel;
         //dd($goodsModel->toArray());
     }
