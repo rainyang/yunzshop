@@ -23,11 +23,14 @@ use app\frontend\modules\goods\services\CategoryService;
 
 class CategoryController extends BaseController
 {
-    public static function getCategory()
+    public function getCategory()
     {
         $pageSize = 10;
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
-        $list = Category::getCategorys($parent_id, $pageSize);
-        return $list->toJson();
+        $list = Category::getCategorys($parent_id)->paginate($pageSize)->toArray();
+        if($list['data']){
+            return $this->successJson($list);
+        }
+        return $this->errorJson('未检测到数据!',$list);
     }
 }
