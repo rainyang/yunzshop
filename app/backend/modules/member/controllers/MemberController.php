@@ -19,15 +19,10 @@ use app\backend\modules\member\models\MemberShopInfo;
 
 class MemberController extends BaseController
 {
-    private $groups;
-    private $levels;
-
     private $pageSize = 20;
 
     public function __construct()
-    {
-
-    }
+    {}
 
     /**
      * 列表
@@ -178,6 +173,10 @@ class MemberController extends BaseController
         }
     }
 
+    /**
+     * 用户检索
+     *
+     */
     public function search()
     {
         $groups = MemberGroup::getMemberGroupList();
@@ -218,6 +217,70 @@ class MemberController extends BaseController
         $member = Member::getMemberByName($keyword);
         $member = set_medias($member, array('avatar', 'share_icon'));
         return $this->render('web/member/query',['ds'=>$member->toArray()]);
+    }
 
+    /**
+     * 数据导出
+     *
+     */
+    public function export()
+    {
+        $file_name = date('Ymdhis', time()) . '会员导出';
+        $total = 10;
+        $list = Member::getMembers($total);
+
+        $export_data[0] = ['会员ID', '粉丝', '姓名', '手机号', '等级', '分组', '注册时间', '积分', '余额', '订单', '金额', '关注'];
+
+        foreach ($list['data'] as $key => $item) {
+            if (!empty($item['yz_member']) && !empty($item['yz_member']['group'])) {
+                $group = $item['yz_member']['group']['group_name'];
+
+            } else {
+                $group = '';
+            }
+
+            if (!empty($item['yz_member']) && !empty($item['yz_member']['level'])) {
+                $level = $item['yz_member']['level']['level_name'];
+
+            } else {
+                $level = '';
+            }
+
+            $order = 0;
+            $price = 0;
+
+            if (!empty($item['has_one_fans'])) {
+                if ($item['has_one_fans']['followed'] == 1) {
+                    $fans = '已关注';
+                } else {
+                    $fans = '未关注';
+                }
+            } else {
+                $fans = '';
+            }
+
+            $export_data[$key+1] = [$item['uid'], $item['nickname'], $item['realname'], $item['mobile'],
+                $level, $group, date('YmdHis', $item['createtime']), $item['credit1'], $item['credit2'], $order,
+                $price, $fans];
+        }
+
+       \Excel::create($file_name, function ($excel) use ($export_data) {
+           // Set the title
+           $excel->setTitle('Office 2005 XLSX Document');
+
+           // Chain the setters
+           $excel->setCreator('芸众商城')
+               ->setLastModifiedBy("芸众商城")
+               ->setSubject("Office 2005 XLSX Test Document")
+               ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+               ->setKeywords("office 2005 openxml php")
+               ->setCategory("report file");
+
+           $excel->sheet('info', function($sheet) use ($export_data){
+               $sheet->rows($export_data);
+           });
+
+
+      })->export('xls');
     }
 }
