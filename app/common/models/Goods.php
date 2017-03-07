@@ -40,14 +40,14 @@ class Goods extends BaseModel
         return $this->hasMany('app\common\models\GoodsParam');
     }
 
+    public function hasManyOptions()
+    {
+        return $this->hasMany('app\common\models\GoodsOption');
+    }
+
     public function hasManyGoodsCategory()
     {
         return $this->hasOne('app\common\models\GoodsCategory');
-    }
-
-    public function hasManyCategoryGoods()
-    {
-        return $this->belongsTo('app\common\models\GoodsCategory');
     }
 
     public function hasManySpecs()
