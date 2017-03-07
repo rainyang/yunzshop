@@ -8,7 +8,6 @@
 
 namespace app\frontend\models;
 
-use app\frontend\modules\member\models\smsSendLimitModel;
 
 class MemberModel extends \app\common\models\Member
 {

@@ -11,16 +11,17 @@
  */
 namespace app\frontend\modules\member\models;
 
-use Eloquent;
-use Illuminate\Database\Eloquent\Model;
+use app\backend\models\BackendModel;
 
-class MemberModel extends Model
+class MemberModel extends BackendModel
 {
     public $table = 'mc_members';
 
     protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4' , 'credit5'];
 
     protected $fillable = ['email'=>'xxx@xx.com'];
+
+    public $timestamps = false;
 
     /**
      * 获取用户uid
@@ -76,9 +77,7 @@ class MemberModel extends Model
     {
         return self::where('uniacid', $uniacid)
             ->where('mobile', $mobile)
-            ->where('password', $password)
-            ->first()
-            ->toArray();
+            ->where('password', $password);
     }
 
     /**
@@ -94,5 +93,19 @@ class MemberModel extends Model
             ->where('uid', $member_id)
             ->first()
             ->toArray();
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param $uid
+     * @param $data
+     * @return mixed
+     */
+    public static function updataData($uid, $data)
+    {
+        return self::uniacid()
+            ->where('uid', $uid)
+            ->update($data);
     }
 }

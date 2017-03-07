@@ -11,17 +11,24 @@
  */
 namespace app\frontend\modules\member\models;
 
-use Illuminate\Database\Eloquent\Model;
+use app\backend\models\BackendModel;
 
-class McMappingFansModel extends Model
+class McMappingFansModel extends BackendModel
 {
     public $table = 'mc_mapping_fans';
+    public $timestamps = false;
 
     public function getOauthUserInfo()
     {
         return mc_oauth_userinfo();
     }
 
+    /**
+     * 获取
+     *
+     * @param $uniacid
+     * @return mixed
+     */
     public function getMemberId($uniacid)
     {
         $user_info = $this->getOauthUserInfo();
@@ -32,12 +39,41 @@ class McMappingFansModel extends Model
             ->toArray();
     }
 
-    public static function getUId($uniacid, $openid)
+    /**
+     * 获取粉丝uid
+     *
+     * @param $openid
+     * @return mixed
+     */
+    public static function getUId($openid)
     {
         return self::select('uid')
-            ->where('uniacid', $uniacid)
+            ->uniacid()
             ->where('openid', $openid)
             ->first()
             ->toArray();
+    }
+
+    /**
+     * 添加数据
+     *
+     * @param $data
+     */
+    public static function insertData($data)
+    {
+        self::insert($data);
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param $uid
+     * @param $data
+     */
+    public static function updateData($uid, $data)
+    {
+        self::uniacid()
+            ->where('uid', $uid)
+            ->update($data);
     }
 }
