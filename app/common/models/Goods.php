@@ -31,9 +31,9 @@ class Goods extends BaseModel
     public $widgets = [];
     
 
-    public static function getList($pagesize=20, $condition = [])
+    public static function getList()
     {
-        return static::uniacid()->paginate($pagesize);
+        return static::uniacid();
     }
 
     public static function getGoodsById($id)
@@ -48,7 +48,7 @@ class Goods extends BaseModel
 
     public function hasManyGoodsCategory()
     {
-        return $this->hasMany('app\common\models\GoodsCategory');
+        return $this->hasOne('app\common\models\GoodsCategory');
     }
 
     public function hasManySpecs()
@@ -101,7 +101,7 @@ class Goods extends BaseModel
      */
     public static function boot()
     {
-        parent::boot();
+        //parent::boot();
 
         //static::$booted[get_class($this)] = true;
         // 开始事件的绑定...
@@ -114,6 +114,6 @@ class Goods extends BaseModel
         });*/
 
         //注册观察者
-        static::observe(new GoodsObserver);
+        //static::observe(new GoodsObserver);
     }
 }

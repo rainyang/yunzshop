@@ -21,5 +21,5 @@ class GoodsOption extends BaseModel
     public $table = 'yz_goods_option';
 
     public $guarded = [];
-
+    
 }
