@@ -31,7 +31,7 @@ class Dispatch extends BaseModel
     public static function getDispatchList()
     {
         $dispatchList = self::uniacid()
-            ->get();
+            ->get()->toArray();
         return $dispatchList;
     }
 
