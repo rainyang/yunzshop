@@ -15,13 +15,12 @@ use app\backend\modules\goods\models\Dispatch;
 
 class DispatchWidget extends Widget
 {
-    public $goodsId = '';
 
     public function run()
     {
         $dispatch = new GoodsDispatch();
-        if ($this->goodsId && GoodsDispatch::getInfo($this->goodsId)) {
-            $dispatch = GoodsDispatch::getInfo($this->goodsId);
+        if ($this->goods_id && GoodsDispatch::getInfo($this->goods_id)) {
+            $dispatch = GoodsDispatch::getInfo($this->goods_id);
         }
         $dispatch_templates = Dispatch::getAll();
         return $this->render('goods/dispatch/goods_dispatch_info',

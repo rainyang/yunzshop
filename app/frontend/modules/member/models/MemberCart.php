@@ -19,7 +19,7 @@ class MemberCart extends \app\common\models\MemberCart
      *
      * @return array
      * */
-    public static function getMemberCartList($memberId, $pageSize)
+    public static function getMemberCartList($memberId)
     {
         $list = static::select('id', 'goods_id', 'total', 'option_id')
             ->where('member_id', $memberId)
@@ -27,7 +27,7 @@ class MemberCart extends \app\common\models\MemberCart
             ->with(['getGoods' => function($query) {
                 return $query->select('id', 'title');
             }])
-            ->paginate($pageSize)
+            ->get()
             ->toArray();
         return $list;
         //return static::uniacid()->where('member_id', $memberId)->get()->toArray();
