@@ -22,7 +22,7 @@ class Goods extends BaseModel
     public $display_order = 0;
     //protected $appends = ['status'];
 
-    public $fillable = ['title'];
+    public $fillable = [];
 
     protected $guarded = ['widgets'];
 
@@ -44,6 +44,11 @@ class Goods extends BaseModel
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
+    }
+
+    public function hasManyGoodsCategory()
+    {
+        return $this->hasMany('app\common\models\GoodsCategory');
     }
 
     public function hasManySpecs()

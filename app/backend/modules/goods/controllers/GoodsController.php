@@ -21,6 +21,7 @@ use app\backend\modules\goods\models\GoodsSpec;
 use app\common\components\Widget;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
+use app\common\models\GoodsCategory;
 use Setting;
 
 
@@ -94,6 +95,7 @@ class GoodsController extends BaseController
 
             if ($goodsModel->save()) {
                 //dd($goodsModel);
+                GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
                 GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
                 GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
                 GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
@@ -128,7 +130,6 @@ class GoodsController extends BaseController
         ]);
     }
 
-
     public function edit()
     {
         $this->goods_id = \YunShop::request()->id;
@@ -136,13 +137,18 @@ class GoodsController extends BaseController
         $goodsModel = Goods::with('hasManyParams')->with('hasManySpecs')->find($this->goods_id);//->getGoodsById(2);
         //dd($goodsModel->hasManyParams->toArray());
 
+        //获取规格名及规格项
         foreach ($goodsModel->hasManySpecs as &$spec)
         {
             $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->get()->toArray();
         }
-        
+
+        //获取具体规格内容html
         $optionsHtml = GoodsOptionService::getOptions($this->goods_id, $goodsModel->hasManySpecs);
+
+        //商品其它图片反序列化
         $goodsModel->piclist = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
+
         $catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
             //将数据赋值到model
