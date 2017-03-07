@@ -25,7 +25,7 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+
     }
 
     protected function formatValidationErrors(Validator $validator)
@@ -53,13 +53,15 @@ class BaseController extends Controller
 
     /**
      * 接口返回成功 JSON格式
-     * @param array $data
+     * @param string $message   提示信息
+     * @param array $data       返回数据
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function successJson($data = [])
+    protected function successJson($message = '', $data = [])
     {
         Response::json([
             'result' => 1,
+            'msg' => $message,
             'data' => $data
         ])->send();
         return;
@@ -67,8 +69,8 @@ class BaseController extends Controller
 
     /**
      * 接口返回错误JSON 格式
-     * @param string $message
-     * @param array $data
+     * @param string $message    提示信息
+     * @param array $data        返回数据
      * @return \Illuminate\Http\JsonResponse
      */
     protected function errorJson($message = '', $data = [])
