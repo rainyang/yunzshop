@@ -87,6 +87,7 @@ class ListController extends BaseController
             return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
         }])->get(['id','order_sn','goods_price','price'])->toArray();
         
-        dd($list);
+        // dd($list);
+        return $this->successJson($data = $list);
     }
 }
