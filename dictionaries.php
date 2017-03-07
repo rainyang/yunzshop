@@ -22,7 +22,7 @@ if($_GPC['table']){
     $sql .= 'INFORMATION_SCHEMA.COLUMNS ';
     $sql .= 'WHERE ';
     $sql .= "table_name = '{$_GPC['table']}' ";
-    $sql .= "AND TABLE_SCHEMA = 'yunzv2' ";
+    $sql .= "AND TABLE_SCHEMA = '{$_GPC['schema']}' ";
     //$sql .= " group BY COLUMN_NAME";
     $data = pdo_fetchall($sql);
     $html = "|字段|类型|空|默认|注释|\r\n";
@@ -63,6 +63,7 @@ if($_GPC['table']){
 
 ?>
 <form action="" method="post" name="myform">
+    数据库名:<input type="text" name="schema" value="">
     表明:<input type="text" name="table" value="">
     <input type="submit" value="提交">
 </form>
