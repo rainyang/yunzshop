@@ -45,15 +45,17 @@ class YunShop
         $controller->route = implode('.',$currentRoutes);
 
         //检测权限
-        if($controller->can($controller->route)) {
-            $content = $controller->$action(
-                Illuminate\Http\Request::capture()
-            );
-
-            exit($content);
-        }else{
+        if(self::isWeb() && !$controller->can($controller->route)){
             abort(403,'无权限');
         }
+        //设置uniacid
+        Setting::$uniqueAccountId = self::app()->uniacid;
+        //执行方法
+        $content = $controller->$action(
+            Illuminate\Http\Request::capture()
+        );
+
+        exit($content);
     }
 
 
@@ -191,7 +193,7 @@ class YunShop
 
 class YunComponent
 {
-    protected $values;
+    protected $values = [];
 
     public function __set($name, $value)
     {
@@ -219,7 +221,6 @@ class YunComponent
 
 class YunRequest extends YunComponent implements ArrayAccess
 {
-    protected $values;
 
     public function __construct()
     {
@@ -257,7 +258,7 @@ class YunApp extends YunComponent
         global $_W;
         $this->values = $_W;
         //$this->var = $_W;
-        $this->routeList = Config::get('route');
+        $this->routeList = Config::get('menu');
     }
 
     /**

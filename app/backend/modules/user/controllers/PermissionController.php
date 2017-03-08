@@ -15,7 +15,7 @@ class PermissionController extends BaseController
 {
     public function index()
     {
-        $menu = \Config::get('route');
+        $menu = \Config::get('menu');
         return view('permission.index',['permission'=>$menu])->render();
     }
 }

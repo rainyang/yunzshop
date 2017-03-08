@@ -159,6 +159,7 @@ class GoodsController extends BaseController
         $goodsModel->thumb_url = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
         //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
 
+
         $catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
             //将数据赋值到model
