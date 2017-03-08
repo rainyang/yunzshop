@@ -10,18 +10,17 @@ class ListController extends BaseController
     //获取指定状态的订单
     public function getOrders($status = '')
     {
-        $memberId = \Yunshop::request()->memberid;
+        $memberId = \Yunshop::request()->member_id;
         if (!$memberId) {
-            return $this->errorJson( $msg = '没有传递参数 - 用户ID', $data = []);
+            return $this->errorJson( $msg = '缺少访问参数', $data = []);
         }
 
         $list = OrderListModel::getRequestOrderList($status);
-        $list = $list->toArray();
 
         if ($list) {
-            return $this->successJson($data = $list);
+            return $this->successJson($data = $list->toArray());
         } else {
-            return $this->errorJson($msg = '查询无数据', $data = []);
+            return $this->errorJson($msg = '未找到数据', $data = []);
         }
     }
 
@@ -34,24 +33,24 @@ class ListController extends BaseController
     //待付款订单
     public function waitPay()
     {
-        return $this->getOrders(0);
+        return $this->getOrders(0); //待付款订单在数据表中的 status 是 0
     }
 
     //待发货订单
     public function waitSend()
     {
-        return $this->getOrders(1);
+        return $this->getOrders(1); //待发货订单在数据表中的 status 是 1
     }
 
     //待收货订单
     public function waitReceive()
     {
-        return $this->getOrders(2);
+        return $this->getOrders(2); //待收货订单在数据表中的 status 是 2
     }
 
     //已完成订单
     public function Completed()
     {
-        return $this->getOrders(3);
+        return $this->getOrders(3); //已完成订单在数据表中的 status 是 3
     }
 }
