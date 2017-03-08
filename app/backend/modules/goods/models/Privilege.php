@@ -43,7 +43,7 @@ class Privilege extends \app\common\models\goods\Privilege
         $privilegeModel->once_buy_limit = !empty($data['once_buy_limit']) ? $data['once_buy_limit'] : '0';
         $privilegeModel->total_buy_limit = !empty($data['total_buy_limit']) ? $data['total_buy_limit']: '0';
         $privilegeModel->time_begin_limit = !empty($data['time_begin_limit']) ? strtotime($data['time_begin_limit']) : '0';
-        $privilegeModel->time_end_limit = !empty($data['time_end_limit']) ? strtotime($data['time_end_limit']): '0';git
+        $privilegeModel->time_end_limit = !empty($data['time_end_limit']) ? strtotime($data['time_end_limit']): '0';
         return $privilegeModel->save();
     }
 
