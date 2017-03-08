@@ -11,13 +11,19 @@ namespace app\backend\modules\goods\models;
 class Comment extends \app\common\models\Comment
 {
 
+    
     /**
      * @param $pageSize
      * @return mixed
      */
     public static function getComments()
     {
+
+        $title = '123';
         return self::uniacid()
+            ->whereHas('goods', function($query)use($title){
+                return $query->where('title', 'like', $title.'%');
+            })
             ->where('comment_id', '0')
             ->with(['goods'=>function($query){
                 return $query->select(['id', 'title', 'thumb']);

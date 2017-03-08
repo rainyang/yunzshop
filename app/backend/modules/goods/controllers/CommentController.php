@@ -27,10 +27,11 @@ class CommentController extends BaseController
      */
     public function index()
     {
+
         $pageSize = 10;
         
         $search = CommentService::Search(\YunShop::request()->search);
-
+        
         $list = Comment::getComments()->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
