@@ -17,6 +17,7 @@ use app\backend\modules\member\models\MemberGroup;
 use app\common\helpers\PaginationHelper;
 use app\backend\modules\member\models\MemberShopInfo;
 
+
 class MemberController extends BaseController
 {
     private $pageSize = 20;
