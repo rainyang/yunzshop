@@ -9,27 +9,27 @@
 namespace app\common\observers;
 
 
-use Eloquent;
+use Illuminate\Database\Eloquent\Model;
 
 class BaseObserver {
 
-    public function saving(Eloquent $model) {}
+    public function saving(Model $model) {}
 
-    public function saved(Eloquent $model) {}
+    public function saved(Model $model) {}
 
-    public function updating(Eloquent $model) {}
+    public function updating(Model $model) {}
 
-    public function updated(Eloquent $model) {}
+    public function updated(Model $model) {}
 
-    public function creating(Eloquent $model) {}
+    public function creating(Model $model) {}
 
-    public function created(Eloquent $model) {}
+    public function created(Model $model) {}
 
-    public function deleting(Eloquent $model) {}
+    public function deleting(Model $model) {}
 
-    public function deleted(Eloquent $model) {}
+    public function deleted(Model $model) {}
 
-    public function restoring(Eloquent $model) {}
+    public function restoring(Model $model) {}
 
-    public function restored(Eloquent $model) {}
+    public function restored(Model $model) {}
 }

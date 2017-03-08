@@ -16,13 +16,28 @@ class CommentService
      */
     public static function Search($search = [])
     {
-        $data['keyword']    = '';
-        $data['fade']       = '';
-        $data['replystatus']= '';
-        $data['searchtime'] = '';
-        $data['starttime']  = strtotime('-1 month');
-        $data['endtime']    = time();
 
+        $data = [
+            'keyword' => '',
+            'fade' => '',
+            'searchtime' => '',
+            'starttime' => strtotime('-1 month'),
+            'endtime' => time()
+        ];
+        if ($search) {
+
+            $data['keyword'] = $search['keyword'];
+            $data['fade'] = $search['fade'];
+            $data['searchtime'] = $search['searchtime'];
+
+            if ($search['searchtime']) {
+                if ($search['time']['start'] != '请选择' && $search['time']['end'] != '请选择') {
+                    $data['starttime'] = strtotime($search['time']['start']);
+                    $data['endtime'] = strtotime($search['time']['end']);
+                }
+
+            }
+        }
         return $data;
     }
 
@@ -40,19 +55,19 @@ class CommentService
         }
         return $comment;
     }
-    
+
 
     public static function reply($reply, $comment, $member)
     {
         $data = [
-            'uniacid'   => $comment->uniacid,
-            'order_id'   => $comment->order_id,
-            'goods_id'   => $comment->goods_id,
-            'content'   => $reply['reply_content'],
-            'created_at'   => time(),
-            'comment_id'   => $comment->id,
-            'reply_id'   => $reply['reply_id'],
-            'reply_name'   => $member->nick_name,
+            'uniacid' => $comment->uniacid,
+            'order_id' => $comment->order_id,
+            'goods_id' => $comment->goods_id,
+            'content' => $reply['reply_content'],
+            'created_at' => time(),
+            'comment_id' => $comment->id,
+            'reply_id' => $reply['reply_id'],
+            'reply_name' => $member->nick_name,
         ];
 
         if (isset($reply['reply_images']) && is_array($reply['reply_images'])) {

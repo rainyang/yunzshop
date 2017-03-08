@@ -16,12 +16,12 @@ class OrderComplete
 
     public function __construct(Order $order_model)
     {
-        $this->order_model = $order_model->getData();
+        $this->order_model = $order_model;
     }
 
     public function completeable()
     {
-        if ($this->order_model['status'] == 3) {
+        if ($this->order_model->status == 3) {
             return true;
         }
     }

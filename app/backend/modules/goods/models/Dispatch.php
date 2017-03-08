@@ -19,12 +19,16 @@ class Dispatch extends \app\common\models\goods\Dispatch
      * @param int $goodsId
      * @return array
      */
-    public static function getList( $pageSize)
+    public static function getList()
     {
         return self::uniacid()
-            ->paginate($pageSize)
-            ->toArray();
+            ->get();
     }
+    public static function getAll()
+    {
+        return self::getDispatchList();
+    }
+
     /**
      * 获取配送模板单条数据
      * @param int $goodsId

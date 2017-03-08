@@ -11,8 +11,8 @@
     <div class="modal-dialog" style='width: 920px;'>
         <div class="modal-content">
             <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择区域</h3></div>
-            <div class="modal-body" style='height:280px;;' > 
-                
+            <div class="modal-body" style='height:280px;;' >
+
                 {loop $areas['address']['province'] $value}
 				{if $value['@attributes']['name']=='请选择省份'}{php continue;}{/if}
                 <div class='province'>
@@ -33,7 +33,7 @@
                     {/if}
                 </div>
                 {/loop}
-            
+
             </div>
             <div class="modal-footer">
                 <a href="javascript:;" id='btnSubmitArea' class="btn btn-success" data-dismiss="modal" aria-hidden="true">确定</a>
@@ -41,16 +41,16 @@
             </div>
         </div>
      </div>
-</div> 
+</div>
  <script language='javascript'>
     $(function(){
-   
+
         $('.province').mouseover(function(){
               $(this).find('ul').show();
         }).mouseout(function(){
               $(this).find('ul').hide();
         });
-        
+
         $('.cityall').click(function(){
             var checked = $(this).get(0).checked;
             var citys = $(this).parent().parent().find('.city');
@@ -71,7 +71,7 @@
         $('.city').click(function(){
             var checked = $(this).get(0).checked;
             var cityall = $(this).parent().parent().parent().parent().find('.cityall');
-          
+
             if(checked){
                 cityall.get(0).checked = true;
             }
@@ -82,21 +82,21 @@
             else{
                 cityall.next().html("");
             }
-        });    
-      
+        });
+
     });
-    
+
      function clearSelects(){
          $('.city').attr('checked',false).removeAttr('disabled');
          $('.cityall').attr('checked',false).removeAttr('disabled');
          $('.citycount').html('');
     }
-    
+
     function selectAreas(){
         clearSelects();
         var old_citys = $('#areas').html().split(';');
-      
-                
+
+
         $('.city').each(function(){
             var parentcheck = false;
             for(var i in old_citys){
@@ -110,16 +110,16 @@
                 $(this).parent().parent().parent().parent().find('.cityall').get(0).checked=  true;
             }
         });
-        
+
         $("#modal-areas").modal();
         var citystrs = '';
         $('#btnSubmitArea').unbind('click').click(function(){
-                   $('.city:checked').each(function(){              
+                   $('.city:checked').each(function(){
                        citystrs+= $(this).attr('city') +";";
-                   }); 
+                   });
                    $('#areas').html(citystrs);
                    $("#selectedareas").val(citystrs);
         })
-    
+
     }
 </script>

@@ -358,6 +358,7 @@ function isEnablePlugin($name)
 
 function p($name = '')
 {
+    return false;
     if (!isEnablePlugin($name)) {
         return false;
     }
@@ -670,7 +671,6 @@ function shop_template_parse($str, $inmodule = false)
 
 function ce($permtype = '', $item = null)
 {
-    return true;
     $perm = p('perm');
     if ($perm) {
         return $perm->check_edit($permtype, $item);
@@ -690,6 +690,8 @@ function cv($permtypes = '')
 
 function ca($permtypes = '')
 {
+    return true;
+
     if (!cv($permtypes)) {
         message('您没有权限操作，请联系管理员!', '', 'error');
     }
@@ -697,7 +699,8 @@ function ca($permtypes = '')
 
 function cp($pluginname = '')
 {
-    return true;
+    return false;
+
     $perm = p('perm');
     if ($perm) {
         return $perm->check_plugin($pluginname);

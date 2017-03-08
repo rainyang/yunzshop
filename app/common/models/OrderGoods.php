@@ -8,14 +8,18 @@
 
 namespace app\common\models;
 
-
-use Illuminate\Database\Eloquent\Model;
-
-class OrderGoods extends Model
+class OrderGoods extends BaseModel
 {
     public $table = 'yz_order_goods';
-    public function hasManyGoods()
+    protected $search_fields = ['goods_sn','title'];
+
+    public function hasOneGoods()
     {
-        return $this->hasMany('\app\common\models\Goods', 'goods_id', 'id');
+        return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');
+    }
+
+    public function belongsToGood()
+    {
+        return $this->belongsTo('\app\common\models\Goods', 'goods_id', 'id');
     }
 }

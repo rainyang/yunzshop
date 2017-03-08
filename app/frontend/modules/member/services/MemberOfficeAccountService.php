@@ -8,14 +8,17 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\MemberMcService;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
-use Illuminate\Session\Store;
+use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\SubMemberModel;
+use app\frontend\models\McGroupsModel;
+use app\common\models\MemberGroup;
+use app\common\models\MemberLevel;
 
 class MemberOfficeAccountService extends MemberMcService
 {
-    private $_login_type    = 1;
+    private $_login_type    = '1';
 
     public function __construct()
     {}
@@ -24,6 +27,7 @@ class MemberOfficeAccountService extends MemberMcService
     {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
+        $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
 
         $appId        = \YunShop::app()->account['key'];
         $appSecret    = \YunShop::app()->account['secret'];
@@ -38,7 +42,7 @@ class MemberOfficeAccountService extends MemberMcService
             $token    = @json_decode($resp['content'], true);
 
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
-                show_json(0, array('msg'=>'请求错误'));
+               return show_json(0, array('msg'=>'请求错误'));
             }
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
@@ -46,22 +50,102 @@ class MemberOfficeAccountService extends MemberMcService
             $userinfo    = @json_decode($resp_info['content'], true);
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-                $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid']);
+                $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
+
+                if (!empty($UnionidInfo)) {
+                    $UnionidInfo = $UnionidInfo->toArray();
+                }
 
                 if (!empty($UnionidInfo['unionid'])) {
-                    $types = expload($UnionidInfo['type'], '|');
+                    $types = explode('|', $UnionidInfo['type']);
                     $member_id = $UnionidInfo['member_id'];
 
                     if (!in_array($this->_login_type, $types)) {
                         //更新ims_yz_member_unique表
                         MemberUniqueModel::updateData(array(
-                            'unque_id'=>$UnionidInfo['unque_id'],
+                            'unique_id'=>$UnionidInfo['unique_id'],
                             'type' => $UnionidInfo['type'] . '|' . $this->_login_type
                         ));
                     }
+
+                    //更新mc_members
+                    $mc_data = array(
+                        'nickname' => stripslashes($userinfo['nickname']),
+                        'avatar' => $userinfo['headimgurl'],
+                        'gender' => $userinfo['sex'],
+                        'nationality' => $userinfo['country'],
+                        'resideprovince' => $userinfo['province'] . '省',
+                        'residecity' => $userinfo['city'] . '市'
+                    );
+                    MemberModel::updataData($UnionidInfo['member_id'], $mc_data);
+
+                    //更新mapping_fans
+                    $record = array(
+                        'openid' => $userinfo['openid'],
+                        'nickname' => stripslashes($userinfo['nickname']),
+                        'tag' => base64_encode(iserializer($userinfo))
+                    );
+                    McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
-                    $member_info = McMappingFansModel::getUId($uniacid, $userinfo['openid']);
-                    $member_id = $member_info['uid'];
+                    //添加mc_members表
+                    $default_groupid = McGroupsModel::getDefaultGroupId();
+
+                    $mc_data = array(
+                        'uniacid' => $uniacid,
+                        'email' => '',
+                        'groupid' => $default_groupid['groupid'],
+                        'createtime' => TIMESTAMP,
+                        'nickname' => stripslashes($userinfo['nickname']),
+                        'avatar' => $userinfo['headimgurl'],
+                        'gender' => $userinfo['sex'],
+                        'nationality' => $userinfo['country'],
+                        'resideprovince' => $userinfo['province'] . '省',
+                        'residecity' => $userinfo['city'] . '市',
+                        'salt' => '',
+                        'password' => ''
+                    );
+                    $member_id = MemberModel::insertData($mc_data);
+
+                    //添加yz_member表
+                    $default_sub_group_id = MemberGroup::getDefaultGroupI()->first();
+                    $default_sub_level_id = MemberLevel::getDefaultLevelId()->first();
+                    if (!empty($default_sub_group_id)) {
+                        $default_subgroup_id = $default_sub_group_id->id;
+                    } else {
+                        $default_subgroup_id = 0;
+                    }
+
+                    if (!empty($default_sub_level_id)) {
+                        $default_sublevel_id = $default_sub_level_id->id;
+                    } else {
+                        $default_sublevel_id = 0;
+                    }
+
+                    $sub_data = array(
+                        'member_id' => $member_id,
+                        'uniacid' => $uniacid,
+                        'agent_id' => $mid,
+                        'group_id' => $default_subgroup_id,
+                        'level_id' => $default_sublevel_id,
+                    );
+                    SubMemberModel::insertData($sub_data);
+
+                    //添加mapping_fans表
+                    $record = array(
+                        'openid' => $userinfo['openid'],
+                        'uid' => $member_id,
+                        'acid' => $uniacid,
+                        'uniacid' => $uniacid,
+                        'salt' => random(8),
+                        'updatetime' => TIMESTAMP,
+                        'nickname' => stripslashes($userinfo['nickname']),
+                        'follow' => 1,
+                        'followtime' => time(),
+                        'unfollowtime' => 0,
+                        'tag' => base64_encode(iserializer($userinfo))
+                    );
+                    McMappingFansModel::insertData($record);
+
 
                     //添加ims_yz_member_unique表
                     MemberUniqueModel::insertData(array(
@@ -74,16 +158,16 @@ class MemberOfficeAccountService extends MemberMcService
 
                 session()->put('member_id',$member_id);
             } else {
-                show_json(0, array('url'=> $authurl));
+                return show_json(0, array('url'=> $authurl));
             }
         } else {
             if (SZ_YI_DEBUG) {
                 header('location:' . $authurl);exit;
             }
-            show_json(0, array('url'=> $authurl));
+            return show_json(0, array('url'=> $authurl));
         }
 
-        show_json(1, array('member_id', session('member_id')));
+        return show_json(1, array('member_id', session('member_id')));
     }
 
     /**
@@ -97,7 +181,7 @@ class MemberOfficeAccountService extends MemberMcService
      */
     private function _getAuthUrl($appId, $url)
     {
-       return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
+       return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
     }
 
     /**

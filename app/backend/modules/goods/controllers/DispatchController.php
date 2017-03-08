@@ -25,8 +25,8 @@ class DispatchController extends BaseController
     public function index()
     {
         $shopset = Setting::get('shop');
-        $pageSize = 5;
-        $list = Dispatch::getList($pageSize);
+        $pageSize = 10;
+        $list = Dispatch::uniacid()->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         $this->render('list', [
             'list' => $list,
@@ -52,7 +52,6 @@ class DispatchController extends BaseController
             $dispatchModel->setRawAttributes($requestDispatch);
             //其他字段赋值
             $dispatchModel->uniacid = \YunShop::app()->uniacid;
-
             //字段检测
             $validator = Dispatch::validator($dispatchModel->getAttributes());
             if ($validator->fails()) {//检测失败
@@ -70,7 +69,7 @@ class DispatchController extends BaseController
 
         $this->render('info', [
             'dispatch' => $dispatchModel,
-            'areas' => $areas,
+            'parents' => $areas->toArray()
         ]);
     }
 

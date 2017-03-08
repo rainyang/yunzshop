@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\member\controllers;
 use app\common\components\BaseController;
+use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\models\MemberCart;
 
 /**
@@ -14,11 +15,24 @@ class MemberCartController extends BaseController
     public function index()
     {
         $memberId = '1';
-        $pageSize = '2';
-        $cartList = MemberCart::getMemberCartList($memberId, $pageSize);
+
+        $cartList = MemberCart::getMemberCartList($memberId);
+
+        $goods = new GoodsService();
+
+        $i = 0;
+        foreach ($cartList as $cart) {
+            $cart['goods'] = $goods->getGoodsByCart($cart['goods_id'], $cart['option_id']);
+            if ($cart['goods'] != false) {
+                $cartList[$i] = $cart;
+            } else {
+                unset($cartList[$i]);
+            }
+            $i += 1;
+        }
         dd($cartList);
-        $msg = '';
-        return $this->successResult($msg, $cartList);
+
+        return $this->successJson($cartList);
     }
     /**
      * Add member cart
@@ -52,56 +66,43 @@ class MemberCartController extends BaseController
                 if ($cartModel->save()) {
                     //输出
                     $msg = "添加购物车成功";
-                    return $this->successResult($msg);
+                    return $this->errorJson($msg);
                 }else{
                     $msg = "写入出错，添加购物车失败！！！";
-                    return $this->errorResult($msg);
+                    return $this->successJson($msg);
                 }
             }
         }
-        $msg = "数据出错，添加购物车失败！";
-        return $this->errorResult($msg);
+        $msg = "接受数据出错，添加购物车失败！";
+        return $this->errorJson($msg);
     }
-    /**
+    /*
+     *  Update memebr cart
+     **/
+    public function update()
+    {
+        //需要判断商品状态、限制数量、商品类型（实体、虚拟）
+    }
+    /*
      * Delete member cart
-     */
+     **/
     public function destroy()
     {
-        $level = MemberCart::getMemberCartById(\YunShop::request()->id);
-        if(!$level) {
+        $cart = MemberCart::getMemberCartById(\YunShop::request()->id);
+        if(!$cart) {
             $msg = "未找到该商品或已经删除";
-            return $this->errorResult($msg);
+            return $this->errorJson($msg);
         }
 
         $result = MemberCart::destroyMemberCart(\YunShop::request()->id);
         if($result) {
             $msg = "移除购物车成功。";
-            return $this->successResult($msg);
+            return $this->successJson($msg);
         }
         $msg = "写入出错，移除购物车失败！";
-        return $this->errorResult($msg);
+        return $this->errorJson($msg);
     }
 
-    protected function errorResult($msg, $data='')
-    {
-        $result = array(
-            'result' => '0',
-            'msg' => $msg,
-            'data' => $data
-        );
-        echo json_encode($result);
-        exit;
-    }
-    protected function successResult($msg, $data='')
-    {
-        $result = array(
-            'result' => '1',
-            'msg' => $msg,
-            'data' => $data
-        );
-        echo json_encode($result);
-        exit;
-    }
 
 
 }

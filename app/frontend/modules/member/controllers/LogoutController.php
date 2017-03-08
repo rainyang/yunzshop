@@ -8,10 +8,11 @@
 
 namespace app\frontend\modules\member\controllers;
 
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Session\Store;
+use app\common\components\BaseController;
 
-class LogoutController
+use Illuminate\Support\Facades\Cookie;
+
+class LogoutController extends BaseController
 {
     public function index()
     {
@@ -22,6 +23,6 @@ class LogoutController
 
         session()->forget('member_id');
 
-        return show_json(1);
+        $this->successJson();
     }
 }

@@ -28,12 +28,14 @@ class WaitPay implements StatusService
     {
         $result =
             [
-                ['name' => '付款',
-                    'api' => '/order/pay',//
-                    'value' => static::PAY],
+                [
+                    'name' => '付款',
+                    'api' => '/order/op/pay',//
+                    'value' => static::PAY
+                ],
                 [
                     'name' => '取消订单',
-                    'api' => 'cancel',
+                    'api' => '/order/op/cancelPay',
                     'value' => static::CANCEL
                 ],
             ];
