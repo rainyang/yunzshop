@@ -30,6 +30,7 @@ class Goods extends BaseModel
 
     protected $amountFields = ['price', 'market_price', 'cost_price'];
 
+    protected $search_fields = ['title'];
 
     public static function getList()
     {
