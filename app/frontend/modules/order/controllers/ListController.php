@@ -10,7 +10,7 @@ class ListController extends BaseController
     //获取指定状态的订单
     public function getOrders($status = '')
     {
-        $memberId = \Yunshop::request()->memberid;
+        $memberId = \Yunshop::request()->member_id;
         if (!$memberId) {
             return $this->errorJson( $msg = '缺少访问参数', $data = []);
         }
