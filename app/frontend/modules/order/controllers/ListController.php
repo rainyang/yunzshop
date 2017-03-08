@@ -15,12 +15,14 @@ class ListController extends BaseController
             return $this->errorJson( $msg = '缺少访问参数', $data = []);
         }
 
-        $list = OrderListModel::getRequestOrderList($status);
+        $pageSize = \Yunshop::request()->pagesize;
+        $pageSize = $pageSize ? $pageSize : 5;
+        $list = OrderListModel::getRequestOrderList($status, $memberId)->paginate($pageSize)->toArray();
 
-        if ($list) {
-            return $this->successJson($data = $list->toArray());
-        } else {
+        if ($list['total'] == 0) {
             return $this->errorJson($msg = '未找到数据', $data = []);
+        } else {
+            return $this->successJson($data = $list);
         }
     }
 
