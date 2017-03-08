@@ -27,10 +27,8 @@
 
 <!-- 确认发货 -->
 <div id="modal-confirmsend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
-	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
-		<input type='hidden' name='id' value='' />
-		<input type='hidden' name='op' value='deal' />
-		<input type='hidden' name='to' value='confirmsend' />
+	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order.confirm-send')}" method="post" enctype="multipart/form-data">
+		<input type='hidden' name='order_id' value='' />
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -51,7 +49,7 @@
 					<div class="form-group">
 						<label class="col-xs-10 col-sm-3 col-md-3 control-label">快递公司</label>
 						<div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-							<select class="form-control" name="express" id="express_company">
+							<select class="form-control" name="express_code" id="express_company">
 								<option value="" data-name="">其他快递</option>
 								<option value="shunfeng" data-name="顺丰">顺丰</option>
 								<option value="shentong" data-name="申通">申通</option>
@@ -144,13 +142,13 @@
 								<option value="zhongxinda" data-name="忠信达">忠信达</option>
 								<option value="zhimakaimen" data-name="芝麻开门">芝麻开门</option>
 							</select>
-							<input type='hidden' name='expresscom' id='expresscom' />
+							<input type='hidden' name='express_company_name' id='expresscom' />
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="col-xs-10 col-sm-3 col-md-3 control-label">快递单号</label>
 						<div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-							<input type="text" name="expresssn" class="form-control" />
+							<input type="text" name="express_sn" class="form-control" />
 						</div>
 					</div>
 					<div id="module-menus"></div>
@@ -166,10 +164,8 @@
 
 <!-- 取消发货 -->
 <div id="modal-cancelsend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
-	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
-		<input type='hidden' name='id' value='' />
-		<input type='hidden' name='op' value='deal' />
-		<input type='hidden' name='to' value='cancelsend' />
+	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order.cancel-order')}" method="post" enctype="multipart/form-data">
+		<input type='hidden' name='order_id' value='' />
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -350,7 +346,7 @@
 		var modal =$('#modal-confirmsend');
 		var itemid = $(btn).parent().find('.itemid').val();
 		    $(".id").val(itemid);
-			modal.find(':input[name=id]').val( itemid );
+			modal.find(':input[name=order_id]').val( itemid );
 			var addressdata  = eval('(' +$(btn).parent().find('.addressdata').val()+')');
 			modal.find('.realname').html(addressdata.realname);
 			modal.find('.mobile').html(addressdata.mobile);
