@@ -190,7 +190,7 @@ class YunShop
 
 class YunComponent
 {
-    protected $values;
+    protected $values = [];
 
     public function __set($name, $value)
     {
@@ -218,12 +218,11 @@ class YunComponent
 
 class YunRequest extends YunComponent implements ArrayAccess
 {
-    protected $values;
 
     public function __construct()
     {
         global $_GPC;
-        $this->values = $_GPC;
+        $this->values = $_GPC ?: [];
     }
     public function offsetUnset($offset){
         unset($this->values[$offset]);
@@ -248,13 +247,12 @@ class YunRequest extends YunComponent implements ArrayAccess
 
 class YunApp extends YunComponent
 {
-    protected $values;
     protected $routeList;
 
     public function __construct()
     {
         global $_W;
-        $this->values = $_W;
+        $this->values = $_W ?: ['uniacid'=>0];
         //$this->var = $_W;
         $this->routeList = Config::get('route');
     }
