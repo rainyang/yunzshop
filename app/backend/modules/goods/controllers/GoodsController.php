@@ -150,7 +150,8 @@ class GoodsController extends BaseController
         $optionsHtml = GoodsOptionService::getOptions($this->goods_id, $goodsModel->hasManySpecs);
 
         //商品其它图片反序列化
-        $goodsModel->piclist = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
+        //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
+        $goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
 
         $catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
