@@ -17,3 +17,4 @@ composer.lock
 /vendor/composer/autoload_real.php
 /vendor/composer/ClassLoader.php
 vendor/
+.DS_Store
