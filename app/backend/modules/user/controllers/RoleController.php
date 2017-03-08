@@ -30,7 +30,7 @@ class RoleController extends BaseController
     public function add()
     {
         $model = new YzRole();
-        $permissions = \Config::get('route');
+        $permissions = \Config::get('menu');
         $permissions = User::getAllPermissions();
 
         dd(\Yunshop::app()->getRoutes());

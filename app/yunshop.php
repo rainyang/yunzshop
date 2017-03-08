@@ -257,7 +257,7 @@ class YunApp extends YunComponent
         global $_W;
         $this->values = $_W;
         //$this->var = $_W;
-        $this->routeList = Config::get('route');
+        $this->routeList = Config::get('menu');
     }
 
     /**

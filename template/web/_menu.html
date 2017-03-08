@@ -16,7 +16,7 @@
 
 
             <ul class="nav nav-sidebar">
-                {if $menuList = Config::get('route')}
+                {if $menuList = Config::get('menu')}
                 {loop $menuList $keyOne $valueOne}
                 {if (isset($valueOne['menu']) && $valueOne['menu'] == true)}
                 <li>
