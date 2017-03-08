@@ -91,6 +91,12 @@ class GoodsController extends BaseController
         if ($requestGoods) {
             //$widgetPost = \YunShop::request()->widget;
             //dd($widgetPost);
+            //$requestGoods['thumb_url'] = serialize($requestGoods['thumb_url']);
+            $requestGoods['thumb_url'] = serialize(
+                array_map(function($item){
+                    return tomedia($item);
+                }, $requestGoods['thumb_url'])
+            );
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
             $goodsModel->uniacid = \YunShop::app()->uniacid;
@@ -150,12 +156,18 @@ class GoodsController extends BaseController
         $optionsHtml = GoodsOptionService::getOptions($this->goods_id, $goodsModel->hasManySpecs);
 
         //商品其它图片反序列化
-        //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
-        $goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
+        $goodsModel->thumb_url = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
+        //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
 
         $catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
             //将数据赋值到model
+            $requestGoods['thumb_url'] = serialize(
+                array_map(function($item){
+                    return tomedia($item);
+                }, $requestGoods['thumb_url'])
+            );
+                //serialize($requestGoods['thumb_url']);
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
             //其他字段赋值
