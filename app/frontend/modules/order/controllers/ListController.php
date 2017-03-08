@@ -16,13 +16,34 @@ class ListController extends BaseController
 {
     // $route = \Yunshop::request()->route;
 
+    public function requestList($request){
+
+        $memberId = \Yunshop::request()->memberid;
+        if (!$memberId) {
+            return $this->errorJson( $msg = '没有传递参数 - 用户ID', $data = []);
+            exit;
+        }
+
+        $list = Order::$request()->with(['hasManyOrderGoods'=>function($query){
+            return $query->select(['id','order_id','goods_id','goods_price','total','price'])
+                ->with(['belongsToGood'=>function($query){
+                    return $query->select(['id','price','title']);
+                }]);
+        }])->get(['id','status','order_sn','goods_price','price'])->toArray();
+
+        if ($list) {
+            return $this->successJson($data = $list);
+        } else {
+            return $this->errorJson($msg = '查询无数据', $data = []);
+        }
+    }
+
 
     //所有订单
     public function index(){
-        $pageSize=5;
+        // $pageSize=5;
 
         $memberId = \Yunshop::request()->memberid;
-        
         if (!$memberId) {
             return $this->errorJson( $msg = '没有传递参数 - 用户ID', $data = []);
             exit;
@@ -42,52 +63,26 @@ class ListController extends BaseController
         }
     }
 
+
     //待付款订单
     public function waitPay(){
-        $pageSize=5;
-        
-        $list = Order::waitPay()->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
-        }])->get(['id','order_sn','goods_price','price'])->toArray();
-        
-        // dd($list);
-        return $this->successJson($data = $list);
+        return $this->requestList('waitPay');
     }
+
 
     //待发货订单
     public function waitSend(){
-        $pageSize=5;
-        
-        $list = Order::waitSend()->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
-        }])->get(['id','order_sn','goods_price','price'])->toArray();
-        
-        // dd($list);
-        return $this->successJson($data = $list);
+        return $this->requestList('waitSend');
     }
 
 
     //待收货订单
     public function waitReceive(){
-        $pageSize=5;
-        
-        $list = Order::waitReceive()->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
-        }])->get(['id','order_sn','goods_price','price'])->toArray();
-        
-        // dd($list);
-        return $this->successJson($data = $list);
+        return $this->requestList('waitReceive');
     }
 
     //已完成订单
     public function Completed(){
-        $pageSize=5;
-        
-        $list = Order::Completed()->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
-        }])->get(['id','order_sn','goods_price','price'])->toArray();
-        
-        // dd($list);
-        return $this->successJson($data = $list);
+        return $this->requestList('Completed');
     }
 }
