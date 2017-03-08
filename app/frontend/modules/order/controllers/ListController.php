@@ -49,14 +49,14 @@ class ListController extends BaseController
             exit;
         }
 
-        $list = Order::all()->with(['hasManyOrderGoods'=>function($query){
+        $list = Order::with(['hasManyOrderGoods'=>function($query){
             return $query->select(['id','order_id','goods_id','goods_price','total','price'])
                             ->with(['belongsToGood'=>function($query){
                                 return $query->select(['id','price','title']);
                             }]);
         }])->get(['id','status','order_sn','goods_price','price'])->toArray();
         
-        if (!$list) {
+        if ($list) {
             return $this->successJson($data = $list);
         } else {
             return $this->errorJson($msg = '查询无数据', $data = []);
