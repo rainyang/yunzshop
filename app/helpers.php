@@ -3,6 +3,21 @@
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
+if(!function_exists('array_child_kv_exists')){
+    function array_child_kv_exists($array, $childKey, $value)
+    {
+        $result = false;
+        if(is_array($array)){
+            foreach ($array as $v){
+                if(is_array($v) && isset($v[$childKey])){
+                    $result = $v[$childKey] == $value;
+                }
+            }
+        }
+
+        return $result;
+    }
+}
 
 if(!function_exists('widget')){
     function widget($class, $params = [])

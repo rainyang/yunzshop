@@ -1,22 +1,19 @@
 <?php
 namespace  app\backend\controllers;
 
-use app\backend\modules\member\models\TestMember;
 use app\common\components\BaseController;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
 use Setting;
 use app\common\services\PluginManager;
 use Datatables;
 use Cookie;
-use iscms\Alisms\SendsmsPusher as Sms;
 
 class TestController extends BaseController
 {
 
     public function index()
     {
-        return $this->render('index');
+        return view('test.index',['a'=>'f']);
 
     }
 
@@ -89,53 +86,11 @@ class TestController extends BaseController
 
     public function testSetting()
     {
-        Setting::$uniqueAccountId = 1;
         $value = Setting::set('config.test','default value');
         $value = Setting::set('config.test.t','default value t');
         $value = Setting::set('config.test.f','default value f');
         dd($value);
 
-        $setting = new Setting();
-        $uniqueAccountId = 1;
-        //测试字符
-        $setting->setValue($uniqueAccountId,'config.test','test value');
-        echo $setting->getValue($uniqueAccountId,'config.test','default value');
-        echo "<br/>";
-        $setting->setValue($uniqueAccountId,'config.test.test2','test2 value');
-        echo $setting->getValue($uniqueAccountId,'config.test.test2','default2 value');
-        echo "<br/>";
-        $setting->setValue($uniqueAccountId,'config.test.test3','test value3');
-        echo $setting->getValue($uniqueAccountId,'config.test.test3','default value3');
-        echo "<br/>";
-        //测试数组
-        $setting->setValue($uniqueAccountId,'config.test2.array',['test-key'=>'ddd']);
-        $arr = $setting->getValue($uniqueAccountId,'config.test2.array',[]);
-        print_r($arr);
-        echo "<br/>";
-        //测试数组
-        $setting->setValue($uniqueAccountId,'config.test2.bb',['testbb-key'=>'dbbbbdd']);
-        $arr = $setting->getValue($uniqueAccountId,'config.test2.bb',[]);
-        print_r($arr);
-        echo "<br/>";
-        $setting->setValue($uniqueAccountId,'test1','test value1');
-        echo $setting->getValue($uniqueAccountId,'test1','default value1');
-        echo "<br/>";
-        //测试数组
-        $setting->setValue($uniqueAccountId,'test1',['testbb-key'=>'test1']);
-        $arr = $setting->getValue($uniqueAccountId,'test1',['a1']);
-        print_r($arr);
-        echo "<br/>";
-        //测试数组
-        $setting->setValue($uniqueAccountId,'test2',['testbb-key'=>'test2']);
-        $arr = $setting->getValue($uniqueAccountId,'test2',['a']);
-        print_r($arr);
-        echo "<br/>";
-        $configs = Setting::fetchSettings($uniqueAccountId,'config')->toArray();
-        print_r($configs);
-        echo "<br/>";
-        $configs = $setting->getItems($uniqueAccountId,'config');
-        print_r($configs);
-        echo "<br/>";
 
     }
 

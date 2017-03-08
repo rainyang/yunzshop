@@ -25,19 +25,17 @@ class CommentService
             'endtime' => time()
         ];
         if ($search) {
-            if ($search['keyword']) {
-                $data['keyword'] = $search['keyword'];
-            }
-            if ($search['fade']) {
-                $data['fade'] = $search['fade'];
-            }
+
+            $data['keyword'] = $search['keyword'];
+            $data['fade'] = $search['fade'];
+            $data['searchtime'] = $search['searchtime'];
+
             if ($search['searchtime']) {
-                if ($search['keyword']) {
-                    $data['starttime'] = $search['time']['start'];
+                if ($search['time']['start'] != '请选择' && $search['time']['end'] != '请选择') {
+                    $data['starttime'] = strtotime($search['time']['start']);
+                    $data['endtime'] = strtotime($search['time']['end']);
                 }
-                if ($search['keyword']) {
-                    $data['endtime'] = $search['time']['end'];
-                }
+
             }
         }
         return $data;

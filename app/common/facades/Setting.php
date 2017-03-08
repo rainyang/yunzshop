@@ -14,7 +14,6 @@ use app\common\models\Setting as SettingModel;
 
 class Setting extends Facade
 {
-    public static $uniqueAccountId = 0;
 
     private static $instance;
 
@@ -45,7 +44,7 @@ class Setting extends Facade
      */
     public static function set($key, $value = null)
     {
-        return self::getInstance()->setValue(self::$uniqueAccountId, $key, $value);
+        return self::getInstance()->setValue( $key, $value);
     }
 
     /**
@@ -57,7 +56,7 @@ class Setting extends Facade
      */
     public static function get($key, $default = null)
     {
-        return self::getInstance()->getValue(self::$uniqueAccountId, $key, $default);
+        return self::getInstance()->getValue( $key, $default);
     }
 
     /**
@@ -67,7 +66,7 @@ class Setting extends Facade
      */
     public static function exitsGroup($group)
     {
-        return self::getInstance()->exists(self::$uniqueAccountId, $group);
+        return self::getInstance()->exists( $group);
     }
 
     /**
@@ -77,6 +76,6 @@ class Setting extends Facade
      */
     public static function getAllByGroup($group)
     {
-        return self::getInstance()->fetchSettings(self::$uniqueAccountId, $group);
+        return self::getInstance()->fetchSettings($group);
     }
 }
