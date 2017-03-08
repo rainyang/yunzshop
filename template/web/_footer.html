@@ -11,15 +11,11 @@
 					$(this).tooltip('hide');
 				});
 			})
+
+          $('.js-clip').each(function(){
+            util.clip(this, $(this).attr('data-url'));
+          });
 			
 		});
-                   $('.js-clip').each(function(){
-			util.clip(this, $(this).attr('data-url'));
-		});
-</script>
-<script type="text/javascript">
-    require(['bootstrap']);
-
 
 </script>
-
