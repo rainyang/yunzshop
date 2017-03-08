@@ -24,8 +24,8 @@ class CreateImsYzOrderGoodsTable extends Migration {
 			$table->integer('price')->default(0)->comment('真实价格');
 			$table->string('goods_sn', 50)->default('')->comment('商品编码');
 			$table->integer('member_id')->default(0)->comment('会员身份标识');
-			$table->string('thumb', 50);
-			$table->string('title', 50);
+			$table->string('thumb', 50)->comment('商品图片 URL');
+			$table->string('title', 50)->comment('商品名称');
 
 			$table->primary('id');
 			$table->foreign('goods_id', 'goods_id')->references('id')->on('ims_yz_goods')->onUpdate('CASCADE')->onDelete('NO ACTION');

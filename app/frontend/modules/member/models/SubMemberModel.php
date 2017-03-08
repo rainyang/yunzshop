@@ -11,9 +11,9 @@
  */
 namespace app\frontend\modules\member\models;
 
-use Illuminate\Database\Eloquent\Model;
+use app\backend\models\BackendModel;
 
-class SubMemberModel extends Model
+class SubMemberModel extends BackendModel
 {
     public $table = 'yz_member';
 
@@ -25,10 +25,20 @@ class SubMemberModel extends Model
             ->toArray();
     }
 
-    public function updateDate($data, $where)
+    public static function updateDate($data, $where)
     {
         self::where('mobile', $where['mobile'])
             ->where('uniacid', $where['uniacid'])
             ->update($data);
+    }
+
+    /**
+     * 添加数据
+     *
+     * @param $data
+     */
+    public static function insertData($data)
+    {
+         self::insert($data);
     }
 }

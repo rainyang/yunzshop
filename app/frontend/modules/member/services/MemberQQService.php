@@ -48,13 +48,13 @@ class MemberQQService extends MemberMcService
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid']);
 
-                $types = expload($UnionidInfo['type'], '|');
+                $types = explode($UnionidInfo['type'], '|');
 
                 if ($UnionidInfo['unionid']) {
                     if (!in_array($this->_login_type, $types)) {
                         //更新ims_yz_member_unique表
                         MemberUniqueModel::updateData(array(
-                            'unque_id'=>$UnionidInfo['unque_id'],
+                            'unique_id'=>$UnionidInfo['unique_id'],
                             'type' => $UnionidInfo['type'] . '|' . $this->_login_type
                         ));
                     }

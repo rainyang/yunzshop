@@ -11,9 +11,9 @@
  */
 namespace app\frontend\modules\member\models;
 
-use Illuminate\Database\Eloquent\Model;
+use app\backend\models\BackendModel;
 
-class MemberQQModel extends Model
+class MemberQQModel extends BackendModel
 {
     public $table = 'yz_member_qq';
 

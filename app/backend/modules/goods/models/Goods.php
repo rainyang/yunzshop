@@ -8,7 +8,9 @@
 namespace app\backend\modules\goods\models;
 
 
+use app\backend\modules\goods\observers\GoodsObserver;
+
 class Goods extends \app\common\models\Goods
 {
-    
+    public $widgets = [];
 }

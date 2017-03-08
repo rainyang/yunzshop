@@ -24,10 +24,9 @@ class Brand extends BaseModel
      * @param $pageSize
      * @return mixed
      */
-    public static function getBrands( $pageSize)
+    public static function getBrands()
     {
-        return self::uniacid()
-            ->paginate($pageSize);
+        return self::uniacid();
     }
 
     /**
