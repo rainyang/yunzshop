@@ -1,7 +1,3 @@
-<!--<script type="text/javascript" src="./resource/js/lib/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery.gcjs.js"></script>
-<script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery.form.js"></script>
-<script type="text/javascript" src="../addons/sz_yi/static/js/dist/tooltipbox.js"></script>-->
 
 <style type="text/css">
     .dropdown.visible-md.visible-lg .dropdown-toggle-name .fa-angle-down {
@@ -41,15 +37,6 @@
     }
 
 </style>
-<!--<script language='javascript'>
-    function preview_html(txt)
-    {
-        var win = window.open("", "win", "width=300,height=600"); // a window object
-        win.document.open("text/html", "replace");
-        win.document.write($(txt).val());
-        win.document.close();
-    }
-</script>-->
 
 <div class="navbar" role="navigation">
 
@@ -59,7 +46,7 @@
         <ul class="nav navbar-nav navbar-actions navbar-left" style="width: auto;">
             <!--<li class="visible-md visible-lg visible-lar "><a href="" id="main-menu-toggle"><i class="fa fa-th-large"></i></a></li>-->
             <li class="visible-md visible-lg visible-lar "><a href="" id="main-menu-index"><i class="fa fa-home"></i></a></li>
-           <!-- <li class="visible-xs visible-sm"><a href="" id="sidebar-menu"><i class="fa fa-navicon"></i></a></li>-->
+            <!-- <li class="visible-xs visible-sm"><a href="" id="sidebar-menu"><i class="fa fa-navicon"></i></a></li>-->
 
             <li class="visible-gzh "style="margin-right:40px">
                 <a class="dropdown-toggle" id="main-menu-name"href="./index.php?c=home&amp;a=welcome&amp;do=ext&amp;m=sz_yi"><i class="iconfont icon-heart"></i> 商城名称</a>
@@ -70,7 +57,7 @@
         <ul class="nav navbar-nav navbar-right" style="width: auto;margin: 0;float: right!important;">
 
             <li class="dropdown visible-md visible-lg">
-                <a href="javascript:void(0)"  class="dropdown-toggle-name" i="system" data-toggle="dropdown" >{$var['username']} ({$var['role']})
+                <a href="javascript:void(0)"  class="dropdown-toggle-name" i="system" data-toggle="dropdown" >admin (系统管理员)
                     <span class="fa fa-angle-down pull-right"></span>
                 </a>
                 <ul class="dropdown-menu" >
@@ -92,7 +79,3 @@
 
 </div>
 <!-- end: Header -->
-<script language='javascript'>
-
-
- </script>

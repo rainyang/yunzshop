@@ -22,7 +22,7 @@
                         <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键词</label>
                         <div class="col-xs-12 col-sm-8 col-lg-9">
                             <input class="form-control" name="search[keyword]" id="" type="text"
-                                   value="{php echo $search->keyword}" placeholder="商品标题">
+                                   value="{php echo $search['keyword']}" placeholder="商品标题">
                         </div>
                     </div>
 
@@ -30,8 +30,8 @@
                         <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">类型</label>
                         <div class="col-xs-12 col-sm-8 col-lg-9">
                             <select name='search[fade]' class='form-control'>
-                                <option value='' {if $search['fade']==''}selected{/if}></option>
-                                <option value='0' {if $search['fade']=='0'}selected{/if}>模拟评价</option>
+                                <option value='' {if $search['fade']==''}selected{/if}>全部</option>
+                                <option value='2' {if $search['fade']=='2'}selected{/if}>模拟评价</option>
                                 <option value='1' {if $search['fade']=='1'}selected{/if} >真实评价</option>
                             </select>
                         </div>
@@ -46,7 +46,7 @@
                             </select>
                         </div>
                         <div class="col-sm-7 col-lg-7 col-xs-12">
-                            {php echo app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', array('starttime'=>date('Y-m-d H:i', $search['starttime']), 'endtime'=>date('Y-m-d H:i',$search['endtime'])), true);}
+                            {php echo app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', ['starttime'=>date('Y-m-d H:i', $search['starttime']), 'endtime'=>date('Y-m-d H:i',$search['endtime'])], true);}
                         </div>
 
                     </div>

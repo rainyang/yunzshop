@@ -25,18 +25,17 @@ class Setting extends BaseModel
     /**
      * 获取统一账号配置与值
      *
-     * @param $uniqueAccountId 统一账号信息
      * @param $key 键
      * @param null $default 默认值
      * @return mixed
      */
-    public function getValue($uniqueAccountId, $key, $default = null)
+    public function getValue($key, $default = null)
     {
-        $cacheKey = 'setting.' . $uniqueAccountId . '.' . $key;
+        $cacheKey = 'setting.' . \YunShop::app()->uniacid . '.' . $key;
         $value = Cache::get($cacheKey);
         if ($value == null) {
             list($group, $item) = $this->parseKey($key);
-            $value = array_get($this->getItems($uniqueAccountId, $group), $item, $default);
+            $value = array_get($this->getItems($group), $item, $default);
             Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
         }
         return $value;
@@ -46,34 +45,32 @@ class Setting extends BaseModel
     /**
      * 设置配置值.
      *
-     * @param $uniqueAccountId 统一公众号
      * @param  string $key 键 使用.隔开 第一位为group
      * @param  mixed $value 值
      *
      * @return void
      */
-    public function setValue($uniqueAccountId, $key, $value = null)
+    public function setValue( $key, $value = null)
     {
         list($group, $item) = $this->parseKey($key);
 
         $type = $this->getTypeOfValue($value);
 
-        return $this->setToDatabase($value, $uniqueAccountId, $group, $item, $type);
+        return $this->setToDatabase($value,  $group, $item, $type);
     }
 
 
     /**
      * 获取账号内当前组的所有配置信息
      *
-     * @param $uniqueAccountId
      * @param $group
      * @return array
      */
-    public function getItems($uniqueAccountId, $group)
+    public function getItems( $group)
     {
         $items = array();
 
-        foreach (self::fetchSettings($uniqueAccountId, $group) as $item) {
+        foreach (self::fetchSettings($group) as $item) {
             switch (strtolower($item->type)) {
                 case 'string':
                     $items[$item->key] = (string)$item->value;
@@ -104,28 +101,26 @@ class Setting extends BaseModel
     /**
      * 检测是否存在相应配置组
      *
-     * @param $uniqueAccountId
      * @param $group
      * @return bool
      */
-    public function exists($uniqueAccountId, $group)
+    public function exists($group)
     {
-        return !$this->fetchSettings($uniqueAccountId, $group)->isEmpty();
+        return !$this->fetchSettings( $group)->isEmpty();
     }
 
     /**
      * 获取配置组数据
      *
-     * @param $uniqueAccountId
      * @param $group
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public function fetchSettings($uniqueAccountId, $group)
+    public function fetchSettings( $group)
     {
-        $cacheKey = 'setting.' . $uniqueAccountId . '.' . $group;
+        $cacheKey = 'setting.' . \YunShop::app()->uniacid . '.' . $group;
         $value = Cache::get($cacheKey);
         if ($value == null) {
-            $value = self::where('group', $group)->where('unique_account_id',$uniqueAccountId)->get();
+            $value = self::where('group', $group)->uniacid()->get();
             Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
         }
         return $value;
@@ -186,12 +181,11 @@ class Setting extends BaseModel
      * 格式化并保存配置到数据库
      *
      * @param $value 值
-     * @param $uniqueAccountId 统一账号
      * @param $group 分组
      * @param $key 键
      * @param $type 值类型
      */
-    protected function setToDatabase($value, $uniqueAccountId, $group, $key, $type)
+    protected function setToDatabase($value,  $group, $key, $type)
     {
 
         //检测数组是否需要特殊操作
@@ -207,8 +201,7 @@ class Setting extends BaseModel
 
         //如果存在记录则更新
         $model = static::where('key', $key)
-            ->where('group', $group)
-            ->where('unique_account_id', $uniqueAccountId);
+            ->where('group', $group)->uniacid();
         $model = $model->first();
 
 
@@ -223,7 +216,7 @@ class Setting extends BaseModel
             }
 
             $data = [
-                'unique_account_id' => $uniqueAccountId,
+                'uniacid' => \YunShop::app()->uniacid,
                 'group' => $group,
                 'key' => $key,
                 'value' => $value,
