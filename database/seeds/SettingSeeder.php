@@ -23,7 +23,7 @@ class SettingSeeder extends Seeder
        if($list){
            foreach ($list as $v){
 
-                Yunshop::app()->uniacid = $v['uniacid'];
+                Setting::$uniqueAccountId = $v['uniacid'];
                 if($v['sets']) {
                     $sets = unserialize($v['sets']);
                     if($sets) {

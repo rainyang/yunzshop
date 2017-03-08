@@ -48,6 +48,9 @@ class YunShop
         if(self::isWeb() && !$controller->can($controller->route)){
             abort(403,'无权限');
         }
+        //设置uniacid
+        Setting::$uniqueAccountId = self::app()->uniacid;
+        //执行方法
         $content = $controller->$action(
             Illuminate\Http\Request::capture()
         );
@@ -222,7 +225,7 @@ class YunRequest extends YunComponent implements ArrayAccess
     public function __construct()
     {
         global $_GPC;
-        $this->values = $_GPC ?: [];
+        $this->values = $_GPC;
     }
     public function offsetUnset($offset){
         unset($this->values[$offset]);
@@ -247,12 +250,13 @@ class YunRequest extends YunComponent implements ArrayAccess
 
 class YunApp extends YunComponent
 {
+    protected $values;
     protected $routeList;
 
     public function __construct()
     {
         global $_W;
-        $this->values = $_W ?: ['uniacid'=>0];
+        $this->values = $_W;
         //$this->var = $_W;
         $this->routeList = Config::get('route');
     }
