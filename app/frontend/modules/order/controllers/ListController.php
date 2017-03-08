@@ -16,10 +16,9 @@ class ListController extends BaseController
         }
 
         $list = OrderListModel::getRequestOrderList($status);
-        $list = $list->toArray();
 
         if ($list) {
-            return $this->successJson($data = $list);
+            return $this->successJson($data = $list->toArray());
         } else {
             return $this->errorJson($msg = '未找到数据', $data = []);
         }
