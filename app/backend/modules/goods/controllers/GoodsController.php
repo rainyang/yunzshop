@@ -172,7 +172,6 @@ class GoodsController extends BaseController
                 $this->error('商品修改失败');
             }
         }
-
         $goods_categorys = $goodsModel->hasManyGoodsCategory->toArray();
         $category_ids = explode(",", $goods_categorys['category_ids']);
         //获取分类2/3级联动

@@ -19,10 +19,13 @@ class SaleWidget extends Widget
     {
         $saleModel = new Sale();
         $parents = Area::getProvinces(0);
+
         $sale = Sale::getList($this->goods_id);
+
         if ($sale) {
             $saleModel->setRawAttributes($sale->toArray());
         }
+
         return $this->render('goods/sale/sale', [
             'item' => $saleModel,
             'parents' => $parents->toArray()

@@ -17,9 +17,13 @@ class Comment extends \app\common\models\Comment
      */
     public static function getComments()
     {
+        $title = '123';
         return self::uniacid()
+            ->whereHas('goods', function ($query) use ($title) {
+                return $query->searchLike($title);
+            })
             ->where('comment_id', '0')
-            ->with(['goods'=>function($query){
+            ->with(['goods' => function ($query) {
                 return $query->select(['id', 'title', 'thumb']);
             }])
             ->orderBy('created_at', 'desc');
@@ -33,7 +37,6 @@ class Comment extends \app\common\models\Comment
     {
         return self::find($id);
     }
-
 
 
     /**
@@ -51,9 +54,9 @@ class Comment extends \app\common\models\Comment
      */
     public static function getReplysByCommentId($comment_id)
     {
-        return self::where('comment_id',$comment_id)
-        ->orderBy('created_at', 'asc')
-        ->get();
+        return self::where('comment_id', $comment_id)
+            ->orderBy('created_at', 'asc')
+            ->get();
     }
 
     /**
@@ -78,21 +81,25 @@ class Comment extends \app\common\models\Comment
     /**
      *  定义字段名
      * 可使
-     * @return array */
-    public static function atributeNames() {
+     * @return array
+     */
+    public static function atributeNames()
+    {
         return [
-            'goods_id'=> '评论商品',
-            'content'=> '评论内容',
+            'goods_id' => '评论商品',
+            'content' => '评论内容',
         ];
     }
 
     /**
      * 字段规则
-     * @return array */
-    public static function rules() {
+     * @return array
+     */
+    public static function rules()
+    {
         return [
-            'goods_id'=> 'required',
-            'content'=> 'required'
+            'goods_id' => 'required',
+            'content' => 'required'
         ];
     }
 }
