@@ -67,7 +67,6 @@ class GoodsController extends BaseController
     public function getGoodsCart()
     {
 
-
         $goodsService = new GoodsService();
         $goods = $goodsService->getGoodsByCart(\YunShop::request()->goods_id, \YunShop::request()->option_id);
         if (!$goods) {

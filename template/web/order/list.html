@@ -1,6 +1,5 @@
-﻿{template 'web/_header'}
+{template 'web/_header'}
 <div class="w1200 m0a">
-    {template 'web/order/tabs'}
     <link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
     <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
     <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
@@ -26,163 +25,45 @@
                     <input type="hidden" name="c" value="site" />
                     <input type="hidden" name="a" value="entry" />
                     <input type="hidden" name="m" value="sz_yi" />
-                    <input type="hidden" name="p" value="list" id="form_p" />
                     <input type="hidden" name="do" value="order" id="form_do" />
-                    <input type="hidden" name="status" value="{$status}" />
-                    <input type="hidden" name="agentid" value="{$request['agentid']}" />
-                    <input type="hidden" name="refund" value="{$request['refund']}" />
-                    <input type="hidden" name="plugin" value="{$request['plugin']}" />
+                    <input type="hidden" name="route" value="order.list" id="form_p" />
                     <div class="form-group">
                         <div class="col-sm-8 col-lg-12 col-xs-12">
                             <div class='input-group'>
-                                <div class='input-group-addon'>订单号</div>
-                                <input class="form-control" name="keyword" type="text" value="{$request['keyword']}" placeholder="订单号/支付单号">
-                                <div class='input-group-addon'>{$lang['good']}名称</div>
-                                <input class="form-control" name="good_name" type="text" value="{$request['good_name']}" placeholder="{$lang['good']}名称">
-                                <div class='input-group-addon'>{$lang['good']}ID</div>
-                                <input class="form-control" name="good_id" type="text" value="{$request['good_id']}" placeholder="{$lang['good']}ID">
-                                <div class='input-group-addon'>快递单号</div>
-                                <input class="form-control" name="expresssn" type="text" value="{$request['expresssn']}" placeholder="快递单号">
-                                <div class='input-group-addon'>会员ID</div>
-                                <input class="form-control" name="memberid" type="text" value="{$request['good_id']}" placeholder="会员ID">
-                                <div class='input-group-addon'>用户信息</div>
-                                <input class="form-control" name="member" type="text" value="{$request['member']}" placeholder="用户手机号/姓名/昵称/绑定手机号, 收件人姓名/手机号 ">
-                                <div class='input-group-addon'>支付方式</div>
-                                <select name="paytype" class="form-control">
-                                    <option value="" {if $request['paytype']==''}selected{/if}>不限</option>
-                                    {loop $paytype $key $type}
-                                    <option value="{$key}" {if $request['paytype'] == "$key"} selected="selected" {/if}>{$type['name']}</option>
-                                    {/loop}
+                                <select name="search[ambiguous][field]" class="form-control">
+                                    <option value="order" {if $request['search']['ambiguous']['field']=='order'}  selected="selected"{/if} >订单号/支付号</option>
+                                    <option value="member"  {if $request['search']['ambiguous']['field']=='member'}  selected="selected"{/if}>用户姓名/ID/昵称/手机号</option>
+                                    <option value="order_goods" {if $request['search']['ambiguous']['field']=='order_goods'}  selected="selected"{/if}>商品名称/ID</option>
+                                    <option value="dispatch" {if $request['search']['ambiguous']['field']=='dispatch'}  selected="selected"{/if}>快递单号</option>
+                                </select>
+                                <input class="form-control" name="search[ambiguous][string]" type="text" value="{$request['search']['ambiguous']['string']}" placeholder="订单号/支付单号">
+                            </div>
+                            <div class='input-group'>
+
+                                <select name="search[pay_type]" class="form-control">
+                                    <option value=""  {if !isset($request['search']['pay_type'])}  selected="selected"{/if}">支付方式</option>
+                                    <option value="1"  {if $request['search']['pay_type']=='1'}  selected="selected"{/if}>在线支付</option>
+                                    <option value="2"  {if $request['search']['pay_type']=='2'}  selected="selected"{/if}>货到付款</option>
+                                    <option value="3"  {if $request['search']['pay_type']=='3'}  selected="selected"{/if}>余额支付</option>
                                 </select>
                             </div>
-                        </div>
-                    </div>
-                    {if $request['plugin'] != "fund"}
-                    <div class='form-group'>
-                        <div class="col-sm-8 col-lg-12 col-xs-12">
                             <div class='input-group'>
-                                <div class='input-group-addon'>核销码</div>
-                                <input class="form-control" name="verifycode" type="text" value="{$request['verifycode']}" placeholder="核销码">
-                                <div class='input-group-addon'>核销员</div>
-                                <input class="form-control" name="saler" type="text" value="{$request['saler']}" placeholder="核销员昵称/姓名/手机号/绑定手机号">
-                                <div class='input-group-addon'>核销门店</div>
-                                <select name="storeid" class="form-control">
-                                    <option value="" ></option>
-                                    {loop $stores $store}
-                                    <option value="{$store['id']}" {if $request['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
-                                    {/loop}
+
+                                <select name="search[time_range][field]" class="form-control">
+                                    <option value=""  {if !isset($request['search']['time_range']['field'])}selected="selected"{/if} >操作时间</option>
+                                    <option value="create_time" {if $request['search']['time_range']['field']=='create_time'}  selected="selected"{/if}  >下单</option>
+                                    <option value="pay_time"  {if $request['search']['time_range']['field']=='pay_time'}  selected="selected"{/if}>付款</option>
+                                    <option value="sent_time"  {if $request['search']['time_range']['field']=='sent_time'}  selected="selected"{/if}>发货</option>
+                                    <option value="finish_time"  {if $request['search']['time_range']['field']=='finish_time'}  selected="selected"{/if}>完成</option>
                                 </select>
-                                {if $p_cashier}
-                                <div class='input-group-addon'>收银商户</div>
-                                <select name="csid" class="form-control">
-                                    <option value="" ></option>
-                                    {loop $cashier_stores $cashier_store}
-                                    <option value="{$cashier_store['id']}" {if $request['csid'] ==$cashier_store['id']} selected="selected" {/if}>{$cashier_store['name']}</option>
-                                    {/loop}
-                                </select>
-                                {/if}
-                                <div class='input-group-addon'>门店取消订单
-                                    <label class='radio-inline' style='margin-top:-7px;'>
-                                        <input type='radio' value='0' name='cancel' {if $request['cancel']=='0'}checked{/if}>不搜索
-                                    </label>
-                                    <label class='radio-inline'  style='margin-top:-7px;'>
-                                        <input type='radio' value='1' name='cancel' {if $request['cancel']=='1'}checked{/if}>搜索
-                                    </label>
-                                </div>
+                                    {php echo tpl_form_field_daterange('search[time_range]', array('starttime'=>array_get($request,'search.time_range.start',0),'endtime'=>array_get($request,'search.time_range.end',0)),true);}
+
                             </div>
                         </div>
                     </div>
 
-                    {if p('supplier')}
-                    <div class='form-group'>
-                        <div class="col-sm-8 col-lg-12 col-xs-12">
-                            <div class='input-group'>
-                                <div class='input-group-addon'>供应商</div>
-                                <select name="supplier_uid" class="form-control">
-                                    <option value="" ></option>
-                                    {loop $suppliers $supplier}
-                                    <option value="{$supplier['uid']}" {if $request['supplier_uid'] ==$supplier['uid']} selected="selected" {/if}>{$supplier['username']}</option>
-                                    {/loop}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    {/if}
-                    {if p('live')}
-                    <div class='form-group'>
-                        <div class="col-sm-8 col-lg-12 col-xs-12">
-                            <div class='input-group'>
-                                <div class='input-group-addon'>直播间</div>
-                                <select name="cloudAnchorId" class="form-control">
-                                    <option value="" ></option>
-                                    {loop $liveRooms $liveRoom}
-                                    {if $liveRoom['status'] !=2 }
-                                    <option value="{$liveRoom['anchor_id']}">{$liveRoom['title']}</option>
-                                    {/if}
-                                    {/loop}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    {/if}
-                    {/if}
-                    <div class="form-group">
-                        <div class="col-sm-12 col-lg-6">
-                            <div class='input-group'>
-                                <div class='input-group-addon'>下单时间
-                                    <label class='radio-inline' style='margin-top:-7px;'>
-                                        <input type='radio' value='0' name='searchtime' {if $request['searchtime']=='0'}checked{/if}>不搜索
-                                    </label>
-                                    <label class='radio-inline'  style='margin-top:-7px;'>
-                                        <input type='radio' value='1' name='searchtime' {if $request['searchtime']=='1'}checked{/if}>搜索
-                                    </label>
-                                </div>
-                                {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d H:i', $endtime)),true);}
-                            </div>
-                            <div class='input-group'>
-                                <div class='input-group-addon'>完成时间
-                                    <label class='radio-inline' style='margin-top:-7px;'>
-                                        <input type='radio' value='0' name='fsearchtime' {if $request['fsearchtime']=='0'}checked{/if}>不搜索
-                                    </label>
-                                    <label class='radio-inline'  style='margin-top:-7px;'>
-                                        <input type='radio' value='1' name='fsearchtime' {if $request['fsearchtime']=='1'}checked{/if}>搜索
-                                    </label>
-                                </div>
-                                {php echo tpl_form_field_daterange('ftime', array('starttime'=>date('Y-m-d H:i', $fstarttime),'endtime'=>date('Y-m-d H:i', $fendtime)),true);}
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-lg-6">
-                            <div class='input-group'>
-                                <div class='input-group-addon'>付款时间
-                                    <label class='radio-inline' style='margin-top:-7px;'>
-                                        <input type='radio' value='0' name='psearchtime' {if $request['psearchtime']=='0'}checked{/if}>不搜索
-                                    </label>
-                                    <label class='radio-inline'  style='margin-top:-7px;'>
-                                        <input type='radio' value='1' name='psearchtime' {if $request['psearchtime']=='1'}checked{/if}>搜索
-                                    </label>
-                                </div>
-                                {php echo tpl_form_field_daterange('ptime', array('starttime'=>date('Y-m-d H:i', $pstarttime),'endtime'=>date('Y-m-d H:i', $pendtime)),true);}
-                            </div>
-                            <div class='input-group'>
-                                <div class='input-group-addon'>发货时间
-                                    <label class='radio-inline' style='margin-top:-7px;'>
-                                        <input type='radio' value='0' name='ssearchtime' {if $request['ssearchtime']=='0'}checked{/if}>不搜索
-                                    </label>
-                                    <label class='radio-inline'  style='margin-top:-7px;'>
-                                        <input type='radio' value='1' name='ssearchtime' {if $request['ssearchtime']=='1'}checked{/if}>搜索
-                                    </label>
-                                </div>
-                                {php echo tpl_form_field_daterange('stime', array('starttime'=>date('Y-m-d H:i', $sstarttime),'endtime'=>date('Y-m-d H:i', $sendtime)),true);}
-                            </div>
-                        </div>
-
-                        <div class='input-group'>
 
 
-                        </div>
-
-
-                    </div>
                     <div class="form-group">
                         {if !empty($agentid) && $level>0}
                         <div class="col-sm-3">
@@ -293,8 +174,8 @@
                     <br/>
                     {$order['belongs_to_member']['realname']}<br/>{$order['belongs_to_member']['mobile']}</td>
                 <td rowspan="{php echo count($order['has_many_order_goods'])}"    >
-                    {if 0&&$order['statusvalue'] > 0}
-                    <label class='label label-{$order['css']}'>{$order['paytype']}</label><br/>
+                    {if $order['status'] > 0}
+                    <label class='label label-1}'>{$order['has_one_pay_type']['name']}</label><br/>
                     {else if 0&&$order['statusvalue'] == 0}
                     {if 0&&$order['paytypevalue'] == 3}
                     <label class='label label-default'>货到付款</label><br/>
@@ -304,7 +185,7 @@
                     {else if 0&&$order['statusvalue'] == -1}
                     <label class='label label-default'>{$order['paytype']}</label><br/>
                     {/if}
-                    {$order['has_one_order_dispatch']['dispatch_type_name']}
+                    {$order['has_one_dispatch_type']['name']}
                     {if 0&&$order['addressid']!=0 && $order['statusvalue']>=2}<br/>
                     <button type='button' class='btn btn-default btn-sm' onclick='express_find(this,"{$order['id']}")' >查看物流</button>
                     {/if}

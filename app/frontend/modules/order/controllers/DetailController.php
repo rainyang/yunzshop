@@ -7,16 +7,23 @@
  */
 
 namespace app\frontend\modules\order\controllers;
+
+use app\common\components\BaseController;
 use app\common\models\Order;
 
 
-class DetailController
+class DetailController extends BaseController
 {
     public function index(){
-        $db_order_models = Order::with('hasManyOrderGoods')->first();
-        $order = $db_order_models->toArray();
-        dd($order);
-
-        echo json_encode($db_order_models,JSON_UNESCAPED_UNICODE);
+        $orderId = \Yunshop::request()->orderid;
+        if ($orderId) {
+            $db_order_models = Order::with(['hasManyOrderGoods'=>function($query){
+                return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
+            }])->get(['id','order_sn'])->first();
+            $order = $db_order_models->toArray();
+            return $this->successJson($data = $order);
+        } else {
+            return $this->errorJson($data = []);
+        }
     }
 }

@@ -13,8 +13,9 @@ use app\common\models\Order;
 
 class DetailController extends BaseController
 {
-    public function index($order_id)
+    public function index()
     {
+        $order_id = \YunShop::request()->id;
         $order_id = 1;
         $db_order_models = Order::with(
             [
@@ -32,10 +33,14 @@ class DetailController extends BaseController
                 'beLongsToMember' => function($member)
                 {
                     return $member->select();
+                },
+                'hasOneOrderRemark' => function($remark)
+                {
+                    return $remark->select();
                 }
             ]
         )->find($order_id)->toArray();
-        //dd($db_order_models['status']);
+        //dd($db_order_models);
         $this->render('detail', [
             'order' => $db_order_models,
             'lang' => $this->_lang(),

@@ -9,6 +9,8 @@
 namespace app\frontend\modules\order\services\behavior;
 
 
+use app\common\models\Order;
+
 class OrderSend
 {
     public $order_model;
