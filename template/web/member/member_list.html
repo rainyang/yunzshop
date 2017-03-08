@@ -222,29 +222,13 @@
 </div>
 </div>
 <script language='javascript'>
-
-    function search_members() {
-        if( $.trim($('#search-kwd-notice').val())==''){
-            Tip.focus('#search-kwd-notice','请输入关键词');
-            return;
-        }
-        $("#module-menus-notice").html("正在搜索....")
-    }
     $(function () {
         $('#export').click(function(){
-            $('#form_p').val("exportMember");
+            $('#route').val("member.member.export");
             $('#form1').submit();
-            $('#form_p').val("list");
+            $('#route').val("member.member.index");
         });
     });
-    function select_member(o) {
-        $("#agentid").val(o.id);
-        $("#parentagentavatar").show();
-        $("#parentagentavatar").find('img').attr('src',o.avatar);
-        $("#parentagent").val( o.nickname+ "/" + o.realname + "/" + o.membermobile );
-        $("#modal-module-menus-notice .close").click();
-    }
-
 </script>
 {template 'web/_footer'}
 

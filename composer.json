@@ -16,7 +16,8 @@
     "printempw/laravel-datatables-lite": "^1.0",
     "iscms/alisms-for-laravel": "^0.0.3",
     "maatwebsite/excel": "~2.1.0",
-    "nwidart/db-exporter": "1.*"
+    "nwidart/db-exporter": "1.*",
+    "hao-li/laravel-amount": "dev-master"
   },
   "require-dev": {
     "filp/whoops": "^2.1",

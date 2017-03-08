@@ -9,9 +9,13 @@
 namespace app\common\models;
 
 use app\backend\modules\goods\observers\GoodsObserver;
+use HaoLi\LaravelAmount\Traits\AmountTrait;
+
 
 class Goods extends BaseModel
 {
+    use AmountTrait;
+
     public $table = 'yz_goods';
     public $display_order = 0;
     //protected $appends = ['status'];
@@ -23,7 +27,9 @@ class Goods extends BaseModel
     public $appends = [''];
 
     public $widgets = [];
-    
+
+    protected $amountFields = ['price', 'market_price', 'cost_price'];
+
 
     public static function getList()
     {
@@ -40,14 +46,14 @@ class Goods extends BaseModel
         return $this->hasMany('app\common\models\GoodsParam');
     }
 
+    public function hasManyOptions()
+    {
+        return $this->hasMany('app\common\models\GoodsOption');
+    }
+
     public function hasManyGoodsCategory()
     {
         return $this->hasOne('app\common\models\GoodsCategory');
-    }
-
-    public function hasManyCategoryGoods()
-    {
-        return $this->belongsTo('app\common\models\GoodsCategory');
     }
 
     public function hasManySpecs()

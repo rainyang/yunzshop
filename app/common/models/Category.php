@@ -42,5 +42,11 @@ class Category extends BaseModel
             ->orderBy('id', 'asc');
     }
 
+    public function goodsCategories()
+    {
+        return $this->hasMany('app\common\models\GoodsCategory','category_id','id');
+    }
+
+
 
 }
