@@ -18,21 +18,49 @@ class GoodsController extends BaseController
 {
     public function getGoods()
     {
-        $id = \YunShop::request()->id;
+        $id = intval(\YunShop::request()->id);
+        if (!$id) {
+            $this->errorJson('请传入正确参数.');
+        }
         //$goods = new Goods();
-        $goodsModel = Goods::with('hasManyParams')->
-                             with('hasManySpecs')->
-                             with('hasOneShare')->
-                             with('hasOneDiscount')->
-                             with('hasOneGoodsDispatch')->
-                             with('hasOnePrivilege')->
-                             find($id);
+        $goodsModel = Goods::with(['hasManyParams' => function ($query){
+            return $query->select('goods_id','title', 'value');
+        }])->with(['hasManySpecs' => function ($query) {
+            return $query->select('id', 'goods_id','title', 'description');
+        }])->with('hasOneShare')
+            ->with('hasOneDiscount')
+            ->with('hasOneGoodsDispatch')
+            ->with('hasOnePrivilege')
+            ->with(['hasOneBrand' => function ($query) {
+                return $query->select('id', 'name');
+            }])
+            ->find($id);
+
         if (!$goodsModel) {
             $this->errorJson('商品不存在.');
         }
-        //dd($goodsModel->price);
+
+        if (!$goodsModel->status) {
+            //$this->errorJson('商品已下架.');
+        }
+        
+        $goodsModel->setHidden(
+            [
+                'deleted_at',
+                'created_at',
+                'updated_at',
+                'cost_price',
+                'real_sales',
+                'is_deleted',
+                'reduce_stock_method',
+            ]);
+        if ($goodsModel->thumb_url) {
+            $goodsModel->thumb_url = explode(",", $goodsModel->thumb_url);
+        }
+
+        //dd($goodsModel);
         foreach ($goodsModel->hasManySpecs as &$spec) {
-            $spec['specitem'] = GoodsSpecItem::where('specid', $spec['id'])->get();
+            $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
         }
 
         //return $this->successJson($goodsModel);
