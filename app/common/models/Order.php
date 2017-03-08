@@ -65,11 +65,23 @@ class Order extends BaseModel
 
     public function hasOneDispatchType()
     {
-        return $this->hasOne('\app\common\models\DispatchType', 'id', 'dispatch_type_id');
+        return $this->hasOne('\app\common\models\OrderDispatch', 'order_id', 'id');
+    }
+
+    //订单评价
+    public function hasOneOrderRemark()
+    {
+        return $this->hasOne('\app\common\models\order\Remark', 'order_id', 'id');
     }
     public function hasOnePayType()
     {
         return $this->hasOne('\app\common\models\PayType', 'id', 'pay_type_id');
+    }
+
+    //订单配送
+    public function hasOneOrderExpress()
+    {
+        return $this->hasOne('\app\common\models\order\Express', 'order_id', 'id');
     }
 
     public function getStatusService()

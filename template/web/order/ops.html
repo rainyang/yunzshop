@@ -14,12 +14,12 @@
 {/if}
 {if $order['status'] == 2}
 <a class="btn btn-danger btn-sm disbut" href="javascript:;"
-   onclick="$('#modal-cancelsend').find(':input[name=id]').val('{$order['id']}')" data-toggle="modal"
+   onclick="$('#modal-cancelsend').find(':input[name=order_id]').val('{$order['id']}')" data-toggle="modal"
    data-target="#modal-cancelsend">取消发货</a>
 <a class="btn btn-primary btn-sm disbut"
-   href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'finish','id' => $order['id']))}"
+   href="{php echo $this->createWebUrl('order.complete-receive', array('order_id' => $order['id']))}"
    onclick="return confirm('确认订单收货吗？');return false;">确认收货</a>
-<a class="btn btn-danger btn-sm disbut">等待收货</a>
+<a class="btn btn-default btn-sm disbut">等待收货</a>
 {/if}
 
 
