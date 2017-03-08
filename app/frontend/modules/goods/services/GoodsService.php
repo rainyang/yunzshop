@@ -50,7 +50,7 @@ class GoodsService
         }
 
         //dd($goodsModel->price);
-        return $goodsModel;
+        return $goodsModel->toArray();
         //dd($goodsModel->toArray());
     }
 }
