@@ -13,13 +13,12 @@ use app\backend\modules\goods\models\Share;
 
 class ShareWidget extends Widget
 {
-    public $goodsId = '';
 
     public function run()
     {
         $share = new Share();
-        if ($this->goodsId && Share::getInfo($this->goodsId)) {
-            $share = Share::getInfo($this->goodsId);
+        if ($this->goods_id && Share::getInfo($this->goods_id)) {
+            $share = Share::getInfo($this->goods_id);
         }
         return $this->render('goods/share/share',
             [

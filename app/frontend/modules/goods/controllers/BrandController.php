@@ -23,12 +23,13 @@ use app\frontend\modules\goods\services\BrandService;
 
 class BrandController extends BaseController
 {
-    public static function getBrand()
+    public function getBrand()
     {
-        $pageSize = 1;
-        $list = Brand::getBrands($pageSize);
-
-        dd($list->toArray());
-        return $list->toJson();
+        $pageSize = 10;
+        $list = Brand::getBrands()->paginate($pageSize)->toArray();
+        if($list['data']){
+            return $this->successJson($list);
+        }
+        return $this->errorJson('未检测到数据!',$list);
     }
 }

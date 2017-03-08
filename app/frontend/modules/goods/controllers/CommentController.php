@@ -24,18 +24,14 @@ use app\frontend\modules\goods\services\CommentService;
 class CommentController extends BaseController
 {
 
-    private $goods_id;
-    private $page_size;
-
-    public function __construct()
-    {
-        $this->goods_id = \YunShop::request()->goods_id;
-        $this->page_size = 2;
-    }
-
     public function getComment()
     {
-        $request = Comment::getCommentsByGoods($this->goods_id, $this->page_size);
-        return $request->toJson();
+        $goodsId = \YunShop::request()->goods_id;
+        $pageSize = 10;
+        $list = Comment::getCommentsByGoods($goodsId)->paginate($pageSize)->toArray();
+        if($list['data']){
+            return $this->successJson($list);
+        }
+        return $this->errorJson('未检测到数据!',$list);
     }
 }

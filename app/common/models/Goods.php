@@ -1,34 +1,39 @@
 <?php
 /**
  * Created by PhpStorm.
-<<<<<<< HEAD
  * User: RainYang
  * Date: 2017/2/22
  * Time: 19:35
-=======
- * User: yanglei
- * Date: 2017/2/28
- * Time: 上午11:31
->>>>>>> 8cd399a5a5fe4f2aecc9117c987f889cb5350423
  */
 
 namespace app\common\models;
 
 use app\backend\modules\goods\observers\GoodsObserver;
+use HaoLi\LaravelAmount\Traits\AmountTrait;
+
 
 class Goods extends BaseModel
 {
+    use AmountTrait;
+
     public $table = 'yz_goods';
     public $display_order = 0;
     //protected $appends = ['status'];
 
-    //public $fillable = ['display_order'];
+    public $fillable = [];
 
-    public $guarded = [];
+    protected $guarded = ['widgets'];
 
-    public static function getList($pagesize=20, $condition = [])
+    public $appends = [''];
+
+    public $widgets = [];
+
+    protected $amountFields = ['price', 'market_price', 'cost_price'];
+
+
+    public static function getList()
     {
-        return static::uniacid()->paginate($pagesize);
+        return static::uniacid();
     }
 
     public static function getGoodsById($id)
@@ -39,6 +44,16 @@ class Goods extends BaseModel
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
+    }
+
+    public function hasManyOptions()
+    {
+        return $this->hasMany('app\common\models\GoodsOption');
+    }
+
+    public function hasManyGoodsCategory()
+    {
+        return $this->hasOne('app\common\models\GoodsCategory');
     }
 
     public function hasManySpecs()

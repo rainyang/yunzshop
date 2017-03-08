@@ -14,4 +14,6 @@ class MemberAddress extends BaseModel
 {
     protected $table = 'mc_member_address';
 
+    public $timestamps = false;
+
 }

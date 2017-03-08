@@ -10,6 +10,8 @@
 namespace app\backend\modules\goods\models;
 
 
+use app\backend\modules\goods\services\DiscountService;
+
 class Discount extends \app\common\models\goods\Discount
 {
     public $timestamps = false;
@@ -22,6 +24,46 @@ class Discount extends \app\common\models\goods\Discount
     public static function getList($goodsId)
     {
         return self::getGoodsDiscountList($goodsId);
+    }
+
+    public static function relationSave($goodsId, $data, $operate = '')
+    {
+        if(!$goodsId){
+            return false;
+        }
+        self::deletedDiscount($goodsId);
+        $discount_data = [];
+        foreach ($data['discount_value'] as $key => $value) {
+            $discount_data[] = [
+                'level_discount_type' => !empty($data['level_discount_type']) ? $data['level_discount_type'] : '1',
+                'discount_method' =>  !empty($data['discount_method']) ? $data['discount_method'] : '1',
+                'level_id' => $key,
+                'discount_value' => !empty($value) ? $value : '0',
+                'goods_id' => $goodsId
+            ];
+        }
+        return self::addByGoodsId($discount_data);
+    }
+
+    public static function addByGoodsId($discount_data)
+    {
+        foreach ($discount_data as $discount) {
+            $discountModel = new static;
+            $discountModel->setRawAttributes($discount);
+            $discountModel->save();
+        }
+        return true;
+    }
+
+    public static function getModel($goodsId,$operate)
+    {
+        $model = false;
+        if($operate != 'created') {
+            $model = static::where(['goods_id' => $goodsId])->first();
+        }
+        !$model && $model =  new static;
+
+        return $model;
     }
 
     /**

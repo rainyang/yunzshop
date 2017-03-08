@@ -15,7 +15,23 @@ use Illuminate\Database\Eloquent\Model;
 class BaseModel extends Model
 {
     use ValidatorTrait;
-
+    protected $search_fields;
+    /**
+     * 模糊查找
+     * @param $query
+     * @param $params
+     * @return mixed
+     */
+    public function scopeSearchLike($query, $params)
+    {
+        $search_fields = $this->search_fields;
+        $query->where(function ($query) use ($params, $search_fields) {
+            foreach ($search_fields as $search_field) {
+                $query->orWhere($search_field, 'like', '%' . $params . '%');
+            }
+        });
+        return $query;
+    }
     /**
      * 默认使用时间戳戳功能
      *

@@ -12,6 +12,7 @@ use app\backend\models\BackendModel;
 class Member extends BackendModel
 {
     public $table = 'mc_members';
+    protected $search_fields = ['mobile','uid','nickname','realname'];
 
 
     public $timestamps = false;
@@ -23,6 +24,7 @@ class Member extends BackendModel
     }
 
     /**
+     * 添加评论默认名称
      * @return mixed
      */
     public static function getRandNickName()
@@ -34,6 +36,7 @@ class Member extends BackendModel
     }
     
     /**
+     * 添加评论默认头像
      * @return mixed
      */
     public static function getRandAvatar()

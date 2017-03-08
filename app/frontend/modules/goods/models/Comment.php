@@ -11,7 +11,7 @@ namespace app\frontend\modules\goods\models;
 class Comment extends \app\common\models\Comment
 {
 
-    public static function getCommentsByGoods($goods_id, $pageSize)
+    public static function getCommentsByGoods($goods_id)
     {
         return self::select(
             'id', 'order_id', 'goods_id', 'uid', 'nick_name', 'head_img_url', 'content', 'level',
@@ -25,8 +25,7 @@ class Comment extends \app\common\models\Comment
             }])
             ->where('goods_id', $goods_id)
             ->where('comment_id', 0)
-            ->orderBy('created_at', 'acs')
-            ->paginate($pageSize);
+            ->orderBy('created_at', 'acs');
     }
     
 }

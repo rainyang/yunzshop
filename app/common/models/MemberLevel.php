@@ -19,4 +19,16 @@ class MemberLevel extends BaseModel
     public $table = 'yz_member_level';
 
     protected $guarded = [''];
+
+    /**
+     * 获取默认等级
+     *
+     * @return mixed
+     */
+    public static function getDefaultLevelId()
+    {
+        return self::select('id')
+            ->uniacid()
+            ->where('is_default', 1);
+    }
 }
