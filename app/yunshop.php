@@ -45,15 +45,14 @@ class YunShop
         $controller->route = implode('.',$currentRoutes);
 
         //检测权限
-        if($controller->can($controller->route)) {
-            $content = $controller->$action(
-                Illuminate\Http\Request::capture()
-            );
-
-            exit($content);
-        }else{
+        if(self::isWeb() && !$controller->can($controller->route)){
             abort(403,'无权限');
         }
+        $content = $controller->$action(
+            Illuminate\Http\Request::capture()
+        );
+
+        exit($content);
     }
 
 
