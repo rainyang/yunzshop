@@ -45,7 +45,7 @@ trait PermissionTrait
     {
         $noPermissions = \Cache::get('noPermissions');
         if($noPermissions === null){
-            $noPermissions = $this->getNoPermissionList(\Config::get('route'));
+            $noPermissions = $this->getNoPermissionList(\Config::get('menu'));
             \Cache::put('noPermissions',$noPermissions);
         }
         if(in_array($route, $noPermissions)){
