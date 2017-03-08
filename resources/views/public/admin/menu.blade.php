@@ -16,7 +16,7 @@
 
             <ul class="nav nav-sidebar">
 
-                @foreach(Config::get('route') as $keyOne=>$valueOne)
+                @foreach(Config::get('menu') as $keyOne=>$valueOne)
                     @if(isset($valueOne['menu']) && $valueOne['menu'] == true)
                 <li>
                     @if(isset($valueOne['child']) && array_child_kv_exists($valueOne['child'],'menu',true))

@@ -17,7 +17,7 @@ class MenuWidget extends Widget
 
     public function run()
     {
-        $menu = \Config::get('route');
+        $menu = \Config::get('menu');
         return view('widgets.menu',['menu'=>$menu]);
     }
 }
