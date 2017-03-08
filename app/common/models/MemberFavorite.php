@@ -9,9 +9,13 @@
 namespace app\common\models;
 
 
-use Illuminate\Database\Eloquent\Model;
 
-class MemberFavorite extends Model
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class MemberFavorite extends BaseModel
 {
+    use SoftDeletes;
+
     protected $table = 'yz_member_favorite';
+
 }

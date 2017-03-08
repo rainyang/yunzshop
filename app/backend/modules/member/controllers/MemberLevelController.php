@@ -11,6 +11,7 @@ namespace app\backend\modules\member\controllers;
 
 use app\backend\modules\member\models\MemberLevel;
 use app\common\components\BaseController;
+use app\common\facades\Setting;
 use app\common\helpers\Url;
 
 class MemberLevelController extends BaseController
@@ -19,11 +20,10 @@ class MemberLevelController extends BaseController
 
     public function __construct()
     {
-        $this->shopset = m('common')->getSysset('shop');
+        parent::__construct();
+        $this->shopset = Setting::get('shop');
     }
-    /**
-     *  Membership list
-     */
+
     public function index()
     {
         $level_list = MemberLevel::getMemberLevelList();

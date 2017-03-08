@@ -12,6 +12,7 @@ use app\backend\models\BackendModel;
 class Member extends BackendModel
 {
     public $table = 'mc_members';
+    protected $search_fields = ['mobile','uid','nickname','realname'];
 
 
     public $timestamps = false;
