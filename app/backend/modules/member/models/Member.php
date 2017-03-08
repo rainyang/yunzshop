@@ -38,7 +38,7 @@ class Member extends \app\common\models\Member
      * @param $pageSize
      * @return mixed
      */
-    public static function getMembers($pageSize)
+    public static function getMembers()
     {
         return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
             'credit1', 'credit2'])
@@ -54,9 +54,7 @@ class Member extends \app\common\models\Member
                     }]);
             }, 'hasOneFans' => function($query4) {
                 return $query4->select(['uid', 'follow as followed']);
-            }])
-            ->paginate($pageSize)
-            ->toArray();
+            }]);
     }
 
     /**
@@ -133,7 +131,7 @@ class Member extends \app\common\models\Member
      * @param $pageSize
      * @return mixed
      */
-    public static function searchMembers($pageSize, $parame)
+    public static function searchMembers($parame)
     {
         $result = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
             'credit1', 'credit2'])
@@ -184,9 +182,7 @@ class Member extends \app\common\models\Member
                     }]);
             }, 'hasOneFans' => function($query4) {
                 return $query4->select(['uid', 'follow as followed']);
-            }])
-            ->paginate($pageSize)
-            ->toArray();
+            }]);
 
         return $result;
     }
