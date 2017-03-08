@@ -16,7 +16,7 @@ class ListController extends BaseController
 {
     // $route = \Yunshop::request()->route;
 
-    public function requestList($request){
+    public function requestOrderList($request){
 
         $memberId = \Yunshop::request()->memberid;
         if (!$memberId) {
@@ -49,7 +49,7 @@ class ListController extends BaseController
             exit;
         }
 
-        $list = Order::with(['hasManyOrderGoods'=>function($query){
+        $list = Order::all()->with(['hasManyOrderGoods'=>function($query){
             return $query->select(['id','order_id','goods_id','goods_price','total','price'])
                             ->with(['belongsToGood'=>function($query){
                                 return $query->select(['id','price','title']);
@@ -66,23 +66,23 @@ class ListController extends BaseController
 
     //待付款订单
     public function waitPay(){
-        return $this->requestList('waitPay');
+        return $this->requestOrderList('waitPay');
     }
 
 
     //待发货订单
     public function waitSend(){
-        return $this->requestList('waitSend');
+        return $this->requestOrderList('waitSend');
     }
 
 
     //待收货订单
     public function waitReceive(){
-        return $this->requestList('waitReceive');
+        return $this->requestOrderList('waitReceive');
     }
 
     //已完成订单
     public function Completed(){
-        return $this->requestList('Completed');
+        return $this->requestOrderList('Completed');
     }
 }
