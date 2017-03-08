@@ -1,7 +1,7 @@
 {if $order['status'] == 0}
 <a class="btn btn-primary btn-sm disbut"
-   href="{php echo $this->createMobileUrl('order.op.pay', array('order_id' => $order['id']))}"
-   onclick="return confirm('确认此订单已付款吗？');return false;">确认付款</a>
+   href="javascript:;"
+   onclick="pay()">确认付款</a>
 <a class="label label-default">等待付款</a>
 {/if}
 {if $order['status'] == 1}
@@ -21,5 +21,21 @@
    onclick="return confirm('确认订单收货吗？');return false;">确认收货</a>
 <a class="btn btn-default btn-sm disbut">等待收货</a>
 {/if}
+<script language="javascript">
+    function pay()
+    {
+        var order_id = $('.order_id').val();
+        if (confirm('确认此订单已付款吗？')) {
+            $.post("{php echo $this->createMobileUrl('order.operation.pay')}", {order_id:order_id}, function(json){
+                var json = $.parseJSON(json);
+                if (json.status == 1) {
+                    location.href = location.href;
+                } else {
+                    alert(json.result);
+                }
+            });
+        }
+    }
+</script>
 
 

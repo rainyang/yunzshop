@@ -16,11 +16,14 @@ class RemarkController extends BaseController
 {
     public function updateRemark()
     {
-        //\YunShop::request()->id 是订单的id
-        \YunShop::request()->id = 1;
-        $db_remark_model = Remark::where('order_id', \YunShop::request()->id)->first();
-        $db_remark_model->remark = \YunShop::request()->remark;
-        $db_remark_model->save();
-        header('Location:http://yz.com/'. $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)));
+        if (\YunShop::app()->ispost) {
+            //\YunShop::request()->id 是订单的id
+            \YunShop::request()->id = 1;
+            $db_remark_model = Remark::where('order_id', \YunShop::request()->order_id)->first();
+            $db_remark_model->remark = \YunShop::request()->remark;
+            $db_remark_model->save();
+            show_json(1);
+        }
+        //header('Location:http://yz.com/'. $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)));
     }
 }
