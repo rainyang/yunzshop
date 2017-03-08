@@ -12,7 +12,7 @@ class ListController extends BaseController
     {
         $memberId = \Yunshop::request()->memberid;
         if (!$memberId) {
-            return $this->errorJson( $msg = '没有传递参数 - 用户ID', $data = []);
+            return $this->errorJson( $msg = '缺少访问参数', $data = []);
         }
 
         $list = OrderListModel::getRequestOrderList($status);
@@ -21,7 +21,7 @@ class ListController extends BaseController
         if ($list) {
             return $this->successJson($data = $list);
         } else {
-            return $this->errorJson($msg = '查询无数据', $data = []);
+            return $this->errorJson($msg = '未找到数据', $data = []);
         }
     }
 
