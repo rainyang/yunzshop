@@ -34,24 +34,24 @@ class ListController extends BaseController
     //待付款订单
     public function waitPay()
     {
-        return $this->getOrders(0);
+        return $this->getOrders(0); //待付款订单在数据表中的 status 是 0
     }
 
     //待发货订单
     public function waitSend()
     {
-        return $this->getOrders(1);
+        return $this->getOrders(1); //待发货订单在数据表中的 status 是 1
     }
 
     //待收货订单
     public function waitReceive()
     {
-        return $this->getOrders(2);
+        return $this->getOrders(2); //待收货订单在数据表中的 status 是 2
     }
 
     //已完成订单
     public function Completed()
     {
-        return $this->getOrders(3);
+        return $this->getOrders(3); //已完成订单在数据表中的 status 是 3
     }
 }
