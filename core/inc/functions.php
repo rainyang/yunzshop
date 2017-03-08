@@ -670,6 +670,7 @@ function shop_template_parse($str, $inmodule = false)
 
 function ce($permtype = '', $item = null)
 {
+    return true;
     $perm = p('perm');
     if ($perm) {
         return $perm->check_edit($permtype, $item);
@@ -679,6 +680,7 @@ function ce($permtype = '', $item = null)
 
 function cv($permtypes = '')
 {
+    return true;
     $perm = p('perm');
     if ($perm) {
         return $perm->check_perm($permtypes);
@@ -695,6 +697,7 @@ function ca($permtypes = '')
 
 function cp($pluginname = '')
 {
+    return true;
     $perm = p('perm');
     if ($perm) {
         return $perm->check_plugin($pluginname);

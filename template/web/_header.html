@@ -2,5 +2,5 @@
 {template 'web/_common'}
 {template 'web/_menu'}
 {template 'web/message_flash'}
-{template 'web/_header_in'}
+{php widget('app\backend\widgets\BreadcrumbWidget',['title'=>$this->title,'breadcrumbs'=>$this->breadcrumbs])}
 

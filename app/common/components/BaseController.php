@@ -3,6 +3,7 @@
 namespace app\common\components;
 
 use app\common\traits\MessageTrait;
+use app\common\traits\PermissionTrait;
 use app\common\traits\TemplateTrait;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -20,7 +21,7 @@ use Response;
  */
 class BaseController extends Controller
 {
-    use DispatchesJobs, MessageTrait, ValidatesRequests, TemplateTrait;
+    use DispatchesJobs, MessageTrait, ValidatesRequests, TemplateTrait, PermissionTrait;
 
 
     public function __construct()
