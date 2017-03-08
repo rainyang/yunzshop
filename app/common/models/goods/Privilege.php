@@ -14,8 +14,6 @@ use app\common\models\BaseModel;
 class Privilege extends BaseModel
 {
     public $table = 'yz_goods_privilege';
-    public $once_buy_limit = '0';
-    public $total_buy_limit = '0';
 
 
     /**

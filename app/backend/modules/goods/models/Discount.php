@@ -33,16 +33,19 @@ class Discount extends \app\common\models\goods\Discount
         }
         self::deletedDiscount($goodsId);
         $discount_data = [];
-        foreach ($data['discount_value'] as $key => $value) {
-            $discount_data[] = [
-                'level_discount_type' => !empty($data['level_discount_type']) ? $data['level_discount_type'] : '1',
-                'discount_method' =>  !empty($data['discount_method']) ? $data['discount_method'] : '1',
-                'level_id' => $key,
-                'discount_value' => !empty($value) ? $value : '0',
-                'goods_id' => $goodsId
-            ];
+        if (!empty($data['discount_value'])) {
+            foreach ($data['discount_value'] as $key => $value) {
+                $discount_data[] = [
+                    'level_discount_type' => !empty($data['level_discount_type']) ? $data['level_discount_type'] : '1',
+                    'discount_method' =>  !empty($data['discount_method']) ? $data['discount_method'] : '1',
+                    'level_id' => $key,
+                    'discount_value' => !empty($value) ? $value : '0',
+                    'goods_id' => $goodsId
+                ];
+            }
+            return self::addByGoodsId($discount_data);
         }
-        return self::addByGoodsId($discount_data);
+
     }
 
     public static function addByGoodsId($discount_data)
