@@ -1,35 +1,22 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: shenyang
- * Date: 2017/3/1
- * Time: 下午5:11
- */
 
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\BaseController;
-use app\common\helpers\PaginationHelper;
-use app\common\models\Order;
+use app\frontend\modules\order\models\OrderListModel;
 
 class ListController extends BaseController
 {
-    // $route = \Yunshop::request()->route;
-
-    public function requestOrderList($request){
-
+    //获取指定状态的订单
+    public function getOrders($status = '')
+    {
         $memberId = \Yunshop::request()->memberid;
         if (!$memberId) {
             return $this->errorJson( $msg = '没有传递参数 - 用户ID', $data = []);
-            exit;
         }
 
-        $list = Order::$request()->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price'])
-                ->with(['belongsToGood'=>function($query){
-                    return $query->select(['id','price','title']);
-                }]);
-        }])->get(['id','status','order_sn','goods_price','price'])->toArray();
+        $list = OrderListModel::getRequestOrderList($status);
+        $list = $list->toArray();
 
         if ($list) {
             return $this->successJson($data = $list);
@@ -38,51 +25,33 @@ class ListController extends BaseController
         }
     }
 
-
-    //所有订单
-    public function index(){
-        // $pageSize=5;
-
-        $memberId = \Yunshop::request()->memberid;
-        if (!$memberId) {
-            return $this->errorJson( $msg = '没有传递参数 - 用户ID', $data = []);
-            exit;
-        }
-
-        $list = Order::with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price'])
-                            ->with(['belongsToGood'=>function($query){
-                                return $query->select(['id','price','title']);
-                            }]);
-        }])->get(['id','status','order_sn','goods_price','price'])->toArray();
-        
-        if ($list) {
-            return $this->successJson($data = $list);
-        } else {
-            return $this->errorJson($msg = '查询无数据', $data = []);
-        }
+    //所有订单(不包括"已删除"订单)
+    public function index()
+    {
+        return $this->getOrders();
     }
-
 
     //待付款订单
-    public function waitPay(){
-        return $this->requestOrderList('waitPay');
+    public function waitPay()
+    {
+        return $this->getOrders(0);
     }
-
 
     //待发货订单
-    public function waitSend(){
-        return $this->requestOrderList('waitSend');
+    public function waitSend()
+    {
+        return $this->getOrders(1);
     }
 
-
     //待收货订单
-    public function waitReceive(){
-        return $this->requestOrderList('waitReceive');
+    public function waitReceive()
+    {
+        return $this->getOrders(2);
     }
 
     //已完成订单
-    public function Completed(){
-        return $this->requestOrderList('Completed');
+    public function Completed()
+    {
+        return $this->getOrders(3);
     }
 }
