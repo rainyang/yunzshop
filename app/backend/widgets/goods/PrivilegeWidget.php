@@ -23,10 +23,10 @@ class PrivilegeWidget extends Widget
         $privilege = new Privilege();
         if ($this->goods_id && Privilege::getInfo($this->goods_id)) {
             $privilege = Privilege::getInfo($this->goods_id);
-            $privilege->show_levels = !empty($privilege->show_levels) ? explode(',', $privilege->show_levels) : '';
-            $privilege->buy_levels = !empty($privilege->buy_levels) ? explode(',', $privilege->buy_levels) : '';
-            $privilege->show_groups = !empty($privilege->show_groups) ? explode(',', $privilege->show_groups) : '';
-            $privilege->buy_groups = !empty($privilege->buy_groups) ? explode(',', $privilege->buy_groups) : '';
+            $privilege->show_levels = !is_null($privilege->show_levels) ? explode(',', $privilege->show_levels) : '';
+            $privilege->buy_levels = !is_null($privilege->buy_levels) ? explode(',', $privilege->buy_levels) : '';
+            $privilege->show_groups = !is_null($privilege->show_groups) ? explode(',', $privilege->show_groups) : '';
+            $privilege->buy_groups = !is_null($privilege->buy_groups) ? explode(',', $privilege->buy_groups) : '';
         }
         $levels = MemberLevel::getMemberLevelList();
         $groups = MemberGroup::getMemberGroupList();
