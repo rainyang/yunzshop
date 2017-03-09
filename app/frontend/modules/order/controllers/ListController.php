@@ -17,7 +17,9 @@ class ListController extends BaseController
 
         $pageSize = \Yunshop::request()->pagesize;
         $pageSize = $pageSize ? $pageSize : 5;
-        $list = OrderListModel::getRequestOrderList($status, $memberId)->paginate($pageSize)->toArray();
+
+        //返回的订单不包括"已删除订单"
+        $list = OrderListModel::getRequestOrderList($status, $memberId)->where('status','<>','-1')->paginate($pageSize)->toArray();
 
         if ($list['total'] == 0) {
             return $this->errorJson($msg = '未找到数据', $data = []);
