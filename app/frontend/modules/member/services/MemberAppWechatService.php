@@ -12,7 +12,7 @@ use app\frontend\modules\member\services\MemberService;
 
 class MemberAppWechatService extends MemberService
 {
-    private $_login_type    = 3;
+    const LOGIN_TYPE    = 3;
 
     public function __construct()
     {}
@@ -49,11 +49,11 @@ class MemberAppWechatService extends MemberService
                     $types = explode('|',$UnionidInfo['type']);
                     $member_id = $UnionidInfo['member_id'];
 
-                    if (!in_array($this->_login_type, $types)) {
+                    if (!in_array(self::LOGIN_TYPE, $types)) {
                         //更新ims_yz_member_unique表
                         MemberUniqueModel::updateData(array(
                             'unique_id'=>$UnionidInfo['unique_id'],
-                            'type' => $UnionidInfo['type'] . '|' . $this->_login_type
+                            'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
                         ));
 
                         //添加yz_member_app_wechat表
@@ -91,7 +91,7 @@ class MemberAppWechatService extends MemberService
                         'uniacid' => $uniacid,
                         'unionid' => $token['unionid'],
                         'member_id' => $member_id,
-                        'type' => $this->_login_type
+                        'type' => self::LOGIN_TYPE
                     ));
 
                     //添加yz_member_app_wechat表

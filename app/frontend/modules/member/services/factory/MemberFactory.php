@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\member\services\factory;
 
-use app\frontend\modules\member\services\MemberMcService;
+use app\frontend\modules\member\services\MemberMobileService;
 use app\frontend\modules\member\services\MemberWechatService;
 use app\frontend\modules\member\services\MemberAppWechatService;
 use app\frontend\modules\member\services\MemberMiniAppService;
@@ -17,28 +17,35 @@ use app\frontend\modules\member\services\MemberQQService;
 
 class MemberFactory
 {
+    const LOGIN_OFFICE_ACCOUNT = 1;
+    const LOGIN_MINI_APP = 2;
+    const LOGIN_APP_WECHAT = 3;
+    const LOGIN_WECHAT = 4;
+    const LOGIN_MOBILE = 5;
+    const LOGIN_QQ = 6;
+
     public static function create($type = null)
     {
         $className = null;
 
         switch($type)
         {
-            case "1":
+            case self::LOGIN_OFFICE_ACCOUNT:
                 $className = new MemberOfficeAccountService();
                 break;
-            case "2":
+            case self::LOGIN_MINI_APP:
                 $className = new MemberMiniAppService();
                 break;
-            case "3":
+            case self::LOGIN_APP_WECHAT:
                 $className = new MemberAppWechatService();
                 break;
-            case "4":
+            case self::LOGIN_WECHAT:
                 $className = new MemberWechatService();
                 break;
-            case "5":
-                $className = new MemberMcService();
+            case self::LOGIN_MOBILE:
+                $className = new MemberMobileService();
                 break;
-            case "6":
+            case self::LOGIN_QQ:
                 $className = new MemberQQService();
                 break;
             default:

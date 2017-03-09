@@ -32,9 +32,6 @@ class MemberService
         self::$_current_member = $member;
     }
 
-    public function login()
-    {}
-
     /**
      * 用户是否登录
      *

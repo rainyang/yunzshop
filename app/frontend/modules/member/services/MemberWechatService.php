@@ -14,9 +14,10 @@ use Illuminate\Session\Store;
 
 class MemberWechatService extends MemberService
 {
+    const LOGIN_TYPE    = 4;
+
     private $_app_id;
     private $_appSecret;
-    private $_login_type    = 4;
 
     public function __construct()
     {
@@ -54,11 +55,11 @@ class MemberWechatService extends MemberService
                     $types = explode('|',$UnionidInfo['type']);
                     $member_id = $UnionidInfo['member_id'];
 
-                    if (!in_array($this->_login_type, $types)) {
+                    if (!in_array(self::LOGIN_TYPE, $types)) {
                         //更新ims_yz_member_unique表
                         MemberUniqueModel::updateData(array(
                             'unique_id'=>$UnionidInfo['unique_id'],
-                            'type' => $UnionidInfo['type'] . '|' . $this->_login_type
+                            'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
                         ));
 
                         //添加yz_member_wechat表
@@ -95,7 +96,7 @@ class MemberWechatService extends MemberService
                         'uniacid' => $uniacid,
                         'unionid' => $user_info['unionid'],
                         'member_id' => $member_id,
-                        'type' => $this->_login_type
+                        'type' => self::LOGIN_TYPE
                     ));
 
                     //添加yz_member_wechat表
