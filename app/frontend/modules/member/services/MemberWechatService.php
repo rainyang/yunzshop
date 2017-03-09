@@ -8,11 +8,11 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\MemberMcService;
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\member\models\MemberWechatModel;
 use Illuminate\Session\Store;
 
-class MemberWechatService extends MemberMcService
+class MemberWechatService extends MemberService
 {
     private $_app_id;
     private $_appSecret;

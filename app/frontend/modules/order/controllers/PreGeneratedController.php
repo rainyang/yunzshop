@@ -8,21 +8,19 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\components\BaseController;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\ShopService;
 
-class DisplayController
+class PreGeneratedController extends BaseController
 {
     public function index(){
-
+        //$param = \YunShop::request();
         $param = [
             [
                 'goods_id' => 1,
                 'total' => 1
-            ], [
-                'goods_id' => 2,
-                'total' => 2
             ]
         ];
         $member_model = MemberService::getCurrentMemberModel();
@@ -30,5 +28,11 @@ class DisplayController
         //todo 根据参数
         $order_goods_models = OrderService::getOrderGoodsModels($param);
         $order_model = OrderService::getPreCreateOrder($order_goods_models,$member_model,$shop_model);
+        $order = $order_model->toArray();
+        $data = [
+            'order'=>$order
+        ];
+        return $this->successJson($data);
+        dd($order);
     }
 }

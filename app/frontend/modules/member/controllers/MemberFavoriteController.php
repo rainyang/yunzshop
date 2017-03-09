@@ -10,13 +10,31 @@ namespace app\frontend\modules\member\controllers;
 
 
 use app\common\components\BaseController;
+use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\models\MemberFavorite;
 
 class MemberFavoriteController extends BaseController
 {
     public function index()
     {
-        dd(1);
+        $memberId = '57';
+        $favoriteList = MemberFavorite::getFavoriteList($memberId);
+        //dd($favoriteList);
+
+        $goodsModel = new GoodsService();
+
+        $i = 0;
+        foreach ($favoriteList as $favorite) {
+            $favorite['goods'] = $goodsModel->getGoodsByCart($favorite['goods_id']);
+            if ($favorite['goods'] != false) {
+                $favoriteList[$i] = $favorite;
+            } else {
+                unset($favoriteList[$i]);
+            }
+            $i += 1;
+        }
+        dd($favoriteList);
+        return $this->successJson($favoriteList);
 
     }
 
@@ -48,7 +66,7 @@ class MemberFavoriteController extends BaseController
     public function destory()
     {
         $favoriteId = \YunShop::request()->id;
-        $favoriteId = 1;
+        $favoriteId = 2;
         $requestModel = MemberFavorite::getFavoriteById($favoriteId);
         if (!$requestModel) {
             $msg = "未找到记录或已删除";

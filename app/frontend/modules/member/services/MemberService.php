@@ -32,6 +32,9 @@ class MemberService
         self::$_current_member = $member;
     }
 
+    public function login()
+    {}
+
     /**
      * 用户是否登录
      *
@@ -165,17 +168,12 @@ class MemberService
     /**
      * 阿里大鱼
      *
-     * @param $mobile
-     * @param $code
+     * @param $sms
      * @param $templateType
      * @return array
      */
-    public static function send_sms_alidayu($sms, $mobile, $code, $templateType)
+    public static function send_sms_alidayu($sms, $templateType)
     {
-        include IA_ROOT . "/addons/sz_yi/core/alifish/TopSdk.php";
-        //$appkey = '23355246';
-        //$secret = '0c34a4887d2f52a6365a266bb3b38d25';
-
         switch ($templateType) {
             case 'reg':
                 $templateCode = $sms['templateCode'];
@@ -186,36 +184,11 @@ class MemberService
                 $params = @explode("\n", $sms['forget']);
                 break;
             default:
+                $params = array();
                 $templateCode = $sms['templateCode'];
                 break;
         }
-
-        $c = new \TopClient;
-        $c->appkey = $sms['appkey'];
-        $c->secretKey = $sms['secret'];
-        $req = new \AlibabaAliqinFcSmsNumSendRequest;
-        $req->setExtend("123456");
-        $req->setSmsType("normal");
-        $req->setSmsFreeSignName($sms['signname']);
-        if (count($params) > 1) {
-            $nparam['code'] = "{$code}";
-            foreach ($params as $param) {
-                $param = trim($param);
-                $explode_param = explode("=", $param);
-                $nparam[$explode_param[0]] = "{$explode_param[1]}";
-            }
-
-            $req->setSmsParam(json_encode($nparam));
-        } else {
-            $explode_param = explode("=", $params[0]);
-            $req->setSmsParam("{\"code\":\"{$code}\",\"product\":\"{$explode_param[1]}\"}");
-        }
-
-        $req->setRecNum($mobile);
-        $req->setSmsTemplateCode($templateCode);
-        $resp = $c->execute($req);
-        //print_r($resp);exit;
-        return objectArray($resp);
+        return array('templateCode' => $templateCode, 'params' => $params);
     }
 
     /**
@@ -232,7 +205,7 @@ class MemberService
      * @param $tel
      * @return mixed
      */
-    function send_sms($account, $pwd, $mobile, $code, $type = 'check', $name, $title, $total, $tel)
+    public static function send_sms($account, $pwd, $mobile, $code, $type = 'check', $name, $title, $total, $tel)
     {
         if ($type == 'check') {
             $content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
