@@ -92,9 +92,16 @@ class Order extends BaseModel
         return $this->StatusService;
     }
 
+    //收货地址
     public function hasOneAddress()
     {
         return $this->hasOne('\app\common\models\order\Address', 'order_id', 'id');
+    }
+
+    //订单支付
+    public function hasOnePay()
+    {
+        return $this->hasOne('\app\common\models\order\Pay', 'order_id', 'id');
     }
 
     public function getStatusNameAttribute()

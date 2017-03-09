@@ -24,6 +24,27 @@ class MemberModel extends BackendModel
     public $timestamps = false;
 
     /**
+     * 主从表1:1
+     *
+     * @return mixed
+     */
+    public function yzMember()
+    {
+        return $this->hasOne('app\backend\modules\member\models\MemberShopInfo','member_id','uid');
+    }
+
+    /**
+     * 会员－粉丝一对一关系
+     *
+     * @return mixed
+     */
+    public function hasOneFans()
+    {
+        return $this->hasOne('app\common\models\McMappingFans','uid','uid');
+    }
+
+
+    /**
      * 获取用户uid
      *
      * @param $uniacid
@@ -83,16 +104,21 @@ class MemberModel extends BackendModel
     /**
      * 获取用户信息
      *
-     * @param $uniacid
      * @param $member_id
      * @return mixed
      */
-    public static function getUserInfos($uniacid, $member_id)
+    public static function getUserInfos($member_id)
     {
-        return self::where('uniacid', $uniacid)
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid()
             ->where('uid', $member_id)
-            ->first()
-            ->toArray();
+            ->with(['yzMember'=>function($query){
+                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content']);
+            }, 'hasOneFans' => function($query2) {
+                return $query2->select(['uid', 'follow as followed']);
+            }
+            ]);
     }
 
     /**
