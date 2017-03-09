@@ -32,7 +32,6 @@ class CreateImsYzOrderTable extends Migration {
 			$table->integer('updated_at')->nullable()->default(0);
 			$table->integer('deleted_at')->nullable()->default(0);
 
-			$table->primary('id');
 			$table->foreign('member_id')->references('id')->on('users');
 		});
 	}
