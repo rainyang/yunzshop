@@ -28,10 +28,9 @@ class ConfirmSendController extends BaseController
         $order = Order::find(\YunShop::request()->order_id);
         $order_send = new OrderSend($order);
         if (!$order_send->sendable()) {
-            echo '状态不正确';exit;
+            $this->message('该订单不能发货');
         }
         $order_send->send();
-        header('Location:http://yz.com/'. $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)));
-        dd(1);
+        $this->message('发货成功', $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)), 'success');
     }
 }

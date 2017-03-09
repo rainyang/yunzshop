@@ -9,21 +9,22 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\BaseController;
-use app\common\models\Order;
+use app\frontend\modules\order\models\OrderDetailModel;
 
 
 class DetailController extends BaseController
 {
     public function index(){
-        $orderId = \Yunshop::request()->orderid;
-        if ($orderId) {
-            $db_order_models = Order::with(['hasManyOrderGoods'=>function($query){
-                return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
-            }])->get(['id','order_sn'])->first();
-            $order = $db_order_models->toArray();
-            return $this->successJson($data = $order);
+        $orderId = \Yunshop::request()->order_id;
+        if (!$orderId) {
+            return $this->errorJson($msg = '缺少访问参数', $data = []);
         } else {
-            return $this->errorJson($data = []);
+            $orderDetail = OrderDetailModel::getOrderDetail($orderId);
+            if (!$orderDetail){
+                return $this->errorJson($msg = '未找到数据', $data = []);
+            } else {
+                return $this->successJson($data = $orderDetail->toArray());
+            }
         }
     }
 }

@@ -19,27 +19,14 @@ class DetailController extends BaseController
         $order_id = 1;
         $db_order_models = Order::with(
             [
-                'hasManyOrderGoods' => function($order_goods)
-                {
-                    return $order_goods->select()
-                        ->with(
-                            [
-                                'belongsToGood' => function($goods) {
-                                    return $goods->select();
-                                }
-                            ]
-                        );
-                },
-                'beLongsToMember' => function($member)
-                {
-                    return $member->select();
-                },
-                'hasOneOrderRemark' => function($remark)
-                {
-                    return $remark->select();
-                }
+                'hasManyOrderGoods.belongsToGood',
+                'beLongsToMember',
+                'hasOneOrderRemark',
+                'hasOneAddress'
             ]
         )->find($order_id)->toArray();
+        //$db_order_models['has_one_address']['address'] = json_decode($db_order_models['has_one_address']['address']);
+        //dd(json_encode($db_order_models['has_one_address']['address']));
         //dd($db_order_models);
         $this->render('detail', [
             'order' => $db_order_models,
