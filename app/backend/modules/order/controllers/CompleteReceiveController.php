@@ -20,9 +20,9 @@ class CompleteReceiveController extends BaseController
         $db_order_model = Order::find(\YunShop::request()->order_id);
         $complete = new OrderReceive($db_order_model);
         if (!$complete->receiveable()) {
-            echo '错误';exit;
+            $this->message('失败');
         }
         $complete->receive();
-        header('Location:http://yz.com/'. $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)));
+        $this->message('确认收货成功', $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)), 'success');
     }
 }

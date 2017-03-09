@@ -92,6 +92,11 @@ class Order extends BaseModel
         return $this->StatusService;
     }
 
+    public function hasOneAddress()
+    {
+        return $this->hasOne('\app\common\models\order\Address', 'order_id', 'id');
+    }
+
     public function getStatusNameAttribute()
     {
         return $this->getStatusService()->getStatusName();
