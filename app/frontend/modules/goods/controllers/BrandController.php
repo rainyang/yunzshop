@@ -28,8 +28,8 @@ class BrandController extends BaseController
         $pageSize = 10;
         $list = Brand::getBrands()->paginate($pageSize)->toArray();
         if($list['data']){
-            return $this->successJson($list);
+            return $this->successJson('获取品牌数据成功!', $list);
         }
-        return $this->errorJson('未检测到数据!',$list);
+        return $this->errorJson('未检测到品牌数据!', $list);
     }
 }
