@@ -13,7 +13,6 @@ class OrderGoods extends BaseModel
     public $table = 'yz_order_goods';
     protected $hidden = ['order_id'];
     protected $search_fields = ['goods_sn','title'];
-    protected $hidden = ['order_id'];
 
     public function hasOneGoods()
     {

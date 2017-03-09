@@ -41,7 +41,8 @@ class ListController extends BaseController
             'belongsToMember' => $this->member_builder(),
             'hasManyOrderGoods' => $this->order_goods_builder(),
             'hasOneDispatchType',
-            'hasOnePayType'
+            'hasOnePayType',
+            'hasOneAddress'
         ])->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         //dd($list);

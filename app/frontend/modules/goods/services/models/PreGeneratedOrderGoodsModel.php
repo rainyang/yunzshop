@@ -21,6 +21,8 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     private $total;
     private $order_model;
     private $goods_model;
+    private $price_model;
+
     private $price;
     private $goods_price;
     private $_has_calculated;
