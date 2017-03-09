@@ -69,12 +69,23 @@ class GoodsController extends BaseController
             'is_recommand' => '推荐',
             'is_discount' => '促销',
         ];
-        
+
+        $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['catlevel']]);
+        $brands = Brand::getBrands()->get()->toArray();
+
+        $requestSearch = \YunShop::request()->search;
+        if ($requestSearch) {
+            dd($requestSearch);
+        }
+
         $list = Goods::getList()->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         $this->render('goods/index', [
             'list' => $list['data'],
             'pager' => $pager,
+            //'status' => $status,
+            'brands' => $brands,
+            'catetory_menus' => $catetory_menus,
             'shopset' => $this->shopset,
             'lang' => $this->lang,
             'product_attr_list' => $product_attr_list,
@@ -92,11 +103,14 @@ class GoodsController extends BaseController
             //$widgetPost = \YunShop::request()->widget;
             //dd($widgetPost);
             //$requestGoods['thumb_url'] = serialize($requestGoods['thumb_url']);
-            $requestGoods['thumb_url'] = serialize(
-                array_map(function($item){
-                    return tomedia($item);
-                }, $requestGoods['thumb_url'])
-            );
+            if (isset($requestGoods['thumb_url'])) {
+                $requestGoods['thumb_url'] = serialize(
+                    array_map(function($item){
+                        return tomedia($item);
+                    }, $requestGoods['thumb_url'])
+                );
+            }
+
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
             $goodsModel->uniacid = \YunShop::app()->uniacid;
@@ -112,18 +126,9 @@ class GoodsController extends BaseController
                 $this->error('商品修改失败');
             }
         }
-        
-        $catetorys = Category::getAllCategoryGroup();
-        //dd($catetorys);
-        if ($this->shopset['catlevel'] == 3) {
-            $catetory_menus = CategoryService::tpl_form_field_category_level3(
-                'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
-            );
-        } else {
-            $catetory_menus = CategoryService::tpl_form_field_category_level2(
-                'category', $catetorys['parent'], $catetorys['children'], 0, 0, 0
-            );
-        }
+
+        $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['catlevel']]);
+
         //dd($brands->toArray());
         $allspecs = [];
         $this->render('goods/goods', [
@@ -160,9 +165,10 @@ class GoodsController extends BaseController
         //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
 
 
-        $catetorys = Category::getAllCategoryGroup();
+        //$catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
             //将数据赋值到model
+            $requestGoods['thumb'] = tomedia($requestGoods['thumb']);
             $requestGoods['thumb_url'] = serialize(
                 array_map(function($item){
                     return tomedia($item);
@@ -186,22 +192,10 @@ class GoodsController extends BaseController
                 $this->error('商品修改失败');
             }
         }
-        $goods_categorys = $goodsModel->hasManyGoodsCategory->toArray();
-        $category_ids = explode(",", $goods_categorys['category_ids']);
-        //获取分类2/3级联动
-        if ($this->shopset['catlevel'] == 3) {
-            $catetory_menus = CategoryService::tpl_form_field_category_level3(
-                'category', $catetorys['parent'], $catetorys['children'], $category_ids[0], $category_ids[1],
-                isset($category_ids[2]) ? $category_ids[2] : 0
-            );
-        } else {
-            $catetory_menus = CategoryService::tpl_form_field_category_level2(
-                'category', $catetorys['parent'], $catetorys['children'], $category_ids[0], $category_ids[1],
-                isset($category_ids[2]) ? $category_ids[2] : 0
-            );
-        }
 
-        //dd($goodsModel->id);
+        $goods_categorys = $goodsModel->hasManyGoodsCategory->toArray();
+        $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['catlevel'], 'ids' => explode(",", $goods_categorys['category_ids'])]);
+
         $this->render('goods/goods', [
             'goods' => $goodsModel,
             'lang'  => $this->lang,
