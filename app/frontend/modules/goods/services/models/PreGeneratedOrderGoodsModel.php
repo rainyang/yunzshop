@@ -13,7 +13,6 @@ use app\common\models\Goods;
 use app\common\models\OrderGoods;
 
 use app\common\ServiceModel\ServiceModel;
-use app\frontend\modules\order\services\model\OrderModel;
 use app\frontend\modules\order\services\model\PreGeneratedOrderModel;
 
 class PreGeneratedOrderGoodsModel extends ServiceModel
@@ -21,6 +20,8 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     private $total;
     private $order_model;
     private $goods_model;
+    private $price_model;
+
     private $price;
     private $goods_price;
     private $_has_calculated;
