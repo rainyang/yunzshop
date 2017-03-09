@@ -13,7 +13,6 @@ use app\common\models\Goods;
 use app\common\models\OrderGoods;
 
 use app\common\ServiceModel\ServiceModel;
-use app\frontend\modules\order\services\model\OrderModel;
 use app\frontend\modules\order\services\model\PreGeneratedOrderModel;
 
 class PreGeneratedOrderGoodsModel extends ServiceModel
