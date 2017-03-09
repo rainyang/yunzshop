@@ -1,93 +1,60 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: shenyang
- * Date: 2017/3/1
- * Time: 下午5:11
- */
 
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\BaseController;
-use app\common\helpers\PaginationHelper;
-use app\common\models\Order;
+use app\frontend\modules\order\models\OrderListModel;
 
 class ListController extends BaseController
 {
-    // $route = \Yunshop::request()->route;
-
-
-    //所有订单
-    public function index(){
-        $pageSize=5;
-
-        $memberId = \Yunshop::request()->memberid;
-        
+    //获取指定状态的订单
+    public function getOrders($status = '')
+    {
+        $memberId = \Yunshop::request()->member_id;
         if (!$memberId) {
-            return $this->errorJson( $msg = '没有传递参数 - 用户ID', $data = []);
-            exit;
+            return $this->errorJson( $msg = '缺少访问参数', $data = []);
         }
 
-        $list = Order::with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price'])
-                            ->with(['belongsToGood'=>function($query){
-                                return $query->select(['id','price','title']);
-                            }]);
-        }])->get(['id','status','order_sn','goods_price','price'])->toArray();
-        
-        if (!$list) {
-            return $this->successJson($data = $list);
+        $pageSize = \Yunshop::request()->pagesize;
+        $pageSize = $pageSize ? $pageSize : 5;
+
+        //返回的订单不包括"已删除订单"
+        $list = OrderListModel::getRequestOrderList($status, $memberId)->where('status','<>','-1')->paginate($pageSize)->toArray();
+
+        if ($list['total'] == 0) {
+            return $this->errorJson($msg = '未找到数据', $data = []);
         } else {
-            return $this->errorJson($msg = '查询无数据', $data = []);
+            return $this->successJson($data = $list);
         }
+    }
+
+    //所有订单(不包括"已删除"订单)
+    public function index()
+    {
+        return $this->getOrders();
     }
 
     //待付款订单
-    public function waitPay(){
-        $pageSize=5;
-        
-        $list = Order::waitPay()->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
-        }])->get(['id','order_sn','goods_price','price'])->toArray();
-        
-        // dd($list);
-        return $this->successJson($data = $list);
+    public function waitPay()
+    {
+        return $this->getOrders(0); //待付款订单在数据表中的 status 是 0
     }
 
     //待发货订单
-    public function waitSend(){
-        $pageSize=5;
-        
-        $list = Order::waitSend()->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
-        }])->get(['id','order_sn','goods_price','price'])->toArray();
-        
-        // dd($list);
-        return $this->successJson($data = $list);
+    public function waitSend()
+    {
+        return $this->getOrders(1); //待发货订单在数据表中的 status 是 1
     }
 
-
     //待收货订单
-    public function waitReceive(){
-        $pageSize=5;
-        
-        $list = Order::waitReceive()->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
-        }])->get(['id','order_sn','goods_price','price'])->toArray();
-        
-        // dd($list);
-        return $this->successJson($data = $list);
+    public function waitReceive()
+    {
+        return $this->getOrders(2); //待收货订单在数据表中的 status 是 2
     }
 
     //已完成订单
-    public function Completed(){
-        $pageSize=5;
-        
-        $list = Order::Completed()->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price','title','thumb']);
-        }])->get(['id','order_sn','goods_price','price'])->toArray();
-        
-        // dd($list);
-        return $this->successJson($data = $list);
+    public function Completed()
+    {
+        return $this->getOrders(3); //已完成订单在数据表中的 status 是 3
     }
 }

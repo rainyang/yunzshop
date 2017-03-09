@@ -4,13 +4,21 @@ namespace app\frontend\modules\order\services\model;
 use app\common\models\Order;
 use app\common\models\Member;
 
+use app\common\ServiceModel\ServiceModel;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\models\ShopModel;
 
-class PreGeneratedOrderModel extends OrderModel
+class PreGeneratedOrderModel extends ServiceModel
 {
-
-    private $_pre_order_goods_models;
+    protected $id;
+    protected $total;
+    protected $price;
+    protected $goods_price;
+    protected $member_model;
+    protected $shop_model;
+    protected $order_goods_models = [];
+    protected $order_sn;
+    private $_pre_order_goods_models = [];
 
     private $_has_calculated;
 
@@ -39,11 +47,14 @@ class PreGeneratedOrderModel extends OrderModel
     {
         $this->shop_model = $shop_model;
     }
+
     //对插件观察者 开放的接口
-    public function setPrice($price){
+    public function setPrice($price)
+    {
         $this->price -= $price;
         //log();
     }
+
     private function calculate()
     {
         $this->_has_calculated = true;
@@ -92,12 +103,23 @@ class PreGeneratedOrderModel extends OrderModel
 
         return null;
     }
-    public function show(){
+
+    public function toArray()
+    {
         if ($this->_has_calculated == false) {
             $this->calculate();
         }
-        return $this;
+        $data = array(
+            'price' => $this->price,
+            'goods_price' => $this->goods_price,
+        );
+        //dd($this->order_goods_models);
+        foreach ($this->_pre_order_goods_models as $order_goods_model) {
+            $data['order_goods'][] = $order_goods_model->toArray();
+        }
+        return $data;
     }
+
     public function generate()
     {
         if ($this->_has_calculated == false) {
@@ -108,11 +130,13 @@ class PreGeneratedOrderModel extends OrderModel
         return true;
     }
 
-    private function createOrderGoods(){
-        foreach ($this->_pre_order_goods_models as $pre_order_goods_model){
+    private function createOrderGoods()
+    {
+        foreach ($this->_pre_order_goods_models as $pre_order_goods_model) {
             $pre_order_goods_model->generate($this);
         }
     }
+
     private function createOrder()
     {
         $data = array(
@@ -125,7 +149,8 @@ class PreGeneratedOrderModel extends OrderModel
         );
         echo '订单插入的数据为:';
         $this->id = 1;
-         var_dump($data);exit;
+        var_dump($data);
+        return;
 
         return Order::insert($data);
     }

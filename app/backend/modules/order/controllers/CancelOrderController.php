@@ -22,12 +22,12 @@ class CancelOrderController extends BaseController
         $db_order_model = Order::find(\YunShop::request()->order_id);
         $order_cancel = new OrderCancelSend($db_order_model);
         if (!$order_cancel->cancelSendable()) {
-            echo '错误';exit;
+            $this->message('失败');
         }
         $order_cancel->cancelSend();
         //删除快递信息
         $db_express_model = Express::select()->where('order_id', '=', \YunShop::request()->order_id)->first();
         $db_express_model->delete($db_express_model->id);
-        header('Location:http://yz.com/'. $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)));
+        $this->message('取消成功', $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)), 'success');
     }
 }
