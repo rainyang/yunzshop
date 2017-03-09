@@ -23,18 +23,15 @@ class ListController extends BaseController
 
         $memberId = \Yunshop::request()->memberid;
         
-        if (!$memberId) {
+        /*if (!$memberId) {
             return $this->errorJson( $msg = '没有传递参数 - 用户ID', $data = []);
             exit;
-        }
+        }*/
 
         $list = Order::with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['id','order_id','goods_id','goods_price','total','price'])
-                            ->with(['belongsToGood'=>function($query){
-                                return $query->select(['id','price','title']);
-                            }]);
-        }])->get(['id','status','order_sn','goods_price','price'])->toArray();
-        
+            return $query->select(['id','order_id','goods_id','goods_price','total','price']);
+        }])->paginate(5);
+        dd($list);
         if (!$list) {
             return $this->successJson($data = $list);
         } else {

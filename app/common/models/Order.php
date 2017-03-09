@@ -62,13 +62,13 @@ class Order extends BaseModel
     {
         return $this->belongsTo('\app\common\models\Member', 'member_id', 'uid');
     }
-
+    //订单配送方式
     public function hasOneDispatchType()
     {
-        return $this->hasOne('\app\common\models\OrderDispatch', 'order_id', 'id');
+        return $this->hasOne('\app\common\models\DispatchType', 'id', 'dispatch_type_id');
     }
 
-    //订单评价
+    //订单备注
     public function hasOneOrderRemark()
     {
         return $this->hasOne('\app\common\models\order\Remark', 'order_id', 'id');
@@ -78,7 +78,7 @@ class Order extends BaseModel
         return $this->hasOne('\app\common\models\PayType', 'id', 'pay_type_id');
     }
 
-    //订单配送
+    //订单快递
     public function hasOneOrderExpress()
     {
         return $this->hasOne('\app\common\models\order\Express', 'order_id', 'id');
