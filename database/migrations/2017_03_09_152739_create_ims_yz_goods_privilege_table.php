@@ -24,6 +24,7 @@ class CreateImsYzGoodsPrivilegeTable extends Migration {
 			$table->integer('total_buy_limit')->nullable()->default(0)->comment('总共限购数量');
 			$table->integer('time_begin_limit')->nullable()->comment('限购开始时间');
 			$table->integer('time_end_limit')->nullable()->comment('限购结束时间');
+			$table->boolean('enable_time_limit')->comment('限购开关（1：开启限购；0：关闭限购）');
 		});
 	}
 

@@ -1,0 +1,26 @@
+<div class="w1200 m0a">
+    {template 'web/shop/tabs'}
+    <div class="main rightlist">
+        <!-- 新增加右侧顶部三级菜单 -->
+        <div class="right-titpos">
+            <ul class="add-snav">
+                <li class="active"><a href="#">菜单管理</a></li>
+            </ul>
+        </div>
+        {php $form->render()}
+
+    </div>
+    <script language='javascript'>
+      require(['bootstrap'],function ($) {
+        $('form').submit(function(){
+          if($(':input[name=brand[name]]').isEmpty()){
+            Tip.focus(':input[name=brand[name]]','请输入分类名称!');
+            return false;
+          }
+          return true;
+        });
+      });
+
+    </script>
+    {template 'web/_footer'}
+
