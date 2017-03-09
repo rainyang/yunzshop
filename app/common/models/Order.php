@@ -18,14 +18,6 @@ class Order extends BaseModel
     protected $appends = ['status_name', 'button_models'];
     protected $search_fields = ['id', 'order_sn'];
 
-    public static function getOrder($order_id, $uniacid)
-    {
-        return self::where('id', $order_id)
-            ->where('uniacid', $uniacid)
-            ->first()
-            ->toArray();
-    }
-
     public function scopeWaitPay($query)
     {
         //AND o.status = 0 and o.paytype<>3
@@ -82,6 +74,11 @@ class Order extends BaseModel
     public function hasOneOrderExpress()
     {
         return $this->hasOne('\app\common\models\order\Express', 'order_id', 'id');
+    }
+
+    public function scopeUn($query)
+    {
+        return $query->where(['uniacid' => 1]);
     }
 
     public function getStatusService()

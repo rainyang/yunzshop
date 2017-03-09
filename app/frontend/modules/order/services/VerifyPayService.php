@@ -45,8 +45,7 @@ class VerifyPayService
         if (!$db_log_model) {
             $log_data = [
                 'uniacid'   => \YunShop::app()->uniacid,
-                'openid'    => $member['openid'],
-                'module'    => 'sz_yi',
+                'member_id' => $member['id'],
                 'tid'       => $order->hasOnePay->pay_sn,
                 'fee'       => $order->price,
                 'status'    => 0
