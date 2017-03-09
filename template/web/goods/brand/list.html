@@ -31,7 +31,7 @@
                                                  <i class="fa fa-edit"></i>
                                              </a>
                                             {/if}
-                                            {ifp 'shop.brand.delete'}
+                                            {if $this->can('goods.brand.deleted')}
                                                 <a class='btn btn-default btn-sm' href="{php echo $this->createWebUrl('goods.brand.deleted-brand', ['id'=>$brand['id']]);}" title='删除' onclick="return confirm('确认删除此品牌吗？');return false;">
                                                     <i class="fa fa-remove"></i>
                                                 </a>
@@ -45,7 +45,7 @@
                         <table class='table'>
                             <tr>
                                 <td>
-                                    {ifp 'shop.category.add'}
+                                    {if $this->can('goods.brand.add')}
                                     <a href="{php echo $this->createWebUrl('goods.brand.add');}" class="btn btn-primary"><i class="fa fa-plus"></i> 添加新品牌</a>
                                     {/if}
                                 </td>

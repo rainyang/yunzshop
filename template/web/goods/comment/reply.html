@@ -79,7 +79,7 @@
                                     {php echo empty($reply['nick_name']) ? '管理员' : $reply['nick_name']; }
                                     回复
                                     {php echo $reply['reply_name']}
-                                    <span>时间:{php echo date('Y-m-d H:i:s', $reply['created_at'])}</span>
+                                    <span>时间:{php echo $reply['created_at']}</span>
                                     {if !empty($reply['nick_name'])}
                                     <input type="button" name="reply" data-uid="{$reply['uid']}" value="回复" class="btn btn-default reply" />
                                     {/if}
