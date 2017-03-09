@@ -30,12 +30,12 @@ class Complete implements StatusService
             [
                 [
                     'name' => '评价', //todo 需要判断iscomment, 当iscomment==0 时, 显示"待评价"; 当iscomment==1 时, 显示"追加评价"
-                    'api' => '/order/op/Comment', //todo
+                    'api' => '/order/operation/comment', //todo
                     'value' => static::COMMENT
                 ],
                 [
                     'name' => '删除订单',
-                    'api' => '/order/op/Delete',
+                    'api' => '/order/operation/delete',
                     'value' => static::DELETE
                 ],
             ];
