@@ -13,13 +13,15 @@ use app\common\models\Goods;
 use app\common\models\OrderGoods;
 
 use app\common\ServiceModel\ServiceModel;
-use app\frontend\modules\order\services\model\OrderModel;
+use app\frontend\modules\order\services\model\PreGeneratedOrderModel;
 
 class PreGeneratedOrderGoodsModel extends ServiceModel
 {
     private $total;
     private $order_model;
     private $goods_model;
+    private $price_model;
+
     private $price;
     private $goods_price;
     private $_has_calculated;
@@ -40,7 +42,7 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
 
     }
 
-    public function setOrderModel(OrderModel $order_model)
+    public function setOrderModel(PreGeneratedOrderModel $order_model)
     {
         $this->order_model = $order_model;
 
@@ -62,6 +64,7 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
 
     private function calculatePrice()
     {
+
         return $this->total * $this->goods_model->price;
     }
 
@@ -69,8 +72,18 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     {
         return $this->total * $this->goods_model->price;
     }
-
-    public function generate(OrderModel $order_model = null)
+    public function toArray(){
+        return $data = array(
+            'goods_id' => $this->goods_model->id,
+            'goods_sn' => $this->goods_model->goods_sn,
+            'price' => $this->price,
+            'total' => $this->total,
+            'title' => $this->goods_model->title,
+            'thumb' => $this->goods_model->thumb,
+        );
+        return $data;
+    }
+    public function generate(PreGeneratedOrderModel $order_model = null)
     {
         if (isset($order_model)) {
             $this->setOrderModel($order_model);
@@ -89,6 +102,7 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
         );
         echo '订单商品插入数据为';
         var_dump($data);
+        return ;
         return OrderGoods::insertGetId($data);
     }
 

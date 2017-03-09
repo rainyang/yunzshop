@@ -11,8 +11,8 @@ namespace app\common\models;
 class OrderGoods extends BaseModel
 {
     public $table = 'yz_order_goods';
-    protected $search_fields = ['goods_sn','title'];
     protected $hidden = ['order_id'];
+    protected $search_fields = ['goods_sn','title'];
 
     public function hasOneGoods()
     {

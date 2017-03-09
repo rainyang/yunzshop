@@ -17,6 +17,7 @@ use app\backend\modules\member\models\MemberGroup;
 use app\common\helpers\PaginationHelper;
 use app\backend\modules\member\models\MemberShopInfo;
 
+
 class MemberController extends BaseController
 {
     private $pageSize = 20;
@@ -33,7 +34,9 @@ class MemberController extends BaseController
         $groups = MemberGroup::getMemberGroupList();
         $levels = MemberLevel::getMemberLevelList();
 
-        $list = Member::getMembers($this->pageSize);
+        $list = Member::getMembers()
+                    ->paginate($this->pageSize)
+                    ->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
@@ -184,7 +187,9 @@ class MemberController extends BaseController
 
         $parames = \YunShop::request();
 
-        $list = Member::searchMembers($this->pageSize, $parames);
+        $list = Member::searchMembers($parames)
+                    ->paginate($this->pageSize)
+                    ->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
@@ -226,12 +231,15 @@ class MemberController extends BaseController
     public function export()
     {
         $file_name = date('Ymdhis', time()) . '会员导出';
-        $total = 10;
-        $list = Member::getMembers($total);
+
+        $parames = \YunShop::request();
+        $list = Member::searchMembers($parames)
+                        ->get()
+                        ->toArray();
 
         $export_data[0] = ['会员ID', '粉丝', '姓名', '手机号', '等级', '分组', '注册时间', '积分', '余额', '订单', '金额', '关注'];
 
-        foreach ($list['data'] as $key => $item) {
+        foreach ($list as $key => $item) {
             if (!empty($item['yz_member']) && !empty($item['yz_member']['group'])) {
                 $group = $item['yz_member']['group']['group_name'];
 

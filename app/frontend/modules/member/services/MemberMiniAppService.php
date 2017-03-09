@@ -8,12 +8,12 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\MemberMcService;
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\member\models\MemberMiniAppModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\MemberModel;
 
-class MemberMiniAppService extends MemberMcService
+class MemberMiniAppService extends MemberService
 {
     private $_login_type    = 1;
 

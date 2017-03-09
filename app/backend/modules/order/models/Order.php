@@ -45,7 +45,7 @@ class Order extends \app\common\models\Order
 
         if (array_get($params, 'time_range.field', '') && array_get($params, 'time_range.start', 0) && array_get($params, 'time_range.end', 0)) {
             $range = [strtotime($params['time_range']['start']), strtotime($params['time_range']['end'])];
-            $order_builder->whereBetween($params['time_range']['field'], $range);
+            $order_builder->whereBetween('create', $range);
         }
         return $order_builder;
     }

@@ -15,6 +15,49 @@ class YunShop
 
     }
 
+    public static function run($namespace,$modules,$controllerName, $action, $currentRoutes)
+    {
+
+        //检测命名空间
+        if (!class_exists($namespace)) {
+            abort(404," 不存在命名空间: " . $namespace);
+        }
+
+        //检测controller继承
+        $controller = new $namespace;
+        if(!$controller instanceof \app\common\components\BaseController){
+            abort(404,'不存在控制器:' . $namespace);
+        }
+        //设置默认方法
+        if (empty($action)) {
+            $action = 'index';
+            self::app()->action = $action;
+            $currentRoutes[] = $action;
+        }
+        //检测方法是否存在并可执行
+        if (!is_callable([$controller, $action])) {
+            abort(404,'操作方法不存在: ' . $action);
+        }
+
+        $controller->modules = $modules;
+        $controller->controller = $controllerName;
+        $controller->action = $action;
+        $controller->route = implode('.',$currentRoutes);
+
+        //检测权限
+        if(self::isWeb() && !$controller->can($controller->route)){
+            abort(403,'无权限');
+        }
+        //设置uniacid
+        Setting::$uniqueAccountId = self::app()->uniacid;
+        //执行方法
+        $content = $controller->$action(
+            Illuminate\Http\Request::capture()
+        );
+
+        exit($content);
+    }
+
 
     /**
      * Configures an object with the initial property values.
@@ -103,48 +146,35 @@ class YunShop
         $namespace = self::getAppNamespace();
         $action = '';
         $controllerName = '';
+        $currentRoutes = [];
         $modules = [];
         if ($routes) {
             $length = count($routes);
             foreach ($routes as $k => $r) {
                 $ucFirstRoute = ucfirst(Str::camel($r));
                 $controllerFile = $path . '/controllers/' . $ucFirstRoute . 'Controller.php';
-                if (file_exists($controllerFile)) {
+                if (is_file($controllerFile)) {
                     $namespace .= '\\controllers\\' . $ucFirstRoute . 'Controller';
                     $controllerName = $ucFirstRoute;
                     $path = $controllerFile;
+                    $currentRoutes[] = $r;
                 } elseif (is_dir($path .= '/modules/' . $r)) {
                     $namespace .= '\\modules\\' . $r;
                     $modules[] = $r;
+                    $currentRoutes[] = $r;
                 } else {
                     if ($length !== $k + 1) {
                         exit('no found route:' . self::request()->route);
                     }
                     $action = strpos($r, '-') === false ? $r : Str::camel($r);
+                    $currentRoutes[] = $r;
                 }
 
             }
         }
+        //执行run
+        static::run($namespace,$modules,$controllerName, $action, $currentRoutes);
 
-        if (!class_exists($namespace)) {
-            exit(" no exists class: " . $namespace);
-        }
-        if (empty($action)) {
-            $action = 'index';
-            self::app()->action = $action;
-        }
-        if (!method_exists($namespace, $action)) {
-            exit('no exists method: ' . $action);
-        }
-        $controller = new $namespace;
-        $controller->modules = $modules;
-        $controller->controller = $controllerName;
-        $controller->action = $action;
-        $content = $controller->$action(
-           Illuminate\Http\Request::capture()
-        );
-
-        exit($content);
     }
 
     public static function getUcfirstName($name)
@@ -163,7 +193,7 @@ class YunShop
 
 class YunComponent
 {
-    protected $values;
+    protected $values = [];
 
     public function __set($name, $value)
     {
@@ -191,7 +221,6 @@ class YunComponent
 
 class YunRequest extends YunComponent implements ArrayAccess
 {
-    protected $values;
 
     public function __construct()
     {
@@ -222,12 +251,53 @@ class YunRequest extends YunComponent implements ArrayAccess
 class YunApp extends YunComponent
 {
     protected $values;
+    protected $routeList;
 
     public function __construct()
     {
         global $_W;
         $this->values = $_W;
         //$this->var = $_W;
+        $this->routeList = Config::get('menu');
     }
+
+    /**
+     * 通过子路由获取交路径
+     * @return mixed
+     */
+    public function getRoutes()
+    {
+        $key = 'routes-child-parent';
+        $routes = \Cache::get($key);
+        if($routes === null){
+            $routes = $this->allRoutes();
+            \Cache::put($key,$routes,36000);
+        }
+
+        return $routes;
+    }
+
+    protected function allRoutes($list = [],$parent = [])
+    {
+        $routes = [];
+        !$list && $list = $this->routeList;
+        if($list){
+            foreach ($list as $k=>$v){
+                $temp = $v;
+                if(isset($temp['child']))  unset($temp['child']);
+                if(isset($v['url'])) {
+                    $routes[$v['url']] = array_merge($temp, ['parent' => $parent]);
+                    if (isset($v['child']) && $v['child']) {
+                        $routes = array_merge($routes,
+                            $this->allRoutes($v['child'], array_merge($parent, $routes[$v['url']])));
+                    }
+                }
+            }
+        }
+
+        return $routes;
+    }
+
+
 
 }

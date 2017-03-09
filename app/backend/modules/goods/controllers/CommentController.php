@@ -13,7 +13,6 @@ use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 
 
-
 /**
  * Created by PhpStorm.
  * User: yanglei
@@ -30,8 +29,12 @@ class CommentController extends BaseController
         $pageSize = 10;
         
         $search = CommentService::Search(\YunShop::request()->search);
+        
+        //$list = $commentModel::getComments($commentModel, $search)->toArray();
+        
 
-        $list = Comment::getComments()->paginate($pageSize)->toArray();
+        $list = Comment::getComments($search)->paginate($pageSize)->toArray();
+//        echo "<pre>"; print_r($list);exit;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         $this->render('list', [
@@ -80,7 +83,7 @@ class CommentController extends BaseController
                 if ($commentModel->save()) {
                     //显示信息并跳转
                     return $this->message('评论创建成功', Url::absoluteWeb('goods.comment.index'));
-                }else{
+                } else {
                     $this->error('评论创建失败');
                 }
             }
@@ -99,8 +102,8 @@ class CommentController extends BaseController
     {
         $id = \YunShop::request()->id;
         $commentModel = Comment::getComment($id);
-        if(!$commentModel){
-            return $this->message('无此记录或已被删除','','error');
+        if (!$commentModel) {
+            return $this->message('无此记录或已被删除', '', 'error');
         }
 
         if (!empty($commentModel->goods_id)) {
@@ -129,7 +132,7 @@ class CommentController extends BaseController
                 if ($commentModel->save()) {
                     //显示信息并跳转
                     return $this->message('评论保存成功', Url::absoluteWeb('goods.comment.index'));
-                }else{
+                } else {
                     $this->error('评论保存失败');
                 }
             }
@@ -148,10 +151,10 @@ class CommentController extends BaseController
      */
     public function reply()
     {
-        $id    = intval(\YunShop::request()->id);
+        $id = intval(\YunShop::request()->id);
         $commentModel = Comment::getComment($id);
-        if(!$commentModel){
-            return $this->message('无此记录或已被删除','','error');
+        if (!$commentModel) {
+            return $this->message('无此记录或已被删除', '', 'error');
         }
 
         $goods = Goods::getGoodsById($commentModel->goods_id);
@@ -171,7 +174,7 @@ class CommentController extends BaseController
                 if (Comment::saveComment($commentModel->getAttributes())) {
                     //显示信息并跳转
                     return $this->message('评论回复保存成功', Url::absoluteWeb('goods.comment.reply', ['id' => $id]));
-                }else{
+                } else {
                     $this->error('评论回复保存失败');
                 }
             }
@@ -191,19 +194,18 @@ class CommentController extends BaseController
     public function deleted()
     {
         $comment = Comment::getComment(\YunShop::request()->id);
-        if(!$comment) {
-            return $this->message('无此评论或已经删除','','error');
+        if (!$comment) {
+            return $this->message('无此评论或已经删除', '', 'error');
         }
 
         $result = Comment::daletedComment(\YunShop::request()->id);
-        if($result) {
-            return $this->message('删除评论成功',Url::absoluteWeb('goods.comment.index'));
-        }else{
-            return $this->message('删除评论失败','','error');
+        if ($result) {
+            return $this->message('删除评论成功', Url::absoluteWeb('goods.comment.index'));
+        } else {
+            return $this->message('删除评论失败', '', 'error');
         }
 
     }
 
 
-    
 }

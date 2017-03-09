@@ -19,6 +19,9 @@ class Url
      */
     public static function web($route, $params = [])
     {
+        if(empty($route)){
+            return $route;
+        }
         $defaultParams = ['c'=>'site','a'=>'entry','m'=>'sz_yi','do'=>random(4),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
@@ -34,7 +37,10 @@ class Url
      */
     public static function app($route, $params = [])
     {
-        $defaultParams = ['c'=>'entry','m'=>'sz_yi','do'=>random(4),'route'=>$route];
+        if(empty($route)){
+            return $route;
+        }
+        $defaultParams = ['c'=>'site','a'=>'entry','m'=>'sz_yi','do'=>random(4),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
         return   '/app/index.php?'. http_build_query($params);

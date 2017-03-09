@@ -21,15 +21,15 @@ class MemberCart extends \app\common\models\MemberCart
      * */
     public static function getMemberCartList($memberId)
     {
-        $list = static::select('id', 'goods_id', 'total', 'option_id')
+        $cartList = static::select('id', 'goods_id', 'total', 'option_id')
             ->where('member_id', $memberId)
             ->uniacid()
-            ->with(['getGoods' => function($query) {
+           /* ->with(['getGoods' => function($query) {
                 return $query->select('id', 'title');
-            }])
+            }])*/
             ->get()
             ->toArray();
-        return $list;
+        return $cartList;
         //return static::uniacid()->where('member_id', $memberId)->get()->toArray();
     }
     public function getGoods(){

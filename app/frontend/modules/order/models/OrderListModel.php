@@ -13,11 +13,11 @@ class OrderListModel extends Order
     /*
      * 获取所有状态的订单列表及订单商品信息 (不包括"已删除"的订单)
      */
-    public static function getOrderList($pageSize)
+    public static function getOrderList($memberId)
     {
         $orders = self::with(['hasManyOrderGoods'=>function($query){
             return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title']);
-        }])->paginate($pageSize);
+        }])->where('member_id','=',$memberId);
 
         return $orders;
     }
@@ -25,12 +25,12 @@ class OrderListModel extends Order
     /*
      * 不同订单状态的订单列表及订单商品信息
      */
-    public static function getRequestOrderList($status = '',$pageSize = 5)
+    public static function getRequestOrderList($status = '', $memberId)
     {
         if($status === ''){
-            return self::getOrderList($pageSize);
+            return self::getOrderList($memberId);
         } else {
-            return self::getOrderList($pageSize)->where('status','=',$status);
+            return self::getOrderList($memberId)->where('status','=',$status);
         }
     }
 }
