@@ -16,16 +16,10 @@ class MemberFavorite extends \app\common\models\MemberFavorite
     {
         return static::uniacid()->where('id', $favoriteId)->first();
     }
-    /**
-     * Add collection
-     *
-     * @param array $data
-     *
-     * @return 1 or 0
-     * */
-    public static function createMemberFavorite($data = array())
+
+    public static function getFavoriteList($memberId)
     {
-        return static::insert($data);
+        return static::select('id', 'goods_id')->uniacid()->where('member_id', $memberId)->get()->toArray();
     }
     /**
      * remove collection
@@ -36,6 +30,6 @@ class MemberFavorite extends \app\common\models\MemberFavorite
      * */
     public static function destroyFavorite($favoriteId)
     {
-        return static::where('id', $favoriteId)->delete();
+        return static::uniacid()->where('id', $favoriteId)->delete();
     }
 }
