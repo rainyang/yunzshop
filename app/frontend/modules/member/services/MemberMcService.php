@@ -8,62 +8,62 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\frontend\modules\member\services\MemberService;
 use Illuminate\Support\Facades\Cookie;
 use app\frontend\modules\member\models\MemberModel;
 use Illuminate\Session\Store;
 
-class MemberMcService
+class MemberMcService extends MemberService
 {
     public function login()
     {
         $memberdata= \YunShop::request()->memberdata;
-
         $mobile   = $memberdata['mobile'];
         $password = $memberdata['password'];
+
         $uniacid  = \YunShop::app()->uniacid;
 
-        if (SZ_YI_DEBUG) {
-            $mobile   = '15046101656';
-            $password = '123456';
-        }
+        if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost
+                                  && MemberService::validate($mobile, $password))) {
+            $has_mobile = MemberModel::checkMobile($uniacid, $mobile);
 
-        $has_mobile = MemberModel::checkMobile($uniacid, $mobile);
+            if (!empty($has_mobile)) {
+                $password = md5($password. $has_mobile['salt'] . \YunShop::app()->config['setting']['authkey']);
 
-        if (!empty($has_mobile)) {
-            $password = md5($password. $has_mobile['salt'] . \YunShop::app()->config['setting']['authkey']);
-
-            $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password);
-        } else {
-            return show_json(0, "用户名不存在！");
-        }
-
-        if($member_info){
-            $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
-
-            if (is_app()) {
-                Cookie::queue($cookieid, $member_info['uid'], time()+3600*24*7);
+                $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password);
             } else {
-                Cookie::queue($cookieid, $member_info['uid']);
+                return show_json(0, "用户名不存在！");
             }
 
-            Cookie::queue('member_mobile', $member_info['uid']);
+            if($member_info){
+                $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
 
-            if(!isMobile()){
-                $member_name = !empty($member_info['realname']) ? $member_info['realname'] : $member_info['nickname'];
-                $member_name = !empty($member_name) ? $member_name : "未知";
-                session()->put('member_id',$member_info['uid']);
-                session()->put('member_name',$member_name);
-            }
+                if (is_app()) {
+                    Cookie::queue($cookieid, $member_info['uid'], time()+3600*24*7);
+                } else {
+                    Cookie::queue($cookieid, $member_info['uid']);
+                }
 
-            if (is_app()) {
-                return show_json(1, array(
-                    'member_id' => $member_info['uid'],
-                ));
-            } else {
-                return show_json(1);
+                Cookie::queue('member_mobile', $member_info['uid']);
+
+                if(!isMobile()){
+                    $member_name = !empty($member_info['realname']) ? $member_info['realname'] : $member_info['nickname'];
+                    $member_name = !empty($member_name) ? $member_name : "未知";
+                    session()->put('member_id',$member_info['uid']);
+                    session()->put('member_name',$member_name);
+                }
+
+                if (is_app()) {
+                    return show_json(1, array(
+                        'member_id' => $member_info['uid'],
+                    ));
+                } else {
+                    return show_json(1);
+                }
+            } else{
+                return show_json(0, "用户名或密码错误！");
             }
-        } else{
-            return show_json(0, "用户名或密码错误！");
         }
+
     }
 }

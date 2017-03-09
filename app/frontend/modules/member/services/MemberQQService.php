@@ -8,11 +8,11 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\MemberMcService;
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\member\models\MemberQQModel;
 use Illuminate\Session\Store;
 
-class MemberQQService extends MemberMcService
+class MemberQQService extends MemberService
 {
     private $_login_type    = 6;
 
