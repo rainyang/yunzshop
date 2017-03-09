@@ -30,7 +30,11 @@ class MemberController extends BaseController
             if (!empty($member_info)) {
                 $member_info = $member_info->toArray();
 
-                return $this->successJson($member_info);
+                foreach ($member_info as $key => $item) {
+
+                }
+
+                return $this->successJson('', $member_info);
             } else {
                 return $this->errorJson('用户不存在');
             }
