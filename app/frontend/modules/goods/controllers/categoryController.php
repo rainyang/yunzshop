@@ -29,8 +29,8 @@ class CategoryController extends BaseController
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
         $list = Category::getCategorys($parent_id)->paginate($pageSize)->toArray();
         if($list['data']){
-            return $this->successJson($list);
+            return $this->successJson('获取分类数据成功!', $list);
         }
-        return $this->errorJson('未检测到数据!',$list);
+        return $this->errorJson('未检测到分类数据!',$list);
     }
 }

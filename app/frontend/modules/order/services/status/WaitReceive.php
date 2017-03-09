@@ -31,12 +31,12 @@ class WaitReceive implements StatusService
             [
                 [
                     'name' => '确认收货',
-                    'api' => '/order/pay',
-                    'value' => static::PAY
+                    'api' => '/order/operation/receive',
+                    'value' => static::COMPLETE //todo
                 ],
                 [
                     'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
-                    'api' => '/order/op/', //todo 
+                    'api' => '/order/operation/', //todo
                     'value' => static::EXPRESS //todo
                 ],
             ];

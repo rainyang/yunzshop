@@ -14,15 +14,15 @@ use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\MemberGroup;
 use Illuminate\Support\Str;
+use iscms\Alisms\SendsmsPusher as Sms;
 use Setting;
 
 class RegisterController extends BaseController
 {
     public function index()
     {
-        if (MemberService::isLogged()) {
+        if (!MemberService::isLogged()) {
             return $this->errorJson('会员已登录');
-            exit;
         }
 
         $mobile   = \YunShop::request()->mobile;
@@ -30,18 +30,13 @@ class RegisterController extends BaseController
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid  = \YunShop::app()->uniacid;
 
-        if (SZ_YI_DEBUG) {
-            $mobile   = '15046101651';
-            $password = '123456';
-            $confirm_password = '123456';
-        }
 
-        if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost) && MemberService::validate($mobile, $password, $confirm_password)) {
+        if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost)
+                     && MemberService::validate($mobile, $password, $confirm_password)) {
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
-                exit;
             }
 
             $default_groupid = MemberGroup::getDefaultGroupI($uniacid);
@@ -84,15 +79,14 @@ class RegisterController extends BaseController
         $mobile = \YunShop::request()->mobile;
         if(empty($mobile)){
             return $this->errorJson('请填入手机号');
-            exit;
         }
 
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
         if(!empty($info))
         {
-            return $this->errorJson('该手机号已被注册！不能获取验证码');
-            exit;
+            //return $this->errorJson('该手机号已被注册！不能获取验证码');
+            //exit;
         }
         $code = rand(1000, 9999);
 
@@ -141,7 +135,7 @@ class RegisterController extends BaseController
 
         //互亿无线
         if ($sms['type'] == 1) {
-            $issendsms = send_sms($sms['account'], $sms['password'], $mobile, $code);
+            $issendsms = MemberService::send_sms($sms['account'], $sms['password'], $mobile, $code);
 
             if($issendsms['SubmitResult']['code'] == 2){
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
@@ -150,16 +144,38 @@ class RegisterController extends BaseController
             else{
                 return $this->errorJson($issendsms['SubmitResult']['msg']);
             }
-
         } else {
-            $issendsms = MemberService::send_sms_alidayu($sms, $mobile, $code, $templateType);
+            $result = MemberService::send_sms_alidayu($sms, $templateType);
 
-            if(isset($issendsms['result']['success'])){
+            if (count($result['params']) > 1) {
+                $nparam['code'] = "{$code}";
+                foreach ($result['params'] as $param) {
+                    $param = trim($param);
+                    $explode_param = explode("=", $param);
+                    if (!empty($explode_param[0])) {
+                        $nparam[$explode_param[0]] = "{$explode_param[1]}";
+                    }
+                }
+
+                $content = json_encode($nparam);
+            } else {
+                $explode_param = explode("=", $result['params'][0]);
+                $content = json_encode(array('code'=>(string)$code, 'product'=>$explode_param[1]));
+            }
+
+            $top_client = new \iscms\AlismsSdk\TopClient();
+            $name = $sms['signname'];
+            $templateCode = $sms['templateCode'];
+
+            $sms = new Sms($top_client);
+            $issendsms = $sms->send($mobile, $name, $content, $templateCode);
+
+            if(isset($issendsms->result->success)){
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return $this->successJson();
             }
             else{
-                return $this->errorJson($issendsms['msg']. '/' . $issendsms['sub_msg']);
+                return $this->errorJson($issendsms->msg. '/' . $issendsms->sub_msg);
             }
         }
     }
