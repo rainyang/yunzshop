@@ -14,4 +14,5 @@ use app\common\models\BaseModel;
 class UniAccountUser extends BaseModel
 {
     public $table = 'uni_account_users';
+
 }

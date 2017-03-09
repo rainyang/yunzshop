@@ -67,6 +67,12 @@ class BrandController extends BaseController
             }
         }
 
+        $this->title = '创建品牌';
+        $this->breadcrumbs = [
+            '品牌管理'=>['url'=>$this->createWebUrl('goods.brand.index'),'icon'=>'icon-dian'],
+            $this->title,
+        ];
+
         $this->render('info', [
             'brandModel' => $brandModel
         ]);

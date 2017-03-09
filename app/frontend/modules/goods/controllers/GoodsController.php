@@ -18,39 +18,78 @@ class GoodsController extends BaseController
 {
     public function getGoods()
     {
-        $id = \YunShop::request()->id;
+        $id = intval(\YunShop::request()->id);
+        if (!$id) {
+            $this->errorJson('请传入正确参数.');
+        }
         //$goods = new Goods();
-        $goodsModel = Goods::with('hasManyParams')->with('hasManySpecs')->find($id);
+        $goodsModel = Goods::with(['hasManyParams' => function ($query){
+            return $query->select('goods_id','title', 'value');
+        }])->with(['hasManySpecs' => function ($query) {
+            return $query->select('id', 'goods_id','title', 'description');
+        }])->with('hasOneShare')
+            ->with('hasOneDiscount')
+            ->with('hasOneGoodsDispatch')
+            ->with('hasOnePrivilege')
+            ->with(['hasOneBrand' => function ($query) {
+                return $query->select('id', 'name');
+            }])
+            ->find($id);
+
         if (!$goodsModel) {
             $this->errorJson('商品不存在.');
         }
 
+        if (!$goodsModel->status) {
+            //$this->errorJson('商品已下架.');
+        }
+        
+        $goodsModel->setHidden(
+            [
+                'deleted_at',
+                'created_at',
+                'updated_at',
+                'cost_price',
+                'real_sales',
+                'is_deleted',
+                'reduce_stock_method',
+            ]);
+        if ($goodsModel->thumb_url) {
+            $goodsModel->thumb_url = explode(",", $goodsModel->thumb_url);
+        }
+
+        //dd($goodsModel);
         foreach ($goodsModel->hasManySpecs as &$spec) {
-            $spec['specitem'] = GoodsSpecItem::where('specid', $spec['id'])->get();
+            $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
         }
 
         //return $this->successJson($goodsModel);
         $this->successJson($goodsModel);
     }
 
-    public function getGoodsList()
+    public function getGoodsCategoryList()
     {
-        $category_array = \YunShop::request()->category_id ? ['id' => \YunShop::request()->category_id] : [];
-        //dd($category_array);
-        $goodsList = Category::uniacid()->where($category_array)->with(
+        //$category_array = \YunShop::request()->category_id ? ['id' => \YunShop::request()->category_id] : [];
+        $category_id = intval(\YunShop::request()->category_id);
+        if (empty($category_id)) {
+            $this->errorJson('请输入正确的商品分类.');
+        }
+        $goodsList = Category::uniacid()->where(['id' => $category_id])->with(
             ['goodsCategories' => function ($query) {
                 return $query->select(['goods_id', 'category_id'])->with(
                     [
                         'goods' => function ($query1) {
-                            return $query1->select(['id', 'title', 'thumb', 'price'])->where('status', '1');
+                            return $query1->select(['id', 'title', 'thumb', 'price', 'market_price'])->where('status', '1');
                         }
                     ]);
             }])->first();
-        //dd($goodsList);
-        // goodsList[0]中的0能否去掉?
-        $goodsList = $goodsList->goodsCategories->filter(function($item){
-            return $item->goods != null;
-        })->all();
+
+        if ($goodsList) {
+            $goodsList = $goodsList->goodsCategories->filter(function($item){
+                return $item->goods != null;
+            })->all();
+        }
+
         //dd($goodsList);
 
         if (empty($goodsList)) {

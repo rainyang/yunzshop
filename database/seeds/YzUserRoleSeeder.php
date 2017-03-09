@@ -13,6 +13,7 @@ class YzUserRoleSeeder extends Seeder
      */
     public function run()
     {
+        return;
         $roles = DB::table($this->sourceTable)
             ->where(['status'=>'1','deleted'=>'0' ])
             ->where('uniacid','>','0')

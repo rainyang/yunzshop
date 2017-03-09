@@ -19,6 +19,12 @@ trait TemplateTrait
     public $controller = '';
     //当前action
     public $action = '';
+    //当前路由
+    public $route = '';
+
+    public $title = '';
+
+    public $breadcrumbs = [];
 
     /**
      * 渲染视图
@@ -66,6 +72,20 @@ trait TemplateTrait
         return $compile;
     }
 
+
+    public function viewWebUrl($url, $params = [])
+    {
+        if(empty($url)){
+            return 'javascript:void(0)';
+        }
+        if(strpos($url, 'http://') === 0 ||
+            strpos($url, 'https://') === 0 ||
+            strpos($url, '/web/') === 0){
+            return $url;
+        }
+        return $this->createWebUrl($url, is_array($params) ? $params : []);
+    }
+
     /**
      * 生成后台url
      * @param $route  路由
@@ -74,7 +94,7 @@ trait TemplateTrait
      */
     public function createWebUrl($route, $params = [])
     {
-        return Url::web($route, $params);
+        return Url::absoluteWeb($route, $params);
     }
 
     /**
@@ -85,7 +105,7 @@ trait TemplateTrait
      */
     public function createPluginWebUrl($route, $params = [])
     {
-        return Url::web($route, $params);
+        return Url::absoluteWeb($route, $params);
     }
 
     /**
@@ -96,7 +116,7 @@ trait TemplateTrait
      */
     public function createPluginMobileUrl($route, $params = [])
     {
-        return Url::app($route, $params);
+        return Url::absoluteApp($route, $params);
     }
 
     /**
@@ -107,7 +127,6 @@ trait TemplateTrait
      */
     public function createMobileUrl($route, $params = [])
     {
-        $params = array_merge($params,['i'=>\YunShop::app()->uniacid]);
-        return Url::app($route, $params);
+        return Url::absoluteApp($route, $params);
     }
 }

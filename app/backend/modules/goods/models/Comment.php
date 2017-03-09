@@ -15,14 +15,34 @@ class Comment extends \app\common\models\Comment
      * @param $pageSize
      * @return mixed
      */
-    public static function getComments()
+    public static function getComments($search)
     {
-        return self::uniacid()
-            ->where('comment_id', '0')
-            ->with(['goods'=>function($query){
-                return $query->select(['id', 'title', 'thumb']);
-            }])
-            ->orderBy('created_at', 'desc');
+
+        $commentModdel = self::uniacid();
+        if ($search['keyword']) {
+            $commentModdel->whereHas('goods', function($query)use($search){
+                return $query->searchLike($search['keyword']);
+            });
+        }
+        $commentModdel->with(['goods'=>function($query){
+            return $query->select(['id', 'title', 'thumb']);
+        }]);
+        $commentModdel->where('comment_id', '0');
+
+        if($search['fade'] == 1){
+            $commentModdel->where('uid', '>', '0');
+        }elseif($search['fade'] == 2){
+            $commentModdel->where('uid', '=', '0');
+        }
+        if ($search['searchtime']) {
+            if ($search['starttime'] != '请选择' && $search['endtime'] != '请选择') {
+                $range = [$search['starttime'], $search['endtime']];
+                $commentModdel->whereBetween('created_at', $range);
+            }
+        }
+        $commentModdel->orderBy('created_at', 'desc');
+
+        return $commentModdel;
     }
 
     /**

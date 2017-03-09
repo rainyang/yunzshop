@@ -150,7 +150,9 @@ class GoodsController extends BaseController
         $optionsHtml = GoodsOptionService::getOptions($this->goods_id, $goodsModel->hasManySpecs);
 
         //商品其它图片反序列化
-        $goodsModel->piclist = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
+
+        //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
+        $goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
 
         $catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
@@ -172,7 +174,6 @@ class GoodsController extends BaseController
                 $this->error('商品修改失败');
             }
         }
-
         $goods_categorys = $goodsModel->hasManyGoodsCategory->toArray();
         $category_ids = explode(",", $goods_categorys['category_ids']);
         //获取分类2/3级联动

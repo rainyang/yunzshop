@@ -40,8 +40,6 @@ return [
     
     'debug' => env('APP_DEBUG', true),
 
-    'debug' => env('APP_DEBUG', true),
-
     /*
     |--------------------------------------------------------------------------
     | Application URL
@@ -170,7 +168,6 @@ return [
          */
         app\common\providers\AppServiceProvider::class,
         app\common\providers\PluginServiceProvider::class,
-        //app\common\providers\AuthServiceProvider::class,
         // app\common\providers\BroadcastServiceProvider::class,
         app\common\providers\EventServiceProvider::class,
         app\common\providers\RouteServiceProvider::class,
