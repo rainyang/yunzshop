@@ -272,7 +272,7 @@
 	}
 
 	function mc_calc() {
-		 
+
 		var change_dispatchprice = parseFloat($('#changeprice_dispatchprice').val());
 		if(!$.isNumber($('#changeprice_dispatchprice').val())){
 			 change_dispatchprice = dispatch_price;
@@ -280,11 +280,11 @@
 		var dprice = change_dispatchprice;
 		if (dprice <= 0) {
 			dprice = 0;
-		} 
+		}
 		$('#dispatchprice').html(dprice.toFixed(2));
- 
+
 		var oprice = 0;
-		$('.changeprice_orderprice').each(function () { 
+		$('.changeprice_orderprice').each(function () {
 			var p = 0;
 			if ($.trim($(this).val()) != '') {
 				p = parseFloat($.trim($(this).val()));
@@ -301,14 +301,14 @@
 			}
 		}
 		var lastprice =  order_price + dprice + oprice;
-		
+
 		$('#lastprice').html( lastprice.toFixed(2) );
 
 	}
 	function mc_check(){
 		var can = true;
 		var lastprice = 0;
-		 $('.changeprice').each(function () { 
+		 $('.changeprice').each(function () {
 			 if( $.trim( $(this).val())==''){
 				 return true;
 			 }
@@ -340,7 +340,7 @@
 	}
 
 </script>
-                                                              
+
 <script language="javascript">
 	function send(btn){
 		var modal =$('#modal-confirmsend');
@@ -348,6 +348,7 @@
 		    $(".id").val(itemid);
 			modal.find(':input[name=order_id]').val( itemid );
 			var addressdata  = eval('(' +$(btn).parent().find('.addressdata').val()+')');
+			//console.log(addressdata.address);
 			modal.find('.realname').html(addressdata.realname);
 			modal.find('.mobile').html(addressdata.mobile);
 			modal.find('.address').html(addressdata.address);
@@ -361,11 +362,11 @@
 			modal.find('.mobile').html(addressdata.mobile);
 			modal.find('.address').html(addressdata.address);
 	}
-</script> 
+</script>
 
 <!-- 查看物流 -->
 <div id="modal-express" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:620px;margin:0px auto;">
-	 
+
 		<div class="modal-dialog">
 			<div class="modal-content" >
 				<div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>查看物流</h3></div>
@@ -377,7 +378,7 @@
 				<div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
 			</div>
 		</div>
- 
+
 </div>
 <script language='javascript'>
 	function express_find(btn,orderid){

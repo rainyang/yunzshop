@@ -15,7 +15,7 @@ use app\frontend\modules\shop\services\ShopService;
 class CreateController
 {
     public function index(){
-        $param = [
+        $param['order_goods'] = [
             [
                 'goods_id' => 1,
                 'total' => 1

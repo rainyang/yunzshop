@@ -14,10 +14,6 @@ use app\frontend\modules\member\models\MemberModel;
 
 class MemberController extends BaseController
 {
-    public function index()
-    {
-        dd(Member::getNickNnme());
-    }
 
     /**
      * 获取用户信息
@@ -26,13 +22,14 @@ class MemberController extends BaseController
      */
     public function getUserInfo()
     {
-        $uniacid = \YunShop::app()->uniacid;
         $member_id = \YunShop::request()->uid;
 
         if (!empty($member_id)) {
-            $member_info = MemberModel::getUserInfos($uniacid, $member_id);
+            $member_info = MemberModel::getUserInfos($member_id)->first();
 
             if (!empty($member_info)) {
+                $member_info = $member_info->toArray();
+
                 return $this->successJson($member_info);
             } else {
                 return $this->errorJson('用户不存在');

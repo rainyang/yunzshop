@@ -125,7 +125,7 @@ class Setting extends BaseModel
         $cacheKey = 'setting.' . $uniqueAccountId . '.' . $group;
         $value = Cache::get($cacheKey);
         if ($value == null) {
-            $value = self::where('group', $group)->where('unique_account_id',$uniqueAccountId)->get();
+            $value = self::where('group', $group)->where('uniacid',$uniqueAccountId)->get();
             Cache::put($cacheKey, $value,Carbon::now()->addSeconds(3600));
         }
         return $value;
@@ -208,7 +208,7 @@ class Setting extends BaseModel
         //如果存在记录则更新
         $model = static::where('key', $key)
             ->where('group', $group)
-            ->where('unique_account_id', $uniqueAccountId);
+            ->where('uniacid', $uniqueAccountId);
         $model = $model->first();
 
 
@@ -223,7 +223,7 @@ class Setting extends BaseModel
             }
 
             $data = [
-                'unique_account_id' => $uniqueAccountId,
+                'uniacid' => $uniqueAccountId,
                 'group' => $group,
                 'key' => $key,
                 'value' => $value,

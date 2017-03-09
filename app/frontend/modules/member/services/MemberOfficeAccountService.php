@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\MemberModel;
@@ -16,7 +17,7 @@ use app\frontend\models\McGroupsModel;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
 
-class MemberOfficeAccountService extends MemberMcService
+class MemberOfficeAccountService extends MemberService
 {
     private $_login_type    = '1';
 
@@ -161,9 +162,6 @@ class MemberOfficeAccountService extends MemberMcService
                 return show_json(0, array('url'=> $authurl));
             }
         } else {
-            if (SZ_YI_DEBUG) {
-                header('location:' . $authurl);exit;
-            }
             return show_json(0, array('url'=> $authurl));
         }
 

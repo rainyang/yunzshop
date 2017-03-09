@@ -17,8 +17,19 @@ class Goods extends BaseModel
     use AmountTrait;
 
     public $table = 'yz_goods';
-    public $display_order = 0;
+    public $attributes = ['display_order' => 0];
+    protected $mediaFields = ['thumb', 'thumb_url'];
+    //public $display_order = 0;
     //protected $appends = ['status'];
+    
+
+    public function setAttribute($key, $value)
+    {
+        if (in_array($key, $this->mediaFields)) {
+            //$value = tomedia($value);
+        }
+        parent::setAttribute($key, $value);
+    }
 
     public $fillable = [];
 
@@ -50,6 +61,30 @@ class Goods extends BaseModel
     public function hasManyOptions()
     {
         return $this->hasMany('app\common\models\GoodsOption');
+    }
+    public function hasOneBrand()
+    {
+        return $this->hasOne('app\common\models\Brand', 'id', 'brand_id');
+    }
+
+    public function hasOneShare()
+    {
+        return $this->hasOne('app\common\models\goods\Share');
+    }
+
+    public function hasOnePrivilege()
+    {
+        return $this->hasOne('app\common\models\goods\Privilege');
+    }
+
+    public function hasOneGoodsDispatch()
+    {
+        return $this->hasOne('app\common\models\goods\GoodsDispatch');
+    }
+
+    public function hasOneDiscount()
+    {
+        return $this->hasOne('app\common\models\goods\Discount');
     }
 
     public function hasManyGoodsCategory()

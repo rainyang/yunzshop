@@ -8,11 +8,9 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\MemberMcService;
-use app\frontend\modules\member\models\MemberAppWechatModel;
-use Illuminate\Session\Store;
+use app\frontend\modules\member\services\MemberService;
 
-class MemberAppWechatService extends MemberMcService
+class MemberAppWechatService extends MemberService
 {
     private $_login_type    = 3;
 
