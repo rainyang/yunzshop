@@ -35,7 +35,6 @@ class Member extends \app\common\models\Member
     /**
      * 获取会员列表
      *
-     * @param $pageSize
      * @return mixed
      */
     public static function getMembers()
@@ -128,7 +127,7 @@ class Member extends \app\common\models\Member
     /**
      * 检索会员信息
      *
-     * @param $pageSize
+     * @param $parame
      * @return mixed
      */
     public static function searchMembers($parame)
