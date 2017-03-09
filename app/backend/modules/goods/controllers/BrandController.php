@@ -30,7 +30,7 @@ class BrandController extends BaseController
         
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
-        $this->render('list', [
+            $this->render('list', [
             'list' => $list,
             'pager' => $pager,
             //'shopset' => $shopset

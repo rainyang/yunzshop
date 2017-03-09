@@ -72,7 +72,7 @@ class OptionForm
             $params[1] = Arr::get(trans("options.$this->id.$params[0]"), 'title', trans("options.$this->id.$params[0]"));
         }
 
-        $class = new ReflectionClass('App\Services\OptionForm'.Str::title($method));
+        $class = new ReflectionClass('app\common\services\OptionForm'.Str::title($method));
         // use ReflectionClass to create a new OptionFormItem instance
         $item = $class->newInstanceArgs($params);
         $item->setParentId($this->id);
