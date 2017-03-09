@@ -80,6 +80,19 @@
     </div>
 </div>
 <div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启限时限购</label>
+    <div class="col-sm-6 col-xs-6">
+        <div class='input-group'>
+            <label class="radio-inline">
+                <input type="radio" name="widgets[privilege][enable_time_limit]" value="1" {if $privilege['enable_time_limit'] == 1} checked="true" {/if} /> 开启
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="widgets[privilege][enable_time_limit]" value="0" {if empty($privilege) || $privilege['enable_time_limit'] == 0} checked="true" {/if} /> 关闭
+            </label>
+        </div>
+    </div>
+</div>
+<div class="form-group" id="time_limit" style="display: none;">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">限购时间</label>
     <div class="col-sm-4 col-xs-6">
         {php echo sz_tpl_form_field_date('widgets[privilege][time_begin_limit]', !empty($privilege['time_begin_limit']) ? date('Y-m-d H:i',$privilege['time_begin_limit']) : date('Y-m-d H:i'), 1)}
@@ -88,3 +101,18 @@
         {php echo sz_tpl_form_field_date('widgets[privilege][time_end_limit]', !empty($privilege['time_end_limit']) ? date('Y-m-d H:i',$privilege['time_end_limit']) : date('Y-m-d H:i'), 1)}
     </div>
 </div>
+
+
+<script language='javascript'>
+    if ($('input:radio[name="widgets[privilege][enable_time_limit]"]:checked').val() == 1) {
+        $('#time_limit').show();
+    };
+    $('input[name="widgets[privilege][enable_time_limit]').click(function(){
+        var discounttype = $('input:radio[name="widgets[privilege][enable_time_limit]"]:checked').val();
+        if(discounttype == 1){
+            $('#time_limit').show();
+        }else{
+            $('#time_limit').hide();
+        }
+    });
+</script>

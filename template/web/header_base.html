@@ -3,9 +3,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{php if(isset($title)) $var['page']['title'] = $title}{if !empty($var['page']['title'])}{$var['page']['title']} - {/if}{$var['account']['name']}</title>
-    <meta name="keywords" content="{if empty($var['page']['copyright']['keywords'])}{if IMS_FAMILY != 'x'}{$var['account']['name']}{/if}{else}{$var['page']['copyright']['keywords']}{/if}" />
-    <meta name="description" content="{if empty($var['page']['copyright']['description'])}{if IMS_FAMILY != 'x'}{$var['account']['name']}{/if}{else}{$var['page']['copyright']['description']}{/if}" />
+    <title>{php if(isset($title)) $var['page']['title'] = $title}{if !empty($var['page']['title'])}{$var['page']['title']} - {/if}</title>
+    <meta name="keywords" content="{if empty($var['page']['copyright']['keywords'])}{else}{$var['page']['copyright']['keywords']}{/if}" />
+    <meta name="description" content="{if empty($var['page']['copyright']['description'])}{else}{$var['page']['copyright']['description']}{/if}" />
     <link rel="shortcut icon" href="{$var['siteroot']}{$var['config']['upload']['attachdir']}/{if !empty($var['setting']['copyright']['icon'])}{$var['setting']['copyright']['icon']}{else}images/global/wechat.jpg{/if}" />
     <link href="../addons/sz_yi/static/resource/css/bootstrap.min.css" rel="stylesheet">
     <link href="../addons/sz_yi/static/resource/css/bootstrap.css" rel="stylesheet">

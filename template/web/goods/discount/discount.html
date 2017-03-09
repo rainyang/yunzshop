@@ -27,6 +27,16 @@
       </div>
     </div>
     <div id="ismember">
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+            <div class="col-sm-6 col-xs-6">
+                <div class='input-group'>
+                    <div class='input-group-addon'>默认等级</div>
+                    <input type='text' name='widgets[discount][discount_value][0]' class="form-control discounts"  value="{loop $discount $d}{if !empty($d) &&  $d['level_id'] == '0'}  {php echo $d['discount_value']}{else}0{/if}{/loop}" />
+                    <div class='input-group-addon waytxt'>{if !empty($discount) && $discount[0]['discount_method'] == 1}折{else}元{/if}</div>
+                </div>
+            </div>
+        </div>
       {loop $levels $key $level}
 
         <div class="form-group">
@@ -51,11 +61,9 @@
     $('input[name="widgets[discount][level_discount_type]"]').click(function(){
       var discounttype = $('input:radio[name="widgets[discount][level_discount_type]"]:checked').val();
       if(discounttype == 1){
-        $('#isdistribution').hide();
         $('#ismember').show();
       }else{
         $('#ismember').hide();
-        $('#isdistribution').show();
       }
     });
     $('input[name="widgets[discount][discount_method]"]').click(function(){

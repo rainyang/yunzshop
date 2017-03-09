@@ -33,7 +33,7 @@ class RoleController extends BaseController
         $permissions = \Config::get('menu');
         $permissions = User::getAllPermissions();
 
-        dd(\Yunshop::app()->getRoutes());
+        //dd(\Yunshop::app()->getRoutes());
         return view('user.role.form',[
             'model'=>$model,
             'permissions'=>$permissions,

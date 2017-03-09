@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\goods\services;
 use app\common\models\Goods;
+use app\common\models\GoodsOption;
 use app\common\models\GoodsSpecItem;
 use app\frontend\modules\goods\services\models\factory\GoodsModelFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -28,8 +29,8 @@ class GoodsService
     public function getGoodsByCart($goods_id, $option_id = null)
     {
         $goodsModel = Goods::with(['hasManyOptions' => function ($query){
-            return $query->select('id', 'goods_id', 'product_price', 'market_price', 'stock', 'specs');
-        }])->select('id', 'thumb', 'price', 'market_price', 'title', 'stock')->where('id', $goods_id)->first();
+            return $query->select('goods_id', 'title', 'thumb', 'product_price', 'market_price');
+        }])->select('id', 'thumb', 'price', 'market_price', 'title')->where('id', $goods_id)->first();
 
         if (!$goodsModel) {
             return false;
@@ -48,9 +49,7 @@ class GoodsService
                 return $item->id == $option_id;
             })->first()->toArray();
         }
-
-        //dd($goodsModel->price);
         return $goodsModel->toArray();
-        //dd($goodsModel->toArray());
     }
+
 }
