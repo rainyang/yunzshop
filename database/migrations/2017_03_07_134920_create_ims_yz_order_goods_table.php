@@ -27,7 +27,7 @@ class CreateImsYzOrderGoodsTable extends Migration {
 			$table->string('thumb', 50)->comment('商品图片 URL');
 			$table->string('title', 50)->comment('商品名称');
 
-			$table->foreign('order_id', 'order_id')->references('id')->on('ims_yz_order')->onUpdate('CASCADE')->onDelete('NO ACTION');
+			$table->foreign('order_id')->references('id')->on('ims_yz_order')->onUpdate('CASCADE');
 		});
 	}
 
