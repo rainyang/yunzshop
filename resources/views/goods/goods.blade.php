@@ -1,9 +1,10 @@
-﻿
-{template 'web/_header'}
+﻿@extends('layouts.admin')
+
+@section('content')
 
 <div class="w1200 m0a">
 
-	{template 'web/shop/tabs'}
+	@include('goods.tabs')
 
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/font-awesome.min.css">
@@ -23,9 +24,9 @@
 			<div class="right-titpos-fixed">
 				<ul class="add-shopnav" id="myTab">
 					<li class="active" ><a href="#tab_basic">基本信息</a></li>
-					<li><a href="#tab_des">{$lang['shopdesc']}</a></li>
+					<li><a href="#tab_des">{{$lang['shopdesc']}}</a></li>
 					<li><a href="#tab_param">属性</a></li>
-					<li><a href="#tab_option">{$lang['shopoption']}</a></li>
+					<li><a href="#tab_option">{{$lang['shopoption']}}</a></li>
 					<li><a href="#tab_share">分享关注</a></li>
 					<li><a href="#tab_privilege">权限</a></li>
 					<li><a href="#tab_discount">折扣</a></li>
@@ -37,17 +38,17 @@
 			<div style="padding-top:50px">
 				<div class="panel-body">
 					<div class="tab-content">
-						<div class="tab-pane  active" id="tab_basic">{template 'web/goods/basic'}</div>
-						<div class="tab-pane" id="tab_des">{template 'web/goods/des'}</div>
-						<div class="tab-pane" id="tab_param">{template 'web/goods/tpl/param'}</div>
-						<div class="tab-pane" id="tab_option">{template 'web/goods/tpl/option'}</div>
+						<div class="tab-pane  active" id="tab_basic">@include('goods.basic')</div>
+						<div class="tab-pane" id="tab_des">@include('goods.des')</div>
+						<div class="tab-pane" id="tab_param">@include('goods.tpl.param')</div>
+						<div class="tab-pane" id="tab_option">@include('goods.tpl.option')</div>
 
-						<div class="tab-pane" id="tab_sale">{php widget('app\backend\widgets\goods\SaleWidget', ['goods_id'=> $goods->id])}</div>
-						<div class="tab-pane" id="tab_notice">{php widget('app\backend\widgets\goods\NoticeWidget', ['goods_id'=> $goods->id])}</div>
-						<div class="tab-pane" id="tab_share">{php widget('app\backend\widgets\goods\ShareWidget', ['goods_id' => $goods->id])}</div>
-						<div class="tab-pane" id="tab_privilege">{php widget('app\backend\widgets\goods\PrivilegeWidget', ['goods_id' => $goods->id])}</div>
-						<div class="tab-pane" id="tab_discount">{php widget('app\backend\widgets\goods\DiscountWidget', ['goods_id' => $goods->id])}</div>
-						<div class="tab-pane" id="tab_dispatch">{php widget('app\backend\widgets\goods\DispatchWidget', ['goods_id' => $goods->id])}</div>
+						<div class="tab-pane" id="tab_sale">{{widget('app\backend\widgets\goods\SaleWidget', ['goods_id'=> $goods->id])}}</div>
+						<div class="tab-pane" id="tab_notice">{{widget('app\backend\widgets\goods\NoticeWidget', ['goods_id'=> $goods->id])}}</div>
+						<div class="tab-pane" id="tab_share">{{widget('app\backend\widgets\goods\ShareWidget', ['goods_id' => $goods->id])}}</div>
+						<div class="tab-pane" id="tab_privilege">{{widget('app\backend\widgets\goods\PrivilegeWidget', ['goods_id' => $goods->id])}}</div>
+						<div class="tab-pane" id="tab_discount">{{widget('app\backend\widgets\goods\DiscountWidget', ['goods_id' => $goods->id])}}</div>
+						<div class="tab-pane" id="tab_dispatch">{{widget('app\backend\widgets\goods\DispatchWidget', ['goods_id' => $goods->id])}}</div>
 
 
 					</div>
@@ -64,8 +65,8 @@
 </div>
 
 <script type="text/javascript">
-	window.type = "{$goods['type']}";
-	window.virtual = "{$goods['virtual']}";
+	window.type = "{{$goods['type']}}";
+	window.virtual = "{{$goods['virtual']}}";
 
 	$(function () {
 
@@ -85,7 +86,7 @@
 		})
 
 		$("input[name='back']").click(function () {
-			location.href = "{php echo $this->createWebUrl('shop/goods')}";
+			location.href = "{{yzWebUrl('goods.goods.index')}}";
 		});
 	})
 	window.optionchanged = false;
@@ -112,13 +113,13 @@
 				return false;
 		}
 
-		{if empty($id)}
+		@if (empty($id))
 		if ($.trim($(':input[name="goods[thumb]"]').val()) == '') {
 		$('#myTab a[href="#tab_basic"]').tab('show');
 				Tip.focus(':input[name="goods[thumb]"]', '请上传缩略图.');
 				return false;
 		}
-		{/if}
+		@endif
 				var full = true;
 		if (window.type == '3') {
 
@@ -351,7 +352,7 @@
 	})
 	function setProperty(obj, id, type) {
 		$(obj).html($(obj).html() + "...");
-		$.post("{php echo $this->createWebUrl('shop/goods')}"
+		$.post("{{yzWebUrl('goods.goods.index')}}"
 				, {'op': 'setgoodsproperty', id: id, type: type, plugin: "", data: obj.getAttribute("data")}
 		, function (d) {
 			$(obj).html($(obj).html().replace("...", ""));
@@ -359,7 +360,7 @@
 				$(obj).html(d.data == '1' ? '实体物品' : '虚拟物品');
 			}
 			if (type == 'status') {
-				$(obj).html(d.data == '1' ? '{$lang['putaway']}' : '{$lang['soldout']}');
+				$(obj).html(d.data == '1' ? '{{$lang['putaway']}}' : '{{$lang['soldout']}}');
 			}
 			$(obj).attr("data", d.data);
 			if (d.result == 1) {
@@ -371,5 +372,4 @@
 	}
 
 </script>
-
-{template 'web/_footer'}
+	@endsection('content')

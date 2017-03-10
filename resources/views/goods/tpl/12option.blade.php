@@ -6,50 +6,34 @@
 	.table.table-bordered tr th,.table.table-bordered tr td{overflow:hidden; text-overflow:ellipsis;}
 </style>
 <div class="form-group">
-       <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用{$lang['shopoption']}</label>
+       <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用{{$lang['shopoption']}}</label>
         <div class="col-sm-9 col-xs-12">
-       {ife 'shop.goods' $goods}
 	<label class="checkbox-inline">
-		<input type="checkbox" id="hasoption" value="1" name="hasoption" {if $goods['hasoption']==1}checked{/if} />启用{$lang['shopoption']}
+		<input type="checkbox" id="hasoption" value="1" name="hasoption" @if ($goods['hasoption']==1)checked @endif />启用{{$lang['shopoption']}}
 	</label>
-	  <span class="help-block">启用{$lang['shopoption']}后，商品的价格及库存以商品规格为准,库存设置为0则不显示,-1为不限制</span>
-	 
-       {else}
-      
-           <div class='form-control-static'>{if $goods['hasoption']==1}启用{else}不启用{/if} </div>
-           
-       {/if}
+	  <span class="help-block">启用{{$lang['shopoption']}}后，商品的价格及库存以商品规格为准,库存设置为0则不显示,-1为不限制</span>
            </div>
 
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用新规格模板</label>
     <div class="col-sm-9 col-xs-12">
-        {ife 'shop.goods' $goods}
         <label class="checkbox-inline">
-            <input type="checkbox" id="opt_switch" value="1" name="opt_switch" {if $goods['opt_switch']==1}checked{/if} />启用规格模板
+            <input type="checkbox" id="opt_switch" value="1" name="opt_switch" @if ($goods['opt_switch']==1)checked @endif />启用规格模板
         </label>
 
         <span class="help-block">新规格模板只在设置2组规格及不支持线下核销时显示</span>
-
-
-        {else}
-
-        <div class='form-control-static'>{if $goods['opt_switch']==1}启用{else}不启用{/if} </div>
-
-        {/if}
     </div>
 </div>
  
-<div id='tboption' style="{if $goods['hasoption']!=1}display:none{/if}">
+<div id='tboption' style="@if ($goods['hasoption']!=1)display:none @endif">
 	<div class="alert alert-info">
 		1. 拖动规格可调整规格显示顺序, 更改规格及规格项后请点击下方的【刷新规格项目表】来更新数据。<br/>
 		2. 每一种规格代表不同型号，例如颜色为一种规格，尺寸为一种规格，如果设置多规格，手机用户必须每一种规格都选择一个规格项，才能添加购物车或购买。
 	</div>
 	<div id='specs'>
-		{loop $allspecs $spec}
-		{php include $this->template('web/shop/tpl/spec')}
-		{/loop}
+		@foreach ($allspecs as $spec)
+		@include('goods.tpl.spec')
+		@endforeach
 	</div>
-    {ife 'shop.goods' $goods}
 	<table class="table">
 		<tr>
 			<td>
@@ -59,9 +43,8 @@
 			</td>
 		</tr>
 	</table>
-    {/if}
 	<div class="panel-body table-responsive" id="options" style="padding:0;">
-		{$html}
+		{!! $html !!}
 	</div>
 </div>
       
@@ -77,9 +60,9 @@
                                         <label class="col-xs-12 col-sm-3 col-md-2 control-label" style='width: 150px'>选择模板:</label>
                                         <div class="col-sm-9 col-xs-12" style='width: 380px'>
                                                <select class="form-control tpl-category-parent">
-                                                    {loop $virtual_types $virtual_type}
-                                                        <option value="{$virtual_type['id']}">{$virtual_type['usedata']}/{$virtual_type['alldata']} | {$virtual_type['title']}</option>
-                                                    {/loop}
+                                                    @foreach ($virtual_types as $virtual_type)
+                                                        <option value="{{$virtual_type['id']}}">{{$virtual_type['usedata']}}/{{$virtual_type['alldata']}} | {{$virtual_type['title']}}</option>
+                                                    @endforeach
                                                 </select>
                                         </div>
                                     </div>
@@ -242,12 +225,12 @@
 
 		html += '<th class="info" style="width:13%;"><div><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div><div class="input-group"><input type="text" class="form-control option_stock_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_stock\');"></a></span></div></div></th>';
 
-		html += '<th class="success" style="width:30%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">{$lang['marketprice']}</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
+		html += '<th class="success" style="width:30%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">{{$lang[marketprice]}}</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
 		html+='<th class="warning" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_productprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
 		html+='<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
 		
 		html+='<th class="warning" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">红包价格</div><div class="input-group"><input type="text" class="form-control option_redprice_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_redprice\');"></a></span></div></div></th>';
-	    html+='<th class="primary" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">{$lang['shopnumber']}</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
+	    html+='<th class="primary" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">{{$lang[shopnumber]}}</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
 	    html+='<th class="danger" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
 		html+='<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
 

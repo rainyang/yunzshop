@@ -91,16 +91,17 @@ class GoodsController extends BaseController
 
         $list = Goods::Search($requestSearch)->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-        $this->render('goods/index', [
+        return view('goods.index', [
             'list' => $list['data'],
             'pager' => $pager,
             //'status' => $status,
             'brands' => $brands,
+            'var' => \YunShop::app()->get(),
             'catetory_menus' => $catetory_menus,
             'shopset' => $this->shopset,
             'lang' => $this->lang,
             'product_attr_list' => $product_attr_list,
-        ]);
+        ])->render();
     }
 
     public function create()
@@ -142,7 +143,7 @@ class GoodsController extends BaseController
 
         //dd($brands->toArray());
         $allspecs = [];
-        $this->render('goods/goods', [
+        return view('goods.goods', [
             'goods' => $goodsModel,
             'lang'  => $this->lang,
             'params'  => $params,
@@ -152,7 +153,7 @@ class GoodsController extends BaseController
             'catetory_menus'  => $catetory_menus,
             'virtual_types' => [],
             'shopset' => $this->shopset
-        ]);
+        ])->render();
     }
 
     public function edit()
@@ -204,19 +205,21 @@ class GoodsController extends BaseController
             }
         }
 
+        $brands = Brand::getBrands()->get();
         $goods_categorys = $goodsModel->hasManyGoodsCategory->toArray();
         $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['catlevel'], 'ids' => explode(",", $goods_categorys['category_ids'])]);
-
-        $this->render('goods/goods', [
+        //dd($this->lang);
+        return view('goods.goods', [
             'goods' => $goodsModel,
             'lang'  => $this->lang,
             'params'  => $goodsModel->hasManyParams->toArray(),
             'allspecs'  => $goodsModel->hasManySpecs->toArray(),
             'html'  => $optionsHtml,
+            'brands'  => $brands->toArray(),
             'catetory_menus'  => $catetory_menus,
             'virtual_types' => [],
             'shopset' => $this->shopset
-        ]);
+        ])->render();
     }
 
     public function destroy($id)

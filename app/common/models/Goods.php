@@ -92,6 +92,9 @@ class Goods extends BaseModel
     public function scopeSearch($query, $filters)
     {
         $query->uniacid();
+        if (!$filters) {
+            return;
+        }
         foreach ($filters as $key => $value) {
             switch ($key) {
                 /*case 'category':
