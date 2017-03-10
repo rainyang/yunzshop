@@ -38,16 +38,6 @@ class YunShop
         if (!method_exists($namespace, $action) || !is_callable([$namespace, $action]) ) {
             abort(404,'操作方法不存在: ' . $action);
         }
-        //插件视图目录绑定命名空间
-        /*
-        if(in_array('plugin',$currentRoutes)){
-            $pluginsViewPath = realpath(base_path() . '/plugins/'. $currentRoutes[1] .'/views');
-            if(is_dir($pluginsViewPath)) {
-                $viewNamespace = str_replace('\\' . $controllerName . 'Controller', '', $namespace);
-                \View::addNamespace($viewNamespace, $pluginsViewPath);
-            }
-        }
-        */
 
         $controller->modules = $modules;
         $controller->controller = $controllerName;

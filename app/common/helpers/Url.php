@@ -13,7 +13,7 @@ class Url
     {
         $domain = request()->getSchemeAndHttpHost();
         $module = isset(\YunShop::request()->m) ? \YunShop::request()->m :'';
-        return $domain . '/addons/' . \YunShop::request()->m . (strpos($uri,'/') === 0 ? '':'/') . $uri;
+        return $domain . '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
     }
 
     /**
