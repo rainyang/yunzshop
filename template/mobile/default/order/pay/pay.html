@@ -161,7 +161,7 @@
 {template 'order/pay/wechat_jie'}
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
-        core.json('order/pay',{orderid:'{$_GPC['orderid']}',openid:"{$openid}",telephone:'{$_GPC['telephone']}'},function(json){
+        core.json('/app/index.php?i=3&c=entry&do=shop&m=sz_yi&route=order.pay.display',{orderid:'{$_GPC['orderid']}',openid:"{$openid}",telephone:'{$_GPC['telephone']}'},function(json){
             var result = json.result;
             if(json.status==-1){
                  //location.href = core.getUrl('order/detail',{id:"{$_GPC['orderid']}"});

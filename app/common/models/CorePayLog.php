@@ -11,6 +11,8 @@ namespace app\common\models;
 
 class CorePayLog extends BaseModel
 {
-    public $table = 'core_paylog';
+    public $table = 'yz_core_paylog';
     public $timestamps = false;
+
+    public $guarded = [''];
 }
