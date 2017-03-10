@@ -25,7 +25,12 @@ class EventServiceProvider extends ServiceProvider
             'app\common\listeners\EventListener', //侦听类1
             'app\common\listeners\EventListenerOther', //侦听类2
         ],
-
+        'app\common\events\OrderGoodsPriceWasCalculated'=>[//订单添加商品后
+            'app\frontend\modules\goods\services\models\RealGoodsDispatch', //订单商品运费计算
+        ],
+        'app\common\events\OrderPriceWasCalculated'=>[//订单价格计算后
+            'app\frontend\modules\order\services\models\OrderDispatch', //订单运费计算
+        ],
     ];
 
     /**

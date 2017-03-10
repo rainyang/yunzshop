@@ -10,6 +10,7 @@ namespace app\common\models;
 
 
 use app\frontend\modules\order\services\status\StatusServiceFactory;
+use Illuminate\Support\Facades\DB;
 
 class Order extends BaseModel
 {
@@ -17,6 +18,10 @@ class Order extends BaseModel
     private $StatusService;
     protected $appends = ['status_name', 'button_models'];
     protected $search_fields = ['id', 'order_sn'];
+    const WAIT_PAY = 0;
+    const WAIT_SEND = 1;
+    const WAIT_RECEIVE = 2;
+    const COMPLETE = 3;
 
     public function scopeWaitPay($query)
     {
@@ -54,6 +59,7 @@ class Order extends BaseModel
     {
         return $this->belongsTo('\app\common\models\Member', 'member_id', 'uid');
     }
+
     //订单配送方式
     public function hasOneDispatchType()
     {
@@ -65,6 +71,7 @@ class Order extends BaseModel
     {
         return $this->hasOne('\app\common\models\order\Remark', 'order_id', 'id');
     }
+
     public function hasOnePayType()
     {
         return $this->hasOne('\app\common\models\PayType', 'id', 'pay_type_id');
@@ -111,4 +118,16 @@ class Order extends BaseModel
         return $this->getStatusService()->getButtonModels();
     }
 
+    public function scopeGetOrderCountGroupByStatus($query, $status=[])
+    {
+        $status = [Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE];
+        $status_counts = $query->select('status', DB::raw('count(*) as total'))
+            ->whereIn('status',$status)->groupBy('status')->get()->makeHidden(['status_name', 'button_models'])->toArray();
+        foreach ($status as $state){
+            if(!in_array($state,array_column($status_counts,'status'))){
+                $status_counts[] = ['status'=>$state,'total'=>0];
+            }
+        }
+        return $status_counts;
+    }
 }

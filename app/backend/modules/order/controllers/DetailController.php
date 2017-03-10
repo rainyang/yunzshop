@@ -25,6 +25,7 @@ class DetailController extends BaseController
                 'hasOneAddress'
             ]
         )->find($order_id)->toArray();
+
         $this->render('detail', [
             'order' => $db_order_models,
             'lang' => $this->_lang(),
