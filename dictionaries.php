@@ -1,3 +1,8 @@
+<form action="" method="post" name="myform">
+    数据库名:<input type="text" name="schema" value="">
+    表明:<input type="text" name="table" value="">
+    <input type="submit" value="提交">
+</form>
 <?php
 /**
  * Created by PhpStorm.
@@ -25,7 +30,9 @@ if($_GPC['table']){
     $sql .= "AND TABLE_SCHEMA = '{$_GPC['schema']}' ";
     //$sql .= " group BY COLUMN_NAME";
     $data = pdo_fetchall($sql);
-    $html = "|字段|类型|空|默认|注释|\r\n";
+    $html = "数据字典\r\n";
+    $html .= "\r\n";
+    $html .= "|字段|类型|空|默认|注释|\r\n";
     $html .= "|:---- |:------- |:--- |-- -|------ |\r\n";
     foreach ($data as $value) {
         $html .= "|";
@@ -39,7 +46,7 @@ if($_GPC['table']){
         $html .= $value['IS_NULLABLE'];
         $html .= "|";
         $html .= $value['COLUMN DEFAULT'];
-        $html .= "|";
+        $html .= " |";
         $comment = '';
         if($value['COLUMN_NAME'] == 'created_at'){
             $comment = '创建时间';
@@ -55,6 +62,19 @@ if($_GPC['table']){
 
 
     }
+    $html .= "\r\n";
+    $html .= "\r\n";
+    $html .= "++++++++++++++";
+    $html .= "\r\n";
+    $html .= "\r\n";
+    $html .= "数据迁移\r\n";
+    $html .= "\r\n";
+    $html .= "\r\n";
+    foreach ($data as $value) {
+        $html .= "'".$value['COLUMN_NAME']."'=> variable['".$value['COLUMN_NAME']."'],\r\n";
+
+    }
+
      //id	  |int(10)     |否	|	 |	           |
     //echo "<pre>"; print_r($data);
 
@@ -62,11 +82,7 @@ if($_GPC['table']){
 }
 
 ?>
-<form action="" method="post" name="myform">
-    数据库名:<input type="text" name="schema" value="">
-    表明:<input type="text" name="table" value="">
-    <input type="submit" value="提交">
-</form>
+
 
 
 

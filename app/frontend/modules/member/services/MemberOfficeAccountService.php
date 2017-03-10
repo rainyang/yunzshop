@@ -19,7 +19,7 @@ use app\common\models\MemberLevel;
 
 class MemberOfficeAccountService extends MemberService
 {
-    private $_login_type    = '1';
+    const LOGIN_TYPE    = '1';
 
     public function __construct()
     {}
@@ -61,11 +61,11 @@ class MemberOfficeAccountService extends MemberService
                     $types = explode('|', $UnionidInfo['type']);
                     $member_id = $UnionidInfo['member_id'];
 
-                    if (!in_array($this->_login_type, $types)) {
+                    if (!in_array(self::LOGIN_TYPE, $types)) {
                         //更新ims_yz_member_unique表
                         MemberUniqueModel::updateData(array(
                             'unique_id'=>$UnionidInfo['unique_id'],
-                            'type' => $UnionidInfo['type'] . '|' . $this->_login_type
+                            'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
                         ));
                     }
 
@@ -153,7 +153,7 @@ class MemberOfficeAccountService extends MemberService
                         'uniacid' => $uniacid,
                         'unionid' => $userinfo['unionid'],
                         'member_id' => $member_id,
-                        'type' => $this->_login_type
+                        'type' => self::LOGIN_TYPE
                     ));
                 }
 
