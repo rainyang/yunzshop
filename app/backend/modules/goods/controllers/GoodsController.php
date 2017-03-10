@@ -75,10 +75,21 @@ class GoodsController extends BaseController
 
         $requestSearch = \YunShop::request()->search;
         if ($requestSearch) {
-            dd($requestSearch);
+            $requestSearch = array_filter($requestSearch,function($item){ return !empty($item);});
+            //dd($requestSearch);
         }
 
-        $list = Goods::getList()->paginate(20)->toArray();
+        /*Category::uniacid()->where(['id' => $category_id])->with(
+            ['goodsCategories' => function ($query) {
+                return $query->select(['goods_id', 'category_id'])->with(
+                    [
+                        'goods' => function ($query1) {
+                            return $query1->select(['id', 'title', 'thumb', 'price', 'market_price'])->where('status', '1');
+                        }
+                    ]);
+            }])->first();*/
+
+        $list = Goods::Search($requestSearch)->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         $this->render('goods/index', [
             'list' => $list['data'],

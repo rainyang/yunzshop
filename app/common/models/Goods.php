@@ -21,15 +21,7 @@ class Goods extends BaseModel
     protected $mediaFields = ['thumb', 'thumb_url'];
     //public $display_order = 0;
     //protected $appends = ['status'];
-    
-
-    public function setAttribute($key, $value)
-    {
-        if (in_array($key, $this->mediaFields)) {
-            //$value = tomedia($value);
-        }
-        parent::setAttribute($key, $value);
-    }
+ 
 
     public $fillable = [];
 
@@ -99,25 +91,26 @@ class Goods extends BaseModel
 
     public function scopeSearch($query, $filters)
     {
+        $query->uniacid();
         foreach ($filters as $key => $value) {
             switch ($key) {
-                case 'category':
+                /*case 'category':
                     $category[] = ['id' => $value * 1];
-                    $query->where('category_id', $category);
+                    $query->with("")->where('category_id', $category);
+                    break;*/
+                case 'keyword':
+                    $query->where('title', 'LIKE', "%{$value}%");
                     break;
-                case 'conditions':
-                    $query->where('condition', 'LIKE', $value);
+                case 'brand_id':
+                    $query->where('brand_id', $value);
                     break;
-                case 'brands':
-                    $query->where('brand_id', '=', $value);
+                case 'min_price':
+                    $query->where('price', '>', $value);
+                    break;
+                case 'max_price':
+                    $query->where('price', '<', $value);
                     break;
                 default:
-                    if ($key != 'category_name' && $key != 'search' && $key != 'page') {
-                        //changing url encoded character by the real ones
-                        $value = urldecode($value);
-                        //applying filter to json field
-                        $query->whereRaw("features LIKE '%\"".$key.'":%"%'.str_replace('/', '%', $value)."%\"%'");
-                    }
                     break;
             }
         }

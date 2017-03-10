@@ -27,7 +27,10 @@ class GoodsController extends BaseController
             return $query->select('goods_id', 'title', 'value');
         }])->with(['hasManySpecs' => function ($query) {
             return $query->select('id', 'goods_id', 'title', 'description');
-        }])->with('hasOneShare')
+        }])->with(['hasManyOptions' => function ($query) {
+            return $query->select('id', 'goods_id', 'title', 'thumb', 'product_price', 'market_price', 'stock', 'specs', 'weight');
+        }])
+            ->with('hasOneShare')
             ->with('hasOneDiscount')
             ->with('hasOneGoodsDispatch')
             ->with('hasOnePrivilege')
