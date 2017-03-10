@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\components\BaseController;
 use app\common\models\Order;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
@@ -15,7 +16,7 @@ use app\frontend\modules\order\services\behavior\OrderDelete;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderSend;
 
-class OperationController
+class OperationController extends BaseController
 {
     public function pay(){
         if (\YunShop::app()->ispost) {
