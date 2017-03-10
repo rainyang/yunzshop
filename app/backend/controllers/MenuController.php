@@ -26,11 +26,13 @@ class MenuController extends BaseController
         } else {
             return $this->errorJson('菜单栏目数据错误');
         }
-/*
-        return view('setting.menu',[
-            'set' => 1
-        ]);
-        */
+
+
+        return view('user.role.index',[
+            'pager'      => 1,
+            'roleList'  => 2
+        ])->render();
+
     }
 
     public function add()
