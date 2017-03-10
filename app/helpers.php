@@ -83,12 +83,12 @@ if (! function_exists('json')) {
     }
 }
 
-if (! function_exists('bs_footer')) {
+if (! function_exists('yz_footer')) {
 
     function yz_footer($page_identification = "")
     {
         $content = "";
-
+/*
         $scripts = [
             assets('scripts/app.min.js'),
             assets('lang/'.config('app.locale').'/locale.js'),
@@ -101,8 +101,9 @@ if (! function_exists('bs_footer')) {
         foreach ($scripts as $script) {
             $content .= "<script type=\"text/javascript\" src=\"$script\"></script>\n";
         }
-
-        $content .=  '<script>'.option("custom_js").'</script>';
+*/
+        $customJs = option("custom_js");
+        $customJs && $content .=  '<script>'.$customJs.'</script>';
 
         $extraContents = [];
 
@@ -112,26 +113,27 @@ if (! function_exists('bs_footer')) {
     }
 }
 
-if (! function_exists('bs_header')) {
+if (! function_exists('yz_header')) {
 
-    function yz_header($page_identification = "")
+    function yz_header($pageIdentification = "")
     {
         $content = "";
-
+/*
         $styles = [
             assets('styles/app.min.css'),
             assets('styles/skins/'.Option::get('color_scheme').'.min.css')
         ];
 
-        if ($page_identification !== "") {
-            $styles[] = assets("styles/$page_identification.css");
+        if ($pageIdentification !== "") {
+            $styles[] = assets("styles/$pageIdentification.css");
         }
 
         foreach ($styles as $style) {
             $content .= "<link rel=\"stylesheet\" href=\"$style\">\n";
         }
-
-        $content .= '<style>'.option("custom_css").'</style>';
+*/
+        $customCss = option("custom_css");
+        $customCss &&  $content .= '<style>'.option("custom_css").'</style>';
 
         $extraContents = [];
 
@@ -141,20 +143,6 @@ if (! function_exists('bs_header')) {
     }
 }
 
-if (! function_exists('yz_favicon')) {
-
-    function yz_favicon()
-    {
-        // fallback to default favicon
-        $url = Str::startsWith($url = (option('favicon_url') ?: config('options.favicon_url')), 'http') ? $url : assets($url);
-
-        return <<< ICONS
-<link rel="shortcut icon" href="$url">
-<link rel="icon" type="image/png" href="$url" sizes="192x192">
-<link rel="apple-touch-icon" href="$url" sizes="180x180">
-ICONS;
-    }
-}
 
 if (! function_exists('yz_menu')) {
 
@@ -162,7 +150,7 @@ if (! function_exists('yz_menu')) {
     {
         $menu = config('menu');
 
-        Event::fire($type == "user" ? new app\common\events\ConfigureUserMenu($menu)
+        Event::fire($type == "member" ? new app\common\events\ConfigureMemberMenu($menu)
                                 : new app\common\events\ConfigureAdminMenu($menu));
 
         if (!isset($menu[$type])) {

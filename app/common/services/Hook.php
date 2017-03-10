@@ -5,13 +5,14 @@ namespace app\common\services;
 use Event;
 use Closure;
 use app\common\events;
+use Illuminate\Support\Str;
 
 class Hook
 {
     /**
      * Add an item to menu.
      *
-     * @param string  $category  'user' or 'admin'
+     * @param string  $category  'member' or 'admin'
      * @param int  $position  Where to insert the given item, start from 0.
      * @param array  $menu  e.g.
      * [
@@ -23,7 +24,7 @@ class Hook
      */
     public static function addMenuItem($category, $position, array $menu)
     {
-        $class = $category == "user" ? events\ConfigureUserMenu::class : events\ConfigureAdminMenu::class;
+        $class = $category == "member" ? events\ConfigureMemberMenu::class : events\ConfigureAdminMenu::class;
 
         Event::listen($class, function ($event) use ($menu, $position, $category)
         {
@@ -75,7 +76,7 @@ class Hook
         Event::listen(events\RenderingHeader::class, function($event) use ($urls, $pages)
         {
             foreach ($pages as $pattern) {
-                if (!app('request')->is($pattern))
+                if (!Str::is($pattern,request()->getRequestUri()))
                     continue;
 
                 foreach ((array) $urls as $url) {
@@ -93,7 +94,7 @@ class Hook
         Event::listen(events\RenderingFooter::class, function($event) use ($urls, $pages)
         {
             foreach ($pages as $pattern) {
-                if (!app('request')->is($pattern))
+                if (!Str::is($pattern,request()->getRequestUri()))
                     continue;
 
                 foreach ((array) $urls as $url) {

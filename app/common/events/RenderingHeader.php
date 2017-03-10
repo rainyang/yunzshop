@@ -17,6 +17,11 @@ class RenderingHeader extends Event
         $this->contents = &$contents;
     }
 
+    protected function setPrice()
+    {
+
+    }
+
     public function addContent($content)
     {
         if ($content) {

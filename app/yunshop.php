@@ -35,9 +35,19 @@ class YunShop
             $currentRoutes[] = $action;
         }
         //检测方法是否存在并可执行
-        if (!is_callable([$controller, $action])) {
+        if (!method_exists($namespace, $action) || !is_callable([$namespace, $action]) ) {
             abort(404,'操作方法不存在: ' . $action);
         }
+        //插件视图目录绑定命名空间
+        /*
+        if(in_array('plugin',$currentRoutes)){
+            $pluginsViewPath = realpath(base_path() . '/plugins/'. $currentRoutes[1] .'/views');
+            if(is_dir($pluginsViewPath)) {
+                $viewNamespace = str_replace('\\' . $controllerName . 'Controller', '', $namespace);
+                \View::addNamespace($viewNamespace, $pluginsViewPath);
+            }
+        }
+        */
 
         $controller->modules = $modules;
         $controller->controller = $controllerName;
@@ -150,27 +160,65 @@ class YunShop
         $modules = [];
         if ($routes) {
             $length = count($routes);
-            foreach ($routes as $k => $r) {
-                $ucFirstRoute = ucfirst(Str::camel($r));
-                $controllerFile = $path . '/controllers/' . $ucFirstRoute . 'Controller.php';
-                if (is_file($controllerFile)) {
-                    $namespace .= '\\controllers\\' . $ucFirstRoute . 'Controller';
-                    $controllerName = $ucFirstRoute;
-                    $path = $controllerFile;
-                    $currentRoutes[] = $r;
-                } elseif (is_dir($path .= '/modules/' . $r)) {
-                    $namespace .= '\\modules\\' . $r;
-                    $modules[] = $r;
-                    $currentRoutes[] = $r;
-                } else {
-                    if ($length !== $k + 1) {
-                        exit('no found route:' . self::request()->route);
+            $routeFirst = array_first($routes);
+            $countRoute = count($routes);
+            if($routeFirst === 'plugin'){
+                $currentRoutes[] = $routeFirst;
+                $namespace = 'Yunshop';
+                 array_shift($routes);
+                $pluginName = array_shift($routes);
+                if($pluginName || plugin($pluginName)) {
+                    $currentRoutes[] = $pluginName;
+                    $path = base_path() . '/plugins/'. $pluginName . '/src';
+                    foreach ($routes as $k => $r) {
+                        $ucFirstRoute = ucfirst(Str::camel($r));
+                        $controllerFile = $path . '/'  . $ucFirstRoute . 'Controller.php';
+                        if (is_file($controllerFile)) {
+                            $namespace .= '\\'. ucfirst(Str::camel($pluginName)) .'\\' . $ucFirstRoute . 'Controller';
+                            $controllerName = $ucFirstRoute;
+                            $path = $controllerFile;
+                            $currentRoutes[] = $r;
+                        }elseif(is_dir($path .= $r)){
+                            $namespace .=  $r;
+                            $modules[] = $r;
+                            $currentRoutes[] = $r;
+                        }else{
+                            if ($length !== $k + 3) {
+                                exit('no found route:' . self::request()->route);
+                            }
+                            $action = strpos($r, '-') === false ? $r : Str::camel($r);
+                            $currentRoutes[] = $r;
+                        }
                     }
-                    $action = strpos($r, '-') === false ? $r : Str::camel($r);
-                    $currentRoutes[] = $r;
+                }else{
+                    abort(404,'无此插件');
                 }
 
+            }else{
+                foreach ($routes as $k => $r) {
+                    $ucFirstRoute = ucfirst(Str::camel($r));
+                    $controllerFile = $path . '/controllers/' . $ucFirstRoute . 'Controller.php';
+                    if (is_file($controllerFile)) {
+                        $namespace .= '\\controllers\\' . $ucFirstRoute . 'Controller';
+                        $controllerName = $ucFirstRoute;
+                        $path = $controllerFile;
+                        $currentRoutes[] = $r;
+                    } elseif (is_dir($path .= '/modules/' . $r)) {
+                        $namespace .= '\\modules\\' . $r;
+                        $modules[] = $r;
+                        $currentRoutes[] = $r;
+                    } else {
+                        if ($length !== $k + 1) {
+                            exit('no found route:' . self::request()->route);
+                        }
+                        $action = strpos($r, '-') === false ? $r : Str::camel($r);
+                        $currentRoutes[] = $r;
+                    }
+
+                }
             }
+
+
         }
         //执行run
         static::run($namespace,$modules,$controllerName, $action, $currentRoutes);
