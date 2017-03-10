@@ -16,7 +16,8 @@ class MemberAddressController extends BaseController
 {
     public function index()
     {
-        $memberId = \YunShop::request()->member_id;
+        $memberId = \YunShop::app()->getMemberId();
+        dd($memberId);
         //$memberId = '57'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
         //var_dump(!empty($addressList));
@@ -28,30 +29,32 @@ class MemberAddressController extends BaseController
         $addressModel = new MemberAddress();
 
         $requestAddress = \YunShop::request()->address;
-        $addressModel->setRawAttributes($requestAddress);
+        if ($requestAddress) {
+            $addressModel->setRawAttributes($requestAddress);
 
-        $memberId = \YunShop::request()->member_id;
-        //$memberId = '57'; //测试使用
-        //验证默认收货地址状态并修改
-        $addressList = MemberAddress::getAddressList($memberId);
-        if (empty($addressList)) {
-            $addressModel->isdefault = '1';
-        } elseif ($addressModel->isdefault == '1') {
-            //修改默认收货地址
-            MemberAddress::cancelDefaultAddress($memberId);
-        }
+            $memberId = \YunShop::request()->member_id;
+            //$memberId = '57'; //测试使用
+            //验证默认收货地址状态并修改
+            $addressList = MemberAddress::getAddressList($memberId);
+            if (empty($addressList)) {
+                $addressModel->isdefault = '1';
+            } elseif ($addressModel->isdefault == '1') {
+                //修改默认收货地址
+                MemberAddress::cancelDefaultAddress($memberId);
+            }
 
-        $addressModel->uid = $memberId;
-        $addressModel->uniacid = \YunShop::app()->uniacid;
+            $addressModel->uid = $memberId;
+            $addressModel->uniacid = \YunShop::app()->uniacid;
 
-        $validator = MemberAddress::validator($addressModel->getAttributes());
-        if ($validator->fails()) {
-            return $this->errorJson($validator->messages());
-        }
-        if ($addressModel->save()) {
-             return $this->successJson('');
-        } else {
-            return $this->errorJson("数据写入出错，请重试！");
+            $validator = MemberAddress::validator($addressModel->getAttributes());
+            if ($validator->fails()) {
+                return $this->errorJson($validator->messages());
+            }
+            if ($addressModel->save()) {
+                 return $this->successJson('');
+            } else {
+                return $this->errorJson("数据写入出错，请重试！");
+            }
         }
 
         return $this->render('member/edit_address');

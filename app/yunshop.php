@@ -346,6 +346,15 @@ class YunApp extends YunComponent
         return $routes;
     }
 
+    /**
+     * @todo set member id from session
+     * @return int
+     */
+    public function getMemberId()
+    {
+        return session('member_id', 0);
+    }
+
 
 
 }

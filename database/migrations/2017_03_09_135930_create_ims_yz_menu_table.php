@@ -17,6 +17,7 @@ class CreateImsYzMenuTable extends Migration {
 		{
 			$table->integer('id', true);
 			$table->string('name', 45)->comment('名称');
+			$table->string('item', 45)->comment('标识');
 			$table->string('url')->default('')->comment('路由或链接地址');
 			$table->string('url_params')->default('')->comment('路由参数');
 			$table->boolean('permit')->default(0)->comment('权限控制 1是 0否');

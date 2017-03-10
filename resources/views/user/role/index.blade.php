@@ -56,35 +56,34 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {loop $list $row}
+
+                        @foreach($roleList['data'] as $role)
                         <tr>
-                            <td>{$row['rolename']}</td>
+                            <td> {{ $role['name'] }}</td>
                             <td>{$row['usercount']}</td>
                             <td>
-                                {if $row['status']==1}
+                                @if($role['status'] == 1)
                                 <span class='label label-success'>启用</span>
-                                {else}
+                                @else
                                 <span class='label label-danger'>禁用</span>
-                                {/if}
+                                @endif
                             </td>
                             <td>
-                                {ifp 'perm.role.edit|perm.role.view'}<a class='btn btn-default' href="{php echo $this->createPluginWebUrl('perm/role', array('op' => 'post', 'id' => $row['id']))}"><i class="fa fa-edit"></i></a>{/if}
-                                {ifp 'perm.role.delete'}<a class='btn btn-default'  href="{php echo $this->createPluginWebUrl('perm/role', array('op' => 'delete', 'id' => $row['id']))}" onclick="return confirm('确认删除此门店吗？');return false;"><i class="fa fa-remove"></i></a>{/if}
+                                <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('perm/role', array('op' => 'post', 'id' => $row['id']))}"><i class="fa fa-edit"></i></a>
+                                <a class='btn btn-default'  href="{php echo $this->createPluginWebUrl('perm/role', array('op' => 'delete', 'id' => $row['id']))}" onclick="return confirm('确认删除此门店吗？');return false;"><i class="fa fa-remove"></i></a>
                             </td>
 
                         </tr>
-                        {/loop}
+                        @endforeach
+
 
                         </tbody>
                     </table>
-                    {$pager}
+                    {!! $pager !!}
                 </div>
-                {if 'perm.role.add'}
                 <div class='panel-footer'>
-                    <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('perm/role', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新角色</a>
+                    <a class='btn btn-primary' href="{{ yzWebUrl('user.role.store') }}"><i class="fa fa-plus"></i> 添加新角色</a>
                 </div>
-                {/if}
-
 
 
 @endsection

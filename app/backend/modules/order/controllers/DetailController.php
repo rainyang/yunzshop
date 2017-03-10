@@ -25,9 +25,7 @@ class DetailController extends BaseController
                 'hasOneAddress'
             ]
         )->find($order_id)->toArray();
-        //$db_order_models['has_one_address']['address'] = json_decode($db_order_models['has_one_address']['address']);
-        //dd(json_encode($db_order_models['has_one_address']['address']));
-        //dd($db_order_models);
+
         $this->render('detail', [
             'order' => $db_order_models,
             'lang' => $this->_lang(),

@@ -19,21 +19,18 @@ class MemberService
             return self::$_current_member;
         }
         //todo 根据情况改写
-        self::setCurrentMemberModel(1);
+        self::setCurrentMemberModel(4967);
         return self::$_current_member;
     }
 
     public static function setCurrentMemberModel($member_id)
     {
-        $member = Member::first();
+        $member = Member::find($member_id);
         if(!isset($member)){
             return '用户id不存在';exit;
         }
         self::$_current_member = $member;
     }
-
-    public function login()
-    {}
 
     /**
      * 用户是否登录

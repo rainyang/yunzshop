@@ -1,4 +1,3 @@
-@inject('Url','app\common\helpers\Url')
 <!-- start: Main Menu -->
 <style type="text/css">
 

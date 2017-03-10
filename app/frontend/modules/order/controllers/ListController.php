@@ -24,7 +24,7 @@ class ListController extends BaseController
         if ($list['total'] == 0) {
             return $this->errorJson($msg = '未找到数据', $data = []);
         } else {
-            return $this->successJson($data = $list);
+            return $this->successJson($msg = 'ok', $data = $list);
         }
     }
 

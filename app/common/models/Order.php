@@ -10,6 +10,7 @@ namespace app\common\models;
 
 
 use app\frontend\modules\order\services\status\StatusServiceFactory;
+use Illuminate\Support\Facades\DB;
 
 class Order extends BaseModel
 {
@@ -17,14 +18,10 @@ class Order extends BaseModel
     private $StatusService;
     protected $appends = ['status_name', 'button_models'];
     protected $search_fields = ['id', 'order_sn'];
-
-    public static function getOrder($order_id, $uniacid)
-    {
-        return self::where('id', $order_id)
-            ->where('uniacid', $uniacid)
-            ->first()
-            ->toArray();
-    }
+    const WAIT_PAY = 0;
+    const WAIT_SEND = 1;
+    const WAIT_RECEIVE = 2;
+    const COMPLETE = 3;
 
     public function scopeWaitPay($query)
     {
@@ -62,6 +59,7 @@ class Order extends BaseModel
     {
         return $this->belongsTo('\app\common\models\Member', 'member_id', 'uid');
     }
+
     //订单配送方式
     public function hasOneDispatchType()
     {
@@ -73,6 +71,7 @@ class Order extends BaseModel
     {
         return $this->hasOne('\app\common\models\order\Remark', 'order_id', 'id');
     }
+
     public function hasOnePayType()
     {
         return $this->hasOne('\app\common\models\PayType', 'id', 'pay_type_id');
@@ -84,6 +83,11 @@ class Order extends BaseModel
         return $this->hasOne('\app\common\models\order\Express', 'order_id', 'id');
     }
 
+    public function scopeUn($query)
+    {
+        return $query->where(['uniacid' => 1]);
+    }
+
     public function getStatusService()
     {
         if (!isset($this->StatusService)) {
@@ -92,9 +96,16 @@ class Order extends BaseModel
         return $this->StatusService;
     }
 
+    //收货地址
     public function hasOneAddress()
     {
         return $this->hasOne('\app\common\models\order\Address', 'order_id', 'id');
+    }
+
+    //订单支付
+    public function hasOnePay()
+    {
+        return $this->hasOne('\app\common\models\order\Pay', 'order_id', 'id');
     }
 
     public function getStatusNameAttribute()
@@ -107,4 +118,16 @@ class Order extends BaseModel
         return $this->getStatusService()->getButtonModels();
     }
 
+    public function scopeGetOrderCountGroupByStatus($query, $status=[])
+    {
+        $status = [Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE];
+        $status_counts = $query->select('status', DB::raw('count(*) as total'))
+            ->whereIn('status',$status)->groupBy('status')->get()->makeHidden(['status_name', 'button_models'])->toArray();
+        foreach ($status as $state){
+            if(!in_array($state,array_column($status_counts,'status'))){
+                $status_counts[] = ['status'=>$state,'total'=>0];
+            }
+        }
+        return $status_counts;
+    }
 }

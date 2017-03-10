@@ -5,10 +5,10 @@
  * Date: 2017/2/23
  * Time: 上午11:16
  */
-namespace app\frontend\modules\order\services\model\factory;
+namespace app\frontend\modules\order\services\models\factory;
 
-use app\frontend\modules\order\services\model\PreGeneratedOrderModel;
-use app\frontend\modules\order\services\model\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+use app\frontend\modules\order\services\models\PreGeneratedOrderGoodsModel;
 
 
 class PreGeneratedOrderModelFactory
