@@ -15,7 +15,7 @@ use app\frontend\modules\member\models\MemberModel;
 
 class MemberMiniAppService extends MemberService
 {
-    private $_login_type    = 1;
+    const LOGIN_TYPE    = 2;
 
     public function __construct()
     {}
@@ -70,11 +70,11 @@ class MemberMiniAppService extends MemberService
                 $types = explode('|',$UnionidInfo['type']);
                 $member_id = $UnionidInfo['member_id'];
 
-                if (!in_array($this->_login_type, $types)) {
+                if (!in_array(self::LOGIN_TYPE, $types)) {
                     //更新ims_yz_member_unique表
                     MemberUniqueModel::updateData(array(
                         'unique_id'=>$UnionidInfo['unique_id'],
-                        'type' => $UnionidInfo['type'] . '|' . $this->_login_type
+                        'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
                     ));
 
                     //添加ims_yz_member_mini_app表
@@ -111,7 +111,7 @@ class MemberMiniAppService extends MemberService
                     'uniacid' => $uniacid,
                     'unionid' => $json_user['unionid'],
                     'member_id' => $member_id,
-                    'type' => $this->_login_type
+                    'type' => self::LOGIN_TYPE
                 ));
 
                 //添加ims_yz_member_mini_app表

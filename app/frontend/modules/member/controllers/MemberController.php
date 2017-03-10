@@ -30,11 +30,39 @@ class MemberController extends BaseController
             if (!empty($member_info)) {
                 $member_info = $member_info->toArray();
 
-                foreach ($member_info as $key => $item) {
+                if (!empty($member_info['data'])) {
+                    foreach ($member_info['data'] as $key => $item) {
+                        if (is_array($item) && !empty($item['yz_member'])) {
+                            if (!empty($item['yz_member']['group'])) {
+                                foreach ($item['yz_member']['group'] as $k => $v) {
+                                    if ($k == 'id') {
+                                        $data['group_id'] = $v;
+                                    }
 
+                                    $data[$k] = $v;
+                                }
+                            }
+
+                            if (!empty($item['yz_member']['level'])) {
+                                foreach ($item['yz_member']['level'] as $k => $v) {
+                                    if ($k == 'id') {
+                                        $data['level_id'] = $v;
+                                    }
+
+                                    $data[$k] = $v;
+                                }
+                            }
+                        }
+
+                        if (!is_array($item)) {
+                            $data[$key] = $item;
+                        }
+                    }
+                } else {
+                    return $this->errorJson('用户不存在');
                 }
 
-                return $this->successJson('', $member_info);
+                return $this->successJson('', $data);
             } else {
                 return $this->errorJson('用户不存在');
             }

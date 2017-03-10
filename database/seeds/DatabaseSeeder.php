@@ -22,5 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(YzAddressSeeder::class);
         //地址(街道)
         $this->call(YzStreetSeeder::class);
+        //商品分类
+        $this->call(YzCategorySeeder::class);
     }
 }

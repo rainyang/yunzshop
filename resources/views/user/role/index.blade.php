@@ -81,7 +81,7 @@
                 </div>
                 {if 'perm.role.add'}
                 <div class='panel-footer'>
-                    <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('perm/role', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新角色</a>
+                    <a class='btn btn-primary' href="{ $this->createWebUrl('member.memberlevel.update')}"><i class="fa fa-plus"></i> 添加新角色</a>
                 </div>
                 {/if}
 
