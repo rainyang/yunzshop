@@ -17,20 +17,30 @@ class MemberCartController extends BaseController
         $memberId = '1';
 
         $cartList = MemberCart::getMemberCartList($memberId);
-
-        $goods = new GoodsService();
-
-        $i = 0;
-        foreach ($cartList as $cart) {
-            $cart['goods'] = $goods->getGoodsByCart($cart['goods_id'], $cart['option_id']);
-            if ($cart['goods'] != false) {
-                $cartList[$i] = $cart;
-            } else {
-                unset($cartList[$i]);
+        //dd($cartList);
+        foreach ($cartList as $key => $cart) {
+            $cartList[$key]['option_str'] = '';
+            if (empty($cart['goods'])) {
+                //销毁未找到商品的数据
+                unset($cartList[$key]);
+            } elseif (!empty($cart['goods_option'])) {
+                //规格数据替换商品数据
+                if ($cart['goods_option']['title']) {
+                    $cartList[$key]['option_str'] = $cart['goods_option']['title'];
+                }
+                if ($cart['goods_option']['thumb']) {
+                    $cart['goods']['thumb'] = $cart['goods_option']['thumb'];
+                }
+                if ($cart['goods_option']['market_price']) {
+                    $cart['goods']['price'] = $cart['goods_option']['market_price'];
+                }
+                if ($cart['goods_option']['market_price']) {
+                    $cart['goods']['price'] = $cart['goods_option']['market_price'];
+                }
             }
-            $i += 1;
+            unset ($cartList[$key]['goods_option']);
         }
-        dd($cartList);
+        //dd($cartList);
 
         return $this->successJson($cartList);
     }
@@ -73,7 +83,7 @@ class MemberCartController extends BaseController
                 }
             }
         }
-        $msg = "接受数据出错，添加购物车失败！";
+        $msg = "接收数据出错，添加购物车失败！";
         return $this->errorJson($msg);
     }
     /*
@@ -102,7 +112,5 @@ class MemberCartController extends BaseController
         $msg = "写入出错，移除购物车失败！";
         return $this->errorJson($msg);
     }
-
-
 
 }

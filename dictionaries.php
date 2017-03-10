@@ -46,7 +46,7 @@ if($_GPC['table']){
         $html .= $value['IS_NULLABLE'];
         $html .= "|";
         $html .= $value['COLUMN DEFAULT'];
-        $html .= "|";
+        $html .= " |";
         $comment = '';
         if($value['COLUMN_NAME'] == 'created_at'){
             $comment = '创建时间';

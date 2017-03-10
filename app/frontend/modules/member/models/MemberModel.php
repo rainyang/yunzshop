@@ -109,16 +109,22 @@ class MemberModel extends BackendModel
      */
     public static function getUserInfos($member_id)
     {
-        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'gender', 'createtime',
             'credit1', 'credit2'])
             ->uniacid()
             ->where('uid', $member_id)
             ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content']);
-            }, 'hasOneFans' => function($query2) {
-                return $query2->select(['uid', 'follow as followed']);
-            }
-            ]);
+                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])
+                    ->with(['group'=>function($query1){
+                        return $query1->select(['id','group_name']);
+                    },'level'=>function($query2){
+                        return $query2->select(['id','level_name']);
+                    }, 'agent'=>function($query3){
+                        return $query3->select(['uid', 'avatar', 'nickname']);
+                    }]);
+            }, 'hasOneFans' => function($query4) {
+                return $query4->select(['uid', 'follow as followed']);
+            }]);
     }
 
     /**

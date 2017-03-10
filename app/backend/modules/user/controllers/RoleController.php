@@ -20,7 +20,7 @@ class RoleController extends BaseController
      */
     public function index()
     {
-        dd(\YunShop::app());
+        //dd(\YunShop::app());
         return view('user.role.index',[])->render();
     }
 
@@ -29,11 +29,12 @@ class RoleController extends BaseController
      */
     public function add()
     {
+        dd(2);
         $model = new YzRole();
         $permissions = \Config::get('menu');
         $permissions = User::getAllPermissions();
 
-        dd(\Yunshop::app()->getRoutes());
+        //dd(\Yunshop::app()->getRoutes());
         return view('user.role.form',[
             'model'=>$model,
             'permissions'=>$permissions,

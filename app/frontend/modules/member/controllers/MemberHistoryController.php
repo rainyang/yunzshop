@@ -17,6 +17,7 @@ class MemberHistoryController extends BaseController
 {
     public function index()
     {
+        $memberId = \YunShop::app()->getMemberId();
         $memberId = 96;
 
         $historyList = MemberHistory::getMemberHistoryList($memberId);
@@ -40,30 +41,8 @@ class MemberHistoryController extends BaseController
         }
         return $this->errorResult();
     }
-    public function update()
+    public function destory()
     {
 
-    }
-    public function destory()
-    {}
-    protected function errorResult($msg, $data='')
-    {
-        $result = array(
-            'result' => '0',
-            'msg' => $msg,
-            'data' => $data
-        );
-        echo json_encode($result);
-        exit;
-    }
-    protected function successResult($msg, $data='')
-    {
-        $result = array(
-            'result' => '1',
-            'msg' => $msg,
-            'data' => $data
-        );
-        echo json_encode($result);
-        exit;
     }
 }
