@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\goods\services\models;
 
-use app\common\events\OrderGoodsPriceWascalculated;
+use app\common\events\OrderGoodsWasAddedInOrder;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class RealGoodsDispatch implements ShouldQueue
@@ -25,15 +25,19 @@ class RealGoodsDispatch implements ShouldQueue
         return 12;
     }
 
-    public function handle(OrderGoodsPriceWascalculated $even)
+    public function handle(OrderGoodsWasAddedInOrder $even)
     {
 
-        $this->_order_goods_model = $even->getOrderGoodsModel();
+        $this->_order_goods_model = $order_goods_model;
         if (!$this->isRealGoods()) {
             return;
         }
         $this->_order_goods_model->setDispatchPrice($this->getDispatchPrice());
-        //dd($this->_order_goods_model);
+
+
+//        var_dump($this->_order_goods_model);
+//        var_dump($even);
+//exit;
         return;
     }
 

@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\order\services\models;
 
+use app\common\events\OrderGoodsWasAddedInOrder;
 use app\common\events\OrderPriceWasCalculated;
 use app\common\models\Order;
 use app\common\models\Member;
@@ -31,15 +32,28 @@ class PreGeneratedOrderModel extends ServiceModel
             $this->_pre_order_goods_models = $pre_order_goods_models;
         }
         $this->_has_calculated = false;
+        $this->afterAddPreGeneratedOrderGoods($pre_order_goods_models);
     }
     public function getOrderGoodsModels(){
         return $this->_pre_order_goods_models;
     }
     public function addPreGeneratedOrderGoods(array $pre_order_goods_models)
     {
-
         $this->_pre_order_goods_models = array_merge($this->_pre_order_goods_models, $pre_order_goods_models);
         $this->_has_calculated = false;
+        $this->afterAddPreGeneratedOrderGoods($pre_order_goods_models);
+    }
+    private function afterAddPreGeneratedOrderGoods($pre_order_goods_models){
+        echo 'in';
+        dd($pre_order_goods_models);
+
+        foreach ($pre_order_goods_models as $pre_order_goods_model){
+            //$GLOBALS['yy'] =1;
+            Event::fire(new OrderGoodsWasAddedInOrder($pre_order_goods_models));
+
+            echo 'afterAddPreGeneratedOrderGoods';
+            dd($pre_order_goods_model);
+        }
 
     }
     public function setDispatchPrice($price){
