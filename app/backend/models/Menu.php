@@ -15,21 +15,48 @@ class Menu extends BaseModel
 {
     public $table = 'yz_menu';
 
+    /**
+     * 父菜单与子菜单栏目1:n关系
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function childs()
     {
         return $this->hasMany('app\backend\models\Menu','parent_id','id');
     }
 
-    public static function getMenuAllInfo()
+    /**
+     * 获取菜单栏目
+     *
+     * @param $parent_id
+     * @param int $child_switch
+     * @return mixed
+     */
+    public static function getMenuAllInfo($parent_id, $child_switch = 0)
+    {
+        $result = self::select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id'])
+                   ->where('parent_id', $parent_id)
+                   ->where('status', 1)
+                   ->orderBy('sort', 'asc');
+
+        if ($child_switch) {
+            $result = $result->with(['childs'=>function ($query) {
+                return $query->select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id'])->where('status', 1)->orderBy('sort', 'asc');
+            }]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * 通过ID获取菜单栏目
+     *
+     * @param $id
+     * @return mixed
+     */
+    public static function getMenuInfoById($id)
     {
         return self::select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id'])
-                   ->where('prarent_id', 0)
-                   ->where('status', 1)
-                   ->with(['childs'=>function ($query) {
-                       return $query->select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id'])
-                           ->with(['childs'=>function ($query2) {
-                            return $query2->select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id']);
-                           }]);
-                   }]);
+            ->where('id', $id);
     }
 }
