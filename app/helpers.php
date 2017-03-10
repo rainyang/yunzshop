@@ -3,6 +3,42 @@
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 
+if(!function_exists('yzWebUrl')){
+    function yzWebUrl($route, $params = [])
+    {
+        return \app\common\helpers\Url::web($route,$params);
+    }
+}
+
+if(!function_exists('yzAppUrl')){
+    function yzAppUrl($route, $params = [])
+    {
+        return \app\common\helpers\Url::app($route,$params);
+    }
+}
+
+
+if(!function_exists('yzWebFullUrl')){
+    function yzWebFullUrl($route, $params = [])
+    {
+        return \app\common\helpers\Url::absoluteWeb($route,$params);
+    }
+}
+
+if(!function_exists('yzAppFullUrl')){
+    function yzAppFullUrl($route, $params = [])
+    {
+        return \app\common\helpers\Url::absoluteApp($route,$params);
+    }
+}
+
+if(!function_exists('yzUrl')){
+    function yzUrl($route, $params = [])
+    {
+        return \app\common\helpers\Url::web($route,$params);
+    }
+}
+
 if(!function_exists('array_child_kv_exists')){
     function array_child_kv_exists($array, $childKey, $value)
     {
