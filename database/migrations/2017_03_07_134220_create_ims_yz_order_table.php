@@ -33,6 +33,7 @@ class CreateImsYzOrderTable extends Migration {
 			$table->integer('deleted_at')->nullable()->default(0);
 
 			//$table->foreign('member_id')->references('id')->on('users');
+			$table->foreign('member_id')->references('id')->on('ims_yz_users')->onUpdate('CASCADE');
 		});
 	}
 

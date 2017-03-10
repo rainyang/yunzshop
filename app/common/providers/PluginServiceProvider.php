@@ -25,13 +25,13 @@ class PluginServiceProvider extends ServiceProvider
     public function boot(PluginManager $plugins)
     {
         // store paths of class files of plugins
-        $src_paths = [];
+        $srcPaths = [];
         $loader = $this->app->make('translation.loader');
         // make view instead of view.finder since the finder is defined as not a singleton
         $finder = $this->app->make('view');
         foreach ($plugins->getPlugins() as $plugin) {
             if ($plugin->isEnabled()) {
-                $src_paths[$plugin->getNameSpace()] = $plugin->getPath()."/src";
+                $srcPaths[$plugin->getNameSpace()] = $plugin->getPath()."/src";
                 // add paths of views
                 $finder->addNamespace($plugin->getNameSpace(), $plugin->getPath()."/views");
             }
@@ -39,7 +39,7 @@ class PluginServiceProvider extends ServiceProvider
             $loader->addNamespace($plugin->getNameSpace(), $plugin->getPath()."/lang");
         }
         $this->registerPluginCallbackListener();
-        $this->registerClassAutoloader($src_paths);
+        $this->registerClassAutoloader($srcPaths);
         $bootstrappers = $plugins->getEnabledBootstrappers();
         foreach ($bootstrappers as $file) {
             $bootstrapper = require $file;

@@ -2,7 +2,7 @@
 
 namespace app\common\events;
 
-class ConfigureUserMenu extends Event
+class ConfigureMemberMenu extends Event
 {
     public $menu;
 

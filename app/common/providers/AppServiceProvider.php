@@ -6,6 +6,7 @@ use app\common\facades\Setting;
 use Illuminate\Support\ServiceProvider;
 use App;
 use Illuminate\Support\Facades\DB;
+use app\common\repositories\OptionRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -68,6 +69,11 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Way\Generators\GeneratorsServiceProvider::class);
             $this->app->register(\Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class);
         }
+
+        //增加模板扩展tpl
+        \View::addExtension('tpl', 'blade');
+        //配置表
+        $this->app->singleton('options',  OptionRepository::class);
 
         /**
          * 设置

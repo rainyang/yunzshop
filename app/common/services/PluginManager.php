@@ -130,7 +130,7 @@ class PluginManager
 
             $plugin->setEnabled(true);
 
-            $this->dispatcher->fire(new Events\PluginWasEnabled($plugin));
+            $this->dispatcher->fire(new events\PluginWasEnabled($plugin));
         }
     }
 
@@ -152,7 +152,7 @@ class PluginManager
 
             $plugin->setEnabled(false);
 
-            $this->dispatcher->fire(new Events\PluginWasDisabled($plugin));
+            $this->dispatcher->fire(new events\PluginWasDisabled($plugin));
         }
     }
 

@@ -5,6 +5,7 @@ namespace app\common\services;
 use ArrayAccess;
 use Illuminate\Support\Arr;
 use Illuminate\Contracts\Support\Arrayable;
+use app\common\helpers\Url;
 
 /**
  * @property string $name
@@ -104,7 +105,7 @@ class Plugin implements Arrayable, ArrayAccess
 
     public function assets($relativeUri)
     {
-        return url("plugins/{$this->getDirname()}/$relativeUri");
+        return Url::shopUrl("plugins/{$this->getDirname()}/$relativeUri");
     }
 
     /**

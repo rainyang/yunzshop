@@ -13,6 +13,7 @@ class Member extends BackendModel
 {
     public $table = 'mc_members';
     protected $search_fields = ['mobile','uid','nickname','realname'];
+    protected $primaryKey = 'uid';
 
 
     public $timestamps = false;

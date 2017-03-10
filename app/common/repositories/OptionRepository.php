@@ -22,7 +22,7 @@ class OptionRepository extends Repository
         }
 
         foreach ($options as $option) {
-            $this->items[$option->option_name] = $option->option_value;
+            $this->items[$option['option_name']] = $option['option_value'];
         }
 
     }

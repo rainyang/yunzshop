@@ -9,22 +9,24 @@
 namespace app\frontend\modules\goods\services\models;
 
 
+use app\common\events\OrderGoodsPriceWascalculated;
 use app\common\models\Goods;
 use app\common\models\OrderGoods;
 
 use app\common\ServiceModel\ServiceModel;
-use app\frontend\modules\order\services\model\PreGeneratedOrderModel;
+use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+use Illuminate\Support\Facades\Event;
 
 class PreGeneratedOrderGoodsModel extends ServiceModel
 {
     private $total;
     private $order_model;
     private $goods_model;
-    private $price_model;
-
+    private $change_price_detail;
     private $price;
     private $goods_price;
     private $_has_calculated;
+    private $_dispatch_price;
 
     public function __construct(Goods $goods_model, $total = 1)
     {
@@ -34,12 +36,26 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
 
     }
 
+    public function setDispatchPrice($dispatch_price)
+    {
+        //dd($dispatch_price);
+        $this->_dispatch_price = $dispatch_price;
+    }
+    public function getDispatchPrice()
+    {
+        return $this->_dispatch_price;
+    }
     public function setTotal($total)
     {
 
         $this->total = $total;
         $this->_has_calculated = false;
 
+    }
+
+    public function addChangePriceModel($change_price_info)
+    {
+        $this->change_price_detail[] = $change_price_info;
     }
 
     public function setOrderModel(PreGeneratedOrderModel $order_model)
@@ -56,23 +72,27 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     }*/
     private function calculate()
     {
+        $this->_has_calculated = true;
         $this->price = $this->calculatePrice();
 
         $this->goods_price = $this->calculateGoodsPrice();
+        Event::fire(new OrderGoodsPriceWascalculated($this));
 
     }
 
     private function calculatePrice()
     {
-
-        return $this->total * $this->goods_model->price;
+        $result = $this->total * $this->goods_model->price;
+        return $result;
     }
 
     private function calculateGoodsPrice()
     {
         return $this->total * $this->goods_model->price;
     }
-    public function toArray(){
+
+    public function toArray()
+    {
         return $data = array(
             'goods_id' => $this->goods_model->id,
             'goods_sn' => $this->goods_model->goods_sn,
@@ -83,6 +103,7 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
         );
         return $data;
     }
+
     public function generate(PreGeneratedOrderModel $order_model = null)
     {
         if (isset($order_model)) {
@@ -102,7 +123,7 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
         );
         echo '订单商品插入数据为';
         var_dump($data);
-        return ;
+        return;
         return OrderGoods::insertGetId($data);
     }
 
