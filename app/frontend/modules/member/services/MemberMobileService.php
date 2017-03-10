@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cookie;
 use app\frontend\modules\member\models\MemberModel;
 use Illuminate\Session\Store;
 
-class MemberMcService extends MemberService
+class MemberMobileService extends MemberService
 {
     public function login()
     {
