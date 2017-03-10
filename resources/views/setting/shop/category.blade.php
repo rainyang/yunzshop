@@ -80,5 +80,5 @@
     </form>
 </div>
 </div>
-@include('setting.mylink')
+{{--@include('setting.mylink')--}}
 @endsection
