@@ -4,18 +4,7 @@
 <div class="w1200 m0a">
 <div class="rightlist">
 <!-- 新增加右侧顶部三级菜单 -->
-    <div class="right-titpos">
-        <ul class="add-shopnav">
-            <li><a href="{{ yzWebUrl('setting.index')}}">商城设置</a></li>
-            {{--<li><a href="{{ $this->createWebUrl('sysset',array('op'=>'pcset'))}}">PC端设置</a></li>
-            <li><a href="{{ $this->createWebUrl('sysset',array('op'=>'follow'))}}">引导分享</a></li>
-            <li><a href="{{ $this->createWebUrl('sysset',array('op'=>'notice'))}}">消息提醒</a></li>
-            <li><a href="{{ $this->createWebUrl('sysset',array('op'=>'trade'))}}">交易设置</a></li>
-            <li><a href="{{ $this->createWebUrl('sysset',array('op'=>'pay'))}}">支付方式</a></li>
-            <li><a href="{{ $this->createPluginWebUrl('perm/setting')}}">权限设置</a></li>
-            <li><a href="{{ $this->createWebUrl('upgrade',array('op'=>'display'))}}">系统升级</a></li>--}}
-        </ul>
-    </div>
+    @include('setting.shop.tabs')
 <!-- 新增加右侧顶部三级菜单结束 -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <div class="panel panel-default">

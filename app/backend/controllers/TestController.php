@@ -12,8 +12,8 @@ class TestController extends BaseController
 {
 
     public function index()
-    {
-        return view('test.index',['a'=>'f']);
+    {        return view('test.index',['a'=>'f']);
+
 
     }
 
