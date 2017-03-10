@@ -15,8 +15,52 @@ use app\common\helpers\PaginationHelper;
 
 class ListController extends BaseController
 {
-    public function index()
+    private $_order_model;
+    public function index(){
+        $params = \YunShop::request();
+        $pageSize = 2;
+        $this->_order_model = Order::getAllOrders($params['search'],$pageSize);
+        $this->render('order/list', $this->getData());
+
+    }
+    public function waitPay()
     {
+        $params = \YunShop::request();
+        $pageSize = 2;
+        $this->_order_model = Order::getWaitPayOrders($params['search'],$pageSize);
+        $this->render('order/list', $this->getData());
+    }
+    public function waitSend()
+    {
+        $params = \YunShop::request();
+        $pageSize = 2;
+        $this->_order_model = Order::getWaitSendOrders($params['search'],$pageSize);
+        $this->render('order/list', $this->getData());
+    }
+    public function waitReceive()
+    {
+        $params = \YunShop::request();
+        $pageSize = 2;
+        $this->_order_model = Order::getWaitReceiveOrders($params['search'],$pageSize);
+        $this->render('order/list', $this->getData());
+    }
+    public function completed()
+    {
+        $params = \YunShop::request();
+        $pageSize = 2;
+        $this->_order_model = Order::getCompletedOrders($params['search'],$pageSize);
+        $this->render('order/list', $this->getData());
+    }
+
+    public function test()
+    {
+        $data = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
+        dd($data);
+    }
+
+
+
+    private function getData(){
         /*$params = [
             'search' => [
                 'ambiguous' => [
@@ -30,84 +74,19 @@ class ListController extends BaseController
                 ]
             ]
         ];*/
-        $params = \YunShop::request();
-        $pageSize = 2;
-
-        $order_builder = Order::search($params['search']);
-
-        $total_price = $order_builder->sum('price');
-
-        $list = $order_builder->with([
-            'belongsToMember' => $this->member_builder(),
-            'hasManyOrderGoods' => $this->order_goods_builder(),
-            'hasOneDispatchType',
-            'hasOnePayType',
-            'hasOneAddress'
-        ])->paginate($pageSize)->toArray();
+        $list = $this->_order_model;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         //dd($list);
         $data = [
             'list' => $list,
-            'total_price' => $total_price,
+            'total_price' => $list['total_price'],
             'lang' => $this->_lang(),
             'totals' => $this->_totals(),
             'pager' => $pager,
         ];
         $data += $this->fakeData();
-        $this->render('order/list', $data);
-
+        return $data;
     }
-
-    public function test()
-    {
-        $params = [
-            'search' => [
-                'base_info' => 1,
-                'member_info' => 1,
-                'goods_info' => 1,
-                'pay_type' => 1,
-                'time_fields' => 'create_time',
-                'time_range' => [0, 0]
-            ]
-        ];
-        $pageSize = 2;
-
-        $order_builder = Order::searchByTime($params['search']['time_fields'], $params['search']['time_range'])
-            ->searchLike($params['search']['base_info']);
-
-        $total_price = $order_builder->sum('price');
-
-        $list = $order_builder->with([
-            'belongsToMember' => $this->member_builder($params['search']['member_info']),
-            'hasManyOrderGoods' => $this->order_goods_builder($params['search']['goods_info'])
-        ])->paginate($pageSize)->toArray();
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-        dd($list);
-    }
-
-    private function member_builder()
-    {
-        return function ($query) {
-            return $query->select(['uid', 'mobile', 'nickname', 'realname']);
-        };
-    }
-
-    private function order_goods_builder()
-    {
-        return function ($query) {
-            $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_sn']);
-        };
-    }
-
-    public function waitPay()
-    {
-        $db_order_models = Order::waitPay()->with('hasManyOrderGoods')->get();
-        //dd($db_order_models);
-        $order_models = $db_order_models;
-        dd($order_models[0]->button_models);
-        exit;
-    }
-
     private function fakeData()
     {
         return array(
