@@ -18,14 +18,6 @@ class Order extends BaseModel
     protected $appends = ['status_name', 'button_models'];
     protected $search_fields = ['id', 'order_sn'];
 
-    public static function getOrder($order_id, $uniacid)
-    {
-        return self::where('id', $order_id)
-            ->where('uniacid', $uniacid)
-            ->first()
-            ->toArray();
-    }
-
     public function scopeWaitPay($query)
     {
         //AND o.status = 0 and o.paytype<>3
@@ -84,6 +76,11 @@ class Order extends BaseModel
         return $this->hasOne('\app\common\models\order\Express', 'order_id', 'id');
     }
 
+    public function scopeUn($query)
+    {
+        return $query->where(['uniacid' => 1]);
+    }
+
     public function getStatusService()
     {
         if (!isset($this->StatusService)) {
@@ -92,9 +89,16 @@ class Order extends BaseModel
         return $this->StatusService;
     }
 
+    //收货地址
     public function hasOneAddress()
     {
         return $this->hasOne('\app\common\models\order\Address', 'order_id', 'id');
+    }
+
+    //订单支付
+    public function hasOnePay()
+    {
+        return $this->hasOne('\app\common\models\order\Pay', 'order_id', 'id');
     }
 
     public function getStatusNameAttribute()
@@ -105,9 +109,5 @@ class Order extends BaseModel
     public function getButtonModelsAttribute()
     {
         return $this->getStatusService()->getButtonModels();
-    }
-    public function getOrderCountGroupByStatus($query,$status){
-        //return $query->groupBy('status')->count();
-        //Order::getOrderCountGroupByStatus(['waitPay','waitSend','waitReceive','complete']);
     }
 }
