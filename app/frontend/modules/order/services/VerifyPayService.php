@@ -32,7 +32,7 @@ class VerifyPayService
         }
     }
 
-    public static function verifyLog(Order $order, $member)
+    public static function verifyLog(Order $order)
     {
         $db_log_model = CorePayLog::select()->where('tid', '=', $order->hasOnePay->order_sn)->first();
         if ($db_log_model && $db_log_model->status != '0') {
@@ -45,7 +45,7 @@ class VerifyPayService
         if (!$db_log_model) {
             $log_data = [
                 'uniacid'   => \YunShop::app()->uniacid,
-                'member_id' => $member['id'],
+                'member_id' => \YunShop::app()->getMemberId(),
                 'tid'       => $order->hasOnePay->pay_sn,
                 'fee'       => $order->price,
                 'status'    => 0

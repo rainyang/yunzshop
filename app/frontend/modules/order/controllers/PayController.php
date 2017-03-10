@@ -30,11 +30,7 @@ class PayController extends BaseController
                 ]
             )->find($order_id);
             //dd($db_order_model->hasOnePay->pay_sn);
-            //member  等会员给方法
-            $member = [
-                'id'    => '12'
-            ];
-            VerifyPayService::verifyLog($db_order_model, $member);
+            VerifyPayService::verifyLog($db_order_model);
             //所有支付方式
             $all_pays = [];
             $return_url = urlencode($this->createMobileUrl('order.pay.display', array('order_id' => $order_id)));

@@ -110,5 +110,4 @@ class Order extends BaseModel
     {
         return $this->getStatusService()->getButtonModels();
     }
-
 }
