@@ -9,13 +9,13 @@
                         <li role="presentation" class="active" style="display: block;"><a aria-controls="link_system" role="tab" data-toggle="tab" href="#link_system" aria-expanded="true">系统页面</a></li>
                         <li role="presentation" style="display: block;"><a aria-controls="link_goods" role="tab" data-toggle="tab" href="#link_goods" aria-expanded="false">商品链接</a></li>
                         <li role="presentation" style="display: block;"><a aria-controls="link_cate" role="tab" data-toggle="tab" href="#link_cate" aria-expanded="false">商品分类</a></li>
-                        {if !empty($mylink_data['designer'])}
+                        @if (!empty($mylink_data['designer']))
                             <li role="presentation" style="display: block;"><a aria-controls="link_diy" role="tab" data-toggle="tab" href="#link_diy" aria-expanded="false">DIY页面</a></li>
-                        {/if}
+                        @endif
                         <li role="presentation" style="display: block;"><a aria-controls="link_diy" role="tab" data-toggle="tab" href="#link_article" aria-expanded="false">营销文章</a></li>
-                        {if p('coupon')}
+                        @if (p('coupon'))
                         <li role="presentation" style="display: block;"><a aria-controls="link_diy" role="tab" data-toggle="tab" href="#link_article" aria-expanded="false">超级券页面</a></li>
-                        {/if}
+                        @endif
                         <li role="presentation" style="display: block;"><a aria-controls="link_other" role="tab" data-toggle="tab" href="#link_other" aria-expanded="false">自定义链接</a></li>
                     </ul>   
                 </div>
@@ -42,7 +42,7 @@
                         <div id="fe-tab-link-li-28" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 28)" data-href="{php echo $this->createMobileUrl('member/withdraw')}">余额提现</div>
                         <div id="fe-tab-link-li-29" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 29)" data-href="{php echo $this->createMobileUrl('shop/address')}">我的收货地址</div>
                         
-                        {if p('commission')}
+                        @if (p('commission'))
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 分销链接</h4>
                         </div>
@@ -56,8 +56,8 @@
                         <div id="fe-tab-link-li-37" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 37)" data-href="{php echo $this->createPluginMobileUrl('commission/log')}">佣金明细</div>
                         <div id="fe-tab-link-li-38" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 38)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop',array('op'=>'set'))}">小店设置</div>
                         <div id="fe-tab-link-li-39" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 39)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop',array('op'=>'select'))}">自选商品</div>
-                        {/if}
-                        {if p('bonus')}
+                        @endif
+                        @if (p('bonus'))
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 分红链接</h4>
                         </div>
@@ -68,30 +68,30 @@
                         <div id="fe-tab-link-li-43" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 43)" data-href="{php echo $this->createPluginMobileUrl('bonus/team')}">我的下线</div>
                         <div id="fe-tab-link-li-44" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 44)" data-href="{php echo $this->createPluginMobileUrl('bonus/log')}">分红明细</div>
                         <div id="fe-tab-link-li-45" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 45)" data-href="{php echo $this->createPluginMobileUrl('bonus/ordercount_area')}">区域订单</div>
-                        {/if}
-                        {if p('coupon')}
+                        @endif
+                        @if (p('coupon'))
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 超级券链接</h4>
                         </div>
                         
                         <div id="fe-tab-link-li-46" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 46)" data-href="{php echo $this->createPluginMobileUrl('coupon')}">优惠券领取中心</div>
                         <div id="fe-tab-link-li-47" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 47)" data-href="{php echo $this->createPluginMobileUrl('coupon/my')}">我的优惠券</div>
-                        {/if}
+                        @endif
                             <div class="page-header">
                                 <h4><i class="fa fa-folder-open-o"></i> 其它插件页面</h4>
                             </div>
-                            {if p('return')}
+                            @if (p('return'))
                             <div id="fe-tab-link-li-48" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 48)" data-href="{php echo $this->createPluginMobileUrl('return/return_log')}">全返明细</div>
-                            {/if}
-                            {if p('supplier')}
+                            @endif
+                            @if (p('supplier'))
                             <div id="fe-tab-link-li-49" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 49)" data-href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}">供应商申请</div>
-                            {/if}
-                            {if p('ranking')}
+                             @endif
+                            @if (p('ranking'))
                              <div id="fe-tab-link-li-50" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 50)" data-href="{php echo $this->createPluginMobileUrl('ranking/ranking')}">排行榜</div>
-                            {/if}
-                            {if p('creditshop')}
+                            @endif
+                            @if (p('creditshop'))
                              <div id="fe-tab-link-li-51" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 51)" data-href="{php echo $this->createPluginMobileUrl('creditshop')}">积分商城</div>
-                            {/if}
+                             @endif
                         </div>
                      </div>
                      <div role="tabpanel" class="tab-pane link_goods" id="link_goods">
@@ -103,72 +103,72 @@
                      </div>
                      <div role="tabpanel" class="tab-pane link_cate" id="link_cate">
                          <div class="mylink-con">
-                             {loop $mylink_data['goodcates'] $goodcate}
-                                {if empty($goodcate['parentid'])}
+                             @foreach ($mylink_data['goodcates'] as $goodcate)
+                                @if (empty($goodcate['parentid']))
                                     <div class="mylink-line">
-                                        {$goodcate['name']}
+                                        {{ $goodcate['name'] }}
                                         <div class="mylink-sub">
                                             <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id']))}">选择</a>
                                         </div>
                                     </div>
 
-                                    {loop $mylink_data['goodcates'] $goodcate2}
-                                        {if $goodcate2['parentid']==$goodcate['id']}
+                                    @foreach ($mylink_data['goodcates'] as $goodcate2)
+                                        @if ($goodcate2['parentid'] == $goodcate['id'])
                                             <div class="mylink-line">
                                                 <span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
-                                                {$goodcate2['name']}
+                                                {{ $goodcate2['name'] }}
                                                 <div class="mylink-sub">
                                                     <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id'],'ccate'=>$goodcate2['id']))}">选择</a>
                                                 </div>
                                             </div>
-                                            {loop $$mylink_data['goodcates'] $goodcate3}
-                                                {if $goodcate3['parentid']==$goodcate2['id']}
+                                            @foreach ($$mylink_data['goodcates'] as $goodcate3)
+                                                @if ($goodcate3['parentid'] == $goodcate2['id'])
                                                     <div class="mylink-line">
                                                         <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
-                                                        {$goodcate3['name']}
+                                                        {{ $goodcate3['name'] }}
                                                         <div class="mylink-sub">
                                                             <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id'],'ccate'=>$goodcate2['id'],'tcate'=>$goodcate3['id']))}">选择</a>
                                                         </div>
                                                     </div>
-                                                {/if}
-                                            {/loop}
-                                        {/if}
-                                    {/loop}
-                                {/if}
-                             {/loop}
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    @endforeach
+                                @endif
+                             @endforeach
                          </div>
                      </div>
-                     {if !empty($mylink_data['designer'])}
+                     @if (!empty($mylink_data['designer']))
                      <div role="tabpanel" class="tab-pane link_cate" id="link_diy">
                          <div class="mylink-con">
-                             {loop $mylink_data['diypages'] $diypage}
+                             @foreach ($mylink_data['diypages'] as $diypage)
                                 <div class="mylink-line">
-                                    {if $diypage['pagetype']=='4'}
+                                    @if ($diypage['pagetype'] == '4')
                                         <label class="label label-danger" style="margin-right:5px;">其他</label>
-                                    {elseif $diypage['pagetype']=='1'}
-                                        {if $diypage['setdefault']==1}
+                                    @elseif ($diypage['pagetype'] == '1')
+                                        @if ($diypage['setdefault'] == 1)
                                             <label class="label label-success" style="margin-right:5px;">默认首页</label>
-                                        {else}
+                                        @else
                                             <label class="label label-primary" style="margin-right:5px;">首页</label>
-                                        {/if}
-                                    {/if}
-                                    {$diypage['pagename']}
+                                        @endif
+                                    @endif
+                                    {{ $diypage['pagename'] }}
                                     <div class="mylink-sub">
                                         <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createPluginMobileUrl('designer',array('pageid'=>$diypage['id']))}">选择</a>
                                     </div>
                                 </div>
-                             {/loop}
+                             @endforeach
                          </div>
                      </div>
-                     {/if}
+                     @endif
                      <div role="tabpanel" class="tab-pane link_cate" id="link_article">
                          <div class="input-group">
                              <span class="input-group-addon" style='padding:0px; border: 0px;'>
                                  <select class="form-control tpl-category-parent" name="article_category" id="select-article-ca" style='width: 150px; border-radius: 4px 0px 0px 4px; border-right: 0px;'>
                                      <option value="" selected="selected">全部分类</option>
-                                     {loop $mylink_data['categorys'] $category}
-                                        <option value="{$category['id']}">{$category['category_name']}</option>
-                                     {/loop}
+                                     @foreach ($mylink_data['categorys'] as $category)
+                                        <option value="{{ $category['id'] }}">{{ $category['category_name'] }}</option>
+                                     @endforeach
                                  </select>
                              </span>
                              <input type="text" class="form-control" value="" id="select-article-kw" placeholder="请输入文章标题进行搜索">
@@ -177,7 +177,7 @@
                          <div class="mylink-con" style="height:266px;">
                              <div class="mylink-line">
                                  <label class="label label-primary" style="margin-right:5px;">文章列表</label>
-                                 {$mylink_data['article_sys']['article_title']}
+                                 {{ $mylink_data['article_sys']['article_title'] }}
                                  <div class="mylink-sub">
                                      <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createPluginMobileUrl('article',array('method'=>'article'))}">选择</a>
                                  </div>

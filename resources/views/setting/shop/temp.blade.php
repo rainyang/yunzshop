@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="w1200 m0a">
-<div class="main rightlist">
+<div class="rightlist">
 <!-- 新增加右侧顶部三级菜单 -->
     @include('setting.shop.tabs')
 <!-- 新增加右侧顶部三级菜单结束 -->
