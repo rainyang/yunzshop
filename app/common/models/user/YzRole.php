@@ -20,4 +20,11 @@ class YzRole extends BaseModel
     {
         return $this->hasMany('app\common\models\user\YzPermission');
     }
+
+    public static function getRoleList($pageSize)
+    {
+        return static::uniacid()
+            ->paginate($pageSize)
+            ->toArray();
+    }
 }

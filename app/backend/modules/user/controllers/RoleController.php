@@ -10,6 +10,8 @@ namespace app\backend\modules\user\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\helpers\PaginationHelper;
+use app\common\helpers\Url;
 use app\common\models\user\User;
 use app\common\models\user\YzRole;
 
@@ -20,24 +22,49 @@ class RoleController extends BaseController
      */
     public function index()
     {
-        //dd(\YunShop::app());
-        return view('user.role.index',[])->render();
+        $pageSize = '3';
+
+        $roleList = YzRole::getRoleList($pageSize);
+        $pager = PaginationHelper::show($roleList['total'], $roleList['current_page'], $roleList['per_page']);
+
+        return view('user.role.index',[
+            'pager'      => $pager,
+            'roleList'  => $roleList
+        ])->render();
     }
 
     /**
      * 创建角色
      */
-    public function add()
+    public function store()
     {
-        dd(2);
-        $model = new YzRole();
+        $roleModel = new YzRole();
         $permissions = \Config::get('menu');
-        $permissions = User::getAllPermissions();
+        $userPermissons = User::getAllPermissions();
+
+        $requestRole = \YunShop::request()->YzRole;
+        if ($requestRole) {
+            $roleModel->setRawAttributes($requestRole);
+            $roleModel->uniacid = \YunShop::app()->uniacid;
+
+            $validator = YzRole::validator($roleModel->getAttributes());
+            if ($validator->fails()) {
+                $this->error($validator->messages());
+            } else {
+                if ($roleModel->save()) {
+                    return $this->message('添加角色成功', Url::absoluteWeb('user.role.index'));
+                } else {
+                    $this->error('数据写入出错，请重试！');
+                }
+            }
+        }
+        //dd($roleModel);
 
         //dd(\Yunshop::app()->getRoutes());
         return view('user.role.form',[
-            'model'=>$model,
+            'roleModel'=>$roleModel,
             'permissions'=>$permissions,
+            'userPermissons'=>$userPermissons,
         ])->render();
     }
 
