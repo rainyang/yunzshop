@@ -1,12 +1,14 @@
 <?php
-namespace app\frontend\modules\order\services\model;
+namespace app\frontend\modules\order\services\models;
 
+use app\common\events\OrderPriceWasCalculated;
 use app\common\models\Order;
 use app\common\models\Member;
 
 use app\common\ServiceModel\ServiceModel;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\models\ShopModel;
+use Illuminate\Support\Facades\Event;
 
 class PreGeneratedOrderModel extends ServiceModel
 {
@@ -16,8 +18,9 @@ class PreGeneratedOrderModel extends ServiceModel
     protected $goods_price;
     protected $member_model;
     protected $shop_model;
-    protected $order_goods_models = [];
     protected $order_sn;
+    protected $dispatch_price;
+
     private $_pre_order_goods_models = [];
 
     private $_has_calculated;
@@ -29,7 +32,9 @@ class PreGeneratedOrderModel extends ServiceModel
         }
         $this->_has_calculated = false;
     }
-
+    public function getOrderGoodsModels(){
+        return $this->_pre_order_goods_models;
+    }
     public function addPreGeneratedOrderGoods(array $pre_order_goods_models)
     {
 
@@ -37,7 +42,9 @@ class PreGeneratedOrderModel extends ServiceModel
         $this->_has_calculated = false;
 
     }
-
+    public function setDispatchPrice($price){
+        $this->dispatch_price = $price;
+    }
     public function setMemberModel(Member $member_model)
     {
         $this->member_model = $member_model;
@@ -55,15 +62,17 @@ class PreGeneratedOrderModel extends ServiceModel
         //log();
     }
 
-    private function calculate()
+    private function _calculate()
     {
         $this->_has_calculated = true;
         $this->total = $this->calculateTotal();
         $this->price = $this->calculatePrice();
         $this->goods_price = $this->calculateGoodsPrice();
-
+        $this->afterCalculate();
     }
-
+    private function afterCalculate(){
+        Event::fire(new OrderPriceWasCalculated($this));
+    }
     private function calculateTotal()
     {
         $result = 0;
@@ -95,7 +104,7 @@ class PreGeneratedOrderModel extends ServiceModel
     public function __get($name)
     {
         if ($this->_has_calculated == false) {
-            $this->calculate();
+            $this->_calculate();
         }
         if (isset($this->$name)) {
             return $this->$name;
@@ -107,7 +116,7 @@ class PreGeneratedOrderModel extends ServiceModel
     public function toArray()
     {
         if ($this->_has_calculated == false) {
-            $this->calculate();
+            $this->_calculate();
         }
         $data = array(
             'price' => $this->price,
@@ -123,7 +132,7 @@ class PreGeneratedOrderModel extends ServiceModel
     public function generate()
     {
         if ($this->_has_calculated == false) {
-            $this->calculate();
+            $this->_calculate();
         }
         $this->createOrder();
         $this->createOrderGoods();

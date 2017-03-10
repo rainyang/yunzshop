@@ -106,5 +106,8 @@ class Order extends BaseModel
     {
         return $this->getStatusService()->getButtonModels();
     }
-
+    public function getOrderCountGroupByStatus($query,$status){
+        //return $query->groupBy('status')->count();
+        //Order::getOrderCountGroupByStatus(['waitPay','waitSend','waitReceive','complete']);
+    }
 }
