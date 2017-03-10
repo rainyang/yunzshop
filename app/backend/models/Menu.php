@@ -19,4 +19,17 @@ class Menu extends BaseModel
     {
         return $this->hasMany('app\backend\models\Menu','parent_id','id');
     }
+
+    public static function getMenuAllInfo()
+    {
+        return self::select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id'])
+                   ->where('prarent_id', 0)
+                   ->where('status', 1)
+                   ->with(['childs'=>function ($query) {
+                       return $query->select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id'])
+                           ->with(['childs'=>function ($query2) {
+                            return $query2->select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id']);
+                           }]);
+                   }]);
+    }
 }
