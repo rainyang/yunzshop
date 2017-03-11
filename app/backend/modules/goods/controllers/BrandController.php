@@ -4,10 +4,8 @@ namespace app\backend\modules\goods\controllers;
 use app\backend\modules\goods\models\Brand;
 use app\backend\modules\goods\services\BrandService;
 use app\common\components\BaseController;
-use app\common\events\TestGoodsEvent;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
-use Setting;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -23,18 +21,14 @@ class BrandController extends BaseController
      */
     public function index()
     {
-        //$shopset   = Setting::get('shop');
-
         $pageSize = 5;
         $list = Brand::getBrands()->paginate($pageSize)->toArray();
-        
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
-            $this->render('list', [
+        return view('goods.brand.list', [
             'list' => $list,
             'pager' => $pager,
-            //'shopset' => $shopset
-        ]);
+        ])->render();
     }
 
     /**
