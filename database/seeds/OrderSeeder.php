@@ -5,16 +5,17 @@ use Illuminate\Database\Seeder;
 Class OrderSeeder extends Seeder
 {
     protected $sourceTable = 'sz_yi_order';
-    protected $table = 'yz_order';
     protected $mappingMemberTable = 'mc_mapping_fans';
-//    protected $newMappingMemberTable = 'new_mapping_fans'; //todo 针对原来的自编openid用户的会员, 等待其迁移数据后生成openid和uid对应关系
+//    protected $newMappingMemberTable = 'new_mapping_fans'; //todo 针对原来的自编openid用户的会员, 等待"会员重构组"生成新旧openid的对应表
+    protected $orderTable = 'yz_order';
+    protected $mappingOrderTable = 'yz_mapping_orders'; //用来记录新旧orderid的对应关系,包括新旧uid的对应关系
 
     public function run()
     {
         //检测新的数据表是否有数据
-        $newList = DB::table($this->table)->first();
+        $newList = DB::table($this->orderTable)->first();
         if($newList){
-            echo $this->table . "数据表已经有数据, 请检查.\n";
+            echo $this->orderTable . "数据表已经有数据, 请检查.\n";
             return;
         }
 
@@ -46,7 +47,7 @@ Class OrderSeeder extends Seeder
                 //手机注册用户的openid和uid的对应关系, 借助会员迁移后生成的临时表
                 if (preg_match('/^o.*/', $record['openid'])){ //以o开头的就是微信登录用户
                     $uid = DB::table($this->mappingMemberTable)
-                                     ->where('openid','=',$record['openid'])->get('uid')->first();
+                           ->where('openid','=',$record['openid'])->get('uid')->first();
                     if($uid){
                         $record['uid'] = $uid;
                     } else {
@@ -69,7 +70,7 @@ Class OrderSeeder extends Seeder
                     return;
                 }
 
-                DB::table($this->table)->insert(
+                $newOrderId = DB::table($this->orderTable)->insertGetId(
                     [
                         'uniacid' => $record['uniacid'], //公众号ID
                         'member_id' => $record['uid'], //mc_member的uid
@@ -89,6 +90,15 @@ Class OrderSeeder extends Seeder
                         'deleted_at' => $record['deleted_at'], //框架自动记录时间
                         'dispatch_type_id' => $record['dispatchid'], //配送方式ID
                         'pay_type_id' => $record['paytype'], //支付方式ID (1为余额，2为在线，3为到付)
+                    ]
+                );
+
+                DB::table($this->mappingOrderTable)->insert(
+                    [
+                        'old_order_id' => $record['id'],
+                        'new_order_id' => $newOrderId,
+                        'old_openid' => $record['openid'],
+                        'new_member_id' =>$record['uid']
                     ]
                 );
             }
