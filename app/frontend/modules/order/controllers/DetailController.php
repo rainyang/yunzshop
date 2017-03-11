@@ -23,7 +23,7 @@ class DetailController extends BaseController
             if (!$orderDetail){
                 return $this->errorJson($msg = '未找到数据', $data = []);
             } else {
-                return $this->successJson($data = $orderDetail->toArray());
+                return $this->successJson($msg = 'ok', $data = $orderDetail->toArray());
             }
         }
     }

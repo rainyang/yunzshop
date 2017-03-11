@@ -1,6 +1,8 @@
 <?php
 
 namespace app\backend\modules\goods\services;
+use app\backend\modules\goods\models\Category;
+
 /**
  * Created by PhpStorm.
  * User: yanglei
@@ -10,6 +12,30 @@ namespace app\backend\modules\goods\services;
 
 class CategoryService
 {
+
+    public static function getCategoryMenu($params)
+    {
+        $catetorys = Category::getAllCategoryGroup();
+
+        //获取分类2/3级联动
+        if ($params['catlevel'] == 3) {
+            $catetory_menus = CategoryService::tpl_form_field_category_level3(
+                'category', $catetorys['parent'], $catetorys['children'],
+                isset($params['ids'][0]) ? $params['ids'][0] : 0,
+                isset($params['ids'][1]) ? $params['ids'][1] : 0,
+                isset($params['ids'][2]) ? $params['ids'][2] : 0
+            );
+        } else {
+            $catetory_menus = CategoryService::tpl_form_field_category_level2(
+                'category', $catetorys['parent'], $catetorys['children'],
+                isset($params['ids'][0]) ? $params['ids'][0] : 0,
+                isset($params['ids'][1]) ? $params['ids'][1] : 0,
+                isset($params['ids'][2]) ? $params['ids'][2] : 0
+            );
+        }
+
+        return $catetory_menus;
+    }
 
     public static function tpl_form_field_category_level3($name, $parents, $children, $parentid, $childid, $thirdid)
     {
