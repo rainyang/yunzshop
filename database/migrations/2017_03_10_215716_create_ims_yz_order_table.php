@@ -36,7 +36,6 @@ class CreateImsYzOrderTable extends Migration {
             $table->integer('cancel_send_time')->default(0)->comment('取消发货时间');
             $table->integer('dispatch_type_id')->default(0)->comment('配送方式id');
             $table->integer('pay_type_id')->default(0)->comment('支付方式id');
-            $table->foreign('member_id')->references('id')->on('ims_yz_users')->onUpdate('CASCADE');
 		});
     }
 

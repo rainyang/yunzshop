@@ -22,14 +22,10 @@ class RoleController extends BaseController
      */
     public function index()
     {
-        $pageSize = '3';
-
-        $roleList = YzRole::getRoleList($pageSize);
-        $pager = PaginationHelper::show($roleList['total'], $roleList['current_page'], $roleList['per_page']);
 
         return view('user.role.index',[
-            'pager'      => $pager,
-            'roleList'  => $roleList
+            'pager'      => 1,
+            'roleList'  => 2
         ])->render();
     }
 
