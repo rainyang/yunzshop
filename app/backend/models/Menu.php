@@ -71,4 +71,31 @@ class Menu extends BaseModel
                 return $query->select(['id', 'name']);
             }]);
     }
+
+    /**
+     *  定义字段名
+     * 可使
+     * @return array */
+    public static function atributeNames() {
+        return [
+            'name'=> '菜单',
+        ];
+    }
+
+    /**
+     * 字段规则
+     * @return array */
+    public static function rules() {
+        return [
+            'item' => 'required',
+            'name' => 'required',
+            'url' => 'required',
+            'url_params' => 'required',
+            'icon' => 'required',
+            'sort' => 'required',
+            'permit' => 'required',
+            'menu' => 'required',
+            'status' => 'required'
+        ];
+    }
 }
