@@ -93,10 +93,10 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">显示状态</label>
                         <div class="col-sm-9 col-xs-12">
                             <label class='radio-inline'>
-                                <input type='radio' name='menu[status]' value='1'/> 启用
+                                <input type='radio' name='menu[status]' value='1' checked/> 启用
                             </label>
                             <label class='radio-inline'>
-                                <input type='radio' name='menu[status]' value='0' checked/> 禁止
+                                <input type='radio' name='menu[status]' value='0'/> 禁止
                             </label>
                         </div>
                     </div>
