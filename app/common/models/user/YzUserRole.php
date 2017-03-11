@@ -25,4 +25,5 @@ class YzUserRole extends BaseModel
         return $this->hasMany('app\common\models\user\YzPermission','item_id','role_id')
             ->where('type','=', YzPermission::TYPE_ROLE);
     }
+
 }

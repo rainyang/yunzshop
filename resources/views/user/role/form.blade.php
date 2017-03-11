@@ -23,12 +23,13 @@
                         <input type='radio' name='YzRole[status]' value='1' {{$roleModel->status==1 && 'checked'}} /> 启用
                     </label>
                     <label class='radio-inline'>
-                        <input type='radio' name='YzRole[status]' value='0' {{$roleModel->status==0 && 'checked'}} /> 禁用
+                        <input type='radio' name='YzRole[status]' value='0' {{$roleModel->status=='0' && 'checked'}} /> 禁用
                     </label>
                     <span class="help-block">如果禁用，则当前角色的操作员全部会禁止使用</span>
                     <!--div class='form-control-static'>{if $item['status']==1}启用{else}禁用{/if}</div-->
                 </div>
             </div>
+
             @include('user.role.permission')
 
             <div class="form-group"></div>
