@@ -20,7 +20,9 @@ class PreGeneratedOrderModel extends ServiceModel
     protected $member_model;
     protected $shop_model;
     protected $order_sn;
-    protected $dispatch_price;
+    protected $dispatch_price = 0;
+    protected $discount_price = 0;
+    protected $discount_details = [];
 
     private $_pre_order_goods_models = [];
 
@@ -34,31 +36,39 @@ class PreGeneratedOrderModel extends ServiceModel
         $this->_has_calculated = false;
         $this->afterAddPreGeneratedOrderGoods($pre_order_goods_models);
     }
-    public function getOrderGoodsModels(){
+
+    public function getOrderGoodsModels()
+    {
         return $this->_pre_order_goods_models;
     }
+
     public function addPreGeneratedOrderGoods(array $pre_order_goods_models)
     {
         $this->_pre_order_goods_models = array_merge($this->_pre_order_goods_models, $pre_order_goods_models);
         $this->_has_calculated = false;
         $this->afterAddPreGeneratedOrderGoods($pre_order_goods_models);
     }
-    private function afterAddPreGeneratedOrderGoods($pre_order_goods_models){
-        echo 'in';
-        dd($pre_order_goods_models);
 
-        foreach ($pre_order_goods_models as $pre_order_goods_model){
-            //$GLOBALS['yy'] =1;
-            Event::fire(new OrderGoodsWasAddedInOrder($pre_order_goods_models));
+    private function afterAddPreGeneratedOrderGoods($pre_order_goods_models)
+    {
 
-            echo 'afterAddPreGeneratedOrderGoods';
-            dd($pre_order_goods_model);
+
+        foreach ($pre_order_goods_models as $pre_order_goods_model) {
+            /*echo '输入';
+            dd($pre_order_goods_model);*/
+
+            Event::fire(new OrderGoodsWasAddedInOrder($pre_order_goods_model));
+            /*echo '输出';
+            dd($pre_order_goods_model);*/
         }
 
     }
-    public function setDispatchPrice($price){
+
+    public function setDispatchPrice($price)
+    {
         $this->dispatch_price = $price;
     }
+
     public function setMemberModel(Member $member_model)
     {
         $this->member_model = $member_model;
@@ -80,13 +90,39 @@ class PreGeneratedOrderModel extends ServiceModel
     {
         $this->_has_calculated = true;
         $this->total = $this->calculateTotal();
-        $this->price = $this->calculatePrice();
         $this->goods_price = $this->calculateGoodsPrice();
+
+        $this->dispatch_price = $this->calculateDispatchPrice();
+
         $this->afterCalculate();
+        $this->price = $this->calculatePrice();
+
     }
-    private function afterCalculate(){
+
+    private function calculateDispatchPrice()
+    {
+        $result = 0;
+        foreach ($this->_pre_order_goods_models as $pre_order_goods_model) {
+            $result += $pre_order_goods_model->dispatch_price;
+        }
+        return $result;
+    }
+
+    private function calculateGoodsDiscountPrice()
+    {
+        $result = 0;
+        foreach ($this->_pre_order_goods_models as $pre_order_goods_model) {
+            $result += $pre_order_goods_model->discount_price;
+        }
+        return $result;
+    }
+
+    private function afterCalculate()
+    {
+        //触发事件
         Event::fire(new OrderPriceWasCalculated($this));
     }
+
     private function calculateTotal()
     {
         $result = 0;
@@ -95,14 +131,12 @@ class PreGeneratedOrderModel extends ServiceModel
         }
         return $result;
     }
-
+    private function calculateOrderDiscountPrice(){
+        return $this->discount_price;
+    }
     private function calculatePrice()
     {
-        $result = 0;
-        foreach ($this->_pre_order_goods_models as $pre_order_goods_model) {
-            $result += $pre_order_goods_model->price;
-        }
-        return $result;
+        return $this->calculateGoodsPrice() - $this->calculateGoodsDiscountPrice() - $this->calculateOrderDiscountPrice();
     }
 
     private function calculateGoodsPrice()
@@ -135,6 +169,8 @@ class PreGeneratedOrderModel extends ServiceModel
         $data = array(
             'price' => $this->price,
             'goods_price' => $this->goods_price,
+            'dispatch_price' => $this->dispatch_price,
+
         );
         //dd($this->order_goods_models);
         foreach ($this->_pre_order_goods_models as $order_goods_model) {
