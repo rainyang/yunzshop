@@ -15,6 +15,7 @@ use app\common\helpers\Url;
 use app\common\models\user\User;
 use app\common\models\user\YzPermission;
 use app\common\models\user\YzRole;
+use Carbon\Carbon;
 
 class RoleController extends BaseController
 {
@@ -69,21 +70,26 @@ class RoleController extends BaseController
                 //$roleId = $roleModel->createRole($roleModel->toArray());
                 if ($roleModel->save()) {
                     $requestPermission = \YunShop::request()->perms;
-                    $requestPermission = is_array($permissionsModel) ? $requestPermission : array();
-                    var_dump($requestPermission);
+
+
                     //数据处理
-                    $data = [];
-                    foreach ($requestPermission as $key => $value) {
-                        $data[$key] = array(
-                            'type' => YzPermission::TYPE_ROLE,
-                            'item_id' => $roleModel->id,
-                            'permission' => $value,
-                            'created_at' => $roleModel->created_at,
-                            'updated_at' => $roleModel->updated_at
-                        );
+                    if ($requestPermission) {
+                        $data = [];
+                        foreach ($requestPermission as $key => $value) {
+                            $data[$key] = array(
+                                'type'      => YzPermission::TYPE_ROLE,
+                                'item_id'   => $roleModel->id,
+                                'permission' => $value,
+                                'created_at' => Carbon::now(),
+                                'updated_at' => $roleModel->updated_at
+                            );
+                            $validator = YzPermission::validator($data);
+                            if ($validator->fails()) {
+                                dd(1);
+                                $this->error($validator->message());
+                            }
+                        }
                     }
-                    //缺少数据验证
-                    //dd($data);
                     $result = YzPermission::createPermission($data);
                     if ($result) {
                         return $this->message('添加角色成功', Url::absoluteWeb('user.role.index'));
