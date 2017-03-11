@@ -35,5 +35,6 @@ class DatabaseSeeder extends Seeder
         $this->call(YzNoticeSeeder::class);
         //商品消息推送
         $this->call(YzSaleSeeder::class);
+        $this->call(YzOptionsTableSeeder::class);
     }
 }

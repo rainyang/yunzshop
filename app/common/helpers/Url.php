@@ -9,6 +9,12 @@ namespace app\common\helpers;
  */
 class Url
 {
+    public static function shopUrl($uri)
+    {
+        $domain = request()->getSchemeAndHttpHost();
+        $module = isset(\YunShop::request()->m) ? \YunShop::request()->m :'';
+        return $domain . '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
+    }
 
     /**
      * 生成后台相对Url
