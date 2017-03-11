@@ -11,14 +11,66 @@ namespace app\backend\modules\order\models;
 
 class Order extends \app\common\models\Order
 {
-    public function getOrders()
-    {
+    public static function getAllOrders($search,$pageSize){
+        $builder = Order::orders($search,$pageSize);
+        $list = $builder->paginate($pageSize)->toArray();
+        $list['total_price'] = $builder->sum('price');
+        return $list;
 
+    }
+    public static function getWaitPayOrders($search,$pageSize){
+        $builder = Order::orders($search,$pageSize)->waitPay();
+        $list = $builder->paginate($pageSize)->toArray();
+        $list['total_price'] = $builder->sum('price');
+        return $list;
+    }
+    public static function getWaitSendOrders($search,$pageSize){
+        $builder = Order::orders($search,$pageSize)->waitSend();
+        $list = $builder->paginate($pageSize)->toArray();
+        $list['total_price'] = $builder->sum('price');
+        return $list;
+    }
+    public static function getWaitReceiveOrders($search,$pageSize){
+        $builder = Order::orders($search,$pageSize)->waitReceive();
+        $list = $builder->paginate($pageSize)->toArray();
+        $list['total_price'] = $builder->sum('price');
+        return $list;
+    }
+    public static function getCompletedOrders($search,$pageSize){
+        $builder = Order::orders($search,$pageSize)->completed();
+        $list = $builder->paginate($pageSize)->toArray();
+        $list['total_price'] = $builder->sum('price');
+        return $list;
+    }
+    public function scopeOrders($search)
+    {
+        $order_builder = Order::search($search);
+
+        $list = $order_builder->with([
+            'belongsToMember' => self::member_builder(),
+            'hasManyOrderGoods' => self::order_goods_builder(),
+            'hasOneDispatchType',
+            'hasOnePayType',
+            'hasOneAddress'
+        ]);
+        return $list;
+    }
+    private static function member_builder()
+    {
+        return function ($query) {
+            return $query->select(['uid', 'mobile', 'nickname', 'realname']);
+        };
+    }
+
+    private static function order_goods_builder()
+    {
+        return function ($query) {
+            $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_sn']);
+        };
     }
 
     public function scopeSearch($order_builder, $params)
     {
-//dd($params);
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单
             if ($params['ambiguous']['field'] == 'order') {

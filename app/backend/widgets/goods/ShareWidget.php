@@ -20,10 +20,8 @@ class ShareWidget extends Widget
         if ($this->goods_id && Share::getInfo($this->goods_id)) {
             $share = Share::getInfo($this->goods_id);
         }
-        return $this->render('goods/share/share',
-            [
-                'share'=> $share,
-            ]
-        );
+        return view('goods.widgets.share', [
+            'share'=> $share,
+        ])->render();
     }
 }

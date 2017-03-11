@@ -70,8 +70,8 @@ class ShopController extends BaseController
     public function temp()
     {
         $temp = Setting::get('shop.temp');
-        $styles = [];//模板数据
-        $styles_pc = [];//pc模板数据
+        $styles = [];//模板数据,数据如何来的待定?
+        $styles_pc = [];//pc模板数据,待定
         $requestModel = \YunShop::request()->temp;
         if ($requestModel) {
             if (Setting::set('shop.temp', $requestModel)) {
@@ -145,6 +145,96 @@ class ShopController extends BaseController
         }
         return view('setting.shop.sms', [
             'set' => $sms,
+        ])->render();
+    }
+
+    /**
+     * 分享引导设置
+     * @return mixed
+     */
+    public function share()
+    {
+        $share = Setting::get('shop.share');
+        $requestModel = \YunShop::request()->share;
+        if ($requestModel) {
+            if (Setting::set('shop.share', $requestModel)) {
+                return $this->message(' 引导分享设置成功', Url::absoluteWeb('setting.shop.share'));
+            } else {
+                $this->error('引导分享设置失败');
+            }
+        }
+        return view('setting.shop.share', [
+            'set' => $share,
+        ])->render();
+    }
+
+    /**
+     * 消息提醒设置
+     * @return mixed
+     */
+    public function notice()
+    {
+        $notice = Setting::get('shop.notice');
+        $salers = []; //订单通知的商家列表,数据如何取待定?
+        $new_type = []; //通知方式的数组,数据如何来的待定?
+        $requestModel = \YunShop::request()->notice;
+        if ($requestModel) {
+            if (Setting::set('shop.notice', $requestModel)) {
+                return $this->message(' 引导分享设置成功', Url::absoluteWeb('setting.shop.notice'));
+            } else {
+                $this->error('引导分享设置失败');
+            }
+        }
+        return view('setting.shop.notice', [
+            'set' => $notice,
+            'salers' => $salers,
+            'new_type' => $new_type
+        ])->render();
+    }
+
+    /**
+     * 交易设置
+     * @return mixed
+     */
+    public function trade()
+    {
+        $trade = Setting::get('shop.trade');
+        $requestModel = \YunShop::request()->trade;
+        if ($requestModel) {
+            if (Setting::set('shop.trade', $requestModel)) {
+                return $this->message(' 交易设置成功', Url::absoluteWeb('setting.shop.trade'));
+            } else {
+                $this->error('交易设置失败');
+            }
+        }
+        return view('setting.shop.trade', [
+            'set' => $trade,
+        ])->render();
+    }
+
+    /**
+     * 支付方式设置
+     * @return mixed
+     */
+    public function pay()
+    {
+        $pay = Setting::get('shop.pay');
+        $data = [
+            'weixin_jie_cert' => '',
+            'weixin_jie_key' => '',
+            'weixin_jie_root' => ''
+        ];//借用微信支付证书,在哪里取得数据待定?
+        $requestModel = \YunShop::request()->pay;
+        if ($requestModel) {
+            if (Setting::set('shop.pay', $requestModel)) {
+                return $this->message(' 支付方式设置成功', Url::absoluteWeb('setting.shop.pay'));
+            } else {
+                $this->error('支付方式设置失败');
+            }
+        }
+        return view('setting.shop.pay', [
+            'set' => $pay,
+            'data' => $data
         ])->render();
     }
 }

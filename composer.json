@@ -26,7 +26,6 @@
     "phpunit/phpunit": "~5.7",
     "barryvdh/laravel-ide-helper": "^2.3",
     "orangehill/iseed": "dev-master",
-    "adamkearsley/convert-migrations": "dev-master",
     "xethron/migrations-generator": "^2.0"
   },
   "autoload": {

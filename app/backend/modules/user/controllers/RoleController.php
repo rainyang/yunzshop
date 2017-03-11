@@ -23,6 +23,7 @@ class RoleController extends BaseController
      */
     public function index()
     {
+<<<<<<< HEAD
         $pageSize = '3';
 
         $roleList = YzRole::getRoleList($pageSize);
@@ -31,6 +32,12 @@ class RoleController extends BaseController
         return view('user.role.index',[
             'pager'     => $pager,
             'roleList'  => $roleList
+=======
+
+        return view('user.role.index',[
+            'pager'      => 1,
+            'roleList'  => 2
+>>>>>>> 111cb2bdacd3a915201914b8faccdb5d2542f3ee
         ])->render();
     }
 

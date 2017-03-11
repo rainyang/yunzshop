@@ -29,10 +29,11 @@ class NoticeWidget extends Widget
             }
             $saler = Member::getMemberById($uid);
         }
-        return $this->render('goods/notice/notice', [
+
+        return view('goods.widgets.notice', [
             'uid'=>$uid,
             'noticetype'=>$noticetype,
             'saler'=>$saler
-        ]);
+        ])->render();
     }
 }
