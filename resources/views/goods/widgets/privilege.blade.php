@@ -1,5 +1,5 @@
 
-@section('content')
+
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级浏览权限</label>
     <div class="col-sm-9 col-xs-12 chks">
@@ -118,4 +118,3 @@
         }
     });
 </script>
-@endsection

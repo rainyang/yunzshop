@@ -18,10 +18,10 @@ class AreaController extends BaseController
     public function selectCity()
     {
         $citys = Area::getAreasByCity(\YunShop::request()->parent_id);
-        
-        return $this->render('area/selectcitys', [
+
+        return view('area.selectcitys', [
             'citys' => $citys->toArray()
-        ]);
+        ])->render();
     }
 
 }

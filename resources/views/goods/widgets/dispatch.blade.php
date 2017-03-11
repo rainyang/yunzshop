@@ -1,5 +1,4 @@
-﻿@section('content')
-    <div class="form-group" id="dispatch_info">
+﻿    <div class="form-group" id="dispatch_info">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">运费设置</label>
         <div class="col-sm-6 col-xs-6">
             <label class="radio-inline" style="float: left;">
@@ -42,6 +41,5 @@
                                                @if ( $dispatch['is_cod'] == 2) checked="true" @endif /> 支持</label>
         </div>
     </div>
-@endsection
 
 

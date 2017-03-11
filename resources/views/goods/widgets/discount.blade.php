@@ -1,5 +1,4 @@
 
-@section('content')
     <div class='panel-heading'>
         等级折扣
     </div>
@@ -110,4 +109,3 @@
         })
 
     </script>
-@endsection
