@@ -53,8 +53,8 @@
 
 					</div>
 					<div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
-						<input type="submit" name="submit" value="{$lang['shopsubmit']}" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
-						<input type="hidden" name="token" value="{$var['token']}" />
+						<input type="submit" name="submit" value="{{$lang['shopsubmit']}}" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
+						<input type="hidden" name="token" value="{{$var['token']}}" />
 						<input type="button" name="back"  style='margin-left:10px;' value="返回列表" class="btn btn-default" />
 
 					</div>

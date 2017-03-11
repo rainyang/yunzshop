@@ -150,6 +150,7 @@ class GoodsController extends BaseController
             'brands'  => $brands->toArray(),
             'allspecs'  => $allspecs,
             'html'  => '',
+            'var' => \YunShop::app()->get(),
             'catetory_menus'  => $catetory_menus,
             'virtual_types' => [],
             'shopset' => $this->shopset
@@ -215,6 +216,7 @@ class GoodsController extends BaseController
             'params'  => $goodsModel->hasManyParams->toArray(),
             'allspecs'  => $goodsModel->hasManySpecs->toArray(),
             'html'  => $optionsHtml,
+            'var' => \YunShop::app()->get(),
             'brands'  => $brands->toArray(),
             'catetory_menus'  => $catetory_menus,
             'virtual_types' => [],
