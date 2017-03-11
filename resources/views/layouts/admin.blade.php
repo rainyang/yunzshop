@@ -9,6 +9,7 @@
     <link rel="shortcut icon"  href="@yield('icon')"/>
     @include('public.admin.css')
     @include('public.admin.js')
+    {!! yz_header('admin') !!}
 </head>
 <body>
 
@@ -54,6 +55,6 @@
       });
 
     </script>
-
+{!! yz_footer('admin') !!}
 </body>
 </html>

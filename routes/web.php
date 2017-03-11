@@ -14,3 +14,4 @@
 Route::any('/', function () {
     YunShop::parseRoute();
 });
+

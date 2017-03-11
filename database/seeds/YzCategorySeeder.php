@@ -37,8 +37,8 @@ class YzCategorySeeder extends Seeder
                     'adv_url'=> $v['advurl'],
                     'level'=> $v['level'],
                     'created_at'=> time(),
-                    'updated_at'=> time(),
-                    'deleted_at'=> time()
+                    'updated_at'=> NULL,
+                    'deleted_at'=> NULL
                 ]);
             }
         }

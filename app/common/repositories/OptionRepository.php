@@ -16,13 +16,13 @@ class OptionRepository extends Repository
     public function __construct()
     {
         try {
-            $options = DB::table('options')->get();
+            $options = DB::table('yz_options')->get();
         } catch (QueryException $e) {
             $options = [];
         }
 
         foreach ($options as $option) {
-            $this->items[$option->option_name] = $option->option_value;
+            $this->items[$option['option_name']] = $option['option_value'];
         }
 
     }
@@ -118,11 +118,11 @@ class OptionRepository extends Repository
 
         try {
             foreach ($this->itemsModified as $key) {
-                if (!DB::table('options')->where('option_name', $key)->first()) {
-                    DB::table('options')
+                if (!DB::table('yz_options')->where('option_name', $key)->first()) {
+                    DB::table('yz_options')
                         ->insert(['option_name' => $key, 'option_value' => $this[$key]]);
                 } else {
-                    DB::table('options')
+                    DB::table('yz_options')
                             ->where('option_name', $key)
                             ->update(['option_value' => $this[$key]]);
                 }
