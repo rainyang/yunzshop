@@ -11,9 +11,9 @@ namespace app\frontend\modules\goods\services\models;
 use app\common\events\OrderGoodsWasAddedInOrder;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class RealGoodsDispatch implements ShouldQueue
+class RealGoodsDispatch
 {
-    private $_order_goods_model;
+    //private $_order_goods_model;
     //todo 待实现
     public function isRealGoods()
     {
@@ -28,11 +28,13 @@ class RealGoodsDispatch implements ShouldQueue
     public function handle(OrderGoodsWasAddedInOrder $even)
     {
 
-        $this->_order_goods_model = $order_goods_model;
+        //$this->_order_goods_model = $order_goods_model;
         if (!$this->isRealGoods()) {
             return;
         }
-        $this->_order_goods_model->setDispatchPrice($this->getDispatchPrice());
+        $even->getOrderGoodsModel()->setDispatchPrice($this->getDispatchPrice());
+
+        //$this->_order_goods_model->setDispatchPrice($this->getDispatchPrice());
 
 
 //        var_dump($this->_order_goods_model);

@@ -20,9 +20,7 @@ class OrderDispatch implements ShouldQueue
     {
 
         $result = 0;
-        dd($this->_order_model->getOrderGoodsModels());
         foreach ($this->_order_model->getOrderGoodsModels() as $order_goods){
-            dd($order_goods->getDispatchPrice());
 
             $result += $order_goods->getDispatchPrice();
         }
@@ -33,7 +31,7 @@ class OrderDispatch implements ShouldQueue
     {
         $this->_order_model = $even->getOrderModel();
         $this->_order_model->setDispatchPrice($this->getDispatchPrice());
-        dd($this->_order_model);
+        //dd($this->_order_model);
         return;
     }
 }

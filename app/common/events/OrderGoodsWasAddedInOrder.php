@@ -13,13 +13,16 @@ class OrderGoodsWasAddedInOrder extends Event
 {
     private $_order_goods_model;
 
-    public function __construct(&$order_goods_model)
+    public function __construct($order_goods_model)
     {
+
         $this->_order_goods_model = $order_goods_model;
+        /*echo '事件中的';
+        dd($this);*/
     }
+
     public function getOrderGoodsModel(){
 
-        dd($this->_order_goods_model);
         return $this->_order_goods_model;
     }
 }
