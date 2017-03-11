@@ -26,7 +26,8 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     private $price;
     private $goods_price;
     private $_has_calculated;
-    private $_dispatch_price;
+    private $dispatch_price;
+    private $discount_details;
 
     public function __construct(Goods $goods_model, $total = 1)
     {
@@ -39,11 +40,16 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     public function setDispatchPrice($dispatch_price)
     {
         //dd($dispatch_price);
-        $this->_dispatch_price = $dispatch_price;
+        $this->dispatch_price = $dispatch_price;
+    }
+    public function setDiscountDetails($discount_details)
+    {
+        //dd($dispatch_price);
+        $this->discount_details = $discount_details;
     }
     public function getDispatchPrice()
     {
-        return $this->_dispatch_price;
+        return $this->dispatch_price;
     }
     public function setTotal($total)
     {
