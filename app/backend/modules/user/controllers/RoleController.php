@@ -64,7 +64,8 @@ class RoleController extends BaseController
 
             //字段检测
             $validator = YzRole::validator($roleModel->getAttributes());
-            if ($validator->fails()) {
+            //dd($validator->fails());
+            if ($validator->messages()) {
                 $this->error($validator->messages()); 
             }else{
                 //$roleId = $roleModel->createRole($roleModel->toArray());
@@ -80,30 +81,29 @@ class RoleController extends BaseController
                                 'type'      => YzPermission::TYPE_ROLE,
                                 'item_id'   => $roleModel->id,
                                 'permission' => $value,
-                                'created_at' => Carbon::now(),
-                                'updated_at' => $roleModel->updated_at
+                                //'created_at' => time(),
+                                //'updated_at' => time()
                             );
                             $validator = YzPermission::validator($data);
                             if ($validator->fails()) {
-                                dd(1);
                                 $this->error($validator->message());
+                            } else {
+                                $result = YzPermission::createPermission($data);
+                                if ($result) {
+                                    return $this->message('添加角色成功', Url::absoluteWeb('user.role.index'));
+                                } else {
+                                    //删除刚刚添加的角色
+                                    YzRole::deleteRole($roleModel->id);
+                                    $this->error('权限数据写入出错，请重试！');
+                                }
                             }
                         }
                     }
-                    $result = YzPermission::createPermission($data);
-                    if ($result) {
-                        return $this->message('添加角色成功', Url::absoluteWeb('user.role.index'));
-                    } else {
-                        //删除刚刚添加的角色
-                        YzRole::deleteRole($roleModel->id);
-                        $this->error('权限数据写入出错，请重试！');
-                    }
+
                 } else {
                     $this->error('角色数据写入出错，请重试！');
                 }
             }
-
-
         }
 
         return view('user.role.form',[
@@ -135,7 +135,7 @@ class RoleController extends BaseController
         }
         $resultRole = YzRole::deleteRole(\YunShop::request()->id);
         if ($resultRole) {
-            $resultPermission = YzPermission::deleteRole(\YunShop::request()->id);
+            $resultPermission = YzPermission::deleteRolePermission(\YunShop::request()->id);
             if ($resultPermission) {
                 return $this->message('删除角色成功。', Url::absoluteWeb('user.role.index'));
             }
