@@ -30,12 +30,11 @@ class PrivilegeWidget extends Widget
         }
         $levels = MemberLevel::getMemberLevelList();
         $groups = MemberGroup::getMemberGroupList();
-        return $this->render('goods/privilege/privilege',
-            [
-                'privilege' => $privilege,
-                'levels' => $levels,
-                'groups' => $groups
-            ]
-        );
+
+        return view('goods.widgets.privilege', [
+            'privilege' => $privilege,
+            'levels' => $levels,
+            'groups' => $groups
+        ])->render();
     }
 }

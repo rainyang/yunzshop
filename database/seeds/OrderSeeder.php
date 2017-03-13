@@ -5,18 +5,19 @@ use Illuminate\Database\Seeder;
 Class OrderSeeder extends Seeder
 {
     protected $sourceTable = 'sz_yi_order';
-    protected $table = 'yz_order';
-    protected $mappingMemberTable = 'mc_mapping_fans';
-//    protected $newMappingMemberTable = 'new_mapping_fans'; //todo 针对原来的自编openid用户的会员, 等待其迁移数据后生成openid和uid对应关系
+    protected $memberMappingTable = 'mc_mapping_fans';
+//    protected $newMappingMemberTable = 'new_mapping_fans'; //todo 针对原来的自编openid用户的会员, 等待"会员重构组"生成新旧openid的对应表
+    protected $orderTable = 'yz_order';
+    protected $orderMappingTable = 'yz_order_mapping'; //用来记录新旧orderid的对应关系,包括新旧uid的对应关系
 
     public function run()
     {
         //检测新的数据表是否有数据
-        $newList = DB::table($this->table)->first();
-        if($newList){
-            echo $this->table . "数据表已经有数据, 请检查.\n";
-            return;
-        }
+//        $newList = DB::table($this->orderTable)->first();
+//        if($newList){
+//            echo $this->orderTable . "数据表已经有数据, 请检查.\n";
+//            return;
+//        }
 
         $sourceList = DB::table($this->sourceTable)->chunk(100, function($records){
             foreach ($records as $record){
@@ -30,28 +31,29 @@ Class OrderSeeder extends Seeder
 
                 //"删除时间"在旧表中没有对应字段, 只有"是否删除"字段
                 //如果该订单删除, 则将"取消订单时间"设置为该订单相关时间的最大值 //todo
+                $recentTime = max($record['createtime'], $record['finishtime'],
+                                  $record['paytime'], $record['sendtime'], $record['canceltime']);
                 if ($record['deleted'] != 0){
-                    $record['deleted_at'] = max($record['createtime'], $record['finishtime'],
-                                            $record['paytime'], $record['sendtime'], $record['canceltime']);
+                    $record['deleted_at'] = $recentTime;
                 } else {
                     $record['deleted_at'] = 0;
                 }
 
                 //"updated_at"在旧表中没有对应字段, 取该订单相关时间的最大值 //todo
-                $record['updated_at']  = max($record['createtime'], $record['finishtime'],
-                                         $record['paytime'], $record['sendtime'], $record['canceltime']);
+                $record['updated_at']  = $recentTime;
 
                 //旧表中"openid"和微擎"mc_member"表的uid的对应
                 //微信登录用户的openid和uid的对应关系, 借助数据表mc_mapping_fans
                 //手机注册用户的openid和uid的对应关系, 借助会员迁移后生成的临时表
                 if (preg_match('/^o.*/', $record['openid'])){ //以o开头的就是微信登录用户
-                    $uid = DB::table($this->mappingMemberTable)
-                                     ->where('openid','=',$record['openid'])->get('uid')->first();
+                    $uid = DB::table($this->memberMappingTable)->select('uid')
+                           ->where('openid','=',$record['openid'])->first();
                     if($uid){
-                        $record['uid'] = $uid;
+                        $record['uid'] = $uid['uid'];
                     } else {
-                        echo 'mc_mapping_fans表内缺少该用户的uid';
-                        exit;
+//                        echo "mc_mapping_fans表内缺少用户".$record['openid']."的uid"."\n";
+//                        exit;
+                        $record['uid'] = 0; //todo 调试用
                     }
 //                } else if (preg_match('/^u.*/', $record['openid'])){ //以u开头的就是手机注册用户
 //                    $uid = DB::table($this->newMappingMemberTable) //todo 等待"会员重构组"的结果
@@ -59,17 +61,18 @@ Class OrderSeeder extends Seeder
 //                      if($uid){
 //                          $record['uid'] = $uid;
 //                      } else {
-//                          echo 'new_mapping_fans表内缺少该用户的uid';
+//                          echo 'new_mapping_fans表内缺少该用户的uid'."\n";
 //                          exit;
 //                      }
                 } else if(preg_match('/^u.*/', $record['openid'])){
                     $record['uid'] = 0; //todo 临时调试用, 等待"会员重构组"针对原来的自编openid用户的会员的mapping数据
-                }else {
-                    echo '获取 uid 时产生非预期结果, 请检查错误';
-                    return;
+                } else {
+//                    echo '获取 uid 时产生非预期结果, 请检查错误'."\n";
+//                    return;
+                    $record['uid'] = 0; //todo 临时调试用
                 }
 
-                DB::table($this->table)->insert(
+                $newOrderId = DB::table($this->orderTable)->insertGetId(
                     [
                         'uniacid' => $record['uniacid'], //公众号ID
                         'member_id' => $record['uid'], //mc_member的uid
@@ -89,6 +92,15 @@ Class OrderSeeder extends Seeder
                         'deleted_at' => $record['deleted_at'], //框架自动记录时间
                         'dispatch_type_id' => $record['dispatchid'], //配送方式ID
                         'pay_type_id' => $record['paytype'], //支付方式ID (1为余额，2为在线，3为到付)
+                    ]
+                );
+
+                DB::table($this->orderMappingTable)->insert(
+                    [
+                        'old_order_id' => $record['id'],
+                        'new_order_id' => $newOrderId,
+                        'old_openid' => $record['openid'],
+                        'new_member_id' =>$record['uid']
                     ]
                 );
             }

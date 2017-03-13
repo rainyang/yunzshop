@@ -21,10 +21,10 @@ class Comment extends BaseModel
         return $this->hasMany('app\common\models\Comment','comment_id','id');
     }
 
-    public function getImagesAttribute($value)
-    {
-        return $value ? unserialize($value) : $value;
-    }
+//    public function getImagesAttribute($value)
+//    {
+//        return is_array($value) ? iserializer($value) : $value;
+//    }
 
 
 }

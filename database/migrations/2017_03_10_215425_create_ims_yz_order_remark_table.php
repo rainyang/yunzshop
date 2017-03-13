@@ -31,7 +31,7 @@ class CreateImsYzOrderRemarkTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_order_remark');
+		Schema::drop('yz_order_remark');
 	}
 
 }

@@ -23,11 +23,14 @@ class GoodsController extends BaseController
             $this->errorJson('请传入正确参数.');
         }
         //$goods = new Goods();
-        $goodsModel = Goods::with(['hasManyParams' => function ($query){
-            return $query->select('goods_id','title', 'value');
+        $goodsModel = Goods::with(['hasManyParams' => function ($query) {
+            return $query->select('goods_id', 'title', 'value');
         }])->with(['hasManySpecs' => function ($query) {
-            return $query->select('id', 'goods_id','title', 'description');
-        }])->with('hasOneShare')
+            return $query->select('id', 'goods_id', 'title', 'description');
+        }])->with(['hasManyOptions' => function ($query) {
+            return $query->select('id', 'goods_id', 'title', 'thumb', 'product_price', 'market_price', 'stock', 'specs', 'weight');
+        }])
+            ->with('hasOneShare')
             ->with('hasOneDiscount')
             ->with('hasOneGoodsDispatch')
             ->with('hasOnePrivilege')
@@ -43,7 +46,7 @@ class GoodsController extends BaseController
         if (!$goodsModel->status) {
             //$this->errorJson('商品已下架.');
         }
-        
+
         $goodsModel->setHidden(
             [
                 'deleted_at',
@@ -55,7 +58,7 @@ class GoodsController extends BaseController
                 'reduce_stock_method',
             ]);
         if ($goodsModel->thumb_url) {
-            $goodsModel->thumb_url = explode(",", $goodsModel->thumb_url);
+            $goodsModel->thumb_url = unserialize($goodsModel->thumb_url);
         }
 
         //dd($goodsModel);
@@ -64,7 +67,7 @@ class GoodsController extends BaseController
         }
 
         //return $this->successJson($goodsModel);
-        $this->successJson($goodsModel);
+        $this->successJson('成功', $goodsModel);
     }
 
     public function getGoodsCategoryList()
@@ -85,7 +88,7 @@ class GoodsController extends BaseController
             }])->first();
 
         if ($goodsList) {
-            $goodsList = $goodsList->goodsCategories->filter(function($item){
+            $goodsList = $goodsList->goodsCategories->filter(function ($item) {
                 return $item->goods != null;
             })->all();
         }
@@ -95,7 +98,7 @@ class GoodsController extends BaseController
         if (empty($goodsList)) {
             $this->errorJson('此分类下没有商品.');
         }
-        $this->successJson($goodsList);
+        $this->successJson('成功', $goodsList);
     }
 
     /**

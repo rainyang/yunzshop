@@ -27,22 +27,23 @@ class CommentController extends BaseController
     public function index()
     {
         $pageSize = 10;
-        
+
         $search = CommentService::Search(\YunShop::request()->search);
-        
+
         //$list = $commentModel::getComments($commentModel, $search)->toArray();
-        
+
 
         $list = Comment::getComments($search)->paginate($pageSize)->toArray();
 //        echo "<pre>"; print_r($list);exit;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
-        $this->render('list', [
+        return view('goods.comment.list', [
             'list' => $list['data'],
             'total' => $list['total'],
             'pager' => $pager,
             'search' => $search,
-        ]);
+        ])->render();
+
     }
 
 
@@ -61,8 +62,8 @@ class CommentController extends BaseController
         $commentModel->goods_id = $goods_id;
 
         $requestComment = \YunShop::request()->comment;
-        if ($requestComment) {
 
+        if ($requestComment) {
             //将数据赋值到model
             $commentModel->setRawAttributes($requestComment);
             //其他字段赋值
@@ -89,10 +90,10 @@ class CommentController extends BaseController
             }
         }
 
-        $this->render('add_info', [
+        return view('goods.comment.info', [
             'comment' => $commentModel,
             'goods' => $goods
-        ]);
+        ])->render();
     }
 
     /**
@@ -122,7 +123,6 @@ class CommentController extends BaseController
                 $commentModel->head_img_url = Member::getRandAvatar()->avatar;
             }
             $commentModel = CommentService::comment($commentModel);
-
             //字段检测
             $validator = Comment::validator($commentModel->getAttributes());
             if ($validator->fails()) {
@@ -138,12 +138,11 @@ class CommentController extends BaseController
             }
         }
 
-        $this->render('add_info', [
+        return view('goods.comment.info', [
             'id' => $id,
             'comment' => $commentModel,
             'goods' => $goods
-        ]);
-
+        ])->render();
     }
 
     /**
@@ -180,11 +179,11 @@ class CommentController extends BaseController
             }
         }
 
-        $this->render('reply', [
+        return view('goods.comment.reply', [
             'comment' => $commentModel,
             'replys' => $replys,
             'goods' => $goods
-        ]);
+        ])->render();
     }
 
 

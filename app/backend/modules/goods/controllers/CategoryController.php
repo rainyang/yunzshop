@@ -24,7 +24,6 @@ class CategoryController extends BaseController
      */
     public function index()
     {
-
         $shopset   = Setting::get('shop');
         $pageSize = 3;
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
@@ -32,12 +31,12 @@ class CategoryController extends BaseController
 
         $list = Category::getCategorys($parent_id)->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-        $this->render('list', [
+        return view('goods.category.list', [
             'list' => $list['data'],
             'parent' => $parent,
             'pager' => $pager,
             'shopset' => $shopset
-        ]);
+        ])->render();
     }
 
     /**
@@ -80,11 +79,11 @@ class CategoryController extends BaseController
             }
         }
 
-        $this->render('info', [
+        return view('goods.category.info', [
             'item' => $categoryModel,
             'parent' => $parent,
             'level' => $level
-        ]);
+        ])->render();
     }
     
     /**
@@ -121,6 +120,10 @@ class CategoryController extends BaseController
             'item' => $categoryModel,
             'level' => $categoryModel->level
         ]);
+        return view('goods.category.info', [
+            'item' => $categoryModel,
+            'level' => $categoryModel->level
+        ])->render();
     }
 
     /**
