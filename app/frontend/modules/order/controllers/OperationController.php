@@ -23,10 +23,10 @@ class OperationController extends BaseController
             $order = Order::find(\YunShop::request()->order_id);
             $order_pay = new OrderPay($order);
             if (!$order_pay->payable()) {
-                show_json(-1,'状态不正确');
+                return show_json(-1,'状态不正确');
             }
             $order_pay->pay();
-            show_json(1);
+            return show_json(1);
         }
     }
     public function cancelPay(){

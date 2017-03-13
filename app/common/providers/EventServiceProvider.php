@@ -13,23 +13,22 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'app\common\events\TestFailEvent' => [ //事件类
-            'app\common\listeners\EventListener', //侦听类1
-            'app\common\listeners\EventListenerOther', //侦听类2
+        //todo 需要转移文件夹(已注册)
+        'app\common\events\OrderGoodsDiscountWasCalculated' => [ //商品优惠计算
+            'app\frontend\modules\goods\listeners\MemberLevelGoodsDiscount', //用户等级优惠
         ],
-        'app\common\events\TestGoodsEvent'=>[
-            'app\common\listeners\EventListenerGoods', //侦听类1
-            'app\backend\modules\goods\controllers\BrandController', //侦听类1
+        'app\common\events\OrderDiscountWasCalculated' => [ //订单优惠计算
+            'app\frontend\modules\order\listeners\testOrderDiscount', //立减优惠
         ],
-        'app\common\events\OrderCreatedEvent'=>[
-            'app\common\listeners\EventListener', //侦听类1
-            'app\common\listeners\EventListenerOther', //侦听类2
+        'app\common\events\OrderGoodsDispatchWasCalculated' => [ //商品运费统计
+            'app\frontend\modules\goods\listeners\UnifyGoodsDispatch', //统一运费
         ],
-        'app\common\events\OrderGoodsWasAddedInOrder'=>[//订单添加商品后
-            'app\frontend\modules\goods\services\models\RealGoodsDispatch', //订单商品运费计算
+        'app\common\events\OrderDispatchWasCalculated' => [ //订单邮费计算
+            'app\frontend\modules\order\listeners\UnifyOrderDispatch', //统一运费
         ],
-        'app\common\events\OrderPriceWasCalculated'=>[//订单价格计算后
-            'app\frontend\modules\order\services\models\OrderDispatch', //订单运费计算
+        //todo 需要改成以下格式(现在未注册)
+        'app\frontend\modules\goods\events\OrderGoodsDiscountWasCalculated'=>[//订单商品计算优惠时
+            'app\frontend\modules\goods\listeners\MemberLevelGoodsDiscount', //用户等级优惠
         ],
     ];
 

@@ -9,12 +9,15 @@
 namespace app\frontend\modules\goods\services\models;
 
 
+use app\common\events\TestFailEvent;
+use app\frontend\modules\goods\evens\OrderGoodsDiscountWasCalculated;
+use Illuminate\Support\Facades\Event;
+
 class GoodsDiscount
 {
-    public function needDiscount(){
-        return true;
-    }
     public function getDiscountDetails(){
+        Event::fire(new \app\common\events\OrderGoodsDiscountWasCalculated($this));
+
         $details = [];
         $details[] = [
             'name'=>'折扣',
@@ -30,14 +33,5 @@ class GoodsDiscount
         ];
         return ;
     }
-    public function handle(OrderGoodsWasAddedInOrder $even)
-    {
 
-        if (!$this->isRealGoods()) {
-            return;
-        }
-        $even->getOrderGoodsModel()->setDiscountDetails($this->getDiscountDetails());
-
-        return;
-    }
 }

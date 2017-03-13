@@ -40,7 +40,7 @@ class CreateImsYzOrderGoodsTable extends Migration {
      */
     public function down()
     {
-        Schema::drop('ims_yz_order_goods');
+        Schema::drop('yz_order_goods');
     }
 
 }

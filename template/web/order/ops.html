@@ -28,12 +28,7 @@
         var order_id = $('.order_id').val();
         if (confirm('确认此订单已付款吗？')) {
             $.post("{php echo $this->createMobileUrl('order.operation.pay')}", {order_id:order_id}, function(json){
-                var json = $.parseJSON(json);
-                if (json.status == 1) {
-                    location.href = location.href;
-                } else {
-                    alert(json.result);
-                }
+                location.href = location.href;
             });
         }
     }

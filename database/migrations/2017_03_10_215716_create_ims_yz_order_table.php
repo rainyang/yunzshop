@@ -47,7 +47,7 @@ class CreateImsYzOrderTable extends Migration {
      */
     public function down()
     {
-        Schema::drop('ims_yz_order');
+        Schema::drop('yz_order');
     }
 
 }

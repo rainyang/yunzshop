@@ -28,7 +28,7 @@ class CreateImsYzOrderAddressTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_order_address');
+		Schema::drop('yz_order_address');
 	}
 
 }
