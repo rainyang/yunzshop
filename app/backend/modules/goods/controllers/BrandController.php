@@ -24,7 +24,7 @@ class BrandController extends BaseController
         $pageSize = 5;
         $list = Brand::getBrands()->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-
+        
         return view('goods.brand.list', [
             'list' => $list,
             'pager' => $pager,
@@ -67,9 +67,9 @@ class BrandController extends BaseController
             $this->title,
         ];
 
-        $this->render('info', [
+        return view('goods.brand.info', [
             'brandModel' => $brandModel
-        ]);
+        ])->render();
     }
 
 
@@ -101,10 +101,9 @@ class BrandController extends BaseController
                 }
             }
         }
-
-        $this->render('info', [
+        return view('goods.brand.info', [
             'brandModel' => $brandModel
-        ]);
+        ])->render();
     }
 
     /**
