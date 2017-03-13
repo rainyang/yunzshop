@@ -2,6 +2,19 @@
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use app\common\services\PermissionService;
+
+
+if(!function_exists('can')){
+    /**
+     * 权限判断
+     */
+    function can($route)
+    {
+        return PermissionService::can($route);
+    }
+}
+
 
 if(!function_exists('yzWebUrl')){
     function yzWebUrl($route, $params = [])
