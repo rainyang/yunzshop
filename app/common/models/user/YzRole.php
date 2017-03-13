@@ -31,7 +31,7 @@ class YzRole extends BaseModel
 
     public function rolePermission()
     {
-        return $this->hasOne('app\common\models\user\YzPermission', 'item_id');
+        return $this->hasMany('app\common\models\user\YzPermission', 'item_id');
     }
 
     /**
