@@ -40,7 +40,7 @@
         $('.province').mouseover(function(){
             var _this = $(this);
             if(_this.find('ul').text().length == 0){
-                $.get('{{ yzWebUrl("area.area.select-city") }}', {
+                $.get('{!! yzWebUrl("area.area.select-city") !!}', {
                     parent_id: $(this).data('parent-id')
                 }, function(dat){
                     _this.find('ul').html(dat);
