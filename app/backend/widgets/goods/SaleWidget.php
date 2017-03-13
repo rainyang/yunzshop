@@ -26,10 +26,10 @@ class SaleWidget extends Widget
             $saleModel->setRawAttributes($sale->toArray());
         }
 
-        return $this->render('goods/sale/sale', [
+        return view('goods.widgets.sale', [
             'item' => $saleModel,
             'parents' => $parents->toArray()
-        ]);
+        ])->render();
     }
 }
 

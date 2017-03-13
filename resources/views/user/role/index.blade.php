@@ -6,18 +6,12 @@
             <div class="panel panel-info">
                 <div class="panel-heading">筛选</div>
                 <div class="panel-body">
-                    <form action="" method="get" class="form-horizontal" role="form">
-                        <input type="hidden" name="c" value="site" />
-                        <input type="hidden" name="a" value="entry" />
-                        <input type="hidden" name="m" value="sz_yi" />
-                        <input type="hidden" name="do" value="plugin" />
-                        <input type="hidden" name="p"  value="perm" />
-                        <input type="hidden" name="method"  value="role" />
-                        <input type="hidden" name="op" value="display" />
+                    <form action=" " method="get" class="form-horizontal" role="form">
+
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>
                             <div class="col-xs-12 col-sm-8 col-lg-9">
-                                <input class="form-control" name="keyword" id="" type="text" value="{$_GPC['keyword']}" placeholder="可搜索角色名称">
+                                <input class="form-control" name="keyword" id="" type="text" value=" " placeholder="可搜索角色名称">
                             </div>
                         </div>
                         <div class="form-group">
@@ -57,10 +51,10 @@
                         </thead>
                         <tbody>
 
-                        @foreach($roleList['data'] as $role)
+                        @foreach($roleList->items() as $role)
                         <tr>
-                            <td> {{ $role['name'] }}</td>
-                            <td>{$row['usercount']}</td>
+                            <td> {{ $role->name }}</td>
+                            <td>{{$role->roleUser->count()}}</td>
                             <td>
                                 @if($role['status'] == 1)
                                 <span class='label label-success'>启用</span>
@@ -69,8 +63,8 @@
                                 @endif
                             </td>
                             <td>
-                                <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('perm/role', array('op' => 'post', 'id' => $row['id']))}"><i class="fa fa-edit"></i></a>
-                                <a class='btn btn-default'  href="{php echo $this->createPluginWebUrl('perm/role', array('op' => 'delete', 'id' => $row['id']))}" onclick="return confirm('确认删除此门店吗？');return false;"><i class="fa fa-remove"></i></a>
+                                <a class='btn btn-default' href="{{ yzWebUrl('user.role.update', array('id' => $role->id)) }}"><i class="fa fa-edit"></i></a>
+                                <a class='btn btn-default'  href="{{ yzWebUrl('user.role.destory', array('id' => $role->id)) }}" onclick="return confirm('确认删除该角色吗？');return false;"><i class="fa fa-remove"></i></a>
                             </td>
 
                         </tr>

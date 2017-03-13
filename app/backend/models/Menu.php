@@ -26,22 +26,31 @@ class Menu extends BaseModel
     }
 
     /**
+     * 子菜单与父菜单1:1关系
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent()
+    {
+        return $this->belongsTo('app\backend\models\Menu','parent_id','id');
+    }
+
+    /**
      * 获取菜单栏目
      *
      * @param $parent_id
      * @param int $child_switch
      * @return mixed
      */
-    public static function getMenuAllInfo($parent_id, $child_switch = 0)
+    public static function getMenuAllInfo($parent_id = 0, $child_switch = 1)
     {
-        $result = self::select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id'])
+        $result = self::select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id', 'sort', 'status'])
                    ->where('parent_id', $parent_id)
                    ->where('status', 1)
                    ->orderBy('sort', 'asc');
 
         if ($child_switch) {
             $result = $result->with(['childs'=>function ($query) {
-                return $query->select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id'])->where('status', 1)->orderBy('sort', 'asc');
+                return $query->select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id', 'sort', 'status'])->where('status', 1)->orderBy('sort', 'asc');
             }]);
         }
 
@@ -56,7 +65,37 @@ class Menu extends BaseModel
      */
     public static function getMenuInfoById($id)
     {
-        return self::select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id'])
-            ->where('id', $id);
+        return self::select(['id', 'name', 'item', 'url', 'url_params', 'permit', 'menu', 'icon', 'parent_id', 'sort', 'status'])
+            ->where('id', $id)
+            ->with(['parent'=>function ($query) {
+                return $query->select(['id', 'name']);
+            }]);
+    }
+
+    /**
+     *  定义字段名
+     * 可使
+     * @return array */
+    public static function atributeNames() {
+        return [
+            'name'=> '菜单',
+        ];
+    }
+
+    /**
+     * 字段规则
+     * @return array */
+    public static function rules() {
+        return [
+            'item' => 'required',
+            'name' => 'required',
+            'url' => 'required',
+            'url_params' => 'required',
+            'icon' => 'required',
+            'sort' => 'required',
+            'permit' => 'required',
+            'menu' => 'required',
+            'status' => 'required'
+        ];
     }
 }

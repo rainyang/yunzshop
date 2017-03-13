@@ -8,32 +8,22 @@
             </tr>
         </thead>
         <tbody id="param-items">
-            {loop $params $p}
+            @foreach ($params as $p)
             <tr>
                 <td>
-                   {ife 'shop.goods' $goods}
                     <a href="javascript:;" class="fa fa-move" title="拖动调整此显示顺序"><i class="fa fa-arrows"></i></a>&nbsp;
                     <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;" title="删除"><i class='fa fa-remove'></i></a>
-                    {/if}
                 </td>
                 <td>
-                      {ife 'shop.goods' $goods}
-                    <input name="param_title[]" type="text" class="form-control param_title" value="{$p['title']}"/>
-                    {else}
-                      {$p['title']}
-                    {/if}
-                    <input name="param_id[]" type="hidden" class="form-control" value="{$p['id']}"/>
+                    <input name="param_title[]" type="text" class="form-control param_title" value="{{$p['title']}}"/>
+                    <input name="param_id[]" type="hidden" class="form-control" value="{{$p['id']}}"/>
                 </td>
                 <td>
-                       {ife 'shop.goods' $goods}
-                    <input name="param_value[]" type="text" class="form-control param_value" value="{$p['value']}"/>
-                {else}   {$p['value']}
-                    {/if}
+                    <input name="param_value[]" type="text" class="form-control param_value" value="{{$p['value']}}"/>
                 </td>
             </tr>
-            {/loop}
+            @endforeach
         </tbody>
-           {ife 'shop.goods' $goods}
         <tbody>
             <tr>
                 <td>&nbsp;</td>
@@ -42,13 +32,12 @@
                 </td>
             </tr>
         </tbody>
-        {/if}
     </table>
 </div>
 
 <script language="javascript">
     $(function() {
-        $("#param-items").sortable({handle: '.fa-move'});
+        //$("#param-items").sortable({handle: '.fa-move'});
         $("#chkoption").click(function() {
             var obj = $(this);
             if (obj.get(0).checked) {
@@ -62,7 +51,7 @@
         });
     })
     function addParam() {
-        var url = "{php echo $this->createWebUrl('goods.goods.getParamTpl')}";
+        var url = "{{yzWebUrl('goods.goods.getParamTpl')}}";
         $.ajax({
             "url": url,
             success: function(data) {

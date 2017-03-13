@@ -61,7 +61,6 @@ class PreGeneratedOrderModel extends ServiceModel
             /*echo '输出';
             dd($pre_order_goods_model);*/
         }
-
     }
 
     public function setDispatchPrice($price)
