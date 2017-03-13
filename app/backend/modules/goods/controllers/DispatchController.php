@@ -28,11 +28,11 @@ class DispatchController extends BaseController
         $pageSize = 10;
         $list = Dispatch::uniacid()->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-        $this->render('list', [
+        return view('goods.dispatch.list', [
             'list' => $list,
             'pager' => $pager,
             'shopset' => $shopset
-        ]);
+        ])->render();
     }
 
     /**
@@ -66,11 +66,10 @@ class DispatchController extends BaseController
                 }
             }
         }
-
-        $this->render('info', [
+        return view('goods.dispatch.info', [
             'dispatch' => $dispatchModel,
             'parents' => $areas->toArray()
-        ]);
+        ])->render();
     }
 
     /**
@@ -109,10 +108,10 @@ class DispatchController extends BaseController
             }
         }
 
-        $this->render('info', [
+        return view('goods.dispatch.info', [
             'dispatch' => $dispatchModel,
             'parents' => $areas->toArray()
-        ]);
+        ])->render();
     }
 
     /**
