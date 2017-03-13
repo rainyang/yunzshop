@@ -26,12 +26,11 @@ class DiscountWidget extends Widget
 
         $levels = MemberLevel::getMemberLevelList();
         $groups = MemberGroup::getMemberGroupList();
-        return $this->render('goods/discount/discount',
-            [
-                'discount' => $discounts->toArray(),
-                'levels' => $levels,
-                'groups' => $groups
-            ]
-        );
+
+        return view('goods.widgets.discount', [
+            'discount' => $discounts->toArray(),
+            'levels' => $levels,
+            'groups' => $groups
+        ])->render();
     }
 }

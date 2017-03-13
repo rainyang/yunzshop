@@ -29,7 +29,6 @@ class CreateImsYzOrderGoodsTable extends Migration {
             $table->integer('goods_option_id');
             $table->integer('goods_option_title');
             $table->integer('product_sn');
-            $table->foreign('order_id')->references('id')->on('ims_yz_order')->onUpdate('CASCADE');
 		});
     }
 
