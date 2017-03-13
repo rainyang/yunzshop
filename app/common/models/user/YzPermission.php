@@ -26,8 +26,10 @@ class YzPermission extends BaseModel
     {
         return static::insert($data);
     }
+
+
     /**
-     * Delete role permissions
+     * Delete role permissions by roleId
      *
      * @param int $roleId
      * @return \mysqli_result

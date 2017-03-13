@@ -17,6 +17,24 @@ class YzRole extends BaseModel
     use SoftDeletes;
     public $table = 'yz_role';
 
+    /**
+     *  定义字段名
+     * 可使
+     * @return array */
+    public static function atributeNames() {
+        return [
+            'name'=> '角色名称',
+        ];
+    }
+
+    /**
+     * 字段规则
+     * @return array */
+    public static function rules() {
+        return [
+            'name' => 'required',
+        ];
+    }
 
     //这个好像没有用，应该可以删除，待确认
     public function UserPermistions()
@@ -46,6 +64,8 @@ class YzRole extends BaseModel
     }
 
     /**
+     * Get full role information and role permissions By roleId
+     *
      * @param int $roleId
      * @return object
      */
@@ -56,7 +76,7 @@ class YzRole extends BaseModel
                 return $query->select('id', 'item_id','permission')
                     ->where('type', '=', YzPermission::TYPE_ROLE);
             }])
-            ->get()->toArray();
+            ->first();
     }
 
     /**
@@ -68,23 +88,5 @@ class YzRole extends BaseModel
         return static::where('id', $roleId)->delete();
     }
 
-    /**
-     *  定义字段名
-     * 可使
-     * @return array */
-    public static function atributeNames() {
-        return [
-            'name'=> '角色名称',
-        ];
-    }
-
-    /**
-     * 字段规则
-     * @return array */
-    public static function rules() {
-        return [
-            'name' => 'required',
-        ];
-    }
 
 }
