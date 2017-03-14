@@ -1,8 +1,7 @@
 <?php
 namespace app\frontend\modules\order\services\models;
 
-use app\common\events\OrderGoodsWasAddedInOrder;
-use app\common\events\OrderPriceWasCalculated;
+use app\common\events\OrderCreatedEvent;
 use app\common\models\Order;
 use app\common\models\Member;
 
@@ -24,6 +23,7 @@ class PreGeneratedOrderModel extends ServiceModel
     protected $discount_price = 0;
     private $dispatch_details = [];
     protected $discount_details = [];
+    private $dispatch_types = [];
 
     private $_pre_order_goods_models = [];
 
@@ -33,9 +33,8 @@ class PreGeneratedOrderModel extends ServiceModel
     {
         //dd($pre_order_goods_models);exit;
         if (isset($pre_order_goods_models)) {
-            $this->_pre_order_goods_models = $pre_order_goods_models;
+            $this->addPreGeneratedOrderGoods($pre_order_goods_models);
         }
-        $this->_has_calculated = false;
     }
     //对外提供的获取订单商品方法
     public function getOrderGoodsModels()
@@ -43,10 +42,8 @@ class PreGeneratedOrderModel extends ServiceModel
         return $this->_pre_order_goods_models;
     }
     //添加订单商品
-    public function addPreGeneratedOrderGoods(array $pre_order_goods_models)
+    private function addPreGeneratedOrderGoods(array $pre_order_goods_models)
     {
-        //dd($pre_order_goods_models);exit;
-
         $this->_pre_order_goods_models = array_merge($this->_pre_order_goods_models, $pre_order_goods_models);
         $this->_has_calculated = false;
     }
@@ -55,7 +52,7 @@ class PreGeneratedOrderModel extends ServiceModel
     {
         $this->discount_details = $discount_details;
     }
-    //为监听者提供的方法,设置运费详情
+    //为监听者提供的方法 设置运费详情
     public function setDispatchDetails($dispatch_detail)
     {
         $this->dispatch_details = $dispatch_detail;
@@ -96,15 +93,18 @@ class PreGeneratedOrderModel extends ServiceModel
     }
     //计算订单优惠
     private function calculateDiscountPrice(){
+        //todo 需要转移到优惠类
         Event::fire(new \app\common\events\OrderDiscountWasCalculated($this));
 
         $result = array_sum(array_column($this->discount_details,'price'));
         return $result;
     }
     //计算订单运费
+    //todo 需要改写
     private function calculateDispatchPrice(){
         $order_dispatch_obj = new OrderDispatch($this);
         $this->dispatch_details = $order_dispatch_obj->getDispatchDetails();
+        $this->dispatch_type_id = $order_dispatch_obj->getDispatchTypeId();
         return $order_dispatch_obj->getDispatchPrice();
     }
 
@@ -149,7 +149,7 @@ class PreGeneratedOrderModel extends ServiceModel
             'price' => $this->price,
             'goods_price' => $this->goods_price,
             'dispatch_price' => $this->dispatch_price,
-
+            'dispatch_types' => $this->dispatch_types,
         );
         //dd($this->order_goods_models);
         foreach ($this->_pre_order_goods_models as $order_goods_model) {
@@ -165,6 +165,7 @@ class PreGeneratedOrderModel extends ServiceModel
         }
         $this->createOrder();
         $this->createOrderGoods();
+        Event::fire(new OrderCreatedEvent(1));
         return true;
     }
     //订单商品生成
@@ -186,7 +187,7 @@ class PreGeneratedOrderModel extends ServiceModel
             'create_time' => time(),
             'discount_details' => json_encode($this->discount_details),
             'dispatch_details' => json_encode($this->dispatch_details),
-
+            'dispatch_type_id' => $this->dispatch_type_id
         );
         echo '订单插入的数据为:';
         $this->id = 1;

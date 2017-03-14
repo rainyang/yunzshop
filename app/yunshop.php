@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use app\common\services\PermissionService;
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
@@ -45,7 +46,7 @@ class YunShop
         $controller->route = implode('.',$currentRoutes);
 
         //检测权限
-        if(self::isWeb() && !$controller->can($controller->route)){
+        if(self::isWeb() && !PermissionService::can($controller->route)){
             abort(403,'无权限');
         }
         //设置uniacid
@@ -159,21 +160,22 @@ class YunShop
                 $pluginName = array_shift($routes);
                 if($pluginName || plugin($pluginName)) {
                     $currentRoutes[] = $pluginName;
+                    $namespace .=  '\\'.ucfirst($pluginName);
                     $path = base_path() . '/plugins/'. $pluginName . '/src';
                     foreach ($routes as $k => $r) {
                         $ucFirstRoute = ucfirst(Str::camel($r));
                         $controllerFile = $path . '/'  . $ucFirstRoute . 'Controller.php';
                         if (is_file($controllerFile)) {
-                            $namespace .= '\\'. ucfirst(Str::camel($pluginName)) .'\\' . $ucFirstRoute . 'Controller';
+                            $namespace .= '\\' . $ucFirstRoute . 'Controller';
                             $controllerName = $ucFirstRoute;
                             $path = $controllerFile;
                             $currentRoutes[] = $r;
-                        }elseif(is_dir($path .= $r)){
-                            $namespace .=  $r;
+                        }elseif(is_dir($path .= '/'.$r)){
+                            $namespace .=  '\\'.$r;
                             $modules[] = $r;
                             $currentRoutes[] = $r;
                         }else{
-                            if ($length !== $k + 3) {
+                            if ($countRoute !== $k + 3) {
                                 exit('no found route:' . self::request()->route);
                             }
                             $action = strpos($r, '-') === false ? $r : Str::camel($r);

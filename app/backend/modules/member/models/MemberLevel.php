@@ -54,8 +54,9 @@ class MemberLevel extends \app\common\models\MemberLevel
      * @param int $discount 完成点总数量
      * @return
      **/
-    public function upgradeMemberLevel($goodsId, $orderMoney, $discount)
+    public static function upgradeMemberLevel($goodsId, $orderMoney, $discount)
     {
+        echo 1;exit;
         //待完善中
         //商品id可能是数组，需要判断
     }

@@ -2,6 +2,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">操作权限</label>
     <div class="col-sm-9 col-xs-12">
         <div class='panel panel-default'>
+            <?php print_r($userPermissons); ?>
             <!-- 第一级-->
             @foreach($permissions as $keyOne=>$valueOne)
                 @if(isset($valueOne['permit']) && $valueOne['permit'] === true)
@@ -9,7 +10,7 @@
                     <div class='panel-heading'>
                         <label class='checkbox-inline'>
                             <input type='checkbox' name='perms[]' value='{{$keyOne}}' class='perm-all'
-                                   data-group='{{$keyOne}}' {{in_array($keyOne, $userPermissons) && 'checked'}} />
+                                   data-group='{{$keyOne}}' {{in_array($keyOne, $userPermissons) ? 'checked' : ''}} />
                             {{$valueOne['name'] or ''}}
                         </label>
                     </div>
@@ -23,6 +24,7 @@
                                                <input type='checkbox' name='perms[]' value='{{$keyTwo}}'
                                                       class='perm-all-item' data-group='{{$keyOne}}'
                                                       data-child='{{$keyTwo}}'
+                                                       {{in_array($keyTwo, $userPermissons) ? 'checked' : ''}}
                                                /> <b> {{$valueTwo['name'] or ''}}</b>
                                            </label>
                                         <!-- 第三级-->
@@ -32,7 +34,8 @@
                                                 <label class="checkbox-inline">
                                                 <input type="checkbox" name="perms[]" value="{{$keyThird}}"
                                                        class="perm-item" data-group="{{$keyOne}}"
-                                                       data-child="{{$keyTwo}}" data-op="{{$keyThird}}">
+                                                       data-child="{{$keyTwo}}" data-op="{{$keyThird}}"
+                                                        {{in_array($keyThird, $userPermissons) ? 'checked' : ''}}>
                                                     {{$valueThird['name'] or ''}}
                                             </label>
                                                 @endif

@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class YzPermission extends BaseModel
 {
-    use SoftDeletes;
+    //use SoftDeletes;
 
     const TYPE_USER = 1;
     const TYPE_ROLE = 2;
@@ -26,13 +26,15 @@ class YzPermission extends BaseModel
     {
         return static::insert($data);
     }
+
+
     /**
-     * Delete role permissions
+     * Delete role permissions by roleId
      *
      * @param int $roleId
      * @return \mysqli_result
      */
-    public static function deleteRole($roleId)
+    public static function deleteRolePermission($roleId)
     {
         return static::where('type', '=', static::TYPE_ROLE)->where('item_id', $roleId)->delete();
     }

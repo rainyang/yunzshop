@@ -24,10 +24,13 @@ class GoodsDispatch
     public function getOrderGoodsModel(){
         return $this->_order_goods_model;
     }
+    // 获取商品配送方式
+    public function getDispatchType(){
+        return 1;
+    }
     //为订单商品提供 获取商品的运费信息
     public function getDispatchDetails(){
         return $this->_dispatch_details;
-
         /*$details[] = [
             'name'=>'运费模板2',
             'id'=>2,
