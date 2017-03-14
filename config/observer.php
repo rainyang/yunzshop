@@ -3,7 +3,8 @@ return [
     'goods'=>[
         'sale'=>[
             'class'=>'app\backend\modules\goods\models\Sale',
-            'function'=>'relationSave'
+            //'function_validator'=>'relationSave',
+            'function_save'=>'relationSave'
         ],
         'notice'=>[
             'class'=>'app\backend\modules\goods\models\Notice',
@@ -25,7 +26,8 @@ return [
             'class'=>'app\backend\modules\goods\models\GoodsDispatch',
             'function'=>'relationSave'
         ],
-
+    ],
+    'order' => [
 
     ]
 ];
