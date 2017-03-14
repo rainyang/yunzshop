@@ -180,6 +180,8 @@ return [
         Orangehill\Iseed\IseedServiceProvider::class,//数据生成
         iscms\Alisms\AlidayuServiceProvider::class,//阿里大鱼
         Maatwebsite\Excel\ExcelServiceProvider::class,//Excel组合
+        Overtrue\LaravelWechat\ServiceProvider::class,//微信接口
+        Latrell\Alipay\AlipayServiceProvider::class,//支付宝接口
     ],
 
     /*
