@@ -32,4 +32,30 @@ class BaseObserver {
     public function restoring(Model $model) {}
 
     public function restored(Model $model) {}
+
+    /**
+     * 插件观察
+     * @param $key
+     * @param $model
+     * @param string $operate
+     * @return array
+     */
+    protected function pluginObserver($key, $model, $operate = 'created')
+    {
+        $observerConfigs = \Config::get($key);
+        $result = [];
+        if($observerConfigs){
+            foreach ($observerConfigs as $pluginName=>$pluginOperators){
+                if(isset($pluginOperators) && $pluginOperators) {
+                    $class = array_get($pluginOperators,'class');
+                    $function =array_get($pluginOperators,$operate == 'validator' ? 'function_validator':'function_save');
+                    $data = array_get($model->widgets,$pluginName,[]);
+                    if(class_exists($class) && is_callable([$class,$function])){
+                        $result[$pluginName] = $class::$function($model->id, $data, $operate);
+                    }
+                }
+            }
+        }
+        return $result;
+    }
 }

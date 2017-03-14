@@ -10,6 +10,7 @@ namespace app\frontend\modules\order\services;
 
 
 use app\common\models\Order;
+use app\common\models\order\OrderOperationLog;
 use app\frontend\modules\order\services\behavior\OrderClose;
 
 class AutoCancel
@@ -30,6 +31,16 @@ class AutoCancel
             $close_class = new OrderClose($order);
             if ($close_class->closeable()) {
                 $close_class->close();
+                //插入操作日志记录
+                $log = [
+                    'order_id'                  => $order->id,
+                    'type'                      => '7',
+                    'before_operation_status'   => '0',
+                    'after_operation_status'    => '-1',
+                    'operator'                  => 'php',
+                    'operation_time'            => time()
+                ];
+                OrderOperationLog::insertOrderOperationLog($log);
             }
         }
     }
