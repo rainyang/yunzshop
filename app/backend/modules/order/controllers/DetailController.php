@@ -10,6 +10,7 @@ namespace app\backend\modules\order\controllers;
 
 use app\common\components\BaseController;
 use app\common\models\Order;
+use app\frontend\modules\order\services\behavior\CancelPayService;
 
 class DetailController extends BaseController
 {
@@ -25,7 +26,7 @@ class DetailController extends BaseController
                 'hasOneAddress'
             ]
         )->find($order_id)->toArray();
-
+        CancelPayService::refund($db_order_models);
         $this->render('detail', [
             'order' => $db_order_models,
             'lang' => $this->_lang(),

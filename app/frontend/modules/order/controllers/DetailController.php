@@ -10,8 +10,6 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\BaseController;
 use app\frontend\modules\order\models\OrderDetailModel;
-use app\frontend\modules\order\services\AutoCancel;
-use app\frontend\modules\order\services\AutoComplete;
 
 
 class DetailController extends BaseController
