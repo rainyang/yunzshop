@@ -9,7 +9,7 @@
 namespace app\backend\modules\order\models;
 
 
-use app\backend\modules\order\observers\OrderObserver;
+
 
 class Order extends \app\common\models\Order
 {
@@ -127,11 +127,5 @@ class Order extends \app\common\models\Order
             $order_builder->whereBetween('create', $range);
         }
         return $order_builder;
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-        static::observe(new OrderObserver());
     }
 }
