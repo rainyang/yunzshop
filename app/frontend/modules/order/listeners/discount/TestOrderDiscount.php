@@ -6,7 +6,7 @@
  * Time: 上午10:00
  */
 
-namespace app\frontend\modules\order\listeners;
+namespace app\frontend\modules\order\listeners\discount;
 
 use app\common\events\OrderDiscountWasCalculated;
 

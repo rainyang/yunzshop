@@ -1,10 +1,13 @@
 <?php
 namespace app\frontend\modules\order\controllers;
 
-use app\common\helpers\Url;
+use app\common\components\BaseController;
+use app\common\models\Order;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\events\AfterOrderReceivedEvent;
 use app\frontend\modules\order\services\OrderService;
+use Illuminate\Support\Facades\Event;
 
 /**
  * Created by PhpStorm.
@@ -12,22 +15,11 @@ use app\frontend\modules\order\services\OrderService;
  * Date: 21/02/2017
  * Time: 11:34
  */
-class TestController
+class TestController extends BaseController
 {
     public function index()
     {
-        echo __CLASS__;
-        echo "<pre>";
-        //$_GPC
-        print_r(\YunShop::request()->route);
-        echo "</pre>";
-        echo "<pre>";
-        //$_W;
-
-        print_r(\YunShop::app()->config['db']);
-        echo "</pre>";
-
-        echo '<a href="' . Url::web('api.v1.test.index', ['id' => 1]) . '" >api</a>';
+        Event::fire(new AfterOrderReceivedEvent(Order::find(1)));
 
     }
 
