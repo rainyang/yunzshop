@@ -38,6 +38,12 @@ class Share extends \app\common\models\goods\Share
         $shareModel->setRawAttributes($data);
         return $shareModel->save();
     }
+    public static function relationValidator($goodsId, $data, $operate)
+    {
+        if ($data) {
+            return self::validator($data);
+        }
+    }
 
     public static function getModel($goodsId,$operate)
     {
