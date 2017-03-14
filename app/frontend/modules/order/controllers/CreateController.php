@@ -8,20 +8,18 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\components\BaseController;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\ShopService;
 
-class CreateController
+class CreateController extends BaseController
 {
     public function index(){
-        $param['order_goods'] = [
+        $param = [
             [
                 'goods_id' => 1,
                 'total' => 1
-            ], [
-                'goods_id' => 2,
-                'total' => 2
             ]
         ];
         $member_model = MemberService::getCurrentMemberModel();

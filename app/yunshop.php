@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use app\common\services\PermissionService;
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
@@ -45,7 +46,7 @@ class YunShop
         $controller->route = implode('.',$currentRoutes);
 
         //检测权限
-        if(self::isWeb() && !$controller->can($controller->route)){
+        if(self::isWeb() && !PermissionService::can($controller->route)){
             abort(403,'无权限');
         }
         //设置uniacid

@@ -88,6 +88,7 @@ class ListController extends BaseController
         $data += $this->fakeData();
         return $data;
     }
+    //假数据,配合模板修改
     private function fakeData()
     {
         return array(
@@ -126,7 +127,7 @@ class ListController extends BaseController
             'agentid' => '',
         );
     }
-
+    //假数据,配合模板修改
     private function _lang()
     {
         return array(
@@ -135,6 +136,7 @@ class ListController extends BaseController
             'orderlist' => '订单列表'
         );
     }
+    //假数据,配合模板修改
 
     private function _totals()
     {

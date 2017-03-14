@@ -8,30 +8,37 @@
 
 namespace app\frontend\modules\order\services\models;
 
-use app\common\events\OrderPriceWasCalculated;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Event;
 
-class OrderDispatch implements ShouldQueue
+class OrderDispatch
 {
     private $_order_model;
-
-    //todo 待实现
-    public function getDispatchPrice()
+    private $_dispatch_details = [];
+    public function __construct(PreGeneratedOrderModel $order_model)
     {
-
-        $result = 0;
-        foreach ($this->_order_model->getOrderGoodsModels() as $order_goods){
-
-            $result += $order_goods->getDispatchPrice();
-        }
-        return $result;
+        $this->_order_model = $order_model;
+        Event::fire(new \app\common\events\OrderDispatchWasCalculated($this));
     }
 
-    public function handle(OrderPriceWasCalculated $even)
-    {
-        $this->_order_model = $even->getOrderModel();
-        $this->_order_model->setDispatchPrice($this->getDispatchPrice());
-        //dd($this->_order_model);
-        return;
+    //提供给订单 累加所有监听者提供的运费
+    public function getDispatchPrice(){
+        return $result = array_sum(array_column($this->_dispatch_details,'price'));
     }
+    //提供给监听者 获取订单model
+    public function getOrderModel(){
+        return $this->_order_model;
+    }
+
+    //提供给监听者 添加一种运费
+    public function addDispatchDetail($dispatch_detail){
+        $this->_dispatch_details[] = $dispatch_detail;
+    }
+    //提供给订单 返回运费详情
+    public function getDispatchDetails()
+    {
+        return $this->_dispatch_details;
+
+    }
+
+
 }
