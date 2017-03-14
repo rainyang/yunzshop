@@ -15,7 +15,6 @@ class OrderObserver extends BaseObserver
 {
     public function saved(Model $model)
     {
-        echo '<pre>';print_r(111);exit;
-        $this->pluginObserver('observer.goods',$model,'saved');
+        $this->pluginObserver('observer.order',$model,'saved', 1);
     }
 }

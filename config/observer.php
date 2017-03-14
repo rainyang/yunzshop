@@ -33,6 +33,10 @@ return [
         ],
     ],
     'order' => [
-
+        //订单操作记录
+        'order_operation_log' => [
+            'class'         => 'app\backend\modules\order\models\OrderOperationLog',
+            'function_save' => 'insertOperationLog'
+        ]
     ]
 ];

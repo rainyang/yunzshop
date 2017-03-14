@@ -40,7 +40,7 @@ class BaseObserver {
      * @param string $operate
      * @return array
      */
-    protected function pluginObserver($key, $model, $operate = 'created')
+    protected function pluginObserver($key, $model, $operate = 'created', $type = null)
     {
         $observerConfigs = \Config::get($key);
         $result = [];
@@ -51,7 +51,11 @@ class BaseObserver {
                     $function =array_get($pluginOperators,$operate == 'validator' ? 'function_validator':'function_save');
                     $data = array_get($model->widgets,$pluginName,[]);
                     if(class_exists($class) && is_callable([$class,$function])){
-                        $result[$pluginName] = $class::$function($model->id, $data, $operate);
+                        if (!$type) {
+                            $result[$pluginName] = $class::$function($model->id, $data, $operate);
+                        } else {
+                            $result[$pluginName] = $class::$function($model);
+                        }
                     }
                 }
             }
