@@ -37,19 +37,23 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         if ($model->notices) {
             return Notices::validator($model->notices);
         }
-        $this->_pluginObserver($model,'saving');
 
+
+        $result = $this->pluginObserver('observer.goods',$model,'validator');
+        if(in_array(false,$result)){
+            return false;
+        }
     }
 
 
     public function saved(Model $model)
     {
-        $this->_pluginObserver($model,'saved');
+        $this->pluginObserver('observer.goods',$model,'saved');
     }
 
     public function created(Model $model)
     {
-        $this->_pluginObserver($model,'created');
+        $this->pluginObserver('observer.goods',$model,'created');
     }
 
     public function updating(Model $model)
@@ -64,34 +68,19 @@ class GoodsObserver extends \app\common\observers\BaseObserver
         if ($model->discount) {
             return Discount::validator($model->discount);
         }
-        $this->_pluginObserver($model,'updating');
+        $this->pluginObserver('observer.goods',$model,'updating');
 
     }
 
     public function updated(Model $model)
     {
-        $this->_pluginObserver($model,'updated');
+        $this->pluginObserver('observer.goods',$model,'updated');
     }
 
     public function deleted(Model $model)
     {
-        $this->_pluginObserver($model,'deleted');
+        $this->pluginObserver('observer.goods',$model,'deleted');
     }
 
-    private function _pluginObserver($model, $operate = 'created')
-    {
-        $observerGoods = \Config::get('observer.goods');
-        if($observerGoods){
-            foreach ($observerGoods as $pluginName=>$pluginOperators){
-                if(isset($pluginOperators) && $pluginOperators) {
-                    $class = array_get($pluginOperators,'class');
-                    $function =array_get($pluginOperators,'function');
-                    $data = array_get($model->widgets,$pluginName,[]);
-                    if(class_exists($class) && method_exists($class,$function)){
-                        $class::$function($model->id, $data, $operate);
-                    }
-                }
-            }
-        }
-    }
+
 }
