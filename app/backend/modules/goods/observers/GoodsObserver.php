@@ -23,24 +23,8 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function saving(Model $model)
     {
-
-        if ($model->share) {
-            return Share::validator($model->share);
-        }
-        if ($model->privilege) {
-            $model->privilege['show_levels'] = PrivilegeService::arrayToSting($model->privilege['show_levels']);
-            return Privilege::validator($model->privilege);
-        }
-        if ($model->discount) {
-            return Discount::validator($model->discount);
-        }
-        if ($model->notices) {
-            return Notices::validator($model->notices);
-        }
-
-
-        $result = $this->pluginObserver('observer.goods',$model,'validator');
-        if(in_array(false,$result)){
+        $result = $this->pluginObserver('observer.goods', $model, 'validator');
+        if (in_array(false, $result)) {
             return false;
         }
     }
@@ -48,38 +32,28 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function saved(Model $model)
     {
-        $this->pluginObserver('observer.goods',$model,'saved');
+        $this->pluginObserver('observer.goods', $model, 'saved');
     }
 
     public function created(Model $model)
     {
-        $this->pluginObserver('observer.goods',$model,'created');
+        $this->pluginObserver('observer.goods', $model, 'created');
     }
 
     public function updating(Model $model)
     {
-        if ($model->share) {
-            return Share::validator($model->share);
-        }
-        if ($model->privilege) {
-            $model->privilege['show_levels'] = PrivilegeService::arrayToSting($model->privilege['show_levels']);
-            return Privilege::validator($model->privilege);
-        }
-        if ($model->discount) {
-            return Discount::validator($model->discount);
-        }
-        $this->pluginObserver('observer.goods',$model,'updating');
+        $this->pluginObserver('observer.goods', $model, 'updating');
 
     }
 
     public function updated(Model $model)
     {
-        $this->pluginObserver('observer.goods',$model,'updated');
+        $this->pluginObserver('observer.goods', $model, 'updated');
     }
 
     public function deleted(Model $model)
     {
-        $this->pluginObserver('observer.goods',$model,'deleted');
+        $this->pluginObserver('observer.goods', $model, 'deleted');
     }
 
 

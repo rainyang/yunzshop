@@ -28,7 +28,7 @@ class Discount extends \app\common\models\goods\Discount
 
     public static function relationSave($goodsId, $data, $operate = '')
     {
-        if(!$goodsId){
+        if (!$goodsId) {
             return false;
         }
         self::deletedDiscount($goodsId);
@@ -37,7 +37,7 @@ class Discount extends \app\common\models\goods\Discount
             foreach ($data['discount_value'] as $key => $value) {
                 $discount_data[] = [
                     'level_discount_type' => !empty($data['level_discount_type']) ? $data['level_discount_type'] : '1',
-                    'discount_method' =>  !empty($data['discount_method']) ? $data['discount_method'] : '1',
+                    'discount_method' => !empty($data['discount_method']) ? $data['discount_method'] : '1',
                     'level_id' => $key,
                     'discount_value' => !empty($value) ? $value : '0',
                     'goods_id' => $goodsId
@@ -46,6 +46,29 @@ class Discount extends \app\common\models\goods\Discount
             return self::addByGoodsId($discount_data);
         }
 
+    }
+
+    public static function relationValidator($goodsId, $data, $operate)
+    {
+        if ($data) {
+            $discount_data = [];
+            $result = [];
+            if (!empty($data['discount_value'])) {
+                foreach ($data['discount_value'] as $key => $value) {
+                    $discount_data = [
+                        'level_discount_type' => !empty($data['level_discount_type']) ? $data['level_discount_type'] : '1',
+                        'discount_method' => !empty($data['discount_method']) ? $data['discount_method'] : '1',
+                        'level_id' => $key,
+                        'discount_value' => !empty($value) ? $value : '0',
+                        'goods_id' => $goodsId
+                    ];
+                    $result[] = self::validator($discount_data);
+                }
+                if (in_array(false, $result)) {
+                    return false;
+                }
+            }
+        }
     }
 
     public static function addByGoodsId($discount_data)
@@ -58,13 +81,13 @@ class Discount extends \app\common\models\goods\Discount
         return true;
     }
 
-    public static function getModel($goodsId,$operate)
+    public static function getModel($goodsId, $operate)
     {
         $model = false;
-        if($operate != 'created') {
+        if ($operate != 'created') {
             $model = static::where(['goods_id' => $goodsId])->first();
         }
-        !$model && $model =  new static;
+        !$model && $model = new static;
 
         return $model;
     }

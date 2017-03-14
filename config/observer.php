@@ -3,28 +3,33 @@ return [
     'goods'=>[
         'sale'=>[
             'class'=>'app\backend\modules\goods\models\Sale',
-            //'function_validator'=>'relationSave',
+            'function_validator'=>'relationValidator',
             'function_save'=>'relationSave'
         ],
         'notice'=>[
             'class'=>'app\backend\modules\goods\models\Notice',
-            'function'=>'relationSave'
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
         ],
         'share'=>[
             'class'=>'app\backend\modules\goods\models\Share',
-            'function'=>'relationSave'
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
         ],
         'privilege'=>[
             'class'=>'app\backend\modules\goods\models\Privilege',
-            'function'=>'relationSave'
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
         ],
         'discount'=>[
             'class'=>'app\backend\modules\goods\models\Discount',
-            'function'=>'relationSave'
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
         ],
         'dispatch'=>[
             'class'=>'app\backend\modules\goods\models\GoodsDispatch',
-            'function'=>'relationSave'
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
         ],
     ],
     'order' => [
