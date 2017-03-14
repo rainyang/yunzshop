@@ -11,6 +11,7 @@ namespace app\common\models;
 
 use app\frontend\modules\order\services\status\StatusServiceFactory;
 use Illuminate\Support\Facades\DB;
+use app\backend\modules\order\observers\OrderObserver;
 
 class Order extends BaseModel
 {
@@ -129,5 +130,11 @@ class Order extends BaseModel
             }
         }
         return $status_counts;
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::observe(new OrderObserver());
     }
 }
