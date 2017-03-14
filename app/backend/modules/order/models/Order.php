@@ -42,6 +42,31 @@ class Order extends \app\common\models\Order
         $list['total_price'] = $builder->sum('price');
         return $list;
     }
+
+    //订单导出订单数据
+    public static function getExportOrders($search)
+    {
+        $builder = Order::exportOrders($search);
+        $orders = $builder->get()->toArray();
+        return $orders;
+    }
+
+    public function scopeExportOrders($search)
+    {
+        $order_builder = Order::search($search);
+
+        $orders = $order_builder->with([
+            'belongsToMember' => self::member_builder(),
+            'hasManyOrderGoods' => self::order_goods_builder(),
+            'hasOneDispatchType',
+            'hasOnePayType',
+            'hasOneAddress',
+            'hasOneOrderRemark',
+            'hasOneOrderExpress'
+        ]);
+        return $orders;
+    }
+
     public function scopeOrders($search)
     {
         $order_builder = Order::search($search);

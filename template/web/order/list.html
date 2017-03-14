@@ -1,9 +1,13 @@
-{template 'web/_header'}
+﻿{template 'web/_header'}
 <div class="w1200 m0a">
     <link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
     <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
     <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
     <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2_locale_zh-CN.js"></script>
+    <script type="text/javascript" src="./resource/js/lib/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery.gcjs.js"></script>
+    <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery.form.js"></script>
+    <script type="text/javascript" src="../addons/sz_yi/static/js/dist/tooltipbox.js"></script>
     <style type='text/css'>
         .trhead td {  background:#f8f8f8;text-align: center}
         .trbody td {  text-align: center; vertical-align:top;border-left:1px solid #DEDEDE;overflow: hidden;}
@@ -405,9 +409,9 @@
             }
         })
         $('#export').click(function(){
-            $('#form_p').val("exportOrder");
+            $('#form_p').val("order.list.export");
             $('#form1').submit();
-            $('#form_p').val("list");
+            $('#form_p').val("order.list");
         });
         $('.select2').select2({
             search: true,

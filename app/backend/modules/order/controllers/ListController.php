@@ -9,6 +9,7 @@
 namespace app\backend\modules\order\controllers;
 
 use app\backend\modules\order\models\Order;
+use app\backend\modules\order\services\ExportService;
 use app\common\components\BaseController;
 
 use app\common\helpers\PaginationHelper;
@@ -148,5 +149,12 @@ class ListController extends BaseController
             'refund' => '1',
             'applyWithdraw' => '4',
         );
+    }
+
+    public function export()
+    {
+        $params = \YunShop::request();
+        $orders = Order::getExportOrders($params);
+        ExportService::export($orders);
     }
 }
