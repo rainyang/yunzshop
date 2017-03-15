@@ -29,12 +29,14 @@ class YunShop
         if(!$controller instanceof \app\common\components\BaseController){
             abort(404,'不存在控制器:' . $namespace);
         }
+
         //设置默认方法
         if (empty($action)) {
             $action = 'index';
             self::app()->action = $action;
             $currentRoutes[] = $action;
         }
+
         //检测方法是否存在并可执行
         if (!method_exists($namespace, $action) || !is_callable([$namespace, $action]) ) {
             abort(404,'操作方法不存在: ' . $action);
@@ -160,7 +162,7 @@ class YunShop
                 $pluginName = array_shift($routes);
                 if($pluginName || plugin($pluginName)) {
                     $currentRoutes[] = $pluginName;
-                    $namespace .=  '\\'.ucfirst($pluginName);
+                    $namespace .=  '\\'.ucfirst(Str::camel($pluginName));
                     $path = base_path() . '/plugins/'. $pluginName . '/src';
                     foreach ($routes as $k => $r) {
                         $ucFirstRoute = ucfirst(Str::camel($r));
@@ -185,7 +187,6 @@ class YunShop
                 }else{
                     abort(404,'无此插件');
                 }
-
             }else{
                 foreach ($routes as $k => $r) {
                     $ucFirstRoute = ucfirst(Str::camel($r));
