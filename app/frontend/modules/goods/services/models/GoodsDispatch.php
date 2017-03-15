@@ -9,7 +9,7 @@
 namespace app\frontend\modules\goods\services\models;
 
 
-use app\common\events\OrderGoodsDispatchWasCalculated;
+use app\common\events\order\OrderGoodsDispatchWasCalculated;
 use Illuminate\Support\Facades\Event;
 
 class GoodsDispatch

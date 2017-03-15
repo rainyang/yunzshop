@@ -82,7 +82,7 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     {
         //$goods_discount_obj = new GoodsDiscount($this);
         //$goods_discount_obj->getDiscountDetails();
-        Event::fire(new \app\common\events\OrderGoodsDiscountWasCalculated($this));
+        Event::fire(new \app\common\events\order\OrderGoodsDiscountWasCalculated($this));
 
         $result = array_sum(array_column($this->discount_details, 'price'));
         return $result;
@@ -127,7 +127,7 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
 
             'price' => $this->price,
             'total' => $this->total,
-            'title' => $this->goods_model->id,
+            'title' => $this->goods_model->title,
             'thumb' => $this->goods_model->thumb,
             'discount_details' => json_encode($this->discount_details),
             'dispatch_details' => json_encode($this->dispatch_details),
@@ -136,8 +136,8 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
         );
         echo '订单商品插入数据为';
         var_dump($data);
-        return;
-        return OrderGoods::insertGetId($data);
+        //return;
+        return OrderGoods::create($data);
     }
     //外部获得订单属性前,先统计商品数据
     public function __get($name)

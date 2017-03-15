@@ -22,7 +22,7 @@ class Level
     public function subscribe($events)
     {
         $events->listen(
-            \app\frontend\modules\order\events\AfterOrderReceivedEvent::class,
+            \app\common\events\order\AfterOrderReceivedEvent::class,
             \app\frontend\modules\member\listeners\Level::class.'@onReceived'
         );
 
