@@ -187,7 +187,6 @@ class YunShop
                 }else{
                     abort(404,'无此插件');
                 }
-
             }else{
                 foreach ($routes as $k => $r) {
                     $ucFirstRoute = ucfirst(Str::camel($r));
