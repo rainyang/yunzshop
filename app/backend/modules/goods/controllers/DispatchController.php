@@ -53,7 +53,7 @@ class DispatchController extends BaseController
             //其他字段赋值
             $dispatchModel->uniacid = \YunShop::app()->uniacid;
             //字段检测
-            $validator = Dispatch::validator($dispatchModel->getAttributes());
+            $validator = $dispatchModel->validator($dispatchModel->getAttributes());
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {
@@ -94,7 +94,7 @@ class DispatchController extends BaseController
             $dispatchModel->uniacid = \YunShop::app()->uniacid;
 
             //字段检测
-            $validator = Dispatch::validator($dispatchModel->getAttributes());
+            $validator = $dispatchModel->validator($dispatchModel->getAttributes());
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {

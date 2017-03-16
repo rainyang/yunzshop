@@ -58,7 +58,7 @@ class RoleController extends BaseController
             $roleModel->uniacid = \YunShop::app()->uniacid;
 
             //字段检测
-            $validator = YzRole::validator($roleModel->getAttributes());
+            $validator = $roleModel->validator($roleModel->getAttributes());
             //dd($validator->messages());
             if ($validator->fails()) {
                 dd("角色数据验证出错");
@@ -76,7 +76,7 @@ class RoleController extends BaseController
                                 'item_id'   => $roleModel->id,
                                 'permission' => $value
                             );
-                            $validator = YzPermission::validator($data);
+                            $validator = (new YzPermission)->validator($data);
                             if ($validator->fails()) {
                                 dd("权限数据验证失败");
                                 $this->error($validator->message());
@@ -122,7 +122,7 @@ class RoleController extends BaseController
         $requestRole = \YunShop::request()->YzRole;
         if ($requestRole) {
             $roleModel->setRawAttributes($requestRole);
-            $validator = YzRole::validator($roleModel->getAttributes());
+            $validator = $roleModel->validator($roleModel->getAttributes());
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
@@ -138,7 +138,7 @@ class RoleController extends BaseController
                                 'item_id'   => \YunShop::request()->id,
                                 'permission' => $value
                             );
-                            $validator = YzPermission::validator($data);
+                            $validator = (new YzPermission)->validator($data);
                             if ($validator->fails()) {
                                 dd("权限数据验证失败");
                                 $this->error($validator->message());

@@ -48,7 +48,7 @@ class MemberLevelController extends BaseController
             $levelModel->uniacid = \YunShop::app()->uniacid;
 
             //字段检测
-            $validator = MemberLevel::validator($levelModel->getAttributes());
+            $validator = $levelModel->validator($levelModel->getAttributes());
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {
@@ -78,7 +78,7 @@ class MemberLevelController extends BaseController
         $requestLevel = \YunShop::request()->level;
         if($requestLevel) {
             $levelModel->setRawAttributes($requestLevel);
-            $validator = MemberLevel::validator($levelModel->getAttributes());
+            $validator = $levelModel->validator($levelModel->getAttributes());
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {

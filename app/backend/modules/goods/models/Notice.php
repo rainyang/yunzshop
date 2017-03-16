@@ -73,7 +73,7 @@ class Notice extends \app\common\models\Notice
     public static function relationValidator($goodsId, $data, $operate)
     {
         if ($data) {
-            return self::validator($data);
+            return parent::validator($data);
         }
     }
     public static function deleteAllByGoodsId($goodsId)
