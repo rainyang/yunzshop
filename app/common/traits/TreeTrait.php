@@ -215,6 +215,13 @@ trait TreeTrait
         return $array;
     }
 
+    /**
+     * 格式化为下拉选择数据
+     * @param $parentId
+     * @param int $depth
+     * @param string $adds
+     * @return array
+     */
     public function toSelectArray($parentId, $depth = 0, $adds = '')
     {
         $treeList = [];
