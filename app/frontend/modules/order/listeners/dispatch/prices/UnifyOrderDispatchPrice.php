@@ -6,16 +6,16 @@
  * Time: 上午10:00
  */
 
-namespace app\frontend\modules\order\listeners;
+namespace app\frontend\modules\order\listeners\dispatch\prices;
 
-use app\common\events\OrderDispatchWasCalculated;
+use app\common\events\order\OrderDispatchWasCalculated;
 
-class UnifyOrderDispatch
+class UnifyOrderDispatchPrice
 {
-    private $even;
+    private $event;
     public function handle(OrderDispatchWasCalculated $even)
     {
-        $this->even = $even;
+        $this->event = $even;
         if (!$this->needDispatch()) {
             return;
         }
@@ -45,7 +45,7 @@ class UnifyOrderDispatch
         //取商品数组 统一运费的最大值
         $result = 0;
         //dd($this->even->getOrderModel()->getOrderGoodsModels());
-        foreach ($this->even->getOrderModel()->getOrderGoodsModels() as $order_goods){
+        foreach ($this->event->getOrderModel()->getOrderGoodsModels() as $order_goods){
             //dd($order_goods);exit;
 
             foreach ($order_goods->dispatch_details as $dispatch_detail){
