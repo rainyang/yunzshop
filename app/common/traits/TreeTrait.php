@@ -228,7 +228,8 @@ trait TreeTrait
         $allTrees = $this->getDescendants($parentId, $depth, $adds);
         if ($allTrees) {
             foreach ($allTrees as $value) {
-                $treeList[$value->{$this->getTreeNodeIdName()}] = $value->spacer . $value->{$this->getTreeNodeDisplayName()};
+                $id =  $value->{$this->getTreeNodeIdName()};
+                $treeList[$id] = $value->spacer . $value->{$this->getTreeNodeDisplayName()};
             }
         }
 

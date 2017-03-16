@@ -182,6 +182,10 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,//Excel组合
         Overtrue\LaravelWechat\ServiceProvider::class,//微信接口
         Latrell\Alipay\AlipayServiceProvider::class,//支付宝接口
+        //表单
+        Collective\Html\HtmlServiceProvider::class,
+        Watson\BootstrapForm\BootstrapFormServiceProvider::class,
+        //表单end
     ],
 
     /*
@@ -234,6 +238,12 @@ return [
         'Setting' => app\common\facades\Setting::class,//设置
         'Option'    => app\common\facades\Option::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,//Excel 组件
+
+        //表单生成
+        'Form'     => Collective\Html\FormFacade::class,
+        'HTML'     => Collective\Html\HtmlFacade::class,
+        'BootForm' => Watson\BootstrapForm\Facades\BootstrapForm::class,
+         //表单生成end
     ],
 
 ];
