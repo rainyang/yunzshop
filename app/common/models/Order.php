@@ -11,13 +11,20 @@ namespace app\common\models;
 
 use app\frontend\modules\order\services\status\StatusServiceFactory;
 use Illuminate\Support\Facades\DB;
+use app\backend\modules\order\observers\OrderObserver;
 
 class Order extends BaseModel
 {
     public $table = 'yz_order';
     private $StatusService;
+    protected $fillable = [];
+    protected $guarded = ['id'];
     protected $appends = ['status_name', 'button_models'];
     protected $search_fields = ['id', 'order_sn'];
+    protected $casts = [
+        'discount_details' => 'json',
+        'dispatch_details' => 'json',
+    ];
     const WAIT_PAY = 0;
     const WAIT_SEND = 1;
     const WAIT_RECEIVE = 2;
@@ -118,16 +125,22 @@ class Order extends BaseModel
         return $this->getStatusService()->getButtonModels();
     }
 
-    public function scopeGetOrderCountGroupByStatus($query, $status=[])
+    public function scopeGetOrderCountGroupByStatus($query, $status = [])
     {
-        $status = [Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE];
+        $status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
-            ->whereIn('status',$status)->groupBy('status')->get()->makeHidden(['status_name', 'button_models'])->toArray();
-        foreach ($status as $state){
-            if(!in_array($state,array_column($status_counts,'status'))){
-                $status_counts[] = ['status'=>$state,'total'=>0];
+            ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'button_models'])->toArray();
+        foreach ($status as $state) {
+            if (!in_array($state, array_column($status_counts, 'status'))) {
+                $status_counts[] = ['status' => $state, 'total' => 0];
             }
         }
         return $status_counts;
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::observe(new OrderObserver());
     }
 }

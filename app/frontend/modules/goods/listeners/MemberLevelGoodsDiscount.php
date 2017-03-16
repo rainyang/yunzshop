@@ -8,8 +8,7 @@
 
 namespace app\frontend\modules\goods\listeners;
 
-use app\common\events\OrderGoodsDiscountWasCalculated;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use app\common\events\order\OrderGoodsDiscountWasCalculated;
 
 class MemberLevelGoodsDiscount
 {

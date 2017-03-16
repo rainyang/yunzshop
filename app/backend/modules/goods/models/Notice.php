@@ -70,7 +70,12 @@ class Notice extends \app\common\models\Notice
         ];
         return self::addByGoodsId($data, $noticesData);
     }
-
+    public static function relationValidator($goodsId, $data, $operate)
+    {
+        if ($data) {
+            return self::validator($data);
+        }
+    }
     public static function deleteAllByGoodsId($goodsId)
     {
         return static::where('goods_id', $goodsId)

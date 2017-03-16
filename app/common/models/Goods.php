@@ -128,6 +128,7 @@ class Goods extends BaseModel
         return static::where('title', 'like', $keyword.'%')
             ->get()
             ->toArray();
+        //goods::update()
     }
 
     /**

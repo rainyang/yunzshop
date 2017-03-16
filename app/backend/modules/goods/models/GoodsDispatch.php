@@ -38,7 +38,12 @@ class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
         $dispatchModel->setRawAttributes($data);
         return $dispatchModel->save();
     }
-
+    public static function relationValidator($goodsId, $data, $operate)
+    {
+        if ($data) {
+            return self::validator($data);
+        }
+    }
     public static function getModel($goodsId,$operate)
     {
         $model = false;

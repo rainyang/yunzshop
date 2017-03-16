@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\goods\listeners;
 
-use app\common\events\OrderGoodsDispatchWasCalculated;
+use app\common\events\order\OrderGoodsDispatchWasCalculated;
 
 class UnifyGoodsDispatch
 {

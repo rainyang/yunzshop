@@ -6,30 +6,32 @@
  * Time: 上午11:44
  */
 
-namespace app\common\events;
+namespace app\common\events\order;
+use app\common\events\Event;
 
 
 class OrderCreatedEvent extends Event
 {
-    use SerializesModels;
 
-    public $order;
+    private $_order_model;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($order=[])
+    public function __construct($order_model)
     {
-        $this->order=$order;
-        echo 'TestFailEventFail fire';
-        echo "<br/>";
-        print_r($order);
-
-        echo "<br/>";
+        $this->_order_model = $order_model;
     }
 
+    /**
+     * (监听者)获取订单model
+     * @return mixed
+     */
+    public function getOrderModel(){
+        return $this->_order_model;
+    }
     /**
      * Get the channels the event should be broadcast on.
      *
