@@ -11,80 +11,70 @@ namespace app\backend\controllers;
 use app\backend\models\Menu;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
-use app\common\helpers\PaginationHelper;
 
 class MenuController extends BaseController
 {
-    private $pageSize = 20;
 
     public function index()
     {
-        $menus = Menu::getMenuAllInfo()
-                     ->paginate($this->pageSize)
-                      ->toArray();
+        $menuList = (new Menu())->getDescendants(0);
 
-        $pager = PaginationHelper::show($menus['total'], $menus['current_page'], $this->pageSize);
-
-        if (empty($menus)) {
-            return $this->errorJson('菜单栏目数据错误');
-        }
-
-        return view('setting.menu',[
-            'pager' => $pager,
-            'menus' => $menus
+        return view('menu.index', [
+            'menuList' => $menuList
         ])->render();
 
     }
 
     public function add()
     {
-        $menu_model = new Menu();
+        $model = new Menu();
 
+        $parentId = intval(\YunShop::request()->parent_id);
         $data = \YunShop::request()->menu;
-        $id = \YunShop::request()->id;
 
-        if (!empty($data)) {
-            $menu_model->setRawAttributes($data);
+        if ($data) {
+            $model->setRawAttributes($data);
 
-            $validator = Menu::validator($menu_model->getAttributes());
-
+            $validator = $model->validator();
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
-                if ($menu_model->save()) {
-                    return $this->message('菜单修改成功', Url::absoluteWeb('menu.index'));
+                if ($model->save()) {
+                    return $this->message('添加菜单成功', Url::absoluteWeb('menu.index'));
                 } else {
-                    $this->error('菜单修改失败');
+                    $this->error('添加菜单失败');
                 }
             }
         }
 
-        if (!empty($id)) {
-            $menu_model = Menu::getMenuInfoById($id)->first()->toArray();
-        }
+        $parentId && $model->setAttribute('parent_id',$parentId);
+        $parentMenu = [0=>'请选择上级'] + $model->toSelectArray(0);
 
-        return view('setting.menu_add',[
-            'menu' => $menu_model
+        return view('menu.form', [
+            'parentMenu' => $parentMenu,
+            'model' => $model
         ])->render();
     }
 
     public function edit()
     {
         $id = \YunShop::request()->id;
-
-        $menu_model = Menu::getMenuInfoById($id)->first();
-
         $data = \YunShop::request()->menu;
 
-        if (!empty($data)) {
-            $menu_model->setRawAttributes($data);
+        $model = Menu::getMenuInfoById($id);
+        if(!$model){
+            return $this->message('无此记录');
+        }
 
-            $validator = Menu::validator($menu_model->getAttributes());
+        if ($data) {
+            $data['id'] = $id;
+            $model->setRawAttributes($data);
 
+            $validator = $model->validator();
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
-                if ($menu_model->save()) {
+                if ($model->save()) {
                     return $this->message('菜单修改成功', Url::absoluteWeb('menu.index'));
                 } else {
                     $this->error('菜单修改失败');
@@ -92,8 +82,11 @@ class MenuController extends BaseController
             }
         }
 
-        return view('setting.menu_info',[
-            'menu' => $menu_model
+        $parentMenu = [0=>'请选择上级'] + $model->toSelectArray(0);
+
+        return view('menu.form', [
+            'model' => $model,
+            'parentMenu' => $parentMenu,
         ])->render();
     }
 
@@ -101,29 +94,17 @@ class MenuController extends BaseController
     {
         $id = \YunShop::request()->id;
 
-        $menu_model = Menu::getMenuInfoById($id)->first();
-
-        if (empty($menu_model)) {
-            $this->error('菜单不存在');
+        $model = Menu::getMenuInfoById($id);
+        if (empty($model)) {
+            return $this->message('菜单不存在');
         }
+        //@todo 判断是否存在子菜单
 
-        if ($menu_model->delete()) {
+        if ($model->delete()) {
             return $this->message('菜单删除成功', Url::absoluteWeb('menu.index'));
         } else {
             $this->error('菜单删除失败');
         }
     }
 
-    public function getJsonData()
-    {
-        $id = \YunShop::request()->id ? \YunShop::request()->id : 0;;
-
-        $menu_model = Menu::getMenuAllInfo($id,1)->get();
-
-        if (empty($menu_model)) {
-            return $this->errorJson('数据不存在');
-        }
-
-        return $this->successJson('', $menu_model->toJson());
-    }
 }

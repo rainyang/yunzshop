@@ -17,7 +17,7 @@ trait ValidatorTrait
      * 自定义显示错误信息
      * @return array
      */
-    public static function validationMessages()
+    public  function validationMessages()
     {
         return trans('validation');
     }
@@ -27,7 +27,7 @@ trait ValidatorTrait
      * 可使用
      * @return array
      */
-    public static function atributeNames()
+    public  function atributeNames()
     {
         return [];
     }
@@ -36,7 +36,7 @@ trait ValidatorTrait
      * 字段规则
      * @return array
      */
-    public static function rules()
+    public  function rules()
     {
         return [];
     }
@@ -47,12 +47,12 @@ trait ValidatorTrait
      * @param $data
      * @return \Illuminate\Validation\Validator
      */
-    public static function validator($data)
+    public  function validator($data =[])
     {
-        $validator = Validator::make($data, static::rules(), static::validationMessages());
+        $validator = Validator::make($data?:$this->getAttributes(), $this->rules(), $this->validationMessages());
 
         //自定义字段名
-        $validator->setAttributeNames(static::atributeNames());
+        $validator->setAttributeNames($this->atributeNames());
 
         return $validator;
     }

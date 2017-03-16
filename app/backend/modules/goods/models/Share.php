@@ -41,7 +41,7 @@ class Share extends \app\common\models\goods\Share
     public static function relationValidator($goodsId, $data, $operate)
     {
         if ($data) {
-            return self::validator($data);
+            return parent::validator($data);
         }
     }
 

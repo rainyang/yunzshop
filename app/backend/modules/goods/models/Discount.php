@@ -62,7 +62,7 @@ class Discount extends \app\common\models\goods\Discount
                         'discount_value' => !empty($value) ? $value : '0',
                         'goods_id' => $goodsId
                     ];
-                    $result[] = self::validator($discount_data);
+                    $result[] = (new self())->validator($discount_data);
                 }
                 if (in_array(false, $result)) {
                     return false;

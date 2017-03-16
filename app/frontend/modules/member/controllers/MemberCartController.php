@@ -68,7 +68,7 @@ class MemberCartController extends BaseController
             $cartModel->uniacid = \YunShop::app()->uniacid;
 
             //字段检测
-            $validator = $cartModel::validator($cartModel->getAttributes());
+            $validator = $cartModel->validator($cartModel->getAttributes());
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {
