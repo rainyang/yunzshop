@@ -1,5 +1,10 @@
 <?php
 return [
+    'user' => [
+        'user_permission' => [
+            'class' => 'app\comm'
+        ]
+    ],
     'goods'=>[
         'sale'=>[
             'class'=>'app\backend\modules\goods\models\Sale',
@@ -39,4 +44,6 @@ return [
             'function_save' => 'insertOperationLog'
         ]
     ]
+
+
 ];

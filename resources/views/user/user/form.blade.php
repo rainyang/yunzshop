@@ -117,7 +117,7 @@
             </div>
         </div>
 
-        <!--         <script language='javascript'>
+                 <script language='javascript'>
 
                     $(function(){
 
@@ -158,7 +158,7 @@
 
                 function search_roles() {
                     $("#module-menus1").html("正在搜索....")
-                    $.get('{php echo $this->createPluginWebUrl('perm/role',array('op'=>'query'));}', {
+                    $.get('{{ yzWebUrl('user.user.search') }}', {
                         keyword: $.trim($('#search-kwd1').val())
                     }, function(dat){
                         $('#module-menus1').html(dat);
@@ -190,6 +190,6 @@
                     $(".close").click();
                 }
             </script>
-            -->
+
 
 @endsection
