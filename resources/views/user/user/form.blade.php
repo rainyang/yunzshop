@@ -1,7 +1,195 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: libaojia
- * Date: 2017/3/15
- * Time: 上午9:51
- */
+@extends('layouts.admin')
+
+@section('content')
+
+    <div class="w1200 m0a">
+        <div class="rightlist">
+            <div class="main">
+                <form id="dataform" action="{{ yzWebUrl('user.user.store') }}" method="post" class="form-horizontal form" >
+                    <input type="hidden" name="id" value="{$item['id']}" />
+                    <div class='panel panel-default'>
+                        <div class='panel-heading'>
+                            操作员设置
+                        </div>
+                        <div class='panel-body'>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 操作员用户名</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <input type="text" name="user[username]" class="form-control" value="{{ $user['username'] or '' }}" />
+                                    <span class='help-block'>您可以直接输入系统已存在用户，且保证用户密码正确才能添加</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>  操作员密码</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <input type="password" name="user[password]" class="form-control" value="{{ $user['password'] or '' }}" autocomplete="off" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">所属角色</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <input type='hidden' id='role[role_id]' name='userRole[role_id]' value="{$role['id']}" />
+                                    <div class='input-group'>
+                                        <input type="text" maxlength="30" value="{{ $role['role_name'] or '' }}" id="role" class="form-control" readonly />
+                                        <div class='input-group-btn'>
+                                            <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus1').modal();">选择角色</button>
+                                            <button class="btn btn-danger" type="button" onclick="$('#roleid').val('');$('#role').val('');">清除选择</button>
+                                        </div>
+                                    </div>
+                                    <span class='help-block'>如果您选择了角色，则此用户本身就继承了此角色的所有权限</span>
+                                    <div id="modal-module-menus1"  class="modal fade" tabindex="-1">
+                                        <div class="modal-dialog" style='width: 920px;'>
+                                            <div class="modal-content">
+                                                <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择角色</h3></div>
+                                                <div class="modal-body" >
+                                                    <div class="row">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control" name="keyword" value="" id="search-kwd1" placeholder="请输入角色名称" />
+                                                            <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_roles();">搜索</button></span>
+                                                        </div>
+                                                    </div>
+                                                    <div id="module-menus1" style="padding-top:5px;"></div>
+                                                </div>
+                                                <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"> 姓名</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <input type="text" name="profile[realname]" class="form-control" value="{{ $user['realname'] or '' }}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <input type="text" name="profile[mobile]" class="form-control" value="{{ $user['mobile'] or '' }}" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">状态</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <label class='radio-inline'>
+                                        <input type='radio' name='user[status]' value='2' @if($user['status'] == 2) checked @endif /> 启用
+                                    </label>
+                                    <label class='radio-inline'>
+                                        <input type='radio' name='user[status]' value='1' @if($user['status'] == 1) checked @endif /> 禁用
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <span class='form-control-static'>用户可以在此角色权限的基础上附加其他权限</span>
+                                </div>
+                            </div>
+
+
+
+                            @include('user.permission.permission')
+
+
+
+
+                            <div class="form-group"></div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <input type="hidden" name="uid" value="{$item['uid']}" />
+                                    <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+                                    <input type="hidden" name="token" value="{$_W['token']}" />
+                                    <input type="button" name="back" onclick='history.back()' style='margin-left:10px;' value="返回列表" class="btn btn-default" />
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-12">
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!--         <script language='javascript'>
+
+                    $(function(){
+
+                        $('#dataform').ajaxForm();
+
+                        $(':input[name=submit]').click(function(){
+                            if($(this).attr('submitting')=='1'){
+                                return;
+                            }
+
+                            if ($(':input[name=username]').isEmpty()) {
+                                Tip.focus($(':input[name=username]'), '请填写用户名!');
+                                return;
+                            }
+                            {if empty($item)}
+                            if ($(':input[name=password]').isEmpty()) {
+                                Tip.focus($(':input[name=password]'), '请输入用户密码!');
+                                return;
+                            }
+                            {/if}
+
+                            $(this).attr('submitting','1').removeClass('btn-primary');
+                            $('#dataform').ajaxSubmit(function(data){
+                                data = eval("(" +  data  +")");
+                                if(data.result!=1){
+                                    $(this).removeAttr('submitting').addClass('btn-primary');
+                                    Tip.select($(':input[name=username]'), data.message );
+                                    return;
+                                }
+                                location.href= "{php echo $this->createPluginWebUrl('perm/user')}";
+                            })
+                        })
+
+                    })
+
+                </script>
+           <script language='javascript'>
+
+                function search_roles() {
+                    $("#module-menus1").html("正在搜索....")
+                    $.get('{php echo $this->createPluginWebUrl('perm/role',array('op'=>'query'));}', {
+                        keyword: $.trim($('#search-kwd1').val())
+                    }, function(dat){
+                        $('#module-menus1').html(dat);
+                    });
+                }
+                function select_role(o) {
+                    $("#roleid").val(o.id);
+                    $("#role").val( o.rolename );
+                    var perms = o.perms.split(',');
+                    $(':checkbox')
+                    $(':checkbox').removeAttr('disabled').removeAttr('checked').each(function(){
+
+                        var _this = $(this);
+                        var perm = '';
+                        if( _this.data('group') ){
+                            perm+=_this.data('group');
+                        }
+                        if( _this.data('child') ){
+                            perm+="." +_this.data('child');
+                        }
+                        if( _this.data('op') ){
+                            perm+="." +_this.data('op');
+                        }
+                        if( $.arrayIndexOf(perms,perm)!=-1){
+                            $(this).attr('disabled',true).get(0).checked =true;
+                        }
+
+                    });
+                    $(".close").click();
+                }
+            </script>
+            -->
+
+@endsection

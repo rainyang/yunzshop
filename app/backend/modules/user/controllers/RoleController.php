@@ -27,7 +27,7 @@ class RoleController extends BaseController
 
         $roleList = YzRole::getRoleList($pageSize);
         $pager = PaginationHelper::show($roleList->total(), $roleList->currentPage(), $roleList->perPage());
-        //dd($roleList);
+        //dd($roleList->items());
         return view('user.role.index',[
             'pager'     => $pager,
             'roleList'  => $roleList

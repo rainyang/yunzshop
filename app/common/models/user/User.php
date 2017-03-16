@@ -15,6 +15,19 @@ class User extends BaseModel
 {
     public $table = 'users';
 
+    public $timestamps = false;
+
+    public $fillable = [];
+
+    public $attributes = [
+        'groupid' => 0 ,
+        'type' => 0,
+        'remark' => '',
+        'endtime' => 0
+    ];
+
+
+
     public function uniAccounts()
     {
         return $this->hasMany('app\common\models\user\UniAccountUser', 'uid', 'uid');
@@ -29,6 +42,13 @@ class User extends BaseModel
     {
         return $this->hasMany('app\common\models\user\YzPermission', 'item_id', 'uid')
             ->where('type', '=', YzPermission::TYPE_USER);
+    }
+
+    protected static function checkUserName($userName)
+    {
+        $user = static::select('uid')->where('username', '=', $userName)->first();
+        //var_dump(empty($user));
+        return empty($user) ? '' : '1';
     }
 
     /**
