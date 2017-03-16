@@ -99,7 +99,7 @@ class Comment extends \app\common\models\Comment
      *  定义字段名
      * 可使
      * @return array */
-    public static function atributeNames() {
+    public  function atributeNames() {
         return [
             'goods_id'=> '评论商品',
             'content'=> '评论内容',
@@ -109,7 +109,7 @@ class Comment extends \app\common\models\Comment
     /**
      * 字段规则
      * @return array */
-    public static function rules() {
+    public  function rules() {
         return [
             'goods_id'=> 'required',
             'content'=> 'required'

@@ -28,7 +28,7 @@ class Discount extends BaseModel
      * 可使用
      * @return array
      */
-    public static function atributeNames()
+    public  function atributeNames()
     {
         return [
             'level_discount_type' => '等级方式',
@@ -39,7 +39,7 @@ class Discount extends BaseModel
     }
 
 
-    public static function rules()
+    public  function rules()
     {
         return [
             'level_discount_type' => '',
