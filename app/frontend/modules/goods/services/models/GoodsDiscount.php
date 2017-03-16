@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Event;
 class GoodsDiscount
 {
     public function getDiscountDetails(){
-        Event::fire(new \app\common\events\OrderGoodsDiscountWasCalculated($this));
+        Event::fire(new \app\common\events\order\OrderGoodsDiscountWasCalculated($this));
 
         $details = [];
         $details[] = [

@@ -14,16 +14,16 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         //todo 需要转移文件夹(已注册)
-        \app\common\events\OrderGoodsDiscountWasCalculated::class => [ //商品优惠计算
+        \app\common\events\order\OrderGoodsDiscountWasCalculated::class => [ //商品优惠计算
             \app\frontend\modules\goods\listeners\MemberLevelGoodsDiscount::class, //用户等级优惠
         ],
-        \app\common\events\OrderDiscountWasCalculated::class => [ //订单优惠计算
+        \app\common\events\order\OrderDiscountWasCalculated::class => [ //订单优惠计算
             \app\frontend\modules\order\listeners\discount\testOrderDiscount::class, //立减优惠
         ],
-        \app\common\events\OrderGoodsDispatchWasCalculated::class => [ //商品运费统计
+        \app\common\events\order\OrderGoodsDispatchWasCalculated::class => [ //商品运费统计
             \app\frontend\modules\goods\listeners\UnifyGoodsDispatch::class, //统一运费
         ],
-        \app\common\events\OrderDispatchWasCalculated::class => [ //订单邮费计算
+        \app\common\events\order\OrderDispatchWasCalculated::class => [ //订单邮费计算
             \app\frontend\modules\order\listeners\dispatch\prices\UnifyOrderDispatchPrice::class, //统一运费
         ],
 

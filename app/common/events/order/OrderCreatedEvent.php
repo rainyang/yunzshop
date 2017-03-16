@@ -6,24 +6,22 @@
  * Time: 上午11:44
  */
 
-namespace app\frontend\modules\order\events;
-
-
+namespace app\common\events\order;
 use app\common\events\Event;
-use app\common\models\Order;
 
-class AfterOrderReceivedEvent extends Event
+
+class OrderCreatedEvent extends Event
 {
 
     private $_order_model;
 
     /**
-     * AfterOrderReceivedEvent constructor.
-     * @param Order $order_model
+     * Create a new event instance.
+     *
+     * @return void
      */
-    public function __construct(Order $order_model)
+    public function __construct($order_model)
     {
-        //$order_model = Order::find($order_id);
         $this->_order_model = $order_model;
     }
 

@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\order\listeners\dispatch\prices;
 
-use app\common\events\OrderDispatchWasCalculated;
+use app\common\events\order\OrderDispatchWasCalculated;
 
 class UnifyOrderDispatchPrice
 {

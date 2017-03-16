@@ -6,7 +6,8 @@
  * Time: 下午1:38
  */
 
-namespace app\common\events;
+namespace app\common\events\order;
+use app\common\events\Event;
 
 
 class PreGeneratedOrderDisplayEvent extends Event

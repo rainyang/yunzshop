@@ -6,9 +6,8 @@
  * Time: 下午1:53
  */
 
-namespace app\common\events;
-
-
+namespace app\common\events\order;
+use app\common\events\Event;
 use app\frontend\modules\goods\services\models\GoodsDispatch;
 
 class OrderGoodsDispatchWasCalculated extends Event

@@ -255,7 +255,10 @@ class YunComponent
         return $this;
     }
 
-    public function get(){
+    public function get($key=null){
+        if(isset($key)){
+            return array_get($this->values,$key,null);
+        }
         return $this->values;
     }
 }

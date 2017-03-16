@@ -9,7 +9,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\BaseController;
-use app\common\events\PreGeneratedOrderDisplayEvent;
+use app\common\events\order\PreGeneratedOrderDisplayEvent;
 use app\common\models\Order;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;

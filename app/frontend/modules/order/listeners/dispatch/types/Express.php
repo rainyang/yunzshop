@@ -9,8 +9,8 @@
 
 namespace app\frontend\modules\order\listeners\dispatch\types;
 
-use app\common\events\OrderCreatedEvent;
-use app\common\events\PreGeneratedOrderDisplayEvent;
+use app\common\events\order\OrderCreatedEvent;
+use app\common\events\order\PreGeneratedOrderDisplayEvent;
 
 use app\common\models\OrderAddress;
 
@@ -51,24 +51,25 @@ class Express
         $params = \YunShop::request();
         //dd($this->event->getOrderModel());exit;
         echo '收货地址插入数据为';
+
         $data = [
             'order_id'=>$this->event->getOrderModel()->id,
             'address'=>$params['address']['address'],
             'mobile'=>$params['address']['mobile'],
             'realname'=>$params['address']['realname'],
         ];
-        var_dump($data);
-        return ;
-        OrderAddress::save($data);
+        dd($data);
+        //return ;
+        OrderAddress::create($data);
     }
     public function subscribe($events)
     {
         $events->listen(
-            \app\common\events\PreGeneratedOrderDisplayEvent::class,
+            \app\common\events\order\PreGeneratedOrderDisplayEvent::class,
             \app\frontend\modules\order\listeners\dispatch\types\Express::class.'@onDisplay'
         );
         $events->listen(
-            \app\common\events\OrderCreatedEvent::class,
+            \app\common\events\order\OrderCreatedEvent::class,
             \app\frontend\modules\order\listeners\dispatch\types\Express::class.'@onSave'
         );
     }

@@ -5,7 +5,6 @@ use app\common\components\BaseController;
 use app\common\models\Order;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\order\events\AfterOrderReceivedEvent;
 use app\frontend\modules\order\services\OrderService;
 use Illuminate\Support\Facades\Event;
 
@@ -19,7 +18,7 @@ class TestController extends BaseController
 {
     public function index()
     {
-        Event::fire(new AfterOrderReceivedEvent(Order::find(1)));
+        Event::fire(new \app\common\events\order\AfterOrderReceivedEvent(Order::find(1)));
 
     }
 
