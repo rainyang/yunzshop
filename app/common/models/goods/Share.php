@@ -42,7 +42,7 @@ class Share extends BaseModel
      * 可使用
      * @return array
      */
-    public static function atributeNames()
+    public  function atributeNames()
     {
         return [
             'need_follow' => '强制关注',
@@ -55,7 +55,7 @@ class Share extends BaseModel
     }
 
 
-    public static function rules()
+    public  function rules()
     {
         return [
             'need_follow' => 'required|digits_between:0,1',

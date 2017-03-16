@@ -21,7 +21,7 @@ class YzRole extends BaseModel
      *  定义字段名
      * 可使
      * @return array */
-    public static function atributeNames() {
+    public  function atributeNames() {
         return [
             'name'=> '角色名称',
         ];
@@ -30,7 +30,7 @@ class YzRole extends BaseModel
     /**
      * 字段规则
      * @return array */
-    public static function rules() {
+    public  function rules() {
         return [
             'name' => 'required',
         ];

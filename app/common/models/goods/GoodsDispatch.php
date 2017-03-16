@@ -40,7 +40,7 @@ class GoodsDispatch extends BaseModel
      * 可使用
      * @return array
      */
-    public static function atributeNames()
+    public  function atributeNames()
     {
         return [
             'dispatch_type' => '配送方式',
@@ -51,7 +51,7 @@ class GoodsDispatch extends BaseModel
     }
 
 
-    public static function rules()
+    public  function rules()
     {
         return [
             'dispatch_type' => 'required|integer|min:0|max:1',

@@ -40,7 +40,7 @@ class Dispatch extends BaseModel
      * 可使用
      * @return array
      */
-    public static function atributeNames()
+    public  function atributeNames()
     {
         return [
             'uniacid' => '公众号id',
@@ -63,7 +63,7 @@ class Dispatch extends BaseModel
     }
 
 
-    public static function rules()
+    public  function rules()
     {
         return [
             'uniacid' => 'required',

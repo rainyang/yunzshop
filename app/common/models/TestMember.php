@@ -52,7 +52,7 @@ class TestMember extends  BaseModel
      * 可使用
      * @return array
      */
-    public static function atributeNames()
+    public  function atributeNames()
     {
         return [
             'title'=> trans('member.title'),
@@ -64,7 +64,7 @@ class TestMember extends  BaseModel
      * 字段规则
      * @return array
      */
-    public static function rules()
+    public  function rules()
     {
 
         return [
