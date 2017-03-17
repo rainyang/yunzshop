@@ -64,6 +64,14 @@ trait TreeTrait
 {
     private $_allNodes = null;
 
+    protected $treeNodeIdName = 'id';
+    protected $treeNodeParentIdName = 'parent_id';
+    protected $treeNodeDisplayName = 'name';
+    protected $treeSpacer = '&nbsp;';
+    protected $treeFirstIcon = '&nbsp;│ ';
+    protected $treeMiddleIcon = '&nbsp;├─ ';
+    protected $treeLastIcon = '&nbsp;└─ ';
+
     /**
      * 数据主ID名.
      *
@@ -224,11 +232,16 @@ trait TreeTrait
      */
     public function toSelectArray($parentId, $depth = 0, $adds = '')
     {
+        $this->treeSpacer = '      ';
+        $this->treeFirstIcon = '      │ ';
+        $this->treeMiddleIcon = '      ├─ ';
+        $this->treeLastIcon = '      └─ ';
+
         $treeList = [];
         $allTrees = $this->getDescendants($parentId, $depth, $adds);
         if ($allTrees) {
             foreach ($allTrees as $value) {
-                $id =  $value->{$this->getTreeNodeIdName()};
+                $id = $value->{$this->getTreeNodeIdName()};
                 $treeList[$id] = $value->spacer . $value->{$this->getTreeNodeDisplayName()};
             }
         }
@@ -307,4 +320,5 @@ trait TreeTrait
         }
         return $array;
     }
+
 }

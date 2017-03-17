@@ -2,6 +2,7 @@
 
 namespace app\common\providers;
 
+use app\backend\models\Menu;
 use app\common\facades\Setting;
 use Illuminate\Support\ServiceProvider;
 use App;
@@ -64,6 +65,9 @@ class AppServiceProvider extends ServiceProvider
             'right_column_class' => 'col-sm-9 col-xs-12',
             'show_all_errors'=>true
         ]);
+
+        //菜单生成
+        \Config::set('menu',Menu::getMenuList());
     }
 
     /**
