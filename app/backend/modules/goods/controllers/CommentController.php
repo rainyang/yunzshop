@@ -76,7 +76,7 @@ class CommentController extends BaseController
             }
             $commentModel = CommentService::comment($commentModel);
             //字段检测
-            $validator = Comment::validator($commentModel->getAttributes());
+            $validator = $commentModel->validator($commentModel->getAttributes());
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
@@ -124,7 +124,7 @@ class CommentController extends BaseController
             }
             $commentModel = CommentService::comment($commentModel);
             //字段检测
-            $validator = Comment::validator($commentModel->getAttributes());
+            $validator = $commentModel->validator($commentModel->getAttributes());
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
@@ -164,7 +164,7 @@ class CommentController extends BaseController
             $requestReply = CommentService::reply($requestReply, $commentModel, $member);
             //将数据赋值到model
             $commentModel->setRawAttributes($requestReply);
-            $validator = Comment::validator($commentModel->getAttributes());
+            $validator = $commentModel->validator($commentModel->getAttributes());
             //字段检测
             if ($validator->fails()) {
                 $this->error($validator->messages());

@@ -47,7 +47,7 @@ class BrandController extends BaseController
             $brandModel->uniacid = \YunShop::app()->uniacid;
 
             //字段检测
-            $validator = Brand::validator($brandModel->getAttributes());
+            $validator = $brandModel->validator($brandModel->getAttributes());
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {
@@ -88,7 +88,7 @@ class BrandController extends BaseController
             //将数据赋值到model
             $brandModel->setRawAttributes($requestBrand);
             //字段检测
-            $validator = Brand::validator($brandModel->getAttributes());
+            $validator = $brandModel->validator($brandModel->getAttributes());
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {

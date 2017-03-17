@@ -3,6 +3,7 @@
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use app\common\services\PermissionService;
+use app\common\helpers\Url;
 
 
 if(!function_exists('can')){
@@ -19,14 +20,14 @@ if(!function_exists('can')){
 if(!function_exists('yzWebUrl')){
     function yzWebUrl($route, $params = [])
     {
-        return \app\common\helpers\Url::web($route,$params);
+        return Url::web($route,$params);
     }
 }
 
 if(!function_exists('yzAppUrl')){
     function yzAppUrl($route, $params = [])
     {
-        return \app\common\helpers\Url::app($route,$params);
+        return Url::app($route,$params);
     }
 }
 
@@ -34,21 +35,21 @@ if(!function_exists('yzAppUrl')){
 if(!function_exists('yzWebFullUrl')){
     function yzWebFullUrl($route, $params = [])
     {
-        return \app\common\helpers\Url::absoluteWeb($route,$params);
+        return Url::absoluteWeb($route,$params);
     }
 }
 
 if(!function_exists('yzAppFullUrl')){
     function yzAppFullUrl($route, $params = [])
     {
-        return \app\common\helpers\Url::absoluteApp($route,$params);
+        return Url::absoluteApp($route,$params);
     }
 }
 
 if(!function_exists('yzUrl')){
     function yzUrl($route, $params = [])
     {
-        return \app\common\helpers\Url::web($route,$params);
+        return Url::web($route,$params);
     }
 }
 
@@ -80,11 +81,11 @@ if (! function_exists('assets')) {
     {
         // add query string to fresh cache
         if (Str::startsWith($relativeUri, 'styles') || Str::startsWith($relativeUri, 'scripts')) {
-            return url("resources/assets/dist/$relativeUri")."?v=".config('app.version');
+            return Url::shopUrl("resources/assets/dist/$relativeUri")."?v=".config('app.version');
         } elseif (Str::startsWith($relativeUri, 'lang')) {
-            return url("resources/$relativeUri");
+            return Url::shopUrl("resources/$relativeUri");
         } else {
-            return url("resources/assets/$relativeUri");
+            return Url::shopUrl("resources/assets/$relativeUri");
         }
     }
 }

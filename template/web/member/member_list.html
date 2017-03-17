@@ -152,8 +152,22 @@
                             <br/>{if empty($row['yz_member']['group']['group_name'])}无分组{else}{$row['yz_member']['group']['group_name']}{/if}</td>
                         <td>{php echo date('Y-m-d',$row['createtime'])}<br/>{php echo date('H:i',$row['createtime'])}</td>
                         <td><label class="label label-primary">{php echo SZ_YI_INTEGRAL}：{$row['credit1']}</label><br/><label class="label label-danger">余额：{$row['credit2']}</label></td>
-                        <td><label class="label label-primary">订单：重计算</label><br/>
-                            <label class="label label-danger">金额：重计算</label></td>
+
+                        <td><label class="label label-primary">订单：
+                            {if !empty($row['has_one_order'])}
+                            {$row['has_one_order']['total']}
+                            {else}
+                            0
+                            {/if}
+                            </label><br/>
+                            <label class="label label-danger">金额：
+                                {if !empty($row['has_one_order'])}
+                                {$row['has_one_order']['sum']}
+                                {else}
+                                0
+                                {/if}
+                            </label>
+                        </td>
                         <td>
                             {if $row['yz_member']['is_black']==1}
                             <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
