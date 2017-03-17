@@ -58,7 +58,7 @@ class Privilege extends \app\common\models\goods\Privilege
             $data['once_buy_limit'] = !empty($data['total_buy_limit']) ? $data['total_buy_limit']: '0';
             $data['once_buy_limit'] = !empty($data['time_begin_limit']) ? strtotime($data['time_begin_limit']) : '0';
             $data['once_buy_limit'] = !empty($data['time_end_limit']) ? strtotime($data['time_end_limit']): '0';
-            return self::validator($data);
+            return parent::validator($data);
         }
     }
 

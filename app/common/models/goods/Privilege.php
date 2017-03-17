@@ -42,7 +42,7 @@ class Privilege extends BaseModel
      * 可使用
      * @return array
      */
-    public static function atributeNames()
+    public  function atributeNames()
     {
         return [
             'show_levels' => '会员浏览等级',
@@ -57,7 +57,7 @@ class Privilege extends BaseModel
     }
 
 
-    public static function rules()
+    public  function rules()
     {
         return [
             'show_levels' => '',

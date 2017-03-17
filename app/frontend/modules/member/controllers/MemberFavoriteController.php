@@ -51,7 +51,7 @@ class MemberFavoriteController extends BaseController
 
         $favoriteModel->setRawAttributes($requestFaveorit);
         $favoriteModel->uniacid = \YunShop::app()->uniacid;
-        $validator = MemberFavorite::validator($favoriteModel->getAttributes());
+        $validator = $favoriteModel->validator($favoriteModel->getAttributes());
         if ($validator->fails()) {
             return $this->errorJson($validator->messages());
         }

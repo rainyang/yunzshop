@@ -38,7 +38,7 @@ class MemberGroupController extends BaseController
             $groupModel->setRawAttributes($requestGroup);
             $groupModel->uniacid = \YunShop::app()->uniacid;
 
-            $validator = MemberGroup::validator($groupModel->getAttributes());
+            $validator = $groupModel->validator($groupModel->getAttributes());
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
@@ -65,7 +65,7 @@ class MemberGroupController extends BaseController
         if ($requestGroup) {
             $groupModel->setRawAttributes($requestGroup);
 
-            $validator = MemberGroup::validator($requestGroup);
+            $validator = $groupModel->validator($requestGroup);
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {

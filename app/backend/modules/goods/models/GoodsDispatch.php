@@ -41,7 +41,7 @@ class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
     public static function relationValidator($goodsId, $data, $operate)
     {
         if ($data) {
-            return self::validator($data);
+            return parent::validator($data);
         }
     }
     public static function getModel($goodsId,$operate)
