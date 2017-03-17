@@ -78,8 +78,7 @@ class YzRole extends BaseModel
     {
         return static::where('id', $roleId)
             ->with(['rolePermission' => function($query) {
-                return $query->select('id', 'item_id','permission')
-                    ->where('type', '=', YzPermission::TYPE_ROLE);
+                return $query->select('id', 'item_id','permission')->where('type', '=', YzPermission::TYPE_ROLE);
             }])
             ->first();
     }

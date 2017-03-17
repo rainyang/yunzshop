@@ -10,15 +10,34 @@ namespace app\backend\modules\user\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\models\user\UniAccountUser;
 use app\common\models\user\User;
 use app\common\models\user\UserProfile;
 use app\common\models\user\YzRole;
 
 class UserController extends BaseController
 {
+    public function search() {
+        $keyword = \YunShop::request()->keyword;
+        dd($keyword);
+        //$kwd                = trim($_GPC['keyword']);
+        /*$params             = array();
+        $params[':uniacid'] = $_W['uniacid'];
+        $condition          = " and uniacid=:uniacid and deleted=0";
+        if (!empty($kwd)) {
+            $condition .= " AND `rolename` LIKE :keyword";
+            $params[':keyword'] = "%{$kwd}%";
+        }
+        $ds = pdo_fetchall('SELECT id,rolename,perms FROM ' . tablename('sz_yi_perm_role') . " WHERE 1 {$condition} order by id asc", $params);
+        include $this->template('query_role');
+        exit;*/
+    }
     public function index()
     {
-        dd(\YunShop::app()->uniacid);
+        $pageSize = 2;
+
+        $userList = UniAccountUser::getUserList($pageSize);
+        //dd($userList);
         return view('user.user.user',[
             'pager'     => '',
             'roleList'  => ''
@@ -86,6 +105,7 @@ class UserController extends BaseController
         $permissions = \Config::get('menu');
         $roleList = YzRole::getRoleListToUser();
         //dd($roleList);
+
         return view('user.user.form',[
             'user'=>array( 'status' => 1, 'id' => ''),
             'roleList' => $roleList,
