@@ -15,37 +15,37 @@ use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderDelete;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderSend;
+use app\frontend\modules\order\services\OrderService;
+use Illuminate\Http\Request;
 
 class OperationController extends BaseController
 {
     public function pay(){
         if (\YunShop::app()->ispost) {
             $order = Order::find(\YunShop::request()->order_id);
-            $order_pay = new OrderPay($order);
-            if (!$order_pay->payable()) {
-                return show_json(-1,'状态不正确');
+
+            $result = OrderService::orderPay($order);
+            if($result['result'] === false){
+                $this->errorJson($result['message']);
             }
-            $order_pay->pay();
-            return show_json(1);
+            $this->successJson($result['message']);
         }
     }
     public function cancelPay(){
         $order = Order::find(\YunShop::request()->order_id);
-        $cancel_pay = new OrderCancelPay($order);
-        if (!$cancel_pay->cancelable()) {
-            show_json(-1,'状态不正确');
+        list($result,$message) = OrderService::orderCancelPay($order);
+        if($result === false){
+            return $this->errorJson($message);
         }
-        $cancel_pay->cancelPay();
-        show_json(1);
+        return $this->successJson($message);
     }
     public function send(){
         $order = Order::find(\YunShop::request()->order_id);
-        $order_send = new OrderSend($order);
-        if (!$order_send) {
-            show_json(-1,'状态不正确');
+        list($result,$data) = OrderService::orderSend($order);
+        if($result === false){
+            $this->errorJson($data);
         }
-        $order_send->send();
-        show_json(1);
+        $this->successJson($data);
     }
     public function cancelSend(){
         $order = Order::find(\YunShop::request()->order_id);

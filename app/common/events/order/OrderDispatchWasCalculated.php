@@ -23,8 +23,4 @@ class OrderDispatchWasCalculated extends Event
     public function getOrderModel(){
         return $this->_order_dispatch_obj->getOrderModel();
     }
-    //提供给监听者 向运费类添加一条运费
-    public function addDispatchDetail($dispatch_detail){
-        $this->_order_dispatch_obj->addDispatchDetail($dispatch_detail);
-    }
 }

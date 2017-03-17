@@ -8,7 +8,9 @@
  */
 
 namespace app\frontend\modules\order\services\behavior;
+use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\models\Order;
+use Illuminate\Support\Facades\Event;
 
 class OrderClose
 {
@@ -22,7 +24,9 @@ class OrderClose
     public function close()
     {
         $this->order_model->status = -1;
-        return $this->order_model->save();
+        $result = $this->order_model->save();
+        Event::fire(new AfterOrderCanceledEvent($this->order_model));
+        return $result;
     }
 
     public function closeable()

@@ -9,28 +9,32 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
-use app\common\models\Order;
+use app\common\events\order\AfterOrderCanceledEvent;
+use app\common\events\order\BeforeOrderCancelPayEvent;
+use app\frontend\modules\order\services\models\OperationValidator;
 
-class OrderCancelPay
+class OrderCancelPay extends OrderOperation
 {
-    public $order_model;
-
-    public function __construct(Order $order_model)
-    {
-        $this->order_model = $order_model;
-    }
-
     public function cancelPay()
     {
         $this->order_model->status = 0;
-        return $this->order_model->save();
+        $result = $this->order_model->save();
+        event(new AfterOrderCanceledEvent($this->order_model));
+        return $result;
     }
 
     public function cancelable()
     {
-        if ($this->order_model['status'] == 1) {
-            return true;
+        $Event = new BeforeOrderCancelPayEvent($this->order_model);
+        event($Event);
+        if ($Event->hasOpinion()) {
+            $this->message = $Event->getOpinion()->message;
+            return $Event->getOpinion()->result;
         }
-        return false;
+        if ($this->order_model['status'] != 1) {
+            $this->message = '订单状态不满足取消付款操作';
+            return false;
+        }
+        return true;
     }
 }

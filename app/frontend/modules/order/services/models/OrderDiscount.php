@@ -8,9 +8,7 @@
 
 namespace app\frontend\modules\order\services\models;
 
-
-use Illuminate\Support\Facades\Event;
-
+use app\common\events\order\OrderDiscountWasCalculated;
 class OrderDiscount
 {
     private $_order_model;
@@ -19,7 +17,9 @@ class OrderDiscount
     public function __construct(PreGeneratedOrderModel $order_model)
     {
         $this->_order_model = $order_model;
-        Event::fire(new \app\common\events\order\OrderDiscountWasCalculated($order_model));
+        $Event = new OrderDiscountWasCalculated($this);
+        event($Event);
+        $this->_discount_details = $Event->getData();
     }
 
     // 获取商品可选的优惠

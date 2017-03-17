@@ -9,7 +9,9 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
+use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Order;
+use Illuminate\Support\Facades\Event;
 
 class OrderReceive
 {
@@ -23,11 +25,14 @@ class OrderReceive
     public function receive()
     {
         $this->order_model->status = 3;
-        return $this->order_model->save();
+        $result = $this->order_model->save();
+        Event::fire(new AfterOrderReceivedEvent($this->order_model));
+        return $result;
     }
 
     public function receiveable()
     {
+
         if ($this->order_model->status == 2) {
             return true;
         }

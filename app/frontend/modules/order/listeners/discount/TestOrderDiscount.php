@@ -17,8 +17,7 @@ class TestOrderDiscount
     }
     public function getDiscountDetails(){
 
-        $details = [];
-        $details[] = [
+        $details = [
             'name'=>'订单满减',
             'value'=>'85',
             'price'=>'50',
@@ -33,7 +32,7 @@ class TestOrderDiscount
         if (!$this->needDiscount()) {
             return;
         }
-        $even->getOrderModel()->setDiscountDetails($this->getDiscountDetails());
+        $even->addData($this->getDiscountDetails());
 
         return;
     }

@@ -9,7 +9,9 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
+use app\common\events\order\AfterOrderPaidEvent;
 use app\common\models\Order;
+use Illuminate\Support\Facades\Event;
 
 class OrderPay
 {
@@ -23,7 +25,9 @@ class OrderPay
     public function pay()
     {
         $this->order_model->status = 1;
-        return $this->order_model->save();
+        $result = $this->order_model->save();
+        Event::fire(new AfterOrderPaidEvent($this->order_model));
+        return $result;
     }
 
     public function payable()

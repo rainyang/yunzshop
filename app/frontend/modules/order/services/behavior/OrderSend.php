@@ -9,7 +9,9 @@
 namespace app\frontend\modules\order\services\behavior;
 
 
+use app\common\events\order\AfterOrderSentEvent;
 use app\common\models\Order;
+use Illuminate\Support\Facades\Event;
 
 class OrderSend
 {
@@ -23,7 +25,9 @@ class OrderSend
     public function send()
     {
         $this->order_model->status = 2;
-        return $this->order_model->save();
+        $result = $this->order_model->save();
+        Event::fire(new AfterOrderSentEvent($this->order_model));
+        return $result;
     }
 
     public function sendable()

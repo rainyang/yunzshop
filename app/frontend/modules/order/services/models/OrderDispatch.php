@@ -8,8 +8,7 @@
 
 namespace app\frontend\modules\order\services\models;
 
-use Illuminate\Support\Facades\Event;
-
+use app\common\events\order\OrderDispatchWasCalculated;
 class OrderDispatch
 {
     private $_order_model;
@@ -18,7 +17,9 @@ class OrderDispatch
     public function __construct(PreGeneratedOrderModel $order_model)
     {
         $this->_order_model = $order_model;
-        Event::fire(new \app\common\events\order\OrderDispatchWasCalculated($this));
+        $Event = new OrderDispatchWasCalculated($this);
+        event($Event);
+        $this->_dispatch_details = $Event->getData();
     }
 
     // 获取商品可选配送方式
@@ -35,6 +36,9 @@ class OrderDispatch
     //提供给订单 累加所有监听者提供的运费
     public function getDispatchPrice()
     {
+        if(empty($this->_dispatch_details)){
+            return 0;
+        }
         return $result = array_sum(array_column($this->_dispatch_details, 'price'));
     }
 
@@ -44,11 +48,6 @@ class OrderDispatch
         return $this->_order_model;
     }
 
-    //提供给监听者 添加一种运费
-    public function addDispatchDetail($dispatch_detail)
-    {
-        $this->_dispatch_details[] = $dispatch_detail;
-    }
 
     //提供给订单 保存订单的配送信息
     public function saveDispatchDetail($order_model){

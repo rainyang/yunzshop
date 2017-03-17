@@ -1,6 +1,5 @@
 <?php
 /**
- * 订单收货后事件
  * Created by PhpStorm.
  * User: shenyang
  * Date: 2017/3/3
@@ -9,7 +8,8 @@
 
 namespace app\common\events\order;
 
-class AfterOrderReceivedEvent extends OrderStatusChangedEvent
+
+abstract class BeforeOrderStatusChangeEvent extends OrderEvent
 {
 
 }

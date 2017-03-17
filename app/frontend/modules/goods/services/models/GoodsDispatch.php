@@ -8,9 +8,7 @@
 
 namespace app\frontend\modules\goods\services\models;
 
-
 use app\common\events\order\OrderGoodsDispatchWasCalculated;
-use Illuminate\Support\Facades\Event;
 
 class GoodsDispatch
 {
@@ -19,26 +17,22 @@ class GoodsDispatch
     public function __construct(PreGeneratedOrderGoodsModel $order_goods_model)
     {
         $this->_order_goods_model = $order_goods_model;
-        Event::fire(new OrderGoodsDispatchWasCalculated($this));
+        event(new OrderGoodsDispatchWasCalculated($this));
     }
     public function getOrderGoodsModel(){
         return $this->_order_goods_model;
     }
-    // 获取商品配送方式
+    // 获取商品配送方式 todo 从商品中获取
     public function getDispatchType(){
         return 1;
     }
     //为订单商品提供 获取商品的运费信息
     public function getDispatchDetails(){
         return $this->_dispatch_details;
-        /*$details[] = [
-            'name'=>'运费模板2',
-            'id'=>2,
-            'value'=>'11',
-            'price'=>'11',
-            'plugin'=>'2',
-        ];
-        return $details;*/
+    }
+    public function saveDispatchDetails($_order_goods_model){
+        $_order_goods_model->dispatch_details = $this->getDispatchDetails();
+        $_order_goods_model->save();
     }
     //为监听者提供 添加运费信息
     public function addDispatchDetail($dispatch_detail){
