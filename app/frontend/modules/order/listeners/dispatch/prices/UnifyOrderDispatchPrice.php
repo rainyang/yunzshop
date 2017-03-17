@@ -20,7 +20,7 @@ class UnifyOrderDispatchPrice
             return;
         }
         //返回给事件
-        $even->addDispatchDetail($this->getDispatchDetails());
+        $even->addData($this->getDispatchDetails());
 
         return;
     }

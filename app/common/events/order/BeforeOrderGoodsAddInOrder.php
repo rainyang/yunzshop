@@ -10,7 +10,7 @@ namespace app\common\events\order;
 use app\common\events\Event;
 
 
-class OrderGoodsWasAddedInOrder extends Event
+class BeforeOrderGoodsAddInOrder extends Event
 {
     private $_order_goods_model;
 

@@ -15,8 +15,7 @@ class Level
 {
     public function onReceived($event){
         $order_model = $event->getOrderModel();
-        dd($order_model);
-        MemberLevel::upgradeMemberLevel(0,0,0);
+        //MemberLevel::upgradeMemberLevel(0,0,0);
 
     }
     public function subscribe($events)

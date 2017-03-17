@@ -7,18 +7,9 @@
  */
 
 namespace app\common\events\order;
-use app\common\events\Event;
 
 
-class OrderGoodsDiscountWasCalculated extends Event
+class OrderGoodsDiscountWasCalculated extends OrderGoodsEvent
 {
-    private $_order_goods_model;
 
-    public function __construct($order_goods_model)
-    {
-        $this->_order_goods_model = $order_goods_model;
-    }
-    public function getOrderGoodsModel(){
-        return $this->_order_goods_model;
-    }
 }

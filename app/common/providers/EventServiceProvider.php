@@ -36,6 +36,9 @@ class EventServiceProvider extends ServiceProvider
     protected $subscribe = [
         \app\frontend\modules\order\listeners\dispatch\types\Express::class,
         \app\frontend\modules\member\listeners\Level::class,
+        \app\common\listeners\order\OrderTestListener::class,
+        \app\common\listeners\goods\GoodsTestListener::class,
+
 
     ];
     /**
