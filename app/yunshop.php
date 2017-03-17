@@ -47,6 +47,9 @@ class YunShop
         $controller->action = $action;
         $controller->route = implode('.',$currentRoutes);
 
+        //菜单生成
+        \Config::set('menu',Menu::getMenuList());
+
         //检测权限
         if(self::isWeb() && !PermissionService::can($controller->route)){
             abort(403,'无权限');
