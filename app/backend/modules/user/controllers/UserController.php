@@ -12,12 +12,13 @@ namespace app\backend\modules\user\controllers;
 use app\common\components\BaseController;
 use app\common\models\user\User;
 use app\common\models\user\UserProfile;
+use app\common\models\user\YzRole;
 
 class UserController extends BaseController
 {
     public function index()
     {
-        //dd(1);
+        dd(\YunShop::app()->uniacid);
         return view('user.user.user',[
             'pager'     => '',
             'roleList'  => ''
@@ -83,9 +84,11 @@ class UserController extends BaseController
 
 
         $permissions = \Config::get('menu');
-        //dd($permissions);
+        $roleList = YzRole::getRoleListToUser();
+        //dd($roleList);
         return view('user.user.form',[
             'user'=>array( 'status' => 1, 'id' => ''),
+            'roleList' => $roleList,
             'permissions'=>$permissions,
             'userPermissons'=>[],
         ])->render();

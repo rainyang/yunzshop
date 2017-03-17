@@ -63,6 +63,11 @@ class YzRole extends BaseModel
             ->paginate($pageSize);
     }
 
+    public static function getRolelistToUser()
+    {
+        return static::select('id', 'name')->uniacid()->where('status', '<>', "1")->get()->toArray();
+    }
+
     /**
      * Get full role information and role permissions By roleId
      *
