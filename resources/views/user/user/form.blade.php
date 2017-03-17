@@ -11,7 +11,20 @@
                         <div class='panel-heading'>
                             操作员设置
                         </div>
+
                         <div class='panel-body'>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">角色</label>
+                                <div class="col-xs-12 col-sm-8 col-lg-9">
+                                    <select name="roleid" class='form-control'>
+                                        <option value=""  selected>点击选择角色</option>
+                                        {loop $roles $role}
+                                        <option value="{$role['id']}" {if $_GPC['roleid']== $role['id']} selected{/if}>{$role['rolename']}</option>
+                                        {/loop}
+
+                                    </select>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 操作员用户名</label>
                                 <div class="col-sm-9 col-xs-12">
@@ -23,39 +36,6 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>  操作员密码</label>
                                 <div class="col-sm-9 col-xs-12">
                                     <input type="password" name="user[password]" class="form-control" value="{{ $user['password'] or '' }}" autocomplete="off" />
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">所属角色</label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <input type='hidden' id='role[role_id]' name='userRole[role_id]' value="{$role['id']}" />
-                                    <div class='input-group'>
-                                        <input type="text" maxlength="30" value="{{ $role['role_name'] or '' }}" id="role" class="form-control" readonly />
-                                        <div class='input-group-btn'>
-                                            <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus1').modal();">选择角色</button>
-                                            <button class="btn btn-danger" type="button" onclick="$('#roleid').val('');$('#role').val('');">清除选择</button>
-                                        </div>
-                                    </div>
-                                    <span class='help-block'>如果您选择了角色，则此用户本身就继承了此角色的所有权限</span>
-                                    <div id="modal-module-menus1"  class="modal fade" tabindex="-1">
-                                        <div class="modal-dialog" style='width: 920px;'>
-                                            <div class="modal-content">
-                                                <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择角色</h3></div>
-                                                <div class="modal-body" >
-                                                    <div class="row">
-                                                        <div class="input-group">
-                                                            <input type="text" class="form-control" name="keyword" value="" id="search-kwd1" placeholder="请输入角色名称" />
-                                                            <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_roles();">搜索</button></span>
-                                                        </div>
-                                                    </div>
-                                                    <div id="module-menus1" style="padding-top:5px;"></div>
-                                                </div>
-                                                <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
-                                            </div>
-
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 

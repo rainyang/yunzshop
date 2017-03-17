@@ -13,6 +13,7 @@ use app\common\components\BaseController;
 use app\common\models\user\UniAccountUser;
 use app\common\models\user\User;
 use app\common\models\user\UserProfile;
+use app\common\models\user\YzRole;
 
 class UserController extends BaseController
 {
@@ -36,7 +37,7 @@ class UserController extends BaseController
         $pageSize = 2;
 
         $userList = UniAccountUser::getUserList($pageSize);
-        dd($userList);
+        //dd($userList);
         return view('user.user.user',[
             'pager'     => '',
             'roleList'  => ''
@@ -102,7 +103,8 @@ class UserController extends BaseController
 
 
         $permissions = \Config::get('menu');
-        //dd($permissions);
+        $roleList = YzRole::getRoleListToUser();
+        dd($roleList);
         return view('user.user.form',[
             'user'=>array( 'status' => 1, 'id' => ''),
             'permissions'=>$permissions,
