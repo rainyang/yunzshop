@@ -9,38 +9,7 @@
 namespace app\common\events\order;
 
 
-use app\common\events\Event;
-use app\common\models\Order;
-
-class OrderStatusChangedEvent extends Event
+class OrderStatusChangedEvent extends OrderEvent
 {
 
-    protected $_order_model;
-
-    /**
-     * AfterOrderReceivedEvent constructor.
-     * @param Order $order_model
-     */
-    public function __construct(Order $order_model)
-    {
-        //$order_model = Order::find($order_id);
-        $this->_order_model = $order_model;
-    }
-
-    /**
-     * (监听者)获取订单model
-     * @return mixed
-     */
-    public function getOrderModel(){
-        return $this->_order_model;
-    }
-    /**
-     * Get the channels the event should be broadcast on.
-     *
-     * @return array
-     */
-    public function broadcastOn()
-    {
-        return [];
-    }
 }
