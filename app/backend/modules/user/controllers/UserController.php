@@ -10,101 +10,56 @@ namespace app\backend\modules\user\controllers;
 
 
 use app\common\components\BaseController;
-use app\common\models\user\UniAccountUser;
+use app\common\helpers\PaginationHelper;
+use app\common\helpers\Url;
 use app\common\models\user\User;
-use app\common\models\user\UserProfile;
 use app\common\models\user\YzRole;
 
 class UserController extends BaseController
 {
-    public function search() {
-        $keyword = \YunShop::request()->keyword;
-        dd($keyword);
-        //$kwd                = trim($_GPC['keyword']);
-        /*$params             = array();
-        $params[':uniacid'] = $_W['uniacid'];
-        $condition          = " and uniacid=:uniacid and deleted=0";
-        if (!empty($kwd)) {
-            $condition .= " AND `rolename` LIKE :keyword";
-            $params[':keyword'] = "%{$kwd}%";
-        }
-        $ds = pdo_fetchall('SELECT id,rolename,perms FROM ' . tablename('sz_yi_perm_role') . " WHERE 1 {$condition} order by id asc", $params);
-        include $this->template('query_role');
-        exit;*/
-    }
+    /*
+     *  操作员列表
+     * */
     public function index()
     {
-        $pageSize = 2;
+        $pageSize = 1;
 
-        $userList = UniAccountUser::getUserList($pageSize);
-        //dd($userList);
+        $userList = User::getPageList($pageSize);
+        $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
+
         return view('user.user.user',[
-            'pager'     => '',
-            'roleList'  => ''
+            'pager'     => $pager,
+            'userList'  => $userList
         ])->render();
     }
-
+    /*
+     *  添加操作员
+     * */
     public function store()
     {
+        $userModel = new User();
 
         $requestUser = \YunShop::request()->user;
         if ($requestUser) {
-            //验证用户名是否存在
-            if (empty($requestUser['username']) || User::checkUserName($requestUser['username'])) {
-                return $this->message('非法用户名或用户名已存在，请重新添加！', '',  'error');
-            }
-            //密码不能为空
-            if (empty($requestUser['password'])) {
-                return $this->message('密码不能为空！', '',  'error');
-            }
 
-            $userModel = new User();
-            //附值数据
             $userData = $this->addedUserData($requestUser);
-            $userData = $userData + $userModel->attributes;
-            $userModel->setRawAttributes($userData);
-            //验证数据
-            $validator = User::validator($userModel->getAttributes());
+            $userModel->fill($userData);
+            $userModel->widgets = \YunShop::request()->widgets;
+            $userModel->widgets['perms'] = \YunShop::request()->perms;
+
+            $validator = $userModel->validator();
             if ($validator->fails()) {
-                return $this->message($validator->message(), '', 'error');
-            }else{
-
-            }
-            //添加操作员
-            if (!$userModel->save()) {
-                return $this->message('操作员用户信息写入失败，请重试！', '', 'error');
-            }
-        //user_profile
-            $requestProfile = \YunShop::request()->profile;
-            if ($requestProfile) {
-
-                $profileModel = new UserProfile();
-                //附值数据
-                $requestProfile = $requestProfile + $profileModel->attributes;
-                $profileModel->setRawAttributes($requestProfile);
-                $profileModel->uid = $userModel->id;
-                $profileModel->createtime = time();
-                //验证数据
-                $validator = UserProfile::validator($profileModel->getAttributes());
-                if ($validator->fails()) {
-                    return $this->message($validator->message(), '', 'error');
-                }
-                //添加操作员信息
-                if (!$profileModel->save()) {
-                    return $this->message('操作员资料信息写入失败，请重试！', '', 'error');
+                $this->error($validator->messages());
+            } else {
+                $userModel->password = $this->password($userModel->password, $userModel->salt);
+                if ($userModel->save()) {
+                    return $this->message('添加操作员成功.', Url::absoluteWeb('user.user.index'));
                 }
             }
-                //uni_account_user
-                //user_permission
-                //yz_permission
-            return $this->message('操作员添加成功。');
 
         }
-
-
         $permissions = \Config::get('menu');
         $roleList = YzRole::getRoleListToUser();
-        //dd($roleList);
 
         return view('user.user.form',[
             'user'=>array( 'status' => 1, 'id' => ''),
@@ -112,6 +67,22 @@ class UserController extends BaseController
             'permissions'=>$permissions,
             'userPermissons'=>[],
         ])->render();
+    }
+
+    /*
+     *  修改操作员
+     * */
+    public function update()
+    {
+
+    }
+
+    /*
+     *  删除操作员
+     * */
+    public function destroy()
+    {
+
     }
 
     /**
@@ -125,7 +96,7 @@ class UserController extends BaseController
         $data['lastip']      = CLIENT_IP;
         $data['joinip']      = CLIENT_IP;
         $data['salt']        = $this->randNum(8);
-        $data['password']    = $this->password($data['password'], $data['salt']);
+
         return $data;
     }
 
@@ -140,6 +111,7 @@ class UserController extends BaseController
         $passwordinput = "{$passwordinput}-{$salt}-{$authkey}";
         return sha1($passwordinput);
     }
+
     /**
      * 获取随机字符串
      * @param number $length 字符串长度
