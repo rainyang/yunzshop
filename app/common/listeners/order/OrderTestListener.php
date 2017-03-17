@@ -22,7 +22,7 @@ class OrderTestListener
 
     public function onTest(BeforeOrderStatusChangeEvent $event)
     {
-        $event->setOpinion(new Opinion(false,'插件反对执行'));
+        //$event->setOpinion(new Opinion(false,'插件反对执行'));
 
         return false;
     }

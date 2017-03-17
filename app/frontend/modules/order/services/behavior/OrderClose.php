@@ -12,28 +12,10 @@ use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\models\Order;
 use Illuminate\Support\Facades\Event;
 
-class OrderClose
+class OrderClose extends OrderOperation
 {
-    public $order_model;
-
-    public function __construct(Order $order_model)
-    {
-        $this->order_model = $order_model;
-    }
-
-    public function close()
-    {
-        $this->order_model->status = -1;
-        $result = $this->order_model->save();
-        Event::fire(new AfterOrderCanceledEvent($this->order_model));
-        return $result;
-    }
-
-    public function closeable()
-    {
-        if ($this->order_model->status == 0) {
-            return true;
-        }
-        return false;
-    }
+    protected $status_before_change = [ORDER::WAIT_PAY];
+    protected $status_after_changed = ORDER::CLOSE;
+    protected $name = '关闭';
+    protected $past_tense_class_name = 'OrderClosed';
 }
