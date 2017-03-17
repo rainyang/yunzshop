@@ -64,7 +64,7 @@ class Category extends \app\common\models\Category
      * 可使
      * @return array
      */
-    public static function atributeNames()
+    public  function atributeNames()
     {
         return [
             'name' => '分类名称',
@@ -75,7 +75,7 @@ class Category extends \app\common\models\Category
      * 字段规则
      * @return array
      */
-    public static function rules()
+    public  function rules()
     {
         return [
             'name' => 'required',

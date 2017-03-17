@@ -1,6 +1,6 @@
 <div class="container" style="    position: fixed;margin: auto;top: 0;left: 0;right: 0;z-index: 10;">
     <div class="row">
-        <div class="col-md-9 col-md-offset-3" style="{php echo (session()->has('flash_notification.overlay')) ? '':'margin-top:60px;z-index: 999;    margin-left:240px;'}">
+        <div class="col-md-9 col-md-offset-3" style="{!! (session()->has('flash_notification.overlay')) ? '':'margin-top:60px;z-index: 999;    margin-left:240px;' !!}">
 
             @if (session()->has('flash_notification.message'))
                 @if (session()->has('flash_notification.overlay'))
@@ -15,7 +15,7 @@
                                 </div>
 
                                 <div class="modal-body">
-                                    <p>{{session('flash_notification.message')}}</p>
+                                    <p>{!! session('flash_notification.message') !!}</p>
                                 </div>
 
                                 <div class="modal-footer">
@@ -34,7 +34,7 @@
                                     aria-hidden="true"
                             >&times;</button>
                         @endif
-                        {{session('flash_notification.message')}}
+                            {!! session('flash_notification.message') !!}
                     </div>
                 @endif
             @endif

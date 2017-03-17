@@ -46,7 +46,7 @@ class MemberAddressController extends BaseController
             $addressModel->uid = $memberId;
             $addressModel->uniacid = \YunShop::app()->uniacid;
 
-            $validator = MemberAddress::validator($addressModel->getAttributes());
+            $validator = $addressModel->validator($addressModel->getAttributes());
             if ($validator->fails()) {
                 return $this->errorJson($validator->messages());
             }
@@ -71,13 +71,13 @@ class MemberAddressController extends BaseController
         if ($requestAddress) {
             $addressModel->setRawAttributes($requestAddress);
 
-            $validator = validator($addressModel->getAttributes());
+            $validator = $addressModel->validator($addressModel->getAttributes());
             if ($validator->fails()) {
                 return $this->errorJson($validator->message());
             }
             if ($addressModel->isdefault == '1') {
                 //$member_id为负值！！！！
-                MemberAddress::cancelDefaultAddress($memberId);
+                MemberAddress::cancelDefaultAddress($addressModel->member_id);
             }
             if ($addressModel->save()) {
                 return $this->successJson();

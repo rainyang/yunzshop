@@ -28,7 +28,7 @@ class TestMemberController extends BaseController
     public function testLogin()
     {
         //表单数据交验
-        $validator = TestMember::validator(Input::get());
+        $validator = (new TestMember())->validator(Input::get());
         print_r($validator->messages());
 
         $this->render('test', ['a' => '123456']);
@@ -36,7 +36,7 @@ class TestMemberController extends BaseController
 
     public function testMessage()
     {
-        $validator = TestMember::validator(['title'=>'','body'=>'1']);
+        $validator = (new TestMember())->validator(['title'=>'','body'=>'1']);
 
         //flash('这里将跳转','danger');
         //flash($validator->messages(),'danger');

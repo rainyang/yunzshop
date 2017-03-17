@@ -12,7 +12,7 @@ class Url
     public static function shopUrl($uri)
     {
         $domain = request()->getSchemeAndHttpHost();
-        $module = isset(\YunShop::request()->m) ? \YunShop::request()->m :'';
+        $module = request()->get('m','');
         return $domain . '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
     }
 

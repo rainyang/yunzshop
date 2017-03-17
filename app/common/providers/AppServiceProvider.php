@@ -2,6 +2,7 @@
 
 namespace app\common\providers;
 
+use app\backend\models\Menu;
 use app\common\facades\Setting;
 use Illuminate\Support\ServiceProvider;
 use App;
@@ -55,6 +56,16 @@ class AppServiceProvider extends ServiceProvider
                 }
             );
         }
+
+        //表单设置
+        \BootForm::horizontal();
+        \BootForm::open([
+            'left_column_class' => 'col-xs-12 col-sm-3 col-md-2',
+            'left_column_offset_class' => '',
+            'right_column_class' => 'col-sm-9 col-xs-12',
+            'show_all_errors'=>true
+        ]);
+
     }
 
     /**
