@@ -36,5 +36,10 @@ class UniAccountUser extends BaseModel
         return $this->hasMany('app\common\models\user\User', 'uid', 'uid');
     }
 
+    public function relationValidator()
+    {
+
+    }
+
 
 }

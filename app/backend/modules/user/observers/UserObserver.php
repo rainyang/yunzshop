@@ -1,16 +1,31 @@
 <?php
+namespace app\backend\modules\user\observers;
+
+use app\common\observers\BaseObserver;
+use Illuminate\Database\Eloquent\Model;
+
 
 /**
  * Created by PhpStorm.
  * User: libaojia
- * Date: 2017/3/16
- * Time: 下午1:41
+ * Date: 2017/3/17
+ * Time: 上午10:56
  */
-class UserObservices extends \app\common\observers\BaseObserver
+class UserObserver extends BaseObserver
 {
-    public function saving(Model $model) {}
+    public function saving(Model $model)
+    {
 
-    public function saved(Model $model) {}
+        //检测1
+       // if(){
+        //    return false;
+      // }
+        //检测2
+    }
+
+    public function saved(Model $model) {
+
+    }
 
     public function updating(Model $model) {}
 

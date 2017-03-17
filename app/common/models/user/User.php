@@ -9,6 +9,7 @@
 namespace app\common\models\user;
 
 
+use app\backend\modules\user\observers\UserObserver;
 use app\common\models\BaseModel;
 
 class User extends BaseModel
@@ -18,6 +19,8 @@ class User extends BaseModel
     public $timestamps = false;
 
     public $fillable = [];
+
+    public $widgets =[];
 
     public $attributes = [
         'groupid' => 0 ,
@@ -110,6 +113,42 @@ class User extends BaseModel
         }
 
         return $permissions;
+    }
+
+    /**
+    * 定义字段名
+    *
+    * @return array */
+    public static function atributeNames() {
+        return [
+            'username'=> "操作员用户名",
+            'password' => "操作员密码"
+        ];
+    }
+    /**
+     * 字段规则
+     *
+     * @return array */
+    public static function rules()
+    {
+        return [
+            'username' => 'unique',
+            'password' => 'required'
+        ];
+    }
+    /**
+     * 在boot()方法里注册下模型观察类
+     * boot()和observe()方法都是从Model类继承来的
+     * 主要是observe()来注册模型观察类，可以用TestMember::observe(new TestMemberObserve())
+     * 并放在代码逻辑其他地方如路由都行，这里放在这个TestMember Model的boot()方法里自启动。
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+
+        //注册观察者
+        static::observe(new UserObserver());
     }
 
 }

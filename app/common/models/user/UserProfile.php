@@ -60,4 +60,14 @@ class UserProfile extends BaseModel
         'workerid'      => ''
     ];
 
+    public function relationValidator($data)
+    {
+        return self::validator($data);
+    }
+
+    public function relationSave($data)
+    {
+
+    }
+
 }

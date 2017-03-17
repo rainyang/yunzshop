@@ -16,11 +16,11 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">角色</label>
                                 <div class="col-xs-12 col-sm-8 col-lg-9">
-                                    <select name="roleid" class='form-control'>
+                                    <select name="widgets[role_id]" class='form-control'>
                                         <option value=""  selected>点击选择角色</option>
-                                        {loop $roles $role}
-                                        <option value="{$role['id']}" {if $_GPC['roleid']== $role['id']} selected{/if}>{$role['rolename']}</option>
-                                        {/loop}
+                                        @foreach($roleList as $role)
+                                        <option value="{{  $role['id'] }}" >{{ $role['name'] }}</option>
+                                        @endforeach
 
                                     </select>
                                 </div>
@@ -42,13 +42,13 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"> 姓名</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="profile[realname]" class="form-control" value="{{ $user['realname'] or '' }}" />
+                                    <input type="text" name="widgets[profile][realname]" class="form-control" value="{{ $user['realname'] or '' }}" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="text" name="profile[mobile]" class="form-control" value="{{ $user['mobile'] or '' }}" />
+                                    <input type="text" name="widgets[profile][mobile]" class="form-control" value="{{ $user['mobile'] or '' }}" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -80,9 +80,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <input type="hidden" name="uid" value="{$item['uid']}" />
                                     <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
-                                    <input type="hidden" name="token" value="{$_W['token']}" />
                                     <input type="button" name="back" onclick='history.back()' style='margin-left:10px;' value="返回列表" class="btn btn-default" />
                                 </div>
                             </div>
@@ -96,80 +94,6 @@
                 </form>
             </div>
         </div>
-
-                 <script language='javascript'>
-
-                    $(function(){
-
-                        $('#dataform').ajaxForm();
-
-                        $(':input[name=submit]').click(function(){
-                            if($(this).attr('submitting')=='1'){
-                                return;
-                            }
-
-                            if ($(':input[name=username]').isEmpty()) {
-                                Tip.focus($(':input[name=username]'), '请填写用户名!');
-                                return;
-                            }
-                            {if empty($item)}
-                            if ($(':input[name=password]').isEmpty()) {
-                                Tip.focus($(':input[name=password]'), '请输入用户密码!');
-                                return;
-                            }
-                            {/if}
-
-                            $(this).attr('submitting','1').removeClass('btn-primary');
-                            $('#dataform').ajaxSubmit(function(data){
-                                data = eval("(" +  data  +")");
-                                if(data.result!=1){
-                                    $(this).removeAttr('submitting').addClass('btn-primary');
-                                    Tip.select($(':input[name=username]'), data.message );
-                                    return;
-                                }
-                                location.href= "{php echo $this->createPluginWebUrl('perm/user')}";
-                            })
-                        })
-
-                    })
-
-                </script>
-           <script language='javascript'>
-
-                function search_roles() {
-                    $("#module-menus1").html("正在搜索....")
-                    $.get('{{ yzWebUrl('user.user.search') }}', {
-                        keyword: $.trim($('#search-kwd1').val())
-                    }, function(dat){
-                        $('#module-menus1').html(dat);
-                    });
-                }
-                function select_role(o) {
-                    $("#roleid").val(o.id);
-                    $("#role").val( o.rolename );
-                    var perms = o.perms.split(',');
-                    $(':checkbox')
-                    $(':checkbox').removeAttr('disabled').removeAttr('checked').each(function(){
-
-                        var _this = $(this);
-                        var perm = '';
-                        if( _this.data('group') ){
-                            perm+=_this.data('group');
-                        }
-                        if( _this.data('child') ){
-                            perm+="." +_this.data('child');
-                        }
-                        if( _this.data('op') ){
-                            perm+="." +_this.data('op');
-                        }
-                        if( $.arrayIndexOf(perms,perm)!=-1){
-                            $(this).attr('disabled',true).get(0).checked =true;
-                        }
-
-                    });
-                    $(".close").click();
-                }
-            </script>
 
 
 @endsection
