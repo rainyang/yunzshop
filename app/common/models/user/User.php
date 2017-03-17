@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: jan
+ * User: yitian
  * Date: 02/03/2017
  * Time: 18:19
  */
@@ -11,6 +11,7 @@ namespace app\common\models\user;
 
 use app\backend\modules\user\observers\UserObserver;
 use app\common\models\BaseModel;
+use Illuminate\Validation\Rule;
 
 class User extends BaseModel
 {
@@ -28,27 +29,63 @@ class User extends BaseModel
         'remark' => '',
         'endtime' => 0
     ];
-
-
-    public function userProfile()
-    {
-        return $this->hasOne('app\common\models\user\UserProfile', 'uid', 'uid');
-    }
+    protected $guarded = [''];
 
     public function uniAccounts()
     {
         return $this->hasMany('app\common\models\user\UniAccountUser', 'uid', 'uid');
     }
 
-    public function userRoles()
+    /*
+     *  One to one, each operator corresponds to an operator
+     **/
+    public function userProfile()
     {
-        return $this->hasMany('app\common\models\user\YzUserRole', 'user_id', 'uid');
+        return $this->hasOne('app\common\models\user\UserProfile', 'uid', 'uid');
     }
 
+    /*
+     *  One to one, account each operator corresponds to an operator
+     **/
+    public function uniAccount()
+    {
+        return $this->belongsTo('app\common\models\user\UniAccountUser', 'uid', 'uid');
+    }
+
+    /*
+     *  One to one, one operator has only one character
+     **/
+    public function userRole()
+    {
+        return $this->hasOne('app\common\models\user\YzUserRole', 'user_id', 'uid');
+    }
+
+    /*
+     *  One to many, one operator has multiple operating privileges
+     **/
     public function permissions()
     {
         return $this->hasMany('app\common\models\user\YzPermission', 'item_id', 'uid')
             ->where('type', '=', YzPermission::TYPE_USER);
+    }
+
+
+    public static function getPageList($pageSize = 20)
+    {
+        return self::whereHas('uniAccount', function($query){
+            return $query->uniacid();
+        })
+        ->with(['userProfile' => function($profile) {
+            return $profile->select('uid', 'realname', 'mobile');
+        }])
+        ->with(['userRole' => function($userRole) {
+            return $userRole->select('user_id', 'role_id')
+                ->with(['role' => function ($role) {
+                    return $role->select('id', 'name')->uniacid();
+            }]);
+        }])
+        ->paginate($pageSize);
+
     }
 
     protected static function checkUserName($userName)
@@ -119,7 +156,7 @@ class User extends BaseModel
     * 定义字段名
     *
     * @return array */
-    public static function atributeNames() {
+    public  function atributeNames() {
         return [
             'username'=> "操作员用户名",
             'password' => "操作员密码"
@@ -129,13 +166,14 @@ class User extends BaseModel
      * 字段规则
      *
      * @return array */
-    public static function rules()
+    public  function rules()
     {
         return [
-            'username' => 'unique',
+            'username' => ['required',Rule::unique($this->table)->ignore($this->id)],
             'password' => 'required'
         ];
     }
+
     /**
      * 在boot()方法里注册下模型观察类
      * boot()和observe()方法都是从Model类继承来的

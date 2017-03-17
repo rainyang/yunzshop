@@ -10,10 +10,10 @@ namespace app\backend\modules\user\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\user\UniAccountUser;
 use app\common\models\user\User;
-use app\common\models\user\UserProfile;
 use app\common\models\user\YzRole;
 
 class UserController extends BaseController
@@ -21,38 +21,40 @@ class UserController extends BaseController
     public function index()
     {
 
-        $pageSize = 2;
+        $pageSize = 1;
 
-        $userList = UniAccountUser::getUserList($pageSize);
+        $userList = User::getPageList($pageSize);
+        //dd($userList);
+
+        //$userList = UniAccountUser::getUserList($pageSize);
+        $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
         //dd($userList);
         return view('user.user.user',[
-            'pager'     => '',
-            'roleList'  => ''
+            'pager'     => $pager,
+            'userList'  => $userList
         ])->render();
     }
-
+    /*
+     *  添加操作员
+     * */
     public function store()
     {
-        $requestUser = \YunShop::request()->user;
+        $userModel = new User();
 
+        $requestUser = \YunShop::request()->user;
         if ($requestUser) {
-            //dd($requestUser);
-            $userModel = new User();
 
             $userData = $this->addedUserData($requestUser);
-            $userData = $userData + $userModel->attributes;
-
-            $userModel->setRawAttributes($userData);
+            $userModel->fill($userData);
             $userModel->widgets = \YunShop::request()->widgets;
+            $userModel->widgets['perms'] = \YunShop::request()->perms;
 
-            $validator = User::validator($userModel->getAttributes());
-
+            $validator = $userModel->validator();
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
                 $userModel->password = $this->password($userModel->password, $userModel->salt);
                 if ($userModel->save()) {
-                    dd(12);
                     return $this->message('添加操作员成功.', Url::absoluteWeb('user.user.index'));
                 }
             }
@@ -60,7 +62,6 @@ class UserController extends BaseController
         }
         $permissions = \Config::get('menu');
         $roleList = YzRole::getRoleListToUser();
-        //dd($roleList);
 
         return view('user.user.form',[
             'user'=>array( 'status' => 1, 'id' => ''),
@@ -84,6 +85,7 @@ class UserController extends BaseController
 
         return $data;
     }
+
 
     /**
      * 计算用户密码
