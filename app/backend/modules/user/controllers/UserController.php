@@ -12,23 +12,21 @@ namespace app\backend\modules\user\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
-use app\common\models\user\UniAccountUser;
 use app\common\models\user\User;
 use app\common\models\user\YzRole;
 
 class UserController extends BaseController
 {
+    /*
+     *  操作员列表
+     * */
     public function index()
     {
-
         $pageSize = 1;
 
         $userList = User::getPageList($pageSize);
-        //dd($userList);
-
-        //$userList = UniAccountUser::getUserList($pageSize);
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
-        //dd($userList);
+
         return view('user.user.user',[
             'pager'     => $pager,
             'userList'  => $userList
@@ -71,6 +69,22 @@ class UserController extends BaseController
         ])->render();
     }
 
+    /*
+     *  修改操作员
+     * */
+    public function update()
+    {
+
+    }
+
+    /*
+     *  删除操作员
+     * */
+    public function destroy()
+    {
+
+    }
+
     /**
      * 附加的用户数据
      * @param string $data 需要储存的数据
@@ -86,7 +100,6 @@ class UserController extends BaseController
         return $data;
     }
 
-
     /**
      * 计算用户密码
      * @param string $passwordinput 输入字符串
@@ -98,6 +111,7 @@ class UserController extends BaseController
         $passwordinput = "{$passwordinput}-{$salt}-{$authkey}";
         return sha1($passwordinput);
     }
+
     /**
      * 获取随机字符串
      * @param number $length 字符串长度

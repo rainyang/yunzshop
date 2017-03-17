@@ -27,28 +27,6 @@ class UniAccountUser extends BaseModel
         return $this->hasOne('app\common\models\user\YzUserRole', 'user_id', 'uid');
     }
 
-    /*
-     * 获取操作员列表
-     * */
-    public static function getUserList($pageSize)
-    {
-        //未完成， 需要添加查询角色
-        return static::uniacid()
-            ->select('uid', 'role')
-            ->with(['hasUser' => function($user) {
-                return $user->select('uid', 'username', 'status')
-                    ->with(['userProfile' => function($profile) {
-                        return $profile->select('uid', 'realname', 'mobile');
-                    }]);
-            }])
-            ->with(['hasRole' => function($hasRole) {
-                return $hasRole->select('user_id', 'role_id')
-                    ->with(['role' => function($role) {
-                        return $role->select('id','name');
-                    }]);
-            }])
-            ->paginate($pageSize);
-    }
 
     /*
      *  添加操作员,挂件使用
