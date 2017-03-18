@@ -8,7 +8,8 @@ class Storage
      * Read a file and return bin data
      *
      * @param  string $filename
-     * @return string|bool
+     * @return bool|string
+     * @throws \Exception
      */
     public static function get($filename)
     {
