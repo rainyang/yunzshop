@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Str;
 use app\common\services\PermissionService;
+use app\backend\models\Menu;
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
@@ -46,6 +47,9 @@ class YunShop
         $controller->controller = $controllerName;
         $controller->action = $action;
         $controller->route = implode('.',$currentRoutes);
+
+        //菜单生成
+        \Config::set('menu',Menu::getMenuList());
 
         //检测权限
         if(self::isWeb() && !PermissionService::can($controller->route)){

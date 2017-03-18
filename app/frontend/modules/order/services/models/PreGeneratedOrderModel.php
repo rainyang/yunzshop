@@ -10,6 +10,23 @@ use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\models\ShopModel;
 use Illuminate\Support\Facades\Event;
 
+/**
+ * 订单生成类
+ * 输入
+ *  用户model
+ *  店铺model
+ *  未生成的订单商品(实例)app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel
+ * 输出
+ *  预下单信息
+ *  订单表插入结果
+ * 执行
+ *  订单表操作
+ * 事件通知
+ *  终止订单生成
+ *  订单生成后
+ * Class PreGeneratedOrderModel
+ * @package app\frontend\modules\order\services\models
+ */
 class PreGeneratedOrderModel extends ServiceModel
 {
     private $id;
@@ -18,8 +35,6 @@ class PreGeneratedOrderModel extends ServiceModel
     private $goods_price;
     //订单运费价格
     private $dispatch_price = 0;
-    //优惠详情
-    private $discount_details = [];
     //商城model实例
     private $shop_model;
     //用户model实例
@@ -51,11 +66,6 @@ class PreGeneratedOrderModel extends ServiceModel
     {
         $this->_pre_order_goods_models = array_merge($this->_pre_order_goods_models, $pre_order_goods_models);
         $this->_has_calculated = false;
-    }
-    //为优惠类提供的 设置优惠详情方法
-    public function setDiscountDetails($discount_details)
-    {
-        $this->discount_details = $discount_details;
     }
 
     //设置订单所属用户

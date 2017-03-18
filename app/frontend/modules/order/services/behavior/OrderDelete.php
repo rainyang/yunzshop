@@ -8,27 +8,24 @@
  */
 
 namespace app\frontend\modules\order\services\behavior;
+
 use app\common\models\Order;
 
-class OrderDelete
+class OrderDelete extends OrderOperation
 {
-    public $order_model;
+    protected $status_before_change = [ORDER::CLOSE, ORDER::COMPLETE];
+    //protected $status_after_changed = -1;
+    protected $name = '删除';
+    protected $past_tense_class_name = 'OrderDeleted';
 
-    public function __construct(Order $order_model)
-    {
-        $this->order_model = $order_model;
-    }
-
-    public function delete()
+    /**
+     * 覆盖父类的更新表方法
+     * @return int
+     */
+    protected function _updateTable()
     {
         return $this->order_model->destroy($this->order_model->id);
     }
 
-    public function deleteable()
-    {
-        if ($this->order_model->status == -1 || $this->order_model->status == 3) {
-            return true;
-        }
-        return false;
-    }
+
 }

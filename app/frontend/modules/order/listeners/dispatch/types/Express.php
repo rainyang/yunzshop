@@ -9,8 +9,8 @@
 
 namespace app\frontend\modules\order\listeners\dispatch\types;
 
+use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\OrderCreatedEvent;
-use app\common\events\order\PreGeneratedOrderDisplayEvent;
 
 use app\common\models\OrderAddress;
 
@@ -28,8 +28,8 @@ class Express
 
         return;
     }
-    public function onDisplay(PreGeneratedOrderDisplayEvent $even){
-        $this->event = $even;
+    public function onDisplay(OnDispatchTypeInfoDisplayEvent $event){
+        $this->event = $event;
         if (!$this->needDispatch()) {
             return;
         }
@@ -41,7 +41,7 @@ class Express
             'mobile'=>'18545571024',
             'realname'=>'默认姓名(死值)',
         ];
-        $even->addDispatchInfo($data);
+        $event->addMap('express',$data);
         return ;
     }
     private function needDispatch(){
@@ -65,12 +65,12 @@ class Express
     public function subscribe($events)
     {
         $events->listen(
-            \app\common\events\order\PreGeneratedOrderDisplayEvent::class,
-            \app\frontend\modules\order\listeners\dispatch\types\Express::class.'@onDisplay'
+            OnDispatchTypeInfoDisplayEvent::class,
+            Express::class.'@onDisplay'
         );
         $events->listen(
             \app\common\events\order\OrderCreatedEvent::class,
-            \app\frontend\modules\order\listeners\dispatch\types\Express::class.'@onSave'
+            Express::class.'@onSave'
         );
     }
 

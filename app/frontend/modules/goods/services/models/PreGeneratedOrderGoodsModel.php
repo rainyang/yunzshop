@@ -9,6 +9,7 @@
 namespace app\frontend\modules\goods\services\models;
 
 
+use app\common\events\order\BeforeOrderGoodsAddInOrder;
 use app\common\events\OrderGoodsDiscountWasCalculated;
 use app\common\models\Goods;
 use app\common\models\OrderGoods;

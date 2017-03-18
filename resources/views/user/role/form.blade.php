@@ -34,7 +34,7 @@
                 </div>
             </div>
 
-            @include('user.role.permission')
+            @include('user.permission.permission')
 
             <div class="form-group"></div>
             <div class="form-group">
