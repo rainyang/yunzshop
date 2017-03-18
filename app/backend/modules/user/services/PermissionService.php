@@ -19,12 +19,27 @@ class PermissionService
     public function addedToPermission($data =[], $type, $itemId)
     {
         foreach ($data as $key => $value) {
-            $permission[] = array(
+            $permissions[] = array(
                 'type' => $type,
                 'item_id' => $itemId,
                 'permission' => $value
             );
         }
-        return $permission;
+        return $permissions;
+    }
+
+    /*
+     *  处理权限数组：读取权限数组，返回一维权限数组$permissions
+     *
+     *  @parms array $data
+     *
+     *  @return array
+     **/
+    public function handlePermission(array $data = [])
+    {
+        foreach ($data as $key) {
+            $permissions[] = $key['permission'];
+        }
+        return $permissions;
     }
 }

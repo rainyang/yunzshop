@@ -71,9 +71,11 @@ class UserObserver extends BaseObserver
 
     public function created(Model $model) {}
 
-    public function deleting(Model $model) {}
 
-    public function deleted(Model $model) {}
+    public function deleted(Model $model) {
+        dd('hhahah');
+        return false;
+    }
 
     public function restoring(Model $model) {}
 

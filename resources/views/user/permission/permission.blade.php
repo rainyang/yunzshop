@@ -2,11 +2,10 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">操作权限</label>
     <div class="col-sm-9 col-xs-12">
         <div class='panel panel-default'>
-            <?php print_r($permissions); ?>
+            <?php print_r($userPermissons); ?>
             <!-- 第一级-->
             @foreach($permissions as $keyOne=>$valueOne)
                 @if(isset($valueOne['permit']) && $valueOne['permit'] === 1)
-阿斯顿发生地方
                     <div class='panel-heading'>
                         <label class='checkbox-inline'>
                             <input type='checkbox' name='perms[]' value='{{$keyOne}}' class='perm-all'

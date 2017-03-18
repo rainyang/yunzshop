@@ -25,37 +25,37 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 操作员用户名</label>
                 <div class="col-sm-9 col-xs-12">
-                    <input type="text" name="user[username]" class="form-control" value="{{ $user['username'] or '' }}" />
+                    <input type="text" name="user[username]" class="form-control" value="{{ $user->username or '' }}" />
                     <span class='help-block'>您可以直接输入系统已存在用户，且保证用户密码正确才能添加</span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>  操作员密码</label>
                 <div class="col-sm-9 col-xs-12">
-                    <input type="password" name="user[password]" class="form-control" value="{{ $user['password'] or '' }}" autocomplete="off" />
+                    <input type="password" name="user[password]" class="form-control" value="{{ $user->password or '' }}" autocomplete="off" />
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"> 姓名</label>
                 <div class="col-sm-9 col-xs-12">
-                    <input type="text" name="widgets[profile][realname]" class="form-control" value="{{ $user['realname'] or '' }}" />
+                    <input type="text" name="widgets[profile][realname]" class="form-control" value="{{ $user->userProfile->realname or '' }}" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
                 <div class="col-sm-9 col-xs-12">
-                    <input type="text" name="widgets[profile][mobile]" class="form-control" value="{{ $user['mobile'] or '' }}" />
+                    <input type="text" name="widgets[profile][mobile]" class="form-control" value="{{ $user->userProfile->mobile or '' }}" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">状态</label>
                 <div class="col-sm-9 col-xs-12">
                     <label class='radio-inline'>
-                        <input type='radio' name='user[status]' value='2' @if($user['status'] == 2) checked @endif /> 启用
+                        <input type='radio' name='user[status]' value='2' @if($user->status == 2) checked @endif /> 启用
                     </label>
                     <label class='radio-inline'>
-                        <input type='radio' name='user[status]' value='1' @if($user['status'] == 1) checked @endif /> 禁用
+                        <input type='radio' name='user[status]' value='1' @if($user->status == 1 || $user->status == '') checked @endif /> 禁用
                     </label>
                 </div>
             </div>

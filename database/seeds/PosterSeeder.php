@@ -6,7 +6,7 @@ Class PosterSeeder extends Seeder
 {
     public function run()
     {
-        factory(Yunshop\Poster\PosterModel::class, 10)->create()->make();
+        factory(Yunshop\Poster\models\Poster::class, 10)->create()->make();
 //        factory(Yunshop\Poster\PosterModel::class, 2)->create()
 //            ->each(function($u){
 //                $u->supplement()->save(factory(Yunshop\Poster\PosterModel::class)->make());
