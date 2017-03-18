@@ -25,6 +25,7 @@ class Order extends BaseModel
         'discount_details' => 'json',
         'dispatch_details' => 'json',
     ];
+    const CLOSE = -1;
     const WAIT_PAY = 0;
     const WAIT_SEND = 1;
     const WAIT_RECEIVE = 2;

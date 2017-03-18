@@ -9,14 +9,14 @@
 namespace app\frontend\modules\goods\services\models;
 
 
-use app\common\events\TestFailEvent;
-use app\frontend\modules\goods\evens\OrderGoodsDiscountWasCalculated;
-use Illuminate\Support\Facades\Event;
+
+use app\common\events\discount\OrderGoodsDiscountWasCalculated;
+
 
 class GoodsDiscount
 {
     public function getDiscountDetails(){
-        Event::fire(new \app\common\events\order\OrderGoodsDiscountWasCalculated($this));
+        event(new OrderGoodsDiscountWasCalculated($this));
 
         $details = [];
         $details[] = [

@@ -8,14 +8,12 @@
 
 namespace app\frontend\modules\goods\services\models;
 
-
-use app\common\events\OrderGoodsDiscountWasCalculated;
 use app\common\models\Goods;
 use app\common\models\OrderGoods;
 
 use app\common\ServiceModel\ServiceModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
-use Illuminate\Support\Facades\Event;
+
 
 class PreGeneratedOrderGoodsModel extends ServiceModel
 {
@@ -82,7 +80,7 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     {
         //$goods_discount_obj = new GoodsDiscount($this);
         //$goods_discount_obj->getDiscountDetails();
-        Event::fire(new \app\common\events\order\OrderGoodsDiscountWasCalculated($this));
+        event(new \app\common\events\discount\OrderGoodsDiscountWasCalculated($this));
 
         $result = array_sum(array_column($this->discount_details, 'price'));
         return $result;
