@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services\behavior;
 
 use app\common\events\order\AfterOrderSentEvent;
 use app\common\models\Order;
-use Illuminate\Support\Facades\Event;
+
 
 class OrderSend extends OrderOperation
 {

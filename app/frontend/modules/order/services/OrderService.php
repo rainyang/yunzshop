@@ -84,37 +84,45 @@ class OrderService
     }
     /**
      * 取消付款
-     * @param Order $order_model
+     * @param $param
      * @return array
      */
-    public static function orderCancelPay(Order $order_model){
+    public static function orderCancelPay($param){
+        $order_model = Order::find($param['order_id']);
+
         $OrderOperation = new OrderCancelPay($order_model);
         return self::OrderOperate($OrderOperation);
     }
     /**
      * 取消发货
-     * @param Order $order_model
+     * @param $param
      * @return array
      */
-    public static function orderCancelSend(Order $order_model){
+    public static function orderCancelSend($param){
+        $order_model = Order::find($param['order_id']);
+
         $OrderOperation = new OrderCancelSend($order_model);
         return self::OrderOperate($OrderOperation);
     }
     /**
      * 关闭订单
-     * @param Order $order_model
+     * @param $param
      * @return array
      */
-    public static function orderClose(Order $order_model){
+    public static function orderClose($param){
+        $order_model = Order::find($param['order_id']);
+
         $OrderOperation = new OrderClose($order_model);
         return self::OrderOperate($OrderOperation);
     }
     /**
      * 用户删除(隐藏)订单
-     * @param Order $order_model
+     * @param $param
      * @return array
      */
-    public static function orderDelete(Order $order_model){
+    public static function orderDelete($param){
+        $order_model = Order::find($param['order_id']);
+
         $OrderOperation = new OrderDelete($order_model);
         return self::OrderOperate($OrderOperation);
     }
@@ -132,20 +140,32 @@ class OrderService
     }
     /**
      * 收货
-     * @param Order $order_model
+     * @param $param
      * @return array
      */
-    public static function orderReceive(Order $order_model){
+    public static function orderReceive($param){
+        $order_model = Order::find($param['order_id']);
+
         $OrderOperation = new OrderReceive($order_model);
         return self::OrderOperate($OrderOperation);
     }
     /**
      * 发货
-     * @param Order $order_model
+     * @param $param
      * @return array
      */
-    public static function orderSend(Order $order_model){
+    public static function orderSend($param){
+        $order_model = Order::find($param['order_id']);
+
         $OrderOperation = new OrderSend($order_model);
         return self::OrderOperate($OrderOperation);
+    }
+    /**
+     * 发货
+     * @param $param
+     * @return array
+     */
+    public static function changeOrderPrice($param){
+
     }
 }

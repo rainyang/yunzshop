@@ -6,9 +6,9 @@
  * Time: 上午10:00
  */
 
-namespace app\frontend\modules\goods\listeners;
+namespace app\frontend\modules\dispatch\listeners\prices;
 
-use app\common\events\order\OrderGoodsDispatchWasCalculated;
+use app\common\events\dispatch\OrderGoodsDispatchWasCalculated;
 
 class UnifyGoodsDispatch
 {
@@ -27,6 +27,7 @@ class UnifyGoodsDispatch
     public function needDispatch(){
         return true;
     }
+    //todo 从商品中获取运费信息
     public function getDispatchDetail(){
         $detail = [
             'name'=>'统一运费',

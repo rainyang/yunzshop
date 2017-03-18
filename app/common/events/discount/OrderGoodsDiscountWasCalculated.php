@@ -6,8 +6,10 @@
  * Time: 下午1:53
  */
 
-namespace app\common\events\order;
+namespace app\common\events\discount;
 
+
+use app\common\events\order\OrderGoodsEvent;
 
 class OrderGoodsDiscountWasCalculated extends OrderGoodsEvent
 {

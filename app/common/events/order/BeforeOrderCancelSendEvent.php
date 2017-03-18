@@ -9,7 +9,7 @@
 
 namespace app\common\events\order;
 
-class BeforeOrderCancelSendEvent extends BeforeOrderStatusChangeEvent
+class BeforeOrderCancelSendEvent extends BeforeCreatedOrderStatusChangeEvent
 {
 
 }

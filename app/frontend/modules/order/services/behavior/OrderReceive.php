@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services\behavior;
 
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Order;
-use Illuminate\Support\Facades\Event;
+
 
 class OrderReceive extends OrderOperation
 {

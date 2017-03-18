@@ -9,7 +9,7 @@
 namespace app\common\listeners\order;
 
 
-use app\common\events\order\BeforeOrderStatusChangeEvent;
+use app\common\events\order\BeforeCreatedOrderStatusChangeEvent;
 use app\common\listeners\Opinion;
 
 class OrderTestListener
@@ -20,14 +20,14 @@ class OrderTestListener
 
     }
 
-    public function onTest(BeforeOrderStatusChangeEvent $event)
+    public function onTest(BeforeCreatedOrderStatusChangeEvent $event)
     {
         //$event->setOpinion(new Opinion(false,'插件反对执行'));
 
         return false;
     }
 
-    public function onTest2(BeforeOrderStatusChangeEvent $even)
+    public function onTest2(BeforeCreatedOrderStatusChangeEvent $even)
     {
 
         $even->addFeedback(

@@ -6,9 +6,9 @@
  * Time: 下午1:53
  */
 
-namespace app\common\events\order;
+namespace app\common\events\discount;
 use app\common\events\Event;
-use app\frontend\modules\order\services\models\OrderDiscount;
+use app\frontend\modules\discount\services\models\OrderDiscount;
 
 
 class OrderDiscountWasCalculated extends Event

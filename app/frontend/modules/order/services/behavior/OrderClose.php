@@ -10,7 +10,7 @@
 namespace app\frontend\modules\order\services\behavior;
 use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\models\Order;
-use Illuminate\Support\Facades\Event;
+
 
 class OrderClose extends OrderOperation
 {

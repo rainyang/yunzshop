@@ -12,10 +12,10 @@ namespace app\frontend\modules\order\services\behavior;
 use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCancelPaidEvent;
 use app\common\events\order\BeforeOrderCancelPayEvent;
-use app\common\events\order\BeforeOrderStatusChangeEvent;
+use app\common\events\order\BeforeCreatedOrderStatusChangeEvent;
 use app\common\models\Order;
 use app\frontend\modules\order\services\models\OperationValidator;
-use Illuminate\Support\Facades\Event;
+
 
 abstract class OrderOperation
 {

@@ -9,7 +9,7 @@
 
 namespace app\common\events\order;
 
-class AfterOrderPaidEvent extends OrderStatusChangedEvent
+class AfterOrderPaidEvent extends CreatedOrderStatusChangedEvent
 {
 
 }

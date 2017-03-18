@@ -6,9 +6,11 @@
  * Time: 下午4:29
  */
 
-namespace app\frontend\modules\order\services\models;
+namespace app\frontend\modules\discount\services\models;
 
-use app\common\events\order\OrderDiscountWasCalculated;
+use app\common\events\discount\OrderDiscountWasCalculated;
+use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+
 class OrderDiscount
 {
     private $_order_model;
@@ -62,7 +64,7 @@ class OrderDiscount
     }
 
     //返回运费详情
-    private function getDiscountDetails()
+    public function getDiscountDetails()
     {
         return $this->_discount_details;
     }

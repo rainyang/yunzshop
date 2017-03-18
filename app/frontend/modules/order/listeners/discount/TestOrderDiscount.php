@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\order\listeners\discount;
 
-use app\common\events\order\OrderDiscountWasCalculated;
+use app\common\events\discount\OrderDiscountWasCalculated;
 
 class TestOrderDiscount
 {

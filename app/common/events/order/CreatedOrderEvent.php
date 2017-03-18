@@ -12,7 +12,7 @@ namespace app\common\events\order;
 use app\common\events\Event;
 use app\common\models\Order;
 
-abstract class OrderEvent extends Event
+abstract class CreatedOrderEvent extends Event
 {
     protected $_order_model;
     /**

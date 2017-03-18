@@ -7,7 +7,7 @@
  * Time: 上午10:40
  */
 
-namespace app\frontend\modules\order\listeners\dispatch\types;
+namespace app\frontend\modules\dispatch\listeners\types;
 
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\OrderCreatedEvent;

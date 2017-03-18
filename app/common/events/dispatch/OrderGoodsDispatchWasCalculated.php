@@ -6,7 +6,7 @@
  * Time: 下午1:53
  */
 
-namespace app\common\events\order;
+namespace app\common\events\dispatch;
 use app\common\events\Event;
 use app\frontend\modules\goods\services\models\GoodsDispatch;
 

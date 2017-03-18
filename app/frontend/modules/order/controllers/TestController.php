@@ -12,7 +12,7 @@ use app\common\models\Order;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
-use Illuminate\Support\Facades\Event;
+
 use app\common\events\order\AfterOrderCancelPaidEvent;
 
 /**

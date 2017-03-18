@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\goods\services\models;
 
-use app\common\events\order\OrderGoodsDispatchWasCalculated;
+use app\common\events\dispatch\OrderGoodsDispatchWasCalculated;
 
 class GoodsDispatch
 {

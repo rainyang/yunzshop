@@ -6,9 +6,9 @@
  * Time: 上午10:00
  */
 
-namespace app\frontend\modules\goods\listeners;
+namespace app\frontend\modules\discount\listeners;
 
-use app\common\events\order\OrderGoodsDiscountWasCalculated;
+use app\common\events\discount\OrderGoodsDiscountWasCalculated;
 
 class MemberLevelGoodsDiscount
 {

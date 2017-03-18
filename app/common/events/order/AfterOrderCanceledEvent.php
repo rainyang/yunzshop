@@ -9,7 +9,7 @@
 
 namespace app\common\events\order;
 
-class AfterOrderCanceledEvent extends OrderStatusChangedEvent
+class AfterOrderCanceledEvent extends CreatedOrderStatusChangedEvent
 {
 
 }
