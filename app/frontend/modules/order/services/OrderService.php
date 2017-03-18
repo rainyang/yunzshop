@@ -22,10 +22,9 @@ use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
-use app\frontend\modules\order\services\models\factory\OrderModelFactory;
-use app\frontend\modules\order\services\models\factory\PreGeneratedOrderModelFactory;
 use app\frontend\modules\goods\services\models\Goods;
 use app\frontend\modules\order\services\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\shop\services\models\ShopModel;
 
 class OrderService
@@ -38,7 +37,7 @@ class OrderService
      * @return models\PreGeneratedOrderModel
      */
     public static function getPreCreateOrder(array $order_goods_models,Member $member_model=null,ShopModel $shop_model=null){
-        $order_model = new PreGeneratedOrderModeL($order_goods_models);
+        $order_model = new PreGeneratedOrderModel($order_goods_models);
         if(isset($member_model)){
             $order_model->setMemberModel($member_model);
         }
@@ -119,12 +118,15 @@ class OrderService
         $OrderOperation = new OrderDelete($order_model);
         return self::OrderOperate($OrderOperation);
     }
+
     /**
      * 支付订单
-     * @param Order $order_model
+     * @param array $param
      * @return array
      */
-    public static function orderPay(Order $order_model){
+
+    public static function orderPay(array $param){
+        $order_model = Order::find($param['order_id']);
         $OrderOperation = new OrderPay($order_model);
         return self::OrderOperate($OrderOperation);
     }

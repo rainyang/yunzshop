@@ -9,16 +9,19 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\BaseController;
-use app\common\models\Order;
-use app\frontend\modules\order\services\behavior\OrderCancelSend;
-use app\frontend\modules\order\services\behavior\OrderDelete;
 use app\frontend\modules\order\services\OrderService;
 
 class OperationController extends BaseController
 {
+    private $_params;
+    public function __construct()
+    {
+        parent::__construct();
+        $this->_params = \YunShop::request()->get();
+    }
+
     public function pay(){
-        $order = Order::find(\YunShop::request()->order_id);
-        list($result,$message) = OrderService::orderPay($order);
+        list($result,$message) = OrderService::orderPay($this->_params);
         if($result === false){
             return $this->errorJson($message);
         }
@@ -26,32 +29,28 @@ class OperationController extends BaseController
 
     }
     public function cancelPay(){
-        $order = Order::find(\YunShop::request()->order_id);
-        list($result,$message) = OrderService::orderCancelPay($order);
+        list($result,$message) = OrderService::orderCancelPay($this->_params);
         if($result === false){
             return $this->errorJson($message);
         }
         return $this->successJson($message);
     }
     public function send(){
-        $order = Order::find(\YunShop::request()->order_id);
-        list($result,$data) = OrderService::orderSend($order);
+        list($result,$data) = OrderService::orderSend($this->_params);
         if($result === false){
             $this->errorJson($data);
         }
         $this->successJson($data);
     }
     public function cancelSend(){
-        $order = Order::find(\YunShop::request()->order_id);
-        list($result,$data) = OrderService::orderCancelSend($order);
+        list($result,$data) = OrderService::orderCancelSend($this->_params);
         if($result === false){
             $this->errorJson($data);
         }
         $this->successJson($data);
     }
     public function Receive(){
-        $order = Order::find(\YunShop::request()->order_id);
-        list($result,$data) = OrderService::orderReceive($order);
+        list($result,$data) = OrderService::orderReceive($this->_params);
         if($result === false){
             $this->errorJson($data);
         }
@@ -59,8 +58,7 @@ class OperationController extends BaseController
     }
     public function Delete()
     {
-        $order = Order::find(\YunShop::request()->order_id);
-        list($result,$data) = OrderService::orderDelete($order);
+        list($result,$data) = OrderService::orderDelete($this->_params);
         if($result === false){
             $this->errorJson($data);
         }

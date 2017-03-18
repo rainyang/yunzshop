@@ -4,7 +4,7 @@
  * User: yangyang
  * Date: 2017/2/28
  * Time: 上午11:19
- * comment: 取消支付
+ * comment: 订单操作基类
  */
 
 namespace app\frontend\modules\order\services\behavior;
@@ -112,7 +112,7 @@ abstract class OrderOperation
      */
     public function execute()
     {
-        $result = $this->save();
+        $result = $this->_updateTable();
         $this->_fireEvent();
         return $result;
     }
