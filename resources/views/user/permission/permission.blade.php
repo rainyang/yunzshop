@@ -2,11 +2,11 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">操作权限</label>
     <div class="col-sm-9 col-xs-12">
         <div class='panel panel-default'>
-            <?php print_r($userPermissons); ?>
+            <?php print_r($permissions); ?>
             <!-- 第一级-->
             @foreach($permissions as $keyOne=>$valueOne)
-                @if(isset($valueOne['permit']) && $valueOne['permit'] === true)
-
+                @if(isset($valueOne['permit']) && $valueOne['permit'] === 1)
+阿斯顿发生地方
                     <div class='panel-heading'>
                         <label class='checkbox-inline'>
                             <input type='checkbox' name='perms[]' value='{{$keyOne}}' class='perm-all'
@@ -18,7 +18,7 @@
                     @if(isset($valueOne['child']))
                         <div class='panel-body perm-group'>
                             @foreach($valueOne['child'] as $keyTwo=>$valueTwo)
-                                @if(isset($valueTwo['permit']) && $valueTwo['permit'] === true)
+                                @if(isset($valueTwo['permit']) && $valueTwo['permit'] === 1)
                                     <span>
                                            <label class='checkbox-inline' style='width:100px;'>
                                                <input type='checkbox' name='perms[]' value='{{$keyTwo}}'
@@ -30,7 +30,7 @@
                                         <!-- 第三级-->
                                         @if(isset($valueTwo['child']))
                                             @foreach($valueTwo['child'] as $keyThird=>$valueThird)
-                                                @if(isset($valueThird['permit']) && $valueThird['permit'] === true)
+                                                @if(isset($valueThird['permit']) && $valueThird['permit'] === 1)
                                                 <label class="checkbox-inline">
                                                 <input type="checkbox" name="perms[]" value="{{$keyThird}}"
                                                        class="perm-item" data-group="{{$keyOne}}"
