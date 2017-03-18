@@ -237,6 +237,7 @@ return [
 
         'Setting' => app\common\facades\Setting::class,//设置
         'Option'    => app\common\facades\Option::class,
+        'Utils'     => \app\common\services\Utils::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,//Excel 组件
 
         //表单生成
