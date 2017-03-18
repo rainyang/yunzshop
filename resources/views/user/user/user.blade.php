@@ -84,10 +84,10 @@
                         @endif
                     </td>
                     <td>
-                        <a class='btn btn-default' href="{{ yzWebUrl('user.user.update', array('id' => $user->id)) }}">
+                        <a class='btn btn-default' href="{{ yzWebUrl('user.user.update', array('id' => $user->uid)) }}">
                             <i class="fa fa-edit"></i>
                         </a>
-                        <a class='btn btn-default'  href="{{ yzWebUrl('user.user.destroy',array('id' => $user->id)) }}" onclick="return confirm('确认删除此操作员吗？'); return false;">
+                        <a class='btn btn-default'  href="{{ yzWebUrl('user.user.destroy',array('id' => $user->uid)) }}" onclick="return confirm('确认删除此操作员吗？'); return false;">
                             <i class="fa fa-remove"></i>
                         </a>
 

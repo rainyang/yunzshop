@@ -9,6 +9,7 @@
 namespace app\backend\modules\user\controllers;
 
 
+use app\backend\modules\user\services\PermissionService;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
@@ -26,7 +27,7 @@ class UserController extends BaseController
 
         $userList = User::getPageList($pageSize);
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
-
+//dd($userList);
         return view('user.user.user',[
             'pager'     => $pager,
             'userList'  => $userList
@@ -60,9 +61,10 @@ class UserController extends BaseController
         }
         $permissions = \Config::get('menu');
         $roleList = YzRole::getRoleListToUser();
+        //dd($roleList);
 
         return view('user.user.form',[
-            'user'=>array( 'status' => 1, 'id' => ''),
+            'user'=>$userModel,
             'roleList' => $roleList,
             'permissions'=>$permissions,
             'userPermissons'=>[],
@@ -74,7 +76,27 @@ class UserController extends BaseController
      * */
     public function update()
     {
+        $userModel = User::getUserByid(\YunShop::request()->id);
 
+        //dd($userModel);
+        if (!$userModel) {
+            return $this->message("未找到数据或以删除！", '', 'error');
+        }
+        $permissionService = new PermissionService();
+
+        $userPermissions = [];
+        $userPermissions = $permissionService->handlePermission($userModel->permissions->toArray());
+        $userPermissions += $permissionService->handlePermission($userModel->userRole->permissions->toArray());
+
+        $permissions = \Config::get('menu');
+        $roleList = YzRole::getRoleListToUser();
+
+        return view('user.user.form',[
+            'user'=> $userModel,
+            'roleList' => $roleList,
+            'permissions'=>$permissions,
+            'userPermissons'=>$userPermissions,
+        ])->render();
     }
 
     /*
@@ -82,7 +104,19 @@ class UserController extends BaseController
      * */
     public function destroy()
     {
+        //@todo 需要完善删除关联表数据
 
+        $requeserUser = User::getUserByid(\YunShop::request()->id);
+        if (!$requeserUser) {
+            return $this->message("未找到数据或以删除！", '', 'error');
+        }
+
+        $result = User::destroyUser(\YunShop::request()->id);
+        if ($result) {
+            return $this->message("删除操作员成功。", Url::absoluteWeb('user.user.index'));
+        } else {
+            return $this->message('数据写入出错，请重试1', '', 'error');
+        }
     }
 
     /**

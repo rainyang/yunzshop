@@ -19,8 +19,6 @@ class User extends BaseModel
 
     public $timestamps = false;
 
-    public $fillable = [];
-
     public $widgets =[];
 
     public $attributes = [
@@ -37,7 +35,7 @@ class User extends BaseModel
     }
 
     /*
-     *  One to one, each operator corresponds to an operator
+     *  One to one, each operator corresponds to an operator profile
      **/
     public function userProfile()
     {
@@ -53,7 +51,7 @@ class User extends BaseModel
     }
 
     /*
-     *  One to one, one operator has only one character
+     *  One to one, one operator has only one role
      **/
     public function userRole()
     {
@@ -69,7 +67,9 @@ class User extends BaseModel
             ->where('type', '=', YzPermission::TYPE_USER);
     }
 
-
+    /*
+     *   Get paging list
+     **/
     public static function getPageList($pageSize = 20)
     {
         return self::whereHas('uniAccount', function($query){
@@ -88,11 +88,40 @@ class User extends BaseModel
 
     }
 
-    protected static function checkUserName($userName)
+    /*
+     * Get operator information through operator ID
+     *
+     * @parms int $userId
+     *
+     * @return object
+     **/
+    public static function getUserById($userId)
     {
-        $user = static::select('uid')->where('username', '=', $userName)->first();
-        //var_dump(empty($user));
-        return empty($user) ? '' : '1';
+        return self::where('uid', $userId)
+            ->with(['userProfile' => function($profile) {
+                return $profile->select('uid', 'realname', 'mobile');
+            }])
+            ->with(['userRole' => function($userRole) {
+                return $userRole->select('user_id', 'role_id')
+                    ->with(['role' => function ($role) {
+                        return $role->select('id', 'name')->uniacid();
+                    }])
+                    ->with(['permissions' => function($rolePermission) {
+                        return $rolePermission->select('permission', 'item_id');
+                    }]);
+            }])
+            ->with(['permissions' => function($userPermission) {
+                return $userPermission->select('permission', 'item_id');
+            }])
+            ->first();
+    }
+
+    /*
+     *  Delete operator
+     **/
+    public static function destroyUser($userId)
+    {
+        return static::where('uid', $userId)->delete();
     }
 
     /**
@@ -162,6 +191,7 @@ class User extends BaseModel
             'password' => "操作员密码"
         ];
     }
+
     /**
      * 字段规则
      *
@@ -183,8 +213,6 @@ class User extends BaseModel
     public static function boot()
     {
         parent::boot();
-
-
         //注册观察者
         static::observe(new UserObserver());
     }
