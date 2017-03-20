@@ -269,4 +269,5 @@
 
     });
 </script>
-{template 'web/area/selectprovinces'}
+@include('area.selectprovinces')
+@endsection
