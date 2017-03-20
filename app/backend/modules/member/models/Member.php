@@ -10,17 +10,6 @@ namespace app\backend\modules\member\models;
 
 class Member extends \app\common\models\Member
 {
-
-    /**
-     * 主从表1:1
-     *
-     * @return mixed
-     */
-    public function yzMember()
-    {
-        return $this->hasOne('app\backend\modules\member\models\MemberShopInfo','member_id','uid');
-    }
-
     /**
      * @param $keyWord
      *
@@ -59,26 +48,6 @@ class Member extends \app\common\models\Member
                               ->where('status', 3)
                               ->groupBy('member_id');
             }]);
-    }
-
-    /**
-     * 会员－订单1:1关系
-     *
-     * @return mixed
-     */
-    public function hasOneOrder()
-    {
-        return $this->hasOne('app\backend\modules\order\models\order','member_id','uid');
-    }
-
-    /**
-     * 会员－粉丝1:1关系
-     *
-     * @return mixed
-     */
-    public function hasOneFans()
-    {
-        return $this->hasOne('app\common\models\McMappingFans','uid','uid');
     }
 
     /**

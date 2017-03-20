@@ -28,6 +28,34 @@
                 </div>
             </div>
             <div id='certs' @if (empty($set['weixin'])) style="display:none" @endif>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">身份标识<br>(appId)</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" class="form-control" name="pay[weixin_appid]" value="{{ @$set['weixin_appid'] }}" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">身份密钥<br>(appSecret)</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" class="form-control" name="pay[weixin_secret]" value="{{ @$set['weixin_secret'] }}" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信支付商户号<br>(mchId)</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" class="form-control"  name="pay[weixin_mchid]" value="{{ @$set['weixin_mchid'] }}" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信支付商户号<br>(apiSecret)</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" class="form-control"  name="pay[weixin_apisecret]" value="{{ @$set['weixin_apisecret'] }}" autocomplete="off">
+                    </div>
+                </div>
+
                  <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">CERT证书文件</label>
                     <div class="col-sm-9 col-xs-12">

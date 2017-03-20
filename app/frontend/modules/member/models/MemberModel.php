@@ -11,38 +11,13 @@
  */
 namespace app\frontend\modules\member\models;
 
-use app\backend\models\BackendModel;
+use app\common\models\Member;
 
-class MemberModel extends BackendModel
+class MemberModel extends Member
 {
-    public $table = 'mc_members';
-
     protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4' , 'credit5'];
 
     protected $fillable = ['email'=>'xxx@xx.com'];
-
-    public $timestamps = false;
-
-    /**
-     * 主从表1:1
-     *
-     * @return mixed
-     */
-    public function yzMember()
-    {
-        return $this->hasOne('app\backend\modules\member\models\MemberShopInfo','member_id','uid');
-    }
-
-    /**
-     * 会员－粉丝一对一关系
-     *
-     * @return mixed
-     */
-    public function hasOneFans()
-    {
-        return $this->hasOne('app\common\models\McMappingFans','uid','uid');
-    }
-
 
     /**
      * 获取用户uid
@@ -99,32 +74,6 @@ class MemberModel extends BackendModel
         return self::where('uniacid', $uniacid)
             ->where('mobile', $mobile)
             ->where('password', $password);
-    }
-
-    /**
-     * 获取用户信息
-     *
-     * @param $member_id
-     * @return mixed
-     */
-    public static function getUserInfos($member_id)
-    {
-        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'gender', 'createtime',
-            'credit1', 'credit2'])
-            ->uniacid()
-            ->where('uid', $member_id)
-            ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])
-                    ->with(['group'=>function($query1){
-                        return $query1->select(['id','group_name']);
-                    },'level'=>function($query2){
-                        return $query2->select(['id','level_name']);
-                    }, 'agent'=>function($query3){
-                        return $query3->select(['uid', 'avatar', 'nickname']);
-                    }]);
-            }, 'hasOneFans' => function($query4) {
-                return $query4->select(['uid', 'follow as followed']);
-            }]);
     }
 
     /**

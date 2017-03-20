@@ -9,20 +9,23 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
-use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\services\MemberService;
+use app\common\services\WechatPay;
+
 
 class TestController extends BaseController
 {
    public function index()
    {
-       $member_info = MemberModel::getUserInfos(11)->first();
+        $wx = new WechatPay();
 
-       if (!empty($member_info)) {
-           $member_info = $member_info->toArray();
+       // $wx->doPay(1,1,1,1,1);
 
-           return $this->successJson($member_info);
-       } else {
-           return $this->errorJson('用户不存在');
-       }
+       echo '<pre>';print_r(\Setting::get('shop.pay'));exit;
+   }
+
+   public function add()
+   {
+       echo MemberService::$name;
    }
 }
