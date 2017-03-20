@@ -1,4 +1,10 @@
-@extends('layouts.admin')
+@extends('layouts.base')
+
+@section('title','菜单列表')
+
+@section('pageHeader','菜单列表header')
+
+@section('pageDesc','菜单列表desc')
 
 @section('content')
 <div class='panel panel-default'>

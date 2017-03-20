@@ -35,10 +35,19 @@ class PermissionService
      *
      *  @return array
      **/
-    public function handlePermission(array $data = [])
+    public function handlePermission($data)
     {
-        foreach ($data as $key) {
-            $permissions[] = $key['permission'];
+        if (!is_array($data)) {
+            return $permissions = [];
+        }
+        $permissions = [];
+        foreach ($data as $key => $value) {
+            if ($key['permission']) {
+                $permissions[] = $key['permission'];
+            }
+            if ($value['permission']) {
+                $permissions[] = $value['permission'];
+            }
         }
         return $permissions;
     }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: jan
+ * User: yitian
  * Date: 07/03/2017
  * Time: 16:13
  */
@@ -19,23 +19,19 @@ use app\common\models\user\YzRole;
 class UserController extends BaseController
 {
     /*
-     *  操作员列表
-     * */
+     *  操作员分页列表
+     **/
     public function index()
     {
         $pageSize = 1;
 
         $userList = User::getPageList($pageSize);
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
-//dd($userList);
+
         return view('user.user.user',[
             'pager'     => $pager,
             'userList'  => $userList
         ])->render();
-    }
-    /*
-     *  添加操作员
-     * */
     public function store()
     {
         $userModel = new User();
@@ -61,7 +57,6 @@ class UserController extends BaseController
         }
         $permissions = \Config::get('menu');
         $roleList = YzRole::getRoleListToUser();
-        //dd($roleList);
 
         return view('user.user.form',[
             'user'=>$userModel,
@@ -73,7 +68,7 @@ class UserController extends BaseController
 
     /*
      *  修改操作员
-     * */
+     **/
     public function update()
     {
         $userModel = User::getUserByid(\YunShop::request()->id);
@@ -84,18 +79,24 @@ class UserController extends BaseController
         }
         $permissionService = new PermissionService();
 
-        $userPermissions = [];
         $userPermissions = $permissionService->handlePermission($userModel->permissions->toArray());
-        $userPermissions += $permissionService->handlePermission($userModel->userRole->permissions->toArray());
 
         $permissions = \Config::get('menu');
         $roleList = YzRole::getRoleListToUser();
 
+        $rolePermissions = [];
+        if ($userModel->userRole && $userModel->userRole->role) {
+            $rolePermissions = YzRole::getRoleById($userModel->userRole->role->id)->toArray();
+            $userPermissions += $permissionService->handlePermission($userModel->userRole->permissions->toArray());
+        }
+        dd($userPermissions);
+
         return view('user.user.form',[
-            'user'=> $userModel,
-            'roleList' => $roleList,
-            'permissions'=>$permissions,
-            'userPermissons'=>$userPermissions,
+            'user'          => $userModel,
+            'roleList'      => $roleList,
+            'permissions'   => $permissions,
+            'rolePermission' => $rolePermissions,
+            'userPermissons' => $userPermissions
         ])->render();
     }
 

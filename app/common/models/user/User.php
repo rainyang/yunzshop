@@ -105,9 +105,6 @@ class User extends BaseModel
                 return $userRole->select('user_id', 'role_id')
                     ->with(['role' => function ($role) {
                         return $role->select('id', 'name')->uniacid();
-                    }])
-                    ->with(['permissions' => function($rolePermission) {
-                        return $rolePermission->select('permission', 'item_id');
                     }]);
             }])
             ->with(['permissions' => function($userPermission) {

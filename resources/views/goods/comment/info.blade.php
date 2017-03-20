@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.base')
 
 @section('content')
     <link href="../addons/sz_yi/template/mobile/default/static/js/star-rating.css" media="all" rel="stylesheet"
