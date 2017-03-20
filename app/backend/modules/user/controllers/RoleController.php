@@ -27,7 +27,7 @@ class RoleController extends BaseController
 
         $roleList = YzRole::getRoleList($pageSize);
         $pager = PaginationHelper::show($roleList->total(), $roleList->currentPage(), $roleList->perPage());
-        //dd($roleList);
+        //dd($roleList->items());
         return view('user.role.index',[
             'pager'     => $pager,
             'roleList'  => $roleList
@@ -82,7 +82,7 @@ class RoleController extends BaseController
                                 $this->error($validator->message());
                             }
                         }
-                        $result = YzPermission::createPermission($data);
+                        $result = YzPermission::addYzPermission($data);
                         if (!$result) {
                             //删除刚刚添加的角色
                             YzRole::deleteRole($roleModel->id);
@@ -146,7 +146,7 @@ class RoleController extends BaseController
                         }
                         //删除原权限数据，更新数据储存
                         YzPermission::deleteRolePermission(\YunShop::request()->id);
-                        $result = YzPermission::createPermission($data);
+                        $result = YzPermission::addYzPermission($data);
                         if (!$result) {
                             //删除刚刚添加的角色
                             YzRole::deleteRole($roleModel->id);

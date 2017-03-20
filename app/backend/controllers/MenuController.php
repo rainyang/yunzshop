@@ -17,7 +17,9 @@ class MenuController extends BaseController
 
     public function index()
     {
-        $menuList = (new Menu())->getDescendants(0);
+
+        $menu = new Menu();
+        $menuList = $menu->getDescendants(0);
 
         return view('menu.index', [
             'menuList' => $menuList
@@ -33,7 +35,7 @@ class MenuController extends BaseController
         $data = \YunShop::request()->menu;
 
         if ($data) {
-            $model->setRawAttributes($data);
+            $model->fill($data);
 
             $validator = $model->validator();
             if ($validator->fails()) {
@@ -63,12 +65,11 @@ class MenuController extends BaseController
 
         $model = Menu::getMenuInfoById($id);
         if(!$model){
-            return $this->message('无此记录');
+            return $this->message('无此记录','','error');
         }
 
         if ($data) {
-            $data['id'] = $id;
-            $model->setRawAttributes($data);
+            $model->fill($data);
 
             $validator = $model->validator();
             if ($validator->fails()) {
@@ -96,9 +97,11 @@ class MenuController extends BaseController
 
         $model = Menu::getMenuInfoById($id);
         if (empty($model)) {
-            return $this->message('菜单不存在');
+            return $this->message('菜单不存在','','error');
         }
-        //@todo 判断是否存在子菜单
+        if($model->childs->count()>0){
+            return $this->message('存在子菜单不可删除','','error');
+        }
 
         if ($model->delete()) {
             return $this->message('菜单删除成功', Url::absoluteWeb('menu.index'));

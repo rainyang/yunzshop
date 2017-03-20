@@ -22,11 +22,16 @@ class YzPermission extends BaseModel
 
     public $table = 'yz_permission';
 
-    public static function createPermission(array $data = [])
+    public static function addYzPermission(array $data = [])
     {
         return static::insert($data);
     }
 
+    public function relationValidator($data)
+    {
+        $this->fill($data);
+        return $this->validator();
+    }
 
     /**
      * Delete role permissions by roleId
@@ -38,5 +43,6 @@ class YzPermission extends BaseModel
     {
         return static::where('type', '=', static::TYPE_ROLE)->where('item_id', $roleId)->delete();
     }
+
 
 }

@@ -1,9 +1,12 @@
 <?php
 namespace app\frontend\modules\goods\services;
+
+use app\common\events\order\BeforeOrderGoodsAddInOrder;
 use app\common\models\Goods;
 use app\common\models\GoodsOption;
 use app\common\models\GoodsSpecItem;
 use app\frontend\modules\goods\services\models\factory\GoodsModelFactory;
+use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -14,10 +17,13 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class GoodsService
 {
-    public static function getGoodsModels($goods_id_arr){
+    public static function getGoodsModels($goods_id_arr)
+    {
         return GoodsModelFactory::createModels($goods_id_arr);
     }
-    public static function getGoodsModel($goods_id){
+
+    public static function getGoodsModel($goods_id)
+    {
         return GoodsModelFactory::createModel($goods_id);
     }
 
@@ -28,7 +34,7 @@ class GoodsService
      */
     public function getGoodsByCart($goods_id, $option_id = null)
     {
-        $goodsModel = Goods::with(['hasManyOptions' => function ($query){
+        $goodsModel = Goods::with(['hasManyOptions' => function ($query) {
             return $query->select('goods_id', 'title', 'thumb', 'product_price', 'market_price');
         }])->select('id', 'thumb', 'price', 'market_price', 'title')->where('id', $goods_id)->first();
 
@@ -37,7 +43,7 @@ class GoodsService
         }
         //dd($goodsModel);
         if ($option_id) {
-            $goodsModel->option = $goodsModel->hasManyOptions->filter(function($item) use ($option_id){
+            $goodsModel->option = $goodsModel->hasManyOptions->filter(function ($item) use ($option_id) {
                 /*if ($item->id == $option_id) {
                     $specs = explode('_', $item->specs);
                     //没生效,明天看
@@ -52,4 +58,25 @@ class GoodsService
         return $goodsModel->toArray();
     }
 
+    public static function GoodsListAvailable(array $preGeneratedOrderGoodsModels)
+    {
+        foreach ($preGeneratedOrderGoodsModels as $preGeneratedOrderGoodsModel) {
+            $result = self::GoodsAvailable($preGeneratedOrderGoodsModel);
+            if($result !== true) {
+                return $result;
+            }
+        }
+        return true;
+    }
+
+    public static function GoodsAvailable(PreGeneratedOrderGoodsModel $preGeneratedOrderGoodsModel)
+    {
+        $Event = new BeforeOrderGoodsAddInOrder($preGeneratedOrderGoodsModel);
+        event($Event);
+        if ($Event->hasOpinion()) {
+            return [$Event->getOpinion()->result,$Event->getOpinion()->message];
+        }
+        return true;
+
+    }
 }

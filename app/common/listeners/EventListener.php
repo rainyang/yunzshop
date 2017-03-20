@@ -8,25 +8,27 @@
 
 namespace app\common\listeners;
 
-
-use app\common\events\TestFailEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
-
-class EventListener implements ShouldQueue
+class EventListener
 {
+    protected $event;
 
-    public function __construct()
-    {
-        //
+    /**
+     * 添加反馈
+     * @param Feedback $feedback
+     * @return mixed
+     */
+
+    public function pushFeedback(Feedback $feedback){
+        return $this->event->addFeedback($feedback);
     }
 
-    public function handle(TestFailEvent $event)
-    {
-        echo "<br/>";
-        var_dump($event->messages);
-
-        echo "这是第一个事件!";
-        echo "<br/>";
+    /**
+     * 提交意见
+     * @param Opinion $opinion
+     * @return mixed
+     */
+    public function sentOpinion(Opinion $opinion){
+        return $this->event->setOpinion($opinion);
     }
 
 }

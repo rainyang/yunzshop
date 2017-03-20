@@ -78,8 +78,6 @@ class MemberLevel extends \app\common\models\MemberLevel
     /**
      * Get membership list
      *
-     * @param int $uniacid
-     *
      * @return
      **/
     public static function getMemberLevelList()

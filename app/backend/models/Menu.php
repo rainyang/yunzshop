@@ -11,10 +11,12 @@ namespace app\backend\models;
 
 use app\common\models\BaseModel;
 use app\common\traits\TreeTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Validation\Rule;
 
 class Menu extends BaseModel
 {
-    use TreeTrait;
+    use TreeTrait,SoftDeletes;
 
     public $table = 'yz_menu';
 
@@ -33,6 +35,9 @@ class Menu extends BaseModel
     ];
     //不可填充
     public $guarded = ['id'];
+
+    const STATUS_ENABLED = 1;
+    const STATUS_DISABLED = 0;
 
     /**
      * 父菜单与子菜单栏目1:n关系
@@ -81,11 +86,38 @@ class Menu extends BaseModel
 
         if ($child_switch) {
             $result = $result->with(['childs'=>function ($query) {
-                return $query->where('status', 1)->orderBy('sort', 'asc');
+                return $query->where('status', self::STATUS_ENABLED)->orderBy('sort', 'asc');
             }]);
         }
 
         return $result;
+    }
+
+    /**
+     * 生成 config 菜单数据结构
+     *
+     * @param int $parentId
+     * @return array
+     */
+    public static function getMenuList($parentId = 0)
+    {
+        $list = [];
+            $menuList = static::select('id','name','url','url_params','permit','menu','icon','parent_id','sort','item')
+                ->where(['parent_id' => $parentId,'status'=>self::STATUS_ENABLED])
+                ->with('childs')
+                ->get();
+
+            if($menuList){
+                foreach ($menuList as $key=>$value){
+                    $list[$value->item] = $value->toArray();
+                    array_forget($list[$value->item],'childs');
+                    if($value->childs->count() > 0){
+                        $list[$value->item]['child'] = self::getMenuList($value->id);
+                    }
+                }
+            }
+
+        return $list;
     }
 
     /**
@@ -96,18 +128,7 @@ class Menu extends BaseModel
      */
     public static function getMenuInfoById($id)
     {
-        return self::where('id', $id)->first();
-    }
-
-    /**
-     * 获取子项
-     *
-     * @param $id
-     * @return mixed
-     */
-    public static function getChildCountByParentId($parentId)
-    {
-        return self::where('parent_id', $parentId)->count();
+        return self::where('id', $id)->with(['childs'])->first();
     }
 
     /**
@@ -145,7 +166,8 @@ class Menu extends BaseModel
     public function rules() {
 
         $rule =  [
-            'item' => 'required|unique:'.$this->table,
+            //具体unique可看文档 https://laravel.com/docs/5.4/validation#rule-unique
+            'item' => ['required',Rule::unique($this->table)->ignore($this->id)],
             'name' => 'required|max:45',
             'url' => 'max:255',
             'url_params' => 'max:255',

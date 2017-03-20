@@ -1,8 +1,7 @@
-﻿@extends('layouts.admin')
+﻿@extends('layouts.base')
 
 @section('content')
 
-<div class="w1200 m0a">
 
 	@include('goods.tabs')
 

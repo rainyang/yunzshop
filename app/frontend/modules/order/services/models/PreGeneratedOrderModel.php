@@ -6,188 +6,240 @@ use app\common\models\Order;
 use app\common\models\Member;
 
 use app\common\ServiceModel\ServiceModel;
+use app\frontend\modules\discount\services\DiscountService;
+use app\frontend\modules\discount\services\models\OrderDiscount;
+use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\models\ShopModel;
-use Illuminate\Support\Facades\Event;
 
+/**
+ * 订单生成类
+ * 输入
+ *  用户model
+ *  店铺model
+ *  未生成的订单商品(实例)app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel
+ * 输出
+ *  预下单信息
+ *  订单表插入结果
+ * 执行
+ *  订单表操作
+ * 事件通知
+ *  终止订单生成
+ *  订单生成后
+ * Class PreGeneratedOrderModel
+ * @package app\frontend\modules\order\services\models
+ */
 class PreGeneratedOrderModel extends ServiceModel
 {
     private $id;
-    private $total;
-    private $price;
-    private $goods_price;
-    //订单运费价格
-    private $dispatch_price = 0;
-    //优惠详情
-    private $discount_details = [];
-    //商城model实例
+    /**
+     * @var 商城model实例
+     */
     private $shop_model;
-    //用户model实例
+    /**
+     * @var用户model实例
+     */
     private $member_model;
-    //运费类实例
-    private $order_dispatch_obj;
-    //优惠类实例
-    private $order_discount_obj;
-    //未插入数据库的订单商品数组
+    /**
+     * @var \app\frontend\modules\dispatch\services\models\OrderDispatch 运费类实例
+     */
+    private $_OrderDispatch;
+    /**
+     * @var OrderDiscount 优惠类实例
+     */
+    private $_OrderDiscount;
+    /**
+     * @var array 未插入数据库的订单商品数组
+     */
     private $_pre_order_goods_models = [];
-    //订单价格没有被计算过
-    private $_has_calculated;
 
-    //记录添加的商品
+    /**
+     * 记录添加的商品
+     * PreGeneratedOrderModel constructor.
+     * @param array|null $pre_order_goods_models
+     */
     public function __construct(array $pre_order_goods_models = null)
     {
-        //dd($pre_order_goods_models);exit;
         if (isset($pre_order_goods_models)) {
             $this->addPreGeneratedOrderGoods($pre_order_goods_models);
         }
+        $this->_OrderDispatch = DispatchService::getPreOrderDispatchModel($this);
+        $this->_OrderDiscount = DiscountService::getPreOrderDiscountModel($this);
+
     }
-    //对外提供的获取订单商品方法
+
+    /**
+     * 对外提供的获取订单商品方法
+     * @return array
+     */
     public function getOrderGoodsModels()
     {
         return $this->_pre_order_goods_models;
     }
-    //添加订单商品
+
+    /**
+     * 添加订单商品
+     * @param array $pre_order_goods_models
+     */
     private function addPreGeneratedOrderGoods(array $pre_order_goods_models)
     {
         $this->_pre_order_goods_models = array_merge($this->_pre_order_goods_models, $pre_order_goods_models);
-        $this->_has_calculated = false;
-    }
-    //为优惠类提供的 设置优惠详情方法
-    public function setDiscountDetails($discount_details)
-    {
-        $this->discount_details = $discount_details;
     }
 
-    //设置订单所属用户
+    /**
+     * 设置订单所属用户
+     * @param Member $member_model
+     */
     public function setMemberModel(Member $member_model)
     {
         $this->member_model = $member_model;
     }
-    //设置订单所属店铺
+
+    /**
+     * 设置订单所属店铺
+     * @param ShopModel $shop_model
+     */
 
     public function setShopModel(ShopModel $shop_model)
     {
         $this->shop_model = $shop_model;
     }
 
-    //统计订单数据
-    private function _calculate()
+    /**
+     * 统计商品总数
+     * @return int
+     */
+    private function getGoodsTotal()
     {
-        $this->_has_calculated = true;
-        $this->total = $this->calculateTotal();
-        $this->goods_price = $this->calculateGoodsPrice();
-
-        $this->dispatch_price = $this->calculateDispatchPrice();
-
-        $this->price = $this->calculatePrice();
-
-    }
-
-    //统计商品总数
-    private function calculateTotal()
-    {
+        //累加所有商品数量
         $result = 0;
         foreach ($this->_pre_order_goods_models as $pre_order_goods_model) {
-            $result += $pre_order_goods_model->total;
+            $result += $pre_order_goods_model->getTotal();
         }
         return $result;
     }
-    //计算订单优惠
-    private function calculateDiscountPrice(){
-        $this->order_discount_obj = new OrderDiscount($this);
-        return $this->order_discount_obj->getDiscountPrice();
-    }
-    //计算订单运费
-    private function calculateDispatchPrice(){
-        $this->order_dispatch_obj = new OrderDispatch($this);
-        return $this->order_dispatch_obj->getDispatchPrice();
+
+    /**
+     * 计算订单优惠
+     * @return number
+     */
+    private function getDiscountPrice(){
+        return $this->_OrderDiscount->getDiscountPrice();
     }
 
-    //计算订单最终价格
-    private function calculatePrice()
+    /**
+     * 计算订单运费
+     * @return int|number
+     */
+    private function getDispatchPrice(){
+        return $this->_OrderDispatch->getDispatchPrice();
+    }
+
+    /**
+     * 计算订单最终价格
+     * @return int
+     */
+    private function getPrice()
     {
         //订单最终价格 = 商品最终价格 - 订单优惠 - 订单运费
-        return $this->calculateGoodsPrice() - $this->calculateDiscountPrice() + $this->calculateDispatchPrice();
+        return $this->getGoodsPrice() - $this->getDiscountPrice() + $this->getDispatchPrice();
     }
-    //统计订单商品最终价格
-    private function calculateGoodsPrice()
+
+    /**
+     * 统计订单商品最终价格
+     * @return int
+     */
+    private function getGoodsPrice()
     {
+        //累加所有商品最终价格
         $result = 0;
         foreach ($this->_pre_order_goods_models as $pre_order_goods_model) {
-            $result += $pre_order_goods_model->price;
+            $result += $pre_order_goods_model->getPrice();
         }
         return $result;
     }
 
-    //外部获取订单属性时 先进行计算
+    /**
+     * 属性获取器
+     * todo 准备删除这个方法
+     * @param $name
+     * @return null
+     */
     public function __get($name)
     {
-        if ($this->_has_calculated == false) {
-            $this->_calculate();
-        }
         if (isset($this->$name)) {
             return $this->$name;
         }
 
         return null;
     }
-    //订单显示
+
+    /**
+     * 输出订单信息
+     * @return array
+     */
     public function toArray()
     {
-        if ($this->_has_calculated == false) {
-            $this->_calculate();
-        }
         $data = array(
-            'price' => $this->price,
-            'goods_price' => $this->goods_price,
-            'dispatch_price' => $this->dispatch_price,
-            'dispatch_types' => $this->dispatch_types,
+            'price' => $this->getPrice(),
+            'goods_price' => $this->getGoodsPrice(),
+            'dispatch_price' => $this->getGoodsPrice(),
+            'dispatch_types' => $this->_OrderDispatch->getDispatchTypeId(),
         );
         foreach ($this->_pre_order_goods_models as $order_goods_model) {
             $data['order_goods'][] = $order_goods_model->toArray();
         }
         return $data;
     }
-    //订单生成
+
+    /**
+     * @return bool 订单插入数据库,触发订单生成事件
+     */
     public function generate()
     {
-        if ($this->_has_calculated == false) {
-            $this->_calculate();
-        }
         $order_model = $this->createOrder();
         $this->id = $order_model->id;
         $this->createOrderGoods();
-        Event::fire(new OrderCreatedEvent($order_model));
-        //配送类记录订单配送信息
-        $this->order_dispatch_obj->saveDispatchDetail($order_model);
-        //优惠类记录订单配送信息
-        $this->order_discount_obj->saveDiscountDetail($order_model);
-
+        event(new OrderCreatedEvent($order_model));
         return true;
     }
-    //订单商品生成
+
+    /**
+     * 订单商品生成
+     */
     private function createOrderGoods()
     {
         foreach ($this->_pre_order_goods_models as $pre_order_goods_model) {
             $pre_order_goods_model->generate($this);
         }
     }
-    //订单插入数据库
+
+    /**
+     * 订单插入数据库
+     * @return static 新生成的order model
+     */
     private function createOrder()
     {
         $data = array(
             'uniacid' => $this->shop_model->uniacid,
             'order_sn' => OrderService::createOrderSN(),
-            'member_id' => $this->member_model->uid,
-            'price' => $this->price,
-            'goods_price' => $this->goods_price,
+            'goods_total'=> $this->getGoodsTotal(),
+            'uid' => $this->member_model->uid,
+            'price' => $this->getPrice(),
+            'goods_price' => $this->getGoodsPrice(),
             'create_time' => time(),
-            'discount_details' => $this->discount_details,
+            //配送类获取订单配送信息
+            'dispatch_details'=>$this->_OrderDispatch->getDispatchDetails(),
+            //优惠类记录订单配送信息
+            'discount_details' => $this->_OrderDiscount->getDiscountDetails(),
+            //配送类获取订单配送方式id
+            'dispatch_type_id'=>$this->_OrderDispatch->getDispatchTypeId()
         );
+        //todo 测试
         echo '订单插入的数据为:';
         var_dump($data);
 
-        return Order::create($data);;
+        return Order::create($data);
     }
 
 }

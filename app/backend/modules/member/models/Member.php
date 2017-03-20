@@ -22,8 +22,8 @@ class Member extends \app\common\models\Member
     }
 
     /**
-     * @param $keyword
-     * @return mixed
+     * @param $keyWord
+     *
      */
     public static function getMemberByName($keyWord)
     {
@@ -43,31 +43,36 @@ class Member extends \app\common\models\Member
             'credit1', 'credit2'])
             ->uniacid()
             ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])
+                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])->uniacid()
                     ->with(['group'=>function($query1){
-                        return $query1->select(['id','group_name']);
+                        return $query1->select(['id','group_name'])->uniacid();
                     },'level'=>function($query2){
-                        return $query2->select(['id','level_name']);
+                        return $query2->select(['id','level_name'])->uniacid();
                     }, 'agent'=>function($query3){
-                        return $query3->select(['uid', 'avatar', 'nickname']);
+                        return $query3->select(['uid', 'avatar', 'nickname'])->uniacid();
                     }]);
             }, 'hasOneFans' => function($query4) {
-                return $query4->select(['uid', 'follow as followed']);
+                return $query4->select(['uid', 'follow as followed'])->uniacid();
+            }, 'hasOneOrder' => function ($query5) {
+                return $query5->selectRaw('member_id, count(member_id) as total, sum(price) as sum')
+                              ->uniacid()
+                              ->where('status', 3)
+                              ->groupBy('member_id');
             }]);
     }
 
     /**
-     * 会员－订单一对一关系
+     * 会员－订单1:1关系
      *
      * @return mixed
      */
     public function hasOneOrder()
     {
-        //return $this->hasOne('app\backend\modules\order\models\order','member_id','uid');
+        return $this->hasOne('app\backend\modules\order\models\order','member_id','uid');
     }
 
     /**
-     * 会员－粉丝一对一关系
+     * 会员－粉丝1:1关系
      *
      * @return mixed
      */
@@ -89,9 +94,9 @@ class Member extends \app\common\models\Member
             ->uniacid()
             ->where('uid', $id)
             ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content']);
+                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content'])->uniacid();
             }, 'hasOneFans' => function($query2) {
-                return $query2->select(['uid', 'follow as followed']);
+                return $query2->select(['uid', 'follow as followed'])->uniacid();
             }
             ])
             ->first()
@@ -173,14 +178,14 @@ class Member extends \app\common\models\Member
         $result = $result->with(['yzMember'=>function($query){
                 return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])
                     ->with(['group'=>function($query1){
-                        return $query1->select(['id','group_name']);
+                        return $query1->select(['id','group_name'])->uniacid();
                     },'level'=>function($query2){
-                        return $query2->select(['id','level_name']);
+                        return $query2->select(['id','level_name'])->uniacid();
                     }, 'agent'=>function($query3){
-                        return $query3->select(['uid', 'avatar', 'nickname']);
+                        return $query3->select(['uid', 'avatar', 'nickname'])->uniacid();
                     }]);
             }, 'hasOneFans' => function($query4) {
-                return $query4->select(['uid', 'follow as followed']);
+                return $query4->select(['uid', 'follow as followed'])->uniacid();
             }]);
 
         return $result;
