@@ -25,6 +25,7 @@ class Order extends BaseModel
         'discount_details' => 'json',
         'dispatch_details' => 'json',
     ];
+    const CLOSE = -1;
     const WAIT_PAY = 0;
     const WAIT_SEND = 1;
     const WAIT_RECEIVE = 2;
@@ -64,7 +65,7 @@ class Order extends BaseModel
 
     public function belongsToMember()
     {
-        return $this->belongsTo('\app\common\models\Member', 'member_id', 'uid');
+        return $this->belongsTo('\app\common\models\Member', 'uid', 'uid');
     }
 
     //订单配送方式

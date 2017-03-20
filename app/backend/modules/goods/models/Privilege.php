@@ -10,8 +10,11 @@
 namespace app\backend\modules\goods\models;
 
 
+use app\common\traits\MessageTrait;
+
 class Privilege extends \app\common\models\goods\Privilege
 {
+    use MessageTrait;
     public $timestamps = false;
 
     /**
@@ -49,6 +52,7 @@ class Privilege extends \app\common\models\goods\Privilege
 
     public static function relationValidator($goodsId, $data, $operate)
     {
+        /**
         if ($data) {
             $data['show_levels'] = !empty($data['show_levels']) ? implode(',', $data['show_levels']) : '';
             $data['buy_levels'] = !empty($data['buy_levels']) ? implode(',', $data['buy_levels']) : '';
@@ -58,8 +62,18 @@ class Privilege extends \app\common\models\goods\Privilege
             $data['once_buy_limit'] = !empty($data['total_buy_limit']) ? $data['total_buy_limit']: '0';
             $data['once_buy_limit'] = !empty($data['time_begin_limit']) ? strtotime($data['time_begin_limit']) : '0';
             $data['once_buy_limit'] = !empty($data['time_end_limit']) ? strtotime($data['time_end_limit']): '0';
-            return parent::validator($data);
+            return (new static)->validator($data);
         }
+ */
+        $flag = false;
+        $model = new static;
+        $validator = $model->validator($data);
+        if($validator->fails()){
+            $model->error($validator->messages());
+        }else{
+            $flag = true;
+        }
+        return $flag;
     }
 
     public static function getModel($goodsId,$operate)

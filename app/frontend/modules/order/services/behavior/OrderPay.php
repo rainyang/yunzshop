@@ -11,26 +11,10 @@ namespace app\frontend\modules\order\services\behavior;
 
 use app\common\models\Order;
 
-class OrderPay
+class OrderPay extends OrderOperation
 {
-    public $order_model;
-
-    public function __construct(Order $order_model)
-    {
-        $this->order_model = $order_model;
-    }
-
-    public function pay()
-    {
-        $this->order_model->status = 1;
-        return $this->order_model->save();
-    }
-
-    public function payable()
-    {
-        if ($this->order_model->status == 0) {
-            return true;
-        }
-        return false;
-    }
+    protected $status_before_change = [ORDER::WAIT_PAY];
+    protected $status_after_changed = ORDER::WAIT_SEND;
+    protected $name = '支付';
+    protected $past_tense_class_name = 'OrderPaid';
 }

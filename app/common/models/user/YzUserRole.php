@@ -26,4 +26,12 @@ class YzUserRole extends BaseModel
             ->where('type','=', YzPermission::TYPE_ROLE);
     }
 
+    public function addUserRole($userId, $roleId)
+    {
+        return static::insert([
+            'user_id' => $userId,
+            'role_id' => $roleId
+        ]);
+    }
+
 }

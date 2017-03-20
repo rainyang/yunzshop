@@ -9,28 +9,13 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
+
 use app\common\models\Order;
 
-class OrderCancelPay
+class OrderCancelPay extends OrderOperation
 {
-    public $order_model;
-
-    public function __construct(Order $order_model)
-    {
-        $this->order_model = $order_model;
-    }
-
-    public function cancelPay()
-    {
-        $this->order_model->status = 0;
-        return $this->order_model->save();
-    }
-
-    public function cancelable()
-    {
-        if ($this->order_model['status'] == 1) {
-            return true;
-        }
-        return false;
-    }
+    protected $status_before_change = [Order::WAIT_SEND];
+    protected $status_after_changed = 0;
+    protected $name = '取消支付';
+    protected $past_tense_class_name = 'OrderCancelPaid';
 }

@@ -50,7 +50,7 @@ class BaseObserver {
                     $class = array_get($pluginOperators,'class');
                     $function =array_get($pluginOperators,$operate == 'validator' ? 'function_validator':'function_save');
                     $data = array_get($model->widgets,$pluginName,[]);
-                    if(class_exists($class) && is_callable([$class,$function])){
+                    if(class_exists($class) && method_exists($class,$function) && is_callable([$class,$function])){
                         if (!$type) {
                             $result[$pluginName] = $class::$function($model->id, $data, $operate);
                         } else {

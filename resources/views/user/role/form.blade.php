@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.base')
 
 @section('content')
 
@@ -34,7 +34,7 @@
                 </div>
             </div>
 
-            @include('user.role.permission')
+            @include('user.permission.permission')
 
             <div class="form-group"></div>
             <div class="form-group">
