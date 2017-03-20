@@ -26,4 +26,5 @@ class MemberShopInfo extends BackendModel
     }
 
 
+
 }

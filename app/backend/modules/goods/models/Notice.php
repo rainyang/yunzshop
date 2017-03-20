@@ -1,5 +1,7 @@
 <?php
 namespace app\backend\modules\goods\models;
+use app\common\traits\MessageTrait;
+
 /**
  * Created by PhpStorm.
  * User: yanglei
@@ -9,6 +11,8 @@ namespace app\backend\modules\goods\models;
 
 class Notice extends \app\common\models\Notice
 {
+    use MessageTrait;
+
     public $timestamps = false;
 
     /**
@@ -72,9 +76,16 @@ class Notice extends \app\common\models\Notice
     }
     public static function relationValidator($goodsId, $data, $operate)
     {
-        if ($data) {
-            return parent::validator($data);
+        $flag = false;
+        $model = new static;
+        $validator = $model->validator($data);
+        if($validator->fails()){
+            $model->error($validator->messages());
+        }else{
+            $flag = true;
         }
+        return $flag;
+
     }
     public static function deleteAllByGoodsId($goodsId)
     {

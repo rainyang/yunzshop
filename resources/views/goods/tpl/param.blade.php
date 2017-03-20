@@ -15,11 +15,11 @@
                     <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;" title="删除"><i class='fa fa-remove'></i></a>
                 </td>
                 <td>
-                    <input name="param_title[]" type="text" class="form-control param_title" value="{{$p['title']}}"/>
-                    <input name="param_id[]" type="hidden" class="form-control" value="{{$p['id']}}"/>
+                    <input name="param_title[]" type="text" class="form-control param_title" value="{{$p['title'] or ''}}"/>
+                    <input name="param_id[]" type="hidden" class="form-control" value="{{$p['id'] or ''}}"/>
                 </td>
                 <td>
-                    <input name="param_value[]" type="text" class="form-control param_value" value="{{$p['value']}}"/>
+                    <input name="param_value[]" type="text" class="form-control param_value" value="{{$p['value'] or ''}}"/>
                 </td>
             </tr>
             @endforeach
