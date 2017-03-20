@@ -7,21 +7,9 @@
  */
 
 namespace app\common\events\dispatch;
-use app\common\events\Event;
-use app\frontend\modules\goods\services\models\GoodsDispatch;
+use app\common\events\order\OrderGoodsEvent;
 
-class OrderGoodsDispatchWasCalculated extends Event
+class OrderGoodsDispatchWasCalculated extends OrderGoodsEvent
 {
-    private $_order_goods_model;
-    public $goods_dispatch_obj;
 
-
-    public function __construct(GoodsDispatch $goods_dispatch_obj)
-    {
-        $this->goods_dispatch_obj = $goods_dispatch_obj;
-        $this->_order_goods_model = $goods_dispatch_obj->getOrderGoodsModel();
-    }
-    public function getOrderGoodsModel(){
-        return $this->_order_goods_model;
-    }
 }

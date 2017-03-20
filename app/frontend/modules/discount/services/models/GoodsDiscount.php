@@ -6,18 +6,12 @@
  * Time: 上午10:00
  */
 
-namespace app\frontend\modules\goods\services\models;
+namespace app\frontend\modules\discount\services\models;
 
-
-
-use app\common\events\discount\OrderGoodsDiscountWasCalculated;
-
-
-class GoodsDiscount
+class GoodsDiscount extends Discount
 {
     public function getDiscountDetails(){
-        event(new OrderGoodsDiscountWasCalculated($this));
-
+        echo 1;exit;
         $details = [];
         $details[] = [
             'name'=>'折扣',
@@ -31,7 +25,7 @@ class GoodsDiscount
             'price'=>'60',
             'plugin'=>'2',
         ];
-        return ;
+        return $details;
     }
 
 }

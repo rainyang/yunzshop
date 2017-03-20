@@ -16,15 +16,14 @@ class MemberLevelGoodsDiscount
         return true;
     }
     public function getDiscountDetails(){
-        $details = [];
-        $details[] = [
+        $detail = [
             'name'=>'会员等级折扣',
             'value'=>'85',
             'price'=>'50',
             'plugin'=>'0',
         ];
 
-        return $details;
+        return $detail;
     }
     public function handle(OrderGoodsDiscountWasCalculated $even)
     {
@@ -33,7 +32,7 @@ class MemberLevelGoodsDiscount
             return;
         }
 
-        $even->getOrderGoodsModel()->setDiscountDetails($this->getDiscountDetails());
+        $even->addData($this->getDiscountDetails());
 
         return;
     }

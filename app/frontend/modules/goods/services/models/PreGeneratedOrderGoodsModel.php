@@ -12,6 +12,9 @@ use app\common\models\Goods;
 use app\common\models\OrderGoods;
 
 use app\common\ServiceModel\ServiceModel;
+use app\frontend\modules\discount\services\DiscountService;
+use app\frontend\modules\dispatch\services\DispatchService;
+use app\frontend\modules\dispatch\services\models\GoodsDispatch;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 
@@ -25,11 +28,16 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     private $_has_calculated;
     private $dispatch_details = [];
     private $discount_details = [];
+    private $GoodsDispatch;
+    private $GoodsDiscount;
 
     public function __construct(Goods $goods_model, $total = 1)
     {
         $this->goods_model = $goods_model;
         $this->total = $total;
+        $this->GoodsDispatch =DispatchService::getPreOrderGoodsDispatchModel($this);
+        $this->GoodsDiscount =DiscountService::getPreOrderGoodsDiscountModel($this);
+
         $this->dispatch_details = $this->getDispatchDetails();
         $this->_has_calculated = false;
 
@@ -38,7 +46,6 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     //为监听者提供的方法,设置优惠详情
     public function setDiscountDetails($discount_details)
     {
-        //dd($dispatch_price);
         $this->discount_details = $discount_details;
     }
     //设置商品数量
@@ -78,17 +85,16 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
     //计算商品优惠价格
     private function calculateDiscountPrice()
     {
-        //$goods_discount_obj = new GoodsDiscount($this);
-        //$goods_discount_obj->getDiscountDetails();
-        event(new \app\common\events\discount\OrderGoodsDiscountWasCalculated($this));
+        return $this->GoodsDiscount->getDiscountPrice();
 
-        $result = array_sum(array_column($this->discount_details, 'price'));
-        return $result;
     }
-    //计算订单运费
+    //获取订单商品配送详情
     private function getDispatchDetails(){
-        $order_dispatch_obj = new GoodsDispatch($this);
-        return $order_dispatch_obj->getDispatchDetails();
+        return $this->GoodsDispatch->getDispatchDetails();
+    }
+    //获取订单优惠详情
+    private function getDiscountDetails(){
+        return $this->GoodsDiscount->getDiscountDetails();
     }
     //显示商品数据
     public function toArray()
@@ -101,11 +107,18 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
             'total' => $this->total,
             'title' => $this->goods_model->title,
             'thumb' => $this->goods_model->thumb,
-            'discount_details' => json_encode($this->discount_details),
-            'dispatch_details' => json_encode($this->dispatch_details),
+            'discount_details' => $this->getDiscountDetails(),
+            'dispatch_details' => $this->getDispatchDetails(),
 
         );
         return $data;
+    }
+    public function getTotal(){
+        return $this->total;
+
+    }
+    public function getPrice(){
+        return $this->price;
     }
     //订单商品插入数据库
     public function generate(PreGeneratedOrderModel $order_model = null)
@@ -113,24 +126,20 @@ class PreGeneratedOrderGoodsModel extends ServiceModel
         if (isset($order_model)) {
             $this->setOrderModel($order_model);
         }
-        //dd($order_model);exit;
 
         $data = array(
             'uniacid' => $this->order_model->shop_model->uniacid,
             'order_id' => $this->order_model->id,
             'goods_id' => $this->goods_model->id,
             'goods_sn' => $this->goods_model->goods_sn,
-            'member_id' => $this->order_model->member_model->uid,
+            'uid' => $this->order_model->member_model->uid,
             'goods_price' => $this->goods_price,
-
             'price' => $this->price,
             'total' => $this->total,
             'title' => $this->goods_model->title,
             'thumb' => $this->goods_model->thumb,
-            'discount_details' => json_encode($this->discount_details),
-            'dispatch_details' => json_encode($this->dispatch_details),
-
-
+            'discount_details' => $this->discount_details,
+            'dispatch_details' => $this->dispatch_details,
         );
         echo '订单商品插入数据为';
         var_dump($data);

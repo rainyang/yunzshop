@@ -65,7 +65,7 @@ class Order extends BaseModel
 
     public function belongsToMember()
     {
-        return $this->belongsTo('\app\common\models\Member', 'member_id', 'uid');
+        return $this->belongsTo('\app\common\models\Member', 'uid', 'uid');
     }
 
     //订单配送方式

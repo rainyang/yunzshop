@@ -8,14 +8,8 @@
 
 namespace app\frontend\modules\dispatch\services\models;
 
-class OrderDispatch
+class OrderDispatch extends Dispatch
 {
-    private $_dispatch_details = [];
-
-    public function __construct($dispatch_details)
-    {
-        $this->_dispatch_details = $dispatch_details;
-    }
 
     //todo 获取商品可选配送方式
     public function getDispatchTypes()
@@ -38,12 +32,7 @@ class OrderDispatch
         return $result = array_sum(array_column($this->_dispatch_details, 'price'));
     }
 
-    //返回运费详情
-    public function getDispatchDetails()
-    {
-        return $this->_dispatch_details;
 
-    }
     //todo 获取配送类型
     public function getDispatchTypeId(){
         return \YunShop::request()->get('dispatch_type_id');

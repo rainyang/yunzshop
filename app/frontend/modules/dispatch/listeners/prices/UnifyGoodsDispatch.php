@@ -19,7 +19,7 @@ class UnifyGoodsDispatch
             return;
         }
 
-        $even->goods_dispatch_obj->addDispatchDetail($this->getDispatchDetail());
+        $even->addData($this->getDispatchDetail());
 
         return;
     }
