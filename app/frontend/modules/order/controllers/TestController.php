@@ -2,11 +2,18 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\BaseController;
+use app\common\events\order\AfterOrderCanceledEvent;
+use app\common\events\order\AfterOrderCancelSentEvent;
+use app\common\events\order\AfterOrderPaidEvent;
+use app\common\events\order\AfterOrderReceivedEvent;
+use app\common\events\order\AfterOrderSentEvent;
+use app\common\events\order\BeforeOrderCancelPayEvent;
 use app\common\models\Order;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
-use Illuminate\Support\Facades\Event;
+
+use app\common\events\order\AfterOrderCancelPaidEvent;
 
 /**
  * Created by PhpStorm.
@@ -18,7 +25,14 @@ class TestController extends BaseController
 {
     public function index()
     {
-        Event::fire(new \app\common\events\order\AfterOrderReceivedEvent(Order::find(1)));
+        $result = OrderService::orderCancelPay(Order::find(1));
+        dd($result);
+        //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
+        /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));
+        Event::fire(new AfterOrderCancelSentEvent(Order::find(1)));
+        Event::fire(new AfterOrderPaidEvent(Order::find(1)));
+        Event::fire(new AfterOrderReceivedEvent(Order::find(1)));
+        Event::fire(new AfterOrderSentEvent(Order::find(1)));*/
 
     }
 

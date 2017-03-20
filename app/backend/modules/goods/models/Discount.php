@@ -11,9 +11,11 @@ namespace app\backend\modules\goods\models;
 
 
 use app\backend\modules\goods\services\DiscountService;
+use app\common\traits\MessageTrait;
 
 class Discount extends \app\common\models\goods\Discount
 {
+    use MessageTrait;
     public $timestamps = false;
 
     /**
@@ -50,6 +52,8 @@ class Discount extends \app\common\models\goods\Discount
 
     public static function relationValidator($goodsId, $data, $operate)
     {
+        $model = new static;
+        $flag = false;
         if ($data) {
             $discount_data = [];
             $result = [];
@@ -62,13 +66,19 @@ class Discount extends \app\common\models\goods\Discount
                         'discount_value' => !empty($value) ? $value : '0',
                         'goods_id' => $goodsId
                     ];
-                    $result[] = (new self())->validator($discount_data);
+                    $validator = $model->validator($discount_data);
+                    $result[] = $validator;
+                    if($validator->fails())
+                    {
+                        $model->error($validator->messages());
+                    }
                 }
-                if (in_array(false, $result)) {
-                    return false;
+                if (!in_array(false, $result)) {
+                    $flag = true;
                 }
             }
         }
+        return $flag;
     }
 
     public static function addByGoodsId($discount_data)

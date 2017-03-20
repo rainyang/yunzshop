@@ -1,8 +1,7 @@
-﻿@extends('layouts.admin')
+﻿@extends('layouts.base')
 
 @section('content')
 
-<div class="w1200 m0a">
 
 	@include('goods.tabs')
 
@@ -27,12 +26,10 @@
 					<li><a href="#tab_des">{{$lang['shopdesc']}}</a></li>
 					<li><a href="#tab_param">属性</a></li>
 					<li><a href="#tab_option">{{$lang['shopoption']}}</a></li>
-					<li><a href="#tab_share">分享关注</a></li>
-					<li><a href="#tab_privilege">权限</a></li>
-					<li><a href="#tab_discount">折扣</a></li>
-					<li><a href="#tab_sale">营销</a></li>
-					<li><a href="#tab_dispatch">配送</a></li>
-					<li><a href="#tab_notice">消息通知</a></li>
+					@foreach(Config::get('widget.goods') as $key=>$value)
+					<li><a href="#{{$key}}">{{$value['title']}}</a></li>
+					@endforeach
+
 				</ul>
 			</div>
 			<div style="padding-top:50px">
@@ -42,14 +39,9 @@
 						<div class="tab-pane" id="tab_des">@include('goods.des')</div>
 						<div class="tab-pane" id="tab_param">@include('goods.tpl.param')</div>
 						<div class="tab-pane" id="tab_option">@include('goods.tpl.option')</div>
-
-						<div class="tab-pane" id="tab_sale">{!! widget('app\backend\widgets\goods\SaleWidget', ['goods_id'=> $goods->id])!!}</div>
-						<div class="tab-pane" id="tab_notice">{!! widget('app\backend\widgets\goods\NoticeWidget', ['goods_id'=> $goods->id]) !!}</div>
-						<div class="tab-pane" id="tab_share">{!! widget('app\backend\widgets\goods\ShareWidget', ['goods_id' => $goods->id]) !!}</div>
-						<div class="tab-pane" id="tab_privilege">{!! widget('app\backend\widgets\goods\PrivilegeWidget', ['goods_id' => $goods->id]) !!}</div>
-						<div class="tab-pane" id="tab_discount">{!! widget('app\backend\widgets\goods\DiscountWidget', ['goods_id' => $goods->id]) !!}</div>
-						<div class="tab-pane" id="tab_dispatch">{!! widget('app\backend\widgets\goods\DispatchWidget', ['goods_id' => $goods->id]) !!}</div>
-
+						@foreach(Config::get('widget.goods') as $key=>$value)
+						<div class="tab-pane" id="{{$key}}">{!! widget($value['class'], ['goods_id'=> $goods->id])!!}</div>
+						@endforeach
 
 					</div>
 					<div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">

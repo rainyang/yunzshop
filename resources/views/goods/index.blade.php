@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin')
+﻿@extends('layouts.base')
 
 @section('content')
 
@@ -163,11 +163,11 @@
 								</td>
 								<td class='tdedit' width="16%">
 										@if($item['has_option']==1)
-											<span class='tip' title='多规格不支持快速修改'>{{$item['market_price']}}</span>
+											<span class='tip' title='多规格不支持快速修改'>{{$item['price']}}</span>
 										@else
-											<span class=' fa-edit-item' style='cursor:pointer'><i class='fa fa-pencil' style="display:none"></i> <span class="title">{{$item['market_price']}}</span> </span>
+											<span class=' fa-edit-item' style='cursor:pointer'><i class='fa fa-pencil' style="display:none"></i> <span class="title">{{$item['price']}}</span> </span>
 											<div class="input-group" style="display:none" data-goodsid="{{$item['id']}}">
-												<input type='text' class='form-control' value="{{$item['market_price']}}" />
+												<input type='text' class='form-control' value="{{$item['price']}}" />
 												<div class="input-group-btn">
 													<button type="button" class="btn btn-default" data-goodsid='{{$item['id']}}' data-type="marketprice"><i class="fa fa-check"></i></button>
 												</div>

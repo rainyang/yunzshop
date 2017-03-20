@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.base')
 
 @section('content')
 
@@ -269,4 +269,5 @@
 
     });
 </script>
-{template 'web/area/selectprovinces'}
+@include('area.selectprovinces')
+@endsection

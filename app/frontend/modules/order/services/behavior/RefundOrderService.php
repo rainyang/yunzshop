@@ -10,7 +10,7 @@ namespace app\frontend\modules\order\services\behavior;
 
 use app\common\models\OrderRefund;
 
-class RefundOrderService
+class RefundOrderService extends OrderOperation
 {
     public $raid;
     public $message;

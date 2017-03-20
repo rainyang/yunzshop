@@ -10,8 +10,11 @@
 namespace app\backend\modules\goods\models;
 
 
+use app\common\traits\MessageTrait;
+
 class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
 {
+    use MessageTrait;
     public $timestamps = false;
 
     /**
@@ -40,9 +43,15 @@ class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
     }
     public static function relationValidator($goodsId, $data, $operate)
     {
-        if ($data) {
-            return parent::validator($data);
+        $flag = false;
+        $model = new static;
+        $validator = $model->validator($data);
+        if($validator->fails()){
+            $model->error($validator->messages());
+        }else{
+            $flag = true;
         }
+        return $flag;
     }
     public static function getModel($goodsId,$operate)
     {
