@@ -14,6 +14,7 @@ namespace app\backend\modules\order\models;
 class Order extends \app\common\models\Order
 {
     public static function getAllOrders($search,$pageSize){
+        dd($search);
         $builder = Order::orders($search,$pageSize);
         $list = $builder->paginate($pageSize)->toArray();
         $list['total_price'] = $builder->sum('price');
@@ -69,9 +70,9 @@ class Order extends \app\common\models\Order
         return $orders;
     }
 
-    public function scopeOrders($search)
+    public function scopeOrders($order_builder,$search)
     {
-        $order_builder = Order::search($search);
+        $order_builder->search($search);
 
         $list = $order_builder->with([
             'belongsToMember' => self::member_builder(),

@@ -37,4 +37,10 @@ class McMappingFans extends BackendModel
             ->first()
             ->toArray();
     }
+
+    public static function getFansById($memberId)
+    {
+        return self::where('uid', $memberId)
+            ->first();
+    }
 }

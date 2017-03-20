@@ -147,7 +147,7 @@ class GoodsController extends BaseController
                 GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
                 return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
             } else {
-                $this->error('商品修改失败');
+                !session()->has('flash_notification.message') && $this->error('商品创建失败');
             }
         }
 
@@ -193,12 +193,15 @@ class GoodsController extends BaseController
         if ($requestGoods) {
             //将数据赋值到model
             $requestGoods['thumb'] = tomedia($requestGoods['thumb']);
-            $requestGoods['thumb_url'] = serialize(
-                array_map(function ($item) {
-                    return tomedia($item);
-                }, $requestGoods['thumb_url'])
-            );
-            //serialize($requestGoods['thumb_url']);
+
+            if(isset($requestGoods['thumb_url'])){
+                $requestGoods['thumb_url'] = serialize(
+                    array_map(function($item){
+                        return tomedia($item);
+                    }, $requestGoods['thumb_url'])
+                );
+            }
+
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
             //其他字段赋值
@@ -213,7 +216,7 @@ class GoodsController extends BaseController
                 //显示信息并跳转
                 return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
             } else {
-                $this->error('商品修改失败');
+                !session()->has('flash_notification.message') && $this->error('商品修改失败');
             }
         }
 

@@ -66,8 +66,6 @@ class AppServiceProvider extends ServiceProvider
             'show_all_errors'=>true
         ]);
 
-        //菜单生成
-        \Config::set('menu',Menu::getMenuList());
     }
 
     /**
