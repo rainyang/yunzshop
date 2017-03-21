@@ -37,9 +37,7 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
 
     public function getGoodsPrice()
     {
-        dd($this->total);
-        dd($this->OrderGoods->goods_price);
-exit;
+
         return $this->total * $this->OrderGoods->goods_price;
 
     }
@@ -53,7 +51,7 @@ exit;
             'discount_details' => $this->discount_details,
             'dispatch_details' => $this->dispatch_details,
         );
-        dd($data);exit;
+
         OrderGoods::save($data);
     }
 }

@@ -17,7 +17,6 @@ class MemberLevelGoodsDiscount
     private $_event;
     public function needDiscount()
     {
-        //$this->_event->getMap();
 
 
         //商品设置了等级折扣
@@ -28,35 +27,34 @@ class MemberLevelGoodsDiscount
     public function getDiscountDetails()
     {
 
-        //member_model
-        //goods_model
         $detail = [
             'name' => '会员等级折扣',
             'value' => '85',
-            'price' => '50',
+            'price' => '-50',
             'plugin' => '0',
         ];
 
         return $detail;
     }
-    public function onDisplay(OnDiscountInfoDisplayEvent $even){
-        $this->_event = $even;
-        $order_model = $even->getOrderModel();
-        $data = [
+    public function onDisplay(OnDiscountInfoDisplayEvent $event){
+        $this->_event = $event;
+
+        $order_model = $event->getOrderModel();
+        $data[] = [
             'name' => '会员等级折扣',
             'value' => '85',
             'price' => '50',
             'plugin' => '1',
         ];
-        $even->addMap('discount',$data);
+        $event->addMap('discount',$data);
     }
-    public function handle(OrderGoodsDiscountWasCalculated $even)
+    public function handle(OrderGoodsDiscountWasCalculated $event)
     {
-
+        $this->_event = $event;
         if (!$this->needDiscount()) {
             return;
         }
-        $even->addData($this->getDiscountDetails());
+        $event->addData($this->getDiscountDetails());
 
         return;
     }

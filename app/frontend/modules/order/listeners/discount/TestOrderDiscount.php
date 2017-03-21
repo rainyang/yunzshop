@@ -16,14 +16,12 @@ class TestOrderDiscount
         return true;
     }
     public function getDiscountDetails(){
-
         $details = [
             'name'=>'订单满减',
             'value'=>'85',
-            'price'=>'50',
+            'price'=>'-50',
             'plugin'=>'0',
         ];
-
         return $details;
     }
     public function handle(OrderDiscountWasCalculated $even)

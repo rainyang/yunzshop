@@ -53,7 +53,7 @@ class PreGeneratedOrderModel extends OrderModel
         }
         parent::__construct($OrderGoodsModels);
     }
-    protected function setOrderGoodsModels($OrderGoodsModels)
+    protected function setOrderGoodsModels(array $OrderGoodsModels)
     {
         $this->_OrderGoodsModels = $OrderGoodsModels;
     }

@@ -16,15 +16,19 @@ class CreatedOrderModel extends OrderModel
 {
     private $_Order;
     protected $_OrderGoodsModels = [];
-    public function __construct($Order,$OrderGoodsModels)
+
+    public function __construct($Order, $OrderGoodsModels)
     {
         $this->_Order = $Order;
         parent::__construct($OrderGoodsModels);
     }
-    protected function setOrderGoodsModels($OrderGoodsModels){
+
+    protected function setOrderGoodsModels(array $OrderGoodsModels)
+    {
         $this->_OrderGoodsModels = $OrderGoodsModels;
 
     }
+
     public function getOrder()
     {
         return $this->_Order;
@@ -33,6 +37,24 @@ class CreatedOrderModel extends OrderModel
     protected function setDiscount()
     {
         $this->_OrderDiscount = DiscountService::getCreatedOrderDiscountModel($this->getOrder());
+    }
+
+    public function changePrice($price)
+    {
+        $change_price = $price - $this->_Order->price;
+
+        $detail = [
+            'name' => '订单改价',
+            'value' => "{$this->_Order->price}->{$price}",
+            'price' => (string)$change_price,
+            'plugin' => '0',
+        ];
+        $this->_OrderDiscount->addDiscountDetail($detail);
+    }
+
+    public function changeDispatchPrice($dispatch_price)
+    {
+        $this->_OrderDispatch->addDispatchDetail();
     }
 
     protected function setDispatch()
@@ -49,8 +71,6 @@ class CreatedOrderModel extends OrderModel
             'discount_details' => $this->_OrderDiscount->getDiscountDetails(),
             'price' => $this->getPrice(),
             'goods_price' => $this->getGoodsPrice(),
-
-
         ];
         dd($data);
     }
