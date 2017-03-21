@@ -12,6 +12,11 @@ use Latrell\Alipay\AlipayServiceProvider;
 
 class AliPay extends Pay
 {
+    public function __construct()
+    {
+
+    }
+
     public function doPay($subject, $body, $amount, $order_no, $extra)
     {
         // TODO: Implement doPay() method.
