@@ -20,11 +20,8 @@ class MemberShopInfo extends BackendModel
     public static function getMemberShopInfo($memberId)
     {
         return static::where('member_id', $memberId)
-            ->where('uniacid', \YunShop::app()->uniacid)
+            ->uniacid()
             ->first(1)
             ->toArray();
     }
-
-
-
 }

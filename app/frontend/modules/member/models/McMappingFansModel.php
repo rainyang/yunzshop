@@ -24,22 +24,6 @@ class McMappingFansModel extends BackendModel
     }
 
     /**
-     * 获取
-     *
-     * @param $uniacid
-     * @return mixed
-     */
-    public function getMemberId($uniacid)
-    {
-        $user_info = $this->getOauthUserInfo();
-
-        return self::where('uniacid', $uniacid)
-            ->where('openid', $user_info['openid'])
-            ->first()
-            ->toArray();
-    }
-
-    /**
      * 获取粉丝uid
      *
      * @param $openid

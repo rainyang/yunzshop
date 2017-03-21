@@ -72,7 +72,6 @@ class Setting extends BaseModel
     public function getItems($uniqueAccountId, $group)
     {
         $items = array();
-
         foreach (self::fetchSettings($uniqueAccountId, $group) as $item) {
             switch (strtolower($item->type)) {
                 case 'string':
@@ -97,7 +96,6 @@ class Setting extends BaseModel
                     $items[$item->key] = $item->value;
             }
         }
-
         return $items;
     }
 

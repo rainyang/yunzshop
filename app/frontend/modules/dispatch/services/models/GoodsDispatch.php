@@ -17,7 +17,8 @@ class GoodsDispatch extends Dispatch
      * @return int
      */
     //  todo 从商品中获取
-    public function getDispatchType(){
+    public function getDispatchType()
+    {
         return 1;
     }
 

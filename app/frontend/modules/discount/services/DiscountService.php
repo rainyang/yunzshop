@@ -9,8 +9,10 @@ namespace app\frontend\modules\discount\services;
 use app\common\events\discount\OrderDiscountWasCalculated;
 use app\common\events\discount\OrderGoodsDiscountWasCalculated;
 use app\common\models\Order;
+use app\common\models\OrderGoods;
 use app\frontend\modules\discount\services\models\GoodsDiscount;
 use app\frontend\modules\discount\services\models\OrderDiscount;
+use app\frontend\modules\dispatch\services\models\GoodsDispatch;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
@@ -38,4 +40,9 @@ class DiscountService
         $GoodsDiscount = new GoodsDiscount($discount_detail);
         return $GoodsDiscount;
     }
+    public static function getCreatedOrderGoodsDiscountModel(OrderGoods $OrderGoods){
+        $OrderGoods->discount_details;
+        return new GoodsDiscount($OrderGoods->discount_details);
+    }
+
 }

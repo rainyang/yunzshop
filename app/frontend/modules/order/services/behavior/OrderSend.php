@@ -8,12 +8,9 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
-
-use app\common\events\order\AfterOrderSentEvent;
 use app\common\models\Order;
 
-
-class OrderSend extends OrderOperation
+class OrderSend extends ChangeStatusOperation
 {
     protected $status_before_change = [ORDER::WAIT_SEND];
     protected $status_after_changed = ORDER::WAIT_RECEIVE;

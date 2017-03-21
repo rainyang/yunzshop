@@ -12,7 +12,7 @@ namespace app\frontend\modules\order\services\behavior;
 
 use app\common\models\Order;
 
-class OrderCancelPay extends OrderOperation
+class OrderCancelPay extends ChangeStatusOperation
 {
     protected $status_before_change = [Order::WAIT_SEND];
     protected $status_after_changed = 0;
