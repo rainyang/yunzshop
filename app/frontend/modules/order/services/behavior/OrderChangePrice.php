@@ -29,10 +29,12 @@ class OrderChangePrice extends OrderOperation
         $db_order = Order::find(80);
         $order_goods_list = $db_order->hasManyOrderGoods;
         foreach ($order_goods_list as $order_goods){
-            $order_goods_models = new CreatedOrderGoodsModel($order_goods);
+            $order_goods_models[] = new CreatedOrderGoodsModel($order_goods);
         }
         $order = new CreatedOrderModel($db_order,$order_goods_models);
+        $order->changePrice('380');
         $order->update();
-        return false;exit;
+        exit;
+        return false;
     }
 }

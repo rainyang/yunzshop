@@ -36,7 +36,7 @@ abstract class OrderModel
 
     abstract protected function setDiscount();
 
-    abstract protected function setOrderGoodsModels($OrderGoodsModels);
+    abstract protected function setOrderGoodsModels(array $OrderGoodsModels);
 
     /**
      * 统计商品总数
@@ -74,8 +74,8 @@ abstract class OrderModel
      */
     protected function getPrice()
     {
-        //订单最终价格 = 商品最终价格 - 订单优惠 - 订单运费
-        return $this->getGoodsPrice() - $this->getDiscountPrice() + $this->getDispatchPrice();
+        //订单最终价格 = 商品最终价格 + 订单优惠 + 订单运费
+        return $this->getGoodsPrice() + $this->getDiscountPrice() + $this->getDispatchPrice();
     }
 
     /**
