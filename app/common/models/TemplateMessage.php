@@ -23,14 +23,20 @@ class TemplateMessage extends BaseModel
      */
     public function init()
     {
-        //array getPrivateTemplates() 获取所有模板列表
+        //array getAllTemplates() 获取所有模板列表
 
-        //已经设置的则更新status 为 1
+        //已经设置的则更新status 为 可用
 
         //未更新则string addTemplate($shortId) 添加模板并获取模板ID；
 
         //将模板ID更新到数据库
     }
+
+    public function getAllTemplates()
+    {
+        return static::where('parent_item','')->get();
+    }
+
 
     /**
      * 发送模板消息
