@@ -2,7 +2,6 @@
 namespace  app\backend\controllers;
 
 use app\common\components\BaseController;
-use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
 use Setting;
 use app\common\services\PluginManager;
@@ -14,19 +13,10 @@ class TestController extends BaseController
 
     public function index()
     {
-        /*
-        dd(new \WeiXinAccount());
-        $account = WeAccount::create(\YunShop::app()->uniacid);
-        dd($account);
-        \Config::set('wechat.app_id',\YunShop::app()->account['key']);
-        \Config::set('wechat.secret',\YunShop::app()->account['secret']);
-        \Config::set('wechat.token',\YunShop::app()->account['token']);
-        \Config::set('wechat.aes_key',\YunShop::app()->account['encodingaeskey']);
-        $app = new Application(\Config::get('wechat'));
-        $accessToken = $app->access_token; // EasyWeChat\Core\AccessToken 实例
-        $token = $accessToken->getToken(); // token 字符串
-        dd(\YunShop::app());
-*/
+        dd($alipay = app('alipay.web'));
+
+        $fans = weAccount()->fansAll();
+        dd($fans);
         return view('test.index',['a'=>'f']);
 
 

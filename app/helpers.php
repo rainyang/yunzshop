@@ -16,6 +16,18 @@ if(!function_exists('can')){
     }
 }
 
+if(!function_exists('weAccount')) {
+    /**
+     * 获取微擎账号体系
+     * @return NULL|WeAccount
+     */
+    function weAccount()
+    {
+        load()->model('account');
+        return WeAccount::create();
+    }
+}
+
 
 if(!function_exists('yzWebUrl')){
     function yzWebUrl($route, $params = [])
