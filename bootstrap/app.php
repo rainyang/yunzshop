@@ -41,6 +41,7 @@ $app->singleton(
     app\common\exceptions\Handler::class
 );
 
+$app->register(Latrell\Alipay\AlipayServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Return The Application
