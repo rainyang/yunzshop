@@ -3,6 +3,7 @@
 namespace app\common\providers;
 
 
+use app\frontend\modules\discount\listeners\MemberLevelGoodsDiscount;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider

@@ -9,6 +9,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\BaseController;
+use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\order\PreGeneratedOrderDisplayEvent;
 use app\common\models\Order;
 use app\frontend\modules\goods\services\GoodsService;
@@ -39,7 +40,7 @@ class PreGeneratedController extends BaseController
         $order_model = OrderService::getPreCreateOrder($order_goods_models,$member_model,$shop_model);
 
         $order = $order_model->toArray();
-        $Event = new PreGeneratedOrderDisplayEvent($this,Order::find(1));
+        $Event = new OnDiscountInfoDisplayEvent($order_model);
         event($Event);
 
         $data = [

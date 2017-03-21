@@ -172,15 +172,16 @@
                             {if $row['yz_member']['is_black']==1}
                             <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
                             {else}
-                            {if empty($row['has_one_fans']['followed'])}
-                                {if empty($row['uid'])}
-                                <label class='label label-default'>未关注</label>
+                                {if empty($row['has_one_fans']['followed'])}
+                                    {if empty($row['uid'])}
+                                    <label class='label label-default'>未关注</label>
+                                    {else}
+                                    <label class='label label-warning'>取消关注</label>
+                                    {/if}
                                 {else}
-                                <label class='label label-warning'>取消关注</label>
+                                <label class='label label-success'>已关注</label>
                                 {/if}
-                            {else}
-                            <label class='label label-success'>已关注</label>
-                            {/if}{/if}
+                            {/if}
 
                         </td>
 
