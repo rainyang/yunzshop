@@ -5,9 +5,7 @@ use app\common\events\order\OrderCreatedEvent;
 use app\common\models\Order;
 use app\common\models\Member;
 
-use app\common\ServiceModel\ServiceModel;
 use app\frontend\modules\discount\services\DiscountService;
-use app\frontend\modules\discount\services\models\OrderDiscount;
 use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\models\ShopModel;
@@ -29,43 +27,44 @@ use app\frontend\modules\shop\services\models\ShopModel;
  * Class PreGeneratedOrderModel
  * @package app\frontend\modules\order\services\models
  */
-class PreGeneratedOrderModel extends ServiceModel
+class PreGeneratedOrderModel extends OrderModel
 {
-    private $id;
+    protected $id;
     /**
      * @var 商城model实例
      */
-    private $shop_model;
+    protected $shop_model;
     /**
      * @var用户model实例
      */
-    private $member_model;
-    /**
-     * @var \app\frontend\modules\dispatch\services\models\OrderDispatch 运费类实例
-     */
-    private $_OrderDispatch;
-    /**
-     * @var OrderDiscount 优惠类实例
-     */
-    private $_OrderDiscount;
-    /**
-     * @var array 未插入数据库的订单商品数组
-     */
-    private $_pre_order_goods_models = [];
+    protected $member_model;
+
+
 
     /**
      * 记录添加的商品
      * PreGeneratedOrderModel constructor.
-     * @param array|null $pre_order_goods_models
+     * @param array|null $OrderGoodsModels
      */
-    public function __construct(array $pre_order_goods_models = null)
+    public function __construct(array $OrderGoodsModels = null)
     {
-        if (isset($pre_order_goods_models)) {
-            $this->addPreGeneratedOrderGoods($pre_order_goods_models);
+        if (!isset($OrderGoodsModels)) {
+            echo '订单商品为空!';exit;
         }
-        $this->_OrderDispatch = DispatchService::getPreOrderDispatchModel($this);
-        $this->_OrderDiscount = DiscountService::getPreOrderDiscountModel($this);
+        parent::__construct($OrderGoodsModels);
+    }
+    protected function setOrderGoodsModels($OrderGoodsModels)
+    {
+        $this->_OrderGoodsModels = $OrderGoodsModels;
+    }
 
+    protected function setDiscount()
+    {
+        $this->_OrderDiscount = DiscountService::getPreOrderDiscountModel($this);
+    }
+    protected function setDispatch()
+    {
+        $this->_OrderDispatch = DispatchService::getPreOrderDispatchModel($this);
     }
 
     /**
@@ -74,7 +73,7 @@ class PreGeneratedOrderModel extends ServiceModel
      */
     public function getOrderGoodsModels()
     {
-        return $this->_pre_order_goods_models;
+        return $this->_OrderGoodsModels;
     }
 
     /**
@@ -83,7 +82,7 @@ class PreGeneratedOrderModel extends ServiceModel
      */
     private function addPreGeneratedOrderGoods(array $pre_order_goods_models)
     {
-        $this->_pre_order_goods_models = array_merge($this->_pre_order_goods_models, $pre_order_goods_models);
+        $this->_OrderGoodsModels = array_merge($this->_OrderGoodsModels, $pre_order_goods_models);
     }
 
     /**
@@ -104,74 +103,11 @@ class PreGeneratedOrderModel extends ServiceModel
     {
         $this->shop_model = $shop_model;
     }
-
-    /**
-     * 统计商品总数
-     * @return int
-     */
-    private function getGoodsTotal()
-    {
-        //累加所有商品数量
-        $result = 0;
-        foreach ($this->_pre_order_goods_models as $pre_order_goods_model) {
-            $result += $pre_order_goods_model->getTotal();
-        }
-        return $result;
+    public function getShopModel(){
+        return $this->shop_model;
     }
-
-    /**
-     * 计算订单优惠
-     * @return number
-     */
-    private function getDiscountPrice(){
-        return $this->_OrderDiscount->getDiscountPrice();
-    }
-
-    /**
-     * 计算订单运费
-     * @return int|number
-     */
-    private function getDispatchPrice(){
-        return $this->_OrderDispatch->getDispatchPrice();
-    }
-
-    /**
-     * 计算订单最终价格
-     * @return int
-     */
-    private function getPrice()
-    {
-        //订单最终价格 = 商品最终价格 - 订单优惠 - 订单运费
-        return $this->getGoodsPrice() - $this->getDiscountPrice() + $this->getDispatchPrice();
-    }
-
-    /**
-     * 统计订单商品最终价格
-     * @return int
-     */
-    private function getGoodsPrice()
-    {
-        //累加所有商品最终价格
-        $result = 0;
-        foreach ($this->_pre_order_goods_models as $pre_order_goods_model) {
-            $result += $pre_order_goods_model->getPrice();
-        }
-        return $result;
-    }
-
-    /**
-     * 属性获取器
-     * todo 准备删除这个方法
-     * @param $name
-     * @return null
-     */
-    public function __get($name)
-    {
-        if (isset($this->$name)) {
-            return $this->$name;
-        }
-
-        return null;
+    public function getMemberModel(){
+        return $this->member_model;
     }
 
     /**
@@ -186,7 +122,7 @@ class PreGeneratedOrderModel extends ServiceModel
             'dispatch_price' => $this->getGoodsPrice(),
             'dispatch_types' => $this->_OrderDispatch->getDispatchTypeId(),
         );
-        foreach ($this->_pre_order_goods_models as $order_goods_model) {
+        foreach ($this->_OrderGoodsModels as $order_goods_model) {
             $data['order_goods'][] = $order_goods_model->toArray();
         }
         return $data;
@@ -209,7 +145,7 @@ class PreGeneratedOrderModel extends ServiceModel
      */
     private function createOrderGoods()
     {
-        foreach ($this->_pre_order_goods_models as $pre_order_goods_model) {
+        foreach ($this->_OrderGoodsModels as $pre_order_goods_model) {
             $pre_order_goods_model->generate($this);
         }
     }

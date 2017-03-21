@@ -16,6 +16,7 @@ use app\frontend\modules\goods\services\models\factory\PreGeneratedOrderGoodsMod
 use app\frontend\modules\goods\services\models\GoodsModel;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
+use app\frontend\modules\order\services\behavior\OrderChangePrice;
 use app\frontend\modules\order\services\behavior\OrderClose;
 use app\frontend\modules\order\services\behavior\OrderDelete;
 use app\frontend\modules\order\services\behavior\OrderOperation;
@@ -161,11 +162,15 @@ class OrderService
         return self::OrderOperate($OrderOperation);
     }
     /**
-     * 发货
+     * 改变订单价格
      * @param $param
      * @return array
      */
     public static function changeOrderPrice($param){
+        $order_model = Order::find($param['order_id']);
+        //dd($order_model);exit;
 
+        $OrderOperation = new OrderChangePrice($order_model);
+        return self::OrderOperate($OrderOperation);
     }
 }

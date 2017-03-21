@@ -26,7 +26,7 @@ class OrderDispatch extends Dispatch
     public function getDispatchPrice()
     {
 
-        if(empty($this->_dispatch_details)){
+        if (empty($this->_dispatch_details)) {
             return 0;
         }
         return $result = array_sum(array_column($this->_dispatch_details, 'price'));
@@ -34,7 +34,8 @@ class OrderDispatch extends Dispatch
 
 
     //todo 获取配送类型
-    public function getDispatchTypeId(){
+    public function getDispatchTypeId()
+    {
         return \YunShop::request()->get('dispatch_type_id');
     }
 
