@@ -13,7 +13,7 @@ use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Order;
 
 
-class OrderReceive extends OrderOperation
+class OrderReceive extends ChangeStatusOperation
 {
     protected $status_before_change = [ORDER::WAIT_RECEIVE];
     protected $status_after_changed = ORDER::COMPLETE;

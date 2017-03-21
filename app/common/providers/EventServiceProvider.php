@@ -3,6 +3,7 @@
 namespace app\common\providers;
 
 
+use app\frontend\modules\discount\listeners\MemberLevelGoodsDiscount;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -32,6 +33,7 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\member\listeners\Level::class,
         \app\common\listeners\order\OrderTestListener::class,
         \app\common\listeners\goods\GoodsTestListener::class,
+        MemberLevelGoodsDiscount::class
 
 
     ];

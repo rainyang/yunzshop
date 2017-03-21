@@ -28,10 +28,7 @@ abstract class OrderOperation
      * @var array 合法前置状态
      */
     protected $status_before_change = [];
-    /**
-     * @var改变后状态
-     */
-    protected $status_after_changed;
+
     /**
      * @var类名的过去式
      */
@@ -98,24 +95,10 @@ abstract class OrderOperation
     }
 
     /**
-     * 更新订单表
-     * @return bool
-     */
-    protected function _updateTable(){
-        $this->order_model->status = $this->status_after_changed;
-        return $this->order_model->save();
-    }
-
-    /**
      * 执行订单操作
      * @return mixed
      */
-    public function execute()
-    {
-        $result = $this->_updateTable();
-        $this->_fireEvent();
-        return $result;
-    }
+    abstract public function execute();
 
     /**
      *

@@ -28,10 +28,11 @@ class UserController extends BaseController
         $userList = User::getPageList($pageSize);
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
 
-        return view('user.user.user',[
-            'pager'     => $pager,
-            'userList'  => $userList
+        return view('user.user.user', [
+            'pager' => $pager,
+            'userList' => $userList
         ])->render();
+    }
     public function store()
     {
         $userModel = new User();

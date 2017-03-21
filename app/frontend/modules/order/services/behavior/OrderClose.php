@@ -12,7 +12,7 @@ use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\models\Order;
 
 
-class OrderClose extends OrderOperation
+class OrderClose extends ChangeStatusOperation
 {
     protected $status_before_change = [ORDER::WAIT_PAY];
     protected $status_after_changed = ORDER::CLOSE;

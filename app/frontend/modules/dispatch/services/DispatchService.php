@@ -9,6 +9,7 @@ namespace app\frontend\modules\dispatch\services;
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\common\events\dispatch\OrderGoodsDispatchWasCalculated;
 use app\common\models\Order;
+use app\common\models\OrderGoods;
 use app\frontend\modules\dispatch\services\models\GoodsDispatch;
 use app\frontend\modules\dispatch\services\models\OrderDispatch;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
@@ -36,5 +37,9 @@ class DispatchService
         //获取反馈
         $dispatch_detail = $Event->getData();
         return new GoodsDispatch($dispatch_detail);
+    }
+    public static function getCreatedOrderGoodsDispatchModel(OrderGoods $OrderGoods){
+        $OrderGoods->dispatch_details;
+        return new GoodsDispatch($OrderGoods->dispatch_details);
     }
 }

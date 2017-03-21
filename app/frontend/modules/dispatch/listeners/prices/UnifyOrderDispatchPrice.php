@@ -48,7 +48,7 @@ class UnifyOrderDispatchPrice
         foreach ($this->event->getOrderModel()->getOrderGoodsModels() as $order_goods){
             //dd($order_goods);exit;
 
-            foreach ($order_goods->dispatch_details as $dispatch_detail){
+            foreach ($order_goods->getDispatchDetails() as $dispatch_detail){
 
                 //将订单统一运费类型的价格  取最大值
                 if($dispatch_detail['id'] == 1){
