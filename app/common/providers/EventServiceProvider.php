@@ -32,6 +32,7 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\member\listeners\Level::class,
         \app\common\listeners\order\OrderTestListener::class,
         \app\common\listeners\goods\GoodsTestListener::class,
+        \app\frontend\modules\coupon\listeners\CouponDiscount::class,
 
 
     ];

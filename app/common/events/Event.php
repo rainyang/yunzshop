@@ -25,7 +25,7 @@ abstract class Event
     public function getData(){
         return $this->data;
     }
-    public function getMap(){
+    public function     getMap(){
         return $this->map;
     }
     public function hasOpinion(){
