@@ -17,11 +17,8 @@ class MemberLevelGoodsDiscount
     private $_event;
     public function needDiscount()
     {
-        $this->_event->getMap();
-        $OrderModel = $this->_event->getOrderModel();
-        $OrderModel->getMemberModel();
-        $OrderModel->getOrderGoodsModels();
-        $OrderModel->getOrderGoodsModels()->getGoods();
+        //$this->_event->getMap();
+
 
         //商品设置了等级折扣
         //用户的等级在设置之内
