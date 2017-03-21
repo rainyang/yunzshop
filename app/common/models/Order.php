@@ -144,4 +144,15 @@ class Order extends BaseModel
         parent::boot();
         static::observe(new OrderObserver());
     }
+
+    /**
+     * 通过会员ID获取订单信息
+     *
+     * @param $member_id
+     */
+    public static function getOrderInfoByMemberId($member_id)
+    {
+        return self::uniacid()
+                   ->where('member_id', $member_id);
+    }
 }
