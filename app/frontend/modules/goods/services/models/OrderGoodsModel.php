@@ -12,13 +12,13 @@ namespace app\frontend\modules\goods\services\models;
 abstract class OrderGoodsModel
 {
     /**
-     * @var \app\frontend\modules\dispatch\services\models\GoodsDispatch的实例
+     * @var \app\frontend\modules\dispatch\services\models\GoodsDispatch 的实例
      */
-    protected $GoodsDispatch;
+    protected $_GoodsDispatch;
     /**
-     * @var \app\frontend\modules\discount\services\models\GoodsDiscount的实例
+     * @var \app\frontend\modules\discount\services\models\GoodsDiscount 的实例
      */
-    protected $GoodsDiscount;
+    protected $_GoodsDiscount;
     protected $total;
 
     public function __construct()
@@ -62,7 +62,7 @@ abstract class OrderGoodsModel
      */
     protected function getDiscountPrice()
     {
-        return $this->GoodsDiscount->getDiscountPrice();
+        return $this->_GoodsDiscount->getDiscountPrice();
 
     }
 
@@ -72,7 +72,7 @@ abstract class OrderGoodsModel
      */
     public function getDispatchDetails()
     {
-        return $this->GoodsDispatch->getDispatchDetails();
+        return $this->_GoodsDispatch->getDispatchDetails();
     }
 
     /**
@@ -81,6 +81,6 @@ abstract class OrderGoodsModel
      */
     public function getDiscountDetails()
     {
-        return $this->GoodsDiscount->getDiscountDetails();
+        return $this->_GoodsDiscount->getDiscountDetails();
     }
 }
