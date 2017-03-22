@@ -15,12 +15,12 @@ class UeditorHelper
     {
         if (!$options) {
             $options = [
-                'height' => '',
+                'height' => '0',
                 'allow_upload_video' => null,
                 'dest_dir' => '',
             ];
-        } 
-        
+        }
+
         return tpl_ueditor($id, $value, $options);
     }
 }

@@ -14,7 +14,7 @@ use HaoLi\LaravelAmount\Traits\AmountTrait;
 
 class Goods extends BaseModel
 {
-    use AmountTrait;
+    //use AmountTrait;
 
     public $table = 'yz_goods';
     public $attributes = ['display_order' => 0];
@@ -81,7 +81,7 @@ class Goods extends BaseModel
 
     public function hasManyGoodsCategory()
     {
-        return $this->hasOne('app\common\models\GoodsCategory');
+        return $this->hasMany('app\common\models\GoodsCategory', 'id', 'goods_id');
     }
 
     public function hasManySpecs()
@@ -92,6 +92,7 @@ class Goods extends BaseModel
     public function scopeSearch($query, $filters)
     {
         $query->uniacid();
+
         if (!$filters) {
             return;
         }
@@ -108,10 +109,13 @@ class Goods extends BaseModel
                     $query->where('brand_id', $value);
                     break;
                 case 'min_price':
-                    $query->where('price', '>', $value);
+                    $query->where('price', '>', $value * 100);
                     break;
                 case 'max_price':
-                    $query->where('price', '<', $value);
+                    $query->where('price', '<', $value * 100);
+                    break;
+                case 'category':
+                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereIn('yz_goods_category.category_id', $value);
                     break;
                 default:
                     break;

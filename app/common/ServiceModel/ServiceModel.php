@@ -12,8 +12,4 @@ namespace app\common\ServiceModel;
 class ServiceModel
 {
 
-    public function __construct()
-    {
-    }
-
 }

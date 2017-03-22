@@ -7,7 +7,7 @@ namespace app\frontend\modules\order\services\behavior;
  */
 use app\common\models\Order;
 
-class OrderCancelSend extends OrderOperation
+class OrderCancelSend extends ChangeStatusOperation
 {
     protected $status_before_change = [Order::WAIT_RECEIVE];
     protected $status_after_changed = Order::WAIT_SEND;

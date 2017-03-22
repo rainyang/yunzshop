@@ -8,8 +8,6 @@
 
 namespace app\frontend\modules\discount\services\models;
 
-use app\frontend\modules\discount\services\models\Discount;
-
 class OrderDiscount extends Discount
 {
 

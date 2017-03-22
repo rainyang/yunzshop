@@ -70,24 +70,28 @@ class GoodsController extends BaseController
             'is_discount' => '促销',
         ];
 
-        $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['catlevel']]);
         $brands = Brand::getBrands()->get()->toArray();
 
         $requestSearch = \YunShop::request()->search;
+
         if ($requestSearch) {
-            $requestSearch = array_filter($requestSearch,function($item){ return !empty($item);});
-            //dd($requestSearch);
+            $requestSearch = array_filter($requestSearch, function ($item) {
+                return !empty($item);
+            });
+
+            $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
+                return !empty($item);
+            });
+
+            $requestSearch['category'] = $categorySearch;
         }
 
-        /*Category::uniacid()->where(['id' => $category_id])->with(
-            ['goodsCategories' => function ($query) {
-                return $query->select(['goods_id', 'category_id'])->with(
-                    [
-                        'goods' => function ($query1) {
-                            return $query1->select(['id', 'title', 'thumb', 'price', 'market_price'])->where('status', '1');
-                        }
-                    ]);
-            }])->first();*/
+        $catetory_menus = CategoryService::getCategoryMenu(
+            [
+                'catlevel' => $this->shopset['catlevel'],
+                'ids'   => $categorySearch ? array_values($categorySearch) : [],
+            ]
+        );
 
         $list = Goods::Search($requestSearch)->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
@@ -96,12 +100,20 @@ class GoodsController extends BaseController
             'pager' => $pager,
             //'status' => $status,
             'brands' => $brands,
+            'requestSearch' => $requestSearch,
             'var' => \YunShop::app()->get(),
             'catetory_menus' => $catetory_menus,
             'shopset' => $this->shopset,
             'lang' => $this->lang,
             'product_attr_list' => $product_attr_list,
         ])->render();
+    }
+
+    public function copy()
+    {
+        $goods_id = 3;
+
+
     }
 
     public function create()
@@ -117,7 +129,7 @@ class GoodsController extends BaseController
             //$requestGoods['thumb_url'] = serialize($requestGoods['thumb_url']);
             if (isset($requestGoods['thumb_url'])) {
                 $requestGoods['thumb_url'] = serialize(
-                    array_map(function($item){
+                    array_map(function ($item) {
                         return tomedia($item);
                     }, $requestGoods['thumb_url'])
                 );
@@ -145,13 +157,13 @@ class GoodsController extends BaseController
         $allspecs = [];
         return view('goods.goods', [
             'goods' => $goodsModel,
-            'lang'  => $this->lang,
-            'params'  => $params,
-            'brands'  => $brands->toArray(),
-            'allspecs'  => $allspecs,
-            'html'  => '',
+            'lang' => $this->lang,
+            'params' => $params,
+            'brands' => $brands->toArray(),
+            'allspecs' => $allspecs,
+            'html' => '',
             'var' => \YunShop::app()->get(),
-            'catetory_menus'  => $catetory_menus,
+            'catetory_menus' => $catetory_menus,
             'virtual_types' => [],
             'shopset' => $this->shopset
         ])->render();
@@ -165,8 +177,7 @@ class GoodsController extends BaseController
         //dd($goodsModel->hasManyGoodsCategory->toArray());
 
         //获取规格名及规格项
-        foreach ($goodsModel->hasManySpecs as &$spec)
-        {
+        foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->get()->toArray();
         }
 
@@ -182,6 +193,7 @@ class GoodsController extends BaseController
         if ($requestGoods) {
             //将数据赋值到model
             $requestGoods['thumb'] = tomedia($requestGoods['thumb']);
+
             if(isset($requestGoods['thumb_url'])){
                 $requestGoods['thumb_url'] = serialize(
                     array_map(function($item){
@@ -190,7 +202,6 @@ class GoodsController extends BaseController
                 );
             }
 
-                //serialize($requestGoods['thumb_url']);
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
             //其他字段赋值
@@ -215,13 +226,13 @@ class GoodsController extends BaseController
         //dd($this->lang);
         return view('goods.goods', [
             'goods' => $goodsModel,
-            'lang'  => $this->lang,
-            'params'  => $goodsModel->hasManyParams->toArray(),
-            'allspecs'  => $goodsModel->hasManySpecs->toArray(),
-            'html'  => $optionsHtml,
+            'lang' => $this->lang,
+            'params' => $goodsModel->hasManyParams->toArray(),
+            'allspecs' => $goodsModel->hasManySpecs->toArray(),
+            'html' => $optionsHtml,
             'var' => \YunShop::app()->get(),
-            'brands'  => $brands->toArray(),
-            'catetory_menus'  => $catetory_menus,
+            'brands' => $brands->toArray(),
+            'catetory_menus' => $catetory_menus,
             'virtual_types' => [],
             'shopset' => $this->shopset
         ])->render();
@@ -270,7 +281,7 @@ class GoodsController extends BaseController
     {
         $goodsModel = Goods::find($this->goods_id);
 
-        $spec     = array(
+        $spec = array(
             "id" => \YunShop::request()->specid,
         );
 
@@ -301,7 +312,7 @@ class GoodsController extends BaseController
         $goods = set_medias($goods, array('thumb', 'share_icon'));
 
         return view('goods.query', [
-            'goods'=>$goods
+            'goods' => $goods
         ])->render();
 
     }
@@ -310,12 +321,12 @@ class GoodsController extends BaseController
     {
         $request = [
             'goods' =>
-                ['title'=>'title1',],
-            'widgets'=>[
-                'notice'=>[
-                    'uid'=>7,'type'=>[0,2]
+                ['title' => 'title1',],
+            'widgets' => [
+                'notice' => [
+                    'uid' => 7, 'type' => [0, 2]
                 ],
-                'sale'=>[
+                'sale' => [
                     'love_money' => 1,
                     'max_point_deduct' => 2,
                     'max_balance_deduct' => 3,

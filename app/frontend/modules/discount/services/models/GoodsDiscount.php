@@ -10,22 +10,23 @@ namespace app\frontend\modules\discount\services\models;
 
 class GoodsDiscount extends Discount
 {
-    public function getDiscountDetails(){
-        echo 1;exit;
+/*    public function getDiscountDetails()
+    {
+
         $details = [];
         $details[] = [
-            'name'=>'折扣',
-            'value'=>'85',
-            'price'=>'50',
-            'plugin'=>'0',
+            'name' => '折扣',
+            'value' => '85',
+            'price' => '50',
+            'plugin' => '0',
         ];
         $details[] = [
-            'name'=>'云币抵扣',
-            'value'=>'600',
-            'price'=>'60',
-            'plugin'=>'2',
+            'name' => '云币抵扣',
+            'value' => '600',
+            'price' => '60',
+            'plugin' => '2',
         ];
         return $details;
-    }
+    }*/
 
 }
