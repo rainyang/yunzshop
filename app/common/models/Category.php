@@ -1,6 +1,7 @@
 <?php
 
 namespace app\common\models;
+
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -14,12 +15,14 @@ class Category extends BaseModel
     use SoftDeletes;
 
     public $table = 'yz_category';
-    
-    public $display_order = '0';
-    public $thumb = '';
-    public $description = '';
-    public $adv_img = '';
-    public $adv_url = '';
+    public $attributes = [
+        'display_order' => 0,
+        'thumb' => '',
+        'description' => '',
+        'adv_img' => '',
+        'adv_url' => '',
+    ];
+
 
     /**
      *  不可填充字段.
@@ -44,9 +47,8 @@ class Category extends BaseModel
 
     public function goodsCategories()
     {
-        return $this->hasMany('app\common\models\GoodsCategory','category_id','id');
+        return $this->hasMany('app\common\models\GoodsCategory', 'category_id', 'id');
     }
-
 
 
 }
