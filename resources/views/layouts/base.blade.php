@@ -37,6 +37,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/webstyle.css">
     @yield('css')
     {!! yz_header('admin') !!}
+    <script>var require = { urlArgs: 'v=2017031511' };</script>
+    <script src="./resource/js/lib/jquery-1.11.1.min.js"></script>
+    <script src="./resource/js/app/util.js"></script>
+    <script src="./resource/js/require.js"></script>
+    <script src="./resource/js/app/config.js"></script>
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -119,8 +124,6 @@ desired effect
 
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 2.2.0 -->
-<script src="//cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
 
 <!-- Bootstrap 3.3.6 -->
 <script src="/addons/sz_yi/static/yunshop/bootstrap/js/bootstrap.js"></script>
