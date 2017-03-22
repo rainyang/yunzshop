@@ -26,15 +26,28 @@ class OrderChangePrice extends OrderOperation
         return $this->order_model->save();
     }
     public function execute(){
-        $db_order = Order::find(80);
-        $order_goods_list = $db_order->hasManyOrderGoods;
-        foreach ($order_goods_list as $order_goods){
-            $order_goods_models[] = new CreatedOrderGoodsModel($order_goods);
+        $DbOrder = Order::find(86);
+        $order_goods_list = $DbOrder->hasManyOrderGoods;
+        foreach ($order_goods_list as $_DbOrderGoods){
+            $_OrderGoods = new CreatedOrderGoodsModel($_DbOrderGoods);
+            //该订单商品价格
+            $_OrderGoods->changePrice('190');
+            $order_goods_models[] = $_OrderGoods;
         }
-        $order = new CreatedOrderModel($db_order,$order_goods_models);
+        $order = new CreatedOrderModel($DbOrder,$order_goods_models);
+        //改订单价格
         $order->changePrice('380');
+        //改运费
+        $order->changeDispatchPrice('21');
+
         $order->update();
         exit;
         return false;
+    }
+    private function getOrderGoodsModels(){
+
+    }
+    private function changeOrderGoodsPrice(){
+
     }
 }

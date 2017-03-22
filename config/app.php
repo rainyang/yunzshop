@@ -181,7 +181,7 @@ return [
         iscms\Alisms\AlidayuServiceProvider::class,//阿里大鱼
         Maatwebsite\Excel\ExcelServiceProvider::class,//Excel组合
         Overtrue\LaravelWechat\ServiceProvider::class,//微信接口
-        Latrell\Alipay\AlipayServiceProvider::class,//支付宝接口
+        app\common\components\alipay\AlipayServiceProvider::class,//支付宝接口
         //表单
         Collective\Html\HtmlServiceProvider::class,
         Watson\BootstrapForm\BootstrapFormServiceProvider::class,

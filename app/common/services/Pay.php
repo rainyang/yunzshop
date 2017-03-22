@@ -72,12 +72,59 @@ abstract class Pay
         $this->init();
     }
 
+    /**
+     * 订单支付/充值
+     *
+     * @param $subject 名称
+     * @param $body 详情
+     * @param $amount 金额
+     * @param $order_no 订单号
+     * @param $extra 附加数据
+     * @return mixed
+     */
     abstract function doPay($subject, $body, $amount, $order_no, $extra);
 
-    abstract function doRefund();
+    /**
+     * 退款
+     *
+     * @param $out_trade_no 订单号
+     * @param $out_refund_no 退款单号
+     * @param $totalmoney 订单总金额
+     * @param $refundmoney 退款金额
+     * @return mixed
+     */
+    abstract function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney);
 
-    abstract function doWithdraw();
+    /**
+     * 提现
+     *
+     * @param $member_id 提现者用户ID
+     * @param $out_trade_no 提现单号
+     * @param $money 提现金额
+     * @param $desc 提现说明
+     * @param $type 只针对微信 1-企业支付(钱包) 2-红包
+     * @return mixed
+     */
+    abstract function doWithdraw($member_id, $out_trade_no, $money, $desc, $type);
 
+    /**
+     * init
+     *
+     * @var void
+     */
+    protected function init()
+    {
+        $this->uniacid = \YunShop::app()->uniacid;
+        $this->url = $this->_getHttpURL();
+        $this->method = $this->_getHttpMethod();
+        $this->ip = $this->getClientIP();
+    }
+
+    /**
+     * 构造签名
+     *
+     * @return mixed
+     */
     abstract function buildRequestSign();
 
     /**
@@ -111,19 +158,6 @@ abstract class Pay
     protected function getClientIP()
     {
         return \Request::getClientIp();
-    }
-
-    /**
-     * init
-     *
-     * @var void
-     */
-    protected function init()
-    {
-        $this->uniacid = \YunShop::app()->uniacid;
-        $this->url = $this->_getHttpURL();
-        $this->method = $this->_getHttpMethod();
-        $this->ip = $this->getClientIP();
     }
 
     /**
