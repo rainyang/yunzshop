@@ -115,20 +115,24 @@ class MenuController extends BaseController
     {
         $url = "http://test.yunzshop.com/app/index.php?i=2&c=entry&a=shop&m=sz_yi&do=FO9H&route=menu.to-list";
         $responseData = Curl::to($url)->get();
+
         if($responseData){
             $data = json_decode($responseData);
-
-            if($data['data']){
+            if($data->data && $menu = objectArray($data->data)){
                 try {
-                    DB::beginTransaction();
-                    (new Menu())->forceDelete();
-                    Menu::create($data['data']);
-                    DB::commit();
+                    (new Menu())->where('id','>',0)->forceDelete();
+                    foreach($menu as $v){
+                        Menu::create($v);
+                    }
+                    //菜单生成
+                    \Config::set('menu',Menu::getMenuList());
+
                 }catch (\Exception $e){
-                    DB::rollBack();
+                     throw new \Exception($e);
                 }
             }
         }
+        return $this->message('更新远程菜单成功');
     }
 
 }
