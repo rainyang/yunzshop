@@ -19,7 +19,8 @@
     "nwidart/db-exporter": "1.*",
     "hao-li/laravel-amount": "dev-master",
     "overtrue/laravel-wechat": "~3.0",
-    "watson/bootstrap-form": "^1.1"
+    "watson/bootstrap-form": "^1.1",
+    "ixudra/curl": "^6.8"
   },
   "require-dev": {
     "filp/whoops": "^2.1",

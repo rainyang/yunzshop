@@ -12,15 +12,24 @@
     <div class="panel panel-default">
         <div class="panel-body">
 
-            {!! BootForm::select('menu[parent_id]','上级',$parentMenu,$model->parent_id) !!}
+            <div class="form-group ">
+                <label for="menu[parent_id]" class="control-label col-xs-12 col-sm-3 col-md-2">上级</label>
+                <div class="col-sm-9 col-xs-12"><select class="form-control" id="menu[parent_id]" name="menu[parent_id]">
+                        @foreach($parentMenu as $key=>$value)
+                        <option value="{{$key}}" @if($key == $model->parent_id) selected="selected" @endif>{!! $value !!}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
             {!! BootForm::text('menu[item]','* 标识',$model->item,['help_text'=>'标识唯一也是做为权限判断标识']) !!}
             {!! BootForm::text('menu[name]','* 菜单名称',$model->name) !!}
             {!! BootForm::text('menu[url]','URL路由或链接地址',$model->url,['help_text'=>'填写路由 menu.add 或 http(s)://xxxx']) !!}
             {!! BootForm::text('menu[url_params]','URL参数',$model->url_params) !!}
 
             {{--图标修改start--}}
-            <link rel="stylesheet" href="/addons/sz_yi/static/yunshop/plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css"/>
-            <link rel="stylesheet" href="/addons/sz_yi/static/yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css"/>
+            <link rel="stylesheet" href="{{static_url('yunshop/plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css')}}"/>
+            <link rel="stylesheet" href="{{static_url('yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css')}}"/>
             <div class="form-group ">
                 <label for="menu[icon]" class="control-label col-xs-12 col-md-2">图标</label>
                 <div class="col-sm-9 col-xs-12">
@@ -28,8 +37,8 @@
                 </div>
             </div>
             @section('js')
-            <script type="text/javascript" src="/addons/sz_yi/static/yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.3.0.min.js"></script>
-            <script type="text/javascript" src="/addons/sz_yi/static/yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.js"></script>
+            <script type="text/javascript" src="{{static_url('yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.3.0.min.js')}}"></script>
+            <script type="text/javascript" src="{{static_url('yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.js')}}"></script>
             @stop
             {{--图标修改end--}}
 

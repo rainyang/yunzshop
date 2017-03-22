@@ -11,6 +11,7 @@ namespace app\backend\controllers;
 use app\backend\models\Menu;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
+use Ixudra\Curl\Facades\Curl;
 
 class MenuController extends BaseController
 {
@@ -108,6 +109,12 @@ class MenuController extends BaseController
         } else {
             $this->error('菜单删除失败');
         }
+    }
+
+    public function getRemoteUpdate()
+    {
+        $menu = Curl::to('http://test.yunzshop.com/app/index.php?i=3&c=entry&a=shop&m=sz_yi&do=FO9H&route=menu.to-list')->get();
+        dd($menu);
     }
 
 }
