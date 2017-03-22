@@ -8,7 +8,7 @@
 
 namespace app\common\services;
 
-use Latrell\Alipay\AlipayServiceProvider;
+use app\common\components\alipay\AlipayServiceProvider;
 
 class AliPay extends Pay
 {

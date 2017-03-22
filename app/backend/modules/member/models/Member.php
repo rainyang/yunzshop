@@ -32,7 +32,7 @@ class Member extends \app\common\models\Member
             'credit1', 'credit2'])
             ->uniacid()
             ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])->uniacid()
+                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])->uniacid()
                     ->with(['group'=>function($query1){
                         return $query1->select(['id','group_name'])->uniacid();
                     },'level'=>function($query2){
@@ -63,7 +63,7 @@ class Member extends \app\common\models\Member
             ->uniacid()
             ->where('uid', $id)
             ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content'])->uniacid();
+                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content'])->uniacid();
             }, 'hasOneFans' => function($query2) {
                 return $query2->select(['uid', 'follow as followed'])->uniacid();
             }
@@ -145,7 +145,7 @@ class Member extends \app\common\models\Member
         }
 
         $result = $result->with(['yzMember'=>function($query){
-                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])
+                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])
                     ->with(['group'=>function($query1){
                         return $query1->select(['id','group_name'])->uniacid();
                     },'level'=>function($query2){

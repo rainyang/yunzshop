@@ -12,7 +12,12 @@ class TestController extends BaseController
 {
 
     public function index()
-    {        return view('test.index',['a'=>'f']);
+    {
+        dd($alipay = app('alipay.web'));
+
+        $fans = weAccount()->fansAll();
+        dd($fans);
+        return view('test.index',['a'=>'f']);
 
 
     }

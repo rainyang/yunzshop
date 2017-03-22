@@ -119,7 +119,7 @@ class PreGeneratedOrderModel extends OrderModel
         $data = array(
             'price' => $this->getPrice(),
             'goods_price' => $this->getGoodsPrice(),
-            'dispatch_price' => $this->getGoodsPrice(),
+            'dispatch_price' => $this->getDispatchPrice(),
             'dispatch_types' => $this->_OrderDispatch->getDispatchTypeId(),
         );
         foreach ($this->_OrderGoodsModels as $order_goods_model) {
@@ -169,7 +169,9 @@ class PreGeneratedOrderModel extends OrderModel
             //优惠类记录订单配送信息
             'discount_details' => $this->_OrderDiscount->getDiscountDetails(),
             //配送类获取订单配送方式id
-            'dispatch_type_id'=>$this->_OrderDispatch->getDispatchTypeId()
+            'dispatch_type_id'=>$this->_OrderDispatch->getDispatchTypeId(),
+            'dispatch_price' => $this->_OrderDispatch->getDispatchPrice(),
+
         );
         //todo 测试
         echo '订单插入的数据为:';

@@ -44,11 +44,11 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
     }
     protected function setGoodsDiscount()
     {
-        $this->GoodsDiscount = DiscountService::getPreOrderGoodsDiscountModel($this);
+        $this->_GoodsDiscount = DiscountService::getPreOrderGoodsDiscountModel($this);
     }
     protected function setGoodsDispatch()
     {
-        $this->GoodsDispatch = DispatchService::getPreOrderGoodsDispatchModel($this);
+        $this->_GoodsDispatch = DispatchService::getPreOrderGoodsDispatchModel($this);
     }
 
     /**
