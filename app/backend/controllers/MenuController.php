@@ -113,9 +113,22 @@ class MenuController extends BaseController
 
     public function getRemoteUpdate()
     {
-        $url = "http://test.yunzshop.com/app/index.php?i=".\Yunshop::app()->uniacid."&c=entry&a=shop&m=sz_yi&do=FO9H&route=menu.to-list";
-        $menu = Curl::to($url)->get();
-        dd($menu);
+        $url = "http://test.yunzshop.com/app/index.php?i=2&c=entry&a=shop&m=sz_yi&do=FO9H&route=menu.to-list";
+        $responseData = Curl::to($url)->get();
+        if($responseData){
+            $data = json_decode($responseData);
+
+            if($data['data']){
+                try {
+                    DB::beginTransaction();
+                    (new Menu())->forceDelete();
+                    Menu::create($data['data']);
+                    DB::commit();
+                }catch (\Exception $e){
+                    DB::rollBack();
+                }
+            }
+        }
     }
 
 }

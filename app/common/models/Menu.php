@@ -38,6 +38,10 @@ class Menu extends BaseModel
     const STATUS_ENABLED = 1;
     const STATUS_DISABLED = 0;
 
+    public function getDateFormat() {
+         return 'U';
+     }
+
     /**
      * 父菜单与子菜单栏目1:n关系
      *
