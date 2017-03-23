@@ -16,7 +16,7 @@ class ChangePriceController extends BaseController
 {
     public function index(){
         $param = [
-            'order_id' => 3,
+            'order_id' => 86,
             'order_goods' => [
                 'id' => 1,
                 'price' => '190',

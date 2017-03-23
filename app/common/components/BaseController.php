@@ -60,16 +60,12 @@ class BaseController extends Controller
      */
     protected function successJson($message = '', $data = [])
     {
-        echo json_encode([
-            'result' => 1,
-            'msg' => $message,
-            'data' => $data
-        ],JSON_UNESCAPED_UNICODE);exit;
         Response::json([
             'result' => 1,
             'msg' => $message,
             'data' => $data
-        ])->send();
+        ],200,['charset'=>'utf-8'],JSON_UNESCAPED_UNICODE)
+            ->send();
         return;
     }
 
@@ -81,17 +77,12 @@ class BaseController extends Controller
      */
     protected function errorJson($message = '', $data = [])
     {
-        //todo 测试
-        echo json_encode([
-            'result' => 0,
-            'msg' => $message,
-            'data' => $data
-        ],JSON_UNESCAPED_UNICODE);exit;
          response()->json([
             'result' => 0,
             'msg' => $message,
             'data' => $data
-        ],200,[])->send();
+        ],200,['charset'=>'utf-8'],JSON_UNESCAPED_UNICODE)
+             ->send();
         return;
     }
 

@@ -25,7 +25,7 @@ class SettingSeeder extends Seeder
 
                 Setting::$uniqueAccountId = $v['uniacid'];
                 if($v['sets']) {
-                    $sets = unserialize($v['sets']);
+                    $sets = @unserialize($this->_fixData($v['sets']));
                     if($sets) {
                         foreach ($sets as $k1 => $v1) {
                             Setting::set('shop.' . $k1, $v1);
@@ -33,7 +33,7 @@ class SettingSeeder extends Seeder
                     }
                 }
                 if($v['plugins']) {
-                    $plugins = unserialize($v['plugins']);
+                    $plugins = @unserialize($this->_fixData($v['plugins']));
                     if($plugins) {
                         foreach ($plugins as $k2 => $v2) {
                             if(is_array($v2)) {
@@ -47,7 +47,7 @@ class SettingSeeder extends Seeder
                     }
                 }
                if($v['sec']) {
-                   $sec = unserialize($v['sec']);
+                   $sec = @unserialize($this->_fixData($v['sec']));
                    if($sec) {
                        foreach ($sec as $k3 => $v3) {
                            Setting::set('pay.' . $k3, $v3);
@@ -57,5 +57,17 @@ class SettingSeeder extends Seeder
                echo "完成：uniacid:".$v['uniacid'] ."\n";
            }
        }
+    }
+
+    private function _fixData($badData)
+    {
+        $data = preg_replace_callback(
+            '/(?<=^|\{|;)s:(\d+):\"(.*?)\";(?=[asbdiO]\:\d|N;|\}|$)/s',
+            function($m){
+                return 's:' . mb_strlen($m[2]) . ':"' . $m[2] . '";';
+            },
+            $badData
+        );
+        return $data;
     }
 }

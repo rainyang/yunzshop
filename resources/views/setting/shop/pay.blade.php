@@ -257,6 +257,29 @@
                     </div>
                 </div>
 
+                <div id='certs' @if (empty($set['alipay'])) style="display:none" @endif>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">收款支付宝账号</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" class="form-control" name="pay[alipay_account]" value="{{ @$set['alipay_account'] }}" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">合作者身份</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" class="form-control" name="pay[alipay_partner]" value="{{ @$set['alipay_partner'] }}" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">校验密钥</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" class="form-control"  name="pay[alipay_secret]" value="{{ @$set['alipay_secret'] }}" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">易宝支付</label>
                     <div class="col-sm-9 col-xs-12">

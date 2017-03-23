@@ -24,7 +24,7 @@ class OrderDelete extends OrderOperation
      */
     protected function _updateTable()
     {
-        return $this->order_model->destroy($this->order_model->id);
+        return $this->_DbOrderModel->destroy($this->_DbOrderModel->id);
     }
 
 

@@ -8,13 +8,58 @@
 
 namespace app\common\services;
 
-use app\common\components\alipay\AlipayServiceProvider;
+use app\common\services\alipay\MobileAlipay;
+use app\common\services\alipay\WebAlipay;
 
 class AliPay extends Pay
 {
+    private $_pay = null;
+
+    public function __construct()
+    {
+        $this->_pay = $this->createFactory();
+
+    }
+
+    private function createFactory()
+    {
+        $type = $this->getClientType();
+$type = 'web';
+        switch ($type) {
+            case 'web':
+                $pay = new WebAlipay();
+                break;
+            case 'mobile':
+                $pay = new MobileAlipay();
+                break;
+            case 'app':
+                break;
+            default:
+                $pay = null;
+        }
+
+        return $pay;
+    }
+
+    /**
+     * 获取客户端类型
+     *
+     * @return string
+     */
+    private function getClientType()
+    {
+        if (isMobile()) {
+            return 'mobile';
+        } elseif (is_app()) {
+            return 'app';
+        } else {
+            return 'web';
+        }
+    }
+
     public function doPay($subject, $body, $amount, $order_no, $extra)
     {
-        // TODO: Implement doPay() method.
+        $this->_pay->doPay($subject, $body, $amount, $order_no, $extra);
     }
 
     public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
@@ -27,25 +72,8 @@ class AliPay extends Pay
         // TODO: Implement doWithdraw() method.
     }
 
-    /**
-     * 构造签名
-     *
-     * @var void
-     */
-    public function buildRequestSign() {
-        $signOrigStr = "";
-        ksort($this->parameters);
-
-        foreach($this->parameters as $k => $v) {
-            if("" != $v && "sign" != $k) {
-                $signOrigStr .= $k . "=" . $v . "&";
-            }
-        }
-        $signOrigStr .= "key=" . $this->getKey();
-
-        $sign = strtoupper(md5($signOrigStr));
-
-
-        $this->setParameter("sign", $sign);
+    public function buildRequestSign()
+    {
+        // TODO: Implement buildRequestSign() method.
     }
 }
