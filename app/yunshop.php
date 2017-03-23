@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Str;
 use app\common\services\PermissionService;
-use app\backend\models\Menu;
+use app\common\models\Menu;
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
@@ -11,6 +11,7 @@ class YunShop
 {
     private static $_req;
     private static $_app;
+    public static $currentItems = [];
 
     public function __construct()
     {
@@ -51,8 +52,12 @@ class YunShop
         //菜单生成
         \Config::set('menu',Menu::getMenuList());
 
+        $item = Menu::getItemByRoute($controller->route);
+        $menuList = Config::get('menu');
+
+        self::$currentItems = array_merge(Menu::getCurrentMenuParents($item,$menuList),[$item]);
         //检测权限
-        if(self::isWeb() && !PermissionService::can(Menu::getItemByRoute($controller->route))){
+        if(self::isWeb() && !PermissionService::can($item)){
             abort(403,'无权限');
         }
         //设置uniacid
@@ -300,6 +305,7 @@ class YunApp extends YunComponent
 {
     protected $values;
     protected $routeList;
+    public $currentItems = [];
 
     public function __construct()
     {
@@ -344,6 +350,16 @@ class YunApp extends YunComponent
         }
 
         return $routes;
+    }
+
+    public function setCurrentItems($items)
+    {
+        $this->currentItems = $items;
+    }
+
+    public function getCurrentItems()
+    {
+        return $this->currentItems;
     }
 
     /**
