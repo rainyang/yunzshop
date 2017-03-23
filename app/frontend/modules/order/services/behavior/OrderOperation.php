@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yangyang
+ * User: shenyang
  * Date: 2017/2/28
  * Time: 上午11:19
  * comment: 订单操作基类
@@ -9,17 +9,15 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
-use app\common\events\order\AfterOrderCanceledEvent;
-use app\common\events\order\AfterOrderCancelPaidEvent;
-use app\common\events\order\BeforeOrderCancelPayEvent;
-use app\common\events\order\BeforeCreatedOrderStatusChangeEvent;
 use app\common\models\Order;
-use app\frontend\modules\order\services\models\OperationValidator;
 
 
 abstract class OrderOperation
 {
-    protected $order_model;
+    /**
+     * @var Order
+     */
+    protected $_DbOrderModel;
     /**
      * @var string 默认返回信息
      */
@@ -30,19 +28,20 @@ abstract class OrderOperation
     protected $status_before_change = [];
 
     /**
-     * @var类名的过去式
+     * @var string 类名的过去式
      */
     protected $past_tense_class_name;
     /**
-     * @var 操作名
+     * @var string 操作名
      */
     protected $name;
 
     /**
      * @return string 获取消息
      */
-    public function getMessage(){
-        return $this->name.$this->message;
+    public function getMessage()
+    {
+        return $this->name . $this->message;
     }
 
     /**
@@ -52,23 +51,34 @@ abstract class OrderOperation
     public function __construct(Order $order_model)
     {
         //dd();exit;
-        $this->order_model = $order_model;
+        $this->_DbOrderModel = $order_model;
     }
 
     /**
      * 获取不带命名空间的类名
      * @return mixed
      */
-    private function _getOperationName(){
-        $result = explode('\\',static::class);
+    private function _getOperationName()
+    {
+        $result = explode('\\', static::class);
         return end($result);
     }
 
     /**
-     * @return 类名的过去式
+     * @return string 类名的过去式
      */
-    protected function _getPastTense(){
+    protected function _getPastTense()
+    {
         return $this->past_tense_class_name;
+    }
+
+    /**
+     * @return \app\common\events\order\CreatedOrderEvent
+     */
+    protected function _getBeforeEvent()
+    {
+        $event_name = '\app\common\events\order\Before' . $this->_getOperationName() . 'Event';
+        return new $event_name($this->_DbOrderModel);
     }
 
     /**
@@ -77,9 +87,8 @@ abstract class OrderOperation
      */
     public function enable()
     {
-        $event_name = '\app\common\events\order\Before'.$this->_getOperationName().'Event';
 
-        $Event = new $event_name($this->order_model);
+        $Event = $this->_getBeforeEvent();
         event($Event);
         if ($Event->hasOpinion()) {
             $this->message = $Event->getOpinion()->message;
@@ -87,7 +96,7 @@ abstract class OrderOperation
         }
 
 
-        if (!in_array($this->order_model['status'],$this->status_before_change)) {
+        if (!in_array($this->_DbOrderModel['status'], $this->status_before_change)) {
             $this->message = "订单状态不满足{$this->name}操作";
             return false;
         }
@@ -103,9 +112,10 @@ abstract class OrderOperation
     /**
      *
      */
-    protected function _fireEvent(){
-        $event_name = '\app\common\events\order\After'.$this->_getPastTense().'Event';
-        event(new $event_name($this->order_model));
+    protected function _fireEvent()
+    {
+        $event_name = '\app\common\events\order\After' . $this->_getPastTense() . 'Event';
+        event(new $event_name($this->_DbOrderModel));
         return;
     }
 }

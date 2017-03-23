@@ -19,12 +19,12 @@ class GoodsService
 {
     public static function getGoodsModels($goods_id_arr)
     {
-        return GoodsModelFactory::createModels($goods_id_arr);
+        return Goods::select()->whereIn('id',$goods_id_arr)->get();
     }
 
     public static function getGoodsModel($goods_id)
     {
-        return GoodsModelFactory::createModel($goods_id);
+        return Goods::find($goods_id);
     }
 
     /**

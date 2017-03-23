@@ -46,7 +46,7 @@ abstract class OrderGoodsModel
     public function getPrice()
     {
         //最终价格=商品价格+优惠价格
-        $result = $this->getGoodsPrice() + $this->getDiscountPrice();
+        $result = max($this->getGoodsPrice() + $this->getDiscountPrice(),0);
         return $result;
     }
 
