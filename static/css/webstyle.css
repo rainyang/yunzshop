@@ -12,7 +12,7 @@ ul{list-style:none;}
 .m0a{margin:0 auto }
 .mrt4{margin-top: 4px;display: block;}
 .fr{float: right !important;;}
-.rightlist{/*width: 100%;*/margin: 56px 6px 6px 186px;padding-bottom: 125px;min-width: 1008px;/*background: #fff;border: 1px #e0e0e0 solid*/}
+.rightlist{width: 100%;padding-bottom: 125px;min-width: 1008px;/*background: #fff;border: 1px #e0e0e0 solid*/}
 .rightlist2{margin: 52px 6px 6px 250px;
     padding-bottom: 125px;
     min-width: 1008px;}

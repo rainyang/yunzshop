@@ -21,3 +21,4 @@ define('SZ_YI_DEBUG', false);//false
 
 !defined('SZ_YI_WECHAT_NOTIFY_URL') && define('SZ_YI_WECHAT_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/wechat/notify.php');
 !defined('SZ_YI_ALIPAY_NOTIFY_URL') && define('SZ_YI_ALIPAY_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/notify.php');
+!defined('SZ_YI_ALIPAY_RETURN_URL') && define('SZ_YI_ALIPAY_RETURN_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/return.php');
