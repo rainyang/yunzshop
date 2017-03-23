@@ -64,9 +64,14 @@ class AliPay extends Pay
         return $this->_pay->doPay($subject, $body, $amount, $order_no, $extra);
     }
 
-    public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
+    public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney='0')
     {
-        // TODO: Implement doRefund() method.
+        $alipay = app('alipay.web');
+
+        $alipay->setOutTradeNo($out_trade_no);
+        $alipay->setTotalFee($totalmoney);
+
+        return $alipay->refund();
     }
 
     public function doWithdraw($member_id, $out_trade_no, $money, $desc, $type)

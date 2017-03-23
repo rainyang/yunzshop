@@ -476,4 +476,27 @@ class SdkPayment
 
 		return $responseText;
 	}
+
+	public function refund()
+    {
+        $service = 'refund_fastpay_by_platform_pwd';
+
+        $parameter = array(
+            'service' => $service,
+            'partner' => $this->partner,
+            'seller_user_id' => $this->partner,
+            'notify_url' => $this->notify_url,
+            'seller_email' => $this->seller_id,
+            'refund_date' => date('Y-m-d H:i:s',time()),
+            'batch_no' => date('Ymd', time()) . time(),
+            'batch_fee' => $this->total_fee,
+            'batch_num' => 1,
+            'detail_data' => $this->out_trade_no.'^'.$this->total_fee.'^退款订单',
+            '_input_charset' => strtolower($this->_input_charset),
+        );
+
+        $para = $this->buildRequestPara($parameter);
+
+        return $this->__gateway_new . $this->createLinkstringUrlencode($para);
+    }
 }

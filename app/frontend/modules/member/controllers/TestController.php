@@ -19,7 +19,9 @@ class TestController extends BaseController
    {
        $pay = new AliPay();
 
-       $p = $pay->doPay(1,2,3,4,5);
+       $p = $pay->doRefund('2017032321001004920211490965', '1', '0.1');
+
+       //$p = $pay->doPay('2017032321001004920211490965',2,0.1,4,5);
 
        redirect($p)->send();
    }
