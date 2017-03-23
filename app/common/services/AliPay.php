@@ -10,6 +10,7 @@ namespace app\common\services;
 
 use app\common\services\alipay\MobileAlipay;
 use app\common\services\alipay\WebAlipay;
+use app\common\services\alipay\WapAlipay;
 
 class AliPay extends Pay
 {
@@ -24,7 +25,7 @@ class AliPay extends Pay
     private function createFactory()
     {
         $type = $this->getClientType();
-$type = 'web';
+
         switch ($type) {
             case 'web':
                 $pay = new WebAlipay();
@@ -32,7 +33,8 @@ $type = 'web';
             case 'mobile':
                 $pay = new MobileAlipay();
                 break;
-            case 'app':
+            case 'wap':
+                $pay = new WapAlipay();
                 break;
             default:
                 $pay = null;
@@ -49,9 +51,9 @@ $type = 'web';
     private function getClientType()
     {
         if (isMobile()) {
-            return 'mobile';
+            return 'wap';
         } elseif (is_app()) {
-            return 'app';
+            return 'mobile';
         } else {
             return 'web';
         }
@@ -59,7 +61,7 @@ $type = 'web';
 
     public function doPay($subject, $body, $amount, $order_no, $extra)
     {
-        $this->_pay->doPay($subject, $body, $amount, $order_no, $extra);
+        return $this->_pay->doPay($subject, $body, $amount, $order_no, $extra);
     }
 
     public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
