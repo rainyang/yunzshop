@@ -16,7 +16,7 @@ class DetailController extends BaseController
     public function index()
     {
         $order_id = \YunShop::request()->id;
-        $order_id = 1;
+        //$order_id = 1;
         $db_order_models = Order::with(
             [
                 'hasManyOrderGoods.belongsToGood',

@@ -317,11 +317,10 @@
                                 </td>
                                 <td rowspan="{php echo count($order['has_many_order_goods'])}"><label
                                             class='label label-{{$order['statuscss']=0}}'>{{$order['status_name']}}</label><br/>
-                                    <a href="{php echo $this->createWebUrl(' order', array('op' => 'detail', 'id' => $order['id'],
-                                'plugin' => $requestSearch['plugin'], 'openid' => $requestSearch['openid']))}">查看详情</a>
+                                    <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
                                 </td>
                                 <td rowspan="{php echo count($order['has_many_order_goods'])}" width="10%">
-                                    {template 'web/order/ops'}
+                                    @include('order.ops')
                                 </td>
                         </tr>
 

@@ -3,8 +3,8 @@
         {
             var order_id = $('.order_id').val();
             if (confirm('确认此订单已付款吗？')) {
-                $.post("{!! yzWebUrl('order.operation.pay') !!}", {order_id:order_id}, function(json){
-                    //location.href = location.href;
+                $.post("{!! yzWebUrl('order.operation.pay',['order_id'=>$order['id']]) !!}", function(json){
+                    location.href = location.href;
                 });
             }
         }
