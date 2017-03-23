@@ -12,10 +12,13 @@ class YzOptionsTableSeeder extends Seeder
      */
     public function run()
     {
-        
 
-        \DB::table('yz_options')->delete();
-        
+        $newList = DB::table('yz_options')->get();
+        if($newList->isNotEmpty()){
+            echo "yz_options 已经有数据了跳过\n";
+            return ;
+        }
+
         \DB::table('yz_options')->insert(array (
             0 => 
             array (
