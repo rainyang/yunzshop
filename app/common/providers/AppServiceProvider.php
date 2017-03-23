@@ -66,6 +66,9 @@ class AppServiceProvider extends ServiceProvider
             'show_all_errors'=>true
         ]);
 
+        //设置uniacid
+        Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+
     }
 
     /**
