@@ -72,7 +72,7 @@ class OrderService
      * @return \app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel
      */
     public static function createOrderSN(){
-        return m('common')->createNO('order', 'ordersn', 'SH');
+        return 'sn'.time();//m('common')->createNO('order', 'ordersn', 'SH');
     }
     private static function OrderOperate(OrderOperation $OrderOperate){
         if(!$OrderOperate->enable()){
