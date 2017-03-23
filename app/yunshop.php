@@ -52,7 +52,7 @@ class YunShop
         \Config::set('menu',Menu::getMenuList());
 
         //检测权限
-        if(self::isWeb() && !PermissionService::can($controller->route)){
+        if(self::isWeb() && !PermissionService::can(Menu::getItemByRoute($controller->route))){
             abort(403,'无权限');
         }
         //设置uniacid

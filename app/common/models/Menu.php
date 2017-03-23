@@ -123,6 +123,12 @@ class Menu extends BaseModel
         return $list;
     }
 
+    public static function getItemByRoute($route)
+    {
+        $data = static::select('item')->where(['url'=>$route])->first();
+        return $data ? $data->item : '';
+    }
+
     /**
      * 通过ID获取菜单栏目
      *
