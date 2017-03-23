@@ -11,6 +11,7 @@ namespace app\backend\controllers;
 use app\backend\models\Menu;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
+use Ixudra\Curl\Facades\Curl;
 
 class MenuController extends BaseController
 {
@@ -108,6 +109,30 @@ class MenuController extends BaseController
         } else {
             $this->error('菜单删除失败');
         }
+    }
+
+    public function getRemoteUpdate()
+    {
+        $url = "http://test.yunzshop.com/app/index.php?i=2&c=entry&a=shop&m=sz_yi&do=FO9H&route=menu.to-list";
+        $responseData = Curl::to($url)->get();
+
+        if($responseData){
+            $data = json_decode($responseData);
+            if($data->data && $menu = objectArray($data->data)){
+                try {
+                    (new Menu())->where('id','>',0)->forceDelete();
+                    foreach($menu as $v){
+                        Menu::create($v);
+                    }
+                    //菜单生成
+                    \Config::set('menu',Menu::getMenuList());
+
+                }catch (\Exception $e){
+                     throw new \Exception($e);
+                }
+            }
+        }
+        return $this->message('更新远程菜单成功');
     }
 
 }

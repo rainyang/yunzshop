@@ -10,18 +10,18 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
 use app\frontend\modules\member\services\MemberService;
-use app\common\services\WechatPay;
+use app\common\services\AliPay;
 
 
 class TestController extends BaseController
 {
    public function index()
    {
-        $wx = new WechatPay();
+       $pay = new AliPay();
 
-       // $wx->doPay(1,1,1,1,1);
+       $p = $pay->doPay(1,2,3,4,5);
 
-       echo '<pre>';print_r(\Setting::get('shop.pay'));exit;
+       echo '<pre>';print_r($p);exit;
    }
 
    public function add()
