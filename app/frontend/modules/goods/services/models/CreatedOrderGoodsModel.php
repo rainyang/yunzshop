@@ -37,7 +37,7 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
     protected function getTotal(){
         return $this->_OrderGoods->total;
     }
-    public function changePrice($price)
+    public function addChangePriceInfo($price)
     {
         $change_price = $price - $this->_OrderGoods->price;
 
