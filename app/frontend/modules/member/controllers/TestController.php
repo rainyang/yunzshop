@@ -21,7 +21,7 @@ class TestController extends BaseController
 
        $p = $pay->doPay(1,2,3,4,5);
 
-       echo '<pre>';print_r($p);exit;
+       redirect($p)->send();
    }
 
    public function add()
