@@ -14,31 +14,46 @@ use app\frontend\modules\dispatch\services\DispatchService;
 
 class CreatedOrderGoodsModel extends OrderGoodsModel
 {
-    private $OrderGoods;
+    private $_OrderGoods;
 
     public function __construct($OrderGoods, $total = 1)
     {
-        $this->OrderGoods = $OrderGoods;
-        $this->total = $this->OrderGoods->total;
+        $this->_OrderGoods = $OrderGoods;
+        $this->total = $this->_OrderGoods->total;
         parent::__construct();
     }
     public function getOrderGoods(){
-        return $this->OrderGoods;
+        return $this->_OrderGoods;
     }
     protected function setGoodsDiscount()
     {
-        $this->GoodsDiscount = DiscountService::getCreatedOrderGoodsDiscountModel($this->getOrderGoods());
+        $this->_GoodsDiscount = DiscountService::getCreatedOrderGoodsDiscountModel($this->getOrderGoods());
     }
 
     protected function setGoodsDispatch()
     {
-        $this->GoodsDispatch = DispatchService::getCreatedOrderGoodsDispatchModel($this->getOrderGoods());
+        $this->_GoodsDispatch = DispatchService::getCreatedOrderGoodsDispatchModel($this->getOrderGoods());
+    }
+    protected function getTotal(){
+        return $this->_OrderGoods->total;
+    }
+    public function addChangePriceInfo($price)
+    {
+        $change_price = $price - $this->_OrderGoods->price;
+
+        $detail = [
+            'name' => '订单商品改价',
+            'value' => "{$this->_OrderGoods->price}->{$price}",
+            'price' => (string)$change_price,
+            'plugin' => '0',
+        ];
+        $this->_GoodsDiscount->addDiscountDetail($detail);
     }
 
     public function getGoodsPrice()
     {
 
-        return $this->total * $this->OrderGoods->goods_price;
+        return $this->total * $this->_OrderGoods->goods_price;
 
     }
 
@@ -48,10 +63,12 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
             'goods_price' => $this->getGoodsPrice(),
             'price' => $this->getPrice(),
             'total' => $this->getTotal(),
-            'discount_details' => $this->discount_details,
-            'dispatch_details' => $this->dispatch_details,
+            'discount_details' => $this->_GoodsDiscount->getDiscountDetails(),
+            'dispatch_details' => $this->_GoodsDispatch->getDispatchDetails(),
         );
-
+        echo '订单商品改价信息:';
+        dd($data);
+        return;
         OrderGoods::save($data);
     }
 }

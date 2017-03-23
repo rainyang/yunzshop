@@ -10,7 +10,6 @@ namespace app\frontend\modules\discount\listeners;
 
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\discount\OrderGoodsDiscountWasCalculated;
-use app\frontend\modules\order\controllers\PreGeneratedController;
 
 class MemberLevelGoodsDiscount
 {

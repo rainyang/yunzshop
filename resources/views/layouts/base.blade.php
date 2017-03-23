@@ -127,6 +127,7 @@ desired effect
 
 <!-- REQUIRED JS SCRIPTS -->
 
+
 <!-- Bootstrap 3.3.6 -->
 <script src="/addons/sz_yi/static/yunshop/bootstrap/js/bootstrap.js"></script>
 <!-- AdminLTE App -->

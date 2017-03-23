@@ -53,7 +53,7 @@ class MemberController extends BaseController
             'starttime' => $starttime,
             'total' => $list['total'],
             'pager' => $pager,
-            'opencommission'=>false
+            'opencommission'=>1
         ]);
     }
 

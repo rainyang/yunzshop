@@ -232,10 +232,6 @@ trait TreeTrait
      */
     public function toSelectArray($parentId, $depth = 0, $adds = '')
     {
-        $this->treeSpacer = '      ';
-        $this->treeFirstIcon = '      │ ';
-        $this->treeMiddleIcon = '      ├─ ';
-        $this->treeLastIcon = '      └─ ';
 
         $treeList = [];
         $allTrees = $this->getDescendants($parentId, $depth, $adds);

@@ -122,8 +122,8 @@
                     <tr>
                         <td style="text-align: center;">   {$row['uid']}</td>
                         {if $opencommission}
-                        <td style="text-align: center;"  {if !empty($row['yz_member']['agent_id'])}title='ID: {$row['yz_member']['agent_id']}'{/if}>
-                        {if empty($row['yz_member']['agent_id'])}
+                        <td style="text-align: center;"  {if !empty($row['yz_member']['parent_id'])}title='ID: {$row['yz_member']['parent_id']}'{/if}>
+                        {if empty($row['yz_member']['parent_id'])}
                         {if $row['yz_member']['is_agent']==1}
                         <label class='label label-primary'>总店</label>
                         {else}

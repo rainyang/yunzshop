@@ -18,23 +18,50 @@ class OrderChangePrice extends OrderOperation
     protected $status_after_changed = ORDER::WAIT_PAY;
     protected $name = '改价';
     protected $past_tense_class_name = 'OrderChangedPrice';
+    protected $_orderGoodsModels = [];
+
     /**
      * 更新订单表
      * @return bool
      */
-    protected function _updateTable(){
-        return $this->order_model->save();
+    protected function _updateTable()
+    {
+        return $this->_DbOrderModel->save();
     }
-    public function execute(){
-        $db_order = Order::find(80);
-        $order_goods_list = $db_order->hasManyOrderGoods;
-        foreach ($order_goods_list as $order_goods){
-            $order_goods_models[] = new CreatedOrderGoodsModel($order_goods);
-        }
-        $order = new CreatedOrderModel($db_order,$order_goods_models);
-        $order->changePrice('380');
+
+    public function execute()
+    {
+        $this->addChangeOrderGoodsPriceInfo();
+
+        $order = new CreatedOrderModel($this->_DbOrderModel, $this->getOrderGoodsModels());
+        //改订单价格 todo 测试
+        //$order->addChangePriceInfo('380');
+        //改运费 todo 测试
+        $order->addChangeDispatchPriceInfo('21');
+
         $order->update();
         exit;
         return false;
+    }
+
+    private function getOrderGoodsModels()
+    {
+        if (count($this->_orderGoodsModels)) {
+            return $this->_orderGoodsModels;
+        }
+        $order_goods_list = $this->_DbOrderModel->hasManyOrderGoods;
+        foreach ($order_goods_list as $_DbOrderGoods) {
+            $_OrderGoods = new CreatedOrderGoodsModel($_DbOrderGoods);
+            $this->_orderGoodsModels[] = $_OrderGoods;
+        }
+        return $this->_orderGoodsModels;
+    }
+
+    private function addChangeOrderGoodsPriceInfo()
+    {
+        foreach ($this->getOrderGoodsModels() as $orderGoodsModel) {
+            //该订单商品价格 todo 测试
+            $orderGoodsModel->addChangePriceInfo('190');
+        }
     }
 }

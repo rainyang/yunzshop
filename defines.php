@@ -20,3 +20,4 @@ define('SZ_YI_DEBUG', false);//false
 !defined('SZ_YI_LIVE_CLOUD_URL') &&define("SZ_YI_LIVE_CLOUD_URL", "https://yz.tbw365.cn"); //直播云端的API
 
 !defined('SZ_YI_WECHAT_NOTIFY_URL') && define('SZ_YI_WECHAT_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/wechat/notify.php');
+!defined('SZ_YI_ALIPAY_NOTIFY_URL') && define('SZ_YI_ALIPAY_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/notify.php');

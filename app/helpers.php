@@ -16,6 +16,18 @@ if(!function_exists('can')){
     }
 }
 
+if(!function_exists('weAccount')) {
+    /**
+     * 获取微擎账号体系
+     * @return NULL|WeAccount
+     */
+    function weAccount()
+    {
+        load()->model('account');
+        return WeAccount::create();
+    }
+}
+
 
 if(!function_exists('yzWebUrl')){
     function yzWebUrl($route, $params = [])
@@ -87,6 +99,13 @@ if (! function_exists('assets')) {
         } else {
             return Url::shopUrl("resources/assets/$relativeUri");
         }
+    }
+}
+if (! function_exists('static_url')) {
+
+    function static_url($relativeUri)
+    {
+       return Url::shopUrl('static/' . $relativeUri);
     }
 }
 

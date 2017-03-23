@@ -20,8 +20,8 @@ abstract class ChangeStatusOperation extends OrderOperation
      * @return bool
      */
     protected function _updateTable(){
-        $this->order_model->status = $this->status_after_changed;
-        return $this->order_model->save();
+        $this->_DbOrderModel->status = $this->status_after_changed;
+        return $this->_DbOrderModel->save();
     }
 
     /**
