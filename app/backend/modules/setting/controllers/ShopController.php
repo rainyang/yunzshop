@@ -227,19 +227,7 @@ class ShopController extends BaseController
         $requestModel = \YunShop::request()->pay;
         if ($requestModel) {
             if (Setting::set('shop.pay', $requestModel)) {
-                $alipay = [
-                    'alipay.pem' => '',
-                    'alipay.partner_id' => '',
-                    'alipay.seller_id' => '',
-                    'alipay-mobile.sign_type' => '',
-                    'alipay-mobile.private_key_path' => '',
-                    'alipay-mobile.public_key_path' => '',
-                    'alipay-mobile.notify_url' => '',
-                    'alipay-web.key' => '',
-                    'alipay-web.sign_type' => '',
-                    'alipay-web.notify_url' => '',
-                    'alipay-web.return_url' => '',
-                ];
+                $this->setAlipayParams($requestModel);
                 return $this->message(' 支付方式设置成功', Url::absoluteWeb('setting.shop.pay'));
             } else {
                 $this->error('支付方式设置失败');
@@ -253,16 +241,16 @@ class ShopController extends BaseController
 
     private function setAlipayParams($data)
     {
-        Setting::set('alipay.pem', $data);
+        Setting::set('alipay.pem', SZ_YI_PATH . 'cert/cacert.pem');
         Setting::set('alipay.partner_id', $data['alipay_partner']);
         Setting::set('alipay.seller_id', $data['alipay_account']);
         Setting::set('alipay-mobile.sign_type', 'RSA');
-        Setting::set('alipay-mobile.private_key_path', $data);
-        Setting::set('alipay-mobile.public_key_path', $data);
-        Setting::set('alipay-mobile.notify_url', $data);
+        Setting::set('alipay-mobile.private_key_path', SZ_YI_PATH . 'cert/rsa_private_key.pem');
+        Setting::set('alipay-mobile.public_key_path', SZ_YI_PATH . 'cert/rsa_public_key.pem');
+        Setting::set('alipay-mobile.notify_url', SZ_YI_ALIPAY_NOTIFY_URL);
         Setting::set('alipay-web.key', $data['alipay_secret']);
         Setting::set('alipay-web.sign_type', 'MD5');
-        Setting::set('alipay-web.notify_url', $data);
-        Setting::set('alipay-web.return_url', $data);
+        Setting::set('alipay-web.notify_url', SZ_YI_ALIPAY_NOTIFY_URL);
+        Setting::set('alipay-web.return_url', SZ_YI_ALIPAY_RETURN_URL);
     }
 }
