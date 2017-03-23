@@ -434,6 +434,7 @@
                             @endforeach
                             <tr>
                                 <td colspan="2">
+                                    @include('order.modals')
                                     @include('order.ops')
                                 </td>
                                 <td colspan="8">

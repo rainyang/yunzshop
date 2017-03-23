@@ -50,23 +50,26 @@ class OperationController extends BaseController
     public function send(){
         list($result,$data) = OrderService::orderSend($this->_params);
         if($result === false){
-            $this->errorJson($data);
+            $this->message('发货成功', $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)), 'success');
+            exit();
         }
-        $this->successJson($data);
+        $this->message('发货失败', $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)), 'error');
     }
     public function cancelSend(){
         list($result,$data) = OrderService::orderCancelSend($this->_params);
         if($result === false){
-            $this->errorJson($data);
+            $this->message('取消失败', $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)), 'error');
+            exit();
         }
-        $this->successJson($data);
+        $this->message('取消成功', $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)), 'success');
     }
     public function Receive(){
         list($result,$data) = OrderService::orderReceive($this->_params);
         if($result === false){
-            $this->errorJson($data);
+            $this->message('收货失败', $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)), 'error');
+            exit();
         }
-        $this->successJson($data);
+        $this->message('确认收货成功', $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)), 'success');
     }
     public function Delete()
     {
