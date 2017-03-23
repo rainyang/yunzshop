@@ -25,12 +25,14 @@ class DetailController extends BaseController
                 'hasOneAddress'
             ]
         )->find($order_id)->toArray();
-        $this->render('detail', [
+
+        return view('order.detail', [
             'order' => $db_order_models,
             'lang' => $this->_lang(),
             'totals'=> $this->_totals(),
             'dispatch' => ['id' => 1],
-        ]);
+            'var'      => \YunShop::app()->get()
+        ])->render();
     }
 
     private function _lang()
