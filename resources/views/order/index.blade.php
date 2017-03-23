@@ -64,6 +64,7 @@
                         <input type="hidden" name="route" value="order.list" id="form_p"/>
                         <div class="form-group">
                             <div class="col-sm-8 col-lg-12 col-xs-12">
+                                @section('search_bar')
                                 <div class='input-group'>
                                     <select name="search[ambiguous][field]" class="form-control">
                                         <option value="order"
@@ -144,6 +145,7 @@
                                         )!!}
 
                                 </div>
+                                @show
                             </div>
                         </div>
 
@@ -203,8 +205,9 @@
                             @if( 0&&!empty($order['refundstate']))<label
                                     class='label label-danger'>{{$r_type[$order['rtype']]}}申请</label>@endif
                             @if( 0&&$order['rstatus'] == 4)<label class='label label-primary'>客户已经寄出快递</label>@endif
-
+                            @section('shop_name')
                             <label class="label label-info">总店</label>
+                            @show
                             @if( 0&&!empty($order['storename']))
                                 <label class="label label-primary">所属门店：{{$order['storename']}}</label>
                         @endif

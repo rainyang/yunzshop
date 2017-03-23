@@ -23,7 +23,7 @@ class ListController extends BaseController
         $pageSize = 2;
         $this->_order_model = Order::getAllOrders($params['search'],$pageSize);
         //dd($this->_order_model);
-        return view('order.index', $this->getData())->render();
+        return view('order.test', $this->getData())->render();
 
     }
     public function waitPay()
