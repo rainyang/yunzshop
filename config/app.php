@@ -186,6 +186,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Watson\BootstrapForm\BootstrapFormServiceProvider::class,
         //表单end
+        Ixudra\Curl\CurlServiceProvider::class,
     ],
 
     /*
@@ -245,6 +246,7 @@ return [
         'HTML'     => Collective\Html\HtmlFacade::class,
         'BootForm' => Watson\BootstrapForm\Facades\BootstrapForm::class,
          //表单生成end
+        'Curl'          => Ixudra\Curl\Facades\Curl::class,
     ],
 
 ];

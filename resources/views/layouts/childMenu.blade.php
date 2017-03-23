@@ -10,7 +10,7 @@
                     @include('layouts.childMenu',['childs'=>$value['child']])
                 </li>
             @else
-                <li><a href="{{yzWebFullUrl(isset($value['url']) ?$value['url']: '') or 'javascript:void(0)'}}">
+                <li><a href="{{yzWebFullUrl($value['url'])}}">
                         <i class="fa {{$value['icon'] or 'fa-circle-o'}}"></i>{{$value['name'] or ''}}
                     </a>
                 </li>

@@ -101,6 +101,13 @@ if (! function_exists('assets')) {
         }
     }
 }
+if (! function_exists('static_url')) {
+
+    function static_url($relativeUri)
+    {
+       return Url::shopUrl('static/' . $relativeUri);
+    }
+}
 
 if (! function_exists('plugin')) {
 
