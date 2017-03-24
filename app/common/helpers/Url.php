@@ -11,6 +11,9 @@ class Url
 {
     public static function shopUrl($uri)
     {
+        if(empty($uri) && self::isHttp($uri)){
+            return $uri;
+        }
         $domain = request()->getSchemeAndHttpHost();
         $module = request()->get('m','');
         return $domain . '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
@@ -25,7 +28,7 @@ class Url
      */
     public static function web($route, $params = [])
     {
-        if(empty($route)){
+        if(empty($route) && self::isHttp($route)){
             return $route;
         }
         $defaultParams = ['c'=>'site','a'=>'entry','m'=>'sz_yi','do'=>random(4),'route'=>$route];
@@ -43,7 +46,7 @@ class Url
      */
     public static function app($route, $params = [])
     {
-        if(empty($route)){
+        if(empty($route) && self::isHttp($route)){
             return $route;
         }
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'c'=>'entry','m'=>'sz_yi','do'=>random(4),'route'=>$route];
@@ -63,6 +66,9 @@ class Url
      */
     public static function absoluteWeb($route, $params = [], $domain = '')
     {
+        if(empty($route) && self::isHttp($route)){
+            return $route;
+        }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
         return $domain . self::web($route,$params);
     }
@@ -77,7 +83,15 @@ class Url
      */
     public static function absoluteApp($route, $params = [], $domain = '')
     {
+        if(empty($route) && self::isHttp($route)){
+            return $route;
+        }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
         return $domain . self::app($route,$params);
+    }
+
+    public static function isHttp($url)
+    {
+        return (strpos($url,'http://') == 0 || strpos($url,'https://') == 0);
     }
 }

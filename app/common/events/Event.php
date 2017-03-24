@@ -4,8 +4,8 @@ namespace app\common\events;
 
 abstract class Event
 {
-    private $opinion = [];
-    private $feedback_list = [];
+    private $opinion = [];//只有一条
+    private $feedback_list = [];//
     private $data = [];
     private $map = [];
     /**
@@ -25,7 +25,7 @@ abstract class Event
     public function getData(){
         return $this->data;
     }
-    public function getMap(){
+    public function     getMap(){
         return $this->map;
     }
     public function hasOpinion(){

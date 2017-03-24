@@ -122,8 +122,8 @@
                     <tr>
                         <td style="text-align: center;">   {$row['uid']}</td>
                         {if $opencommission}
-                        <td style="text-align: center;"  {if !empty($row['yz_member']['agent_id'])}title='ID: {$row['yz_member']['agent_id']}'{/if}>
-                        {if empty($row['yz_member']['agent_id'])}
+                        <td style="text-align: center;"  {if !empty($row['yz_member']['parent_id'])}title='ID: {$row['yz_member']['parent_id']}'{/if}>
+                        {if empty($row['yz_member']['parent_id'])}
                         {if $row['yz_member']['is_agent']==1}
                         <label class='label label-primary'>总店</label>
                         {else}
@@ -172,15 +172,16 @@
                             {if $row['yz_member']['is_black']==1}
                             <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
                             {else}
-                            {if empty($row['has_one_fans']['followed'])}
-                                {if empty($row['uid'])}
-                                <label class='label label-default'>未关注</label>
+                                {if empty($row['has_one_fans']['followed'])}
+                                    {if empty($row['uid'])}
+                                    <label class='label label-default'>未关注</label>
+                                    {else}
+                                    <label class='label label-warning'>取消关注</label>
+                                    {/if}
                                 {else}
-                                <label class='label label-warning'>取消关注</label>
+                                <label class='label label-success'>已关注</label>
                                 {/if}
-                            {else}
-                            <label class='label label-success'>已关注</label>
-                            {/if}{/if}
+                            {/if}
 
                         </td>
 

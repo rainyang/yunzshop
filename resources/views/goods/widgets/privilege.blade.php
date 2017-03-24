@@ -104,7 +104,7 @@
     </div>
 </div>
 
-
+@section('js')
 <script language='javascript'>
     if ($('input:radio[name="widgets[privilege][enable_time_limit]"]:checked').val() == 1) {
         $('#time_limit').show();
@@ -118,3 +118,4 @@
         }
     });
 </script>
+@stop

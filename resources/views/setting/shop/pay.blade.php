@@ -28,6 +28,34 @@
                 </div>
             </div>
             <div id='certs' @if (empty($set['weixin'])) style="display:none" @endif>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">身份标识<br>(appId)</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" class="form-control" name="pay[weixin_appid]" value="{{ @$set['weixin_appid'] }}" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">身份密钥<br>(appSecret)</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" class="form-control" name="pay[weixin_secret]" value="{{ @$set['weixin_secret'] }}" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信支付商户号<br>(mchId)</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" class="form-control"  name="pay[weixin_mchid]" value="{{ @$set['weixin_mchid'] }}" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信支付商户号<br>(apiSecret)</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" class="form-control"  name="pay[weixin_apisecret]" value="{{ @$set['weixin_apisecret'] }}" autocomplete="off">
+                    </div>
+                </div>
+
                  <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">CERT证书文件</label>
                     <div class="col-sm-9 col-xs-12">
@@ -229,6 +257,29 @@
                     </div>
                 </div>
 
+                <div id='alipay_block' @if (empty($set['alipay'])) style="display:none" @endif>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">收款支付宝账号</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" class="form-control" name="pay[alipay_account]" value="{{ @$set['alipay_account'] }}" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">合作者身份</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" class="form-control" name="pay[alipay_partner]" value="{{ @$set['alipay_partner'] }}" autocomplete="off">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">校验密钥</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" class="form-control"  name="pay[alipay_secret]" value="{{ @$set['alipay_secret'] }}" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">易宝支付</label>
                     <div class="col-sm-9 col-xs-12">
@@ -350,6 +401,14 @@
                         }
                         else {
                             $("#paypal").hide();
+                        }
+                    })
+                    $(":radio[name='pay[alipay]']").click(function () {
+                        if ($(this).val() == 1) {
+                            $("#alipay_block").show();
+                        }
+                        else {
+                            $("#alipay_block").hide();
                         }
                     })
                     $(":radio[name='pay[yeepay]']").click(function () {

@@ -249,8 +249,7 @@ class Sz_DYi_Common
                 $string1 .= "{$key}={$v}&";
             }
             $string1 .= "key={$wechat['signkey']}";
-            dump(1);
-            dump($string1);
+
             $package['sign'] = strtoupper(md5($string1));
             $dat             = array2xml($package);
             $response        = ihttp_request('https://api.mch.weixin.qq.com/pay/unifiedorder', $dat);
@@ -353,15 +352,15 @@ class Sz_DYi_Common
     public function createNO($table, $field, $prefix)
     {
         $billno = date('YmdHis') . random(6, true);
-        while (1) {
-            $count = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_' . $table) . " where {$field}=:billno limit 1", array(
+        /*while (1) {
+            $count = pdo_fetchcolumn('select count(*) from ' . tablename('yz_' . $table) . " where 1 limit 1", array(
                 ':billno' => $billno
             ));
             if ($count <= 0) {
                 break;
             }
             $billno = date('YmdHis') . random(6, true);
-        }
+        }*/
         return $prefix . $billno;
     }
     public function html_images($detail = '')

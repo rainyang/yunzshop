@@ -11,12 +11,15 @@
 }
 </style>
 <script type="text/javascript">
-$(document).scroll(function() {
-  	var toptype = $("#edui1_toolbarbox").css('position');
-  	if(toptype == "fixed"){
-  		$("#edui1_toolbarbox").addClass('top_menu');
-  	}else{
-  		$("#edui1_toolbarbox").removeClass('top_menu');
-  	}
-});
+  require(['bootstrap'], function ($) {
+    $(document).scroll(function () {
+      var toptype = $("#edui1_toolbarbox").css('position');
+      if (toptype == "fixed") {
+        $("#edui1_toolbarbox").addClass('top_menu');
+      }
+      else {
+        $("#edui1_toolbarbox").removeClass('top_menu');
+      }
+    });
+  });
 </script>

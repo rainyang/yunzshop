@@ -71,7 +71,7 @@
 
     </div>
 </div>
-
+@section('js')
 <script language='javascript'>
 
     function search_members() {
@@ -95,3 +95,4 @@
     }
 
 </script>
+@stop

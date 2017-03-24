@@ -30,11 +30,7 @@ class CommentController extends BaseController
 
         $search = CommentService::Search(\YunShop::request()->search);
 
-        //$list = $commentModel::getComments($commentModel, $search)->toArray();
-
-
         $list = Comment::getComments($search)->paginate($pageSize)->toArray();
-//        echo "<pre>"; print_r($list);exit;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         return view('goods.comment.list', [

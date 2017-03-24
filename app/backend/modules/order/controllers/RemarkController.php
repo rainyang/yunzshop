@@ -24,6 +24,5 @@ class RemarkController extends BaseController
             $db_remark_model->save();
             show_json(1);
         }
-        //header('Location:http://yz.com/'. $this->createWebUrl('order.detail', array('id' => \YunShop::request()->id)));
     }
 }

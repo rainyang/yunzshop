@@ -12,19 +12,25 @@ class TestController extends BaseController
 {
 
     public function index()
-    {        return view('test.index',['a'=>'f']);
+    {
+
+        dd($alipay = app('alipay.web'));
+
+        $fans = weAccount()->fansAll();
+        dd($fans);
+        return view('test.index',['a'=>'f']);
 
 
     }
 
     public function testJson()
     {
-        return $this->successJson($data = []);
+        return $this->successJson('错误提示',$data = ['错误提示']);
     }
 
     public function testErrorJson()
     {
-        return $this->errorJson($message = '错误提示', $data = []);
+        return $this->errorJson($message = '错误提示', $data = ['错误提示']);
     }
 
     public function test()
