@@ -61,7 +61,7 @@ class AlipayController extends PaymentController
     }
 
     public function refundNotifyUrl()
-    {echo 1;exit;
+    {
         // TODO 访问记录
         // TODO 保存响应数据
     }
