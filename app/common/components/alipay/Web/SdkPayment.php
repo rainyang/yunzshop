@@ -499,7 +499,7 @@ class SdkPayment
             'batch_no' => date('Ymd', time()) . time(),
             'batch_fee' => $this->total_fee,
             'batch_num' => 1,
-            'detail_data' => $this->out_trade_no.'^'.$this->total_fee.'^退款订单-' . \YunShop::app()->uniacid,
+            'detail_data' => $this->out_trade_no.'^'.$this->total_fee.'^退款订单',
             '_input_charset' => strtolower($this->_input_charset),
         );
 
@@ -529,7 +529,7 @@ class SdkPayment
             'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现-' . \YunShop::app()->uniacid,
             '_input_charset' => strtolower($this->_input_charset),
         );
-
+echo '<pre>';print_r($parameter);exit;
         $para = $this->buildRequestPara($parameter);
 
         return $this->__gateway_new . $this->createLinkstringUrlencode($para);
