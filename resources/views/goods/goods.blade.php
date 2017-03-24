@@ -1,4 +1,4 @@
-﻿@extends('layouts.admin-drop')
+﻿@extends('layouts.base')
 
 @section('js')
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
