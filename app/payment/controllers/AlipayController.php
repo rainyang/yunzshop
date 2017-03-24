@@ -61,39 +61,9 @@ class AlipayController extends PaymentController
     }
 
     public function refundNotifyUrl()
-    {
-        $verify_result = $this->getSignResult();
-
-        if($verify_result) {
-            file_put_contents('../../../../addons/sz_yi/data/p1.log', print_r(\YunShop::request(),1));
-            exit;
-            $success_details = $_POST['success_details']; //成功信息
-            $batch_no = $_POST['batch_no']; //批次号
-            $notify_time = $_POST['notify_time']; //通知时间
-            if($success_details!=''){
-                $success_details = explode('^',$success_details);
-                $apply= array('status'=>'4','finshtime'=>strtotime($notify_time));
-                pdo_update('sz_yi_commission_apply', $apply, array('batch_no' =>$batch_no));
-            }
-
-            //批量付款数据中转账失败的详细信息
-            $fail_details = $_POST['fail_details']; //失败信息
-
-            if($fail_details!=''){
-                $fail_details = explode('^',$fail_details);
-                if($fail_details['5']=='transfer_amount_not_enough'){
-                    $fail_details['5']='账户余额不足';
-                }
-                $apply= array('status'=>'3','reason'=>$fail_details['5']);
-                pdo_update('sz_yi_commission_apply', $apply, array('batch_no' =>$batch_no));
-            }
-
-            echo "success";
-        }
-        else {
-            file_put_contents('../../../../addons/sz_yi/data/p2.log', 1);
-            echo "fail";
-        }
+    {echo 1;exit;
+        // TODO 访问记录
+        // TODO 保存响应数据
     }
 
     /**

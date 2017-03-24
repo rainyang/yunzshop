@@ -16,9 +16,14 @@ class PaymentController extends BaseController
     {
         parent::__construct();
 
-        $body = $_REQUEST['body'];
-        $strs = explode(':', $body);
+        $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
+        $splits = explode(':', $body);
 
-        \YunShop::app()->uniacid = intval($strs[1]);
+        if (is_array($splits)) {
+            \YunShop::app()->uniacid = intval($splits[1]);
+        } else {
+            \YunShop::app()->uniacid = 0;
+        }
+
     }
 }
