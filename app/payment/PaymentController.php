@@ -28,13 +28,7 @@ class PaymentController extends BaseController
                     $splits = explode(':', $body);
                     break;
                 case 'refundNotifyUrl':
-                    file_put_contents('../../../../addons/sz_yi/data/p1.log', print_r($_REQUEST,1));
-                    $detail_data = !empty($_REQUEST['detail_data']) ? $_REQUEST['detail_data'] : '';
-                    $data = explode('^', $detail_data);
-
-                    if (!empty($data[2])) {
-                        $splits = explode('-', $data[2]);
-                    }
+                    // TODO 获取不到uniacid
                     break;
                 case 'withdrawNotifyUrl':
                     $detail_data = !empty($_REQUEST['detail_data']) ? $_REQUEST['detail_data'] : '';
