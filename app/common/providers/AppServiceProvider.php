@@ -2,8 +2,7 @@
 
 namespace app\common\providers;
 
-use app\backend\models\Menu;
-use app\common\facades\Setting;
+use Setting;
 use Illuminate\Support\ServiceProvider;
 use App;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +64,9 @@ class AppServiceProvider extends ServiceProvider
             'right_column_class' => 'col-sm-9 col-xs-12',
             'show_all_errors'=>true
         ]);
+
+        //设置uniacid
+        Setting::$uniqueAccountId = \YunShop::app()->uniacid;
 
     }
 

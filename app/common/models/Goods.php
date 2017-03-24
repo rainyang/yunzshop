@@ -14,7 +14,6 @@ use HaoLi\LaravelAmount\Traits\AmountTrait;
 
 class Goods extends BaseModel
 {
-    //use AmountTrait;
 
     public $table = 'yz_goods';
     public $attributes = ['display_order' => 0];
@@ -30,8 +29,6 @@ class Goods extends BaseModel
     public $appends = [''];
 
     public $widgets = [];
-
-    protected $amountFields = ['price', 'market_price', 'cost_price'];
 
     protected $search_fields = ['title'];
 
@@ -54,6 +51,7 @@ class Goods extends BaseModel
     {
         return $this->hasMany('app\common\models\GoodsOption');
     }
+
     public function hasOneBrand()
     {
         return $this->hasOne('app\common\models\Brand', 'id', 'brand_id');

@@ -16,7 +16,7 @@
 
             <p>
                 没有权限.
-                此时你可以返回<a href="/"> 首页 </a> 或者返回 <a href="{{$previousUrl}}"> 上一页 </a>.
+                此时你可以返回<a href="/"> 首页 </a> 或者返回 <a href="javascript:go(-1)"> 上一页 </a>.
             </p>
 
         </div>

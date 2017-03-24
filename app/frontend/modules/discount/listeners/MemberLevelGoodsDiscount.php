@@ -16,7 +16,6 @@ class MemberLevelGoodsDiscount
     private $_event;
     public function needDiscount()
     {
-        //dd($this->_event);
 
 
         //商品设置了等级折扣

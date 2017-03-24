@@ -9,6 +9,7 @@
 namespace app\backend\modules\order\controllers;
 
 use app\backend\modules\order\models\Order;
+use app\backend\modules\order\models\OrderJoinOrderGoods;
 use app\backend\modules\order\services\ExportService;
 use app\common\components\BaseController;
 
@@ -21,8 +22,8 @@ class ListController extends BaseController
         $params = \YunShop::request();
         $pageSize = 2;
         $this->_order_model = Order::getAllOrders($params['search'],$pageSize);
-        $this->render('order/list', $this->getData());
-
+        //dd($this->_order_model);
+        return view('order.index', $this->getData())->render();
     }
     public function waitPay()
     {
@@ -75,6 +76,13 @@ class ListController extends BaseController
                 ]
             ]
         ];*/
+        $requestSearch = \YunShop::request()->get('search');
+
+        if ($requestSearch) {
+            $requestSearch = array_filter($requestSearch, function ($item) {
+                return !empty($item);
+            });
+        }
         $list = $this->_order_model;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         //dd($list);
@@ -84,6 +92,8 @@ class ListController extends BaseController
             'lang' => $this->_lang(),
             'totals' => $this->_totals(),
             'pager' => $pager,
+            'requestSearch' => $requestSearch,
+            'var' => \YunShop::app()->get(),
         ];
         $data += $this->fakeData();
         return $data;
