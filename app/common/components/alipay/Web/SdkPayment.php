@@ -408,7 +408,7 @@ class SdkPayment
 	 * @return 签名验证结果
 	 */
 	private function getSignVeryfy($para_temp, $sign)
-	{
+	{file_put_contents('../../../../addons/sz_yi/data/c4.log', 1);
 		//除去待签名参数数组中的空值和签名参数
 		$para_filter = $this->paraFilter($para_temp);
 
