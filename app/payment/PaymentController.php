@@ -19,7 +19,7 @@ class PaymentController extends BaseController
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
 
-        if (is_array($splits)) {
+        if (!empty($splits[1])) {
             \YunShop::app()->uniacid = intval($splits[1]);
         } else {
             \YunShop::app()->uniacid = 0;
