@@ -35,7 +35,7 @@
         <div class="col-sm-6 col-xs-6">
             <div class='input-group'>
                 <div class='input-group-addon'>默认等级</div>
-                {{ $valuedefault = 0;}}
+                {{ $valuedefault = 0}}
                 @foreach($discount as $d)
                     @if( !empty($d) &&  $d['level_id'] == '0')
                         {{ $valuedefault = $d['discount_value'] }}
