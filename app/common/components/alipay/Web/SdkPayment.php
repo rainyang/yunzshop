@@ -499,7 +499,7 @@ class SdkPayment
             'batch_no' => date('Ymd', time()) . time(),
             'batch_fee' => $this->total_fee,
             'batch_num' => 1,
-            'detail_data' => $this->out_trade_no.'^'.$this->total_fee.'^退款订单-' . \YunShop::app()->uniacid,
+            'detail_data' => $this->out_trade_no.'^'.$this->total_fee.'^退款订单',
             '_input_charset' => strtolower($this->_input_charset),
         );
 
