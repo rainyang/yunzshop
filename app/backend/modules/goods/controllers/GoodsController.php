@@ -228,7 +228,7 @@ class GoodsController extends BaseController
         $catetory_menus = '';
         if (isset($goodsModel->hasManyGoodsCategory[0])){
             foreach($goods_categorys = $goodsModel->hasManyGoodsCategory->toArray() as $goods_category){
-                $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['catlevel'], 'ids' => explode(",", $goods_category['category_ids'])]);
+                $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['cat_level'], 'ids' => explode(",", $goods_category['category_ids'])]);
             }
         }
 

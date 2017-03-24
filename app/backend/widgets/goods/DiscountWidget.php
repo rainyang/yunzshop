@@ -27,6 +27,7 @@ class DiscountWidget extends Widget
                 $discountValue[$discount['level_id']] =   $discount['discount_value'];
             }
         }
+        //dd($discountValue);
         $levels = MemberLevel::getMemberLevelList();
         $groups = MemberGroup::getMemberGroupList();
 
