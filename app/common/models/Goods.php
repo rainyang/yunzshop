@@ -14,7 +14,6 @@ use HaoLi\LaravelAmount\Traits\AmountTrait;
 
 class Goods extends BaseModel
 {
-    //use AmountTrait;
 
     public $table = 'yz_goods';
     public $attributes = ['display_order' => 0];
@@ -31,8 +30,6 @@ class Goods extends BaseModel
 
     public $widgets = [];
 
-    protected $amountFields = ['price', 'market_price', 'cost_price'];
-
     protected $search_fields = ['title'];
 
     public static function getList()
@@ -45,17 +42,6 @@ class Goods extends BaseModel
         return static::find($id);
     }
 
-    public function getMarketPriceAttribute()
-    {
-        return $this->attributes['market_price'] / 100;
-    }
-
-    public function getPriceAttribute()
-    {
-        return $this->attributes['price'] / 100;
-    }
-
-
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
@@ -65,6 +51,7 @@ class Goods extends BaseModel
     {
         return $this->hasMany('app\common\models\GoodsOption');
     }
+
     public function hasOneBrand()
     {
         return $this->hasOne('app\common\models\Brand', 'id', 'brand_id');
@@ -92,7 +79,7 @@ class Goods extends BaseModel
 
     public function hasManyGoodsCategory()
     {
-        return $this->hasMany('app\common\models\GoodsCategory', 'id', 'goods_id');
+        return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
     }
 
     public function hasManySpecs()

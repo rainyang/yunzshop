@@ -47,7 +47,7 @@ class PreGeneratedController extends BaseController
             'order'=>$order
         ];
         $data = array_merge($data,$Event->getMap());
-        dd($data);
+        dump($data);
 
         return $this->successJson($data);
     }

@@ -20,16 +20,15 @@ class WapAlipay extends AliPay
         //todo
     }
 
-    public function doPay($subject, $body, $amount, $order_no, $extra)
+    public function doPay($data = [])
     {
         // 创建支付单。
         $alipay = app('alipay.wap');
 
-        $alipay->setOutTradeNo($order_no);
-        $alipay->setTotalFee($amount);
-        $alipay->setSubject($subject);
-        $alipay->setBody($body);
-
+        $alipay->setOutTradeNo($data['order_no']);
+        $alipay->setTotalFee($data['amount']);
+        $alipay->setSubject($data['subject']);
+        $alipay->setBody($data['body']);
 
         // 跳转到支付页面。
         return $alipay->getPayLink();
