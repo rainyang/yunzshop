@@ -18,7 +18,6 @@ class AlipayController extends PaymentController
         echo \YunShop::app()->uniacid;
 
         $alipay = app('alipay.web');
-        $alipay->setSignType('MD5');
 
         $verify_result = $alipay->verify();
 
