@@ -35,8 +35,8 @@ class CouponService
 
         });
 
-        dd(self::calCoupon($memberValidCoupons, $OrderModel));
-        dd($memberValidCoupons);
+        //dd(self::calCoupon($memberValidCoupons, $OrderModel));
+        //dd($memberValidCoupons);
         $data = [
             ['name' => 'sss会员等级折扣111',
                 'value' => '85',
