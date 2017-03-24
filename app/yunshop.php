@@ -19,12 +19,10 @@ class YunShop
 
     public static function run($namespace,$modules,$controllerName, $action, $currentRoutes)
     {
-
         //检测命名空间
         if (!class_exists($namespace)) {
             abort(404," 不存在命名空间: " . $namespace);
         }
-
         //检测controller继承
         $controller = new $namespace;
         if(!$controller instanceof \app\common\components\BaseController){
@@ -42,7 +40,6 @@ class YunShop
         if (!method_exists($namespace, $action) || !is_callable([$namespace, $action]) ) {
             abort(404,'操作方法不存在: ' . $action);
         }
-
         $controller->modules = $modules;
         $controller->controller = $controllerName;
         $controller->action = $action;
