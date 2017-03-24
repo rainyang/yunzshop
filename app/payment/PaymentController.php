@@ -19,7 +19,8 @@ class PaymentController extends BaseController
        // file_put_contents('../../../../addons/sz_yi/data/p2.log', print_r($_SERVER['SCRIPT_NAME'],1));
 
         $script_name = $_SERVER['SCRIPT_NAME'];
-echo $script_name;exit;
+
+echo basename($script_name);exit;
 
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
