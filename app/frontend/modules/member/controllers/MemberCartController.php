@@ -97,13 +97,25 @@ class MemberCartController extends BaseController
         $msg = "接收数据出错，添加购物车失败！";
         return $this->errorJson($msg);
     }
+
     /*
-     *  Update memebr cart
-     **/
-    public function update()
+     * 修改购物车商品数量
+     * */
+    public function updateNum()
     {
-        //需要判断商品状态、限制数量、商品类型（实体、虚拟）
+        var_dump(1+-1);exit;
+        $cartId = \YunShop::request()->id;
+        $num = \YunShop::request()->num;
+        $cartModel = MemberCart::getMemberCartById($cartId);
+        if ($cartModel) {
+            $cartModel->total = $cartModel->total + $num;
+            if ($cartModel->update()) {
+                return $this->successJson('修改数量成功');
+            }
+        }
+        return $this->errorJson('未找到数据或已删除，请重试！');
     }
+
     /*
      * Delete member cart
      **/
