@@ -18,18 +18,18 @@ class YunShop
 
     }
 
-    public static function run($namespace,$modules,$controllerName, $action, $currentRoutes)
+    public static function run($namespace, $modules, $controllerName, $action, $currentRoutes)
     {
 
         //检测命名空间
         if (!class_exists($namespace)) {
-            abort(404," 不存在命名空间: " . $namespace);
+            abort(404, " 不存在命名空间: " . $namespace);
         }
 
         //检测controller继承
         $controller = new $namespace;
-        if(!$controller instanceof \app\common\components\BaseController){
-            abort(404,'不存在控制器:' . $namespace);
+        if (!$controller instanceof \app\common\components\BaseController) {
+            abort(404, '不存在控制器:' . $namespace);
         }
 
         //设置默认方法
@@ -40,25 +40,25 @@ class YunShop
         }
 
         //检测方法是否存在并可执行
-        if (!method_exists($namespace, $action) || !is_callable([$namespace, $action]) ) {
-            abort(404,'操作方法不存在: ' . $action);
+        if (!method_exists($namespace, $action) || !is_callable([$namespace, $action])) {
+            abort(404, '操作方法不存在: ' . $action);
         }
 
         $controller->modules = $modules;
         $controller->controller = $controllerName;
         $controller->action = $action;
-        $controller->route = implode('.',$currentRoutes);
+        $controller->route = implode('.', $currentRoutes);
 
         //菜单生成
-        \Config::set('menu',Menu::getMenuList());
+        \Config::set('menu', Menu::getMenuList());
 
         $item = Menu::getItemByRoute($controller->route);
         $menuList = Config::get('menu');
 
-        self::$currentItems = array_merge(Menu::getCurrentMenuParents($item,$menuList),[$item]);
+        self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
         //检测权限
-        if(self::isWeb() && !PermissionService::can($item)){
-            abort(403,'无权限');
+        if (self::isWeb() && !PermissionService::can($item)) {
+            abort(403, '无权限');
         }
         //设置uniacid
         Setting::$uniqueAccountId = self::app()->uniacid;
@@ -100,7 +100,7 @@ class YunShop
 
     public static function getAppPath()
     {
-        $path = dirname(__FILE__) ;
+        $path = dirname(__FILE__);
         if (self::isWeb()) {
             $path .= '/backend';
         }
@@ -120,12 +120,18 @@ class YunShop
         return strpos($_SERVER['PHP_SELF'], '/app/index.php') !== false ? true : false;
     }
 
+    public static function isPayment()
+    {
+        return strpos($_SERVER['PHP_SELF'], '/payment/') > 0 ? true : false;
+    }
+
     public static function request()
     {
         if (self::$_req !== null) {
             return self::$_req;
         } else {
-            return new YunRequest();
+            self::$_req = new YunRequest();
+            return self::$_req;
         }
     }
 
@@ -134,7 +140,8 @@ class YunShop
         if (self::$_app !== null) {
             return self::$_app;
         } else {
-            return new YunApp();
+            self::$_app = new YunApp();
+            return self::$_app;
         }
     }
 
@@ -164,28 +171,28 @@ class YunShop
             $length = count($routes);
             $routeFirst = array_first($routes);
             $countRoute = count($routes);
-            if($routeFirst === 'plugin'){
+            if ($routeFirst === 'plugin') {
                 $currentRoutes[] = $routeFirst;
                 $namespace = 'Yunshop';
-                 array_shift($routes);
+                array_shift($routes);
                 $pluginName = array_shift($routes);
-                if($pluginName || plugin($pluginName)) {
+                if ($pluginName || plugin($pluginName)) {
                     $currentRoutes[] = $pluginName;
-                    $namespace .=  '\\'.ucfirst(Str::camel($pluginName));
-                    $path = base_path() . '/plugins/'. $pluginName . '/src';
+                    $namespace .= '\\' . ucfirst(Str::camel($pluginName));
+                    $path = base_path() . '/plugins/' . $pluginName . '/src';
                     foreach ($routes as $k => $r) {
                         $ucFirstRoute = ucfirst(Str::camel($r));
-                        $controllerFile = $path . '/'  . $ucFirstRoute . 'Controller.php';
+                        $controllerFile = $path . '/' . $ucFirstRoute . 'Controller.php';
                         if (is_file($controllerFile)) {
                             $namespace .= '\\' . $ucFirstRoute . 'Controller';
                             $controllerName = $ucFirstRoute;
                             $path = $controllerFile;
                             $currentRoutes[] = $r;
-                        }elseif(is_dir($path .= '/'.$r)){
-                            $namespace .=  '\\'.$r;
+                        } elseif (is_dir($path .= '/' . $r)) {
+                            $namespace .= '\\' . $r;
                             $modules[] = $r;
                             $currentRoutes[] = $r;
-                        }else{
+                        } else {
                             if ($countRoute !== $k + 3) {
                                 exit('no found route:' . self::request()->route);
                             }
@@ -193,10 +200,10 @@ class YunShop
                             $currentRoutes[] = $r;
                         }
                     }
-                }else{
-                    abort(404,'无此插件');
+                } else {
+                    abort(404, '无此插件');
                 }
-            }else{
+            } else {
                 foreach ($routes as $k => $r) {
                     $ucFirstRoute = ucfirst(Str::camel($r));
                     $controllerFile = $path . '/controllers/' . $ucFirstRoute . 'Controller.php';
@@ -223,7 +230,7 @@ class YunShop
 
         }
         //执行run
-        static::run($namespace,$modules,$controllerName, $action, $currentRoutes);
+        static::run($namespace, $modules, $controllerName, $action, $currentRoutes);
 
     }
 
@@ -241,14 +248,13 @@ class YunShop
 
 }
 
-class YunComponent
+class YunComponent implements ArrayAccess
 {
     protected $values = [];
 
     public function __set($name, $value)
     {
-        return array_key_exists($name, $this->values)
-            ? $this->values[$name] : null;
+        return $this->values[$name] = $value;
     }
 
     public function __get($name)
@@ -259,45 +265,56 @@ class YunComponent
         return $this->values[$name];
     }
 
-    public function set($name, $value){
+    public function set($name, $value)
+    {
         $this->values[$name] = $value;
         return $this;
     }
 
-    public function get($key=null){
-        if(isset($key)){
-            return array_get($this->values,$key,null);
+    public function get($key = null)
+    {
+        if (isset($key)) {
+            return array_get($this->values, $key, null);
         }
         return $this->values;
     }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->values[$offset]);
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->values[$offset] = $value;
+    }
+
+    public function offsetGet($offset)
+    {
+        if (isset($this->values[$offset])) {
+            return $this->values[$offset];
+        }
+        return null;
+    }
+
+    public function offsetExists($offset)
+    {
+        if (isset($this->values[$offset])) {
+            return true;
+        }
+        return false;
+    }
 }
 
-class YunRequest extends YunComponent implements ArrayAccess
+class YunRequest extends YunComponent
 {
 
     public function __construct()
     {
         global $_GPC;
-        $this->values = $_GPC;
+        $this->values = (array)$_GPC;
     }
-    public function offsetUnset($offset){
-        unset($this->values[$offset]);
-    }
-    public function offsetSet($offset, $value){
-        $this->values[$offset] = $value;
-    }
-    public function offsetGet($offset){
-        if(isset($this->values[$offset])){
-            return $this->values[$offset];
-        }
-        return null;
-    }
-    public function offsetExists($offset){
-        if(isset($this->values[$offset])){
-            return true;
-        }
-        return false;
-    }
+
 
 }
 
@@ -310,8 +327,7 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
-        $this->values = $_W;
-        //$this->var = $_W;
+        $this->values = (array)$_W;
         $this->routeList = Config::get('menu');
     }
 
@@ -323,23 +339,25 @@ class YunApp extends YunComponent
     {
         $key = 'routes-child-parent';
         $routes = \Cache::get($key);
-        if($routes === null){
+        if ($routes === null) {
             $routes = $this->allRoutes();
-            \Cache::put($key,$routes,36000);
+            \Cache::put($key, $routes, 36000);
         }
 
         return $routes;
     }
 
-    protected function allRoutes($list = [],$parent = [])
+    protected function allRoutes($list = [], $parent = [])
     {
         $routes = [];
         !$list && $list = $this->routeList;
-        if($list){
-            foreach ($list as $k=>$v){
+        if ($list) {
+            foreach ($list as $k => $v) {
                 $temp = $v;
-                if(isset($temp['child']))  unset($temp['child']);
-                if(isset($v['url'])) {
+                if (isset($temp['child'])) {
+                    unset($temp['child']);
+                }
+                if (isset($v['url'])) {
                     $routes[$v['url']] = array_merge($temp, ['parent' => $parent]);
                     if (isset($v['child']) && $v['child']) {
                         $routes = array_merge($routes,
@@ -370,7 +388,6 @@ class YunApp extends YunComponent
     {
         return session('member_id', 0);
     }
-
 
 
 }

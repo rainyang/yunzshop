@@ -27,9 +27,11 @@ class PermissionService
      */
     public static function can($item)
     {
+        /*
         if(!$item){
             return false;
         }
+        */
         if(self::checkNoPermission($item) === true){
             return true;
         }
@@ -67,7 +69,7 @@ class PermissionService
         $noPermissions = [];
         if ($menus) {
             foreach ($menus as $key => $m) {
-                if (!(isset($m['permit']) || !$m['permit'])) {
+                if (!isset($m['permit']) || (isset($m['permit']) && !$m['permit'])) {
                     $noPermissions[] = $key;
                 }
                 if(isset($m['child']) && $m['child']){
