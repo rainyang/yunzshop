@@ -66,7 +66,7 @@ class MemberCartController extends BaseController
             //验证商品是否存在购物车,存在则修改数量
             $hasGoodsModel = MemberCart::hasGoodsToMemberCart($data);
             if ($hasGoodsModel) {
-                $hasGoodsModel->total = $hasGoodsModel->tatal + 1;
+                $hasGoodsModel->total = $hasGoodsModel->total + 1;
                 if ($hasGoodsModel->update()){
                     return $this->successJson('添加购物车成功');
                 }
