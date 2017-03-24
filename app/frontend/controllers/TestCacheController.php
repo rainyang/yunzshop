@@ -7,7 +7,7 @@ class TestCacheController extends BaseController
 {
     public function index()
     {
-        echo "test cache ";
+        echo "test cach";
     }
 
 }
