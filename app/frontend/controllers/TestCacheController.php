@@ -8,7 +8,6 @@ class TestCacheController extends BaseController
     public function index()
     {
 
-
     }
 
 }
