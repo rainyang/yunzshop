@@ -18,13 +18,6 @@ class ConfirmSendController extends BaseController
 {
     public function index()
     {
-        $db_express_model = new Express();
-        $db_express_model->order_id = \YunShop::request()->order_id;
-        $db_express_model->express_code = \YunShop::request()->express_code;
-        $db_express_model->express_company_name = \YunShop::request()->express_company_name;
-        $db_express_model->express_sn = \YunShop::request()->express_sn;
-        $db_express_model->save();
-
         $order = Order::find(\YunShop::request()->order_id);
         $order_send = new OrderSend($order);
         if (!$order_send->sendable()) {

@@ -9,6 +9,7 @@
 namespace app\common\services;
 
 
+use app\common\models\Menu;
 use app\common\models\user\User;
 
 class PermissionService
@@ -21,19 +22,21 @@ class PermissionService
 
     /**
      * 检测是否有权限
-     * @param $route
+     * @param $item
      * @return bool
      */
-    public static function can($route)
+    public static function can($item)
     {
-
-        if(self::checkNoPermission($route) === true){
+        if(!$item){
+            return false;
+        }
+        if(self::checkNoPermission($item) === true){
             return true;
         }
         if (self::isFounder()) {
             return true;
         }
-        return in_array($route, User::getAllPermissions());
+        return in_array($item, User::getAllPermissions());
     }
 
     /**
@@ -64,7 +67,7 @@ class PermissionService
         $noPermissions = [];
         if ($menus) {
             foreach ($menus as $key => $m) {
-                if (!(isset($m['permit']) && $m['permit'] === true)) {
+                if (!(isset($m['permit']) || !$m['permit'])) {
                     $noPermissions[] = $key;
                 }
                 if(isset($m['child']) && $m['child']){
