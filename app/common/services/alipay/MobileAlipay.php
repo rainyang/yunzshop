@@ -19,13 +19,13 @@ class MobileAlipay extends AliPay
     public function __construct()
     {}
 
-    public function doPay($subject, $body, $amount, $order_no, $extra)
+    public function doPay($data = [])
     {
         $alipay = app('alipay.mobile');
-        $alipay->setOutTradeNo($order_no);
-        $alipay->setTotalFee($amount);
-        $alipay->setSubject($subject);
-        $alipay->setBody($body);
+        $alipay->setOutTradeNo($data['order_no']);
+        $alipay->setTotalFee($data['amount']);
+        $alipay->setSubject($data['subject']);
+        $alipay->setBody($data['body']);
 
         // 返回签名后的支付参数给支付宝移动端的SDK。
         echo $alipay->getPayPara();

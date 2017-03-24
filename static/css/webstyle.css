@@ -12,7 +12,11 @@ ul{list-style:none;}
 .m0a{margin:0 auto }
 .mrt4{margin-top: 4px;display: block;}
 .fr{float: right !important;;}
+<<<<<<< HEAD
+.rightlist{/*width: 100%;margin: 56px 6px 6px 186px;*/padding-bottom: 125px;min-width: 1008px;/*background: #fff;border: 1px #e0e0e0 solid*/}
+=======
 .rightlist{width: 100%;padding-bottom: 125px;min-width: 1008px;/*background: #fff;border: 1px #e0e0e0 solid*/}
+>>>>>>> 524ffa13710365620825bd92f0bb3547def4270a
 .rightlist2{margin: 52px 6px 6px 250px;
     padding-bottom: 125px;
     min-width: 1008px;}

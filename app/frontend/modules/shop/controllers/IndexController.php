@@ -36,7 +36,7 @@ class IndexController extends BaseController
             ->where("status", 1)
             ->get();
 
-        dd($goodsList);
+        //dd($goodsList);
         return $goodsList;
     }
 

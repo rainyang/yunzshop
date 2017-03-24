@@ -10,8 +10,8 @@ class ListController extends BaseController
     //获取指定状态的订单
     public function getOrders($status = '')
     {
-        $memberId = \Yunshop::request()->member_id;
-        if (!$memberId) {
+        $uid = 9;//\YunShop::app()->getMemberId();
+        if (!$uid) {
             return $this->errorJson( $msg = '缺少访问参数', $data = []);
         }
 
@@ -19,7 +19,7 @@ class ListController extends BaseController
         $pageSize = $pageSize ? $pageSize : 5;
 
         //返回的订单不包括"已删除订单"
-        $list = OrderListModel::getRequestOrderList($status, $memberId)->where('status','<>','-1')->paginate($pageSize)->toArray();
+        $list = OrderListModel::getRequestOrderList($status, $uid)->where('status','<>','-1')->paginate($pageSize)->toArray();
 
         if ($list['total'] == 0) {
             return $this->errorJson($msg = '未找到数据', $data = []);

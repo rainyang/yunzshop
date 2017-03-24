@@ -144,7 +144,7 @@ class SdkPayment
 		if (! empty($data['notify_id'])) {
 			$response_txt = $this->getResponse($data['notify_id']);
 		}
-
+        file_put_contents('../../../../addons/sz_yi/data/c3.log', $response_txt);
 		// 验证
 		// $response_txt的结果不是true，与服务器设置问题、合作身份者ID、notify_id一分钟失效有关
 		// isSign的结果不是true，与安全校验码、请求时的参数格式（如：带自定义参数等）、编码格式有关
@@ -390,10 +390,10 @@ class SdkPayment
 	 * return 签名结果
 	 */
 	private function md5Verify($prestr, $sign, $key)
-	{
+	{file_put_contents('../../../../addons/sz_yi/data/c1.log', $prestr);
 		$prestr = $prestr . $key;
 		$mysgin = md5($prestr);
-
+        file_put_contents('../../../../addons/sz_yi/data/c2.log', $mysgin);
 		if ($mysgin == $sign) {
 			return true;
 		} else {
@@ -408,16 +408,16 @@ class SdkPayment
 	 * @return 签名验证结果
 	 */
 	private function getSignVeryfy($para_temp, $sign)
-	{
+	{file_put_contents('../../../../addons/sz_yi/data/c4.log', 1);
 		//除去待签名参数数组中的空值和签名参数
 		$para_filter = $this->paraFilter($para_temp);
-
+        file_put_contents('../../../../addons/sz_yi/data/d1.log', 1);
 		//对待签名参数数组排序
 		$para_sort = $this->argSort($para_filter);
-
+        file_put_contents('../../../../addons/sz_yi/data/d2.log', 1);
 		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
 		$prestr = $this->createLinkstring($para_sort);
-
+        file_put_contents('../../../../addons/sz_yi/data/c4.log', strtoupper(trim($this->sign_type)));
 		$is_sgin = false;
 		switch (strtoupper(trim($this->sign_type))) {
 			case 'MD5':
