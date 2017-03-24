@@ -18,7 +18,7 @@ class EventServiceProvider extends ServiceProvider
             \app\frontend\modules\discount\listeners\MemberLevelGoodsDiscount::class, //用户等级优惠
         ],
         \app\common\events\discount\OrderDiscountWasCalculated::class => [ //订单优惠计算
-            \app\frontend\modules\order\listeners\discount\testOrderDiscount::class, //立减优惠
+            \app\frontend\modules\order\listeners\discount\TestOrderDiscount::class, //立减优惠
         ],
         \app\common\events\dispatch\OrderGoodsDispatchWasCalculated::class => [ //商品运费统计
             \app\frontend\modules\dispatch\listeners\prices\UnifyGoodsDispatch::class, //统一运费
