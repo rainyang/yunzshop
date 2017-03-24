@@ -79,7 +79,7 @@ class Goods extends BaseModel
 
     public function hasManyGoodsCategory()
     {
-        return $this->hasMany('app\common\models\GoodsCategory', 'id', 'goods_id');
+        return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
     }
 
     public function hasManySpecs()
