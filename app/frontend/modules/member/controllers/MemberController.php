@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\controllers;
 use app\frontend\modules\member\models\Member;
 use app\common\components\BaseController;
 use app\frontend\modules\member\models\MemberModel;
+use app\common\models\Order;
 
 class MemberController extends BaseController
 {
@@ -42,6 +43,9 @@ class MemberController extends BaseController
                     }
                 }
 
+                $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
+
+                $member_info['order'] = $order_info;
                 return $this->successJson('', $member_info);
             } else {
                 return $this->errorJson('用户不存在');
