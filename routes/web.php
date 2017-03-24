@@ -12,7 +12,10 @@
 */
 
 Route::any('/', function () {
-    //dd(request()->getRequestUri());
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With');
+    header('Access-Control-Allow-Credentials: true');
     //支付回调
     if(strpos(request()->getRequestUri(),'/payment/') > 0){
 
