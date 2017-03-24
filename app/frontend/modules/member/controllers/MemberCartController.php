@@ -14,7 +14,8 @@ class MemberCartController extends BaseController
 {
     public function index()
     {
-        $memberId = '1';
+        $memberId = \YunShop::app()->getMemberId();
+        $memberId = '9';
 
         $cartList = MemberCart::getMemberCartList($memberId);
         //dd($cartList);
@@ -42,21 +43,13 @@ class MemberCartController extends BaseController
         }
         //dd($cartList);
 
-        return $this->successJson($cartList);
+        return $this->successJson('获取列表成功', $cartList);
     }
     /**
      * Add member cart
      */
     public function store()
     {
-        $requestcart = array(
-            'member_id' => '77',
-            'uniacid'   => '8',
-            'goods_id'  => '19',
-            'total'     => '1',
-            'option_id' => '123'
-        );
-
         $cartModel = new membercart();
 
         $requestcart = \YunShop::request();
