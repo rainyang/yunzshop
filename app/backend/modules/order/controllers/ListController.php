@@ -9,6 +9,7 @@
 namespace app\backend\modules\order\controllers;
 
 use app\backend\modules\order\models\Order;
+use app\backend\modules\order\models\OrderJoinOrderGoods;
 use app\backend\modules\order\services\ExportService;
 use app\common\components\BaseController;
 
@@ -18,13 +19,11 @@ class ListController extends BaseController
 {
     private $_order_model;
     public function index(){
-
         $params = \YunShop::request();
         $pageSize = 2;
         $this->_order_model = Order::getAllOrders($params['search'],$pageSize);
         //dd($this->_order_model);
-        return view('order.test', $this->getData())->render();
-
+        return view('order.index', $this->getData())->render();
     }
     public function waitPay()
     {

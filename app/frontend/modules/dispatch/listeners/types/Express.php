@@ -58,7 +58,7 @@ class Express
             'mobile'=>$params['address']['mobile'],
             'realname'=>$params['address']['realname'],
         ];
-        dd($data);
+        dump($data);
         //return ;
         OrderAddress::create($data);
     }

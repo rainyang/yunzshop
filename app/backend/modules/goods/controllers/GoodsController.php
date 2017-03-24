@@ -89,7 +89,7 @@ class GoodsController extends BaseController
         $catetory_menus = CategoryService::getCategoryMenu(
             [
                 'catlevel' => $this->shopset['catlevel'],
-                'ids'   => $categorySearch ? array_values($categorySearch) : [],
+                'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
             ]
         );
 
@@ -173,7 +173,7 @@ class GoodsController extends BaseController
     {
         $this->goods_id = \YunShop::request()->id;
         $requestGoods = \YunShop::request()->goods;
-        $goodsModel = Goods::with('hasManyParams')->with('hasManySpecs')->find($this->goods_id);//->getGoodsById(2);
+        $goodsModel = Goods::with('hasManyParams')->with('hasManySpecs')->with('hasManyGoodsCategory')->find($this->goods_id);//->getGoodsById(2);
         //dd($goodsModel->hasManyGoodsCategory->toArray());
 
         //获取规格名及规格项
@@ -221,7 +221,8 @@ class GoodsController extends BaseController
         }
 
         $brands = Brand::getBrands()->get();
-        $goods_categorys = $goodsModel->hasManyGoodsCategory->toArray();
+        $goods_categorys = $goodsModel->hasManyGoodsCategory[0]->toArray();
+        //dd($goods_categorys);
         $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['catlevel'], 'ids' => explode(",", $goods_categorys['category_ids'])]);
         //dd($this->lang);
         return view('goods.goods', [
