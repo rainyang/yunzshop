@@ -216,8 +216,8 @@ class GoodsController extends BaseController
                 return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
             } else {
                 //dd($goodsModel);
-                dd('商品修改失败');
-                //!session()->has('flash_notification.message') && $this->error('商品修改失败');
+                //dd('商品修改失败');
+                !session()->has('flash_notification.message') && $this->error('商品修改失败');
                 //$this->error('商品修改失败');
             }
         }
