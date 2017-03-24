@@ -526,7 +526,7 @@ class SdkPayment
             'batch_no' => $batch_no,
             'batch_fee' => $this->total_fee,
             'batch_num' => 1,
-            'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现{' . \YunShop::app()->uniacid . '}',
+            'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现' . \YunShop::app()->uniacid,
             '_input_charset' => strtolower($this->_input_charset),
         );
 
