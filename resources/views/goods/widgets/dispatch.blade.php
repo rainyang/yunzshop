@@ -9,7 +9,7 @@
             <div class="input-group form-group" style="width: 180px; float: left;">
                 <input type="text" name="widgets[dispatch][dispatch_price]" style="margin:0 10px;" id="dispatchprice"
                        class="form-control"
-                       value="@if ( empty($dispatch['dispatch_price'])) 0 @else {{ $dispatch['dispatch_price'] }} @endif"/>
+                       value="{{ $dispatch['dispatch_price'] }}"/>
                 <span class="input-group-addon">元</span>
             </div>
 

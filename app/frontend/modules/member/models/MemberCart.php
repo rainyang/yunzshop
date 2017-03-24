@@ -69,6 +69,25 @@ class MemberCart extends \app\common\models\MemberCart
         return static::insert($data);
     }
 
+    /*
+     * 检测商品是否存在购物车
+     *
+     * @param array $data ['member_id', 'goods_id', 'option_id']
+     *
+     * @return object or false
+     * */
+    public static function hasGoodsToMemberCart($data)
+    {
+        $hasGoods = self::uniacid()
+            ->where([
+                'member_id' => $data['member_id'],
+                'goods_id'  => $data['goods_id'],
+                'option_id' => $data['option_id']
+            ])
+            ->first();
+        return $hasGoods ? $hasGoods : false;
+    }
+
     /**
      * Remove cart items by Id
      *
@@ -78,7 +97,7 @@ class MemberCart extends \app\common\models\MemberCart
      * */
     public static function destroyMemberCart($cartId)
     {
-        return static::uniacid()->where('id', $cartId)->delete();
+        return static::uniacid()->where('id', 'in', $cartId)->delete();
     }
 
     /**
