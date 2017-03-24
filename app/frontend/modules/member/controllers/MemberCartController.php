@@ -103,7 +103,6 @@ class MemberCartController extends BaseController
      * */
     public function updateNum()
     {
-        var_dump(1+-1);exit;
         $cartId = \YunShop::request()->id;
         $num = \YunShop::request()->num;
         $cartModel = MemberCart::getMemberCartById($cartId);
