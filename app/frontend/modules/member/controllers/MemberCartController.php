@@ -105,8 +105,6 @@ class MemberCartController extends BaseController
     {
         $cartId = \YunShop::request()->id;
         $num = \YunShop::request()->num;
-        $cartId = 14;
-        $num = -1;
         if ($cartId && $num) {
             $cartModel = MemberCart::getMemberCartById($cartId);
             if ($cartModel) {
