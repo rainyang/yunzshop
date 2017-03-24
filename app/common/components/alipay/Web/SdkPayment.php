@@ -417,7 +417,7 @@ class SdkPayment
         file_put_contents('../../../../addons/sz_yi/data/d2.log', 1);
 		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
 		$prestr = $this->createLinkstring($para_sort);
-        file_put_contents('../../../../addons/sz_yi/data/c4.log', strtoupper(trim($this->sign_type)));
+        file_put_contents('../../../../addons/sz_yi/data/c4.log', print_r(json_decode(json_encode($this),1)));
 		$is_sgin = false;
 		switch (strtoupper(trim($this->sign_type))) {
 			case 'MD5':
