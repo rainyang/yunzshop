@@ -20,7 +20,7 @@ class PaymentController extends BaseController
 
         $script_name = $_SERVER['SCRIPT_NAME'];
 
-echo basename($script_name);exit;
+echo '<pre>';print_r(pathinfo($_SERVER['SCRIPT_NAME']));exit;
 
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
