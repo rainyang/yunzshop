@@ -69,6 +69,25 @@ class MemberCart extends \app\common\models\MemberCart
         return static::insert($data);
     }
 
+    /*
+     * 检测商品是否存在购物车
+     *
+     * @param array $data ['member_id', 'goods_id', 'option_id']
+     *
+     * @return bool $result
+     * */
+    public static function hasGoodsToMemberCart($data)
+    {
+        $result = self::uniacid()
+            ->where([
+                'member_id' => $data['member_id'],
+                'goods_id'  => $data['goods_id'],
+                'option_id' => $data['option_id']
+            ])
+            ->first();
+        return $result ? true : false;
+    }
+
     /**
      * Remove cart items by Id
      *

@@ -61,6 +61,11 @@ class MemberCartController extends BaseController
                 'total'     => $requestcart->total,
                 'option_id' => $requestcart->option_id ? $requestcart->option_id : '0'
             );
+            //验证商品是否存在购物车
+            $hasGoods = MemberCart::hasGoodsToMemberCart($data);
+            if ($hasGoods) {
+                return $this->errorJson('商品已存在购物车');
+            }
             //将数据赋值到model
             $cartModel->setRawAttributes($data);
             //字段检测
