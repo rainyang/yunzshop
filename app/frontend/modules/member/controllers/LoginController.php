@@ -16,13 +16,10 @@ class LoginController extends BaseController
 {
     public function index()
     {
-        if (SZ_YI_DEBUG) {
-            session()->put('member_id',9);
-        }
         if (MemberService::isLogged()) {
             return $this->errorJson('用户已登录');
         }
-        
+
         if (SZ_YI_DEBUG) {
             session()->put('member_id',9);
         }
