@@ -962,33 +962,17 @@ if (!function_exists("ddump")) {
  */
 if (!function_exists("dump")) {
 
-    function dump($var, $echo = true, $label = null, $strict = true)
+    function dump($a)
     {
         if (!defined('IS_TEST')) {
             return;
         }
-        $label = ($label === null) ? '' : rtrim($label) . ' ';
-        if (!$strict) {
-            if (ini_get('html_errors')) {
-                $output = print_r($var, true);
-                $output = '<pre>' . $label . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
-            } else {
-                $output = $label . print_r($var, true);
-            }
-        } else {
-            ob_start();
-            var_dump($var);
-            $output = ob_get_clean();
-            if (!extension_loaded('xdebug')) {
-                $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-                $output = '<pre>' . $label . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
-            }
+        array_map(function ($x) {
+            (new \Illuminate\Support\Debug\Dumper())->dump($x);
+        }, func_get_args());
+        if(!$a){
+            die(1);
         }
-        if ($echo) {
-            echo($output);
-            return null;
-        } else
-            return $output;
     }
 }
 if (!function_exists("is_test")) {

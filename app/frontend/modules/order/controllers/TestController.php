@@ -26,7 +26,7 @@ class TestController extends BaseController
     public function index()
     {
         $result = OrderService::orderCancelPay(Order::find(1));
-        dd($result);
+        dump($result);
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
         /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));
         Event::fire(new AfterOrderCancelSentEvent(Order::find(1)));
