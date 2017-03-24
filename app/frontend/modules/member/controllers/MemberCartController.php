@@ -105,13 +105,16 @@ class MemberCartController extends BaseController
     {
         $cartId = \YunShop::request()->id;
         $num = \YunShop::request()->num;
-        $cartModel = MemberCart::getMemberCartById($cartId);
-        if ($cartModel) {
-            $cartModel->total = $cartModel->total + $num;
-            if ($cartModel->update()) {
-                return $this->successJson('修改数量成功');
+        if ($cartId && $num) {
+            $cartModel = MemberCart::getMemberCartById($cartId);
+            if ($cartModel) {
+                $cartModel->total = $cartModel->total + $num;
+                if ($cartModel->update()) {
+                    return $this->successJson('修改数量成功');
+                }
             }
         }
+
         return $this->errorJson('未找到数据或已删除，请重试！');
     }
 
