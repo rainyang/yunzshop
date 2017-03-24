@@ -66,7 +66,7 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
             'discount_details' => $this->_GoodsDiscount->getDiscountDetails(),
             'dispatch_details' => $this->_GoodsDispatch->getDispatchDetails(),
         );
-        echo '订单商品改价信息:';
+        dump('订单商品改价信息:');
         dump($data);
         return;
         OrderGoods::save($data);
