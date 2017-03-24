@@ -30,7 +30,7 @@ class IndexController extends BaseController
     public function getRecommentGoods()
     {
         //$goods = new Goods();
-        $field = ['id as goods_id', 'thumb', 'title', 'price / 100 as price', 'market_price / 100 as market_price'];
+        $field = ['id as goods_id', 'thumb', 'title', 'price', 'market_price'];
         $goodsList = Goods::uniacid()->select(DB::raw(implode(',', $field)))
             ->where("is_recommand", 1)
             ->where("status", 1)
