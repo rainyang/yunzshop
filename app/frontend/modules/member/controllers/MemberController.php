@@ -30,39 +30,19 @@ class MemberController extends BaseController
             if (!empty($member_info)) {
                 $member_info = $member_info->toArray();
 
-                if (!empty($member_info['data'])) {
-                    foreach ($member_info['data'] as $key => $item) {
-                        if (is_array($item) && !empty($item['yz_member'])) {
-                            if (!empty($item['yz_member']['group'])) {
-                                foreach ($item['yz_member']['group'] as $k => $v) {
-                                    if ($k == 'id') {
-                                        $data['group_id'] = $v;
-                                    }
-
-                                    $data[$k] = $v;
-                                }
-                            }
-
-                            if (!empty($item['yz_member']['level'])) {
-                                foreach ($item['yz_member']['level'] as $k => $v) {
-                                    if ($k == 'id') {
-                                        $data['level_id'] = $v;
-                                    }
-
-                                    $data[$k] = $v;
-                                }
-                            }
-                        }
-
-                        if (!is_array($item)) {
-                            $data[$key] = $item;
-                        }
+                if (!empty($member_info['yz_member'])) {
+                    if (!empty($member_info['yz_member']['group'])) {
+                        $member_info['group_id'] = $member_info['yz_member']['group']['id'];
+                        $member_info['group_name'] = $member_info['yz_member']['group']['group_name'];
                     }
-                } else {
-                    return $this->errorJson('用户不存在');
+
+                    if (!empty($member_info['yz_member']['level'])) {
+                        $member_info['level_id'] = $member_info['yz_member']['level']['id'];
+                        $member_info['level_name'] = $member_info['yz_member']['level']['level_name'];
+                    }
                 }
 
-                return $this->successJson('', $data);
+                return $this->successJson('', $member_info);
             } else {
                 return $this->errorJson('用户不存在');
             }
