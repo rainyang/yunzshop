@@ -59,9 +59,20 @@ class AliPay extends Pay
         }
     }
 
-    public function doPay($subject, $body, $amount, $order_no, $extra)
+    /**
+     * 订单支付/充值
+     *
+     * @param $subject 名称
+     * @param $body 详情
+     * @param $amount 金额
+     * @param $order_no 订单号
+     * @param $extra 附加数据
+     * @return string
+     */
+    public function doPay($data = [])
     {
-        return $this->_pay->doPay($subject, $body, $amount, $order_no, $extra);
+
+        return $this->_pay->doPay($data);
     }
 
     public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney='0')

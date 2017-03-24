@@ -26,7 +26,12 @@ class PayFactory
      */
     const PAY_CREDIT  = 3;
 
-    public static function create($type = null)
+    /**
+     * 货到付款
+     */
+    const PAY_CASH = 4;
+
+   public static function create($type = null)
     {
         $className = null;
 
@@ -38,6 +43,10 @@ class PayFactory
                 $className = new AliPay();
                 break;
             case self::PAY_CREDIT:
+                $className = new CreditPay();
+                break;
+            case self::PAY_CASH:
+                $className = new CashPay();
                 break;
             default:
                 $className = null;
