@@ -3,6 +3,8 @@
 namespace app\common\providers;
 
 
+use app\common\events\WechatProcessor;
+use app\common\listeners\WechatProcessorListener;
 use app\frontend\modules\discount\listeners\MemberLevelGoodsDiscount;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -26,6 +28,10 @@ class EventServiceProvider extends ServiceProvider
         \app\common\events\dispatch\OrderDispatchWasCalculated::class => [ //订单邮费计算
             \app\frontend\modules\dispatch\listeners\prices\UnifyOrderDispatchPrice::class, //统一运费
         ],
+        //微信接口回调触发事件进程
+        WechatProcessor::class => [
+            WechatProcessorListener::class//示例监听类
+        ]
 
     ];
     protected $subscribe = [
