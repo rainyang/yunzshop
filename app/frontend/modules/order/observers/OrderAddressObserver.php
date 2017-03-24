@@ -33,7 +33,5 @@ class OrderAddressObserver extends \app\common\observers\BaseObserver
     public function saved(Model $model)
     {
 
-        dd($model);
-        exit;
     }
 }

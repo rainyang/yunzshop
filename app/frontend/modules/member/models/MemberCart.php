@@ -44,16 +44,21 @@ class MemberCart extends \app\common\models\MemberCart
         return $this->hasOne('app\common\models\GoodsOption','id','option_id');
     }
 
+    public static function getMemberCartById($cartId)
+    {
+        return static::uniacid()->where('id', $cartId)->first();
+    }
+
     /**
-     * Get a list of members shopping cart through member ID
+     * Get a list of members shopping cart through cart IDs
      *
-     * @param int $cartId
+     * @param array $cartIds
      *
      * @return array
      * */
-    public static function getMemberCartById($cartId)
+    public static function getMemberCartByIds($cartIds)
     {
-        return static::uniacid()->where('id', $cartId)->get()->toArray();
+        return static::uniacid()->whereIn('id', $cartIds)->get()->toArray();
     }
 
     /**
@@ -74,30 +79,30 @@ class MemberCart extends \app\common\models\MemberCart
      *
      * @param array $data ['member_id', 'goods_id', 'option_id']
      *
-     * @return bool $result
+     * @return object or false
      * */
     public static function hasGoodsToMemberCart($data)
     {
-        $result = self::uniacid()
+        $hasGoods = self::uniacid()
             ->where([
                 'member_id' => $data['member_id'],
                 'goods_id'  => $data['goods_id'],
                 'option_id' => $data['option_id']
             ])
             ->first();
-        return $result ? true : false;
+        return $hasGoods ? $hasGoods : false;
     }
 
     /**
-     * Remove cart items by Id
+     * Remove cart items by Ids
      *
-     * @param int $cartId
+     * @param array $cartIds
      *
      * @return 1 or 0
      * */
-    public static function destroyMemberCart($cartId)
+    public static function destroyMemberCart($cartIds)
     {
-        return static::uniacid()->where('id', $cartId)->delete();
+        return static::uniacid()->whereIn('id', $cartIds)->delete();
     }
 
     /**
