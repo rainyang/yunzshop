@@ -25,7 +25,7 @@ class TestController extends BaseController
  //      exit;
        $pay = new AliPay();
 
-       $p = $pay->doRefund('2017032421001004920213187304', '1', '0.2');
+       $p = $pay->doRefund('2017032421001004920213173338', '1', '0.2');
 
        //$p = $pay->doPay(['order_no'=>time(),'amount'=>0.01, 'subject'=>'支付宝支付', 'body'=>'测试:2', 'extra'=>'']);
        //$p = $pay->doWithdraw(4,'22220000','0.1','提现');
