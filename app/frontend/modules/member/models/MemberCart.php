@@ -44,16 +44,21 @@ class MemberCart extends \app\common\models\MemberCart
         return $this->hasOne('app\common\models\GoodsOption','id','option_id');
     }
 
+    public static function getMemberCartById($cartId)
+    {
+        return static::uniacid()->where('id', $cartId)->first();
+    }
+
     /**
-     * Get a list of members shopping cart through member ID
+     * Get a list of members shopping cart through cart IDs
      *
-     * @param int $cartId
+     * @param array $cartIds
      *
      * @return array
      * */
-    public static function getMemberCartById($cartId)
+    public static function getMemberCartByIds($cartIds)
     {
-        return static::uniacid()->where('id', $cartId)->get()->toArray();
+        return static::uniacid()->whereIn('id', $cartIds)->get()->toArray();
     }
 
     /**
@@ -89,15 +94,15 @@ class MemberCart extends \app\common\models\MemberCart
     }
 
     /**
-     * Remove cart items by Id
+     * Remove cart items by Ids
      *
-     * @param int $cartId
+     * @param array $cartIds
      *
      * @return 1 or 0
      * */
-    public static function destroyMemberCart($cartId)
+    public static function destroyMemberCart($cartIds)
     {
-        return static::uniacid()->where('id', $cartId)->delete();
+        return static::uniacid()->whereIn('id', $cartIds)->delete();
     }
 
     /**

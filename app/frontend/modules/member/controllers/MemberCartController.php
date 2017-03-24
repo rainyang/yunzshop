@@ -66,7 +66,7 @@ class MemberCartController extends BaseController
             //验证商品是否存在购物车,存在则修改数量
             $hasGoodsModel = MemberCart::hasGoodsToMemberCart($data);
             if ($hasGoodsModel) {
-                $hasGoodsModel->total = $hasGoodsModel->tatal + 1;
+                $hasGoodsModel->total = $hasGoodsModel->total + 1;
                 if ($hasGoodsModel->update()){
                     return $this->successJson('添加购物车成功');
                 }
@@ -97,25 +97,42 @@ class MemberCartController extends BaseController
         $msg = "接收数据出错，添加购物车失败！";
         return $this->errorJson($msg);
     }
+
     /*
-     *  Update memebr cart
-     **/
-    public function update()
+     * 修改购物车商品数量
+     * */
+    public function updateNum()
     {
-        //需要判断商品状态、限制数量、商品类型（实体、虚拟）
+        $cartId = \YunShop::request()->id;
+        $num = \YunShop::request()->num;
+        if ($cartId && $num) {
+            $cartModel = MemberCart::getMemberCartById($cartId);
+            if ($cartModel) {
+                $cartModel->total = $cartModel->total + $num;
+                if ($cartModel->update()) {
+                    return $this->successJson('修改数量成功');
+                }
+            }
+        }
+
+        return $this->errorJson('未找到数据或已删除，请重试！');
     }
+
     /*
      * Delete member cart
      **/
     public function destroy()
     {
-        $cart = MemberCart::getMemberCartById(\YunShop::request()->ids);
+        $ids = explode(',', \YunShop::request()->ids);
+
+        $cart = MemberCart::getMemberCartByIds($ids);
+
         if(!$cart) {
             $msg = "未找到商品或已经删除";
             return $this->errorJson($msg);
         }
 
-        $result = MemberCart::destroyMemberCart(\YunShop::request()->ids);
+        $result = MemberCart::destroyMemberCart($ids);
         if($result) {
             $msg = "移除购物车成功。";
             return $this->successJson($msg);

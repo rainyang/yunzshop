@@ -15,65 +15,72 @@ class AlipayController extends PaymentController
 {
     public function notifyUrl()
     {
-        $alipay = app('alipay.web');
+        // TODO 访问记录
+        // TODO 保存响应数据
 
-        $verify_result = $alipay->verify();
+        $verify_result = $this->getSignResult();
 
-        if($verify_result) {//验证成功
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //请在这里加上商户的业务逻辑程序代
-            file_put_contents('../../../../addons/sz_yi/data/a1.log', 1);
-
-            //——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
-
-            //获取支付宝的通知返回参数，可参考技术文档中服务器异步通知参数列表
-
+        if($verify_result) {
             //商户订单号
-
             $out_trade_no = $_POST['out_trade_no'];
-
             //支付宝交易号
-
             $trade_no = $_POST['trade_no'];
 
-            //交易状态
-            $trade_status = $_POST['trade_status'];
+            $total_fee = $_POST['total_fee'];
 
-
-            if($_POST['trade_status'] == 'TRADE_FINISHED') {
-                //退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
-            }
-            else if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
-                //判断该笔订单是否在商户网站中已经做过处理
-                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-                //请务必判断请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
-                //如果有做过处理，不执行商户的业务程序
-
-                //注意：
-                //付款完成后，支付宝系统发送该交易状态通知
-
-                //调试用，写文本函数记录程序运行情况是否正常
-                //logResult("这里写入想要调试的代码变量值，或其他运行的结果记录");
+            if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
+                // TODO 支付单查询 && 支付请求数据查询 验证请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
+                $pay_log = [];
+                if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
+                     // TODO 更新支付单状态
+                     // TODO 更新订单状态
+                }
             }
 
-            //——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
+            echo "success";
 
-            echo "success";		//请不要修改或删除
-
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        }
-        else {
-            file_put_contents('../../../../addons/sz_yi/data/a2.log', 1);
-            //验证失败
+        } else {
             echo "fail";
-
-            //调试用，写文本函数记录程序运行情况是否正常
-            //logResult("这里写入想要调试的代码变量值，或其他运行的结果记录");
         }
     }
 
     public function returnUrl()
     {
-        echo 'success';
+        // TODO 访问记录
+        // TODO 保存响应数据
+
+        $verify_result = $this->getSignResult();
+
+        if($verify_result) {
+            if($_GET['trade_status'] == 'TRADE_SUCCESS') {
+                redirect()->send();
+            }
+        } else {
+            echo "您提交的订单验证失败";
+        }
+    }
+
+    public function refundNotifyUrl()
+    {
+        // TODO 访问记录
+        // TODO 保存响应数据
+    }
+
+    public function withdrawNotifyUrl()
+    {
+        // TODO 访问记录
+        // TODO 保存响应数据
+    }
+
+    /**
+     * 签名验证
+     *
+     * @return bool
+     */
+    public function getSignResult()
+    {
+        $alipay = app('alipay.web');
+
+        return $alipay->verify();
     }
 }
