@@ -105,7 +105,7 @@ desired effect
 
             </h6>
         </section>
-
+        @include('public.admin.message')
         <!-- Main content -->
         <section class="content">
 

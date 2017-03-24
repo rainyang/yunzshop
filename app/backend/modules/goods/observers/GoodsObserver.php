@@ -23,6 +23,7 @@ class GoodsObserver extends \app\common\observers\BaseObserver
 
     public function saving(Model $model)
     {
+
         $result = $this->pluginObserver('observer.goods', $model, 'validator');
         if (in_array(false, $result)) {
             return false;
