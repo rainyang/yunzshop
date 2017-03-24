@@ -90,12 +90,12 @@ class AliPay extends Pay
         $alipay = app('alipay.web');
 
         $alipay->setTotalFee($money);
-        if (SZ_YI_DEBUG) {echo 1;
+        if (SZ_YI_DEBUG) {
             $account ='iam_dingran@163.com';
             $name ='丁冉';
         }
 
-echo 2;exit;
+
         return $alipay->withdraw($account, $name);
     }
 
