@@ -34,13 +34,16 @@ class MemberCart extends \app\common\models\MemberCart
         return $cartList;
         //return static::uniacid()->where('member_id', $memberId)->get()->toArray();
     }
+
     public function goods(){
         return $this->hasOne('app\common\models\Goods','id','goods_id');
     }
+
     public function goodsOption()
     {
         return $this->hasOne('app\common\models\GoodsOption','id','option_id');
     }
+
     /**
      * Get a list of members shopping cart through member ID
      *
@@ -52,6 +55,7 @@ class MemberCart extends \app\common\models\MemberCart
     {
         return static::uniacid()->where('id', $cartId)->get()->toArray();
     }
+
     /**
      * Add merchandise to shopping cart
      *
@@ -64,6 +68,7 @@ class MemberCart extends \app\common\models\MemberCart
         //需要监听事件，购物车存在的处理方式
         return static::insert($data);
     }
+
     /**
      * Remove cart items by Id
      *
@@ -75,4 +80,28 @@ class MemberCart extends \app\common\models\MemberCart
     {
         return static::uniacid()->where('id', $cartId)->delete();
     }
+
+    /**
+     * 定义字段名
+     *
+     * @return array */
+    public  function atributeNames() {
+        return [
+            'goods_id'  => '未获取到商品',
+            'total'     => '商品数量不能为空',
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array */
+    public  function rules()
+    {
+        return [
+            'goods_id'  => 'required',
+            'total'     => 'required',
+        ];
+    }
+
 }

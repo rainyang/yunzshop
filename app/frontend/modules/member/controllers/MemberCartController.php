@@ -54,7 +54,6 @@ class MemberCartController extends BaseController
             'uniacid'   => '8',
             'goods_id'  => '19',
             'total'     => '1',
-            'price'     => '100',
             'option_id' => '123'
         );
 
