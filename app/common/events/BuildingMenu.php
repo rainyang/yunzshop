@@ -1,6 +1,6 @@
 <?php
 
-namespace JeroenNoten\LaravelAdminLte\Events;
+namespace app\common\events;
 
 use app\common\services\menu\Builder;
 
