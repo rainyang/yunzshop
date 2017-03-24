@@ -97,7 +97,7 @@ class MemberCart extends \app\common\models\MemberCart
      * */
     public static function destroyMemberCart($cartId)
     {
-        return static::uniacid()->where('id', $cartId)->delete();
+        return static::uniacid()->where('id', 'in', $cartId)->delete();
     }
 
     /**
