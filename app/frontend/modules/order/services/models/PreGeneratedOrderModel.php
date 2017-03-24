@@ -171,7 +171,7 @@ class PreGeneratedOrderModel extends OrderModel
             //配送类获取订单配送方式id
             'dispatch_type_id'=>$this->_OrderDispatch->getDispatchTypeId(),
             'dispatch_price' => $this->_OrderDispatch->getDispatchPrice(),
-
+            'discount_price' => $this->getDiscountPrice()
         );
         //todo 测试
         echo '订单插入的数据为:';

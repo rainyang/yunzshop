@@ -257,7 +257,7 @@
                     </div>
                 </div>
 
-                <div id='certs' @if (empty($set['alipay'])) style="display:none" @endif>
+                <div id='alipay_block' @if (empty($set['alipay'])) style="display:none" @endif>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">收款支付宝账号</label>
                         <div class="col-sm-9 col-xs-12">
@@ -401,6 +401,14 @@
                         }
                         else {
                             $("#paypal").hide();
+                        }
+                    })
+                    $(":radio[name='pay[alipay]']").click(function () {
+                        if ($(this).val() == 1) {
+                            $("#alipay_block").show();
+                        }
+                        else {
+                            $("#alipay_block").hide();
                         }
                     })
                     $(":radio[name='pay[yeepay]']").click(function () {

@@ -2,8 +2,7 @@
 
 namespace app\common\providers;
 
-use app\backend\models\Menu;
-use app\common\facades\Setting;
+use Setting;
 use Illuminate\Support\ServiceProvider;
 use App;
 use Illuminate\Support\Facades\DB;

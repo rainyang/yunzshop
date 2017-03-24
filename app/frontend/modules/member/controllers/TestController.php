@@ -19,9 +19,11 @@ class TestController extends BaseController
    {
        $pay = new AliPay();
 
-       $p = $pay->doPay(1,2,3,4,5);
+       $p = $pay->doRefund('2017032321001004920211490965', '1', '0.1');
 
-       echo '<pre>';print_r($p);exit;
+       //$p = $pay->doPay('2017032321001004920211490965',2,0.1,4,5);
+       //$p = $pay->doWithdraw(4,'22220000','0.1','提现');
+       redirect($p)->send();
    }
 
    public function add()

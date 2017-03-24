@@ -132,7 +132,7 @@ class Order extends BaseModel
 
     public function scopeGetOrderCountGroupByStatus($query, $status = [])
     {
-        $status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE];
+        //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
             ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'button_models'])->toArray();
         foreach ($status as $state) {

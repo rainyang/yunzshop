@@ -60,7 +60,7 @@ class Member extends BackendModel
             ->uniacid()
             ->where('uid', $member_id)
             ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','agent_id', 'is_agent', 'group_id','level_id', 'is_black'])
+                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])
                     ->with(['group'=>function($query1){
                         return $query1->select(['id','group_name']);
                     },'level'=>function($query2){

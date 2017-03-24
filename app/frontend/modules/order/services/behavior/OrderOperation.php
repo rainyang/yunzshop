@@ -50,7 +50,6 @@ abstract class OrderOperation
      */
     public function __construct(Order $order_model)
     {
-        //dd();exit;
         $this->_DbOrderModel = $order_model;
     }
 
