@@ -74,18 +74,18 @@ class MemberCart extends \app\common\models\MemberCart
      *
      * @param array $data ['member_id', 'goods_id', 'option_id']
      *
-     * @return bool $result
+     * @return object or false
      * */
     public static function hasGoodsToMemberCart($data)
     {
-        $result = self::uniacid()
+        $hasGoods = self::uniacid()
             ->where([
                 'member_id' => $data['member_id'],
                 'goods_id'  => $data['goods_id'],
                 'option_id' => $data['option_id']
             ])
             ->first();
-        return $result ? true : false;
+        return $hasGoods ? $hasGoods : false;
     }
 
     /**
