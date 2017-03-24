@@ -46,7 +46,7 @@ class MemberCart extends \app\common\models\MemberCart
 
     public static function getMemberCartById($cartId)
     {
-        return static::uniacid()->where('id', $cartId)->get();
+        return static::uniacid()->where('id', $cartId)->first();
     }
 
     /**
