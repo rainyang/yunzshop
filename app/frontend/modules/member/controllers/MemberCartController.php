@@ -109,8 +109,7 @@ class MemberCartController extends BaseController
      **/
     public function destroy()
     {
-        return $this->errorJson(\YunShop::request()->ids);
-        $cart = MemberCart::getMemberCartById(\YunShop::request()->ids);
+        $cart = MemberCart::getMemberCartByIds(\YunShop::request()->ids);
         if(!$cart) {
             $msg = "未找到商品或已经删除";
             return $this->errorJson($msg);
