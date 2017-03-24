@@ -175,7 +175,7 @@ class PreGeneratedOrderModel extends OrderModel
         );
         //todo 测试
         echo '订单插入的数据为:';
-        dd($data);
+        //dd($data);
         return Order::create($data);
     }
 
