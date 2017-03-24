@@ -17,7 +17,11 @@ class Discount extends \app\common\models\goods\Discount
 {
     use MessageTrait;
     public $timestamps = false;
-
+    public $attributes = [
+        'level_discount_type' => 1,
+        'discount_method' => 1,
+        'discount_value' => 0,
+    ];
     /**
      * 获取商品折扣数据
      * @param int $goodsId

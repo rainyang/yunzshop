@@ -28,15 +28,16 @@ class Sz_yiModuleProcessor extends WeModuleProcessor
         $names  = explode(':', $rule['name']);
         $plugin = isset($names[1]) ? $names[1] : '';
         if (!empty($plugin)) {
-            $processor_file = SZ_YI_PLUGIN . $plugin . "/processor.php";
-            if (is_file($processor_file)) {
-                require $processor_file;
-                $processor_class = ucfirst($plugin) . "Processor";
-                $proc            = new $processor_class($plugin);
-                if (method_exists($proc, "respond")) {
-                    return $proc->respond($this);
-                }
-            }
+
+            include_once __DIR__ . '/app/laravel.php';
+            include_once __DIR__ . '/app/yunshop.php';
+
+            //微信接口事件
+            $response = '';
+            event(new \app\common\events\WechatProcessor($this,$plugin,$response));
+
+            return $response;
+
         }
     }
 }

@@ -144,11 +144,11 @@ class SdkPayment
 		if (! empty($data['notify_id'])) {
 			$response_txt = $this->getResponse($data['notify_id']);
 		}
-        file_put_contents('../../../../addons/sz_yi/data/c3.log', $response_txt);
+
 		// 验证
 		// $response_txt的结果不是true，与服务器设置问题、合作身份者ID、notify_id一分钟失效有关
 		// isSign的结果不是true，与安全校验码、请求时的参数格式（如：带自定义参数等）、编码格式有关
-		if (preg_match('/true$/i', $response_txt) && $is_sign) {
+		if ($is_sign) {
 			return true;
 		} else {
 			return false;
@@ -390,10 +390,10 @@ class SdkPayment
 	 * return 签名结果
 	 */
 	private function md5Verify($prestr, $sign, $key)
-	{file_put_contents('../../../../addons/sz_yi/data/c1.log', $prestr);
+	{
 		$prestr = $prestr . $key;
 		$mysgin = md5($prestr);
-        file_put_contents('../../../../addons/sz_yi/data/c2.log', $mysgin);
+
 		if ($mysgin == $sign) {
 			return true;
 		} else {
@@ -408,17 +408,16 @@ class SdkPayment
 	 * @return 签名验证结果
 	 */
 	private function getSignVeryfy($para_temp, $sign)
-	{file_put_contents('../../../../addons/sz_yi/data/c4.log', 1);
+	{
 		//除去待签名参数数组中的空值和签名参数
 		$para_filter = $this->paraFilter($para_temp);
-        file_put_contents('../../../../addons/sz_yi/data/d1.log', 1);
+
 		//对待签名参数数组排序
 		$para_sort = $this->argSort($para_filter);
-        file_put_contents('../../../../addons/sz_yi/data/d2.log', 1);
+
 		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
 		$prestr = $this->createLinkstring($para_sort);
-        file_put_contents('../../../../addons/sz_yi/data/c4.log', get_class($this));
-            file_put_contents('../../../../addons/sz_yi/data/c5.log', print_r([$this->service,$this->sign_type],1));
+
 		$is_sgin = false;
 		switch (strtoupper(trim($this->sign_type))) {
 			case 'MD5':
@@ -488,12 +487,13 @@ class SdkPayment
 	public function refund()
     {
         $service = 'refund_fastpay_by_platform_pwd';
+        $notify_url = SZ_YI_ALIPAY_REFUNDNOTIFY_URL;
 
         $parameter = array(
             'service' => $service,
             'partner' => $this->partner,
             'seller_user_id' => $this->partner,
-            'notify_url' => $this->notify_url,
+            'notify_url' => $notify_url,
             'seller_email' => $this->seller_id,
             'refund_date' => date('Y-m-d H:i:s',time()),
             'batch_no' => date('Ymd', time()) . time(),
@@ -526,7 +526,7 @@ class SdkPayment
             'batch_no' => $batch_no,
             'batch_fee' => $this->total_fee,
             'batch_num' => 1,
-            'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现',
+            'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现-' . \YunShop::app()->uniacid,
             '_input_charset' => strtolower($this->_input_charset),
         );
 

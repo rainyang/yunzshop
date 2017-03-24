@@ -45,6 +45,18 @@ class Category extends BaseModel
             ->orderBy('id', 'asc');
     }
 
+    public static function getChildrenCategorys($parentId)
+    {
+        return $data = self::uniacid()
+            ->with('hasManyChildren')
+            ->where('parent_id', $parentId)
+            ->orderBy('id', 'asc');
+    }
+
+    public function hasManyChildren(){
+        return $this->hasMany(self::class, "parent_id");
+    }
+
     public function goodsCategories()
     {
         return $this->hasMany('app\common\models\GoodsCategory', 'category_id', 'id');
