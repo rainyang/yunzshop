@@ -54,19 +54,22 @@ class MemberCartController extends BaseController
             'uniacid'   => '8',
             'goods_id'  => '19',
             'total'     => '1',
-            'price'     => '100',
             'option_id' => '123'
         );
 
         $cartModel = new membercart();
 
-        $requestcart = \YunShop::request()->cart;
+        $requestcart = \YunShop::request();
         if($requestcart) {
+            $data = array(
+                'member_id' => '9',
+                'uniacid'   => \YunShop::app()->uniacid,
+                'goods_id'  => $requestcart->goods_id,
+                'total'     => $requestcart->total,
+                'option_id' => $requestcart->option_id
+            );
             //将数据赋值到model
-            $cartModel->setRawAttributes($requestcart);
-            //其他字段赋值
-            $cartModel->uniacid = \YunShop::app()->uniacid;
-
+            $cartModel->setRawAttributes($data);
             //字段检测
             $validator = $cartModel->validator($cartModel->getAttributes());
             if ($validator->fails()) {//检测失败

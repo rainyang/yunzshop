@@ -35,14 +35,14 @@
         <div class="col-sm-6 col-xs-6">
             <div class='input-group'>
                 <div class='input-group-addon'>默认等级</div>
+                <?php $valuedefault = 0;?>
+                @foreach($discount as $d)
+                    @if( !empty($d) &&  $d['level_id'] == '0')
+                        {{ $valuedefault = $d['discount_value'] }}
+                    @endif
+                @endforeach
                 <input type='text' name='widgets[discount][discount_value][0]' class="form-control discounts"
-                       value="@foreach ($discount as $d)
-                       @if ( !empty($d) &&  $d['level_id'] == '0')
-                       {{ $d['discount_value'] }}
-                       @else
-                               0
-                       @endif
-                       @endforeach"/>
+                       value="{{ $valuedefault }}"/>
                 <div class='input-group-addon waytxt'> @if ( !empty($discount) && $discount[0]['discount_method'] == 1)
                         折 @else 元 @endif</div>
             </div>
@@ -55,14 +55,15 @@
             <div class="col-sm-6 col-xs-6">
                 <div class='input-group'>
                     <div class='input-group-addon'>{{  $level['level_name'] }}</div>
+                    <?php $value = 0;?>
+                    @foreach ($discount as $d)
+                        @if ( !empty($d) && $level['id'] == $d['level_id'])
+                            {{ $value = $d['discount_value'] }}
+                        @endif
+                    @endforeach
                     <input type='text' name='widgets[discount][discount_value][{{$level["id"] }}]'
                            class="form-control discounts"
-                           value="
-                           @foreach ($discount as $d)
-                           @if ( !empty($d) && $level['id'] == $d['level_id'])
-                           {{ $d['discount_value'] }}
-                           @endif
-                           @endforeach"/>
+                           value="{{ $value }}"/>
                     <div class='input-group-addon waytxt'>@if ( !empty($discount) && $discount[0]['discount_method'] == 1)
                             折 @else 元 @endif</div>
                 </div>

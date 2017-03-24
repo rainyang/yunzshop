@@ -41,7 +41,7 @@ abstract class OrderOperation
      */
     public function getMessage()
     {
-        return $this->name . $this->message;
+        return $this->message;
     }
 
     /**
