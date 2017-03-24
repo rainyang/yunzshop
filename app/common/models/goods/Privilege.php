@@ -15,7 +15,17 @@ class Privilege extends BaseModel
 {
     public $table = 'yz_goods_privilege';
 
+    public $attributes = [
+        'show_levels' => '',
+        'show_groups' => '',
+        'buy_levels' => '',
+        'buy_groups' => '',
+        'once_buy_limit' => 0,
+        'total_buy_limit' => 0,
+        'time_begin_limit' => 0,
+        'time_end_limit' => 0,
 
+    ];
     /**
      *  不可填充字段.
      *
@@ -42,7 +52,7 @@ class Privilege extends BaseModel
      * 可使用
      * @return array
      */
-    public  function atributeNames()
+    public function atributeNames()
     {
         return [
             'show_levels' => '会员浏览等级',
@@ -57,7 +67,7 @@ class Privilege extends BaseModel
     }
 
 
-    public  function rules()
+    public function rules()
     {
         return [
             'show_levels' => '',
