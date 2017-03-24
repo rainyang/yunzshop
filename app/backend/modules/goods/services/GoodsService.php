@@ -16,7 +16,7 @@ class GoodsService
 
     public static function saveGoodsCategory($goodsModel, $categorys, $shopset)
     {
-        $category_id = $shopset['catlevel'] == 3 ? $categorys['thirdid'] : $categorys['childid'];
+        $category_id = $shopset['cat_level'] == 3 ? $categorys['thirdid'] : $categorys['childid'];
         $goodsCategory = [
             'goods_id' => $goodsModel->id,
             'category_id' => $category_id,
