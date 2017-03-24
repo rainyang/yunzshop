@@ -120,7 +120,8 @@ class PreGeneratedOrderModel extends OrderModel
             'price' => $this->getPrice(),
             'goods_price' => $this->getGoodsPrice(),
             'dispatch_price' => $this->getDispatchPrice(),
-            'dispatch_types' => $this->_OrderDispatch->getDispatchTypeId(),
+            'discount_price' => $this->getDiscountPrice(),
+
         );
         foreach ($this->_OrderGoodsModels as $order_goods_model) {
             $data['order_goods'][] = $order_goods_model->toArray();
