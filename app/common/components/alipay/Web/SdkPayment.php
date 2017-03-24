@@ -487,12 +487,13 @@ class SdkPayment
 	public function refund()
     {
         $service = 'refund_fastpay_by_platform_pwd';
+        $notify_url = SZ_YI_ALIPAY_REFUNDNOTIFY_URL;
 
         $parameter = array(
             'service' => $service,
             'partner' => $this->partner,
             'seller_user_id' => $this->partner,
-            'notify_url' => $this->notify_url,
+            'notify_url' => $notify_url,
             'seller_email' => $this->seller_id,
             'refund_date' => date('Y-m-d H:i:s',time()),
             'batch_no' => date('Ymd', time()) . time(),
