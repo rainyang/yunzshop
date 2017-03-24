@@ -78,7 +78,7 @@ class ListController extends BaseController
             ]
         ];*/
         $requestSearch = \YunShop::request()->get('search');
-
+        $requestSearch['plugin'] = 'fund';
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
                 return !empty($item);
@@ -95,6 +95,7 @@ class ListController extends BaseController
             'pager' => $pager,
             'requestSearch' => $requestSearch,
             'var' => \YunShop::app()->get(),
+            'url' => 'order.list'
         ];
         $data += $this->fakeData();
         return $data;
