@@ -31,13 +31,12 @@ class PreGeneratedController extends BaseController
         $shop_model = ShopService::getCurrentShopModel();
 
 
-
         $order_goods_models = OrderService::getOrderGoodsModels($param);
         list($result,$message) = GoodsService::GoodsListAvailable($order_goods_models);
         if($result === false){
             return $this->errorJson($message);
         }
-        $order_model = OrderService::getPreCreateOrder($order_goods_models,$member_model,$shop_model);
+        $order_model = OrderService::getPreGeneratedOrder($order_goods_models,$member_model,$shop_model);
 
         $order = $order_model->toArray();
         $Event = new OnDiscountInfoDisplayEvent($order_model);

@@ -14,7 +14,8 @@ class MemberCartController extends BaseController
 {
     public function index()
     {
-        $memberId = '1';
+        $memberId = \YunShop::app()->getMemberId();
+        $memberId = '9';
 
         $cartList = MemberCart::getMemberCartList($memberId);
         //dd($cartList);
@@ -42,31 +43,31 @@ class MemberCartController extends BaseController
         }
         //dd($cartList);
 
-        return $this->successJson($cartList);
+        return $this->successJson('获取列表成功', $cartList);
     }
     /**
      * Add member cart
      */
     public function store()
     {
-        $requestcart = array(
-            'member_id' => '77',
-            'uniacid'   => '8',
-            'goods_id'  => '19',
-            'total'     => '1',
-            'price'     => '100',
-            'option_id' => '123'
-        );
-
         $cartModel = new membercart();
 
-        $requestcart = \YunShop::request()->cart;
+        $requestcart = \YunShop::request();
         if($requestcart) {
+            $data = array(
+                'member_id' => '9',
+                'uniacid'   => \YunShop::app()->uniacid,
+                'goods_id'  => $requestcart->goods_id,
+                'total'     => $requestcart->total,
+                'option_id' => $requestcart->option_id ? $requestcart->option_id : '0'
+            );
+            //验证商品是否存在购物车
+            $hasGoods = MemberCart::hasGoodsToMemberCart($data);
+            if ($hasGoods) {
+                return $this->errorJson('商品已存在购物车');
+            }
             //将数据赋值到model
-            $cartModel->setRawAttributes($requestcart);
-            //其他字段赋值
-            $cartModel->uniacid = \YunShop::app()->uniacid;
-
+            $cartModel->setRawAttributes($data);
             //字段检测
             $validator = $cartModel->validator($cartModel->getAttributes());
             if ($validator->fails()) {//检测失败

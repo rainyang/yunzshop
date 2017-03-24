@@ -30,7 +30,7 @@ class WaitSend implements StatusService
             [
                 [
                     'name' => '申请退款',
-                    'api' => '/order/operation/refund', //todo
+                    'api' => 'order.operation.refund', //todo
                     'value' => static::REFUND
                 ]
             ];

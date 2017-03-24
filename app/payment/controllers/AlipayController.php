@@ -15,9 +15,8 @@ class AlipayController extends PaymentController
 {
     public function notifyUrl()
     {
-        echo \YunShop::app()->uniacid;
-
         $alipay = app('alipay.web');
+
         $verify_result = $alipay->verify();
 
         if($verify_result) {//验证成功
