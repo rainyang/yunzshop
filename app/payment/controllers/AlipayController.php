@@ -15,7 +15,13 @@ class AlipayController extends PaymentController
 {
     public function notifyUrl()
     {
+        file_put_contents('../../../../addons/sz_yi/data/p3.log', print_r($_POST,1));
         echo \YunShop::app()->uniacid;
                 echo "index ";
+    }
+
+    public function returnUrl()
+    {
+        echo 'success';
     }
 }
