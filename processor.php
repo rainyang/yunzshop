@@ -14,15 +14,29 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 define('IS_API', true);
-require IA_ROOT . '/addons/sz_yi/version.php';
-require IA_ROOT . '/addons/sz_yi/defines.php';
-require SZ_YI_INC . 'functions.php';
-require SZ_YI_INC . 'processor.php';
-require SZ_YI_INC . 'plugin/plugin_model.php';
-class Sz_yiModuleProcessor extends Processor
+
+class Sz_yiModuleProcessor extends WeModuleProcessor
 {
     public function respond()
     {
-        return parent::respond();
+        $rule = pdo_fetch('select * from ' . tablename('rule') . ' where id=:id limit 1', array(
+            ':id' => $this->rule
+        ));
+        if (empty($rule)) {
+            return false;
+        }
+        $names  = explode(':', $rule['name']);
+        $plugin = isset($names[1]) ? $names[1] : '';
+        if (!empty($plugin)) {
+            $processor_file = SZ_YI_PLUGIN . $plugin . "/processor.php";
+            if (is_file($processor_file)) {
+                require $processor_file;
+                $processor_class = ucfirst($plugin) . "Processor";
+                $proc            = new $processor_class($plugin);
+                if (method_exists($proc, "respond")) {
+                    return $proc->respond($this);
+                }
+            }
+        }
     }
 }

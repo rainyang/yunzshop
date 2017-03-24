@@ -1,7 +1,7 @@
 require.config({
-	baseUrl: 'resource/js/app',
+	baseUrl: '/addons/sz_yi/static/resource/js/app',
 	paths: {
-		'jquery': '../lib/jquery-1.11.1.min',
+		'jquery': '../jquery.1.12.4.min',
 		'jquery.ui': '../lib/jquery-ui-1.10.3.min',
 		'jquery.caret': '../lib/jquery.caret',
 		'jquery.jplayer': '../../components/jplayer/jquery.jplayer.min',

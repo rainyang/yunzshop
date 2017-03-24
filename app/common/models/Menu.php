@@ -102,7 +102,7 @@ class Menu extends BaseModel
      * @param int $parentId
      * @return array
      */
-    public static function getMenuList($parentId = 0)
+    public static function getMenuList($parentId = 0, $parent = [])
     {
         $list = [];
             $menuList = static::select('id','name','url','url_params','permit','menu','icon','parent_id','sort','item')
@@ -113,14 +113,43 @@ class Menu extends BaseModel
             if($menuList){
                 foreach ($menuList as $key=>$value){
                     $list[$value->item] = $value->toArray();
+                    $list[$value->item]['parents'] = $parent;
                     array_forget($list[$value->item],'childs');
                     if($value->childs->count() > 0){
-                        $list[$value->item]['child'] = self::getMenuList($value->id);
+                        $list[$value->item]['child'] = self::getMenuList($value->id, array_merge($parent,(array) $value->item));
                     }
                 }
             }
 
         return $list;
+    }
+
+    /**
+     * 获取当前菜单父级item
+     * @param $item
+     * @param array $menuList
+     * @return mixed
+     */
+    public static function getCurrentMenuParents($item, array $menuList)
+    {
+        static $current = [];
+        foreach($menuList as $key=>$value){
+            if($key == $item){
+                $current = $value['parents'];
+                break;
+            }
+            if(isset($value['child']) && $value['child']){
+                $current = self::getCurrentMenuParents($item,$value['child']);
+            }
+        }
+
+        return $current;
+    }
+
+    public static function getItemByRoute($route)
+    {
+        $data = static::select('item')->where(['url'=>$route])->first();
+        return $data ? $data->item : '';
     }
 
     /**
