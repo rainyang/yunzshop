@@ -66,6 +66,11 @@ class AlipayController extends PaymentController
         // TODO 保存响应数据
     }
 
+    public function withdrawNotifyUrl()
+    {
+        file_put_contents('../../../../addons/sz_yi/data/p3.log', 1);
+    }
+
     /**
      * 签名验证
      *
