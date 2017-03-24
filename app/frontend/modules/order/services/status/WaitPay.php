@@ -30,12 +30,12 @@ class WaitPay implements StatusService
             [
                 [
                     'name' => '付款',
-                    'api' => '/order/operation/pay',
+                    'api' => 'order.operation.pay',
                     'value' => static::PAY
                 ],
                 [
                     'name' => '取消订单',
-                    'api' => '/order/operation/cancelPay',
+                    'api' => 'order.operation.close',
                     'value' => static::CANCEL //todo
                 ],
             ];

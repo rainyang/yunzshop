@@ -418,7 +418,7 @@ class SdkPayment
 		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
 		$prestr = $this->createLinkstring($para_sort);
         file_put_contents('../../../../addons/sz_yi/data/c4.log', get_class($this));
-            file_put_contents('../../../../addons/sz_yi/data/c5.log', print_r([$this->service,$this->sign_type],1));
+            file_put_contents('../../../../addons/sz_yi/data/c5.log', print_r([$this->service,$this->sign_type, $this->key],1));
 		$is_sgin = false;
 		switch (strtoupper(trim($this->sign_type))) {
 			case 'MD5':

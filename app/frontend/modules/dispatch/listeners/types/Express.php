@@ -50,7 +50,7 @@ class Express
     private function saveExpressInfo(){
         $params = \YunShop::request();
         //dd($this->event->getOrderModel());exit;
-        echo '收货地址插入数据为';
+        dump('收货地址插入数据为');
 
         $data = [
             'order_id'=>$this->event->getOrderModel()->id,
