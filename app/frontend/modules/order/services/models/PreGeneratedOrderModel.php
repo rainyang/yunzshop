@@ -1,7 +1,7 @@
 <?php
 namespace app\frontend\modules\order\services\models;
 
-use app\common\events\order\OrderCreatedEvent;
+use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Order;
 use app\common\models\Member;
 
@@ -136,7 +136,7 @@ class PreGeneratedOrderModel extends OrderModel
         $order_model = $this->createOrder();
         $this->id = $order_model->id;
         $this->createOrderGoods();
-        event(new OrderCreatedEvent($order_model));
+        event(new AfterOrderCreatedEvent($order_model));
         return true;
     }
 
@@ -171,7 +171,7 @@ class PreGeneratedOrderModel extends OrderModel
             //配送类获取订单配送方式id
             'dispatch_type_id'=>$this->_OrderDispatch->getDispatchTypeId(),
             'dispatch_price' => $this->_OrderDispatch->getDispatchPrice(),
-
+            'discount_price' => $this->getDiscountPrice()
         );
         //todo 测试
         echo '订单插入的数据为:';

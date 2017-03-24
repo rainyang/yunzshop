@@ -89,7 +89,7 @@ class GoodsController extends BaseController
         $catetory_menus = CategoryService::getCategoryMenu(
             [
                 'catlevel' => $this->shopset['catlevel'],
-                'ids'   => $categorySearch ? array_values($categorySearch) : [],
+                'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
             ]
         );
 

@@ -240,7 +240,7 @@ abstract class Pay
         return $response;
     }
 
-    protected function encryption() {}
+    public function encryption() {}
 
     protected function decryption() {}
 

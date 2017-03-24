@@ -12,18 +12,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="_token" content="{{ csrf_token() }}"/>
     <!-- Bootstrap 3.3.6 -->
-    <link rel="stylesheet" href="/addons/sz_yi/static/yunshop/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{static_url('yunshop/bootstrap/css/bootstrap.min.css')}}">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="/addons/sz_yi/static/yunshop/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{static_url('yunshop/libs/font-awesome/4.5.0/css/font-awesome.min.css')}}">
     <!-- Ionicons -->
-    <link rel="stylesheet" href="/addons/sz_yi/static/yunshop/libs/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="{{static_url('yunshop/libs/ionicons/2.0.1/css/ionicons.min.css')}}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="/addons/sz_yi/static/yunshop/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="{{static_url('yunshop/dist/css/AdminLTE.min.css')}}">
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
           page. However, you can choose any other skin. Make sure you
           apply the skin class to the body tag so the changes take effect.
     -->
-    <link rel="stylesheet" href="/addons/sz_yi/static/yunshop/dist/css/skins/skin-red.min.css">
+    <link rel="stylesheet" href="{{static_url('yunshop/dist/css/skins/skin-red.min.css')}}">
     <link href="./resource/css/common.css?v=20161011" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -34,17 +34,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <![endif]-->
 
     {{--loding--}}
-    <link href="/addons/sz_yi/static/yunshop/dist/css/load/load.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/webstyle.css">
+    <link href="{{static_url('yunshop/dist/css/load/load.css')}}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{static_url('css/webstyle.css')}}">
     @yield('css')
     {!! yz_header('admin') !!}
     <script>var require = { urlArgs: 'v={{time()}}' };</script>
     <!-- jQuery 2.2.0 -->
-    <script src="//cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-    <script type="text/javascript" src="./resource/js/app/util.js?v=20161011"></script>
-    <script type="text/javascript" src="./resource/js/app/common.min.js?v=20161011"></script>
-    <script type="text/javascript" src="./resource/js/require.js?v=20161011"></script>
-    <script type="text/javascript" src="./resource/js/app/config.js?v=20161011"></script>
+    <script src="//almsaeedstudio.com/themes/AdminLTE/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="{{static_url('resource/js/app/util.js')}}"></script>
+    <script type="text/javascript" src="./resource/js/app/common.min.js"></script>
+    <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('resource/js/app/config.js')}}"></script>
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -129,12 +129,12 @@ desired effect
 
 
 <!-- Bootstrap 3.3.6 -->
-<script src="/addons/sz_yi/static/yunshop/bootstrap/js/bootstrap.js"></script>
+<script src="{{static_url('yunshop/bootstrap/js/bootstrap.js')}}"></script>
 <!-- AdminLTE App -->
-<script src="/addons/sz_yi/static/yunshop/dist/js/app.min.js"></script>
+<script src="{{static_url('yunshop/dist/js/app.min.js')}}"></script>
 
 <!-- dataTables -->
-<script src="/addons/sz_yi/static/yunshop/dist/js/common.js"></script>
+<script src="{{static_url('yunshop/dist/js/common.js')}}"></script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

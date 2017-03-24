@@ -16,6 +16,10 @@ class OrderGoods extends BaseModel
         'discount_details' => 'json',
         'dispatch_details' => 'json',
     ];
+    protected $attributes = [
+        'discount_details' => [],
+        'dispatch_details' => [],
+    ];
     protected $fillable = [];
     protected $guarded = ['id'];
 

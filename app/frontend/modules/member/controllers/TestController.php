@@ -10,18 +10,20 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
 use app\frontend\modules\member\services\MemberService;
-use app\common\services\WechatPay;
+use app\common\services\AliPay;
 
 
 class TestController extends BaseController
 {
    public function index()
    {
-        $wx = new WechatPay();
+       $pay = new AliPay();
 
-       // $wx->doPay(1,1,1,1,1);
+       $p = $pay->doRefund('2017032321001004920211490965', '1', '0.1');
 
-       echo '<pre>';print_r(\Setting::get('shop.pay'));exit;
+       //$p = $pay->doPay('2017032321001004920211490965',2,0.1,4,5);
+       //$p = $pay->doWithdraw(4,'22220000','0.1','提现');
+       redirect($p)->send();
    }
 
    public function add()

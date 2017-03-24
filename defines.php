@@ -4,7 +4,7 @@ if (!defined('IN_IA')) {
 }
 
 
-define('SZ_YI_DEBUG', false);//false
+define('SZ_YI_DEBUG', 1);//false
 !defined('SZ_YI_PATH') && define('SZ_YI_PATH', IA_ROOT . '/addons/sz_yi/');
 !defined('SZ_YI_CORE') && define('SZ_YI_CORE', SZ_YI_PATH . 'core/');
 !defined('SZ_YI_APP') && define('SZ_YI_APP', SZ_YI_PATH . 'app/');
@@ -20,3 +20,5 @@ define('SZ_YI_DEBUG', false);//false
 !defined('SZ_YI_LIVE_CLOUD_URL') &&define("SZ_YI_LIVE_CLOUD_URL", "https://yz.tbw365.cn"); //直播云端的API
 
 !defined('SZ_YI_WECHAT_NOTIFY_URL') && define('SZ_YI_WECHAT_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/wechat/notify.php');
+!defined('SZ_YI_ALIPAY_NOTIFY_URL') && define('SZ_YI_ALIPAY_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/notify.php');
+!defined('SZ_YI_ALIPAY_RETURN_URL') && define('SZ_YI_ALIPAY_RETURN_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/return.php');

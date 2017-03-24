@@ -8,44 +8,88 @@
 
 namespace app\common\services;
 
-use app\common\components\alipay\AlipayServiceProvider;
+use app\common\services\alipay\MobileAlipay;
+use app\common\services\alipay\WebAlipay;
+use app\common\services\alipay\WapAlipay;
 
 class AliPay extends Pay
 {
-    public function doPay($subject, $body, $amount, $order_no, $extra)
+    private $_pay = null;
+
+    public function __construct()
     {
-        // TODO: Implement doPay() method.
+        $this->_pay = $this->createFactory();
+
     }
 
-    public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
+    private function createFactory()
     {
-        // TODO: Implement doRefund() method.
-    }
+        $type = $this->getClientType();
 
-    public function doWithdraw($member_id, $out_trade_no, $money, $desc, $type)
-    {
-        // TODO: Implement doWithdraw() method.
+        switch ($type) {
+            case 'web':
+                $pay = new WebAlipay();
+                break;
+            case 'mobile':
+                $pay = new MobileAlipay();
+                break;
+            case 'wap':
+                $pay = new WapAlipay();
+                break;
+            default:
+                $pay = null;
+        }
+
+        return $pay;
     }
 
     /**
-     * 构造签名
+     * 获取客户端类型
      *
-     * @var void
+     * @return string
      */
-    public function buildRequestSign() {
-        $signOrigStr = "";
-        ksort($this->parameters);
-
-        foreach($this->parameters as $k => $v) {
-            if("" != $v && "sign" != $k) {
-                $signOrigStr .= $k . "=" . $v . "&";
-            }
+    private function getClientType()
+    {
+        if (isMobile()) {
+            return 'wap';
+        } elseif (is_app()) {
+            return 'mobile';
+        } else {
+            return 'web';
         }
-        $signOrigStr .= "key=" . $this->getKey();
+    }
 
-        $sign = strtoupper(md5($signOrigStr));
+    public function doPay($subject, $body, $amount, $order_no, $extra)
+    {
+        return $this->_pay->doPay($subject, $body, $amount, $order_no, $extra);
+    }
+
+    public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney='0')
+    {
+        $alipay = app('alipay.web');
+
+        $alipay->setOutTradeNo($out_trade_no);
+        $alipay->setTotalFee($totalmoney);
+
+        return $alipay->refund();
+    }
+
+    public function doWithdraw($member_id, $out_trade_no, $money, $desc, $type=1)
+    {
+        $alipay = app('alipay.web');
+
+        $alipay->setTotalFee($money);
+        if (SZ_YI_DEBUG) {
+            $account ='iam_dingran@163.com';
+            $name ='丁冉';
+        }
 
 
-        $this->setParameter("sign", $sign);
+        return $alipay->withdraw($account, $name);
+    }
+
+    public function buildRequestSign()
+    {
+        // TODO: Implement buildRequestSign() method.
     }
 }

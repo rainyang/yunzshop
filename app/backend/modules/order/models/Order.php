@@ -8,13 +8,9 @@
 
 namespace app\backend\modules\order\models;
 
-
-
-
 class Order extends \app\common\models\Order
 {
     public static function getAllOrders($search,$pageSize){
-        dd($search);
         $builder = Order::orders($search,$pageSize);
         $list = $builder->paginate($pageSize)->toArray();
         $list['total_price'] = $builder->sum('price');

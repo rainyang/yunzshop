@@ -9,10 +9,18 @@ use app\common\helpers\Url;
 if(!function_exists('can')){
     /**
      * 权限判断
+     * @param $item   可以是item 或者是route
+     * @param bool $isRoute
+     * @return bool
      */
-    function can($route)
+    function can($itemRoute, $isRoute = false)
     {
-        return PermissionService::can($route);
+        if($isRoute == true){
+            $item = \app\common\models\Menu::getItemByRoute($itemRoute);
+        }else{
+            $item = $itemRoute;
+        }
+        return PermissionService::can($item);
     }
 }
 
@@ -99,6 +107,13 @@ if (! function_exists('assets')) {
         } else {
             return Url::shopUrl("resources/assets/$relativeUri");
         }
+    }
+}
+if (! function_exists('static_url')) {
+
+    function static_url($relativeUri)
+    {
+       return Url::shopUrl('static/' . $relativeUri);
     }
 }
 

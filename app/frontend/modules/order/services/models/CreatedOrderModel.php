@@ -39,7 +39,7 @@ class CreatedOrderModel extends OrderModel
         $this->_OrderDiscount = DiscountService::getCreatedOrderDiscountModel($this->getOrder());
     }
 
-    public function changePrice($price)
+    public function addChangePriceInfo($price)
     {
         $change_price = $price - $this->_Order->price;
 
@@ -52,7 +52,7 @@ class CreatedOrderModel extends OrderModel
         $this->_OrderDiscount->addDiscountDetail($detail);
     }
 
-    public function changeDispatchPrice($dispatch_price)
+    public function addChangeDispatchPriceInfo($dispatch_price)
     {
         //dd($this->_Order);
         $change_dispatch_price = $dispatch_price - $this->_Order->dispatch_price;
@@ -77,7 +77,8 @@ class CreatedOrderModel extends OrderModel
             'dispatch_details' => $this->_OrderDispatch->getDispatchDetails(),
             //优惠类记录订单配送信息
             'discount_details' => $this->_OrderDiscount->getDiscountDetails(),
-            'diapatch_price' => $this->getDispatchPrice(),
+            'discount_price' => $this->getDiscountPrice(),
+            'dispatch_price' => $this->getDispatchPrice(),
             'price' => $this->getPrice(),
             'goods_price' => $this->getGoodsPrice(),
         ];
