@@ -40,7 +40,7 @@ class OrderChangePrice extends OrderOperation
         $order->addChangeDispatchPriceInfo('21');
 
         $order->update();
-        exit;
+
         return false;
     }
 

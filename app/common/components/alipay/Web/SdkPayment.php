@@ -148,7 +148,7 @@ class SdkPayment
 		// 验证
 		// $response_txt的结果不是true，与服务器设置问题、合作身份者ID、notify_id一分钟失效有关
 		// isSign的结果不是true，与安全校验码、请求时的参数格式（如：带自定义参数等）、编码格式有关
-		if (preg_match('/true$/i', $response_txt) && $is_sign) {
+		if ($is_sign) {
 			return true;
 		} else {
 			return false;
@@ -487,12 +487,13 @@ class SdkPayment
 	public function refund()
     {
         $service = 'refund_fastpay_by_platform_pwd';
+        $notify_url = SZ_YI_ALIPAY_REFUNDNOTIFY_URL;
 
         $parameter = array(
             'service' => $service,
             'partner' => $this->partner,
             'seller_user_id' => $this->partner,
-            'notify_url' => $this->notify_url,
+            'notify_url' => $notify_url,
             'seller_email' => $this->seller_id,
             'refund_date' => date('Y-m-d H:i:s',time()),
             'batch_no' => date('Ymd', time()) . time(),
@@ -513,19 +514,19 @@ class SdkPayment
         $pay = Setting::get('shop.pay');
 
         $batch_no = date('Ymd', time()) . time();
-
+        $notify_url = SZ_YI_ALIPAY_WITHDRAWNOTIFY_URL;
 
         $parameter = array(
             'service' => $service,
             'partner' => $this->partner,
-            'notify_url' => $this->notify_url,
+            'notify_url' => $notify_url,
             'email' => $pay['alipay_number'],
             'account_name' => $pay['alipay_name'],
             'pay_date' => date('Ymd',time()),
             'batch_no' => $batch_no,
             'batch_fee' => $this->total_fee,
             'batch_num' => 1,
-            'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现',
+            'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现-' . \YunShop::app()->uniacid,
             '_input_charset' => strtolower($this->_input_charset),
         );
 

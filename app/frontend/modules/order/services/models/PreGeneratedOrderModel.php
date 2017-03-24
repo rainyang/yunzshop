@@ -120,7 +120,8 @@ class PreGeneratedOrderModel extends OrderModel
             'price' => $this->getPrice(),
             'goods_price' => $this->getGoodsPrice(),
             'dispatch_price' => $this->getDispatchPrice(),
-            'dispatch_types' => $this->_OrderDispatch->getDispatchTypeId(),
+            'discount_price' => $this->getDiscountPrice(),
+
         );
         foreach ($this->_OrderGoodsModels as $order_goods_model) {
             $data['order_goods'][] = $order_goods_model->toArray();
@@ -174,7 +175,7 @@ class PreGeneratedOrderModel extends OrderModel
             'discount_price' => $this->getDiscountPrice()
         );
         //todo 测试
-        echo '订单插入的数据为:';
+        dump( '订单插入的数据为:');
         dump($data);
         return Order::create($data);
     }

@@ -23,6 +23,7 @@ class MemberAddress extends \app\common\models\MemberAddress
         return static::select('id', 'username', 'zipcode', 'province', 'city', 'district', 'address', 'isdefault')
             ->uniacid()->where('uid', $memberId)->get()->toArray();
     }
+
     /*
      *  Get the receiving address information through the receiving address ID
      *
@@ -34,6 +35,7 @@ class MemberAddress extends \app\common\models\MemberAddress
     {
         return static::where('id', $addressId)->first();
     }
+
     /*
      *  Delete the receiving address by receiving address ID
      *
@@ -45,6 +47,7 @@ class MemberAddress extends \app\common\models\MemberAddress
     {
         return static::where('id', $addressId)->delete();
     }
+
     /*
      *  Cancel the default address
      *
@@ -55,6 +58,35 @@ class MemberAddress extends \app\common\models\MemberAddress
     public static function cancelDefaultAddress($memberId)
     {
         return static::uniacid()->where('uid', $memberId)->where('isdefault', '1')->update('isdefault', '0');
+    }
+
+    /**
+     * 定义字段名
+     *
+     * @return array */
+    public  function atributeNames() {
+        return [
+            'mobile'    => 'mobile_phone',
+            'username'  => '收货人不能为空',
+            'province'  => '省份不能为空',
+            'city'      => '城市不能为空',
+            'district'  => '区域不能为空',
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array */
+    public  function rules()
+    {
+        return [
+            'mobile'    => 'mobile_phone',
+            'username'  => 'required',
+            'province'  => 'required',
+            'city'      => 'required',
+            'district'  => 'required',
+        ];
     }
 
 }

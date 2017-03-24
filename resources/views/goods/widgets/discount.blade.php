@@ -6,8 +6,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣类型</label>
     <div class="col-sm-6 col-xs-6">
         <label class="radio-inline">
-            <input type="radio" name="widgets[discount][level_discount_type]" value="1"
-                   @if ( !empty($discount) && $discount[0]['level_discount_type'] == 1) checked="true" @endif />
+            <input type="radio" name="widgets[discount][level_discount_type]" value="1" checked/>
             会员等级
         </label>
     </div>
@@ -18,36 +17,36 @@
     <div class="col-sm-6 col-xs-6">
         <div class='input-group'>
             <label class="radio-inline">
-                <input type="radio" name="widgets[discount][discount_method]" value="1"
-                       @if ( !empty($discount) && $discount[0]['discount_method'] == 1) checked="true" @endif /> 折扣
+                <input type="radio" name="widgets[discount][discount_method]" value="1" checked/> 折扣
             </label>
             <label class="radio-inline">
-                <input type="radio" name="widgets[discount][discount_method]" value="2"
-                       @if ( !empty($discount) && $discount[0]['discount_method'] == 2) checked="true" @endif />
+                <input type="radio" name="widgets[discount][discount_method]" value="2"/>
                 固定金额
             </label>
         </div>
     </div>
 </div>
 <div id="ismember">
-    <div class="form-group">
+    {{--<div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
         <div class="col-sm-6 col-xs-6">
             <div class='input-group'>
                 <div class='input-group-addon'>默认等级</div>
+                {{ $valuedefault = 0 }}
+                @foreach($discount as $d)
+                    @if( !empty($d) &&  $d['level_id'] == '0')
+                        {{ $valuedefault = $d['discount_value'] }}
+                        @else
+                        {{ $valuedefault = 0 }}
+                    @endif
+                @endforeach
                 <input type='text' name='widgets[discount][discount_value][0]' class="form-control discounts"
-                       value="@foreach ($discount as $d)
-                       @if ( !empty($d) &&  $d['level_id'] == '0')
-                       {{ $d['discount_value'] }}
-                       @else
-                               0
-                       @endif
-                       @endforeach"/>
+                       value="{{ $valuedefault }}"/>
                 <div class='input-group-addon waytxt'> @if ( !empty($discount) && $discount[0]['discount_method'] == 1)
                         折 @else 元 @endif</div>
             </div>
         </div>
-    </div>
+    </div>--}}
     @foreach ($levels as $level)
 
         <div class="form-group">
@@ -55,16 +54,11 @@
             <div class="col-sm-6 col-xs-6">
                 <div class='input-group'>
                     <div class='input-group-addon'>{{  $level['level_name'] }}</div>
+
                     <input type='text' name='widgets[discount][discount_value][{{$level["id"] }}]'
                            class="form-control discounts"
-                           value="
-                           @foreach ($discount as $d)
-                           @if ( !empty($d) && $level['id'] == $d['level_id'])
-                           {{ $d['discount_value'] }}
-                           @endif
-                           @endforeach"/>
-                    <div class='input-group-addon waytxt'>@if ( !empty($discount) && $discount[0]['discount_method'] == 1)
-                            折 @else 元 @endif</div>
+                           value="@if (!empty($discountValue)){{ $discountValue[$level["id"]] }}@endif"/>
+                    <div class='input-group-addon waytxt'>折</div>
                 </div>
             </div>
         </div>

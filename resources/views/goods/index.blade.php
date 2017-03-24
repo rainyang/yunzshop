@@ -21,6 +21,7 @@
 						<input type="hidden" name="do" value="shop" />
 						<input type="hidden" name="p"  value="goods" />
 						<input type="hidden" name="op" value="display" />
+						@section('search')
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键字</label>
 							<div class="col-xs-12 col-sm-8 col-lg-9">
@@ -83,7 +84,7 @@
 								<input class="form-control" name="search[max_price]" id="max_price" type="text" value="" onclick="value='';" ／>
 							</div>
 						</div>
-
+						@show
 						<button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
 
 					</form>
@@ -136,7 +137,8 @@
 								<th width="16%">{{$lang['price']}}<br/>{{$lang['repertory']}}</th>
 
 								<th width="10%">销量</th>
-								<th width="10%">状态</th>
+
+								<th width="10%">@section('status')状态@show</th>
 
 								<th width="20%">操作</th>
 							</tr>
@@ -144,7 +146,6 @@
 							<tbody>
 							@foreach($list as $item)
 							<tr>
-
 								<td width="6%">{{$item['id']}}</td>
 								<td width="6%">
 									<input type="text" class="form-control" name="displayorder[{{$item['id']}}]" value="{{$item['display_order']}}">
@@ -191,7 +192,15 @@
 
 								<td >{{$item['real_sales']}}</td>
 								<td >
-									<label data='{{$item['status']}}' class='label  label-default @if($item['status']==1) label-info @endif' onclick="setProperty(this,{{$item['id']}},'status')">@if($item['status']==1){{$lang['putaway']}}@else{{$lang['soldout']}} @endif</label>
+									@section('putaway')
+									<label data='{{$item['status']}}' class='label  label-default @if($item['status']==1) label-info @endif' onclick="setProperty(this,{{$item['id']}},'status')">
+										@if($item['status']==1)
+											{{$lang['putaway']}}
+										@else
+											{{$lang['soldout']}}
+										@endif
+									</label>
+									@show
 								</td>
 
 								<td style="position:relative; overflow:visible;" width="20%">

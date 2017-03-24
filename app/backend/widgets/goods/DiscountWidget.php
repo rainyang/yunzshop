@@ -20,15 +20,20 @@ class DiscountWidget extends Widget
     public function run()
     {
         $discounts = new Discount();
+        $discountValue = array();
         if ($this->goods_id && Discount::getList($this->goods_id)) {
             $discounts = Discount::getList($this->goods_id);
+            foreach ($discounts as $key => $discount) {
+                $discountValue[$discount['level_id']] =   $discount['discount_value'];
+            }
         }
-
+        //dd($discountValue);
         $levels = MemberLevel::getMemberLevelList();
         $groups = MemberGroup::getMemberGroupList();
 
         return view('goods.widgets.discount', [
             'discount' => $discounts->toArray(),
+            'discountValue' => $discountValue,
             'levels' => $levels,
             'groups' => $groups
         ])->render();

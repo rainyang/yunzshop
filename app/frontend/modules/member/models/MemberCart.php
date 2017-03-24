@@ -34,24 +34,33 @@ class MemberCart extends \app\common\models\MemberCart
         return $cartList;
         //return static::uniacid()->where('member_id', $memberId)->get()->toArray();
     }
+
     public function goods(){
         return $this->hasOne('app\common\models\Goods','id','goods_id');
     }
+
     public function goodsOption()
     {
         return $this->hasOne('app\common\models\GoodsOption','id','option_id');
     }
+
+    public static function getMemberCartById($cartId)
+    {
+        return static::uniacid()->where('id', $cartId)->first();
+    }
+
     /**
-     * Get a list of members shopping cart through member ID
+     * Get a list of members shopping cart through cart IDs
      *
-     * @param int $cartId
+     * @param array $cartIds
      *
      * @return array
      * */
-    public static function getMemberCartById($cartId)
+    public static function getMemberCartByIds($cartIds)
     {
-        return static::uniacid()->where('id', $cartId)->get()->toArray();
+        return static::uniacid()->whereIn('id', $cartIds)->get()->toArray();
     }
+
     /**
      * Add merchandise to shopping cart
      *
@@ -64,15 +73,59 @@ class MemberCart extends \app\common\models\MemberCart
         //需要监听事件，购物车存在的处理方式
         return static::insert($data);
     }
-    /**
-     * Remove cart items by Id
+
+    /*
+     * 检测商品是否存在购物车
      *
-     * @param int $cartId
+     * @param array $data ['member_id', 'goods_id', 'option_id']
+     *
+     * @return object or false
+     * */
+    public static function hasGoodsToMemberCart($data)
+    {
+        $hasGoods = self::uniacid()
+            ->where([
+                'member_id' => $data['member_id'],
+                'goods_id'  => $data['goods_id'],
+                'option_id' => $data['option_id']
+            ])
+            ->first();
+        return $hasGoods ? $hasGoods : false;
+    }
+
+    /**
+     * Remove cart items by Ids
+     *
+     * @param array $cartIds
      *
      * @return 1 or 0
      * */
-    public static function destroyMemberCart($cartId)
+    public static function destroyMemberCart($cartIds)
     {
-        return static::uniacid()->where('id', $cartId)->delete();
+        return static::uniacid()->whereIn('id', $cartIds)->delete();
     }
+
+    /**
+     * 定义字段名
+     *
+     * @return array */
+    public  function atributeNames() {
+        return [
+            'goods_id'  => '未获取到商品',
+            'total'     => '商品数量不能为空',
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array */
+    public  function rules()
+    {
+        return [
+            'goods_id'  => 'required',
+            'total'     => 'required',
+        ];
+    }
+
 }

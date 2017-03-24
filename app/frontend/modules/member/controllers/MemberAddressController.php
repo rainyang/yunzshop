@@ -30,18 +30,31 @@ class MemberAddressController extends BaseController
 
     /*
      * 添加会员搜获地址
-     * 
+     *
      * */
     public function store()
     {
         $addressModel = new MemberAddress();
 
-        $requestAddress = \YunShop::request()->address;
+        $requestAddress = \YunShop::request();
         if ($requestAddress) {
-            $addressModel->setRawAttributes($requestAddress);
+            $data = array(
+                //'uid' => $requestAddress->uid,
+                //'uniacid' => \YunShop::app()->uniacid,
+                'username' => $requestAddress->username,
+                'mobile' => $requestAddress->mobile,
+                'zipcode' => '',
+                'isdefault' => $requestAddress->isdefault,
+                'province' => $requestAddress->province,
+                'city' => $requestAddress->city,
+                'district' => $requestAddress->district,
+                'address' => $requestAddress->city,
+            );
+            $addressModel->fill($data);
+            //$addressModel->setRawAttributes($requestAddress);
 
             $memberId = \YunShop::request()->member_id;
-            //$memberId = '57'; //测试使用
+            $memberId = '9'; //测试使用
             //验证默认收货地址状态并修改
             $addressList = MemberAddress::getAddressList($memberId);
             if (empty($addressList)) {
