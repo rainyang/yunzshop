@@ -272,7 +272,7 @@ class YunRequest extends YunComponent implements ArrayAccess
     public function __construct()
     {
         global $_GPC;
-        $this->values = $_GPC;
+        $this->values = (array)$_GPC;
     }
     public function offsetUnset($offset){
         unset($this->values[$offset]);
@@ -303,7 +303,7 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
-        $this->values = $_W;
+        $this->values = (array)$_W;
         //$this->var = $_W;
         $this->routeList = Config::get('menu');
     }
