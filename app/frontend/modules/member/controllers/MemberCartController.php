@@ -66,7 +66,7 @@ class MemberCartController extends BaseController
                 'uniacid'   => \YunShop::app()->uniacid,
                 'goods_id'  => $requestcart->goods_id,
                 'total'     => $requestcart->total,
-                'option_id' => $requestcart->option_id ? $requestcart->option_id : 0
+                'option_id' => $requestcart->option_id ? $requestcart->option_id : '0'
             );
             //将数据赋值到model
             $cartModel->setRawAttributes($data);
