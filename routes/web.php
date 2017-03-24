@@ -34,7 +34,6 @@ Route::any('/', function () {
     //api
     if (strpos(request()->getRequestUri(), '/api.php') === 0) {
 
-
         return;
     }
     //如未设置当前公众号则加到选择公众号列表
