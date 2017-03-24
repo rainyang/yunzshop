@@ -50,30 +50,38 @@ class OperationController extends BaseController
     public function send(){
         list($result,$data) = OrderService::orderSend($this->_params);
         if($result === false){
-            $this->errorJson($data);
+            return $this->errorJson($data);
         }
-        $this->successJson($data);
+        return $this->successJson($data);
     }
     public function cancelSend(){
         list($result,$data) = OrderService::orderCancelSend($this->_params);
         if($result === false){
-            $this->errorJson($data);
+            return $this->errorJson($data);
         }
-        $this->successJson($data);
+        return $this->successJson($data);
     }
     public function Receive(){
         list($result,$data) = OrderService::orderReceive($this->_params);
         if($result === false){
-            $this->errorJson($data);
+            return $this->errorJson($data);
         }
-        $this->successJson($data);
+        return $this->successJson($data);
     }
     public function Delete()
     {
         list($result,$data) = OrderService::orderDelete($this->_params);
         if($result === false){
-            $this->errorJson($data);
+            return $this->errorJson($data);
         }
-        $this->successJson($data);
+        return $this->successJson($data);
+    }
+    public function Close()
+    {
+        list($result,$data) = OrderService::orderClose($this->_params);
+        if($result === false){
+            return $this->errorJson($data);
+        }
+        return $this->successJson($data);
     }
 }
