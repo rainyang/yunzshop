@@ -1,9 +1,8 @@
 ﻿ <script language="javascript">
-        function pay()
+        function pay(order_id)
         {
-            var order_id = $('.order_id').val();
             if (confirm('确认此订单已付款吗？')) {
-                $.post("{!! yzWebUrl('order.operation.pay') !!}", {order_id:order_id}, function(json){
+                $.get("{!! yzWebUrl('order.operation.pay') !!}",{order_id:order_id}, function(json){
                     if (json.result == 1) {
                         location.href = location.href;
 
@@ -18,7 +17,7 @@
 @if ($order['status'] == 0)
 <a class="btn btn-primary btn-sm disbut"
    href="javascript:;"
-   onclick="pay()">确认付款</a>
+   onclick="pay({{$order['id']}})">确认付款</a>
 <a class="label label-default">等待付款</a>
 @endif
 
