@@ -12,6 +12,7 @@
 */
 
 Route::any('/', function () {
+    //@todo 接口api部份设置跨域
     header('Access-Control-Allow-Origin: *');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
     header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With');
