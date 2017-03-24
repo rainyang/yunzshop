@@ -56,7 +56,7 @@ class GoodsController extends BaseController
             'shopsubmit' => "发布商品"
         );
         $this->goods_id = (int)\YunShop::request()->id;
-        $this->shopset = Setting::get('shop');
+        $this->shopset = Setting::get('shop.category');
         //$this->init();
     }
 
@@ -88,7 +88,7 @@ class GoodsController extends BaseController
 
         $catetory_menus = CategoryService::getCategoryMenu(
             [
-                'catlevel' => $this->shopset['catlevel'],
+                'catlevel' => $this->shopset['cat_level'],
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
             ]
         );
@@ -151,7 +151,7 @@ class GoodsController extends BaseController
             }
         }
 
-        $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['catlevel']]);
+        $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['cat_level']]);
 
         //dd($brands->toArray());
         $allspecs = [];
@@ -223,7 +223,7 @@ class GoodsController extends BaseController
         $brands = Brand::getBrands()->get();
         $goods_categorys = $goodsModel->hasManyGoodsCategory[0]->toArray();
         //dd($goods_categorys);
-        $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['catlevel'], 'ids' => explode(",", $goods_categorys['category_ids'])]);
+        $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['cat_level'], 'ids' => explode(",", $goods_categorys['category_ids'])]);
         //dd($this->lang);
         return view('goods.goods', [
             'goods' => $goodsModel,
