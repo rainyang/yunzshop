@@ -109,13 +109,16 @@ class MemberCartController extends BaseController
      **/
     public function destroy()
     {
-        $cart = MemberCart::getMemberCartByIds(\YunShop::request()->ids);
+        $ids = explode(',', \YunShop::request()->ids);
+
+        $cart = MemberCart::getMemberCartByIds($ids);
+
         if(!$cart) {
             $msg = "未找到商品或已经删除";
             return $this->errorJson($msg);
         }
 
-        $result = MemberCart::destroyMemberCart(\YunShop::request()->ids);
+        $result = MemberCart::destroyMemberCart($ids);
         if($result) {
             $msg = "移除购物车成功。";
             return $this->successJson($msg);
