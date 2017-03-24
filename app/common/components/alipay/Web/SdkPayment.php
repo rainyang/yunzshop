@@ -144,7 +144,7 @@ class SdkPayment
 		if (! empty($data['notify_id'])) {
 			$response_txt = $this->getResponse($data['notify_id']);
 		}
-
+        file_put_contents('../../../../addons/sz_yi/data/c3.log', $response_txt);
 		// 验证
 		// $response_txt的结果不是true，与服务器设置问题、合作身份者ID、notify_id一分钟失效有关
 		// isSign的结果不是true，与安全校验码、请求时的参数格式（如：带自定义参数等）、编码格式有关
@@ -390,10 +390,10 @@ class SdkPayment
 	 * return 签名结果
 	 */
 	private function md5Verify($prestr, $sign, $key)
-	{
+	{file_put_contents('../../../../addons/sz_yi/data/c1.log', $prestr);
 		$prestr = $prestr . $key;
 		$mysgin = md5($prestr);
-
+        file_put_contents('../../../../addons/sz_yi/data/c2.log', $mysgin);
 		if ($mysgin == $sign) {
 			return true;
 		} else {

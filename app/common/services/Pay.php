@@ -82,7 +82,7 @@ abstract class Pay
      * @param $extra 附加数据
      * @return mixed
      */
-    abstract function doPay($subject, $body, $amount, $order_no, $extra);
+    abstract function doPay($data = []);
 
     /**
      * 退款

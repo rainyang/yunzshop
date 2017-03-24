@@ -19,15 +19,15 @@ class WebAlipay extends AliPay
     public function __construct()
     {}
 
-    public function doPay($subject, $body, $amount, $order_no, $extra)
+    public function doPay($data = [])
     {
         // 创建支付单。
         $alipay = app('alipay.web');
 
-        $alipay->setOutTradeNo($order_no);
-        $alipay->setTotalFee($amount);
-        $alipay->setSubject($subject);
-        $alipay->setBody($body);
+        $alipay->setOutTradeNo($data['order_no']);
+        $alipay->setTotalFee($data['amount']);
+        $alipay->setSubject($data['subject']);
+        $alipay->setBody($data['body']);
 
         //$alipay->setQrPayMode('4'); //该设置为可选，添加该参数设置，支持二维码支付。
 
