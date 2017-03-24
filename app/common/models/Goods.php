@@ -45,6 +45,17 @@ class Goods extends BaseModel
         return static::find($id);
     }
 
+    public function getMarketPriceAttribute()
+    {
+        return $this->attributes['market_price'] / 100;
+    }
+
+    public function getPriceAttribute()
+    {
+        return $this->attributes['price'] / 100;
+    }
+
+
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
