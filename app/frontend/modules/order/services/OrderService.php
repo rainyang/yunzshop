@@ -37,7 +37,7 @@ class OrderService
      * @param ShopModel|null $shop_model
      * @return models\PreGeneratedOrderModel
      */
-    public static function getPreCreateOrder(array $order_goods_models,Member $member_model=null,ShopModel $shop_model=null){
+    public static function getPreGeneratedOrder(array $order_goods_models, Member $member_model=null, ShopModel $shop_model=null){
         $order_model = new PreGeneratedOrderModel($order_goods_models);
         if(isset($member_model)){
             $order_model->setMemberModel($member_model);

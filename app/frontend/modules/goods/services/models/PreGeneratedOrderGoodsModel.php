@@ -121,7 +121,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'discount_details' => $this->getDiscountDetails(),
             'dispatch_details' => $this->getDispatchDetails(),
         );
-        echo '订单商品插入数据为';
+        dump('订单商品插入数据为');
         dump($data);
         //return;
         return OrderGoods::create($data);

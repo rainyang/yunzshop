@@ -174,7 +174,7 @@ class PreGeneratedOrderModel extends OrderModel
             'discount_price' => $this->getDiscountPrice()
         );
         //todo 测试
-        echo '订单插入的数据为:';
+        dump( '订单插入的数据为:');
         dump($data);
         return Order::create($data);
     }

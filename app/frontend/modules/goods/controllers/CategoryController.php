@@ -33,4 +33,16 @@ class CategoryController extends BaseController
         }
         return $this->errorJson('未检测到分类数据!',$list);
     }
+    
+    public function getChildrenCategory()
+    {
+        //$pageSize = 10;
+        
+        $parent_id = intval(\YunShop::request()->parent_id);
+        $list = Category::getChildrenCategorys($parent_id)->get()->toArray();//->paginate($pageSize)
+        if($list){
+            return $this->successJson('获取子分类数据成功!', $list);
+        }
+        return $this->errorJson('未检测到子分类数据!',$list);
+    }
 }

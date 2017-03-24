@@ -82,8 +82,8 @@ class CreatedOrderModel extends OrderModel
             'price' => $this->getPrice(),
             'goods_price' => $this->getGoodsPrice(),
         ];
-        echo '订单改价信息:';
-        dd($data);
+        dump('订单改价信息:');
+        dump($data);
         $this->_updateOrderGoods();
     }
     private function _updateOrderGoods(){
