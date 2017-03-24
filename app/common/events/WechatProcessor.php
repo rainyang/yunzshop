@@ -49,6 +49,8 @@ class WechatProcessor extends Event
      */
     public function setResponse($response)
     {
-        $this->response = $response;
+        if ($response) {
+            $this->response = $response;
+        }
     }
 }
