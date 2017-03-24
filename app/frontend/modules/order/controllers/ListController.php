@@ -15,7 +15,7 @@ class ListController extends BaseController
             return $this->errorJson( $msg = '缺少访问参数', $data = []);
         }
 
-        $pageSize = \Yunshop::request()->pagesize;
+        $pageSize = \Yunshop::request()->page_size;
         $pageSize = $pageSize ? $pageSize : 5;
 
         //返回的订单不包括"已删除订单"
