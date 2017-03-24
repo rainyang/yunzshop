@@ -22,4 +22,5 @@ define('SZ_YI_DEBUG', 1);//false
 !defined('SZ_YI_WECHAT_NOTIFY_URL') && define('SZ_YI_WECHAT_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/wechat/notifyUrl.php');
 !defined('SZ_YI_ALIPAY_NOTIFY_URL') && define('SZ_YI_ALIPAY_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/notifyUrl.php');
 !defined('SZ_YI_ALIPAY_REFUNDNOTIFY_URL') && define('SZ_YI_ALIPAY_REFUNDNOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/refundNotifyUrl.php');
+!defined('SZ_YI_ALIPAY_WITHDRAWNOTIFY_URL') && define('SZ_YI_ALIPAY_WITHDRAWNOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/refundNotifyUrl.php');
 !defined('SZ_YI_ALIPAY_RETURN_URL') && define('SZ_YI_ALIPAY_RETURN_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/returnUrl.php');
