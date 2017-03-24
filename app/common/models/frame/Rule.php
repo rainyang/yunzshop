@@ -20,4 +20,13 @@ class Rule extends BaseModel
     protected $guarded = [''];
 
 
+    /*
+     * 通过rid 关键字主键id获取关键字规则详情
+
+     *
+     * */
+    public static function getRuleByKeywordId($keywordId)
+    {
+        return self::uniacid()->where('rid', $keywordId)->first();
+    }
 }

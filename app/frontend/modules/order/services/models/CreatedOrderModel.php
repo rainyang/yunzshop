@@ -77,7 +77,8 @@ class CreatedOrderModel extends OrderModel
             'dispatch_details' => $this->_OrderDispatch->getDispatchDetails(),
             //优惠类记录订单配送信息
             'discount_details' => $this->_OrderDiscount->getDiscountDetails(),
-            'diapatch_price' => $this->getDispatchPrice(),
+            'discount_price' => $this->getDiscountPrice(),
+            'dispatch_price' => $this->getDispatchPrice(),
             'price' => $this->getPrice(),
             'goods_price' => $this->getGoodsPrice(),
         ];
