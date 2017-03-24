@@ -44,8 +44,13 @@ class MemberCart extends \app\common\models\MemberCart
         return $this->hasOne('app\common\models\GoodsOption','id','option_id');
     }
 
+    public static function getMemberCartById($cartId)
+    {
+        return static::uniacid()->where('id', $cartId)->get();
+    }
+
     /**
-     * Get a list of members shopping cart through member ID
+     * Get a list of members shopping cart through cart IDs
      *
      * @param array $cartIds
      *
