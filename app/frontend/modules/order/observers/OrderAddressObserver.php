@@ -24,7 +24,7 @@ class OrderAddressObserver extends \app\common\observers\BaseObserver
 
     public function saving(Model $model)
     {
-        dd($model);
+        dump($model);
 
         //dd($model);exit;
     }
