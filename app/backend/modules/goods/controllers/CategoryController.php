@@ -115,11 +115,7 @@ class CategoryController extends BaseController
                 }
             }
         }
-
-        $this->render('info', [
-            'item' => $categoryModel,
-            'level' => $categoryModel->level
-        ]);
+        
         return view('goods.category.info', [
             'item' => $categoryModel,
             'level' => $categoryModel->level

@@ -315,16 +315,24 @@
 </script>
 
 <script language="javascript">
+
     function send(btn){
         var modal =$('#modal-confirmsend');
         var itemid = $(btn).parent().find('.itemid').val();
+
         $(".id").val(itemid);
         modal.find(':input[name=order_id]').val( itemid );
-        var addressdata  = eval('(' +$(btn).parent().find('.addressdata').val()+')');
-        //console.log(addressdata.address);
-        modal.find('.realname').html(addressdata.realname);
-        modal.find('.mobile').html(addressdata.mobile);
-        modal.find('.address').html(addressdata.address);
+        if($(btn).parent().find('.addressdata').val()){
+            var addressdata  =JSON.parse($(btn).parent().find('.addressdata').val()) ;
+            if(addressdata){
+                modal.find('.realname').html(addressdata.realname);
+                modal.find('.mobile').html(addressdata.mobile);
+                modal.find('.address').html(addressdata.address);
+            }
+        }
+
+
+
     }
 </script>
 

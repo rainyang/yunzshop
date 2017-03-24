@@ -321,6 +321,7 @@
                                 </td>
                                 <td rowspan="{php echo count($order['has_many_order_goods'])}" width="10%">
                                     @include('order.ops')
+
                                 </td>
                         </tr>
 
@@ -335,41 +336,11 @@
             <div id="pager">{!! $pager !!}</div>
         </div>
     </div>
+    @include('order.modals')
     <script language="javascript">
 
-
-        function send(btn) {
-            var modal = $('#modal-confirmsend');
-            var itemid = $(btn).parent().find('.itemid').val();
-            modal.find(':input[name=id]').val(itemid);
-            var addressdata = eval('(' + $(btn).parent().find('.addressdata').val() + ')');
-            modal.find('.realname').html(addressdata.realname);
-            modal.find('.mobile').html(addressdata.mobile);
-            modal.find('.address').html(addressdata.address);
-        }
         $(function () {
-            $.ajax({
-                url: window.location.href,
-                type: 'post',
-                success: function (serverData) {
-                    if (serverData) {
-                        eval("var data=" + serverData + "");
-                        $("#pager").html(data.result.pager);
-                        $("#total").html(data.result.total);
-                        $("#totalmoney").html(data.result.totalmoney);
-                    }
-                }
-            })
-            $('#export').click(function () {
-                $('#form_p').val("order.list.export");
-                $('#form1').submit();
-                $('#form_p').val("order.list");
-            });
-            $('.select2').select2({
-                search: true,
-                placeholder: "请选择门店",
-                allowClear: true
-            });
+
         });
         function sendagent(btn) {
             var modal = $('#modal-changeagent');

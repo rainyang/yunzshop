@@ -14,16 +14,24 @@ use app\frontend\modules\member\models\MemberAddress;
 
 class MemberAddressController extends BaseController
 {
+    /*
+     * 会员收货地址列表
+     *
+     * */
     public function index()
     {
         $memberId = \YunShop::app()->getMemberId();
-        dd($memberId);
+        //dd($memberId);
         //$memberId = '57'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
         //var_dump(!empty($addressList));
         return $this->successJson($addressList);
     }
 
+    /*
+     * 添加会员搜获地址
+     * 
+     * */
     public function store()
     {
         $addressModel = new MemberAddress();
@@ -56,9 +64,6 @@ class MemberAddressController extends BaseController
                 return $this->errorJson("数据写入出错，请重试！");
             }
         }
-
-        return $this->render('member/edit_address');
-
     }
 
     public function update()
