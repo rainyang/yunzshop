@@ -74,9 +74,18 @@ class AliPay extends Pay
         return $alipay->refund();
     }
 
-    public function doWithdraw($member_id, $out_trade_no, $money, $desc, $type)
+    public function doWithdraw($member_id, $out_trade_no, $money, $desc, $type=1)
     {
-        // TODO: Implement doWithdraw() method.
+        $alipay = app('alipay.web');
+
+        $alipay->setTotalFee($money);
+        if (SZ_YI_DEBUG) {
+            $account ='iam_dingran@163.com';
+            $name ='丁冉';
+        }
+
+
+        return $alipay->withdraw($account, $name);
     }
 
     public function buildRequestSign()

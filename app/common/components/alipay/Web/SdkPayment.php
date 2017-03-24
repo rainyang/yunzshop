@@ -1,6 +1,8 @@
 <?php
 namespace app\common\components\alipay\Web;
 
+use app\common\facades\Setting;
+
 class SdkPayment
 {
 
@@ -477,6 +479,11 @@ class SdkPayment
 		return $responseText;
 	}
 
+    /**
+     * 统一退款
+     *
+     * @return string
+     */
 	public function refund()
     {
         $service = 'refund_fastpay_by_platform_pwd';
@@ -492,6 +499,33 @@ class SdkPayment
             'batch_fee' => $this->total_fee,
             'batch_num' => 1,
             'detail_data' => $this->out_trade_no.'^'.$this->total_fee.'^退款订单',
+            '_input_charset' => strtolower($this->_input_charset),
+        );
+
+        $para = $this->buildRequestPara($parameter);
+
+        return $this->__gateway_new . $this->createLinkstringUrlencode($para);
+    }
+
+    public function withdraw($collectioner_account, $collectioner_name)
+    {
+        $service = 'batch_trans_notify';
+        $pay = Setting::get('shop.pay');
+
+        $batch_no = date('Ymd', time()) . time();
+
+
+        $parameter = array(
+            'service' => $service,
+            'partner' => $this->partner,
+            'notify_url' => $this->notify_url,
+            'email' => $pay['alipay_number'],
+            'account_name' => $pay['alipay_name'],
+            'pay_date' => date('Ymd',time()),
+            'batch_no' => $batch_no,
+            'batch_fee' => $this->total_fee,
+            'batch_num' => 1,
+            'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现',
             '_input_charset' => strtolower($this->_input_charset),
         );
 
