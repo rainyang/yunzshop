@@ -83,7 +83,9 @@ class GoodsController extends BaseController
                 return !empty($item);
             });
 
-            $requestSearch['category'] = $categorySearch;
+            if ($categorySearch) {
+                $requestSearch['category'] = $categorySearch;
+            }
         }
 
         $catetory_menus = CategoryService::getCategoryMenu(
