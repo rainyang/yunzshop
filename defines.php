@@ -19,6 +19,6 @@ define('SZ_YI_DEBUG', 1);//false
 !defined('SZ_YI_EXPRESS_URL') &&define("SZ_YI_EXPRESS_URL", "https://m.kuaidi100.com/query?type=%s&postid=%s&id=1&valicode=&temp=%s");
 !defined('SZ_YI_LIVE_CLOUD_URL') &&define("SZ_YI_LIVE_CLOUD_URL", "https://yz.tbw365.cn"); //直播云端的API
 
-!defined('SZ_YI_WECHAT_NOTIFY_URL') && define('SZ_YI_WECHAT_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/wechat/notify.php');
-!defined('SZ_YI_ALIPAY_NOTIFY_URL') && define('SZ_YI_ALIPAY_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/notify.php');
-!defined('SZ_YI_ALIPAY_RETURN_URL') && define('SZ_YI_ALIPAY_RETURN_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/return.php');
+!defined('SZ_YI_WECHAT_NOTIFY_URL') && define('SZ_YI_WECHAT_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/wechat/notifyUrl.php');
+!defined('SZ_YI_ALIPAY_NOTIFY_URL') && define('SZ_YI_ALIPAY_NOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/notifyUrl.php');
+!defined('SZ_YI_ALIPAY_RETURN_URL') && define('SZ_YI_ALIPAY_RETURN_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/returnUrl.php');

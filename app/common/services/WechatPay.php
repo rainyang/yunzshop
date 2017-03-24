@@ -15,10 +15,10 @@ use app\common\models\Order;
 
 class WechatPay extends Pay
 {
-    public function doPay($subject, $body, $amount, $order_no, $extra)
+    public function doPay($data = [])
     {
         $this->payAccessLog();
-        $this->payLog(1, 1, $amount, '微信订单支付 订单号：' . $order_no);
+        $this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
 
         $user_info = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
 
@@ -32,9 +32,8 @@ class WechatPay extends Pay
         $app     = $this->getEasyWeChatApp($pay);
         $payment = $app->payment;
 
-        $order = $this->getEasyWeChatOrder($body, $order_no, $amount, $extra, $user_info);
+        $order = $this->getEasyWeChatOrder($data, $user_info);
         $result = $payment->prepare($order);
-
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             return show_json(1, $result);
         } else {
@@ -153,16 +152,16 @@ class WechatPay extends Pay
         return $app->payment;
     }
 
-    public function getEasyWeChatOrder($body, $order_no, $amount, $extra, $user_info)
+    public function getEasyWeChatOrder($data, $user_info)
     {
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...
-            'body'             => $body,
-            'out_trade_no'     => $order_no,
-            'total_fee'        => $amount * 100, // 单位：分
+            'body'             => $data['body'],
+            'out_trade_no'     => $data['order_no'],
+            'total_fee'        => $data['amount'] * 100, // 单位：分
             'nonce_str'        => random(8) . "",
             'device_info'      => 'sz_yi',
-            'attach'           => $extra,
+            'attach'           => $data['extra'],
             'spbill_create_ip' => $this->ip,
             'openid'           => $user_info['openid']
         ];
