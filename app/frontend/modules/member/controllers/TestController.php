@@ -22,7 +22,7 @@ class TestController extends BaseController
        $pay = new WechatPay();
        $data = $pay->doPay(['order_no'=>time(),'amount'=>0.2, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>'']);
 
-echo '<pre>';print_r($data);exit;
+
        $this->render('shop/wx',[
            'config' => $data['config'],
            'js' => $data['js']
