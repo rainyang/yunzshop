@@ -86,13 +86,13 @@ class GoodsController extends BaseController
                 return !empty($item) && $item !== 0;
             });
 
-            /*$categorySearch = array_filter(\YunShop::request()->category, function ($item) {
+            $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
                 return !empty($item);
             });
 
             if ($categorySearch) {
                 $requestSearch['category'] = $categorySearch;
-            }*/
+            }
         }
         //dd($requestSearch);
 
