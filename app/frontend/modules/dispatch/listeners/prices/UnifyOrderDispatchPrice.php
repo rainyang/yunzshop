@@ -24,11 +24,10 @@ class UnifyOrderDispatchPrice
 
         return;
     }
-    //订单满足本插件
+    //订单满足本插件 todo 需要重写
     public function needDispatch(){
-        return true;
+        return false;
     }
-    //todo 订单统一运费信息 从商品中获取
     private function getDispatchDetails(){
         $details = [
             'name'=>'统一运费',

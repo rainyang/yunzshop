@@ -75,8 +75,9 @@ class GoodsController extends BaseController
         $requestSearch = \YunShop::request()->search;
 
         if ($requestSearch) {
+
             $requestSearch = array_filter($requestSearch, function ($item) {
-                return !empty($item);
+                return !empty($item) && $item!=0;
             });
 
             $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
@@ -94,8 +95,8 @@ class GoodsController extends BaseController
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
             ]
         );
-
-        $list = Goods::Search($requestSearch)->paginate(20)->toArray();
+        //dd($requestSearch);
+        $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         return view('goods.index', [
             'list' => $list['data'],
@@ -249,9 +250,51 @@ class GoodsController extends BaseController
         ])->render();
     }
 
-    public function destroy($id)
+    public function qrcode()
     {
 
+        //$this->error($goods);
+    }
+
+    public function displayorder()
+    {
+        $displayOrders = \YunShop::request()->display_order;
+        foreach($displayOrders as $id => $displayOrder){
+            $goods = Goods::find($id);
+            $goods->display_order = $displayOrder;
+            $goods->save();
+        }
+        return $this->message('商品排序成功', Url::absoluteWeb('goods.goods.index'));
+        //$this->error($goods);
+    }
+
+    public function change()
+    {
+        //dd(\YunShop::request());
+        $id = \YunShop::request()->id;
+        $field = \YunShop::request()->type;
+        $goods = Goods::find($id);
+        $goods->$field = \YunShop::request()->value;
+        $goods->save();
+        //$this->error($goods);
+    }
+
+    public function setProperty()
+    {
+        $id = \YunShop::request()->id;
+        $field = \YunShop::request()->type;
+        $data = (\YunShop::request()->data == 1 ? '0' : '1');
+        $goods = Goods::find($id);
+        $goods->$field = $data;
+        $goods->save();
+        echo json_encode(["data" => $data, "result" => 1]);
+    }
+
+    public function destroy()
+    {
+        $id = \YunShop::request()->id;
+        $goods = Goods::destroy($id);
+        return $this->message('商品删除成功', Url::absoluteWeb('goods.goods.index'));
     }
 
     /**
@@ -280,9 +323,9 @@ class GoodsController extends BaseController
                 "show" => 1*/
             ],
         );
-        $this->render('goods/tpl/spec', [
+        return view('goods/tpl/spec', [
             'spec' => $spec,
-        ]);
+        ])->render();
     }
 
     /**
@@ -305,11 +348,11 @@ class GoodsController extends BaseController
             'thumb' => '',
         );
 
-        $this->render('goods/tpl/spec_item', [
+        return view('goods/tpl/spec_item', [
             'spec' => $spec,
             'goods' => $goodsModel,
             'specitem' => $specitem,
-        ]);
+        ])->render();
     }
 
     /**

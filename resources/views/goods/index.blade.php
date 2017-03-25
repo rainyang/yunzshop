@@ -25,7 +25,7 @@
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键字</label>
 							<div class="col-xs-12 col-sm-8 col-lg-9">
-								<input class="form-control" name="search[keyword]" id="keyword" type="text" value="" onclick="value='';" ／>
+								<input class="form-control" name="search[keyword]" id="keyword" type="text" value="{{$requestSearch['keyword']}}" onclick="value='';" ／>
 							</div>
 						</div>
 						<div class="form-group">
@@ -68,7 +68,7 @@
 									<option value="0">请选择品牌</option>
 									@if(!empty($brands))
 									@foreach($brands as $brand)
-									<option value="{php echo $brand['id']}">{{$brand['name']}}</option>
+									<option value="{{$brand['id']}}">{{$brand['name']}}</option>
 									@endforeach
 									@endif
 								</select>
@@ -124,7 +124,7 @@
 					border-left: 10px solid #e7eaec;
 				}
 			</style>
-			<form action="" method="post">
+			<form action="{!! yzWebUrl('goods.goods.displayorder') !!}" method="post">
 				<div class="panel panel-default">
 					<div class="panel-body table-responsive">
 						<table class="table table-hover">
@@ -148,7 +148,7 @@
 							<tr>
 								<td width="6%">{{$item['id']}}</td>
 								<td width="6%">
-									<input type="text" class="form-control" name="displayorder[{{$item['id']}}]" value="{{$item['display_order']}}">
+									<input type="text" class="form-control" name="display_order[{{$item['id']}}]" value="{{$item['display_order']}}">
 								</td>
 								<td width="6%" title="{{$item['title']}}">
 									<img src="{{tomedia($item['thumb'])}}" style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"  />
@@ -170,7 +170,7 @@
 											<div class="input-group" style="display:none" data-goodsid="{{$item['id']}}">
 												<input type='text' class='form-control' value="{{$item['price']}}" />
 												<div class="input-group-btn">
-													<button type="button" class="btn btn-default" data-goodsid='{{$item['id']}}' data-type="marketprice"><i class="fa fa-check"></i></button>
+													<button type="button" class="btn btn-default" data-goodsid='{{$item['id']}}' data-type="price"><i class="fa fa-check"></i></button>
 												</div>
 											</div>
 										@endif
@@ -182,7 +182,7 @@
 											<div class="input-group" style="display:none" data-goodsid="{{$item['id']}}">
 												<input type='text' class='form-control' value="{{$item['stock']}}"   />
 												<div class="input-group-btn">
-													<button type="button" class="btn btn-default" data-goodsid='{{$item['id']}}' data-type="total"><i class="fa fa-check"></i></button>
+													<button type="button" class="btn btn-default" data-goodsid='{{$item['id']}}' data-type="stock"><i class="fa fa-check"></i></button>
 												</div>
 											</div>
 										@endif
@@ -193,7 +193,7 @@
 								<td >{{$item['real_sales']}}</td>
 								<td >
 									@section('putaway')
-									<label data='{{$item['status']}}' class='label  label-default @if($item['status']==1) label-info @endif' onclick="setProperty(this,{{$item['id']}},'status')">
+									<label data='{{$item['status']}}' class='label  label-default @if($item['status']==1) label-info @endif' onclick="setProperty(this, {{$item['id']}},'status')">
 										@if($item['status']==1)
 											{{$lang['putaway']}}
 										@else
@@ -214,9 +214,9 @@
 										<i class="fa fa-qrcode"></i>
 									</a>
 
-									<a href="{{yzWebUrl('shop/goods', array('id' => $item['id'] ,'op' =>'copygoods'))}}"  title="{{$lang['copyshop']}}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
-									<a href="{{yzWebUrl('goods.goods.edit', array('id' => $item['id']))}}"class="btn btn-sm btn-default" title="编辑" target="_blank"><i class="fa fa-edit"></i></a>
-									<a href="{{yzWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'delete'))}}" onclick="return confirm('确认删除此商品？');
+									<a href="{{yzWebUrl('shop.goods.copy', array('id' => $item['id']))}}"  title="{{$lang['copyshop']}}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
+									<a href="{{yzWebUrl('goods.goods.edit', array('id' => $item['id']))}}"class="btn btn-sm btn-default" title="编辑"><i class="fa fa-edit"></i></a>
+									<a href="{{yzWebUrl('goods.goods.destroy', array('id' => $item['id']))}}" onclick="return confirm('确认删除此商品？');
 										return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-trash"></i></a>
 									<a href="javascript:;" data-url="{{yzAppUrl('shop/detail', array('id' => $item['id']))}}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
 								</td>
@@ -227,13 +227,13 @@
 									@if($item['goods_sn'])
 									<label data='{{$item['isnew']}}' class='label label-default text-default'>商品编号：</label><span style="font-size:14px;color:#7B7B7B; margin-right:20px;">{{$item['goods_sn']}}</span>
 									 @endif
-									<label data='{{$item['is_new']}}' class='label label-default text-default @if($item['is_new']==1)label-info text-pinfo @endif'  onclick="setProperty(this,{{$item['id']}},'new')">新品</label>-
+									<label data='{{$item['is_new']}}' class='label label-default text-default @if($item['is_new']==1)label-info text-pinfo @endif'  onclick="setProperty(this,{{$item['id']}},'is_new')">新品</label>-
 
-									<label data='{{$item['is_hot']}}' class='label label-default text-default @if($item['is_hot']==1)label-info text-pinfo @endif' onclick="setProperty(this,{{$item['id']}},'hot')">热卖</label>-
+									<label data='{{$item['is_hot']}}' class='label label-default text-default @if($item['is_hot']==1)label-info text-pinfo @endif' onclick="setProperty(this,{{$item['id']}},'is_hot')">热卖</label>-
 
-									<label data='{{$item['is_recommand']}}' class='label label-default text-default @if($item['is_recommand']==1)label-info text-pinfo @endif' onclick="setProperty(this,{{$item['id']}},'recommand')">推荐</label>-
+									<label data='{{$item['is_recommand']}}' class='label label-default text-default @if($item['is_recommand']==1)label-info text-pinfo @endif' onclick="setProperty(this,{{$item['id']}},'is_recommand')">推荐</label>-
 
-									<label data='{{$item['is_discount']}}' class='label label-default text-default @if($item['is_discount']==1)label-info text-pinfo @endif'  onclick="setProperty(this,{{$item['id']}},'discount')">促销</label>-
+									<label data='{{$item['is_discount']}}' class='label label-default text-default @if($item['is_discount']==1)label-info text-pinfo @endif'  onclick="setProperty(this,{{$item['id']}},'is_discount')">促销</label>-
 
 
 								</td>
@@ -266,7 +266,7 @@
     $('.umphp').hover(function() {
         var url = $(this).attr('data-url');
         var goodsid = $(this).attr('data-goodsid');
-		$.post("{!! yzWebUrl('shop/goods') !!}"
+		$.post("{!! yzWebUrl('shop.goods.qrcode') !!}"
 			, {'op': 'goods_qrcode', id: goodsid, url: url}
 			, function (qr) {
                 if (qr.img) {
@@ -284,11 +284,12 @@
 	})
 	function fastChange(id, type, value) {
 		$.ajax({
-			url: "{!! yzWebUrl('shop/goods') !!}",
+			url: "{!! yzWebUrl('goods.goods.change') !!}",
 			type: "post",
-			data: {op: 'change', id: id, type: type, value: value},
+			data: {id: id, type: type, value: value},
 			cache: false,
-			success: function () {
+			success: function ($data) {
+				//console.log($data);
 				location.reload();
 			}
 		})
@@ -338,23 +339,23 @@
 	})
 	function setProperty(obj, id, type) {
 		$(obj).html($(obj).html() + "...");
-		$.post("{!! yzWebUrl('shop/goods') !!}"
-				, {'op': 'setgoodsproperty', id: id, type: type, plugin: "", data: obj.getAttribute("data")}
-		, function (d) {
-			$(obj).html($(obj).html().replace("...", ""));
-			if (type == 'type') {
-				$(obj).html(d.data == '1' ? '实体物品' : '虚拟物品');
-			}
-			if (type == 'status') {
-				$(obj).html(d.data == '1' ? '{{$lang['putaway']}}' : '{{$lang['soldout']}}');
-			}
-			$(obj).attr("data", d.data);
-			if (d.result == 1) {
-				$(obj).toggleClass("label-info text-pinfo");
-			}
-		}
-		, "json"
-				);
+		$.post("{!! yzWebUrl('goods.goods.setProperty') !!}", {id: id, type: type, data: obj.getAttribute("data")}
+				, function (d) {
+					console.log(d);
+					$(obj).html($(obj).html().replace("...", ""));
+					if (type == 'type') {
+						$(obj).html(d.data == '1' ? '实体物品' : '虚拟物品');
+					}
+					if (type == 'status') {
+						$(obj).html(d.data == '1' ? '{{$lang['putaway']}}' : '{{$lang['soldout']}}');
+					}
+					$(obj).attr("data", d.data);
+					if (d.result == 1) {
+						$(obj).toggleClass("label-info text-pinfo");
+					}
+				}
+				, "json"
+		);
 	}
 
 </script>

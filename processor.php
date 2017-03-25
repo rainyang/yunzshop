@@ -70,14 +70,12 @@ class Sz_yiModuleProcessor extends WeModuleProcessor
     /**
      * 预定义的操作, 构造返回图文消息结构, 一条图文消息不能超过 10 条内容
      * @param array $news 回复的图文定义,定义为元素集合
-     * <pre>
      * 	array(
             'title' => '', 		// string: 新闻标题
-            'picurl' => '',		// string: 新闻描述
-            'url' => '',		// string: 图片链接
-            'description' => ''	/string: 原文链接
+            'picurl' => '',		// string: 图片链接
+            'url' => '',		// string: 原文链接
+            'description' => ''	/string: 新闻描述
             );
-        </pre>
      * @return array 返回的消息数组结构
      */
     public function news(array $news)

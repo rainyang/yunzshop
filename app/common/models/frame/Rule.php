@@ -22,8 +22,10 @@ class Rule extends BaseModel
 
     /*
      * 通过rid 关键字主键id获取关键字规则详情
-
      *
+     * @param int $keyworkId
+     *
+     * @return object
      * */
     public static function getRuleByKeywordId($keywordId)
     {

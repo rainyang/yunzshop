@@ -62,7 +62,7 @@ class Share extends BaseModel
             'no_follow_message' => 'max:255',
             'follow_message' => 'max:255',
             'share_title' => 'max:50',
-            'share_thumb' => 'image',
+            'share_thumb' => '',
             'share_desc' => '',
         ];
     }
