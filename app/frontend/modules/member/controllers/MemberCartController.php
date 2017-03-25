@@ -45,6 +45,7 @@ class MemberCartController extends BaseController
 
         return $this->successJson('获取列表成功', $cartList);
     }
+    
     /**
      * Add member cart
      */
@@ -103,6 +104,7 @@ class MemberCartController extends BaseController
      * */
     public function updateNum()
     {
+        //@todo 需要添加商品最多购买判断。会员限购数量判断
         $cartId = \YunShop::request()->id;
         $num = \YunShop::request()->num;
         if ($cartId && $num) {
