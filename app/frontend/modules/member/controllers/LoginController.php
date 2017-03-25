@@ -31,7 +31,7 @@ class LoginController extends BaseController
 
                 if ($member !== NULL) {
                     $msg = $member->login();
-echo '<pre>';print_r($msg->status);exit;
+                    $msg = json_decode($msg);
                     if ($msg->status == 1) {
                         return $this->successJson($msg->result);
                     } else {
