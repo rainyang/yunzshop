@@ -8,7 +8,7 @@
 
 namespace app\common\services;
 
-use app\common\models\MemberShopInfo;
+use app\common\models\Member;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
 use app\common\models\Order;
@@ -19,9 +19,9 @@ class WechatPay extends Pay
     {
         //$this->payAccessLog();
         //$this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
-        session()->put('member_id',9);
+        session()->put('member_id',123);
 
-       // $user_info = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $openid = Member::getOpenId(\YunShop::app()->getMemberId());
 
         $pay = \Setting::get('shop.pay');
 
@@ -31,11 +31,13 @@ class WechatPay extends Pay
         }
 
         $app     = $this->getEasyWeChatApp($pay);
+
         $payment = $app->payment;
 
-        $order = $this->getEasyWeChatOrder($data, $user_info);
+        $order = $this->getEasyWeChatOrder($data, $openid);
+
         $result = $payment->prepare($order);
-        echo '<pre>';print_r($result);exit;
+echo '<pre>';print_r($result);exit;
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             return show_json(1, $result);
         } else {
@@ -151,10 +153,11 @@ class WechatPay extends Pay
         ];
 
         $app = new Application($options);
-        return $app->payment;
+
+        return $app;
     }
 
-    public function getEasyWeChatOrder($data, $user_info)
+    public function getEasyWeChatOrder($data, $openid)
     {
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...
@@ -165,7 +168,7 @@ class WechatPay extends Pay
             'device_info'      => 'sz_yi',
             'attach'           => $data['extra'],
             'spbill_create_ip' => $this->ip,
-            'openid'           => $user_info['openid']
+            'openid'           => $openid
         ];
 
         return new easyOrder($attributes);

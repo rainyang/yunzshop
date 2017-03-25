@@ -20,7 +20,7 @@ class TestController extends BaseController
    public function index()
    {
        $pay = new WechatPay();
-$pay->doPay('1','2', '0.1', 4,5);
+$pay->doPay(['order_no'=>time(),'amount'=>0.2, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>'']);
 
        exit;
        $pay = new AliPay();
