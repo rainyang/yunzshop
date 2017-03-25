@@ -159,13 +159,13 @@ class MemberOfficeAccountService extends MemberService
 
                 session()->put('member_id',$member_id);
             } else {
-                return json_encode(['status'=>0, ['result'=>['url'=>$authurl]]]);
+                return json_encode(['status'=>0, 'result'=>['url'=>$authurl]]);
             }
         } else {
-            return json_encode(['status'=>0, ['result'=>['url'=>$authurl]]]);
+            return json_encode(['status'=>0, 'result'=>['url'=>$authurl]]);
         }
 
-        return json_encode(['status'=>1, ['result'=>['member_id'=>session('member_id')]]]);
+        return json_encode(['status'=>1, 'result'=>['member_id'=>session('member_id')]]);
 
     }
 
