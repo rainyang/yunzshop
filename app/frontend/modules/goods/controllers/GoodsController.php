@@ -46,7 +46,12 @@ class GoodsController extends BaseController
         }
 
         if (!$goodsModel->status) {
-            //$this->errorJson('商品已下架.');
+            $this->errorJson('商品已下架.');
+        }
+
+        if ($goodsModel->has_option) {
+            $goodsModel->min_price = $goodsModel->hasManyOptions->min("product_price");
+            $goodsModel->max_price = $goodsModel->hasManyOptions->max("product_price");
         }
 
         $goodsModel->setHidden(
@@ -79,7 +84,7 @@ class GoodsController extends BaseController
         if (empty($category_id)) {
             $this->errorJson('请输入正确的商品分类.');
         }
-        
+
         $categorys = Category::uniacid()->select("name", "thumb", "id")->where(['id' => $category_id])->first();
         $goodsList = Goods::uniacid()->select('yz_goods.id', 'title', 'thumb', 'price', 'market_price')
             ->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')
