@@ -51,11 +51,13 @@ class Category extends BaseModel
     {
         $model = self::select('id','name','thumb')
             ->uniacid();
+
         if ($set['cat_level'] == 3) {
             $model->with(['hasManyChildren'=>function($qurey){
-                $qurey->select('id','name','thumb');
+                $qurey->select('id','parent_id','name','thumb');
             }]);
         }
+
         $model->where('parent_id', $parentId);
         $model->where('enabled', 1);
         $model->orderBy('id', 'asc');
