@@ -51,7 +51,7 @@
         });
     })
     function addParam() {
-        var url = "{{yzWebUrl('goods.goods.getParamTpl')}}";
+        var url = "{!! yzWebUrl('goods.goods.getParamTpl') !!}";
         $.ajax({
             "url": url,
             success: function(data) {

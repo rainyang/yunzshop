@@ -266,7 +266,7 @@
     $('.umphp').hover(function() {
         var url = $(this).attr('data-url');
         var goodsid = $(this).attr('data-goodsid');
-		$.post("{{yzWebUrl('shop/goods')}}"
+		$.post("{!! yzWebUrl('shop/goods') !!}"
 			, {'op': 'goods_qrcode', id: goodsid, url: url}
 			, function (qr) {
                 if (qr.img) {
@@ -284,7 +284,7 @@
 	})
 	function fastChange(id, type, value) {
 		$.ajax({
-			url: "{{yzWebUrl('shop/goods')}}",
+			url: "{!! yzWebUrl('shop/goods') !!}",
 			type: "post",
 			data: {op: 'change', id: id, type: type, value: value},
 			cache: false,
@@ -338,7 +338,7 @@
 	})
 	function setProperty(obj, id, type) {
 		$(obj).html($(obj).html() + "...");
-		$.post("{{yzWebUrl('shop/goods')}}"
+		$.post("{!! yzWebUrl('shop/goods') !!}"
 				, {'op': 'setgoodsproperty', id: id, type: type, plugin: "", data: obj.getAttribute("data")}
 		, function (d) {
 			$(obj).html($(obj).html().replace("...", ""));

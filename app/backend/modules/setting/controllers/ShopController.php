@@ -241,12 +241,12 @@ class ShopController extends BaseController
 
     private function setAlipayParams($data)
     {
-        Setting::set('alipay.pem', SZ_YI_PATH . 'cert/cacert.pem');
+        Setting::set('alipay.pem', SZ_YI_PATH . 'storage/cacert.pem');
         Setting::set('alipay.partner_id', $data['alipay_partner']);
         Setting::set('alipay.seller_id', $data['alipay_account']);
         Setting::set('alipay-mobile.sign_type', 'RSA');
-        Setting::set('alipay-mobile.private_key_path', SZ_YI_PATH . 'cert/private_key.pem');
-        Setting::set('alipay-mobile.public_key_path', SZ_YI_PATH . 'cert/public_key.pem');
+        Setting::set('alipay-mobile.private_key_path', SZ_YI_PATH . 'storage/private_key.pem');
+        Setting::set('alipay-mobile.public_key_path', SZ_YI_PATH . 'storage/public_key.pem');
         Setting::set('alipay-mobile.notify_url', SZ_YI_ALIPAY_NOTIFY_URL);
         Setting::set('alipay-web.key', $data['alipay_secret']);
         Setting::set('alipay-web.sign_type', 'MD5');
