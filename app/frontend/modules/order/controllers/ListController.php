@@ -20,7 +20,7 @@ class ListController extends BaseController
 
         //返回的订单不包括"已删除订单"
         $list = OrderListModel::getRequestOrderList($status, $uid)->where('status','<>','-1')->paginate($pageSize)->toArray();
-dd($list);
+//dd($list);
 
         if ($list['total'] == 0) {
             return $this->errorJson($msg = '未找到数据', $data = []);
