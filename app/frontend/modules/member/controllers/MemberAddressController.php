@@ -36,6 +36,7 @@ class MemberAddressController extends BaseController
     {
         $addressModel = new MemberAddress();
         $requestAddress = \YunShop::request();
+        dd($requestAddress);
         if ($requestAddress) {
             $data = array(
                 //'uid' => $requestAddress->uid,

@@ -25,15 +25,7 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
     public function getOrderGoods(){
         return $this->_OrderGoods;
     }
-    protected function setGoodsDiscount()
-    {
-        $this->_GoodsDiscount = DiscountService::getCreatedOrderGoodsDiscountModel($this->getOrderGoods());
-    }
 
-    protected function setGoodsDispatch()
-    {
-        $this->_GoodsDispatch = DispatchService::getCreatedOrderGoodsDispatchModel($this->getOrderGoods());
-    }
     protected function getTotal(){
         return $this->_OrderGoods->total;
     }
@@ -52,19 +44,16 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
 
     public function getGoodsPrice()
     {
-
         return $this->total * $this->_OrderGoods->goods_price;
-
     }
 
     public function update()
     {
         $data = array(
             'goods_price' => $this->getGoodsPrice(),
+            'discount_price' => $this->getDiscountPrice(),
             'price' => $this->getPrice(),
             'total' => $this->getTotal(),
-            'discount_details' => $this->_GoodsDiscount->getDiscountDetails(),
-            'dispatch_details' => $this->_GoodsDispatch->getDispatchDetails(),
         );
         dump('订单商品改价信息:');
         dump($data);
