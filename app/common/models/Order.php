@@ -21,14 +21,7 @@ class Order extends BaseModel
     protected $guarded = ['id'];
     protected $appends = ['status_name', 'button_models'];
     protected $search_fields = ['id', 'order_sn'];
-    protected $casts = [
-        'discount_details' => 'json',
-        'dispatch_details' => 'json',
-    ];
-    protected $attributes = [
-        'discount_details' => [],
-        'dispatch_details' => [],
-    ];
+
     const CLOSE = -1;
     const WAIT_PAY = 0;
     const WAIT_SEND = 1;

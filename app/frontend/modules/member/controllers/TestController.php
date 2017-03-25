@@ -19,10 +19,10 @@ class TestController extends BaseController
 {
    public function index()
    {
-       //$pay = new CreditPay();
-//$pay->doPay('1','2', '0.1', 4,5);
+       $pay = new WechatPay();
+$pay->doPay(['order_no'=>time(),'amount'=>0.2, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>'']);
 
- //      exit;
+       exit;
        $pay = new AliPay();
 
       //\\ $p = $pay->doRefund('2017032421001004920213140182', '1', '0.1');

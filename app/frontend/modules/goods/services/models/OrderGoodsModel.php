@@ -23,13 +23,8 @@ abstract class OrderGoodsModel
 
     public function __construct()
     {
-        $this->setGoodsDiscount();
-        $this->setGoodsDispatch();
+
     }
-
-    abstract protected function setGoodsDispatch();
-
-    abstract protected function setGoodsDiscount();
 
     /**
      * 设置商品数量
@@ -40,18 +35,18 @@ abstract class OrderGoodsModel
         $this->total = $total;
     }
     /**
-     * 计算最终价格
+     * 计算成交价格
      * @return int
      */
     public function getPrice()
     {
-        //最终价格=商品价格+优惠价格
+        //成交价格=商品销售价+优惠价格
         $result = max($this->getGoodsPrice() + $this->getDiscountPrice(),0);
         return $result;
     }
 
     /**
-     * 计算商品价格
+     * 计算商品销售价格
      * @return int
      */
     abstract function getGoodsPrice();
@@ -62,25 +57,9 @@ abstract class OrderGoodsModel
      */
     protected function getDiscountPrice()
     {
-        return $this->_GoodsDiscount->getDiscountPrice();
+        //todo 重写
+        return 11;
 
     }
 
-    /**
-     * 获取订单商品配送详情
-     * @return array
-     */
-    public function getDispatchDetails()
-    {
-        return $this->_GoodsDispatch->getDispatchDetails();
-    }
-
-    /**
-     * 获取订单优惠详情
-     * @return array
-     */
-    public function getDiscountDetails()
-    {
-        return $this->_GoodsDiscount->getDiscountDetails();
-    }
 }

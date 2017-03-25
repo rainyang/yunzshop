@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\models;
 
 class MemberAddress extends \app\common\models\MemberAddress
 {
+    protected $guarded = [''];
     /*
      *  Get a list of members receiving addresses
      *
@@ -81,7 +82,7 @@ class MemberAddress extends \app\common\models\MemberAddress
     public  function rules()
     {
         return [
-            'mobile'    => 'mobile_phone',
+            'mobile'    => 'required',
             'username'  => 'required',
             'province'  => 'required',
             'city'      => 'required',
