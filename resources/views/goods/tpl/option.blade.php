@@ -9,7 +9,7 @@
        <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用{{$lang['shopoption']}}</label>
         <div class="col-sm-9 col-xs-12">
 	<label class="checkbox-inline">
-		<input type="checkbox" id="hasoption" value="1" name="has_option" @if($goods['has_option']==1) checked @endif />启用{{$lang['shopoption']}}
+		<input type="checkbox" id="hasoption" value="1" name="goods[has_option]" @if($goods['has_option']==1) checked @endif />启用{{$lang['shopoption']}}
 	</label>
 	  <span class="help-block">启用{{$lang['shopoption']}}后，商品的价格及库存以商品规格为准,库存设置为0则不显示,-1为不限制</span>
 
@@ -104,7 +104,7 @@
 	})
 	function addDataSpec(){
 		$("#add-spec").html("正在处理...").attr("disabled", "true").toggleClass("btn-primary");
-		var url = "{{yzWebUrl('shop/tpl',array('tpl'=>'spec_data'))}}";
+		var url = "{!! yzWebUrl('shop/tpl',array('tpl'=>'spec_data')) !!}";
 		$.ajax({
 			"url": url,
 			success:function(data){
@@ -126,7 +126,7 @@
         }
                     
 		$("#add-spec").html("正在处理...").attr("disabled", "true").toggleClass("btn-primary");
-		var url = "{{yzWebUrl('goods.goods.getSpecTpl',array('tpl'=>'spec'))}}";
+		var url = "{!! yzWebUrl('goods.goods.getSpecTpl',array('tpl'=>'spec')) !!}";
 		$.ajax({
 			"url": url,
 			success:function(data){
@@ -147,7 +147,7 @@
 	}
 	function addSpecItem(specid){
 	$("#add-specitem-" + specid).html("正在处理...").attr("disabled", "true");
-		var url = "{{yzWebUrl('goods.goods.getSpecItemTpl',array('tpl'=>'specitem'))}}" + "&specid=" + specid;
+		var url = "{!! yzWebUrl('goods.goods.getSpecItemTpl',array('tpl'=>'specitem')) !!}" + "&specid=" + specid;
 		$.ajax({
 			"url": url,
 			success:function(data){

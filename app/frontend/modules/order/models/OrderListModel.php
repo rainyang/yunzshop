@@ -6,7 +6,7 @@ use app\common\models\Order;
 
 class OrderListModel extends Order
 {
-    protected $hidden = ['uniacid','status','create_time','is_deleted','is_member_deleted',
+    protected $hidden = ['uniacid','create_time','is_deleted','is_member_deleted',
                         'finish_time','pay_time',',send_time','send_time','uid',
                         'cancel_time','created_at','updated_at','deleted_at']; //在 Json 中隐藏的字段
 
@@ -16,9 +16,8 @@ class OrderListModel extends Order
     public static function getOrderList($uid)
     {
         $orders = self::with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title']);
+            return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title','goods_option_id','goods_option_title']);
         }])->where('uid','=',$uid);
-
         return $orders;
     }
 

@@ -26,7 +26,7 @@ class RuleKeyword extends BaseModel
     /*
      * 关键字是否存在，存在返回id，不存在返回false；
      *
-     * @parms string $keyword
+     * @param string $keyword
      *
      * @return mixed   $id or false
      * */

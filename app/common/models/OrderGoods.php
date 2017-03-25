@@ -12,14 +12,7 @@ class OrderGoods extends BaseModel
 {
     public $table = 'yz_order_goods';
     protected $hidden = ['order_id'];
-    protected $casts = [
-        'discount_details' => 'json',
-        'dispatch_details' => 'json',
-    ];
-    protected $attributes = [
-        'discount_details' => [],
-        'dispatch_details' => [],
-    ];
+
     protected $fillable = [];
     protected $guarded = ['id'];
 
