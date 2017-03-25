@@ -21,7 +21,7 @@ class WechatPay extends Pay
         //$this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
         session()->put('member_id',9);
 
-       // $user_info = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $user_info = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         $pay = \Setting::get('shop.pay');
 
@@ -31,11 +31,13 @@ class WechatPay extends Pay
         }
 
         $app     = $this->getEasyWeChatApp($pay);
+
         $payment = $app->payment;
 
         $order = $this->getEasyWeChatOrder($data, $user_info);
+
         $result = $payment->prepare($order);
-        echo '<pre>';print_r($result);exit;
+
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             return show_json(1, $result);
         } else {
@@ -151,7 +153,8 @@ class WechatPay extends Pay
         ];
 
         $app = new Application($options);
-        return $app->payment;
+
+        return $app;
     }
 
     public function getEasyWeChatOrder($data, $user_info)
