@@ -34,6 +34,7 @@ class WechatPay extends Pay
 
         $order = $this->getEasyWeChatOrder($data, $user_info);
         $result = $payment->prepare($order);
+        echo '<pre>';print_r($result);exit;
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             return show_json(1, $result);
         } else {
