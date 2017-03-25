@@ -52,6 +52,11 @@ class Goods extends BaseModel
         return $this->hasMany('app\common\models\GoodsParam');
     }
 
+    public function belongsToCategorys()
+    {
+        return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
+    }
+
     public function hasManyOptions()
     {
         return $this->hasMany('app\common\models\GoodsOption');
