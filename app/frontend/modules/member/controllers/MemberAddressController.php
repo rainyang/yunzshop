@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\models\member\Address;
 use app\frontend\modules\member\models\MemberAddress;
 
 class MemberAddressController extends BaseController
@@ -26,6 +27,23 @@ class MemberAddressController extends BaseController
         //var_dump(!empty($addressList));
         $msg = "获取列表成功";
         return $this->successJson($msg, $addressList);
+    }
+
+    /*
+     * 地址JSON数据接口
+     *
+     * */
+    public function address()
+    {
+        $address = Address::getAllAddress();
+        $province = [];
+        foreach ($address as $key)
+        {
+            if ($key['parentid'] == 0 && $key['level'] == 1){
+            }
+
+        }
+        dd($province);
     }
 
     /*
@@ -81,7 +99,7 @@ class MemberAddressController extends BaseController
 
     public function update()
     {
-        $addressModel = MemberAddress::getAddressById(\YunShop::request()->id);
+        $addressModel = MemberAddress::getAddressById(\YunShop::request()->address_id);
         if (!$addressModel) {
             return $this->errorJson("未找到数据或已删除");
         }

@@ -9,7 +9,19 @@
 namespace app\common\models\member;
 
 
-class Address
+use app\common\models\BaseModel;
+
+class Address extends BaseModel
 {
+    public $table = 'yz_address';
+
+    public $timestamps = false;
+
+    public $guarded = [''];
+
+    public static function getAllAddress()
+    {
+        return static::all()->toArray();
+    }
 
 }
