@@ -11,46 +11,17 @@ use Illuminate\Support\Facades\Log;
 
 class CouponService
 {
-    const COUPON_CATEGORY_USE = 3;
-    const COUPON_GOODS_USE = 4;
+    protected $OrderModel;
+    protected $memberCoupon;
 
-    public static function getMemberCoupon($used = 0) {
-        return static::uniacid()->where('used', $used);
+    public function __construct($OrderModel, $memberCoupon){
+        $this->OrderModel = $OrderModel;
+        $this->memberCoupon = $memberCoupon;
     }
 
-    /**
-     * 获得用户可使用的优惠券,预下单页
-     * 传递过来一个预下单model
-     * 返回可使用优惠券列表
-     */
-    public static function getValidCouponByPreOrder(PreGeneratedOrderModel $OrderModel)
+    public function getValidCoupon()
     {
-        //dd($OrderModel);
-        $memberValidCouponsCollection = self::getValidCoupon($OrderModel->getMemberModel())->get();
-
-        $memberValidCoupons = $memberValidCouponsCollection->filter(function ($memberValidCoupon) use ($OrderModel){
-            return self::validUseType($memberValidCoupon, $OrderModel) &&
-                self::validEnoughMoney($memberValidCoupon, $OrderModel) &&
-                self::validEnoughTime($memberValidCoupon, $OrderModel);
-
-        });
-
-        //dd(self::calCoupon($memberValidCoupons, $OrderModel));
-        //dd($memberValidCoupons);
-        $data = [
-            ['name' => 'sss会员等级折扣111',
-                'value' => '85',
-                'price' => '-50',
-                'plugin' => '0',
-                'coupon_id' => '1'
-            ],
-            ['name' => 'sss会员等级折扣111',
-                'value' => '85',
-                'price' => '-50',
-                'plugin' => '1',
-            ]
-        ];
-        return $data;
+        return $this->validUseType() && $this->validEnoughMoney() && $this->validEnoughTime();
     }
 
     public static function calCoupon($memberValidCoupons, PreGeneratedOrderModel $OrderModel)
@@ -85,10 +56,6 @@ class CouponService
         return $couponDatas;
     }
 
-    public static function getValidCoupon($MemberModel)
-    {
-        return MemberCoupon::getMemberCoupon($MemberModel);
-    }
 
     /**
      * 是否满足适用范围,如订单/通用/指定分类/指定商品
@@ -96,16 +63,16 @@ class CouponService
      * @param $OrderModel
      * @return bool
      */
-    protected static function validUseType($memberValidCoupon, PreGeneratedOrderModel $OrderModel)
+    protected function validUseType()
     {
-        //dd($memberValidCoupon);
-        if ($memberValidCoupon->belongsToCoupon->use_type == self::COUPON_GOODS_USE) {
-            Log::info("Coupon_id:{$memberValidCoupon->coupon_id} ,指定商品不满足.");
+        //dd($this->memberCoupon);
+        if ($this->memberCoupon->belongsToCoupon->use_type == Coupon::COUPON_GOODS_USE) {
+            Log::info("Coupon_id:{$this->memberCoupon->coupon_id} ,指定商品不满足.");
             return false;
         }
 
-        if ($memberValidCoupon->belongsToCoupon->use_type == self::COUPON_CATEGORY_USE) {
-            Log::info("Coupon_id:{$memberValidCoupon->coupon_id} ,指定分类不满足.");
+        if ($this->memberCoupon->belongsToCoupon->use_type == Coupon::COUPON_CATEGORY_USE) {
+            Log::info("Coupon_id:{$this->memberCoupon->coupon_id} ,指定分类不满足.");
             return false;
         }
 
@@ -118,10 +85,10 @@ class CouponService
      * @param $OrderModel
      * @return bool
      */
-    protected static function validEnoughMoney($memberValidCoupon, PreGeneratedOrderModel $OrderModel)
+    protected function validEnoughMoney()
     {
-        if ($memberValidCoupon->belongsToCoupon->enough > 0 && $OrderModel->toArray()['price'] < $memberValidCoupon->belongsToCoupon->enough) {
-            Log::info("Coupon_id:{$memberValidCoupon->coupon_id} ,消费金额不满足.");
+        if ($this->memberCoupon->belongsToCoupon->enough > 0 && $this->OrderModel->toArray()['price'] < $this->memberCoupon->belongsToCoupon->enough) {
+            Log::info("Coupon_id:{$this->memberCoupon->coupon_id} ,消费金额不满足.");
             return false;
         }
 
@@ -134,23 +101,23 @@ class CouponService
      * @param $OrderModel
      * @return bool
      */
-    protected static function validEnoughTime($memberValidCoupon, PreGeneratedOrderModel $OrderModel)
+    protected function validEnoughTime()
     {
         //dd($memberValidCoupon->belongsToCoupon->time_limit);
         //领取后多少天可用
-        if ($memberValidCoupon->belongsToCoupon->time_limit == 0
-            && ceil((time() - $memberValidCoupon->get_time) / 86400) > $memberValidCoupon->belongsToCoupon->time_days) {
+        if ($this->memberCoupon->belongsToCoupon->time_limit == 0
+            && ceil((time() - $this->memberCoupon->get_time) / 86400) > $this->memberCoupon->belongsToCoupon->time_days) {
             //$diffDay = ceil((time() - $memberValidCoupon->get_time) / 86400);
-            Log::info("Coupon_id:{$memberValidCoupon->coupon_id} ,天数条件不满足.");
+            Log::info("Coupon_id:{$this->memberCoupon->coupon_id} ,天数条件不满足.");
 
             return false;
         }
 
         //什么时间段可用
-        if ($memberValidCoupon->belongsToCoupon->time_limit == 1
-            && ($memberValidCoupon->belongsToCoupon->time_start > time())
-            && (time() < $memberValidCoupon->belongsToCoupon->time_end)) {
-            Log::info("Coupon_id:{$memberValidCoupon->coupon_id} ,时间段条件不满足.");
+        if ($this->memberCoupon->belongsToCoupon->time_limit == 1
+            && ($this->memberCoupon->belongsToCoupon->time_start > time())
+            && (time() < $this->memberCoupon->belongsToCoupon->time_end)) {
+            Log::info("Coupon_id:{$this->memberCoupon->coupon_id} ,时间段条件不满足.");
             return false;
         }
         return true;

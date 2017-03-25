@@ -514,19 +514,19 @@ class SdkPayment
         $pay = Setting::get('shop.pay');
 
         $batch_no = date('Ymd', time()) . time();
-
+        $notify_url = SZ_YI_ALIPAY_WITHDRAWNOTIFY_URL;
 
         $parameter = array(
             'service' => $service,
             'partner' => $this->partner,
-            'notify_url' => $this->notify_url,
+            'notify_url' => $notify_url,
             'email' => $pay['alipay_number'],
             'account_name' => $pay['alipay_name'],
             'pay_date' => date('Ymd',time()),
             'batch_no' => $batch_no,
             'batch_fee' => $this->total_fee,
             'batch_num' => 1,
-            'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现-' . \YunShop::app()->uniacid,
+            'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现_' . \YunShop::app()->uniacid,
             '_input_charset' => strtolower($this->_input_charset),
         );
 

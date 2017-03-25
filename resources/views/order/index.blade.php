@@ -61,7 +61,7 @@
                         <input type="hidden" name="a" value="entry"/>
                         <input type="hidden" name="m" value="sz_yi"/>
                         <input type="hidden" name="do" value="order" id="form_do"/>
-                        <input type="hidden" name="route" value="order.list" id="form_p"/>
+                        <input type="hidden" name="route" value="{{$url}}" id="form_p"/>
                         <div class="form-group">
                             <div class="col-sm-8 col-lg-12 col-xs-12">
                                 @section('search_bar')
@@ -175,7 +175,7 @@
                     <td colspan='8' style="text-align: left;">
                         订单数: <span id="total">{{$list['total']}}</span>
                         订单金额: <span id="totalmoney" style="color:red">{{$total_price}}</span>元&nbsp;
-                        @if( $perm_role == 1)
+                        @if(0)
                             结算金额: <span style="color:red">
                                 @if( $costmoney>0){{$costmoney}}</span>元
                             &nbsp;<a class="btn btn-default"
@@ -242,7 +242,7 @@
                                 @if( 0&&$order['cashier']==1){{$order['name']['name']}}@else{{$order_goods['title']}}@endif @if( !empty($order_goods['optiontitle']))
                                     <br/><span
                                             class="label label-primary sizebg">{{$order_goods['optiontitle']}}</span>@endif
-                                }
+
                                 <br/>{{$order_goods['goods_sn']}}
                             </td>
                             <td style='border-left:none;text-align:left;/*width:150px*/'>@if( $requestSearch['plugin'] != "fund")
@@ -254,25 +254,24 @@
                             @if( $order_goods_index==0)
                                 <td rowspan="{!! count($order['has_many_order_goods']) !!}">
                                     <a href="{!! yzAppUrl('member/list',array('op'=>'detail')) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
-                                    @else
-                                        {{$order['belongs_to_member']['nickname']}}
-                                    @endif
-
-                                    <br/>
-                                    {{$order['belongs_to_member']['realname']}}
-                                    <br/>{{$order['belongs_to_member']['mobile']}}
-                                </td>
+                            @else
+                                {{$order['belongs_to_member']['nickname']}}
+                            @endif
+                                <br/>
+                                {{$order['belongs_to_member']['realname']}}
+                                <br/>{{$order['belongs_to_member']['mobile']}}
+                            </td>
                                 <td rowspan="{!! count($order['has_many_order_goods']) !!}">
                                     @if( $order['status'] > 0)
                                         <label class='label label-1}'>{{$order['has_one_pay_type']['name']}}</label>
                                         <br/>
-                                        @elseif (0&&$order['statusvalue'] == 0)
+                                    @elseif (0&&$order['statusvalue'] == 0)
                                         @if( 0&&$order['paytypevalue'] == 3)
                                             <label class='label label-default'>货到付款</label><br/>
                                         @else
                                             <label class='label label-default'>未支付</label><br/>
                                         @endif
-                                        @elseif( 0&&$order['statusvalue'] == -1)
+                                    @elseif( 0&&$order['statusvalue'] == -1)
                                         <label class='label label-default'>{{$order['paytype']}}</label><br/>
                                     @endif
                                     {{$order['has_one_dispatch_type']['name']}}
@@ -301,7 +300,7 @@
                                         @if( empty($order['statusvalue']))
                                             <tr>
                                                 <td style='border:none;text-align:right;'></td>
-                                                @if( $perm_role != 1)
+                                                @if(0)
                                                     @if( 0&&$order['ischangePrice'] == 1)
                                                         <td style='border:none;text-align:right;color:green;'>
                                                             <a href="javascript:;" class="btn btn-link "
@@ -312,19 +311,17 @@
                                             </tr>
                                         @endif
                                     </table>
-
-
                                 </td>
                                 <td rowspan="{php echo count($order['has_many_order_goods'])}"><label
                                             class='label label-{{$order['statuscss']=0}}'>{{$order['status_name']}}</label><br/>
                                     <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
                                 </td>
                                 <td rowspan="{php echo count($order['has_many_order_goods'])}" width="10%">
-                                    @include('order.ops')
-
+                                    @section('operation')
+                                        @include('order.ops')
+                                    @show
                                 </td>
                         </tr>
-
                     @endforeach
                     <tr>
 
@@ -336,11 +333,36 @@
             <div id="pager">{!! $pager !!}</div>
         </div>
     </div>
-    @include('order.modals')
     <script language="javascript">
 
-        $(function () {
 
+        function send(btn) {
+            var modal = $('#modal-confirmsend');
+            var itemid = $(btn).parent().find('.itemid').val();
+            modal.find(':input[name=id]').val(itemid);
+            var addressdata = eval('(' + $(btn).parent().find('.addressdata').val() + ')');
+            modal.find('.realname').html(addressdata.realname);
+            modal.find('.mobile').html(addressdata.mobile);
+            modal.find('.address').html(addressdata.address);
+        }
+        $(function () {
+            $.ajax({
+                url: window.location.href,
+                type: 'post',
+                success: function (serverData) {
+                    if (serverData) {
+                        eval("var data=" + serverData + "");
+                        $("#pager").html(data.result.pager);
+                        $("#total").html(data.result.total);
+                        $("#totalmoney").html(data.result.totalmoney);
+                    }
+                }
+            })
+            $('.select2').select2({
+                search: true,
+                placeholder: "请选择门店",
+                allowClear: true
+            });
         });
         function sendagent(btn) {
             var modal = $('#modal-changeagent');
