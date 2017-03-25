@@ -1,7 +1,7 @@
 ﻿@extends('layouts.base')
 
 @section('js')
-<script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
+<script type="text/javascript" src="./resource/js/lib/jquery-ui-1.10.3.min.js"></script>
 
 	<script type="text/javascript">
       window.type = "{{$goods['type']}}";
@@ -219,7 +219,7 @@
       $('.umphp').hover(function() {
           var url = $(this).attr('data-url');
           var goodsid = $(this).attr('data-goodsid');
-          $.post("{php echo $this->createWebUrl('shop/goods')}"
+          $.post("{!! yzWebUrl('shop.goods') !!}"
             , {'op': 'goods_qrcode', id: goodsid, url: url}
             , function (qr) {
               if (qr.img) {
@@ -237,7 +237,7 @@
         })
       function fastChange(id, type, value) {
         $.ajax({
-          url: "{php echo $this->createWebUrl('shop/goods')}",
+          url: "{!! yzWebUrl('shop.goods') !!}",
           type: "post",
           data: {op: 'change', id: id, type: type, value: value},
           cache: false,
@@ -316,7 +316,7 @@
 @section('content')
 
 
-<link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="{{static_url('css/font-awesome.min.css')}}">
 <style type='text/css'>
     .tab-pane {padding:20px 0 20px 0;}
 
