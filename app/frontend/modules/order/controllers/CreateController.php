@@ -27,7 +27,7 @@ class CreateController extends BaseController
         $shop_model = ShopService::getCurrentShopModel();
         //todo 根据参数
         $order_goods_models = OrderService::getOrderGoodsModels($param);
-        $order_model = OrderService::getPreCreateOrder($order_goods_models,$member_model,$shop_model);
+        $order_model = OrderService::getPreGeneratedOrder($order_goods_models,$member_model,$shop_model);
         $order_model->generate();
         exit;
     }

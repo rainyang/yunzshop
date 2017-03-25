@@ -14,7 +14,8 @@ class MemberCartController extends BaseController
 {
     public function index()
     {
-        $memberId = '1';
+        $memberId = \YunShop::app()->getMemberId();
+        $memberId = '9';
 
         $cartList = MemberCart::getMemberCartList($memberId);
         //dd($cartList);
@@ -42,21 +43,14 @@ class MemberCartController extends BaseController
         }
         //dd($cartList);
 
-        return $this->successJson($cartList);
+        return $this->successJson('获取列表成功', $cartList);
     }
+    
     /**
      * Add member cart
      */
     public function store()
     {
-        $requestcart = array(
-            'member_id' => '77',
-            'uniacid'   => '8',
-            'goods_id'  => '19',
-            'total'     => '1',
-            'option_id' => '123'
-        );
-
         $cartModel = new membercart();
 
         $requestcart = \YunShop::request();
@@ -66,8 +60,21 @@ class MemberCartController extends BaseController
                 'uniacid'   => \YunShop::app()->uniacid,
                 'goods_id'  => $requestcart->goods_id,
                 'total'     => $requestcart->total,
-                'option_id' => $requestcart->option_id
+                'option_id' => $requestcart->option_id ? $requestcart->option_id : '0'
             );
+
+
+            //验证商品是否存在购物车,存在则修改数量
+            $hasGoodsModel = MemberCart::hasGoodsToMemberCart($data);
+            if ($hasGoodsModel) {
+                $hasGoodsModel->total = $hasGoodsModel->total + 1;
+                if ($hasGoodsModel->update()){
+                    return $this->successJson('添加购物车成功');
+                }
+                return $this->errorJson('数据更新失败，请重试！');
+            }
+
+
             //将数据赋值到model
             $cartModel->setRawAttributes($data);
             //字段检测
@@ -85,29 +92,49 @@ class MemberCartController extends BaseController
                     return $this->successJson($msg);
                 }
             }
+
+
         }
         $msg = "接收数据出错，添加购物车失败！";
         return $this->errorJson($msg);
     }
+
     /*
-     *  Update memebr cart
-     **/
-    public function update()
+     * 修改购物车商品数量
+     * */
+    public function updateNum()
     {
-        //需要判断商品状态、限制数量、商品类型（实体、虚拟）
+        //@todo 需要添加商品最多购买判断。会员限购数量判断
+        $cartId = \YunShop::request()->id;
+        $num = \YunShop::request()->num;
+        if ($cartId && $num) {
+            $cartModel = MemberCart::getMemberCartById($cartId);
+            if ($cartModel) {
+                $cartModel->total = $cartModel->total + $num;
+                if ($cartModel->update()) {
+                    return $this->successJson('修改数量成功');
+                }
+            }
+        }
+
+        return $this->errorJson('未找到数据或已删除，请重试！');
     }
+
     /*
      * Delete member cart
      **/
     public function destroy()
     {
-        $cart = MemberCart::getMemberCartById(\YunShop::request()->id);
+        $ids = explode(',', \YunShop::request()->ids);
+
+        $cart = MemberCart::getMemberCartByIds($ids);
+
         if(!$cart) {
-            $msg = "未找到该商品或已经删除";
+            $msg = "未找到商品或已经删除";
             return $this->errorJson($msg);
         }
 
-        $result = MemberCart::destroyMemberCart(\YunShop::request()->id);
+        $result = MemberCart::destroyMemberCart($ids);
         if($result) {
             $msg = "移除购物车成功。";
             return $this->successJson($msg);

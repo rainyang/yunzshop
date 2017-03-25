@@ -17,6 +17,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        //微信接口不输出错误
+        if (strpos(request()->getRequestUri(), '/api.php') == 0) {
+            error_reporting(0);
+        }
+
         //开发模式下记录SQL
         if ($this->app->environment() !== 'production') {
             DB::listen(

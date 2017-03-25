@@ -46,7 +46,7 @@
 		</tr>
 	</table>
 	<div class="panel-body table-responsive" id="options" style="padding:0;">
-		{!! $html !!}}
+		{!! $html !!}
 	</div>
 </div>
       

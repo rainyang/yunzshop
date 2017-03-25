@@ -21,21 +21,14 @@ class Close implements StatusService
 
     public function getStatusName()
     {
-        return '已完成';
+        return '已关闭';
     }
 
     public function getButtonModels()
     {
         $result =
             [
-                ['name' => '付款',
-                    'api' => '/order/pay',//
-                    'value' => static::PAY],
-                [
-                    'name' => '取消订单',
-                    'api' => 'cancel',
-                    'value' => static::CANCEL
-                ],
+
             ];
         return $result;
     }
