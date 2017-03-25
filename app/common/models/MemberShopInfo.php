@@ -19,7 +19,7 @@ class MemberShopInfo extends BackendModel
 
     public static function getMemberShopInfo($memberId)
     {
-        return static::where('member_id', $memberId)
+        return self::select('*')->where('member_id', $memberId)
             ->uniacid()
             ->first(1)
             ->toArray();
