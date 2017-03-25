@@ -37,6 +37,37 @@ class Goods extends BaseModel
 
     protected $search_fields = ['title'];
 
+
+    /**
+     * 定义字段名
+     *
+     * @return array */
+    public  function atributeNames() {
+        return [
+            'title'    => '商品名称',
+            'price'  => '价格',
+            'sku'  => '商品单位',
+            'thumb'  => '图片',
+            'stock'  => '库存',
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array */
+    public  function rules()
+    {
+        return [
+            'title'    => 'required',
+            'price'  => 'required',
+            'sku'  => 'required',
+            'thumb'  => 'required',
+            'stock'  => 'required',
+        ];
+    }
+
+
     public static function getList()
     {
         return static::uniacid();
