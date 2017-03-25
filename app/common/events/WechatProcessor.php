@@ -16,7 +16,7 @@ class WechatProcessor extends Event
 
     protected $pluginName;
 
-    protected $response;
+    public $response;
 
     public function __construct($processor, $pluginName,  &$response)
     {
@@ -49,8 +49,6 @@ class WechatProcessor extends Event
      */
     public function setResponse($response)
     {
-        if ($response) {
             $this->response = $response;
-        }
     }
 }
