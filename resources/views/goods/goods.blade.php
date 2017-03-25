@@ -25,7 +25,7 @@
         })
 
         $("input[name='back']").click(function () {
-          location.href = "{{yzWebUrl('goods.goods.index')}}";
+          location.href = "{!! yzWebUrl('goods.goods.index') !!}";
         });
       })
       window.optionchanged = false;
@@ -291,7 +291,7 @@
       })
       function setProperty(obj, id, type) {
         $(obj).html($(obj).html() + "...");
-        $.post("{{yzWebUrl('goods.goods.index')}}"
+        $.post("{!! yzWebUrl('goods.goods.index') !!}"
           , {'op': 'setgoodsproperty', id: id, type: type, plugin: "", data: obj.getAttribute("data")}
           , function (d) {
             $(obj).html($(obj).html().replace("...", ""));
