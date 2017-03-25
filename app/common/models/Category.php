@@ -57,7 +57,12 @@ class Category extends BaseModel
         $model->orderBy('id', 'asc');
         return $model;
     }
-
+    public static function getRecommentCategoryList()
+    {
+        $model = self::uniacid();
+        return $model;
+        
+    }
     public function hasManyChildren()
     {
         return $this->hasMany(self::class, "parent_id");
