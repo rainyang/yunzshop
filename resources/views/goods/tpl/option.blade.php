@@ -46,7 +46,7 @@
 		</tr>
 	</table>
 	<div class="panel-body table-responsive" id="options" style="padding:0;">
-		{!! $html !!}}
+		{!! $html !!}
 	</div>
 </div>
       
@@ -104,7 +104,7 @@
 	})
 	function addDataSpec(){
 		$("#add-spec").html("正在处理...").attr("disabled", "true").toggleClass("btn-primary");
-		var url = "{{yzWebUrl('shop/tpl',array('tpl'=>'spec_data'))}}";
+		var url = "{!! yzWebUrl('shop/tpl',array('tpl'=>'spec_data')) !!}";
 		$.ajax({
 			"url": url,
 			success:function(data){
@@ -126,7 +126,7 @@
         }
                     
 		$("#add-spec").html("正在处理...").attr("disabled", "true").toggleClass("btn-primary");
-		var url = "{{yzWebUrl('goods.goods.getSpecTpl',array('tpl'=>'spec'))}}";
+		var url = "{!! yzWebUrl('goods.goods.getSpecTpl',array('tpl'=>'spec')) !!}";
 		$.ajax({
 			"url": url,
 			success:function(data){
@@ -147,7 +147,7 @@
 	}
 	function addSpecItem(specid){
 	$("#add-specitem-" + specid).html("正在处理...").attr("disabled", "true");
-		var url = "{{yzWebUrl('goods.goods.getSpecItemTpl',array('tpl'=>'specitem'))}}" + "&specid=" + specid;
+		var url = "{!! yzWebUrl('goods.goods.getSpecItemTpl',array('tpl'=>'specitem')) !!}" + "&specid=" + specid;
 		$.ajax({
 			"url": url,
 			success:function(data){

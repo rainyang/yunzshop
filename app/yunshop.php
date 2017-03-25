@@ -57,8 +57,6 @@ class YunShop
         if (self::isWeb() && !PermissionService::can($item)) {
             abort(403, '无权限');
         }
-        //设置uniacid
-        Setting::$uniqueAccountId = self::app()->uniacid;
         //执行方法
         $content = $controller->$action(
             Illuminate\Http\Request::capture()

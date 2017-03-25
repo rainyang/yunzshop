@@ -12,7 +12,10 @@ namespace app\frontend\modules\coupon\listeners;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\discount\OrderDiscountWasCalculated;
 use app\common\events\discount\OrderGoodsDiscountWasCalculated;
+use app\common\models\Coupon;
+use app\frontend\modules\coupon\services\CouponFactory;
 use app\frontend\modules\coupon\services\CouponService;
+use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class CouponDiscount
 {
@@ -30,6 +33,51 @@ class CouponDiscount
     }
 
     /**
+     * 获得用户可使用的优惠券,预下单页
+     * 传递过来一个预下单model
+     * 返回可使用优惠券列表
+     */
+    public static function getValidCouponByPreOrder(PreGeneratedOrderModel $OrderModel)
+    {
+        $memberCouponsCollection = Coupon::getValidCoupon($OrderModel->getMemberModel())->get();
+
+        $memberValidCouponsCollection = collect();
+        $memberCouponsCollection->each(function ($memberCoupon) use ($OrderModel, $memberValidCouponsCollection){
+            /*return self::validUseType($memberCoupon, $OrderModel) &&
+            self::validEnoughMoney($memberCoupon, $OrderModel) &&
+            self::validEnoughTime($memberCoupon, $OrderModel);*/
+            $couponModel = new CouponFactory();
+            $couponModel = $couponModel->createCoupon($OrderModel, $memberCoupon);
+            if ($couponModel->getValidCoupon())
+            {
+                $memberValidCouponsCollection->push($couponModel);
+            }
+        });
+
+        //dd($memberValidCouponsCollection);
+        return $memberValidCouponsCollection;
+        //dd(self::calCoupon($memberCouponsCollection, $OrderModel));
+        /*$data = [
+            ['name' => 'sss会员等级折扣111',
+                'value' => '85',
+                'price' => '-50',
+                'plugin' => '0',
+                'coupon_id' => '1'
+                'goods' => [
+                    [商品1优惠详情]
+                    [商品2优惠详情]
+                    [商品3优惠详情]
+                ]
+            ],
+            ['name' => 'sss会员等级折扣111',
+                'value' => '85',
+                'price' => '-50',
+                'plugin' => '1',
+            ]
+        ];*/
+    }
+
+    /**
      * @param OnDiscountInfoDisplayEvent $event
      * 显示优惠券信息
      */
@@ -37,7 +85,8 @@ class CouponDiscount
         $this->_event = $event;
         //$order_model = $even->getOrderModel();
         $OrderModel = $this->_event->getOrderModel();
-        $data = CouponService::getValidCouponByPreOrder($OrderModel);
+        //dd($OrderModel->getOrderGoodsModels());
+        $data = self::getValidCouponByPreOrder($OrderModel);
         //$OrderModel->getMemberModel();
         //$OrderModel->getOrderGoodsModels();
         //dd($OrderModel);

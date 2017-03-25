@@ -19,7 +19,7 @@ class MemberService
             return self::$_current_member;
         }
         //todo 根据情况改写
-        self::setCurrentMemberModel(9);
+        self::setCurrentMemberModel(4967);
         return self::$_current_member;
     }
 

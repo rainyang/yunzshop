@@ -34,8 +34,8 @@ class MemberAddressController extends BaseController
      * */
     public function store()
     {
+        dd(1);
         $addressModel = new MemberAddress();
-
         $requestAddress = \YunShop::request();
         if ($requestAddress) {
             $data = array(
@@ -77,6 +77,7 @@ class MemberAddressController extends BaseController
                 return $this->errorJson("数据写入出错，请重试！");
             }
         }
+        return $this->errorJson("未获取到数据，请重试！");
     }
 
     public function update()

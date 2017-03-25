@@ -66,6 +66,12 @@ class AlipayController extends PaymentController
         // TODO 保存响应数据
     }
 
+    public function withdrawNotifyUrl()
+    {
+        // TODO 访问记录
+        // TODO 保存响应数据
+    }
+
     /**
      * 签名验证
      *
