@@ -40,7 +40,8 @@ class Category extends BaseModel
      */
     public static function getCategorys($parentId)
     {
-        return self::uniacid()
+        return self::select('id','name','thumb')
+            ->uniacid()
             ->where('parent_id', $parentId)
             ->where('enabled', 1)
             ->orderBy('id', 'asc');
@@ -48,9 +49,12 @@ class Category extends BaseModel
 
     public static function getChildrenCategorys($parentId, $set)
     {
-        $model = self::uniacid();
+        $model = self::select('id','name','thumb')
+            ->uniacid();
         if ($set['cat_level'] == 3) {
-            $model->with('hasManyChildren');
+            $model->with(['hasManyChildren'=>function($qurey){
+                $qurey->select('id','name','thumb');
+            }]);
         }
         $model->where('parent_id', $parentId);
         $model->where('enabled', 1);
@@ -59,7 +63,8 @@ class Category extends BaseModel
     }
     public static function getRecommentCategoryList()
     {
-        $model = self::uniacid();
+        $model = self::select('id','name','thumb')
+            ->uniacid();
         return $model;
         
     }
