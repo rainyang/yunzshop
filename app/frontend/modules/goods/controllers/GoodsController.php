@@ -79,17 +79,7 @@ class GoodsController extends BaseController
         if (empty($category_id)) {
             $this->errorJson('请输入正确的商品分类.');
         }
-
-        $goodsList = Category::uniacid()->select("name", "thumb", "id")->where(['id' => $category_id])->with(
-            ['goodsCategories' => function ($query) {
-                return $query->select(['goods_id', 'category_id'])->with(
-                    [
-                        'goods' => function ($query1) {
-                            return $query1->select(['id', 'title', 'thumb', 'price', 'market_price'])->where('status', '1');
-                        }
-                    ]);
-            }])->first();
-
+        
         $categorys = Category::uniacid()->select("name", "thumb", "id")->where(['id' => $category_id])->first();
         $goodsList = Goods::uniacid()->select('yz_goods.id', 'title', 'thumb', 'price', 'market_price')
             ->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')
