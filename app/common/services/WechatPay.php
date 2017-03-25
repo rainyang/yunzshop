@@ -17,12 +17,13 @@ class WechatPay extends Pay
 {
     public function doPay($data = [])
     {
-        $this->payAccessLog();
-        $this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
+        //$this->payAccessLog();
+        //$this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
+        session()->put('member_id',9);
 
-        $user_info = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
+       // $user_info = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
 
-        $pay = Setting::get('shop.pay');
+        $pay = \Setting::get('shop.pay');
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])
                || empty($pay['weixin_appid']) || empty($pay['weixin_secret'])) {

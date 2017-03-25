@@ -20,9 +20,8 @@ class MemberAddressController extends BaseController
      * */
     public function index()
     {
-        $memberId = \YunShop::app()->getMemberId();
-        //dd($memberId);
-        //$memberId = '57'; //测试使用
+        //$memberId = \YunShop::app()->getMemberId();
+        $memberId = '9'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
         //var_dump(!empty($addressList));
         return $this->successJson($addressList);
@@ -47,11 +46,10 @@ class MemberAddressController extends BaseController
                 'province' => $requestAddress->province,
                 'city' => $requestAddress->city,
                 'district' => $requestAddress->district,
-                'address' => $requestAddress->city,
+                'address' => $requestAddress->address,
             );
-            dd($data);
+
             $addressModel->fill($data);
-            //$addressModel->setRawAttributes($requestAddress);
 
             $memberId = \YunShop::request()->member_id;
             $memberId = '9'; //测试使用
@@ -72,7 +70,7 @@ class MemberAddressController extends BaseController
                 return $this->errorJson($validator->messages());
             }
             if ($addressModel->save()) {
-                 return $this->successJson('');
+                 return $this->successJson('新增地址成功');
             } else {
                 return $this->errorJson("数据写入出错，请重试！");
             }
