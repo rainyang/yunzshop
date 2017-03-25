@@ -1,10 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: dingran
- * Date: 2017/3/26
- * Time: 上午7:44
- */
 @extends('layouts.base')
 
 @section('content')
