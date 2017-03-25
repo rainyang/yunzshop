@@ -25,6 +25,6 @@ class WechatProcessorListener
        // $processor->message;
         //file_put_contents(base_path() . '/data/test.log','WechatProcessorListener',FILE_APPEND);
         //设置返回微信可以为空
-        $event->setResponse($processor->text('开发术语 demo - 消息类型'.\YunShop::app()->uniacid));
+        //$event->setResponse($processor->text('开发术语 demo - 消息类型'.\YunShop::app()->uniacid));
     }
 }
