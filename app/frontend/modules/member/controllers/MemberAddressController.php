@@ -49,7 +49,6 @@ class MemberAddressController extends BaseController
                 'district' => $requestAddress->district,
                 'address' => $requestAddress->city,
             );
-            dd($data);
             $addressModel->fill($data);
             //$addressModel->setRawAttributes($requestAddress);
 
