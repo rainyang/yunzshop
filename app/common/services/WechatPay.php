@@ -9,9 +9,9 @@
 namespace app\common\services;
 
 use app\common\models\Member;
+use app\common\models\Order;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
-use app\common\models\Order;
 
 class WechatPay extends Pay
 {
@@ -22,27 +22,29 @@ class WechatPay extends Pay
         session()->put('member_id',123);
 
         $openid = Member::getOpenId(\YunShop::app()->getMemberId());
-
         $pay = \Setting::get('shop.pay');
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])
-               || empty($pay['weixin_appid']) || empty($pay['weixin_secret'])) {
+            || empty($pay['weixin_appid']) || empty($pay['weixin_secret'])) {
+
             return error(1, '没有设定支付参数');
         }
 
         $app     = $this->getEasyWeChatApp($pay);
-
         $payment = $app->payment;
-
         $order = $this->getEasyWeChatOrder($data, $openid);
-
         $result = $payment->prepare($order);
-echo '<pre>';print_r($result);exit;
+        $prepayId = null;
+
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
-            return show_json(1, $result);
+            $prepayId = $result->prepay_id;
         } else {
             return show_json(0);
         }
+
+        $config = $payment->configForJSSDKPayment($prepayId);
+
+        echo '<pre>';print_r($config);exit;
     }
 
     public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
