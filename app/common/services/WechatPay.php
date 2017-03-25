@@ -46,10 +46,7 @@ class WechatPay extends Pay
 
         $js = $app->js;
 
-        $this->render('shop/wx',[
-            'config' => $config,
-            'js' => $js
-        ]);
+        return ['config'=>$config, 'js'=>$js];
     }
 
     public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
