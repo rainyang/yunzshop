@@ -24,7 +24,8 @@ class MemberAddressController extends BaseController
         $memberId = '9'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
         //var_dump(!empty($addressList));
-        return $this->successJson($addressList);
+        $msg = "获取列表成功";
+        return $this->successJson($msg, $addressList);
     }
 
     /*
