@@ -22,7 +22,7 @@ class WechatPay extends Pay
         session()->put('member_id',9);
 
         $user_info = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
-
+echo '<pre>';print_r($user_info);exit;
         $pay = \Setting::get('shop.pay');
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])
