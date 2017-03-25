@@ -42,14 +42,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         parent::__construct();
 
     }
-    protected function setGoodsDiscount()
-    {
-        $this->_GoodsDiscount = DiscountService::getPreOrderGoodsDiscountModel($this);
-    }
-    protected function setGoodsDispatch()
-    {
-        $this->_GoodsDispatch = DispatchService::getPreOrderGoodsDispatchModel($this);
-    }
+
 
     /**
      * 为订单model提供的方法 ,设置所属的订单model
@@ -108,18 +101,17 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         }
 
         $data = array(
-            'uniacid' => $this->Order->getShopModel()->uniacid,
-            'order_id' => $this->Order->id,
-            'goods_id' => $this->Goods->id,
-            'goods_sn' => $this->Goods->goods_sn,
-            'uid' => $this->Order->getMemberModel()->uid,
-            'goods_price' => $this->getGoodsPrice(),
             'price' => $this->getPrice(),
+            'goods_price' => $this->getGoodsPrice(),
+            'discount_price' => $this->getDiscountPrice(),
+            'goods_id' => $this->Goods->id,
             'total' => $this->getTotal(),
+            'goods_sn' => $this->Goods->goods_sn,
             'title' => $this->Goods->title,
             'thumb' => $this->Goods->thumb,
-            'discount_details' => $this->getDiscountDetails(),
-            'dispatch_details' => $this->getDispatchDetails(),
+            'uid' => $this->Order->getMemberModel()->uid,
+            'uniacid' => $this->Order->getShopModel()->uniacid,
+            'order_id' => $this->Order->id,
         );
         dump('订单商品插入数据为');
         dump($data);

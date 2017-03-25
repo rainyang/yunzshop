@@ -150,7 +150,9 @@ class PreGeneratedOrderModel extends OrderModel
             $pre_order_goods_model->generate($this);
         }
     }
-
+    protected function getDispatchPrice(){
+        return $this->_OrderDispatch->getDispatchPrice();
+    }
     /**
      * 订单插入数据库
      * @return static 新生成的order model
@@ -158,21 +160,19 @@ class PreGeneratedOrderModel extends OrderModel
     private function createOrder()
     {
         $data = array(
-            'uniacid' => $this->shop_model->uniacid,
-            'order_sn' => OrderService::createOrderSN(),
-            'goods_total'=> $this->getGoodsTotal(),
-            'uid' => $this->member_model->uid,
             'price' => $this->getPrice(),
+            'order_goods_price' => $this->getOrderGoodsPrice(),
             'goods_price' => $this->getGoodsPrice(),
+            'discount_price' => $this->getDiscountPrice(),
+            'deduction_price' => $this->getDeductionPrice(),
+            'dispatch_price' => $this->getDispatchPrice(),
+            'goods_total'=> $this->getGoodsTotal(),
+            'order_sn' => OrderService::createOrderSN(),
             'create_time' => time(),
-            //配送类获取订单配送信息
-            'dispatch_details'=>$this->_OrderDispatch->getDispatchDetails(),
-            //优惠类记录订单配送信息
-            'discount_details' => $this->_OrderDiscount->getDiscountDetails(),
             //配送类获取订单配送方式id
             'dispatch_type_id'=>$this->_OrderDispatch->getDispatchTypeId(),
-            'dispatch_price' => $this->_OrderDispatch->getDispatchPrice(),
-            'discount_price' => $this->getDiscountPrice()
+            'uid' => $this->member_model->uid,
+            'uniacid' => $this->shop_model->uniacid,
         );
         //todo 测试
         dump( '订单插入的数据为:');

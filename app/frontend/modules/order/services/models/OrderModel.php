@@ -53,13 +53,19 @@ abstract class OrderModel
     }
 
     /**
-     * 计算订单优惠
+     * 计算订单优惠金额
      * @return number
      */
     protected function getDiscountPrice(){
         return $this->_OrderDiscount->getDiscountPrice();
     }
-
+    /**
+     * 获取订单抵扣金额
+     * @return number
+     */
+    protected function getDeductionPrice(){
+        return $this->_OrderDiscount->getDeductionPrice();
+    }
     /**
      * 计算订单运费
      * @return int|number
@@ -69,23 +75,32 @@ abstract class OrderModel
     }
 
     /**
-     * 计算订单最终价格
+     * 计算订单成交价格
      * @return int
      */
     protected function getPrice()
     {
         //订单最终价格 = 商品最终价格 + 订单优惠 + 订单运费
-        return max($this->getGoodsPrice() + $this->getDiscountPrice() + $this->getDispatchPrice(),0);
+        return max($this->getGoodsPrice() + $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(),0);
     }
 
     /**
-     * 统计订单商品最终价格
+     * 统计订单商品小计金额
      * @return int
      */
     protected function getGoodsPrice()
     {
-        //dd($this->_OrderGoodsModels);exit;
-        //累加所有商品最终价格
+        $result = 0;
+        foreach ($this->_OrderGoodsModels as $OrderGoodsModel) {
+            $result += $OrderGoodsModel->getGoodsPrice();
+        }
+        return $result;
+    }
+    /**
+     * 统计订单商品成交金额
+     * @return int
+     */
+    protected function getOrderGoodsPrice(){
         $result = 0;
         foreach ($this->_OrderGoodsModels as $OrderGoodsModel) {
             $result += $OrderGoodsModel->getPrice();
