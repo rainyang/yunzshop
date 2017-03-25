@@ -51,7 +51,7 @@ class MemberOfficeAccountService extends MemberService
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
             $resp_info = @ihttp_get($userinfo_url);
             $userinfo    = @json_decode($resp_info['content'], true);
-echo '<pre>';print_r($userinfo);exit;
+
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
 
