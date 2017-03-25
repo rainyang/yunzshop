@@ -36,14 +36,30 @@ class MemberAddressController extends BaseController
     public function address()
     {
         $address = Address::getAllAddress();
+
+        $msg = '数据获取成功';
+        return $this->successJson($msg, $this->addressService($address));
+    }
+    private function addressService($address)
+    {
         $province = [];
+        $city = [];
+        $district = [];
         foreach ($address as $key)
         {
-            if ($key['parentid'] == 0 && $key['level'] == 1){
+            if ($key['parentid'] == 0 && $key['level'] == 1) {
+                $province[] = $key;
+            } elseif ($key['parentid'] != 0 && $key['level'] == 2 ) {
+                $city[] = $key;
+            } else {
+                $district[] = $key;
             }
-
         }
-        dd($province);
+        return array(
+            'province' => $province,
+            'city' => $city,
+            'district' => $district,
+            );
     }
 
     /*
