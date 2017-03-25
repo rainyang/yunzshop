@@ -8,14 +8,13 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\member\models\McMappingFansModel;
-use app\frontend\modules\member\models\MemberUniqueModel;
-use app\frontend\modules\member\models\MemberModel;
-use app\frontend\modules\member\models\SubMemberModel;
-use app\frontend\models\McGroupsModel;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
+use app\frontend\models\McGroupsModel;
+use app\frontend\modules\member\models\McMappingFansModel;
+use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\MemberUniqueModel;
+use app\frontend\modules\member\models\SubMemberModel;
 
 class MemberOfficeAccountService extends MemberService
 {
@@ -35,6 +34,9 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = \YunShop::app()->siteroot . 'app/index.php?' . $_SERVER['QUERY_STRING'];
 
+        //客户端请求地址
+        $client_url   = $_SERVER['HTTP_REFERER'];
+
         $authurl = $this->_getAuthUrl($appId, $callback);
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
@@ -49,7 +51,7 @@ class MemberOfficeAccountService extends MemberService
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
             $resp_info = @ihttp_get($userinfo_url);
             $userinfo    = @json_decode($resp_info['content'], true);
-
+echo '<pre>';print_r($userinfo);exit;
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
 
@@ -159,13 +161,17 @@ class MemberOfficeAccountService extends MemberService
 
                 session()->put('member_id',$member_id);
             } else {
-                return json_encode(['status'=>0, 'result'=>['url'=>$authurl]]);
+                redirect($authurl)->send();
+                exit;
+                //return json_encode(['status'=>0, 'result'=>['url'=>$authurl]]);
             }
         } else {
-            return json_encode(['status'=>0, 'result'=>['url'=>$authurl]]);
+            redirect($authurl)->send();
+            exit;
+            //return json_encode(['status'=>0, 'result'=>['url'=>$authurl]]);
         }
 
-        return json_encode(['status'=>1, 'result'=>['member_id'=>session('member_id')]]);
+        return json_encode(['status'=>1, 'result'=>['url'=>$client_url, 'member_id'=>session('member_id')]]);
 
     }
 
