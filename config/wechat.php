@@ -24,7 +24,7 @@ return [
     'log' => [
         'level'      => 'debug',
         'permission' => 0644,
-        'file'       => storage_path('easywechat/easywechat_'.date('Ymd').'.log'),
+        'file'       => storage_path('easywechat/easywechat.log'),
     ],
     /**
      * OAuth 配置

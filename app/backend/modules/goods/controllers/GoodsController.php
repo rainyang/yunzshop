@@ -83,7 +83,9 @@ class GoodsController extends BaseController
                 return !empty($item);
             });
 
-            $requestSearch['category'] = $categorySearch;
+            if ($categorySearch) {
+                $requestSearch['category'] = $categorySearch;
+            }
         }
 
         $catetory_menus = CategoryService::getCategoryMenu(
@@ -278,9 +280,9 @@ class GoodsController extends BaseController
                 "show" => 1*/
             ],
         );
-        $this->render('goods/tpl/spec', [
+        return view('goods/tpl/spec', [
             'spec' => $spec,
-        ]);
+        ])->render();
     }
 
     /**
@@ -303,11 +305,11 @@ class GoodsController extends BaseController
             'thumb' => '',
         );
 
-        $this->render('goods/tpl/spec_item', [
+        return view('goods/tpl/spec_item', [
             'spec' => $spec,
             'goods' => $goodsModel,
             'specitem' => $specitem,
-        ]);
+        ])->render();
     }
 
     /**
