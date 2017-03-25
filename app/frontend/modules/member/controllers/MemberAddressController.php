@@ -36,6 +36,9 @@ class MemberAddressController extends BaseController
     public function address()
     {
         $address = Address::getAllAddress();
+        if (!$address) {
+            return $this->errorJson('数据收取失败，请联系管理员！');
+        }
 
         $msg = '数据获取成功';
         return $this->successJson($msg, $this->addressService($address));
