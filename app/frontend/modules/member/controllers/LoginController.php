@@ -33,9 +33,9 @@ class LoginController extends BaseController
                     $msg = $member->login();
                     $msg = json_decode($msg);
                     if ($msg->status == 1) {
-                        return $this->successJson($msg->result);
+                        return $this->successJson('', $msg->result);
                     } else {
-                        return $this->errorJson($msg->result);
+                        return $this->errorJson('', $msg->result);
                     }
                 } else {
                     return $this->errorJson('登录异常');
