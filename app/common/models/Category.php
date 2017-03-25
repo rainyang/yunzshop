@@ -40,20 +40,26 @@ class Category extends BaseModel
      */
     public static function getCategorys($parentId)
     {
-        return $data = self::uniacid()
+        return self::uniacid()
             ->where('parent_id', $parentId)
+            ->where('enabled', 1)
             ->orderBy('id', 'asc');
     }
 
-    public static function getChildrenCategorys($parentId)
+    public static function getChildrenCategorys($parentId, $set)
     {
-        return $data = self::uniacid()
-            ->with('hasManyChildren')
-            ->where('parent_id', $parentId)
-            ->orderBy('id', 'asc');
+        $model = self::uniacid();
+        if ($set['cat_level'] == 3) {
+            $model->with('hasManyChildren');
+        }
+        $model->where('parent_id', $parentId);
+        $model->where('enabled', 1);
+        $model->orderBy('id', 'asc');
+        return $model;
     }
 
-    public function hasManyChildren(){
+    public function hasManyChildren()
+    {
         return $this->hasMany(self::class, "parent_id");
     }
 
