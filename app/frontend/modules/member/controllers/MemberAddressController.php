@@ -20,9 +20,8 @@ class MemberAddressController extends BaseController
      * */
     public function index()
     {
-        $memberId = \YunShop::app()->getMemberId();
-        //dd($memberId);
-        //$memberId = '57'; //测试使用
+        //$memberId = \YunShop::app()->getMemberId();
+        $memberId = '9'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
         //var_dump(!empty($addressList));
         return $this->successJson($addressList);
