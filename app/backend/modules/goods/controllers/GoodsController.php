@@ -75,9 +75,8 @@ class GoodsController extends BaseController
         $requestSearch = \YunShop::request()->search;
 
         if ($requestSearch) {
-
             $requestSearch = array_filter($requestSearch, function ($item) {
-                return !empty($item) && $item!=0;
+                return !empty($item) && $item !== 0;
             });
 
             $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
