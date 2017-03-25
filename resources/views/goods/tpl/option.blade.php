@@ -9,7 +9,7 @@
        <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用{{$lang['shopoption']}}</label>
         <div class="col-sm-9 col-xs-12">
 	<label class="checkbox-inline">
-		<input type="checkbox" id="hasoption" value="1" name="has_option" @if($goods['has_option']==1) checked @endif />启用{{$lang['shopoption']}}
+		<input type="checkbox" id="hasoption" value="1" name="goods[has_option]" @if($goods['has_option']==1) checked @endif />启用{{$lang['shopoption']}}
 	</label>
 	  <span class="help-block">启用{{$lang['shopoption']}}后，商品的价格及库存以商品规格为准,库存设置为0则不显示,-1为不限制</span>
 
