@@ -46,11 +46,8 @@ class WechatPay extends Pay
         $config['appId'] = $pay['weixin_appid'];
 
         $js = $app->js;
-        $js = json_decode($js->config(array('chooseWXPay')),1);
-       // echo '<pre>';print_r($js );
-       // unset($js['beta']);
-       // echo '<pre>';print_r($js );exit;
-        return ['config'=>$config, 'js'=>json_encode($js)];
+
+        return ['config'=>$config, 'js'=>$js];
     }
 
     public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
