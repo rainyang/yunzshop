@@ -50,6 +50,15 @@ class WechatPay extends Pay
         return ['config'=>$config, 'js'=>$js];
     }
 
+    /**
+     * 微信退款
+     *
+     * @param 订单号 $out_trade_no
+     * @param 微信支付单号 $out_refund_no
+     * @param 订单总金额 $totalmoney
+     * @param 退款金额 $refundmoney
+     * @return array
+     */
     public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
     {
        // $this->payAccessLog();
@@ -69,8 +78,13 @@ class WechatPay extends Pay
         $payment = $app->payment;
         $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);
 
-        return $result;
+        if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
+            return show_json(1);
+        } else {
+            return show_json(0);
+        }
     }
+
 
     public function doWithdraw($member_id, $out_trade_no, $money, $desc='', $type=1)
     {
@@ -86,12 +100,14 @@ class WechatPay extends Pay
         if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
             message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
         }
-
+/*
         $order_info = Order::getOrderInfoByMemberId($member_id)->first();
 
         if (!empty($order_info) && $order_info['status'] == 3) {
             $user_info = MemberShopInfo::getMemberShopInfo($order_info['member_id']);
-        }
+        }*/
+
+        $user_info = MemberShopInfo::getMemberShopInfo(123);
 
         $app = $this->getEasyWeChatApp($pay);
 
