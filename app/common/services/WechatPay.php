@@ -9,7 +9,7 @@
 namespace app\common\services;
 
 use app\common\models\Member;
-use app\common\models\Order;
+use app\common\models\MemberShopInfo;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
 
