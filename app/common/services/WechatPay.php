@@ -141,6 +141,8 @@ class WechatPay extends Pay
             ];
             $result = $luckyMoney->sendNormal($luckyMoneyData);
         }
+
+        echo '<pre>';print_r($result);exit;
     }
 
     /**
