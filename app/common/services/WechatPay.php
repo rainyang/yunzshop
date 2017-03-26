@@ -45,8 +45,10 @@ class WechatPay extends Pay
         $config = $payment->configForJSSDKPayment($prepayId);
 
         $js = $app->js;
-     //   $js = json_encode($js);
-//echo '<pre>';print_r( $js->config(array('chooseWXPay')));exit;
+        $js = $js->config(array('chooseWXPay'));
+        echo '<pre>';print_r($js );exit;
+unset($js['beta']);
+        echo '<pre>';print_r($js );exit;
         return ['config'=>$config, 'js'=>$js];
     }
 
