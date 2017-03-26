@@ -33,7 +33,7 @@
                         }
                     },
                     fail: function (res) {
-                        console.log(res);
+                        alert(res.errMsg);
                         alert("支付失败，请返回重试。");
                     }
                 });
