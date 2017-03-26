@@ -29,12 +29,10 @@
                             alert('支付成功。');
                             window.location.href="{{url("wechat/pay_ok")}}";
                         }else{
-                            //alert(res.errMsg);
                             alert("支付失败，请返回重试。");
                         }
                     },
                     fail: function (res) {
-                        alert(res.errMsg);
                         alert("支付失败，请返回重试。");
                     }
                 });
