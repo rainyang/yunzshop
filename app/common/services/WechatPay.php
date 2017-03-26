@@ -9,7 +9,6 @@
 namespace app\common\services;
 
 use app\common\models\Member;
-use app\common\models\MemberShopInfo;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
 
@@ -104,10 +103,10 @@ class WechatPay extends Pay
         $order_info = Order::getOrderInfoByMemberId($member_id)->first();
 
         if (!empty($order_info) && $order_info['status'] == 3) {
-            $user_info = MemberShopInfo::getMemberShopInfo($order_info['member_id']);
+            $openid = Member::getOpenId($order_info['member_id']);
         }*/
 
-        $user_info = MemberShopInfo::getMemberShopInfo(123);
+        $openid = Member::getOpenId(123);
 
         $app = $this->getEasyWeChatApp($pay);
 
@@ -116,7 +115,7 @@ class WechatPay extends Pay
 
             $merchantPayData = [
                 'partner_trade_no' => empty($out_trade_no) ? time() . random(4, true) : $out_trade_no,
-                'openid' => $user_info['openid'],
+                'openid' => $openid,
                 'check_name' => 'NO_CHECK',
                 'amount' => $money * 100,
                 'desc' => empty($desc) ? '佣金提现' : $desc,
@@ -130,7 +129,7 @@ class WechatPay extends Pay
             $luckyMoneyData = [
                 'mch_billno'       => $app['weixin_mchid'] . date('YmdHis') . rand(1000, 9999),
                 'send_name'        => \YunShop::app()->account['name'],
-                're_openid'        => $user_info['openid'],
+                're_openid'        => $openid,
                 'total_num'        => 1,
                 'total_amount'     => $money * 100,
                 'wishing'          => empty($desc) ? '佣金提现红包' : $desc,
