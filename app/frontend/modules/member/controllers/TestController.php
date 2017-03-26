@@ -20,8 +20,8 @@ class TestController extends BaseController
    public function index()
    {
        $pay = new WechatPay();
-       $pay->doRefund('1490501934', '4001322001201703264692073547', '0.1', '0.1');
-       exit;
+       $result = $pay->doRefund('1490501934', '4001322001201703264692073547', '0.1', '0.1');
+       echo '<pre>';print_r($result);exit;
        $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>'']);
 
        return view('order.pay', [

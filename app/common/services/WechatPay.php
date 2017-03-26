@@ -52,8 +52,8 @@ class WechatPay extends Pay
 
     public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
     {
-        $this->payAccessLog();
-        $this->payLog(2, 1, $refundmoney, '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney);
+       // $this->payAccessLog();
+        //$this->payLog(2, 1, $refundmoney, '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney);
 
         $pay = Setting::get('shop.pay');
 
@@ -68,6 +68,8 @@ class WechatPay extends Pay
         $app     = $this->getEasyWeChatApp($pay);
         $payment = $app->payment;
         $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney);
+
+        return $result;
     }
 
     public function doWithdraw($member_id, $out_trade_no, $money, $desc='', $type=1)
