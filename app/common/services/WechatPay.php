@@ -67,7 +67,7 @@ class WechatPay extends Pay
 
         $app     = $this->getEasyWeChatApp($pay);
         $payment = $app->payment;
-        $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney);
+        $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);
 
         return $result;
     }
