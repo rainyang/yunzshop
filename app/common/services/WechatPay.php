@@ -55,7 +55,7 @@ class WechatPay extends Pay
        // $this->payAccessLog();
         //$this->payLog(2, 1, $refundmoney, '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney);
 
-        $pay = Setting::get('shop.pay');
+        $pay = \Setting::get('shop.pay');
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
             return error(1, '没有设定支付参数');
@@ -74,10 +74,10 @@ class WechatPay extends Pay
 
     public function doWithdraw($member_id, $out_trade_no, $money, $desc='', $type=1)
     {
-        $this->payAccessLog();
-        $this->payLog(3, 1, $money, '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money);
+        //$this->payAccessLog();
+        //$this->payLog(3, 1, $money, '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money);
 
-        $pay = Setting::get('shop.pay');
+        $pay = \Setting::get('shop.pay');
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
             return error(1, '没有设定支付参数');
