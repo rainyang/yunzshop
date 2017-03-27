@@ -253,4 +253,25 @@ class ShopController extends BaseController
         Setting::set('alipay-web.notify_url', SZ_YI_ALIPAY_NOTIFY_URL);
         Setting::set('alipay-web.return_url', SZ_YI_ALIPAY_RETURN_URL);
     }
+
+    /**
+     * 商城设置接口
+     * @param string $key  setting表key字段值
+     * @return json
+     */
+    public function getSetting()
+    {
+        $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'notice';
+        if (!empty($key)) {
+            $setting = Setting::get('shop.' . $key);
+        } else {
+            $setting = Setting::get('shop');
+        }
+        dd($setting);
+        if (!$setting) {
+            $this->errorJson('未进行设置');
+        }
+
+        $this->successJson('获取商城设置成功', $setting);
+    }
 }
