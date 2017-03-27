@@ -34,13 +34,12 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = \YunShop::app()->siteroot . 'app/index.php?' . $_SERVER['QUERY_STRING'];
 
-        //客户端请求地址
-        $client_url   = $_SERVER['HTTP_REFERER'];
-
         $authurl = $this->_getAuthUrl($appId, $callback);
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
+            $redirect_url = session('client_url', $callback);
+
             $resp     = @ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
 
@@ -163,16 +162,18 @@ class MemberOfficeAccountService extends MemberService
             } else {
                 redirect($authurl)->send();
                 exit;
-                //return json_encode(['status'=>0, 'result'=>['url'=>$authurl]]);
             }
         } else {
+            echo '<pre>';print_r($_SERVER);exit;
+            //客户端请求地址
+            $client_url   = $_SERVER['HTTP_REFERER'];
+
+            session()->put('client_url',$client_url);
             redirect($authurl)->send();
             exit;
-            //return json_encode(['status'=>0, 'result'=>['url'=>$authurl]]);
         }
-
-        return json_encode(['status'=>1, 'result'=>['url'=>$client_url, 'member_id'=>session('member_id')]]);
-
+        //$redirect_url;
+        redirect('test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.test.login')->send();
     }
 
     /**

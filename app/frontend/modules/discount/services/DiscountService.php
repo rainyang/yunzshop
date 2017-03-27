@@ -20,12 +20,12 @@ use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 class DiscountService
 {
     public static function getPreOrderDiscountModel(PreGeneratedOrderModel $preGeneratedOrderModel){
-        //触发事件
+        /*//触发事件
         $Event = new OrderDiscountWasCalculated($preGeneratedOrderModel);
         event($Event);
         //获取反馈
-        $discount_detail = $Event->getData();
-        return new OrderDiscount($discount_detail);
+        $discount_detail = $Event->getData();*/
+        return new OrderDiscount($preGeneratedOrderModel);
     }
     public static function getCreatedOrderDiscountModel(Order $order){
         $order->discount_details;
