@@ -18,6 +18,13 @@ class McMappingFansModel extends BackendModel
     public $table = 'mc_mapping_fans';
     public $timestamps = false;
 
+    protected $guarded = [];
+
+    protected $fillable = ['openid','uid','acid','uniacid', 'salt', 'updatetime', 'nickname', 'follow', 'followtime', 'unfollowtime', 'tag'];
+
+    protected $attributes = [];
+
+
     public function getOauthUserInfo()
     {
         return mc_oauth_userinfo();
