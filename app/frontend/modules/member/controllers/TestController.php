@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
 use app\common\services\CreditPay;
+use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\services\MemberService;
@@ -46,7 +47,7 @@ class TestController extends BaseController
 
    public function loginApi()
    {
-       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=1';
+       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=5';
 
        redirect($login_api)->send();
    }

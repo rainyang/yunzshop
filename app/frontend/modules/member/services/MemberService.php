@@ -244,7 +244,6 @@ class MemberService
 
     protected function save($member_info, $uniacid)
     {
-        //$member_info = $member_info->toArray();
         $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
 
         if (is_app()) {

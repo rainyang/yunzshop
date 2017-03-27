@@ -64,8 +64,12 @@ class MemberFavoriteController extends BaseController
     public function store()
     {
         if (\YunShop::request()->goods_id) {
+            $memberId = 9;
+            if (MemberFavorite::getFavoriteByGoodsId(\YunShop::request()->goods_id, $memberId)){
+                return $this->errorJson('商品已收藏，不需要重复添加！');
+            }
             $requestFaveorit = array(
-                'member_id' => '9',
+                'member_id' => $memberId,
                 //'member_id' => \YunShop::app()->getMemberId(),
                 'goods_id' => \YunShop::request()->goods_id,
                 'uniacid' => \YunShop::app()->uniacid

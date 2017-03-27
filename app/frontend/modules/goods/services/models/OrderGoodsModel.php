@@ -60,5 +60,5 @@ abstract class OrderGoodsModel
         return $this->coupon_discount_price;
 
     }
-
+    abstract public function getGoodsId();
 }

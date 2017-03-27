@@ -35,6 +35,8 @@ class MemberMobileService extends MemberService
             }
 
             if(!empty($member_info)){
+                $member_info = $member_info->toArray();
+
                 $this->save($member_info, $uniacid);
 
                 return show_json(1, array(
