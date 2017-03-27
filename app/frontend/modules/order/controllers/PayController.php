@@ -20,19 +20,21 @@ class PayController extends BaseController
     public function index()
     {
         //返回支付方式列表
+        return view('order.pay',[])->render();
     }
 
     public function wechatPay()
     {
-        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        //$order_id = '';
         $Order = Order::first();
+        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         /*$result = $pay->setyue('50');
         if($result == false){
             $this->errorJson($pay->getMessage());
         }*/
         $query_str = [
             'order_no' => time(),
-            'amount' => $Order->price,
+            'amount' => 0.1,
             'subject' => '微信支付',
             'body' => '商品的描述:2',
             'extra' => ''
@@ -49,7 +51,7 @@ class PayController extends BaseController
         }
 
         //$data = $pay->doPay(['order_no' => time(), 'amount' => $Order->price, 'subject' => '微信支付', 'body' => '商品的描述:2', 'extra' => '']);
-        return $this->successJson($data->data);
+        return $this->successJson('成功',$data->data);
     }
 
     public function alipay()
