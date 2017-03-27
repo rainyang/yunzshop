@@ -164,7 +164,7 @@ class MemberOfficeAccountService extends MemberService
                 exit;
             }
         } else {
-            file_put_contents(storage_path('logs/server.log'), print_r($_SERVER));
+            file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
 
             $client_url = $this->_getClientRequestUrl();
 
@@ -216,12 +216,12 @@ class MemberOfficeAccountService extends MemberService
 
     /**
      * 客户端请求地址
-     * 
+     *
      * @return string
      */
     private function _getClientRequestUrl()
     {
-        if ($_SERVER['HTTP_REFERER']) {
+        if (!empty($_SERVER['HTTP_REFERER'])) {
             $client_url   = $_SERVER['HTTP_REFERER'];
         } else {
             $client_url   = $_SERVER['REQUEST_SCHEME'] . '//' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
