@@ -40,7 +40,7 @@ class Category extends BaseModel
      */
     public static function getCategorys($parentId)
     {
-        return self::select('id','name','thumb')
+        return self::select('id','name','thumb','level')
             ->uniacid()
             ->where('parent_id', $parentId)
             ->where('enabled', 1)
