@@ -74,8 +74,8 @@
                 <tr>
                     <td>{{ $user->username }}</td>
                     <td>{{ $user->userRole->role->name or "无" }}</td>
-                    <td>{{ $user->userProfile->realname }}</td>
-                    <td>{{ $user->userProfile->mobile }}</td>
+                    <td>{{ $user->userProfile->realname or '' }}</td>
+                    <td>{{ $user->userProfile->mobile or '' }}</td>
                     <td>
                         @if($user->status == 2)
                         <span class='label label-success'>启用</span>
