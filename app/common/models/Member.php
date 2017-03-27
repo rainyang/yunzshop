@@ -47,7 +47,7 @@ class Member extends BackendModel
      */
     public function hasOneOrder()
     {
-        return $this->hasOne('app\backend\modules\order\models\order', 'member_id', 'uid');
+        return $this->hasOne('app\backend\modules\order\models\Order', 'uid', 'uid');
     }
 
     /**

@@ -39,8 +39,6 @@ class PreGeneratedOrderModel extends OrderModel
      */
     protected $member_model;
 
-
-
     /**
      * 记录添加的商品
      * PreGeneratedOrderModel constructor.

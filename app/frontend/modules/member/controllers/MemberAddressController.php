@@ -95,6 +95,10 @@ class MemberAddressController extends BaseController
         return $this->errorJson("未获取到数据，请重试！");
     }
 
+    /*
+     * 修改会员收获地址
+     *
+     * */
     public function update()
     {
         $addressModel = MemberAddress::getAddressById(\YunShop::request()->address_id);

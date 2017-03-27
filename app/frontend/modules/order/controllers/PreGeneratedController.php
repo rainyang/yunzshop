@@ -25,6 +25,9 @@ class PreGeneratedController extends BaseController
             [
                 'goods_id' => 1,
                 'total' => 1
+            ],[
+                'goods_id' => 2,
+                'total' => 2
             ]
         ];
         $member_model = MemberService::getCurrentMemberModel();

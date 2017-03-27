@@ -74,7 +74,7 @@ class Sz_yiModuleProcessor extends WeModuleProcessor
             'title' => '', 		// string: 新闻标题
             'picurl' => '',		// string: 图片链接
             'url' => '',		// string: 原文链接
-            'description' => ''	/string: 新闻描述
+            'description' => ''	//string: 新闻描述
             );
      * @return array 返回的消息数组结构
      */
