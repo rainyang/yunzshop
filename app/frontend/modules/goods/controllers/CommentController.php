@@ -29,8 +29,9 @@ class CommentController extends BaseController
     {
         $goodsId = \YunShop::request()->goods_id;
         $pageSize = 10;
-        $list = Comment::getCommentsByGoods($goodsId)->paginate($pageSize)->toArray();
+        $list = Comment::getCommentsByGoods($goodsId)->paginate($pageSize);
         if($list['data']){
+
             return $this->successJson('获取评论数据成功!', $list);
         }
         return $this->errorJson('未检测到评论数据!',$list);
