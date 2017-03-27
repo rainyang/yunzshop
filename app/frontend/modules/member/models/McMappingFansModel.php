@@ -22,7 +22,7 @@ class McMappingFansModel extends BackendModel
 
     protected $fillable = ['openid','uid','acid','uniacid', 'salt', 'updatetime', 'nickname', 'follow', 'followtime', 'unfollowtime', 'tag'];
 
-    protected $attributes = ['unionid'=>'', 'groupid'=>''];
+    protected $attributes = ['unionid'=>'', 'groupid'=>0];
 
 
     public function getOauthUserInfo()
