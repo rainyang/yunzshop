@@ -39,8 +39,6 @@ class PreGeneratedOrderModel extends OrderModel
      */
     protected $member_model;
 
-
-
     /**
      * 记录添加的商品
      * PreGeneratedOrderModel constructor.
@@ -121,6 +119,7 @@ class PreGeneratedOrderModel extends OrderModel
             'goods_price' => $this->getGoodsPrice(),
             'dispatch_price' => $this->getDispatchPrice(),
             'discount_price' => $this->getDiscountPrice(),
+            'deduction_price' => $this->getDeductionPrice(),
 
         );
         foreach ($this->_OrderGoodsModels as $order_goods_model) {

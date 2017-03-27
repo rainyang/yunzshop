@@ -8,14 +8,13 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\member\models\McMappingFansModel;
-use app\frontend\modules\member\models\MemberUniqueModel;
-use app\frontend\modules\member\models\MemberModel;
-use app\frontend\modules\member\models\SubMemberModel;
-use app\frontend\models\McGroupsModel;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
+use app\frontend\models\McGroupsModel;
+use app\frontend\modules\member\models\McMappingFansModel;
+use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\MemberUniqueModel;
+use app\frontend\modules\member\models\SubMemberModel;
 
 class MemberOfficeAccountService extends MemberService
 {
@@ -33,12 +32,14 @@ class MemberOfficeAccountService extends MemberService
         $appId        = \YunShop::app()->account['key'];
         $appSecret    = \YunShop::app()->account['secret'];
 
-        $callback     = \YunShop::app()->siteroot . 'app/index.php?' . $_SERVER['QUERY_STRING'];
+        $callback     = \YunShop::app()->siteroot . $_SERVER['REQUEST_URI'];
 
         $authurl = $this->_getAuthUrl($appId, $callback);
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
+            $redirect_url = session('client_url', $callback);
+
             $resp     = @ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
 
@@ -46,7 +47,9 @@ class MemberOfficeAccountService extends MemberService
                return show_json(0, array('msg'=>'请求错误'));
             }
 
+
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
+
             $resp_info = @ihttp_get($userinfo_url);
             $userinfo    = @json_decode($resp_info['content'], true);
 
@@ -105,10 +108,11 @@ class MemberOfficeAccountService extends MemberService
                         'salt' => '',
                         'password' => ''
                     );
-                    $member_id = MemberModel::insertData($mc_data);
+                    $memberModel = MemberModel::create($mc_data);
+                    $member_id = $memberModel->uid;
 
                     //添加yz_member表
-                    $default_sub_group_id = MemberGroup::getDefaultGroupI()->first();
+                    $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
                     $default_sub_level_id = MemberLevel::getDefaultLevelId()->first();
                     if (!empty($default_sub_group_id)) {
                         $default_subgroup_id = $default_sub_group_id->id;
@@ -125,7 +129,7 @@ class MemberOfficeAccountService extends MemberService
                     $sub_data = array(
                         'member_id' => $member_id,
                         'uniacid' => $uniacid,
-                        'agent_id' => $mid,
+                        'parent_id' => $mid,
                         'group_id' => $default_subgroup_id,
                         'level_id' => $default_sublevel_id,
                     );
@@ -145,7 +149,7 @@ class MemberOfficeAccountService extends MemberService
                         'unfollowtime' => 0,
                         'tag' => base64_encode(iserializer($userinfo))
                     );
-                    McMappingFansModel::insertData($record);
+                    McMappingFansModel::create($record);
 
 
                     //添加ims_yz_member_unique表
@@ -157,15 +161,24 @@ class MemberOfficeAccountService extends MemberService
                     ));
                 }
 
-                session()->put('member_id',$member_id);
+                session(['member_id'=>$member_id]);
+                \Session::save();
+                $this->saveSession($member_id);
             } else {
-                return show_json(0, array('url'=> $authurl));
+                redirect($authurl)->send();
+                exit;
             }
         } else {
-            return show_json(0, array('url'=> $authurl));
-        }
+            file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
 
-        return show_json(1, array('member_id', session('member_id')));
+            $client_url = $this->_getClientRequestUrl();
+
+            session()->put('client_url',$client_url);
+            redirect($authurl)->send();
+            exit;
+        }
+        //$redirect_url;
+        redirect('http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.test.login')->send();
     }
 
     /**
@@ -204,5 +217,21 @@ class MemberOfficeAccountService extends MemberService
     private function _getUserInfoUrl($accesstoken, $openid)
     {
         return "https://api.weixin.qq.com/sns/userinfo?access_token={$accesstoken}&openid={$openid}&lang=zh_CN";
+    }
+
+    /**
+     * 客户端请求地址
+     *
+     * @return string
+     */
+    private function _getClientRequestUrl()
+    {
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $client_url   = $_SERVER['HTTP_REFERER'];
+        } else {
+            $client_url   = $_SERVER['REQUEST_SCHEME'] . '//' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        }
+
+        return $client_url;
     }
 }

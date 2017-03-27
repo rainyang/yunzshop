@@ -46,7 +46,9 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
     {
         return $this->total * $this->_OrderGoods->goods_price;
     }
-
+    public function getGoodsId(){
+        return $this->_OrderGoods->goods_id;
+    }
     public function update()
     {
         $data = array(

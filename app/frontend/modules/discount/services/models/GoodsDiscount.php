@@ -28,5 +28,10 @@ class GoodsDiscount extends Discount
         ];
         return $details;
     }*/
+    public function getDiscountPrice(){
 
+    }
+    public static function getVipPrice($goods_model){
+        return $goods_model->price * 0.9;
+    }
 }

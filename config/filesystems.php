@@ -55,6 +55,11 @@ return [
             'visibility' => 'public',
         ],
 
+        'cert' => [
+            'driver' => 'local',
+            'root' => storage_path('cert'),
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),

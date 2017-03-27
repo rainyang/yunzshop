@@ -17,7 +17,10 @@ class MemberModel extends Member
 {
     protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4' , 'credit5'];
 
-    protected $fillable = ['email'=>'xxx@xx.com'];
+    protected $fillable = ['uniacid','mobile','groupid','createtime','nickname','avatar','gender'
+    ,'salt','password'];
+
+    protected $attributes = ['bio' => '','resideprovince'=>'','residecity'=>'','nationality'=>'','interest'=>''];
 
     /**
      * 获取用户uid

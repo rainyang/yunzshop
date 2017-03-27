@@ -57,9 +57,8 @@ abstract class OrderGoodsModel
      */
     protected function getDiscountPrice()
     {
-        //todo 重写
-        return 11;
+        return $this->coupon_discount_price;
 
     }
-
+    abstract public function getGoodsId();
 }

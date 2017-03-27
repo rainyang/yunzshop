@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 use app\backend\modules\goods\observers\GoodsObserver;
+use app\frontend\modules\discount\services\models\GoodsDiscount;
 use HaoLi\LaravelAmount\Traits\AmountTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -31,15 +32,52 @@ class Goods extends BaseModel
 
     protected $guarded = ['widgets'];
 
-    public $appends = [''];
+    public $appends = ['vip_price'];
 
     public $widgets = [];
 
     protected $search_fields = ['title'];
 
+
+    /**
+     * 定义字段名
+     *
+     * @return array */
+    public  function atributeNames() {
+        return [
+            'title'    => '商品名称',
+            'price'  => '价格',
+            'sku'  => '商品单位',
+            'thumb'  => '图片',
+            'stock'  => '库存',
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array */
+    public  function rules()
+    {
+        return [
+            'title'    => 'required',
+            'price'  => 'required',
+            'sku'  => 'required',
+            'thumb'  => 'required',
+            'stock'  => 'required',
+        ];
+    }
+
+
     public static function getList()
     {
         return static::uniacid();
+    }
+
+    public function getVipPriceAttribute()
+    {
+        //dd(GoodsDiscount::getVipPrice($this));
+        return GoodsDiscount::getVipPrice($this);
     }
 
     public static function getGoodsById($id)
@@ -50,6 +88,11 @@ class Goods extends BaseModel
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
+    }
+
+    public function belongsToCategorys()
+    {
+        return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
     }
 
     public function hasManyOptions()

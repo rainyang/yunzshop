@@ -12,6 +12,9 @@ use app\backend\models\BackendModel;
 class Member extends BackendModel
 {
     public $table = 'mc_members';
+
+    const INVALID_OPENID = 0;
+
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
     protected $primaryKey = 'uid';
 
@@ -44,7 +47,7 @@ class Member extends BackendModel
      */
     public function hasOneOrder()
     {
-        return $this->hasOne('app\backend\modules\order\models\order', 'member_id', 'uid');
+        return $this->hasOne('app\backend\modules\order\models\Order', 'uid', 'uid');
     }
 
     /**
@@ -60,6 +63,7 @@ class Member extends BackendModel
             'avatar',
             'nickname',
             'realname',
+            'avatar',
             'mobile',
             'gender',
             'createtime',
@@ -84,7 +88,7 @@ class Member extends BackendModel
                         ]);
                 },
                 'hasOneFans' => function ($query4) {
-                    return $query4->select(['uid', 'follow as followed']);
+                    return $query4->select(['uid', 'openid', 'follow as followed']);
                 }
             ]);
     }
@@ -107,8 +111,8 @@ class Member extends BackendModel
      */
     public static function getRandNickName()
     {
-        return self::select('nick_name')
-            ->whereNotNull('nick_name')
+        return self::select('nickname')
+            ->whereNotNull('nickname')
             ->inRandomOrder()
             ->first();
     }
@@ -125,6 +129,13 @@ class Member extends BackendModel
             ->first();
     }
 
+    /**
+     * 设置会员积分/余额
+     *
+     * @param string $member_id
+     * @param string $credittype
+     * @param int $credits
+     */
     public static function setCredit($member_id = '', $credittype = 'credit1', $credits = 0)
     {
         $data = self::getMemberById($member_id)->toArray();
@@ -137,5 +148,18 @@ class Member extends BackendModel
         self::uniacid()
             ->where('uid', $member_id)
             ->update([$credittype=>$newcredit]);
+    }
+
+    public static function getOpenId($member_id){
+        $data = self::getUserInfos($member_id)->first();
+        if ($data) {
+            $info = $data->toArray();
+
+            if (!empty($info['has_one_fans'])) {
+                return $info['has_one_fans']['openid'];
+            } else {
+                return INVALID_OPENID;
+            }
+        }
     }
 }

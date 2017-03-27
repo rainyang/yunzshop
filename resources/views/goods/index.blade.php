@@ -25,7 +25,7 @@
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键字</label>
 							<div class="col-xs-12 col-sm-8 col-lg-9">
-								<input class="form-control" name="search[keyword]" id="keyword" type="text" value="{{$requestSearch['keyword']}}" onclick="value='';" ／>
+								<input class="form-control" name="search[keyword]" id="keyword" type="text" value="{{$requestSearch['keyword'] or ''}}" onclick="value='';" ／>
 							</div>
 						</div>
 						<div class="form-group">

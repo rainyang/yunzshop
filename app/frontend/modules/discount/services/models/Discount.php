@@ -11,15 +11,12 @@ namespace app\frontend\modules\discount\services\models;
 
 abstract class Discount
 {
-    protected $_discount_details = [];
-
     /**
      * OrderDiscount constructor.
      * @param array $discount_details
      */
-    public function __construct(array $discount_details)
+    public function __construct( )
     {
-        $this->_discount_details = $discount_details;
     }
     /**
      * 改价时 添加一种优惠
