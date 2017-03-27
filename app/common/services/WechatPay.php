@@ -36,7 +36,7 @@ class WechatPay extends Pay
         $order = $this->getEasyWeChatOrder($data, $openid);
         $result = $payment->prepare($order);
         $prepayId = null;
-echo '<pre>';print_r($result);exit;
+
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
         } else {
@@ -200,7 +200,7 @@ echo '<pre>';print_r($result);exit;
             'total_fee'        => $data['amount'] * 100, // 单位：分
             'nonce_str'        => random(8) . "",
             'device_info'      => 'sz_yi',
-            'attach'           => $data['extra'],
+            'attach'           => $data['extra']['type'],
             'spbill_create_ip' => $this->ip,
             'openid'           => $openid
         ];
