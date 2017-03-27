@@ -17,6 +17,7 @@ class MemberFavoriteController extends BaseController
 {
     public function index()
     {
+        //todo 需要增加商品信息显示
         $memberId = '57';
         $favoriteList = MemberFavorite::getFavoriteList($memberId);
         //dd($favoriteList);
@@ -36,6 +37,16 @@ class MemberFavoriteController extends BaseController
         dd($favoriteList);
         return $this->successJson($favoriteList);
 
+    }
+
+    public function isFavorite()
+    {
+        $memberId = '9';
+        $goodsId = \YunShop::request()->goods_id;
+        if (MemberFavorite::getFavoriteByGoodsId($goodsId, $memberId)){
+            return $this->successJson('商品已收藏');
+        }
+        return $this->errorJson('商品未收藏');
     }
 
     public function store()
