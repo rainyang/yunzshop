@@ -47,7 +47,7 @@ class TestController extends BaseController
 
    public function loginApi()
    {
-       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=2';
+       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=1';
 
        redirect($login_api)->send();
    }
@@ -56,7 +56,7 @@ class TestController extends BaseController
    {
        echo $_SESSION['member_id'];
        echo '<BR>';
-       $_SESSION['dmeo'] = 'yunzshop';
+       $_SESSION['demo'] = 'yunzshop';
        echo $_SESSION['demo'];
    }
 

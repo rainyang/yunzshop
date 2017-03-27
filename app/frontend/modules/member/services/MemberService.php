@@ -244,6 +244,9 @@ class MemberService
 
     protected function save($member_info, $uniacid)
     {
+        $_SESSION['member_id'] = $member_info['uid'];
+        echo $_SESSION['member_id'];
+        exit;
         $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
 
         if (is_app()) {
@@ -264,6 +267,6 @@ class MemberService
 
     protected function saveSession($member_id)
     {
-        $_SERVER['member_id'] = $member_id;
+        $_SESSION['member_id'] = $member_id;
     }
 }
