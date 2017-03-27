@@ -74,6 +74,7 @@ class MemberFavoriteController extends BaseController
             $favoriteModel = new MemberFavorite();
 
             $favoriteModel->setRawAttributes($requestFaveorit);
+            $favoriteModel->uniacid = \YunShop::app()->uniacid;
             $validator = $favoriteModel->validator($favoriteModel->getAttributes());
             if ($validator->fails()) {
                 return $this->errorJson($validator->messages());
@@ -90,13 +91,16 @@ class MemberFavoriteController extends BaseController
     public function destroy()
     {
         if (\YunShop::request()->goods_id) {
-            if (!MemberFavorite::getFavoriteById(\YunShop::request()->goods_id)) {
+            $memberId = '9';
+            $favoriteModel = MemberFavorite::getFavoriteByGoodsId(\YunShop::request()->goods_id, $memberId);
+            if (!$favoriteModel) {
                 return $this->errorJson("未找到记录或已删除");
             }
-            if (MemberFavorite::destroyFavorite(\YunShop::request()->goods_id)) {
+            if ($favoriteModel->delete()) {
                 return $this->successJson("移除收藏成功");
+            } else {
+                return $this->errorJson("数据写入出错，移除收藏失败");
             }
-            return $this->errorJson("数据写入出错，移除收藏失败");
         }
         return $this->errorJson("未获取到商品ID");
     }
