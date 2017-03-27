@@ -108,10 +108,12 @@ class MemberOfficeAccountService extends MemberService
                         'salt' => '',
                         'password' => ''
                     );
-                    $member_id = MemberModel::insertData($mc_data);
+                    //$member_id = MemberModel::insertData($mc_data);
+                    $memberModel = MemberModel::create($mc_data);
+                    $member_id = $memberModel->uid;
 
                     //添加yz_member表
-                    $default_sub_group_id = MemberGroup::getDefaultGroupI()->first();
+                    $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
                     $default_sub_level_id = MemberLevel::getDefaultLevelId()->first();
                     if (!empty($default_sub_group_id)) {
                         $default_subgroup_id = $default_sub_group_id->id;
@@ -128,7 +130,7 @@ class MemberOfficeAccountService extends MemberService
                     $sub_data = array(
                         'member_id' => $member_id,
                         'uniacid' => $uniacid,
-                        'agent_id' => $mid,
+                        'parent_id' => $mid,
                         'group_id' => $default_subgroup_id,
                         'level_id' => $default_sublevel_id,
                     );

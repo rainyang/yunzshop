@@ -111,8 +111,8 @@ class Member extends BackendModel
      */
     public static function getRandNickName()
     {
-        return self::select('nick_name')
-            ->whereNotNull('nick_name')
+        return self::select('nickname')
+            ->whereNotNull('nickname')
             ->inRandomOrder()
             ->first();
     }
