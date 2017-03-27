@@ -42,7 +42,10 @@ class IndexController extends BaseController
 
     public function getRecommentCategoryList()
     {
-        return [];
+        $request = Category::getRecommentCategoryList()
+        ->where('is_home','1')
+        ->get();
+        return $request;
     }
 
     /**

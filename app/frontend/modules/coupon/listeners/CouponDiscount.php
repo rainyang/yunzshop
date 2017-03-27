@@ -54,7 +54,7 @@ class CouponDiscount
             }
         });
 
-        dd($memberValidCouponsCollection);
+        //dd($memberValidCouponsCollection);
         return $memberValidCouponsCollection;
         //dd(self::calCoupon($memberCouponsCollection, $OrderModel));
         /*$data = [

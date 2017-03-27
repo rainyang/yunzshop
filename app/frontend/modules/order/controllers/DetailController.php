@@ -9,6 +9,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\BaseController;
+use app\frontend\modules\order\models\OrderAddress;
 use app\frontend\modules\order\models\OrderDetailModel;
 
 
@@ -20,10 +21,16 @@ class DetailController extends BaseController
             return $this->errorJson($msg = '缺少访问参数', $data = []);
         } else {
             $orderDetail = OrderDetailModel::getOrderDetail($orderId);
+            $data= $orderDetail->toArray();
+            //todo 配送类型
+            //dd($orderDetail);
+            if($orderDetail['dispatch_type_id'] == 1){
+                $data['address_info'] = OrderAddress::select('address','mobile','realname')->where('order_id',$orderDetail['id'])->first();
+            }
             if (!$orderDetail){
-                return $this->errorJson($msg = '未找到数据', $data = []);
+                return $this->errorJson($msg = '未找到数据', []);
             } else {
-                return $this->successJson($msg = 'ok', $data = $orderDetail->toArray());
+                return $this->successJson($msg = 'ok', $data);
             }
         }
     }

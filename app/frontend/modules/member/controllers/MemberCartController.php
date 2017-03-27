@@ -45,7 +45,7 @@ class MemberCartController extends BaseController
 
         return $this->successJson('获取列表成功', $cartList);
     }
-    
+
     /**
      * Add member cart
      */

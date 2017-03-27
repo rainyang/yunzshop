@@ -8,7 +8,6 @@
 
 namespace app\backend\modules\setting\controllers;
 
-
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
@@ -225,7 +224,30 @@ class ShopController extends BaseController
             'weixin_jie_root' => ''
         ];//借用微信支付证书,在哪里取得数据待定?
         $requestModel = \YunShop::request()->pay;
+        //echo '<pre>';print_r($requestModel);exit;
         if ($requestModel) {
+
+            if ($_FILES['weixin_cert_file']['name']) {
+                $file_name = $this->upload('weixin_cert_file');
+                if (!empty($file_name)) {
+                    $requestModel['weixin_cert'] = storage_path('cert/' . $file_name);
+                }
+            }
+
+            if ($_FILES['weixin_key_file']['name']) {
+                $file_name = $this->upload('weixin_key_file');
+                if (!empty($file_name)) {
+                    $requestModel['weixin_key'] = storage_path('cert/' . $file_name);
+                }
+            }
+
+            if ($_FILES['weixin_root_file']['name']) {
+                $file_name = $this->upload('weixin_root_file');
+                if (!empty($file_name)) {
+                    $requestModel['weixin_root'] = storage_path('cert/' . $file_name);
+                }
+            }
+
             if (Setting::set('shop.pay', $requestModel)) {
                 $this->setAlipayParams($requestModel);
                 return $this->message(' 支付方式设置成功', Url::absoluteWeb('setting.shop.pay'));
@@ -241,16 +263,35 @@ class ShopController extends BaseController
 
     private function setAlipayParams($data)
     {
-        Setting::set('alipay.pem', SZ_YI_PATH . 'storage/cacert.pem');
+        Setting::set('alipay.pem', SZ_YI_PATH . 'storage/cert/cacert.pem');
         Setting::set('alipay.partner_id', $data['alipay_partner']);
         Setting::set('alipay.seller_id', $data['alipay_account']);
         Setting::set('alipay-mobile.sign_type', 'RSA');
-        Setting::set('alipay-mobile.private_key_path', SZ_YI_PATH . 'storage/private_key.pem');
-        Setting::set('alipay-mobile.public_key_path', SZ_YI_PATH . 'storage/public_key.pem');
+        Setting::set('alipay-mobile.private_key_path', SZ_YI_PATH . 'storage/cert/private_key.pem');
+        Setting::set('alipay-mobile.public_key_path', SZ_YI_PATH . 'storage/cert/public_key.pem');
         Setting::set('alipay-mobile.notify_url', SZ_YI_ALIPAY_NOTIFY_URL);
         Setting::set('alipay-web.key', $data['alipay_secret']);
         Setting::set('alipay-web.sign_type', 'MD5');
         Setting::set('alipay-web.notify_url', SZ_YI_ALIPAY_NOTIFY_URL);
         Setting::set('alipay-web.return_url', SZ_YI_ALIPAY_RETURN_URL);
+    }
+
+    private function upload($fileinput)
+    {
+        if (\Request::isMethod('post')) {
+            $file = \Request::file($fileinput);
+
+            if ($file->isValid()) {
+
+                // 获取文件相关信息
+                $originalName = $file->getClientOriginalName(); // 文件原名
+                $ext = $file->getClientOriginalExtension();     // 扩展名
+                $realPath = $file->getRealPath();   //临时文件的绝对路径
+
+                $bool = \Storage::disk('cert')->put($originalName, file_get_contents($realPath));
+
+                return $bool ? $originalName : '';
+            }
+        }
     }
 }

@@ -17,7 +17,7 @@ class LoginController extends BaseController
     public function index()
     {
         if (MemberService::isLogged()) {
-            return $this->errorJson('用户已登录');
+            return $this->errorJson('用户已登录', ['status'=>1]);
         }
 
         if (SZ_YI_DEBUG) {
@@ -31,17 +31,17 @@ class LoginController extends BaseController
 
                 if ($member !== NULL) {
                     $msg = $member->login();
-
+                    $msg = json_decode($msg);
                     if ($msg->status == 1) {
-                        return $this->successJson($msg->result);
+                        return $this->successJson('', $msg->result);
                     } else {
-                        return $this->errorJson($msg->result);
+                        return $this->errorJson('', $msg->result);
                     }
                 } else {
-                    return $this->errorJson('登录异常');
+                    return $this->errorJson('登录异常', ['status'=>-1]);
                 }
         } else {
-            return $this->errorJson('登录失败');
+            return $this->errorJson('登录失败', ['status'=>0]);
         }
     }
 }
