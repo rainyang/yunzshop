@@ -108,7 +108,6 @@ class MemberOfficeAccountService extends MemberService
                         'salt' => '',
                         'password' => ''
                     );
-                    //$member_id = MemberModel::insertData($mc_data);
                     $memberModel = MemberModel::create($mc_data);
                     $member_id = $memberModel->uid;
 
@@ -130,7 +129,7 @@ class MemberOfficeAccountService extends MemberService
                     $sub_data = array(
                         'member_id' => $member_id,
                         'uniacid' => $uniacid,
-                        'agent_id' => $mid,
+                        'parent_id' => $mid,
                         'group_id' => $default_subgroup_id,
                         'level_id' => $default_sublevel_id,
                     );
@@ -150,7 +149,7 @@ class MemberOfficeAccountService extends MemberService
                         'unfollowtime' => 0,
                         'tag' => base64_encode(iserializer($userinfo))
                     );
-                    McMappingFansModel::insertData($record);
+                    McMappingFansModel::create($record);
 
 
                     //添加ims_yz_member_unique表

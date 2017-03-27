@@ -29,7 +29,11 @@ class PreGeneratedController extends BaseController
 
     public function cart()
     {
-        $cart = MemberCart::getMemberCartByIds([11,12]);
+        $cart_ids = explode(',',$_GET['cart_ids']);
+        if(!count($cart_ids)){
+            return $this->errorJson('请选择要结算的商品');
+        }
+        $cart = MemberCart::getMemberCartByIds($cart_ids);
         //dd($cart);exit;
         $this->_param = $cart;
         $this->run();
@@ -58,8 +62,8 @@ class PreGeneratedController extends BaseController
             'order' => $order
         ];
         $data = array_merge($data, $this->getDiscountEventData($order_model), $this->getDispatchEventData($order_model));
-        //dump($data);
-        return $this->successJson($data);
+        //var_dump($data);
+        return $this->successJson('成功',$data);
     }
 
     private function getDiscountEventData($order_model)
