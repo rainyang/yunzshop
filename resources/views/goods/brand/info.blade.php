@@ -11,7 +11,7 @@
         <!-- 新增加右侧顶部三级菜单结束 -->
         <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
             {{--@if(isset($brandModel->id) && !empty($brandModel->id))--}}
-            <input type="hidden" name="id" class="form-control" value="{php echo $brandModel->id}"/>
+            <input type="hidden" name="id" class="form-control" value="{{$brandModel->id}}"/>
 
             <div class="panel panel-default">
                 <div class="panel-body">

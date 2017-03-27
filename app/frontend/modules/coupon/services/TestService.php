@@ -39,7 +39,7 @@ class TestService
         //url 格式 &coupon[][id]=1
         $coupon_id = array_column($_GET['coupon'],'id');
         //dd($coupon_id);exit;
-        return [\app\common\models\Coupon::whereIn('id',$coupon_id)->first()];
+        return \app\common\models\Coupon::whereIn('id',$coupon_id)->get();
     }
 
     private function getAllValidCoupons(){

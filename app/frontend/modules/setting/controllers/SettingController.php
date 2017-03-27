@@ -17,18 +17,18 @@ class SettingController extends BaseController
      * @param string $key  setting表key字段值
      * @return json
      */
-    public function getSetting($key = '')
+    public function getSetting()
     {
-        if (!$key) {
+        $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
+        if (!empty($key)) {
             $setting = Setting::get('shop.' . $key);
         } else {
             $setting = Setting::get('shop');
         }
-
         if (!$setting) {
             $this->errorJson('未进行设置.');
         }
 
-        $this->successJson('成功', $setting);
+        $this->successJson('获取商城设置成功', $setting);
     }
 }

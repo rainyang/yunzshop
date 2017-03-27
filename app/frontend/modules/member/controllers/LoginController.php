@@ -20,10 +20,6 @@ class LoginController extends BaseController
             return $this->errorJson('用户已登录', ['status'=>1]);
         }
 
-        if (SZ_YI_DEBUG) {
-            session()->put('member_id',9);
-        }
-
         $type = \YunShop::request()->type;
 
         if (!empty($type)) {
@@ -32,10 +28,15 @@ class LoginController extends BaseController
                 if ($member !== NULL) {
                     $msg = $member->login();
                     $msg = json_decode($msg);
-                    if ($msg->status == 1) {
-                        return $this->successJson('', $msg->result);
+
+                    if (!empty($msg)) {
+                        if ($msg->status == 1) {
+                            return $this->successJson('', $msg->result);
+                        } else {
+                            return $this->errorJson('', $msg->result);
+                        }
                     } else {
-                        return $this->errorJson('', $msg->result);
+                        echo $this->errorJson('', 500);
                     }
                 } else {
                     return $this->errorJson('登录异常', ['status'=>-1]);

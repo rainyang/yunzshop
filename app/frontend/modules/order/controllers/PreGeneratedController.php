@@ -12,29 +12,49 @@ use app\common\components\BaseController;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\frontend\modules\goods\services\GoodsService;
+use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\ShopService;
 
 class PreGeneratedController extends BaseController
 {
+    private $_param;
+
+
     public function index()
     {
-        //$param = \YunShop::request();
-        $param = [
-            [
-                'goods_id' => 1,
-                'total' => 1
-            ],[
-                'goods_id' => 2,
-                'total' => 2
-            ]
-        ];
+
+    }
+
+    public function cart()
+    {
+        if(!isset($_GET['cart_ids'])){
+            return $this->errorJson('请选择要结算的商品');
+        }
+        if(!is_array($_GET['cart_ids'])){
+            $cart_ids = explode(',',$_GET['cart_ids']);
+        }
+        if(!count($cart_ids)){
+            return $this->errorJson('参数格式有误');
+        }
+        $cart = MemberCart::getMemberCartByIds($cart_ids);
+        //dd($cart);exit;
+        $this->_param = $cart;
+        $this->run();
+    }
+
+    private function run()
+    {
+
         $member_model = MemberService::getCurrentMemberModel();
         $shop_model = ShopService::getCurrentShopModel();
 
-
-        $order_goods_models = OrderService::getOrderGoodsModels($param);
+        $order_goods_models = OrderService::getOrderGoodsModels($this->_param);
+        if(!count($order_goods_models)){
+            return $this->errorJson('未找到商品');
+        }
+        //dd($order_goods_models);exit;
         list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
         if ($result === false) {
             return $this->errorJson($message);
@@ -47,8 +67,8 @@ class PreGeneratedController extends BaseController
             'order' => $order
         ];
         $data = array_merge($data, $this->getDiscountEventData($order_model), $this->getDispatchEventData($order_model));
-        //dump($data);
-        return $this->successJson($data);
+        //var_dump($data);
+        return $this->successJson('成功',$data);
     }
 
     private function getDiscountEventData($order_model)
