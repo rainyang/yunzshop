@@ -57,8 +57,7 @@ abstract class OrderGoodsModel
      */
     protected function getDiscountPrice()
     {
-        //todo 重写
-        return 11;
+        return $this->discount_price;
 
     }
 

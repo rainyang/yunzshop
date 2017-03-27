@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 use app\backend\modules\goods\observers\GoodsObserver;
+use app\frontend\modules\discount\services\models\GoodsDiscount;
 use HaoLi\LaravelAmount\Traits\AmountTrait;
 
 
@@ -26,7 +27,7 @@ class Goods extends BaseModel
 
     protected $guarded = ['widgets'];
 
-    public $appends = [''];
+    public $appends = ['vip_price'];
 
     public $widgets = [];
 
@@ -35,6 +36,12 @@ class Goods extends BaseModel
     public static function getList()
     {
         return static::uniacid();
+    }
+
+    public function getVipPriceAttribute()
+    {
+        //dd(GoodsDiscount::getVipPrice($this));
+        return GoodsDiscount::getVipPrice($this);
     }
 
     public static function getGoodsById($id)

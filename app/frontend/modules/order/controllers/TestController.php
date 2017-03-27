@@ -23,8 +23,9 @@ use app\common\events\order\AfterOrderCancelPaidEvent;
  */
 class TestController extends BaseController
 {
-    public function index()
+    public function index( )
     {
+        dd($this->test());exit;
         $result = OrderService::orderCancelPay(Order::find(1));
         dump($result);
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
@@ -35,7 +36,9 @@ class TestController extends BaseController
         Event::fire(new AfterOrderSentEvent(Order::find(1)));*/
 
     }
-
+    private function test($a){
+        //echo $b;
+    }
     public function testGoodsModel()
     {
         $goods_model = GoodsService::getGoodsModel(2);
