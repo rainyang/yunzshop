@@ -16,36 +16,14 @@ use app\frontend\modules\order\services\VerifyPayService;
 
 class PayController extends BaseController
 {
-    public function display()
+    public function index()
     {
-        $set = Setting::get('pay');
-        $order_id = \YunShop::request()->order_id;
-        $msg = VerifyPayService::verifyPay($order_id);
-        if ($msg) {
-            return $this->errorJson($msg, $data = []);
-        }
-        $db_order_model = Order::with(
-            [
-                'hasManyOrderGoods.belongsToGood',
-                'hasOnePay'
-            ]
-        )->find($order_id);
-        $log_msg = VerifyPayService::verifyLog($db_order_model);
-        if ($log_msg) {
-           return $this->errorJson($log_msg, $data = []);
-        }
-        //所有支付方式
-        $all_pays = [];
-        $return_url = urlencode($this->createMobileUrl('order.pay.display', array('order_id' => $order_id)));
-
-        return $this->successJson(
-            $msg = 'ok',
-            $data = [
-                'order'     => $db_order_model,
-                'set'       => $set,
-                'all_pays'  => $all_pays,
-                'return_url'    => $return_url,
-            ]
-        );
+        //返回支付方式列表
+    }
+    public function wechat(){
+        //获取微信支付 支付单 数据
+    }
+    public function alipay(){
+        //获取支付宝 支付单 数据
     }
 }

@@ -41,7 +41,7 @@ class Rule extends BaseModel
      * 定义字段名
      *
      * @return array */
-    public  function atributeNames() {
+    public  function attributeNames() {
         return [
             'module'        => 'module字段不能为空\'',
             'displayorder'  => 'displayorder字段不能为空',

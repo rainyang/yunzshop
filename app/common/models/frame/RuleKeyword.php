@@ -70,7 +70,7 @@ class RuleKeyword extends BaseModel
      * 定义字段名
      *
      * @return array */
-    public  function atributeNames() {
+    public  function attributeNames() {
         return [
             'uniacid'       => 'uniacid字段不能为空',
             'module'        => 'module字段不能为空',
