@@ -30,7 +30,7 @@ class CommentController extends BaseController
         $goodsId = \YunShop::request()->goods_id;
         //$pageSize = 10;
         $list = Comment::getCommentsByGoods($goodsId)->get();//->paginate($pageSize)
-        if($list['data']){
+        if($list){
 
             return $this->successJson('获取评论数据成功!', $list);
         }
