@@ -261,9 +261,5 @@ class MemberService
             session()->put('member_id',$member_info['uid']);
             session()->put('member_name',$member_name);
         }
-
-        return show_json(1, array(
-            'member_id' => $member_info['uid'],
-        ));
     }
 }
