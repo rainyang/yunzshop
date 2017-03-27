@@ -18,6 +18,7 @@ class MemberFavoriteController extends BaseController
     public function index()
     {
         //todo 需要增加商品信息显示
+        $memberId = \YunShop::app()->getMemberId();
         $memberId = '57';
         $favoriteList = MemberFavorite::getFavoriteList($memberId);
         //dd($favoriteList);
@@ -41,21 +42,32 @@ class MemberFavoriteController extends BaseController
 
     public function isFavorite()
     {
+        $memberId = \YunShop::app()->getMemberId();
         $memberId = '9';
-        $goodsId = \YunShop::request()->goods_id;
-        if (MemberFavorite::getFavoriteByGoodsId($goodsId, $memberId)){
-            return $this->successJson('商品已收藏');
+        if (\YunShop::request()->goods_id){
+            if (MemberFavorite::getFavoriteByGoodsId(\YunShop::request()->goods_id, $memberId)){
+                $data = array(
+                    'status' => 1,
+                    'message' => '商品已收藏'
+                );
+            } else {
+                $data = array(
+                    'status' => 0,
+                    'message' => '商品未收藏'
+                );
+            }
+            return $this->successJson('接口访问成功', $data);
         }
-        return $this->errorJson('商品未收藏');
+        return $this->errorJson('未获取到商品ID');
     }
 
     public function store()
     {
-        $requestFaveorit = \YunShop::request()->favortie;
-
         $requestFaveorit = array(
-            'member_id' => '57',
-            'goods_id' => '1'
+            'member_id' => '9',
+            //'member_id' => \YunShop::app()->getMemberId(),
+            'goods_id' => '1',
+            'uniacid' => \YunShop::app()->uniacid
         );
 
         $favoriteModel = new MemberFavorite();
@@ -67,10 +79,9 @@ class MemberFavoriteController extends BaseController
             return $this->errorJson($validator->messages());
         }
         if ($favoriteModel->save()) {
-            return $this->successJson();
+            return $this->successJson('添加收藏成功');
         }
-        $msg = "写入数据出错，添加收藏失败！";
-        return $this->errorJson($msg);
+        return $this->errorJson("写入数据出错，添加收藏失败！");
     }
 
 
