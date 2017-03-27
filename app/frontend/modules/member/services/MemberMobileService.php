@@ -36,6 +36,10 @@ class MemberMobileService extends MemberService
 
             if(!empty($member_info)){
                 $this->save($member_info, $uniacid);
+
+                return show_json(1, array(
+                    'member_id' => $member_info['uid'],
+                ));
             } else{
                 return show_json(0, "手机号或密码错误");
             }
