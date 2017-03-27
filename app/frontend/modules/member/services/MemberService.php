@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\services;
 
 use app\common\models\Member;
 use app\frontend\modules\member\models\smsSendLimitModel;
+use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
@@ -239,5 +240,30 @@ class MemberService
             }
         }
         return $arr;
+    }
+
+    protected function save($member_info, $uniacid)
+    {
+        $member_info = $member_info->toArray();
+        $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
+
+        if (is_app()) {
+            Cookie::queue($cookieid, $member_info['uid'], time()+3600*24*7);
+        } else {
+            Cookie::queue($cookieid, $member_info['uid']);
+        }
+
+        Cookie::queue('member_id', $member_info['uid']);
+
+        if(!isMobile()){
+            $member_name = !empty($member_info['realname']) ? $member_info['realname'] : $member_info['nickname'];
+            $member_name = !empty($member_name) ? $member_name : "未知";
+            session()->put('member_id',$member_info['uid']);
+            session()->put('member_name',$member_name);
+        }
+
+        return show_json(1, array(
+            'member_id' => $member_info['uid'],
+        ));
     }
 }

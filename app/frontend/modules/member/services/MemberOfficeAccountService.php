@@ -32,7 +32,7 @@ class MemberOfficeAccountService extends MemberService
         $appId        = \YunShop::app()->account['key'];
         $appSecret    = \YunShop::app()->account['secret'];
 
-        $callback     = \YunShop::app()->siteroot . 'app/index.php?' . $_SERVER['QUERY_STRING'];
+        $callback     = \YunShop::app()->siteroot . $_SERVER['REQUEST_URI'];
 
         $authurl = $this->_getAuthUrl($appId, $callback);
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
@@ -47,7 +47,9 @@ class MemberOfficeAccountService extends MemberService
                return show_json(0, array('msg'=>'请求错误'));
             }
 
+
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
+
             $resp_info = @ihttp_get($userinfo_url);
             $userinfo    = @json_decode($resp_info['content'], true);
 
@@ -158,22 +160,24 @@ class MemberOfficeAccountService extends MemberService
                     ));
                 }
 
-                session()->put('member_id',$member_id);
+                session(['member_id'=>$member_id]);
+                \Session::save();
+                $this->save(['member_id'=>$member_id, 'realname'=>$userinfo['realname']], $uniacid);
             } else {
                 redirect($authurl)->send();
                 exit;
             }
         } else {
-            echo '<pre>';print_r($_SERVER);exit;
-            //客户端请求地址
-            $client_url   = $_SERVER['HTTP_REFERER'];
+            file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
+
+            $client_url = $this->_getClientRequestUrl();
 
             session()->put('client_url',$client_url);
             redirect($authurl)->send();
             exit;
         }
         //$redirect_url;
-        redirect('test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.test.login')->send();
+        redirect('http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.test.login')->send();
     }
 
     /**
@@ -212,5 +216,21 @@ class MemberOfficeAccountService extends MemberService
     private function _getUserInfoUrl($accesstoken, $openid)
     {
         return "https://api.weixin.qq.com/sns/userinfo?access_token={$accesstoken}&openid={$openid}&lang=zh_CN";
+    }
+
+    /**
+     * 客户端请求地址
+     *
+     * @return string
+     */
+    private function _getClientRequestUrl()
+    {
+        if (!empty($_SERVER['HTTP_REFERER'])) {
+            $client_url   = $_SERVER['HTTP_REFERER'];
+        } else {
+            $client_url   = $_SERVER['REQUEST_SCHEME'] . '//' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        }
+
+        return $client_url;
     }
 }
