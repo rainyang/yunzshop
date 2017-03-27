@@ -15,6 +15,7 @@ use Illuminate\Contracts\Validation\Validator;
 class Dispatch extends BaseModel
 {
     public $table = 'yz_dispatch';
+    
 
     /**
      *  不可填充字段.
