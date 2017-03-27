@@ -57,6 +57,6 @@ class TestController extends BaseController
 
        session()->put('test_id',100);
 
-       session('test_id', 0);
+       echo 'test_id: ' . session('test_id', 0);
    }
 }
