@@ -47,7 +47,9 @@ class MemberOfficeAccountService extends MemberService
                return show_json(0, array('msg'=>'请求错误'));
             }
 
+
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
+
             $resp_info = @ihttp_get($userinfo_url);
             $userinfo    = @json_decode($resp_info['content'], true);
 
@@ -158,7 +160,7 @@ class MemberOfficeAccountService extends MemberService
                     ));
                 }
 
-                session()->put('member_id',$member_id);
+                session(['member_id'=>$member_id]);
                 \Session::save();
             } else {
                 redirect($authurl)->send();

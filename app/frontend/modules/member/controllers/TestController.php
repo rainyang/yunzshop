@@ -46,17 +46,42 @@ class TestController extends BaseController
 
    public function loginApi()
    {
-       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index';
+       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=1';
 
        redirect($login_api)->send();
    }
 
    public function login()
    {
-       echo 'member_id: ' . \YunShop::app()->getMemberId();
+       echo 'member_id: ' . session('member_id');
 
-       session()->put('test_id',100);
+       session(['test_id'=>200]);
 
        echo 'test_id: ' . session('test_id', 0);
+   }
+
+   public function pay()
+   {
+       $pay = PayFactory::create($type);
+
+       //微信预下单
+       $data = $pay->doPay(['order_no'=>time(),'amount'=>1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>'']);
+       //预下单返回结果
+       return view('order.pay', [
+           'config' => $data['config'],
+           'js' => $data['js']
+       ])->render();
+
+       //支付宝支付
+       $url = $pay->doPay(['order_no'=>time(),'amount'=>1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>'']);
+
+
+
+       //订单号、退款单号、退款总金额、实际退款金额
+       $result = $pay->doRefund('1490503054', '4001322001201703264702511714', 1, 1);
+
+       //提现者用户ID、提现单号、提现金额
+       $pay->doWithdraw(123, time(), 0.1);
+
    }
 }
