@@ -36,11 +36,11 @@ class WechatPay extends Pay
         $order = $this->getEasyWeChatOrder($data, $openid);
         $result = $payment->prepare($order);
         $prepayId = null;
-
+echo '<pre>';print_r($result);exit;
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
         } else {
-            return show_json(0);
+            return show_json(-1);
         }
 
         $config = $payment->configForJSSDKPayment($prepayId);
