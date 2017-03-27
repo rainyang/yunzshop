@@ -1,7 +1,7 @@
 <div class="form-group">
 	<label class="col-xs-12 col-sm-3 col-md-2 control-label">{{$lang['shopinfo']}}</label>
 	<div class="col-sm-9 col-xs-12">
-							{!! app\common\helpers\UeditorHelper::tpl_ueditor('content', $goods['content']) !!}
+							{!! app\common\helpers\UeditorHelper::tpl_ueditor('goods[content]', $goods['content']) !!}
 
 	</div>
 </div>

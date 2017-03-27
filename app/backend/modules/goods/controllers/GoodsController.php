@@ -113,9 +113,40 @@ class GoodsController extends BaseController
 
     public function copy()
     {
-        $goods_id = 3;
+        $id = intval(\YunShop::request()->id);
+        if (!$id) {
+            $this->error('请传入正确参数.');
+        }
 
+        $goodsModel = \app\common\models\Goods::find($id);
+        if (!$goodsModel) {
+            $this->error('商品不存在.');
+        }
 
+        $newGoods = $goodsModel->replicate();
+        $newGoods->save();
+
+        $goodsModel->load('hasOneShare', 'hasOneDiscount', 'hasOneGoodsDispatch', 'hasOnePrivilege', 'hasOneBrand');
+        foreach($goodsModel->getRelations() as $relation => $item){
+            if ($item) {
+                unset($item->id);
+                $newGoods->{$relation}()->create($item->toArray());
+            }
+        }
+
+        $goodsModel->setRelations([]);
+        $goodsModel->load('hasManyParams');
+        foreach($goodsModel->getRelations() as $relation => $items){
+            foreach($items as $item){
+                if ($item) {
+                    unset($item->id);
+                    $newGoods->{$relation}()->create($item->toArray());
+                }
+            }
+        }
+        dd($newGoods);
+        //$newGoods->push();
+        //dd($newGoods);
     }
 
     public function create()
@@ -128,6 +159,7 @@ class GoodsController extends BaseController
         if ($requestGoods) {
             //$widgetPost = \YunShop::request()->widget;
             //dd($widgetPost);
+
             //$requestGoods['thumb_url'] = serialize($requestGoods['thumb_url']);
             if (isset($requestGoods['thumb_url'])) {
                 $requestGoods['thumb_url'] = serialize(

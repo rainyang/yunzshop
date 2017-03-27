@@ -276,6 +276,7 @@ class ShopController extends BaseController
         Setting::set('alipay-web.return_url', SZ_YI_ALIPAY_RETURN_URL);
     }
 
+
     private function upload($fileinput)
     {
         if (\Request::isMethod('post')) {

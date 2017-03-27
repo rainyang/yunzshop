@@ -8,22 +8,74 @@
 
 namespace app\frontend\modules\order\controllers;
 
-
 use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\models\Order;
+use app\common\services\PayFactory;
 use app\frontend\modules\order\services\VerifyPayService;
+use Ixudra\Curl\Facades\Curl;
 
 class PayController extends BaseController
 {
     public function index()
     {
+        $Order = Order::first();
+        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        /*$result = $pay->setyue('50');
+        if($result == false){
+            $this->errorJson($pay->getMessage());
+        }*/
+        $query_str = [
+            'order_no' => time(),
+            'amount' => 0.1,
+            'subject' => '微信支付',
+            'body' => '商品的描述:2',
+            'extra' => ''
+        ];
+        $url = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=order.testPay';
+        //$url = 'http://www.yunzhong.com/app/index.php?i=3&c=entry&do=shop&m=sz_yi&route=order.testPay';
+        $data = Curl::to($url)
+            ->withData( $query_str )
+            ->asJsonResponse(true)->post();
         //返回支付方式列表
+        //$data['data']['js'] = json_decode($data['data']['js'],true);
+        //dd($data);exit;
+        return view('order.pay',$data['data'])->render();
     }
-    public function wechat(){
-        //获取微信支付 支付单 数据
+
+    public function wechatPay()
+    {
+        //$order_id = '';
+        $Order = Order::first();
+        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        /*$result = $pay->setyue('50');
+        if($result == false){
+            $this->errorJson($pay->getMessage());
+        }*/
+        $query_str = [
+            'order_no' => time(),
+            'amount' => 0.1,
+            'subject' => '微信支付',
+            'body' => '商品的描述:2',
+            'extra' => ''
+        ];
+        $url = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=order.testPay';
+        //$url = 'http://www.yunzhong.com/app/index.php?i=3&c=entry&do=shop&m=sz_yi&route=order.testPay';
+        $data = Curl::to($url)
+            ->withData( $query_str )
+            ->asJsonResponse(true)->post();
+        dd($data);exit;
+
+        if(isset($data['data']['errno'])){
+            return $this->errorJson($data['data']['message']);
+        }
+
+        //$data = $pay->doPay(['order_no' => time(), 'amount' => $Order->price, 'subject' => '微信支付', 'body' => '商品的描述:2', 'extra' => '']);
+        return $this->successJson('成功',$data['data']);
     }
-    public function alipay(){
+
+    public function alipay()
+    {
         //获取支付宝 支付单 数据
     }
 }

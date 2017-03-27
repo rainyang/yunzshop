@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
 use app\common\services\CreditPay;
+use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\services\MemberService;
@@ -21,18 +22,18 @@ class TestController extends BaseController
    public function index()
    {
        $pay = new WechatPay();
-       $str  = $pay->setUniacidNo(122, 5);
-       echo $str . '<BR>';
-       echo substr($str, 17, 5);
+//       $str  = $pay->setUniacidNo(122, 5);
+//       echo $str . '<BR>';
+//       echo substr($str, 17, 5);
       // $pay->doWithdraw(123, time(), 0.1);
        //$result = $pay->doRefund('1490503054', '4001322001201703264702511714', 1, 1);
 
-       $data = $pay->doPay(['order_no'=>time(),'amount'=>1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>'']);
+       $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>'']);
 
-     /*  return view('order.pay', [
+       return view('order.pay', [
            'config' => $data['config'],
            'js' => $data['js']
-       ])->render();*/
+       ])->render();
 
        exit;
        $pay = new AliPay();
@@ -53,11 +54,10 @@ class TestController extends BaseController
 
    public function login()
    {
-       echo 'member_id: ' . session('member_id');
-
-       session(['test_id'=>200]);
-
-       echo 'test_id: ' . session('test_id', 0);
+       echo $_SESSION['member_id'];
+       echo '<BR>';
+       $_SESSION['demo'] = 'yunzshop';
+       echo $_SESSION['demo'];
    }
 
    public function pay()

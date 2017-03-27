@@ -50,7 +50,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
     {
         $this->_GoodsDispatch = DispatchService::getPreOrderGoodsDispatchModel($this);
     }
-
+    public function getGoodsId(){
+        return $this->Goods->id;
+    }
     /**
      * 为订单model提供的方法 ,设置所属的订单model
      * @param PreGeneratedOrderModel $Order
