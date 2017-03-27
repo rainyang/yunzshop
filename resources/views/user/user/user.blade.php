@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.base')
 
 @section('content')
 <form action="" method="get" class='form form-horizontal'>

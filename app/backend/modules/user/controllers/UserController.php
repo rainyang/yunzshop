@@ -23,9 +23,10 @@ class UserController extends BaseController
      **/
     public function index()
     {
-        $pageSize = 1;
+        $pageSize = 5;
 
         $userList = User::getPageList($pageSize);
+        dd($userList);
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
 
         return view('user.user.user', [
