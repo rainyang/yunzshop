@@ -42,6 +42,6 @@ class TestPayController extends BaseController
         ];
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay($param);
-        dump($data);exit;
+        dump(json_decode(json_encode($data)));exit;
     }
 }
