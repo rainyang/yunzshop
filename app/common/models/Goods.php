@@ -11,14 +11,19 @@ namespace app\common\models;
 use app\backend\modules\goods\observers\GoodsObserver;
 use app\frontend\modules\discount\services\models\GoodsDiscount;
 use HaoLi\LaravelAmount\Traits\AmountTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Goods extends BaseModel
 {
 
+    use SoftDeletes;
+
     public $table = 'yz_goods';
     public $attributes = ['display_order' => 0];
     protected $mediaFields = ['thumb', 'thumb_url'];
+    protected $dates = ['deleted_at'];
+
     //public $display_order = 0;
     //protected $appends = ['status'];
  
@@ -32,6 +37,37 @@ class Goods extends BaseModel
     public $widgets = [];
 
     protected $search_fields = ['title'];
+
+
+    /**
+     * 定义字段名
+     *
+     * @return array */
+    public  function atributeNames() {
+        return [
+            'title'    => '商品名称',
+            'price'  => '价格',
+            'sku'  => '商品单位',
+            'thumb'  => '图片',
+            'stock'  => '库存',
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array */
+    public  function rules()
+    {
+        return [
+            'title'    => 'required',
+            'price'  => 'required',
+            'sku'  => 'required',
+            'thumb'  => 'required',
+            'stock'  => 'required',
+        ];
+    }
+
 
     public static function getList()
     {
@@ -52,6 +88,11 @@ class Goods extends BaseModel
     public function hasManyParams()
     {
         return $this->hasMany('app\common\models\GoodsParam');
+    }
+
+    public function belongsToCategorys()
+    {
+        return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
     }
 
     public function hasManyOptions()
@@ -113,11 +154,16 @@ class Goods extends BaseModel
                 case 'brand_id':
                     $query->where('brand_id', $value);
                     break;
+                case 'product_attr':
+                    foreach($value as $attr){
+                        $query->where($attr, 1);
+                    }
+                    break;
                 case 'min_price':
-                    $query->where('price', '>', $value * 100);
+                    $query->where('price', '>', $value);
                     break;
                 case 'max_price':
-                    $query->where('price', '<', $value * 100);
+                    $query->where('price', '<', $value);
                     break;
                 case 'category':
                     $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereIn('yz_goods_category.category_id', $value);

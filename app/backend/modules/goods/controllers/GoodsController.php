@@ -76,7 +76,7 @@ class GoodsController extends BaseController
 
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
-                return !empty($item);
+                return !empty($item) && $item !== 0;
             });
 
             $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
@@ -94,8 +94,8 @@ class GoodsController extends BaseController
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
             ]
         );
-
-        $list = Goods::Search($requestSearch)->paginate(20)->toArray();
+        //dd($requestSearch);
+        $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         return view('goods.index', [
             'list' => $list['data'],
@@ -141,15 +141,20 @@ class GoodsController extends BaseController
             $goodsModel->widgets = \YunShop::request()->widgets;
             $goodsModel->uniacid = \YunShop::app()->uniacid;
 
-            if ($goodsModel->save()) {
-                //dd($goodsModel);
-                GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
-                GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
-                GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
-                GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
-                return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
+            $validator = $goodsModel->validator($goodsModel->getAttributes());
+            if ($validator->fails()) {
+                $this->error($validator->messages());
             } else {
-                !session()->has('flash_notification.message') && $this->error('商品创建失败');
+                if ($goodsModel->save()) {
+                    //dd($goodsModel);
+                    GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
+                    GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                    GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                    GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                    return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
+                } else {
+                    !session()->has('flash_notification.message') && $this->error('商品创建失败');
+                }
             }
         }
 
@@ -209,19 +214,27 @@ class GoodsController extends BaseController
             //其他字段赋值
             $goodsModel->uniacid = \YunShop::app()->uniacid;
             $goodsModel->id = $this->goods_id;
-            //数据保存
-            if ($goodsModel->save()) {
-                GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
-                GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
-                GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
-                //显示信息并跳转
-                return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
-            } else {
-                //dd($goodsModel);
-                //dd('商品修改失败');
-                !session()->has('flash_notification.message') && $this->error('商品修改失败');
-                //$this->error('商品修改失败');
+
+            $validator = $goodsModel->validator($goodsModel->getAttributes());
+            if ($validator->fails()) {
+                $this->error($validator->messages());
             }
+            else {
+                //数据保存
+                if ($goodsModel->save()) {
+                    GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                    GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                    GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                    //显示信息并跳转
+                    return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
+                } else {
+                    //dd($goodsModel);
+                    //dd('商品修改失败');
+                    !session()->has('flash_notification.message') && $this->error('商品修改失败');
+                    //$this->error('商品修改失败');
+                }
+            }
+
         }
 
         $brands = Brand::getBrands()->get();
@@ -249,9 +262,51 @@ class GoodsController extends BaseController
         ])->render();
     }
 
-    public function destroy($id)
+    public function qrcode()
     {
 
+        //$this->error($goods);
+    }
+
+    public function displayorder()
+    {
+        $displayOrders = \YunShop::request()->display_order;
+        foreach($displayOrders as $id => $displayOrder){
+            $goods = Goods::find($id);
+            $goods->display_order = $displayOrder;
+            $goods->save();
+        }
+        return $this->message('商品排序成功', Url::absoluteWeb('goods.goods.index'));
+        //$this->error($goods);
+    }
+
+    public function change()
+    {
+        //dd(\YunShop::request());
+        $id = \YunShop::request()->id;
+        $field = \YunShop::request()->type;
+        $goods = Goods::find($id);
+        $goods->$field = \YunShop::request()->value;
+        $goods->save();
+        //$this->error($goods);
+    }
+
+    public function setProperty()
+    {
+        $id = \YunShop::request()->id;
+        $field = \YunShop::request()->type;
+        $data = (\YunShop::request()->data == 1 ? '0' : '1');
+        $goods = Goods::find($id);
+        $goods->$field = $data;
+        $goods->save();
+        echo json_encode(["data" => $data, "result" => 1]);
+    }
+
+    public function destroy()
+    {
+        $id = \YunShop::request()->id;
+        $goods = Goods::destroy($id);
+        return $this->message('商品删除成功', Url::absoluteWeb('goods.goods.index'));
     }
 
     /**

@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\models\member\Address;
 use app\frontend\modules\member\models\MemberAddress;
 
 class MemberAddressController extends BaseController
@@ -20,16 +21,31 @@ class MemberAddressController extends BaseController
      * */
     public function index()
     {
-        $memberId = \YunShop::app()->getMemberId();
-        //dd($memberId);
-        //$memberId = '57'; //测试使用
+        //$memberId = \YunShop::app()->getMemberId();
+        $memberId = '9'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
         //var_dump(!empty($addressList));
-        return $this->successJson($addressList);
+        $msg = "获取列表成功";
+        return $this->successJson($msg, $addressList);
     }
 
     /*
-     * 添加会员搜获地址
+     * 地址JSON数据接口
+     *
+     * */
+    public function address()
+    {
+        $address = Address::getAllAddress();
+        if (!$address) {
+            return $this->errorJson('数据收取失败，请联系管理员！');
+        }
+
+        $msg = '数据获取成功';
+        return $this->successJson($msg, $this->addressService($address));
+    }
+
+    /*
+     * 添加会员收获地址
      *
      * */
     public function store()
@@ -47,11 +63,10 @@ class MemberAddressController extends BaseController
                 'province' => $requestAddress->province,
                 'city' => $requestAddress->city,
                 'district' => $requestAddress->district,
-                'address' => $requestAddress->city,
+                'address' => $requestAddress->address,
             );
-            dd($data);
+
             $addressModel->fill($data);
-            //$addressModel->setRawAttributes($requestAddress);
 
             $memberId = \YunShop::request()->member_id;
             $memberId = '9'; //测试使用
@@ -72,7 +87,7 @@ class MemberAddressController extends BaseController
                 return $this->errorJson($validator->messages());
             }
             if ($addressModel->save()) {
-                 return $this->successJson('');
+                 return $this->successJson('新增地址成功');
             } else {
                 return $this->errorJson("数据写入出错，请重试！");
             }
@@ -80,9 +95,13 @@ class MemberAddressController extends BaseController
         return $this->errorJson("未获取到数据，请重试！");
     }
 
+    /*
+     * 修改会员收获地址
+     *
+     * */
     public function update()
     {
-        $addressModel = MemberAddress::getAddressById(\YunShop::request()->id);
+        $addressModel = MemberAddress::getAddressById(\YunShop::request()->address_id);
         if (!$addressModel) {
             return $this->errorJson("未找到数据或已删除");
         }
@@ -95,7 +114,7 @@ class MemberAddressController extends BaseController
                 return $this->errorJson($validator->message());
             }
             if ($addressModel->isdefault == '1') {
-                //$member_id为负值！！！！
+                //$member_id未附值！！！！
                 MemberAddress::cancelDefaultAddress($addressModel->member_id);
             }
             if ($addressModel->save()) {
@@ -110,7 +129,7 @@ class MemberAddressController extends BaseController
 
     public function destroy()
     {
-        $addressId = \YunShop::request()->id;
+        $addressId = \YunShop::request()->address_id;
         $addressModel = MemberAddress::getAddressById($addressId);
         if (!$addressModel) {
             return $this->errorJson("未找到数据或已删除");
@@ -121,6 +140,31 @@ class MemberAddressController extends BaseController
         } else {
             return $this->errorJson("数据写入出错，删除失败！");
         }
+    }
+
+    /*
+     * 服务地址接口数据重构
+     * */
+    private function addressService($address)
+    {
+        $province = [];
+        $city = [];
+        $district = [];
+        foreach ($address as $key)
+        {
+            if ($key['parentid'] == 0 && $key['level'] == 1) {
+                $province[] = $key;
+            } elseif ($key['parentid'] != 0 && $key['level'] == 2 ) {
+                $city[] = $key;
+            } else {
+                $district[] = $key;
+            }
+        }
+        return array(
+            'province' => $province,
+            'city' => $city,
+            'district' => $district,
+        );
     }
 
 
