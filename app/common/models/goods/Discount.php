@@ -14,6 +14,7 @@ use app\common\models\BaseModel;
 class Discount extends BaseModel
 {
     public $table = 'yz_goods_discount';
+    protected $guarded = [''];
 
     public static function getGoodsDiscountList($goodsId)
     {
