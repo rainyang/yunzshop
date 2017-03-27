@@ -55,7 +55,7 @@ class TestController extends BaseController
    {
        echo 'member_id: ' . \YunShop::app()->getMemberId();
 
-       session()->put('test_id',100);
+       session(['test_id'=>200]);
 
        echo 'test_id: ' . session('test_id', 0);
    }

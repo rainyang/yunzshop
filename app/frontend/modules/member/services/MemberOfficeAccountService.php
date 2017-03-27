@@ -158,7 +158,7 @@ class MemberOfficeAccountService extends MemberService
                     ));
                 }
 
-                session()->put('member_id',$member_id);
+                session(['member_id'=>$member_id]);
                 \Session::save();
             } else {
                 redirect($authurl)->send();
