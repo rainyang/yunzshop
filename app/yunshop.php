@@ -381,7 +381,9 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        return session('member_id', 0);
+
+        return session('member_id', 9);
+        //return session('member_id', 0);
     }
 
 
