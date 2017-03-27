@@ -63,6 +63,7 @@ class Member extends BackendModel
             'avatar',
             'nickname',
             'realname',
+            'avatar',
             'mobile',
             'gender',
             'createtime',

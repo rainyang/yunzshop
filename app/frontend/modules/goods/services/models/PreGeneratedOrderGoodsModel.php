@@ -42,8 +42,17 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         parent::__construct();
 
     }
-
-
+    protected function setGoodsDiscount()
+    {
+        $this->_GoodsDiscount = DiscountService::getPreOrderGoodsDiscountModel($this);
+    }
+    protected function setGoodsDispatch()
+    {
+        $this->_GoodsDispatch = DispatchService::getPreOrderGoodsDispatchModel($this);
+    }
+    public function getGoodsId(){
+        return $this->Goods->id;
+    }
     /**
      * 为订单model提供的方法 ,设置所属的订单model
      * @param PreGeneratedOrderModel $Order
@@ -60,7 +69,6 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      */
     public function toArray()
     {
-
         return $data = array(
             'goods_id' => $this->Goods->id,
             'goods_sn' => $this->Goods->goods_sn,
@@ -68,6 +76,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'total' => $this->total,
             'title' => $this->Goods->title,
             'thumb' => $this->Goods->thumb,
+            'coupon_discount_price' => $this->coupon_discount_price,
             /*'discount_details' => $this->getDiscountDetails(),
             'dispatch_details' => $this->getDispatchDetails(),*/
 
@@ -101,17 +110,17 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         }
 
         $data = array(
-            'price' => $this->getPrice(),
             'goods_price' => $this->getGoodsPrice(),
             'discount_price' => $this->getDiscountPrice(),
+            'price' => $this->getPrice(),
             'goods_id' => $this->Goods->id,
             'total' => $this->getTotal(),
             'goods_sn' => $this->Goods->goods_sn,
             'title' => $this->Goods->title,
             'thumb' => $this->Goods->thumb,
             'uid' => $this->Order->getMemberModel()->uid,
-            'uniacid' => $this->Order->getShopModel()->uniacid,
             'order_id' => $this->Order->id,
+            'uniacid' => $this->Order->getShopModel()->uniacid,
         );
         dump('订单商品插入数据为');
         dump($data);

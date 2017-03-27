@@ -19,6 +19,8 @@ class MemberModel extends Member
 
     protected $fillable = ['email'=>'xxx@xx.com'];
 
+    protected $attributes = ['alipay'=>'','bio' => '', 'bloodtype'=>'','lookingfor'=>'','interest'=>'','height'=>'','msn'=>'','salt'=>'','site'=>'','taobao'=>'','weight'=>'','affectivestatus'=>'','revenue'=>''];
+
     /**
      * 获取用户uid
      *
