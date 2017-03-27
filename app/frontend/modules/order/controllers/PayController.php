@@ -18,17 +18,21 @@ class PayController extends BaseController
 {
     public function index()
     {
-        $query_str = [
-            'order_no' => time(),
-            'amount' => 0.1,
-            'subject' => '微信支付',
-            'body' => '商品的描述:2',
-            'extra' => ['type' => Pay::PAY_TYPE_COST]
-        ];
-        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
-        $data = $pay->doPay($query_str);
+        $pay = new WechatPay();
+//       $str  = $pay->setUniacidNo(122, 5);
+//       echo $str . '<BR>';
+//       echo substr($str, 17, 5);
+        // $pay->doWithdraw(123, time(), 0.1);
+        //$result = $pay->doRefund('1490503054', '4001322001201703264702511714', 1, 1);
 
-        return view('order.pay', $data['data'])->render();
+        $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>'']);
+
+        return view('order.pay', [
+            'config' => $data['config'],
+            'js' => $data['js']
+        ])->render();
+
+        exit;
     }
 
     public function wechatPay()
