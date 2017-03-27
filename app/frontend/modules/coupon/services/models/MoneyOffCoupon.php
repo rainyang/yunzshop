@@ -10,7 +10,7 @@
 namespace app\frontend\modules\coupon\services\models;
 
 
-
+use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModelGroup;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
@@ -22,21 +22,33 @@ class MoneyOffCoupon extends Coupon
         $this->_OrderModel = $OrderModel;
 
     }
+
     public function destroy()
     {
         //todo 监听者调用此方法,记录优惠券已使用
     }
 
+    /**
+     * @return array
+     */
     public function getOrderGoodsOfUsedCoupon()
     {
+        $result = [];
+        foreach ($this->_OrderModel->getOrderGoodsModels() as $orderGoodsModel) {
+            /* @var $orderGoodsModel PreGeneratedOrderGoodsModel */
+            if(in_array($orderGoodsModel->getGoodsId(),$this->_DbCoupon)){
 
-        return $this->_OrderModel->getOrderGoodsModels();
+            }
+        }
+        return $result;
     }
+
     public function getPrice()
     {
         return $this->_DbCoupon->deduct;
 
     }
+
     public function valid()
     {
         // todo 判断订单是否满足 优惠券使用条件

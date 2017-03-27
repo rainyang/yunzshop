@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
 use app\common\services\CreditPay;
+use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\services\MemberService;
