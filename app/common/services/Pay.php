@@ -18,6 +18,7 @@ use app\common\models\PayResponseDataLog;
 
 abstract class Pay
 {
+    const INVALID_UNIACID_LENGTH = -1;
     /**
      * 请求的参数
      *
@@ -337,4 +338,34 @@ abstract class Pay
 
     protected function payResponseDataLog()
     {}
+
+    public function setUniacidNo($uniacid, $strleng)
+    {
+        $part1 = date('Ymd', time());
+        $part2 = $this->generate_string();
+
+        $uniacid_lenght = strlen($uniacid);
+
+        if ($uniacid_lenght > $strleng) {
+            return INVALID_UNIACID_LENGTH;
+        }
+
+        if ($uniacid_lenght >= 1 && $uniacid_lenght <= $strleng) {
+            $part3 = sprintf("%0{$strleng}s", $uniacid);
+        } else {
+            return INVALID_UNIACID_LENGTH;
+        }
+
+        return $part1 . substr($part2, 0, 9) . $part3 . substr($part2, 9);;
+    }
+
+    private function generate_string ($length = 19)
+    {
+        $nps = "";
+        for($i=0;$i<$length;$i++)
+        {
+            $nps .= chr( (mt_rand(1, 36) <= 26) ? mt_rand(97, 122) : mt_rand(48, 57 ));
+        }
+        return $nps;
+    }
 }
