@@ -30,7 +30,7 @@ class MoneyOffCoupon extends Coupon
     public function getOrderGoodsOfUsedCoupon()
     {
 
-        return $this->_OrderModel->getOrderGoodsModels();
+        //return $this->_OrderModel->getOrderGoodsModels();
     }
     public function getPrice()
     {
