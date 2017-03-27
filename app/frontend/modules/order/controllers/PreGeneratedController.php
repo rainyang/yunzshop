@@ -12,29 +12,45 @@ use app\common\components\BaseController;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\frontend\modules\goods\services\GoodsService;
+use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\ShopService;
 
 class PreGeneratedController extends BaseController
 {
+    private $_param;
+
+
     public function index()
     {
-        //$param = \YunShop::request();
-        $param = [
+
+    }
+
+    public function cart()
+    {
+        $cart = MemberCart::getMemberCartByIds([11,12]);
+        dd($cart);exit;
+        $this->_param = [
             [
                 'goods_id' => 1,
                 'total' => 1
-            ],[
+            ], [
                 'goods_id' => 2,
                 'total' => 2
             ]
         ];
+        $this->run();
+    }
+
+    private function run()
+    {
+
         $member_model = MemberService::getCurrentMemberModel();
         $shop_model = ShopService::getCurrentShopModel();
 
 
-        $order_goods_models = OrderService::getOrderGoodsModels($param);
+        $order_goods_models = OrderService::getOrderGoodsModels($this->_param);
         list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
         if ($result === false) {
             return $this->errorJson($message);
