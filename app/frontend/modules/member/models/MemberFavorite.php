@@ -50,4 +50,25 @@ class MemberFavorite extends \app\common\models\MemberFavorite
     {
         return static::uniacid()->where('id', $favoriteId)->delete();
     }
+
+    /**
+     * 定义字段名
+     *
+     * @return array */
+    public  function atributeNames() {
+        return [
+            'goods_id'  => '商品ID不能为空',
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array */
+    public  function rules()
+    {
+        return [
+            'goods_id'  => 'required',
+        ];
+    }
 }
