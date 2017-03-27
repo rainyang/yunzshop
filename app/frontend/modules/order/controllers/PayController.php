@@ -19,8 +19,28 @@ class PayController extends BaseController
 {
     public function index()
     {
+        $Order = Order::first();
+        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        /*$result = $pay->setyue('50');
+        if($result == false){
+            $this->errorJson($pay->getMessage());
+        }*/
+        $query_str = [
+            'order_no' => time(),
+            'amount' => 0.1,
+            'subject' => '微信支付',
+            'body' => '商品的描述:2',
+            'extra' => ''
+        ];
+        $url = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=order.testPay';
+        //$url = 'http://www.yunzhong.com/app/index.php?i=3&c=entry&do=shop&m=sz_yi&route=order.testPay';
+        $data = Curl::to($url)
+            ->withData( $query_str )
+            ->asJsonResponse(true)->post();
         //返回支付方式列表
-        return view('order.pay',[])->render();
+        //$data['data']['js'] = json_decode($data['data']['js'],true);
+        //dd($data);exit;
+        return view('order.pay',$data['data'])->render();
     }
 
     public function wechatPay()
