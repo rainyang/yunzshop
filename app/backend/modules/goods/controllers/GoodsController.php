@@ -159,13 +159,12 @@ class GoodsController extends BaseController
         }
 
         $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['cat_level']]);
-
         //dd($brands->toArray());
         $allspecs = [];
         return view('goods.goods', [
             'goods' => $goodsModel,
             'lang' => $this->lang,
-            'params' => $params,
+            'params' => $params->toArray(),
             'brands' => $brands->toArray(),
             'allspecs' => $allspecs,
             'html' => '',
@@ -315,9 +314,9 @@ class GoodsController extends BaseController
     public function getParamTpl()
     {
         $tag = random(32);
-        $this->render('goods/tpl/param', [
+        return view('goods.tpl.param', [
             'tag' => $tag,
-        ]);
+        ])->render();
         //include $this->template('web/shop/tpl/param');
     }
 
