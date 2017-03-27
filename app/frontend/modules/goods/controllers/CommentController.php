@@ -42,8 +42,13 @@ class CommentController extends BaseController
         $commentModel = new \app\common\models\Comment();
         $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
 
-        $comment = \YunShop::request()->comment;
-
+        $comment = [
+            'order_id' => \YunShop::request()->order_id,
+            'goods_id' => \YunShop::request()->goods_id,
+            'content' => \YunShop::request()->content,
+            'level' => \YunShop::request()->level,
+        ];
+        
         if(!$comment){
             return $this->errorJson('评论失败!未检测到评论数据!');
         }
