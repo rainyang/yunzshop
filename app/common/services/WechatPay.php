@@ -205,8 +205,8 @@ class WechatPay extends Pay
             'openid'           => $openid
         ];
 
-        $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
-            $pay_order_model->third_type, json_encode($attributes));
+        //$this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
+        //    $pay_order_model->third_type, json_encode($attributes));
 
         return new easyOrder($attributes);
     }
