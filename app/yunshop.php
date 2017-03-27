@@ -384,7 +384,7 @@ class YunApp extends YunComponent
         if (!empty($_SESSION['member_id'])) {
             return $_SESSION['member_id'];
         } else {
-            return 9;
+            return 0;
         }
 
         //return session('member_id', 9);
