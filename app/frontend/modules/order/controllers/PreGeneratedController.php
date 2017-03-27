@@ -32,7 +32,7 @@ class PreGeneratedController extends BaseController
         if(!isset($_GET['cart_ids'])){
             return $this->errorJson('请选择要结算的商品');
         }
-        if(!is_array()){
+        if(!is_array($_GET['cart_ids'])){
             $cart_ids = explode(',',$_GET['cart_ids']);
         }
         if(!count($cart_ids)){
