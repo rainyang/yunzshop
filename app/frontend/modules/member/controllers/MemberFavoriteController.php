@@ -87,7 +87,7 @@ class MemberFavoriteController extends BaseController
     }
 
 
-    public function destory()
+    public function destroy()
     {
         if (\YunShop::request()->goods_id) {
             if (!MemberFavorite::getFavoriteById(\YunShop::request()->goods_id)) {
