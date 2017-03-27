@@ -4,6 +4,7 @@ namespace app\frontend\modules\coupon\services;
 
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\coupon\services\models\DiscountCoupon;
+use app\frontend\modules\coupon\services\models\MoneyOffCoupon;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
@@ -46,7 +47,7 @@ class TestService
         $result = [];
         foreach ($this->getAllSelectedCoupons() as $coupon){
             //todo 根据model 实例化那种优惠券(立减or折扣)
-            $Coupon = new DiscountCoupon($this->_Order,$coupon);
+            $Coupon = new MoneyOffCoupon($this->_Order,$coupon);
             if($Coupon->valid()){
                 $Coupon->activate();
                 $result[] = $Coupon;
