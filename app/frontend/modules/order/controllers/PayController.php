@@ -31,7 +31,7 @@ class PayController extends BaseController
             'amount' => 0.1,
             'subject' => '微信支付',
             'body' => '商品的描述:2',
-            'extra' => ['type'=>1]
+            'extra' => ''
         ]);
 
         return view('order.pay', [
