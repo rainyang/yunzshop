@@ -10,7 +10,7 @@
 </script>
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
-        wx.config({!! $js->config(array('chooseWXPay')) !!});
+        wx.config({!! $js !!});
     </script>
     <script>
         $(function(){
@@ -27,7 +27,7 @@
                         // 支付成功后的回调函数
                         if(res.errMsg == "chooseWXPay:ok" ) {
                             alert('支付成功。');
-                            window.location.href="{{url("wechat/pay_ok")}}";
+                            window.location.href="{{yzUrl("wechat.pay_ok")}}";
                         }else{
                             alert("支付失败，请返回重试。");
                         }

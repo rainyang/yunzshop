@@ -28,9 +28,7 @@ class WechatPay extends Pay
 
             return error(1, '没有设定支付参数');
         }
-        dump($pay);
         $app     = $this->getEasyWeChatApp($pay);
-        dump($app);
         $payment = $app->payment;
         $order = $this->getEasyWeChatOrder($data, $openid);
         $result = $payment->prepare($order);
