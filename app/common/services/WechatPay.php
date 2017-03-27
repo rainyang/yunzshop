@@ -33,14 +33,14 @@ class WechatPay extends Pay
         }
         $app     = $this->getEasyWeChatApp($pay);
         $payment = $app->payment;
-        $order = $this->getEasyWeChatOrder($data, $openid, $pay_order_model);
+        $order = $this->getEasyWeChatOrder($data, $openid);
         $result = $payment->prepare($order);
         $prepayId = null;
-
+echo '<pre>';print_r($result);exit;
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
         } else {
-            return show_json(0);
+            return show_json(-1);
         }
 
         $config = $payment->configForJSSDKPayment($prepayId);
@@ -191,7 +191,7 @@ class WechatPay extends Pay
      * @param $openid
      * @return easyOrder
      */
-    public function getEasyWeChatOrder($data, $openid, $pay_order_model)
+    public function getEasyWeChatOrder($data, $openid)
     {
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...
@@ -205,8 +205,8 @@ class WechatPay extends Pay
             'openid'           => $openid
         ];
 
-        $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
-            $pay_order_model->third_type, json_encode($attributes));
+        //$this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
+        //    $pay_order_model->third_type, json_encode($attributes));
 
         return new easyOrder($attributes);
     }
