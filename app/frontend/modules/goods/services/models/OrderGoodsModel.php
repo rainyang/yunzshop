@@ -57,7 +57,7 @@ abstract class OrderGoodsModel
      */
     protected function getDiscountPrice()
     {
-        return $this->discount_price;
+        return $this->coupon_discount_price;
 
     }
 
