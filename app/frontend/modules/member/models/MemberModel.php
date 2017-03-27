@@ -15,9 +15,9 @@ use app\common\models\Member;
 
 class MemberModel extends Member
 {
-    protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4' , 'credit5', 'bio'];
+    protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4' , 'credit5'];
 
-    protected $fillable = ['email'=>'xxx@xx.com'];
+    protected $fillable = ['email'=>'xxx@xx.com', 'bio'=> ''];
 
     /**
      * 获取用户uid
