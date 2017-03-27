@@ -29,9 +29,12 @@ class PreGeneratedController extends BaseController
 
     public function cart()
     {
+        if(!isset($_GET['cart_ids'])){
+            return $this->errorJson('请选择要结算的商品');
+        }
         $cart_ids = explode(',',$_GET['cart_ids']);
         if(!count($cart_ids)){
-            return $this->errorJson('请选择要结算的商品');
+            return $this->errorJson('参数格式有误');
         }
         $cart = MemberCart::getMemberCartByIds($cart_ids);
         //dd($cart);exit;
