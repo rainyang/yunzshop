@@ -19,9 +19,29 @@ class TestPayController extends BaseController
 
     public function index()
     {
+        //$param =  ['order_no' => $_POST['order_no'], 'amount' => $_POST['amount'], 'subject' => $_POST['subject'], 'body' => $_POST['body'], 'extra' => $_POST['extra']];
+        $param = [
+            'order_no' => time(),
+            'amount' => 0.1,
+            'subject' => '微信支付',
+            'body' => '商品的描述:2',
+            'extra' => ''
+        ];
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
-        $data = $pay->doPay(['order_no' => $_POST['order_no'], 'amount' => $_POST['amount'], 'subject' => $_POST['subject'], 'body' => $_POST['body'], 'extra' => $_POST['extra']]);
+        $data = $pay->doPay($param);
         return $this->successJson('成功',$data);
     }
-
+    public function test(){
+        define('IS_TEST',true);
+        $param = [
+            'order_no' => time(),
+            'amount' => 0.1,
+            'subject' => '微信支付',
+            'body' => '商品的描述:2',
+            'extra' => ''
+        ];
+        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        $data = $pay->doPay($param);
+        dump($data);exit;
+    }
 }
