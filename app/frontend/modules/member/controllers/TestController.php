@@ -29,7 +29,7 @@ class TestController extends BaseController
        //$result = $pay->doRefund('1490503054', '4001322001201703264702511714', 1, 1);
 
        $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>'']);
-echo '<pre>';print_r($data);exit;
+
        return view('order.pay', [
            'config' => $data['config'],
            'js' => $data['js']
@@ -47,18 +47,17 @@ echo '<pre>';print_r($data);exit;
 
    public function loginApi()
    {
-       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=5';
+       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=2';
 
        redirect($login_api)->send();
    }
 
    public function login()
    {
-       echo 'member_id: ' . session('member_id');
-
-       session(['test_id'=>200]);
-
-       echo 'test_id: ' . session('test_id', 0);
+       echo $_SESSION['member_id'];
+       echo '<BR>';
+       $_SESSION['dmeo'] = 'yunzshop';
+       echo $_SESSION['demo'];
    }
 
    public function pay()

@@ -261,4 +261,9 @@ class MemberService
             session()->put('member_name',$member_name);
         }
     }
+
+    protected function saveSession($member_id)
+    {
+        $_SERVER['member_id'] = $member_id;
+    }
 }
