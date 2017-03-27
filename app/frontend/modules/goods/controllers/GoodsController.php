@@ -86,17 +86,17 @@ class GoodsController extends BaseController
                 return !empty($item) && $item !== 0;
             });
 
-            /*$categorySearch = array_filter(\YunShop::request()->category, function ($item) {
+            $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
                 return !empty($item);
             });
 
             if ($categorySearch) {
                 $requestSearch['category'] = $categorySearch;
-            }*/
+            }
         }
         //dd($requestSearch);
 
-        $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
+        $list = Goods::Search($requestSearch)->where("status", 1)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
 
         if (empty($list)) {
             $this->errorJson('没有找到商品.');
