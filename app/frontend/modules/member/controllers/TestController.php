@@ -46,7 +46,7 @@ class TestController extends BaseController
 
    public function loginApi()
    {
-       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=5';
+       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=1';
 
        redirect($login_api)->send();
    }

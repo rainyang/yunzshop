@@ -162,7 +162,7 @@ class MemberOfficeAccountService extends MemberService
 
                 session(['member_id'=>$member_id]);
                 \Session::save();
-                $this->save(['member_id'=>$member_id, 'realname'=>$userinfo['nickname']], $uniacid);
+                $this->save(['uid'=>$member_id, 'realname'=>$userinfo['nickname']], $uniacid);
             } else {
                 redirect($authurl)->send();
                 exit;
