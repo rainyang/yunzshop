@@ -21,7 +21,7 @@ class RegisterController extends BaseController
 {
     public function index()
     {
-        if (!MemberService::isLogged()) {
+        if (MemberService::isLogged()) {
             return $this->errorJson('会员已登录');
         }
 
@@ -31,7 +31,7 @@ class RegisterController extends BaseController
         $uniacid  = \YunShop::app()->uniacid;
 
 
-        if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost)
+        if ((\YunShop::app()->ispost)
                      && MemberService::validate($mobile, $password, $confirm_password)) {
             $member_info = MemberModel::getId($uniacid, $mobile);
 
@@ -39,25 +39,24 @@ class RegisterController extends BaseController
                 return $this->errorJson('该手机号已被注册');
             }
 
-            $default_groupid = MemberGroup::getDefaultGroupI($uniacid);
+            $default_groupid = MemberGroup::getDefaultGroupId($uniacid)->first();
 
             $data = array(
                 'uniacid' => $uniacid,
                 'mobile' => $mobile,
-                'groupid' => $default_groupid['id'],
+                'groupid' => $default_groupid->id,
                 'createtime' => TIMESTAMP,
                 'nickname' => $mobile,
-                'avatar' => SZ_YI_URL . 'template/mobile/default/static/images/photo-mr.jpg',
+                'avatar' => SZ_YI_DEFAULT_AVATAR,
                 'gender' => 0,
-                'nationality' => '',
-                'resideprovince' => '',
                 'residecity' => '',
             );
             $data['salt']  = Str::random(8);
 
             $data['password'] = md5($password. $data['salt'] . \YunShop::app()->config['setting']['authkey']);
 
-            $member_id = MemberModel::insertData($data);
+            $memberModel = MemberModel::create($data);
+            $member_id = $memberModel->uid;
 
             $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);

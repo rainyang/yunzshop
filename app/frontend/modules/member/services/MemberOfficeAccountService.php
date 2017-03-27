@@ -108,7 +108,9 @@ class MemberOfficeAccountService extends MemberService
                         'salt' => '',
                         'password' => ''
                     );
-                    $member_id = MemberModel::insertData($mc_data);
+                    //$member_id = MemberModel::insertData($mc_data);
+                    $memberModel = MemberModel::create($mc_data);
+                    $member_id = $memberModel->uid;
 
                     //添加yz_member表
                     $default_sub_group_id = MemberGroup::getDefaultGroupI()->first();

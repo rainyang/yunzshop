@@ -24,3 +24,4 @@ define('SZ_YI_DEBUG', 0);//false
 !defined('SZ_YI_ALIPAY_REFUNDNOTIFY_URL') && define('SZ_YI_ALIPAY_REFUNDNOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/refundNotifyUrl.php');
 !defined('SZ_YI_ALIPAY_WITHDRAWNOTIFY_URL') && define('SZ_YI_ALIPAY_WITHDRAWNOTIFY_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/withdrawNotifyUrl.php');
 !defined('SZ_YI_ALIPAY_RETURN_URL') && define('SZ_YI_ALIPAY_RETURN_URL', $_W['siteroot'] . 'addons/sz_yi/payment/alipay/returnUrl.php');
+!defined('SZ_YI_DEFAULT_AVATAR') && define('SZ_YI_DEFAULT_AVATAR', SZ_YI_URL . 'template/mobile/default/static/images/photo-mr.jpg');
