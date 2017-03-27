@@ -25,7 +25,7 @@ class TestPayController extends BaseController
             'amount' => 0.1,
             'subject' => '微信支付',
             'body' => '商品的描述:2',
-            'extra' => ''
+            'extra' => ['type'=>1]
         ];
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay($param);

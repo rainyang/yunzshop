@@ -19,8 +19,8 @@ class MemberService
         if(isset(self::$_current_member)){
             return self::$_current_member;
         }
-        //todo 根据情况改写
-        self::setCurrentMemberModel(9);
+
+        self::setCurrentMemberModel(\YunShop::app()->getMemberId());
         return self::$_current_member;
     }
 
