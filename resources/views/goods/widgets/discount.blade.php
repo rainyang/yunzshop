@@ -69,7 +69,7 @@
 
 
 
-@section('js')
+
     <script language='javascript'>
         $('input[name="widgets[discount][level_discount_type]"]').click(function () {
             var discounttype = $('input:radio[name="widgets[discount][level_discount_type]"]:checked').val();
@@ -100,4 +100,3 @@
         })
 
     </script>
-@stop

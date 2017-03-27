@@ -14,6 +14,7 @@ use app\common\models\BaseModel;
 class Discount extends BaseModel
 {
     public $table = 'yz_goods_discount';
+    protected $guarded = [''];
 
     public static function getGoodsDiscountList($goodsId)
     {
@@ -42,10 +43,10 @@ class Discount extends BaseModel
     public  function rules()
     {
         return [
-            'level_discount_type' => '',
-            'discount_method' => '',
-            'level_id' => '',
-            'discount_value' => ''
+            'level_discount_type' => 'numeric',
+            'discount_method' => 'numeric',
+            'level_id' => 'integer',
+            'discount_value' => 'numeric'
         ];
     }
 }
