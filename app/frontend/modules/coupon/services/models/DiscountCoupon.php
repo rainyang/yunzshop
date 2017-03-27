@@ -11,12 +11,12 @@ namespace app\frontend\modules\coupon\services\models;
 
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModelGroup;
+use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class DiscountCoupon extends Coupon
 {
     public function __construct(PreGeneratedOrderModel $OrderModel, \app\common\models\Coupon $DbCoupon)
     {
-        dd($DbCoupon);exit;
         $this->_DbCoupon = $DbCoupon;
         $this->_OrderModel = $OrderModel;
 
@@ -37,7 +37,7 @@ class DiscountCoupon extends Coupon
     }
     public function getPrice()
     {
-         dd($this->_DbCoupon);exit;
+         //dd($this->_DbCoupon);exit;
         //dd($this->_DbCoupon);
         // TODO: 获取立减金额
         return $this->_DbCoupon->deduct;

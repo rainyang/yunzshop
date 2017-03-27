@@ -51,7 +51,7 @@ class OrderDiscount extends Discount
     // todo 获取订单抵扣金额
     public function getDeductionPrice()
     {
-        $Event = new OnDeductionPriceCalculatedEvent();
+        $Event = new OnDeductionPriceCalculatedEvent($this->_Order);
         $data = $Event->getData();
         $price = max(array_sum(array_column($data, 'price')), 0);
         return $price;
@@ -66,7 +66,7 @@ class OrderDiscount extends Discount
 
     public function getMemberLevelDiscountPrice()
     {
-        $Event = new OnCouponPriceCalculatedEvent();
+        $Event = new OnCouponPriceCalculatedEvent($this->_Order);
         $data = $Event->getData();
         $price = max(array_sum(array_column($data, 'price')), 0);
         return $price;

@@ -45,7 +45,7 @@ class TestService
         $result = [];
         foreach ($this->getAllSelectedCoupons() as $coupon){
             //todo 根据model 实例化那种优惠券(立减or折扣)
-            $Coupon = new DiscountCoupon();
+            $Coupon = new DiscountCoupon($this->_Order,$coupon);
             if($Coupon->valid()){
                 $result[] = $Coupon;
             }
