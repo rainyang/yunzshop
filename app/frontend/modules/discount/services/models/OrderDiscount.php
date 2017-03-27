@@ -16,6 +16,9 @@ use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 class OrderDiscount extends Discount
 {
     protected $_Order;
+    private $_coupon_price;
+    private $_deduction_price;
+
     public function __construct(PreGeneratedOrderModel $Order)
     {
         //dd($Order);exit;
@@ -48,31 +51,45 @@ class OrderDiscount extends Discount
         return $data;
     }
 
-    // todo 获取订单抵扣金额
+    /**
+     * 获取订单抵扣金额
+     * @return mixed
+     */
     public function getDeductionPrice()
     {
+        if(isset($this->_deduction_price)){
+            return $this->_deduction_price;
+        }
+
+        $this->_deduction_price = $this->_getDeductionPrice();
+
+        return $this->_deduction_price;
+    }
+    private function _getDeductionPrice(){
         $Event = new OnDeductionPriceCalculatedEvent($this->_Order);
         $data = $Event->getData();
-        $price = max(array_sum(array_column($data, 'price')), 0);
-        return $price;
+        return max(array_sum(array_column($data, 'price')), 0);
     }
-
-    //todo 获取订单优惠金额
+    /**
+     * 获取订单优惠金额
+     * @return int
+     */
 
     public function getDiscountPrice()
     {
-        return $this->getCouponPrice() + $this->getMemberLevelDiscountPrice();
+        return $this->getCouponPrice();
     }
-
-    public function getMemberLevelDiscountPrice()
-    {
-        $Event = new OnCouponPriceCalculatedEvent($this->_Order);
-        $data = $Event->getData();
-        $price = max(array_sum(array_column($data, 'price')), 0);
-        return $price;
-    }
-
     public function getCouponPrice()
+    {
+        if(isset($this->_coupon_price)){
+            return $this->_coupon_price;
+        }
+
+        $this->_coupon_price = $this->_getCouponPrice();
+
+        return $this->_coupon_price;
+    }
+    private function _getCouponPrice()
     {
         //todo 对商品价格进行处理
         $obj = new TestService($this->_Order);

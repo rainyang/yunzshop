@@ -9,6 +9,7 @@
 namespace app\frontend\modules\coupon\services\models;
 
 
+use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModelGroup;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 abstract class Coupon
@@ -34,10 +35,9 @@ abstract class Coupon
     //todo 此处比较混乱
     private function setOrderGoodsDiscountPrice()
     {
-        //echo 1;exit;
-        foreach ($this->_OrderGoodsGroup as $OrderGoods){
+        foreach ($this->_OrderGoodsGroup->getOrderGoodsGroup() as $OrderGoods){
             //(优惠券金额/订单商品总金额)*订单商品价格
-            $OrderGoods->coupon_discount_price = ($this->getPrice() / $this->_OrderGoodsGroup->getPrice()) * $OrderGoods->getPrice();
+            $OrderGoods->coupon_discount_price = number_format(($this->getPrice() / $this->_OrderGoodsGroup->getPrice()) * $OrderGoods->getPrice(),2);
 
         }
 

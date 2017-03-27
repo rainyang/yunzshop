@@ -35,18 +35,20 @@ class TestService
     }
 
     private function getAllSelectedCoupons(){
-        //todo 根据url 从数据库获取
+        //url 格式 &coupon[][id]=1
         $coupon_id = array_column($_GET['coupon'],'id');
         //dd($coupon_id);exit;
         return [\app\common\models\Coupon::whereIn('id',$coupon_id)->first()];
     }
 
     private function getAllValidCoupons(){
+
         $result = [];
         foreach ($this->getAllSelectedCoupons() as $coupon){
             //todo 根据model 实例化那种优惠券(立减or折扣)
             $Coupon = new DiscountCoupon($this->_Order,$coupon);
             if($Coupon->valid()){
+                $Coupon->activate();
                 $result[] = $Coupon;
             }
         }

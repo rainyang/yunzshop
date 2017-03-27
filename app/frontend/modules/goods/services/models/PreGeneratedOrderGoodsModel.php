@@ -67,7 +67,6 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      */
     public function toArray()
     {
-
         return $data = array(
             'goods_id' => $this->Goods->id,
             'goods_sn' => $this->Goods->goods_sn,
@@ -75,6 +74,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'total' => $this->total,
             'title' => $this->Goods->title,
             'thumb' => $this->Goods->thumb,
+            'coupon_discount_price' => $this->coupon_discount_price,
             /*'discount_details' => $this->getDiscountDetails(),
             'dispatch_details' => $this->getDispatchDetails(),*/
 

@@ -19,8 +19,11 @@ class PreGeneratedOrderGoodsModelGroup
     public function getPrice(){
         $result = 0;
         foreach ($this->_OrderGoodsGroup as $OrderGoods){
-            $result += $OrderGoods->getPrice;
+            $result += $OrderGoods->getPrice();
         }
         return $result;
+    }
+    public function getOrderGoodsGroup(){
+        return $this->_OrderGoodsGroup;
     }
 }
