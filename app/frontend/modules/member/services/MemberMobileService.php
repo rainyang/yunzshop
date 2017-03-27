@@ -9,9 +9,7 @@
 namespace app\frontend\modules\member\services;
 
 use app\frontend\modules\member\services\MemberService;
-use Illuminate\Support\Facades\Cookie;
 use app\frontend\modules\member\models\MemberModel;
-use Illuminate\Session\Store;
 
 class MemberMobileService extends MemberService
 {
@@ -23,47 +21,33 @@ class MemberMobileService extends MemberService
 
         $uniacid  = \YunShop::app()->uniacid;
 
-        if ((\YunShop::app()->isajax) && (\YunShop::app()->ispost
-                                  && MemberService::validate($mobile, $password))) {
+        if (\YunShop::app()->ispost
+                                  && MemberService::validate($mobile, $password)) {
             $has_mobile = MemberModel::checkMobile($uniacid, $mobile);
 
             if (!empty($has_mobile)) {
                 $password = md5($password. $has_mobile['salt'] . \YunShop::app()->config['setting']['authkey']);
 
-                $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password);
+                $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
+
             } else {
-                return show_json(0, "用户名不存在！");
+                return show_json(0, "用户不存在");
             }
 
-            if($member_info){
-                $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
+            if(!empty($member_info)){
+                $this->save($member_info, $uniacid);
 
-                if (is_app()) {
-                    Cookie::queue($cookieid, $member_info['uid'], time()+3600*24*7);
-                } else {
-                    Cookie::queue($cookieid, $member_info['uid']);
-                }
-
-                Cookie::queue('member_mobile', $member_info['uid']);
-
-                if(!isMobile()){
-                    $member_name = !empty($member_info['realname']) ? $member_info['realname'] : $member_info['nickname'];
-                    $member_name = !empty($member_name) ? $member_name : "未知";
-                    session()->put('member_id',$member_info['uid']);
-                    session()->put('member_name',$member_name);
-                }
-
-                if (is_app()) {
-                    return show_json(1, array(
-                        'member_id' => $member_info['uid'],
-                    ));
-                } else {
-                    return show_json(1);
-                }
+                return show_json(1, array(
+                    'member_id' => $member_info['uid'],
+                ));
             } else{
-                return show_json(0, "用户名或密码错误！");
+                return show_json(0, "手机号或密码错误");
             }
+        } else {
+            return show_json(-1, "手机号或密码错误");
         }
 
     }
+
+
 }

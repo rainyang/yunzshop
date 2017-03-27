@@ -23,7 +23,7 @@ class TestController extends BaseController
        $pay = new WechatPay();
        $str  = $pay->setUniacidNo(122, 5);
        echo $str . '<BR>';
-       echo substr($str, 17, 5); ;
+       echo substr($str, 17, 5);
       // $pay->doWithdraw(123, time(), 0.1);
        //$result = $pay->doRefund('1490503054', '4001322001201703264702511714', 1, 1);
 
