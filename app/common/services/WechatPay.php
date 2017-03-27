@@ -18,8 +18,9 @@ class WechatPay extends Pay
     {
         //$this->payAccessLog();
         //$this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
-        session()->put('member_id',123);
-
+        if (empty(\YunShop::app()->getMemberId())) {
+            return show_json(0);
+        }
         $openid = Member::getOpenId(\YunShop::app()->getMemberId());
         $pay = \Setting::get('shop.pay');
 

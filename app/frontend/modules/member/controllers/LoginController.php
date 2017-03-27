@@ -20,10 +20,6 @@ class LoginController extends BaseController
             return $this->errorJson('用户已登录', ['status'=>1]);
         }
 
-        if (SZ_YI_DEBUG) {
-            session()->put('member_id',9);
-        }
-
         $type = \YunShop::request()->type;
 
         if (!empty($type)) {

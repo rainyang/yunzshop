@@ -162,6 +162,7 @@ class MemberOfficeAccountService extends MemberService
 
                 session(['member_id'=>$member_id]);
                 \Session::save();
+                $this->saveSession($member_id);
             } else {
                 redirect($authurl)->send();
                 exit;
