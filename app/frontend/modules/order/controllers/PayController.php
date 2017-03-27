@@ -63,15 +63,15 @@ class PayController extends BaseController
         //$url = 'http://www.yunzhong.com/app/index.php?i=3&c=entry&do=shop&m=sz_yi&route=order.testPay';
         $data = Curl::to($url)
             ->withData( $query_str )
-            ->asJsonResponse()->post();
-        //dd($data);exit;
+            ->asJsonResponse(true)->post();
+        dd($data);exit;
 
-        if(isset($data->data->errno)){
-            return $this->errorJson($data->data->message);
+        if(isset($data['data']['errno'])){
+            return $this->errorJson($data['data']['message']);
         }
 
         //$data = $pay->doPay(['order_no' => time(), 'amount' => $Order->price, 'subject' => '微信支付', 'body' => '商品的描述:2', 'extra' => '']);
-        return $this->successJson('成功',$data->data);
+        return $this->successJson('成功',$data['data']);
     }
 
     public function alipay()
