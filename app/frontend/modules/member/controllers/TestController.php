@@ -54,5 +54,9 @@ class TestController extends BaseController
    public function login()
    {
        echo 'member_id: ' . \YunShop::app()->getMemberId();
+
+       session()->put('test_id',100);
+
+       session('test_id', 0);
    }
 }

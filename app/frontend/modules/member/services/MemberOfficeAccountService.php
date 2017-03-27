@@ -173,7 +173,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
         //$redirect_url;
-        redirect('test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.test.login')->send();
+        redirect('http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.test.login')->send();
     }
 
     /**
