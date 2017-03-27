@@ -164,6 +164,7 @@ class MemberOfficeAccountService extends MemberService
                 exit;
             }
         } else {
+            echo '<pre>';print_r($_SERVER);exit;
             //客户端请求地址
             $client_url   = $_SERVER['HTTP_REFERER'];
 
