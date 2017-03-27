@@ -30,16 +30,8 @@ class PreGeneratedController extends BaseController
     public function cart()
     {
         $cart = MemberCart::getMemberCartByIds([11,12]);
-        dd($cart);exit;
-        $this->_param = [
-            [
-                'goods_id' => 1,
-                'total' => 1
-            ], [
-                'goods_id' => 2,
-                'total' => 2
-            ]
-        ];
+        //dd($cart);exit;
+        $this->_param = $cart;
         $this->run();
     }
 
@@ -49,8 +41,11 @@ class PreGeneratedController extends BaseController
         $member_model = MemberService::getCurrentMemberModel();
         $shop_model = ShopService::getCurrentShopModel();
 
-
         $order_goods_models = OrderService::getOrderGoodsModels($this->_param);
+        if(!count($order_goods_models)){
+            return $this->errorJson('未找到商品');
+        }
+        //dd($order_goods_models);exit;
         list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
         if ($result === false) {
             return $this->errorJson($message);
