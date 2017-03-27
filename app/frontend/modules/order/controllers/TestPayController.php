@@ -21,7 +21,7 @@ class TestPayController extends BaseController
     {
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay(['order_no' => $_POST['order_no'], 'amount' => $_POST['amount'], 'subject' => $_POST['subject'], 'body' => $_POST['body'], 'extra' => $_POST['extra']]);
-        return $this->successJson($data);
+        return $this->successJson('成功',$data);
     }
 
 }
