@@ -29,7 +29,11 @@ class PreGeneratedController extends BaseController
 
     public function cart()
     {
-        $cart = MemberCart::getMemberCartByIds([11,12]);
+        $cart_ids = explode(',',$_GET['cart_ids']);
+        if(!count($cart_ids)){
+            return $this->errorJson('请选择要结算的商品');
+        }
+        $cart = MemberCart::getMemberCartByIds($cart_ids);
         //dd($cart);exit;
         $this->_param = $cart;
         $this->run();
