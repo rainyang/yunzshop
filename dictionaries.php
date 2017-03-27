@@ -3,6 +3,16 @@
     表明:<input type="text" name="table" value="">
     <input type="submit" value="提交">
 </form>
+<!--=================-->
+<!--<form action="http://test.ysv2.com/app/index.php?i=6&c=entry&do=shop&m=sz_yi&route=goods.comment.create-comment" method="post" name="myform">-->
+<!--    order_id:<input type="text" name="comment[order_id]" value="1">-->
+<!--    goods_id:<input type="text" name="comment[goods_id]" value="1">-->
+<!--    content:<input type="text" name="comment[content]" value="2112121212212121">-->
+<!--    level:<input type="text" name="comment[level]" value="3">-->
+<!---->
+<!--    <input type="submit" value="提交">-->
+<!--</form>-->
+
 <?php
 /**
  * Created by PhpStorm.
