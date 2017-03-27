@@ -63,25 +63,28 @@ class MemberFavoriteController extends BaseController
 
     public function store()
     {
-        $requestFaveorit = array(
-            'member_id' => '9',
-            //'member_id' => \YunShop::app()->getMemberId(),
-            'goods_id' => '1',
-            'uniacid' => \YunShop::app()->uniacid
-        );
+        if (\YunShop::request()->goods_id) {
+            $requestFaveorit = array(
+                'member_id' => '9',
+                //'member_id' => \YunShop::app()->getMemberId(),
+                'goods_id' => \YunShop::request()->goods_id,
+                'uniacid' => \YunShop::app()->uniacid
+            );
 
-        $favoriteModel = new MemberFavorite();
+            $favoriteModel = new MemberFavorite();
 
-        $favoriteModel->setRawAttributes($requestFaveorit);
-        $favoriteModel->uniacid = \YunShop::app()->uniacid;
-        $validator = $favoriteModel->validator($favoriteModel->getAttributes());
-        if ($validator->fails()) {
-            return $this->errorJson($validator->messages());
+            $favoriteModel->setRawAttributes($requestFaveorit);
+            $favoriteModel->uniacid = \YunShop::app()->uniacid;
+            $validator = $favoriteModel->validator($favoriteModel->getAttributes());
+            if ($validator->fails()) {
+                return $this->errorJson($validator->messages());
+            }
+            if ($favoriteModel->save()) {
+                return $this->successJson('添加收藏成功');
+            }
+            return $this->errorJson("数据写入出错，请重试！");
         }
-        if ($favoriteModel->save()) {
-            return $this->successJson('添加收藏成功');
-        }
-        return $this->errorJson("写入数据出错，添加收藏失败！");
+        return $this->errorJson("未获取到商品ID");
     }
 
 
@@ -91,16 +94,13 @@ class MemberFavoriteController extends BaseController
         $favoriteId = 2;
         $requestModel = MemberFavorite::getFavoriteById($favoriteId);
         if (!$requestModel) {
-            $msg = "未找到记录或已删除";
-            return $this->errorJson($msg);
+            return $this->errorJson("未找到记录或已删除");
         }
         $result = MemberFavorite::destroyFavorite($favoriteId);
         if ($result) {
-            $msg = "移除收藏成功";
-            return $this->successJson($msg);
+            return $this->successJson("移除收藏成功");
         } else {
-            $msg = "数据写入出错，移除收藏失败";
-            $this->errorJson($msg);
+            $this->errorJson("数据写入出错，移除收藏失败");
         }
     }
 }
