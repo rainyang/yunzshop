@@ -70,9 +70,9 @@ class Discount extends \app\common\models\goods\Discount
                         'goods_id' => $goodsId
                     ];
                     $validator = $model->validator($discount_data);
-                    $result[] = $validator;
                     if($validator->fails())
                     {
+                        $result[] = false;
                         $model->error($validator->messages());
                     }
                 }
