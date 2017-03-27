@@ -12,7 +12,7 @@ use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\models\Order;
 use app\common\services\PayFactory;
-use app\frontend\modules\order\services\VerifyPayService;
+use app\frontend\modules\member\services\MemberService;
 use Ixudra\Curl\Facades\Curl;
 
 class PayController extends BaseController
@@ -45,6 +45,10 @@ class PayController extends BaseController
 
     public function wechatPay()
     {
+        if(!MemberService::isLogged()){
+            return $this->errorJson('登录状态失效');
+        }
+
         //$order_id = '';
         $Order = Order::first();
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
@@ -59,12 +63,14 @@ class PayController extends BaseController
             'body' => '商品的描述:2',
             'extra' => ''
         ];
-        $url = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=order.testPay';
+        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        $data = $pay->doPay($query_str);
+        /*$url = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=order.testPay';
         //$url = 'http://www.yunzhong.com/app/index.php?i=3&c=entry&do=shop&m=sz_yi&route=order.testPay';
         $data = Curl::to($url)
             ->withData( $query_str )
-            ->asJsonResponse(true)->post();
-        dd($data);exit;
+            ->asJsonResponse(true)->post();*/
+        //dd($data);exit;
 
         if(isset($data['data']['errno'])){
             return $this->errorJson($data['data']['message']);
