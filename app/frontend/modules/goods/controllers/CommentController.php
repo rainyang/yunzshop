@@ -41,6 +41,9 @@ class CommentController extends BaseController
     {
         $commentModel = new \app\common\models\Comment();
         $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+        if(!$member){
+            return $this->errorJson('评论失败!未检测到会员数据!');
+        }
 
         $comment = [
             'order_id' => \YunShop::request()->order_id,
@@ -48,11 +51,19 @@ class CommentController extends BaseController
             'content' => \YunShop::request()->content,
             'level' => \YunShop::request()->level,
         ];
-        
-        if(!$comment){
-            return $this->errorJson('评论失败!未检测到评论数据!');
+        if(!$comment['order_id']){
+            return $this->errorJson('评论失败!未检测到订单ID!');
         }
-
+        if(!$comment['goods_id']){
+            return $this->errorJson('评论失败!未检测到商品ID!');
+        }
+        if(!$comment['content']){
+            return $this->errorJson('评论失败!未检测到评论内容!');
+        }
+        if(!$comment['level']){
+            return $this->errorJson('评论失败!未检测到评论等级!');
+        }
+        
         $commentModel->setRawAttributes($comment);
 
         $commentModel->uniacid = \YunShop::app()->uniacid;
