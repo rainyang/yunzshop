@@ -16,9 +16,9 @@ class WechatPay extends Pay
 {
     public function doPay($data = [])
     {
-        $this->payAccessLog();
-        $this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
-        $pay_order_model = $this->payOrder($data['order_no'], 0, $data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount']);
+        //$this->payAccessLog();
+        //$this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
+        //$pay_order_model = $this->payOrder($data['order_no'], 0, $data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount']);
 
         if (empty(\YunShop::app()->getMemberId())) {
             return show_json(0);
@@ -191,7 +191,7 @@ class WechatPay extends Pay
      * @param $openid
      * @return easyOrder
      */
-    public function getEasyWeChatOrder($data, $openid, $pay_log)
+    public function getEasyWeChatOrder($data, $openid, $pay_order_model)
     {
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...
@@ -205,7 +205,9 @@ class WechatPay extends Pay
             'openid'           => $openid
         ];
 
-        $this->payRequestDataLog($pay_log->id, $pay_log->type);
+        $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
+            $pay_order_model->third_type, json_encode($attributes));
+
         return new easyOrder($attributes);
     }
 }

@@ -19,12 +19,12 @@ use app\common\models\PayResponseDataLog;
 abstract class Pay
 {
     const INVALID_UNIACID_LENGTH = -1;
-    const PAY_TYPE_COST = 1;
-    const PAY_TYPE_RECHarge = 2;
-    const PAY_MODE_WECHAT = 1;
-    const PAY_MODE_ALIPAY = 2;
-    const PAY_MODE_CREDIT = 3;
-    const PAY_MODE_CASH   = 4;
+    const PAY_TYPE_COST          = 1;
+    const PAY_TYPE_RECHARGE      = 2;
+    const PAY_MODE_WECHAT        = 1;
+    const PAY_MODE_ALIPAY        = 2;
+    const PAY_MODE_CREDIT        = 3;
+    const PAY_MODE_CASH          = 4;
 
     /**
      * 请求的参数
