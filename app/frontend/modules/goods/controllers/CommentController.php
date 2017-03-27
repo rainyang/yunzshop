@@ -10,6 +10,7 @@
 namespace app\frontend\modules\goods\controllers;
 
 
+use app\common\models\Member;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
@@ -34,4 +35,39 @@ class CommentController extends BaseController
         }
         return $this->errorJson('未检测到评论数据!',$list);
     }
+
+    public function createComment()
+    {
+        $commentModel = new \app\common\models\Comment();
+        $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first()->toArray();
+
+        $comment = \YunShop::request()->comment;
+
+        if(!$comment){
+            return $this->errorJson('评论失败!未检测到评论数据!');
+        }
+
+        $commentModel->setRawAttributes($comment);
+
+        $commentModel->uniacid = \YunShop::app()->uniacid;
+        $commentModel->uid = $member['uid'];
+        $commentModel->nick_name = $member['nickname'];
+        $commentModel->head_img_url = $member['avatar'];
+        
+        $validator = $commentModel->validator($commentModel->getAttributes());
+        if ($validator->fails()) {
+            //检测失败
+            return $this->errorJson($validator->messages());
+        } else {
+            //数据保存
+            if ($commentModel->save()) {
+                //显示信息并跳转
+                return $this->successJson('评论成功!');
+            }else{
+                return $this->errorJson('评论失败!');
+            }
+        }
+    }
+    
+
 }
