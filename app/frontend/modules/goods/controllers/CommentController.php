@@ -40,7 +40,7 @@ class CommentController extends BaseController
     public function createComment()
     {
         $commentModel = new \app\common\models\Comment();
-        $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first()->toArray();
+        $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
 
         $comment = \YunShop::request()->comment;
 
@@ -51,9 +51,9 @@ class CommentController extends BaseController
         $commentModel->setRawAttributes($comment);
 
         $commentModel->uniacid = \YunShop::app()->uniacid;
-        $commentModel->uid = $member['uid'];
-        $commentModel->nick_name = $member['nickname'];
-        $commentModel->head_img_url = $member['avatar'];
+        $commentModel->uid = $member->uid;
+        $commentModel->nick_name = $member->nickname;
+        $commentModel->head_img_url = $member->avatar;
         
         $validator = $commentModel->validator($commentModel->getAttributes());
         if ($validator->fails()) {
