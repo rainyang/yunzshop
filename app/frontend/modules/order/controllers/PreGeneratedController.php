@@ -58,8 +58,8 @@ class PreGeneratedController extends BaseController
             'order' => $order
         ];
         $data = array_merge($data, $this->getDiscountEventData($order_model), $this->getDispatchEventData($order_model));
-        //dump($data);
-        return $this->successJson($data);
+        //var_dump($data);
+        return $this->successJson('成功',$data);
     }
 
     private function getDiscountEventData($order_model)
