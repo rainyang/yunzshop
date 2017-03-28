@@ -180,8 +180,8 @@ class MemberOfficeAccountService extends MemberService
             redirect($authurl)->send();
             exit;
         }
-echo $redirect_url;exit;
-        redirect($redirect_url)->send();
+
+        //redirect($redirect_url)->send();
     }
 
     /**
