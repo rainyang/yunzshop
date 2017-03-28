@@ -20,7 +20,7 @@ class MemberService
             return self::$_current_member;
         }
 
-        self::setCurrentMemberModel(\YunShop::app()->getMemberId());
+        self::setCurrentMemberModel($_GET['uid']);
         return self::$_current_member;
     }
 
