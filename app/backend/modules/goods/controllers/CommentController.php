@@ -65,7 +65,7 @@ class CommentController extends BaseController
             //其他字段赋值
             $commentModel->uniacid = \YunShop::app()->uniacid;
             if (empty($commentModel->nick_name)) {
-                $commentModel->nick_name = Member::getRandNickName()->nick_name;
+                $commentModel->nick_name = Member::getRandNickName()->nickname;
             }
             if (empty($commentModel->head_img_url)) {
                 $commentModel->head_img_url = Member::getRandAvatar()->avatar;

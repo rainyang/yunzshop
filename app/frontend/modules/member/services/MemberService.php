@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\services;
 
 use app\common\models\Member;
 use app\frontend\modules\member\models\smsSendLimitModel;
+use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
@@ -18,8 +19,10 @@ class MemberService
         if(isset(self::$_current_member)){
             return self::$_current_member;
         }
-        //todo 根据情况改写
-        self::setCurrentMemberModel(4967);
+        if(!isset($_GET['uid'])){
+            echo 'uid不存在';exit;
+        }
+        self::setCurrentMemberModel($_GET['uid']);
         return self::$_current_member;
     }
 
@@ -39,7 +42,7 @@ class MemberService
      */
     public static function isLogged()
     {
-        return !empty(session('member_id'));
+        return isset($_SESSION['member_id']) && $_SESSION['member_id'] > 0;  //!empty(session('member_id'));
     }
 
     /**
@@ -239,5 +242,33 @@ class MemberService
             }
         }
         return $arr;
+    }
+
+    protected function save($member_info, $uniacid)
+    {
+        $_SESSION['member_id'] = $member_info['uid'];
+        echo $_SESSION['member_id'];
+        exit;
+        $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
+
+        if (is_app()) {
+            Cookie::queue($cookieid, $member_info['uid'], time()+3600*24*7);
+        } else {
+            Cookie::queue($cookieid, $member_info['uid']);
+        }
+
+        Cookie::queue('member_id', $member_info['uid']);
+
+        if(!isMobile()){
+            $member_name = !empty($member_info['realname']) ? $member_info['realname'] : $member_info['nickname'];
+            $member_name = !empty($member_name) ? $member_name : "未知";
+            session()->put('member_id',$member_info['uid']);
+            session()->put('member_name',$member_name);
+        }
+    }
+
+    protected function saveSession($member_id)
+    {
+        $_SESSION['member_id'] = $member_id;
     }
 }

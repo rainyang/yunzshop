@@ -161,6 +161,11 @@ class SdkPayment
 		return $this;
 	}
 
+    public function getPayMethod()
+    {
+        return $this->paymethod;
+    }
+
 	public function setDefaultBank($bank)
 	{
 		$this->defaultbank = $bank;
@@ -173,11 +178,21 @@ class SdkPayment
 		return $this;
 	}
 
+	public function getPartner()
+    {
+        return $this->partner;
+    }
+
 	public function setNotifyUrl($notify_url)
 	{
 		$this->notify_url = $notify_url;
 		return $this;
 	}
+
+    public function getNotifyUrl()
+    {
+        return $this->notify_url;
+    }
 
 	public function setReturnUrl($return_url)
 	{
@@ -185,11 +200,21 @@ class SdkPayment
 		return $this;
 	}
 
+    public function getReturnUrl()
+    {
+        return $this->return_url;
+    }
+
 	public function setOutTradeNo($out_trade_no)
 	{
 		$this->out_trade_no = $out_trade_no;
 		return $this;
 	}
+
+    public function getOutTradeNo()
+    {
+        return $this->out_trade_no;
+    }
 
 	public function setKey($key)
 	{
@@ -203,11 +228,21 @@ class SdkPayment
 		return $this;
 	}
 
+    public function getSellerId()
+    {
+        return $this->seller_id;
+    }
+
 	public function setTotalFee($total_fee)
 	{
 		$this->total_fee = $total_fee;
 		return $this;
 	}
+
+    public function getTotalFee()
+    {
+        return $this->total_fee;
+    }
 
 	public function setSubject($subject)
 	{
@@ -215,17 +250,32 @@ class SdkPayment
 		return $this;
 	}
 
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
 	public function setBody($body)
 	{
 		$this->body = $body;
 		return $this;
 	}
 
+    public function getBody()
+    {
+        return $this->body;
+    }
+
 	public function setItBPay($it_b_pay)
 	{
 		$this->it_b_pay = $it_b_pay;
 		return $this;
 	}
+
+    public function getItBPay()
+    {
+        return $this->it_b_pay;
+    }
 
 	public function setShowUrl($show_url)
 	{
@@ -245,11 +295,21 @@ class SdkPayment
 		return $this;
 	}
 
+    public function getExterInvokeIp()
+    {
+        return $this->exter_invoke_ip;
+    }
+
 	public function setQrPayMode($qr_pay_mode)
 	{
 		$this->qr_pay_mode = $qr_pay_mode;
 		return $this;
 	}
+
+    public function getQrPayMode()
+    {
+        $this->qr_pay_mode;
+    }
 
 	/**
 	 * 生成要请求给支付宝的参数数组
@@ -508,6 +568,13 @@ class SdkPayment
         return $this->__gateway_new . $this->createLinkstringUrlencode($para);
     }
 
+    /**
+     * 统一提现
+     *
+     * @param $collectioner_account
+     * @param $collectioner_name
+     * @return string
+     */
     public function withdraw($collectioner_account, $collectioner_name)
     {
         $service = 'batch_trans_notify';

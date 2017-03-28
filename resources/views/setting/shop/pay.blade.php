@@ -62,7 +62,7 @@
                         <input type="hidden" name="pay[weixin_cert]" value="{{ $set['weixin_cert'] }}"/>
                         <input type="file" name="weixin_cert_file" class="form-control" />
                         <span class="help-block">
-                            @if (!empty($sec['cert']))
+                            @if (!empty($set['weixin_cert']))
                             <span class='label label-success'>已上传</span>
                             @else
                             <span class='label label-danger'>未上传</span>
@@ -77,7 +77,7 @@
 
                         <input type="file" name="weixin_key_file" class="form-control" />
                         <span class="help-block">
-                           @if (!empty($sec['key']))
+                           @if (!empty($set['weixin_key']))
                             <span class='label label-success'>已上传</span>
                             @else
                             <span class='label label-danger'>未上传</span>
@@ -93,7 +93,7 @@
 
                         <input type="file" name="weixin_root_file" class="form-control" />
                         <span class="help-block">
-                          @if (!empty($sec['root']))
+                          @if (!empty($set['weixin_root']))
                             <span class='label label-success'>已上传</span>
                             @else
                             <span class='label label-danger'>未上传</span>

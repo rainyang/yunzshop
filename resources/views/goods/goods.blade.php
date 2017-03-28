@@ -28,6 +28,7 @@
           location.href = "{!! yzWebUrl('goods.goods.index') !!}";
         });
       })
+
       window.optionchanged = false;
       require(['bootstrap'], function () {
         $('#myTab a').click(function (e) {
@@ -48,6 +49,7 @@
 
         if ($("#goodsname").isEmpty()) {
           $('#myTab a[href="#tab_basic"]').tab('show');
+          alert('111');
           Tip.focus("#goodsname", "请输入商品名称!");
           return false;
         }
@@ -61,11 +63,8 @@
 				  @endif
         var full = true;
         if (window.type == '3') {
-
           if (window.virtual != '0') {  //如果单规格，不能有规格
-
             if ($('#hasoption').get(0).checked) {
-
               $('#myTab a[href="#tab_option"]').tab('show');
               util.message('您的商品类型为：虚拟物品(卡密)的单规格形式，需要关闭商品规格！');
               return false;

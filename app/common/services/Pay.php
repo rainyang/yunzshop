@@ -18,6 +18,17 @@ use app\common\models\PayResponseDataLog;
 
 abstract class Pay
 {
+    const INVALID_UNIACID_LENGTH = -1;
+    const PAY_TYPE_COST          = 1;
+    const PAY_TYPE_RECHARGE      = 2;
+    const PAY_MODE_WECHAT        = 1;
+    const PAY_MODE_ALIPAY        = 2;
+    const PAY_MODE_CREDIT        = 3;
+    const PAY_MODE_CASH          = 4;
+    const ORDER_STATUS_CREATE    = 0;
+    const ORDER_STATUS_WAITPAY   = 1;
+    const ORDER_STATUS_COMPLETE   = 2;
+
     /**
      * 请求的参数
      *
@@ -288,19 +299,18 @@ abstract class Pay
     /**
      * 支付单
      *
-     * @param $int_order_no
-     * @param $out_order_no
-     * @param $status
-     * @param $type
-     * @param $third_type
-     * @param $price
+     * @param $out_order_no 订单号
+     * @param $status 支付单状态
+     * @param $type 支付类型
+     * @param $third_type 支付方式
+     * @param $price 支付金额
      */
-    protected function payOrder($int_order_no, $out_order_no, $status, $type, $third_type, $price)
+    protected function payOrder($out_order_no, $status, $type, $third_type, $price)
     {
-        PayOrder::create([
+        return PayOrder::create([
             'uniacid' => $this->uniacid,
             'member_id' => \YunShop::app()->getMemberId(),
-            'int_order_no' => $int_order_no,
+            'int_order_no' => $this->createPayOrderNo(),
             'out_order_no' => $out_order_no,
             'status' => $status,
             'type' => $type,
@@ -337,4 +347,59 @@ abstract class Pay
 
     protected function payResponseDataLog()
     {}
+
+    /**
+     * 支付单号
+     *
+     * 格式：P+YYMMDD+31位流水号(数字+字母)
+     *
+     * @return string
+     */
+    private function createPayOrderNo()
+    {
+        return 'P' . date('Ymd', time()) . $this->generate_string(23);
+    }
+
+    /**
+     * 创建退款/提现订单批次号
+     *
+     * @param $uniacid
+     * @param $strleng
+     * @return string
+     */
+    public function setUniacidNo($uniacid, $strleng)
+    {
+        $part1 = date('Ymd', time());
+        $part2 = $this->generate_string();
+
+        $uniacid_lenght = strlen($uniacid);
+
+        if ($uniacid_lenght > $strleng) {
+            return INVALID_UNIACID_LENGTH;
+        }
+
+        if ($uniacid_lenght >= 1 && $uniacid_lenght <= $strleng) {
+            $part3 = sprintf("%0{$strleng}s", $uniacid);
+        } else {
+            return INVALID_UNIACID_LENGTH;
+        }
+
+        return $part1 . substr($part2, 0, 9) . $part3 . substr($part2, 9);;
+    }
+
+    /**
+     * 退款/提现流水号
+     *
+     * @param int $length
+     * @return string
+     */
+    private function generate_string ($length = 19)
+    {
+        $nps = "";
+        for($i=0;$i<$length;$i++)
+        {
+            $nps .= chr((mt_rand(1, 36) <= 26) ? mt_rand(97, 122) : mt_rand(48, 57 ));
+        }
+        return $nps;
+    }
 }

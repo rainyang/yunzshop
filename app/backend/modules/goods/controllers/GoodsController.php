@@ -75,9 +75,8 @@ class GoodsController extends BaseController
         $requestSearch = \YunShop::request()->search;
 
         if ($requestSearch) {
-
             $requestSearch = array_filter($requestSearch, function ($item) {
-                return !empty($item) && $item!=0;
+                return !empty($item) && $item !== 0;
             });
 
             $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
@@ -114,9 +113,40 @@ class GoodsController extends BaseController
 
     public function copy()
     {
-        $goods_id = 3;
+        $id = intval(\YunShop::request()->id);
+        if (!$id) {
+            $this->error('请传入正确参数.');
+        }
 
+        $goodsModel = \app\common\models\Goods::find($id);
+        if (!$goodsModel) {
+            $this->error('商品不存在.');
+        }
 
+        $newGoods = $goodsModel->replicate();
+        $newGoods->save();
+
+        $goodsModel->load('hasOneShare', 'hasOneDiscount', 'hasOneGoodsDispatch', 'hasOnePrivilege', 'hasOneBrand');
+        foreach($goodsModel->getRelations() as $relation => $item){
+            if ($item) {
+                unset($item->id);
+                $newGoods->{$relation}()->create($item->toArray());
+            }
+        }
+
+        $goodsModel->setRelations([]);
+        $goodsModel->load('hasManyParams');
+        foreach($goodsModel->getRelations() as $relation => $items){
+            foreach($items as $item){
+                if ($item) {
+                    unset($item->id);
+                    $newGoods->{$relation}()->create($item->toArray());
+                }
+            }
+        }
+        dd($newGoods);
+        //$newGoods->push();
+        //dd($newGoods);
     }
 
     public function create()
@@ -129,6 +159,7 @@ class GoodsController extends BaseController
         if ($requestGoods) {
             //$widgetPost = \YunShop::request()->widget;
             //dd($widgetPost);
+
             //$requestGoods['thumb_url'] = serialize($requestGoods['thumb_url']);
             if (isset($requestGoods['thumb_url'])) {
                 $requestGoods['thumb_url'] = serialize(
@@ -142,26 +173,30 @@ class GoodsController extends BaseController
             $goodsModel->widgets = \YunShop::request()->widgets;
             $goodsModel->uniacid = \YunShop::app()->uniacid;
 
-            if ($goodsModel->save()) {
-                //dd($goodsModel);
-                GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
-                GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
-                GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
-                GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
-                return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
+            $validator = $goodsModel->validator($goodsModel->getAttributes());
+            if ($validator->fails()) {
+                $this->error($validator->messages());
             } else {
-                !session()->has('flash_notification.message') && $this->error('商品创建失败');
+                if ($goodsModel->save()) {
+                    //dd($goodsModel);
+                    GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
+                    GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                    GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                    GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                    return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
+                } else {
+                    !session()->has('flash_notification.message') && $this->error('商品创建失败');
+                }
             }
         }
 
         $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['cat_level']]);
-
         //dd($brands->toArray());
         $allspecs = [];
         return view('goods.goods', [
             'goods' => $goodsModel,
             'lang' => $this->lang,
-            'params' => $params,
+            'params' => $params->toArray(),
             'brands' => $brands->toArray(),
             'allspecs' => $allspecs,
             'html' => '',
@@ -210,19 +245,27 @@ class GoodsController extends BaseController
             //其他字段赋值
             $goodsModel->uniacid = \YunShop::app()->uniacid;
             $goodsModel->id = $this->goods_id;
-            //数据保存
-            if ($goodsModel->save()) {
-                GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
-                GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
-                GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
-                //显示信息并跳转
-                return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
-            } else {
-                //dd($goodsModel);
-                //dd('商品修改失败');
-                !session()->has('flash_notification.message') && $this->error('商品修改失败');
-                //$this->error('商品修改失败');
+
+            $validator = $goodsModel->validator($goodsModel->getAttributes());
+            if ($validator->fails()) {
+                $this->error($validator->messages());
             }
+            else {
+                //数据保存
+                if ($goodsModel->save()) {
+                    GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                    GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
+                    GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                    //显示信息并跳转
+                    return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
+                } else {
+                    //dd($goodsModel);
+                    //dd('商品修改失败');
+                    !session()->has('flash_notification.message') && $this->error('商品修改失败');
+                    //$this->error('商品修改失败');
+                }
+            }
+
         }
 
         $brands = Brand::getBrands()->get();
@@ -303,9 +346,9 @@ class GoodsController extends BaseController
     public function getParamTpl()
     {
         $tag = random(32);
-        $this->render('goods/tpl/param', [
+        return view('goods.tpl.param', [
             'tag' => $tag,
-        ]);
+        ])->render();
         //include $this->template('web/shop/tpl/param');
     }
 

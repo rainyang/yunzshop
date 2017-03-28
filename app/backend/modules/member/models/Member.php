@@ -43,10 +43,10 @@ class Member extends \app\common\models\Member
             }, 'hasOneFans' => function($query4) {
                 return $query4->select(['uid', 'follow as followed'])->uniacid();
             }, 'hasOneOrder' => function ($query5) {
-                return $query5->selectRaw('member_id, count(member_id) as total, sum(price) as sum')
+                return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
                               ->uniacid()
                               ->where('status', 3)
-                              ->groupBy('member_id');
+                              ->groupBy('uid');
             }]);
     }
 

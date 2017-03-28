@@ -8,44 +8,79 @@
 
 namespace app\frontend\modules\order\controllers;
 
-
 use app\common\components\BaseController;
-use app\common\facades\Setting;
 use app\common\models\Order;
-use app\frontend\modules\order\services\VerifyPayService;
+use app\common\services\Pay;
+use app\common\services\PayFactory;
+use app\common\services\WechatPay;
+use app\frontend\modules\member\services\MemberService;
 
 class PayController extends BaseController
 {
-    public function display()
+    public function index()
     {
-        $set = Setting::get('pay');
-        $order_id = \YunShop::request()->order_id;
-        $msg = VerifyPayService::verifyPay($order_id);
-        if ($msg) {
-            return $this->errorJson($msg, $data = []);
-        }
-        $db_order_model = Order::with(
-            [
-                'hasManyOrderGoods.belongsToGood',
-                'hasOnePay'
-            ]
-        )->find($order_id);
-        $log_msg = VerifyPayService::verifyLog($db_order_model);
-        if ($log_msg) {
-           return $this->errorJson($log_msg, $data = []);
-        }
-        //所有支付方式
-        $all_pays = [];
-        $return_url = urlencode($this->createMobileUrl('order.pay.display', array('order_id' => $order_id)));
+        $pay = new WechatPay();
+//       $str  = $pay->setUniacidNo(122, 5);
+//       echo $str . '<BR>';
+//       echo substr($str, 17, 5);
+        // $pay->doWithdraw(123, time(), 0.1);
+        //$result = $pay->doRefund('1490503054', '4001322001201703264702511714', 1, 1);
 
-        return $this->successJson(
-            $msg = 'ok',
-            $data = [
-                'order'     => $db_order_model,
-                'set'       => $set,
-                'all_pays'  => $all_pays,
-                'return_url'    => $return_url,
-            ]
-        );
+        $data = $pay->doPay([
+            'order_no' => time(),
+            'amount' => 0.1,
+            'subject' => '微信支付',
+            'body' => '商品的描述:2',
+            'extra' => ''
+        ]);
+
+        return view('order.pay', [
+            'config' => $data['config'],
+            'js' => $data['js']
+        ])->render();
+
+        exit;
+    }
+
+    public function wechatPay()
+    {
+        if (!MemberService::isLogged()) {
+            return $this->errorJson('登录状态失效');
+        }
+
+        //$order_id = '';
+        $Order = Order::first();
+        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        /*$result = $pay->setyue('50');
+        if($result == false){
+            $this->errorJson($pay->getMessage());
+        }*/
+        $query_str = [
+            'order_no' => time(),
+            'amount' => 0.1,
+            'subject' => '微信支付',
+            'body' => '商品的描述:2',
+            'extra' => ['type' => Pay::PAY_TYPE_COST]
+        ];
+        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        $data = $pay->doPay($query_str);
+        /*$url = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=order.testPay';
+        //$url = 'http://www.yunzhong.com/app/index.php?i=3&c=entry&do=shop&m=sz_yi&route=order.testPay';
+        $data = Curl::to($url)
+            ->withData( $query_str )
+            ->asJsonResponse(true)->post();*/
+        //dd($data);exit;
+
+        if (isset($data['data']['errno'])) {
+            return $this->errorJson($data['data']['message']);
+        }
+
+        //$data = $pay->doPay(['order_no' => time(), 'amount' => $Order->price, 'subject' => '微信支付', 'body' => '商品的描述:2', 'extra' => '']);
+        return $this->successJson('成功', $data['data']);
+    }
+
+    public function alipay()
+    {
+        //获取支付宝 支付单 数据
     }
 }

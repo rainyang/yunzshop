@@ -8,12 +8,14 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\common\components\ApiController;
 use app\frontend\modules\member\models\Member;
 use app\common\components\BaseController;
 use app\frontend\modules\member\models\MemberModel;
 use app\common\models\Order;
+use app\backend\modules\member\models\MemberRelation;
 
-class MemberController extends BaseController
+class MemberController extends ApiController
 {
 
     /**
@@ -54,6 +56,18 @@ class MemberController extends BaseController
         } else {
             return $this->errorJson('缺少访问参数');
         }
+
+    }
+
+    public function getMemberRelationInfo()
+    {
+        $info = MemberRelation::getSetInfo()->first()->toJson();
+
+        echo '<pre>';print_r($info);exit;
+    }
+
+    public function login()
+    {
 
     }
 }

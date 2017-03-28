@@ -16,7 +16,7 @@ use app\frontend\modules\order\models\OrderDetailModel;
 class DetailController extends BaseController
 {
     public function index(){
-        $orderId = \Yunshop::request()->order_id;
+        $orderId = \YunShop::request()->order_id;
         if (!$orderId) {
             return $this->errorJson($msg = '缺少访问参数', $data = []);
         } else {

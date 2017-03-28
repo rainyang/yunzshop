@@ -25,8 +25,10 @@ class TestController extends BaseController
 {
     public function index()
     {
-        $result = OrderService::orderCancelPay(Order::find(1));
-        dump($result);
+
+        //dd($this->test());exit;
+        //$result = OrderService::orderCancelPay(Order::find(1));
+        //dump($result);
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
         /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));
         Event::fire(new AfterOrderCancelSentEvent(Order::find(1)));
@@ -36,17 +38,25 @@ class TestController extends BaseController
 
     }
 
+    private function test($a)
+    {
+        //echo $b;
+    }
+
     public function testGoodsModel()
     {
         $goods_model = GoodsService::getGoodsModel(2);
         var_dump($goods_model->price);
         exit;
     }
-    public function testMemberModel(){
+
+    public function testMemberModel()
+    {
         $member_model = MemberService::getCurrentMemberModel();
         var_dump($member_model->uid);
         exit;
     }
+
     public function testGoodsModels()
     {
         $goods_models = GoodsService::getGoodsModels([1, 2]);

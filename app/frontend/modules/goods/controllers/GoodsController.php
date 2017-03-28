@@ -2,11 +2,13 @@
 namespace app\frontend\modules\goods\controllers;
 
 use app\common\components\BaseController;
+use app\common\helpers\PaginationHelper;
 use app\common\models\Category;
 use app\common\models\Goods;
 use app\common\models\GoodsCategory;
 use app\common\models\GoodsSpecItem;
 use app\frontend\modules\goods\services\GoodsService;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Created by PhpStorm.
@@ -44,7 +46,12 @@ class GoodsController extends BaseController
         }
 
         if (!$goodsModel->status) {
-            //$this->errorJson('商品已下架.');
+            $this->errorJson('商品已下架.');
+        }
+
+        if ($goodsModel->has_option) {
+            $goodsModel->min_price = $goodsModel->hasManyOptions->min("product_price");
+            $goodsModel->max_price = $goodsModel->hasManyOptions->max("product_price");
         }
 
         $goodsModel->setHidden(
@@ -70,35 +77,56 @@ class GoodsController extends BaseController
         $this->successJson('成功', $goodsModel);
     }
 
+    public function searchGoods()
+    {
+        $requestSearch = \YunShop::request()->search;
+
+        if ($requestSearch) {
+            $requestSearch = array_filter($requestSearch, function ($item) {
+                return !empty($item) && $item !== 0;
+            });
+
+            $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
+                return !empty($item);
+            });
+
+            if ($categorySearch) {
+                $requestSearch['category'] = $categorySearch;
+            }
+        }
+        //dd($requestSearch);
+
+        $list = Goods::Search($requestSearch)->where("status", 1)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
+
+        if (empty($list)) {
+            $this->errorJson('没有找到商品.');
+        }
+        $this->successJson('成功', $list);
+    }
+
     public function getGoodsCategoryList()
     {
-        //$category_array = \YunShop::request()->category_id ? ['id' => \YunShop::request()->category_id] : [];
         $category_id = intval(\YunShop::request()->category_id);
+
         if (empty($category_id)) {
             $this->errorJson('请输入正确的商品分类.');
         }
-        $goodsList = Category::uniacid()->where(['id' => $category_id])->with(
-            ['goodsCategories' => function ($query) {
-                return $query->select(['goods_id', 'category_id'])->with(
-                    [
-                        'goods' => function ($query1) {
-                            return $query1->select(['id', 'title', 'thumb', 'price', 'market_price'])->where('status', '1');
-                        }
-                    ]);
-            }])->first();
 
-        if ($goodsList) {
-            $goodsList = $goodsList->goodsCategories->filter(function ($item) {
-                return $item->goods != null;
-            })->all();
-        }
+        $categorys = Category::uniacid()->select("name", "thumb", "id")->where(['id' => $category_id])->first();
+        $goodsList = Goods::uniacid()->select('yz_goods.id', 'title', 'thumb', 'price', 'market_price')
+            ->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')
+            ->where("category_id", $category_id)
+            ->where('status', '1')
+            ->orderBy('display_order', 'desc')
+            ->orderBy('yz_goods.id', 'desc')
+            ->paginate(20)->toArray();
 
-        //dd($goodsList);
+        $categorys->goods = $goodsList;
 
-        if (empty($goodsList)) {
+        if (empty($categorys)) {
             $this->errorJson('此分类下没有商品.');
         }
-        $this->successJson('成功', $goodsList);
+        $this->successJson('成功', $categorys);
     }
 
     /**
