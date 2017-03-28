@@ -176,7 +176,7 @@ class MemberOfficeAccountService extends MemberService
 
             //session()->put('client_url',$client_url);
             $_SESSION['client_Url'] = $client_url;
-echo '<pre>';print_r($_SESSION['client_Url']);exit;
+
             redirect($authurl)->send();
             exit;
         }
