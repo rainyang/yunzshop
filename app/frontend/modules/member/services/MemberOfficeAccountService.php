@@ -245,12 +245,10 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _getClientRequestUrl()
     {
-        echo 'url: <BR>';
-        echo $_SESSION['client_Url'];exit;
-        if (empty($_SESSION['client_url'])) {
+        if (empty($_SESSION['client_Url'])) {
             return false;
         }
 
-        return $_SESSION['client_url'];
+        return $_SESSION['client_Url'];
     }
 }
