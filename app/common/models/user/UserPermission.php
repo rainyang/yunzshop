@@ -15,6 +15,11 @@ class UserPermission extends BaseModel
 {
     public $table = 'users_permission';
 
+    protected $guarded = [''];
+
+    public $timestamps = false;
+
+
     final function addUserPermission($userId)
     {
         return $this->insert([

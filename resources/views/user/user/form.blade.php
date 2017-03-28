@@ -20,7 +20,7 @@
                     <select name="widgets[role_id]" class='form-control'>
                         <option value=""  selected>点击选择角色</option>
                         @foreach($roleList as $role)
-                        <option value="{{  $role['id'] }}" >{{ $role['name'] }}</option>
+                        <option value="{{  $role['id'] }}" @if($role['id'] == $user->userRole->role_id) selected @endif >{{ $role['name'] }}</option>
                         @endforeach
 
                     </select>
