@@ -1,5 +1,6 @@
 ﻿@extends('layouts.base')
 
+@section('content')
     <script type="text/javascript" src="./resource/js/lib/jquery-ui-1.10.3.min.js"></script>
 
     <script type="text/javascript">
@@ -536,7 +537,7 @@
 
     </script>
 
-@section('content')
+
 
 
     <link rel="stylesheet" type="text/css" href="{{static_url('css/font-awesome.min.css')}}">
