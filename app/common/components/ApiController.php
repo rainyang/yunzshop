@@ -15,7 +15,7 @@ use app\frontend\modules\member\services\MemberService;
 class ApiController extends BaseController
 {
     public function __construct()
-    {
+    {echo 4656;exit;
         parent::__construct();
 
         if (!MemberService::isLogged()) {
