@@ -159,26 +159,4 @@ class Member extends \app\common\models\Member
 
         return $result;
     }
-
-    public function scopeMember($query, $params)
-    {
-        $query->uniacid();
-        if (!$params) {
-            return;
-        }
-        foreach ($params as $key => $value) {
-            switch ($key) {
-                case 'mid':
-                    $query->where('uid', $value);
-                    break;
-                case 'realname':
-                    $query->where('nickname', 'like', '%' . $value . '%')
-                        ->orWhere('realname', 'like', '%' . $value . '%')
-                        ->orWhere('mobile', 'like', '%' . $value . '%');
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
 }
