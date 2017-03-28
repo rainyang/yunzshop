@@ -15,6 +15,8 @@ use app\frontend\modules\member\services\MemberService;
 
 class LoginController extends ApiController
 {
+    protected $publicAction = ['index'];
+
     public function index()
     {
         $type = \YunShop::request()->type;
