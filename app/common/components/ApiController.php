@@ -19,7 +19,7 @@ class ApiController extends BaseController
         parent::__construct();
 
         if (!MemberService::isLogged()) {
-            return $this->errorJson('用户未登录', ['url'=>Url::absoluteApp('member.member.login')]);
+            return $this->errorJson('用户未登录', ['url'=>Url::absoluteApp('member.login')]);
         }
     }
 }

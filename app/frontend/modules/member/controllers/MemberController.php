@@ -65,4 +65,9 @@ class MemberController extends ApiController
 
         echo '<pre>';print_r($info);exit;
     }
+
+    public function login()
+    {
+
+    }
 }
