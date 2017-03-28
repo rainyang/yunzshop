@@ -174,7 +174,12 @@ class MemberOfficeAccountService extends MemberService
             $client_url = $this->_getClientRequestUrl();
 
             session()->put('client_url',$client_url);
-            redirect($authurl)->send();
+
+            //redirect($authurl)->send();
+
+            $resp     = @ihttp_get($authurl);
+            $token    = @json_decode($resp['content'], true);
+            echo '<pre>';print_r($token);exit;
             exit;
         }
 
