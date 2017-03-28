@@ -57,8 +57,6 @@ class ShopController extends BaseController
                 $this->error('会员设置失败');
             }
         }
-        $mylink_data = MyLink::getMyLink();
-        dd($mylink_data);
         return view('setting.shop.member', [
             'set' => $member
         ])->render();
