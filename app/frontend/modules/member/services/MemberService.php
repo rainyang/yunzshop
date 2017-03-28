@@ -42,7 +42,7 @@ class MemberService
      */
     public static function isLogged()
     {
-        return !empty(session('member_id'));
+        return isset($_SESSION['member_id']) && $_SESSION['member_id'] > 0;  //!empty(session('member_id'));
     }
 
     /**
