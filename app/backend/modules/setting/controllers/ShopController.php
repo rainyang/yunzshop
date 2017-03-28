@@ -11,6 +11,7 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
+use app\common\services\MyLink;
 
 class ShopController extends BaseController
 {
@@ -56,7 +57,6 @@ class ShopController extends BaseController
                 $this->error('会员设置失败');
             }
         }
-
         return view('setting.shop.member', [
             'set' => $member
         ])->render();
@@ -276,27 +276,7 @@ class ShopController extends BaseController
         Setting::set('alipay-web.return_url', SZ_YI_ALIPAY_RETURN_URL);
     }
 
-<<<<<<< HEAD
-    /**
-     * 商城设置接口
-     * @param string $key  setting表key字段值
-     * @return json
-     */
-    public function getSetting()
-    {
-        $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'notice';
-        if (!empty($key)) {
-            $setting = Setting::get('shop.' . $key);
-        } else {
-            $setting = Setting::get('shop');
-        }
-        dd($setting);
-        if (!$setting) {
-            $this->errorJson('未进行设置');
-        }
 
-        $this->successJson('获取商城设置成功', $setting);
-=======
     private function upload($fileinput)
     {
         if (\Request::isMethod('post')) {
@@ -314,6 +294,5 @@ class ShopController extends BaseController
                 return $bool ? $originalName : '';
             }
         }
->>>>>>> 1090a28717a64ff01d5fdffe1a566d4e7abe6055
     }
 }

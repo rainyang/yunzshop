@@ -175,19 +175,9 @@
                     <td colspan='8' style="text-align: left;">
                         订单数: <span id="total">{{$list['total']}}</span>
                         订单金额: <span id="totalmoney" style="color:red">{{$total_price}}</span>元&nbsp;
-                        @if(0)
-                            结算金额: <span style="color:red">
-                                @if( $costmoney>0){{$costmoney}}</span>元
-                            &nbsp;<a class="btn btn-default"
-                                     href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>
-                            @if( !empty($shopset['weixin']))
-                                <a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')"
-                                   href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>
-                            @endif
-                        @else
-                            没有可提现金额
-                        @endif
-                        @endif
+                        @section('supplier_apply')
+
+                        @show
                     </td>
                 </tr>
             </table>

@@ -56,7 +56,7 @@
                     <div class='input-group-addon'>{{  $level['level_name'] }}</div>
 
                     <input type='text' name='widgets[discount][discount_value][{{$level["id"] }}]'
-                           class="form-control discounts"
+                           class="form-control discounts_value"
                            value="@if (!empty($discountValue)){{ $discountValue[$level["id"]] }}@endif"/>
                     <div class='input-group-addon waytxt'>折</div>
                 </div>
@@ -69,7 +69,7 @@
 
 
 
-@section('js')
+
     <script language='javascript'>
         $('input[name="widgets[discount][level_discount_type]"]').click(function () {
             var discounttype = $('input:radio[name="widgets[discount][level_discount_type]"]:checked').val();
@@ -100,4 +100,3 @@
         })
 
     </script>
-@stop
