@@ -439,4 +439,14 @@ class GoodsController extends BaseController
         $goods->widgets = $request['widgets'];
         $goods->save();
     }
+
+
+    public function getMyLinkGoods()
+    {
+        if (\YunShop::request()->kw) {
+            $goods = Goods::getGoodsByName(\YunShop::request()->kw);
+            $goods = set_medias($goods, array('thumb', 'share_icon'));
+            echo json_encode($goods); exit;
+        }
+    }
 }
