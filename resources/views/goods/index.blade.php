@@ -207,9 +207,7 @@
 									<!-- yitian_add::商品链接二维码 2017-02-07 qq:751818588 -->
 									<a class="btn btn-sm btn-default umphp" title="商品二维码" data-url="<?php echo yzAppUrl('shop/detail', array('id' => $item['id']));?>" data-goodsid = "{{$item['id']}}">
 										<div class="img">
-											<img id="{{$item['id']}}" src="" style="width:110px;">
-											<div class="arrow-bottom"></div>
-											<div class="triangle-left"></div>
+											{!! QrCode::size(120)->generate(Request::url()) !!}
 										</div>
 										<i class="fa fa-qrcode"></i>
 									</a>
@@ -218,7 +216,7 @@
 
 									@section('supplier_edit')
 									<a href="{{yzWebUrl('goods.goods.edit', array('id' => $item['id']))}}"class="btn btn-sm btn-default" title="编辑"><i class="fa fa-edit"></i></a>
-									@endsection
+									@show
 
 									@section('admin_destroy')
 									<a href="{{yzWebUrl('goods.goods.destroy', array('id' => $item['id']))}}" onclick="return confirm('确认删除此商品？');
@@ -246,6 +244,8 @@
 								</td>
 							</tr>
 							@endforeach
+
+							@section('release_gods')
 							<tr>
 								<td colspan='10'>
 									@section('add_goods')
@@ -256,7 +256,7 @@
 
 								</td>
 							</tr>
-
+							@show
 							</tr>
 							</tbody>
 						</table>
@@ -274,18 +274,6 @@
 	//鼠标划过显示商品链接二维码
     $('.umphp').hover(function() {
         var url = $(this).attr('data-url');
-        var goodsid = $(this).attr('data-goodsid');
-		$.post("{!! yzWebUrl('shop.goods.qrcode') !!}"
-			, {'op': 'goods_qrcode', id: goodsid, url: url}
-			, function (qr) {
-                if (qr.img) {
-					var goodsqr = qr.img;
-                    var element = document.getElementById(goodsid);
-                    element.src = goodsqr;
-                }
-			}
-			, "json"
-		);
 		$(this).addClass("selected");
 	},
 	function() {
