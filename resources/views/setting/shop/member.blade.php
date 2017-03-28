@@ -125,5 +125,5 @@
     </form>
 </div>
 </div>
-{{--@include('setting.mylink')--}}
+@include('public.admin.mylink')
 @endsection('content')

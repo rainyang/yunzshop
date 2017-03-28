@@ -52,7 +52,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品单位</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品单位</label>
     <div class="col-sm-6 col-xs-6">
         <input type="text" name="goods[sku]" id="unit" class="form-control" value="{{$goods['sku']}}" />
         <span class="help-block">如: 个/件/包</span>
@@ -79,7 +79,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{{$lang['mainimg']}}</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>{{$lang['mainimg']}}</label>
     <div class="col-sm-9 col-xs-12 detail-logo">
         {!! app\common\helpers\ImageHelper::tplFormFieldImage('goods[thumb]', $goods['thumb']) !!}
         <span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>
@@ -114,7 +114,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品价格</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品价格</label>
     <div class="col-sm-9 col-xs-12">
         <div class="input-group form-group">
             <span class="input-group-addon">现价</span>
@@ -137,7 +137,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">库存</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>库存</label>
     <div class="col-sm-6 col-xs-12">
         <div class="input-group">
             <input type="text" name="goods[stock]" id="total" class="form-control" value="{{$goods['stock']}}" />
