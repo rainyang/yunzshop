@@ -180,7 +180,7 @@ class MemberOfficeAccountService extends MemberService
             redirect($authurl)->send();
             exit;
         }
-echo $redirect_url;exit;
+
         redirect($redirect_url)->send();
     }
 
@@ -245,6 +245,8 @@ echo $redirect_url;exit;
      */
     private function _getClientRequestUrl()
     {
+        echo 'url: <BR>';
+        echo $_SESSION['client_Url'];exit;
         if (empty($_SESSION['client_url'])) {
             return false;
         }
