@@ -11,6 +11,7 @@ namespace app\common\services;
 use app\common\services\alipay\MobileAlipay;
 use app\common\services\alipay\WebAlipay;
 use app\common\services\alipay\WapAlipay;
+use app\common\models\Member;
 
 class AliPay extends Pay
 {
@@ -18,8 +19,9 @@ class AliPay extends Pay
 
     public function __construct()
     {
-        $this->_pay = $this->createFactory();
+        parent::__construct();
 
+        $this->_pay = $this->createFactory();
     }
 
     private function createFactory()
@@ -71,41 +73,49 @@ class AliPay extends Pay
      */
     public function doPay($data = [])
     {
-
-        // TODO 访问日志
-        // TODO 支付单
+        $op = "支付宝订单支付 订单号：" . $data['order_no'];
+        $this->log($data['extra']['type'], Pay::PAY_MODE_ALIPAY, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
 
         return $this->_pay->doPay($data);
     }
 
-    public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney='0')
+    public function doRefund($out_trade_no, $totalmoney, $refundmoney='0')
     {
-        // TODO 访问日志
-        // TODO 退款单
+        $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
+
+        $op = '支付宝退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
+        $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_ALIPAY, $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+
 
         $alipay = app('alipay.web');
 
         $alipay->setOutTradeNo($out_trade_no);
         $alipay->setTotalFee($totalmoney);
 
-        return $alipay->refund();
+        return $alipay->refund($out_refund_no);
     }
 
-    public function doWithdraw($member_id, $out_trade_no, $money, $desc, $type=1)
+    public function doWithdraw($member_id, $money, $desc, $type=1)
     {
-        // TODO 访问日志
-        // TODO 提现单
+        $out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
+
+        $op = '支付宝提现 订单号：' . $out_trade_no . '提现金额：' . $money;
+        $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_ALIPAY, $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
 
         $alipay = app('alipay.web');
 
         $alipay->setTotalFee($money);
-        if (SZ_YI_DEBUG) {
-            $account ='iam_dingran@163.com';
-            $name ='丁冉';
+
+        $member_info = Member::getUserInfos($member_id)->first()->toArray();
+
+        if (!empty($member_info['yz-member']['alipay']) && !empty($member_info['yz-member']['alipayname'])) {
+            $account = $member_info['yz-member']['alipay'];
+            $name = $member_info['yz-member']['alipayname'];
+        } else {
+            return show_json(0);
         }
 
-
-        return $alipay->withdraw($account, $name);
+        return $alipay->withdraw($account, $name, $out_trade_no);
     }
 
     public function buildRequestSign()

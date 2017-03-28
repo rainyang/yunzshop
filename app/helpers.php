@@ -6,6 +6,21 @@ use app\common\services\PermissionService;
 use app\common\helpers\Url;
 
 
+if (! function_exists('my_link_extra')) {
+
+    function my_link_extra($type = 'content')
+    {
+
+        $content = "";
+
+        $extraContents = [];
+
+        Event::fire(new app\common\events\RenderingMyLink($extraContents));
+
+        return $type == 'content' ? $content . implode("\n", $extraContents) : implode("\n",array_keys($extraContents));
+    }
+}
+
 if(!function_exists('can')){
     /**
      * 权限判断

@@ -73,7 +73,6 @@ class GoodsController extends BaseController
         $brands = Brand::getBrands()->get()->toArray();
 
         $requestSearch = \YunShop::request()->search;
-
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
                 return !empty($item) && $item !== 0;
@@ -118,7 +117,7 @@ class GoodsController extends BaseController
             $this->error('请传入正确参数.');
         }
 
-        $goodsModel = \app\common\models\Goods::find($id);
+        $goodsModel = \app\common\models\Goods::uniacid()->find($id);
         if (!$goodsModel) {
             $this->error('商品不存在.');
         }
@@ -135,7 +134,7 @@ class GoodsController extends BaseController
         }
 
         $goodsModel->setRelations([]);
-        $goodsModel->load('hasManyParams');
+        $goodsModel->load('hasManyParams', 'hasManyOptions');
         foreach($goodsModel->getRelations() as $relation => $items){
             foreach($items as $item){
                 if ($item) {
@@ -144,9 +143,55 @@ class GoodsController extends BaseController
                 }
             }
         }
-        dd($newGoods);
-        //$newGoods->push();
-        //dd($newGoods);
+
+        //todo, 先复制老的规格,再复制规格项,再更新规格content字段,最后复制option,更新option specs字段
+        $goodsSpecs = GoodsSpec::uniacid()->where('goods_id', $goodsModel->id)->get();
+
+        $specItemIds = [];
+        $item_ids = [];
+        foreach($goodsSpecs as $goodsSpec){
+            $newGoodsSpecModel = $goodsSpec->replicate();
+            $newGoodsSpecModel->goods_id = $newGoods->id;
+            //dd($newGoodsSpecModel);
+            $newGoodsSpecModel->save();
+
+            //获取旧的规格项
+            $goodsSpecItems = GoodsSpecItem::uniacid()->where("specid", $goodsSpec->id)->get();
+
+            foreach($goodsSpecItems as $goodsSpecItem){
+                $newGoodsSpecItem = $goodsSpecItem->replicate();
+                $newGoodsSpecItem->specid = $newGoodsSpecModel->id;
+                $newGoodsSpecItem->save();
+
+                $items = [
+                    'old_item' => $goodsSpecItem->id,
+                    'new_item' => $newGoodsSpecItem->id,
+                ];
+
+                array_push($item_ids, $items);
+                array_push($specItemIds, $newGoodsSpecItem->id);
+            }
+
+            $newGoodsSpecModel->content = serialize($specItemIds);
+            $newGoodsSpecModel->save();
+        }
+
+        $goodsOptions = GoodsOption::uniacid()->where('goods_id', $newGoods->id)->get();
+        foreach($goodsOptions as $goodsOption){
+            $specs = explode("_", $goodsOption->specs);
+            $newSpecs = [];
+            foreach($specs as $spec){
+                foreach($item_ids as $item){
+                    if ($item['old_item'] == $spec){
+                        $newSpecs[] = $item['new_item'];
+                    }
+                }
+            }
+            $goodsOption->specs = implode("_", $newSpecs);
+            $goodsOption->save();
+        }
+
+        return $this->message('商品复制成功', Url::absoluteWeb('goods.goods.index'));
     }
 
     public function create()
@@ -157,10 +202,6 @@ class GoodsController extends BaseController
 
         $requestGoods = \YunShop::request()->goods;
         if ($requestGoods) {
-            //$widgetPost = \YunShop::request()->widget;
-            //dd($widgetPost);
-
-            //$requestGoods['thumb_url'] = serialize($requestGoods['thumb_url']);
             if (isset($requestGoods['thumb_url'])) {
                 $requestGoods['thumb_url'] = serialize(
                     array_map(function ($item) {
@@ -225,7 +266,6 @@ class GoodsController extends BaseController
         //商品其它图片反序列化
         $goodsModel->thumb_url = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
         //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
-
 
         //$catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
@@ -438,5 +478,15 @@ class GoodsController extends BaseController
         $goods->setRawAttributes($request['goods']);
         $goods->widgets = $request['widgets'];
         $goods->save();
+    }
+
+
+    public function getMyLinkGoods()
+    {
+        if (\YunShop::request()->kw) {
+            $goods = Goods::getGoodsByName(\YunShop::request()->kw);
+            $goods = set_medias($goods, array('thumb', 'share_icon'));
+            echo json_encode($goods); exit;
+        }
     }
 }

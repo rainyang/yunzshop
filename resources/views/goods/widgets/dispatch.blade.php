@@ -31,6 +31,8 @@
         </div>
     </div>
 
+
+    @section('supplier_show_dispatch')
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持货到付款</label>
         <div class="col-sm-6 col-xs-6">
@@ -41,5 +43,6 @@
                                                @if ( $dispatch['is_cod'] == 2) checked="true" @endif /> 支持</label>
         </div>
     </div>
+    @show
 
 

@@ -58,7 +58,7 @@ class BaseController extends Controller
      * @param array $data       返回数据
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function successJson($message = '', $data = [])
+    public static function successJson($message = '', $data = [])
     {
         Response::json([
             'result' => 1,
@@ -75,7 +75,7 @@ class BaseController extends Controller
      * @param array $data        返回数据
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function errorJson($message = '', $data = [])
+    public static function errorJson($message = '', $data = [])
     {
          response()->json([
             'result' => 0,

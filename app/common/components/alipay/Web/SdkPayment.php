@@ -1,7 +1,9 @@
 <?php
 namespace app\common\components\alipay\Web;
 
+use app\common\events\PayLog;
 use app\common\facades\Setting;
+use app\common\services\alipay\WebAlipay;
 
 class SdkPayment
 {
@@ -84,6 +86,8 @@ class SdkPayment
 			'_input_charset' => strtolower($this->_input_charset),
 			'qr_pay_mode' => $this->qr_pay_mode
 		);
+        //请求数据日志
+        event(new PayLog($parameter, new WebAlipay()));
 
 		$para = $this->buildRequestPara($parameter);
 
@@ -544,7 +548,7 @@ class SdkPayment
      *
      * @return string
      */
-	public function refund()
+	public function refund($out_refund_no)
     {
         $service = 'refund_fastpay_by_platform_pwd';
         $notify_url = SZ_YI_ALIPAY_REFUNDNOTIFY_URL;
@@ -556,7 +560,7 @@ class SdkPayment
             'notify_url' => $notify_url,
             'seller_email' => $this->seller_id,
             'refund_date' => date('Y-m-d H:i:s',time()),
-            'batch_no' => date('Ymd', time()) . time(),
+            'batch_no' => $out_refund_no,
             'batch_fee' => $this->total_fee,
             'batch_num' => 1,
             'detail_data' => $this->out_trade_no.'^'.$this->total_fee.'^退款订单',
@@ -575,12 +579,12 @@ class SdkPayment
      * @param $collectioner_name
      * @return string
      */
-    public function withdraw($collectioner_account, $collectioner_name)
+    public function withdraw($collectioner_account, $collectioner_name, $out_trade_no)
     {
         $service = 'batch_trans_notify';
         $pay = Setting::get('shop.pay');
 
-        $batch_no = date('Ymd', time()) . time();
+        $batch_no = $out_trade_no;
         $notify_url = SZ_YI_ALIPAY_WITHDRAWNOTIFY_URL;
 
         $parameter = array(

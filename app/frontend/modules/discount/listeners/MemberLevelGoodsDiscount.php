@@ -59,9 +59,6 @@ class MemberLevelGoodsDiscount
     }
     public function subscribe($events)
     {
-        $events->listen(
-            OnDiscountInfoDisplayEvent::class,
-            MemberLevelGoodsDiscount::class.'@onDisplay'
-        );
+
     }
 }

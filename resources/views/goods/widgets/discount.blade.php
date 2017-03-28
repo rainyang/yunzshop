@@ -1,6 +1,4 @@
-<div class='panel-heading'>
-    等级折扣
-</div>
+
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣类型</label>
@@ -56,7 +54,7 @@
                     <div class='input-group-addon'>{{  $level['level_name'] }}</div>
 
                     <input type='text' name='widgets[discount][discount_value][{{$level["id"] }}]'
-                           class="form-control discounts"
+                           class="form-control discounts_value"
                            value="@if (!empty($discountValue)){{ $discountValue[$level["id"]] }}@endif"/>
                     <div class='input-group-addon waytxt'>折</div>
                 </div>
