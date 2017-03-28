@@ -114,6 +114,17 @@ class User extends BaseModel
     }
 
     /*
+     * 修改操作员信息通过操作员ID
+     *
+     * @params int $uid
+     * @params array $data
+     * */
+    public static function updateUserByUserId($uid, $data)
+    {
+        return static::where('uid', $uid)->update($data);
+    }
+
+    /*
      *  Delete operator
      **/
     public static function destroyUser($userId)

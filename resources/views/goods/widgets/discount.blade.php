@@ -56,7 +56,7 @@
                     <div class='input-group-addon'>{{  $level['level_name'] }}</div>
 
                     <input type='text' name='widgets[discount][discount_value][{{$level["id"] }}]'
-                           class="form-control discounts"
+                           class="form-control discounts_value"
                            value="@if (!empty($discountValue)){{ $discountValue[$level["id"]] }}@endif"/>
                     <div class='input-group-addon waytxt'>折</div>
                 </div>

@@ -23,7 +23,7 @@ class UserController extends BaseController
      **/
     public function index()
     {
-        $pageSize = 1;
+        $pageSize = 5;
 
         $userList = User::getPageList($pageSize);
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
@@ -33,6 +33,9 @@ class UserController extends BaseController
             'userList' => $userList
         ])->render();
     }
+    /*
+     *  添加操作员
+     **/
     public function store()
     {
         $userModel = new User();
@@ -73,8 +76,8 @@ class UserController extends BaseController
     public function update()
     {
         $userModel = User::getUserByid(\YunShop::request()->id);
-
         //dd($userModel);
+
         if (!$userModel) {
             return $this->message("未找到数据或以删除！", '', 'error');
         }
@@ -90,7 +93,25 @@ class UserController extends BaseController
             $rolePermissions = YzRole::getRoleById($userModel->userRole->role->id)->toArray();
             $userPermissions += $permissionService->handlePermission($userModel->userRole->permissions->toArray());
         }
-        dd($userPermissions);
+        //dd($userPermissions);
+        //修改 start
+        $requestUser =\YunShop::request()->user;
+        if ($requestUser) {
+            if ($requestUser['password'] || $requestUser['status'] != $userModel->status) {
+                $userData = array('status' => $requestUser['status']);
+                if ($requestUser['password']) {
+                    $userData['password'] = $this->password($requestUser->password, $userModel->salt);
+                }
+                if (User::updateUserByUserId($userModel->uid, $userData)) {
+                    return $this->message('修改操作员成功.', Url::absoluteWeb('user.user.update', array('id'=>$userModel->uid)));
+                }
+            }
+            //todo 修改会员权限等其他信息
+            //todo 如果user表不修改，则判断是否需要修改权限，所选角色，和操作员简介
+
+
+        }
+
 
         return view('user.user.form',[
             'user'          => $userModel,

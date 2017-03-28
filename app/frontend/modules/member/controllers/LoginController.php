@@ -8,18 +8,17 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\services\MemberService;
 
-class LoginController extends BaseController
+class LoginController extends ApiController
 {
+    protected $publicAction = ['index'];
+
     public function index()
     {
-        if (MemberService::isLogged()) {
-            return $this->errorJson('用户已登录', ['status'=>1]);
-        }
-
         $type = \YunShop::request()->type;
 
         if (!empty($type)) {

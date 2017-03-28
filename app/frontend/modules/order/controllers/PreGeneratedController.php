@@ -24,7 +24,12 @@ class PreGeneratedController extends BaseController
 
     public function index()
     {
-
+        $this->_param['goods'][] = [
+            'goods_id'=>\YunShop::request()->get('goods_id'),
+            'total'=>\YunShop::request()->get('total'),
+            'option_id'=>\YunShop::request()->get('option_id'),
+        ];
+        $this->run();
     }
 
     public function cart()
@@ -40,7 +45,7 @@ class PreGeneratedController extends BaseController
         }
         $cart = MemberCart::getMemberCartByIds($cart_ids);
         //dd($cart);exit;
-        $this->_param = $cart;
+        $this->_param['goods'] = $cart;
         $this->run();
     }
 
@@ -48,9 +53,13 @@ class PreGeneratedController extends BaseController
     {
 
         $member_model = MemberService::getCurrentMemberModel();
+        //dd($member_model);exit;
+        if(!isset($member_model)){
+            return $this->errorJson('用户登录状态过期');
+        }
         $shop_model = ShopService::getCurrentShopModel();
 
-        $order_goods_models = OrderService::getOrderGoodsModels($this->_param);
+        $order_goods_models = OrderService::getOrderGoodsModels($this->_param['goods']);
         if(!count($order_goods_models)){
             return $this->errorJson('未找到商品');
         }

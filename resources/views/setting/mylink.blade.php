@@ -17,7 +17,7 @@
                         <li role="presentation" style="display: block;"><a aria-controls="link_diy" role="tab" data-toggle="tab" href="#link_article" aria-expanded="false">超级券页面</a></li>
                         @endif
                         <li role="presentation" style="display: block;"><a aria-controls="link_other" role="tab" data-toggle="tab" href="#link_other" aria-expanded="false">自定义链接</a></li>
-                    </ul>
+                    </ul>   
                 </div>
                  <div class="modal-body tab-content">
                      <div role="tabpanel" class="tab-pane link_system active" id="link_system">
@@ -25,7 +25,7 @@
                             <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 商城页面链接</h4>
                         </div>
-                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{php echo $this->createMobileUrl('shop/index')}">商城首页</div>
+                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzWebUrl('shop.index') }}">商城首页</div>
                         <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" data-href="{php echo $this->createMobileUrl('shop/category')}">分类导航</div>
                         <div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>
                         <div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>
@@ -42,11 +42,10 @@
                         <div id="fe-tab-link-li-28" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 28)" data-href="{php echo $this->createMobileUrl('member/withdraw')}">余额提现</div>
                         <div id="fe-tab-link-li-29" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 29)" data-href="{php echo $this->createMobileUrl('shop/address')}">我的收货地址</div>
 
-                        @if (p('commission'))
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 分销链接</h4>
                         </div>
-
+                        
                         <div id="fe-tab-link-li-31" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 31)" data-href="{php echo $this->createPluginMobileUrl('commission')}">分销中心</div>
                         <div id="fe-tab-link-li-32" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 32)" data-href="{php echo $this->createPluginMobileUrl('commission/register')}">成为分销商</div>
                         <div id="fe-tab-link-li-33" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 33)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop')}">我的小店</div>
@@ -56,31 +55,30 @@
                         <div id="fe-tab-link-li-37" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 37)" data-href="{php echo $this->createPluginMobileUrl('commission/log')}">佣金明细</div>
                         <div id="fe-tab-link-li-38" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 38)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop',array('op'=>'set'))}">小店设置</div>
                         <div id="fe-tab-link-li-39" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 39)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop',array('op'=>'select'))}">自选商品</div>
-                        @endif
-                        @if (p('bonus'))
+
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 分红链接</h4>
                         </div>
-
+                        
                         <div id="fe-tab-link-li-40" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 40)" data-href="{php echo $this->createPluginMobileUrl('bonus')}">分红中心</div>
                         <div id="fe-tab-link-li-41" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 41)" data-href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}">分红佣金</div>
                         <div id="fe-tab-link-li-42" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 42)" data-href="{php echo $this->createPluginMobileUrl('bonus/order')}">分红订单</div>
                         <div id="fe-tab-link-li-43" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 43)" data-href="{php echo $this->createPluginMobileUrl('bonus/team')}">我的下线</div>
                         <div id="fe-tab-link-li-44" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 44)" data-href="{php echo $this->createPluginMobileUrl('bonus/log')}">分红明细</div>
                         <div id="fe-tab-link-li-45" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 45)" data-href="{php echo $this->createPluginMobileUrl('bonus/ordercount_area')}">区域订单</div>
-                        @endif
-                        @if (p('coupon'))
+
+
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 超级券链接</h4>
                         </div>
-
+                        
                         <div id="fe-tab-link-li-46" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 46)" data-href="{php echo $this->createPluginMobileUrl('coupon')}">优惠券领取中心</div>
                         <div id="fe-tab-link-li-47" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 47)" data-href="{php echo $this->createPluginMobileUrl('coupon/my')}">我的优惠券</div>
-                        @endif
+
                             <div class="page-header">
                                 <h4><i class="fa fa-folder-open-o"></i> 其它插件页面</h4>
                             </div>
-                            @if (p('return'))
+                            {{--@if (p('return'))
                             <div id="fe-tab-link-li-48" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 48)" data-href="{php echo $this->createPluginMobileUrl('return/return_log')}">全返明细</div>
                             @endif
                             @if (p('supplier'))
@@ -91,7 +89,7 @@
                             @endif
                             @if (p('creditshop'))
                              <div id="fe-tab-link-li-51" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 51)" data-href="{php echo $this->createPluginMobileUrl('creditshop')}">积分商城</div>
-                             @endif
+                             @endif--}}
                         </div>
                      </div>
                      <div role="tabpanel" class="tab-pane link_goods" id="link_goods">

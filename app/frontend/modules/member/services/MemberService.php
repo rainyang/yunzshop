@@ -19,8 +19,10 @@ class MemberService
         if(isset(self::$_current_member)){
             return self::$_current_member;
         }
-        //todo 根据情况改写
-        self::setCurrentMemberModel(9);
+        if(!isset($_GET['uid'])){
+            echo 'uid不存在';exit;
+        }
+        self::setCurrentMemberModel($_GET['uid']);
         return self::$_current_member;
     }
 
@@ -40,7 +42,7 @@ class MemberService
      */
     public static function isLogged()
     {
-        return !empty(session('member_id'));
+        return isset($_SESSION['member_id']) && $_SESSION['member_id'] > 0;  //!empty(session('member_id'));
     }
 
     /**
