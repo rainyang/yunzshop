@@ -38,7 +38,8 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            $redirect_url = session('client_url', $callback);
+            //$redirect_url = session('client_url', $callback);
+            $redirect_url = $this->_getClientRequestUrl();
 
             $resp     = @ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
@@ -171,15 +172,16 @@ class MemberOfficeAccountService extends MemberService
         } else {
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
 
-            $client_url = $this->_getClientRequestUrl();
+            $client_url = $this->_setClientRequestUrl();
 
-            session()->put('client_url',$client_url);
+            //session()->put('client_url',$client_url);
+            $_SESSION['client_Url'] = $client_url;
 
             redirect($authurl)->send();
             exit;
         }
 
-        //redirect($redirect_url)->send();
+        redirect($redirect_url)->send();
     }
 
     /**
@@ -221,11 +223,11 @@ class MemberOfficeAccountService extends MemberService
     }
 
     /**
-     * 客户端请求地址
+     * 设置客户端请求地址
      *
      * @return string
      */
-    private function _getClientRequestUrl()
+    private function _setClientRequestUrl()
     {
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $client_url   = $_SERVER['HTTP_REFERER'];
@@ -234,5 +236,19 @@ class MemberOfficeAccountService extends MemberService
         }
 
         return $client_url;
+    }
+
+    /**
+     * 获取客户端地址
+     *
+     * @return mixed
+     */
+    private function _getClientRequestUrl()
+    {
+        if (empty($_SESSION['client_url'])) {
+            return false;
+        }
+
+        return $_SESSION['client_url'];
     }
 }
