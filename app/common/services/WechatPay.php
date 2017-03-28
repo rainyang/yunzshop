@@ -18,6 +18,8 @@ class WechatPay extends Pay
     {
         //$this->payAccessLog();
         //$this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
+        //$pay_order_model = $this->payOrder($data['order_no'], 0, $data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount']);
+
         if (empty(\YunShop::app()->getMemberId())) {
             return show_json(0);
         }
@@ -38,7 +40,7 @@ class WechatPay extends Pay
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
         } else {
-            return show_json(0);
+            return show_json(-1);
         }
 
         $config = $payment->configForJSSDKPayment($prepayId);
@@ -60,8 +62,8 @@ class WechatPay extends Pay
      */
     public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
     {
-       // $this->payAccessLog();
-        //$this->payLog(2, 1, $refundmoney, '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney);
+         $this->payAccessLog();
+         $this->payLog(2, 1, $refundmoney, '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney);
 
         $pay = \Setting::get('shop.pay');
 
@@ -87,8 +89,8 @@ class WechatPay extends Pay
 
     public function doWithdraw($member_id, $out_trade_no, $money, $desc='', $type=1)
     {
-        //$this->payAccessLog();
-        //$this->payLog(3, 1, $money, '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money);
+        $this->payAccessLog();
+        $this->payLog(3, 1, $money, '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money);
 
         $pay = \Setting::get('shop.pay');
 
@@ -106,7 +108,7 @@ class WechatPay extends Pay
             $openid = Member::getOpenId($order_info['member_id']);
         }*/
 
-        $openid = Member::getOpenId(123);
+        $openid = Member::getOpenId(\YunShop::app()->get());
 
         $app = $this->getEasyWeChatApp($pay);
 
@@ -155,6 +157,7 @@ class WechatPay extends Pay
     }
 
     /**
+     * 创建支付对象
      *
      * @param $pay
      * @return \EasyWeChat\Payment\Payment
@@ -181,6 +184,13 @@ class WechatPay extends Pay
         return $app;
     }
 
+    /**
+     * 创建预下单
+     *
+     * @param $data
+     * @param $openid
+     * @return easyOrder
+     */
     public function getEasyWeChatOrder($data, $openid)
     {
         $attributes = [
@@ -190,10 +200,13 @@ class WechatPay extends Pay
             'total_fee'        => $data['amount'] * 100, // 单位：分
             'nonce_str'        => random(8) . "",
             'device_info'      => 'sz_yi',
-            'attach'           => $data['extra'],
+            'attach'           => $data['extra']['type'],
             'spbill_create_ip' => $this->ip,
             'openid'           => $openid
         ];
+
+        //$this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
+        //    $pay_order_model->third_type, json_encode($attributes));
 
         return new easyOrder($attributes);
     }

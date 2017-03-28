@@ -72,11 +72,17 @@ class AliPay extends Pay
     public function doPay($data = [])
     {
 
+        // TODO 访问日志
+        // TODO 支付单
+
         return $this->_pay->doPay($data);
     }
 
     public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney='0')
     {
+        // TODO 访问日志
+        // TODO 退款单
+
         $alipay = app('alipay.web');
 
         $alipay->setOutTradeNo($out_trade_no);
@@ -87,6 +93,9 @@ class AliPay extends Pay
 
     public function doWithdraw($member_id, $out_trade_no, $money, $desc, $type=1)
     {
+        // TODO 访问日志
+        // TODO 提现单
+
         $alipay = app('alipay.web');
 
         $alipay->setTotalFee($money);
