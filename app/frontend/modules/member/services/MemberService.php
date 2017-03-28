@@ -19,8 +19,10 @@ class MemberService
         if(isset(self::$_current_member)){
             return self::$_current_member;
         }
-
-        self::setCurrentMemberModel(\YunShop::app()->getMemberId());
+        if(!isset($_GET['uid'])){
+            echo 'uid不存在';exit;
+        }
+        self::setCurrentMemberModel($_GET['uid']);
         return self::$_current_member;
     }
 
