@@ -1,6 +1,4 @@
-<div class='panel-heading'>
-    等级折扣
-</div>
+
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣类型</label>
