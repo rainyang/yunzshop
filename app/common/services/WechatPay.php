@@ -16,9 +16,8 @@ class WechatPay extends Pay
 {
     public function doPay($data = [])
     {
-        //$this->payAccessLog();
-        //$this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
-        //$pay_order_model = $this->payOrder($data['order_no'], 0, $data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount']);
+        $op = '微信订单支付 订单号：\' . $data[\'order_no\']';
+        $pay_order_model = $this->log($data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
 
         if (empty(\YunShop::app()->getMemberId())) {
             return show_json(0);
@@ -33,14 +32,16 @@ class WechatPay extends Pay
         }
         $app     = $this->getEasyWeChatApp($pay);
         $payment = $app->payment;
-        $order = $this->getEasyWeChatOrder($data, $openid);
+        $order = $this->getEasyWeChatOrder($data, $openid, $pay_order_model);
         $result = $payment->prepare($order);
         $prepayId = null;
 
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
+
+            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
         } else {
-            return show_json(-1);
+            return show_json(0);
         }
 
         $config = $payment->configForJSSDKPayment($prepayId);
@@ -55,15 +56,17 @@ class WechatPay extends Pay
      * 微信退款
      *
      * @param 订单号 $out_trade_no
-     * @param 微信支付单号 $out_refund_no
+     * @param 微信退款批次号 $out_refund_no
      * @param 订单总金额 $totalmoney
      * @param 退款金额 $refundmoney
      * @return array
      */
-    public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
+    public function doRefund($out_trade_no, $totalmoney, $refundmoney)
     {
-         $this->payAccessLog();
-         $this->payLog(2, 1, $refundmoney, '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney);
+        $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
+
+        $op = '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
+        $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_WECHAT, $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
 
         $pay = \Setting::get('shop.pay');
 
@@ -77,20 +80,31 @@ class WechatPay extends Pay
 
         $app     = $this->getEasyWeChatApp($pay);
         $payment = $app->payment;
+
         $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);
 
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
+            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
+
             return show_json(1);
         } else {
             return show_json(0);
         }
     }
 
-
-    public function doWithdraw($member_id, $out_trade_no, $money, $desc='', $type=1)
+    /**
+     * @param 提现者用户ID $member_id
+     * @param 提现金额 $money
+     * @param string $desc
+     * @param int $type
+     * @return array
+     */
+    public function doWithdraw($member_id, $money, $desc='', $type=1)
     {
-        $this->payAccessLog();
-        $this->payLog(3, 1, $money, '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money);
+        $out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
+
+        $op = '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money;
+        $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_WECHAT, $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
 
         $pay = \Setting::get('shop.pay');
 
@@ -101,14 +115,12 @@ class WechatPay extends Pay
         if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
             message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
         }
-/*
+
         $order_info = Order::getOrderInfoByMemberId($member_id)->first();
 
         if (!empty($order_info) && $order_info['status'] == 3) {
             $openid = Member::getOpenId($order_info['member_id']);
-        }*/
-
-        $openid = Member::getOpenId(\YunShop::app()->get());
+        }
 
         $app = $this->getEasyWeChatApp($pay);
 
@@ -124,6 +136,10 @@ class WechatPay extends Pay
                 'spbill_create_ip' => $this->ip,
             ];
 
+            //请求数据日志
+            $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
+                $pay_order_model->third_type, json_encode($merchantPayData));
+
             $result = $merchantPay->send($merchantPayData);
         } else {//红包
             $luckyMoney = $app->lucky_money;
@@ -138,11 +154,16 @@ class WechatPay extends Pay
                 'client_ip'        => $this->ip,
                 'act_name'         => empty($act_name) ? '佣金提现红包' : $act_name,
                 'remark'           => empty($remark) ? '佣金提现红包' : $remark,
-                // ...
             ];
+
+            //请求数据日志
+            $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
+                $pay_order_model->third_type, json_encode($luckyMoneyData));
+
             $result = $luckyMoney->sendNormal($luckyMoneyData);
         }
 
+        $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
         echo '<pre>';print_r($result);exit;
     }
 
@@ -191,7 +212,7 @@ class WechatPay extends Pay
      * @param $openid
      * @return easyOrder
      */
-    public function getEasyWeChatOrder($data, $openid)
+    public function getEasyWeChatOrder($data, $openid, $pay_order_model)
     {
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...
@@ -205,9 +226,16 @@ class WechatPay extends Pay
             'openid'           => $openid
         ];
 
-        //$this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
-        //    $pay_order_model->third_type, json_encode($attributes));
+        //请求数据日志
+        $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
+            $pay_order_model->third_type, json_encode($attributes));
 
         return new easyOrder($attributes);
+    }
+
+    private function changeOrderStatus($model, $status)
+    {
+        $model->status = $status;
+        $model->save();
     }
 }
