@@ -81,7 +81,7 @@ abstract class OrderModel
     protected function getPrice()
     {
         //订单最终价格 = 商品最终价格 + 订单优惠 + 订单运费
-        return max($this->getGoodsPrice() + $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(),0);
+        return max($this->getGoodsPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(),0);
     }
 
     /**

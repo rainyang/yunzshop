@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\exceptions\AppException;
 use app\common\models\Member;
 use app\frontend\modules\member\models\smsSendLimitModel;
 use Illuminate\Support\Facades\Cookie;
@@ -20,7 +21,7 @@ class MemberService
             return self::$_current_member;
         }
         if(!isset($_GET['uid'])){
-            echo 'uid不存在';exit;
+            throw new AppException('uid不存在');
         }
         self::setCurrentMemberModel($_GET['uid']);
         return self::$_current_member;

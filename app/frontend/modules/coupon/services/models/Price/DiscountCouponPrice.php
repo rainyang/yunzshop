@@ -7,15 +7,18 @@
  * Time: 下午5:20
  */
 
-namespace app\frontend\modules\coupon\services\models;
+namespace app\frontend\modules\coupon\services\models\Price;
 
 
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModelGroup;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
-class DiscountCoupon extends Coupon
+class DiscountCouponPrice extends CouponPrice
 {
 
-
+    public function getPrice()
+    {
+        return (1 - $this->dbCoupon->discount) * $this->coupon->getOrderGoodsInScope()->getPrice();
+    }
 }
