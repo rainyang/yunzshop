@@ -73,7 +73,6 @@ class GoodsController extends BaseController
         $brands = Brand::getBrands()->get()->toArray();
 
         $requestSearch = \YunShop::request()->search;
-
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
                 return !empty($item) && $item !== 0;

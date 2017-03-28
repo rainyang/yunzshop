@@ -49,6 +49,8 @@ class GoodsController extends BaseController
             $this->errorJson('商品已下架.');
         }
 
+        $goodsModel->content = html_entity_decode($goodsModel->content);
+
         if ($goodsModel->has_option) {
             $goodsModel->min_price = $goodsModel->hasManyOptions->min("product_price");
             $goodsModel->max_price = $goodsModel->hasManyOptions->max("product_price");
