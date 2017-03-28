@@ -25,6 +25,9 @@ abstract class Pay
     const PAY_MODE_ALIPAY        = 2;
     const PAY_MODE_CREDIT        = 3;
     const PAY_MODE_CASH          = 4;
+    const ORDER_STATUS_CREATE    = 0;
+    const ORDER_STATUS_WAITPAY   = 1;
+    const ORDER_STATUS_COMPLETE   = 2;
 
     /**
      * 请求的参数
