@@ -165,7 +165,7 @@ class MemberOfficeAccountService extends MemberService
                 \Session::save();
                 $this->saveSession($member_id);
             } else {
-                redirect($authurl)->send();
+                //redirect($authurl)->send();
                 exit;
             }
         } else {
@@ -183,7 +183,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        redirect($redirect_url)->send();
+        //redirect($redirect_url)->send();
     }
 
     /**
