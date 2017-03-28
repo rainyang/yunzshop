@@ -18,7 +18,7 @@ class WechatPay extends Pay
     {
         //$this->payAccessLog();
         //$this->payLog(1, 1, $data['amount'], '微信订单支付 订单号：' . $data['order_no']);
-        //$pay_order_model = $this->payOrder($data['order_no'], 0, $data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount']);
+        //$pay_order_model = $this->payOrder($data['order_no'], Pay::ORDER_STATUS_CREATE, $data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount']);
 
         if (empty(\YunShop::app()->getMemberId())) {
             return show_json(0);
@@ -39,8 +39,10 @@ class WechatPay extends Pay
 
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
+
+            $this->payOrder($data['order_no'], Pay::ORDER_STATUS_WAITPAY, $data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount']);
         } else {
-            return show_json(-1);
+            return show_json(0);
         }
 
         $config = $payment->configForJSSDKPayment($prepayId);

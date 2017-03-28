@@ -177,8 +177,8 @@ class MemberOfficeAccountService extends MemberService
             redirect($authurl)->send();
             exit;
         }
-        //$redirect_url;
-        redirect('http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.test.login')->send();
+
+        redirect($redirect_url)->send();
     }
 
     /**
