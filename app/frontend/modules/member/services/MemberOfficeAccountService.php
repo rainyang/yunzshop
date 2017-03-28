@@ -181,7 +181,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        //redirect($redirect_url)->send();
+        redirect($redirect_url)->send();
     }
 
     /**
