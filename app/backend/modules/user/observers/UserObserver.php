@@ -22,7 +22,7 @@ class UserObserver extends BaseObserver
 {
     use MessageTrait;
 
-    public function saving(Model $model)
+    public function creating(Model $model)
     {
         $profile = (new UserProfile())->relationValidator($model->widgets['profile']);
         if($profile->fails()){
@@ -32,7 +32,7 @@ class UserObserver extends BaseObserver
         //未进行权限校验
     }
 
-    public function saved(Model $model) {
+    public function created(Model $model) {
         $userProfile = (new UserProfile())->addUserProfile($model->widgets['profile'], $model);
         if (!$userProfile) {
             $this->error("操作员简介写入失败,请重试！！");
@@ -67,9 +67,9 @@ class UserObserver extends BaseObserver
 
     public function updated(Model $model) {}
 
-    public function creating(Model $model) {}
+    public function saving(Model $model) {}
 
-    public function created(Model $model) {}
+    public function saved(Model $model) {}
 
 
     public function deleted(Model $model) {

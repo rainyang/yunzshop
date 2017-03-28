@@ -553,6 +553,7 @@
 
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
         <div class="panel-default panel-center">
+<<<<<<< HEAD
             <!--             <div class="panel-heading">
                             {if empty($goods['id'])}添加商品{else}编辑商品{/if}
                         </div> -->
@@ -598,3 +599,49 @@
     {{--</div>--}}
 
 @endsection('content')
+=======
+<!--             <div class="panel-heading">
+                {if empty($goods['id'])}添加商品{else}编辑商品{/if}
+            </div> -->
+
+			<div  >
+				<ul class="add-shopnav" id="myTab">
+					<li class="active" ><a href="#tab_basic">基本信息</a></li>
+					<li><a href="#tab_des">{{$lang['shopdesc']}}</a></li>
+					<li><a href="#tab_param">属性</a></li>
+					<li><a href="#tab_option">{{$lang['shopoption']}}</a></li>
+
+                    @section('supplier_widget')
+					@foreach(Config::get('widget.goods') as $key=>$value)
+					<li><a href="#{{$key}}">{{$value['title']}}</a></li>
+					@endforeach
+                    @show
+
+				</ul>
+			</div>
+			<div style="padding-top:50px">
+				<div class="panel-body">
+					<div class="tab-content">
+						<div class="tab-pane  active" id="tab_basic">@include('goods.basic')</div>
+						<div class="tab-pane" id="tab_des">@include('goods.des')</div>
+						<div class="tab-pane" id="tab_param">@include('goods.tpl.param')</div>
+						<div class="tab-pane" id="tab_option">@include('goods.tpl.option')</div>
+						@foreach(Config::get('widget.goods') as $key=>$value)
+						<div class="tab-pane" id="{{$key}}">{!! widget($value['class'], ['goods_id'=> $goods->id])!!}</div>
+						@endforeach
+
+					</div>
+					<div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
+						<input type="submit" name="submit" value="{{$lang['shopsubmit']}}" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
+						<input type="hidden" name="token" value="{{$var['token']}}" />
+						<input type="button" name="back"  style='margin-left:10px;' value="返回列表" class="btn btn-default" />
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+{{--</div>--}}
+
+	@endsection('content')
+>>>>>>> b2989fd2c62b73a1138008cf92a98ab28943ef04
