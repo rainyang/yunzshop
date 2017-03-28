@@ -76,6 +76,7 @@ class SdkPayment
 			'_input_charset' => strtolower($this->_input_charset)
 		);
 
+
 		$para = $this->buildRequestPara($parameter);
 
 		return $this->__gateway_new . $this->createLinkstringUrlencode($para);

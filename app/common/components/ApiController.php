@@ -17,7 +17,7 @@ class ApiController extends BaseController
     protected $publicAction = [];
 
     public function __construct()
-    {echo '<pre>';print_r($_SERVER);exit;
+    {
         parent::__construct();
 
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {

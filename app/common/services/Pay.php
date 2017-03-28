@@ -18,16 +18,54 @@ use app\common\models\PayResponseDataLog;
 
 abstract class Pay
 {
+    /**
+     * 无效的Uniacid长度
+     */
     const INVALID_UNIACID_LENGTH = -1;
+    /**
+     * 订单支付
+     */
     const PAY_TYPE_COST          = 1;
+    /**
+     * 充值
+     */
     const PAY_TYPE_RECHARGE      = 2;
+    /**
+     * 退款
+     */
+    const PAY_TYPE_REFUND        = 3;
+    /**
+     * 提现
+     */
+    const PAY_TYPE_WITHDRAW      = 4;
+    /**
+     * 微信支付
+     */
     const PAY_MODE_WECHAT        = 1;
+    /**
+     * 支付宝支付
+     */
     const PAY_MODE_ALIPAY        = 2;
+    /**
+     * 余额支付
+     */
     const PAY_MODE_CREDIT        = 3;
+    /**
+     * 货到付款
+     */
     const PAY_MODE_CASH          = 4;
-    const ORDER_STATUS_CREATE    = 0;
+    /**
+     * 未付款
+     */
+    const ORDER_STATUS_NON       = 0;
+    /**
+     * 待付款
+     */
     const ORDER_STATUS_WAITPAY   = 1;
-    const ORDER_STATUS_COMPLETE   = 2;
+    /**
+     * 完成
+     */
+    const ORDER_STATUS_COMPLETE  = 2;
 
     /**
      * 请求的参数
@@ -99,24 +137,22 @@ abstract class Pay
      * 退款
      *
      * @param $out_trade_no 订单号
-     * @param $out_refund_no 退款单号
      * @param $totalmoney 订单总金额
      * @param $refundmoney 退款金额
      * @return mixed
      */
-    abstract function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney);
+    abstract function doRefund($out_trade_no, $totalmoney, $refundmoney);
 
     /**
      * 提现
      *
      * @param $member_id 提现者用户ID
-     * @param $out_trade_no 提现单号
      * @param $money 提现金额
      * @param $desc 提现说明
      * @param $type 只针对微信 1-企业支付(钱包) 2-红包
      * @return mixed
      */
-    abstract function doWithdraw($member_id, $out_trade_no, $money, $desc, $type);
+    abstract function doWithdraw($member_id, $money, $desc, $type);
 
     /**
      * init
@@ -401,5 +437,29 @@ abstract class Pay
             $nps .= chr((mt_rand(1, 36) <= 26) ? mt_rand(97, 122) : mt_rand(48, 57 ));
         }
         return $nps;
+    }
+
+    /**
+     * 支付日志
+     *
+     * @param $type
+     * @param $third_type
+     * @param $amount
+     * @param $operation
+     * @param $order_no
+     * @param $status
+     *
+     * @return mixed
+     */
+    protected function log($type, $third_type, $amount, $operation, $order_no, $status)
+    {
+        //访问日志
+        $this->payAccessLog();
+        //支付日志
+        $this->payLog($type, $third_type, $amount, $operation);
+        //支付单记录
+        $model = $this->payOrder($order_no, $status, $type, $third_type, $amount);
+
+        return $model;
     }
 }
