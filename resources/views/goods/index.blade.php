@@ -25,7 +25,7 @@
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键字</label>
 							<div class="col-xs-12 col-sm-8 col-lg-9">
-								<input class="form-control" name="search[keyword]" id="keyword" type="text" value="{{$requestSearch['keyword'] or ''}}" onclick="value='';" ／>
+								<input class="form-control" name="search[keyword]" id="keyword" type="text" value="{{$requestSearch['keyword']}}" onclick="value='';" ／>
 							</div>
 						</div>
 						<div class="form-group">
@@ -214,10 +214,17 @@
 										<i class="fa fa-qrcode"></i>
 									</a>
 
-									<a href="{{yzWebUrl('goods.goods.copy', array('id' => $item['id']))}}"  title="{{$lang['copyshop']}}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
+									<a href="{{yzWebUrl('shop.goods.copy', array('id' => $item['id']))}}"  title="{{$lang['copyshop']}}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
+
+									@section('supplier_edit')
 									<a href="{{yzWebUrl('goods.goods.edit', array('id' => $item['id']))}}"class="btn btn-sm btn-default" title="编辑"><i class="fa fa-edit"></i></a>
+									@endsection
+
+									@section('admin_destroy')
 									<a href="{{yzWebUrl('goods.goods.destroy', array('id' => $item['id']))}}" onclick="return confirm('确认删除此商品？');
 										return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-trash"></i></a>
+									@show
+
 									<a href="javascript:;" data-url="{{yzAppUrl('shop/detail', array('id' => $item['id']))}}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
 								</td>
 							</tr>
@@ -241,7 +248,9 @@
 							@endforeach
 							<tr>
 								<td colspan='10'>
+									@section('add_goods')
 									<a class='btn btn-primary' href="{{yzWebUrl('goods.goods.create')}}"><i class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
+									@show
 									<input name="submit" type="submit" class="btn btn-default" value="提交排序">
 									<input type="hidden" name="token" value="{{$var['token']}}" />
 
@@ -266,7 +275,7 @@
     $('.umphp').hover(function() {
         var url = $(this).attr('data-url');
         var goodsid = $(this).attr('data-goodsid');
-		$.post("{!! yzWebUrl('goods.goods.qrcode') !!}"
+		$.post("{!! yzWebUrl('shop.goods.qrcode') !!}"
 			, {'op': 'goods_qrcode', id: goodsid, url: url}
 			, function (qr) {
                 if (qr.img) {
