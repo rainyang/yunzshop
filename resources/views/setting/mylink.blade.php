@@ -17,7 +17,7 @@
                         <li role="presentation" style="display: block;"><a aria-controls="link_diy" role="tab" data-toggle="tab" href="#link_article" aria-expanded="false">超级券页面</a></li>
                         @endif
                         <li role="presentation" style="display: block;"><a aria-controls="link_other" role="tab" data-toggle="tab" href="#link_other" aria-expanded="false">自定义链接</a></li>
-                    </ul>   
+                    </ul>
                 </div>
                  <div class="modal-body tab-content">
                      <div role="tabpanel" class="tab-pane link_system active" id="link_system">
@@ -41,12 +41,12 @@
                         <div id="fe-tab-link-li-27" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 27)" data-href="{php echo $this->createMobileUrl('member/log')}">余额明细</div>
                         <div id="fe-tab-link-li-28" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 28)" data-href="{php echo $this->createMobileUrl('member/withdraw')}">余额提现</div>
                         <div id="fe-tab-link-li-29" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 29)" data-href="{php echo $this->createMobileUrl('shop/address')}">我的收货地址</div>
-                        
+
                         @if (p('commission'))
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 分销链接</h4>
                         </div>
-                        
+
                         <div id="fe-tab-link-li-31" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 31)" data-href="{php echo $this->createPluginMobileUrl('commission')}">分销中心</div>
                         <div id="fe-tab-link-li-32" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 32)" data-href="{php echo $this->createPluginMobileUrl('commission/register')}">成为分销商</div>
                         <div id="fe-tab-link-li-33" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 33)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop')}">我的小店</div>
@@ -61,7 +61,7 @@
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 分红链接</h4>
                         </div>
-                        
+
                         <div id="fe-tab-link-li-40" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 40)" data-href="{php echo $this->createPluginMobileUrl('bonus')}">分红中心</div>
                         <div id="fe-tab-link-li-41" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 41)" data-href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}">分红佣金</div>
                         <div id="fe-tab-link-li-42" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 42)" data-href="{php echo $this->createPluginMobileUrl('bonus/order')}">分红订单</div>
@@ -73,7 +73,7 @@
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 超级券链接</h4>
                         </div>
-                        
+
                         <div id="fe-tab-link-li-46" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 46)" data-href="{php echo $this->createPluginMobileUrl('coupon')}">优惠券领取中心</div>
                         <div id="fe-tab-link-li-47" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 47)" data-href="{php echo $this->createPluginMobileUrl('coupon/my')}">我的优惠券</div>
                         @endif
