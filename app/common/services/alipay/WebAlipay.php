@@ -32,6 +32,6 @@ class WebAlipay extends AliPay
         //$alipay->setQrPayMode('4'); //该设置为可选，添加该参数设置，支持二维码支付。
 
         // 跳转到支付页面。
-        return $alipay->getPayLink();
+        return $alipay->getPayLink($data['model']);
     }
 }
