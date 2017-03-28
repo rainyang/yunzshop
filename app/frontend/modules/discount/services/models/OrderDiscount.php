@@ -93,7 +93,6 @@ class OrderDiscount extends Discount
     {
         //todo 对商品价格进行处理
         $obj = new TestService($this->_Order);
-
-        return - $obj->getOrderDiscountPrice();
+        return $obj->getOrderDiscountPrice();
     }
 }

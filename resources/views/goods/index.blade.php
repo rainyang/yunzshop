@@ -216,7 +216,7 @@
 
 									@section('supplier_edit')
 									<a href="{{yzWebUrl('goods.goods.edit', array('id' => $item['id']))}}"class="btn btn-sm btn-default" title="编辑"><i class="fa fa-edit"></i></a>
-									@endsection
+									@show
 
 									@section('admin_destroy')
 									<a href="{{yzWebUrl('goods.goods.destroy', array('id' => $item['id']))}}" onclick="return confirm('确认删除此商品？');
@@ -244,6 +244,8 @@
 								</td>
 							</tr>
 							@endforeach
+
+							@section('release_gods')
 							<tr>
 								<td colspan='10'>
 									@section('add_goods')
@@ -254,7 +256,7 @@
 
 								</td>
 							</tr>
-
+							@show
 							</tr>
 							</tbody>
 						</table>

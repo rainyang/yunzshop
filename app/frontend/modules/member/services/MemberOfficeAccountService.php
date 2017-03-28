@@ -25,8 +25,6 @@ class MemberOfficeAccountService extends MemberService
 
     public function login()
     {
-        echo 1;
-        exit;
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
@@ -183,7 +181,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        redirect($redirect_url)->send();
+        //redirect($redirect_url)->send();
     }
 
     /**
@@ -247,10 +245,10 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _getClientRequestUrl()
     {
-        if (empty($_SESSION['client_url'])) {
+        if (empty($_SESSION['client_Url'])) {
             return false;
         }
 
-        return $_SESSION['client_url'];
+        return $_SESSION['client_Url'];
     }
 }
