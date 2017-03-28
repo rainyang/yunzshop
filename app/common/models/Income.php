@@ -48,6 +48,31 @@ class Income extends BackendModel
     {
        return self::uniacid();
     }
+
+    public static function getIncomeInMonth()
+    {
+        $model = self::select('create_month');
+        $model->uniacid();
+        $model->with(['hasManyIncome'=>function($query){
+            $query->select('id','create_month','type_name','amount','created_at');
+            $query->get();
+        }]);
+        $model->groupBy('create_month');
+        $model->orderBy('create_month','desc');
+        return $model;
+    }
     
+    public static function getDetailById($id)
+    {
+        $model = self::uniacid();
+        $model->select('detail');
+        $model->where('id',$id);
+        return $model;
+    }
+
+    public function hasManyIncome()
+    {
+        return $this->hasMany(self::class, "create_month", "create_month");
+    }
     
 }

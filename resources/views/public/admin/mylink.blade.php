@@ -19,7 +19,7 @@
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 商城页面链接</h4>
                         </div>
-                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzWebUrl('shop.index') }}">商城首页</div>
+                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzAppUrl('shop.index') }}">商城首页</div>
                         <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" data-href="{php echo $this->createMobileUrl('shop/category')}">分类导航</div>
                         <div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>
                         <div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>
@@ -49,29 +49,29 @@
                 </div>
                 <div role="tabpanel" class="tab-pane link_cate" id="link_cate">
                     <div class="mylink-con">
-                        @foreach ($mylink_data['goodcates'] as $goodcate)
-                            @if (empty($goodcate['parentid']))
+                        @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_parent)
+                            @if (empty($goodcate_parent['parentid']))
                                 <div class="mylink-line">
-                                    {{ $goodcate['name'] }}
+                                    {{ $goodcate_parent['name'] }}
                                     <div class="mylink-sub">
                                         <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id']))}">选择</a>
                                     </div>
                                 </div>
 
-                                @foreach ($mylink_data['goodcates'] as $goodcate2)
-                                    @if ($goodcate2['parentid'] == $goodcate['id'])
+                                @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_chlid)
+                                    @if ($goodcate_chlid['parentid'] == $goodcate_parent['id'])
                                         <div class="mylink-line">
                                             <span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
-                                            {{ $goodcate2['name'] }}
+                                            {{ $goodcate_chlid['name'] }}
                                             <div class="mylink-sub">
                                                 <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id'],'ccate'=>$goodcate2['id']))}">选择</a>
                                             </div>
                                         </div>
-                                        @foreach ($$mylink_data['goodcates'] as $goodcate3)
-                                            @if ($goodcate3['parentid'] == $goodcate2['id'])
+                                        @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_third)
+                                            @if ($goodcate_third['parentid'] == $goodcate_chlid['id'])
                                                 <div class="mylink-line">
                                                     <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
-                                                    {{ $goodcate3['name'] }}
+                                                    {{ $goodcate_third['name'] }}
                                                     <div class="mylink-sub">
                                                         <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id'],'ccate'=>$goodcate2['id'],'tcate'=>$goodcate3['id']))}">选择</a>
                                                     </div>
@@ -166,11 +166,11 @@
         var kw = $("#select-good-kw").val();
         $.ajax({
             type: 'POST',
-            url: "{php echo $this->createPluginWebUrl('article',array('method'=>'api','apido'=>'selectgoods'))}",
+            url: "{!! yzWebUrl('goods.goods.getMyLinkGoods') !!}",
             data: {kw:kw},
             dataType:'json',
             success: function(data){
-                //console.log(data);
+                console.log(data);
                 $("#select-goods").html("");
                 if(data){
                     $.each(data,function(n,value){
@@ -184,7 +184,7 @@
                         html+='</div>';
                         html+='<div class="info">';
                         html+='<div class="info-title">'+value.title+'</div>';
-                        html+='<div class="info-price">原价:￥'+value.productprice+' 现价￥'+value.marketprice+'</div>';
+                        html+='<div class="info-price">原价:￥'+value.market_price+' 现价￥'+value.price+'</div>';
                         html+='</div>'
                         html+='</div>';
                         $("#select-goods").append(html);

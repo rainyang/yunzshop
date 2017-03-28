@@ -15,7 +15,7 @@ class GoodsSpecItem extends \app\common\models\BaseModel
 
     public $guarded = [];
 
-    public $timestamps = false;
+    //public $timestamps = true;
 
     public function hasManyOption()
     {

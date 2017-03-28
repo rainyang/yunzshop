@@ -192,6 +192,9 @@ return [
         Watson\BootstrapForm\BootstrapFormServiceProvider::class,
         //表单end
         Ixudra\Curl\CurlServiceProvider::class,
+
+        //二维码
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
     ],
 
     /*
@@ -252,6 +255,8 @@ return [
         'BootForm' => Watson\BootstrapForm\Facades\BootstrapForm::class,
          //表单生成end
         'Curl'          => Ixudra\Curl\Facades\Curl::class,
+
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ],
 
 ];
