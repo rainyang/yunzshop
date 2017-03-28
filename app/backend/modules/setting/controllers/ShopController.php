@@ -11,6 +11,7 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
+use app\common\services\MyLink;
 
 class ShopController extends BaseController
 {
@@ -56,7 +57,8 @@ class ShopController extends BaseController
                 $this->error('会员设置失败');
             }
         }
-
+        $mylink_data = MyLink::getMyLink();
+        dd($mylink_data);
         return view('setting.shop.member', [
             'set' => $member
         ])->render();

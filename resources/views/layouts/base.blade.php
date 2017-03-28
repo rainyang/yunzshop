@@ -45,7 +45,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script type="text/javascript" src="./resource/js/app/common.min.js"></script>
     <script type="text/javascript" src="./resource/js/require.js"></script>
     <script type="text/javascript" src="./resource/js/app/config.js"></script>
+    <script type="text/javascript" src="../addons/sz_yi/static/js/dist/tooltipbox.js"></script>
+
 </head>
+<style type="text/css">
+    .red {float:left;color:red}
+    .white{float:left;color:#fff}
+
+    .tooltipbox {
+        background:#ffffff;border:1px solid #c40808; position:absolute; left:0;top:0; text-align:center;height:25px;
+        color:#c40808;padding:2px 5px 1px 5px; border-radius:3px;z-index:1000;
+    }
+    .red { float:left;color:red}
+</style>
 <!--
 BODY TAG OPTIONS:
 =================
