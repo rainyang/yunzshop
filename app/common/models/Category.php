@@ -46,6 +46,11 @@ class Category extends BaseModel
             ->orderBy('id', 'asc');
     }
 
+    /**
+     * @param $parentId
+     * @param $set
+     * @return mixed
+     */
     public static function getChildrenCategorys($parentId, $set)
     {
         $model = self::select('id','name','thumb')
@@ -62,6 +67,10 @@ class Category extends BaseModel
         $model->orderBy('id', 'asc');
         return $model;
     }
+
+    /**
+     * @return mixed
+     */
     public static function getRecommentCategoryList()
     {
         $model = self::select('id','name','thumb')
@@ -69,11 +78,18 @@ class Category extends BaseModel
         return $model;
         
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function hasManyChildren()
     {
         return $this->hasMany(self::class, "parent_id");
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function goodsCategories()
     {
         return $this->hasMany('app\common\models\GoodsCategory', 'category_id', 'id');

@@ -192,6 +192,7 @@
 
 								<td >{{$item['real_sales']}}</td>
 								<td >
+
 									<label data='{{$item['status']}}' class='label  label-default @if($item['status']==1) label-info @endif' onclick="setProperty(this, {{$item['id']}},'status')">
 										@if($item['status']==1)
 											{{$lang['putaway']}}
