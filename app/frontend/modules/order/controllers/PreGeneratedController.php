@@ -68,6 +68,7 @@ class PreGeneratedController extends BaseController
         if ($result === false) {
             return $this->errorJson($message);
         }
+
         $order_model = OrderService::getPreGeneratedOrder($order_goods_models, $member_model, $shop_model);
 
         $order = $order_model->toArray();

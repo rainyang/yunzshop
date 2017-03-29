@@ -17,6 +17,8 @@ class UniAccountUser extends BaseModel
 
     public $timestamps = false;
 
+    protected $guarded = [''];
+
     public function hasUser()
     {
         return $this->hasMany('app\common\models\user\User', 'uid', 'uid');
@@ -27,21 +29,6 @@ class UniAccountUser extends BaseModel
         return $this->hasOne('app\common\models\user\YzUserRole', 'user_id', 'uid');
     }
 
-
-    /*
-     *  添加操作员,挂件使用
-     *
-     *  @parms int $userId
-     * */
-    public function addOperator($userId)
-    {
-        return $this->insert([
-            'uniacid' => \YunShop::app()->uniacid,
-            'uid' => $userId,
-            'role' => 'operator',
-            'rank' => NULL
-        ]);
-    }
 
 
 }

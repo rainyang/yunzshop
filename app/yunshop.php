@@ -53,14 +53,15 @@ class YunShop
 
         $item = Menu::getItemByRoute($controller->route);
         $menuList = array_merge(Menu::getMenuList(), Config::get('menu'));
-        Config::set('menu',$menuList);
-
+        
+        
         self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
         //检测权限
         if (self::isWeb() && !PermissionService::can($item)) {
             abort(403, '无权限');
         }
         //执行方法
+        $controller->preAction();
         $content = $controller->$action(
             Illuminate\Http\Request::capture()
         );

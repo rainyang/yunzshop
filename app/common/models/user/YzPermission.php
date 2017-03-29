@@ -14,23 +14,48 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class YzPermission extends BaseModel
 {
-    //use SoftDeletes;
-
     const TYPE_USER = 1;
     const TYPE_ROLE = 2;
     const TYPE_ACCOUNT = 3;
 
     public $table = 'yz_permission';
 
-    public static function addYzPermission(array $data = [])
+    public $timestamps = false;
+
+    protected $guarded = [''];
+
+
+    /*
+     * 通过操作员ID获得操作员个人所有操作权限
+     *
+     * @param int $userId
+     *
+     * @return object */
+    public static function gerUserPermissonByUserId($userId)
+    {
+        return static::where('type', '=', static::TYPE_USER)->where('item_id', $userId)->first();
+    }
+
+    /*
+     * 添加操作员权限 或 添加角色权限 多条数据同时写入
+     *
+     * @param array $data
+     *
+     * @return result */
+    public static function insertYzPermission(array $data = [])
     {
         return static::insert($data);
     }
 
-    public function relationValidator($data)
+    /*
+     * 通过操作员ID删除操作员所有权限
+     *
+     * @param int $userId
+     *
+     * @return result */
+    public static function deleteUserPermissionByUserId($userId)
     {
-        $this->fill($data);
-        return $this->validator();
+        return static::where('type', '=', static::TYPE_USER)->where('item_id', $userId)->delete();
     }
 
     /**
