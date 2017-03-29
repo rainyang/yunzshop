@@ -35,7 +35,7 @@ class PreGeneratedOrderModel extends OrderModel
      */
     protected $shop_model;
     /**
-     * @var用户model实例
+     * @var \app\frontend\models\Member
      */
     protected $member_model;
 

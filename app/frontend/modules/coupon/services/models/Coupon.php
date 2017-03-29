@@ -13,15 +13,31 @@ use app\common\exceptions\AppException;
 use app\common\models\MemberCoupon;
 use app\common\models\Coupon as DbCoupon;
 
+use app\frontend\modules\coupon\services\models\Price\CouponPrice;
 use app\frontend\modules\coupon\services\models\Price\DiscountCouponPrice;
 use app\frontend\modules\coupon\services\models\Price\MoneyOffCouponPrice;
+use app\frontend\modules\coupon\services\models\TimeLimit\DateTimeRange;
+use app\frontend\modules\coupon\services\models\TimeLimit\SinceReceive;
+use app\frontend\modules\coupon\services\models\TimeLimit\TimeLimit;
+use app\frontend\modules\coupon\services\models\UseScope\CouponUseScope;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class Coupon
 {
+    /**
+     * @var CouponPrice
+     */
     private $price;
+    /**
+     * @var CouponUseScope
+     */
     private $useScope;
+    /**
+     * @var TimeLimit
+     */
+    private $timeLimit;
+
     /**
      * @var PreGeneratedOrderModel
      */
@@ -38,6 +54,7 @@ class Coupon
         $this->preGeneratedOrderModel = $preGeneratedOrderModel;
         $this->price = $this->getPriceInstance();
         $this->useScope = $this->getUseScopeInstance();
+        $this->timeLimit = $this->getTimeLimitInstance();
     }
 
     public function getPreGeneratedOrderModel()
@@ -88,7 +105,25 @@ class Coupon
                 break;
         }
     }
+    /**
+     * 时间限制类实例
+     */
+    private function getTimeLimitInstance()
+    {
+        switch ($this->memberCoupon->belongsToCoupon->time_limit) {
+            case DbCoupon::COUPON_DATE_TIME_RANGE:
+                return new DateTimeRange($this);
+                break;
+            case DbCoupon::COUPON_SINCE_RECEIVE:
+                return new SinceReceive($this);
+                break;
+            default:
+                dd($this->memberCoupon->belongsToCoupon);
 
+                throw new AppException('时限类型不存在');
+                break;
+        }
+    }
     /**
      * 获取订单优惠价格
      */
@@ -124,6 +159,6 @@ class Coupon
      */
     public function valid()
     {
-        return $this->useScope->valid() && $this->price->valid();
+        return $this->useScope->valid() && $this->price->valid() &&$this->timeLimit->valid();
     }
 }

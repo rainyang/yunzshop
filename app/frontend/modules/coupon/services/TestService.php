@@ -25,6 +25,7 @@ class TestService
      */
     public function getOrderDiscountPrice()
     {
+        //dd($this->getAllValidCoupons());
         $result = 0;
         //统计所有优惠券的金额
         foreach ($this->getAllValidCoupons() as $coupon) {
