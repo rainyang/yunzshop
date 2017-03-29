@@ -19,6 +19,8 @@ class LoginController extends ApiController
 
     public function index()
     {
+        //$this->checkoutLogin();
+
         $type = \YunShop::request()->type;
 
         if (!empty($type)) {
