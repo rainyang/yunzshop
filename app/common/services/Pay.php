@@ -343,7 +343,7 @@ abstract class Pay
      */
     protected function payOrder($out_order_no, $status, $type, $third_type, $price)
     {
-        return PayOrder::create([
+         PayOrder::create([
             'uniacid' => $this->uniacid,
             'member_id' => \YunShop::app()->getMemberId(),
             'int_order_no' => $this->createPayOrderNo(),
@@ -351,8 +351,7 @@ abstract class Pay
             'status' => $status,
             'type' => $type,
             'third_type' => $third_type,
-            'price' => $price,
-            'ip' => $this->ip
+            'price' => $price
         ]);
     }
 
@@ -370,10 +369,10 @@ abstract class Pay
      * @param $third_type
      * @param $params
      */
-    protected function payRequestDataLog($order_id, $type, $third_type, $params)
+    public function payRequestDataLog($order_id, $type, $third_type, $params)
     {
         PayRequestDataLog::create([
-            'uniacid' => $this->uniacid,
+            'uniacid' => \YunShop::app()->uniacid,
             'order_id' => $order_id,
             'type' => $type,
             'third_type' => $third_type,

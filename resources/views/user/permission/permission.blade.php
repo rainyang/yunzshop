@@ -2,13 +2,13 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">操作权限</label>
     <div class="col-sm-9 col-xs-12">
         <div class='panel panel-default'>
-            <?php print_r($userPermissons); ?>
+            <?php print_r($rolePermission); ?>
             <!-- 第一级-->
             @foreach($permissions as $keyOne=>$valueOne)
                 @if(isset($valueOne['permit']) && $valueOne['permit'] === 1)
                     <div class='panel-heading'>
                         <label class='checkbox-inline'>
-                            <input type='checkbox' name='perms[]' value='{{$keyOne}}' class='perm-all'
+                            <input type='checkbox' name='perms[]' value='{{$keyOne}}' class='perm-all' {{in_array($keyOne, $rolePermission) ? 'disabled' : ''}}
                                    data-group='{{$keyOne}}' {{in_array($keyOne, $userPermissons) ? 'checked' : ''}} />
                             {{$valueOne['name'] or ''}}
                         </label>
@@ -22,7 +22,7 @@
                                            <label class='checkbox-inline' style='width:100px;'>
                                                <input type='checkbox' name='perms[]' value='{{$keyTwo}}'
                                                       class='perm-all-item' data-group='{{$keyOne}}'
-                                                      data-child='{{$keyTwo}}'
+                                                      data-child='{{$keyTwo}}' {{in_array($keyTwo, $rolePermission) ? 'disabled' : ''}}
                                                        {{in_array($keyTwo, $userPermissons) ? 'checked' : ''}}
                                                /> <b> {{$valueTwo['name'] or ''}}</b>
                                            </label>
@@ -32,7 +32,7 @@
                                                 @if(isset($valueThird['permit']) && $valueThird['permit'] === 1)
                                                 <label class="checkbox-inline">
                                                 <input type="checkbox" name="perms[]" value="{{$keyThird}}"
-                                                       class="perm-item" data-group="{{$keyOne}}"
+                                                       class="perm-item" data-group="{{$keyOne}}" {{in_array($keyThird, $rolePermission) ? 'disabled' : ''}}
                                                        data-child="{{$keyTwo}}" data-op="{{$keyThird}}"
                                                         {{in_array($keyThird, $userPermissons) ? 'checked' : ''}}>
                                                     {{$valueThird['name'] or ''}}

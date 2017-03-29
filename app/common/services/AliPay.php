@@ -19,6 +19,8 @@ class AliPay extends Pay
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->_pay = $this->createFactory();
     }
 
@@ -71,11 +73,10 @@ class AliPay extends Pay
      */
     public function doPay($data = [])
     {
-        $op = '支付宝订单支付 订单号：\' . $data[\'order_no\']';
-        $pay_order_model = $this->log($data['extra']['type'], Pay::PAY_MODE_ALIPAY, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
+        $op = "支付宝订单支付 订单号：" . $data['order_no'];
+        $this->log($data['extra']['type'], Pay::PAY_MODE_ALIPAY, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
 
-        $data['model'] = $pay_order_model;
-        return $this->_pay->doPay($data, $pay_order_model);
+        return $this->_pay->doPay($data);
     }
 
     public function doRefund($out_trade_no, $totalmoney, $refundmoney='0')

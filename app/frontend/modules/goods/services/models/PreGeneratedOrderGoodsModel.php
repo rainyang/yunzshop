@@ -136,7 +136,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         return OrderGoods::create($data);
     }
     public function getVipPrice(){
-        return $this->Goods->vip_price;
+        return $this->Goods->vip_price * $this->getTotal();
     }
     /**
      * @param $name

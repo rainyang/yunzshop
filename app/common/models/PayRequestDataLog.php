@@ -8,8 +8,9 @@
 
 namespace app\common\models;
 
+use app\backend\models\BackendModel;
 
-class PayRequestDataLog
+class PayRequestDataLog extends BackendModel
 {
     public $table = 'yz_pay_request_data';
 
@@ -18,5 +19,5 @@ class PayRequestDataLog
      *
      * @var array
      */
-    protected $fillable = ['uniacid', 'order_id', 'params', 'type', 'third_type', 'price', 'ip'];
+    protected $fillable = ['uniacid', 'order_id', 'params', 'type', 'third_type', 'price'];
 }

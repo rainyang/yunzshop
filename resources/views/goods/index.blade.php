@@ -192,7 +192,6 @@
 
 								<td >{{$item['real_sales']}}</td>
 								<td >
-									@section('putaway')
 									<label data='{{$item['status']}}' class='label  label-default @if($item['status']==1) label-info @endif' onclick="setProperty(this, {{$item['id']}},'status')">
 										@if($item['status']==1)
 											{{$lang['putaway']}}
@@ -200,7 +199,10 @@
 											{{$lang['soldout']}}
 										@endif
 									</label>
+
+									@section('putaway')
 									@show
+
 								</td>
 
 								<td style="position:relative; overflow:visible;" width="20%">

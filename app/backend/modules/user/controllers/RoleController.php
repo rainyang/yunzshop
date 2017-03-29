@@ -18,6 +18,7 @@ use app\common\models\user\YzRole;
 class RoleController extends BaseController
 {
 
+    //todo 页面功能逻辑优化，搜索功能完善
     /**
      * 角色列表
      */
@@ -61,7 +62,7 @@ class RoleController extends BaseController
             $validator = $roleModel->validator($roleModel->getAttributes());
             //dd($validator->messages());
             if ($validator->fails()) {
-                dd("角色数据验证出错");
+                //dd("角色数据验证出错");
                 $this->error($validator->messages()); 
             }else{
                 if ($roleModel->save()) {
@@ -82,7 +83,7 @@ class RoleController extends BaseController
                                 $this->error($validator->message());
                             }
                         }
-                        $result = YzPermission::addYzPermission($data);
+                        $result = YzPermission::insertYzPermission($data);
                         if (!$result) {
                             //删除刚刚添加的角色
                             YzRole::deleteRole($roleModel->id);
@@ -146,7 +147,7 @@ class RoleController extends BaseController
                         }
                         //删除原权限数据，更新数据储存
                         YzPermission::deleteRolePermission(\YunShop::request()->id);
-                        $result = YzPermission::addYzPermission($data);
+                        $result = YzPermission::insertYzPermission($data);
                         if (!$result) {
                             //删除刚刚添加的角色
                             YzRole::deleteRole($roleModel->id);
