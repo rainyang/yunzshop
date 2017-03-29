@@ -15,7 +15,7 @@ use app\common\traits\MessageTrait;
 class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
 {
     use MessageTrait;
-    public $timestamps = false;
+    //public $timestamps = false;
     public $attributes = [
         'dispatch_price' => 0,
         'dispatch_type' => 1,
