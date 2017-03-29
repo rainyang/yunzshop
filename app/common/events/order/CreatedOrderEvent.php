@@ -14,7 +14,7 @@ use app\common\models\Order;
 
 abstract class CreatedOrderEvent extends Event
 {
-    protected $_order_model;
+    protected $orderModel;
     /**
      * AfterOrderReceivedEvent constructor.
      * @param Order $order_model
@@ -22,13 +22,13 @@ abstract class CreatedOrderEvent extends Event
     public function __construct(Order $order_model)
     {
         //$order_model = Order::find($order_id);
-        $this->_order_model = $order_model;
+        $this->orderModel = $order_model;
     }
     /**
      * (监听者)获取订单model
      * @return mixed
      */
     public function getOrderModel(){
-        return $this->_order_model;
+        return $this->orderModel;
     }
 }

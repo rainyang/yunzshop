@@ -19,9 +19,13 @@ class ApiController extends BaseController
     public function __construct()
     {
         parent::__construct();
+    }
 
-      //  if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
-      //      return $this->errorJson('用户未登录', ['url'=>Url::absoluteApp('member.login.index')]);
-      //  }
+    public function preAction()
+    {
+        parent::preAction();
+        if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
+            return $this->errorJson('用户未登录', ['url'=>Url::absoluteApp('member.login.index')]);
+        }
     }
 }

@@ -1,7 +1,9 @@
 <?php
 namespace app\common\components\alipay\Web;
 
+use app\common\events\PayLog;
 use app\common\facades\Setting;
+use app\common\services\alipay\WebAlipay;
 
 class SdkPayment
 {
@@ -64,7 +66,7 @@ class SdkPayment
 	/**
 	 * 取得支付链接
 	 */
-	public function getPayLink($pay_order_model)
+	public function getPayLink()
 	{
 		$parameter = array(
 			'service' => $this->service,
@@ -84,10 +86,9 @@ class SdkPayment
 			'_input_charset' => strtolower($this->_input_charset),
 			'qr_pay_mode' => $this->qr_pay_mode
 		);
+        //请求数据日志
+        event(new PayLog($parameter, new WebAlipay()));
 
-		//请求数据日志
-        $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
-            $pay_order_model->third_type, json_encode($parameter));
 		$para = $this->buildRequestPara($parameter);
 
 		return $this->__gateway_new . $this->createLinkstringUrlencode($para);

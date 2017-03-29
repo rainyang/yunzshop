@@ -21,7 +21,7 @@ class MemberAddress extends \app\common\models\MemberAddress
      * */
     public static function getAddressList($memberId)
     {
-        return static::select('id', 'username', 'zipcode', 'province', 'city', 'district', 'address', 'isdefault')
+        return static::select('id', 'username', 'mobile', 'zipcode', 'province', 'city', 'district', 'address', 'isdefault')
             ->uniacid()->where('uid', $memberId)->get()->toArray();
     }
 

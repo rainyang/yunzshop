@@ -207,7 +207,7 @@
 									<!-- yitian_add::商品链接二维码 2017-02-07 qq:751818588 -->
 									<a class="btn btn-sm btn-default umphp" title="商品二维码" data-url="<?php echo yzAppUrl('shop/detail', array('id' => $item['id']));?>" data-goodsid = "{{$item['id']}}">
 										<div class="img">
-											{!! QrCode::size(120)->generate(Request::url()) !!}
+											{!! QrCode::size(120)->generate(yzAppUrl('/goods/'.$item['id'], array('id' => $item['id']))) !!}
 										</div>
 										<i class="fa fa-qrcode"></i>
 									</a>

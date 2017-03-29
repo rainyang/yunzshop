@@ -25,6 +25,10 @@ class TestController extends BaseController
 {
     public function index()
     {
+        dd(bccomp('1.00001', '1', 5));
+        dd( unserialize('a:1:{i:0;s:3:"199";}'));
+        dd(unserialize('a:1:{i:0;s:3:"296";}'));
+        dd(unserialize('a:1:{i:0;s:6:"叶子";}'));
 
         //dd($this->test());exit;
         //$result = OrderService::orderCancelPay(Order::find(1));

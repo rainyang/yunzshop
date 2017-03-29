@@ -17,8 +17,8 @@ class CreateImsYzPayOrderTable extends Migration {
 			$table->integer('id', true)->comment('编号');
 			$table->integer('uniacid')->index('idx_uniacid')->comment('统一公众号');
 			$table->integer('member_id')->index('idx_member_id')->comment('用户ID');
-			$table->string('int_order_no', 20)->nullable()->comment('支付单号');
-			$table->string('out_order_no', 20)->default('0')->index('idx_order_no')->comment('订单号');
+			$table->string('int_order_no', 32)->nullable()->comment('支付单号');
+			$table->string('out_order_no', 32)->default('0')->index('idx_order_no')->comment('订单号');
 			$table->boolean('status')->default(0)->comment('支付状态 0-未支付；1-待支付；2-已支付');
 			$table->integer('price')->comment('支付金额');
 			$table->boolean('type')->comment('支付类型(1支付、2充值)');

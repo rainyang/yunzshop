@@ -8,8 +8,9 @@
 
 namespace app\common\models;
 
+use app\backend\models\BackendModel;
 
-class PayOrder
+class PayOrder extends BackendModel
 {
     public $table = 'yz_pay_order';
 
@@ -18,5 +19,11 @@ class PayOrder
      *
      * @var array
      */
-    protected $fillable = ['uniacid', 'member_id', 'int_order_no', 'out_order_no', 'status', 'type', 'third_type', 'price', 'ip'];
+    protected $fillable = ['uniacid', 'member_id', 'int_order_no', 'out_order_no', 'status', 'type', 'third_type', 'price'];
+
+    public static function getPayOrderInfo($orderno)
+    {
+        return self::uniacid()
+            ->where('out_order_no', $orderno);
+    }
 }

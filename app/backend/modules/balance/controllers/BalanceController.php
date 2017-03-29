@@ -19,10 +19,23 @@ class BalanceController extends BaseController
      * */
     public function index()
     {
+        $balance = array(
+            'transfer' => 0,
+            'recharge' => 0,
+            'withdraw' => array('status' => 0)
+        );
         return view('balance.index', [
-            'list' => '',
-            'pager' => '',
+            'balance' => $balance,
+            'pager' => ''
         ])->render();
+    }
+
+    /*
+     * 保存余额基础设置
+     * */
+    public function save()
+    {
+        dd(\YunShop::request());
     }
 
 }
