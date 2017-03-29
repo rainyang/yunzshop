@@ -10,6 +10,8 @@ namespace app\frontend\modules\order\services\models;
 
 
 use app\frontend\modules\discount\services\models\OrderDiscount;
+use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
+
 abstract class OrderModel
 {
     /**
@@ -81,18 +83,21 @@ abstract class OrderModel
     protected function getPrice()
     {
         //订单最终价格 = 商品最终价格 + 订单优惠 + 订单运费
-        return max($this->getGoodsPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(),0);
+        return max($this->getVipPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(),0);
     }
 
     /**
      * 统计订单商品小计金额
      * @return int
      */
-    protected function getGoodsPrice()
+    protected function getVipPrice()
     {
         $result = 0;
         foreach ($this->_OrderGoodsModels as $OrderGoodsModel) {
-            $result += $OrderGoodsModel->getGoodsPrice();
+            /**
+             * @var $OrderGoodsModel PreGeneratedOrderGoodsModel
+             */
+            $result += $OrderGoodsModel->getVipPrice();
         }
         return $result;
     }
