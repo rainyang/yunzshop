@@ -22,13 +22,14 @@ class MemberAddressController extends BaseController
     public function index()
     {
         //$memberId = \YunShop::app()->getMemberId();
-        $memberId = '9'; //测试使用
+        $memberId = '57'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
         //获取省市ID
         if ($addressList) {
             $address = Address::getAllAddress();
             $addressList = $this->addressServiceForIndex($addressList, $address);
         }
+        dd($addressList);
         //var_dump(!empty($addressList));
         $msg = "获取列表成功";
         return $this->successJson($msg, $addressList);
@@ -161,6 +162,7 @@ class MemberAddressController extends BaseController
         if (!$addressModel) {
             return $this->errorJson("未找到数据或已删除");
         }
+        //todo 需要考虑删除默认地址选择其他地址改为默认
         $result = MemberAddress::destroyAddress($addressId);
         if ($result) {
             return $this->successJson();
