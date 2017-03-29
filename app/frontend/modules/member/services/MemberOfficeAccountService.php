@@ -171,6 +171,7 @@ class MemberOfficeAccountService extends MemberService
                 }
                 Session::set('member_id', $member_id);
             } else {
+                echo 1;
                 //redirect($authurl)->send();
                 exit;
             }
