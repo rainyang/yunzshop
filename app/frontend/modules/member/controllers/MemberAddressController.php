@@ -161,6 +161,7 @@ class MemberAddressController extends BaseController
         if (!$addressModel) {
             return $this->errorJson("未找到数据或已删除");
         }
+        //todo 需要考虑删除默认地址选择其他地址改为默认
         $result = MemberAddress::destroyAddress($addressId);
         if ($result) {
             return $this->successJson();
