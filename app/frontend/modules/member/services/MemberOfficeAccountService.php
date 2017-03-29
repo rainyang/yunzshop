@@ -40,9 +40,8 @@ class MemberOfficeAccountService extends MemberService
 
         if (!empty($code)) {
             $redirect_url = $this->_getClientRequestUrl();
-            echo $redirect_url;exit;
             Session::clear('client_url');
-
+            file_put_contents(storage_path('logs/session333.log'), print_r($_SESSION, 1));
             $resp     = @ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
 
