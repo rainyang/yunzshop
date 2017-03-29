@@ -46,15 +46,11 @@ class YunShop
         $controller->action = $action;
         $controller->route = implode('.', $currentRoutes);
 
-
-
         //菜单生成
-        //\Config::prepend('menu', Menu::getMenuList());
-
         $item = Menu::getItemByRoute($controller->route);
-        $menuList = array_merge(Menu::getMenuList(), Config::get('menu'));
-        
-        
+        $menuList = array_merge(Menu::getMenuList(), (array)Config::get('menu'));
+        Config::set('menu',$menuList);
+
         self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
         //检测权限
         if (self::isWeb() && !PermissionService::can($item)) {
