@@ -8,8 +8,9 @@
 
 namespace app\common\models;
 
+use app\backend\models\BackendModel;
 
-class PayLog
+class PayLog extends BackendModel
 {
     public $table = 'yz_pay_log';
 

@@ -15,7 +15,9 @@ use Illuminate\Validation\lValidator;
 class Share extends BaseModel
 {
     public $table = 'yz_goods_share';
-
+    public $attributes = [
+        'need_follow' =>  1,
+    ];
 
     /**
      *  不可填充字段.

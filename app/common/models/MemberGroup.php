@@ -30,7 +30,7 @@ class MemberGroup extends BaseModel
      *
      * @return mixed
      */
-    public static function getDefaultGroupI()
+    public static function getDefaultGroupId()
     {
         return self::select('id')
             ->uniacid()

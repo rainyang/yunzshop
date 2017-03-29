@@ -76,6 +76,8 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'total' => $this->total,
             'title' => $this->Goods->title,
             'thumb' => $this->Goods->thumb,
+            'goods_price' => $this->Goods->price,
+            'vip_price' => $this->Goods->vip_price,
             'coupon_discount_price' => $this->coupon_discount_price,
             /*'discount_details' => $this->getDiscountDetails(),
             'dispatch_details' => $this->getDispatchDetails(),*/

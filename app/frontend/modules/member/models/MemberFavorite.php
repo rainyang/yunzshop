@@ -68,7 +68,7 @@ class MemberFavorite extends \app\common\models\MemberFavorite
     public  function rules()
     {
         return [
-            'goods_id'  => 'required',
+            'goods_id'  => 'required|integer',
         ];
     }
 }

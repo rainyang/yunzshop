@@ -38,7 +38,8 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            $redirect_url = session('client_url', $callback);
+            //$redirect_url = session('client_url', $callback);
+            $redirect_url = $this->_getClientRequestUrl();
 
             $resp     = @ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
@@ -108,10 +109,11 @@ class MemberOfficeAccountService extends MemberService
                         'salt' => '',
                         'password' => ''
                     );
-                    $member_id = MemberModel::insertData($mc_data);
+                    $memberModel = MemberModel::create($mc_data);
+                    $member_id = $memberModel->uid;
 
                     //添加yz_member表
-                    $default_sub_group_id = MemberGroup::getDefaultGroupI()->first();
+                    $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
                     $default_sub_level_id = MemberLevel::getDefaultLevelId()->first();
                     if (!empty($default_sub_group_id)) {
                         $default_subgroup_id = $default_sub_group_id->id;
@@ -128,7 +130,7 @@ class MemberOfficeAccountService extends MemberService
                     $sub_data = array(
                         'member_id' => $member_id,
                         'uniacid' => $uniacid,
-                        'agent_id' => $mid,
+                        'parent_id' => $mid,
                         'group_id' => $default_subgroup_id,
                         'level_id' => $default_sublevel_id,
                     );
@@ -148,7 +150,7 @@ class MemberOfficeAccountService extends MemberService
                         'unfollowtime' => 0,
                         'tag' => base64_encode(iserializer($userinfo))
                     );
-                    McMappingFansModel::insertData($record);
+                    McMappingFansModel::create($record);
 
 
                     //添加ims_yz_member_unique表
@@ -164,20 +166,22 @@ class MemberOfficeAccountService extends MemberService
                 \Session::save();
                 $this->saveSession($member_id);
             } else {
-                redirect($authurl)->send();
+                //redirect($authurl)->send();
                 exit;
             }
         } else {
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
+echo 'end';exit;
+            $client_url = $this->_setClientRequestUrl();
 
-            $client_url = $this->_getClientRequestUrl();
+            //session()->put('client_url',$client_url);
+            $_SESSION['client_Url'] = $client_url;
 
-            session()->put('client_url',$client_url);
             redirect($authurl)->send();
             exit;
         }
-        //$redirect_url;
-        redirect('http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.test.login')->send();
+
+        redirect($redirect_url)->send();
     }
 
     /**
@@ -219,11 +223,11 @@ class MemberOfficeAccountService extends MemberService
     }
 
     /**
-     * 客户端请求地址
+     * 设置客户端请求地址
      *
      * @return string
      */
-    private function _getClientRequestUrl()
+    private function _setClientRequestUrl()
     {
         if (!empty($_SERVER['HTTP_REFERER'])) {
             $client_url   = $_SERVER['HTTP_REFERER'];
@@ -232,5 +236,19 @@ class MemberOfficeAccountService extends MemberService
         }
 
         return $client_url;
+    }
+
+    /**
+     * 获取客户端地址
+     *
+     * @return mixed
+     */
+    private function _getClientRequestUrl()
+    {
+        if (empty($_SESSION['client_Url'])) {
+            return false;
+        }
+
+        return $_SESSION['client_Url'];
     }
 }

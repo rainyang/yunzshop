@@ -18,6 +18,8 @@ class UserProfile extends BaseModel
 
     public $timestamps = false;
 
+    //protected $guarded = [''];
+
     protected $guarded = [''];
 
     public $attributes =[
@@ -63,6 +65,18 @@ class UserProfile extends BaseModel
         'workerid'      => ''
     ];
 
+
+    /*
+     * 通过uid获取单条数据
+     *
+     * @params int $uid
+     *
+     * @return object */
+    public static function getProfileByUid($uid)
+    {
+        return static::where('uid', $uid)->first();
+    }
+
     public function relationValidator($data)
     {
         $userProfile = new static();
@@ -85,10 +99,6 @@ class UserProfile extends BaseModel
         return $this->save();
     }
 
-    public function relationSave($data)
-    {
-
-    }
 
     /**
      * 定义字段名
@@ -96,8 +106,8 @@ class UserProfile extends BaseModel
      * @return array */
     public  function atributeNames() {
         return [
-            'realname'=> "姓名",
-            'moblie' => "电话"
+            'realname'=> "姓名不能为空",
+            'moblie' => "电话不能为空"
         ];
     }
     /**
@@ -107,7 +117,7 @@ class UserProfile extends BaseModel
     public  function rules()
     {
         return [
-            'realname' => ['required', Rule::unique($this->table)->ignore($this->id)],
+            'realname' => 'required',
             'mobile' => 'required'
         ];
     }

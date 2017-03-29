@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\exceptions\AppException;
 use app\common\models\Member;
 use app\frontend\modules\member\models\smsSendLimitModel;
 use Illuminate\Support\Facades\Cookie;
@@ -19,8 +20,10 @@ class MemberService
         if(isset(self::$_current_member)){
             return self::$_current_member;
         }
-        //todo 根据情况改写
-        self::setCurrentMemberModel(9);
+        if(!isset($_GET['uid'])){
+            throw new AppException('uid不存在');
+        }
+        self::setCurrentMemberModel($_GET['uid']);
         return self::$_current_member;
     }
 
@@ -40,7 +43,7 @@ class MemberService
      */
     public static function isLogged()
     {
-        return !empty(session('member_id'));
+        return isset($_SESSION['member_id']) && $_SESSION['member_id'] > 0;  //!empty(session('member_id'));
     }
 
     /**

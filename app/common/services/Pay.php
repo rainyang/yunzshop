@@ -18,7 +18,55 @@ use app\common\models\PayResponseDataLog;
 
 abstract class Pay
 {
+    /**
+     * 无效的Uniacid长度
+     */
     const INVALID_UNIACID_LENGTH = -1;
+    /**
+     * 订单支付
+     */
+    const PAY_TYPE_COST          = 1;
+    /**
+     * 充值
+     */
+    const PAY_TYPE_RECHARGE      = 2;
+    /**
+     * 退款
+     */
+    const PAY_TYPE_REFUND        = 3;
+    /**
+     * 提现
+     */
+    const PAY_TYPE_WITHDRAW      = 4;
+    /**
+     * 微信支付
+     */
+    const PAY_MODE_WECHAT        = 1;
+    /**
+     * 支付宝支付
+     */
+    const PAY_MODE_ALIPAY        = 2;
+    /**
+     * 余额支付
+     */
+    const PAY_MODE_CREDIT        = 3;
+    /**
+     * 货到付款
+     */
+    const PAY_MODE_CASH          = 4;
+    /**
+     * 未付款
+     */
+    const ORDER_STATUS_NON       = 0;
+    /**
+     * 待付款
+     */
+    const ORDER_STATUS_WAITPAY   = 1;
+    /**
+     * 完成
+     */
+    const ORDER_STATUS_COMPLETE  = 2;
+
     /**
      * 请求的参数
      *
@@ -89,24 +137,22 @@ abstract class Pay
      * 退款
      *
      * @param $out_trade_no 订单号
-     * @param $out_refund_no 退款单号
      * @param $totalmoney 订单总金额
      * @param $refundmoney 退款金额
      * @return mixed
      */
-    abstract function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney);
+    abstract function doRefund($out_trade_no, $totalmoney, $refundmoney);
 
     /**
      * 提现
      *
      * @param $member_id 提现者用户ID
-     * @param $out_trade_no 提现单号
      * @param $money 提现金额
      * @param $desc 提现说明
      * @param $type 只针对微信 1-企业支付(钱包) 2-红包
      * @return mixed
      */
-    abstract function doWithdraw($member_id, $out_trade_no, $money, $desc, $type);
+    abstract function doWithdraw($member_id, $money, $desc, $type);
 
     /**
      * init
@@ -289,25 +335,23 @@ abstract class Pay
     /**
      * 支付单
      *
-     * @param $int_order_no
-     * @param $out_order_no
-     * @param $status
-     * @param $type
-     * @param $third_type
-     * @param $price
+     * @param $out_order_no 订单号
+     * @param $status 支付单状态
+     * @param $type 支付类型
+     * @param $third_type 支付方式
+     * @param $price 支付金额
      */
-    protected function payOrder($int_order_no, $out_order_no, $status, $type, $third_type, $price)
+    protected function payOrder($out_order_no, $status, $type, $third_type, $price)
     {
-        PayOrder::create([
+         PayOrder::create([
             'uniacid' => $this->uniacid,
             'member_id' => \YunShop::app()->getMemberId(),
-            'int_order_no' => $int_order_no,
+            'int_order_no' => $this->createPayOrderNo(),
             'out_order_no' => $out_order_no,
             'status' => $status,
             'type' => $type,
             'third_type' => $third_type,
-            'price' => $price,
-            'ip' => $this->ip
+            'price' => $price
         ]);
     }
 
@@ -325,10 +369,10 @@ abstract class Pay
      * @param $third_type
      * @param $params
      */
-    protected function payRequestDataLog($order_id, $type, $third_type, $params)
+    public function payRequestDataLog($order_id, $type, $third_type, $params)
     {
         PayRequestDataLog::create([
-            'uniacid' => $this->uniacid,
+            'uniacid' => \YunShop::app()->uniacid,
             'order_id' => $order_id,
             'type' => $type,
             'third_type' => $third_type,
@@ -339,6 +383,25 @@ abstract class Pay
     protected function payResponseDataLog()
     {}
 
+    /**
+     * 支付单号
+     *
+     * 格式：P+YYMMDD+31位流水号(数字+字母)
+     *
+     * @return string
+     */
+    private function createPayOrderNo()
+    {
+        return 'P' . date('Ymd', time()) . $this->generate_string(23);
+    }
+
+    /**
+     * 创建退款/提现订单批次号
+     *
+     * @param $uniacid
+     * @param $strleng
+     * @return string
+     */
     public function setUniacidNo($uniacid, $strleng)
     {
         $part1 = date('Ymd', time());
@@ -359,13 +422,43 @@ abstract class Pay
         return $part1 . substr($part2, 0, 9) . $part3 . substr($part2, 9);;
     }
 
+    /**
+     * 退款/提现流水号
+     *
+     * @param int $length
+     * @return string
+     */
     private function generate_string ($length = 19)
     {
         $nps = "";
         for($i=0;$i<$length;$i++)
         {
-            $nps .= chr( (mt_rand(1, 36) <= 26) ? mt_rand(97, 122) : mt_rand(48, 57 ));
+            $nps .= chr((mt_rand(1, 36) <= 26) ? mt_rand(97, 122) : mt_rand(48, 57 ));
         }
         return $nps;
+    }
+
+    /**
+     * 支付日志
+     *
+     * @param $type
+     * @param $third_type
+     * @param $amount
+     * @param $operation
+     * @param $order_no
+     * @param $status
+     *
+     * @return mixed
+     */
+    protected function log($type, $third_type, $amount, $operation, $order_no, $status)
+    {
+        //访问日志
+        $this->payAccessLog();
+        //支付日志
+        $this->payLog($type, $third_type, $amount, $operation);
+        //支付单记录
+        $model = $this->payOrder($order_no, $status, $type, $third_type, $amount);
+
+        return $model;
     }
 }

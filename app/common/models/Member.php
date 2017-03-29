@@ -74,7 +74,7 @@ class Member extends BackendModel
             ->where('uid', $member_id)
             ->with([
                 'yzMember' => function ($query) {
-                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black'])
+                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])
                         ->with([
                             'group' => function ($query1) {
                                 return $query1->select(['id', 'group_name']);
@@ -111,8 +111,8 @@ class Member extends BackendModel
      */
     public static function getRandNickName()
     {
-        return self::select('nick_name')
-            ->whereNotNull('nick_name')
+        return self::select('nickname')
+            ->whereNotNull('nickname')
             ->inRandomOrder()
             ->first();
     }

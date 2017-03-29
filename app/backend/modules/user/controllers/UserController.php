@@ -23,16 +23,28 @@ class UserController extends BaseController
      **/
     public function index()
     {
-        $pageSize = 1;
+        $pageSize = 5;
 
         $userList = User::getPageList($pageSize);
+        if (\YunShop::request()->keyword) {
+            //dd(\YunShop::request()->keyword);
+            $userList = User::searchPagelist($pageSize, \YunShop::request()->keyword);
+            dd($userList);
+        }
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
 
+        $roleList = YzRole::getRoleListToUser();
+        //dd($roleList);
         return view('user.user.user', [
             'pager' => $pager,
+            'roleList' => $roleList,
             'userList' => $userList
         ])->render();
     }
+
+    /*
+     *  添加操作员
+     **/
     public function store()
     {
         $userModel = new User();
@@ -73,24 +85,40 @@ class UserController extends BaseController
     public function update()
     {
         $userModel = User::getUserByid(\YunShop::request()->id);
-
         //dd($userModel);
+
         if (!$userModel) {
             return $this->message("未找到数据或以删除！", '', 'error');
         }
         $permissionService = new PermissionService();
 
         $userPermissions = $permissionService->handlePermission($userModel->permissions->toArray());
-
+//dd($userPermissions);
         $permissions = \Config::get('menu');
         $roleList = YzRole::getRoleListToUser();
 
         $rolePermissions = [];
         if ($userModel->userRole && $userModel->userRole->role) {
-            $rolePermissions = YzRole::getRoleById($userModel->userRole->role->id)->toArray();
-            $userPermissions += $permissionService->handlePermission($userModel->userRole->permissions->toArray());
+            $rolePermissions = $permissionService->handlePermission($userModel->userRole->permissions->toArray());
+            $userPermissions = array_merge($rolePermissions, $userPermissions);
+            //dd($permissionService->handlePermission($userModel->userRole->permissions->toArray()));
         }
-        dd($userPermissions);
+        //dd($userPermissions);
+        //修改 start
+        $requestUser =\YunShop::request()->user;
+        if ($requestUser) {
+            //dd(\YunShop::request());
+            $userModel->status = $requestUser['status'];
+            if ($requestUser['password']) {
+                $userModel->password = $this->password($requestUser->password, $userModel->salt);
+            }
+            $userModel->widgets = \YunShop::request()->widgets;
+            $userModel->widgets['perms'] = \YunShop::request()->perms;
+            if ($userModel->save()) {
+                return $this->message('修改操作员成功.', Url::absoluteWeb('user.user.update', array('id' => $userModel->uid)));
+            }
+        }
+
 
         return view('user.user.form',[
             'user'          => $userModel,

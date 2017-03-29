@@ -11,6 +11,7 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
+use app\common\services\MyLink;
 
 class ShopController extends BaseController
 {
@@ -56,7 +57,6 @@ class ShopController extends BaseController
                 $this->error('会员设置失败');
             }
         }
-
         return view('setting.shop.member', [
             'set' => $member
         ])->render();
@@ -275,6 +275,7 @@ class ShopController extends BaseController
         Setting::set('alipay-web.notify_url', SZ_YI_ALIPAY_NOTIFY_URL);
         Setting::set('alipay-web.return_url', SZ_YI_ALIPAY_RETURN_URL);
     }
+
 
     private function upload($fileinput)
     {

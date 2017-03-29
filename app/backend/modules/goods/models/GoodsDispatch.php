@@ -18,7 +18,8 @@ class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
     public $timestamps = false;
     public $attributes = [
         'dispatch_price' => 0,
-        'dispatch_type' => 1
+        'dispatch_type' => 1,
+        'is_cod' => 1,
     ];
     /**
      * 获取商品配送信息关联数据

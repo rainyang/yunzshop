@@ -2,6 +2,7 @@
 
 namespace app\common\exceptions;
 
+use app\common\components\BaseController;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -15,6 +16,7 @@ class Handler extends ExceptionHandler
      */
     protected $dontReport = [
         \Illuminate\Auth\AuthenticationException::class,
+        AppException::class,
         \Illuminate\Auth\Access\AuthorizationException::class,
         \Symfony\Component\HttpKernel\Exception\HttpException::class,
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
@@ -82,6 +84,15 @@ class Handler extends ExceptionHandler
      */
     protected function renderExceptionWithWhoops(Exception $e)
     {
+        if($e instanceof AppException){
+            echo json_encode([
+                'result' => 1,
+                'msg' => $e->getMessage(),
+                'data' => []
+            ],256);exit;
+            BaseController::errorJson($e->getMessage());
+            exit;
+        }
         $whoops = new \Whoops\Run;
         $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
 

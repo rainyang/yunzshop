@@ -41,7 +41,7 @@ class Express
             'mobile'=>'18545571024',
             'realname'=>'默认姓名(死值)',
         ];
-        $event->addMap('member_info',$data);
+        $event->addMap('default_member_address',$data);
         return ;
     }
     private function needDispatch(){
