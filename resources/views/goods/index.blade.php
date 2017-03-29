@@ -214,14 +214,14 @@
 
 									<a href="{{yzWebUrl('shop.goods.copy', array('id' => $item['id']))}}"  title="{{$lang['copyshop']}}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
 
-									@section('supplier_edit')
-									<a href="{{yzWebUrl('goods.goods.edit', array('id' => $item['id']))}}"class="btn btn-sm btn-default" title="编辑"><i class="fa fa-edit"></i></a>
-									@show
 
-									@section('admin_destroy')
+									<a href="{{yzWebUrl('goods.goods.edit', array('id' => $item['id']))}}"class="btn btn-sm btn-default" title="编辑"><i class="fa fa-edit"></i></a>
+
+
+
 									<a href="{{yzWebUrl('goods.goods.destroy', array('id' => $item['id']))}}" onclick="return confirm('确认删除此商品？');
 										return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-trash"></i></a>
-									@show
+
 
 									<a href="javascript:;" data-url="{{yzAppUrl('shop/detail', array('id' => $item['id']))}}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
 								</td>
