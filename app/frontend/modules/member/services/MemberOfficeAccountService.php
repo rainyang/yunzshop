@@ -171,13 +171,13 @@ class MemberOfficeAccountService extends MemberService
                 }
                 Session::set('member_id', $member_id);
             } else {
-                redirect($authurl)->send();
+                //redirect($authurl)->send();
                 exit;
             }
         } else {
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
             $this->_setClientRequestUrl();
-
+exit;
 //            if (!Session::get('openid')) {
 //                $redirect_url = $this->_getClientRequestUrl();
 //                redirect($redirect_url . '?login')->send();exit;
