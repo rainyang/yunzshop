@@ -175,7 +175,6 @@ class MemberOfficeAccountService extends MemberService
                 exit;
             }
         } else {
-            echo 'tt';exit;
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
             $this->_setClientRequestUrl();
 
@@ -183,8 +182,8 @@ class MemberOfficeAccountService extends MemberService
 //                $redirect_url = $this->_getClientRequestUrl();
 //                redirect($redirect_url . '?login')->send();exit;
 //            }
-            header('Location:' . $authurl);
-            //redirect($authurl)->send();
+
+            redirect($authurl)->send();
             exit;
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
