@@ -18,6 +18,7 @@ class MemberCartController extends BaseController
         $memberId = '9';
 
         $cartList = MemberCart::getMemberCartList($memberId);
+        dd($cartList);
         //dd($cartList);
         foreach ($cartList as $key => $cart) {
             $cartList[$key]['option_str'] = '';
