@@ -96,6 +96,11 @@ class GoodsController extends BaseController
         //dd($requestSearch);
         $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+
+        $edit_url = 'goods.goods.edit';
+        $delete_url = 'goods.goods.destroy';
+        $delete_msg = '确认删除此商品？';
+
         return view('goods.index', [
             'list' => $list['data'],
             'pager' => $pager,
@@ -107,6 +112,9 @@ class GoodsController extends BaseController
             'shopset' => $this->shopset,
             'lang' => $this->lang,
             'product_attr_list' => $product_attr_list,
+            'edit_url' => $edit_url,
+            'delete_url' => $delete_url,
+            'delete_msg' => $delete_msg
         ])->render();
     }
 
