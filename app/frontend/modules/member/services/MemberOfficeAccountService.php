@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\services;
 
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
+use app\common\services\Session;
 use app\frontend\models\McGroupsModel;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberModel;
@@ -39,7 +40,7 @@ class MemberOfficeAccountService extends MemberService
 
         if (!empty($code)) {
             $redirect_url = $this->_getClientRequestUrl();
-            unset($_SESSION['client_url']);
+            Session::clear('client_url');
 
             $resp     = @ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
@@ -55,6 +56,8 @@ class MemberOfficeAccountService extends MemberService
             $userinfo    = @json_decode($resp_info['content'], true);
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+                \YunShop::app()->openid = $userinfo['openid'];
+
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
 
                 if (!empty($UnionidInfo)) {
@@ -161,12 +164,9 @@ class MemberOfficeAccountService extends MemberService
                         'type' => self::LOGIN_TYPE
                     ));
                 }
-
-                session(['member_id'=>$member_id]);
-                \Session::save();
-                $this->saveSession($member_id);
+                Session::set('member_id', $member_id);
             } else {
-                //redirect($authurl)->send();
+                redirect($authurl)->send();
                 exit;
             }
         } else {
@@ -177,7 +177,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
-        redirect($redirect_url)->send();
+        redirect($redirect_url . '?login')->send();
     }
 
     /**
@@ -225,10 +225,10 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _setClientRequestUrl()
     {
-        if (empty($_SESSION['client_url']) && !empty($_SERVER['HTTP_REFERER'])) {
-            $_SESSION['client_Url'] = $_SERVER['HTTP_REFERER'];
+        if (!Session::get('client_url')  && !empty($_SERVER['HTTP_REFERER'])) {
+            Session::set('client_url', $_SERVER['HTTP_REFERER']);
         } else {
-            $_SESSION['client_Url'] = '';
+            Session::set('client_url', '');
         }
     }
 
@@ -239,10 +239,6 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _getClientRequestUrl()
     {
-        if (empty($_SESSION['client_Url'])) {
-            return false;
-        }
-
-        return $_SESSION['client_Url'];
+        return Session::get('client_url');
     }
 }

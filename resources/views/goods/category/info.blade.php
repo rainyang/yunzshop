@@ -156,5 +156,6 @@
             </div>
         </form>
     </div>
+    @include('public.admin.mylink');
 @endsection
 

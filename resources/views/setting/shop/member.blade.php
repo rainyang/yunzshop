@@ -1,6 +1,30 @@
 @extends('layouts.base')
 
 @section('content')
+
+    <script type="text/javascript">
+        function formcheck() {
+            var numerictype = /^(0|[1-9]\d*)$/; //非负整数验证
+            var thumb = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
+
+
+            if ($(':input[name="member[headimg]"]').val() != '') {
+                if (!thumb.test($(':input[name="member[headimg]"]').val())) {
+                    Tip.focus(':input[name="member[headimg]"]', '图片类型必须是.gif,jpeg,jpg,png中的一种.');
+                    return false;
+                }
+            }
+
+            if ($(':input[name="member[term_time]"]').val() != '') {
+                if (!numerictype.test($(':input[name="member[term_time]"]').val())) {
+                    Tip.focus(':input[name="member[term_time]"]', '会员等级到期时间,只能为非负整数.');
+                    return false;
+                }
+            }
+            return true;
+
+        }
+    </script>
 <div class="w1200 m0a">
 <div class="rightlist">
 <!-- 新增加右侧顶部三级菜单 -->
@@ -104,19 +128,19 @@
                         <span class="help-block">会员中心显示推荐人</span>
                     </div>
                 </div>
-                <div class="form-group">
+                {{--<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">绑定手机</label>
                     <div class="col-sm-9 col-xs-12">
                         <a class="btn btn-warning" href="{php echo $this->createWebUrl('member/query', array('op' => 'delbindmobile'))}" data-original-title="" title="">清除绑定记录</a>
                         <span class="help-block">公众号被封后可使用此功能清除手机号绑定记录，让会员重新绑定找回被封公众号会员信息</span>
                     </div>
-                </div>
+                </div>--}}
 
                        <div class="form-group"></div>
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  onclick="return formcheck();"/>
                      </div>
             </div>
                        
