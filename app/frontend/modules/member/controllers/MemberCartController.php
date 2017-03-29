@@ -23,7 +23,7 @@ class MemberCartController extends BaseController
             $cartList[$key]['option_str'] = '';
             if (empty($cart['goods'])) {
                 //销毁未找到商品的数据
-                //unset($cartList[$key]);
+                unset($cartList[$key]);
             } elseif (!empty($cart['goods_option'])) {
                 //规格数据替换商品数据
                 if ($cart['goods_option']['title']) {
@@ -39,7 +39,7 @@ class MemberCartController extends BaseController
                     $cart['goods']['price'] = $cart['goods_option']['market_price'];
                 }
             }
-            //unset ($cartList[$key]['goods_option']);
+            unset ($cartList[$key]['goods_option']);
         }
         //dd($cartList);
 
