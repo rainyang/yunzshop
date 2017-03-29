@@ -43,7 +43,12 @@ class MemberService
      * @return bool
      */
     public static function isLogged()
-    {echo 'member_id' . Session::get('member_id');exit;
+    {
+        if (Session::get('member_id') > 0) {
+            echo 'member_id_ok: ' . Session::get('member_id');
+        } else {
+            echo 'member_id_ko: ' . Session::get('member_id');
+        }exit;
         return !Session::get('member_id') && Session::get('member_id') > 0;
     }
 
