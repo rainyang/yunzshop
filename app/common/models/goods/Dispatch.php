@@ -3,6 +3,7 @@
 namespace app\common\models\goods;
 
 use app\common\models\BaseModel;
+use app\common\observers\dispatchObserver\DispatchObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Validator;
 
@@ -86,6 +87,11 @@ class Dispatch extends BaseModel
         ];
     }
 
+    public static function boot()
+    {
+        parent::boot();
+        static::observe(new DispatchObserver());
+    }
 
 
 }
