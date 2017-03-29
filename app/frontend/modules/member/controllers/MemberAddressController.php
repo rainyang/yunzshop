@@ -24,6 +24,11 @@ class MemberAddressController extends BaseController
         //$memberId = \YunShop::app()->getMemberId();
         $memberId = '9'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
+        //获取省市ID
+        if ($addressList) {
+            $address = Address::getAllAddress();
+            $addressList = $this->addressServiceForIndex($addressList, $address);
+        }
         //var_dump(!empty($addressList));
         $msg = "获取列表成功";
         return $this->successJson($msg, $addressList);
@@ -39,7 +44,6 @@ class MemberAddressController extends BaseController
         if (!$address) {
             return $this->errorJson('数据收取失败，请联系管理员！');
         }
-
         $msg = '数据获取成功';
         return $this->successJson($msg, $this->addressService($address));
     }
@@ -163,6 +167,30 @@ class MemberAddressController extends BaseController
         } else {
             return $this->errorJson("数据写入出错，删除失败！");
         }
+    }
+
+    /*
+     * 服务列表数据 index() 增加省市区ID值
+     * */
+    private function addressServiceForIndex($addressList = [], $address)
+    {
+        $i = 0;
+        foreach ($addressList as $list) {
+            foreach ($address as $key) {
+                if ($list['province'] == $key['areaname']) {
+                    //dd('od');
+                    $addressList[$i]['province_id'] = $key['id'];
+                }
+                if ($list['city'] == $key['areaname']) {
+                    $addressList[$i]['city_id'] = $key['id'];
+                }
+                if ($list['district'] == $key['areaname']) {
+                    $addressList[$i]['district_id'] = $key['id'];
+                }
+            }
+            $i++;
+        }
+        return $addressList;
     }
 
     /*
