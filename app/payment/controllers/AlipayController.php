@@ -15,12 +15,14 @@ class AlipayController extends PaymentController
 {
     public function notifyUrl()
     {
+        file_put_contents('../../../../addons/sz_yi/data/n.log', print_r($_POST,1));
         // TODO 访问记录
         // TODO 保存响应数据
 
         $verify_result = $this->getSignResult();
 
         if($verify_result) {
+            file_put_contents('../../../../addons/sz_yi/data/s.log', print_r($_POST,1));
             //商户订单号
             $out_trade_no = $_POST['out_trade_no'];
             //支付宝交易号
@@ -40,12 +42,14 @@ class AlipayController extends PaymentController
             echo "success";
 
         } else {
+            file_put_contents('../../../../addons/sz_yi/data/k.log', print_r($_POST,1));
             echo "fail";
         }
     }
 
     public function returnUrl()
     {
+        file_put_contents('../../../../addons/sz_yi/data/r.log', print_r($_GET,1));
         // TODO 访问记录
         // TODO 保存响应数据
 

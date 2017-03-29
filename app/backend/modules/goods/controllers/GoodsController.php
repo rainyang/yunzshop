@@ -73,7 +73,6 @@ class GoodsController extends BaseController
         $brands = Brand::getBrands()->get()->toArray();
 
         $requestSearch = \YunShop::request()->search;
-
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
                 return !empty($item) && $item !== 0;
@@ -479,5 +478,15 @@ class GoodsController extends BaseController
         $goods->setRawAttributes($request['goods']);
         $goods->widgets = $request['widgets'];
         $goods->save();
+    }
+
+
+    public function getMyLinkGoods()
+    {
+        if (\YunShop::request()->kw) {
+            $goods = Goods::getGoodsByName(\YunShop::request()->kw);
+            $goods = set_medias($goods, array('thumb', 'share_icon'));
+            echo json_encode($goods); exit;
+        }
     }
 }

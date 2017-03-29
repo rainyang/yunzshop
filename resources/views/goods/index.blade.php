@@ -207,7 +207,7 @@
 									<!-- yitian_add::商品链接二维码 2017-02-07 qq:751818588 -->
 									<a class="btn btn-sm btn-default umphp" title="商品二维码" data-url="<?php echo yzAppUrl('shop/detail', array('id' => $item['id']));?>" data-goodsid = "{{$item['id']}}">
 										<div class="img">
-											{!! QrCode::size(120)->generate(Request::url()) !!}
+											{!! QrCode::size(120)->generate(yzAppUrl('/goods/'.$item['id'], array('id' => $item['id']))) !!}
 										</div>
 										<i class="fa fa-qrcode"></i>
 									</a>
@@ -216,7 +216,7 @@
 
 									@section('supplier_edit')
 									<a href="{{yzWebUrl('goods.goods.edit', array('id' => $item['id']))}}"class="btn btn-sm btn-default" title="编辑"><i class="fa fa-edit"></i></a>
-									@endsection
+									@show
 
 									@section('admin_destroy')
 									<a href="{{yzWebUrl('goods.goods.destroy', array('id' => $item['id']))}}" onclick="return confirm('确认删除此商品？');
@@ -244,6 +244,8 @@
 								</td>
 							</tr>
 							@endforeach
+
+							@section('release_gods')
 							<tr>
 								<td colspan='10'>
 									@section('add_goods')
@@ -254,7 +256,7 @@
 
 								</td>
 							</tr>
-
+							@show
 							</tr>
 							</tbody>
 						</table>

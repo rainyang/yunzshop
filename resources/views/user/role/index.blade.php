@@ -7,7 +7,11 @@
                 <div class="panel-heading">筛选</div>
                 <div class="panel-body">
                     <form action=" " method="get" class="form-horizontal" role="form">
-
+                        <input type="hidden" name="c" value="site"/>
+                        <input type="hidden" name="a" value="entry"/>
+                        <input type="hidden" name="m" value="sz_yi"/>
+                        <input type="hidden" name="do" value="QDaf"/>
+                        <input type="hidden" name="route" value="user.role.index"/>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>
                             <div class="col-xs-12 col-sm-8 col-lg-9">

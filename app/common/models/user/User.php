@@ -15,6 +15,8 @@ use Illuminate\Validation\Rule;
 
 class User extends BaseModel
 {
+    public $primaryKey = 'uid';
+
     public $table = 'users';
 
     public $timestamps = false;
@@ -89,6 +91,25 @@ class User extends BaseModel
     }
 
     /*
+     * 条件搜索分页列表
+     *
+     * @params int $pageSize
+     * @params array $keyword
+     *
+     * @return object */
+    public static function searchPagelist($pageSize, $keyword = [])
+    {
+        //todo 查询语句，
+        $query = new static();
+
+        $keyword['user'] && $query::where('username', 'like', $keyword['user'] . '%');
+
+
+        dd($query->get());
+        return $query->get();
+    }
+
+    /*
      * Get operator information through operator ID
      *
      * @parms int $userId
@@ -114,17 +135,6 @@ class User extends BaseModel
     }
 
     /*
-     * 修改操作员信息通过操作员ID
-     *
-     * @params int $uid
-     * @params array $data
-     * */
-    public static function updateUserByUserId($uid, $data)
-    {
-        return static::where('uid', $uid)->update($data);
-    }
-
-    /*
      *  Delete operator
      **/
     public static function destroyUser($userId)
@@ -134,8 +144,8 @@ class User extends BaseModel
 
     /**
      * 数据库获取用户权限
-     * @return mixed
-     */
+     *
+     * @return mixed */
     public static function getUserPermissionsCache()
     {
         $key = 'user.permissions.'.\YunShop::app()->uid;
@@ -161,8 +171,8 @@ class User extends BaseModel
 
     /**
      * 获取并组合用户权限
-     * @return array
-     */
+     *
+     * @return array*/
     public static function getAllPermissions()
     {
         $userPermissions = self::getUserPermissionsCache()->toArray();
