@@ -172,11 +172,11 @@ class MemberOfficeAccountService extends MemberService
         } else {
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
             $this->_setClientRequestUrl();
-            
-            if (!Session::get('openid')) {
-                $redirect_url = $this->_getClientRequestUrl();
-                redirect($redirect_url)->send();exit;
-            }
+
+//            if (!Session::get('openid')) {
+//                $redirect_url = $this->_getClientRequestUrl();
+//                redirect($redirect_url . '?login')->send();exit;
+//            }
 
             redirect($authurl)->send();
             exit;
