@@ -9,9 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
 use app\frontend\modules\member\services\factory\MemberFactory;
-use app\frontend\modules\member\services\MemberService;
 
 class LoginController extends ApiController
 {
