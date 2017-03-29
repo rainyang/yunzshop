@@ -2,7 +2,6 @@
 
 namespace app\frontend\modules\coupon\services;
 
-use app\common\models\MemberCoupon;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\coupon\services\models\DiscountCoupon;
 use app\frontend\modules\coupon\services\models\MoneyOffCoupon;
@@ -11,10 +10,12 @@ use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 class TestService
 {
     private $order;
+    private $back_type = null;
 
-    public function __construct(PreGeneratedOrderModel $Order)
+    public function __construct(PreGeneratedOrderModel $order, $back_type = null)
     {
-        $this->order = $Order;
+        $this->order = $order;
+        $this->back_type = $back_type;
 
     }
 
@@ -26,7 +27,6 @@ class TestService
     {
         $result = 0;
         //统计所有优惠券的金额
-        //dd($this->getAllValidCoupons());
         foreach ($this->getAllValidCoupons() as $coupon) {
             /**
              * @var $coupon Coupon
@@ -42,16 +42,18 @@ class TestService
      * 获取订单可算的优惠券
      * @return array
      */
-    public function getOptionalCoupons(){
+    public function getOptionalCoupons()
+    {
         $result = [];
         foreach ($this->getMemberCoupon() as $coupon) {
-            $Coupon = new Coupon($coupon,$this->order);
+            $Coupon = new Coupon($coupon, $this->order);
             if ($Coupon->valid()) {
                 $result[] = $Coupon;
             }
         }
         return $result;
     }
+
     /**
      * 获取所有选中并有效的优惠券
      * @return array
@@ -61,9 +63,9 @@ class TestService
 
         $result = [];
         foreach ($this->getSelectedMemberCoupon() as $coupon) {
-            $Coupon = new Coupon($coupon,$this->order);
+            $Coupon = new Coupon($coupon, $this->order);
             if ($Coupon->valid()) {
-                $Coupon->activate();
+                //$Coupon->activate();
                 $result[] = $Coupon;
             }
         }
@@ -74,9 +76,12 @@ class TestService
      * 用户拥有的优惠券
      * @return mixed
      */
-    private function getMemberCoupon(){
-        return MemberCoupon::getMemberCoupon($this->order->getMemberModel())->get();
+    private function getMemberCoupon()
+    {
+        //dd($this->order->getMemberModel()->hasManyMemberCoupon($this->back_type)->get());
+        return $this->order->getMemberModel()->hasManyMemberCoupon($this->back_type)->get();
     }
+
     /**
      * 用户拥有并选中的优惠券
      * @return array
@@ -87,7 +92,7 @@ class TestService
         $result = [];
         //dd(MemberCoupon::getMemberCoupon($this->order->getMemberModel())->get());exit;
         foreach ($this->getMemberCoupon() as $memberCoupon) {
-            if(in_array($memberCoupon->coupon_id, $coupon_id)){
+            if (in_array($memberCoupon->coupon_id, $coupon_id)) {
                 $result[] = $memberCoupon;
             }
         }

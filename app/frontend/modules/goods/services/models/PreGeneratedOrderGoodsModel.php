@@ -28,7 +28,8 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      * @var Goods
      */
     private $Goods;
-
+    public $coupon_money_off_price;
+    public $coupon_discount_price;
 
     /**
      * PreGeneratedOrderGoodsModel constructor.
@@ -78,7 +79,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'thumb' => $this->Goods->thumb,
             'goods_price' => $this->Goods->price,
             'vip_price' => $this->Goods->vip_price,
+            'coupon_price' => $this->getCouponPrice(),
             'coupon_discount_price' => $this->coupon_discount_price,
+            'coupon_money_off_price' => $this->coupon_money_off_price,
             /*'discount_details' => $this->getDiscountDetails(),
             'dispatch_details' => $this->getDispatchDetails(),*/
 
@@ -86,6 +89,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         return $data;
     }
 
+    public function getCouponPrice(){
+        return $this->coupon_money_off_price+$this->coupon_discount_price;
+    }
     /**
      * 获取商品数量
      * @return int
@@ -129,7 +135,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         //return;
         return OrderGoods::create($data);
     }
-
+    public function getVipPrice(){
+        return $this->Goods->vip_price * $this->getTotal();
+    }
     /**
      * @param $name
      * @return null
