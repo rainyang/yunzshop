@@ -30,7 +30,7 @@
             <option value="0">请选择品牌</option>
             @if (!empty($brands))
             @foreach ($brands as $brand)
-            <option value="{{$brand['id']}}">{{$brand['name']}}</option>
+            <option value="{{$brand['id']}}" @if ($brand['id'] == $goods['brand_id']) selected @endif>{{$brand['name']}}</option>
             @endforeach
             @endif
         </select>
@@ -172,7 +172,7 @@
 @section('js')
 <script>
 require(['select2'],function(){
-        $('#brand').select2();
+    $('#brand').select2();
 })
 
 </script>
