@@ -179,7 +179,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
-        redirect($redirect_url)->send();
+        redirect($redirect_url . '?login=1')->send();
     }
 
     /**
