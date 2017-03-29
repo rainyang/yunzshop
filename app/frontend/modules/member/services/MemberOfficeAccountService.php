@@ -171,7 +171,7 @@ class MemberOfficeAccountService extends MemberService
             }
         } else {
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
-
+echo 'end';
             $client_url = $this->_setClientRequestUrl();
 
             //session()->put('client_url',$client_url);
