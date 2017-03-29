@@ -230,11 +230,11 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _setClientRequestUrl()
     {
-        if (!Session::get('client_url')  && !empty($_SERVER['HTTP_REFERER'])) {
+        if (!Session::get('client_url')  && !empty($_SERVER['HTTP_REFERER'])) {echo 2;
             Session::set('client_url', $_SERVER['HTTP_REFERER']);
-        } else {
+        } else {echo 3;
             Session::set('client_url', '');
-        }
+        }exit;
     }
 
     /**
