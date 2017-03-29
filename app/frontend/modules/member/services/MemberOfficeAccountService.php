@@ -26,9 +26,8 @@ class MemberOfficeAccountService extends MemberService
 
     public function login()
     {
-        echo '<pre>';print_r($_COOKIE);
-        echo '<pre>';print_r($_SESSION);exit;
-        file_put_contents(storage_path('logs/WWW.log'), print_r(\YunShop::app(), 1));
+        file_put_contents(storage_path('logs/WWW.log'), print_r($_COOKIE, 1), FILE_APPEND);
+        file_put_contents(storage_path('logs/WWW.log'), print_r($_COOKIE, 1), FILE_APPEND);
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
@@ -189,7 +188,8 @@ class MemberOfficeAccountService extends MemberService
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
         file_put_contents(storage_path('logs/redirect_url.log'), $redirect_url);
-        redirect($redirect_url . '?login')->send();
+        //redirect($redirect_url . '?login')->send();
+        redirect('http://www.baidu.com')->send();
     }
 
     /**
