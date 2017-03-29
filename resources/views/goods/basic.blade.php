@@ -26,19 +26,16 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
     <div class="col-sm-8 col-xs-12">
-        <select name="goods[brand_id]">
+        <select name="goods[brand_id]" id="brand" style="width:250px">
             <option value="0">请选择品牌</option>
             @if (!empty($brands))
             @foreach ($brands as $brand)
-            <option value="{{$brand['id']}}">{{$brand['name']}}</option>
+            <option value="{{$brand['id']}}" @if ($brand['id'] == $goods['brand_id']) selected @endif>{{$brand['name']}}</option>
             @endforeach
             @endif
         </select>
     </div>
 </div>
-
-<link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
-<link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品类型</label>
@@ -172,3 +169,11 @@
     </div>
 </div>
 @show
+@section('js')
+<script>
+require(['select2'],function(){
+    $('#brand').select2();
+})
+
+</script>
+ @stop
