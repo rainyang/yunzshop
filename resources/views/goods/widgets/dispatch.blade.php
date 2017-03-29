@@ -36,11 +36,11 @@
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持货到付款</label>
         <div class="col-sm-6 col-xs-6">
-            <label class="radio-inline"><input type="radio" name="widgets[dispatch][is_cod]" value="1"
-                                               @if ( empty($dispatch['is_cod']) || $dispatch['is_cod'] == 1) checked="true" @endif />
+            <label class="radio-inline"><input type="radio" name="widgets[dispatch][is_cod]" value="0"
+                                               @if ( empty($dispatch['is_cod']) || $dispatch['is_cod'] == 0) checked="true" @endif />
                 不支持</label>
-            <label class="radio-inline"><input type="radio" name="widgets[dispatch][is_cod]" value="2"
-                                               @if ( $dispatch['is_cod'] == 2) checked="true" @endif /> 支持</label>
+            <label class="radio-inline"><input type="radio" name="widgets[dispatch][is_cod]" value="1"
+                                               @if ( $dispatch['is_cod'] == 1) checked="true" @endif /> 支持</label>
         </div>
     </div>
     @show
