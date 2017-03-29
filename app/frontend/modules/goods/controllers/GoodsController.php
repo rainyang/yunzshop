@@ -115,7 +115,7 @@ class GoodsController extends BaseController
         }
 
         $categorys = Category::uniacid()->select("name", "thumb", "id")->where(['id' => $category_id])->first();
-        $goodsList = Goods::uniacid()->select('yz_goods.id', 'title', 'thumb', 'price', 'market_price')
+        $goodsList = Goods::uniacid()->select('yz_goods.id','yz_goods.id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')
             ->where("category_id", $category_id)
             ->where('status', '1')
