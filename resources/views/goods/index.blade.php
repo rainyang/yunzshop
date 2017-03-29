@@ -64,7 +64,7 @@
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
 							<div class="col-sm-8 col-xs-12">
-								<select name="search[brand_id]">
+								<select name="search[brand_id]" id="brand">
 									<option value="0">请选择品牌</option>
 									@if(!empty($brands))
 									@foreach($brands as $brand)
@@ -270,6 +270,9 @@
 </div>
 
 <script type="text/javascript">
+	$('.js-clip').each(function(){
+		util.clip(this, $(this).attr('data-url'));
+	});
 	//鼠标划过显示商品链接二维码
     $('.umphp').hover(function() {
         var url = $(this).attr('data-url');
