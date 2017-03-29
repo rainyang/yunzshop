@@ -170,8 +170,6 @@ class MemberOfficeAccountService extends MemberService
                 exit;
             }
         } else {
-            Session::set('url', 12344);
-            echo Session::get('url');exit;
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
             $this->_setClientRequestUrl();
 

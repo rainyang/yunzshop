@@ -44,7 +44,7 @@ class MemberService
      */
     public static function isLogged()
     {
-        return Session::get('member_id') && Session::get('member_id') > 0;
+        return !Session::get('member_id') && Session::get('member_id') > 0;
     }
 
     /**

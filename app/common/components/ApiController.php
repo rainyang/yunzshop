@@ -22,12 +22,10 @@ class ApiController extends BaseController
     }
 
     public function preAction()
-    {
+    {echo '<pre>';print_r($_SESSION);exit;
         parent::preAction();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             return $this->errorJson('用户未登录', ['url'=>Url::absoluteApp('member.login.index')]);
-        } else {
-            redirect($_SERVER['HTTP_REFERER'] . '?login')->send();
         }
     }
 }
