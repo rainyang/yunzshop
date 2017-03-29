@@ -137,6 +137,7 @@ class GoodsController extends BaseController
         foreach($goodsModel->getRelations() as $relation => $item){
             if ($item) {
                 unset($item->id);
+                //dd($item);
                 $newGoods->{$relation}()->create($item->toArray());
             }
         }
@@ -290,7 +291,6 @@ class GoodsController extends BaseController
             }
 
             GoodsCategory::where("goods_id", $goodsModel->id)->first()->delete();
-
             GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
 
             $goodsModel->setRawAttributes($requestGoods);

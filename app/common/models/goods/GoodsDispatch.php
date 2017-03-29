@@ -21,7 +21,7 @@ class GoodsDispatch extends BaseModel
      *
      * @var array
      */
-    protected $guarded = [''];
+    protected $guarded = ['created_at', 'updated_at'];
 
 
     /**
