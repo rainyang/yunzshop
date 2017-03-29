@@ -9,6 +9,8 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\BaseController;
+use app\common\exceptions\AppException;
+use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\ShopService;
@@ -16,20 +18,39 @@ use app\frontend\modules\shop\services\ShopService;
 class CreateController extends BaseController
 {
     public function index(){
-        $param = [
-            [
-                'goods_id' => 1,
-                'total' => 1
-            ]
-        ];
+        //dd(defined('IS_TEST'));exit;
+        /*if (!defined('IS_TEST')) {
+            return;
+        }*/
+        $params = \YunShop::request()->get();
+        $this->validator($params['goods']);
         $member_model = MemberService::getCurrentMemberModel();
 
         $shop_model = ShopService::getCurrentShopModel();
         //todo 根据参数
-        $order_goods_models = OrderService::getOrderGoodsModels($param);
+        $order_goods_models = OrderService::getOrderGoodsModels($params['goods']);
+        list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
+        if ($result === false) {
+            return $this->errorJson($message);
+        }
         $order_model = OrderService::getPreGeneratedOrder($order_goods_models,$member_model,$shop_model);
         $order_model->generate();
-        exit;
+        $this->successJson();
     }
-
+    private function validator($params){
+        if(!is_array($params)){
+            throw new AppException('请选择下单商品(非数组)');
+        }
+        if(!count($params)){
+            throw new AppException('请选择下单商品(空数组)');
+        }
+        foreach ($params as $param){
+            if(!isset($param['goods_id'])){
+                throw new AppException('请选择下单商品(缺少goods_id)');
+            }
+            if(!isset($param['total'])){
+                throw new AppException('请选择下单商品(缺少total)');
+            }
+        }
+    }
 }

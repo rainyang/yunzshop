@@ -964,6 +964,7 @@ if (!function_exists("dump")) {
 
     function dump($a)
     {
+        echo 1;exit;
         if (!defined('IS_TEST')) {
             return;
         }
