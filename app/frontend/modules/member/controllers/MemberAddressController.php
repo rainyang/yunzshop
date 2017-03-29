@@ -45,6 +45,29 @@ class MemberAddressController extends BaseController
     }
 
     /*
+     * 修改默认收货地址
+     *
+     * */
+    public function setDefatult()
+    {
+        $memberId = '9';
+        $addressModel = MemberAddress::getAddressById(\YunShop::request()->address_id);
+        if ($addressModel) {
+            if ($addressModel->isdefault == 1) {
+                return $this->errorJson('默认地址不支持取消，请编辑或修改其他默认地址');
+            }
+            $addressModel->isdefault = 1;
+            MemberAddress::cancelDefaultAddress($memberId);
+            if ($addressModel->save()) {
+                return $this->successJson('修改默认地址成功');
+            } else {
+                return $this->errorJson('修改失败，请刷新重试！');
+            }
+        }
+        return $this->errorJson('未找到数据或已删除，请重试！');
+    }
+
+    /*
      * 添加会员收获地址
      *
      * */

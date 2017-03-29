@@ -26,6 +26,8 @@ class ApiController extends BaseController
         parent::preAction();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             return $this->errorJson('用户未登录', ['url'=>Url::absoluteApp('member.login.index')]);
+        } else {
+            redirect($_SERVER['HTTP_REFERER'] . '?login')->send();
         }
     }
 }
