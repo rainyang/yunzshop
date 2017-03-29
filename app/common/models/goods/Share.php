@@ -21,12 +21,14 @@ class Share extends BaseModel
         'need_follow' =>  1,
     ];
 
+
+
     /**
      *  不可填充字段.
      *
      * @var array
      */
-    protected $guarded = [''];
+    protected $guarded = ['updated_at', 'created_at'];
 
 
     /**
