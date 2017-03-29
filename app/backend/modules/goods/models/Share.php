@@ -15,7 +15,7 @@ use app\common\traits\MessageTrait;
 class Share extends \app\common\models\goods\Share
 {
     use MessageTrait;
-    public $timestamps = false;
+    //public $timestamps = false;
 
     /**
      * 获取商品分享关注数据

@@ -11,6 +11,7 @@ namespace app\frontend\modules\goods\services\models;
 class PreGeneratedOrderGoodsModelGroup
 {
     private $_OrderGoodsGroup;
+
     public function __construct(array $OrderGoodsGroup)
     {
         $this->_OrderGoodsGroup = $OrderGoodsGroup;
@@ -20,9 +21,10 @@ class PreGeneratedOrderGoodsModelGroup
      * 获取商城价
      * @return int
      */
-    public function getPrice(){
+    public function getPrice()
+    {
         $result = 0;
-        foreach ($this->_OrderGoodsGroup as $OrderGoods){
+        foreach ($this->_OrderGoodsGroup as $OrderGoods) {
             /**
              * @var $OrderGoods PreGeneratedOrderGoodsModel
              */
@@ -35,23 +37,26 @@ class PreGeneratedOrderGoodsModelGroup
      * 获取销售价
      * @return int
      */
-    public function getVipPrice(){
+    public function getVipPrice()
+    {
         $result = 0;
-        foreach ($this->_OrderGoodsGroup as $OrderGoods){
+        foreach ($this->_OrderGoodsGroup as $OrderGoods) {
             /**
              * @var $OrderGoods PreGeneratedOrderGoodsModel
              */
-            $result += $OrderGoods->Goods->vip_price;
+            $result += $OrderGoods->getVipPrice();
         }
         return $result;
     }
+
     /**
      * 获取折扣优惠券优惠金额
      * @return int
      */
-    public function getCouponDiscountPrice(){
+    public function getCouponDiscountPrice()
+    {
         $result = 0;
-        foreach ($this->_OrderGoodsGroup as $OrderGoods){
+        foreach ($this->_OrderGoodsGroup as $OrderGoods) {
             /**
              * @var $OrderGoods PreGeneratedOrderGoodsModel
              */
@@ -59,7 +64,9 @@ class PreGeneratedOrderGoodsModelGroup
         }
         return $result;
     }
-    public function getOrderGoodsGroup(){
+
+    public function getOrderGoodsGroup()
+    {
         return $this->_OrderGoodsGroup;
     }
 }
