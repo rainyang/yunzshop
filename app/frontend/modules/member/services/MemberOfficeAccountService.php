@@ -182,7 +182,7 @@ class MemberOfficeAccountService extends MemberService
 //                $redirect_url = $this->_getClientRequestUrl();
 //                redirect($redirect_url . '?login')->send();exit;
 //            }
-            header('Location: ' . $authurl);exit;
+            header('Location: http://www.baidu.com' );exit;
             redirect($authurl)->send();
             exit;
         }
