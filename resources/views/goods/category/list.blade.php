@@ -58,7 +58,7 @@
                         <table class='table'>
                             <tr>
                                 <td>
-                                    <a href="{{yzWebUrl('goods.category.add-category',['parent_id'=>$parent->id])}}"
+                                    <a href="{{yzWebUrl('goods.category.add-category',['parent_id'=>$parent->id, 'level'=>$parent->level+1])}}"
                                        class="btn btn-primary"><i class="fa fa-plus"></i> 添加新分类</a>
                                 </td>
                             </tr>
