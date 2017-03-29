@@ -25,7 +25,7 @@ class MemberOfficeAccountService extends MemberService
     {}
 
     public function login()
-    {
+    {echo 'end';exit;
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
@@ -171,7 +171,6 @@ class MemberOfficeAccountService extends MemberService
                 }
                 Session::set('member_id', $member_id);
             } else {
-                echo 1;
                 //redirect($authurl)->send();
                 exit;
             }
