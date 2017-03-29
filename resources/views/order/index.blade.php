@@ -65,86 +65,86 @@
                         <div class="form-group">
                             <div class="col-sm-8 col-lg-12 col-xs-12">
                                 @section('search_bar')
-                                <div class='input-group'>
-                                    <select name="search[ambiguous][field]" class="form-control">
-                                        <option value="order"
-                                                @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
-                                            订单号/支付号
-                                        </option>
-                                        <option value="member"
-                                                @if( array_get($requestSearch,'ambiguous.field','')=='member')  selected="selected"@endif>
-                                            用户姓名/ID/昵称/手机号
-                                        </option>
-                                        <option value="order_goods"
-                                                @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
-                                            商品名称/ID
-                                        </option>
-                                        <option value="dispatch"
-                                                @if( array_get($requestSearch,'ambiguous.field','')=='dispatch')  selected="selected"@endif>
-                                            快递单号
-                                        </option>
-                                    </select>
-                                    <input class="form-control" name="search[ambiguous][string]" type="text"
-                                           value="{{array_get($requestSearch,'ambiguous.string','')}}"
-                                           placeholder="订单号/支付单号">
-                                </div>
-                                <div class='input-group'>
+                                    <div class='input-group'>
+                                        <select name="search[ambiguous][field]" class="form-control">
+                                            <option value="order"
+                                                    @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
+                                                订单号/支付号
+                                            </option>
+                                            <option value="member"
+                                                    @if( array_get($requestSearch,'ambiguous.field','')=='member')  selected="selected"@endif>
+                                                用户姓名/ID/昵称/手机号
+                                            </option>
+                                            <option value="order_goods"
+                                                    @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
+                                                商品名称/ID
+                                            </option>
+                                            <option value="dispatch"
+                                                    @if( array_get($requestSearch,'ambiguous.field','')=='dispatch')  selected="selected"@endif>
+                                                快递单号
+                                            </option>
+                                        </select>
+                                        <input class="form-control" name="search[ambiguous][string]" type="text"
+                                               value="{{array_get($requestSearch,'ambiguous.string','')}}"
+                                               placeholder="订单号/支付单号">
+                                    </div>
+                                    <div class='input-group'>
 
-                                    <select name="search[pay_type]" class="form-control">
-                                        <option value=""
-                                                @if( array_get($requestSearch,'pay_type',''))  selected="selected"@endif>
-                                            支付方式
-                                        </option>
-                                        <option value="1"
-                                                @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
-                                            在线支付
-                                        </option>
-                                        <option value="2"
-                                                @if( array_get($requestSearch,'pay_type','') == '2')  selected="selected"@endif>
-                                            货到付款
-                                        </option>
-                                        <option value="3"
-                                                @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
-                                            余额支付
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class='input-group'>
+                                        <select name="search[pay_type]" class="form-control">
+                                            <option value=""
+                                                    @if( array_get($requestSearch,'pay_type',''))  selected="selected"@endif>
+                                                支付方式
+                                            </option>
+                                            <option value="1"
+                                                    @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
+                                                在线支付
+                                            </option>
+                                            <option value="2"
+                                                    @if( array_get($requestSearch,'pay_type','') == '2')  selected="selected"@endif>
+                                                货到付款
+                                            </option>
+                                            <option value="3"
+                                                    @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
+                                                余额支付
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class='input-group'>
 
-                                    <select name="search[time_range][field]" class="form-control">
-                                        <option value=""
-                                                @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
-                                            操作时间
-                                        </option>
-                                        <option value="create_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='create_time')  selected="selected"@endif >
-                                            下单
-                                        </option>
-                                        <option value="pay_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='pay_time')  selected="selected"@endif>
-                                            付款
-                                        </option>
-                                        <option value="sent_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='sent_time')  selected="selected"@endif>
-                                            发货
-                                        </option>
-                                        <option value="finish_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='finish_time')  selected="selected"@endif>
-                                            完成
-                                        </option>
-                                    </select>
-                                    {!! tpl_form_field_daterange(
-                                        'search[time_range]',
-                                        array(
-                                            'starttime'=>array_get($requestSearch,'time_range.start',0),
-                                            'endtime'=>array_get($requestSearch,'time_range.end',0),
-                                            'start'=>0,
-                                            'end'=>0
-                                        ),
-                                        true
-                                        )!!}
+                                        <select name="search[time_range][field]" class="form-control">
+                                            <option value=""
+                                                    @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
+                                                操作时间
+                                            </option>
+                                            <option value="create_time"
+                                                    @if( array_get($requestSearch,'time_range.field','')=='create_time')  selected="selected"@endif >
+                                                下单
+                                            </option>
+                                            <option value="pay_time"
+                                                    @if( array_get($requestSearch,'time_range.field','')=='pay_time')  selected="selected"@endif>
+                                                付款
+                                            </option>
+                                            <option value="sent_time"
+                                                    @if( array_get($requestSearch,'time_range.field','')=='sent_time')  selected="selected"@endif>
+                                                发货
+                                            </option>
+                                            <option value="finish_time"
+                                                    @if( array_get($requestSearch,'time_range.field','')=='finish_time')  selected="selected"@endif>
+                                                完成
+                                            </option>
+                                        </select>
+                                        {!! tpl_form_field_daterange(
+                                            'search[time_range]',
+                                            array(
+                                                'starttime'=>array_get($requestSearch,'time_range.start',0),
+                                                'endtime'=>array_get($requestSearch,'time_range.end',0),
+                                                'start'=>0,
+                                                'end'=>0
+                                            ),
+                                            true
+                                            )!!}
 
-                                </div>
+                                    </div>
                                 @show
                             </div>
                         </div>
@@ -196,7 +196,7 @@
                                     class='label label-danger'>{{$r_type[$order['rtype']]}}申请</label>@endif
                             @if( 0&&$order['rstatus'] == 4)<label class='label label-primary'>客户已经寄出快递</label>@endif
                             @section('shop_name')
-                            <label class="label label-info">总店</label>
+                                <label class="label label-info">总店</label>
                             @show
                             @if( 0&&!empty($order['storename']))
                                 <label class="label label-primary">所属门店：{{$order['storename']}}</label>
@@ -229,28 +229,27 @@
                                 <img src="@if( 0&&$order['cashier']==1){{$order['name']['thumb']}}@else{!! tomedia($order_goods['thumb']) !!}@endif">
                             </td>
                             <td valign='top' style='border-left:none;text-align: left;/*width:400px*/;'>
-                                @if( 0&&$order['cashier']==1){{$order['name']['name']}}@else{{$order_goods['title']}}@endif @if( !empty($order_goods['optiontitle']))
-                                    <br/><span
-                                            class="label label-primary sizebg">{{$order_goods['optiontitle']}}</span>@endif
-
+                                @if( 0&&$order['cashier']==1){{$order['name']['name']}}
+                                @else{{$order_goods['title']}}
+                                @endif @if( !empty($order_goods['optiontitle']))<br/><span class="label label-primary sizebg">{{$order_goods['optiontitle']}}</span>
+                                @endif
                                 <br/>{{$order_goods['goods_sn']}}
                             </td>
-                            <td style='border-left:none;text-align:left;/*width:150px*/'>@if( $requestSearch['plugin'] != "fund")
-                                    原价: {!! number_format(
-                                    $order_goods['goods_price']/$order_goods['total'],2)!!} @endif<br/>应付: {!! number_format($order_goods['price']/$order_goods['total'],2) !!}
+                            <td style='border-left:none;text-align:left;/*width:150px*/'>@if( $requestSearch['plugin'] != "fund")原价: {!! number_format($order_goods['goods_price']/$order_goods['total'],2)!!} @endif<br/>应付: {!! number_format($order_goods['price']/$order_goods['total'],2) !!}
                                 <br/>数量: {{$order_goods['total']}}
                             </td>
 
-                            @if( $order_goods_index==0)
+
+                            @if( $order_goods_index == 0)
                                 <td rowspan="{!! count($order['has_many_order_goods']) !!}">
                                     <a href="{!! yzAppUrl('member/list',array('op'=>'detail')) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
-                            @else
-                                {{$order['belongs_to_member']['nickname']}}
-                            @endif
-                                <br/>
-                                {{$order['belongs_to_member']['realname']}}
-                                <br/>{{$order['belongs_to_member']['mobile']}}
-                            </td>
+                                    @else
+                                        {{$order['belongs_to_member']['nickname']}}
+                                    @endif
+                                    <br/>
+                                    {{$order['belongs_to_member']['realname']}}
+                                    <br/>{{$order['belongs_to_member']['mobile']}}
+                                </td>
                                 <td rowspan="{!! count($order['has_many_order_goods']) !!}">
                                     @if( $order['status'] > 0)
                                         <label class='label label-1}'>{{$order['has_one_pay_type']['name']}}</label>
@@ -276,13 +275,13 @@
                                         <tr>
                                             <td style='border:none;text-align:right;'>商品小计：</td>
                                             <td style='border:none;text-align:right;;'>￥{!! number_format(
-                                                $order['goods_price'] ,2) !!}
+                                            $order['goods_price'] ,2) !!}
                                             </td>
                                         </tr>
                                         <tr>
                                             <td style='border:none;text-align:right;'>运费：</td>
                                             <td style='border:none;text-align:right;;'>￥{!! number_format(
-                                                $order['dispatch_price'],2) !!}
+                                            $order['dispatch_price'],2) !!}
                                             </td>
                                         </tr>
 
@@ -313,9 +312,6 @@
                                 </td>
                         </tr>
                     @endforeach
-                    <tr>
-
-                    </tr>
                 </table>
             @endforeach
 
