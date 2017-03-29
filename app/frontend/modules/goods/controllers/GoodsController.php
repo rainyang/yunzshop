@@ -98,8 +98,7 @@ class GoodsController extends BaseController
         }
         //dd($requestSearch);
 
-        $list = Goods::Search($requestSearch)->where("status", 1)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
-
+        $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')->where("status", 1)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
         if (empty($list)) {
             $this->errorJson('没有找到商品.');
         }

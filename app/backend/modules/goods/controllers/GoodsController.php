@@ -274,7 +274,8 @@ class GoodsController extends BaseController
         //商品其它图片反序列化
         $goodsModel->thumb_url = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
         //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
-
+        $category = \YunShop::request()->category();
+        
         //$catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
             //将数据赋值到model
