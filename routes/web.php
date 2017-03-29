@@ -32,7 +32,7 @@ Route::any('/', function () {
         return;
     }
     //api
-    if (strpos(request()->getRequestUri(), '/api.php') === 0) {
+    if (strpos(request()->getRequestUri(), '/api.php') > 0) {
 
         return;
     }
@@ -45,4 +45,3 @@ Route::any('/', function () {
     YunShop::parseRoute();
     return;
 });
-
