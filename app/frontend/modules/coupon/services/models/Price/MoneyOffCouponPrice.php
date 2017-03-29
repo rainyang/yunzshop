@@ -17,14 +17,17 @@ class MoneyOffCouponPrice extends CouponPrice
     {
 
         //优惠券商品价格不小于订单满减价格
-        if (!float_lesser($this->getOrderGoodsPrice(), $this->dbCoupon->enough)) {
+        if (!float_lesser($this->getOrderGoodsGroupPrice(), $this->dbCoupon->enough)) {
 
             return true;
         }
         return false;
     }
-    private function getOrderGoodsPrice(){
+    private function getOrderGoodsGroupPrice(){
         return $this->coupon->getOrderGoodsInScope()->getVipPrice()-$this->coupon->getOrderGoodsInScope()->getCouponDiscountPrice();
+    }
+    private function getOrderGoodsPrice($orderGoods){
+        return $orderGoods->getVipPrice() - $orderGoods->coupon_discount_price;
     }
     public function getPrice()
     {
@@ -35,15 +38,15 @@ class MoneyOffCouponPrice extends CouponPrice
      */
     public function setOrderGoodsDiscountPrice()
     {
-        //echo 1;exit;
+       // var_dump(debug_backtrace(0,9));
+
         //dd($this->getOrderGoodsInScope());
         foreach ($this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup() as $orderGoods) {
             /**
              * @var $orderGoods PreGeneratedOrderGoodsModel
              */
-
             //(优惠券金额/折扣优惠券后价格)*折扣优惠券后价格
-            $orderGoods->coupon_money_off_price += number_format(($this->getPrice() / $this->getOrderGoodsPrice()) * ($orderGoods->getVipPrice()-$orderGoods->coupon_discount_price), 2);
+            $orderGoods->coupon_money_off_price += number_format(($this->getPrice() / $this->getOrderGoodsGroupPrice()) * $this->getOrderGoodsPrice($orderGoods), 2);
 
         }
     }

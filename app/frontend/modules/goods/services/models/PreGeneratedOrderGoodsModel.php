@@ -138,16 +138,5 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
     public function getVipPrice(){
         return $this->Goods->vip_price * $this->getTotal();
     }
-    /**
-     * @param $name
-     * @return null
-     */
-    //todo 在确认没有其他类调用后,删除这个方法
-    public function __get($name)
-    {
-        if (isset($this->$name)) {
-            return $this->$name;
-        }
-        return null;
-    }
+
 }
