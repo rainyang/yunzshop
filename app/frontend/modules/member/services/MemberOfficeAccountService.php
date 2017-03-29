@@ -35,7 +35,12 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = \YunShop::app()->siteroot . $_SERVER['REQUEST_URI'];
 
-        $authurl = $this->_getAuthUrl($appId, $callback);
+        if (!Session::get('member_id')) {
+            $authurl = $this->_getAuthUrl($appId, $callback);
+        } else {
+            $authurl = $this->_getAuthBaseUrl($appId, $callback);
+        }
+
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
@@ -198,6 +203,11 @@ class MemberOfficeAccountService extends MemberService
     private function _getAuthUrl($appId, $url)
     {
        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+    }
+
+    private function _getAuthBaseUrl($appId, $url)
+    {
+        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
     }
 
     /**
