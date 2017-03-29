@@ -40,6 +40,7 @@ class MemberOfficeAccountService extends MemberService
 
         if (!empty($code)) {
             $redirect_url = $this->_getClientRequestUrl();
+            echo $redirect_url;exit;
             Session::clear('client_url');
 
             $resp     = @ihttp_get($tokenurl);
@@ -230,11 +231,11 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _setClientRequestUrl()
     {
-        if (!Session::get('client_url')  && !empty($_SERVER['HTTP_REFERER'])) {echo 2;
+        if (!Session::get('client_url')  && !empty($_SERVER['HTTP_REFERER'])) {
             Session::set('client_url', $_SERVER['HTTP_REFERER']);
-        } else {echo 3;
+        } else {
             Session::set('client_url', '');
-        }exit;
+        }
     }
 
     /**
