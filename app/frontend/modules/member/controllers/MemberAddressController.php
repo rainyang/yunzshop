@@ -157,7 +157,7 @@ class MemberAddressController extends BaseController
                 MemberAddress::cancelDefaultAddress($addressModel->member_id);
             }
             if ($addressModel->save()) {
-                return $this->successJson();
+                return $this->successJson('添加收货地址成功');
             } else {
                 return $this->errorJson("写入数据出错，请重试！");
             }
