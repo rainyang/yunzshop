@@ -56,7 +56,7 @@ class Member extends BackendModel
      */
     public function hasManyMemberCoupon()
     {
-        return $this->hasOne(MemberCoupon::class, 'member_id', 'uid');
+        return $this->hasOne(MemberCoupon::class, 'uid', 'uid');
     }
     /**
      * 获取用户信息
