@@ -1,6 +1,23 @@
 @extends('layouts.base')
 
 @section('content')
+
+    <script type="text/javascript">
+        function formcheck() {
+            var thumb = /\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/;
+
+
+            if ($(':input[name="category[cat_adv_img]"]').val() != '') {
+                if (!thumb.test($(':input[name="category[cat_adv_img]"]').val())) {
+                    Tip.focus(':input[name="category[cat_adv_img]"]', '图片类型必须是.gif,jpeg,jpg,png中的一种.');
+                    return false;
+                }
+            }
+
+            return true;
+
+        }
+    </script>
 <div class="w1200 m0a">
 <div class="rightlist">
 <!-- 新增加右侧顶部三级菜单 -->
@@ -71,7 +88,7 @@
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick="return formcheck();" />
                      </div>
             </div>
                    
