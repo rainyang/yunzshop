@@ -28,7 +28,7 @@ class CategoryController extends BaseController
         $set = Setting::get('shop.category');
         $pageSize = 10;
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
-        $list = Category::getCategorys($parent_id)->paginate($pageSize)->toArray();
+        $list = Category::getCategorys($parent_id)->where('enabled', 1)->paginate($pageSize)->toArray();
         $list['set'] = $set;
         if($list['data']){
             return $this->successJson('获取分类数据成功!', $list);
