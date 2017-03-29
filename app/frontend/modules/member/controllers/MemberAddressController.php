@@ -132,9 +132,21 @@ class MemberAddressController extends BaseController
         if (!$addressModel) {
             return $this->errorJson("未找到数据或已删除");
         }
-        $requestAddress = \YunShop::request()->address;
-        if ($requestAddress) {
-            $addressModel->setRawAttributes($requestAddress);
+        //$requestAddress = \YunShop::request()->address;
+        if (\YunShop::request()->address_id) {
+            $requestAddress = array(
+                //'uid' => $requestAddress->uid,
+                //'uniacid' => \YunShop::app()->uniacid,
+                'username'      => \YunShop::request()->username,
+                'mobile'        => \YunShop::request()->mobile,
+                'zipcode'       => '',
+                'isdefault'     => \YunShop::request()->isdefault,
+                'province'      => \YunShop::request()->province,
+                'city'          => \YunShop::request()->city,
+                'district'      => \YunShop::request()->district,
+                'address'       => \YunShop::request()->address,
+            );
+            $addressModel->fill($requestAddress);
 
             $validator = $addressModel->validator($addressModel->getAttributes());
             if ($validator->fails()) {
@@ -145,7 +157,7 @@ class MemberAddressController extends BaseController
                 MemberAddress::cancelDefaultAddress($addressModel->member_id);
             }
             if ($addressModel->save()) {
-                return $this->successJson();
+                return $this->successJson('添加收货地址成功');
             } else {
                 return $this->errorJson("写入数据出错，请重试！");
             }

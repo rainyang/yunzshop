@@ -130,8 +130,6 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'order_id' => $this->Order->id,
             'uniacid' => $this->Order->getShopModel()->uniacid,
         );
-        dump('订单商品插入数据为');
-        dump($data);
         //return;
         return OrderGoods::create($data);
     }
