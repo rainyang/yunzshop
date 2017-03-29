@@ -10,9 +10,29 @@ namespace app\backend\modules\balance\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\models\finance\Balance;
 
 class BalanceController extends BaseController
 {
+    public function test()
+    {
+        $datas = array();
+        for ($i = 1; $i < 100000; $i++) {
+            $data = array(
+                'uniacid' => rand(1, 100),
+                'member_id' => rand(1, 100000),
+                'old_money' => rand(1, 100000),
+                'change_money' => rand(1, 100000),
+                'new_money' => rand(1, 100000),
+                'type' => rand(1,2),
+                'service_type' =>11
+            );
+
+            $datas[] = $data;
+        }
+        $test = Balance::addData($datas);
+        dd($test);
+    }
     /*
      * 余额基础设置
      *

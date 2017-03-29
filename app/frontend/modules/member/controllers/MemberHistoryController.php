@@ -21,7 +21,7 @@ class MemberHistoryController extends BaseController
         $memberId = 96;
 
         $historyList = MemberHistory::getMemberHistoryList($memberId);
-        return $this->successResult('', $historyList);
+        return $this->successJson('获取列表成功', $historyList);
     }
 
     public function store()
@@ -36,10 +36,10 @@ class MemberHistoryController extends BaseController
         } else {
             $result = MemberHistory::saveMemberHistory($memberId, $goodsId);
             if ($result) {
-                return $this->successResult();
+                return $this->successJson();
             }
         }
-        return $this->errorResult();
+        return $this->errorJson('');
     }
     public function destory()
     {
