@@ -182,6 +182,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
+        file_put_contents(storage_path('logs/redirect_url.log'), $redirect_url);
         redirect($redirect_url . '?login')->send();
     }
 
@@ -230,6 +231,9 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _setClientRequestUrl()
     {
+        file_put_contents(storage_path('logs/ssss.log'), print_r($_SERVER, 1));
+        file_put_contents(storage_path('logs/sssslll.log'), print_r($_SESSION, 1));
+
         if (!Session::get('client_url')  && !empty($_SERVER['HTTP_REFERER'])) {
             file_put_contents(storage_path('logs/session11111.log'), print_r($_SESSION, 1));
             Session::set('client_url', $_SERVER['HTTP_REFERER']);
