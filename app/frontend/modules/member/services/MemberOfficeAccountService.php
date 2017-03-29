@@ -25,7 +25,7 @@ class MemberOfficeAccountService extends MemberService
     {}
 
     public function login()
-    {
+    {echo 'end';exit;
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
@@ -177,7 +177,6 @@ class MemberOfficeAccountService extends MemberService
         } else {
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
             $this->_setClientRequestUrl();
-die(2);
 //            if (!Session::get('openid')) {
 //                $redirect_url = $this->_getClientRequestUrl();
 //                redirect($redirect_url . '?login')->send();exit;
