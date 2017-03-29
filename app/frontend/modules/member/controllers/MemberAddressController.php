@@ -29,7 +29,6 @@ class MemberAddressController extends BaseController
             $address = Address::getAllAddress();
             $addressList = $this->addressServiceForIndex($addressList, $address);
         }
-        dd($addressList);
         //var_dump(!empty($addressList));
         $msg = "获取列表成功";
         return $this->successJson($msg, $addressList);
