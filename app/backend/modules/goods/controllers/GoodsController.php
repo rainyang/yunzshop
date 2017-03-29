@@ -367,8 +367,9 @@ class GoodsController extends BaseController
         $id = \YunShop::request()->id;
         $field = \YunShop::request()->type;
         $data = (\YunShop::request()->data == 1 ? '0' : '1');
-        $goods = Goods::find($id);
+        $goods = \app\common\models\Goods::find($id);
         $goods->$field = $data;
+        //dd($goods);
         $goods->save();
         echo json_encode(["data" => $data, "result" => 1]);
     }
