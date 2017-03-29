@@ -174,7 +174,7 @@ class MemberOfficeAccountService extends MemberService
         } else {
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
             $this->_setClientRequestUrl();
-echo 2;exit;
+
             redirect($authurl)->send();
             exit;
         }
@@ -226,8 +226,7 @@ echo 2;exit;
      * @return string
      */
     private function _setClientRequestUrl()
-    {echo 1 . '<BR>';
-    echo $_SERVER['HTTP_REFERER'];
+    {
         if (empty($_SESSION['client_url']) && !empty($_SERVER['HTTP_REFERER'])) {
             $_SESSION['client_Url'] = $_SERVER['HTTP_REFERER'];
         } else {
