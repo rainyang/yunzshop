@@ -44,12 +44,7 @@ class MemberService
      */
     public static function isLogged()
     {
-        if (!Session::get('member_id')) {
-            echo 'member_id_ok: ' . Session::get('member_id');
-        } else {
-            echo 'member_id_ko: ' . Session::get('member_id');
-        }exit;
-        return !Session::get('member_id') && Session::get('member_id') > 0;
+        return Session::get('member_id') && Session::get('member_id') > 0;
     }
 
     /**
