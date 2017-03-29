@@ -10,6 +10,8 @@ namespace app\frontend\modules\order\services\models;
 
 
 use app\frontend\modules\discount\services\models\OrderDiscount;
+use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
+
 abstract class OrderModel
 {
     /**
@@ -32,6 +34,7 @@ abstract class OrderModel
         $this->setDispatch();
         $this->setDiscount();
     }
+
     abstract protected function setDispatch();
 
     abstract protected function setDiscount();
@@ -56,21 +59,26 @@ abstract class OrderModel
      * 计算订单优惠金额
      * @return number
      */
-    protected function getDiscountPrice(){
+    protected function getDiscountPrice()
+    {
         return $this->_OrderDiscount->getDiscountPrice();
     }
+
     /**
      * 获取订单抵扣金额
      * @return number
      */
-    protected function getDeductionPrice(){
+    protected function getDeductionPrice()
+    {
         return $this->_OrderDiscount->getDeductionPrice();
     }
+
     /**
      * 计算订单运费
      * @return int|number
      */
-    protected function getDispatchPrice(){
+    protected function getDispatchPrice()
+    {
         return $this->_OrderDispatch->getDispatchPrice();
     }
 
@@ -80,33 +88,39 @@ abstract class OrderModel
      */
     protected function getPrice()
     {
-        //订单最终价格 = 商品最终价格 + 订单优惠 + 订单运费
-        return max($this->getGoodsPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(),0);
+        //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
+        return max($this->getVipPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(), 0);
     }
 
     /**
      * 统计订单商品小计金额
      * @return int
      */
-    protected function getGoodsPrice()
+    protected function getVipPrice()
     {
         $result = 0;
         foreach ($this->_OrderGoodsModels as $OrderGoodsModel) {
-            $result += $OrderGoodsModel->getGoodsPrice();
+            /**
+             * @var $OrderGoodsModel PreGeneratedOrderGoodsModel
+             */
+            $result += $OrderGoodsModel->getVipPrice();
         }
         return $result;
     }
+
     /**
      * 统计订单商品成交金额
      * @return int
      */
-    protected function getOrderGoodsPrice(){
+    protected function getOrderGoodsPrice()
+    {
         $result = 0;
         foreach ($this->_OrderGoodsModels as $OrderGoodsModel) {
             $result += $OrderGoodsModel->getPrice();
         }
         return $result;
     }
+
     /**
      * 属性获取器
      * todo 准备删除这个方法

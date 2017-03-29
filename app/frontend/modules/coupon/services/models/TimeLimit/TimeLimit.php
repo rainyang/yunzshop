@@ -2,18 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: shenyang
- * Date: 2017/3/25
- * Time: 下午5:14
+ * Date: 2017/3/29
+ * Time: 下午5:23
  */
 
-namespace app\frontend\modules\coupon\services\models\Price;
+namespace app\frontend\modules\coupon\services\models\TimeLimit;
 
 
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModelGroup;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
-abstract class CouponPrice
+abstract class TimeLimit
 {
     /**
      * 优惠券数据库model
@@ -41,10 +41,4 @@ abstract class CouponPrice
 
     }
     abstract public function valid();
-    /**
-     * 订单获取优惠券 金额
-     * @return mixed
-     */
-    abstract public function getPrice();
-    abstract public function setOrderGoodsDiscountPrice();
 }

@@ -35,13 +35,18 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = \YunShop::app()->siteroot . $_SERVER['REQUEST_URI'];
 
-        $authurl = $this->_getAuthUrl($appId, $callback);
+        if (!Session::get('member_id')) {
+            $authurl = $this->_getAuthUrl($appId, $callback);
+        } else {
+            $authurl = $this->_getAuthBaseUrl($appId, $callback);
+        }
+
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
             $redirect_url = $this->_getClientRequestUrl();
             Session::clear('client_url');
-
+            file_put_contents(storage_path('logs/session333.log'), print_r($_SESSION, 1));
             $resp     = @ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
 
@@ -166,17 +171,22 @@ class MemberOfficeAccountService extends MemberService
                 }
                 Session::set('member_id', $member_id);
             } else {
-                redirect($authurl)->send();
+                //redirect($authurl)->send();
                 exit;
             }
         } else {
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
             $this->_setClientRequestUrl();
-
+exit;
+//            if (!Session::get('openid')) {
+//                $redirect_url = $this->_getClientRequestUrl();
+//                redirect($redirect_url . '?login')->send();exit;
+//            }
             redirect($authurl)->send();
             exit;
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
+        file_put_contents(storage_path('logs/redirect_url.log'), $redirect_url);
         redirect($redirect_url . '?login')->send();
     }
 
@@ -192,6 +202,11 @@ class MemberOfficeAccountService extends MemberService
     private function _getAuthUrl($appId, $url)
     {
        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+    }
+
+    private function _getAuthBaseUrl($appId, $url)
+    {
+        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
     }
 
     /**
@@ -225,9 +240,13 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _setClientRequestUrl()
     {
+        file_put_contents(storage_path('logs/ssss.log'), print_r($_SERVER, 1));
+        file_put_contents(storage_path('logs/sssslll.log'), print_r($_SESSION, 1));
         if (!Session::get('client_url')  && !empty($_SERVER['HTTP_REFERER'])) {
+            file_put_contents(storage_path('logs/session11111.log'), print_r($_SESSION, 1));
             Session::set('client_url', $_SERVER['HTTP_REFERER']);
         } else {
+            file_put_contents(storage_path('logs/session22222.log'), print_r($_SESSION, 1));
             Session::set('client_url', '');
         }
     }

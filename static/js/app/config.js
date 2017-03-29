@@ -1,5 +1,5 @@
 require.config({
-    urlArgs: 'v=201510211500', 
+    urlArgs: 'v=201510211501',
     baseUrl: '../addons/sz_yi/static/js/app',
     paths: {
         'jquery': '../dist/jquery-1.11.1.min',
@@ -9,7 +9,7 @@ require.config({
         'jquery.touchslider':'../dist/jquery.touchslider.min',
         'swipe':'../dist/swipe',
         'Swiper':'../dist/swiper',
-        'sweetalert':'../dist/sweetalert/sweetalert.min',
+        'sweetalert':'../dist/sweetalert/sweetalert.min'
         /*'swiper':'../dist/swiper'*/
         
     },
@@ -30,6 +30,6 @@ require.config({
             exports: "$",
             deps: ['css!../dist/sweetalert/sweetalert.css']
         }
-        
+
     }
 });

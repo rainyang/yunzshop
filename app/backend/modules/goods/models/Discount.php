@@ -16,7 +16,7 @@ use app\common\traits\MessageTrait;
 class Discount extends \app\common\models\goods\Discount
 {
     use MessageTrait;
-    public $timestamps = false;
+    //public $timestamps = false;
     public $attributes = [
         'level_discount_type' => 1,
         'discount_method' => 1

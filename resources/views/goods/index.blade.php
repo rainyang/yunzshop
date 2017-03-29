@@ -64,7 +64,7 @@
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
 							<div class="col-sm-8 col-xs-12">
-								<select name="search[brand_id]">
+								<select name="search[brand_id]" id="brand">
 									<option value="0">请选择品牌</option>
 									@if(!empty($brands))
 									@foreach($brands as $brand)
@@ -192,6 +192,7 @@
 
 								<td >{{$item['real_sales']}}</td>
 								<td >
+
 									<label data='{{$item['status']}}' class='label  label-default @if($item['status']==1) label-info @endif' onclick="setProperty(this, {{$item['id']}},'status')">
 										@if($item['status']==1)
 											{{$lang['putaway']}}
@@ -214,7 +215,7 @@
 										<i class="fa fa-qrcode"></i>
 									</a>
 
-									<a href="{{yzWebUrl('shop.goods.copy', array('id' => $item['id']))}}"  title="{{$lang['copyshop']}}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
+									<a href="{{yzWebUrl('goods.goods.copy', array('id' => $item['id']))}}"  title="{{$lang['copyshop']}}" class="btn btn-default btn-smjs-clip" style="font-size: 13px;"><i class="fa fa-article"></i></a>
 
 									<a href="{{yzWebUrl($edit_url, array('id' => $item['id']))}}"class="btn btn-sm btn-default" title="编辑"><i class="fa fa-edit"></i></a>
 
@@ -269,6 +270,9 @@
 </div>
 
 <script type="text/javascript">
+	$('.js-clip').each(function(){
+		util.clip(this, $(this).attr('data-url'));
+	});
 	//鼠标划过显示商品链接二维码
     $('.umphp').hover(function() {
         var url = $(this).attr('data-url');

@@ -28,7 +28,8 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      * @var Goods
      */
     private $Goods;
-
+    public $coupon_money_off_price;
+    public $coupon_discount_price;
 
     /**
      * PreGeneratedOrderGoodsModel constructor.
@@ -78,7 +79,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'thumb' => $this->Goods->thumb,
             'goods_price' => $this->Goods->price,
             'vip_price' => $this->Goods->vip_price,
+            'coupon_price' => $this->getCouponPrice(),
             'coupon_discount_price' => $this->coupon_discount_price,
+            'coupon_money_off_price' => $this->coupon_money_off_price,
             /*'discount_details' => $this->getDiscountDetails(),
             'dispatch_details' => $this->getDispatchDetails(),*/
 
@@ -86,6 +89,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         return $data;
     }
 
+    public function getCouponPrice(){
+        return $this->coupon_money_off_price+$this->coupon_discount_price;
+    }
     /**
      * 获取商品数量
      * @return int
@@ -124,22 +130,11 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'order_id' => $this->Order->id,
             'uniacid' => $this->Order->getShopModel()->uniacid,
         );
-        dump('订单商品插入数据为');
-        dump($data);
         //return;
         return OrderGoods::create($data);
     }
-
-    /**
-     * @param $name
-     * @return null
-     */
-    //todo 在确认没有其他类调用后,删除这个方法
-    public function __get($name)
-    {
-        if (isset($this->$name)) {
-            return $this->$name;
-        }
-        return null;
+    public function getVipPrice(){
+        return $this->Goods->vip_price * $this->getTotal();
     }
+
 }

@@ -137,6 +137,7 @@ class GoodsController extends BaseController
         foreach($goodsModel->getRelations() as $relation => $item){
             if ($item) {
                 unset($item->id);
+                //dd($item);
                 $newGoods->{$relation}()->create($item->toArray());
             }
         }
@@ -275,6 +276,7 @@ class GoodsController extends BaseController
         $goodsModel->thumb_url = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
         //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
 
+
         //$catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
             //将数据赋值到model
@@ -287,6 +289,9 @@ class GoodsController extends BaseController
                     }, $requestGoods['thumb_url'])
                 );
             }
+
+            GoodsCategory::where("goods_id", $goodsModel->id)->first()->delete();
+            GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
 
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
@@ -375,8 +380,9 @@ class GoodsController extends BaseController
         $id = \YunShop::request()->id;
         $field = \YunShop::request()->type;
         $data = (\YunShop::request()->data == 1 ? '0' : '1');
-        $goods = Goods::find($id);
+        $goods = \app\common\models\Goods::find($id);
         $goods->$field = $data;
+        //dd($goods);
         $goods->save();
         echo json_encode(["data" => $data, "result" => 1]);
     }
