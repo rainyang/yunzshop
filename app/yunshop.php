@@ -61,6 +61,7 @@ class YunShop
             abort(403, '无权限');
         }
         //执行方法
+        $controller->preAction();
         $content = $controller->$action(
             Illuminate\Http\Request::capture()
         );

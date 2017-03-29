@@ -29,6 +29,14 @@ class BaseController extends Controller
 
     }
 
+    /**
+     * 前置action
+     */
+    public function preAction()
+    {
+
+    }
+
     protected function formatValidationErrors(Validator $validator)
     {
         return $validator->errors()->all();
