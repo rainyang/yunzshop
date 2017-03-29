@@ -43,7 +43,6 @@ class Category extends BaseModel
         return self::select('id','name','thumb','level')
             ->uniacid()
             ->where('parent_id', $parentId)
-            ->where('enabled', 1)
             ->orderBy('id', 'asc');
     }
 
