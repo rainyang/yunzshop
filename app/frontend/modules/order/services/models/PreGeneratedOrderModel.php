@@ -116,7 +116,7 @@ class PreGeneratedOrderModel extends OrderModel
     {
         $data = array(
             'price' => $this->getPrice(),
-            'goods_price' => $this->getGoodsPrice(),
+            'goods_price' => $this->getVipPrice(),
             'dispatch_price' => $this->getDispatchPrice(),
             'discount_price' => $this->getDiscountPrice(),
             'deduction_price' => $this->getDeductionPrice(),
@@ -161,7 +161,7 @@ class PreGeneratedOrderModel extends OrderModel
         $data = array(
             'price' => $this->getPrice(),
             'order_goods_price' => $this->getOrderGoodsPrice(),
-            'goods_price' => $this->getGoodsPrice(),
+            'goods_price' => $this->getVipPrice(),
             'discount_price' => $this->getDiscountPrice(),
             'deduction_price' => $this->getDeductionPrice(),
             'dispatch_price' => $this->getDispatchPrice(),

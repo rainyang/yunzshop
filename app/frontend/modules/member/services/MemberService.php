@@ -9,7 +9,7 @@
 namespace app\frontend\modules\member\services;
 
 use app\common\exceptions\AppException;
-use app\common\models\Member;
+use app\frontend\models\Member;
 use app\frontend\modules\member\models\smsSendLimitModel;
 use Illuminate\Support\Facades\Cookie;
 

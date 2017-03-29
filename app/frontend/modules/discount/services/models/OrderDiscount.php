@@ -10,6 +10,7 @@ namespace app\frontend\modules\discount\services\models;
 
 use app\common\events\discount\OnCouponPriceCalculatedEvent;
 use app\common\events\discount\OnDeductionPriceCalculatedEvent;
+use app\common\models\Coupon;
 use app\frontend\modules\coupon\services\TestService;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
@@ -57,7 +58,7 @@ class OrderDiscount extends Discount
      */
     public function getDeductionPrice()
     {
-        if(isset($this->_deduction_price)){
+        if (isset($this->_deduction_price)) {
             return $this->_deduction_price;
         }
 
@@ -65,11 +66,14 @@ class OrderDiscount extends Discount
 
         return $this->_deduction_price;
     }
-    private function _getDeductionPrice(){
+
+    private function _getDeductionPrice()
+    {
         $Event = new OnDeductionPriceCalculatedEvent($this->_Order);
         $data = $Event->getData();
         return max(array_sum(array_column($data, 'price')), 0);
     }
+
     /**
      * 获取订单优惠金额
      * @return int
@@ -79,9 +83,10 @@ class OrderDiscount extends Discount
     {
         return $this->getCouponPrice();
     }
+
     public function getCouponPrice()
     {
-        if(isset($this->_coupon_price)){
+        if (isset($this->_coupon_price)) {
             return $this->_coupon_price;
         }
 
@@ -89,10 +94,14 @@ class OrderDiscount extends Discount
 
         return $this->_coupon_price;
     }
+
     private function _getCouponPrice()
     {
-        //todo 对商品价格进行处理
-        $obj = new TestService($this->_Order);
-        return $obj->getOrderDiscountPrice();
+        $discountPrice = (new TestService($this->_Order, Coupon::COUPON_DISCOUNT))->getOrderDiscountPrice();
+        //var_dump($discountPrice);
+        $moneyOffPrice = (new TestService($this->_Order, Coupon::COUPON_MONEY_OFF))->getOrderDiscountPrice();
+        //var_dump($moneyOffPrice);
+//exit;
+        return $discountPrice + $moneyOffPrice;
     }
 }

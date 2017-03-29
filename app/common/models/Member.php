@@ -41,7 +41,7 @@ class Member extends BackendModel
     }
 
     /**
-     * 会员－订单1:1关系
+     * 会员－订单1:1关系 todo 会员和订单不是一对多关系吗?
      *
      * @return mixed
      */
@@ -49,7 +49,15 @@ class Member extends BackendModel
     {
         return $this->hasOne('app\backend\modules\order\models\Order', 'uid', 'uid');
     }
-
+    /**
+     * 会员－会员优惠券1:多关系
+     *
+     * @return mixed
+     */
+    public function hasManyMemberCoupon()
+    {
+        return $this->hasOne(MemberCoupon::class, 'member_id', 'uid');
+    }
     /**
      * 获取用户信息
      *

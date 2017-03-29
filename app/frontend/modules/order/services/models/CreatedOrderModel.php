@@ -80,7 +80,7 @@ class CreatedOrderModel extends OrderModel
             'discount_price' => $this->getDiscountPrice(),
             'dispatch_price' => $this->getDispatchPrice(),
             'price' => $this->getPrice(),
-            'goods_price' => $this->getGoodsPrice(),
+            'goods_price' => $this->getVipPrice(),
         ];
         dump('订单改价信息:');
         dump($data);

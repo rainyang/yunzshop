@@ -40,8 +40,9 @@ abstract class OrderGoodsModel
      */
     public function getPrice()
     {
-        //成交价格=商品销售价+优惠价格
-        $result = max($this->getGoodsPrice() + $this->getDiscountPrice(),0);
+        //成交价格=商品销售价-优惠价格
+
+        $result = max($this->getVipPrice() - $this->getCouponPrice(),0);
         return $result;
     }
 
@@ -50,14 +51,14 @@ abstract class OrderGoodsModel
      * @return int
      */
     abstract function getGoodsPrice();
-
+    abstract function getCouponPrice();
     /**
      * 计算商品优惠价格
      * @return number
      */
     protected function getDiscountPrice()
     {
-        return $this->coupon_discount_price;
+        return $this->getCouponPrice();
 
     }
     abstract public function getGoodsId();

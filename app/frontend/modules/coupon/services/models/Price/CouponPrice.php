@@ -40,10 +40,11 @@ abstract class CouponPrice
         $this->orderModel = $coupon->getPreGeneratedOrderModel();
 
     }
+    abstract public function valid();
     /**
      * 订单获取优惠券 金额
      * @return mixed
      */
     abstract public function getPrice();
-
+    abstract public function setOrderGoodsDiscountPrice();
 }

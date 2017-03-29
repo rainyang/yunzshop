@@ -16,7 +16,6 @@ use app\common\models\Coupon as DbCoupon;
 use app\frontend\modules\coupon\services\models\Price\DiscountCouponPrice;
 use app\frontend\modules\coupon\services\models\Price\MoneyOffCouponPrice;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
-use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class Coupon
@@ -60,11 +59,11 @@ class Coupon
             case DbCoupon::COUPON_MONEY_OFF:
                 return new MoneyOffCouponPrice($this);
                 break;
-            case DbCoupon::COUPON_CATEGORY_USE:
+            case DbCoupon::COUPON_DISCOUNT:
                 return new DiscountCouponPrice($this);
                 break;
             default:
-                //dd($this->memberCoupon->belongsToCoupon);
+                dd($this->memberCoupon);
                 throw new AppException('优惠券优惠类型不存在');
                 break;
         }
@@ -83,6 +82,8 @@ class Coupon
                 return new CategoryScope($this);
                 break;
             default:
+                dd($this->memberCoupon->belongsToCoupon);
+
                 throw new AppException('优惠券范围不存在');
                 break;
         }
@@ -95,25 +96,18 @@ class Coupon
     {
         return $this->price->getPrice();
     }
-    public function activate(){
+
+    public function activate()
+    {
         return $this->setOrderGoodsDiscountPrice();
     }
+
     /**
      * 分配优惠金额 todo 需理清与订单商品类之间的调用关系
      */
     private function setOrderGoodsDiscountPrice()
     {
-        //echo 1;exit;
-        //dd($this->getOrderGoodsInScope());
-        foreach ($this->getOrderGoodsInScope()->getOrderGoodsGroup() as $OrderGoods) {
-            /**
-             * @var $OrderGoods PreGeneratedOrderGoodsModel
-             */
-            //(优惠券金额/订单商品总金额)*订单商品价格
-            //dd(number_format(-($this->getDiscountPrice() / $this->getOrderGoodsInScope()->getPrice()) * $OrderGoods->getPrice(), 2));exit;
-            $OrderGoods->coupon_discount_price = number_format(-($this->getDiscountPrice() / $this->getOrderGoodsInScope()->getPrice()) * $OrderGoods->getPrice(), 2);
-
-        }
+        $this->price->setOrderGoodsDiscountPrice();
     }
 
     /**
@@ -130,6 +124,6 @@ class Coupon
      */
     public function valid()
     {
-        return $this->useScope->valid();
+        return $this->useScope->valid() && $this->price->valid();
     }
 }
