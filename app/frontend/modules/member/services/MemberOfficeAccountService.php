@@ -24,7 +24,7 @@ class MemberOfficeAccountService extends MemberService
     {}
 
     public function login()
-    {echo 'index';exit;
+    {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
