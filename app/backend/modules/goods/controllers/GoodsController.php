@@ -274,8 +274,8 @@ class GoodsController extends BaseController
         //商品其它图片反序列化
         $goodsModel->thumb_url = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
         //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
-        $category = \YunShop::request()->category();
-        
+
+
         //$catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
             //将数据赋值到model
@@ -288,6 +288,10 @@ class GoodsController extends BaseController
                     }, $requestGoods['thumb_url'])
                 );
             }
+
+            GoodsCategory::where("goods_id", $goodsModel->id)->first()->delete();
+
+            GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
 
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
