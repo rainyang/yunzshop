@@ -15,7 +15,7 @@ use Illuminate\Validation\lValidator;
 class Share extends BaseModel
 {
     public $table = 'yz_goods_share';
-    public $timestamps = true;
+    //public $timestamps = true;
 
     public $attributes = [
         'need_follow' =>  1,
