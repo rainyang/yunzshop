@@ -2,7 +2,9 @@
 
 namespace app;
 
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 class Kernel extends HttpKernel
 {
@@ -14,7 +16,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-
+        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
     ];
 
     /**
@@ -23,6 +25,16 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middlewareGroups = [
+        'web' => [
+            //EncryptCookies::class,
+            //\Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            //\Illuminate\Session\Middleware\StartSession::class,
+            //\Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            //VerifyCsrfToken::class,
+        ],
+        'api' => [
+            'throttle:60,1',
+        ],
     ];
 
     /**

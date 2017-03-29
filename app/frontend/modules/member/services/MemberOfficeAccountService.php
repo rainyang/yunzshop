@@ -38,8 +38,8 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            //$redirect_url = session('client_url', $callback);
             $redirect_url = $this->_getClientRequestUrl();
+            unset($_SESSION['client_url']);
 
             $resp     = @ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
@@ -55,6 +55,8 @@ class MemberOfficeAccountService extends MemberService
             $userinfo    = @json_decode($resp_info['content'], true);
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+                \YunShop::app()->openid = $userinfo['openid'];
+
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
 
                 if (!empty($UnionidInfo)) {
@@ -171,17 +173,13 @@ class MemberOfficeAccountService extends MemberService
             }
         } else {
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
-
-            $client_url = $this->_setClientRequestUrl();
-
-            //session()->put('client_url',$client_url);
-            $_SESSION['client_Url'] = $client_url;
+            $this->_setClientRequestUrl();
 
             redirect($authurl)->send();
             exit;
         }
-
-        redirect($redirect_url)->send();
+        file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
+        redirect($redirect_url . '?login')->send();
     }
 
     /**
@@ -229,13 +227,11 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _setClientRequestUrl()
     {
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-            $client_url   = $_SERVER['HTTP_REFERER'];
+        if (empty($_SESSION['client_url']) && !empty($_SERVER['HTTP_REFERER'])) {
+            $_SESSION['client_Url'] = $_SERVER['HTTP_REFERER'];
         } else {
-            $client_url   = $_SERVER['REQUEST_SCHEME'] . '//' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+            $_SESSION['client_Url'] = '';
         }
-
-        return $client_url;
     }
 
     /**

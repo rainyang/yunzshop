@@ -6,6 +6,9 @@ namespace app\backend\modules\goods\models;
  * Date: 2017/2/22
  * Time: 下午2:24
  */
+
+use Illuminate\Validation\Rule;
+
 class Category extends \app\common\models\Category
 {
 
@@ -78,7 +81,9 @@ class Category extends \app\common\models\Category
     public  function rules()
     {
         return [
-            'name' => 'required',
+            'name' => ['required', Rule::unique($this->table)
+                ->ignore($this->id)
+                ->where('uniacid', \YunShop::app()->uniacid)],
         ];
     }
 }
