@@ -100,7 +100,9 @@ class IncomeController extends BaseController
 
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
         $incomeModel = $incomeModel->where('status', '0');
-
+        if (!$incomeModel->get()) {
+            return $this->errorJson('未检测到数据!');
+        }
         foreach ($config as $key => $item) {
 
             $set[$key] = \Setting::get('income.withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
