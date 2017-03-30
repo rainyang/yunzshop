@@ -97,7 +97,7 @@ class IncomeController extends BaseController
     {
 
         $config = \Config::get('income');
-
+echo "<pre>"; print_r(\YunShop::app()->getMemberId());exit;
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
         $incomeModel = $incomeModel->where('status', '0');
         if ($incomeModel->get()) {
