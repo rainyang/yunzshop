@@ -11,7 +11,7 @@ namespace app\frontend\modules\finance\controllers;
 
 use app\common\components\BaseController;
 use app\common\models\Income;
-use app\frontend\modules\finance\models\IncomeWithdraw;
+use app\frontend\modules\finance\models\Withdraw;
 use Yunshop\Commission\models\CommissionOrder;
 
 class IncomeController extends BaseController
@@ -205,7 +205,7 @@ class IncomeController extends BaseController
      */
     public function setIncome($type, $typeId)
     {
-        $request = Income::updatedIncomeWithdraw($type, $typeId, '1');
+        $request = Income::updatedWithdraw($type, $typeId, '1');
     }
 
     /**
@@ -240,7 +240,7 @@ class IncomeController extends BaseController
             ];
             static::setIncomeAndOrder($item['type'], $item['type_id']);
         }
-        return IncomeWithdraw::insert($data);
+        return Withdraw::insert($data);
     }
 
 }

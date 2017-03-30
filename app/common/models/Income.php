@@ -71,7 +71,7 @@ class Income extends BackendModel
     }
 
 
-    public static function updatedIncomeWithdraw($type, $typeId, $status)
+    public static function updatedWithdraw($type, $typeId, $status)
     {
 //        var_dump($type);
 //        echo "--";
