@@ -27,7 +27,7 @@ class MemberOfficeAccountService extends MemberService
     public function login()
     {
         file_put_contents(storage_path('logs/WWW.log'), print_r($_COOKIE, 1), FILE_APPEND);
-        file_put_contents(storage_path('logs/WWW.log'), print_r($_SESSION, 1), FILE_APPEND);exit;
+        file_put_contents(storage_path('logs/WWW.log'), print_r($_SESSION, 1), FILE_APPEND);
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
