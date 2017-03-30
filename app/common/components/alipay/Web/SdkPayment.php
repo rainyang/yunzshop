@@ -88,9 +88,9 @@ class SdkPayment
 		);
         //请求数据日志
         event(new PayLog($parameter, new WebAlipay()));
-
+file_put_contents(storage_path('logs/step1.log'), print_r($parameter));
 		$para = $this->buildRequestPara($parameter);
-
+        file_put_contents(storage_path('logs/step2.log'), print_r($para,1));
 		return $this->__gateway_new . $this->createLinkstringUrlencode($para);
 	}
 
@@ -139,7 +139,7 @@ class SdkPayment
 		}
 
 		$data = $_POST ?  : $_GET;
-
+        file_put_contents(storage_path('logs/step2.log'), print_r($data,1));
 		// 生成签名结果
 		$is_sign = $this->getSignVeryfy($data, $data['sign']);
 
@@ -475,7 +475,7 @@ class SdkPayment
 	{
 		//除去待签名参数数组中的空值和签名参数
 		$para_filter = $this->paraFilter($para_temp);
-
+file_put_contents(storage_path('logs/step3'));
 		//对待签名参数数组排序
 		$para_sort = $this->argSort($para_filter);
 
