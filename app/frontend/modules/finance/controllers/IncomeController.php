@@ -99,14 +99,14 @@ class IncomeController extends BaseController
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
         $incomeModel = $incomeModel->where('status', '0');
         if ($incomeModel->get()) {
-            return $this->errorJson('未检测到可提现数据!');
+            return $this->errorJson('未检测到可提现数据!'.\YunShop::app()->getMemberId());
         }
 
         foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('income.withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
             $incomeModel = $incomeModel->where('type', $key);
             $amount = $incomeModel->sum('amount');
-            
+
             if (isset($set[$key]['roll_out_limit']) && bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1) {
                 $type_id = '';
                 foreach ($incomeModel->get() as $ids) {
