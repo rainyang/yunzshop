@@ -19,7 +19,7 @@ class Session{
      * @param Mixed  $data   session data
      * @param Int    $expire 超时时间(秒)
      */
-    public static function set($name, $data, $expire=1200){
+    public static function set($name, $data, $expire=3600){
         $session_data = array();
         $session_data['data'] = $data;
         $session_data['expire'] = time()+$expire;

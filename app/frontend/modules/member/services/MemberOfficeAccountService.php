@@ -26,6 +26,8 @@ class MemberOfficeAccountService extends MemberService
 
     public function login()
     {
+        file_put_contents(storage_path('logs/WWW.log'), print_r($_COOKIE, 1), FILE_APPEND);
+        file_put_contents(storage_path('logs/WWW.log'), print_r($_SESSION, 1), FILE_APPEND);
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
@@ -171,24 +173,23 @@ class MemberOfficeAccountService extends MemberService
                 }
                 Session::set('member_id', $member_id);
             } else {
-                redirect($authurl)->send();
+                //redirect($authurl)->send();
                 exit;
             }
         } else {
             file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
             $this->_setClientRequestUrl();
-
 //            if (!Session::get('openid')) {
 //                $redirect_url = $this->_getClientRequestUrl();
 //                redirect($redirect_url . '?login')->send();exit;
 //            }
-            header('Location: ' . $authurl);exit;
             redirect($authurl)->send();
             exit;
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
         file_put_contents(storage_path('logs/redirect_url.log'), $redirect_url);
-        redirect($redirect_url . '?login')->send();
+        //redirect($redirect_url . '?login')->send();
+        redirect('http://www.baidu.com')->send();
     }
 
     /**
