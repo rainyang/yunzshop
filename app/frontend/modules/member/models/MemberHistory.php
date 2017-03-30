@@ -20,7 +20,7 @@ class MemberHistory extends \app\common\models\MemberHistory
      */
     protected $guarded = [''];
 
-    public function hasGoods()
+    public function goods()
     {
         return $this->hasOne('app\common\models\Goods','id','goods_id');
     }
@@ -46,7 +46,7 @@ class MemberHistory extends \app\common\models\MemberHistory
     {
         return MemberHistory::uniacid()
             ->where('member_id', $memberId)
-            ->with(['hasGoods' => function($query) {
+            ->with(['goods' => function($query) {
                 return $query->select('id', 'thumb', 'price', 'market_price', 'title');
             }])
             ->get()->toArray();
