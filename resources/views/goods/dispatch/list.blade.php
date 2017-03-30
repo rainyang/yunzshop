@@ -4,7 +4,7 @@
 
 
 <div class="w1200 m0a">
-    
+
 <div class="rightlist">
     	<!-- 新增加右侧顶部三级菜单 -->
 <div class="right-titpos">
@@ -13,7 +13,7 @@
 	</ul>
 </div>
 <!-- 新增加右侧顶部三级菜单结束 -->
-<form action="" method="post">
+<form action="{{ yzWebUrl('goods.dispatch.sort') }}" method="post">
 <div class="main panel panel-default">
     <div class="panel-body table-responsive">
         <table class="table table-hover">
@@ -70,6 +70,7 @@
 </div>
 </form>
 </div>
+</div>
 <script>
     require(['bootstrap'], function ($) {
         $('.btn').hover(function () {
@@ -80,5 +81,5 @@
     });
 </script>
 
-@endsection('content');
+@endsection
 

@@ -44,4 +44,16 @@ class MemberHistoryController extends BaseController
         }
     }
 
+    public function destroy()
+    {
+        $historyModel = MemberHistory::getHistoryById(\YunShop::request()->id);
+        if (!$historyModel) {
+            return $this->errorJson('未找到数据或已删除！');
+        }
+        if ($historyModel->delete()) {
+            return $this->successJson('移除成功');
+        }
+        return $this->errorJson('未获取到历史记录ID');
+    }
+
 }
