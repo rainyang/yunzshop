@@ -85,7 +85,11 @@
 							</div>
 						</div>
 						@show
-						<button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+						<div class="form-group">
+							<label class="col-sm-9"></label>
+
+							<button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+						</div>
 
 					</form>
 				</div>
