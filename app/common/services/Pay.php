@@ -343,7 +343,7 @@ abstract class Pay
      */
     protected function payOrder($out_order_no, $status, $type, $third_type, $price)
     {
-         PayOrder::create([
+         return PayOrder::create([
             'uniacid' => $this->uniacid,
             'member_id' => \YunShop::app()->getMemberId(),
             'int_order_no' => $this->createPayOrderNo(),
