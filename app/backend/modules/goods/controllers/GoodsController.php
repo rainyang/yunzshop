@@ -8,6 +8,7 @@
 
 namespace app\backend\modules\goods\controllers;
 
+use app\api\model\Good;
 use app\backend\modules\goods\models\Brand;
 use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\models\Goods;
@@ -94,7 +95,7 @@ class GoodsController extends BaseController
             ]
         );
         //dd($requestSearch);
-        $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
+        $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         $edit_url = 'goods.goods.edit';
@@ -369,7 +370,7 @@ class GoodsController extends BaseController
         //dd(\YunShop::request());
         $id = \YunShop::request()->id;
         $field = \YunShop::request()->type;
-        $goods = Goods::find($id);
+        $goods = \app\common\models\Goods::find($id);
         $goods->$field = \YunShop::request()->value;
         $goods->save();
         //$this->error($goods);

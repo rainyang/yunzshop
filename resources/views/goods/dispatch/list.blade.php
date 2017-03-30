@@ -14,7 +14,7 @@
 		<li class="active"><a href="#">配送方式</a></li>
 	</ul>
 </div>
-<!-- 新增加右侧顶部三级菜单结束 -->   
+<!-- 新增加右侧顶部三级菜单结束 -->
 <form action="" method="post">
 <div class="main panel panel-default">
     <div class="panel-body table-responsive">

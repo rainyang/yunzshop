@@ -26,6 +26,8 @@ class MemberOfficeAccountService extends MemberService
 
     public function login()
     {
+        file_put_contents(storage_path('logs/WWW.log'), print_r($_COOKIE, 1), FILE_APPEND);
+        file_put_contents(storage_path('logs/WWW.log'), print_r($_SESSION, 1), FILE_APPEND);
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
@@ -35,10 +37,11 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = \YunShop::app()->siteroot . $_SERVER['REQUEST_URI'];
 
+        $state = 'we7sid-'.\YunShop::app()->session_id;
         if (!Session::get('member_id')) {
-            $authurl = $this->_getAuthUrl($appId, $callback);
+            $authurl = $this->_getAuthUrl($appId, $callback, $state);
         } else {
-            $authurl = $this->_getAuthBaseUrl($appId, $callback);
+            $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
         }
 
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
@@ -171,43 +174,55 @@ class MemberOfficeAccountService extends MemberService
                 }
                 Session::set('member_id', $member_id);
             } else {
-                redirect($authurl)->send();
+                //redirect($authurl)->send();
                 exit;
             }
         } else {
-            file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
+            file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1), FILE_APPEND);
             $this->_setClientRequestUrl();
-
 //            if (!Session::get('openid')) {
 //                $redirect_url = $this->_getClientRequestUrl();
 //                redirect($redirect_url . '?login')->send();exit;
 //            }
-            header('Location: ' . $authurl);exit;
+            //header('Location: ' . $authurl);
             redirect($authurl)->send();
             exit;
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
         file_put_contents(storage_path('logs/redirect_url.log'), $redirect_url);
         redirect($redirect_url . '?login')->send();
+        //redirect('http://test.yunzshop.com/api.html?login')->send();
     }
 
     /**
-     * 授权 api
+     * 用户验证授权 api
      *
-     * snsapi_base/snsapi_userinfo
+     * snsapi_userinfo
      *
      * @param $appId
      * @param $url
+     * @param $state
      * @return string
      */
-    private function _getAuthUrl($appId, $url)
+    private function _getAuthUrl($appId, $url, $state)
     {
-       return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+       return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_userinfo&state={$state}#wechat_redirect";
     }
 
-    private function _getAuthBaseUrl($appId, $url)
+    /**
+     *
+     * 静默获取用户信息
+     *
+     * snsapi_base
+     *
+     * @param $appId
+     * @param $url
+     * @param $state
+     * @return string
+     */
+    private function _getAuthBaseUrl($appId, $url, $state)
     {
-        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
+        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state={$state}#wechat_redirect";
     }
 
     /**
@@ -241,11 +256,13 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _setClientRequestUrl()
     {
+        file_put_contents(storage_path('logs/session4444.log'), print_r(\YunShop::request(), 1));
         file_put_contents(storage_path('logs/ssss.log'), print_r($_SERVER, 1));
         file_put_contents(storage_path('logs/sssslll.log'), print_r($_SESSION, 1));
-        if (!Session::get('client_url')  && !empty($_SERVER['HTTP_REFERER'])) {
+        if (!empty(\YunShop::request()->yz_redirect)) {
             file_put_contents(storage_path('logs/session11111.log'), print_r($_SESSION, 1));
-            Session::set('client_url', $_SERVER['HTTP_REFERER']);
+            file_put_contents(storage_path('logs/session33333.log'), print_r(\YunShop::request(), 1));
+            Session::set('client_url', \YunShop::request()->yz_redirect);
         } else {
             file_put_contents(storage_path('logs/session22222.log'), print_r($_SESSION, 1));
             Session::set('client_url', '');

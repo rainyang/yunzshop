@@ -26,19 +26,16 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
     <div class="col-sm-8 col-xs-12">
-        <select name="goods[brand_id]">
+        <select name="goods[brand_id]" id="brand" style="width:250px">
             <option value="0">请选择品牌</option>
             @if (!empty($brands))
             @foreach ($brands as $brand)
-            <option value="{{$brand['id']}}">{{$brand['name']}}</option>
+            <option value="{{$brand['id']}}" @if ($brand['id'] == $goods['brand_id']) selected @endif>{{$brand['name']}}</option>
             @endforeach
             @endif
         </select>
     </div>
 </div>
-
-<link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
-<link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品类型</label>
@@ -115,18 +112,18 @@
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品价格</label>
-    <div class="col-sm-9 col-xs-12">
-        <div class="input-group form-group">
+    <div class="col-sm-9 col-xs-12 form-inline">
+        <div class="input-group form-group col-sm-3">
             <span class="input-group-addon">现价</span>
             <input type="text" name="goods[price]" id="product_price" class="form-control" value="{{$goods['price']}}" />
             <span class="input-group-addon">元</span>
         </div>
-        <div class="input-group form-group">
+        <div class="input-group form-group col-sm-3">
             <span class="input-group-addon">原价</span>
             <input type="text" name="goods[market_price]" id="market_price" class="form-control" value="{{$goods['market_price']}}" />
             <span class="input-group-addon">元</span>
         </div>
-        <div class="input-group form-group">
+        <div class="input-group form-group col-sm-3">
             <span class="input-group-addon">成本</span>
             <input type="text" name="goods[cost_price]" id="costprice" class="form-control" value="{{$goods['cost_price']}}" />
             <span class="input-group-addon">元</span>
@@ -139,7 +136,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>库存</label>
     <div class="col-sm-6 col-xs-12">
-        <div class="input-group">
+        <div class="input-group form-group col-sm-3">
             <input type="text" name="goods[stock]" id="total" class="form-control" value="{{$goods['stock']}}" />
             <span class="input-group-addon">件</span>
         </div>
@@ -172,3 +169,12 @@
     </div>
 </div>
 @show
+
+@section('js')
+    <script>
+require(['select2'],function(){
+    $('#brand').select2();
+})
+
+</script>
+ @stop
