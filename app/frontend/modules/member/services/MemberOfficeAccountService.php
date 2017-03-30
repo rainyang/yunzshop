@@ -260,6 +260,7 @@ class MemberOfficeAccountService extends MemberService
         file_put_contents(storage_path('logs/sssslll.log'), print_r($_SESSION, 1));
         if (!Session::get('client_url')  && !empty($_SERVER['HTTP_REFERER'])) {
             file_put_contents(storage_path('logs/session11111.log'), print_r($_SESSION, 1));
+            file_put_contents(storage_path('logs/session33333.log'), $_SERVER['HTTP_REFERER']);
             Session::set('client_url', $_SERVER['HTTP_REFERER']);
         } else {
             file_put_contents(storage_path('logs/session22222.log'), print_r($_SESSION, 1));
