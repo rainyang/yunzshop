@@ -18,5 +18,6 @@ class OrderReceive extends ChangeStatusOperation
     protected $status_before_change = [ORDER::WAIT_RECEIVE];
     protected $status_after_changed = ORDER::COMPLETE;
     protected $name = '收货';
+    protected $time_field = 'finish_time';
     protected $past_tense_class_name = 'OrderReceived';
 }
