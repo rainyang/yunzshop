@@ -21,6 +21,10 @@ abstract class ChangeStatusOperation extends OrderOperation
      */
     protected function _updateTable(){
         $this->_DbOrderModel->status = $this->status_after_changed;
+        if(isset($this->time_field)){
+            $time_fields = $this->time_field;
+            $this->_DbOrderModel->$time_fields = time();
+        }
         return $this->_DbOrderModel->save();
     }
 

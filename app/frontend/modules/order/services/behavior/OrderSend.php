@@ -16,6 +16,8 @@ class OrderSend extends ChangeStatusOperation
     protected $status_before_change = [ORDER::WAIT_SEND];
     protected $status_after_changed = ORDER::WAIT_RECEIVE;
     protected $name = '发货';
+    protected $time_field = 'send_time';
+
     protected $past_tense_class_name = 'OrderSent';
     protected function _updateTable(){
         $db_express_model = new Express();
