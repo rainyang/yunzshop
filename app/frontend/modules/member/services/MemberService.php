@@ -32,7 +32,7 @@ class MemberService
     {
         $member = \app\frontend\models\Member::find($member_id);
         if(!isset($member)){
-            return '用户id不存在';exit;
+            throw new AppException('用户不存在');
         }
         self::$_current_member = $member;
     }

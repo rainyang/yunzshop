@@ -357,7 +357,7 @@ class GoodsController extends BaseController
     {
         $displayOrders = \YunShop::request()->display_order;
         foreach($displayOrders as $id => $displayOrder){
-            $goods = Goods::find($id);
+            $goods = \app\common\models\Goods::find($id);
             $goods->display_order = $displayOrder;
             $goods->save();
         }
