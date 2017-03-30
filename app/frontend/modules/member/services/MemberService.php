@@ -30,9 +30,9 @@ class MemberService
 
     public static function setCurrentMemberModel($member_id)
     {
-        $member = \app\frontend\models\Member::find($member_id);
-        if(!isset($member)){
-            return '用户id不存在';exit;
+        $member = \app\frontend\models\Member::findOrFail($member_id);
+        if(!$member){
+            throw new AppException('用户不存在');
         }
         self::$_current_member = $member;
     }
