@@ -58,7 +58,7 @@ class MemberAddress extends \app\common\models\MemberAddress
      * */
     public static function cancelDefaultAddress($memberId)
     {
-        return static::uniacid()->where('uid', $memberId)->where('isdefault', '1')->update('isdefault', '0');
+        return static::uniacid()->where('uid', $memberId)->where('isdefault', '1')->update(['isdefault' => '0']);
     }
 
     /**

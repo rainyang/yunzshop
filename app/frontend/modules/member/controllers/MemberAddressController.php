@@ -81,20 +81,16 @@ class MemberAddressController extends BaseController
         $requestAddress = \YunShop::request();
         if ($requestAddress) {
             $data = array(
-                //'uid' => $requestAddress->uid,
-                //'uniacid' => \YunShop::app()->uniacid,
-                'username' => $requestAddress->username,
-                'mobile' => $requestAddress->mobile,
-                'zipcode' => '',
-                'isdefault' => $requestAddress->isdefault,
-                'province' => $requestAddress->province,
-                'city' => $requestAddress->city,
-                'district' => $requestAddress->district,
-                'address' => $requestAddress->address,
+                'username'  => \YunShop::request()->username,
+                'mobile'    => \YunShop::request()->mobile,
+                'zipcode'   => '',
+                'isdefault' => \YunShop::request()->isdefault,
+                'province'  => \YunShop::request()->province,
+                'city'      => \YunShop::request()->city,
+                'district'  => \YunShop::request()->district,
+                'address'   => \YunShop::request()->address,
             );
-
             $addressModel->fill($data);
-
             $memberId = \YunShop::request()->member_id;
             $memberId = '9'; //测试使用
             //验证默认收货地址状态并修改
@@ -108,7 +104,6 @@ class MemberAddressController extends BaseController
 
             $addressModel->uid = $memberId;
             $addressModel->uniacid = \YunShop::app()->uniacid;
-
             $validator = $addressModel->validator($addressModel->getAttributes());
             if ($validator->fails()) {
                 return $this->errorJson($validator->messages());
