@@ -30,7 +30,7 @@ class MemberService
 
     public static function setCurrentMemberModel($member_id)
     {
-        $member = Member::find($member_id);
+        $member = \app\frontend\models\Member::find($member_id);
         if(!isset($member)){
             return '用户id不存在';exit;
         }
@@ -44,7 +44,7 @@ class MemberService
      */
     public static function isLogged()
     {
-        return !Session::get('member_id') && Session::get('member_id') > 0;
+        return Session::get('member_id') && Session::get('member_id') > 0;
     }
 
     /**

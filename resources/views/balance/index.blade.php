@@ -152,15 +152,15 @@
                 else {
                     $("#recharge").hide();
                 }
-            })
-            $(":radio[name='balance[withdraw]']").click(function () {
+            });
+            $(":radio[name='balance[withdraw][status]']").click(function () {
                 if ($(this).val() == 1) {
                     $("#withdraw").show();
                 }
                 else {
                     $("#withdraw").hide();
                 }
-            })
+            });
         })
     </script>
 

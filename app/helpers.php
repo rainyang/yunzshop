@@ -6,7 +6,7 @@ use app\common\services\PermissionService;
 use app\common\helpers\Url;
 
 
-if (! function_exists('my_link_extra')) {
+if (!function_exists('my_link_extra')) {
 
     function my_link_extra($type = 'content')
     {
@@ -17,11 +17,11 @@ if (! function_exists('my_link_extra')) {
 
         Event::fire(new app\common\events\RenderingMyLink($extraContents));
 
-        return $type == 'content' ? $content . implode("\n", $extraContents) : implode("\n",array_keys($extraContents));
+        return $type == 'content' ? $content . implode("\n", $extraContents) : implode("\n", array_keys($extraContents));
     }
 }
 
-if(!function_exists('can')){
+if (!function_exists('can')) {
     /**
      * 权限判断
      * @param $item   可以是item 或者是route
@@ -30,16 +30,16 @@ if(!function_exists('can')){
      */
     function can($itemRoute, $isRoute = false)
     {
-        if($isRoute == true){
+        if ($isRoute == true) {
             $item = \app\common\models\Menu::getItemByRoute($itemRoute);
-        }else{
+        } else {
             $item = $itemRoute;
         }
         return PermissionService::can($item);
     }
 }
 
-if(!function_exists('weAccount')) {
+if (!function_exists('weAccount')) {
     /**
      * 获取微擎账号体系
      * @return NULL|WeAccount
@@ -52,49 +52,49 @@ if(!function_exists('weAccount')) {
 }
 
 
-if(!function_exists('yzWebUrl')){
+if (!function_exists('yzWebUrl')) {
     function yzWebUrl($route, $params = [])
     {
-        return Url::web($route,$params);
+        return Url::web($route, $params);
     }
 }
 
-if(!function_exists('yzAppUrl')){
+if (!function_exists('yzAppUrl')) {
     function yzAppUrl($route, $params = [])
     {
-        return Url::app($route,$params);
+        return Url::app($route, $params);
     }
 }
 
 
-if(!function_exists('yzWebFullUrl')){
+if (!function_exists('yzWebFullUrl')) {
     function yzWebFullUrl($route, $params = [])
     {
-        return Url::absoluteWeb($route,$params);
+        return Url::absoluteWeb($route, $params);
     }
 }
 
-if(!function_exists('yzAppFullUrl')){
+if (!function_exists('yzAppFullUrl')) {
     function yzAppFullUrl($route, $params = [])
     {
-        return Url::absoluteApp($route,$params);
+        return Url::absoluteApp($route, $params);
     }
 }
 
-if(!function_exists('yzUrl')){
+if (!function_exists('yzUrl')) {
     function yzUrl($route, $params = [])
     {
-        return Url::web($route,$params);
+        return Url::web($route, $params);
     }
 }
 
-if(!function_exists('array_child_kv_exists')){
+if (!function_exists('array_child_kv_exists')) {
     function array_child_kv_exists($array, $childKey, $value)
     {
         $result = false;
-        if(is_array($array)){
-            foreach ($array as $v){
-                if(is_array($v) && isset($v[$childKey])){
+        if (is_array($array)) {
+            foreach ($array as $v) {
+                if (is_array($v) && isset($v[$childKey])) {
                     $result = $v[$childKey] == $value;
                 }
             }
@@ -104,19 +104,19 @@ if(!function_exists('array_child_kv_exists')){
     }
 }
 
-if(!function_exists('widget')){
+if (!function_exists('widget')) {
     function widget($class, $params = [])
     {
         return (new $class($params))->run();
     }
 }
-if (! function_exists('assets')) {
+if (!function_exists('assets')) {
 
     function assets($relativeUri)
     {
         // add query string to fresh cache
         if (Str::startsWith($relativeUri, 'styles') || Str::startsWith($relativeUri, 'scripts')) {
-            return Url::shopUrl("resources/assets/dist/$relativeUri")."?v=".config('app.version');
+            return Url::shopUrl("resources/assets/dist/$relativeUri") . "?v=" . config('app.version');
         } elseif (Str::startsWith($relativeUri, 'lang')) {
             return Url::shopUrl("resources/$relativeUri");
         } else {
@@ -124,15 +124,15 @@ if (! function_exists('assets')) {
         }
     }
 }
-if (! function_exists('static_url')) {
+if (!function_exists('static_url')) {
 
     function static_url($relativeUri)
     {
-       return Url::shopUrl('static/' . $relativeUri);
+        return Url::shopUrl('static/' . $relativeUri);
     }
 }
 
-if (! function_exists('plugin')) {
+if (!function_exists('plugin')) {
 
     function plugin($id)
     {
@@ -140,7 +140,7 @@ if (! function_exists('plugin')) {
     }
 }
 
-if (! function_exists('plugin_assets')) {
+if (!function_exists('plugin_assets')) {
 
     function plugin_assets($id, $relativeUri)
     {
@@ -152,7 +152,7 @@ if (! function_exists('plugin_assets')) {
     }
 }
 
-if (! function_exists('json')) {
+if (!function_exists('json')) {
 
     function json()
     {
@@ -164,38 +164,38 @@ if (! function_exists('json')) {
             // the third argument is array of extra fields
             return Response::json(array_merge([
                 'errno' => $args[1],
-                'msg'   => $args[0]
+                'msg' => $args[0]
             ], $args[2]));
         } else {
             return Response::json([
                 'errno' => Arr::get($args, 1, 1),
-                'msg'   => $args[0]
+                'msg' => $args[0]
             ]);
         }
     }
 }
 
-if (! function_exists('yz_footer')) {
+if (!function_exists('yz_footer')) {
 
     function yz_footer($page_identification = "")
     {
         $content = "";
-/*
-        $scripts = [
-            assets('scripts/app.min.js'),
-            assets('lang/'.config('app.locale').'/locale.js'),
-        ];
+        /*
+                $scripts = [
+                    assets('scripts/app.min.js'),
+                    assets('lang/'.config('app.locale').'/locale.js'),
+                ];
 
-        if ($page_identification !== "") {
-            $scripts[] = assets("scripts/$page_identification.js");
-        }
+                if ($page_identification !== "") {
+                    $scripts[] = assets("scripts/$page_identification.js");
+                }
 
-        foreach ($scripts as $script) {
-            $content .= "<script type=\"text/javascript\" src=\"$script\"></script>\n";
-        }
-*/
+                foreach ($scripts as $script) {
+                    $content .= "<script type=\"text/javascript\" src=\"$script\"></script>\n";
+                }
+        */
         $customJs = option("custom_js");
-        $customJs && $content .=  '<script>'.$customJs.'</script>';
+        $customJs && $content .= '<script>' . $customJs . '</script>';
 
         $extraContents = [];
 
@@ -205,27 +205,27 @@ if (! function_exists('yz_footer')) {
     }
 }
 
-if (! function_exists('yz_header')) {
+if (!function_exists('yz_header')) {
 
     function yz_header($pageIdentification = "")
     {
         $content = "";
-/*
-        $styles = [
-            assets('styles/app.min.css'),
-            assets('styles/skins/'.Option::get('color_scheme').'.min.css')
-        ];
+        /*
+                $styles = [
+                    assets('styles/app.min.css'),
+                    assets('styles/skins/'.Option::get('color_scheme').'.min.css')
+                ];
 
-        if ($pageIdentification !== "") {
-            $styles[] = assets("styles/$pageIdentification.css");
-        }
+                if ($pageIdentification !== "") {
+                    $styles[] = assets("styles/$pageIdentification.css");
+                }
 
-        foreach ($styles as $style) {
-            $content .= "<link rel=\"stylesheet\" href=\"$style\">\n";
-        }
-*/
+                foreach ($styles as $style) {
+                    $content .= "<link rel=\"stylesheet\" href=\"$style\">\n";
+                }
+        */
         $customCss = option("custom_css");
-        $customCss &&  $content .= '<style>'.option("custom_css").'</style>';
+        $customCss && $content .= '<style>' . option("custom_css") . '</style>';
 
         $extraContents = [];
 
@@ -236,14 +236,14 @@ if (! function_exists('yz_header')) {
 }
 
 
-if (! function_exists('yz_menu')) {
+if (!function_exists('yz_menu')) {
 
     function yz_menu($type)
     {
         $menu = config('menu');
 
         Event::fire($type == "member" ? new app\common\events\ConfigureMemberMenu($menu)
-                                : new app\common\events\ConfigureAdminMenu($menu));
+            : new app\common\events\ConfigureAdminMenu($menu));
 
         if (!isset($menu[$type])) {
             throw new InvalidArgumentException;
@@ -260,7 +260,7 @@ if (! function_exists('yz_menu')) {
             $active = app('request')->is(@$value['link']);
 
             // also set parent as active if any child is active
-            foreach ((array) @$value['children'] as $childKey => $childValue) {
+            foreach ((array)@$value['children'] as $childKey => $childValue) {
                 if (app('request')->is(@$childValue['link'])) {
                     $active = true;
                 }
@@ -269,11 +269,11 @@ if (! function_exists('yz_menu')) {
             $content .= $active ? '<li class="active">' : '<li>';
 
             if (isset($value['children'])) {
-                $content .= '<a href="#"><i class="fa '.$value['icon'].'"></i> <span>'.trans($value['title']).'</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>';
+                $content .= '<a href="#"><i class="fa ' . $value['icon'] . '"></i> <span>' . trans($value['title']) . '</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>';
                 // recurse
-                $content .= '<ul class="treeview-menu" style="display: none;">'.yz_menu_render($value['children']).'</ul>';
+                $content .= '<ul class="treeview-menu" style="display: none;">' . yz_menu_render($value['children']) . '</ul>';
             } else {
-                $content .= '<a href="'.url($value['link']).'"><i class="fa '.$value['icon'].'"></i> <span>'.trans($value['title']).'</span></a>';
+                $content .= '<a href="' . url($value['link']) . '"><i class="fa ' . $value['icon'] . '"></i> <span>' . trans($value['title']) . '</span></a>';
             }
 
             $content .= '</li>';
@@ -284,16 +284,15 @@ if (! function_exists('yz_menu')) {
 }
 
 
-
-if (! function_exists('option')) {
+if (!function_exists('option')) {
     /**
      * Get / set the specified option value.
      *
      * If an array is passed as the key, we will assume you want to set an array of values.
      *
-     * @param  array|string  $key
-     * @param  mixed  $default
-     * @param  raw    $raw  return raw value without convertion
+     * @param  array|string $key
+     * @param  mixed $default
+     * @param  raw $raw return raw value without convertion
      * @return mixed
      */
     function option($key = null, $default = null, $raw = false)
@@ -312,5 +311,23 @@ if (! function_exists('option')) {
         }
 
         return $options->get($key, $default, $raw);
+    }
+}
+if (!function_exists('float_greater')) {
+    function float_greater($number, $other_number)
+    {
+        return bccomp($number, $other_number) === 1;
+    }
+}
+if (!function_exists('float_lesser')) {
+    function float_lesser($number, $other_number)
+    {
+        return bccomp($number, $other_number) === -1;
+    }
+}
+if (!function_exists('float_equal')) {
+    function float_equal($number, $other_number)
+    {
+        return bccomp($number, $other_number) === 0;
     }
 }

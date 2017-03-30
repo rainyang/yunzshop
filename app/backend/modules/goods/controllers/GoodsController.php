@@ -8,6 +8,7 @@
 
 namespace app\backend\modules\goods\controllers;
 
+use app\api\model\Good;
 use app\backend\modules\goods\models\Brand;
 use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\models\Goods;
@@ -94,7 +95,7 @@ class GoodsController extends BaseController
             ]
         );
         //dd($requestSearch);
-        $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
+        $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         $edit_url = 'goods.goods.edit';
@@ -137,6 +138,7 @@ class GoodsController extends BaseController
         foreach($goodsModel->getRelations() as $relation => $item){
             if ($item) {
                 unset($item->id);
+                //dd($item);
                 $newGoods->{$relation}()->create($item->toArray());
             }
         }
@@ -275,6 +277,7 @@ class GoodsController extends BaseController
         $goodsModel->thumb_url = !empty($goodsModel->thumb_url) ? unserialize($goodsModel->thumb_url) : [];
         //$goodsModel->piclist = !empty($goodsModel->thumb_url) ? $goodsModel->thumb_url : [];
 
+
         //$catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
             //将数据赋值到model
@@ -287,6 +290,9 @@ class GoodsController extends BaseController
                     }, $requestGoods['thumb_url'])
                 );
             }
+
+            GoodsCategory::where("goods_id", $goodsModel->id)->first()->delete();
+            GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
 
             $goodsModel->setRawAttributes($requestGoods);
             $goodsModel->widgets = \YunShop::request()->widgets;
@@ -364,7 +370,7 @@ class GoodsController extends BaseController
         //dd(\YunShop::request());
         $id = \YunShop::request()->id;
         $field = \YunShop::request()->type;
-        $goods = Goods::find($id);
+        $goods = \app\common\models\Goods::find($id);
         $goods->$field = \YunShop::request()->value;
         $goods->save();
         //$this->error($goods);

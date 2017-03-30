@@ -8,6 +8,7 @@ use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\AfterOrderSentEvent;
 use app\common\events\order\BeforeOrderCancelPayEvent;
+use app\common\models\MemberCoupon;
 use app\common\models\Order;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
@@ -25,10 +26,11 @@ class TestController extends BaseController
 {
     public function index()
     {
-        dd(bccomp('1.00001', '1', 5));
-        dd( unserialize('a:1:{i:0;s:3:"199";}'));
-        dd(unserialize('a:1:{i:0;s:3:"296";}'));
-        dd(unserialize('a:1:{i:0;s:6:"叶子";}'));
+        $builder = MemberCoupon::getMemberCoupon(
+            $this->order->getMemberModel(),
+            ['coupon' => ['back_type' => $this->back_type]]
+        );
+        return $builder->get();
 
         //dd($this->test());exit;
         //$result = OrderService::orderCancelPay(Order::find(1));
