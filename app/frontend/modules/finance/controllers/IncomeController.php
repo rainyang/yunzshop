@@ -102,7 +102,7 @@ class IncomeController extends BaseController
         if (!$incomeModel->get()) {
             return $this->errorJson('未检测到可提现数据!');
         }
-
+        
         foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('income.withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
             $incomeModel = $incomeModel->where('type', $key);
@@ -115,7 +115,7 @@ class IncomeController extends BaseController
                     $type_id .= $ids->type_id . ",";
                 }
 
-                $incomeData[] = [
+                $incomeData[$key] = [
                     'type' => $item['type'],
                     'type_name' => $item['type_name'],
                     'type_id' => rtrim($type_id, ','),
@@ -125,7 +125,7 @@ class IncomeController extends BaseController
                     'can' => true,
                 ];
             } else {
-                $incomeData[] = [
+                $incomeData[$key] = [
                     'type' => $item['type'],
                     'type_name' => $item['type_name'],
                     'type_id' => '',
@@ -180,8 +180,6 @@ class IncomeController extends BaseController
             ) {
                 return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
             }
-
-
         }
 
         $request = static::setWithdraw($withdrawData, $withdrawTotal);
