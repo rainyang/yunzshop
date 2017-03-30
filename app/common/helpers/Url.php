@@ -49,7 +49,7 @@ class Url
         if(empty($route) && self::isHttp($route)){
             return $route;
         }
-        $defaultParams = ['i'=>\YunShop::app()->uniacid,'c'=>'entry','m'=>'sz_yi','do'=>random(4),'route'=>$route];
+        $defaultParams = ['i'=>\YunShop::app()->uniacid,'c'=>'entry','m'=>'sz_yi','do'=>rand(4),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
         return   '/app/index.php?'. http_build_query($params);
