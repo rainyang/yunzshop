@@ -22,7 +22,7 @@ class MemberAddressController extends BaseController
     public function index()
     {
         //$memberId = \YunShop::app()->getMemberId();
-        $memberId = '9'; //测试使用
+        $memberId = '57'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
         //获取省市ID
         if ($addressList) {
@@ -57,7 +57,7 @@ class MemberAddressController extends BaseController
         $memberId = '9';
         $addressModel = MemberAddress::getAddressById(\YunShop::request()->address_id);
         if ($addressModel) {
-            if ($addressModel->isdefault == 1) {
+            if ($addressModel->isdefault) {
                 return $this->errorJson('默认地址不支持取消，请编辑或修改其他默认地址');
             }
             $addressModel->isdefault = 1;
@@ -101,7 +101,7 @@ class MemberAddressController extends BaseController
             $addressList = MemberAddress::getAddressList($memberId);
             if (empty($addressList)) {
                 $addressModel->isdefault = '1';
-            } elseif ($addressModel->isdefault == '1') {
+            } elseif ($addressModel->isdefault) {
                 //修改默认收货地址
                 MemberAddress::cancelDefaultAddress($memberId);
             }
@@ -152,8 +152,8 @@ class MemberAddressController extends BaseController
             if ($validator->fails()) {
                 return $this->errorJson($validator->message());
             }
-            if ($addressModel->isdefault == '1') {
-                //$member_id未附值！！！！
+            if ($addressModel->isdefault) {
+                //todo member_id 未附值
                 MemberAddress::cancelDefaultAddress($addressModel->member_id);
             }
             if ($addressModel->save()) {

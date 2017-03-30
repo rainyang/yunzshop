@@ -178,20 +178,20 @@ class MemberOfficeAccountService extends MemberService
                 exit;
             }
         } else {
-            file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1));
+            file_put_contents(storage_path('logs/server.log'), print_r($_SERVER, 1), FILE_APPEND);
             $this->_setClientRequestUrl();
 //            if (!Session::get('openid')) {
 //                $redirect_url = $this->_getClientRequestUrl();
 //                redirect($redirect_url . '?login')->send();exit;
 //            }
-            header('Location: ' . $authurl);
-            //redirect($authurl)->send();
+            //header('Location: ' . $authurl);
+            redirect($authurl)->send();
             exit;
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
         file_put_contents(storage_path('logs/redirect_url.log'), $redirect_url);
         redirect($redirect_url . '?login')->send();
-        //redirect('http://www.baidu.com')->send();
+        //redirect('http://test.yunzshop.com/api.html?login')->send();
     }
 
     /**
@@ -256,11 +256,13 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _setClientRequestUrl()
     {
+        file_put_contents(storage_path('logs/session4444.log'), print_r(\YunShop::request(), 1));
         file_put_contents(storage_path('logs/ssss.log'), print_r($_SERVER, 1));
         file_put_contents(storage_path('logs/sssslll.log'), print_r($_SESSION, 1));
-        if (!Session::get('client_url')  && !empty($_SERVER['HTTP_REFERER'])) {
+        if (!empty(\YunShop::request()->yz_redirect)) {
             file_put_contents(storage_path('logs/session11111.log'), print_r($_SESSION, 1));
-            Session::set('client_url', $_SERVER['HTTP_REFERER']);
+            file_put_contents(storage_path('logs/session33333.log'), print_r(\YunShop::request(), 1));
+            Session::set('client_url', \YunShop::request()->yz_redirect);
         } else {
             file_put_contents(storage_path('logs/session22222.log'), print_r($_SESSION, 1));
             Session::set('client_url', '');

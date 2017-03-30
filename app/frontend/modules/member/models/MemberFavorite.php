@@ -12,6 +12,10 @@ namespace app\frontend\modules\member\models;
 
 class MemberFavorite extends \app\common\models\MemberFavorite
 {
+    public function hasGoods()
+    {
+        return $this->hasOne('app\common\models\Goods','id','goods_id');
+    }
     /*
      * 通过主键ID查找
      *
@@ -29,15 +33,26 @@ class MemberFavorite extends \app\common\models\MemberFavorite
      * @params int $goodsId
      * @params int $memberId
      *
-     * @return object*/
+     * @return object */
     public static function getFavoriteByGoodsId($goodsId, $memberId)
     {
         return static::uniacid()->where('goods_id', $goodsId)->where('member_id', $memberId)->first();
     }
 
+    /*
+     * 获取会员收藏列表
+     *
+     * @params int $goodsId
+     * @params int $memberId
+     *
+     * @return object */
     public static function getFavoriteList($memberId)
     {
-        return static::select('id', 'goods_id')->uniacid()->where('member_id', $memberId)->get()->toArray();
+        return static::select('id', 'goods_id')->uniacid()->where('member_id', $memberId)
+            ->with(['hasGoods' => function($query) {
+                return $query->select('id', 'thumb', 'price', 'market_price', 'title');
+            }])
+            ->get()->toArray();
     }
     /**
      * remove collection
