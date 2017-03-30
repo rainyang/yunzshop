@@ -27,7 +27,6 @@ class MemberHistoryController extends BaseController
 
     public function store()
     {
-        //需要考虑添加过的只修改时间，不重复添加记录
         $memberId = 9;
         //$goodsId = 100;
         $goodsId = \YunShop::request()->goods_id;
