@@ -49,6 +49,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script type="text/javascript" src="../addons/sz_yi/static/js/dist/tooltipbox.js"></script>
 
 
+
 </head>
 <style type="text/css">
     .red {float:left;color:red}
@@ -140,7 +141,6 @@ desired effect
 
 
 <!-- REQUIRED JS SCRIPTS -->
-
 
 <!-- Bootstrap 3.3.6 -->
 <!-- AdminLTE App -->
