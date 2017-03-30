@@ -97,9 +97,7 @@ class IncomeController extends BaseController
     {
         $config = \Config::get('income');
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
-        echo "<pre>"; print_r(\YunShop::app()->getMemberId());
         $incomeModel = $incomeModel->where('status', '0');
-        echo "<pre>"; print_r($incomeModel->get());exit;
         if ($incomeModel->get()) {
             return $this->errorJson('未检测到可提现数据!');
         }
