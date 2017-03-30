@@ -36,6 +36,17 @@ class MemberHistory extends \app\common\models\MemberHistory
         return static::uniacid()->where('member_id', $memberId)->where('goods_id', $goodsId)->first();
     }
 
+    /*
+     *
+     * @param int memberId
+     * @param int goodsId
+     *
+     * @return object */
+    public static function getHistoryById($historyId)
+    {
+        return static::uniacid()->where('id', $historyId)->first();
+    }
+
     /**
      * Get member browsing records
      *
