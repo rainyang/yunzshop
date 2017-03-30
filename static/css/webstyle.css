@@ -112,7 +112,7 @@ z-index: 2;position: fixed;
     line-height: 22px;}*/
 .nav-link{border: 1px solid #ccc!important;border-left:0!important}
 .disbut{display: block;margin: 4px;}
-.input-group-addon{border: 0;background: none}
+/*.input-group-addon{border: 0;background: none}*/
 .form-control{font-size: 12px;border-radius: 2px !important;height: 30px}
 .table{margin-bottom: 6px; /*margin-left:13px;*/}
 /*.nav>li{width: 100%}*/
@@ -229,7 +229,7 @@ z-index: 2;position: fixed;
     position: relative;line-height: 50px;height: 50px;}
 .page-heading h2{ font-size: 16px;position: absolute;left: 0;padding: 0;margin: 0;line-height: 50px;}
 .page-heading .pull-right{padding-right: 10px}
-.w1200{width: 100% !important;overflow: hidden;padding: 0px 0px 0px 60px;min-width: 1260px;box-sizing: border-box;}
+.w1200{width: 100% !important;overflow: hidden;min-width: 1260px;box-sizing: border-box;}
 .input-group{margin-bottom: 4px;z-index: 1}
 .mart7{margin-top: 7px}
 .tpl-category-container select{margin-bottom: 4px}

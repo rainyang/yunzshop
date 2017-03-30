@@ -15,7 +15,7 @@ use app\common\traits\MessageTrait;
 class Privilege extends \app\common\models\goods\Privilege
 {
     use MessageTrait;
-    public $timestamps = false;
+    //public $timestamps = false;
 
     /**
      * 获取商品权限数据
