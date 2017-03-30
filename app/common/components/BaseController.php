@@ -9,9 +9,7 @@ use app\common\traits\TemplateTrait;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
-use Setting;
 use Validator;
-use Response;
 
 /**
  * controller基类
