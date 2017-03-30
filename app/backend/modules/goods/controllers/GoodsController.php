@@ -8,6 +8,7 @@
 
 namespace app\backend\modules\goods\controllers;
 
+use app\api\model\Good;
 use app\backend\modules\goods\models\Brand;
 use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\models\Goods;
@@ -369,7 +370,7 @@ class GoodsController extends BaseController
         //dd(\YunShop::request());
         $id = \YunShop::request()->id;
         $field = \YunShop::request()->type;
-        $goods = Goods::find($id);
+        $goods = \app\common\models\Goods::find($id);
         $goods->$field = \YunShop::request()->value;
         $goods->save();
         //$this->error($goods);
