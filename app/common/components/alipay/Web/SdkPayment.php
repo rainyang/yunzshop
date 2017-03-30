@@ -90,7 +90,7 @@ class SdkPayment
        // event(new PayLog($parameter, new WebAlipay()));
 
 		$para = $this->buildRequestPara($parameter);
-    
+
 		return $this->__gateway_new . $this->createLinkstringUrlencode($para);
 	}
 
