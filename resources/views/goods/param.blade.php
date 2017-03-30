@@ -37,7 +37,6 @@
 
 <script language="javascript">
     $(function() {
-        $("#param-items").sortable({handle: '.fa-move'});
         $("#chkoption").click(function() {
             var obj = $(this);
             if (obj.get(0).checked) {
