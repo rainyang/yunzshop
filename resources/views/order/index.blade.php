@@ -225,9 +225,8 @@
                                 <img src="@if( 0&&$order['cashier']==1){{$order['name']['thumb']}}@else{!! tomedia($order_goods['thumb']) !!}@endif">
                             </td>
                             <td valign='top' style='border-left:none;text-align: left;/*width:400px*/;'>
-                                @if( 0&&$order['cashier']==1){{$order['name']['name']}}
-                                @else{{$order_goods['title']}}
-                                @endif @if( !empty($order_goods['optiontitle']))<br/><span class="label label-primary sizebg">{{$order_goods['optiontitle']}}</span>
+                                {{$order_goods['title']}}
+                                    @if( !empty($order_goods['optiontitle']))<br/><span class="label label-primary sizebg">{{$order_goods['optiontitle']}}</span>
                                 @endif
                                 <br/>{{$order_goods['goods_sn']}}
                             </td>
@@ -298,7 +297,7 @@
                                     </table>
                                 </td>
                                 <td rowspan="{php echo count($order['has_many_order_goods'])}"><label
-                                            class='label label-{{$order['statuscss']=0}}'>{{$order['status_name']}}</label><br/>
+                                            class='label label-info'>{{$order['status_name']}}</label><br/>
                                     <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
                                 </td>
                                 <td rowspan="{php echo count($order['has_many_order_goods'])}" width="10%">
