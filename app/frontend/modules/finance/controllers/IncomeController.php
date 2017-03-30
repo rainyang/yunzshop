@@ -149,9 +149,10 @@ class IncomeController extends BaseController
     public function saveWithdraw()
     {
         $config = \Config::get('income');
-
+        \Log::info("- request");
+        \Log::info(\YunShop::request());
         $withdrawData = \YunShop::request()->data;
-        \Log::info("POST");
+        \Log::info("POST - data");
         \Log::info($withdrawData);
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
