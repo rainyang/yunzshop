@@ -20,6 +20,10 @@ trait JsonTrait
     public  function successJson($message = '成功', $data = [])
     {
         response()->json([
+<<<<<<< HEAD
+=======
+            'session_id'=>session_id(),
+>>>>>>> 1776696aac3e88ae20abf873f98fdb5f5324e7cc
             'result' => 1,
             'msg' => $message,
             'data' => $data
@@ -37,6 +41,7 @@ trait JsonTrait
     public  function errorJson($message = '失败', $data = [])
     {
         response()->json([
+            'session_id'=>session_id(),
             'result' => 0,
             'msg' => $message,
             'data' => $data
