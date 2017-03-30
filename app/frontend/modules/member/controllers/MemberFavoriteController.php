@@ -19,9 +19,8 @@ class MemberFavoriteController extends BaseController
     {
         //todo 需要增加商品信息显示
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = '57';
+        $memberId = '9';
         $favoriteList = MemberFavorite::getFavoriteList($memberId);
-        //dd($favoriteList);
 
         return $this->successJson('成功', $favoriteList);
 

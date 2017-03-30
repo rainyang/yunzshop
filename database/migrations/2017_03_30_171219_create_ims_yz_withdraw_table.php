@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateImsYzIncomeWithdrawTable extends Migration {
+class CreateImsYzWithdrawTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class CreateImsYzIncomeWithdrawTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_income_withdraw', function(Blueprint $table)
+		Schema::create('yz_withdraw', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->integer('uniacid')->nullable()->comment('店铺ID');
@@ -38,7 +38,7 @@ class CreateImsYzIncomeWithdrawTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_income_withdraw');
+		Schema::drop('ims_yz_withdraw');
 	}
 
 }
