@@ -23,20 +23,7 @@ class MemberFavoriteController extends BaseController
         $favoriteList = MemberFavorite::getFavoriteList($memberId);
         //dd($favoriteList);
 
-        $goodsModel = new GoodsService();
-
-        $i = 0;
-        foreach ($favoriteList as $favorite) {
-            $favorite['goods'] = $goodsModel->getGoodsByCart($favorite['goods_id']);
-            if ($favorite['goods'] != false) {
-                $favoriteList[$i] = $favorite;
-            } else {
-                unset($favoriteList[$i]);
-            }
-            $i += 1;
-        }
-        dd($favoriteList);
-        return $this->successJson($favoriteList);
+        return $this->successJson('成功', $favoriteList);
 
     }
 

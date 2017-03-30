@@ -17,40 +17,41 @@ use app\common\helpers\PaginationHelper;
 
 class ListController extends BaseController
 {
+    const PAGE_SIZE = 10;
     private $_order_model;
     public function index(){
         $params = \YunShop::request();
-        $pageSize = 2;
-        $this->_order_model = Order::getAllOrders($params['search'],$pageSize);
+        
+        $this->_order_model = Order::getAllOrders($params['search'],self::PAGE_SIZE);
         //dd($this->_order_model);
         return view('order.index', $this->getData())->render();
     }
     public function waitPay()
     {
         $params = \YunShop::request();
-        $pageSize = 2;
-        $this->_order_model = Order::getWaitPayOrders($params['search'],$pageSize);
+        
+        $this->_order_model = Order::getWaitPayOrders($params['search'],self::PAGE_SIZE);
         $this->render('order/list', $this->getData());
     }
     public function waitSend()
     {
         $params = \YunShop::request();
-        $pageSize = 2;
-        $this->_order_model = Order::getWaitSendOrders($params['search'],$pageSize);
+        
+        $this->_order_model = Order::getWaitSendOrders($params['search'],self::PAGE_SIZE);
         $this->render('order/list', $this->getData());
     }
     public function waitReceive()
     {
         $params = \YunShop::request();
-        $pageSize = 2;
-        $this->_order_model = Order::getWaitReceiveOrders($params['search'],$pageSize);
+        
+        $this->_order_model = Order::getWaitReceiveOrders($params['search'],self::PAGE_SIZE);
         $this->render('order/list', $this->getData());
     }
     public function completed()
     {
         $params = \YunShop::request();
-        $pageSize = 2;
-        $this->_order_model = Order::getCompletedOrders($params['search'],$pageSize);
+        
+        $this->_order_model = Order::getCompletedOrders($params['search'],self::PAGE_SIZE);
         $this->render('order/list', $this->getData());
     }
 

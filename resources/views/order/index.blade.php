@@ -2,11 +2,6 @@
 
 @section('content')
     <div class="w1200 m0a">
-        <link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
-        <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
-        <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
-        <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2_locale_zh-CN.js"></script>
-        <script type="text/javascript" src="./resource/js/lib/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery.gcjs.js"></script>
         <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery.form.js"></script>
         <script type="text/javascript" src="../addons/sz_yi/static/js/dist/tooltipbox.js"></script>
@@ -15,6 +10,7 @@
                 background: #f8f8f8;
                 text-align: center
             }
+            #modal-confirmsend .control-label{margin-top:0;}
 
             .trbody td {
                 text-align: center;
@@ -308,6 +304,8 @@
                                 <td rowspan="{php echo count($order['has_many_order_goods'])}" width="10%">
                                     @section('operation')
                                         @include('order.ops')
+                                        @include('order.modals')
+
                                     @show
                                 </td>
                         </tr>
@@ -319,41 +317,4 @@
             <div id="pager">{!! $pager !!}</div>
         </div>
     </div>
-    <script language="javascript">
-
-
-        function send(btn) {
-            var modal = $('#modal-confirmsend');
-            var itemid = $(btn).parent().find('.itemid').val();
-            modal.find(':input[name=id]').val(itemid);
-            var addressdata = eval('(' + $(btn).parent().find('.addressdata').val() + ')');
-            modal.find('.realname').html(addressdata.realname);
-            modal.find('.mobile').html(addressdata.mobile);
-            modal.find('.address').html(addressdata.address);
-        }
-        $(function () {
-            $.ajax({
-                url: window.location.href,
-                type: 'post',
-                success: function (serverData) {
-                    if (serverData) {
-                        eval("var data=" + serverData + "");
-                        $("#pager").html(data.result.pager);
-                        $("#total").html(data.result.total);
-                        $("#totalmoney").html(data.result.totalmoney);
-                    }
-                }
-            })
-            $('.select2').select2({
-                search: true,
-                placeholder: "请选择门店",
-                allowClear: true
-            });
-        });
-        function sendagent(btn) {
-            var modal = $('#modal-changeagent');
-            var itemid = $(btn).parent().find('.itemid').val();
-            modal.find(':input[name=id]').val(itemid);
-        }
-    </script>
 @endsection('content')
