@@ -33,7 +33,7 @@ class Dispatch extends BaseModel
      *
      * @var array
      */
-    protected $guarded = [''];
+    protected $guarded = ['deleted_at'];
 
 
     /**
