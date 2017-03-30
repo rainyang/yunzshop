@@ -27,7 +27,6 @@ class ApiController extends BaseController
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             $yz_redirect  = \YunShop::request()->yz_redirect;
             redirect(Url::absoluteApp('member.login.index', ['yz_redirect'=>$yz_redirect]))->send();
-            //return $this->errorJson('用户未登录', ['url'=>Url::absoluteApp('member.login.index')]);
         }
     }
 }
