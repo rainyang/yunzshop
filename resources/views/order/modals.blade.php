@@ -321,8 +321,6 @@
         var itemid = $(btn).parent().find('.itemid').val();
 
         $(".id").val(itemid);
-        console.log(modal.find(':input[name=order_id]'));
-        console.log(itemid);return false;
 
         modal.find(':input[name=order_id]').val( itemid );
         if($(btn).parent().find('.addressdata').val()){

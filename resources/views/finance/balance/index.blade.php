@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="main rightlist">
-        <form action="{{ yzWebUrl('balance.balance.save') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
+        <form action="{{ yzWebUrl('finance.balance.save') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     余额设置

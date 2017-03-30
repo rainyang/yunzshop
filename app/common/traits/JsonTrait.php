@@ -8,7 +8,6 @@
 
 namespace app\common\traits;
 
-
 trait JsonTrait
 {
 

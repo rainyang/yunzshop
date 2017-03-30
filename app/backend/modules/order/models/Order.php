@@ -95,6 +95,7 @@ class Order extends \app\common\models\Order
 
     public function scopeSearch($order_builder, $params)
     {
+
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单
             if ($params['ambiguous']['field'] == 'order') {
