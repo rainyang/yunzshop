@@ -37,10 +37,11 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = \YunShop::app()->siteroot . $_SERVER['REQUEST_URI'];
 
+        $state = 'we7sid-'.\YunShop::app()->session_id;
         if (!Session::get('member_id')) {
-            $authurl = $this->_getAuthUrl($appId, $callback);
+            $authurl = $this->_getAuthUrl($appId, $callback, $state);
         } else {
-            $authurl = $this->_getAuthBaseUrl($appId, $callback);
+            $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
         }
 
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
@@ -194,22 +195,34 @@ class MemberOfficeAccountService extends MemberService
     }
 
     /**
-     * 授权 api
+     * 用户验证授权 api
      *
-     * snsapi_base/snsapi_userinfo
+     * snsapi_userinfo
      *
      * @param $appId
      * @param $url
+     * @param $state
      * @return string
      */
-    private function _getAuthUrl($appId, $url)
+    private function _getAuthUrl($appId, $url, $state)
     {
-       return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect";
+       return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_userinfo&state={$state}#wechat_redirect";
     }
 
-    private function _getAuthBaseUrl($appId, $url)
+    /**
+     *
+     * 静默获取用户信息
+     *
+     * snsapi_base
+     *
+     * @param $appId
+     * @param $url
+     * @param $state
+     * @return string
+     */
+    private function _getAuthBaseUrl($appId, $url, $state)
     {
-        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
+        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state={$state}#wechat_redirect";
     }
 
     /**
