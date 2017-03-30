@@ -260,7 +260,7 @@ class MemberOfficeAccountService extends MemberService
         file_put_contents(storage_path('logs/session5555.log'), print_r(\YunShop::request()->yz_redirect, 1));
         file_put_contents(storage_path('logs/ssss.log'), print_r($_SERVER, 1));
         file_put_contents(storage_path('logs/sssslll.log'), print_r($_SESSION, 1));
-        if (!empty(\YunShop::request()->yz_redirect)) {
+        if (\YunShop::request()->yz_redirect) {
             file_put_contents(storage_path('logs/session11111.log'), print_r($_SESSION, 1));
             file_put_contents(storage_path('logs/session33333.log'), print_r(\YunShop::request(), 1));
             Session::set('client_url', \YunShop::request()->yz_redirect);
