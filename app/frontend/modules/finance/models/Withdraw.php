@@ -7,7 +7,7 @@ namespace app\frontend\modules\finance\models;
  * Time: 上午9:40
  */
 
-class IncomeWithdraw extends \app\common\models\IncomeWithdraw
+class Withdraw extends \app\common\models\Withdraw
 {
     
 }

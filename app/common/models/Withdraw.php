@@ -11,9 +11,9 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 
-class IncomeWithdraw extends BackendModel
+class Withdraw extends BackendModel
 {
-    public $table = 'yz_income_withdraw';
+    public $table = 'yz_withdraw';
 
     public $timestamps = true;
 
