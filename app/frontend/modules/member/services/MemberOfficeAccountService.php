@@ -36,7 +36,7 @@ class MemberOfficeAccountService extends MemberService
         $appId        = $pay['weixin_appid'];
         $appSecret    = $pay['weixin_secret'];
 
-        $callback     = $_SERVER['REQUEST_SCHEME'] . '//' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         $state = \YunShop::app()->uniacid;
         if (!Session::get('member_id')) {
