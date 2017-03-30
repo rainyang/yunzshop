@@ -88,9 +88,9 @@ class SdkPayment
 		);
         //请求数据日志
        // event(new PayLog($parameter, new WebAlipay()));
-file_put_contents(storage_path('logs/step1.log'), print_r($parameter,1));
+
 		$para = $this->buildRequestPara($parameter);
-        file_put_contents(storage_path('logs/step2.log'), print_r($para,1));
+
 		return $this->__gateway_new . $this->createLinkstringUrlencode($para);
 	}
 
@@ -139,7 +139,7 @@ file_put_contents(storage_path('logs/step1.log'), print_r($parameter,1));
 		}
 
 		$data = $_POST ?  : $_GET;
-        file_put_contents(storage_path('logs/step7.log'), print_r($data,1));
+
 		// 生成签名结果
 		$is_sign = $this->getSignVeryfy($data, $data['sign']);
 
@@ -442,9 +442,6 @@ file_put_contents(storage_path('logs/step1.log'), print_r($parameter,1));
 	 */
 	private function md5Sign($prestr, $key)
 	{
-	    file_put_contents(storage_path('logs/step9.log'), $prestr);
-        file_put_contents(storage_path('logs/step10.log'), $key);
-
 		$prestr = $prestr . $key;
 		return md5($prestr);
 	}
@@ -458,13 +455,10 @@ file_put_contents(storage_path('logs/step1.log'), print_r($parameter,1));
 	 */
 	private function md5Verify($prestr, $sign, $key)
 	{
-	    file_put_contents(storage_path('logs/step11.log'), print_r($prestr, 1));
-        file_put_contents(storage_path('logs/step12.log'), print_r($key, 1));
-        file_put_contents(storage_path('logs/step13.log'), print_r($sign, 1));
 		$prestr = $prestr . $key;
-        file_put_contents(storage_path('logs/step5.log'), print_r($prestr, 1));
+
 		$mysgin = md5($prestr);
-        file_put_contents(storage_path('logs/step6.log'), print_r($mysgin, 1));
+
 		if ($mysgin == $sign) {
 			return true;
 		} else {
@@ -482,14 +476,13 @@ file_put_contents(storage_path('logs/step1.log'), print_r($parameter,1));
 	{
 		//除去待签名参数数组中的空值和签名参数
 		$para_filter = $this->paraFilter($para_temp);
-        file_put_contents(storage_path('logs/step3.log'), print_r($para_filter, 1));
+
 		//对待签名参数数组排序
 		$para_sort = $this->argSort($para_filter);
 
 		//把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
 		$prestr = $this->createLinkstring($para_sort);
-        file_put_contents(storage_path('logs/step4.log'), print_r($prestr, 1));
-        file_put_contents(storage_path('logs/step8.log'), '11'. $this->sign_type);
+
 		$is_sgin = false;
 		switch (strtoupper(trim($this->sign_type))) {
 			case 'MD5':

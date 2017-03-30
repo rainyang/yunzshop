@@ -1,4 +1,5 @@
-﻿ <script language="javascript">
+﻿
+    <script language="javascript">
         function pay(order_id)
         {
             if (confirm('确认此订单已付款吗？')) {
