@@ -61,7 +61,7 @@ class MemberOfficeAccountService extends MemberService
 
             $resp_info = @ihttp_get($userinfo_url);
             $userinfo    = @json_decode($resp_info['content'], true);
-echo '<pre>';print_r($userinfo);exit;
+
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 \YunShop::app()->openid = $userinfo['openid'];
 
