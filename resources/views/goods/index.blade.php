@@ -53,18 +53,16 @@
 						</div>
 
 						<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品分类</label>
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">商品分类</label>
 							<div class="col-sm-8 col-xs-12">
-
 								{!!$catetory_menus!!}
-
 							</div>
 						</div>
 
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
 							<div class="col-sm-8 col-xs-12">
-								<select name="search[brand_id]" id="brand">
+								<select name="search[brand_id]" id="brand" style="width:250px">
 									<option value="0">请选择品牌</option>
 									@if(!empty($brands))
 									@foreach($brands as $brand)
@@ -360,7 +358,9 @@
 				, "json"
 		);
 	}
-
+	require(['select2'],function(){
+		$('#brand').select2();
+	})
 </script>
 
 @endsection('content')
