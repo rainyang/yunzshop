@@ -13,7 +13,7 @@
 	</ul>
 </div>
 <!-- 新增加右侧顶部三级菜单结束 -->
-<form action="" method="post">
+<form action="{{ yzWebUrl('goods.dispatch.sort') }}" method="post">
 <div class="main panel panel-default">
     <div class="panel-body table-responsive">
         <table class="table table-hover">

@@ -139,6 +139,12 @@ class DispatchController extends BaseController
      */
     public function sort()
     {
-
+        $displayOrders = \YunShop::request()->display_order;
+        foreach($displayOrders as $id => $displayOrder){
+            $dispatch = Dispatch::find($id);
+            $dispatch->display_order = $displayOrder;
+            $dispatch->save();
+        }
+        return $this->message('排序成功', Url::absoluteWeb('goods.dispatch.index'));
     }
 }
