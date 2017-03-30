@@ -4,7 +4,7 @@ if (!defined('IN_IA')) {
 }
 
 
-define('SZ_YI_DEBUG', 0);//false
+define('SZ_YI_DEBUG', 1);//false
 !defined('SZ_YI_PATH') && define('SZ_YI_PATH', IA_ROOT . '/addons/sz_yi/');
 !defined('SZ_YI_CORE') && define('SZ_YI_CORE', SZ_YI_PATH . 'core/');
 !defined('SZ_YI_APP') && define('SZ_YI_APP', SZ_YI_PATH . 'app/');
