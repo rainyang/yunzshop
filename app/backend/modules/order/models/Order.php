@@ -12,33 +12,33 @@ class Order extends \app\common\models\Order
 {
     public static function getAllOrders($search,$pageSize){
         $builder = Order::orders($search,$pageSize);
-        $list = $builder->paginate($pageSize)->toArray();
         $list['total_price'] = $builder->sum('price');
+        $list += $builder->paginate($pageSize)->toArray();
         return $list;
 
     }
     public static function getWaitPayOrders($search,$pageSize){
         $builder = Order::orders($search,$pageSize)->waitPay();
-        $list = $builder->paginate($pageSize)->toArray();
         $list['total_price'] = $builder->sum('price');
+        $list += $builder->paginate($pageSize)->toArray();
         return $list;
     }
     public static function getWaitSendOrders($search,$pageSize){
         $builder = Order::orders($search,$pageSize)->waitSend();
-        $list = $builder->paginate($pageSize)->toArray();
         $list['total_price'] = $builder->sum('price');
+        $list += $builder->paginate($pageSize)->toArray();
         return $list;
     }
     public static function getWaitReceiveOrders($search,$pageSize){
         $builder = Order::orders($search,$pageSize)->waitReceive();
-        $list = $builder->paginate($pageSize)->toArray();
         $list['total_price'] = $builder->sum('price');
+        $list += $builder->paginate($pageSize)->toArray();
         return $list;
     }
     public static function getCompletedOrders($search,$pageSize){
         $builder = Order::orders($search,$pageSize)->completed();
-        $list = $builder->paginate($pageSize)->toArray();
         $list['total_price'] = $builder->sum('price');
+        $list += $builder->paginate($pageSize)->toArray();
         return $list;
     }
 

@@ -381,13 +381,16 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-//        if (!empty($_SESSION['member_id'])) {
-//            return $_SESSION['member_id'];
-//        } else {
-//            return 0;
-//        }
+        if (!empty($_SESSION['member_id'])) {
+            return $_SESSION['member_id'];
+        } else {
+            if (SZ_YI_DEBUG) {
+                return 9;
+            }
+            return 0;
+        }
 
-        return session('member_id', 9);
+        //return session('member_id', 9);
     }
 
 

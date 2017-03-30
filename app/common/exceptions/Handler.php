@@ -2,13 +2,14 @@
 
 namespace app\common\exceptions;
 
-use app\common\components\BaseController;
+use app\common\traits\JsonTrait;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
+    use JsonTrait;
     /**
      * A list of the exception types that should not be reported.
      *
@@ -90,7 +91,7 @@ class Handler extends ExceptionHandler
                 'msg' => $e->getMessage(),
                 'data' => []
             ],256);exit;
-            BaseController::errorJson($e->getMessage());
+            $this->errorJson($e->getMessage());
             exit;
         }
         $whoops = new \Whoops\Run;
