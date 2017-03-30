@@ -210,9 +210,10 @@ class WechatPay extends Pay
      *
      * @param $data
      * @param $openid
+     * @param $pay_order_model
      * @return easyOrder
      */
-    public function getEasyWeChatOrder($data, $openid, $pay_order_model)
+    public function getEasyWeChatOrder($data, $openid, &$pay_order_model)
     {
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...

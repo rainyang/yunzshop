@@ -4,9 +4,7 @@
 
 
 <div class="w1200 m0a">
-    
-@include('goods.dispatch.tabs')
-    
+
 <div class="rightlist">
     	<!-- 新增加右侧顶部三级菜单 -->
 <div class="right-titpos">
@@ -15,7 +13,7 @@
 	</ul>
 </div>
 <!-- 新增加右侧顶部三级菜单结束 -->
-<form action="" method="post">
+<form action="{{ yzWebUrl('goods.dispatch.sort') }}" method="post">
 <div class="main panel panel-default">
     <div class="panel-body table-responsive">
         <table class="table table-hover">
@@ -58,7 +56,7 @@
                          <a href="{{ yzWebUrl('goods.dispatch.delete', ['id'=>$dispatch['id']]) }}" class="btn btn-default btn-sm" onclick="return confirm('确认删除此配送方式?')" title="删除"><i class="fa fa-times"></i></a>
                     </td>
                 </tr>
-                {/loop}
+                @endforeach
                 <tr>
                     <td colspan='9'>
                         <a class='btn btn-primary' href="{{ yzWebUrl('goods.dispatch.add') }}"><i class='fa fa-plus'></i> 添加配送方式</a>
@@ -67,10 +65,11 @@
                 </tr>
             </tbody>
         </table>
-        {$pager}
+        {!! $pager !!}
     </div>
 </div>
 </form>
+</div>
 </div>
 <script>
     require(['bootstrap'], function ($) {
@@ -82,6 +81,5 @@
     });
 </script>
 
+@endsection
 
-
-{template 'web/_footer'}

@@ -9,6 +9,7 @@
 namespace app\payment\controllers;
 
 
+use app\common\facades\Setting;
 use app\payment\PaymentController;
 
 class AlipayController extends PaymentController
@@ -64,18 +65,6 @@ class AlipayController extends PaymentController
         }
     }
 
-    public function refundNotifyUrl()
-    {
-        // TODO 访问记录
-        // TODO 保存响应数据
-    }
-
-    public function withdrawNotifyUrl()
-    {
-        // TODO 访问记录
-        // TODO 保存响应数据
-    }
-
     /**
      * 签名验证
      *
@@ -83,7 +72,13 @@ class AlipayController extends PaymentController
      */
     public function getSignResult()
     {
+        echo  'uniacid: '. \YunShop::app()->uniacid;
+        $pay = Setting::get('shop.pay');
+        echo '<pre> pay:';print_r($pay);exit;
+
         $alipay = app('alipay.web');
+        $alipay->setSignType('MD5');
+        $alipay->setKey();
 
         return $alipay->verify();
     }
