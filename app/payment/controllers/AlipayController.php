@@ -84,6 +84,7 @@ class AlipayController extends PaymentController
     public function getSignResult()
     {
         $alipay = app('alipay.web');
+        $alipay->setSignType('MD5');
 
         return $alipay->verify();
     }
