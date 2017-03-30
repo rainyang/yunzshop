@@ -19,23 +19,10 @@ class MemberFavoriteController extends BaseController
     {
         //todo 需要增加商品信息显示
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = '57';
+        $memberId = '9';
         $favoriteList = MemberFavorite::getFavoriteList($memberId);
         //dd($favoriteList);
 
-        $goodsModel = new GoodsService();
-
-        $i = 0;
-        foreach ($favoriteList as $favorite) {
-            $favorite['goods'] = $goodsModel->getGoodsByCart($favorite['goods_id']);
-            if ($favorite['goods'] != false) {
-                $favoriteList[$i] = $favorite;
-            } else {
-                unset($favoriteList[$i]);
-            }
-            $i += 1;
-        }
-        dd($favoriteList);
         return $this->successJson($favoriteList);
 
     }

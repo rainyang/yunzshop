@@ -22,7 +22,7 @@ class MemberAddressController extends BaseController
     public function index()
     {
         //$memberId = \YunShop::app()->getMemberId();
-        $memberId = '9'; //测试使用
+        $memberId = '57'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
         //获取省市ID
         if ($addressList) {
