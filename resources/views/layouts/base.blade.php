@@ -142,7 +142,6 @@ desired effect
 
 
 <!-- Bootstrap 3.3.6 -->
-<script src="{{static_url('yunshop/bootstrap/js/bootstrap.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{static_url('yunshop/dist/js/app.min.js')}}"></script>
 

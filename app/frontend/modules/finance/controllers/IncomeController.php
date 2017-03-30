@@ -98,8 +98,8 @@ class IncomeController extends BaseController
         $config = \Config::get('income');
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
         $incomeModel = $incomeModel->where('status', '0');
-        if ($incomeModel->get()) {
-            return $this->errorJson('未检测到可提现数据!'.\YunShop::app()->getMemberId());
+        if (!$incomeModel->get()) {
+            return $this->errorJson('未检测到可提现数据!');
         }
 
         foreach ($config as $key => $item) {
