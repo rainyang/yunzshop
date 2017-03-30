@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\facades\Setting;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
 use app\common\services\Session;
@@ -30,8 +31,9 @@ class MemberOfficeAccountService extends MemberService
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
 
-        $appId        = \YunShop::app()->account['key'];
-        $appSecret    = \YunShop::app()->account['secret'];
+        $pay = Setting::get('shop.pay');
+        $appId        = $pay['weixin_appid'];
+        $appSecret    = $pay['weixin_secret'];
 
         $callback     = \YunShop::app()->siteroot . $_SERVER['REQUEST_URI'];
 

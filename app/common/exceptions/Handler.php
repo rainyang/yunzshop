@@ -47,11 +47,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if(($exception instanceof AppException) || \YunShop::isApi()){
+            return $this->errorJson($exception->getMessage());
+        }
+
         if ($this->isHttpException($exception))
         {
             return $this->renderHttpException($exception);
         }
-
 
         if (config('app.debug'))
         {
@@ -85,15 +88,6 @@ class Handler extends ExceptionHandler
      */
     protected function renderExceptionWithWhoops(Exception $e)
     {
-        if($e instanceof AppException){
-            echo json_encode([
-                'result' => 1,
-                'msg' => $e->getMessage(),
-                'data' => []
-            ],256);exit;
-            $this->errorJson($e->getMessage());
-            exit;
-        }
         $whoops = new \Whoops\Run;
         $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
 
