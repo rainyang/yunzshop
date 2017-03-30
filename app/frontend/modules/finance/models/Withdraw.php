@@ -9,5 +9,10 @@ namespace app\frontend\modules\finance\models;
 
 class Withdraw extends \app\common\models\Withdraw
 {
-    
+    public static function getWithdrawLog()
+    {
+        $withdrawModel = self::uniacid();
+        $withdrawModel->where('member_id',\YunShop::app()->getMemberId());
+        return $withdrawModel;
+    }
 }
