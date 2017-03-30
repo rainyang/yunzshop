@@ -184,14 +184,14 @@ class MemberOfficeAccountService extends MemberService
 //                $redirect_url = $this->_getClientRequestUrl();
 //                redirect($redirect_url . '?login')->send();exit;
 //            }
-            header('Location: ' . $authurl);
-            //redirect($authurl)->send();
+            //header('Location: ' . $authurl);
+            redirect($authurl)->send();
             exit;
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
         file_put_contents(storage_path('logs/redirect_url.log'), $redirect_url);
-        //redirect($redirect_url . '?login')->send();
-        redirect('http://test.yunzshop.com/api.html?login')->send();
+        redirect($redirect_url . '?login')->send();
+        //redirect('http://test.yunzshop.com/api.html?login')->send();
     }
 
     /**
