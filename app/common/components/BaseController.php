@@ -2,6 +2,7 @@
 
 namespace app\common\components;
 
+use app\common\traits\JsonTrait;
 use app\common\traits\MessageTrait;
 use app\common\traits\PermissionTrait;
 use app\common\traits\TemplateTrait;
@@ -21,7 +22,7 @@ use Response;
  */
 class BaseController extends Controller
 {
-    use DispatchesJobs, MessageTrait, ValidatesRequests, TemplateTrait, PermissionTrait;
+    use DispatchesJobs, MessageTrait, ValidatesRequests, TemplateTrait, PermissionTrait,JsonTrait;
 
 
     public function __construct()
@@ -60,39 +61,6 @@ class BaseController extends Controller
     }
 
 
-    /**
-     * 接口返回成功 JSON格式
-     * @param string $message   提示信息
-     * @param array $data       返回数据
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public static function successJson($message = '成功', $data = [])
-    {
-        Response::json([
-            'result' => 1,
-            'msg' => $message,
-            'data' => $data
-        ],200,['charset'=>'utf-8'],JSON_UNESCAPED_UNICODE)
-            ->send();
-        return;
-    }
-
-    /**
-     * 接口返回错误JSON 格式
-     * @param string $message    提示信息
-     * @param array $data        返回数据
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public static function errorJson($message = '失败', $data = [])
-    {
-         response()->json([
-            'result' => 0,
-            'msg' => $message,
-            'data' => $data
-        ],200,['charset'=>'utf-8'],JSON_UNESCAPED_UNICODE)
-             ->send();
-        return;
-    }
 
 
 }
