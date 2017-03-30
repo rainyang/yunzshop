@@ -17,7 +17,7 @@ use app\common\models\BaseModel;
  * */
 class Balance extends BaseModel
 {
-    public $table = 'yz_balance_log';
+    public $table = 'yz_balance';
 
     public $timestamps = false;
 
