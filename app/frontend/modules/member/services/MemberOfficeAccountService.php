@@ -188,8 +188,8 @@ class MemberOfficeAccountService extends MemberService
         }
         file_put_contents(storage_path('logs/session.log'), print_r($_SESSION, 1));
         file_put_contents(storage_path('logs/redirect_url.log'), $redirect_url);
-        //redirect($redirect_url . '?login')->send();
-        redirect('http://www.baidu.com')->send();
+        redirect($redirect_url . '?login')->send();
+        //redirect('http://www.baidu.com')->send();
     }
 
     /**
