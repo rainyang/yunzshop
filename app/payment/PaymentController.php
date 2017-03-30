@@ -48,6 +48,8 @@ class PaymentController extends BaseController
                     break;
             }
         }
+
+        \YunShop::app()->uniacid  = 2;
     }
 
     private function getUniacid()

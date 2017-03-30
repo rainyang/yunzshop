@@ -4,7 +4,7 @@
 
 
 <div class="w1200 m0a">
-    
+
 <div class="rightlist">
     	<!-- 新增加右侧顶部三级菜单 -->
 <div class="right-titpos">
@@ -70,6 +70,7 @@
 </div>
 </form>
 </div>
+</div>
 <script>
     require(['bootstrap'], function ($) {
         $('.btn').hover(function () {
@@ -80,5 +81,5 @@
     });
 </script>
 
-@endsection('content');
+@endsection
 
