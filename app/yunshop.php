@@ -46,16 +46,19 @@ class YunShop
         $controller->action = $action;
         $controller->route = implode('.', $currentRoutes);
 
-        //菜单生成
-        $item = Menu::getItemByRoute($controller->route);
-        $menuList = array_merge(Menu::getMenuList(), (array)Config::get('menu'));
-        Config::set('menu',$menuList);
+        if(self::isWeb()){
+            //菜单生成
+            $item = Menu::getItemByRoute($controller->route);
+            $menuList = array_merge(Menu::getMenuList(), (array)Config::get('menu'));
+            Config::set('menu',$menuList);
 
-        self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
-        //检测权限
-        if (self::isWeb() && !PermissionService::can($item)) {
-            abort(403, '无权限');
+            self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
+            //检测权限
+            if (!PermissionService::can($item)) {
+                abort(403, '无权限');
+            }
         }
+
         //执行方法
         $controller->preAction();
         $content = $controller->$action(
@@ -87,7 +90,7 @@ class YunShop
         if (self::isWeb()) {
             $rootName .= '\\backend';
         }
-        if (self::isApp()) {
+        if (self::isApp() || self::isApi()) {
             $rootName .= '\\frontend';
         }
         return $rootName;
@@ -99,7 +102,7 @@ class YunShop
         if (self::isWeb()) {
             $path .= '/backend';
         }
-        if (self::isApp()) {
+        if (self::isApp() || self::isApi()) {
             $path .= '/frontend';
         }
         return $path;
@@ -113,6 +116,12 @@ class YunShop
     public static function isApp()
     {
         return strpos($_SERVER['PHP_SELF'], '/app/index.php') !== false ? true : false;
+    }
+
+    public static function isApi()
+    {
+        return (strpos($_SERVER['PHP_SELF'], '/addons/') !== false &&
+            strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
     }
 
     public static function isPayment()
@@ -152,9 +161,9 @@ class YunShop
      * 路由写法为   test-cache.test-clean
      *
      */
-    public static function parseRoute()
+    public static function parseRoute($requestRoute)
     {
-        $routes = explode('.', self::request()->route);
+        $routes = explode('.', $requestRoute);
 
         $path = self::getAppPath();
         $namespace = self::getAppNamespace();
@@ -189,7 +198,7 @@ class YunShop
                             $currentRoutes[] = $r;
                         } else {
                             if ($countRoute !== $k + 3) {
-                                exit('no found route:' . self::request()->route);
+                                abort(404,'no found route:' . $requestRoute);
                             }
                             $action = strpos($r, '-') === false ? $r : Str::camel($r);
                             $currentRoutes[] = $r;
@@ -213,7 +222,7 @@ class YunShop
                         $currentRoutes[] = $r;
                     } else {
                         if ($length !== $k + 1) {
-                            exit('no found route:' . self::request()->route);
+                            abort(404,'no found route:' . $requestRoute);
                         }
                         $action = strpos($r, '-') === false ? $r : Str::camel($r);
                         $currentRoutes[] = $r;
@@ -307,7 +316,7 @@ class YunRequest extends YunComponent
     public function __construct()
     {
         global $_GPC;
-        $this->values = (array)$_GPC;
+        $this->values = YunShop::isApi() ? request()->input() :(array)$_GPC;
     }
 
 
@@ -322,8 +331,17 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
-        $this->values = (array)$_W;
+        $this->values = YunShop::isApi() ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
+    }
+    
+    public function getW()
+    {
+        return [
+            'uniacid'=>request()->get('i'),
+            'weid'=>request()->get('i'),
+            'acid'=>request()->get('i'),
+        ];
     }
 
     /**
@@ -384,7 +402,7 @@ class YunApp extends YunComponent
         if (!empty($_SESSION['member_id'])) {
             return $_SESSION['member_id'];
         } else {
-            if (SZ_YI_DEBUG) {
+            if (config('app.debug')) {
                 return 9;
             }
             return 0;
