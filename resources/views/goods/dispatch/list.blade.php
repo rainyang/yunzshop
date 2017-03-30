@@ -5,8 +5,6 @@
 
 <div class="w1200 m0a">
     
-@include('goods.dispatch.tabs')
-    
 <div class="rightlist">
     	<!-- 新增加右侧顶部三级菜单 -->
 <div class="right-titpos">
@@ -58,7 +56,7 @@
                          <a href="{{ yzWebUrl('goods.dispatch.delete', ['id'=>$dispatch['id']]) }}" class="btn btn-default btn-sm" onclick="return confirm('确认删除此配送方式?')" title="删除"><i class="fa fa-times"></i></a>
                     </td>
                 </tr>
-                {/loop}
+                @endforeach
                 <tr>
                     <td colspan='9'>
                         <a class='btn btn-primary' href="{{ yzWebUrl('goods.dispatch.add') }}"><i class='fa fa-plus'></i> 添加配送方式</a>
@@ -67,7 +65,7 @@
                 </tr>
             </tbody>
         </table>
-        {$pager}
+        {!! $pager !!}
     </div>
 </div>
 </form>
@@ -82,6 +80,5 @@
     });
 </script>
 
+@endsection('content');
 
-
-{template 'web/_footer'}

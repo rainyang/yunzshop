@@ -8,7 +8,6 @@
 
 namespace app\common\traits;
 
-
 trait JsonTrait
 {
 
@@ -20,7 +19,7 @@ trait JsonTrait
      */
     public  function successJson($message = '成功', $data = [])
     {
-        Response::json([
+        response()->json([
             'result' => 1,
             'msg' => $message,
             'data' => $data

@@ -47,6 +47,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script type="text/javascript" src="./resource/js/app/config.js"></script>
     <script type="text/javascript" src="../addons/sz_yi/static/js/dist/tooltipbox.js"></script>
 
+
 </head>
 <style type="text/css">
     .red {float:left;color:red}
