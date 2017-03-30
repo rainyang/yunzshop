@@ -58,6 +58,7 @@ class AlipayController extends PaymentController
 
         if($verify_result) {
             if($_GET['trade_status'] == 'TRADE_SUCCESS') {
+                echo 'ok';exit;
                 redirect()->send();
             }
         } else {
@@ -72,13 +73,11 @@ class AlipayController extends PaymentController
      */
     public function getSignResult()
     {
-        echo  'uniacid: '. \YunShop::app()->uniacid;
-        $pay = Setting::get('shop.pay');
-        echo '<pre> pay:';print_r($pay);exit;
+        $key = Setting::get('alipay-web.key');
 
         $alipay = app('alipay.web');
         $alipay->setSignType('MD5');
-        $alipay->setKey();
+        $alipay->setKey($key);
 
         return $alipay->verify();
     }

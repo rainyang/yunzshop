@@ -124,6 +124,7 @@ class IncomeController extends BaseController
                     'poundage' => $poundage,
                     'poundage_rate' => $set[$key]['poundage_rate'],
                     'can' => true,
+                    'selected' => true,
                 ];
             } else {
                 $incomeData[$key] = [
@@ -134,6 +135,7 @@ class IncomeController extends BaseController
                     'poundage' => $poundage,
                     'poundage_rate' => $set[$key]['poundage_rate'],
                     'can' => false,
+                    'selected' => false,
                 ];
             }
         }
@@ -149,8 +151,7 @@ class IncomeController extends BaseController
     public function saveWithdraw()
     {
         $config = \Config::get('income');
-        \Log::info("- request");
-        \Log::info(\YunShop::request());
+
         $withdrawData = \YunShop::request()->data;
         \Log::info("POST - data");
         \Log::info($withdrawData);
@@ -235,6 +236,7 @@ class IncomeController extends BaseController
                 'uniacid' => \YunShop::app()->uniacid,
                 'member_id' => \YunShop::app()->getMemberId(),
                 'type' => $item['type'],
+                'type_name' => $item['type_name'],
                 'type_id' => $item['type_id'],
                 'amounts' => $item['amounts'],
                 'poundage' => $item['poundage'],
