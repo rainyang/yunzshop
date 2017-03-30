@@ -37,7 +37,7 @@ trait JsonTrait
      */
     public  function errorJson($message = '失败', $data = [])
     {
-        response()->json([
+        \response()->json([
             'result' => 0,
             'msg' => $message,
             'data' => $data
