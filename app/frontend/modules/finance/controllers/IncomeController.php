@@ -137,6 +137,7 @@ class IncomeController extends BaseController
                 ];
             }
         }
+        dd($incomeData);
         if ($incomeData) {
             return $this->successJson('获取数据成功!', $incomeData);
         }
