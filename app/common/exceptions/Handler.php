@@ -2,7 +2,6 @@
 
 namespace app\common\exceptions;
 
-use app\common\components\BaseController;
 use app\common\traits\JsonTrait;
 use Exception;
 use Illuminate\Auth\AuthenticationException;

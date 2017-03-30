@@ -20,7 +20,7 @@ trait JsonTrait
      */
     public  function successJson($message = '成功', $data = [])
     {
-        Response::json([
+        \Response::json([
             'result' => 1,
             'msg' => $message,
             'data' => $data
