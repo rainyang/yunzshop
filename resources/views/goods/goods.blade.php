@@ -1,8 +1,6 @@
 ﻿@extends('layouts.base')
 
 @section('content')
-    <script type="text/javascript" src="./resource/js/lib/jquery-ui-1.10.3.min.js"></script>
-
     <script type="text/javascript">
         window.type = "{{$goods['type']}}";
         window.virtual = "{{$goods['virtual']}}";

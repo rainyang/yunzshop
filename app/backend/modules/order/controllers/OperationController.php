@@ -21,6 +21,7 @@ class OperationController extends BaseController
     {
         parent::__construct();
         $this->_params = \YunShop::request()->get();
+        dd($this->_params);exit;
         if(!isset($this->_params['order_id'])){
             $this->errorJson('order_id 不能为空!');
             exit;

@@ -95,26 +95,23 @@ class IncomeController extends BaseController
      */
     public function getWithdraw()
     {
-
         $config = \Config::get('income');
         $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
         $incomeModel = $incomeModel->where('status', '0');
-        if ($incomeModel->get()) {
+        if (!$incomeModel->get()) {
             return $this->errorJson('未检测到可提现数据!');
         }
-        foreach ($config as $key => $item) {
 
+        foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('income.withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
             $incomeModel = $incomeModel->where('type', $key);
             $amount = $incomeModel->sum('amount');
-
 
             if (isset($set[$key]['roll_out_limit']) && bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1) {
                 $type_id = '';
                 foreach ($incomeModel->get() as $ids) {
                     $type_id .= $ids->type_id . ",";
                 }
-
                 $incomeData[] = [
                     'type' => $item['type'],
                     'type_name' => $item['type_name'],
