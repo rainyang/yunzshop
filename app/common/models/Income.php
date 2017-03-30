@@ -38,7 +38,7 @@ class Income extends BackendModel
     public static function getIncomeById($id)
     {
         return self::uniacid()
-        ->where('id',$id);
+            ->where('id', $id);
     }
 
     /**
@@ -46,33 +46,47 @@ class Income extends BackendModel
      */
     public static function getIncomes()
     {
-       return self::uniacid();
+        return self::uniacid();
     }
 
     public static function getIncomeInMonth()
     {
         $model = self::select('create_month');
         $model->uniacid();
-        $model->with(['hasManyIncome'=>function($query){
-            $query->select('id','create_month','type_name','amount','created_at');
+        $model->with(['hasManyIncome' => function ($query) {
+            $query->select('id', 'create_month', 'type_name', 'amount', 'created_at');
             $query->get();
         }]);
         $model->groupBy('create_month');
-        $model->orderBy('create_month','desc');
+        $model->orderBy('create_month', 'desc');
         return $model;
     }
-    
+
     public static function getDetailById($id)
     {
         $model = self::uniacid();
         $model->select('detail');
-        $model->where('id',$id);
+        $model->where('id', $id);
         return $model;
+    }
+
+
+    public static function updatedIncomeWithdraw($type, $typeId, $status)
+    {
+//        var_dump($type);
+//        echo "--";
+//        var_dump($typeId);exit;
+        return self::where('type', 'commission')
+            ->where('member_id', \YunShop::app()->getMemberId())
+            ->whereIn('type_id', ['2'])
+            ->update(['status' => $status]);
+//        ->get();
     }
 
     public function hasManyIncome()
     {
         return $this->hasMany(self::class, "create_month", "create_month");
     }
-    
+
+
 }
