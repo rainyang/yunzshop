@@ -185,7 +185,7 @@ class MemberOfficeAccountService extends MemberService
             redirect($authurl)->send();
             exit;
         }
-        redirect($redirect_url . '?login')->send();
+        redirect($redirect_url . '?login&session_id=' . session_id())->send();
     }
 
     /**
