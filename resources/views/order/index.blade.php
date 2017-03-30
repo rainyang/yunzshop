@@ -238,7 +238,7 @@
 
                             @if( $order_goods_index == 0)
                                 <td rowspan="{!! count($order['has_many_order_goods']) !!}">
-                                    <a href="{!! yzAppUrl('member/list',array('op'=>'detail')) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
+                                    <a href="{!! yzWebUrl('member.member.detail',array('id'=>$order['belongs_to_member']['uid'])) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
                                     @else
                                         {{$order['belongs_to_member']['nickname']}}
                                     @endif
