@@ -192,7 +192,8 @@ class MemberOfficeAccountService extends MemberService
 
         //redirect('http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.test.login')->send();
         $split = explode('?', $redirect_url);
-
+echo strrpos($split[0], '/') . ' <BR> ';
+        echo substr($split[0], 0, strrpos($split[0], '/'));exit;
         $redirect_url = substr($split[0], 0, strrpos($split[0], '/'));
 
         redirect($redirect_url . '?login&session_id=' . session_id())->send();
