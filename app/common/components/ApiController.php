@@ -33,6 +33,7 @@ class ApiController extends BaseController
 
         session_start();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
+            echo '<pre>';print_r($_SESSION);exit;
             $yz_redirect  = \YunShop::request()->yz_redirect;
             $type  = \YunShop::request()->type;
 
