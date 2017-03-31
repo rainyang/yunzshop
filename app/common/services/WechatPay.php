@@ -53,7 +53,7 @@ class WechatPay extends Pay
 
         $js = $app->js;
 
-        return ['config'=>$config, 'js'=>$js->config(array('chooseWXPay'), true)];
+        return ['config'=>$config, 'js'=>$js->config(array('chooseWXPay'))];
     }
 
     /**
