@@ -162,7 +162,7 @@ class MemberOfficeAccountService extends MemberService
                         'follow' => 1,
                         'followtime' => time(),
                         'unfollowtime' => 0,
-                        'tag' => base64_encode(iserializer($userinfo))
+                        'tag' => base64_encode(serialize($userinfo))
                     );
                     McMappingFansModel::create($record);
 
