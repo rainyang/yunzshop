@@ -34,6 +34,7 @@ class ApiController extends BaseController
             echo 'cc:' . $_COOKIE[session_name()];
             $session_id = $_COOKIE[session_name()];
         }
+        echo 'sid1:' . $session_id;
         session_id($session_id);
 echo '<pre>';print_r($_COOKIE);
 echo '<pre>';print_r($_COOKIE['PHPSESSID']);
