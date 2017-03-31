@@ -32,6 +32,12 @@ class ApiController extends BaseController
             $type  = \YunShop::request()->type;
 
             redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
+        } else {
+            $redirect_url = $this->_getClientRequestUrl();
+
+            if ($redirect_url) {
+                redirect($redirect_url . '?login&session_id=' . session_id())->send();
+            }
         }
     }
 
