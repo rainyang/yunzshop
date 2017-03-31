@@ -33,10 +33,10 @@ class ApiController extends BaseController
 
             redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
         } else {
-            $redirect_url = $this->_getClientRequestUrl();
+            $redirect_url = Session::get('client_url');
 
             if ($redirect_url) {
-                redirect($redirect_url . '?login&session_id=' . session_id())->send();
+               // redirect($redirect_url . '?login&session_id=' . session_id())->send();
             }
         }
     }
