@@ -31,7 +31,6 @@ class BalanceController extends BaseController
             }
         }
 
-
         return view('finance.balance.index', [
             'balance' => $balance,
             'pager' => ''
