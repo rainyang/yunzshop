@@ -18,7 +18,7 @@ use app\frontend\modules\member\services\MemberService;
 use app\common\services\AliPay;
 
 
-class TestController extends ApiController
+class TestController extends BaseController
 {
    public function index()
    {
