@@ -37,7 +37,7 @@ class MemberOfficeAccountService extends MemberService
         $appSecret    = $pay['weixin_secret'];
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
- 'sid2:' . session_id();
+
         $state = 'yz-' . session_id();
         if (!Session::get('member_id')) {
             $authurl = $this->_getAuthUrl($appId, $callback, $state);
@@ -48,7 +48,6 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            echo '<pre>code:';print_r($_SESSION);
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
@@ -59,7 +58,6 @@ class MemberOfficeAccountService extends MemberService
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
                 throw new AppException('请求错误');
             }
-
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
@@ -257,11 +255,10 @@ echo '<pre>';print_r($_SESSION);exit;
      * @return string
      */
     private function _setClientRequestUrl()
-    {echo '<pre>';print_r(\YunShop::request());
+    {
         if (\YunShop::request()->yz_redirect) {
-            echo 1;
            Session::set('client_url', \YunShop::request()->yz_redirect);
-        } else {echo 2;
+        } else {
             Session::set('client_url', '');
         }
     }

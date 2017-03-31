@@ -26,36 +26,8 @@ class ApiController extends BaseController
     {
         parent::preAction();
 
-        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state)) {
-            echo 'stat' . \YunShop::request()->state . '<BR>';
-            $session_id = \YunShop::request()->state;
-        } elseif (isset(\YunShop::request()->sessoin_id)) {
-            echo 'sid:' . \YunShop::request()->sessoin_id . '<BR>';
-            $session_id = \YunShop::request()->sessoin_id;
-        } else {
-            echo 'cc:' . $_COOKIE[session_name()];
-            $session_id = $_COOKIE[session_name()];
-        }
-        if (empty($session_id)) {
-            $session_id = \YunShop::app()->uniacid . '-' . Client::random(20) ;
-            $session_id = md5($session_id);
-            setcookie(session_name(), $session_id);
-        }
-        echo 'sid1:' . $session_id;
-//        session_id($session_id);
-//echo '<pre>';print_r($_COOKIE);
-//echo '<pre>';print_r($_COOKIE['PHPSESSID']);
-//echo session_name();
-//        echo '<pre>';print_r($_COOKIE[session_name()]);
-//        echo '<BR>';
-       // session_id($_COOKIE[session_name()]);
-        session_start();
-       // echo '<pre>session: ';print_r($_SESSION);exit;
+        $this->setCookie();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
-//            echo 'sessid:<BR>';
-//            echo session_name(). ':' . session_id();
-//            echo '<BR>';
-//            echo '<pre>';print_r($_SESSION);exit;
             $yz_redirect  = \YunShop::request()->yz_redirect;
             $type  = \YunShop::request()->type;
 
