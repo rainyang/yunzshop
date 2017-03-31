@@ -48,7 +48,7 @@ class ApiController extends BaseController
 echo '<pre>';print_r(\YunShop::request());
         if (empty($session_id) ) {
             echo 'user';
-            $session_id = \YunShop::request()->sessoin_id;
+            $session_id = \YunShop::request()->session_id;
         }
 
         if (empty($session_id)) {
