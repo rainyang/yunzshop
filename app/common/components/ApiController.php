@@ -24,14 +24,14 @@ class ApiController extends BaseController
     public function preAction()
     {
         parent::preAction();
-
-        if (isset(\YunShop::request()->sessoin_id)) {
-            echo 'sid:' . \YunShop::request()->sessoin_id;exit;
-            session_id(\YunShop::request()->sessoin_id);
-        } else {
-            echo 'cc:' . $_COOKIE[session_name()];exit;
-            session_id($_COOKIE[session_name()]);
-        }
+//
+//        if (isset(\YunShop::request()->sessoin_id)) {
+//            echo 'sid:' . \YunShop::request()->sessoin_id;exit;
+//            session_id(\YunShop::request()->sessoin_id);
+//        } else {
+//            echo 'cc:' . $_COOKIE[session_name()];exit;
+//            session_id($_COOKIE[session_name()]);
+//        }
 
         session_start();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
