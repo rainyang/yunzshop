@@ -32,7 +32,7 @@ class ApiController extends BaseController
 //            echo 'cc:' . $_COOKIE[session_name()];exit;
 //            session_id($_COOKIE[session_name()]);
 //        }
-
+echo '<pre>';print_r($_COOKIE);exit;
         session_start();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
 //            echo 'sessid:<BR>';
