@@ -38,7 +38,7 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-        $state = \YunShop::app()->uniacid;
+        $state = 'yz-' . session_id();
         if (!Session::get('member_id')) {
             $authurl = $this->_getAuthUrl($appId, $callback, $state);
         } else {
@@ -51,18 +51,19 @@ class MemberOfficeAccountService extends MemberService
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
-            $resp     = @ihttp_get($tokenurl);
-            $token    = @json_decode($resp['content'], true);
+            $token = \Curl::to($tokenurl)
+                ->asJsonResponse(true)
+                ->get();
 
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
-               return show_json(0, array('msg'=>'请求错误'));
+                throw new AppException('请求错误');
             }
-
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
-            $resp_info = @ihttp_get($userinfo_url);
-            $userinfo    = @json_decode($resp_info['content'], true);
+            $userinfo = \Curl::to($userinfo_url)
+                ->asJsonResponse(true)
+                ->get();
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 \YunShop::app()->openid = $userinfo['openid'];
@@ -100,7 +101,7 @@ class MemberOfficeAccountService extends MemberService
                     $record = array(
                         'openid' => $userinfo['openid'],
                         'nickname' => stripslashes($userinfo['nickname']),
-                        'tag' => base64_encode(iserializer($userinfo))
+                        'tag' => base64_encode(serialize($userinfo))
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
@@ -160,7 +161,7 @@ class MemberOfficeAccountService extends MemberService
                         'follow' => 1,
                         'followtime' => time(),
                         'unfollowtime' => 0,
-                        'tag' => base64_encode(iserializer($userinfo))
+                        'tag' => base64_encode(serialize($userinfo))
                     );
                     McMappingFansModel::create($record);
 
@@ -188,6 +189,15 @@ class MemberOfficeAccountService extends MemberService
             redirect($authurl)->send();
             exit;
         }
+
+        //redirect('http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.test.login')->send();
+        $split = explode('?', $redirect_url);
+
+        if (strrpos($split[0], '/') > 6) {
+          //  $redirect_url = substr($split[0], 0, strrpos($split[0], '/'));
+        }
+
+file_put_contents(storage_path('logs/red.log'), $redirect_url, FILE_APPEND);
         redirect($redirect_url . '?login&session_id=' . session_id())->send();
     }
 

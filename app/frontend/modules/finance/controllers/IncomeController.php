@@ -105,7 +105,7 @@ class IncomeController extends BaseController
         }
 
         foreach ($config as $key => $item) {
-            $set[$key] = \Setting::get('income.withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
+            $set[$key] = \Setting::get('withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
             $incomeModel = $incomeModel->where('type', $key);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
@@ -118,6 +118,7 @@ class IncomeController extends BaseController
 
                 $incomeData[$key] = [
                     'type' => $item['type'],
+                    'key_name' => $item['title'],
                     'type_name' => $item['type_name'],
                     'type_id' => rtrim($type_id, ','),
                     'income' => $incomeModel->sum('amount'),
@@ -129,6 +130,7 @@ class IncomeController extends BaseController
             } else {
                 $incomeData[$key] = [
                     'type' => $item['type'],
+                    'key_name' => $item['title'],
                     'type_name' => $item['type_name'],
                     'type_id' => '',
                     'income' => $incomeModel->sum('amount'),
@@ -153,24 +155,29 @@ class IncomeController extends BaseController
         $config = \Config::get('income');
 
         $withdrawData = \YunShop::request()->data;
-        \Log::info("POST - data");
+        \Log::info("POST - data /r/n");
         \Log::info($withdrawData);
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
 
         $withdrawTotal = $withdrawData['total'];
+        \Log::info("POST - Withdraw Total/r/n");
+        \Log::info($withdrawTotal);
         unset($withdrawData['total']);
 
         $incomeModel = Income::getIncomes();
         $incomeModel = $incomeModel->where('member_id', \YunShop::app()->getMemberId());
         $incomeModel = $incomeModel->where('status', '0');
+
+        \Log::info("POST - Withdraw Data /r/n");
+        \Log::info($withdrawData);
         /**
          * 验证数据
          */
         foreach ($withdrawData as $key => $item) {
 
-            $set[$key] = \Setting::get('income.withdraw.' . $key,
+            $set[$key] = \Setting::get('withdraw.' . $key,
                 [
                     'roll_out_limit' => '100',
                     'poundage_rate' => '5'

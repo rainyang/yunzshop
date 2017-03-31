@@ -11,29 +11,37 @@ namespace app\backend\modules\member\controllers;
 
 use app\backend\modules\member\models\MemberGroup;
 use app\common\components\BaseController;
+use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 
 class MemberGroupController extends BaseController
 {
-    /**
-     *  Member group list
-     */
+    /*
+     * Member group pager list
+     * 17.3,31 restructure
+     *
+     * @autor yitian */
     public function index()
     {
-        $groupsList = MemberGroup::getMemberGroupList();
-        $this->render('member/group', [
-            'groups_list' => $groupsList
-        ]);
+        $pageSize = 1;
+        $groupList = MemberGroup::getGroupPageList($pageSize);
+        $pager = PaginationHelper::show($groupList->total(), $groupList->currentPage(), $groupList->perPage());
+
+        return view('member.group.list', [
+            'groupList' => $groupList,
+            'pager' => $pager
+        ])->render();
     }
     /*
      * Add member group
-     * */
+     * 17.3,31 restructure
+     *
+     * @autor yitian */
     public function store()
     {
         $groupModel = new MemberGroup();
 
         $requestGroup = \YunShop::request()->group;
-        dd($requestGroup);
         if ($requestGroup) {
             $groupModel->setRawAttributes($requestGroup);
             $groupModel->uniacid = \YunShop::app()->uniacid;
@@ -49,15 +57,16 @@ class MemberGroupController extends BaseController
                 }
             }
         }
-
-        $this->render('member/edit_group', ['group' => $requestGroup]);
+        return view('member.group.form', [
+            'groupModel' => $groupModel
+        ])->render();
     }
     /*
      *  Update member group
      * */
     public function update()
     {
-        $groupModel = MemberGroup::getMemberGroupByGroupID(\YunShop::request()->id);
+        $groupModel = MemberGroup::getMemberGroupByGroupID(\YunShop::request()->group_id);
         if(!$groupModel) {
             return $this->message('未找到会员分组或已删除', Url::absoluteWeb('member.member-group.index'));
         }
@@ -76,21 +85,21 @@ class MemberGroupController extends BaseController
                 }
             }
         }
-        $this->render('member/edit_group', [
-            'group'     => $groupModel
-        ]);
+        return view('member.group.form', [
+            'groupModel' => $groupModel
+        ])->render();
     }
     /*
      * Destory member group
+     *
      * */
     public function destroy()
     {
-        $requestGroup = MemberGroup::getMemberGroupByGroupID(\YunShop::request()->id);
-        if (!$requestGroup) {
+        $groupModel = MemberGroup::getMemberGroupByGroupID(\YunShop::request()->group_id);
+        if (!$groupModel) {
             $this->error('未找到会员分组或已删除', Url::absoluteWeb('member.membergroup.index'));
         }
-        $result = MemberGroup::deleteMemberGroup(\YunShop::request()->id);
-        if ($result) {
+        if ($groupModel->delete()) {
             return $this->message("删除会员分组成功。", Url::absoluteWeb('member.membergroup.index'));
         } else {
             $this->error("删除会员分组失败");

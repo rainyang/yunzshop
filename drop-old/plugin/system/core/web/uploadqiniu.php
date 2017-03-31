@@ -2,7 +2,10 @@
 set_time_limit(0);
 global $_W, $_GPC;
 if(!empty($_GPC["submit"])){
-    $SQL = "SELECT id, thumb FROM " . tablename("sz_yi_goods") . " WHERE thumb like :thumb AND uniacid = :uniacid";
+    $page = intval($_GPC["page"]);
+    $startpage = 1 * $page;
+    $endpage = $startpage + 100;
+    $SQL = "SELECT id, thumb FROM " . tablename("sz_yi_goods") . " WHERE thumb like :thumb AND uniacid = :uniacid order by id desc limit {$startpage}, {$endpage}";
     $goods = pdo_fetchall($SQL, array(":uniacid" => $_W["uniacid"], ":thumb" => "images%"));
     foreach ($goods as $good) {
 

@@ -65,7 +65,7 @@
                             <div class="col-sm-8 col-lg-12 col-xs-12">
                                 @section('search_bar')
                                     <div class='input-group'>
-                                        <select name="search[ambiguous][field]" class="form-control">
+                                        <select name="search[ambiguous][field]" id="ambiguous-field" class="form-control">
                                             <option value="order"
                                                     @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
                                                 订单号/支付号
@@ -123,8 +123,8 @@
                                                     @if( array_get($requestSearch,'time_range.field','')=='pay_time')  selected="selected"@endif>
                                                 付款
                                             </option>
-                                            <option value="sent_time"
-                                                    @if( array_get($requestSearch,'time_range.field','')=='sent_time')  selected="selected"@endif>
+                                            <option value="send_time"
+                                                    @if( array_get($requestSearch,'time_range.field','')=='send_time')  selected="selected"@endif>
                                                 发货
                                             </option>
                                             <option value="finish_time"
@@ -321,4 +321,12 @@
             <div id="pager">{!! $pager !!}</div>
         </div>
     </div>
+    <script>
+        $(function () {
+            $("#ambiguous-field").on('change',function(){
+
+                $(this).next('input').attr('placeholder',$(this).find(':selected').text().trim())
+            });
+        })
+    </script>
 @endsection('content')

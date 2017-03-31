@@ -57,7 +57,7 @@
                                     <option value=""  {if !isset($request['search']['time_range']['field'])}selected="selected"{/if} >操作时间</option>
                                     <option value="create_time" {if $request['search']['time_range']['field']=='create_time'}  selected="selected"{/if}  >下单</option>
                                     <option value="pay_time"  {if $request['search']['time_range']['field']=='pay_time'}  selected="selected"{/if}>付款</option>
-                                    <option value="sent_time"  {if $request['search']['time_range']['field']=='sent_time'}  selected="selected"{/if}>发货</option>
+                                    <option value="send_time"  {if $request['search']['time_range']['field']=='send_time'}  selected="selected"{/if}>发货</option>
                                     <option value="finish_time"  {if $request['search']['time_range']['field']=='finish_time'}  selected="selected"{/if}>完成</option>
                                 </select>
                                     {php echo tpl_form_field_daterange('search[time_range]', array('starttime'=>array_get($request,'search.time_range.start',0),'endtime'=>array_get($request,'search.time_range.end',0),'start'=>0,'end'=>0),true);}
