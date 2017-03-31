@@ -118,7 +118,8 @@ class IncomeController extends BaseController
 
                 $incomeData[$key] = [
                     'type' => $item['type'],
-                    'type_name' => $item['type_name'],
+                    'key_name' => $item['key_name'],
+                    'type_name' => $item['title'],
                     'type_id' => rtrim($type_id, ','),
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
@@ -129,6 +130,7 @@ class IncomeController extends BaseController
             } else {
                 $incomeData[$key] = [
                     'type' => $item['type'],
+                    'key_name' => $item['title'],
                     'type_name' => $item['type_name'],
                     'type_id' => '',
                     'income' => $incomeModel->sum('amount'),
