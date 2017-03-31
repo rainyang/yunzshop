@@ -26,7 +26,7 @@ class DispatchController extends BaseController
     {
         $shopset = Setting::get('shop');
         $pageSize = 10;
-        $list = Dispatch::uniacid()->paginate($pageSize)->toArray();
+        $list = Dispatch::uniacid()->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         return view('goods.dispatch.list', [
             'list' => $list,
@@ -57,6 +57,14 @@ class DispatchController extends BaseController
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {
+                //取消其他默认模板
+                $defaultModel = Dispatch::getOneByDefault();
+                if ($defaultModel) {
+                    $defaultModel->is_default = 0;
+                    $defaultModel->save();
+                } else {
+                    $dispatchModel->is_default = 1;
+                }
                 //数据保存
                 if ($dispatchModel->save()) {
                     //显示信息并跳转
@@ -98,6 +106,13 @@ class DispatchController extends BaseController
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {
+                //取消其他默认模板
+                $defaultModel = Dispatch::getOneByDefault();
+                if ($defaultModel) {
+                    $defaultModel->is_default = 0;
+                    $defaultModel->save();
+                }
+
                 //数据保存
                 if ($dispatchModel->save()) {
                     //显示信息并跳转
@@ -127,9 +142,9 @@ class DispatchController extends BaseController
 
         $result = Dispatch::deletedDispatch(\YunShop::request()->id);
         if ($result) {
-            return $this->message('删除品牌成功', Url::absoluteWeb('goods.dispatch.index'));
+            return $this->message('删除模板成功', Url::absoluteWeb('goods.dispatch.index'));
         } else {
-            return $this->message('删除品牌失败', '', 'error');
+            return $this->message('删除模板失败', '', 'error');
         }
     }
 
