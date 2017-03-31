@@ -25,16 +25,17 @@ class ApiController extends BaseController
     {
         parent::preAction();
 
-//        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state)) {
-//            $session_id = \YunShop::request()->state;
-//        } elseif (isset(\YunShop::request()->sessoin_id)) {
-//            echo 'sid:' . \YunShop::request()->sessoin_id;exit;
-//            $session_id = \YunShop::request()->sessoin_id;
-//        } else {
-//            echo 'cc:' . $_COOKIE[session_name()];
-//            $session_id = $_COOKIE[session_name()];
-//        }
-//        echo 'sid1:' . $session_id;
+        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state)) {
+            echo 'stat' . \YunShop::request()->state . '<BR>';
+            $session_id = \YunShop::request()->state;
+        } elseif (isset(\YunShop::request()->sessoin_id)) {
+            echo 'sid:' . \YunShop::request()->sessoin_id . '<BR>';
+            $session_id = \YunShop::request()->sessoin_id;
+        } else {
+            echo 'cc:' . $_COOKIE[session_name()];
+            $session_id = $_COOKIE[session_name()];
+        }
+        echo 'sid1:' . $session_id;
 //        session_id($session_id);
 //echo '<pre>';print_r($_COOKIE);
 //echo '<pre>';print_r($_COOKIE['PHPSESSID']);
