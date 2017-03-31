@@ -25,6 +25,13 @@ class ApiController extends BaseController
     {
         parent::preAction();
 
+        if (\YunShop::request()->sessoin_id) {
+            session_id(\YunShop::request()->sessoin_id);
+        } else {
+            session_id($_COOKIE[session_name()]);
+        }
+
+        session_start();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             $yz_redirect  = \YunShop::request()->yz_redirect;
             redirect(Url::absoluteApp('member.login.index', ['yz_redirect'=>$yz_redirect]))->send();

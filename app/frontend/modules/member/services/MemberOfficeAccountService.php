@@ -32,12 +32,13 @@ class MemberOfficeAccountService extends MemberService
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
 
         $pay = Setting::get('shop.pay');
+
         $appId        = $pay['weixin_appid'];
         $appSecret    = $pay['weixin_secret'];
 
-        $callback     = \YunShop::app()->siteroot . $_SERVER['REQUEST_URI'];
+        $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-        $state = 'we7sid-'.\YunShop::app()->session_id;
+        $state = \YunShop::app()->uniacid;
         if (!Session::get('member_id')) {
             $authurl = $this->_getAuthUrl($appId, $callback, $state);
         } else {
@@ -50,18 +51,20 @@ class MemberOfficeAccountService extends MemberService
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
-            $resp     = @ihttp_get($tokenurl);
-            $token    = @json_decode($resp['content'], true);
+            $token = \Curl::to($tokenurl)
+                ->asJsonResponse(true)
+                ->get();
 
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
-               return show_json(0, array('msg'=>'请求错误'));
+                throw new AppException('请求错误');
             }
 
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
-            $resp_info = @ihttp_get($userinfo_url);
-            $userinfo    = @json_decode($resp_info['content'], true);
+            $userinfo = \Curl::to($userinfo_url)
+                ->asJsonResponse(true)
+                ->get();
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 \YunShop::app()->openid = $userinfo['openid'];
@@ -99,7 +102,7 @@ class MemberOfficeAccountService extends MemberService
                     $record = array(
                         'openid' => $userinfo['openid'],
                         'nickname' => stripslashes($userinfo['nickname']),
-                        'tag' => base64_encode(iserializer($userinfo))
+                        'tag' => base64_encode(serialize($userinfo))
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
@@ -159,7 +162,7 @@ class MemberOfficeAccountService extends MemberService
                         'follow' => 1,
                         'followtime' => time(),
                         'unfollowtime' => 0,
-                        'tag' => base64_encode(iserializer($userinfo))
+                        'tag' => base64_encode(serialize($userinfo))
                     );
                     McMappingFansModel::create($record);
 
