@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\services;
 
 use app\common\facades\Setting;
+use app\common\helpers\Client;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
 use app\common\services\Session;
@@ -112,7 +113,7 @@ class MemberOfficeAccountService extends MemberService
                         'uniacid' => $uniacid,
                         'email' => '',
                         'groupid' => $default_groupid['groupid'],
-                        'createtime' => TIMESTAMP,
+                        'createtime' => time(),
                         'nickname' => stripslashes($userinfo['nickname']),
                         'avatar' => $userinfo['headimgurl'],
                         'gender' => $userinfo['sex'],
@@ -155,8 +156,8 @@ class MemberOfficeAccountService extends MemberService
                         'uid' => $member_id,
                         'acid' => $uniacid,
                         'uniacid' => $uniacid,
-                        'salt' => random(8),
-                        'updatetime' => TIMESTAMP,
+                        'salt' => Client::random(8),
+                        'updatetime' => time(),
                         'nickname' => stripslashes($userinfo['nickname']),
                         'follow' => 1,
                         'followtime' => time(),
