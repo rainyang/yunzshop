@@ -32,7 +32,6 @@ class AlipayController extends PaymentController
             $total_fee = $_POST['total_fee'];
 
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
-                // TODO 支付单查询 && 支付请求数据查询 验证请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
                 $pay_log = [];
                 if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
                      // TODO 更新支付单状态

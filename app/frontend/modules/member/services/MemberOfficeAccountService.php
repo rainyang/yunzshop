@@ -51,11 +51,15 @@ class MemberOfficeAccountService extends MemberService
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
+
+            $responseData = Curl::to($tokenurl)->get();
+
+            echo '<pre>';print_r($responseData);exit;
             $resp     = @ihttp_get($tokenurl);
             $token    = @json_decode($resp['content'], true);
 
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
-               return show_json(0, array('msg'=>'请求错误'));
+                throw new AppException('请求错误');
             }
 
 

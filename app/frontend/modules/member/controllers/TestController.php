@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\services\CreditPay;
 use app\common\services\PayFactory;
@@ -17,7 +18,7 @@ use app\frontend\modules\member\services\MemberService;
 use app\common\services\AliPay;
 
 
-class TestController extends BaseController
+class TestController extends ApiController
 {
    public function index()
    {
@@ -47,16 +48,16 @@ class TestController extends BaseController
 
    public function loginApi()
    {
+       echo $_SESSION['demo'];
+       exit;
        $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=1';
 
        redirect($login_api)->send();
    }
 
    public function login()
-   {
-       echo $_SESSION['member_id'];
-       echo '<BR>';
-       $_SESSION['demo'] = 'yunzshop';
+   {echo '<pre>';print_r($_SESSION);exit;
+       $_SESSION['demo'] = 'yunzshop123';
        echo $_SESSION['demo'];
    }
 
