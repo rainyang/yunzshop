@@ -46,6 +46,7 @@ class ApiController extends BaseController
         }
 
         if (empty($session_id) && isset(\YunShop::request()->sessoin_id)) {
+            echo 'user';
             $session_id = \YunShop::request()->sessoin_id;
         }
 
