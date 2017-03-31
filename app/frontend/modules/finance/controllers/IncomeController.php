@@ -12,6 +12,7 @@ namespace app\frontend\modules\finance\controllers;
 use app\common\components\BaseController;
 use app\common\models\Income;
 use app\frontend\modules\finance\models\Withdraw;
+use Illuminate\Support\Facades\Log;
 use Yunshop\Commission\models\CommissionOrder;
 
 class IncomeController extends BaseController
@@ -102,7 +103,7 @@ class IncomeController extends BaseController
         if (!$incomeModel->get()) {
             return $this->errorJson('未检测到可提现数据!');
         }
-        
+
         foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('income.withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
             $incomeModel = $incomeModel->where('type', $key);
@@ -123,6 +124,7 @@ class IncomeController extends BaseController
                     'poundage' => $poundage,
                     'poundage_rate' => $set[$key]['poundage_rate'],
                     'can' => true,
+                    'selected' => true,
                 ];
             } else {
                 $incomeData[$key] = [
@@ -133,6 +135,7 @@ class IncomeController extends BaseController
                     'poundage' => $poundage,
                     'poundage_rate' => $set[$key]['poundage_rate'],
                     'can' => false,
+                    'selected' => false,
                 ];
             }
         }
@@ -150,7 +153,8 @@ class IncomeController extends BaseController
         $config = \Config::get('income');
 
         $withdrawData = \YunShop::request()->data;
-
+        \Log::info("POST - data");
+        \Log::info($withdrawData);
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
@@ -174,7 +178,8 @@ class IncomeController extends BaseController
             );
             $incomeModel = $incomeModel->whereIn('type_id', [$item['type_id']]);
             $incomes = $incomeModel->get();
-
+            \Log::info("INCOME:");
+            \Log::info($incomes);
             if (isset($set[$key]['roll_out_limit']) &&
                 bccomp($incomes->sum('amount'), $set[$key]['roll_out_limit'], 2) == -1
             ) {
@@ -205,6 +210,7 @@ class IncomeController extends BaseController
      */
     public function setIncome($type, $typeId)
     {
+        \Log::info('setIncome');
         $request = Income::updatedWithdraw($type, $typeId, '1');
     }
 
@@ -214,6 +220,7 @@ class IncomeController extends BaseController
      */
     public function setCommissionOrder($type, $typeId)
     {
+        \Log::info('setCommissionOrder');
         $request = CommissionOrder::updatedCommissionOrderWithdraw($type, $typeId, '1');
     }
 
@@ -229,6 +236,7 @@ class IncomeController extends BaseController
                 'uniacid' => \YunShop::app()->uniacid,
                 'member_id' => \YunShop::app()->getMemberId(),
                 'type' => $item['type'],
+                'type_name' => $item['type_name'],
                 'type_id' => $item['type_id'],
                 'amounts' => $item['amounts'],
                 'poundage' => $item['poundage'],
@@ -240,6 +248,8 @@ class IncomeController extends BaseController
             ];
             static::setIncomeAndOrder($item['type'], $item['type_id']);
         }
+        \Log::info("Withdraw - data");
+        \Log::info($data);
         return Withdraw::insert($data);
     }
 

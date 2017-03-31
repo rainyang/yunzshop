@@ -18,7 +18,8 @@ class WechatPay extends Pay
     {
         $op = '微信订单支付 订单号：\' . $data[\'order_no\']';
         $pay_order_model = $this->log($data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
-
+        echo '<pre>';print_r($_SESSION);exit;
+echo '<pre>';print_r(\YunShop::app()->getMemberId());exit;
         if (empty(\YunShop::app()->getMemberId())) {
             return show_json(0);
         }
@@ -28,20 +29,20 @@ class WechatPay extends Pay
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])
             || empty($pay['weixin_appid']) || empty($pay['weixin_secret'])) {
 
-            return error(1, '没有设定支付参数');
+            throw new AppException('没有设定支付参数');
         }
         $app     = $this->getEasyWeChatApp($pay);
         $payment = $app->payment;
         $order = $this->getEasyWeChatOrder($data, $openid, $pay_order_model);
         $result = $payment->prepare($order);
         $prepayId = null;
-
+echo '<pre>';print_r($result);exit;
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
 
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
         } else {
-            return show_json(0);
+            throw new AppException('微信预下单失败');
         }
 
         $config = $payment->configForJSSDKPayment($prepayId);
@@ -86,9 +87,8 @@ class WechatPay extends Pay
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
 
-            return show_json(1);
         } else {
-            return show_json(0);
+            throw new AppException('退款失败');
         }
     }
 
@@ -210,9 +210,10 @@ class WechatPay extends Pay
      *
      * @param $data
      * @param $openid
+     * @param $pay_order_model
      * @return easyOrder
      */
-    public function getEasyWeChatOrder($data, $openid, $pay_order_model)
+    public function getEasyWeChatOrder($data, $openid, &$pay_order_model)
     {
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...

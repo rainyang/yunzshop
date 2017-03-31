@@ -10,7 +10,10 @@
                 background: #f8f8f8;
                 text-align: center
             }
-            #modal-confirmsend .control-label{margin-top:0;}
+
+            #modal-confirmsend .control-label {
+                margin-top: 0;
+            }
 
             .trbody td {
                 text-align: center;
@@ -178,7 +181,7 @@
                 </tr>
             </table>
 
-            @foreach ($list['data'] as $order)
+            @foreach ($list['data'] as $order_index => $order)
                 <table class='table'
                        style='float:left;border:1px solid #ccc;margin-top:5px;margin-bottom:0px;table-layout: fixed;'>
                     <tr>
@@ -226,11 +229,14 @@
                             </td>
                             <td valign='top' style='border-left:none;text-align: left;/*width:400px*/;'>
                                 {{$order_goods['title']}}
-                                    @if( !empty($order_goods['optiontitle']))<br/><span class="label label-primary sizebg">{{$order_goods['optiontitle']}}</span>
+                                @if( !empty($order_goods['optiontitle']))<br/><span
+                                        class="label label-primary sizebg">{{$order_goods['optiontitle']}}</span>
                                 @endif
                                 <br/>{{$order_goods['goods_sn']}}
                             </td>
-                            <td style='border-left:none;text-align:left;/*width:150px*/'>@if( $requestSearch['plugin'] != "fund")原价: {!! number_format($order_goods['goods_price']/$order_goods['total'],2)!!} @endif<br/>应付: {!! number_format($order_goods['price']/$order_goods['total'],2) !!}
+                            <td style='border-left:none;text-align:left;/*width:150px*/'>@if( $requestSearch['plugin'] != "fund")
+                                    原价: {!! number_format($order_goods['goods_price']/$order_goods['total'],2)!!} @endif
+                                <br/>应付: {!! number_format($order_goods['price']/$order_goods['total'],2) !!}
                                 <br/>数量: {{$order_goods['total']}}
                             </td>
 
@@ -296,21 +302,20 @@
                                         @endif
                                     </table>
                                 </td>
-                                <td rowspan="{php echo count($order['has_many_order_goods'])}"><label
+                                <td rowspan="{{count($order['has_many_order_goods'])}}"><label
                                             class='label label-info'>{{$order['status_name']}}</label><br/>
                                     <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
                                 </td>
-                                <td rowspan="{php echo count($order['has_many_order_goods'])}" width="10%">
-                                    @section('operation')
+                                <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">
+                                @section('operation'.$order_index)
                                         @include('order.ops')
-                                        @include('order.modals')
-
                                     @show
                                 </td>
                         </tr>
                     @endforeach
                 </table>
             @endforeach
+            @include('order.modals')
 
 
             <div id="pager">{!! $pager !!}</div>

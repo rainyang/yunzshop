@@ -8,6 +8,7 @@
 
 namespace app\common\services;
 
+use app\common\helpers\Client;
 use app\common\services\alipay\MobileAlipay;
 use app\common\services\alipay\WebAlipay;
 use app\common\services\alipay\WapAlipay;
@@ -52,9 +53,9 @@ class AliPay extends Pay
      */
     private function getClientType()
     {
-        if (isMobile()) {
+        if (Client::isMobile()) {
             return 'wap';
-        } elseif (is_app()) {
+        } elseif (Client::is_app()) {
             return 'mobile';
         } else {
             return 'web';
