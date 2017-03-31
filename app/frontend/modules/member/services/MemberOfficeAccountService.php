@@ -48,7 +48,7 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            echo '<pre>code:';print_r($_SESSION);exit;
+            echo '<pre>code:';print_r($_SESSION);
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
