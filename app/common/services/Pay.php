@@ -306,8 +306,8 @@ abstract class Pay
             'uniacid' => 2,
             'member_id' => 3,
             'url' => 4,
-            'http_method' => 5,
-            'ip' => 6
+            'http_method' => $this->method,
+            'ip' => $this->ip
         ]);
     }
 
