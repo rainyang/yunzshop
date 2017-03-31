@@ -25,11 +25,11 @@ class ApiController extends BaseController
     {
         parent::preAction();
 
-//        if (\YunShop::request()->sessoin_id) {
-//            session_id(\YunShop::request()->sessoin_id);
-//        } else {
-//            session_id($_COOKIE[session_name()]);
-//        }
+        if (isset(\YunShop::request()->sessoin_id)) {
+            session_id(\YunShop::request()->sessoin_id);
+        } else {
+            session_id($_COOKIE[session_name()]);
+        }
 
         session_start();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
