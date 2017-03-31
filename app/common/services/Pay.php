@@ -305,7 +305,7 @@ abstract class Pay
         PayAccessLog::create([
             'uniacid' => 2,
             'member_id' => 3,
-            'url' => 4,
+            'url' => $this->url,
             'http_method' => $this->method,
             'ip' => $this->ip
         ]);
