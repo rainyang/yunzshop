@@ -123,7 +123,7 @@
                                                     @if( array_get($requestSearch,'time_range.field','')=='pay_time')  selected="selected"@endif>
                                                 付款
                                             </option>
-                                            <option value="sent_time"
+                                            <option value="send_time"
                                                     @if( array_get($requestSearch,'time_range.field','')=='send_time')  selected="selected"@endif>
                                                 发货
                                             </option>
