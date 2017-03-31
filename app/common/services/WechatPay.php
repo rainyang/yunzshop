@@ -8,6 +8,7 @@
 
 namespace app\common\services;
 
+use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\models\Member;
 use EasyWeChat\Foundation\Application;
