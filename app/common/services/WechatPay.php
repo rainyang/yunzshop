@@ -144,7 +144,7 @@ class WechatPay extends Pay
                 'spbill_create_ip' => $this->ip,
             ];
             if (config('app.debug')) {
-                echo '<pre>';print_r($merchantPayData);exit;
+                echo '<pre>';print_r($merchantPayData);
             }
 
             //请求数据日志
