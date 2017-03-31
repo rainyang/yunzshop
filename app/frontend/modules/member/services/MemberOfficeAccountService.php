@@ -102,7 +102,7 @@ class MemberOfficeAccountService extends MemberService
                     $record = array(
                         'openid' => $userinfo['openid'],
                         'nickname' => stripslashes($userinfo['nickname']),
-                        'tag' => base64_encode(iserializer($userinfo))
+                        'tag' => base64_encode(serialize($userinfo))
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
