@@ -16,14 +16,17 @@ class Coupon extends BaseModel
     const COUPON_SINCE_RECEIVE = 1;
 
     public $table = 'yz_coupon';
+
     protected $casts = [
         'goods_ids' => 'json',
         'categoryids' => 'json'
     ];
+
     protected $attributes = [
         'goods_ids' => [],
         'categoryids' => [],
     ];
+
     public static function getMemberCoupon($used = 0) {
         return static::uniacid()->where('used', $used);
     }
@@ -32,7 +35,6 @@ class Coupon extends BaseModel
     {
         return $this->hasMany('app\common\models\MemberCoupon');
     }
-
 
     public static function getValidCoupon($MemberModel)
     {
