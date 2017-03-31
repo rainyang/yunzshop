@@ -51,14 +51,9 @@ class MemberOfficeAccountService extends MemberService
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
-
-            $responseData = \Curl::to($tokenurl)
+            $token = \Curl::to($tokenurl)
                 ->asJsonResponse(true)
                 ->get();
-
-            echo '<pre>';print_r($responseData);exit;
-            $resp     = @ihttp_get($tokenurl);
-            $token    = @json_decode($resp['content'], true);
 
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
                 throw new AppException('请求错误');
@@ -67,8 +62,9 @@ class MemberOfficeAccountService extends MemberService
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
-            $resp_info = @ihttp_get($userinfo_url);
-            $userinfo    = @json_decode($resp_info['content'], true);
+            $userinfo = \Curl::to($userinfo_url)
+                ->asJsonResponse(true)
+                ->get();
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 \YunShop::app()->openid = $userinfo['openid'];
