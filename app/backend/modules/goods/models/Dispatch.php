@@ -40,6 +40,17 @@ class Dispatch extends \app\common\models\goods\Dispatch
     }
 
     /**
+     * 获取配送模板单条数据
+     * @param int $goodsId
+     * @return array
+     */
+    public static function getOneByDefault()
+    {
+        return self::where('is_default', 1)
+            ->first();
+    }
+
+    /**
      * 配送模板数据添加
      * @param array $DispatchInfo
      * @return bool

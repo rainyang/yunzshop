@@ -25,16 +25,33 @@ class ApiController extends BaseController
     {
         parent::preAction();
 
-        if (\YunShop::request()->sessoin_id) {
-            session_id(\YunShop::request()->sessoin_id);
+        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state)) {
+            $session_id = \YunShop::request()->state;
+        } elseif (isset(\YunShop::request()->sessoin_id)) {
+            echo 'sid:' . \YunShop::request()->sessoin_id;exit;
+            $session_id = \YunShop::request()->sessoin_id;
         } else {
-            session_id($_COOKIE[session_name()]);
+            echo 'cc:' . $_COOKIE[session_name()];
+            $session_id = $_COOKIE[session_name()];
         }
-
+        session_id($session_id);
+echo '<pre>';print_r($_COOKIE);
+echo '<pre>';print_r($_COOKIE['PHPSESSID']);
+echo session_name();
+        echo '<pre>';print_r($_COOKIE[session_name()]);
+        echo '<BR>';
+       // session_id($_COOKIE[session_name()]);
         session_start();
+       // echo '<pre>session: ';print_r($_SESSION);exit;
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
+//            echo 'sessid:<BR>';
+//            echo session_name(). ':' . session_id();
+//            echo '<BR>';
+//            echo '<pre>';print_r($_SESSION);exit;
             $yz_redirect  = \YunShop::request()->yz_redirect;
-            redirect(Url::absoluteApp('member.login.index', ['yz_redirect'=>$yz_redirect]))->send();
+            $type  = \YunShop::request()->type;
+
+            redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
         }
     }
 }

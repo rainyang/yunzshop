@@ -16,7 +16,10 @@ class WithDrawController extends BaseController
 {
     public function withdrawLog()
     {
-        $request = Withdraw::getWithdrawLog();
-        dd($request->get()->toArray());
+        $request = Withdraw::getWithdrawLog()->get()->toArray();
+        if ($request) {
+            return $this->successJson('获取数据成功!', $request);
+        }
+        return $this->errorJson('未检测到数据!');
     }
 }

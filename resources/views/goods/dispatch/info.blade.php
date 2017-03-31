@@ -173,7 +173,7 @@
                             <th class="show_n" style="width:120px;">运费(元)</th>
                             <th class="show_n" style="width:120px;">续件(个)</th>
                             <th class="show_n" style="width:120px;">续费(元)</th>
-                            <th style="width:120px;">管理</th>
+                            {{--<th style="width:120px;">管理</th>--}}
                         </tr>
                         </thead>
                         <tbody id='tbody-areas'>
