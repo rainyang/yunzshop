@@ -32,7 +32,7 @@ class ApiController extends BaseController
 //            $type  = \YunShop::request()->type;
 //
 //            redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
-//        } 
+//        }
     }
 
 
