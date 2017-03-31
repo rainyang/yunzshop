@@ -140,7 +140,7 @@
                                     @if (!empty($refund) && $refund['status'] == 1)
                                         <span class="label label-default">已{{$r_type[$refund['rtype']]}}</span>
                                             @if (!empty($refund['refundtime']))
-                                                完成时间: {{date('Y-m-d H:i:s',$refund['refundtime'])}}
+                                                退款时间: {{date('Y-m-d H:i:s',$refund['refundtime'])}}
                                             @endif
                                     @else
                                         <span class="label label-default">已关闭</span>
@@ -183,12 +183,15 @@
                         </div>
                     </div>
                     @endif
+                    @if ($order['status'] == 3)
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">完成时间 :</label>
                         <div class="col-sm-9 col-xs-12">
                             <p class="form-control-static">{{date('Y-m-d H:i:s', $order['finish_time'])}}</p>
                         </div>
                     </div>
+                    @endif
+
                 </div>
 
                 @if (!empty($refund))
