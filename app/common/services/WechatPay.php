@@ -126,6 +126,10 @@ class WechatPay extends Pay
             $openid = Member::getOpenId($order_info['member_id']);
         }
 
+        if (config('app.debug')) {
+            $openid = 146;
+        }
+
         $app = $this->getEasyWeChatApp($pay);
 
         if ($type == 1) {//钱包
