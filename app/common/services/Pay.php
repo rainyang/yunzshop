@@ -301,10 +301,10 @@ abstract class Pay
      * @var void
      */
     protected function payAccessLog()
-    {
+    {   $member_id = \YunShop::app()->getMemberId();
         PayAccessLog::create([
             'uniacid' => $this->uniacid,
-            'member_id' => \YunShop::app()->getMemberId(),
+            'member_id' => $member_id,
             'url' => $this->url,
             'http_method' => $this->method,
             'ip' => $this->ip
