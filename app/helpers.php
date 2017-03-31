@@ -255,6 +255,12 @@ if (!function_exists('yzAppUrl')) {
     }
 }
 
+if (!function_exists('yzApiUrl')) {
+    function yzApiUrl($route, $params = [])
+    {
+        return Url::api($route, $params);
+    }
+}
 
 if (!function_exists('yzWebFullUrl')) {
     function yzWebFullUrl($route, $params = [])
