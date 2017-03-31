@@ -399,8 +399,8 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        if (!empty($_SESSION['member_id'])) {
-            return $_SESSION['member_id'];
+        if (!empty(\Session::get('member_id'))) {
+            return \Session::get('member_id');
         } else {
             if (config('app.debug')) {
                 return 9;
