@@ -23,7 +23,7 @@ class WechatPay extends Pay
 
         if (empty(\YunShop::app()->getMemberId())) {
             return show_json(0);
-        }
+        }echo \YunShop::app()->getMemberId();exit;
         $openid = Member::getOpenId(\YunShop::app()->getMemberId());
         $pay = \Setting::get('shop.pay');
 
