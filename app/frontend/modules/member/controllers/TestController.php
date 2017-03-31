@@ -48,11 +48,14 @@ class TestController extends ApiController
 
    public function loginApi()
    {
-       echo $_SESSION['demo'];
-       exit;
-       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=1';
+       $login_api = 'http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.login.index&type=1';
 
        redirect($login_api)->send();
+   }
+   
+   public function pt()
+   {
+       echo '<pre>';print_r($_SESSION);exit;
    }
 
    public function login()
