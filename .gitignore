@@ -18,3 +18,4 @@ composer.lock
 /vendor/composer/ClassLoader.php
 vendor/
 .DS_Store
+/index.html
