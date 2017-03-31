@@ -8,10 +8,11 @@
 
 namespace app\common\services;
 
-use app\common\helpers\Url;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
+use app\common\helpers\Url;
 use app\common\models\Member;
+use app\common\models\Order;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
 
