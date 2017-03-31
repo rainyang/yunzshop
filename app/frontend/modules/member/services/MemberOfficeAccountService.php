@@ -52,7 +52,9 @@ class MemberOfficeAccountService extends MemberService
             //Session::clear('client_url');
 
 
-            $responseData = \Curl::to($tokenurl)->get();
+            $responseData = \Curl::to($tokenurl)
+                ->asJsonResponse(true)
+                ->get();
 
             echo '<pre>';print_r($responseData);exit;
             $resp     = @ihttp_get($tokenurl);
