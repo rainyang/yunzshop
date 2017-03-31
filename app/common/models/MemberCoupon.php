@@ -11,6 +11,7 @@ class MemberCoupon extends BaseModel
     {
         return $this->belongsTo('app\common\models\Coupon', 'coupon_id', 'id');
     }
+
     public function scopeCoupons($order_builder, $params){
         $order_builder->with([
                 'belongsToCoupon'=>function($query){

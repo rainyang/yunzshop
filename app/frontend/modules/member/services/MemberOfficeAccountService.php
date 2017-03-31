@@ -38,7 +38,7 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-        $state = \YunShop::app()->uniacid;
+        $state = 'yz-' . session_id();
         if (!Session::get('member_id')) {
             $authurl = $this->_getAuthUrl($appId, $callback, $state);
         } else {
@@ -58,7 +58,6 @@ class MemberOfficeAccountService extends MemberService
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
                 throw new AppException('请求错误');
             }
-
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
@@ -191,8 +190,15 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        redirect('http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.test.login')->send();
-        //redirect($redirect_url . '?login&session_id=' . session_id())->send();
+        //redirect('http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.test.login')->send();
+        $split = explode('?', $redirect_url);
+
+        if (strrpos($split[0], '/') > 6) {
+            $redirect_url = substr($split[0], 0, strrpos($split[0], '/'));
+        }
+
+
+        redirect($redirect_url . '?login&session_id=' . session_id())->send();
     }
 
     /**

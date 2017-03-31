@@ -19,6 +19,10 @@ class Address extends BaseModel
 
     public $guarded = [''];
 
+    /*
+     * 获取地址数据表全部数据
+     *
+     * @return array */
     public static function getAllAddress()
     {
         return static::all()->toArray();

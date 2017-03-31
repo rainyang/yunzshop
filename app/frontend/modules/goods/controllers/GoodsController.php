@@ -25,7 +25,7 @@ class GoodsController extends BaseController
             $this->errorJson('请传入正确参数.');
         }
         //$goods = new Goods();
-        $goodsModel = Goods::with(['hasManyParams' => function ($query) {
+        $goodsModel = Goods::uniacid()->with(['hasManyParams' => function ($query) {
             return $query->select('goods_id', 'title', 'value');
         }])->with(['hasManySpecs' => function ($query) {
             return $query->select('id', 'goods_id', 'title', 'description');

@@ -40,7 +40,7 @@ class BalanceController extends BaseController
     //用户余额管理
     public function member()
     {
-        
+
     }
 
 
