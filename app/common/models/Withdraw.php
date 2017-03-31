@@ -10,11 +10,14 @@ namespace app\common\models;
 
 
 use app\backend\models\BackendModel;
+use app\frontend\modules\finance\services\WithdrawService;
 
 class Withdraw extends BackendModel
 {
     public $table = 'yz_withdraw';
-
+    
+    public $StatusService;
+    
     public $timestamps = true;
 
     public $widgets = [];
@@ -22,10 +25,23 @@ class Withdraw extends BackendModel
     public $attributes = [];
 
     protected $guarded = [];
-    
-    
-    
 
+    protected $appends = ['status_name'];
+
+    public function getStatusService()
+    {
+        if (!isset($this->StatusService)) {
+
+            $this->StatusService = WithdrawService::createStatusService($this);
+        }
+        return $this->StatusService;
+    }
+
+    public function getStatusNameAttribute()
+    {
+        return $this->getStatusService();
+    }
+    
     /**
      *  定义字段名
      * 可使
