@@ -44,26 +44,21 @@ class ApiController extends BaseController
             $session_id = $pieces[1];
             unset($pieces);
         }
-        echo 'st:' . $session_id . '<BR>';
-echo '<pre>';print_r(\YunShop::request());
+
         if (empty($session_id) && \YunShop::request()->session_id) {
-            echo 'user';
             $session_id = \YunShop::request()->session_id;
         }
 
         if (empty($session_id)) {
-            echo 'cc';
             $session_id = $_COOKIE[session_name()];
         }
         if (empty($session_id)) {
-            echo 'ra';
             $session_id = \YunShop::app()->uniacid . '-' . Client::random(20) ;
             $session_id = md5($session_id);
             setcookie(session_name(), $session_id);
         }
-echo $session_id;
+
         session_id($session_id);
         session_start();
-        echo '<pre>';print_r($_SESSION);exit;
     }
 }
