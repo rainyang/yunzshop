@@ -8,6 +8,7 @@
 
 namespace app\common\services;
 
+use app\common\helpers\Url;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\models\Member;
@@ -24,6 +25,7 @@ class WechatPay extends Pay
         if (empty(\YunShop::app()->getMemberId())) {
             return show_json(0);
         }
+
         $openid = Member::getOpenId(\YunShop::app()->getMemberId());
         $pay = \Setting::get('shop.pay');
 
@@ -37,7 +39,7 @@ class WechatPay extends Pay
         $order = $this->getEasyWeChatOrder($data, $openid, $pay_order_model);
         $result = $payment->prepare($order);
         $prepayId = null;
-echo '<pre>';print_r($result);exit;
+
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
 
@@ -197,7 +199,7 @@ echo '<pre>';print_r($result);exit;
                 'key'                => $pay['weixin_apisecret'],
                 'cert_path'          => $pay['weixin_cert'],
                 'key_path'           => $pay['weixin_key'],
-                'notify_url'         => SZ_YI_WECHAT_NOTIFY_URL
+                'notify_url'         => Url::shopUrl('payment/wechat/notifyUrl.php')
             ]
         ];
 
