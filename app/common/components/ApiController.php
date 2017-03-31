@@ -27,18 +27,12 @@ class ApiController extends BaseController
         parent::preAction();
 
         $this->setCookie();
-        if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
-            $yz_redirect  = \YunShop::request()->yz_redirect;
-            $type  = \YunShop::request()->type;
-
-            redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
-        } else {
-//            $redirect_url = Session::get('client_url');
+//        if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
+//            $yz_redirect  = \YunShop::request()->yz_redirect;
+//            $type  = \YunShop::request()->type;
 //
-//            if ($redirect_url) {
-//                redirect($redirect_url . '?login&session_id=' . session_id())->send();
-//            }
-        }
+//            redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
+//        } 
     }
 
 
