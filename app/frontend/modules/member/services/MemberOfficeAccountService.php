@@ -48,6 +48,7 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
+            echo '<pre>';print_r($_SESSION);exit;
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
@@ -256,10 +257,11 @@ class MemberOfficeAccountService extends MemberService
      * @return string
      */
     private function _setClientRequestUrl()
-    {
+    {echo '<pre>';print_r(\YunShop::request());
         if (\YunShop::request()->yz_redirect) {
+            echo 1;
            Session::set('client_url', \YunShop::request()->yz_redirect);
-        } else {
+        } else {echo 2;
             Session::set('client_url', '');
         }
     }
