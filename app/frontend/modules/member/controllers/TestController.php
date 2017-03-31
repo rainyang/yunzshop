@@ -57,11 +57,11 @@ class TestController extends ApiController
 
    public function login()
    {
-       echo '<pre>';print_r($_COOKIE);
-
-       echo '<pre>';print_r($_SESSION);exit;
-       $_SESSION['demo'] = 'yunzshop123';
-       echo $_SESSION['demo'];
+       $url = 'http://dev.yzshop.com/addons/sz_yi/api.php?i=2&route=member.login.index';
+       \Curl::to($url)
+           ->withData(['type=>5', 'memberdata[mobile]'=>'15216771448', 'memberdata[password]' => '123456'])
+           ->asJsonResponse(true)
+           ->post();
    }
 
    public function pay()
