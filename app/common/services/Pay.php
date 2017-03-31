@@ -304,7 +304,7 @@ abstract class Pay
     {   $member_id = \YunShop::app()->getMemberId();
         PayAccessLog::create([
             'uniacid' => $this->uniacid,
-            'member_id' => 2,
+            'member_id' => $member_id,
             'url' => $this->url,
             'http_method' => $this->method,
             'ip' => $this->ip
