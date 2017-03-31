@@ -43,7 +43,7 @@ class WechatPay extends Pay
 
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
         } else {
-            throw new \AppException('微信预下单失败');
+            throw new AppException('微信预下单失败');
         }
 
         $config = $payment->configForJSSDKPayment($prepayId);
