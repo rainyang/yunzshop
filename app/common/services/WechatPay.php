@@ -25,7 +25,7 @@ class WechatPay extends Pay
         if (empty(\YunShop::app()->getMemberId())) {
             return show_json(0);
         }
-        
+
         $openid = Member::getOpenId(\YunShop::app()->getMemberId());
         $pay = \Setting::get('shop.pay');
 
@@ -39,7 +39,7 @@ class WechatPay extends Pay
         $order = $this->getEasyWeChatOrder($data, $openid, $pay_order_model);
         $result = $payment->prepare($order);
         $prepayId = null;
-echo '<pre>';print_r($result);exit;
+
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
 
