@@ -38,7 +38,7 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-        $state = \YunShop::app()->uniacid;
+        $state = session_id();
         if (!Session::get('member_id')) {
             $authurl = $this->_getAuthUrl($appId, $callback, $state);
         } else {
@@ -48,7 +48,7 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            echo '<pre>';print_r($_SESSION);exit;
+            echo '<pre>code:';print_r($_SESSION);exit;
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
