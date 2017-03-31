@@ -23,5 +23,10 @@ class FixController extends BaseController
         Order::where('status','-1')->where('cancel_time',0)->update(['cancel_time'=>time()]);
         echo 'ok';
     }
+    public function deleteInvalidOrders()
+    {
+       $result = Order::doesntHave('hasManyOrderGoods')->delete();
+        dd($result);
+    }
 
 }
