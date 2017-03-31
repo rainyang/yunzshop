@@ -49,7 +49,7 @@ class MemberOfficeAccountService extends MemberService
 
         if (!empty($code)) {
             $redirect_url = $this->_getClientRequestUrl();
-            Session::clear('client_url');
+            //Session::clear('client_url');
 
             $token = \Curl::to($tokenurl)
                 ->asJsonResponse(true)
