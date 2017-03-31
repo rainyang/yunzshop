@@ -18,8 +18,7 @@ class WechatPay extends Pay
     {
         $op = '微信订单支付 订单号：\' . $data[\'order_no\']';
         $pay_order_model = $this->log($data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
-        echo '<pre>';print_r($_SESSION);exit;
-echo '<pre>';print_r(\YunShop::app()->getMemberId());exit;
+
         if (empty(\YunShop::app()->getMemberId())) {
             return show_json(0);
         }
@@ -36,7 +35,7 @@ echo '<pre>';print_r(\YunShop::app()->getMemberId());exit;
         $order = $this->getEasyWeChatOrder($data, $openid, $pay_order_model);
         $result = $payment->prepare($order);
         $prepayId = null;
-echo '<pre>';print_r($result);exit;
+
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
 
