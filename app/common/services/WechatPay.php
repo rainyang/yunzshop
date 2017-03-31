@@ -143,6 +143,9 @@ class WechatPay extends Pay
                 'desc' => empty($desc) ? '佣金提现' : $desc,
                 'spbill_create_ip' => $this->ip,
             ];
+            if (config('app.debug')) {
+                echo '<pre>';print_r($merchantPayData);exit;
+            }
 
             //请求数据日志
             $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
