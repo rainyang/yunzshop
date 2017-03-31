@@ -58,7 +58,7 @@ class TestController extends ApiController
    public function login()
    {
        echo '<pre>';print_r($_COOKIE);
-       
+
        echo '<pre>';print_r($_SESSION);exit;
        $_SESSION['demo'] = 'yunzshop123';
        echo $_SESSION['demo'];
