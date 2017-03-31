@@ -197,7 +197,7 @@ class MemberOfficeAccountService extends MemberService
             $redirect_url = substr($split[0], 0, strrpos($split[0], '/'));
         }
 
-echo $redirect_url;exit;
+
         redirect($redirect_url . '?login&session_id=' . session_id())->send();
     }
 
