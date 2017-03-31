@@ -25,11 +25,11 @@ class LoginController extends ApiController
                 if ($member !== NULL) {
                     $msg = $member->login();
                     $msg = json_decode($msg);
-
+echo '<pre>';print_r($_SESSION);
                     if (!empty($msg)) {
-                        if ($msg->status == 1) {
+                        if ($msg->status == 1) {echo 1;
                             return $this->successJson('', $msg->result);
-                        } else {
+                        } else {echo 2;
                             return $this->errorJson('', $msg->result);
                         }
                     } else {
