@@ -19,3 +19,4 @@ composer.lock
 vendor/
 .DS_Store
 /index.html
+/index.php
