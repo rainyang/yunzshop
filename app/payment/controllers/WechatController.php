@@ -9,6 +9,7 @@
 namespace app\payment\controllers;
 
 
+use app\common\helpers\Url;
 use app\payment\PaymentController;
 use EasyWeChat\Payment\Notify;
 
@@ -108,7 +109,7 @@ class WechatController extends PaymentController
                 'key'                => $pay['weixin_apisecret'],
                 'cert_path'          => $pay['weixin_cert'],
                 'key_path'           => $pay['weixin_key'],
-                'notify_url'         => SZ_YI_WECHAT_NOTIFY_URL
+                'notify_url'         => Url::shopUrl('payment/wechat/notifyUrl.php')
             ]
         ];
 

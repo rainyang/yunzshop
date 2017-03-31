@@ -64,8 +64,8 @@ trait TemplateTrait
     public function template($filename)
     {
         strpos($filename, 'web/') !== false && $filename = str_replace('web/', '', $filename);
-        $compile = SZ_YI_PATH . "/data/tpl/{$filename}.tpl.php";
-        $source = SZ_YI_PATH . "/template/web/{$filename}.html";
+        $compile = base_path() . "/data/tpl/{$filename}.tpl.php";
+        $source = base_path() . "/template/web/{$filename}.html";
         if (DEVELOPMENT || !is_file($compile) || filemtime($source) > filemtime($compile)) {
             shop_template_compile($source, $compile, true);
         }
