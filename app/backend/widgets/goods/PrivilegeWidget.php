@@ -13,6 +13,7 @@ use app\common\components\Widget;
 use app\backend\modules\goods\models\Privilege;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberGroup;
+use app\backend\modules\goods\services\GoodsPrivilegeService;
 
 
 class PrivilegeWidget extends Widget
@@ -30,7 +31,6 @@ class PrivilegeWidget extends Widget
         }
         $levels = MemberLevel::getMemberLevelList();
         $groups = MemberGroup::getMemberGroupList();
-
         return view('goods.widgets.privilege', [
             'privilege' => $privilege,
             'levels' => $levels,

@@ -97,10 +97,10 @@
 <div class="form-group" id="time_limit" style="display: none;">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">限购时间</label>
     <div class="col-sm-4 col-xs-6">
-        {!! sz_tpl_form_field_date('widgets[privilege][time_begin_limit]', !empty($privilege['time_begin_limit']) ? date('Y-m-d H:i',$privilege['time_begin_limit']) : date('Y-m-d H:i'), 1) !!}
+        {!! \app\backend\modules\goods\services\GoodsPrivilegeService::tpl_form_field_date('widgets[privilege][time_begin_limit]', !empty($privilege['time_begin_limit']) ? date('Y-m-d H:i',$privilege['time_begin_limit']) : date('Y-m-d H:i'), 1) !!}
     </div>
     <div class="col-sm-4 col-xs-6">
-        {!! sz_tpl_form_field_date('widgets[privilege][time_end_limit]', !empty($privilege['time_end_limit']) ? date('Y-m-d H:i',$privilege['time_end_limit']) : date('Y-m-d H:i'), 1) !!}
+        {!! \app\backend\modules\goods\services\GoodsPrivilegeService::tpl_form_field_date('widgets[privilege][time_end_limit]', !empty($privilege['time_end_limit']) ? date('Y-m-d H:i',$privilege['time_end_limit']) : date('Y-m-d H:i'), 1) !!}
     </div>
 </div>
 
