@@ -56,6 +56,24 @@ class Url
     }
 
     /**
+     *  前端api接口相对Url
+     *
+     * @param $route
+     * @param array $params
+     * @return string
+     */
+    public static function api($route, $params = [])
+    {
+        if(empty($route) && self::isHttp($route)){
+            return $route;
+        }
+        $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
+        $params = array_merge($defaultParams, $params);
+
+        return   '/addons/sz_yi/api.php?'. http_build_query($params);
+    }
+
+    /**
      * 生成后台绝对地址
      *  路由   api.v1.test.index  为  app/backend/moduels/api/modules/v1/TestController   index
      *
@@ -88,6 +106,15 @@ class Url
         }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
         return $domain . self::app($route,$params);
+    }
+
+    public static function absoluteApi($route, $params = [], $domain = '')
+    {
+        if(empty($route) && self::isHttp($route)){
+            return $route;
+        }
+        empty($domain) && $domain = request()->getSchemeAndHttpHost();
+        return $domain . self::api($route,$params);
     }
 
     public static function isHttp($url)
