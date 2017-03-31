@@ -49,7 +49,7 @@ class MemberOfficeAccountService extends MemberService
 
         if (!empty($code)) {
             $redirect_url = $this->_getClientRequestUrl();
-            //Session::clear('client_url');
+            Session::clear('client_url');
 
             $token = \Curl::to($tokenurl)
                 ->asJsonResponse(true)
@@ -191,6 +191,9 @@ class MemberOfficeAccountService extends MemberService
         }
 
         //redirect('http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.test.login')->send();
+        $split = explode('?', $redirect_url);
+        $redirect_url = $split[0];
+
         redirect($redirect_url . '?login&session_id=' . session_id())->send();
     }
 
