@@ -44,7 +44,7 @@ class BalanceController extends BaseController
     {
         $pageSize = 5;
         $memberList = Member::getMembers()->paginate($pageSize);
-        $pager = PaginationHelper::show($memberList['total'], $memberList['current_page'], $this->pageSize);
+        $pager = PaginationHelper::show($memberList->total(), $memberList->currentPage(), $memberList->perPage());
 
         //todo 搜索，会员组，会员等级显示
 
