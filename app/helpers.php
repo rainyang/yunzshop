@@ -256,7 +256,7 @@ if (!function_exists('yzAppUrl')) {
 }
 
 if (!function_exists('yzApiUrl')) {
-    function yzAppUrl($route, $params = [])
+    function yzApiUrl($route, $params = [])
     {
         return Url::api($route, $params);
     }
