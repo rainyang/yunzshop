@@ -53,7 +53,7 @@ class ApiController extends BaseController
             $session_id = $_COOKIE[session_name()];
         }
         if (empty($session_id)) {
-            $session_id = \YunShop::app()->uniacid . '-' . random(20) ;
+            $session_id = \YunShop::app()->uniacid . '-' . Client::random(20) ;
             $session_id = md5($session_id);
             setcookie(session_name(), $session_id);
         }
