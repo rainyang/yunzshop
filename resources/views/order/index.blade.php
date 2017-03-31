@@ -65,7 +65,7 @@
                             <div class="col-sm-8 col-lg-12 col-xs-12">
                                 @section('search_bar')
                                     <div class='input-group'>
-                                        <select name="search[ambiguous][field]" class="form-control">
+                                        <select name="search[ambiguous][field]" id="ambiguous-field" class="form-control">
                                             <option value="order"
                                                     @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
                                                 订单号/支付号
@@ -321,4 +321,12 @@
             <div id="pager">{!! $pager !!}</div>
         </div>
     </div>
+    <script>
+        $(function () {
+            $("#ambiguous-field").on('change',function(){
+
+                $(this).next('input').attr('placeholder',$(this).find(':selected').text().trim())
+            });
+        })
+    </script>
 @endsection('content')
