@@ -303,11 +303,11 @@ abstract class Pay
     protected function payAccessLog()
     {   $member_id = \YunShop::app()->getMemberId();
         PayAccessLog::create([
-            'uniacid' => $this->uniacid,
-            'member_id' => $member_id,
-            'url' => $this->url,
-            'http_method' => $this->method,
-            'ip' => $this->ip
+            'uniacid' => 2,
+            'member_id' => 3,
+            'url' => 4,
+            'http_method' => 5,
+            'ip' => 6
         ]);
     }
 
