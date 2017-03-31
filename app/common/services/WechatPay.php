@@ -123,7 +123,7 @@ class WechatPay extends Pay
         $order_info = Order::getOrderInfoByMemberId($member_id)->first();
 
         if (!empty($order_info) && $order_info['status'] == 3) {
-            $openid = Member::getOpenId($order_info['member_id']);
+            $openid = Member::getOpenId($order_info['uid']);
         }
 
         if (config('app.debug')) {
