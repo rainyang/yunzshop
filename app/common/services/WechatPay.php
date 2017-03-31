@@ -8,6 +8,7 @@
 
 namespace app\common\services;
 
+use app\common\helpers\Client;
 use app\common\models\Member;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
@@ -127,7 +128,7 @@ class WechatPay extends Pay
             $merchantPay = $app->merchant_pay;
 
             $merchantPayData = [
-                'partner_trade_no' => empty($out_trade_no) ? time() . random(4, true) : $out_trade_no,
+                'partner_trade_no' => empty($out_trade_no) ? time() . Client::random(4, true) : $out_trade_no,
                 'openid' => $openid,
                 'check_name' => 'NO_CHECK',
                 'amount' => $money * 100,
@@ -219,7 +220,7 @@ class WechatPay extends Pay
             'body'             => $data['body'],
             'out_trade_no'     => $data['order_no'],
             'total_fee'        => $data['amount'] * 100, // 单位：分
-            'nonce_str'        => random(8) . "",
+            'nonce_str'        => Client::random(8) . "",
             'device_info'      => 'sz_yi',
             'attach'           => $data['extra']['type'],
             'spbill_create_ip' => $this->ip,
