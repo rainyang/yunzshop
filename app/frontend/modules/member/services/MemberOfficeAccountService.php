@@ -37,7 +37,7 @@ class MemberOfficeAccountService extends MemberService
         $appSecret    = $pay['weixin_secret'];
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-echo 'sid2:' . session_id();exit;
+// 'sid2:' . session_id();exit;
         $state = session_id();
         if (!Session::get('member_id')) {
             $authurl = $this->_getAuthUrl($appId, $callback, $state);
