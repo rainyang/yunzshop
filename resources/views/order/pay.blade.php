@@ -35,9 +35,6 @@
                     },
                     cancel:function(res){
                         //支付取消
-                    },
-                    fail: function (res) {
-                        alert("支付失败，请返回重试。");
                     }
                 });
             });
