@@ -15,15 +15,34 @@ class MemberGroup extends \app\common\models\MemberGroup
 {
     use SoftDeletes;
 
-    //public $timestamps = false;
     public $guarded = [''];
+
+    //关联 member 数据表 一对多
+    public function member()
+    {
+        return $this->hasMany('app\backend\modules\member\models\MemberShopInfo','group_id','id');
+    }
+
+    /*
+     * 获取会员分页列表 17.3.31 auto::yitian
+     *
+     * @param int $pageSize
+     *
+     * @return object */
+    public static function getGroupPageList($pageSize)
+    {
+        //todo 获取分组内会员数量
+        return self::uniacid()
+
+            ->paginate($pageSize);
+    }
+
     /**
      *  Get membership information through member group ID
      *
      * @param int $groupId
      *
-     * @return array
-     * */
+     * @return array */
     public static function getMemberGroupByGroupID($groupId)
     {
         return  MemberGroup::where('id', $groupId)->first();
@@ -48,10 +67,6 @@ class MemberGroup extends \app\common\models\MemberGroup
         //return  MemberGroup::where('uniacid', $uniacid)->get()->toArray();
     }
 
-    public function member()
-    {
-        return $this->hasMany('app\backend\modules\member\models\MemberShopInfo','group_id','id');
-    }
     /**
      * Delete member list
      *
@@ -62,5 +77,28 @@ class MemberGroup extends \app\common\models\MemberGroup
     public static function deleteMemberGroup($groupId)
     {
         return static::where('id', $groupId)->delete();
+    }
+
+    /**
+     * 定义字段名
+     *
+     * @return array */
+    public  function atributeNames() {
+        return [
+            'group_name'    => '分组名不能为空',
+            'uniacid'  => '数据获取不完整，请刷新重试',
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array */
+    public  function rules()
+    {
+        return [
+            'group_name'    => 'required',
+            'uniacid'       => 'required'
+        ];
     }
 }
