@@ -194,7 +194,7 @@ class MemberOfficeAccountService extends MemberService
         $split = explode('?', $redirect_url);
 
         if (strrpos($split[0], '/') > 6) {
-            $redirect_url = substr($split[0], 0, strrpos($split[0], '/'));
+          //  $redirect_url = substr($split[0], 0, strrpos($split[0], '/'));
         }
 
 
