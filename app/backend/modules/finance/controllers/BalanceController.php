@@ -71,12 +71,36 @@ class BalanceController extends BaseController
             $this->error('未获取到会员信息，请刷新重试');
         }
 
-        if (\YunShop::request()->num && $memberInfo['id']) {
+        if (\YunShop::request()->num && $memberInfo['uid']) {
+            if (!is_numeric(\YunShop::request()->num)) {
+                dd('请输入正确的充值金额');
+                $this->error('请输入正确的充值金额');
+            }
+
             $rechargeMode = new BalanceRecharge();
+
             $recordData = array(
                 'uniacid' => \YunShop::app()->uniacid,
                 'member_id' => $memberId,
+                'old_money' => $memberInfo['credit2'],
+                'money' => \YunShop::request()->num,
+                'new_money' => $memberInfo['credit2'] + \YunShop::request()->num,
+                'type' => 1,        //后台充值
+                'ordersn' => '',     //需要增加订单号生成
+                'status' => 0
             );
+            dd($recordData);
+            $rechargeMode->fill($recordData);
+            $validator = $rechargeMode->validator();
+            if ($validator->fails()) {
+                $this->error($validator->messages());
+            } else {
+                if ($rechargeMode->save()) {
+                    //todo 请求修改余额接口
+
+                    return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.memnber'), 'success');
+                }
+            }
 
         }
 
