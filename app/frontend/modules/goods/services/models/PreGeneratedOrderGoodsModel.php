@@ -13,6 +13,7 @@ use app\common\models\OrderGoods;
 
 use app\frontend\modules\discount\services\DiscountService;
 use app\frontend\modules\dispatch\services\DispatchService;
+use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class PreGeneratedOrderGoodsModel extends OrderGoodsModel
@@ -27,18 +28,20 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      * @var Goods
      */
     protected $goods;
+    protected $goodsOption;
     public $couponMoneyOffPrice;
     public $couponDiscountPrice;
 
     /**
      * PreGeneratedOrderGoodsModel constructor.
-     * @param Goods $goods_model
-     * @param int $total
+     * @param MemberCart $memberCart
      */
-    public function __construct(Goods $goods_model, $total = 1)
+    public function __construct(MemberCart $memberCart)
     {
-        $this->goods = $goods_model;
-        $this->total = $total;
+        $this->goods = $memberCart->goods;
+        $this->total = $memberCart->total;
+        $this->goodsOption = $memberCart->goodsOption;
+
         parent::__construct();
 
     }
@@ -74,19 +77,27 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      */
     public function toArray()
     {
-        return $data = array(
+        $data = array(
             'goods_id' => $this->goods->id,
             'goods_sn' => $this->goods->goods_sn,
             'price' => $this->getPrice(),
             'total' => $this->total,
             'title' => $this->goods->title,
             'thumb' => $this->goods->thumb,
+            'goods_option_id' => $this->goodsOption->id,
+            'goods_option_title' => $this->goodsOption->title,
             'goods_price' => $this->getGoodsPrice(),
             'vip_price' => $this->getVipPrice(),
             'coupon_price' => $this->getCouponPrice(),
             'coupon_discount_price' => $this->couponDiscountPrice,
             'coupon_money_off_price' => $this->couponMoneyOffPrice,
         );
+        if(isset($this->goodsOption)){
+            $data += [
+                'goods_option_id' => $this->goodsOption->id,
+                'goods_option_title' => $this->goodsOption->title,
+            ];
+        }
         return $data;
     }
 
@@ -135,6 +146,12 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'order_id' => $this->order->id,
             'uniacid' => $this->order->getShopModel()->uniacid,
         );
+        if(isset($this->goodsOption)){
+            $data += [
+                'goods_option_id' => $this->goodsOption->id,
+                'goods_option_title' => $this->goodsOption->title,
+            ];
+        }
         return OrderGoods::create($data);
     }
 
@@ -146,9 +163,8 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     public function getVipPrice()
     {
-        if (isset($this->goods->hasManyOptions)) {
-            //dd($this->goods->hasManyOptions);
-            //exit;
+        if (isset($this->goodsOption)) {
+            return $this->goodsOption->product_price * $this->getTotal();
         }
         return $this->goods->vip_price * $this->getTotal();
     }

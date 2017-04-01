@@ -8,12 +8,12 @@
 
 namespace app\frontend\modules\member\controllers;
 
-use app\common\components\ApiController;
-use app\frontend\modules\member\models\Member;
-use app\common\components\BaseController;
-use app\frontend\modules\member\models\MemberModel;
-use app\common\models\Order;
 use app\backend\modules\member\models\MemberRelation;
+use app\common\components\ApiController;
+use app\common\models\Order;
+use app\frontend\modules\member\models\Member;
+use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\SubMemberModel;
 
 class MemberController extends ApiController
 {
@@ -59,11 +59,44 @@ class MemberController extends ApiController
 
     }
 
+    /**
+     * 会员关系链
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getMemberRelationInfo()
     {
-        $info = MemberRelation::getSetInfo()->first()->toJson();
+        $info = MemberRelation::getSetInfo()->first()->toArray();
 
-        echo '<pre>';print_r($info);exit;
+        ///$sub_member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+        if (empty($info) || empty($sub_member_info)) {
+            return $this->errorJson('缺少参数');
+        }
+
+        switch ($info['become']) {
+           case 2:
+               $desc = $info['become_ordercount'];
+               break;
+           case 3:
+               $desc = $info['become_moneycount'];
+               break;
+           case 4:
+               $desc = '指定商品';
+               break;
+           default:
+               $desc = '';
+       }
+
+       $relation = [
+           'switch' => $info['status'],
+           'become' => $info['become'],
+           'desc'   => $desc,
+           'is_agent' => $sub_member_info['is_agent'],
+           'status' => $sub_member_info['status'],
+       ];
+
+        return $this->successJson('', $relation);
     }
 
     public function login()
