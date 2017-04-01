@@ -18,7 +18,7 @@ class RemarkController extends BaseController
     {
         if (\YunShop::app()->ispost) {
             //\YunShop::request()->id 是订单的id
-            \YunShop::request()->id = 1;
+            //\YunShop::request()->id = 1;
             $db_remark_model = Remark::where('order_id', \YunShop::request()->order_id)->first();
             $db_remark_model->remark = \YunShop::request()->remark;
             $db_remark_model->save();
