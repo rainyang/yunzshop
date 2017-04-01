@@ -94,7 +94,7 @@ exit;
 
    public function getId()
    {
-
+echo \YunShop::app()->getMemberId();
    }
 
 }

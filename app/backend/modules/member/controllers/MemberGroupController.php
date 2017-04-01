@@ -51,7 +51,7 @@ class MemberGroupController extends BaseController
                 $this->error($validator->messages());
             } else {
                 if ($groupModel->save()) {
-                    return $this->message("添加会员分组成功",Url::absoluteWeb('member.membergroup.index'));
+                    return $this->message("添加会员分组成功",Url::absoluteWeb('member.membergroup.index'),'success');
                 } else {
                     $this->error("添加会员分组失败");
                 }
@@ -66,7 +66,7 @@ class MemberGroupController extends BaseController
      * */
     public function update()
     {
-        $groupModel = MemberGroup::getMemberGroupByGroupID(\YunShop::request()->group_id);
+        $groupModel = MemberGroup::getMemberGroupByGroupId(\YunShop::request()->group_id);
         if(!$groupModel) {
             return $this->message('未找到会员分组或已删除', Url::absoluteWeb('member.member-group.index'));
         }
@@ -95,7 +95,7 @@ class MemberGroupController extends BaseController
      * */
     public function destroy()
     {
-        $groupModel = MemberGroup::getMemberGroupByGroupID(\YunShop::request()->group_id);
+        $groupModel = MemberGroup::getMemberGroupByGroupId(\YunShop::request()->group_id);
         if (!$groupModel) {
             $this->error('未找到会员分组或已删除', Url::absoluteWeb('member.membergroup.index'));
         }
