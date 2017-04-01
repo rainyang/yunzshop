@@ -68,9 +68,9 @@ class MemberController extends ApiController
     {
         $info = MemberRelation::getSetInfo()->first()->toArray();
 
-        ///$sub_member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
-        if (empty($info) || empty($sub_member_info)) {
+        if (empty($info) || empty($member_info)) {
             return $this->errorJson('缺少参数');
         }
 
@@ -88,19 +88,28 @@ class MemberController extends ApiController
                $desc = '';
        }
 
+       // TODO 消费和购买指定商品达到条件后 返回审核状态
+
        $relation = [
            'switch' => $info['status'],
            'become' => $info['become'],
            'desc'   => $desc,
-           'is_agent' => $sub_member_info['is_agent'],
-           'status' => $sub_member_info['status'],
+           'is_agent' => $member_info['is_agent'],
+           'status' => $member_info['status'],
        ];
 
         return $this->successJson('', $relation);
     }
 
-    public function login()
+    /**
+     * 会员是否有推广权限
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function isAgent()
     {
+        $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
+        return $this->successJson('', ['is_agent' => $member_info['is_agent']]);
     }
 }
