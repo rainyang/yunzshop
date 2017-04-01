@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use app\common\components\BaseController;
+use app\common\models\Goods;
 use app\common\services\CreditPay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
@@ -22,7 +23,6 @@ class TestController extends ApiController
 {
    public function index()
    {
-
 //       $pay = new WechatPay();
 //       $str  = $pay->setUniacidNo(122, 5);
 //       echo $str . '<BR>';

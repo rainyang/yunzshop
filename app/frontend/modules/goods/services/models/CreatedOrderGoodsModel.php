@@ -39,7 +39,7 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
             'price' => (string)$change_price,
             'plugin' => '0',
         ];
-        $this->_GoodsDiscount->addDiscountDetail($detail);
+        $this->goodsDiscount->addDiscountDetail($detail);
     }
 
     public function getGoodsPrice()
@@ -61,5 +61,10 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
         dump($data);
         return;
         OrderGoods::save($data);
+    }
+    protected function getDiscountPrice()
+    {
+        return $this->_OrderGoods->discount_price;
+
     }
 }

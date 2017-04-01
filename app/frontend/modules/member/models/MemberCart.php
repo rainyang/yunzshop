@@ -20,21 +20,37 @@ class MemberCart extends \app\common\models\MemberCart
      * */
     public static function getMemberCartList($memberId)
     {
-        $cartList = static::select('id', 'goods_id', 'total', 'option_id')
-            ->where('member_id', $memberId)
+        $cartList = static::carts()->where('member_id', $memberId)
+            ->get()
+            ->toArray();
+        return $cartList;
+    }
+
+    /**
+     * 根据购物车id数组,获取购物车记录数组
+     * @param $cartIds
+     * @return mixed
+     */
+    public static function getCartsByIds($cartIds)
+    {
+        if(!is_array($cartIds)){
+            $cartIds = explode(',',$cartIds);
+        }
+        $result = static::carts()->whereIn('id', $cartIds)
+            ->get()
+            ->toArray();
+        return $result;
+    }
+    public function scopeCarts($query){
+        $query->select('id', 'goods_id', 'total', 'option_id')
             ->uniacid()
             ->with(['goods' => function($query) {
                 return $query->select('id', 'thumb', 'price', 'market_price', 'title');
             }])
             ->with(['goodsOption' => function ($query) {
                 return $query->select('id', 'title', 'thumb', 'product_price', 'market_price');
-            }])
-            ->get()
-            ->toArray();
-        return $cartList;
-        //return static::uniacid()->where('member_id', $memberId)->get()->toArray();
+            }]);
     }
-
     public function goods(){
         return $this->hasOne('app\common\models\Goods','id','goods_id');
     }

@@ -18,36 +18,40 @@ class PreGeneratedOrderGoodsModelFactory
     public function createOrderGoodsModels(array $param)
     {
         $result = [];
-        $goods_models = $this->getGoodsModels($param);
+        $goodsModels = $this->getGoodsModels($param);
 
-        foreach ($goods_models as $goods_model) {
-            $total = $this->getTotal($goods_model->id, $param);
-            $order_goods_model = new PreGeneratedOrderGoodsModel($goods_model, $total);
-            $result[] = $order_goods_model;
+        foreach ($goodsModels as $goodsModel) {
+            $total = $this->getTotal($goodsModel->id, $param);
+
+            $orderGoodsModel = $this->createOrderGoodsModel($goodsModel, $total);
+            $result[] = $orderGoodsModel;
         }
 
         return $result;
     }
 
-    public function createOrderGoodsModel($goods_model, $total = 1)
+    private function createOrderGoodsModel($goodsModel, $total = 1)
     {
-        $order_goods_model = new PreGeneratedOrderGoodsModel();
-        $order_goods_model->setGoodsModel($goods_model);
-        $order_goods_model->setTotal($total);
-        return $order_goods_model;
+        dd($goodsModel);
+        exit;
+        if(isset($goodsModel->hasManyOption)){
+
+        }
+        $result = new PreGeneratedOrderGoodsModel($goodsModel, $total);
+        return $result;
     }
 
     //todo 待完善(缓存)
     private function getTotal($goods_id, $param)
     {
-        $goods_total_arr = array_column($param, 'total', 'goods_id');
-        return $goods_total_arr[$goods_id];
+        $goodsTotalArr = array_column($param, 'total', 'goods_id');
+        return $goodsTotalArr[$goods_id];
     }
 
     private function getGoodsModels($param)
     {
-        $goods_id_arr = array_column($param, 'goods_id');
-        return GoodsService::getGoodsModels($goods_id_arr);
+
+        return GoodsService::getGoodsModels($param);
     }
 
 }

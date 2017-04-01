@@ -58,15 +58,6 @@ class OrderService
     }
 
     /**
-     * 获取订单商品对象
-     * @param GoodsModel $goods_model
-     * @return \app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel
-     */
-    public static function getOrderGoodsModel(GoodsModel $goods_model){
-        return (new PreGeneratedOrderGoodsModelFactory())->createOrderGoodsModel($goods_model);
-
-    }
-    /**
      * 获取订单号
      * @param GoodsModel $goods_model
      * @return \app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel
