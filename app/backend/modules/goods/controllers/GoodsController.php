@@ -134,7 +134,7 @@ class GoodsController extends BaseController
         $newGoods = $goodsModel->replicate();
         $newGoods->save();
 
-        $goodsModel->load('hasOneShare', 'hasOneDiscount', 'hasOneGoodsDispatch', 'hasOnePrivilege', 'hasOneBrand');
+        $goodsModel->load('hasOneShare', 'hasOneDiscount', 'hasOneGoodsDispatch', 'hasOnePrivilege');
         foreach($goodsModel->getRelations() as $relation => $item){
             if ($item) {
                 unset($item->id);
@@ -153,6 +153,19 @@ class GoodsController extends BaseController
                 }
             }
         }
+
+        $goodsModel->setRelations([]);
+        $goodsModel->load('hasManyGoodsCategory');
+        foreach($goodsModel->getRelations() as $relation => $items){
+            foreach($items as $item){
+                if ($item) {
+                    unset($item->id);
+                    $item->goods_id = $newGoods->id;
+                    $newGoods->{$relation}()->create($item->toArray());
+                }
+            }
+        }
+
 
         //todo, 先复制老的规格,再复制规格项,再更新规格content字段,最后复制option,更新option specs字段
         $goodsSpecs = GoodsSpec::uniacid()->where('goods_id', $goodsModel->id)->get();

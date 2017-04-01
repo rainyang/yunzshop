@@ -14,8 +14,7 @@ class GoodsCategory extends BaseModel
 {
     public $table = 'yz_goods_category';
 
-    public $guarded = [];
-
+    public $guarded = ['updated_at', 'created_at', 'deleted_at'];
 
     public function goods()
     {
