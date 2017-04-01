@@ -28,6 +28,13 @@ class MemberOfficeAccountService extends MemberService
 
     public function login()
     {
+        if (config('api.debug')) {
+            $this->_setClientRequestUrl();
+            $redirect_url = $this->_getClientRequestUrl();
+
+            redirect($redirect_url . '?login&session_id=' . session_id())->send();
+            exit;
+        }
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
