@@ -15,9 +15,13 @@ use app\frontend\modules\finance\services\WithdrawService;
 class Withdraw extends BackendModel
 {
     public $table = 'yz_withdraw';
-    
+
     public $StatusService;
-    
+
+    public $PayWayService;
+
+    public $TypeData;
+
     public $timestamps = true;
 
     public $widgets = [];
@@ -26,8 +30,12 @@ class Withdraw extends BackendModel
 
     protected $guarded = [];
 
-    protected $appends = ['status_name'];
 
+    protected $appends = ['status_name', 'pay_way_name', 'type'];
+
+    /**
+     * @return string
+     */
     public function getStatusService()
     {
         if (!isset($this->StatusService)) {
@@ -37,17 +45,71 @@ class Withdraw extends BackendModel
         return $this->StatusService;
     }
 
+    /**
+     * @return string
+     */
     public function getStatusNameAttribute()
     {
         return $this->getStatusService();
     }
-    
+
+    /**
+     * @return string
+     */
+    public function getPayWayService()
+    {
+        if (!isset($this->PayWayService)) {
+
+            $this->PayWayService = WithdrawService::createPayWayService($this);
+        }
+        return $this->PayWayService;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPayWayNameAttribute()
+    {
+        return $this->getPayWayService();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeData()
+    {
+        if (!isset($this->TypeData)) {
+
+            //$this->TypeData = WithdrawService::createPayWayService($this);
+            $this->TypeData = $this->type;
+        }
+        return $this->TypeData;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeAttribute()
+    {
+        return $this->getTypeData();
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMember()
+    {
+        return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
+    }
+
+
     /**
      *  定义字段名
      * 可使
      * @return array
      */
-    public  function atributeNames()
+    public function atributeNames()
     {
         return [
             'member_id' => '会员ID',
@@ -61,7 +123,7 @@ class Withdraw extends BackendModel
      * 字段规则
      * @return array
      */
-    public  function rules()
+    public function rules()
     {
         return [
             'member_id' => 'required',

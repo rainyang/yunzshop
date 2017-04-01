@@ -80,10 +80,11 @@ class Category extends \app\common\models\Category
      */
     public  function rules()
     {
+        $rule = Rule::unique($this->table);
         return [
-            'name' => ['required', Rule::unique($this->table)
-                ->ignore($this->id)
-                ->where('uniacid', \YunShop::app()->uniacid)],
+            'name' => ['required', $this->id ?
+                $rule->ignore($this->id)->where('uniacid',\YunShop::app()->uniacid)
+                :$rule->where('uniacid', \YunShop::app()->uniacid)],
         ];
     }
 }

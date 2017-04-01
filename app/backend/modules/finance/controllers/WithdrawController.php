@@ -20,7 +20,7 @@ class WithdrawController extends BaseController
     public function set()
     {
         $set = Setting::get('withdraw.balance');
-        
+
         $requestModel = \YunShop::request()->withdraw;
         if ($requestModel) {
             foreach ($requestModel as $key => $item) {
@@ -45,7 +45,7 @@ class WithdrawController extends BaseController
         $withdrawModel = Withdraw::getWithdrawList($search);
 
         $list = $withdrawModel->paginate($pageSize)->toArray();
-
+//        echo "<pre>"; print_r($list);exit;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         return view('finance.withdraw.withdraw-list', [
@@ -53,5 +53,23 @@ class WithdrawController extends BaseController
             'pager' => $pager,
         ])->render();
     }
-    
+
+
+    public function info()
+    {
+
+        $id = intval(\YunShop::request()->id);
+        $withdrawModel = Withdraw::getWithdrawById($id)->first();
+        if ($withdrawModel) {
+            return $this->message('数据不存在或已被删除!','',error);
+        }
+
+        echo "<pre>";
+        print_r($withdrawModel->toArray());
+        exit;
+        return view('finance.withdraw.withdraw-info', [
+            'item' => $withdrawModel,
+        ])->render();
+    }
+
 }

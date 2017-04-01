@@ -49,12 +49,7 @@ class TestController extends BaseController
         //echo $b;
     }
 
-    public function testGoodsModel()
-    {
-        $goods_model = GoodsService::getGoodsModel(2);
-        var_dump($goods_model->price);
-        exit;
-    }
+
 
     public function testMemberModel()
     {

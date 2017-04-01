@@ -13,8 +13,8 @@ use app\common\models\OrderGoods;
 
 use app\frontend\modules\discount\services\DiscountService;
 use app\frontend\modules\dispatch\services\DispatchService;
+use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
-
 
 class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 {
@@ -22,45 +22,52 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      * app\frontend\modules\order\services\models\PreGeneratedOrderModel的实例
      * @var
      */
-    private $Order;
+    protected $order;
     /**
      * app\common\models\Goods的实例
      * @var Goods
      */
-    private $Goods;
-    public $coupon_money_off_price;
-    public $coupon_discount_price;
+    protected $goods;
+    protected $goodsOption;
+    public $couponMoneyOffPrice;
+    public $couponDiscountPrice;
 
     /**
      * PreGeneratedOrderGoodsModel constructor.
-     * @param Goods $goods_model
-     * @param int $total
+     * @param MemberCart $memberCart
      */
-    public function __construct(Goods $goods_model, $total = 1)
+    public function __construct(MemberCart $memberCart)
     {
-        $this->Goods = $goods_model;
-        $this->total = $total;
+        $this->goods = $memberCart->goods;
+        $this->total = $memberCart->total;
+        $this->goodsOption = $memberCart->goodsOption;
+
         parent::__construct();
 
     }
+
     protected function setGoodsDiscount()
     {
-        $this->_GoodsDiscount = DiscountService::getPreOrderGoodsDiscountModel($this);
+        $this->goodsDiscount = DiscountService::getPreOrderGoodsDiscountModel($this);
     }
+
     protected function setGoodsDispatch()
     {
-        $this->_GoodsDispatch = DispatchService::getPreOrderGoodsDispatchModel($this);
+        $this->goodsDispatch = DispatchService::getPreOrderGoodsDispatchModel($this);
     }
-    public function getGoodsId(){
-        return $this->Goods->id;
+
+    public function getGoodsId()
+    {
+        return $this->goods->id;
     }
+
     /**
      * 为订单model提供的方法 ,设置所属的订单model
-     * @param PreGeneratedOrderModel $Order
+     * @param PreGeneratedOrderModel $order
      */
-    public function setOrder(PreGeneratedOrderModel $Order)
+    public function setOrder(PreGeneratedOrderModel $order)
     {
-        $this->Order = $Order;
+        $this->order = $order;
 
     }
 
@@ -70,28 +77,35 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      */
     public function toArray()
     {
-        return $data = array(
-            'goods_id' => $this->Goods->id,
-            'goods_sn' => $this->Goods->goods_sn,
+        $data = array(
+            'goods_id' => $this->goods->id,
+            'goods_sn' => $this->goods->goods_sn,
             'price' => $this->getPrice(),
             'total' => $this->total,
-            'title' => $this->Goods->title,
-            'thumb' => $this->Goods->thumb,
-            'goods_price' => $this->Goods->price,
-            'vip_price' => $this->Goods->vip_price,
+            'title' => $this->goods->title,
+            'thumb' => $this->goods->thumb,
+            'goods_option_id' => $this->goodsOption->id,
+            'goods_option_title' => $this->goodsOption->title,
+            'goods_price' => $this->getGoodsPrice(),
+            'vip_price' => $this->getVipPrice(),
             'coupon_price' => $this->getCouponPrice(),
-            'coupon_discount_price' => $this->coupon_discount_price,
-            'coupon_money_off_price' => $this->coupon_money_off_price,
-            /*'discount_details' => $this->getDiscountDetails(),
-            'dispatch_details' => $this->getDispatchDetails(),*/
-
+            'coupon_discount_price' => $this->couponDiscountPrice,
+            'coupon_money_off_price' => $this->couponMoneyOffPrice,
         );
+        if(isset($this->goodsOption)){
+            $data += [
+                'goods_option_id' => $this->goodsOption->id,
+                'goods_option_title' => $this->goodsOption->title,
+            ];
+        }
         return $data;
     }
 
-    public function getCouponPrice(){
-        return $this->coupon_money_off_price+$this->coupon_discount_price;
+    public function getCouponPrice()
+    {
+        return $this->couponMoneyOffPrice + $this->couponDiscountPrice;
     }
+
     /**
      * 获取商品数量
      * @return int
@@ -101,40 +115,58 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         return $this->total;
 
     }
+
     public function getGoodsPrice()
     {
-        return $this->total * $this->Goods->price;
+        return $this->total * $this->goods->price;
 
     }
+
     /**
      * 订单商品插入数据库
-     * @param PreGeneratedOrderModel|null $order_model
+     * @param PreGeneratedOrderModel|null $orderModel
      * @return static
      */
-    public function generate(PreGeneratedOrderModel $order_model = null)
+    public function generate(PreGeneratedOrderModel $orderModel = null)
     {
-        if (isset($order_model)) {
-            $this->setOrder($order_model);
+        if (isset($orderModel)) {
+            $this->setOrder($orderModel);
         }
 
         $data = array(
             'goods_price' => $this->getGoodsPrice(),
             'discount_price' => $this->getDiscountPrice(),
             'price' => $this->getPrice(),
-            'goods_id' => $this->Goods->id,
+            'goods_id' => $this->goods->id,
             'total' => $this->getTotal(),
-            'goods_sn' => $this->Goods->goods_sn,
-            'title' => $this->Goods->title,
-            'thumb' => $this->Goods->thumb,
-            'uid' => $this->Order->getMemberModel()->uid,
-            'order_id' => $this->Order->id,
-            'uniacid' => $this->Order->getShopModel()->uniacid,
+            'goods_sn' => $this->goods->goods_sn,
+            'title' => $this->goods->title,
+            'thumb' => $this->goods->thumb,
+            'uid' => $this->order->getMemberModel()->uid,
+            'order_id' => $this->order->id,
+            'uniacid' => $this->order->getShopModel()->uniacid,
         );
-        //return;
+        if(isset($this->goodsOption)){
+            $data += [
+                'goods_option_id' => $this->goodsOption->id,
+                'goods_option_title' => $this->goodsOption->title,
+            ];
+        }
         return OrderGoods::create($data);
     }
-    public function getVipPrice(){
-        return $this->Goods->vip_price * $this->getTotal();
+
+    protected function getDiscountPrice()
+    {
+        return $this->getCouponPrice();
+
+    }
+
+    public function getVipPrice()
+    {
+        if (isset($this->goodsOption)) {
+            return $this->goodsOption->product_price * $this->getTotal();
+        }
+        return $this->goods->vip_price * $this->getTotal();
     }
 
 }
