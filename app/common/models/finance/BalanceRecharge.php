@@ -64,7 +64,7 @@ class BalanceRecharge extends BaseModel
                             }]);
                 }]);
             }])
-            ->orderBy('created_at')
+            ->orderBy('created_at', 'desc')
             ->paginate($pageSize);
     }
 

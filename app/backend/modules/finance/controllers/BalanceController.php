@@ -18,6 +18,13 @@ use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\finance\BalanceRecharge;
 
+/*
+ * 余额基础设置页面
+ * 用户余额管理页面
+ * 后台会员充值
+ * 余额充值记录列表
+ *
+ * */
 class BalanceController extends BaseController
 {
     //余额基础设置页面
@@ -140,6 +147,8 @@ class BalanceController extends BaseController
         );
         return $rechargeMenu;
     }
+
+    //创建订单号，todo 应该是一个公用的方法，暂时不知道放哪里，先
 
 
 }
