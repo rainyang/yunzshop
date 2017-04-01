@@ -8,10 +8,11 @@
 
 namespace app\common\services;
 
-use app\common\helpers\Url;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
+use app\common\helpers\Url;
 use app\common\models\Member;
+use app\common\models\Order;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
 
@@ -122,7 +123,11 @@ class WechatPay extends Pay
         $order_info = Order::getOrderInfoByMemberId($member_id)->first();
 
         if (!empty($order_info) && $order_info['status'] == 3) {
-            $openid = Member::getOpenId($order_info['member_id']);
+            $openid = Member::getOpenId($order_info['uid']);
+        }
+
+        if (config('app.debug')) {
+            $openid = 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y';
         }
 
         $app = $this->getEasyWeChatApp($pay);
