@@ -16,9 +16,9 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
 {
     private $_OrderGoods;
 
-    public function __construct($OrderGoods, $total = 1)
+    public function __construct($Order, $total = 1)
     {
-        $this->_OrderGoods = $OrderGoods;
+        $this->_OrderGoods = $Order;
         $this->total = $this->_OrderGoods->total;
         parent::__construct();
     }

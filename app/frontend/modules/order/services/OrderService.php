@@ -9,6 +9,7 @@
 
 namespace app\frontend\modules\order\services;
 
+use app\common\models\MemberCart;
 use app\common\models\Order;
 use app\common\models\Member;
 
@@ -49,13 +50,16 @@ class OrderService
 
     /**
      * 获取订单商品对象数组
-     * @param $param
+     * @param $memberCarts
      * @return array
      */
     public static function getOrderGoodsModels($memberCarts){
         $result = [];
         foreach ($memberCarts as $memberCart) {
-            $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart->goods, $memberCart->total);
+            /**
+             * @var $memberCart \app\frontend\modules\member\models\MemberCart
+             */
+            $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart);
             $result[] = $orderGoodsModel;
         }
         return $result;
