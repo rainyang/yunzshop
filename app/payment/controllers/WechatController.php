@@ -9,6 +9,7 @@
 namespace app\payment\controllers;
 
 
+use app\common\helpers\Url;
 use app\payment\PaymentController;
 use EasyWeChat\Payment\Notify;
 
@@ -16,6 +17,7 @@ class WechatController extends PaymentController
 {
     public function notifyUrl()
     {
+        file_put_contents(storage_path('logs/notify.log'), print_r($_POST, 1));
         // TODO 访问记录
         // TODO 保存响应数据
 
@@ -47,6 +49,7 @@ class WechatController extends PaymentController
 
     public function returnUrl()
     {
+        file_put_contents(storage_path('logs/return.log'), print_r($_REQUEST, 1));
         // TODO 访问记录
         // TODO 保存响应数据
 
@@ -63,12 +66,14 @@ class WechatController extends PaymentController
 
     public function refundNotifyUrl()
     {
+        file_put_contents(storage_path('logs/refund.log'), print_r($_POST, 1));
         // TODO 访问记录
         // TODO 保存响应数据
     }
 
     public function withdrawNotifyUrl()
     {
+        file_put_contents(storage_path('logs/withdraw.log'), print_r($_POST, 1));
         // TODO 访问记录
         // TODO 保存响应数据
     }
@@ -108,7 +113,7 @@ class WechatController extends PaymentController
                 'key'                => $pay['weixin_apisecret'],
                 'cert_path'          => $pay['weixin_cert'],
                 'key_path'           => $pay['weixin_key'],
-                'notify_url'         => SZ_YI_WECHAT_NOTIFY_URL
+                'notify_url'         => Url::shopUrl('payment/wechat/notifyUrl.php')
             ]
         ];
 

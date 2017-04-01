@@ -9,8 +9,10 @@
 namespace app\backend\modules\finance\controllers;
 
 
+use app\backend\modules\member\models\Member;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
+use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 
 class BalanceController extends BaseController
@@ -39,6 +41,23 @@ class BalanceController extends BaseController
 
     //用户余额管理
     public function member()
+    {
+        $pageSize = 5;
+        $memberList = Member::getMembers()->paginate($pageSize);
+        $pager = PaginationHelper::show($memberList->total(), $memberList->currentPage(), $memberList->perPage());
+
+        //todo 搜索，会员组，会员等级显示
+
+        return view('finance.balance.member', [
+            'memberList'    => $memberList,
+            'pager'         => $pager,
+            'memberLevel'   => '',
+            'memberGroup'   => ''
+        ])->render(
+    }
+
+    //
+    public function recharge()
     {
 
     }

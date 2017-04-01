@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\common\helpers\Url;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\frontend\modules\member\models\MemberModel;
@@ -48,7 +49,7 @@ class RegisterController extends BaseController
                 'groupid' => $default_groupid->id,
                 'createtime' => time(),
                 'nickname' => $mobile,
-                'avatar' => SZ_YI_DEFAULT_AVATAR,
+                'avatar' => Url::shopUrl('static/images/photo-mr.jpg'),
                 'gender' => 0,
                 'residecity' => '',
             );

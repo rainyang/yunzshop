@@ -18,25 +18,25 @@ use app\frontend\modules\member\services\MemberService;
 use app\common\services\AliPay;
 
 
-class TestController extends ApiController
+class TestController extends BaseController
 {
    public function index()
    {
 
-//       $pay = new WechatPay();
+       $pay = new WechatPay();
 //       $str  = $pay->setUniacidNo(122, 5);
 //       echo $str . '<BR>';
 //       echo substr($str, 17, 5);
- //      $pay->doWithdraw(123, time(), 0.1);
-       //$result = $pay->doRefund('1490503054', '4001322001201703264702511714', 1, 1);
-
-//       $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
+//       $pay->doWithdraw(146,  0.1);
+//       $result = $pay->doRefund('1490503054', '4001322001201703264702511714', 1, 1);
 //
+//       $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
+
 //       return view('order.pay', [
 //           'config' => $data['config'],
 //           'js' => $data['js']
 //       ])->render();
-//exit;
+exit;
        $pay = new AliPay();
 
       //\\ $p = $pay->doRefund('2017032421001004920213140182', '1', '0.1');
@@ -48,11 +48,14 @@ class TestController extends ApiController
 
    public function loginApi()
    {
-       echo $_SESSION['demo'];
-       exit;
-       $login_api = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=member.login.index&type=1';
+       $login_api = 'http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.login.index&type=1';
 
        redirect($login_api)->send();
+   }
+
+   public function pt()
+   {
+       echo '<pre>';print_r($_SESSION);exit;
    }
 
    public function login()
