@@ -20,10 +20,9 @@ class WithdrawController extends BaseController
     public function set()
     {
         $set = Setting::get('withdraw.balance');
-
+        
         $requestModel = \YunShop::request()->withdraw;
         if ($requestModel) {
-            $inSet = fslse;
             foreach ($requestModel as $key => $item) {
                 Setting::set('withdraw.' . $key, $item);
             }
