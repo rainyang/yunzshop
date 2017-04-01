@@ -17,7 +17,7 @@ class Member extends \app\common\models\Member
     public static function getMemberByName($keyWord)
     {
         return self::where('realname', 'like', $keyWord . '%')
-            ->orWhere('nick_name', 'like', $keyWord . '%')
+            ->orWhere('nickname', 'like', $keyWord . '%')
             ->orWhere('mobile', 'like', $keyWord . '%')
             ->get();
     }
