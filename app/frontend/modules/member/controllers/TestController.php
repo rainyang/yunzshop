@@ -18,7 +18,7 @@ use app\frontend\modules\member\services\MemberService;
 use app\common\services\AliPay;
 
 
-class TestController extends BaseController
+class TestController extends ApiController
 {
    public function index()
    {
@@ -91,4 +91,10 @@ exit;
        $pay->doWithdraw(123, time(), 0.1);
 
    }
+
+   public function getId()
+   {
+echo \YunShop::app()->getMemberId();
+   }
+
 }

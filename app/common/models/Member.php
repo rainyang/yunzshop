@@ -166,7 +166,7 @@ class Member extends BackendModel
             if (!empty($info['has_one_fans'])) {
                 return $info['has_one_fans']['openid'];
             } else {
-                return INVALID_OPENID;
+                return self::INVALID_OPENID;
             }
         }
     }

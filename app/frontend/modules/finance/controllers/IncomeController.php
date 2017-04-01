@@ -9,13 +9,14 @@
 
 namespace app\frontend\modules\finance\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\Income;
 use app\frontend\modules\finance\models\Withdraw;
 use Illuminate\Support\Facades\Log;
 use Yunshop\Commission\models\CommissionOrder;
 
-class IncomeController extends BaseController
+class IncomeController extends ApiController
 {
     /**
      * @return \Illuminate\Http\JsonResponse

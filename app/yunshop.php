@@ -400,16 +400,15 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
+        if (config('app.debug')) {
+            return 146;
+        }
+
         if (Session::get('member_id')) {
             return Session::get('member_id');
         } else {
-            if (config('app.debug')) {
-                return 9;
-            }
             return 0;
         }
-
-        //return session('member_id', 9);
     }
 
 

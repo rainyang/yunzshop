@@ -8,12 +8,12 @@
 
 namespace app\frontend\modules\member\controllers;
 
-
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\models\MemberFavorite;
 
-class MemberFavoriteController extends BaseController
+class MemberFavoriteController extends ApiController
 {
     public function index()
     {

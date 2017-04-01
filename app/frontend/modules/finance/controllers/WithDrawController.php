@@ -8,11 +8,11 @@
 
 namespace app\frontend\modules\finance\controllers;
 
-
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\finance\models\Withdraw;
 
-class WithDrawController extends BaseController
+class WithDrawController extends ApiController
 {
     public function withdrawLog()
     {

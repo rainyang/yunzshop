@@ -8,13 +8,13 @@
 
 namespace app\frontend\modules\member\controllers;
 
-
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\member\models\MemberFavorite;
 use app\frontend\modules\member\models\MemberHistory;
 
 
-class MemberHistoryController extends BaseController
+class MemberHistoryController extends ApiController
 {
     public function index()
     {

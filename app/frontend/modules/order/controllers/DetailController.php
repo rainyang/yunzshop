@@ -13,7 +13,7 @@ use app\frontend\modules\order\models\OrderAddress;
 use app\frontend\modules\order\models\OrderDetailModel;
 
 
-class DetailController extends BaseController
+class DetailController extends ApiController
 {
     public function index(){
         $orderId = \YunShop::request()->order_id;
