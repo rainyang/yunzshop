@@ -97,14 +97,10 @@ class Income extends BackendModel
 
     public static function updatedWithdraw($type, $typeId, $status)
     {
-//        var_dump($type);
-//        echo "--";
-//        var_dump($typeId);exit;
         return self::where('type', 'commission')
             ->where('member_id', \YunShop::app()->getMemberId())
-            ->whereIn('type_id', ['2'])
+            ->whereIn('id', explode(',',$typeId))
             ->update(['status' => $status]);
-//        ->get();
     }
 
     public function hasManyIncome()

@@ -53,7 +53,7 @@ class BalanceController extends BaseController
             'pager'         => $pager,
             'memberLevel'   => '',
             'memberGroup'   => ''
-        ])->render(
+        ])->render();
     }
 
     //
