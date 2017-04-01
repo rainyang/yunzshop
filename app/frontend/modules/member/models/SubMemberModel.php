@@ -11,12 +11,10 @@
  */
 namespace app\frontend\modules\member\models;
 
-use app\backend\models\BackendModel;
+use app\common\models\MemberShopInfo;
 
-class SubMemberModel extends BackendModel
+class SubMemberModel extends MemberShopInfo
 {
-    public $table = 'yz_member';
-
     public static function getInfo($uniacid, $referralsn)
     {
         return self::where('uniacid', $uniacid)
