@@ -8,11 +8,8 @@
 
 namespace app\common\models;
 
-use app\backend\modules\goods\observers\GoodsObserver;
 use app\frontend\modules\discount\services\models\GoodsDiscount;
-use HaoLi\LaravelAmount\Traits\AmountTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 
 class Goods extends BaseModel
 {
@@ -23,10 +20,6 @@ class Goods extends BaseModel
     public $attributes = ['display_order' => 0];
     protected $mediaFields = ['thumb', 'thumb_url'];
     protected $dates = ['deleted_at'];
-
-    //public $display_order = 0;
-    //protected $appends = ['status'];
- 
 
     public $fillable = [];
 
@@ -78,7 +71,6 @@ class Goods extends BaseModel
 
     public function getVipPriceAttribute()
     {
-        //dd(GoodsDiscount::getVipPrice($this));
         return GoodsDiscount::getVipPrice($this);
     }
 

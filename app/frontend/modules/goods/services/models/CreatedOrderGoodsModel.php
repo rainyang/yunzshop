@@ -16,9 +16,9 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
 {
     private $_OrderGoods;
 
-    public function __construct($OrderGoods, $total = 1)
+    public function __construct($Order, $total = 1)
     {
-        $this->_OrderGoods = $OrderGoods;
+        $this->_OrderGoods = $Order;
         $this->total = $this->_OrderGoods->total;
         parent::__construct();
     }
@@ -39,7 +39,7 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
             'price' => (string)$change_price,
             'plugin' => '0',
         ];
-        $this->_GoodsDiscount->addDiscountDetail($detail);
+        $this->goodsDiscount->addDiscountDetail($detail);
     }
 
     public function getGoodsPrice()
@@ -61,5 +61,10 @@ class CreatedOrderGoodsModel extends OrderGoodsModel
         dump($data);
         return;
         OrderGoods::save($data);
+    }
+    protected function getDiscountPrice()
+    {
+        return $this->_OrderGoods->discount_price;
+
     }
 }

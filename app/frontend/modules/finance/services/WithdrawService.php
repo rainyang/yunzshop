@@ -29,4 +29,19 @@ class WithdrawService
                 break;
         }
     }
+
+    public static function createPayWayService($withdraw)
+    {
+        switch ($withdraw->pay_way) {
+            case 'balance':
+                return '余额';
+                break;
+            case 'alipay':
+                return '支付宝';
+                break;
+            case 'wecht':
+                return '微信';
+                break;
+        }
+    }
 }

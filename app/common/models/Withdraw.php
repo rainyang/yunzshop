@@ -18,6 +18,8 @@ class Withdraw extends BackendModel
     
     public $StatusService;
     
+    public $PayWayService;
+    
     public $timestamps = true;
 
     public $widgets = [];
@@ -26,8 +28,11 @@ class Withdraw extends BackendModel
 
     protected $guarded = [];
 
-    protected $appends = ['status_name'];
+    protected $appends = ['status_name','pay_way_name'];
 
+    /**
+     * @return string
+     */
     public function getStatusService()
     {
         if (!isset($this->StatusService)) {
@@ -37,10 +42,41 @@ class Withdraw extends BackendModel
         return $this->StatusService;
     }
 
+    /**
+     * @return string
+     */
     public function getStatusNameAttribute()
     {
         return $this->getStatusService();
     }
+
+    /**
+     * @return string
+     */
+    public function getPayWayService()
+    {
+        if (!isset($this->PayWayService)) {
+
+            $this->PayWayService = WithdrawService::createPayWayService($this);
+        }
+        return $this->PayWayService;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPayWayNameAttribute()
+    {
+        return $this->getPayWayService();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hasOneMember()
+    {
+        return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
+    } 
     
     /**
      *  定义字段名

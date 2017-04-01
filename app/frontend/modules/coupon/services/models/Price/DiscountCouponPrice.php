@@ -38,7 +38,7 @@ class DiscountCouponPrice extends CouponPrice
              */
             //(优惠券金额/订单商品总金额)*订单商品价格
             //dd(number_format(-($this->getDiscountPrice() / $this->getOrderGoodsInScope()->getPrice()) * $OrderGoods->getPrice(), 2));exit;
-            $OrderGoods->coupon_discount_price += number_format(($this->getPrice() / $this->coupon->getOrderGoodsInScope()->getVipPrice()) * $OrderGoods->getVipPrice(), 2);
+            $OrderGoods->couponDiscountPrice += number_format(($this->getPrice() / $this->coupon->getOrderGoodsInScope()->getVipPrice()) * $OrderGoods->getVipPrice(), 2);
 
         }
     }

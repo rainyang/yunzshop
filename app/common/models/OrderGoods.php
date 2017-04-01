@@ -15,8 +15,11 @@ class OrderGoods extends BaseModel
 
     protected $fillable = [];
     protected $guarded = ['id'];
-
-    protected $search_fields = ['goods_sn','title'];
+    protected $attributes = [
+        'goods_option_id' => 0,
+        'goods_option_title' => ''
+    ];
+    protected $search_fields = ['goods_sn', 'title'];
 
     public function hasOneGoods()
     {

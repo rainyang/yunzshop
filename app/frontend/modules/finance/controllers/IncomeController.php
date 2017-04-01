@@ -184,7 +184,7 @@ class IncomeController extends ApiController
                     'poundage_rate' => '5'
                 ]
             );
-            $incomeModel = $incomeModel->whereIn('type_id', [$item['type_id']]);
+            $incomeModel = $incomeModel->whereIn('id', [$item['type_id']]);
             $incomes = $incomeModel->get();
             \Log::info("INCOME:");
             \Log::info($incomes);
@@ -194,7 +194,6 @@ class IncomeController extends ApiController
                 return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
             }
         }
-
         $request = static::setWithdraw($withdrawData, $withdrawTotal);
         if ($request) {
             return $this->successJson('提现成功!');
