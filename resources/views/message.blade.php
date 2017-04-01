@@ -14,13 +14,13 @@
             <div class="col-xs-12 col-sm-8 col-md-9 col-lg-10">
 
 
-                <p>{{$message}}</p>
+                <p>{!! $message !!}</p>
 
                 @if($redirect)
-                    <p><a href="{{$redirect}}">如果你的浏览器没有自动跳转，请点击此链接</a></p>
+                    <p><a href="{!! $redirect !!}">如果你的浏览器没有自动跳转，请点击此链接</a></p>
                     <script type="text/javascript">
                         setTimeout(function () {
-                            location.href = "{{$redirect}}";
+                            location.href = "{!! $redirect !!}";
                         }, 3000);
                     </script>
                 @else
