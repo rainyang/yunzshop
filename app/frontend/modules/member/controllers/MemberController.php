@@ -110,6 +110,10 @@ class MemberController extends ApiController
     {
         $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
+        if (empty($member_info)) {
+            return $this->errorJson('会员不存在');
+        }
+
         return $this->successJson('', ['is_agent' => $member_info['is_agent']]);
     }
 }
