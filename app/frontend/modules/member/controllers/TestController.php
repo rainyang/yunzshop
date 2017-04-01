@@ -9,13 +9,11 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
-use app\common\services\CreditPay;
+use app\common\services\AliPay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
-use app\frontend\modules\member\services\MemberService;
-use app\common\services\AliPay;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 class TestController extends ApiController
@@ -94,7 +92,12 @@ exit;
 
    public function getId()
    {
-echo \YunShop::app()->getMemberId();
+       echo \YunShop::app()->getMemberId();
+   }
+
+   public function getQR()
+   {
+       QrCode::format('png')->size(100)->color(255,0,255)->generate('Hello,LaravelAcademy!',public_path(storage_path('logs')));
    }
 
 }

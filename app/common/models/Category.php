@@ -31,7 +31,7 @@ class Category extends BaseModel
      */
     protected $guarded = [''];
 
-    protected $fillable = [''];
+    //protected $fillable = [''];
 
     /**
      * @param $parent_id

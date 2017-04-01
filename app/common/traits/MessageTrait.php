@@ -88,7 +88,6 @@ trait MessageTrait
         } else {
             $messageStr = $message;
         }
-
         return $messageStr;
     }
 

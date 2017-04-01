@@ -21,15 +21,13 @@ class MemberAddressController extends ApiController
      * */
     public function index()
     {
-        //$memberId = \YunShop::app()->getMemberId();
-        $memberId = '9'; //测试使用
+        $memberId = \YunShop::app()->getMemberId();
         $addressList = MemberAddress::getAddressList($memberId);
         //获取省市ID
         if ($addressList) {
             $address = Address::getAllAddress();
             $addressList = $this->addressServiceForIndex($addressList, $address);
         }
-        //var_dump(!empty($addressList));
         $msg = "获取列表成功";
         return $this->successJson($msg, $addressList);
     }
@@ -54,7 +52,7 @@ class MemberAddressController extends ApiController
      * */
     public function setDefatult()
     {
-        $memberId = '9';
+        $memberId = \YunShop::app()->getMemberId();
         $addressModel = MemberAddress::getAddressById(\YunShop::request()->address_id);
         if ($addressModel) {
             if ($addressModel->isdefault) {
@@ -91,8 +89,7 @@ class MemberAddressController extends ApiController
                 'address'   => \YunShop::request()->address,
             );
             $addressModel->fill($data);
-            $memberId = \YunShop::request()->member_id;
-            $memberId = '9'; //测试使用
+            $memberId = \YunShop::app()->getMemberId();
             //验证默认收货地址状态并修改
             $addressList = MemberAddress::getAddressList($memberId);
             if (empty($addressList)) {
@@ -127,7 +124,6 @@ class MemberAddressController extends ApiController
         if (!$addressModel) {
             return $this->errorJson("未找到数据或已删除");
         }
-        //$requestAddress = \YunShop::request()->address;
         if (\YunShop::request()->address_id) {
             $requestAddress = array(
                 //'uid' => $requestAddress->uid,
@@ -161,6 +157,10 @@ class MemberAddressController extends ApiController
 
     }
 
+    /*
+     * 移除会员收货地址
+     *
+     * */
     public function destroy()
     {
         $addressId = \YunShop::request()->address_id;
