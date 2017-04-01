@@ -31,7 +31,7 @@ class Url
         if(empty($route) && self::isHttp($route)){
             return $route;
         }
-        $defaultParams = ['c'=>'site','a'=>'entry','m'=>'sz_yi','do'=>random(4),'route'=>$route];
+        $defaultParams = ['c'=>'site','a'=>'entry','m'=>'sz_yi','do'=>rand(1000,9999),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
         return  '/web/index.php?'. http_build_query($params);
@@ -49,10 +49,28 @@ class Url
         if(empty($route) && self::isHttp($route)){
             return $route;
         }
-        $defaultParams = ['i'=>\YunShop::app()->uniacid,'c'=>'entry','m'=>'sz_yi','do'=>random(4),'route'=>$route];
+        $defaultParams = ['i'=>\YunShop::app()->uniacid,'c'=>'entry','m'=>'sz_yi','do'=>rand(1000,9999),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
         return   '/app/index.php?'. http_build_query($params);
+    }
+
+    /**
+     *  前端api接口相对Url
+     *
+     * @param $route
+     * @param array $params
+     * @return string
+     */
+    public static function api($route, $params = [])
+    {
+        if(empty($route) && self::isHttp($route)){
+            return $route;
+        }
+        $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
+        $params = array_merge($defaultParams, $params);
+
+        return   '/addons/sz_yi/api.php?'. http_build_query($params);
     }
 
     /**
@@ -88,6 +106,15 @@ class Url
         }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
         return $domain . self::app($route,$params);
+    }
+
+    public static function absoluteApi($route, $params = [], $domain = '')
+    {
+        if(empty($route) && self::isHttp($route)){
+            return $route;
+        }
+        empty($domain) && $domain = request()->getSchemeAndHttpHost();
+        return $domain . self::api($route,$params);
     }
 
     public static function isHttp($url)

@@ -343,7 +343,7 @@ abstract class Pay
      */
     protected function payOrder($out_order_no, $status, $type, $third_type, $price)
     {
-         PayOrder::create([
+         return PayOrder::create([
             'uniacid' => $this->uniacid,
             'member_id' => \YunShop::app()->getMemberId(),
             'int_order_no' => $this->createPayOrderNo(),
@@ -398,11 +398,11 @@ abstract class Pay
     /**
      * 创建退款/提现订单批次号
      *
-     * @param $uniacid
-     * @param $strleng
+     * @param $uniacid 统一公众号
+     * @param $strleng 统一公众号长度
      * @return string
      */
-    public function setUniacidNo($uniacid, $strleng)
+    public function setUniacidNo($uniacid, $strleng=5)
     {
         $part1 = date('Ymd', time());
         $part2 = $this->generate_string();
@@ -410,13 +410,13 @@ abstract class Pay
         $uniacid_lenght = strlen($uniacid);
 
         if ($uniacid_lenght > $strleng) {
-            return INVALID_UNIACID_LENGTH;
+            return self::INVALID_UNIACID_LENGTH;
         }
 
         if ($uniacid_lenght >= 1 && $uniacid_lenght <= $strleng) {
             $part3 = sprintf("%0{$strleng}s", $uniacid);
         } else {
-            return INVALID_UNIACID_LENGTH;
+            return self::INVALID_UNIACID_LENGTH;
         }
 
         return $part1 . substr($part2, 0, 9) . $part3 . substr($part2, 9);;

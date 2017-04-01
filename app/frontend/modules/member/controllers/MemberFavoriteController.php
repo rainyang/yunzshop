@@ -8,20 +8,19 @@
 
 namespace app\frontend\modules\member\controllers;
 
-
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\models\MemberFavorite;
 
-class MemberFavoriteController extends BaseController
+class MemberFavoriteController extends ApiController
 {
     public function index()
     {
         //todo 需要增加商品信息显示
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = '57';
+        $memberId = '9';
         $favoriteList = MemberFavorite::getFavoriteList($memberId);
-        //dd($favoriteList);
 
         return $this->successJson('成功', $favoriteList);
 

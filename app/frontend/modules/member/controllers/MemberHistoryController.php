@@ -8,13 +8,13 @@
 
 namespace app\frontend\modules\member\controllers;
 
-
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\member\models\MemberFavorite;
 use app\frontend\modules\member\models\MemberHistory;
 
 
-class MemberHistoryController extends BaseController
+class MemberHistoryController extends ApiController
 {
     public function index()
     {
@@ -42,6 +42,18 @@ class MemberHistoryController extends BaseController
         if ($historyModel->save()) {
             return $this->successJson('更新足迹成功');
         }
+    }
+
+    public function destroy()
+    {
+        $historyModel = MemberHistory::getHistoryById(\YunShop::request()->id);
+        if (!$historyModel) {
+            return $this->errorJson('未找到数据或已删除！');
+        }
+        if ($historyModel->delete()) {
+            return $this->successJson('移除成功');
+        }
+        return $this->errorJson('未获取到历史记录ID');
     }
 
 }

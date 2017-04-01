@@ -94,7 +94,7 @@ class Logger
         if (!self::$logger instanceof Mlogger) {
             self::$logger = new Mlogger('yunshop');
             //@todo 配置日志记录目录
-            $handler = new StreamHandler(SZ_YI_PATH . '/data/logs/' . date('y_m_d') . '.log', Logger::DEBUG);
+            $handler = new StreamHandler(base_path() . '/data/logs/' . date('y_m_d') . '.log', Logger::DEBUG);
             $handler->getFormatter()->allowInlineLineBreaks();
             $handler->getFormatter()->ignoreEmptyContextAndExtra();
             self::$logger->pushProcessor(new WebProcessor());

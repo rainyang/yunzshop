@@ -17,11 +17,14 @@ use app\common\helpers\PaginationHelper;
 
 class ListController extends BaseController
 {
+    /**
+     * 页码
+     */
     const PAGE_SIZE = 10;
     private $_order_model;
     public function index(){
-        $params = \YunShop::request();
-        
+        //phpinfo();
+        $params = \YunShop::request()->get();
         $this->_order_model = Order::getAllOrders($params['search'],self::PAGE_SIZE);
         //dd($this->_order_model);
         return view('order.index', $this->getData())->render();

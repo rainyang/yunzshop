@@ -8,11 +8,11 @@
 
 namespace app\frontend\modules\order\controllers;
 
-
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\order\services\OrderService;
 
-class ChangePriceController extends BaseController
+class ChangePriceController extends ApiController
 {
     public function index(){
         $param = [

@@ -9,7 +9,7 @@
 
 namespace app\frontend\modules\goods\controllers;
 
-
+use app\common\components\ApiController;
 use app\common\models\Member;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
@@ -22,7 +22,7 @@ use Illuminate\Session\Store;
 use app\frontend\modules\goods\models\Comment;
 use app\frontend\modules\goods\services\CommentService;
 
-class CommentController extends BaseController
+class CommentController extends ApiController
 {
 
     public function getComment()

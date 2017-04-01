@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\common\helpers\Url;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\frontend\modules\member\models\MemberModel;
@@ -31,7 +32,7 @@ class RegisterController extends BaseController
         $uniacid = \YunShop::app()->uniacid;
 
 
-        if ((\YunShop::app()->ispost)
+        if (($_SERVER['REQUEST_METHOD'] == 'POST')
             && MemberService::validate($mobile, $password, $confirm_password)
         ) {
             $member_info = MemberModel::getId($uniacid, $mobile);
@@ -46,9 +47,9 @@ class RegisterController extends BaseController
                 'uniacid' => $uniacid,
                 'mobile' => $mobile,
                 'groupid' => $default_groupid->id,
-                'createtime' => TIMESTAMP,
+                'createtime' => time(),
                 'nickname' => $mobile,
-                'avatar' => SZ_YI_DEFAULT_AVATAR,
+                'avatar' => Url::shopUrl('static/images/photo-mr.jpg'),
                 'gender' => 0,
                 'residecity' => '',
             );

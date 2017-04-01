@@ -12,7 +12,6 @@ namespace app\backend\modules\goods\models;
 
 class Dispatch extends \app\common\models\goods\Dispatch
 {
-    public $timestamps = false;
 
     /**
      * 获取配送模板所有数据
@@ -37,6 +36,17 @@ class Dispatch extends \app\common\models\goods\Dispatch
     public static function getOne($id)
     {
         return self::where('id', $id)
+            ->first();
+    }
+
+    /**
+     * 获取配送模板单条数据
+     * @param int $goodsId
+     * @return array
+     */
+    public static function getOneByDefault()
+    {
+        return self::where('is_default', 1)
             ->first();
     }
 

@@ -173,7 +173,7 @@
                             <th class="show_n" style="width:120px;">运费(元)</th>
                             <th class="show_n" style="width:120px;">续件(个)</th>
                             <th class="show_n" style="width:120px;">续费(元)</th>
-                            <th style="width:120px;">管理</th>
+                            {{--<th style="width:120px;">管理</th>--}}
                         </tr>
                         </thead>
                         <tbody id='tbody-areas'>
@@ -181,23 +181,23 @@
                             <input type="hidden" id="selectedareas" value="{{ $dispatch->areas }}" class="form-control" name="dispatch[areas]">
                             <td style="padding:10px;" id="areas">{{ $dispatch->areas }}</td>
                             <td class="show_h text-center">
-                                <input type="number" value="{{ empty($dispatch->first->weight) ? 1000 : $dispatch->first_weight }}" class="form-control" name="dispatch[first_weight]" style="width:100px;"></td>
+                                <input type="number" value="{{ $dispatch->first_weight }}" class="form-control" name="dispatch[first_weight]" style="width:100px;"></td>
                             <td class="show_h text-center">
-                                <input type="text" value="{{ empty($dispatch->first_weight_price) ? 0 : $dispatch->first_weight_price }}" class="form-control" name="dispatch[first_weight_price]"  style="width:100px;"></td>
+                                <input type="text" value="{{ $dispatch->first_weight_price }}" class="form-control" name="dispatch[first_weight_price]"  style="width:100px;"></td>
                             <td class="show_h text-center">
-                                <input type="number" value="{{ empty($dispatch->another_weight) ? 1000 : $dispatch->another_weight }}" class="form-control" name="dispatch[another_weight]"  style="width:100px;"></td>
+                                <input type="number" value="{{ $dispatch->another_weight }}" class="form-control" name="dispatch[another_weight]"  style="width:100px;"></td>
                             <td class="show_h text-center">
-                                <input type="text" value="{{ empty($dispatch->another_weight_price) ? 0 : $dispatch->another_weight_price }}" class="form-control" name="dispatch[another_weight_price]"  style="width:100px;"></td>
+                                <input type="text" value="{{ $dispatch->another_weight_price }}" class="form-control" name="dispatch[another_weight_price]"  style="width:100px;"></td>
                             <td class="show_h"></td>
 
                             <td class="show_n text-center">
-                                <input type="number" value="{{ empty($dispatch->first_piece) ? 1 : $dispatch->first_piece }}" class="form-control" name="dispatch[first_piece]" style="width:100px;"></td>
+                                <input type="number" value="{{ $dispatch->first_piece }}" class="form-control" name="dispatch[first_piece]" style="width:100px;"></td>
                             <td class="show_n text-center">
-                                <input type="text" value="{{ empty($dispatch->first_piece_price) ? 0 : $dispatch->first_piece_price }}" class="form-control" name="dispatch[first_piece_price]"  style="width:100px;"></td>
+                                <input type="text" value="{{ $dispatch->first_piece_price }}" class="form-control" name="dispatch[first_piece_price]"  style="width:100px;"></td>
                             <td class="show_n text-center">
-                                <input type="number" value="{{ empty($dispatch->another_piece) ? 1 : $dispatch->another_piece }}" class="form-control" name="dispatch[another_piece]"  style="width:100px;"></td>
+                                <input type="number" value="{{ $dispatch->another_piece }}" class="form-control" name="dispatch[another_piece]"  style="width:100px;"></td>
                             <td class="show_n text-center">
-                                <input type="text" value="{{ empty($dispatch->another_piece_price) ? 0 : $dispatch->another_piece_price }}" class="form-control" name="dispatch[another_piece_price]"  style="width:100px;"></td>
+                                <input type="text" value="{{ $dispatch->another_piece_price }}" class="form-control" name="dispatch[another_piece_price]"  style="width:100px;"></td>
 
                             <td class="show_n"></td>
                         </tr>

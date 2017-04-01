@@ -16,5 +16,6 @@ class OrderPay extends ChangeStatusOperation
     protected $status_before_change = [ORDER::WAIT_PAY];
     protected $status_after_changed = ORDER::WAIT_SEND;
     protected $name = '支付';
+    protected $time_field = 'pay_time';
     protected $past_tense_class_name = 'OrderPaid';
 }

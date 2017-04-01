@@ -150,6 +150,6 @@ class Order extends BaseModel
     public static function getOrderInfoByMemberId($member_id)
     {
         return self::uniacid()
-                   ->where('member_id', $member_id);
+                   ->where('uid', $member_id);
     }
 }

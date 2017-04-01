@@ -17,5 +17,7 @@ class OrderCancelPay extends ChangeStatusOperation
     protected $status_before_change = [Order::WAIT_SEND];
     protected $status_after_changed = 0;
     protected $name = '取消支付';
+    protected $time_field = 'cancel_pay_time';
+
     protected $past_tense_class_name = 'OrderCancelPaid';
 }

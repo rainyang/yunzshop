@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\goods\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\models\Category;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\DB;
  * Date: 2017/3/3
  * Time: 22:16
  */
-class GoodsController extends BaseController
+class GoodsController extends ApiController
 {
     public function getGoods()
     {
@@ -25,7 +26,7 @@ class GoodsController extends BaseController
             $this->errorJson('请传入正确参数.');
         }
         //$goods = new Goods();
-        $goodsModel = Goods::with(['hasManyParams' => function ($query) {
+        $goodsModel = Goods::uniacid()->with(['hasManyParams' => function ($query) {
             return $query->select('goods_id', 'title', 'value');
         }])->with(['hasManySpecs' => function ($query) {
             return $query->select('id', 'goods_id', 'title', 'description');

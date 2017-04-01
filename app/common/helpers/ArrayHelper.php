@@ -11,6 +11,21 @@ namespace app\common\helpers;
 
 class ArrayHelper
 {
+
+    //stdClass Object 转 数组
+    public static function objectArray($array)
+    {
+        if (is_object($array)) {
+            $array = (array)$array;
+        }
+        if (is_array($array)) {
+            foreach ($array as $key => $value) {
+                $array[$key] = self::objectArray($value);
+            }
+        }
+        return $array;
+    }
+
     /**
      * 数组驼峰转分隔
      * 如：如：['aB'=>1,['cD'=>2]]  =>  ['a_b'=>1,['c_d'=>2]]

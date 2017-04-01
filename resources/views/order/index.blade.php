@@ -10,7 +10,10 @@
                 background: #f8f8f8;
                 text-align: center
             }
-            #modal-confirmsend .control-label{margin-top:0;}
+
+            #modal-confirmsend .control-label {
+                margin-top: 0;
+            }
 
             .trbody td {
                 text-align: center;
@@ -62,7 +65,7 @@
                             <div class="col-sm-8 col-lg-12 col-xs-12">
                                 @section('search_bar')
                                     <div class='input-group'>
-                                        <select name="search[ambiguous][field]" class="form-control">
+                                        <select name="search[ambiguous][field]" id="ambiguous-field" class="form-control">
                                             <option value="order"
                                                     @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
                                                 订单号/支付号
@@ -120,8 +123,8 @@
                                                     @if( array_get($requestSearch,'time_range.field','')=='pay_time')  selected="selected"@endif>
                                                 付款
                                             </option>
-                                            <option value="sent_time"
-                                                    @if( array_get($requestSearch,'time_range.field','')=='sent_time')  selected="selected"@endif>
+                                            <option value="send_time"
+                                                    @if( array_get($requestSearch,'time_range.field','')=='send_time')  selected="selected"@endif>
                                                 发货
                                             </option>
                                             <option value="finish_time"
@@ -178,7 +181,7 @@
                 </tr>
             </table>
 
-            @foreach ($list['data'] as $order)
+            @foreach ($list['data'] as $order_index => $order)
                 <table class='table'
                        style='float:left;border:1px solid #ccc;margin-top:5px;margin-bottom:0px;table-layout: fixed;'>
                     <tr>
@@ -225,20 +228,22 @@
                                 <img src="@if( 0&&$order['cashier']==1){{$order['name']['thumb']}}@else{!! tomedia($order_goods['thumb']) !!}@endif">
                             </td>
                             <td valign='top' style='border-left:none;text-align: left;/*width:400px*/;'>
-                                @if( 0&&$order['cashier']==1){{$order['name']['name']}}
-                                @else{{$order_goods['title']}}
-                                @endif @if( !empty($order_goods['optiontitle']))<br/><span class="label label-primary sizebg">{{$order_goods['optiontitle']}}</span>
+                                {{$order_goods['title']}}
+                                @if( !empty($order_goods['optiontitle']))<br/><span
+                                        class="label label-primary sizebg">{{$order_goods['optiontitle']}}</span>
                                 @endif
                                 <br/>{{$order_goods['goods_sn']}}
                             </td>
-                            <td style='border-left:none;text-align:left;/*width:150px*/'>@if( $requestSearch['plugin'] != "fund")原价: {!! number_format($order_goods['goods_price']/$order_goods['total'],2)!!} @endif<br/>应付: {!! number_format($order_goods['price']/$order_goods['total'],2) !!}
+                            <td style='border-left:none;text-align:left;/*width:150px*/'>@if( $requestSearch['plugin'] != "fund")
+                                    原价: {!! number_format($order_goods['goods_price']/$order_goods['total'],2)!!} @endif
+                                <br/>应付: {!! number_format($order_goods['price']/$order_goods['total'],2) !!}
                                 <br/>数量: {{$order_goods['total']}}
                             </td>
 
 
                             @if( $order_goods_index == 0)
                                 <td rowspan="{!! count($order['has_many_order_goods']) !!}">
-                                    <a href="{!! yzAppUrl('member/list',array('op'=>'detail')) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
+                                    <a href="{!! yzWebUrl('member.member.detail',array('id'=>$order['belongs_to_member']['uid'])) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
                                     @else
                                         {{$order['belongs_to_member']['nickname']}}
                                     @endif
@@ -297,24 +302,31 @@
                                         @endif
                                     </table>
                                 </td>
-                                <td rowspan="{php echo count($order['has_many_order_goods'])}"><label
-                                            class='label label-{{$order['statuscss']=0}}'>{{$order['status_name']}}</label><br/>
+                                <td rowspan="{{count($order['has_many_order_goods'])}}"><label
+                                            class='label label-info'>{{$order['status_name']}}</label><br/>
                                     <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
                                 </td>
-                                <td rowspan="{php echo count($order['has_many_order_goods'])}" width="10%">
-                                    @section('operation')
+                                <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">
+                                @section('operation'.$order_index)
                                         @include('order.ops')
-                                        @include('order.modals')
-
                                     @show
                                 </td>
                         </tr>
                     @endforeach
                 </table>
             @endforeach
+            @include('order.modals')
 
 
             <div id="pager">{!! $pager !!}</div>
         </div>
     </div>
+    <script>
+        $(function () {
+            $("#ambiguous-field").on('change',function(){
+
+                $(this).next('input').attr('placeholder',$(this).find(':selected').text().trim())
+            });
+        })
+    </script>
 @endsection('content')

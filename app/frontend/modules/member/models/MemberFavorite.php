@@ -12,7 +12,7 @@ namespace app\frontend\modules\member\models;
 
 class MemberFavorite extends \app\common\models\MemberFavorite
 {
-    public function hasGoods()
+    public function goods()
     {
         return $this->hasOne('app\common\models\Goods','id','goods_id');
     }
@@ -49,7 +49,7 @@ class MemberFavorite extends \app\common\models\MemberFavorite
     public static function getFavoriteList($memberId)
     {
         return static::select('id', 'goods_id')->uniacid()->where('member_id', $memberId)
-            ->with(['hasGoods' => function($query) {
+            ->with(['goods' => function($query) {
                 return $query->select('id', 'thumb', 'price', 'market_price', 'title');
             }])
             ->get()->toArray();

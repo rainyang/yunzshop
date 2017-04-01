@@ -2,10 +2,11 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\order\models\OrderListModel;
 
-class ListController extends BaseController
+class ListController extends ApiController
 {
     //获取指定状态的订单
     public function getOrders($status = '')

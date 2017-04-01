@@ -16,14 +16,24 @@ use Illuminate\Contracts\Validation\Validator;
 class Dispatch extends BaseModel
 {
     public $table = 'yz_dispatch';
-    
+    public $attributes = [
+        'display_order' => 0,
+        'first_weight' => 1000,
+        'first_weight_price' => 0,
+        'another_weight' => 1000,
+        'another_weight_price' => 0,
+        'first_piece' => 1,
+        'first_piece_price' => 0,
+        'another_piece' => 1,
+        'another_piece_price' => 0,
+    ];
 
     /**
      *  不可填充字段.
      *
      * @var array
      */
-    protected $guarded = ['created_at', 'updated_at'];
+    protected $guarded = ['deleted_at'];
 
 
     /**
@@ -32,7 +42,7 @@ class Dispatch extends BaseModel
      */
     public static function getDispatchList()
     {
-        $dispatchList = self::uniacid()
+        $dispatchList = self::uniacid()->where('enabled', 1)
             ->get()->toArray();
         return $dispatchList;
     }

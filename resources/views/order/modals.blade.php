@@ -321,6 +321,7 @@
         var itemid = $(btn).parent().find('.itemid').val();
 
         $(".id").val(itemid);
+
         modal.find(':input[name=order_id]').val( itemid );
         if($(btn).parent().find('.addressdata').val()){
             var addressdata  =JSON.parse($(btn).parent().find('.addressdata').val()) ;
