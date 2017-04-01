@@ -27,9 +27,9 @@ class LoginController extends ApiController
                     $msg = json_decode($msg);
 
                     if (!empty($msg)) {
-                        if ($msg->status == 1) {echo 1;
+                        if ($msg->status == 1) {
                             return $this->successJson('', $msg->result);
-                        } else {echo 2;
+                        } else {
                             return $this->errorJson('', $msg->result);
                         }
                     } else {
