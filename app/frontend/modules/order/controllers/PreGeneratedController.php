@@ -21,16 +21,17 @@ use app\frontend\modules\shop\services\ShopService;
 
 class PreGeneratedController extends ApiController
 {
-    private $_param;
-
+    private $param;
+    private $memberCarts;
     public function index()
     {
 
-        $this->_param['goods'][] = [
+        $this->param['goods'][] = [
             'goods_id'=>\YunShop::request()->get('goods_id'),
             'total'=>\YunShop::request()->get('total'),
             'option_id'=>\YunShop::request()->get('option_id'),
         ];
+        $this->memberCarts[] = (new MemberCart($this->param['goods'][0]));
 
         $this->run();
     }
@@ -48,7 +49,7 @@ class PreGeneratedController extends ApiController
         }
         $cart = MemberCart::getCartsByIds($cartIds);
         //dd($cart);exit;
-        $this->_param['goods'] = $cart;
+        $this->memberCarts = $cart;
         $this->run();
     }
 
@@ -61,7 +62,7 @@ class PreGeneratedController extends ApiController
             throw new AppException('用户登录状态过期');
         }
         $shop_model = ShopService::getCurrentShopModel();
-        $order_goods_models = OrderService::getOrderGoodsModels($this->_param['goods']);
+        $order_goods_models = OrderService::getOrderGoodsModels($this->memberCarts);
         if(!count($order_goods_models)){
             throw new AppException('未找到商品');
         }

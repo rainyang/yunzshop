@@ -11,6 +11,9 @@ namespace app\frontend\modules\member\models;
 
 class MemberCart extends \app\common\models\MemberCart
 {
+    protected $fillable=[];
+    protected $guarded = ['id'];
+
     /**
      * Get a list of members shopping cart through member ID
      *
@@ -37,8 +40,7 @@ class MemberCart extends \app\common\models\MemberCart
             $cartIds = explode(',',$cartIds);
         }
         $result = static::carts()->whereIn('id', $cartIds)
-            ->get()
-            ->toArray();
+            ->get();
         return $result;
     }
     public function scopeCarts($query){
