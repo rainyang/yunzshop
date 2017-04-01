@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
+use app\backend\modules\finance\services\IncomeService;
 
 class Income extends BackendModel
 {
@@ -21,7 +22,30 @@ class Income extends BackendModel
     public $attributes = [];
 
     protected $guarded = [];
+    
+    public $StatusService;
+    
+    protected $appends = ['status_name'];
 
+    /**
+     * @return mixed
+     */
+    public function getStatusService()
+    {
+        if (!isset($this->StatusService)) {
+
+            $this->StatusService = IncomeService::createStatusService($this);
+        }
+        return $this->StatusService;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusNameAttribute()
+    {
+        return $this->getStatusService();
+    }
     /**
      * @param $id
      * @return mixed
