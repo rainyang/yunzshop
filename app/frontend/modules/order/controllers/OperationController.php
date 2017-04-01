@@ -8,11 +8,12 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\Order;
 use app\frontend\modules\order\services\OrderService;
 
-class OperationController extends BaseController
+class OperationController extends ApiController
 {
     private $_params;
     private $_Order;

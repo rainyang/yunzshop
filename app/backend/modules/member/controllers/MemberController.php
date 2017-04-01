@@ -45,7 +45,7 @@ class MemberController extends BaseController
             $endtime   = time();
         }
 
-        $this->render('member/member_list',[
+        return view('member.index', [
             'list' => $list,
             'levels' => $levels,
             'groups' => $groups,
@@ -54,7 +54,7 @@ class MemberController extends BaseController
             'total' => $list['total'],
             'pager' => $pager,
             'opencommission'=>1
-        ]);
+        ])->render();
     }
 
     /**
@@ -206,6 +206,7 @@ class MemberController extends BaseController
             'starttime' => $starttime,
             'total' => $list['total'],
             'pager' => $pager,
+            'request' => \YunShop::request(),
             'opencommission'=>false
         ]);
 

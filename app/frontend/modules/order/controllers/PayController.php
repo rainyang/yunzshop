@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\Order;
 use app\common\services\Pay;
@@ -15,7 +16,7 @@ use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\services\MemberService;
 
-class PayController extends BaseController
+class PayController extends ApiController
 {
     public function index()
     {

@@ -8,12 +8,12 @@
 
 namespace app\frontend\modules\member\controllers;
 
-
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\member\Address;
 use app\frontend\modules\member\models\MemberAddress;
 
-class MemberAddressController extends BaseController
+class MemberAddressController extends ApiController
 {
     /*
      * 会员收货地址列表

@@ -1,5 +1,7 @@
 <?php
 namespace app\frontend\modules\member\controllers;
+
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\models\MemberCart;
@@ -10,7 +12,7 @@ use app\frontend\modules\member\models\MemberCart;
  * Date: 2017/2/23
  * Time: 上午10:17
  */
-class MemberCartController extends BaseController
+class MemberCartController extends ApiController
 {
     public function index()
     {
