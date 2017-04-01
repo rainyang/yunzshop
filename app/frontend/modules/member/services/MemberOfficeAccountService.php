@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\services;
 
 use app\common\facades\Setting;
+use app\common\helpers\Client;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
 use app\common\services\Session;
@@ -38,7 +39,7 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-        $state = \YunShop::app()->uniacid;
+        $state = 'yz-' . session_id();
         if (!Session::get('member_id')) {
             $authurl = $this->_getAuthUrl($appId, $callback, $state);
         } else {
@@ -48,7 +49,6 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            echo '<pre>';print_r($_SESSION);exit;
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
@@ -59,7 +59,6 @@ class MemberOfficeAccountService extends MemberService
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
                 throw new AppException('请求错误');
             }
-
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
@@ -114,7 +113,7 @@ class MemberOfficeAccountService extends MemberService
                         'uniacid' => $uniacid,
                         'email' => '',
                         'groupid' => $default_groupid['groupid'],
-                        'createtime' => TIMESTAMP,
+                        'createtime' => time(),
                         'nickname' => stripslashes($userinfo['nickname']),
                         'avatar' => $userinfo['headimgurl'],
                         'gender' => $userinfo['sex'],
@@ -157,8 +156,8 @@ class MemberOfficeAccountService extends MemberService
                         'uid' => $member_id,
                         'acid' => $uniacid,
                         'uniacid' => $uniacid,
-                        'salt' => random(8),
-                        'updatetime' => TIMESTAMP,
+                        'salt' => Client::random(8),
+                        'updatetime' => time(),
                         'nickname' => stripslashes($userinfo['nickname']),
                         'follow' => 1,
                         'followtime' => time(),
@@ -193,6 +192,13 @@ class MemberOfficeAccountService extends MemberService
         }
 
         //redirect('http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.test.login')->send();
+        $split = explode('?', $redirect_url);
+
+        if (strrpos($split[0], '/') > 6) {
+          //  $redirect_url = substr($split[0], 0, strrpos($split[0], '/'));
+        }
+
+file_put_contents(storage_path('logs/red.log'), $redirect_url, FILE_APPEND);
         redirect($redirect_url . '?login&session_id=' . session_id())->send();
     }
 
@@ -257,11 +263,10 @@ class MemberOfficeAccountService extends MemberService
      * @return string
      */
     private function _setClientRequestUrl()
-    {echo '<pre>';print_r(\YunShop::request());
+    {
         if (\YunShop::request()->yz_redirect) {
-            echo 1;
            Session::set('client_url', \YunShop::request()->yz_redirect);
-        } else {echo 2;
+        } else {
             Session::set('client_url', '');
         }
     }

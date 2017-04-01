@@ -8,12 +8,12 @@
 
 namespace app\frontend\modules\member\controllers;
 
-
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\member\Address;
 use app\frontend\modules\member\models\MemberAddress;
 
-class MemberAddressController extends BaseController
+class MemberAddressController extends ApiController
 {
     /*
      * 会员收货地址列表
@@ -22,7 +22,7 @@ class MemberAddressController extends BaseController
     public function index()
     {
         //$memberId = \YunShop::app()->getMemberId();
-        $memberId = '57'; //测试使用
+        $memberId = '9'; //测试使用
         $addressList = MemberAddress::getAddressList($memberId);
         //获取省市ID
         if ($addressList) {

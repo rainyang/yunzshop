@@ -9,6 +9,7 @@
 namespace app\backend\modules\order\controllers;
 
 use app\common\components\BaseController;
+use app\common\helpers\Url;
 use app\common\models\Order;
 use app\frontend\modules\order\services\OrderService;
 
@@ -50,33 +51,30 @@ class OperationController extends BaseController
     public function send(){
         list($result,$data) = OrderService::orderSend($this->_params);
         if($result === false){
-            $this->message('发货成功', $this->createWebUrl('order.detail', array('id' => $this->_params['order_id'])), 'success');
-            exit();
+            return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'success');
         }
-        $this->message('发货失败', $this->createWebUrl('order.detail', array('id' => $this->_params['order_id'])), 'error');
+        return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'error');
     }
     public function cancelSend(){
         list($result,$data) = OrderService::orderCancelSend($this->_params);
         if($result === false){
-            $this->message('取消失败', $this->createWebUrl('order.detail', array('id' => $this->_params['order_id'])), 'error');
-            exit();
+            return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'error');
         }
-        $this->message('取消成功', $this->createWebUrl('order.detail', array('id' => $this->_params['order_id'])), 'success');
+        return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'success');
     }
     public function Receive(){
         list($result,$data) = OrderService::orderReceive($this->_params);
         if($result === false){
-            $this->message('收货失败', $this->createWebUrl('order.detail', array('id' => $this->_params['order_id'])), 'error');
-            exit();
+            return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'error');
         }
-        $this->message('确认收货成功', $this->createWebUrl('order.detail', array('id' => $this->_params['order_id'])), 'success');
+        return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'success');
     }
     public function Delete()
     {
         list($result,$data) = OrderService::orderDelete($this->_params);
         if($result === false){
-            $this->errorJson($data);
+            return $this->message($data, Url::absoluteWeb('order.list'), 'error');
         }
-        $this->successJson($data);
+        return $this->message($data, Url::absoluteWeb('order.list'), 'success');
     }
 }

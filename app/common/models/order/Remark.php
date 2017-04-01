@@ -14,4 +14,5 @@ use app\common\models\BaseModel;
 class Remark extends BaseModel
 {
     public $table = 'yz_order_remark';
+    protected $guarded = [''];
 }

@@ -9,7 +9,7 @@
 
 namespace app\frontend\modules\goods\controllers;
 
-
+use app\common\components\ApiController;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
@@ -21,7 +21,7 @@ use Illuminate\Session\Store;
 use app\frontend\modules\goods\models\Category;
 use app\frontend\modules\goods\services\CategoryService;
 
-class CategoryController extends BaseController
+class CategoryController extends ApiController
 {
     public function getCategory()
     {

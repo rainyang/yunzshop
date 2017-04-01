@@ -25,7 +25,7 @@ class BaseController extends Controller
 
     public function __construct()
     {
-
+        session_start();
     }
 
     /**
@@ -51,11 +51,13 @@ class BaseController extends Controller
      */
     public function message($message, $redirect = '', $status = 'success')
     {
-        return $this->render('web/message', [
+
+        return view('message', [
             'redirect' => $redirect,
             'message' => $message,
             'status' => $status
-        ]);
+        ])->render();
+
     }
 
 

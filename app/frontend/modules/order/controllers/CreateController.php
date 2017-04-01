@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\exceptions\AppException;
 use app\frontend\modules\goods\services\GoodsService;
@@ -15,7 +16,7 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\ShopService;
 
-class CreateController extends BaseController
+class CreateController extends ApiController
 {
     public function index(){
         //dd(defined('IS_TEST'));exit;

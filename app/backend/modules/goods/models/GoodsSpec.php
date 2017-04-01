@@ -66,7 +66,7 @@ class GoodsSpec extends \app\common\models\GoodsSpec
                     "display_order" => $n,
                     "title" => $spec_item_titles[$n],
                     "show" => $spec_item_shows[$n],
-                    "thumb" => save_media($spec_item_thumbs[$n]),
+                    "thumb" => $spec_item_thumbs[$n],
                     "virtual" => $data['type'] == 3 ? $spec_item_virtuals[$n] : 0
                 ];
                 //$f = "spec_item_thumb_" . $get_item_id;

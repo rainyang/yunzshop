@@ -6,7 +6,6 @@
                 $.get("{!! yzWebUrl('order.operation.pay') !!}",{order_id:order_id}, function(json){
                     if (json.result == 1) {
                         location.href = location.href;
-
                     } else {
                         alert(json.msg);
                     }
