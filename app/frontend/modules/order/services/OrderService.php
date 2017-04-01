@@ -9,10 +9,10 @@
 
 namespace app\frontend\modules\order\services;
 
+use app\common\models\MemberCart;
 use app\common\models\Order;
 use app\common\models\Member;
 
-use app\frontend\modules\goods\services\models\factory\PreGeneratedOrderGoodsModelFactory;
 use app\frontend\modules\goods\services\models\GoodsModel;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
@@ -24,7 +24,7 @@ use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
 use app\frontend\modules\goods\services\models\Goods;
-use app\frontend\modules\order\services\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\shop\services\models\ShopModel;
 
@@ -50,22 +50,21 @@ class OrderService
 
     /**
      * 获取订单商品对象数组
-     * @param $param
+     * @param $memberCarts
      * @return array
      */
-    public static function getOrderGoodsModels($param){
-        return (new PreGeneratedOrderGoodsModelFactory())->createOrderGoodsModels($param);
+    public static function getOrderGoodsModels($memberCarts){
+        $result = [];
+        foreach ($memberCarts as $memberCart) {
+            /**
+             * @var $memberCart \app\frontend\modules\member\models\MemberCart
+             */
+            $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart);
+            $result[] = $orderGoodsModel;
+        }
+        return $result;
     }
 
-    /**
-     * 获取订单商品对象
-     * @param GoodsModel $goods_model
-     * @return \app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel
-     */
-    public static function getOrderGoodsModel(GoodsModel $goods_model){
-        return (new PreGeneratedOrderGoodsModelFactory())->createOrderGoodsModel($goods_model);
-
-    }
     /**
      * 获取订单号
      * @param GoodsModel $goods_model

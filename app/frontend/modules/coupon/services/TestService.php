@@ -89,7 +89,7 @@ class TestService
      */
     private function getSelectedMemberCoupon()
     {
-        $coupon_id = array_column(array_get($_GET, 'coupon', []), 'id');
+        $coupon_id = explode(',',array_get($_GET, 'coupon_ids', ''));
         $result = [];
         //dd(MemberCoupon::getMemberCoupon($this->order->getMemberModel())->get());exit;
         foreach ($this->getMemberCoupon() as $memberCoupon) {

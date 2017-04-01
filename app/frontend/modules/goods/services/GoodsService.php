@@ -2,12 +2,9 @@
 namespace app\frontend\modules\goods\services;
 
 use app\common\events\order\BeforeOrderGoodsAddInOrder;
-use app\common\models\Goods;
-use app\common\models\GoodsOption;
-use app\common\models\GoodsSpecItem;
+use app\frontend\modules\goods\models\Goods;
 use app\frontend\modules\goods\services\models\factory\GoodsModelFactory;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Created by PhpStorm.
@@ -17,14 +14,10 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class GoodsService
 {
-    public static function getGoodsModels($goods_id_arr)
+    public static function getGoodsModels($params)
     {
-        return Goods::select()->whereIn('id',$goods_id_arr)->get();
-    }
-
-    public static function getGoodsModel($goods_id)
-    {
-        return Goods::find($goods_id);
+        $ids = array_column($params, 'goods_id');
+        return Goods::whereIn('id',$ids)->withOption()->get();
     }
 
     /**

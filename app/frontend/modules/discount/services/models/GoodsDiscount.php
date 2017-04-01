@@ -8,30 +8,24 @@
 
 namespace app\frontend\modules\discount\services\models;
 
+use app\common\models\Goods;
+use app\common\models\GoodsOption;
+
 class GoodsDiscount extends Discount
 {
-/*    public function getDiscountDetails()
+
+    public function getDiscountPrice()
     {
 
-        $details = [];
-        $details[] = [
-            'name' => '折扣',
-            'value' => '85',
-            'price' => '50',
-            'plugin' => '0',
-        ];
-        $details[] = [
-            'name' => '云币抵扣',
-            'value' => '600',
-            'price' => '60',
-            'plugin' => '2',
-        ];
-        return $details;
-    }*/
-    public function getDiscountPrice(){
-
     }
-    public static function getVipPrice($goods_model){
-        return $goods_model->price * 0.9;
+
+    public static function getVipPrice(Goods $goodsModel)
+    {
+        return $goodsModel->price * 0.9;
+    }
+
+    public static function getOptionVipPrice(GoodsOption $goodsOption)
+    {
+        return $goodsOption->product_price * 0.9;
     }
 }
