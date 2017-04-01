@@ -37,9 +37,12 @@ class Express
 
         $data = [
             'dispatch_type_id'=>1,
-            'address'=>'默认地址(死值)',
+            'address'=>'云霄路188-1',
             'mobile'=>'18545571024',
-            'realname'=>'默认姓名(死值)',
+            'username'=>'高启',
+            'province'=>'广东省',
+            'city'=>'广州市',
+            'district'=>'白云区',
         ];
         $event->addMap('default_member_address',$data);
         return ;
