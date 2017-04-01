@@ -26,9 +26,9 @@ class ApiController extends BaseController
     {
         parent::preAction();
 
-        if (config('app.debug')) {echo 1;
+        if (config('app.debug')) {
             return true;
-        }echo 2;exit;
+        }
         $this->setCookie();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             $yz_redirect  = \YunShop::request()->yz_redirect;
