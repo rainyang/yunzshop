@@ -45,13 +45,24 @@ class WithdrawController extends BaseController
         $withdrawModel = Withdraw::getWithdrawList($search);
 
         $list = $withdrawModel->paginate($pageSize)->toArray();
-
+//        echo "<pre>"; print_r($list);exit;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         return view('finance.withdraw.withdraw-list', [
             'list' => $list,
             'pager' => $pager,
         ])->render();
+    }
+    
+    
+    public function info()
+    {
+        $id = intval(\YunShop::request()->id);
+        $withdrawModel = Withdraw::getWithdrawById($id)->first();
+        
+        return view('finance.withdraw.withdraw-info', [
+            'item' => $withdrawModel,
+        ])->render(); 
     }
     
 }
