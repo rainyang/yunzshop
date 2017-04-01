@@ -9,7 +9,6 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\exceptions\AppException;

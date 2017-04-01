@@ -37,6 +37,7 @@ class Express
 
         $data = [
             'dispatch_type_id'=>1,
+            'id'=>'1',
             'address'=>'云霄路188-1',
             'mobile'=>'18545571024',
             'username'=>'高启',
