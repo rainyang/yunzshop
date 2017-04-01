@@ -18,6 +18,13 @@ use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\finance\BalanceRecharge;
 
+/*
+ * 余额基础设置页面
+ * 用户余额管理页面
+ * 后台会员充值
+ * 余额充值记录列表
+ *
+ * */
 class BalanceController extends BaseController
 {
     //余额基础设置页面
@@ -73,7 +80,6 @@ class BalanceController extends BaseController
 
         if (\YunShop::request()->num && $memberInfo['uid']) {
             if (!is_numeric(\YunShop::request()->num)) {
-                dd('请输入正确的充值金额');
                 $this->error('请输入正确的充值金额');
             }
 
@@ -95,14 +101,12 @@ class BalanceController extends BaseController
             $rechargeMode->fill($recordData);
             $validator = $rechargeMode->validator();
             if ($validator->fails()) {
-                dd('验证错误');
                 $this->error($validator->messages());
             } else {
                 if ($rechargeMode->save()) {
 
 //todo 请求修改余额接口，完成余额充值
-                    dd('保存成功');
-                    return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.memnber'), 'success');
+                    return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge'), 'success');
                 }
             }
 
@@ -113,6 +117,20 @@ class BalanceController extends BaseController
         return view('finance.balance.recharge', [
             'rechargeMenu'  => $this->getRechargeMenu(),
             'memberInfo'    => $memberInfo,
+        ])->render();
+    }
+
+    //充值记录
+    public function rechargeRecord()
+    {
+//todo 搜索功能
+        $pageSize = 20;
+        $recordList = BalanceRecharge::getRechargeRecord($pageSize);
+        $pager = PaginationHelper::show($recordList->total(), $recordList->currentPage(), $recordList->perPage());
+
+        return view('finance.balance.rechargeRecord', [
+            'recordList'  => $recordList,
+            'pager'    => $pager,
         ])->render();
     }
 
@@ -129,6 +147,8 @@ class BalanceController extends BaseController
         );
         return $rechargeMenu;
     }
+
+    //创建订单号，todo 应该是一个公用的方法，暂时不知道放哪里，先
 
 
 }
