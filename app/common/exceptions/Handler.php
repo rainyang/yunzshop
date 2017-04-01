@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if(($exception instanceof AppException) || \YunShop::isApi()){
+        if(($exception instanceof AppException)){
             return $this->errorJson($exception->getMessage());
         }
 
@@ -60,7 +60,9 @@ class Handler extends ExceptionHandler
         {
             return $this->renderExceptionWithWhoops($exception);
         }
-
+        if(\YunShop::isApi()){
+            return $this->errorJson($exception->getMessage());
+        }
         return parent::render($request, $exception);
     }
 

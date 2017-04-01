@@ -23,21 +23,21 @@
                             <div class="col-sm-8 col-lg-12 col-xs-12">
                                 <div class='input-group'>
                                     <div class='input-group-addon'>会员信息</div>
-                                    <input class="form-control" name="keyword" type="text" value=" " placeholder="订单号/支付单号">
+                                    <input class="form-control" name="keyword" type="text" value="搜索功能未完善" placeholder="订单号/支付单号">
 
                                     <div class='input-group-addon'>会员等级</div>
                                     <select name="paytype" class="form-control">
                                         <option value="" {if $_GPC['paytype']==''}selected{/if}>不限</option>
-                                        {loop $paytype $key $type}
-                                        <option value=" " > 1231</option>
-                                        {/loop}
+                                        @foreach($memberLevel as $level)
+                                        <option value="{{ $level['id'] }}" >{{ $level['level_name'] }}</option>
+                                        @endforeach
                                     </select>
                                     <div class='input-group-addon'>会员分组</div>
                                     <select name="paytype" class="form-control">
                                         <option value="" {if $_GPC['paytype']==''}selected{/if}>不限</option>
-                                        {loop $paytype $key $type}
-                                        <option value="" >1231231</option>
-                                        {/loop}
+                                        @foreach($memberGroup as $group)
+                                        <option value="{{ $group['id'] }}" >{{ $group['group_name'] }}</option>
+                                        @endforeach
                                     </select>
 
                                 </div>

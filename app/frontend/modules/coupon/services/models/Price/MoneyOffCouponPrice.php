@@ -46,7 +46,7 @@ class MoneyOffCouponPrice extends CouponPrice
              * @var $orderGoods PreGeneratedOrderGoodsModel
              */
             //(优惠券金额/折扣优惠券后价格)*折扣优惠券后价格
-            $orderGoods->coupon_money_off_price += number_format(($this->getPrice() / $this->getOrderGoodsGroupPrice()) * $this->getOrderGoodsPrice($orderGoods), 2);
+            $orderGoods->couponMoneyOffPrice += number_format(($this->getPrice() / $this->getOrderGoodsGroupPrice()) * $this->getOrderGoodsPrice($orderGoods), 2);
 
         }
     }

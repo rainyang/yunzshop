@@ -10,6 +10,8 @@ namespace app\common\models;
 
 
 
+use app\frontend\modules\discount\services\models\GoodsDiscount;
+
 class GoodsOption extends \app\common\models\BaseModel
 {
     public $table = 'yz_goods_option';
@@ -17,4 +19,8 @@ class GoodsOption extends \app\common\models\BaseModel
     public $guarded = [];
     public $timestamps = false;
 
+    public function getVipPriceAttribute()
+    {
+        return GoodsDiscount::getOptionVipPrice($this);
+    }
 }
