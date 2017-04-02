@@ -15,7 +15,6 @@ use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-
 class TestController extends ApiController
 {
    public function index()
