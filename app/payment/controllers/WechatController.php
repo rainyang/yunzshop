@@ -96,7 +96,7 @@ class WechatController extends PaymentController
 
         $notify  = $payment->getNotify();
 
-        return $notify->isValid();
+        //return $notify->isValid();
     }
 
     /**
