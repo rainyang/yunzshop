@@ -23,6 +23,7 @@ class WechatController extends PaymentController
         $verify_result = $this->getSignResult();
 
         if($verify_result) {
+            file_put_contents(storage_path('logs/pp.log'), print_r($_POST, 1));
             //商户订单号
             $out_trade_no = $_POST['out_trade_no'];
             //支付宝交易号
@@ -31,6 +32,7 @@ class WechatController extends PaymentController
             $total_fee = $_POST['total_fee'];
 
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
+                file_put_contents(storage_path('logs/ss.log'), print_r($_POST, 1));
                 // TODO 支付单查询 && 支付请求数据查询 验证请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
                 $pay_log = [];
                 if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
@@ -55,7 +57,10 @@ class WechatController extends PaymentController
         $verify_result = $this->getSignResult();
 
         if($verify_result) {
+            file_put_contents(storage_path('logs/gg.log'), print_r($_GET, 1));
             if($_GET['trade_status'] == 'TRADE_SUCCESS') {
+                file_put_contents(storage_path('logs/gp.log'), print_r($_GET, 1));
+                echo 'ok';
                 redirect()->send();
             }
         } else {
