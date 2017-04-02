@@ -85,6 +85,15 @@ class BalanceController extends BaseController
 
             $rechargeMode = new BalanceRecharge();
 
+            //验证订单号是否可以用
+            $ordersn = createNo('RV', true);
+            while (1) {
+                if (!BalanceRecharge::validatorOrderSn($ordersn)) {
+                    break;
+                }
+                $ordersn = createNo('RV', true);
+            }
+
             $recordData = array(
                 'uniacid' => \YunShop::app()->uniacid,
                 'member_id' => $memberId,
@@ -94,10 +103,12 @@ class BalanceController extends BaseController
 //todo 增加金额值处理
 
                 'new_money' => $memberInfo['credit2'] + \YunShop::request()->num,
-                'type' => 1,        //后台充值
-                'ordersn' => '',     //需要增加订单号生成
+                'type' => 1,
+                'ordersn' => $ordersn,
                 'status' => 0
             );
+
+
             $rechargeMode->fill($recordData);
             $validator = $rechargeMode->validator();
             if ($validator->fails()) {
@@ -147,8 +158,5 @@ class BalanceController extends BaseController
         );
         return $rechargeMenu;
     }
-
-    //创建订单号，todo 应该是一个公用的方法，暂时不知道放哪里，先
-
 
 }
