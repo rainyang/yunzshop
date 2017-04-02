@@ -172,6 +172,7 @@ class ListController extends BaseController
     {
         $params = \YunShop::request();
         $orders = Order::getExportOrders($params);
-        ExportService::export($orders);
+        $export_class = new ExportService();
+        $export_class->export($orders);
     }
 }
