@@ -57,7 +57,6 @@ class BaseController extends Controller
             'message' => $message,
             'status' => $status
         ])->render();
-
     }
 
 

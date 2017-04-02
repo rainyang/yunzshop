@@ -9,14 +9,11 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
-use app\common\services\CreditPay;
+use app\common\services\AliPay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
-use app\frontend\modules\member\services\MemberService;
-use app\common\services\AliPay;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class TestController extends ApiController
 {
@@ -30,12 +27,12 @@ class TestController extends ApiController
 //       $pay->doWithdraw(146,  0.1);
 //       $result = $pay->doRefund('1490503054', '4001322001201703264702511714', 1, 1);
 //
-//       $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
+      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
 
-//       return view('order.pay', [
-//           'config' => $data['config'],
-//           'js' => $data['js']
-//       ])->render();
+       return view('order.pay', [
+           'config' => $data['config'],
+           'js' => $data['js']
+       ])->render();
 exit;
        $pay = new AliPay();
 
@@ -94,7 +91,12 @@ exit;
 
    public function getId()
    {
-echo \YunShop::app()->getMemberId();
+       echo \YunShop::app()->getMemberId();
+   }
+
+   public function getQR()
+   {
+       echo QrCode::format('png')->size(100)->generate('http:www.baidu.com', storage_path('qr/' . time().'.png'));
    }
 
 }

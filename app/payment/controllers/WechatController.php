@@ -8,22 +8,23 @@
 
 namespace app\payment\controllers;
 
-
 use app\common\helpers\Url;
 use app\payment\PaymentController;
-use EasyWeChat\Payment\Notify;
+use EasyWeChat\Foundation\Application;
 
 class WechatController extends PaymentController
 {
     public function notifyUrl()
     {
         file_put_contents(storage_path('logs/notify.log'), print_r($_POST, 1));
+        file_put_contents(storage_path('logs/notify2.log'), print_r($_GET, 1));
         // TODO 访问记录
         // TODO 保存响应数据
 
         $verify_result = $this->getSignResult();
 
         if($verify_result) {
+            file_put_contents(storage_path('logs/pp.log'), print_r($_POST, 1));
             //商户订单号
             $out_trade_no = $_POST['out_trade_no'];
             //支付宝交易号
@@ -32,6 +33,7 @@ class WechatController extends PaymentController
             $total_fee = $_POST['total_fee'];
 
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
+                file_put_contents(storage_path('logs/ss.log'), print_r($_POST, 1));
                 // TODO 支付单查询 && 支付请求数据查询 验证请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
                 $pay_log = [];
                 if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
@@ -56,7 +58,10 @@ class WechatController extends PaymentController
         $verify_result = $this->getSignResult();
 
         if($verify_result) {
+            file_put_contents(storage_path('logs/gg.log'), print_r($_GET, 1));
             if($_GET['trade_status'] == 'TRADE_SUCCESS') {
+                file_put_contents(storage_path('logs/gp.log'), print_r($_GET, 1));
+                echo 'ok';
                 redirect()->send();
             }
         } else {
@@ -88,10 +93,11 @@ class WechatController extends PaymentController
         $pay = \Setting::get('shop.pay');
 
         $app     = $this->getEasyWeChatApp($pay);
-        $notify = $app->getNotify();
+        $payment = $app->payment;
 
+        $notify  = $payment->getNotify();
 
-        return $notify->isValid();
+        //return $notify->isValid();
     }
 
     /**
@@ -116,7 +122,7 @@ class WechatController extends PaymentController
                 'notify_url'         => Url::shopUrl('payment/wechat/notifyUrl.php')
             ]
         ];
-
+echo '<pre>';print_r($options);exit;
         $app = new Application($options);
 
         return $app;
