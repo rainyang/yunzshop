@@ -16,8 +16,22 @@ class WechatController extends PaymentController
 {
     public function notifyUrl()
     {
-        file_put_contents(storage_path('logs/notify.log'), print_r($_POST, 1));
-        file_put_contents(storage_path('logs/notify2.log'), print_r($_GET, 1));
+        $input = file_get_contents('php://input');
+        if (!empty($input) && empty($_GET['out_trade_no'])) {
+            $obj = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $data = json_decode(json_encode($obj), true);
+            if (empty($data)) {
+                exit('fail');
+            }
+            if ($data['result_code'] != 'SUCCESS' || $data['return_code'] != 'SUCCESS') {
+                exit('fail');
+            }
+            $get = $data;
+        } else {
+            $get = $_GET;
+        }
+
+        file_put_contents(storage_path('logs/notify.log'), print_r($get, 1));
         // TODO 访问记录
         // TODO 保存响应数据
 
@@ -122,7 +136,7 @@ class WechatController extends PaymentController
                 'notify_url'         => Url::shopUrl('payment/wechat/notifyUrl.php')
             ]
         ];
-echo '<pre>';print_r($options);exit;
+
         $app = new Application($options);
 
         return $app;
