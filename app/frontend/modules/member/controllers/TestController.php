@@ -97,7 +97,7 @@ exit;
 
    public function getQR()
    {
-       echo QrCode::format('png')->size(100)->generate('http:www.baidu.com', storage_path('qr/' . time().'png'));
+       echo QrCode::format('png')->size(100)->generate('http:www.baidu.com', storage_path('qr/' . time().'.png'));
    }
 
 }
