@@ -97,7 +97,7 @@ exit;
 
    public function getQR()
    {
-       QrCode::format('png')->size(100)->color(255,0,255)->generate('Hello,LaravelAcademy!',public_path(storage_path('logs')));
+       echo QrCode::format('png')->size(100)->generate('http:www.baidu.com', storage_path('qr/' . time().'png'));
    }
 
 }
