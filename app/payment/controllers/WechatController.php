@@ -8,10 +8,9 @@
 
 namespace app\payment\controllers;
 
-
 use app\common\helpers\Url;
 use app\payment\PaymentController;
-use EasyWeChat\Payment\Notify;
+use EasyWeChat\Foundation\Application;
 
 class WechatController extends PaymentController
 {
@@ -48,7 +47,7 @@ class WechatController extends PaymentController
     }
 
     public function returnUrl()
-    {echo 'path : '. storage_path();exit;
+    {
         file_put_contents(storage_path('logs/return.log'), print_r($_REQUEST, 1));
         // TODO 访问记录
         // TODO 保存响应数据
@@ -88,8 +87,9 @@ class WechatController extends PaymentController
         $pay = \Setting::get('shop.pay');
 
         $app     = $this->getEasyWeChatApp($pay);
-        $notify = $app->getNotify();
+        $payment = $app->payment;
 
+        $notify  = $payment->getNotify();
 
         return $notify->isValid();
     }
