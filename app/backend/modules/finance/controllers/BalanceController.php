@@ -17,6 +17,8 @@ use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\finance\BalanceRecharge;
+use app\common\models\finance\BalanceTansfer;
+use app\common\services\fiance\Balance;
 
 /*
  * 余额基础设置页面
@@ -115,6 +117,9 @@ class BalanceController extends BaseController
                 $this->error($validator->messages());
             } else {
                 if ($rechargeMode->save()) {
+                    (new Balance())->balanceChange($rechargeMode->member_id, $rechargeMode->money);
+                    $rechargeMode->status = 1;
+                    $rechargeMode->save();
 
 //todo 请求修改余额接口，完成余额充值
                     return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge'), 'success');
@@ -141,6 +146,19 @@ class BalanceController extends BaseController
 
         return view('finance.balance.rechargeRecord', [
             'recordList'  => $recordList,
+            'pager'    => $pager,
+        ])->render();
+    }
+
+    //会员余额转让记录
+    public function tansferRecord()
+    {
+        $pageSize = 1;
+        $tansferList = BalanceTansfer::getTansferPageList($pageSize);
+        $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());
+
+        return view('finance.balance.transferRecord', [
+            'tansferList'  => $tansferList,
             'pager'    => $pager,
         ])->render();
     }

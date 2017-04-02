@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="panel panel-default">
-            <div class="panel-heading">总数：{$total}</div>
+            <div class="panel-heading">总数：{{ $recordList->total() }}</div>
             <div class="panel-body ">
                 <table class="table table-hover">
                     <thead class="navbar-inner">
@@ -47,7 +47,7 @@
                             <th style='width:12%;' class='hidden-xs'>等级/分组</th>
                             <th style='width:12%;'>充值时间</th>
                             <th style='width:12%;'>充值方式</th>
-                            <th style='width:12%;'>状态</th>
+                            <th style='width:12%;'>充值金额<br/>状态</th>
                             <th style='width:12%;'>操作</th>
                         </tr>
                     </thead>
@@ -85,7 +85,8 @@
 
                         </td>
                         <td>
-
+                            {{ $list->money }}
+                            <br/>
                             @if($list->status == 1)
                                 <span class='label label-success'>充值成功</span>
                             @elseif($list->status == '-1')
