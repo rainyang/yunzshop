@@ -122,7 +122,7 @@ class WechatController extends PaymentController
                 'notify_url'         => Url::shopUrl('payment/wechat/notifyUrl.php')
             ]
         ];
-
+echo '<pre>';print_r($options);exit;
         $app = new Application($options);
 
         return $app;
