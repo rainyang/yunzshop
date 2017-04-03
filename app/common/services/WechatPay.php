@@ -96,6 +96,8 @@ class WechatPay extends Pay
         } else {
             throw new \AppException('退款失败');
         }
+
+        return $result;
     }
 
     /**
@@ -175,7 +177,7 @@ class WechatPay extends Pay
         }
 
         $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
-        echo '<pre>';print_r($result);exit;
+        return $result;
     }
 
     /**
