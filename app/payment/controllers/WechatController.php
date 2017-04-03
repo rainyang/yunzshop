@@ -47,9 +47,8 @@ class WechatController extends PaymentController
 
     public function refundUrl()
     {
+        file_put_contents(storage_path('logs/refund.log'), 1);
         $post = $this->getResponseResult();
-
-        file_put_contents(storage_path('logs/refund.log'), print_r($post, 1));
         // TODO 访问记录
         // TODO 保存响应数据
         $verify_result = $this->getSignResult();

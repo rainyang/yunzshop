@@ -16,9 +16,6 @@ class PaymentController extends BaseController
     {
         parent::__construct();
 
-        file_put_contents('../../../../addons/sz_yi/data/p1.log', print_r($_POST,1));
-        file_put_contents('../../../../addons/sz_yi/data/p2.log', print_r($_GET,1));
-
 /*        $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
 
@@ -29,7 +26,8 @@ class PaymentController extends BaseController
         }*/
 
         $script_info = pathinfo($_SERVER['SCRIPT_NAME']);
-        file_put_contents('../../../../addons/sz_yi/data/f.log', print_r($script_info,1), FILE_APPEND);
+        file_put_contents(storage_path('logs/f.log'), print_r($script_info,1), FILE_APPEND);
+
         if (!empty($script_info)) {
             switch ($script_info['filename']) {
                 case 'notifyUrl':
