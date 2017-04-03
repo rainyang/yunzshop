@@ -38,7 +38,7 @@ class WechatController extends PaymentController
         $verify_result = $this->getSignResult();
 
         if($verify_result) {
-            file_put_contents(storage_path('logs/pp.log'), 1);
+            file_put_contents(storage_path('logs/pp.log'), print_r($post,1));
 
 
 //            $total_fee = $post['total_fee'];
@@ -51,8 +51,7 @@ class WechatController extends PaymentController
             echo "success";
 
         } else {
-            file_put_contents(storage_path('logs/ee.log'), print_r($GLOBALS['HTTP_RAW_POST_DATA'],1));
-            echo "fail";
+           echo "fail";
         }
     }
 
