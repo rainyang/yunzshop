@@ -25,7 +25,7 @@ class TestController extends ApiController
 //       echo $str . '<BR>';
 //       echo substr($str, 17, 5);
 //       $pay->doWithdraw(146,  0.1);
-       $result = $pay->doRefund('1491198238',  0.1, 0.1);
+       $result = $pay->doRefund('1491196913',  0.1, 0.1);
        echo '<pre>';print_r($result);exit;
 //
 //      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
