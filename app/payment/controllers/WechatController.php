@@ -16,31 +16,14 @@ class WechatController extends PaymentController
 {
     public function notifyUrl()
     {
-        $input = file_get_contents('php://input');
-        if (!empty($input) && empty($_POST['out_trade_no'])) {
-            $obj = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
-            $data = json_decode(json_encode($obj), true);
-            if (empty($data)) {
-                exit('fail');
-            }
-            if ($data['result_code'] != 'SUCCESS' || $data['return_code'] != 'SUCCESS') {
-                exit('fail');
-            }
-            $post = $data;
-        } else {
-            $post = $_POST;
-        }
+        $post = $this->getResponseResult();
 
-        file_put_contents(storage_path('logs/notify1.log'), print_r($post, 1));
         // TODO 访问记录
         // TODO 保存响应数据
 
         $verify_result = $this->getSignResult();
 
         if($verify_result) {
-            file_put_contents(storage_path('logs/pp.log'), print_r($post,1));
-
-
 //            $total_fee = $post['total_fee'];
 //            $pay_log = [];
 //            if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
@@ -64,9 +47,27 @@ class WechatController extends PaymentController
 
     public function refundNotifyUrl()
     {
-        file_put_contents(storage_path('logs/refund.log'), print_r($_POST, 1));
+        $post = $this->getResponseResult();
+
+        file_put_contents(storage_path('logs/refund.log'), print_r($post, 1));
         // TODO 访问记录
         // TODO 保存响应数据
+        $verify_result = $this->getSignResult();
+
+        if($verify_result) {
+            file_put_contents(storage_path('logs/refund2.log'), print_r($post, 1));
+//            $total_fee = $post['total_fee'];
+//            $pay_log = [];
+//            if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
+//                // TODO 更新支付单状态
+//                // TODO 更新订单状态
+//            }
+
+            echo "success";
+
+        } else {
+            echo "fail";
+        }
     }
 
     public function withdrawNotifyUrl()
@@ -119,5 +120,30 @@ class WechatController extends PaymentController
         $app = new Application($options);
 
         return $app;
+    }
+
+    /**
+     * 获取回调结果
+     *
+     * @return array|mixed|\stdClass
+     */
+    public function getResponseResult()
+    {
+        $input = file_get_contents('php://input');
+        if (!empty($input) && empty($_POST['out_trade_no'])) {
+            $obj = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $data = json_decode(json_encode($obj), true);
+            if (empty($data)) {
+                exit('fail');
+            }
+            if ($data['result_code'] != 'SUCCESS' || $data['return_code'] != 'SUCCESS') {
+                exit('fail');
+            }
+            $post = $data;
+        } else {
+            $post = $_POST;
+        }
+
+        return $post;
     }
 }

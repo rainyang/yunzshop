@@ -61,7 +61,6 @@ class WechatPay extends Pay
      * 微信退款
      *
      * @param 订单号 $out_trade_no
-     * @param 微信退款批次号 $out_refund_no
      * @param 订单总金额 $totalmoney
      * @param 退款金额 $refundmoney
      * @return array

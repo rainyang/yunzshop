@@ -25,14 +25,15 @@ class TestController extends ApiController
 //       echo $str . '<BR>';
 //       echo substr($str, 17, 5);
 //       $pay->doWithdraw(146,  0.1);
-//       $result = $pay->doRefund('1490503054', '4001322001201703264702511714', 1, 1);
+       $result = $pay->doRefund('1491199968',  0.1, 0.1);
+       echo '<pre>';print_r($result);exit;
 //
-      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
-
-       return view('order.pay', [
-           'config' => $data['config'],
-           'js' => $data['js']
-       ])->render();
+//      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
+//
+//       return view('order.pay', [
+//           'config' => $data['config'],
+//           'js' => $data['js']
+//       ])->render();
 exit;
        $pay = new AliPay();
 

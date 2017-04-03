@@ -49,7 +49,7 @@ class PaymentController extends BaseController
             }
         }
 
-       \Setting::$uniqueAccountId = \YunShop::app()->uniacid = 2;
+       \Setting::$uniqueAccountId = \YunShop::app()->uniacid;
 
     }
 
