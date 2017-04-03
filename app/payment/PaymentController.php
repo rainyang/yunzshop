@@ -35,6 +35,13 @@ class PaymentController extends BaseController
                     \YunShop::app()->uniacid = $this->getUniacid();
 
                     break;
+                case 'refundUrl':
+                case 'withdrawUrl':
+                    $out_refund_no = !empty($_REQUEST['out_refund_no']) ? $_REQUEST['out_refund_no'] : '';
+
+                    \YunShop::app()->uniacid = substr($out_refund_no, 17, 5);
+                    file_put_contents(storage_path('logs/uniacid.log'), \YunShop::app()->uniacid);
+                    break;
                 case 'refundNotifyUrl':
                 case 'withdrawNotifyUrl':
                     $batch_no = !empty($_REQUEST['batch_no']) ? $_REQUEST['batch_no'] : '';

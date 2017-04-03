@@ -84,7 +84,7 @@ class WechatPay extends Pay
             message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
         }
 
-        $notify_url = Url::shopUrl('payment/wechat/refundNotifyUrl.php');
+        $notify_url = Url::shopUrl('payment/wechat/refundUrl.php');
         $app     = $this->getEasyWeChatApp($pay);
         $payment = $app->payment;
 
@@ -134,7 +134,7 @@ class WechatPay extends Pay
             $openid = 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y';
         }
 
-        $notify_url = Url::shopUrl('payment/wechat/withdrawNotifyUrl.php');
+        $notify_url = Url::shopUrl('payment/wechat/withdrawUrl.php');
         $app = $this->getEasyWeChatApp($pay, $notify_url);
 
         if ($type == 1) {//钱包

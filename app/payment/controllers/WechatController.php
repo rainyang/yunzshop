@@ -45,7 +45,7 @@ class WechatController extends PaymentController
 
     }
 
-    public function refundNotifyUrl()
+    public function refundUrl()
     {
         $post = $this->getResponseResult();
 
@@ -70,7 +70,7 @@ class WechatController extends PaymentController
         }
     }
 
-    public function withdrawNotifyUrl()
+    public function withdrawUrl()
     {
         file_put_contents(storage_path('logs/withdraw.log'), print_r($_POST, 1));
         // TODO 访问记录
