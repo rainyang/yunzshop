@@ -85,7 +85,7 @@ class WechatPay extends Pay
         }
 
         $notify_url = Url::shopUrl('payment/wechat/refundUrl.php');
-        $app     = $this->getEasyWeChatApp($pay);
+        $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
 
         $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);

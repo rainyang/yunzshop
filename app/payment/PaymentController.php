@@ -16,7 +16,8 @@ class PaymentController extends BaseController
     {
         parent::__construct();
 
-        file_put_contents('../../../../addons/sz_yi/data/p.log', print_r($_REQUEST,1));
+        file_put_contents('../../../../addons/sz_yi/data/p1.log', print_r($_POST,1));
+        file_put_contents('../../../../addons/sz_yi/data/p2.log', print_r($_GET,1));
 
 /*        $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
