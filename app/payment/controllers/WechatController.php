@@ -111,8 +111,7 @@ class WechatController extends PaymentController
                 'merchant_id'        => $pay['weixin_mchid'],
                 'key'                => $pay['weixin_apisecret'],
                 'cert_path'          => $pay['weixin_cert'],
-                'key_path'           => $pay['weixin_key'],
-                'notify_url'         => Url::shopUrl('payment/wechat/notifyUrl.php')
+                'key_path'           => $pay['weixin_key']
             ]
         ];
 

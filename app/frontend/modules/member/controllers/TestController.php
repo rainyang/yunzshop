@@ -24,8 +24,8 @@ class TestController extends ApiController
 //       $str  = $pay->setUniacidNo(122, 5);
 //       echo $str . '<BR>';
 //       echo substr($str, 17, 5);
-//       $pay->doWithdraw(146,  0.1);
-       $result = $pay->doRefund('1491193485',  0.1, 0.1);
+       $result = $pay->doWithdraw(146,  1);
+     //  $result = $pay->doRefund('1491193485',  0.1, 0.1);
        echo '<pre>';print_r($result);exit;
 //
 //      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
