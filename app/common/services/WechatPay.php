@@ -35,7 +35,9 @@ class WechatPay extends Pay
 
             throw new AppException('没有设定支付参数');
         }
-        $app     = $this->getEasyWeChatApp($pay);
+
+        $notify_url = Url::shopUrl('payment/wechat/notifyUrl.php');
+        $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
         $order = $this->getEasyWeChatOrder($data, $openid, $pay_order_model);
         $result = $payment->prepare($order);
@@ -82,6 +84,7 @@ class WechatPay extends Pay
             message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
         }
 
+        $notify_url = Url::shopUrl('payment/wechat/refundNotifyUrl.php');
         $app     = $this->getEasyWeChatApp($pay);
         $payment = $app->payment;
 
@@ -129,7 +132,8 @@ class WechatPay extends Pay
             $openid = 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y';
         }
 
-        $app = $this->getEasyWeChatApp($pay);
+        $notify_url = Url::shopUrl('payment/wechat/withdrawNotifyUrl.php');
+        $app = $this->getEasyWeChatApp($pay, $notify_url);
 
         if ($type == 1) {//钱包
             $merchantPay = $app->merchant_pay;
@@ -190,7 +194,7 @@ class WechatPay extends Pay
      * @param $pay
      * @return \EasyWeChat\Payment\Payment
      */
-    public function getEasyWeChatApp($pay)
+    public function getEasyWeChatApp($pay, $notify_url)
     {
         $options = [
             'app_id'  => $pay['weixin_appid'],
@@ -203,7 +207,7 @@ class WechatPay extends Pay
                 'key'                => $pay['weixin_apisecret'],
                 'cert_path'          => $pay['weixin_cert'],
                 'key_path'           => $pay['weixin_key'],
-                'notify_url'         => Url::shopUrl('payment/wechat/notifyUrl.php')
+                'notify_url'         => $notify_url
             ]
         ];
 
