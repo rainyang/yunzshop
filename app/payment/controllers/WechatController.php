@@ -26,7 +26,7 @@ class WechatController extends PaymentController
             if ($data['result_code'] != 'SUCCESS' || $data['return_code'] != 'SUCCESS') {
                 exit('fail');
             }
-            $get = $data;
+            $post = $data;
         } else {
             $post = $_POST;
         }
@@ -51,7 +51,7 @@ class WechatController extends PaymentController
             echo "success";
 
         } else {
-            file_put_contents(storage_path('logs/ee.log'), 1);
+            file_put_contents(storage_path('logs/ee.log'), print_r($GLOBALS['HTTP_RAW_POST_DATA'],1));
             echo "fail";
         }
     }
