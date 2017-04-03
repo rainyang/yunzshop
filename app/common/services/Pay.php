@@ -300,7 +300,7 @@ abstract class Pay
      *
      * @var void
      */
-    protected function payAccessLog()
+    public function payAccessLog()
     {
         PayAccessLog::create([
             'uniacid' => $this->uniacid,
@@ -319,7 +319,7 @@ abstract class Pay
      * @param $price
      * @param $operation
      */
-    protected function payLog($type, $third_type, $price, $operation)
+    public function payLog($type, $third_type, $price, $operation)
     {
         PayLog::create([
             'uniacid' => $this->uniacid,
@@ -341,7 +341,7 @@ abstract class Pay
      * @param $third_type 支付方式
      * @param $price 支付金额
      */
-    protected function payOrder($out_order_no, $status, $type, $third_type, $price)
+    public function payOrder($out_order_no, $status, $type, $third_type, $price)
     {
          return PayOrder::create([
             'uniacid' => $this->uniacid,
@@ -364,10 +364,10 @@ abstract class Pay
     /**
      * 支付请求数据记录
      *
-     * @param $order_id
-     * @param $type
-     * @param $third_type
-     * @param $params
+     * @param $order_id  支付单号
+     * @param $type  订单号
+     * @param $third_type 支付类型
+     * @param $params 请求数据
      */
     public function payRequestDataLog($order_id, $type, $third_type, $params)
     {
@@ -380,8 +380,24 @@ abstract class Pay
         ]);
     }
 
-    protected function payResponseDataLog()
-    {}
+    /**
+     * 支付响应数据记录
+     *
+     * @param $order_id  支付单号
+     * @param $out_order_no  订单号
+     * @param $third_type 支付方式
+     * @param $params 响应结果
+     */
+    public function payResponseDataLog($order_id, $out_order_no, $third_type, $params)
+    {
+        PayResponseDataLog::create([
+            'uniacid' => \YunShop::app()->uniacid,
+            'order_id' => $order_id,
+            'out_order_no' => $out_order_no,
+            'third_type' => $third_type,
+            'params' => $params
+        ]);
+    }
 
     /**
      * 支付单号

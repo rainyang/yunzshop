@@ -93,11 +93,11 @@ class WechatPay extends Pay
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
 
+            $this->payResponseDataLog();
+
         } else {
             throw new \AppException('退款失败');
         }
-
-        return $result;
     }
 
     /**
@@ -176,8 +176,14 @@ class WechatPay extends Pay
             $result = $luckyMoney->sendNormal($luckyMoneyData);
         }
 
-        $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
-        return $result;
+        if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
+            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
+
+            $this->payResponseDataLog();
+
+        } else {
+            throw new \AppException('退款失败');
+        }
     }
 
     /**

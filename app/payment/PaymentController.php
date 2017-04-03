@@ -15,31 +15,14 @@ class PaymentController extends BaseController
     public function __construct()
     {
         parent::__construct();
-
-/*        $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
-        $splits = explode(':', $body);
-
-        if (!empty($splits[1])) {
-            \YunShop::app()->uniacid = intval($splits[1]);
-        } else {
-            \YunShop::app()->uniacid = 0;
-        }*/
+        $pay_type = config('app.pay_type');
 
         $script_info = pathinfo($_SERVER['SCRIPT_NAME']);
-        file_put_contents(storage_path('logs/f.log'), print_r($script_info,1), FILE_APPEND);
 
         if (!empty($script_info)) {
             switch ($script_info['filename']) {
                 case 'notifyUrl':
                     \YunShop::app()->uniacid = $this->getUniacid();
-
-                    break;
-                case 'refundUrl':
-                case 'withdrawUrl':
-                    $out_refund_no = !empty($_REQUEST['out_refund_no']) ? $_REQUEST['out_refund_no'] : '';
-
-                    \YunShop::app()->uniacid = substr($out_refund_no, 17, 5);
-                    file_put_contents(storage_path('logs/uniacid.log'), \YunShop::app()->uniacid);
                     break;
                 case 'refundNotifyUrl':
                 case 'withdrawNotifyUrl':

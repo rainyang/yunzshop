@@ -259,4 +259,11 @@ return [
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ],
 
+    'pay_type' => [
+         1 => '微信',
+         2 => '支付宝',
+         3 => '余额',
+         4 => '货到付款'
+    ],
+
 ];
