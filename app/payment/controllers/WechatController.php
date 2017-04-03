@@ -17,7 +17,7 @@ class WechatController extends PaymentController
     public function notifyUrl()
     {
         $input = file_get_contents('php://input');
-        if (!empty($input) && empty($_GET['out_trade_no'])) {
+        if (!empty($input) && empty($_POST['out_trade_no'])) {
             $obj = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
             $data = json_decode(json_encode($obj), true);
             if (empty($data)) {
@@ -28,59 +28,39 @@ class WechatController extends PaymentController
             }
             $get = $data;
         } else {
-            $get = $_GET;
+            $post = $_POST;
         }
 
-        file_put_contents(storage_path('logs/notify.log'), print_r($get, 1));
+        file_put_contents(storage_path('logs/notify1.log'), print_r($post, 1));
         // TODO 访问记录
         // TODO 保存响应数据
 
         $verify_result = $this->getSignResult();
 
         if($verify_result) {
-            file_put_contents(storage_path('logs/pp.log'), print_r($_POST, 1));
-            //商户订单号
-            $out_trade_no = $_POST['out_trade_no'];
-            //支付宝交易号
-            $trade_no = $_POST['trade_no'];
+            file_put_contents(storage_path('logs/pp.log'), 1);
 
-            $total_fee = $_POST['total_fee'];
 
-            if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
-                file_put_contents(storage_path('logs/ss.log'), print_r($_POST, 1));
-                // TODO 支付单查询 && 支付请求数据查询 验证请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
-                $pay_log = [];
-                if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
-                    // TODO 更新支付单状态
-                    // TODO 更新订单状态
-                }
-            }
+//            $total_fee = $post['total_fee'];
+//            $pay_log = [];
+//            if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
+//                // TODO 更新支付单状态
+//                // TODO 更新订单状态
+//            }
 
             echo "success";
 
         } else {
+            file_put_contents(storage_path('logs/ee.log'), 1);
             echo "fail";
         }
     }
 
     public function returnUrl()
     {
-        file_put_contents(storage_path('logs/return.log'), print_r($_REQUEST, 1));
         // TODO 访问记录
         // TODO 保存响应数据
 
-        $verify_result = $this->getSignResult();
-
-        if($verify_result) {
-            file_put_contents(storage_path('logs/gg.log'), print_r($_GET, 1));
-            if($_GET['trade_status'] == 'TRADE_SUCCESS') {
-                file_put_contents(storage_path('logs/gp.log'), print_r($_GET, 1));
-                echo 'ok';
-                redirect()->send();
-            }
-        } else {
-            echo "您提交的订单验证失败";
-        }
     }
 
     public function refundNotifyUrl()
@@ -111,7 +91,7 @@ class WechatController extends PaymentController
 
         $notify  = $payment->getNotify();
 
-        //return $notify->isValid();
+        return $notify->isValid();
     }
 
     /**
