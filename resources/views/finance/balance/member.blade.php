@@ -13,30 +13,29 @@
             <div class="panel panel-info">
                 <div class="panel-heading">筛选</div>
                 <div class="panel-body">
-                    <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+                    <form action="" method="post" class="form-horizontal" role="form" id="form1">
                         <input type="hidden" name="c" value="site" />
                         <input type="hidden" name="a" value="entry" />
                         <input type="hidden" name="m" value="sz_yi" />
-                        <input type="hidden" name="p" value="list" id="form_p" />
                         <input type="hidden" name="do" value="member" id="form_do" />
                         <div class="form-group">
                             <div class="col-sm-8 col-lg-12 col-xs-12">
                                 <div class='input-group'>
                                     <div class='input-group-addon'>会员信息</div>
-                                    <input class="form-control" name="keyword" type="text" value="搜索功能未完善" placeholder="订单号/支付单号">
+                                    <input class="form-control" name="search[realname]" type="text" value="{{ $search['realname'] or ''}}" placeholder="会员姓名／昵称／手机号">
 
                                     <div class='input-group-addon'>会员等级</div>
-                                    <select name="paytype" class="form-control">
-                                        <option value="" {if $_GPC['paytype']==''}selected{/if}>不限</option>
+                                    <select name="search[level]" class="form-control">
+                                        <option value="" selected>不限</option>
                                         @foreach($memberLevel as $level)
-                                        <option value="{{ $level['id'] }}" >{{ $level['level_name'] }}</option>
+                                        <option value="{{ $level['id'] }}" @if($search['level'] == $level['id']) selected @endif>{{ $level['level_name'] }}</option>
                                         @endforeach
                                     </select>
                                     <div class='input-group-addon'>会员分组</div>
-                                    <select name="paytype" class="form-control">
-                                        <option value="" {if $_GPC['paytype']==''}selected{/if}>不限</option>
+                                    <select name="search[groupid]" class="form-control">
+                                        <option value="" selected >不限</option>
                                         @foreach($memberGroup as $group)
-                                        <option value="{{ $group['id'] }}" >{{ $group['group_name'] }}</option>
+                                        <option value="{{ $group['id'] }}" @if($search['groupid'] == $group['id']) selected @endif>{{ $group['group_name'] }}</option>
                                         @endforeach
                                     </select>
 
@@ -48,20 +47,17 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
                             <div class="col-sm-7 col-lg-9 col-xs-12">
-                                <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
-                                <input type="hidden" name="token" value="{$_W['token']}" />
+                                <input type="submit" class="btn btn-default" value="搜索">
                             </div>
                         </div>
 
 
-                        <div class="form-group">
-                        </div>
                     </form>
                 </div>
             </div>
             <div class="clearfix">
                 <div class="panel panel-default">
-                    <div class="panel-heading">总数：{$total}   </div>
+                    <div class="panel-heading">总数：{{ $memberList->total() }}</div>
                     <div class="panel-body">
                         <table class="table table-hover" style="overflow:visible;">
                             <thead class="navbar-inner">
@@ -98,15 +94,7 @@
 
 
                                 <td  style="overflow:visible;">
-
-                                    <div class="btn-group btn-group-sm" >
-                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
-                                        <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 9999'>
-                                            <li><a href="{php echo $this->createWebUrl('member',array('op'=>'detail','id' => $row['id']));}" title="会员详情"><i class='fa fa-money'></i>充值余额</a></li>
-                                        </ul>
-                                    </div>
-
-
+                                    <a class='btn btn-default' href="{{ yzWebUrl('finance.balance.recharge', array('member_id' => $list->uid)) }}" style="margin-bottom: 2px">充值余额</a>
                                 </td>
 
                             </tr>
@@ -121,39 +109,5 @@
                     </div>
                 </div>
             </div>
-
-    </div>
-    <script language='javascript'>
-
-        function search_members() {
-            if( $.trim($('#search-kwd-notice').val())==''){
-                Tip.focus('#search-kwd-notice','请输入关键词');
-                return;
-            }
-            $("#module-menus-notice").html("正在搜索....")
-            $.get('{php echo $this->createPluginWebUrl('commission/agent')}', {
-                keyword: $.trim($('#search-kwd-notice').val()),'op':'query',selfid:"{$id}"
-            }, function(dat){
-                $('#module-menus-notice').html(dat);
-            });
-        }
-        $(function () {
-            $('#export').click(function(){
-                $('#form_p').val("exportMember");
-                $('#form1').submit();
-                $('#form_p').val("list");
-            });
-        });
-        function select_member(o) {
-            $("#agentid").val(o.id);
-            $("#parentagentavatar").show();
-            $("#parentagentavatar").find('img').attr('src',o.avatar);
-            $("#parentagent").val( o.nickname+ "/" + o.realname + "/" + o.membermobile );
-            $("#modal-module-menus-notice .close").click();
-        }
-
-    </script>
-
-
 
 @endsection

@@ -2,8 +2,6 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
-use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\models\MemberCart;
 
 /**
@@ -17,7 +15,6 @@ class MemberCartController extends ApiController
     public function index()
     {
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = '9';
 
         $cartList = MemberCart::getMemberCartList($memberId);
         //dd($cartList);
@@ -58,7 +55,7 @@ class MemberCartController extends ApiController
         $requestcart = \YunShop::request();
         if($requestcart) {
             $data = array(
-                'member_id' => '9',
+                'member_id' => \YunShop::app()->getMemberId(),
                 'uniacid'   => \YunShop::app()->uniacid,
                 'goods_id'  => $requestcart->goods_id,
                 'total'     => $requestcart->total,

@@ -17,7 +17,7 @@ use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\finance\BalanceRecharge;
-use app\common\models\finance\BalanceTansfer;
+use app\common\models\finance\BalanceTransfer;
 use app\common\services\fiance\Balance;
 
 /*
@@ -54,14 +54,17 @@ class BalanceController extends BaseController
     //用户余额管理
     public function member()
     {
-        //dd(MemberGroup::getMemberGroupList());
         $pageSize = 5;
+        $search = \YunShop::request()->search;
         $memberList = Member::getMembers()->paginate($pageSize);
+        if ($search) {
+            $memberList = Member::searchMembers($search)->paginate($pageSize);
+        }
         $pager = PaginationHelper::show($memberList->total(), $memberList->currentPage(), $memberList->perPage());
 
-        //todo 搜索，会员组，会员等级显示
 
         return view('finance.balance.member', [
+            'search'        => $search,
             'memberList'    => $memberList,
             'pager'         => $pager,
             'memberGroup'   => MemberGroup::getMemberGroupList(),
@@ -74,59 +77,62 @@ class BalanceController extends BaseController
     {
 //todo 缺少会员头像路径转换
 
-        $memberId = '55';
+        $memberId = \YunShop::request()->member_id;
+        //$memberId = '55';
         $memberInfo = Member::getMemberInfoById($memberId);
         if (!$memberInfo) {
             $this->error('未获取到会员信息，请刷新重试');
-        }
+        } else {
+            if (\YunShop::request()->num && $memberInfo['uid']) {
+                if (!is_numeric(\YunShop::request()->num)) {
+                    $this->error('请输入正确的充值金额');
+                } else {
+                    $rechargeMode = new BalanceRecharge();
 
-        if (\YunShop::request()->num && $memberInfo['uid']) {
-            if (!is_numeric(\YunShop::request()->num)) {
-                $this->error('请输入正确的充值金额');
-            }
+                    //验证订单号是否可以用
+                    $ordersn = createNo('RV', true);
+                    while (1) {
+                        if (!BalanceRecharge::validatorOrderSn($ordersn)) {
+                            break;
+                        }
+                        $ordersn = createNo('RV', true);
+                    }
 
-            $rechargeMode = new BalanceRecharge();
-
-            //验证订单号是否可以用
-            $ordersn = createNo('RV', true);
-            while (1) {
-                if (!BalanceRecharge::validatorOrderSn($ordersn)) {
-                    break;
-                }
-                $ordersn = createNo('RV', true);
-            }
-
-            $recordData = array(
-                'uniacid' => \YunShop::app()->uniacid,
-                'member_id' => $memberId,
-                'old_money' => $memberInfo['credit2'],
-                'money' => \YunShop::request()->num,
+                    $recordData = array(
+                        'uniacid' => \YunShop::app()->uniacid,
+                        'member_id' => $memberId,
+                        'old_money' => $memberInfo['credit2'],
+                        'money' => trim(\YunShop::request()->num),
 
 //todo 增加金额值处理
 
-                'new_money' => $memberInfo['credit2'] + \YunShop::request()->num,
-                'type' => 1,
-                'ordersn' => $ordersn,
-                'status' => 0
-            );
+                        'new_money' => $memberInfo['credit2'] + trim(\YunShop::request()->num),
+                        'type' => 1,
+                        'ordersn' => $ordersn,
+                        'status' => 0
+                    );
 
 
-            $rechargeMode->fill($recordData);
-            $validator = $rechargeMode->validator();
-            if ($validator->fails()) {
-                $this->error($validator->messages());
-            } else {
-                if ($rechargeMode->save()) {
-                    (new Balance())->balanceChange($rechargeMode->member_id, $rechargeMode->money);
-                    $rechargeMode->status = 1;
-                    $rechargeMode->save();
+                    $rechargeMode->fill($recordData);
+                    $validator = $rechargeMode->validator();
+                    if ($validator->fails()) {
+                        $this->error($validator->messages());
+                    } else {
+                        if ($rechargeMode->save()) {
+                            (new Balance())->balanceChange($rechargeMode->member_id, $rechargeMode->money);
+                            $rechargeMode->status = 1;
+                            $rechargeMode->save();
 
 //todo 请求修改余额接口，完成余额充值
-                    return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge'), 'success');
+                            return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $memberId)), 'success');
+                        }
+                    }
+
                 }
             }
-
         }
+
+
 
         //dd($memberInfo);
 
@@ -151,10 +157,10 @@ class BalanceController extends BaseController
     }
 
     //会员余额转让记录
-    public function tansferRecord()
+    public function transferRecord()
     {
         $pageSize = 1;
-        $tansferList = BalanceTansfer::getTansferPageList($pageSize);
+        $tansferList = BalanceTransfer::getTansferPageList($pageSize);
         $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());
 
         return view('finance.balance.transferRecord', [
