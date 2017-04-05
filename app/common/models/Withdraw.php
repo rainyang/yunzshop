@@ -31,7 +31,7 @@ class Withdraw extends BackendModel
     protected $guarded = [];
 
 
-    protected $appends = ['status_name', 'pay_way_name', 'type'];
+    protected $appends = ['status_name', 'pay_way_name', 'type_data'];
 
     /**
      * @return string
@@ -73,25 +73,21 @@ class Withdraw extends BackendModel
         return $this->getPayWayService();
     }
 
+
     /**
      * @return string
      */
-    public function getTypeData()
+    public function getTypeDataAttribute()
     {
+        //$type = $this->attributes['type'];
         if (!isset($this->TypeData)) {
 
+            
             //$this->TypeData = WithdrawService::createPayWayService($this);
             $this->TypeData = $this->type;
         }
-        return $this->TypeData;
-    }
 
-    /**
-     * @return string
-     */
-    public function getTypeAttribute()
-    {
-        return $this->getTypeData();
+        return $this->TypeData;
     }
 
 
@@ -103,6 +99,10 @@ class Withdraw extends BackendModel
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
+    public function hasOneAgent()
+    {
+        return $this->hasOne('Yunshop\Commission\models\Agents', 'member_id', 'member_id');
+    }
 
     /**
      *  定义字段名
