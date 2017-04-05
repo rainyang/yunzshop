@@ -63,9 +63,10 @@ class ApiController extends BaseController
             setcookie(session_name(), $session_id);
         }
 echo $session_id . '<BR>';
+        session_save_path('/tmp');
         file_put_contents(storage_path('logs/ssid.log'), print_r(['ssid'=>$session_id, 'path'=>session_save_path('/tmp')],1), FILE_APPEND);
         session_id($session_id);
-        session_save_path('/tmp');
+
         session_start();
  echo        session_id();
         file_put_contents(storage_path('logs/ssid2.log'), print_r(['ssid'=>session_id(), 'path'=>session_save_path('/tmp')],1), FILE_APPEND);
