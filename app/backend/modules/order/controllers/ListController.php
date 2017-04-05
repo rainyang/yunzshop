@@ -170,7 +170,7 @@ class ListController extends BaseController
 
     public function export()
     {
-        $params = \YunShop::request();
+        $params = \YunShop::request()->search;
         $orders = Order::getExportOrders($params);
         $export_class = new ExportService();
         $export_class->export($orders);
