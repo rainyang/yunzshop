@@ -232,6 +232,6 @@ class MemberController extends ApiController
         $member_mode->mobile = $moible;
         $member_mode->save();
 
-
+        $this->successJson('保存成功',['status'=>1]);
     }
 }
