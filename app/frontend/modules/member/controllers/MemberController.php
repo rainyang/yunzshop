@@ -140,7 +140,7 @@ class MemberController extends ApiController
        }
 
        $relation = [
-           'switch' => $info['status'],
+           'switched' => $info['status'],
            'become' => $apply_qualification,
            'become1' => ['parent_name' => $parent_name],
            'become2' => ['shop_name' => $account['name'], 'total' => $info['become_ordercount'], 'cost' => $cost_num],
