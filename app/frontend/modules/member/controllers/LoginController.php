@@ -17,7 +17,7 @@ class LoginController extends ApiController
 
     public function index()
     {
-        $type = \YunShop::request()->type;
+        $type = 1; //\YunShop::request()->type ;
 
         if (!empty($type)) {
                 $member = MemberFactory::create($type);
