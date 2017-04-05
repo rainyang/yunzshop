@@ -8,74 +8,32 @@
 
 namespace app\payment\controllers;
 
-
-use app\common\helpers\Url;
 use app\payment\PaymentController;
-use EasyWeChat\Payment\Notify;
+use EasyWeChat\Foundation\Application;
+use app\common\services\WechatPay;
+use app\common\models\PayOrder;
 
 class WechatController extends PaymentController
 {
     public function notifyUrl()
     {
-        file_put_contents(storage_path('logs/notify.log'), print_r($_POST, 1));
-        // TODO 访问记录
-        // TODO 保存响应数据
+        $post = $this->getResponseResult();
+
+        $this->log($post);
 
         $verify_result = $this->getSignResult();
 
-        if($verify_result) {
-            //商户订单号
-            $out_trade_no = $_POST['out_trade_no'];
-            //支付宝交易号
-            $trade_no = $_POST['trade_no'];
-
-            $total_fee = $_POST['total_fee'];
-
-            if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
-                // TODO 支付单查询 && 支付请求数据查询 验证请求时的total_fee、seller_id与通知时获取的total_fee、seller_id为一致的
-                $pay_log = [];
-                if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
-                    // TODO 更新支付单状态
-                    // TODO 更新订单状态
-                }
+        if ($verify_result) {
+            $total_fee = $post['total_fee'];
+            $pay_log = [];
+            if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
+                // TODO 更新支付单状态
+                // TODO 更新订单状态
             }
-
             echo "success";
-
         } else {
             echo "fail";
         }
-    }
-
-    public function returnUrl()
-    {
-        file_put_contents(storage_path('logs/return.log'), print_r($_REQUEST, 1));
-        // TODO 访问记录
-        // TODO 保存响应数据
-
-        $verify_result = $this->getSignResult();
-
-        if($verify_result) {
-            if($_GET['trade_status'] == 'TRADE_SUCCESS') {
-                redirect()->send();
-            }
-        } else {
-            echo "您提交的订单验证失败";
-        }
-    }
-
-    public function refundNotifyUrl()
-    {
-        file_put_contents(storage_path('logs/refund.log'), print_r($_POST, 1));
-        // TODO 访问记录
-        // TODO 保存响应数据
-    }
-
-    public function withdrawNotifyUrl()
-    {
-        file_put_contents(storage_path('logs/withdraw.log'), print_r($_POST, 1));
-        // TODO 访问记录
-        // TODO 保存响应数据
     }
 
     /**
@@ -87,9 +45,10 @@ class WechatController extends PaymentController
     {
         $pay = \Setting::get('shop.pay');
 
-        $app     = $this->getEasyWeChatApp($pay);
-        $notify = $app->getNotify();
+        $app = $this->getEasyWeChatApp($pay);
+        $payment = $app->payment;
 
+        $notify = $payment->getNotify();
 
         return $notify->isValid();
     }
@@ -103,22 +62,58 @@ class WechatController extends PaymentController
     public function getEasyWeChatApp($pay)
     {
         $options = [
-            'app_id'  => $pay['weixin_appid'],
-            'secret'  => $pay['weixin_secret'],
-            'token'   => \YunShop::app()->account['token'],
+            'app_id' => $pay['weixin_appid'],
+            'secret' => $pay['weixin_secret'],
+            'token' => \YunShop::app()->account['token'],
             'aes_key' => \YunShop::app()->account['encodingaeskey'],
             // payment
             'payment' => [
-                'merchant_id'        => $pay['weixin_mchid'],
-                'key'                => $pay['weixin_apisecret'],
-                'cert_path'          => $pay['weixin_cert'],
-                'key_path'           => $pay['weixin_key'],
-                'notify_url'         => Url::shopUrl('payment/wechat/notifyUrl.php')
+                'merchant_id' => $pay['weixin_mchid'],
+                'key' => $pay['weixin_apisecret'],
+                'cert_path' => $pay['weixin_cert'],
+                'key_path' => $pay['weixin_key']
             ]
         ];
 
         $app = new Application($options);
 
         return $app;
+    }
+
+    /**
+     * 获取回调结果
+     *
+     * @return array|mixed|\stdClass
+     */
+    public function getResponseResult()
+    {
+        $input = file_get_contents('php://input');
+        if (!empty($input) && empty($_POST['out_trade_no'])) {
+            $obj = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $data = json_decode(json_encode($obj), true);
+            if (empty($data)) {
+                exit('fail');
+            }
+            if ($data['result_code'] != 'SUCCESS' || $data['return_code'] != 'SUCCESS') {
+                exit('fail');
+            }
+            $post = $data;
+        } else {
+            $post = $_POST;
+        }
+
+        return $post;
+    }
+
+
+    public function log($post)
+    {
+        $pay = new WechatPay();
+
+        //访问记录
+        $pay->payAccessLog();
+        //保存响应数据
+        $pay_order_info = PayOrder::getPayOrderInfo($post['out_trade_no'])->first()->toArray();
+        $pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
     }
 }

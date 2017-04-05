@@ -17,6 +17,8 @@ use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\finance\BalanceRecharge;
+use app\common\models\finance\BalanceTansfer;
+use app\common\services\fiance\Balance;
 
 /*
  * 余额基础设置页面
@@ -85,6 +87,15 @@ class BalanceController extends BaseController
 
             $rechargeMode = new BalanceRecharge();
 
+            //验证订单号是否可以用
+            $ordersn = createNo('RV', true);
+            while (1) {
+                if (!BalanceRecharge::validatorOrderSn($ordersn)) {
+                    break;
+                }
+                $ordersn = createNo('RV', true);
+            }
+
             $recordData = array(
                 'uniacid' => \YunShop::app()->uniacid,
                 'member_id' => $memberId,
@@ -94,16 +105,21 @@ class BalanceController extends BaseController
 //todo 增加金额值处理
 
                 'new_money' => $memberInfo['credit2'] + \YunShop::request()->num,
-                'type' => 1,        //后台充值
-                'ordersn' => '',     //需要增加订单号生成
+                'type' => 1,
+                'ordersn' => $ordersn,
                 'status' => 0
             );
+
+
             $rechargeMode->fill($recordData);
             $validator = $rechargeMode->validator();
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
                 if ($rechargeMode->save()) {
+                    (new Balance())->balanceChange($rechargeMode->member_id, $rechargeMode->money);
+                    $rechargeMode->status = 1;
+                    $rechargeMode->save();
 
 //todo 请求修改余额接口，完成余额充值
                     return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge'), 'success');
@@ -134,6 +150,19 @@ class BalanceController extends BaseController
         ])->render();
     }
 
+    //会员余额转让记录
+    public function tansferRecord()
+    {
+        $pageSize = 1;
+        $tansferList = BalanceTansfer::getTansferPageList($pageSize);
+        $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());
+
+        return view('finance.balance.transferRecord', [
+            'tansferList'  => $tansferList,
+            'pager'    => $pager,
+        ])->render();
+    }
+
     //余额充值菜单
     private function getRechargeMenu()
     {
@@ -147,8 +176,5 @@ class BalanceController extends BaseController
         );
         return $rechargeMenu;
     }
-
-    //创建订单号，todo 应该是一个公用的方法，暂时不知道放哪里，先
-
 
 }

@@ -32,4 +32,32 @@ class OrderListModel extends Order
             return self::getOrderList($uid)->where('status','=',$status);
         }
     }
+
+    /**
+     * 获取用户消费总额
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalPrice($uid)
+    {
+        return self::uniacid()
+            ->where('status', 3)
+            ->where('uid', $uid)
+            ->sum('price');
+    }
+
+    /**
+     * 获取用户消费次数
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalNum($uid)
+    {
+        return self::uniacid()
+            ->where('status', 3)
+            ->where('uid', $uid)
+            ->count('id');
+    }
 }
