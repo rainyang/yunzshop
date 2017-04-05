@@ -88,6 +88,7 @@ class MemberController extends ApiController
         $account = AccountWechats::getAccountInfoById(\YunShop::app()->uniacid);
         switch ($info['become']) {
             case 1:
+                $apply_qualification = 1;
                 $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
                 $parent_name = '';
 
@@ -104,12 +105,23 @@ class MemberController extends ApiController
                 }
                 break;
            case 2:
+               $apply_qualification = 2;
                $cost_num  = OrderListModel::getCostTotalNum(\YunShop::app()->getMemberId());
+
+               if ($info['become_check'] && $cost_num >= $info['become_ordercount']) {
+                   $apply_qualification = 5;
+               }
                break;
            case 3:
-               $cost_price  = OrderListModel::getCostTotalPrice(\YunShop::app()->getMemberId());;
+               $apply_qualification = 3;
+               $cost_price  = OrderListModel::getCostTotalPrice(\YunShop::app()->getMemberId());
+
+               if ($info['become_check'] && $cost_price >= $info['become_moneycount']) {
+                   $apply_qualification = 6;
+               }
                break;
            case 4:
+               $apply_qualification = 4;
                $goods = Goods::getGoodsById($info['become_goods_id']);
                $goods_name = '';
 
@@ -118,22 +130,23 @@ class MemberController extends ApiController
 
                    $goods_name = $goods['title'];
                }
+
+               if ($info['become_check'] && MemberRelation::checkOrderGoods($info['become_goods_id'])) {
+                   $apply_qualification = 7;
+               }
                break;
            default:
-               $desc = '';
+               $apply_qualification = 0;
        }
-
-       // TODO 消费和购买指定商品达到条件后 返回审核状态
 
        $relation = [
            'switch' => $info['status'],
-           'become' => $info['become'],
+           'become' => $apply_qualification,
            'become1' => ['parent_name' => $parent_name],
            'become2' => ['total' => $info['become_ordercount'], 'cost' => $cost_num],
            'become3' => ['total' => $info['become_moneycount'], 'cost' => $cost_price],
            'become4' =>['goods_name' => $goods_name],
            'is_agent' => $data['is_agent'],
-           'check'   => $info['become_check'],
            'status' => $data['status'],
            'account' => $account['name']
        ];
