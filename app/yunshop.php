@@ -408,7 +408,7 @@ class YunApp extends YunComponent
             if($_GET['test_uid']){
                 return $_GET['test_uid'];
             }
-           // return false;
+            return false;
         }
 
         if (Session::get('member_id')) {
