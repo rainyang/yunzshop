@@ -151,7 +151,7 @@ class PreGeneratedOrderModel extends OrderModel
             return $order;
         });
         $this->order = $order;
-        event(new AfterOrderCreatedEvent($this));
+        event(new AfterOrderCreatedEvent($order,$this));
         return true;
     }
     /**
