@@ -168,7 +168,9 @@ class MemberController extends ApiController
     public function isAgent()
     {
         $info = MemberRelation::getSetInfo()->first()->toArray();
-
+if (empty(\YunShop::app()->getMemberId())) {
+    return $this->errorJson('会员ID不存在');
+}
         $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         if (empty($member_info)) {
