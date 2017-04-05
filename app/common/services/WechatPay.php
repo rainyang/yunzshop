@@ -130,9 +130,9 @@ class WechatPay extends Pay
             $openid = Member::getOpenId($order_info['uid']);
         }
 
-        if (config('app.debug')) {
-            $openid = 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y';
-        }
+//        if (config('app.debug')) {
+//            $openid = 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y';
+//        }
 
         $notify_url = Url::shopUrl('payment/wechat/withdrawUrl.php');
         $app = $this->getEasyWeChatApp($pay, $notify_url);
