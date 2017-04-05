@@ -28,7 +28,6 @@ class IncomeController extends BaseController
         
         $list = $incomeModel->paginate($pageSize)->toArray();
 
-        echo "<pre>"; print_r($list);exit;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
 

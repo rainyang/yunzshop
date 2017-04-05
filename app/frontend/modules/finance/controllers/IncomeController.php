@@ -107,16 +107,15 @@ class IncomeController extends ApiController
 
         foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
-            $incomeModel = $incomeModel->where('type', $key);
+            $incomeModel = $incomeModel->where('incometable_type', $item['class']);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
             $poundage = sprintf("%.2f",substr(sprintf("%.3f", $poundage), 0, -2));
             if (isset($set[$key]['roll_out_limit']) && bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1) {
                 $type_id = '';
                 foreach ($incomeModel->get() as $ids) {
-                    $type_id .= $ids->type_id . ",";
+                    $type_id .= $ids->id . ",";
                 }
-
                 $incomeData[$key] = [
                     'type' => $item['type'],
                     'key_name' => $item['title'],
