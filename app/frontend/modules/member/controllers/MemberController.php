@@ -142,7 +142,7 @@ class MemberController extends ApiController
        $relation = [
            'switched' => $info['status'],
            'become' => $apply_qualification,
-           'become1' => ['parent_name' => $parent_name],
+           'become1' => ['shop_name' => $account['name'],'parent_name' => $parent_name],
            'become2' => ['shop_name' => $account['name'], 'total' => $info['become_ordercount'], 'cost' => $cost_num],
            'become3' => ['shop_name' => $account['name'], 'total' => $info['become_moneycount'], 'cost' => $cost_price],
            'become4' =>['shop_name' => $account['name'], 'goods_name' => $goods_name, 'goods_id' => $info['become_goods_id']],
