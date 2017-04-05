@@ -263,7 +263,7 @@
                             @endforeach
                             </tbody>
                         </table>
-                        {{$pager}}
+                        {!!$pager!!}
                     </div>
                 </div>
             </div>
