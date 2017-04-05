@@ -48,6 +48,8 @@ class PreGeneratedOrderModel extends OrderModel
      */
     public function __construct(array $OrderGoodsModels = null)
     {
+        dd($OrderGoodsModels);
+        exit;
         if (!isset($OrderGoodsModels)) {
             echo '订单商品为空!';exit;
         }
