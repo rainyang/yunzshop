@@ -62,18 +62,8 @@ class PayController extends BaseController
         ];
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay($query_str);
-        /*$url = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=order.testPay';
-        //$url = 'http://www.yunzhong.com/app/index.php?i=3&c=entry&do=shop&m=sz_yi&route=order.testPay';
-        $data = Curl::to($url)
-            ->withData( $query_str )
-            ->asJsonResponse(true)->post();*/
-        //dd($data);exit;
-
-        /*if(isset($data['data']['errno'])){
-            return $this->errorJson($data['data']['message']);
-        }*/
-
-        //$data = $pay->doPay(['order_no' => time(), 'amount' => $Order->price, 'subject' => '微信支付', 'body' => '商品的描述:2', 'extra' => '']);
+        dd($data);
+        exit;
         return $this->successJson('成功',$data);
 
         //return view('order.pay', $data)->render();

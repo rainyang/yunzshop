@@ -40,10 +40,10 @@ class OrderService
     public static function getPreGeneratedOrder(array $order_goods_models, Member $member_model=null, ShopModel $shop_model=null){
         $order_model = new PreGeneratedOrderModel($order_goods_models);
         if(isset($member_model)){
-            $order_model->setMemberModel($member_model);
+            $order_model->setMember($member_model);
         }
         if(isset($shop_model)){
-            $order_model->setShopModel($shop_model);
+            $order_model->setShop($shop_model);
         }
         return $order_model;
     }
@@ -53,7 +53,7 @@ class OrderService
      * @param $memberCarts
      * @return array
      */
-    public static function getOrderGoodsModels($memberCarts){
+    public static function getOrderGoodsModels(array $memberCarts){
         $result = [];
         foreach ($memberCarts as $memberCart) {
             /**
