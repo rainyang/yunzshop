@@ -189,17 +189,12 @@ class MemberOfficeAccountService extends MemberService
 //                $redirect_url = $this->_getClientRequestUrl();
 //                redirect($redirect_url . '?login')->send();exit;
 //            }
-echo 5;
-          //  redirect($authurl)->send();
+
+            redirect($authurl)->send();
             exit;
         }
 
         //redirect('http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.test.login')->send();
-        $split = explode('?', $redirect_url);
-
-        if (strrpos($split[0], '/') > 6) {
-          //  $redirect_url = substr($split[0], 0, strrpos($split[0], '/'));
-        }
 
         header('Access-Control-Allow-Origin: http://localhost:8081' );
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
