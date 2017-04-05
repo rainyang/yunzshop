@@ -138,11 +138,9 @@ class PreGeneratedOrderModel extends OrderModel
     public function generate()
     {
         $orderModel = $this->createOrder();
-        $this->id = $orderModel->id;
         $orderGoodsModels = $this->createOrderGoods();
         $order = DB::transaction(function () use ($orderModel,$orderGoodsModels){
-
-            $order = $orderModel->create();
+            $order = Order::create($orderModel);
             foreach ($orderGoodsModels as $orderGoodsModel){
                 $orderGoodsModel->order_id = $order->id;
                 $orderGoodsModel->save();
@@ -150,8 +148,9 @@ class PreGeneratedOrderModel extends OrderModel
             }
             return $order;
         });
-        $this->order = $order;
-        event(new AfterOrderCreatedEvent($order,$this));
+        $this->id = $order->id;
+        $this->order = $order->find($order->id);
+        event(new AfterOrderCreatedEvent($this->order,$this));
         return true;
     }
     /**
@@ -195,7 +194,7 @@ class PreGeneratedOrderModel extends OrderModel
         );
         //todo 测试
 
-        return new Order($data);
+        return $data;
     }
 
 }
