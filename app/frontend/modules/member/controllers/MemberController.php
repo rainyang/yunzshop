@@ -174,9 +174,7 @@ class MemberController extends ApiController
         } else {
             $uid = \YunShop::app()->getMemberId();
         }
-        echo 1;
-file_put_contents(storage_path('logs/isa.log'), print_r($_SESSION));
-echo 2;exit;
+      
         $member_info = SubMemberModel::getMemberShopInfo($uid);
 
         if (empty($member_info)) {
