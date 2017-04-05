@@ -199,7 +199,9 @@ class MemberOfficeAccountService extends MemberService
         }
 
 //file_put_contents(storage_path('logs/red.log'), $redirect_url, FILE_APPEND);
-        redirect($redirect_url . '?login&session_id=' . session_id() . '&uid=' . \YunShop::app()->getMemberId())->send();
+        redirect($redirect_url . '?login&session_id=' . session_id() . '&uid=' . \YunShop::app()->getMemberId(),302,[
+            'Access-Control-Allow-Origin'=>'http://localhost:8081'
+        ])->send();
     }
 
     /**
