@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if (($exception instanceof AppException)) {
+        if ($exception instanceof AppException) {
             return $this->errorJson($exception->getMessage());
         }
 

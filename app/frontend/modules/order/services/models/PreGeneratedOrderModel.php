@@ -55,7 +55,7 @@ class PreGeneratedOrderModel extends OrderModel
     }
     protected function setOrderGoodsModels(array $OrderGoodsModels)
     {
-        $this->_OrderGoodsModels = $OrderGoodsModels;
+        $this->orderGoodsModels = $OrderGoodsModels;
     }
 
     protected function setDiscount()
@@ -73,7 +73,7 @@ class PreGeneratedOrderModel extends OrderModel
      */
     public function getOrderGoodsModels()
     {
-        return $this->_OrderGoodsModels;
+        return $this->orderGoodsModels;
     }
 
     /**
@@ -82,7 +82,7 @@ class PreGeneratedOrderModel extends OrderModel
      */
     private function addPreGeneratedOrderGoods(array $pre_order_goods_models)
     {
-        $this->_OrderGoodsModels = array_merge($this->_OrderGoodsModels, $pre_order_goods_models);
+        $this->orderGoodsModels = array_merge($this->orderGoodsModels, $pre_order_goods_models);
     }
 
     /**
@@ -124,8 +124,8 @@ class PreGeneratedOrderModel extends OrderModel
             'deduction_price' => $this->getDeductionPrice(),
 
         );
-        foreach ($this->_OrderGoodsModels as $order_goods_model) {
-            $data['order_goods'][] = $order_goods_model->toArray();
+        foreach ($this->orderGoodsModels as $orderGoodsModel) {
+            $data['order_goods'][] = $orderGoodsModel->toArray();
         }
         return $data;
     }
@@ -139,11 +139,16 @@ class PreGeneratedOrderModel extends OrderModel
         $this->id = $orderModel->id;
         $orderGoodsModels = $this->createOrderGoods();
         DB::transaction(function () use ($orderModel,$orderGoodsModels){
-            //$orderModel->save();
-            $orderModel->create()->saveMany($orderGoodsModels);
+
+            $order = $orderModel->create();
+            foreach ($orderGoodsModels as $orderGoodsModel){
+                $orderGoodsModel->order_id = $order->id;
+                $orderGoodsModel->save();
+
+            }
         });
 
-        event(new AfterOrderCreatedEvent($orderModel));
+        event(new AfterOrderCreatedEvent($this));
         return true;
     }
     /**
@@ -152,7 +157,7 @@ class PreGeneratedOrderModel extends OrderModel
     private function createOrderGoods()
     {
         $result = [];
-        foreach ($this->_OrderGoodsModels as $preOrderGoodsModel) {
+        foreach ($this->orderGoodsModels as $preOrderGoodsModel) {
             /**
              * @var $preOrderGoodsModel PreGeneratedOrderGoodsModel
              */

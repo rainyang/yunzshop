@@ -17,7 +17,7 @@ abstract class OrderModel
     /**
      * @var array 未插入数据库的订单商品数组
      */
-    protected $_OrderGoodsModels = [];
+    protected $orderGoodsModels = [];
 
     /**
      * @var \app\frontend\modules\dispatch\services\models\OrderDispatch 运费类实例
@@ -49,7 +49,7 @@ abstract class OrderModel
     {
         //累加所有商品数量
         $result = 0;
-        foreach ($this->_OrderGoodsModels as $pre_order_goods_model) {
+        foreach ($this->orderGoodsModels as $pre_order_goods_model) {
             $result += $pre_order_goods_model->getTotal();
         }
         return $result;
@@ -99,7 +99,7 @@ abstract class OrderModel
     protected function getVipPrice()
     {
         $result = 0;
-        foreach ($this->_OrderGoodsModels as $OrderGoodsModel) {
+        foreach ($this->orderGoodsModels as $OrderGoodsModel) {
             /**
              * @var $OrderGoodsModel PreGeneratedOrderGoodsModel
              */
@@ -115,7 +115,7 @@ abstract class OrderModel
     protected function getOrderGoodsPrice()
     {
         $result = 0;
-        foreach ($this->_OrderGoodsModels as $OrderGoodsModel) {
+        foreach ($this->orderGoodsModels as $OrderGoodsModel) {
             $result += $OrderGoodsModel->getPrice();
         }
         return $result;
