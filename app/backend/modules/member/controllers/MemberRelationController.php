@@ -53,11 +53,7 @@ class MemberRelationController extends BaseController
         } else {
             $relation = Relation::create($setData);
         }
-
-        $relation = $relation->toArray();
-
-        return view('member.relation', [
-            'set' => $relation
-        ])->render();
+echo 3;exit;
+        $this->message('保存成功', yzWebUrl('member.member-relation.index'));
     }
 }
