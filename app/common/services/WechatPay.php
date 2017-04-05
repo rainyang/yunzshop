@@ -22,14 +22,14 @@ class WechatPay extends Pay
     {
         $op = '微信订单支付 订单号：\' . $data[\'order_no\']';
         $pay_order_model = $this->log($data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
-
+        echo '<pre>'; echo \YunShop::app()->getMemberId();exit;
         if (empty(\YunShop::app()->getMemberId())) {
             return show_json(0);
         }
 
         $openid = Member::getOpenId(\YunShop::app()->getMemberId());
         $pay = \Setting::get('shop.pay');
-        echo '<pre>1';exit;
+
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])
             || empty($pay['weixin_appid']) || empty($pay['weixin_secret'])) {
 
