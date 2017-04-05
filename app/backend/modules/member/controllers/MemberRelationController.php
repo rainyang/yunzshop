@@ -53,7 +53,7 @@ class MemberRelationController extends BaseController
         } else {
             $relation = Relation::create($setData);
         }
-echo 3;exit;
-        $this->message('保存成功', yzWebUrl('member.member-relation.index'));
+
+        return $this->message('保存成功', yzWebUrl('member.member-relation.index'));
     }
 }
