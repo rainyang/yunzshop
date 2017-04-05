@@ -47,7 +47,8 @@ class ApiController extends BaseController
             unset($pieces);
         }
 
-        if (empty($session_id) && \YunShop::request()->session_id) {
+        if (empty($session_id) && \YunShop::request()->session_id &&
+            \YunShop::request()->session_id != 'undefind') {
             echo 2;
             $session_id = \YunShop::request()->session_id;
         }
@@ -64,10 +65,14 @@ class ApiController extends BaseController
         }
 echo $session_id . '<BR>';
         session_save_path('/tmp');
+
         file_put_contents(storage_path('logs/ssid.log'), print_r(['ssid'=>$session_id, 'path'=>session_save_path('/tmp')],1), FILE_APPEND);
+
         session_id($session_id);
 file_put_contents(storage_path('logs/ss.log'), print_r($_SESSION, 1));
         session_start();
+
+
  echo        session_id();
         file_put_contents(storage_path('logs/ssid2.log'), print_r(['ssid'=>session_id(), 'path'=>session_save_path('/tmp')],1), FILE_APPEND);
         file_put_contents(storage_path('logs/ss2.log'), print_r($_SESSION, 1));
