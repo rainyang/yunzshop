@@ -2,6 +2,7 @@
 
 namespace app\common\providers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Setting;
 use Illuminate\Support\ServiceProvider;
 use App;
@@ -17,6 +18,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        /*Relation::morphMap([
+            'CommissionOrder' => \Yunshop\Commission\models\CommissionOrder::class,
+            //'videos' => App\Video::class,
+        ]);*/
         //微信接口不输出错误
         if (strpos(request()->getRequestUri(), '/api.php') >= 0) {
             error_reporting(0);

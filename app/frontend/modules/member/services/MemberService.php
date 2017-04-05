@@ -21,11 +21,11 @@ class MemberService
         if(isset(self::$_current_member)){
             return self::$_current_member;
         }
-        //$_GET['uid'] = 1;
-        if(!isset($_GET['uid'])){
+        $uid = \YunShop::app()->getMemberId();
+        if(!isset($uid)){
             throw new AppException('uid不存在');
         }
-        self::setCurrentMemberModel($_GET['uid']);
+        self::setCurrentMemberModel($uid);
         return self::$_current_member;
     }
 

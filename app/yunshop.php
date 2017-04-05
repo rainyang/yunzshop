@@ -279,6 +279,10 @@ class YunComponent implements ArrayAccess
     public function get($key = null)
     {
         if (isset($key)) {
+            $result = json_decode(array_get($this->values, $key, null),true);
+            if(@is_array($result)){
+                return $result;
+            }
             return array_get($this->values, $key, null);
         }
         return $this->values;
@@ -401,8 +405,12 @@ class YunApp extends YunComponent
     public function getMemberId()
     {
         if (config('app.debug')) {
-            return 146;
+            if($_GET['test_uid']){
+                return $_GET['test_uid'];
+            }
+            return false;
         }
+
 
         if (Session::get('member_id')) {
             return Session::get('member_id');

@@ -105,6 +105,7 @@ class Coupon
                 break;
         }
     }
+
     /**
      * 时间限制类实例
      */
@@ -124,6 +125,7 @@ class Coupon
                 break;
         }
     }
+
     /**
      * 获取订单优惠价格
      */
@@ -159,6 +161,12 @@ class Coupon
      */
     public function valid()
     {
-        return $this->useScope->valid() && $this->price->valid() &&$this->timeLimit->valid();
+        return $this->useScope->valid() && $this->price->valid() && $this->timeLimit->valid();
+    }
+
+    public function destroy()
+    {
+        $this->memberCoupon->used = 1;
+        return $this->memberCoupon->save();
     }
 }

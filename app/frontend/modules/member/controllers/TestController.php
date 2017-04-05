@@ -8,7 +8,10 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\api\model\Good;
 use app\common\components\ApiController;
+use app\common\models\AccountWechats;
+use app\common\models\Goods;
 use app\common\services\AliPay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
@@ -24,16 +27,16 @@ class TestController extends ApiController
 //       $str  = $pay->setUniacidNo(122, 5);
 //       echo $str . '<BR>';
 //       echo substr($str, 17, 5);
-       $result = $pay->doWithdraw(146,  1);
+//       $result = $pay->doWithdraw(146,  1);
      //  $result = $pay->doRefund('1491193485',  0.1, 0.1);
-       echo '<pre>';print_r($result);exit;
+//       echo '<pre>';print_r($result);exit;
 //
-//      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
-//
-//       return view('order.pay', [
-//           'config' => $data['config'],
-//           'js' => $data['js']
-//       ])->render();
+      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
+
+       return view('order.pay', [
+           'config' => $data['config'],
+           'js' => $data['js']
+       ])->render();
 exit;
        $pay = new AliPay();
 
@@ -92,7 +95,9 @@ exit;
 
    public function getId()
    {
-       echo \YunShop::app()->getMemberId();
+
+       $g = AccountWechats::getAccountInfoById(2);
+       echo '<pre>';print_r($g->toArray());exit;
    }
 
    public function getQR()

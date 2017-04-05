@@ -33,6 +33,7 @@ class MemberRelation extends BackendModel
     public $guarded = [];
 
 
+
     /**
      * 获取会员关系链数据
      *
@@ -79,18 +80,7 @@ class MemberRelation extends BackendModel
                     }
                     break;
                 case 4:
-                    $list = OrderListModel::getRequestOrderList(3,\YunShop::app()->getMemberId());
-
-                    if (!empty($list)) {
-                        foreach ($list as $rows) {
-                            foreach ($rows['has_many_order_goods'] as $item) {
-                                if ($item['goods_id'] == $info['become_goods_id']) {
-                                    $isAgent = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    $isAgent = self::checkOrderGoods($info['become_goods_id']);
                     break;
                 default:
                     $isAgent = false;
@@ -125,5 +115,22 @@ class MemberRelation extends BackendModel
                 $member_info->save();
             }
         }
+    }
+
+    public static function checkOrderGoods($goods_id)
+    {
+        $list = OrderListModel::getRequestOrderList(3,\YunShop::app()->getMemberId());
+
+        if (!empty($list)) {
+            foreach ($list as $rows) {
+                foreach ($rows['has_many_order_goods'] as $item) {
+                    if ($item['goods_id'] == $goods_id) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }

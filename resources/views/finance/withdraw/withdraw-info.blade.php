@@ -7,7 +7,8 @@
         </div>
         <div class='panel-body'>
             <div style='height:auto;width:120px;float:left;'>
-                <img src='{{tomedia($item->hasOneMember->avatar)}}' style='width:100px;height:100px;border:1px solid #ccc;padding:1px' />
+                <img src='{{tomedia($item->hasOneMember->avatar)}}'
+                     style='width:100px;height:100px;border:1px solid #ccc;padding:1px'/>
             </div>
             <div style='float:left;height:auto;overflow: hidden'>
                 <p>
@@ -18,52 +19,48 @@
                     <b>手机号:</b>
                     {{$item->hasOneMember->mobile}}
                 </p>
-                <p><b>分销等级:</b> {$agentLevel['levelname']} (
-                    {if $this->set['level']>=1}一级比例: <span style='color:blue'>{$agentLevel['commission1']}%</span>{/if}
-                    {if $this->set['level']>=2}二级比例: <span style='color:blue'>{$agentLevel['commission2']}%</span>{/if}
-                    {if $this->set['level']>=3}三级比例: <span style='color:blue'>{$agentLevel['commission3']}%</span>{/if}
-                    )</p>
-                <p>
-                    <b>下级:</b> 总共 <span style='color:red'>{$member['agentcount']}</span> 人
-                    {if $this->set['level']>=1}<b>一级:</b><span style='color:red'>{$member['level1']}</span> 人{/if}
-                    {if $this->set['level']>=2}<b>二级:</b> <span style='color:red'>{$member['level2']}</span> 人{/if}
-                    {if $this->set['level']>=3}<b>三级: </b><span style='color:red'>{$member['level3']}</span> 人{/if}
-                    点击: <span style='color:red'>{$member['clickcount']}</span> 次
-
-                    <b>累计佣金: </b><span style='color:red'>{$member['commission_total']}</span> 元
-                    <b>待审核佣金: </b><span style='color:red'>{$member['commission_apply']}</span> 元
-                    <b>待打款佣金: </b><span style='color:red'>{$member['commission_check']}</span> 元
-                    <b>结算期佣金: </b><span style='color:red'>{$member['commission_lock']}</span> 元 </p>
-                <p>
-                    <b>申请佣金: </b><span style='color:red'>{$apply['commission']}</span> 元
-                    <b>打款方式: </b>
-                    {if empty($apply['type'])}
-                    <span class='label label-primary'>余额{if $apply['payauto']}(自动打款){/if}</span>
-                    {else if !empty($apply['type']) && $apply['type']=='3'}
-                    <span class='label label-success'>支付宝</span>
-                    <span class='label' style="color:#000">支付宝账号：{$apply['alipay']}  姓名：{$apply['alipayname']}</span>
-                    {else}
-                    <span class='label label-success'>微信{if $apply['payauto']}(自动打款){/if}</span>
-                    {/if}
-
+                <p><b>分销等级:</b> {{$item->hasOneAgent['agent_level']['name']}} (
+                    @if($set['level']>=1)一级比例: <span style='color:blue'>{{$item->hasOneAgent['agent_level']['first_level']}}
+                        %</span>@endif
+                    @if($set['level']>=2)二级比例: <span style='color:blue'>{{$item->hasOneAgent['agent_level']['second_level']}}
+                        %</span>@endif
+                    @if($set['level']>=3)三级比例: <span style='color:blue'>{{$item->hasOneAgent['agent_level']['third_level']}}
+                        %</span>@endif
+                    )
                 </p>
                 <p>
-                    <b>状态: </b>
-                    {if $apply['status']==1}
-                    <span class='label label-primary'>申请中</span>
-                    {else if $apply['status']==2}
-                    <span class='label label-success'>审核完毕，准备打款</span>
-                    {else if $apply['status']==3}
-                    <span class='label label-warning'>已打款</span>
-                    {else if $apply['status']==4}
-                    <span class='label label-warning'>已到款</span>
-                    {/if}
-
-                    {if $apply['status']>=1}<b>申请时间: </b> {php echo date('Y-m-d H:i', $apply['applytime'])}{/if}
-                    {if $apply['status']>=2}<b>审核时间: </b> {php echo date('Y-m-d H:i', $apply['checktime'])}{/if}
-                    {if $apply['status']>=3}<b>打款时间: </b> {php echo date('Y-m-d H:i', $apply['paytime'])}{/if}
-                    {if $apply['status']>=4}<b>到款时间: </b> {php echo date('Y-m-d H:i', $apply['finshtime'])}{/if}
+                    <b>累计收入: </b><span style='color:red'>{{$item->hasOneAgent['commission_total']}}</span> 元
                 </p>
+                <p>
+                    <b>提现金额: </b><span style='color:red'>{{$item->amounts}}</span> 元
+                <p>
+                <p>
+                    <b>收入类型: </b>{{$item->type_name}}
+                <p>
+                <p>
+                    <b>提现方式: </b>{{$item->pay_way_name}}
+                </p>
+                <p>
+                    <b>状态: </b>{{$item->status_name}}
+                </p>
+                <p>
+                    <b>申请时间: </b>{{$item->created_at}}
+                </p>
+                @if($item->audit_at)
+                    <p>
+                        <b>审核时间: </b>{{$item->audit_at}}
+                    </p>
+                @endif
+                @if($item->pay_at)
+                    <p>
+                        <b>打款时间: </b>{{$item->pay_at}}
+                    </p>
+                @endif
+                @if($item->arrival_at)
+                    <p>
+                        <b>到账时间: </b>{{$item->arrival_at}}
+                    </p>
+                @endif
 
             </div>
         </div>

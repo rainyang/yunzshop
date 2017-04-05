@@ -22,9 +22,9 @@ class Income extends BackendModel
     public $attributes = [];
 
     protected $guarded = [];
-    
+
     public $StatusService;
-    
+
     protected $appends = ['status_name'];
 
     /**
@@ -46,6 +46,7 @@ class Income extends BackendModel
     {
         return $this->getStatusService();
     }
+
     /**
      * @param $id
      * @return mixed
@@ -63,6 +64,24 @@ class Income extends BackendModel
     {
         return self::uniacid()
             ->where('id', $id);
+
+    }
+
+    /**
+     * @param $ids
+     * @return mixed
+     */
+    public static function getIncomeByIds($ids)
+    {
+        return self::uniacid()
+            ->whereIn('id', explode(',', $ids))
+            ->first();
+    }
+    
+
+    public function incometable()
+    {
+        return $this->morphTo();
     }
 
     /**
@@ -94,12 +113,18 @@ class Income extends BackendModel
         return $model;
     }
 
-
-    public static function updatedWithdraw($type, $typeId, $status)
+    public static function getWithdraw($type, $typeId, $status)
     {
         return self::where('type', 'commission')
             ->where('member_id', \YunShop::app()->getMemberId())
-            ->whereIn('id', explode(',',$typeId))
+            ->whereIn('id', explode(',', $typeId))
+            ->update(['status' => $status]);
+    }
+
+    public static function updatedWithdraw($type, $typeId, $status)
+    {
+        return self::where('member_id', \YunShop::app()->getMemberId())
+            ->whereIn('id', explode(',', $typeId))
             ->update(['status' => $status]);
     }
 
