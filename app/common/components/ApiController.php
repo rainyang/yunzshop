@@ -41,26 +41,35 @@ class ApiController extends BaseController
     {
         $session_id = '';
         if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
+            echo 1;
             $pieces = explode('-', \YunShop::request()->state);
             $session_id = $pieces[1];
             unset($pieces);
         }
 
         if (empty($session_id) && \YunShop::request()->session_id) {
+            echo 2;
             $session_id = \YunShop::request()->session_id;
         }
 
         if (empty($session_id)) {
+            echo 3;
             $session_id = $_COOKIE[session_name()];
         }
         if (empty($session_id)) {
+            echo 4;
             $session_id = \YunShop::app()->uniacid . '-' . Client::random(20) ;
             $session_id = md5($session_id);
             setcookie(session_name(), $session_id);
         }
-
+echo $session_id . '<BR>';
+        file_put_contents(storage_path('logs/ssid.log'), print_r(['ssid'=>$session_id, 'path'=>session_save_path('/tmp')],1), FILE_APPEND);
         session_id($session_id);
+        session_save_path('/tmp');
         session_start();
+ echo        session_id();
+        file_put_contents(storage_path('logs/ssid2.log'), print_r(['ssid'=>session_id(), 'path'=>session_save_path('/tmp')],1), FILE_APPEND);
+       // echo '<pre>';print_r($_SESSION);exit;
     }
 
     private function setAgent()

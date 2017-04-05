@@ -411,7 +411,7 @@ class YunApp extends YunComponent
             return false;
         }
 
-        
+
         if (Session::get('member_id')) {
             return Session::get('member_id');
         } else {

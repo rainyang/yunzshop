@@ -10,7 +10,9 @@ namespace app\common\models;
 
 
 use app\backend\models\BackendModel;
+use app\backend\modules\finance\models\IncomeOrder;
 use app\frontend\modules\finance\services\WithdrawService;
+use Illuminate\Support\Facades\Config;
 
 class Withdraw extends BackendModel
 {
@@ -79,17 +81,38 @@ class Withdraw extends BackendModel
      */
     public function getTypeDataAttribute()
     {
-        //$type = $this->attributes['type'];
+        
         if (!isset($this->TypeData)) {
+            $configs = Config::get('income');
+            foreach ($configs as $key => $config) {
+                if ($key === $this->type) {
+                    $orders = Income::getIncomeByIds($this->type_id)->get();
+                    if($orders){
+                        foreach ($orders as $order) {
+                            $this->TypeData[] = $order->incometable->ordertable->toArray();
+                        }
+                    }
+                }
 
-            
-            //$this->TypeData = WithdrawService::createPayWayService($this);
-            $this->TypeData = $this->type;
+            }
         }
 
         return $this->TypeData;
     }
 
+    public static function getWithdrawById($id)
+    {
+        $Model = self::where('id', $id);
+
+        $Model->with(['hasOneMember' => function ($query) {
+            $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
+        }]);
+        $Model->with(['hasOneAgent' => function ($query) {
+            $query->select('member_id', 'agent_level_id', 'commission_total');
+        }]);
+
+        return $Model;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
