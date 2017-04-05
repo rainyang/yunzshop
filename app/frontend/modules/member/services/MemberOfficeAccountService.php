@@ -189,7 +189,7 @@ class MemberOfficeAccountService extends MemberService
 //                $redirect_url = $this->_getClientRequestUrl();
 //                redirect($redirect_url . '?login')->send();exit;
 //            }
-echo 1;
+echo 5;
           //  redirect($authurl)->send();
             exit;
         }
