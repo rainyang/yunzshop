@@ -49,6 +49,7 @@ echo 1;exit;
 
         if (empty($session_id) && \YunShop::request()->session_id) {
             $session_id = \YunShop::request()->session_id;
+            echo $session_id;exit;
         }
 
         if (empty($session_id)) {
