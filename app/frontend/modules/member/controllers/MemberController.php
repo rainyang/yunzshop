@@ -168,11 +168,14 @@ class MemberController extends ApiController
     public function isAgent()
     {
         $info = MemberRelation::getSetInfo()->first()->toArray();
-if (empty(\YunShop::app()->getMemberId())) {
-    echo '<pre>';print_r($_SESSION);exit;
-    return $this->errorJson('会员ID不存在');
-}
-        $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+        if (empty(\YunShop::app()->getMemberId())) {
+            $uid = \YunShop::request()->uid;
+        } else {
+            $uid = \YunShop::app()->getMemberId();
+        }
+
+        $member_info = SubMemberModel::getMemberShopInfo($uid);
 
         if (empty($member_info)) {
             return $this->errorJson('会员不存在');
