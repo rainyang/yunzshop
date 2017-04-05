@@ -74,7 +74,12 @@ class PayController extends BaseController
         }*/
 
         //$data = $pay->doPay(['order_no' => time(), 'amount' => $Order->price, 'subject' => '微信支付', 'body' => '商品的描述:2', 'extra' => '']);
-        return $this->successJson('成功',$data['data']);
+        //return $this->successJson('成功',$data['data']);
+
+        return view('order.pay', [
+            'config' => $data['config'],
+            'js' => $data['js']
+        ])->render();
     }
 
     public function alipay()
