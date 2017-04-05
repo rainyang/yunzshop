@@ -62,19 +62,19 @@ class CreatedOrderModel extends OrderModel
             'price' => (string)$change_dispatch_price,
             'plugin' => '0',
         ];
-        $this->_OrderDispatch->addDispatchDetail($dispatch_price);
+        $this->orderDispatch->addDispatchDetail($dispatch_price);
     }
 
     protected function setDispatch()
     {
-        $this->_OrderDispatch = DispatchService::getCreatedOrderDispatchModel($this->getOrder());
+        $this->orderDispatch = DispatchService::getCreatedOrderDispatchModel($this->getOrder());
     }
 
     public function update()
     {
         $data = [
             //配送类获取订单配送信息
-            'dispatch_details' => $this->_OrderDispatch->getDispatchDetails(),
+            'dispatch_details' => $this->orderDispatch->getDispatchDetails(),
             //优惠类记录订单配送信息
             'discount_details' => $this->_OrderDiscount->getDiscountDetails(),
             'discount_price' => $this->getDiscountPrice(),

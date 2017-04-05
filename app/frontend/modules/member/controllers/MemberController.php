@@ -92,16 +92,22 @@ class MemberController extends ApiController
                 $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
                 $parent_name = '';
 
-                if (emtpy($mid)) {
+                if (empty($mid)) {
                     $parent_name = '总店';
                 } else {
-                    $member = MemberModel::getMemberById($mid);
+                    $parent_model = MemberModel::getMemberById($mid);
 
-                    if (!empty($parent_name)) {
-                        $member = $member->toArray();
+                    if (!empty($parent_model)) {
+                        $parent_member = $parent_model->toArray();
 
-                        $parent_name = $member['realname'];
+                        $parent_name = $parent_member['realname'];
                     }
+                }
+
+                $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
+
+                if (!empty($member_model)) {
+                    $member = $member_model->toArray();
                 }
                 break;
            case 2:
@@ -140,12 +146,12 @@ class MemberController extends ApiController
        }
 
        $relation = [
-           'switch' => $info['status'],
+           'switched' => $info['status'],
            'become' => $apply_qualification,
-           'become1' => ['parent_name' => $parent_name],
-           'become2' => ['total' => $info['become_ordercount'], 'cost' => $cost_num],
-           'become3' => ['total' => $info['become_moneycount'], 'cost' => $cost_price],
-           'become4' =>['goods_name' => $goods_name],
+           'become1' => ['shop_name' => $account['name'],'parent_name' => $parent_name, 'realname' => $member['realname'], 'mobile' => $member['mobile']],
+           'become2' => ['shop_name' => $account['name'], 'total' => $info['become_ordercount'], 'cost' => $cost_num],
+           'become3' => ['shop_name' => $account['name'], 'total' => $info['become_moneycount'], 'cost' => $cost_price],
+           'become4' =>['shop_name' => $account['name'], 'goods_name' => $goods_name, 'goods_id' => $info['become_goods_id']],
            'is_agent' => $data['is_agent'],
            'status' => $data['status'],
            'account' => $account['name']
@@ -163,7 +169,13 @@ class MemberController extends ApiController
     {
         $info = MemberRelation::getSetInfo()->first()->toArray();
 
-        $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        if (empty(\YunShop::app()->getMemberId())) {
+            $uid = \YunShop::request()->uid;
+        } else {
+            $uid = \YunShop::app()->getMemberId();
+        }
+echo '<pre>';print_r($uid);exit;
+        $member_info = SubMemberModel::getMemberShopInfo($uid);
 
         if (empty($member_info)) {
             return $this->errorJson('会员不存在');
@@ -212,5 +224,24 @@ class MemberController extends ApiController
     {
         $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
 
+        $sub_member_model = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+        $sub_member_model->parent_id = $mid;
+        if ($sub_member_model->save()) {
+            $this->errorJson('会员上级信息保存失败');
+        }
+
+        $realname = \YunShop::request()->realname;
+        $moible =\YunShop::request()->mobile;
+
+        $member_mode = MemberModel::getMemberById(\YunShop::app()->getMemberId());
+
+        $member_mode->realname = $realname;
+        $member_mode->mobile = $moible;
+        if ($member_mode->save()) {
+            $this->errorJson('会员信息保存失败');
+        }
+
+        $this->successJson('ok');
     }
 }

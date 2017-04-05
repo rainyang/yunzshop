@@ -73,10 +73,14 @@ class Member extends \app\common\models\Member
                     }]);
             }, 'hasOneFans' => function($query2) {
                 return $query2->select(['uid', 'follow as followed'])->uniacid();
+            }, 'hasOneOrder' => function ($query5) {
+                return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                              ->uniacid()
+                              ->where('status', 3)
+                              ->groupBy('uid');
             }
             ])
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**

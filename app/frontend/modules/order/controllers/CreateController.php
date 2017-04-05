@@ -21,7 +21,6 @@ class CreateController extends ApiController
 {
     private function getMemberCarts(){
         $params = \YunShop::request()->get();
-
         $result = [];
         foreach ($params['goods'] as $goods_params){
             $result[] = new MemberCart($goods_params);
@@ -34,14 +33,12 @@ class CreateController extends ApiController
             return;
         }*/
         $params = \YunShop::request()->get();
-        //$this->validator($params['goods']);
+        $this->validator($params['goods']);
         $member_model = MemberService::getCurrentMemberModel();
 
         $shop_model = ShopService::getCurrentShopModel();
         //todo 根据参数
-
         $order_goods_models = OrderService::getOrderGoodsModels($this->getMemberCarts());
-
         list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
         if ($result === false) {
             return $this->errorJson($message);
@@ -58,8 +55,6 @@ class CreateController extends ApiController
             throw new AppException('请选择下单商品(空数组)');
         }
         foreach ($params as $param){
-            dd($param);
-            exit;
             if(!isset($param['goods_id'])){
                 throw new AppException('请选择下单商品(缺少goods_id)');
             }

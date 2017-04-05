@@ -25,7 +25,6 @@ class TestService
      */
     public function getOrderDiscountPrice()
     {
-        //dd($this->getAllValidCoupons());
         $result = 0;
         //统计所有优惠券的金额
         foreach ($this->getAllValidCoupons() as $coupon) {
@@ -55,11 +54,21 @@ class TestService
         return $result;
     }
 
+    public function destroyUsedCoupons()
+    {
+        foreach ($this->getAllValidCoupons() as $coupon){
+            /**
+             * @var $coupon Coupon
+             */
+            $coupon->destroy();
+        }
+    }
+
     /**
      * 获取所有选中并有效的优惠券
      * @return array
      */
-    private function getAllValidCoupons()
+    public function getAllValidCoupons()
     {
 
         $result = [];
@@ -80,7 +89,7 @@ class TestService
     private function getMemberCoupon()
     {
         //dd($this->order->getMemberModel()->hasManyMemberCoupon($this->back_type)->get());
-        return $this->order->getMemberModel()->hasManyMemberCoupon($this->back_type)->get();
+        return $this->order->getMember()->hasManyMemberCoupon($this->back_type)->get();
     }
 
     /**
@@ -89,7 +98,7 @@ class TestService
      */
     private function getSelectedMemberCoupon()
     {
-        $coupon_id = explode(',',array_get($_GET, 'coupon_ids', ''));
+        $coupon_id = explode(',', array_get($_GET, 'coupon_ids', ''));
         $result = [];
         //dd(MemberCoupon::getMemberCoupon($this->order->getMemberModel())->get());exit;
         foreach ($this->getMemberCoupon() as $memberCoupon) {

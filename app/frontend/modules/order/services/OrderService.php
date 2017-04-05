@@ -9,11 +9,11 @@
 
 namespace app\frontend\modules\order\services;
 
-use app\common\models\MemberCart;
 use app\common\models\Order;
 use app\common\models\Member;
 
 use app\frontend\modules\goods\services\models\GoodsModel;
+use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;
@@ -40,10 +40,10 @@ class OrderService
     public static function getPreGeneratedOrder(array $order_goods_models, Member $member_model=null, ShopModel $shop_model=null){
         $order_model = new PreGeneratedOrderModel($order_goods_models);
         if(isset($member_model)){
-            $order_model->setMemberModel($member_model);
+            $order_model->setMember($member_model);
         }
         if(isset($shop_model)){
-            $order_model->setShopModel($shop_model);
+            $order_model->setShop($shop_model);
         }
         return $order_model;
     }
@@ -53,11 +53,14 @@ class OrderService
      * @param $memberCarts
      * @return array
      */
-    public static function getOrderGoodsModels($memberCarts){
+    public static function getOrderGoodsModels(array $memberCarts){
         $result = [];
         foreach ($memberCarts as $memberCart) {
+            if($memberCart instanceof MemberCart){
+                throw new \Exception("请传入".MemberCart::class."的实例");
+            }
             /**
-             * @var $memberCart \app\frontend\modules\member\models\MemberCart
+             * @var $memberCart MemberCart
              */
             $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart);
             $result[] = $orderGoodsModel;
@@ -67,8 +70,7 @@ class OrderService
 
     /**
      * 获取订单号
-     * @param GoodsModel $goods_model
-     * @return \app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel
+     * @return string
      */
     public static function createOrderSN(){
         return 'sn'.time();//m('common')->createNO('order', 'ordersn', 'SH');

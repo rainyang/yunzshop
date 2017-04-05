@@ -10,6 +10,7 @@ use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\models\ShopModel;
+use Illuminate\Support\Facades\DB;
 
 /**
  * 订单生成类
@@ -32,13 +33,13 @@ class PreGeneratedOrderModel extends OrderModel
 {
     protected $id;
     /**
-     * @var 商城model实例
+     * @var ShopModel 商城model实例
      */
-    protected $shop_model;
+    protected $shop;
     /**
      * @var \app\frontend\models\Member
      */
-    protected $member_model;
+    protected $member;
 
     /**
      * 记录添加的商品
@@ -63,7 +64,7 @@ class PreGeneratedOrderModel extends OrderModel
     }
     protected function setDispatch()
     {
-        $this->_OrderDispatch = DispatchService::getPreOrderDispatchModel($this);
+        $this->orderDispatch = DispatchService::getPreOrderDispatchModel($this);
     }
 
     /**
@@ -86,27 +87,27 @@ class PreGeneratedOrderModel extends OrderModel
 
     /**
      * 设置订单所属用户
-     * @param Member $member_model
+     * @param Member $member
      */
-    public function setMemberModel(Member $member_model)
+    public function setMember(Member $member)
     {
-        $this->member_model = $member_model;
+        $this->member = $member;
     }
 
     /**
      * 设置订单所属店铺
-     * @param ShopModel $shop_model
+     * @param ShopModel $shop
      */
 
-    public function setShopModel(ShopModel $shop_model)
+    public function setShop(ShopModel $shop)
     {
-        $this->shop_model = $shop_model;
+        $this->shop = $shop;
     }
-    public function getShopModel(){
-        return $this->shop_model;
+    public function getShop(){
+        return $this->shop;
     }
-    public function getMemberModel(){
-        return $this->member_model;
+    public function getMember(){
+        return $this->member;
     }
 
     /**
@@ -134,10 +135,15 @@ class PreGeneratedOrderModel extends OrderModel
      */
     public function generate()
     {
-        $order_model = $this->createOrder();
-        $this->id = $order_model->id;
-        $this->createOrderGoods();
-        event(new AfterOrderCreatedEvent($order_model));
+        $orderModel = $this->createOrder();
+        $this->id = $orderModel->id;
+        $orderGoodsModels = $this->createOrderGoods();
+        DB::transaction(function () use ($orderModel,$orderGoodsModels){
+            //$orderModel->save();
+            $orderModel->create()->saveMany($orderGoodsModels);
+        });
+
+        event(new AfterOrderCreatedEvent($orderModel));
         return true;
     }
     /**
@@ -145,15 +151,17 @@ class PreGeneratedOrderModel extends OrderModel
      */
     private function createOrderGoods()
     {
+        $result = [];
         foreach ($this->_OrderGoodsModels as $preOrderGoodsModel) {
             /**
              * @var $preOrderGoodsModel PreGeneratedOrderGoodsModel
              */
-            $preOrderGoodsModel->generate($this);
+            $result[] = $preOrderGoodsModel->generate($this);
         }
+        return $result;
     }
     protected function getDispatchPrice(){
-        return $this->_OrderDispatch->getDispatchPrice();
+        return $this->orderDispatch->getDispatchPrice();
     }
     /**
      * 订单插入数据库
@@ -173,13 +181,13 @@ class PreGeneratedOrderModel extends OrderModel
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
             //配送类获取订单配送方式id
-            'dispatch_type_id'=>$this->_OrderDispatch->getDispatchTypeId(),
-            'uid' => $this->member_model->uid,
-            'uniacid' => $this->shop_model->uniacid,
+            'dispatch_type_id'=>$this->orderDispatch->getDispatchTypeId(),
+            'uid' => $this->member->uid,
+            'uniacid' => $this->shop->uniacid,
         );
         //todo 测试
 
-        return Order::create($data);
+        return new Order($data);
     }
 
 }
