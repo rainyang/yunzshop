@@ -31,11 +31,12 @@ class PayController extends BaseController
             'body' => '商品的描述:2',
             'extra' => ''
         ];
-        $url = 'http://test.yunzshop.com/app/index.php?i=2&c=entry&do=shop&m=sz_yi&route=order.testPay';
+        $url = 'http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=order.testPay';
         //$url = 'http://www.yunzhong.com/app/index.php?i=3&c=entry&do=shop&m=sz_yi&route=order.testPay';
         $data = Curl::to($url)
             ->withData( $query_str )
             ->asJsonResponse(true)->post();
+
         //返回支付方式列表
         //$data['data']['js'] = json_decode($data['data']['js'],true);
         //dd($data);exit;
@@ -44,12 +45,9 @@ class PayController extends BaseController
 
     public function wechatPay()
     {
-        if(!MemberService::isLogged()){
-            return $this->errorJson('登录状态失效');
-        }
+
 
         //$order_id = '';
-        $Order = Order::first();
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         /*$result = $pay->setyue('50');
         if($result == false){
@@ -60,7 +58,7 @@ class PayController extends BaseController
             'amount' => 0.1,
             'subject' => '微信支付',
             'body' => '商品的描述:2',
-            'extra' => ''
+            'extra' => ['type'=>1]
         ];
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay($query_str);
