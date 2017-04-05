@@ -9,11 +9,11 @@
 
 namespace app\frontend\modules\order\services;
 
-use app\common\models\MemberCart;
 use app\common\models\Order;
 use app\common\models\Member;
 
 use app\frontend\modules\goods\services\models\GoodsModel;
+use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;
@@ -56,8 +56,11 @@ class OrderService
     public static function getOrderGoodsModels(array $memberCarts){
         $result = [];
         foreach ($memberCarts as $memberCart) {
+            if($memberCart instanceof MemberCart){
+                throw new \Exception("请传入".MemberCart::class."的实例");
+            }
             /**
-             * @var $memberCart \app\frontend\modules\member\models\MemberCart
+             * @var $memberCart MemberCart
              */
             $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart);
             $result[] = $orderGoodsModel;

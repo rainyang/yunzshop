@@ -8,13 +8,12 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\common\components\BaseController;
+use app\common\components\ApiController;
 use app\common\models\Order;
 use app\common\services\PayFactory;
-use app\frontend\modules\member\services\MemberService;
 use Ixudra\Curl\Facades\Curl;
 
-class PayController extends BaseController
+class PayController extends ApiController
 {
     public function index()
     {
