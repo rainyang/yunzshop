@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\goods\controllers;
 
+use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
@@ -129,6 +130,35 @@ class GoodsController extends ApiController
             $this->errorJson('此分类下没有商品.');
         }
         $this->successJson('成功', $categorys);
+    }
+
+    public function getGoodsBrandList()
+    {
+        $brand_id = intval(\YunShop::request()->brand_id);
+
+        if (empty($brand_id)) {
+            $this->errorJson('请输入正确的品牌id.');
+        }
+
+        $brand = Brand::uniacid()->select("name", "logo", "id")->where(['id' => $brand_id])->first();
+        if (!$brand) {
+            $this->errorJson('没有此品牌.');
+        }
+        //dd($brand);
+        $goodsList = Goods::uniacid()->select('id','id as goods_id', 'title', 'thumb', 'price', 'market_price')
+            ->where('status', '1')
+            ->where('brand_id', $brand_id)
+            ->orderBy('display_order', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(20)->toArray();
+
+        if (empty($brand)) {
+            $this->errorJson('此品牌下没有商品.');
+        }
+
+        $brand->goods = $goodsList;
+
+        $this->successJson('成功', $brand);
     }
 
     /**
