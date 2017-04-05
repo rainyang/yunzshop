@@ -76,11 +76,11 @@ class MemberController extends BaseController
 
         $member = Member::getMemberInfoById($uid);
 
-        $this->render('member/member_detail',[
+        return view('member.detail', [
             'member' => $member,
             'levels' => $levels,
             'groups' => $groups,
-        ]);
+        ])->render();
     }
 
     /**
@@ -116,12 +116,10 @@ class MemberController extends BaseController
         MemberShopInfo::updateMemberInfoById($yz, $uid);
 
         if ($uid == 0 || !is_int($uid)) {
-            $this->message('参数错误', '', 'error');
-            exit;
+           return $this->message('参数错误', '', 'error');
         }
 
-
-        $this->message("用户资料更新成功", $this->createWebUrl('member.member.detail', array('id'=>$uid)));
+        return $this->message("用户资料更新成功", yzWebUrl('member.member.detail', ['id'=>$uid]));
     }
 
     /**
@@ -133,23 +131,21 @@ class MemberController extends BaseController
         $uid = \YunShop::request()->id ? intval(\YunShop::request()->id) : 0;
 
         if ($uid == 0 || !is_int($uid)) {
-            $this->message('参数错误', '', 'error');
-            exit;
+            return $this->message('参数错误', '', 'error');
         }
 
         $member = Member::getMemberInfoById($uid);
 
         if (empty($member)) {
-            $this->message('用户不存在', '', 'error');
-            exit;
+            return $this->message('用户不存在', '', 'error');
         }
 
         if (Member::deleteMemberInfoById($uid)) {
             MemberShopInfo::deleteMemberInfoById($uid);
 
-            $this->message('用户删除成功', $this->createWebUrl('member.member.index'));
+            return $this->message('用户删除成功', yzWebUrl('member.member.index'));
         } else {
-            $this->message('用户删除失败', $this->createWebUrl('member.member.index'));
+            return $this->message('用户删除失败', yzWebUrl('member.member.index'));
         }
     }
 
@@ -171,9 +167,9 @@ class MemberController extends BaseController
         );
 
         if (MemberShopInfo::setMemberBlack($uid, $data)) {
-            $this->message('黑名单设置成功', $this->createWebUrl('member.member.index'));
+            return $this->message('黑名单设置成功', yzWebUrl('member.member.index'));
         } else {
-            $this->message('黑名单设置失败', '', 'error');
+            return $this->message('黑名单设置失败', '', 'error');
         }
     }
 
