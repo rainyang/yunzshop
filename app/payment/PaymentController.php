@@ -15,7 +15,6 @@ class PaymentController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $pay_type = config('app.pay_type');
 
         $script_info = pathinfo($_SERVER['SCRIPT_NAME']);
 
@@ -29,11 +28,9 @@ class PaymentController extends BaseController
                     $batch_no = !empty($_REQUEST['batch_no']) ? $_REQUEST['batch_no'] : '';
 
                     \YunShop::app()->uniacid = substr($batch_no, 17, 5);
-
                     break;
                 default:
                     \YunShop::app()->uniacid = $this->getUniacid();
-
                     break;
             }
         }

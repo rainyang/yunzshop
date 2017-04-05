@@ -15,6 +15,7 @@ use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use app\frontend\modules\order\models\OrderListModel;
 
 class MemberController extends ApiController
 {
@@ -71,8 +72,15 @@ class MemberController extends ApiController
 
         $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
-        if (empty($info) || empty($member_info)) {
+        if (empty($info)) {
             return $this->errorJson('缺少参数');
+        }
+
+        if (empty($member_info))
+        {
+            return $this->errorJson('会员不存在');
+        } else {
+            $data = $member_info->toArray();
         }
 
         switch ($info['become']) {
@@ -97,8 +105,8 @@ class MemberController extends ApiController
            'become2' => ['total' => $info['become_ordercount'], 'cost' => 0],
            'become3' => ['total' => $info['become_moneycount'], 'cost' => 0],
            'become4' => ['desc' => '商品名'],
-           'is_agent' => $member_info['is_agent'],
-           'status' => $member_info['status'],
+           'is_agent' => $data['is_agent'],
+           'status' => $data['status'],
        ];
 
         return $this->successJson('', $relation);
@@ -111,13 +119,24 @@ class MemberController extends ApiController
      */
     public function isAgent()
     {
+        $info = MemberRelation::getSetInfo()->first()->toArray();
+
         $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         if (empty($member_info)) {
             return $this->errorJson('会员不存在');
+        } else {
+            $data = $member_info->toArray();
         }
 
-        return $this->successJson('', ['is_agent' => $member_info['is_agent']]);
+        if ($data['is_agent'] == 0 && $info['become'] == 0) {
+            $member_info->is_agent = 1;
+            $member_info->save();
+
+            $data['is_agent'] == 1;
+        }
+
+        return $this->successJson('', ['is_agent' => $data['is_agent']]);
     }
 
     /**
@@ -127,7 +146,7 @@ class MemberController extends ApiController
      * @param string $extra
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getAgentQr($url, $extra='')
+    public function getAgentQR($url, $extra='')
     {
         if (empty(\YunShop::app()->getMemberId())) {
             return $this->errorJson('请重新登录');

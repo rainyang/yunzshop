@@ -16,7 +16,7 @@ class AlipayController extends PaymentController
 {
     public function notifyUrl()
     {
-        $this->pay($_POST);
+        $this->log($_POST);
 
         $verify_result = $this->getSignResult();
 
