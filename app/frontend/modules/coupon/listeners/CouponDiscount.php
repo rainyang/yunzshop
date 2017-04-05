@@ -42,7 +42,7 @@ class CouponDiscount
     public function onOrderCreated(AfterOrderCreatedEvent $event){
         $this->event = $event;
         $orderModel = $this->event->getOrderModel();
-        $couponService = new TestService($orderModel);
+        $couponService = new TestService($orderModel->getOrder());
         $couponService->destroyUsedCoupons();
 
     }
