@@ -68,4 +68,17 @@ class BalanceRecharge extends BaseModel
             ->paginate($pageSize);
     }
 
+    /*
+     * 验证订单号是否存在，存在返回true
+     *
+     * @params varchar $orderSN
+     *
+     * @return bool true or false
+     *
+     * @Author yitian */
+    public static function validatorOrderSn($orderSN)
+    {
+        return self::uniacid()->where('ordersn', $orderSN)->first();
+    }
+
 }

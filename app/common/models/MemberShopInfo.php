@@ -21,7 +21,6 @@ class MemberShopInfo extends BackendModel
     {
         return self::select('*')->where('member_id', $memberId)
             ->uniacid()
-            ->first(1)
-            ->toArray();
+            ->first(1);
     }
 }
