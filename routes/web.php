@@ -11,7 +11,7 @@
 |
 */
 //@todo 接口api部份设置跨域
-header('Access-Control-Allow-Origin: ' .request()->getHost());
+header('Access-Control-Allow-Origin: localhost' );
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
 header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With');
 header('Access-Control-Allow-Credentials: true');
