@@ -92,7 +92,7 @@ class MemberController extends ApiController
                 $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
                 $parent_name = '';
 
-                if (emtpy($mid)) {
+                if (empty($mid)) {
                     $parent_name = '总店';
                 } else {
                     $member = MemberModel::getMemberById($mid);
