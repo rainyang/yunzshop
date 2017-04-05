@@ -215,8 +215,17 @@
                                         {{date('Y-m-d',$row['createtime'])}}<br/>
                                         {{date('H:i',$row['createtime'])}}</td>
                                     <td><label class="label label-primary">积分：{{$row['credit1']}}</label><br/><label class="label label-danger">余额：{{$row['credit2']}}</label></td>
-                                    <td><label class="label label-primary">订单：重计算</label><br/>
-                                        <label class="label label-danger">金额：重计算</label></td>
+                                    <td><label class="label label-primary">订单：
+                                        @if(!empty($row['has_one_order']['total']))
+                                                {{$row['has_one_order']['total']}}
+                                        @else
+                                            0
+                                        @endif</label><br/>
+                                        <label class="label label-danger">金额：@if(!empty($row['has_one_order']['sum']))
+                                                {{$row['has_one_order']['sum']}}
+                                            @else
+                                                0
+                                            @endif</label></td>
                                     <td>
                                         @if($row['yz_member']['is_black']==1)
                                             <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
