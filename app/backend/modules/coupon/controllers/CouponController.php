@@ -40,4 +40,25 @@ class CouponController extends \app\common\components\BaseController
             'var' => \YunShop::app()->get(),
         ])->render();
     }
+
+    public function edit()
+    {
+        $coupon_id = intval(\YunShop::request()->id);
+        if (!$coupon_id) {
+            $this->error('请传入正确参数.');
+        }
+
+        $coupon = Coupon::uniacid()->find($coupon_id);
+        $couponRequest = \YunShop::request()->coupon;
+        if ($couponRequest) {
+            $coupon->setRawAttributes($couponRequest);
+            $coupon->save();
+        }
+
+        return view('coupon.coupon', [
+            'coupon' => $coupon,
+            'var' => \YunShop::app()->get(),
+        ])->render();
+    }
+
 }

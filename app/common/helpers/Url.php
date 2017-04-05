@@ -15,7 +15,7 @@ class Url
             return $uri;
         }
         $domain = request()->getSchemeAndHttpHost();
-        $module = request()->get('m','');
+        $module = request()->get('m','sz_yi');
         return $domain . '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
     }
 

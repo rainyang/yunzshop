@@ -10,6 +10,8 @@ namespace app\backend\modules\finance\models;
 
 class Withdraw extends \app\common\models\Withdraw
 {
+    
+    
     public static function getWithdrawList($search = [])
     {
 
@@ -30,6 +32,10 @@ class Withdraw extends \app\common\models\Withdraw
         $Model->with(['hasOneMember' => function ($query) {
             $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
         }]);
+        $Model->with(['hasOneAgent' => function ($query) {
+            $query->select('member_id', 'agent_level_id');
+        }]);
+
         return $Model;
     }
 

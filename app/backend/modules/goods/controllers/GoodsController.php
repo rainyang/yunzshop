@@ -134,7 +134,7 @@ class GoodsController extends BaseController
         $newGoods = $goodsModel->replicate();
         $newGoods->save();
 
-        $goodsModel->load('hasOneShare', 'hasOneDiscount', 'hasOneGoodsDispatch', 'hasOnePrivilege', 'hasOneBrand');
+        $goodsModel->load('hasOneShare', 'hasOneDiscount', 'hasOneGoodsDispatch', 'hasOnePrivilege');
         foreach($goodsModel->getRelations() as $relation => $item){
             if ($item) {
                 unset($item->id);
@@ -153,6 +153,19 @@ class GoodsController extends BaseController
                 }
             }
         }
+
+        $goodsModel->setRelations([]);
+        $goodsModel->load('hasManyGoodsCategory');
+        foreach($goodsModel->getRelations() as $relation => $items){
+            foreach($items as $item){
+                if ($item) {
+                    unset($item->id);
+                    $item->goods_id = $newGoods->id;
+                    $newGoods->{$relation}()->create($item->toArray());
+                }
+            }
+        }
+
 
         //todo, 先复制老的规格,再复制规格项,再更新规格content字段,最后复制option,更新option specs字段
         $goodsSpecs = GoodsSpec::uniacid()->where('goods_id', $goodsModel->id)->get();
@@ -260,7 +273,12 @@ class GoodsController extends BaseController
 
     public function edit()
     {
-        $this->goods_id = \YunShop::request()->id;
+        $this->goods_id = intval(\YunShop::request()->id);
+
+        if (!$this->goods_id){
+            $this->error('请传入正确参数.');
+        }
+
         $requestGoods = \YunShop::request()->goods;
         $goodsModel = Goods::with('hasManyParams')->with('hasManySpecs')->with('hasManyGoodsCategory')->find($this->goods_id);//->getGoodsById(2);
         //dd($goodsModel->hasManyGoodsCategory->toArray());
@@ -313,8 +331,6 @@ class GoodsController extends BaseController
                     //显示信息并跳转
                     return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
                 } else {
-                    //dd($goodsModel);
-                    //dd('商品修改失败');
                     !session()->has('flash_notification.message') && $this->error('商品修改失败');
                     //$this->error('商品修改失败');
                 }

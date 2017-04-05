@@ -22,10 +22,9 @@ class MemberRelationController extends BaseController
             $relation = $relation->toArray();
         }
 
-        $this->render('member/member_set',[
+        return view('member.relation', [
             'set' => $relation
-        ]);
-
+        ])->render();
     }
 
     public function save()
@@ -55,10 +54,6 @@ class MemberRelationController extends BaseController
             $relation = Relation::create($setData);
         }
 
-        $relation = $relation->toArray();
-
-        $this->render('member/member_set',[
-            'set' => $relation
-        ]);
+        return $this->message('保存成功', yzWebUrl('member.member-relation.index'));
     }
 }

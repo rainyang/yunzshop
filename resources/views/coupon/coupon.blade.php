@@ -5,7 +5,6 @@
     <div class="w1200 m0a">
         <div class="rightlist">
             <form action="" method='post' class='form-horizontal'>
-            <input type="hidden" name="id" value="{$coupon['id']}">
             <input type="hidden" name="op" value="detail">
             <input type="hidden" name="c" value="site" />
             <input type="hidden" name="a" value="entry" />
@@ -40,8 +39,6 @@
             <input type="button" name="back" onclick='history.back()' style='margin-left:10px;' value="返回列表" class="btn btn-default" />
         </div>
     </div>
-
-
 
 {{--
     {template 'web/sysset/selectgoods'}

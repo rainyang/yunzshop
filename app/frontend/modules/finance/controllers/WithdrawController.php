@@ -12,13 +12,14 @@ use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\finance\models\Withdraw;
 
-class WithDrawController extends ApiController
+class WithdrawController extends ApiController
 {
     public function withdrawLog()
     {
-        $request = Withdraw::getWithdrawLog()->get()->toArray();
+        $status = \YunShop::request()->status;
+        $request = Withdraw::getWithdrawLog($status)->get();
         if ($request) {
-            return $this->successJson('获取数据成功!', $request);
+            return $this->successJson('获取数据成功!', $request->toArray());
         }
         return $this->errorJson('未检测到数据!');
     }

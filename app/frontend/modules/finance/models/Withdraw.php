@@ -9,14 +9,16 @@ namespace app\frontend\modules\finance\models;
 
 class Withdraw extends \app\common\models\Withdraw
 {
-    public static function getWithdrawLog()
+    public static function getWithdrawLog($status)
     {
-        $withdrawModel = self::select('id','type_name','amounts','poundage','status','created_at');
-        
+        $withdrawModel = self::select('id', 'type_name', 'amounts', 'poundage', 'status', 'created_at');
+
         $withdrawModel->uniacid();
 
-        $withdrawModel->where('member_id',\YunShop::app()->getMemberId());
-
+        $withdrawModel->where('member_id', \YunShop::app()->getMemberId());
+        if ($status >= '0') {
+            $withdrawModel->where('status', $status);
+        }
         return $withdrawModel;
     }
 }

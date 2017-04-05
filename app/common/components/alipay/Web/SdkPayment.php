@@ -88,7 +88,7 @@ class SdkPayment
 			'qr_pay_mode' => $this->qr_pay_mode
 		);
         //请求数据日志
-       // event(new PayLog($parameter, new WebAlipay()));
+        event(new PayLog($parameter, new WebAlipay()));
 
 		$para = $this->buildRequestPara($parameter);
 
