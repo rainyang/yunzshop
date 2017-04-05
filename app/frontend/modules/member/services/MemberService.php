@@ -21,6 +21,7 @@ class MemberService
         if(isset(self::$_current_member)){
             return self::$_current_member;
         }
+        //$_GET['uid'] = 1;
         if(!isset($_GET['uid'])){
             throw new AppException('uid不存在');
         }
