@@ -3,8 +3,7 @@
 @section('content')
     <div class="w1200 m0a">
         <div class="rightlist">
-            <form id="setform"  action="{{ yzWebUrl('member.memberrelation.save') }}" method="post" class="form-horizontal form">
-                <input type="hidden" name="route" value="member.memberrelation.save" />
+            <form id="setform"  action="{{ yzWebUrl('member.member-relation.save') }}" method="post" class="form-horizontal form">
                 <div class='panel panel-default'>
                     <div class='panel-heading'>
                         会员关系设置
