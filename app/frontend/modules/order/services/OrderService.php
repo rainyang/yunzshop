@@ -56,7 +56,7 @@ class OrderService
     public static function getOrderGoodsModels(array $memberCarts){
         $result = [];
         foreach ($memberCarts as $memberCart) {
-            if($memberCart instanceof MemberCart){
+            if(!($memberCart instanceof MemberCart)){
                 throw new \Exception("请传入".MemberCart::class."的实例");
             }
             /**
