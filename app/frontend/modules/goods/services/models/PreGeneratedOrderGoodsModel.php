@@ -19,8 +19,7 @@ use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 {
     /**
-     * app\frontend\modules\order\services\models\PreGeneratedOrderModel的实例
-     * @var
+     * @var PreGeneratedOrderModel
      */
     protected $order;
     /**
@@ -142,9 +141,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'goods_sn' => $this->goods->goods_sn,
             'title' => $this->goods->title,
             'thumb' => $this->goods->thumb,
-            'uid' => $this->order->getMemberModel()->uid,
+            'uid' => $this->order->getMember()->uid,
             'order_id' => $this->order->id,
-            'uniacid' => $this->order->getShopModel()->uniacid,
+            'uniacid' => $this->order->getShop()->uniacid,
         );
         if(isset($this->goodsOption)){
             $data += [

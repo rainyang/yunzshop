@@ -23,7 +23,7 @@ class CreateController extends ApiController
         $params = \YunShop::request()->get();
         $result = [];
         foreach ($params['goods'] as $goods_params){
-            $result = new MemberCart($goods_params);
+            $result[] = new MemberCart($goods_params);
         }
         return $result;
     }

@@ -33,13 +33,13 @@ class PreGeneratedOrderModel extends OrderModel
 {
     protected $id;
     /**
-     * @var 商城model实例
+     * @var ShopModel 商城model实例
      */
-    protected $shop_model;
+    protected $shop;
     /**
      * @var \app\frontend\models\Member
      */
-    protected $member_model;
+    protected $member;
 
     /**
      * 记录添加的商品
@@ -48,8 +48,6 @@ class PreGeneratedOrderModel extends OrderModel
      */
     public function __construct(array $OrderGoodsModels = null)
     {
-        dd($OrderGoodsModels);
-        exit;
         if (!isset($OrderGoodsModels)) {
             echo '订单商品为空!';exit;
         }
@@ -89,27 +87,27 @@ class PreGeneratedOrderModel extends OrderModel
 
     /**
      * 设置订单所属用户
-     * @param Member $member_model
+     * @param Member $member
      */
-    public function setMemberModel(Member $member_model)
+    public function setMember(Member $member)
     {
-        $this->member_model = $member_model;
+        $this->member = $member;
     }
 
     /**
      * 设置订单所属店铺
-     * @param ShopModel $shop_model
+     * @param ShopModel $shop
      */
 
-    public function setShopModel(ShopModel $shop_model)
+    public function setShop(ShopModel $shop)
     {
-        $this->shop_model = $shop_model;
+        $this->shop = $shop;
     }
-    public function getShopModel(){
-        return $this->shop_model;
+    public function getShop(){
+        return $this->shop;
     }
-    public function getMemberModel(){
-        return $this->member_model;
+    public function getMember(){
+        return $this->member;
     }
 
     /**
@@ -141,11 +139,8 @@ class PreGeneratedOrderModel extends OrderModel
         $this->id = $orderModel->id;
         $orderGoodsModels = $this->createOrderGoods();
         DB::transaction(function () use ($orderModel,$orderGoodsModels){
-            $orderModel->save();
-            foreach ($orderGoodsModels as $orderGoodsModel){
-
-                $orderGoodsModel->save();
-            }
+            //$orderModel->save();
+            $orderModel->create()->saveMany($orderGoodsModels);
         });
 
         event(new AfterOrderCreatedEvent($orderModel));
@@ -187,8 +182,8 @@ class PreGeneratedOrderModel extends OrderModel
             'create_time' => time(),
             //配送类获取订单配送方式id
             'dispatch_type_id'=>$this->orderDispatch->getDispatchTypeId(),
-            'uid' => $this->member_model->uid,
-            'uniacid' => $this->shop_model->uniacid,
+            'uid' => $this->member->uid,
+            'uniacid' => $this->shop->uniacid,
         );
         //todo 测试
 
