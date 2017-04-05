@@ -221,7 +221,9 @@ class MemberController extends ApiController
         $sub_member_model = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         $sub_member_model->parent_id = $mid;
-        $sub_member_model->save();
+        if ($sub_member_model->save()) {
+            $this->errorJson('会员上级信息保存失败');
+        }
 
         $realname = \YunShop::request()->realname;
         $moible =\YunShop::request()->mobile;
@@ -230,8 +232,10 @@ class MemberController extends ApiController
 
         $member_mode->realname = $realname;
         $member_mode->mobile = $moible;
-        $member_mode->save();
+        if ($member_mode->save()) {
+            $this->errorJson('会员信息保存失败');
+        }
 
-        $this->successJson('保存成功',['status'=>1]);
+        $this->successJson('ok');
     }
 }
