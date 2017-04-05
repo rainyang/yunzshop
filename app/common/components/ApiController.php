@@ -65,7 +65,7 @@ class ApiController extends BaseController
 
         session_id($session_id);
         session_start();
-        echo '<pre>';print_r($_SESSION);exit;
+       // echo '<pre>';print_r($_SESSION);exit;
     }
 
     private function setAgent()
