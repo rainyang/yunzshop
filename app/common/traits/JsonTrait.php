@@ -40,7 +40,7 @@ trait JsonTrait
             'result' => 0,
             'msg' => $message,
             'data' => $data
-        ],200,['charset'=>'utf-8'],JSON_UNESCAPED_UNICODE)
+        ],200,['charset'=>'utf-8'])
             ->send();
         return;
     }
