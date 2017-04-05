@@ -169,7 +169,7 @@ class MemberController extends ApiController
     {
         $info = MemberRelation::getSetInfo()->first()->toArray();
 
-        if (empty(\YunShop::app()->getMemberId())) {
+        if (!\YunShop::app()->getMemberId()) {
             $uid = \YunShop::request()->uid;
         } else {
             $uid = \YunShop::app()->getMemberId();
