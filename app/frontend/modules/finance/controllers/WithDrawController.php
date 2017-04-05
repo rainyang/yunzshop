@@ -16,9 +16,10 @@ class WithDrawController extends ApiController
 {
     public function withdrawLog()
     {
-        $request = Withdraw::getWithdrawLog()->get()->toArray();
+        $status = \YunShop::request()->status;
+        $request = Withdraw::getWithdrawLog($status)->get();
         if ($request) {
-            return $this->successJson('获取数据成功!', $request);
+            return $this->successJson('获取数据成功!', $request->toArray());
         }
         return $this->errorJson('未检测到数据!');
     }
