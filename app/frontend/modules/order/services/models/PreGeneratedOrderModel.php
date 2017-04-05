@@ -141,7 +141,6 @@ class PreGeneratedOrderModel extends OrderModel
         $this->id = $orderModel->id;
         $orderGoodsModels = $this->createOrderGoods();
         $order = DB::transaction(function () use ($orderModel,$orderGoodsModels){
-
             $order = $orderModel->create();
             foreach ($orderGoodsModels as $orderGoodsModel){
                 $orderGoodsModel->order_id = $order->id;
@@ -150,8 +149,8 @@ class PreGeneratedOrderModel extends OrderModel
             }
             return $order;
         });
-        $this->order = $order;
-        event(new AfterOrderCreatedEvent($order,$this));
+        $this->order = $order->first();
+        event(new AfterOrderCreatedEvent($this->order,$this));
         return true;
     }
     /**
