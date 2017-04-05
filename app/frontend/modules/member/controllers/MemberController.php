@@ -143,9 +143,9 @@ class MemberController extends ApiController
            'switch' => $info['status'],
            'become' => $apply_qualification,
            'become1' => ['parent_name' => $parent_name],
-           'become2' => ['total' => $info['become_ordercount'], 'cost' => $cost_num],
-           'become3' => ['total' => $info['become_moneycount'], 'cost' => $cost_price],
-           'become4' =>['goods_name' => $goods_name],
+           'become2' => ['shop_name' => $account['name'], 'total' => $info['become_ordercount'], 'cost' => $cost_num],
+           'become3' => ['shop_name' => $account['name'], 'total' => $info['become_moneycount'], 'cost' => $cost_price],
+           'become4' =>['shop_name' => $account['name'], 'goods_name' => $goods_name],
            'is_agent' => $data['is_agent'],
            'status' => $data['status'],
            'account' => $account['name']
