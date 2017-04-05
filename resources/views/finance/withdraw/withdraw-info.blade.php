@@ -19,9 +19,9 @@
                     {{$item->hasOneMember->mobile}}
                 </p>
                 <p><b>分销等级:</b> {$agentLevel['levelname']} (
-                    {if $this->set['level']>=1}一级比例: <span style='color:blue'>{$agentLevel['commission1']}%</span>{/if}
-                    {if $this->set['level']>=2}二级比例: <span style='color:blue'>{$agentLevel['commission2']}%</span>{/if}
-                    {if $this->set['level']>=3}三级比例: <span style='color:blue'>{$agentLevel['commission3']}%</span>{/if}
+                    {if $this->set['level']>=1}一级比例: <span style='color:blue'>10%</span>{/if}
+                    {if $this->set['level']>=2}二级比例: <span style='color:blue'>8%</span>{/if}
+                    {if $this->set['level']>=3}三级比例: <span style='color:blue'>6%</span>{/if}
                     )</p>
                 <p>
                     <b>下级:</b> 总共 <span style='color:red'>{$member['agentcount']}</span> 人

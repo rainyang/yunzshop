@@ -57,10 +57,10 @@ class WithdrawController extends BaseController
 
     public function info()
     {
-
+        $set = Setting::get('plugin.commission');
         $id = intval(\YunShop::request()->id);
         $withdrawModel = Withdraw::getWithdrawById($id)->first();
-        if ($withdrawModel) {
+        if (!$withdrawModel) {
             return $this->message('数据不存在或已被删除!','',error);
         }
 
@@ -69,6 +69,7 @@ class WithdrawController extends BaseController
         exit;
         return view('finance.withdraw.withdraw-info', [
             'item' => $withdrawModel,
+            'set' => $set,
         ])->render();
     }
 

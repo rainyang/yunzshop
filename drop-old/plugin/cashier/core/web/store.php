@@ -140,7 +140,7 @@ if ($operation == 'display') {
         mkdirs($accountDir);
     }
     $payLink   = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=cashier&method=order_confirm&sid=' . $id.'&mid='.$item['member_id'];
-    $qrcodeImg = 'cashier_store_' . $id . '.png';
+    $qrcodeImg = "cashier_store_{$id}.png";
     $fullPath  = $accountDir . '/' . $qrcodeImg;
     if (!is_file($fullPath)) {
         require IA_ROOT . '/framework/library/qrcode/phpqrcode.php';
@@ -148,7 +148,7 @@ if ($operation == 'display') {
     }
 
     header('Content-type: image/png'); 
-    header("Content-Disposition: attachment; filename='$qrcodeImg'");
+    header("Content-Disposition: attachment; filename={$qrcodeImg}");
     readfile($fullPath);
     exit;
 } elseif ($operation == 'getmembers') {
