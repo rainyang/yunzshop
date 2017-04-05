@@ -40,7 +40,7 @@ class PreGeneratedOrderModel extends OrderModel
      * @var \app\frontend\models\Member
      */
     protected $member;
-
+    protected $order;
     /**
      * 记录添加的商品
      * PreGeneratedOrderModel constructor.
@@ -75,7 +75,9 @@ class PreGeneratedOrderModel extends OrderModel
     {
         return $this->orderGoodsModels;
     }
-
+    public function getOrder(){
+        return $this->order;
+    }
     /**
      * 添加订单商品
      * @param array $pre_order_goods_models
@@ -138,7 +140,7 @@ class PreGeneratedOrderModel extends OrderModel
         $orderModel = $this->createOrder();
         $this->id = $orderModel->id;
         $orderGoodsModels = $this->createOrderGoods();
-        DB::transaction(function () use ($orderModel,$orderGoodsModels){
+        $order = DB::transaction(function () use ($orderModel,$orderGoodsModels){
 
             $order = $orderModel->create();
             foreach ($orderGoodsModels as $orderGoodsModel){
@@ -146,8 +148,9 @@ class PreGeneratedOrderModel extends OrderModel
                 $orderGoodsModel->save();
 
             }
+            return $order;
         });
-
+        $this->order = $order;
         event(new AfterOrderCreatedEvent($this));
         return true;
     }
