@@ -202,6 +202,8 @@ class MemberOfficeAccountService extends MemberService
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
         header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With');
         header('Access-Control-Allow-Credentials: true');
+        header('location:' . $redirect_url . '?login&session_id=' . session_id() . '&uid=' . \YunShop::app()->getMemberId());
+        exit;
 //file_put_contents(storage_path('logs/red.log'), $redirect_url, FILE_APPEND);
         redirect($redirect_url . '?login&session_id=' . session_id() . '&uid=' . \YunShop::app()->getMemberId(),302,[
             'Access-Control-Allow-Origin'=>'http://localhost:8081'
