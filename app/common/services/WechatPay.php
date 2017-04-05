@@ -55,7 +55,7 @@ class WechatPay extends Pay
         $config['appId'] = $pay['weixin_appid'];
 
         $js = $app->js;
-
+echo '<pre>';print_r($config);exit;
         return ['config'=>$config, 'js'=>$js->config(array('chooseWXPay'))];
     }
 
