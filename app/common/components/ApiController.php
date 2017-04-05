@@ -33,7 +33,7 @@ class ApiController extends BaseController
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             $yz_redirect  = \YunShop::request()->yz_redirect;
             $type  = \YunShop::request()->type;
-echo 1;exit;
+
             //redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
         }
     }
@@ -49,7 +49,6 @@ echo 1;exit;
 
         if (empty($session_id) && \YunShop::request()->session_id) {
             $session_id = \YunShop::request()->session_id;
-
         }
 
         if (empty($session_id)) {
@@ -63,7 +62,7 @@ echo 1;exit;
 
         session_id($session_id);
         session_start();
-        echo '<pre>';print_r($_SESSION);exit;
+        
     }
 
     private function setAgent()
