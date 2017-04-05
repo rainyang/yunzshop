@@ -56,8 +56,8 @@ class MemberRelationController extends BaseController
 
         $relation = $relation->toArray();
 
-        $this->render('member/member_set',[
+        return view('member.relation', [
             'set' => $relation
-        ]);
+        ])->render();
     }
 }
