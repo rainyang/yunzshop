@@ -77,6 +77,7 @@ class MemberOfficeAccountService extends MemberService
                 }
 
                 if (!empty($UnionidInfo['unionid'])) {
+                    \Log::debug();
                     $types = explode('|', $UnionidInfo['type']);
                     $member_id = $UnionidInfo['member_id'];
 
@@ -107,6 +108,7 @@ class MemberOfficeAccountService extends MemberService
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
+                    \Log::debug();
                     //添加mc_members表
                     $default_groupid = McGroupsModel::getDefaultGroupId();
 
