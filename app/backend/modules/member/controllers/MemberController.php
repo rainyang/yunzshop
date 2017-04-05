@@ -76,6 +76,10 @@ class MemberController extends BaseController
 
         $member = Member::getMemberInfoById($uid);
 
+        if (!empty($member)) {
+            $member = $member->toArray();
+        }
+
         return view('member.detail', [
             'member' => $member,
             'levels' => $levels,
@@ -138,6 +142,8 @@ class MemberController extends BaseController
 
         if (empty($member)) {
             return $this->message('用户不存在', '', 'error');
+        } else {
+            $member = $member->toArray();
         }
 
         if (Member::deleteMemberInfoById($uid)) {

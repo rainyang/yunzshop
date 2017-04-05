@@ -95,13 +95,19 @@ class MemberController extends ApiController
                 if (empty($mid)) {
                     $parent_name = '总店';
                 } else {
-                    $member = MemberModel::getMemberById($mid);
+                    $parent_model = MemberModel::getMemberById($mid);
 
-                    if (!empty($parent_name)) {
-                        $member = $member->toArray();
+                    if (!empty($parent_model)) {
+                        $parent_member = $parent_model->toArray();
 
-                        $parent_name = $member['realname'];
+                        $parent_name = $parent_member['realname'];
                     }
+                }
+
+                $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
+
+                if (!empty($member_model)) {
+                    $member = $member_model->toArray();
                 }
                 break;
            case 2:
@@ -142,7 +148,7 @@ class MemberController extends ApiController
        $relation = [
            'switched' => $info['status'],
            'become' => $apply_qualification,
-           'become1' => ['shop_name' => $account['name'],'parent_name' => $parent_name],
+           'become1' => ['shop_name' => $account['name'],'parent_name' => $parent_name, 'realname' => $member['realname'], 'mobile' => $member['mobile']],
            'become2' => ['shop_name' => $account['name'], 'total' => $info['become_ordercount'], 'cost' => $cost_num],
            'become3' => ['shop_name' => $account['name'], 'total' => $info['become_moneycount'], 'cost' => $cost_price],
            'become4' =>['shop_name' => $account['name'], 'goods_name' => $goods_name, 'goods_id' => $info['become_goods_id']],
@@ -212,5 +218,20 @@ class MemberController extends ApiController
     {
         $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
 
+        $sub_member_model = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+        $sub_member_model->parent_id = $mid;
+        $sub_member_model->save();
+
+        $realname = \YunShop::request()->realname;
+        $moible =\YunShop::request()->mobile;
+
+        $member_mode = MemberModel::getMemberById(\YunShop::app()->getMemberId());
+
+        $member_mode->realname = $realname;
+        $member_mode->mobile = $moible;
+        $member_mode->save();
+
+        $this->successJson('保存成功',['status'=>1]);
     }
 }

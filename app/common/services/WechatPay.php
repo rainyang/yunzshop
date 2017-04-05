@@ -32,7 +32,7 @@ class WechatPay extends Pay
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])
             || empty($pay['weixin_appid']) || empty($pay['weixin_secret'])) {
-echo '<pre>';print_r('没有设定支付参数');exit;
+
             throw new AppException('没有设定支付参数');
         }
 
@@ -55,7 +55,7 @@ echo '<pre>';print_r('没有设定支付参数');exit;
         $config['appId'] = $pay['weixin_appid'];
 
         $js = $app->js;
-
+echo '<pre>';print_r($config);exit;
         return ['config'=>$config, 'js'=>$js->config(array('chooseWXPay'))];
     }
 
@@ -130,9 +130,9 @@ echo '<pre>';print_r('没有设定支付参数');exit;
             $openid = Member::getOpenId($order_info['uid']);
         }
 
-        if (config('app.debug')) {
-            $openid = 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y';
-        }
+//        if (config('app.debug')) {
+//            $openid = 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y';
+//        }
 
         $notify_url = Url::shopUrl('payment/wechat/withdrawUrl.php');
         $app = $this->getEasyWeChatApp($pay, $notify_url);

@@ -80,8 +80,7 @@ class Member extends \app\common\models\Member
                               ->groupBy('uid');
             }
             ])
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**
