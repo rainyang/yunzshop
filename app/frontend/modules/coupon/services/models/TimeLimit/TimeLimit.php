@@ -31,7 +31,7 @@ abstract class TimeLimit
     /**
      * @var PreGeneratedOrderGoodsModelGroup
      */
-    protected $_OrderGoodsGroup;
+    protected $orderGoodsModelGroup;
 
     public function __construct(Coupon $coupon)
     {

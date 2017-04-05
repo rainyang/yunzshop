@@ -10,6 +10,7 @@ use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\models\ShopModel;
+use Illuminate\Support\Facades\DB;
 
 /**
  * 订单生成类
@@ -63,7 +64,7 @@ class PreGeneratedOrderModel extends OrderModel
     }
     protected function setDispatch()
     {
-        $this->_OrderDispatch = DispatchService::getPreOrderDispatchModel($this);
+        $this->orderDispatch = DispatchService::getPreOrderDispatchModel($this);
     }
 
     /**
@@ -134,10 +135,18 @@ class PreGeneratedOrderModel extends OrderModel
      */
     public function generate()
     {
-        $order_model = $this->createOrder();
-        $this->id = $order_model->id;
-        $this->createOrderGoods();
-        event(new AfterOrderCreatedEvent($order_model));
+        $orderModel = $this->createOrder();
+        $this->id = $orderModel->id;
+        $orderGoodsModels = $this->createOrderGoods();
+        DB::transaction(function () use ($orderModel,$orderGoodsModels){
+            $orderModel->save();
+            foreach ($orderGoodsModels as $orderGoodsModel){
+
+                $orderGoodsModel->save();
+            }
+        });
+
+        event(new AfterOrderCreatedEvent($orderModel));
         return true;
     }
     /**
@@ -145,15 +154,17 @@ class PreGeneratedOrderModel extends OrderModel
      */
     private function createOrderGoods()
     {
+        $result = [];
         foreach ($this->_OrderGoodsModels as $preOrderGoodsModel) {
             /**
              * @var $preOrderGoodsModel PreGeneratedOrderGoodsModel
              */
-            $preOrderGoodsModel->generate($this);
+            $result[] = $preOrderGoodsModel->generate($this);
         }
+        return $result;
     }
     protected function getDispatchPrice(){
-        return $this->_OrderDispatch->getDispatchPrice();
+        return $this->orderDispatch->getDispatchPrice();
     }
     /**
      * 订单插入数据库
@@ -173,13 +184,13 @@ class PreGeneratedOrderModel extends OrderModel
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
             //配送类获取订单配送方式id
-            'dispatch_type_id'=>$this->_OrderDispatch->getDispatchTypeId(),
+            'dispatch_type_id'=>$this->orderDispatch->getDispatchTypeId(),
             'uid' => $this->member_model->uid,
             'uniacid' => $this->shop_model->uniacid,
         );
         //todo 测试
 
-        return Order::create($data);
+        return new Order($data);
     }
 
 }
