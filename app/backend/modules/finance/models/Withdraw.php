@@ -21,22 +21,9 @@ class Withdraw extends \app\common\models\Withdraw
             $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
         }]);
 
-
         return $Model;
     }
 
-    public static function getWithdrawById($id)
-    {
-        $Model = self::where('id', $id);
-        
-        $Model->with(['hasOneMember' => function ($query) {
-            $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
-        }]);
-        $Model->with(['hasOneAgent' => function ($query) {
-            $query->select('member_id', 'agent_level_id');
-        }]);
 
-        return $Model;
-    }
 
 }
