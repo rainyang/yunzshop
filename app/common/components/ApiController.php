@@ -49,7 +49,7 @@ echo 1;exit;
 
         if (empty($session_id) && \YunShop::request()->session_id) {
             $session_id = \YunShop::request()->session_id;
-            echo $session_id;exit;
+
         }
 
         if (empty($session_id)) {
@@ -63,6 +63,7 @@ echo 1;exit;
 
         session_id($session_id);
         session_start();
+        echo '<pre>';print_r($_SESSION);exit;
     }
 
     private function setAgent()
