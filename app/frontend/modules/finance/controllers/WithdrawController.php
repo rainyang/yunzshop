@@ -12,7 +12,7 @@ use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\frontend\modules\finance\models\Withdraw;
 
-class WithDrawController extends ApiController
+class WithdrawController extends ApiController
 {
     public function withdrawLog()
     {

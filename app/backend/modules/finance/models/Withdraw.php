@@ -33,7 +33,7 @@ class Withdraw extends \app\common\models\Withdraw
             $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
         }]);
         $Model->with(['hasOneAgent' => function ($query) {
-            $query->select('member_id', 'mobile', 'realname', 'nickname', 'avatar');
+            $query->select('member_id', 'agent_level_id');
         }]);
 
         return $Model;
