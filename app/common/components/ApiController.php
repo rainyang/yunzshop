@@ -69,9 +69,9 @@ echo $session_id . '<BR>';
         file_put_contents(storage_path('logs/ssid.log'), print_r(['ssid'=>$session_id, 'path'=>session_save_path('/tmp')],1), FILE_APPEND);
 
         session_id($session_id);
-file_put_contents(storage_path('logs/ss.log'), print_r($_SESSION, 1));
-        session_start();
 
+        session_start();
+        file_put_contents(storage_path('logs/ss.log'), print_r($_SESSION, 1));
 
  echo        session_id();
         file_put_contents(storage_path('logs/ssid2.log'), print_r(['ssid'=>session_id(), 'path'=>session_save_path('/tmp')],1), FILE_APPEND);

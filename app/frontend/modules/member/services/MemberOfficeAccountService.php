@@ -67,6 +67,7 @@ class MemberOfficeAccountService extends MemberService
                 ->get();
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+                file_put_contents(storage_path('logs/unid.log'), print_r($userinfo, 1));
                 \YunShop::app()->openid = $userinfo['openid'];
 
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
