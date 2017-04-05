@@ -59,6 +59,7 @@ class ApiController extends BaseController
             setcookie(session_name(), $session_id);
         }
 
+        echo $session_id;exit;
         session_id($session_id);
         session_start();
     }
