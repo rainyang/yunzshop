@@ -48,6 +48,7 @@ class WechatPay extends Pay
 
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
         } else {
+            echo '<pre>';print_r($result);exit;
             throw new AppException('微信预下单失败');
         }
 
