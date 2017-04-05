@@ -17,6 +17,8 @@ class Coupon extends BaseModel
 
     public $table = 'yz_coupon';
 
+    protected $guarded = [];
+
     protected $casts = [
         'goods_ids' => 'json',
         'categoryids' => 'json'

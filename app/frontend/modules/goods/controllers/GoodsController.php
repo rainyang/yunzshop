@@ -32,14 +32,14 @@ class GoodsController extends BaseController
         }])->with(['hasManyOptions' => function ($query) {
             return $query->select('id', 'goods_id', 'title', 'thumb', 'product_price', 'market_price', 'stock', 'specs', 'weight');
         }])
-            ->with('hasOneShare')
-            ->with('hasOneDiscount')
-            ->with('hasOneGoodsDispatch')
-            ->with('hasOnePrivilege')
-            ->with(['hasOneBrand' => function ($query) {
-                return $query->select('id', 'name');
-            }])
-            ->find($id);
+        ->with('hasOneShare')
+        ->with('hasOneDiscount')
+        ->with('hasOneGoodsDispatch')
+        ->with('hasOnePrivilege')
+        ->with(['hasOneBrand' => function ($query) {
+            return $query->select('id', 'name');
+        }])
+        ->find($id);
 
         if (!$goodsModel) {
             $this->errorJson('商品不存在.');
