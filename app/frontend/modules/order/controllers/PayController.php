@@ -48,13 +48,13 @@ class PayController extends BaseController
 
 
         //$order_id = '';
-        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        //$pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         /*$result = $pay->setyue('50');
         if($result == false){
             $this->errorJson($pay->getMessage());
         }*/
         $query_str = [
-            'order_no' => time(),
+            'order_no' => 'sn'.time(),
             'amount' => 0.1,
             'subject' => '微信支付',
             'body' => '商品的描述:2',
@@ -69,12 +69,14 @@ class PayController extends BaseController
             ->asJsonResponse(true)->post();*/
         //dd($data);exit;
 
-        if(isset($data['data']['errno'])){
+        /*if(isset($data['data']['errno'])){
             return $this->errorJson($data['data']['message']);
-        }
+        }*/
 
         //$data = $pay->doPay(['order_no' => time(), 'amount' => $Order->price, 'subject' => '微信支付', 'body' => '商品的描述:2', 'extra' => '']);
-        return $this->successJson('成功',$data['data']);
+        return $this->successJson('成功',$data);
+
+        //return view('order.pay', $data)->render();
     }
 
     public function alipay()
