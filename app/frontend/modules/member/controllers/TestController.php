@@ -8,7 +8,10 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\api\model\Good;
 use app\common\components\ApiController;
+use app\common\models\AccountWechats;
+use app\common\models\Goods;
 use app\common\services\AliPay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
@@ -92,7 +95,9 @@ exit;
 
    public function getId()
    {
-       echo \YunShop::app()->getMemberId();
+
+       $g = AccountWechats::getAccountInfoById(2);
+       echo '<pre>';print_r($g->toArray());exit;
    }
 
    public function getQR()

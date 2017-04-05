@@ -10,12 +10,14 @@ namespace app\frontend\modules\member\controllers;
 
 use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
+use app\common\models\AccountWechats;
+use app\common\models\Goods;
 use app\common\models\Order;
-use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\frontend\modules\order\models\OrderListModel;
+
 
 class MemberController extends ApiController
 {
@@ -83,30 +85,70 @@ class MemberController extends ApiController
             $data = $member_info->toArray();
         }
 
+        $account = AccountWechats::getAccountInfoById(\YunShop::app()->uniacid);
         switch ($info['become']) {
+            case 1:
+                $apply_qualification = 1;
+                $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+                $parent_name = '';
+
+                if (emtpy($mid)) {
+                    $parent_name = '总店';
+                } else {
+                    $member = MemberModel::getMemberById($mid);
+
+                    if (!empty($parent_name)) {
+                        $member = $member->toArray();
+
+                        $parent_name = $member['realname'];
+                    }
+                }
+                break;
            case 2:
-               $desc = '<p>本店累计消费满 <span>' . $info['become_ordercount'] . '</span> 次， 才可开启<公众号名称>推广中心，您已消费 <span>0</span> 次，请继续努力</p>';
+               $apply_qualification = 2;
+               $cost_num  = OrderListModel::getCostTotalNum(\YunShop::app()->getMemberId());
+
+               if ($info['become_check'] && $cost_num >= $info['become_ordercount']) {
+                   $apply_qualification = 5;
+               }
                break;
            case 3:
-               $desc = '<p>本店累计消费满 <span>' . $info['become_moneycount']. '</span>元， 才可开启<公众号名称>推广中心，您已消费 <span>0</span> 元，请继续努力</p>';
+               $apply_qualification = 3;
+               $cost_price  = OrderListModel::getCostTotalPrice(\YunShop::app()->getMemberId());
+
+               if ($info['become_check'] && $cost_price >= $info['become_moneycount']) {
+                   $apply_qualification = 6;
+               }
                break;
            case 4:
-               $desc = '';
+               $apply_qualification = 4;
+               $goods = Goods::getGoodsById($info['become_goods_id']);
+               $goods_name = '';
+
+               if (!empty($goods)) {
+                   $goods = $goods->toArray();
+
+                   $goods_name = $goods['title'];
+               }
+
+               if ($info['become_check'] && MemberRelation::checkOrderGoods($info['become_goods_id'])) {
+                   $apply_qualification = 7;
+               }
                break;
            default:
-               $desc = '';
+               $apply_qualification = 0;
        }
-
-       // TODO 消费和购买指定商品达到条件后 返回审核状态
 
        $relation = [
            'switch' => $info['status'],
-           'become' => $info['become'],
-           'become2' => ['total' => $info['become_ordercount'], 'cost' => 0],
-           'become3' => ['total' => $info['become_moneycount'], 'cost' => 0],
-           'become4' => ['desc' => '商品名'],
+           'become' => $apply_qualification,
+           'become1' => ['parent_name' => $parent_name],
+           'become2' => ['total' => $info['become_ordercount'], 'cost' => $cost_num],
+           'become3' => ['total' => $info['become_moneycount'], 'cost' => $cost_price],
+           'become4' =>['goods_name' => $goods_name],
            'is_agent' => $data['is_agent'],
            'status' => $data['status'],
+           'account' => $account['name']
        ];
 
         return $this->successJson('', $relation);
@@ -164,5 +206,11 @@ class MemberController extends ApiController
         echo QrCode::format($extend)->size(100)->generate($url, storage_path('qr/') . $filename);
 
         return $this->successJson('', ['qr' => storage_path('qr/') . $filename]);
+    }
+
+    public function addAgentApply()
+    {
+        $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+
     }
 }
