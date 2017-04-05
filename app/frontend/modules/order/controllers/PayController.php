@@ -48,7 +48,7 @@ class PayController extends BaseController
 
 
         //$order_id = '';
-        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        //$pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         /*$result = $pay->setyue('50');
         if($result == false){
             $this->errorJson($pay->getMessage());
@@ -67,7 +67,7 @@ class PayController extends BaseController
         $data = Curl::to($url)
             ->withData( $query_str )
             ->asJsonResponse(true)->post();*/
-        //dd($data);exit;
+        dd($data);exit;
 
         if(isset($data['data']['errno'])){
             return $this->errorJson($data['data']['message']);
