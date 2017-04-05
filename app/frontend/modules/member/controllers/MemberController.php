@@ -169,6 +169,7 @@ class MemberController extends ApiController
     {
         $info = MemberRelation::getSetInfo()->first()->toArray();
 if (empty(\YunShop::app()->getMemberId())) {
+    echo '<pre>';print_r($_SESSION);exit;
     return $this->errorJson('会员ID不存在');
 }
         $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
