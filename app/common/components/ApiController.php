@@ -29,11 +29,17 @@ class ApiController extends BaseController
 //        if (config('app.debug')) {
 //            return true;
 //        }
-        $this->setCookie();
-        if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
-            $yz_redirect  = \YunShop::request()->yz_redirect;
-            $type  = \YunShop::request()->type;
-            //redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
+
+
+        if (!in_array($this->action,$this->publicAction)) {
+            $this->setCookie();
+
+            if (!MemberService::isLogged()) {
+                $yz_redirect  = \YunShop::request()->yz_redirect;
+                $type  = \YunShop::request()->type;
+
+                //redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
+            }
         }
     }
 
