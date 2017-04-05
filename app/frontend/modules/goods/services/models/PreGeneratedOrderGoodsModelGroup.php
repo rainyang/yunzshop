@@ -60,7 +60,7 @@ class PreGeneratedOrderGoodsModelGroup
             /**
              * @var $OrderGoods PreGeneratedOrderGoodsModel
              */
-            $result += $OrderGoods->coupon_discount_price;
+            $result += $OrderGoods->couponDiscountPrice;
         }
         return $result;
     }

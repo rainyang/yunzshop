@@ -9,13 +9,14 @@
 
 namespace app\frontend\modules\finance\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\Income;
 use app\frontend\modules\finance\models\Withdraw;
 use Illuminate\Support\Facades\Log;
 use Yunshop\Commission\models\CommissionOrder;
 
-class IncomeController extends BaseController
+class IncomeController extends ApiController
 {
     /**
      * @return \Illuminate\Http\JsonResponse
@@ -105,7 +106,7 @@ class IncomeController extends BaseController
         }
 
         foreach ($config as $key => $item) {
-            $set[$key] = \Setting::get('income.withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
+            $set[$key] = \Setting::get('withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
             $incomeModel = $incomeModel->where('type', $key);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
@@ -118,8 +119,8 @@ class IncomeController extends BaseController
 
                 $incomeData[$key] = [
                     'type' => $item['type'],
-                    'key_name' => $item['key_name'],
-                    'type_name' => $item['title'],
+                    'key_name' => $item['title'],
+                    'type_name' => $item['type_name'],
                     'type_id' => rtrim($type_id, ','),
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
@@ -177,13 +178,13 @@ class IncomeController extends BaseController
          */
         foreach ($withdrawData as $key => $item) {
 
-            $set[$key] = \Setting::get('income.withdraw.' . $key,
+            $set[$key] = \Setting::get('withdraw.' . $key,
                 [
                     'roll_out_limit' => '100',
                     'poundage_rate' => '5'
                 ]
             );
-            $incomeModel = $incomeModel->whereIn('type_id', [$item['type_id']]);
+            $incomeModel = $incomeModel->whereIn('id', [$item['type_id']]);
             $incomes = $incomeModel->get();
             \Log::info("INCOME:");
             \Log::info($incomes);
@@ -193,7 +194,6 @@ class IncomeController extends BaseController
                 return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
             }
         }
-
         $request = static::setWithdraw($withdrawData, $withdrawTotal);
         if ($request) {
             return $this->successJson('提现成功!');

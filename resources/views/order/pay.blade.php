@@ -27,15 +27,13 @@
                         // 支付成功后的回调函数
                         if(res.errMsg == "chooseWXPay:ok" ) {
                             alert('支付成功。');
-                            window.location.href="{{yzUrl("wechat.pay_ok")}}";
                         }else{
+                            console.log(res);
                             alert("支付失败，请返回重试。");
                         }
                     },
-                    cancel:function(res){
-                        //支付取消
-                    },
                     fail: function (res) {
+                        console.log(res);
                         alert("支付失败，请返回重试。");
                     }
                 });

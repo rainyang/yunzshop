@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
+use app\backend\modules\finance\services\IncomeService;
 
 class Income extends BackendModel
 {
@@ -21,7 +22,30 @@ class Income extends BackendModel
     public $attributes = [];
 
     protected $guarded = [];
+    
+    public $StatusService;
+    
+    protected $appends = ['status_name'];
 
+    /**
+     * @return mixed
+     */
+    public function getStatusService()
+    {
+        if (!isset($this->StatusService)) {
+
+            $this->StatusService = IncomeService::createStatusService($this);
+        }
+        return $this->StatusService;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusNameAttribute()
+    {
+        return $this->getStatusService();
+    }
     /**
      * @param $id
      * @return mixed
@@ -73,14 +97,10 @@ class Income extends BackendModel
 
     public static function updatedWithdraw($type, $typeId, $status)
     {
-//        var_dump($type);
-//        echo "--";
-//        var_dump($typeId);exit;
         return self::where('type', 'commission')
             ->where('member_id', \YunShop::app()->getMemberId())
-            ->whereIn('type_id', ['2'])
+            ->whereIn('id', explode(',',$typeId))
             ->update(['status' => $status]);
-//        ->get();
     }
 
     public function hasManyIncome()

@@ -14,11 +14,11 @@ abstract class OrderGoodsModel
     /**
      * @var \app\frontend\modules\dispatch\services\models\GoodsDispatch 的实例
      */
-    protected $_GoodsDispatch;
+    protected $goodsDispatch;
     /**
      * @var \app\frontend\modules\discount\services\models\GoodsDiscount 的实例
      */
-    protected $_GoodsDiscount;
+    protected $goodsDiscount;
     protected $total;
 
     public function __construct()
@@ -42,7 +42,7 @@ abstract class OrderGoodsModel
     {
         //成交价格=商品销售价-优惠价格
 
-        $result = max($this->getVipPrice() - $this->getCouponPrice(),0);
+        $result = max($this->getVipPrice() - $this->getDiscountPrice(),0);
         return $result;
     }
 
@@ -51,15 +51,10 @@ abstract class OrderGoodsModel
      * @return int
      */
     abstract function getGoodsPrice();
-    abstract function getCouponPrice();
     /**
      * 计算商品优惠价格
      * @return number
      */
-    protected function getDiscountPrice()
-    {
-        return $this->getCouponPrice();
-
-    }
+    abstract protected function getDiscountPrice();
     abstract public function getGoodsId();
 }

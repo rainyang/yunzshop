@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\goods\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\models\Category;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\DB;
  * Date: 2017/3/3
  * Time: 22:16
  */
-class GoodsController extends BaseController
+class GoodsController extends ApiController
 {
     public function getGoods()
     {

@@ -3,6 +3,7 @@ namespace app\common\components\alipay\Web;
 
 use app\common\events\PayLog;
 use app\common\facades\Setting;
+use app\common\helpers\Url;
 use app\common\services\alipay\WebAlipay;
 
 class SdkPayment
@@ -87,7 +88,7 @@ class SdkPayment
 			'qr_pay_mode' => $this->qr_pay_mode
 		);
         //请求数据日志
-       // event(new PayLog($parameter, new WebAlipay()));
+        event(new PayLog($parameter, new WebAlipay()));
 
 		$para = $this->buildRequestPara($parameter);
 
@@ -552,7 +553,7 @@ class SdkPayment
 	public function refund($out_refund_no)
     {
         $service = 'refund_fastpay_by_platform_pwd';
-        $notify_url = SZ_YI_ALIPAY_REFUNDNOTIFY_URL;
+        $notify_url = Url::shopUrl('payment/alipay/refundNotifyUrl.php');
 
         $parameter = array(
             'service' => $service,
@@ -586,7 +587,7 @@ class SdkPayment
         $pay = Setting::get('shop.pay');
 
         $batch_no = $out_trade_no;
-        $notify_url = SZ_YI_ALIPAY_WITHDRAWNOTIFY_URL;
+        $notify_url = Url::shopUrl('payment/alipay/withdrawNotifyUrl.php');
 
         $parameter = array(
             'service' => $service,

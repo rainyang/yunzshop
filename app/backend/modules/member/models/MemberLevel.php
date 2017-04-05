@@ -9,6 +9,8 @@
 namespace app\backend\modules\member\models;
 
 
+use app\common\frame\Rule;
+
 class MemberLevel extends \app\common\models\MemberLevel
 {
     /****************************       需要考虑。注意！！！      *******************
@@ -20,12 +22,16 @@ class MemberLevel extends \app\common\models\MemberLevel
      *****************************************************************************/
 
 
-
-
-    //public $timestamps = false;
     public $guarded = [''];
 
-    /****************************       对外接口       ****************************/
+    /**
+     * Get membership list
+     *
+     * @return */
+    public static function getMemberLevelList()
+    {
+        return static::uniacid()->get()->toArray();
+    }
 
 
     /**
@@ -34,8 +40,7 @@ class MemberLevel extends \app\common\models\MemberLevel
      * @access public
      * @param int $levelId 等级id
      *
-     * @return mixed
-     **/
+     * @return mixed */
     public static function getMemberLevelNameById($levelId)
     {
         $level = MemberLevel::when($levelId, function ($query) use ($levelId) {
@@ -45,55 +50,67 @@ class MemberLevel extends \app\common\models\MemberLevel
         return $level ? $level : '';
     }
 
-    /**
-     * 触发会员升级系统【下单触发】
-     * @Author::yitian 2017-02-27 qq:751818588
-     * @access public
-     * @param mixed $goodsId 订单商品ID
-     * @param int $orderMoney 完成订单总金额
-     * @param int $discount 完成点总数量
-     * @return
-     **/
-    public static function upgradeMemberLevel($goodsId, $orderMoney, $discount)
+    /*
+     * 获取等级分页列表
+     *
+     * @param int $pageSize
+     *
+     * @return object */
+    public static function getLevelPageList($pageSize)
     {
-        echo 1;exit;
-        //待完善中
-        //商品id可能是数组，需要判断
+        //todo 需要关联商品去title值
+        return static::uniacid()
+            ->with(['goods' => function($query) {
+                return $query->select('id','title');
+            }])
+            ->orderBy('level')
+            ->paginate($pageSize);
     }
-
-
-    /****************************       后台数据操作       ****************************/
 
     /**
      * Get rank information by level ID
      *
      * @param int $levelId
      *
-     * @return array
-     **/
+     * @return object */
     public static function getMemberLevelById($levelId)
     {
         return static::where('id', $levelId)->first();
     }
+
     /**
-     * Get membership list
+     * 定义字段名
      *
-     * @return
-     **/
-    public static function getMemberLevelList()
-    {
-        return static::uniacid()->get()->toArray();
+     * @return array */
+    public  function atributeNames() {
+        return [
+            //'level'         => '等级权重不能为空且为唯一整数',
+            'level_name'    => '等级名称不能为空',
+            'discount'      => '请输入正确的折扣',
+            'order_money'   => '请输入正确的订单金额',
+            'order_count'   => '订单数量只能是整数'
+        ];
     }
+
     /**
-     * Delete member level by level ID
+     * 字段规则
      *
-     * @param int $levelId
-     *
-     * @return
-     **/
-    public static function deleteMemberLevel($levelId)
+     * @return array */
+    public  function rules()
     {
-        return  static::where('id', $levelId)->delete();
+        return [
+            //'level'      => ['required',\Illuminate\Validation\Rule::unique($this->table)->ignore($this->id),'integer'],
+            'level_name' => 'required',
+            'discount'   => 'numeric',
+            'order_money'=> 'numeric',
+            'order_count'=> 'integer|numeric'
+        ];
+    }
+
+    //模型关联 关联商品
+    public function goods()
+    {
+        return $this->hasOne('app\common\models\Goods', 'id', 'goods_id');
     }
 
 }

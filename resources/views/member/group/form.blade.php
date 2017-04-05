@@ -5,8 +5,7 @@
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">
             <ul class="add-snav">
-                <li class="active"><a href="#">会员管理</a></li>
-                <li><a href="#">分组设置</a></li>
+                <li><a href="#">会员分组设置</a></li>
             </ul>
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->

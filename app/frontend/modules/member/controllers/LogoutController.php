@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
 
+use app\common\services\Session;
 use Illuminate\Support\Facades\Cookie;
 
 class LogoutController extends BaseController
@@ -21,8 +22,8 @@ class LogoutController extends BaseController
         Cookie::unqueue($cookieid);
         Cookie::unqueue('member_mobile');
 
-        session()->forget('member_id');
-
+        Session::clear(member_id);
+        
         $this->successJson();
     }
 }

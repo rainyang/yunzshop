@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\setting\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
 
@@ -10,7 +11,7 @@ use app\common\facades\Setting;
  * Date: 2017/3/25
  * Time: 上午11:57
  */
-class SettingController extends BaseController
+class SettingController extends ApiController
 {
     /**
      * 商城设置接口

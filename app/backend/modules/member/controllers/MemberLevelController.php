@@ -12,6 +12,7 @@ namespace app\backend\modules\member\controllers;
 use app\backend\modules\member\models\MemberLevel;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
+use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 
 class MemberLevelController extends BaseController
@@ -24,18 +25,29 @@ class MemberLevelController extends BaseController
         $this->shopset = Setting::get('shop');
     }
 
+    /*
+     * Member level pager list
+     * 17.3,31 restructure
+     *
+     * @autor yitian */
     public function index()
     {
-        $level_list = MemberLevel::getMemberLevelList();
+        $pageSize = 5;
+        $levelList = MemberLevel::getLevelPageList($pageSize);
+        $pager = PaginationHelper::show($levelList->total(), $levelList->currentPage(), $levelList->perPage());
 
-        $this->render('member/level', [
-            'level_list' => $level_list,
-            'shopset' => $this->shopset
-        ]);
+        return view('member.level.list', [
+            'levelList' => $levelList,
+            'pager' => $pager,
+            'shopSet' => Setting::get('shop.member')
+        ])->render();
+
     }
-    /**
+
+    /*
      * Add member level
-     */
+     *
+     * @autor yitian */
     public function store()
     {
         $levelModel = new memberLevel();
@@ -61,10 +73,11 @@ class MemberLevelController extends BaseController
                 }
             }
         }
-        $this->render('member/edit_level', [
+
+        return view('member.level.form', [
             'level' => $levelModel,
-            'shopset' => $this->shopset
-        ]);
+            'shopSet' => Setting::get('shop.member')
+        ])->render();
     }
     /**
      * Modify membership level
@@ -95,21 +108,23 @@ class MemberLevelController extends BaseController
             'shopset'   => $this->shopset
         ]);
     }
-    /**
+    /*
      * Delete membership
-     */
+     *
+     * @author yitain */
     public function destroy()
     {
-        $level = MemberLevel::getMemberLevelById(\YunShop::request()->id);
-        if(!$level) {
-            return $this->message('无此品牌或已经删除','','error');
+        $levelModel = MemberLevel::getMemberLevelById(\YunShop::request()->id);
+        if(!$levelModel) {
+            return $this->message('未找到记录或已删除','','error');
         }
-
-        $result = MemberLevel::deleteMemberLevel(\YunShop::request()->id);
-        if($result) {
-            return $this->message('删除品牌成功',Url::absoluteWeb('member.member-level.index'));
+        if($levelModel->delete()) {
+            return $this->message('删等级成功',Url::absoluteWeb('member.member-level.index'));
         }else{
-            return $this->message('删除品牌失败','','error');
+            return $this->message('删除等级失败','','error');
         }
     }
+
+
+
 }

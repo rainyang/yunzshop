@@ -3,6 +3,7 @@
 use Illuminate\Support\Str;
 use app\common\services\PermissionService;
 use app\common\models\Menu;
+use app\common\services\Session;
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
@@ -399,16 +400,15 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        if (!empty($_SESSION['member_id'])) {
-            return $_SESSION['member_id'];
-        } else {
-            if (config('app.debug')) {
-                return 9;
-            }
-            return 0;
+        if (config('app.debug')) {
+            return 146;
         }
 
-        //return session('member_id', 9);
+        if (Session::get('member_id')) {
+            return Session::get('member_id');
+        } else {
+            return 0;
+        }
     }
 
 

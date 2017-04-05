@@ -43,7 +43,7 @@ class MemberGroup extends \app\common\models\MemberGroup
      * @param int $groupId
      *
      * @return array */
-    public static function getMemberGroupByGroupID($groupId)
+    public static function getMemberGroupByGroupId($groupId)
     {
         return  MemberGroup::where('id', $groupId)->first();
     }
@@ -52,8 +52,7 @@ class MemberGroup extends \app\common\models\MemberGroup
      *
      * @param int $uniacid
      *
-     * @return array
-     **/
+     * @return array */
     public static function getMemberGroupList()
     {
         $memberGroup = MemberGroup::select('id', 'group_name', 'uniacid')
@@ -64,7 +63,6 @@ class MemberGroup extends \app\common\models\MemberGroup
             ->get()
             ->toArray();
         return $memberGroup;
-        //return  MemberGroup::where('uniacid', $uniacid)->get()->toArray();
     }
 
     /**

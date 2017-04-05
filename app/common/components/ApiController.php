@@ -26,6 +26,9 @@ class ApiController extends BaseController
     {
         parent::preAction();
 
+        if (config('app.debug')) {
+            return true;
+        }
         $this->setCookie();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             $yz_redirect  = \YunShop::request()->yz_redirect;
@@ -33,6 +36,8 @@ class ApiController extends BaseController
 
             redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
         }
+
+
     }
 
 
@@ -45,8 +50,8 @@ class ApiController extends BaseController
             unset($pieces);
         }
 
-        if (empty($session_id) && isset(\YunShop::request()->sessoin_id)) {
-            $session_id = \YunShop::request()->sessoin_id;
+        if (empty($session_id) && \YunShop::request()->session_id) {
+            $session_id = \YunShop::request()->session_id;
         }
 
         if (empty($session_id)) {
@@ -60,5 +65,10 @@ class ApiController extends BaseController
 
         session_id($session_id);
         session_start();
+    }
+
+    private function setAgent()
+    {
+
     }
 }

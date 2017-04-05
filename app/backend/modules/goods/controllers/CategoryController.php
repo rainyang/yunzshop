@@ -44,7 +44,6 @@ class CategoryController extends BaseController
      */
     public function addCategory()
     {
-        ca('shop.category.add');
 
         $level = \YunShop::request()->level ? \YunShop::request()->level : '1';
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
@@ -91,7 +90,6 @@ class CategoryController extends BaseController
      */
     public function editCategory()
     {
-        ca('shop.category.edit');
         $categoryModel = Category::getCategory(\YunShop::request()->id);
         if(!$categoryModel){
             return $this->message('无此记录或已被删除','','error');
@@ -100,9 +98,9 @@ class CategoryController extends BaseController
         $requestCategory = \YunShop::request()->category;
         if($requestCategory) {
             //将数据赋值到model
-            $categoryModel->setRawAttributes($requestCategory);
+            $categoryModel->fill($requestCategory);
             //字段检测
-            $validator = $categoryModel->validator($categoryModel->getAttributes());
+            $validator = $categoryModel->validator();
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {

@@ -9,6 +9,8 @@
 namespace app\common\models;
 
 
+use app\common\models\order\Pay;
+use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\status\StatusServiceFactory;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
@@ -82,6 +84,12 @@ class Order extends BaseModel
         return $this->hasOne('\app\common\models\PayType', 'id', 'pay_type_id');
     }
 
+    //订单支付信息
+    public function hasOneOrderPay()
+    {
+        return $this->hasOne(Pay::class, 'order_id', 'id');
+    }
+
     //订单快递
     public function hasOneOrderExpress()
     {
@@ -150,6 +158,6 @@ class Order extends BaseModel
     public static function getOrderInfoByMemberId($member_id)
     {
         return self::uniacid()
-                   ->where('member_id', $member_id);
+                   ->where('uid', $member_id);
     }
 }

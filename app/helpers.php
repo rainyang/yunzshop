@@ -5,6 +5,194 @@ use Illuminate\Support\Arr;
 use app\common\services\PermissionService;
 use app\common\helpers\Url;
 
+if (!function_exists("xml_to_array")) {
+    function xml_to_array($xml)
+    {
+        $reg = "/<(\w+)[^>]*>([\\x00-\\xFF]*)<\\/\\1>/";
+        if (preg_match_all($reg, $xml, $matches)) {
+            $count = count($matches[0]);
+            for ($i = 0; $i < $count; $i++) {
+                $subxml = $matches[2][$i];
+                $key = $matches[1][$i];
+                if (preg_match($reg, $subxml)) {
+                    $arr[$key] = xml_to_array($subxml);
+                } else {
+                    $arr[$key] = $subxml;
+                }
+            }
+        }
+        return $arr;
+    }
+}
+if (!function_exists("set_medias")) {
+    function set_medias($list = array(), $fields = null)
+    {
+        if (empty($fields)) {
+            foreach ($list as &$row) {
+                $row = tomedia($row);
+            }
+            return $list;
+        }
+        if (!is_array($fields)) {
+            $fields = explode(',', $fields);
+        }
+        if (is_array2($list)) {
+            foreach ($list as $key => &$value) {
+                foreach ($fields as $field) {
+                    if (isset($list[$field])) {
+                        $list[$field] = tomedia($list[$field]);
+                    }
+                    if (is_array($value) && isset($value[$field])) {
+                        $value[$field] = tomedia($value[$field]);
+                    }
+                }
+            }
+            return $list;
+        } else {
+            foreach ($fields as $field) {
+                if (isset($list[$field])) {
+                    $list[$field] = tomedia($list[$field]);
+                }
+            }
+            return $list;
+        }
+    }
+}
+
+if (!function_exists("show_json")) {
+    function show_json($status = 1, $return = null, $variable = null)
+    {
+        $ret = array(
+            'status' => $status
+        );
+        if ($return) {
+            $ret['result'] = $return;
+        }
+
+        if (Yunshop::isApi()) {
+            return array(
+                'status' => $status,
+                'variable' => $variable,
+                'json' => $return,
+            );
+        }
+        die(json_encode($ret));
+    }
+}
+if (!function_exists("array_column")) {
+
+    function array_column($input = null, $columnKey = null, $indexKey = null)
+    {
+        // Using func_get_args() in order to check for proper number of
+        // parameters and trigger errors exactly as the built-in array_column()
+        // does in PHP 5.5.
+        $argc = func_num_args();
+        $params = func_get_args();
+        if ($argc < 2) {
+            trigger_error("array_column() expects at least 2 parameters, {$argc} given", E_USER_WARNING);
+            return null;
+        }
+        if (!is_array($params[0])) {
+            trigger_error(
+                'array_column() expects parameter 1 to be array, ' . gettype($params[0]) . ' given',
+                E_USER_WARNING
+            );
+            return null;
+        }
+        if (!is_int($params[1])
+            && !is_float($params[1])
+            && !is_string($params[1])
+            && $params[1] !== null
+            && !(is_object($params[1]) && method_exists($params[1], '__toString'))
+        ) {
+            trigger_error('array_column(): The column key should be either a string or an integer', E_USER_WARNING);
+            return false;
+        }
+        if (isset($params[2])
+            && !is_int($params[2])
+            && !is_float($params[2])
+            && !is_string($params[2])
+            && !(is_object($params[2]) && method_exists($params[2], '__toString'))
+        ) {
+            trigger_error('array_column(): The index key should be either a string or an integer', E_USER_WARNING);
+            return false;
+        }
+        $paramsInput = $params[0];
+        $paramsColumnKey = ($params[1] !== null) ? (string)$params[1] : null;
+        $paramsIndexKey = null;
+        if (isset($params[2])) {
+            if (is_float($params[2]) || is_int($params[2])) {
+                $paramsIndexKey = (int)$params[2];
+            } else {
+                $paramsIndexKey = (string)$params[2];
+            }
+        }
+        $resultArray = array();
+        foreach ($paramsInput as $row) {
+            $key = $value = null;
+            $keySet = $valueSet = false;
+            if ($paramsIndexKey !== null && array_key_exists($paramsIndexKey, $row)) {
+                $keySet = true;
+                $key = (string)$row[$paramsIndexKey];
+            }
+            if ($paramsColumnKey === null) {
+                $valueSet = true;
+                $value = $row;
+            } elseif (is_array($row) && array_key_exists($paramsColumnKey, $row)) {
+                $valueSet = true;
+                $value = $row[$paramsColumnKey];
+            }
+            if ($valueSet) {
+                if ($keySet) {
+                    $resultArray[$key] = $value;
+                } else {
+                    $resultArray[] = $value;
+                }
+            }
+        }
+        return $resultArray;
+    }
+}
+
+if (!function_exists('shop_template_compile')) {
+    function shop_template_compile($from, $to, $inmodule = false)
+    {
+        $path = dirname($to);
+        if (!is_dir($path)) {
+            load()->func('file');
+            mkdirs($path);
+        }
+        $content = shop_template_parse(file_get_contents($from), $inmodule);
+
+        file_put_contents($to, $content);
+    }
+}
+
+if (!function_exists('shop_template_parse')) {
+    function shop_template_parse($str, $inmodule = false)
+    {
+        $str = template_parse($str, $inmodule);
+        $str = preg_replace('/{ifp\s+(.+?)}/', '<?php if(cv($1)) { ?>', $str);
+        $str = preg_replace('/{ifpp\s+(.+?)}/', '<?php if(cp($1)) { ?>', $str);
+        $str = preg_replace('/{ife\s+(\S+)\s+(\S+)}/', '<?php if( ce($1 ,$2) ) { ?>', $str);
+        return $str;
+    }
+}
+if (!function_exists('objectArray')) {
+    function objectArray($array)
+    {
+        if (is_object($array)) {
+            $array = (array)$array;
+        }
+        if (is_array($array)) {
+            foreach ($array as $key => $value) {
+                $array[$key] = objectArray($value);
+            }
+        }
+        return $array;
+    }
+}
+
 
 if (!function_exists('my_link_extra')) {
 
@@ -17,7 +205,8 @@ if (!function_exists('my_link_extra')) {
 
         Event::fire(new app\common\events\RenderingMyLink($extraContents));
 
-        return $type == 'content' ? $content . implode("\n", $extraContents) : implode("\n", array_keys($extraContents));
+        return $type == 'content' ? $content . implode("\n", $extraContents) : implode("\n",
+            array_keys($extraContents));
     }
 }
 
@@ -66,6 +255,12 @@ if (!function_exists('yzAppUrl')) {
     }
 }
 
+if (!function_exists('yzApiUrl')) {
+    function yzApiUrl($route, $params = [])
+    {
+        return Url::api($route, $params);
+    }
+}
 
 if (!function_exists('yzWebFullUrl')) {
     function yzWebFullUrl($route, $params = [])
@@ -329,5 +524,21 @@ if (!function_exists('float_equal')) {
     function float_equal($number, $other_number)
     {
         return bccomp($number, $other_number) === 0;
+    }
+
+}
+
+  /*
+   * 生成一个随机订单号：如果需要唯一性，请自己验证重复调用
+   *
+   * @params string $prefix 标示 SN RV
+   * @params bool $numeric 是否为纯数字
+   *
+   * @return mixed
+   * @Author yitian */
+if (!function_exists('createNo')) {
+    function createNo($prefix, $numeric = FALSE)
+    {
+        return $prefix . date('YmdHis') . \app\common\helpers\Client::random(6, $numeric);
     }
 }

@@ -328,5 +328,10 @@
                 $(this).next('input').attr('placeholder',$(this).find(':selected').text().trim())
             });
         })
+        $('#export').click(function () {
+            $('#form_p').val("order.list.export");
+            $('#form1').submit();
+            $('#form_p').val("order.list");
+        });
     </script>
 @endsection('content')
