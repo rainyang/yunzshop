@@ -26,21 +26,23 @@ class TestController extends BaseController
 {
     public function index()
     {
-        $builder = MemberCoupon::getMemberCoupon(
-            $this->order->getMemberModel(),
-            ['coupon' => ['back_type' => $this->back_type]]
-        );
-        return $builder->get();
 
-        //dd($this->test());exit;
-        //$result = OrderService::orderCancelPay(Order::find(1));
-        //dump($result);
-        //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
+        Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
         /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));
         Event::fire(new AfterOrderCancelSentEvent(Order::find(1)));
         Event::fire(new AfterOrderPaidEvent(Order::find(1)));
         Event::fire(new AfterOrderReceivedEvent(Order::find(1)));
         Event::fire(new AfterOrderSentEvent(Order::find(1)));*/
+        //$event->addMap('supplier',[1,2]);
+        //$event->addMap('store',[3]);
+
+        //controller
+        //[1,2,3,4]
+
+        //$result = $event->getData();
+        //[1,2],[3]
+        //$result += $this->getShopCart($result);
+        //'shop'=>差集数组
 
     }
 

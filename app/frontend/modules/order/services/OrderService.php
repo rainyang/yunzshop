@@ -67,8 +67,7 @@ class OrderService
 
     /**
      * 获取订单号
-     * @param GoodsModel $goods_model
-     * @return \app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel
+     * @return string
      */
     public static function createOrderSN(){
         return 'sn'.time();//m('common')->createNO('order', 'ordersn', 'SH');

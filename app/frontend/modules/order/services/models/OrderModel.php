@@ -22,7 +22,7 @@ abstract class OrderModel
     /**
      * @var \app\frontend\modules\dispatch\services\models\OrderDispatch 运费类实例
      */
-    protected $_OrderDispatch;
+    protected $orderDispatch;
     /**
      * @var OrderDiscount 优惠类实例
      */
@@ -79,7 +79,7 @@ abstract class OrderModel
      */
     protected function getDispatchPrice()
     {
-        return $this->_OrderDispatch->getDispatchPrice();
+        return $this->orderDispatch->getDispatchPrice();
     }
 
     /**

@@ -152,7 +152,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
                 'goods_option_title' => $this->goodsOption->title,
             ];
         }
-        return OrderGoods::create($data);
+        return new OrderGoods($data);
     }
 
     protected function getDiscountPrice()
@@ -164,6 +164,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
     public function getVipPrice()
     {
         if (isset($this->goodsOption)) {
+
             return $this->goodsOption->product_price * $this->getTotal();
         }
         return $this->goods->vip_price * $this->getTotal();
