@@ -40,7 +40,7 @@ class MemberOfficeAccountService extends MemberService
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         $state = 'yz-' . session_id();
-        echo $state;exit;
+        
         if (!Session::get('member_id')) {
             $authurl = $this->_getAuthUrl($appId, $callback, $state);
         } else {
