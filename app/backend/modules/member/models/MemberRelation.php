@@ -33,8 +33,6 @@ class MemberRelation extends BackendModel
      */
     public $guarded = [];
 
-
-
     /**
      * 获取会员关系链数据
      *
@@ -50,31 +48,30 @@ class MemberRelation extends BackendModel
      *
      * @return bool
      */
-    public static function checkAgent()
+    public static function checkAgent($uid)
     {
         $info = self::getSetInfo()->first()->toArray();
 
-        $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId())->first();
+        $member_info = SubMemberModel::getMemberShopInfo($uid)->first();
 
         if (!empty($member_info)) {
            $data = $member_info->toArray();
         }
 
         if ($data['is_agent'] == 0) {
-
             switch ($info['become']) {
                 case 0:
                     $isAgent = true;
                     break;
                 case 2:
-                    $cost_num = OrderListModel::getCostTotalNum(\YunShop::app()->getMemberId());
+                    $cost_num = OrderListModel::getCostTotalNum($uid);
 
                     if ($cost_num >= $info['become_ordercount']) {
                         $isAgent = true;
                     }
                     break;
                 case 3:
-                    $cost_price = OrderListModel::getCostTotalPrice(\YunShop::app()->getMemberId());
+                    $cost_price = OrderListModel::getCostTotalPrice($uid);
 
                     if ($cost_price >= $info['become_moneycount']) {
                         $isAgent = true;
@@ -144,4 +141,60 @@ class MemberRelation extends BackendModel
 
         return false;
     }
+
+    public function createChildAgent($mid, MemberShopInfo $user)
+    {
+        $child_info = $this->getChildAgentInfo();
+
+        if ($child_info != -1) {
+            switch ($child_info) {
+                case 0:
+                    $this->becomeChildAgentByShare($mid, $user);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                default:
+            }
+        }
+    }
+
+    /**
+     * 获取成为下线条件
+     *
+     * @return int
+     */
+    public function getChildAgentInfo()
+    {
+        $info = self::getSetInfo()->first();
+
+        if (!empty($info)) {
+            $data = $info->toArray();
+
+            if ($info['become_child']) {
+                return $info['become_child'];
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * 首次分享链接成为下线
+     *
+     * @param $mid
+     * @param MemberShopInfo $user
+     */
+    private function becomeChildAgentByShare($mid, MemberShopInfo $user)
+    {
+        $member_info = SubMemberModel::getMemberShopInfo($mid)->first();
+
+        if ($member_info && $member_info->is_agent) {
+            $user->parent_id = $mid;
+            $user->save();
+        }
+    }
+
+
 }
