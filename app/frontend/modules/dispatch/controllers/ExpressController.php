@@ -35,6 +35,8 @@ class ExpressController extends ApiController
         $data['company_name'] = $order->express->express_company_name;
         $data['data'] = $express['data'];
         $data['thumb'] = $order->hasManyOrderGoods[0]->thumb;
+        $data['tel'] = '95533';
+        $data['status_name'] = $this->expressStatusName($express['state']);
         $this->successJson('成功', $data);
     }
 
@@ -47,7 +49,6 @@ class ExpressController extends ApiController
         if (empty($result)) {
             return array();
         }
-        $result['status_name'] = $this->expressStatusName($result['state']);
         return $result;
     }
 
