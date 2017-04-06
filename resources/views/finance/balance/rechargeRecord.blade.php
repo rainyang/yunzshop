@@ -10,92 +10,7 @@
                     <input type="hidden" name="c" value="site"/>
                     <input type="hidden" name="a" value="entry"/>
                     <input type="hidden" name="m" value="sz_yi"/>
-                    <div class="form-group">
-                        <div class="col-sm-8 col-lg-12 col-xs-12">
-                            @section('search_bar')
-                                <div class='input-group'>
-                                    <select name="search[ambiguous][field]" id="ambiguous-field" class="form-control">
-                                        <option value="order"
-                                                @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
-                                            订单号/支付号
-                                        </option>
-                                        <option value="member"
-                                                @if( array_get($requestSearch,'ambiguous.field','')=='member')  selected="selected"@endif>
-                                            用户姓名/ID/昵称/手机号
-                                        </option>
-                                        <option value="order_goods"
-                                                @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
-                                            商品名称/ID
-                                        </option>
-                                        <option value="dispatch"
-                                                @if( array_get($requestSearch,'ambiguous.field','')=='dispatch')  selected="selected"@endif>
-                                            快递单号
-                                        </option>
-                                    </select>
-                                    <input class="form-control" name="search[ambiguous][string]" type="text"
-                                           value="{{array_get($requestSearch,'ambiguous.string','')}}"
-                                           placeholder="订单号/支付单号">
-                                </div>
-                                <div class='input-group'>
 
-                                    <select name="search[pay_type]" class="form-control">
-                                        <option value=""
-                                                @if( array_get($requestSearch,'pay_type',''))  selected="selected"@endif>
-                                            支付方式
-                                        </option>
-                                        <option value="1"
-                                                @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
-                                            在线支付
-                                        </option>
-                                        <option value="2"
-                                                @if( array_get($requestSearch,'pay_type','') == '2')  selected="selected"@endif>
-                                            货到付款
-                                        </option>
-                                        <option value="3"
-                                                @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
-                                            余额支付
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class='input-group'>
-
-                                    <select name="search[time_range][field]" class="form-control">
-                                        <option value=""
-                                                @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
-                                            操作时间
-                                        </option>
-                                        <option value="create_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='create_time')  selected="selected"@endif >
-                                            下单
-                                        </option>
-                                        <option value="pay_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='pay_time')  selected="selected"@endif>
-                                            付款
-                                        </option>
-                                        <option value="send_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='send_time')  selected="selected"@endif>
-                                            发货
-                                        </option>
-                                        <option value="finish_time"
-                                                @if( array_get($requestSearch,'time_range.field','')=='finish_time')  selected="selected"@endif>
-                                            完成
-                                        </option>
-                                    </select>
-                                    {!! tpl_form_field_daterange(
-                                        'search[time_range]',
-                                        array(
-                                            'starttime'=>array_get($requestSearch,'time_range.start',0),
-                                            'endtime'=>array_get($requestSearch,'time_range.end',0),
-                                            'start'=>0,
-                                            'end'=>0
-                                        ),
-                                        true
-                                        )!!}
-
-                                </div>
-                            @show
-                        </div>
-                    </div>
                     <div class="form-group">
                         <div class="col-sm-8 col-lg-12 col-xs-12">
                             <div class='input-group'>
@@ -120,6 +35,22 @@
                                 </select>
 
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">价格区间</label>
+                        <div class="col-xs-6 col-sm-4 col-lg-4">
+                            {!! tpl_form_field_daterange(
+                                'search[time_range]',
+                                array(
+                                    'starttime'=>array_get($requestSearch,'time_range.start',0),
+                                    'endtime'=>array_get($requestSearch,'time_range.end',0),
+                                    'start'=>0,
+                                    'end'=>0
+                                ),
+                                true
+                            )!!}
                         </div>
                     </div>
 
