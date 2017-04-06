@@ -29,10 +29,13 @@ class MemberCartService
 
         return MemberCart::destroyMemberCart($ids);
     }
-    public function newMemberCart($params){
+    public static function newMemberCart($params){
         $cart = new MemberCart($params);
         if(!isset($cart->goods)){
-            throw new AppException('未找到商品或已经删除');
+            throw new AppException('(ID:'.$cart->goods_id.')未找到商品或已经删除');
+        }
+        if($cart->total > $cart->goods->stock){
+            throw new AppException($cart->goods->title.':库存不足');
         }
         return $cart;
     }

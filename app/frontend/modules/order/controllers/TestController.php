@@ -10,6 +10,7 @@ use app\common\events\order\AfterOrderSentEvent;
 use app\common\events\order\BeforeOrderCancelPayEvent;
 use app\common\models\MemberCoupon;
 use app\common\models\Order;
+use app\frontend\models\Member;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
@@ -26,8 +27,9 @@ class TestController extends BaseController
 {
     public function index()
     {
-
-        Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
+        dd(MemberService::getCurrentMemberModel()->defaultAddress);
+        exit;
+        //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
         /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));
         Event::fire(new AfterOrderCancelSentEvent(Order::find(1)));
         Event::fire(new AfterOrderPaidEvent(Order::find(1)));
