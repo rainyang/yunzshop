@@ -10,6 +10,7 @@
 namespace app\frontend\modules\goods\controllers;
 
 use app\common\components\ApiController;
+use app\common\models\Goods;
 use app\common\models\Member;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
@@ -78,6 +79,7 @@ class CommentController extends ApiController
         } else {
             //数据保存
             if ($commentModel->save()) {
+                Goods::updatedComment($commentModel->goods_id);
                 //显示信息并跳转
                 return $this->successJson('评论成功!');
             }else{

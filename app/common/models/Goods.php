@@ -10,6 +10,7 @@ namespace app\common\models;
 
 use app\frontend\modules\discount\services\models\GoodsDiscount;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Goods extends BaseModel
 {
@@ -35,31 +36,34 @@ class Goods extends BaseModel
     /**
      * 定义字段名
      *
-     * @return array */
-    public  function atributeNames() {
+     * @return array
+     */
+    public function atributeNames()
+    {
         return [
-            'title'    => '商品名称',
-            'price'  => '价格',
-            'cost_price'  => '成本价',
-            'sku'  => '商品单位',
-            'thumb'  => '图片',
-            'stock'  => '库存',
+            'title' => '商品名称',
+            'price' => '价格',
+            'cost_price' => '成本价',
+            'sku' => '商品单位',
+            'thumb' => '图片',
+            'stock' => '库存',
         ];
     }
 
     /**
      * 字段规则
      *
-     * @return array */
-    public  function rules()
+     * @return array
+     */
+    public function rules()
     {
         return [
-            'title'    => 'required',
-            'price'  => 'required|numeric|min:0',
-            'cost_price'  => 'required|numeric|min:0',
-            'sku'  => 'required',
-            'thumb'  => 'required',
-            'stock'  => 'required|numeric|min:0',
+            'title' => 'required',
+            'price' => 'required|numeric|min:0',
+            'cost_price' => 'required|numeric|min:0',
+            'sku' => 'required',
+            'thumb' => 'required',
+            'stock' => 'required|numeric|min:0',
         ];
     }
 
@@ -149,7 +153,7 @@ class Goods extends BaseModel
                     $query->where('brand_id', $value);
                     break;
                 case 'product_attr':
-                    foreach($value as $attr){
+                    foreach ($value as $attr) {
                         $query->where($attr, 1);
                     }
                     break;
@@ -174,12 +178,22 @@ class Goods extends BaseModel
      */
     public static function getGoodsByName($keyword)
     {
-        return static::select('id','title','thumb')
-            ->where('title', 'like', '%'.$keyword.'%')
-            ->get()
-            ->toArray();
+        return static::select('id', 'title', 'thumb')
+            ->where('title', 'like', '%' . $keyword . '%')
+            ->get();
         //goods::update()
     }
 
-    
+    /**
+     * @param $goodsId
+     * @return mixed
+     */
+    public static function updatedComment($goodsId)
+    {
+
+        return self::where('id', $goodsId)
+            ->update(['comment_num' => DB::raw('`comment_num` + 1')]);
+    }
+
+
 }
