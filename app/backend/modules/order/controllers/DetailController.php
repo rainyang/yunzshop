@@ -22,7 +22,7 @@ class DetailController extends BaseController
                 'hasManyOrderGoods.belongsToGood',
                 'beLongsToMember',
                 'hasOneOrderRemark',
-                'hasOneAddress'
+                'address'
             ]
         )->find($order_id)->toArray();
 

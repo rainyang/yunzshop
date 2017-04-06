@@ -59,7 +59,7 @@ class Order extends \app\common\models\Order
             'hasManyOrderGoods' => self::order_goods_builder(),
             'hasOneDispatchType',
             'hasOnePayType',
-            'hasOneAddress',
+            'address',
             'hasOneOrderRemark',
             'hasOneOrderExpress',
             'hasOnePayType'
@@ -76,7 +76,7 @@ class Order extends \app\common\models\Order
             'hasManyOrderGoods' => self::order_goods_builder(),
             'hasOneDispatchType',
             'hasOnePayType',
-            'hasOneAddress',
+            'address',
             'hasOnePayType'
         ]);
         return $list;
