@@ -9,7 +9,10 @@
 namespace app\common\models;
 
 
+use app\common\models\order\Address;
+use app\common\models\order\Express;
 use app\common\models\order\Pay;
+use app\common\models\order\Remark;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\status\StatusServiceFactory;
 use Illuminate\Support\Facades\DB;
@@ -59,29 +62,29 @@ class Order extends BaseModel
 
     public function hasManyOrderGoods()
     {
-        return $this->hasMany('\app\common\models\OrderGoods', 'order_id', 'id');
+        return $this->hasMany(OrderGoods::class, 'order_id', 'id');
     }
 
     public function belongsToMember()
     {
-        return $this->belongsTo('\app\common\models\Member', 'uid', 'uid');
+        return $this->belongsTo(Member::class, 'uid', 'uid');
     }
 
     //订单配送方式
     public function hasOneDispatchType()
     {
-        return $this->hasOne('\app\common\models\DispatchType', 'id', 'dispatch_type_id');
+        return $this->hasOne(DispatchType::class, 'id', 'dispatch_type_id');
     }
 
     //订单备注
     public function hasOneOrderRemark()
     {
-        return $this->hasOne('\app\common\models\order\Remark', 'order_id', 'id');
+        return $this->hasOne(Remark::class, 'order_id', 'id');
     }
 
     public function hasOnePayType()
     {
-        return $this->hasOne('\app\common\models\PayType', 'id', 'pay_type_id');
+        return $this->hasOne(PayType::class, 'id', 'pay_type_id');
     }
 
     //订单支付信息
@@ -91,9 +94,9 @@ class Order extends BaseModel
     }
 
     //订单快递
-    public function hasOneOrderExpress()
+    public function express()
     {
-        return $this->hasOne('\app\common\models\order\Express', 'order_id', 'id');
+        return $this->hasOne(Express::class, 'order_id', 'id');
     }
 
     public function scopeUn($query)
@@ -110,15 +113,15 @@ class Order extends BaseModel
     }
 
     //收货地址
-    public function hasOneAddress()
+    public function address()
     {
-        return $this->hasOne('\app\common\models\order\Address', 'order_id', 'id');
+        return $this->hasOne(Address::class, 'order_id', 'id');
     }
 
     //订单支付
     public function hasOnePay()
     {
-        return $this->hasOne('\app\common\models\order\Pay', 'order_id', 'id');
+        return $this->hasOne(Pay::class, 'order_id', 'id');
     }
 
     public function getStatusNameAttribute()

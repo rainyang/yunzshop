@@ -14,6 +14,15 @@ use app\common\models\Member;
 
 class Balance
 {
+    private $service_type;
+
+    private $type;
+
+    const INCOME      = 1; //类型：收入
+
+    const EXPENDITURE = 2; //类型：支出
+
+
     /*
      * 修改会员余额 使用时需注意数据判断
      *
@@ -163,6 +172,79 @@ class Balance
             $ordersn = createNo('RV', true);
         }
         return $ordersn;
+    }
+
+    //余额充值接口
+    public function rechargeBalance()
+    {
+        $this->type = \app\common\models\finance\Balance::BALANCE_RECHARGE;
+
+    }
+
+    //余额消费接口
+    public function consumeBalance()
+    {
+        $this->service_type = \app\common\models\finance\Balance::BALANCE_CONSUME;
+
+    }
+
+    //余额转让接口
+    public function transferBalance()
+    {
+        $this->service_type = \app\common\models\finance\Balance::BALANCE_TRANSFER;
+    }
+
+    //余额抵扣
+    public function deductionBalance()
+    {
+        $this->service_type = \app\common\models\finance\Balance::BALANCE_DEDUCTION;
+    }
+
+    //余额奖励
+    public function awardBalance()
+    {
+        $this->service_type = \app\common\models\finance\Balance::BALANCE_AWARD;
+    }
+
+    //余额提现
+    public function withdrawalBalance()
+    {
+        $this->service_type = \app\common\models\finance\Balance::BALANCE_WITHDRAWAL;
+    }
+
+    //提现到余额
+    public function incomeBalance()
+    {
+        $this->service_type = \app\common\models\finance\Balance::BALANCE_INCOME;
+    }
+
+    //抵扣取消余额回滚
+    public function cancelDeductionBalance()
+    {
+
+    }
+
+    //奖励取消余额回滚
+    public function cancelAwardBalance()
+    {
+
+    }
+
+
+
+
+    /*
+     * 获取交易类型，支出 1， 收入 2，
+     *
+     * @params numeric $chargeMoney
+     *
+     * */
+    private function attachedType($chargeMoney)
+    {
+        $this->type = static::INCOME;
+        if ($chargeMoney > 0 ) {
+            $this->type = static::EXPENDITURE;
+        }
     }
 
 }

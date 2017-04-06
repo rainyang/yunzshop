@@ -26,7 +26,7 @@ class ExportService
     }
 
     protected function getOrder($order){
-        $address = json_decode($order['has_one_address']['address']);
+        $address = json_decode($order['address']['address']);
         $order['pay_sn'] = $order['has_one_order_pay']['pay_sn'];
         $order['nickname'] = $order['belongs_to_member']['nickname'];
         $order['realname'] = $order['belongs_to_member']['realname'];

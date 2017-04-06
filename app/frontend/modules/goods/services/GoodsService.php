@@ -51,4 +51,31 @@ class GoodsService
         return $goodsModel->toArray();
     }
 
+    public static function GoodsListAvailable(array $preGeneratedOrderGoodsModels)
+    {
+        foreach ($preGeneratedOrderGoodsModels as $preGeneratedOrderGoodsModel) {
+            foreach ($preGeneratedOrderGoodsModel as $orderGoodsModel) {
+                $result = self::GoodsAvailable($orderGoodsModel);
+                if($result !== true) {
+                    return $result;
+                }
+            }
+            /*$result = self::GoodsAvailable($preGeneratedOrderGoodsModel);
+            if($result !== true) {
+                return $result;
+            }*/
+        }
+        return true;
+    }
+
+    public static function GoodsAvailable(PreGeneratedOrderGoodsModel $preGeneratedOrderGoodsModel)
+    {
+        $Event = new BeforeOrderGoodsAddInOrder($preGeneratedOrderGoodsModel);
+        event($Event);
+        if ($Event->hasOpinion()) {
+            return [$Event->getOpinion()->result,$Event->getOpinion()->message];
+        }
+        return true;
+
+    }
 }
