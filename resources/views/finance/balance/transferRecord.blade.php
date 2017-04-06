@@ -58,9 +58,9 @@
                             <td>{{ $list->created_at }}</td>
                             <td>
                                 @if($list->status == 1)
-                                    <span class='label label-success'>转账成功</span>
+                                    <span class='label label-success'>转让成功</span>
                                 @else
-                                    <span class='label label-default'>转账失败</span>
+                                    <span class='label label-default'>转让失败</span>
                                 @endif
                             </td>
                         </tr>

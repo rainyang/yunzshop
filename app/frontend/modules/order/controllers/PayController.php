@@ -61,8 +61,7 @@ class PayController extends ApiController
         ];
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay($query_str);
-        dd($data);
-        exit;
+        
         return $this->successJson('成功',$data);
 
         //return view('order.pay', $data)->render();

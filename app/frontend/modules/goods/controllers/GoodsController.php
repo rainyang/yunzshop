@@ -86,15 +86,11 @@ class GoodsController extends ApiController
         $requestSearch = \YunShop::request()->search;
 
         $order_field = \YunShop::request()->order_field;
-        if (!in_array($order_field, ['price', 'show_sales', 'comment'])){
+        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
             $order_field = 'display_order';
         }
 
-        if (isset(\YunShop::request()->order_by)){
-            $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
-        } else {
-            $order_by = 'desc';
-        }
+        $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
 
 
         if ($requestSearch) {
@@ -112,7 +108,11 @@ class GoodsController extends ApiController
         }
         //dd($requestSearch);
 
-        $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')->where("status", 1)->orderBy('display_order', 'desc')->orderBy($order_field, $order_by)->paginate(20)->toArray();
+        $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
+            ->where("status", 1)
+            ->orderBy($order_field, $order_by)
+            ->paginate(20)->toArray();
+        
         if (empty($list)) {
             $this->errorJson('没有找到商品.');
         }
@@ -128,15 +128,11 @@ class GoodsController extends ApiController
         }
 
         $order_field = \YunShop::request()->order_field;
-        if (!in_array($order_field, ['price', 'show_sales', 'comment'])){
+        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
             $order_field = 'display_order';
         }
 
-        if (isset(\YunShop::request()->order_by)){
-            $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
-        } else {
-            $order_by = 'desc';
-        }
+        $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
 
         $categorys = Category::uniacid()->select("name", "thumb", "id")->where(['id' => $category_id])->first();
         $goodsList = Goods::uniacid()->select('yz_goods.id','yz_goods.id as goods_id', 'title', 'thumb', 'price', 'market_price')
@@ -158,15 +154,12 @@ class GoodsController extends ApiController
     {
         $brand_id = intval(\YunShop::request()->brand_id);
         $order_field = \YunShop::request()->order_field;
-        if (!in_array($order_field, ['price', 'show_sales', 'comment'])){
+        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
             $order_field = 'display_order';
         }
 
-        if (isset(\YunShop::request()->order_by)){
-            $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
-        } else {
-            $order_by = 'desc';
-        }
+        $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
+
 
         if (empty($brand_id)) {
             $this->errorJson('请输入正确的品牌id.');

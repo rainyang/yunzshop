@@ -12,6 +12,7 @@ namespace app\backend\modules\finance\controllers;
 use app\backend\modules\finance\models\Income;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
+use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 
 class IncomeController extends BaseController

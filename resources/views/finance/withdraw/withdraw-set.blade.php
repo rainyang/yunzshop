@@ -31,8 +31,50 @@
 
                     <div class="tab-content">
                         <div class="tab-pane  active" id="tab_balance">
-                            {{--余额提现--}}
-                            余额提现
+                            {{--余额提现 start--}}
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额提现</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <label class='radio-inline'>
+                                        <input type='radio' name='withdraw[balance][status]' value='1' @if($set['status'] == 1) checked @endif />
+                                        开启
+                                    </label>
+                                    <label class='radio-inline'>
+                                        <input type='radio' name='withdraw[balance][status]' value='0' @if($set['status'] == 0) checked @endif />
+                                        关闭
+                                    </label>
+                                    <span class='help-block'>是否允许用户将余额提出</span>
+                                </div>
+                            </div>
+                            <div id='withdraw' @if(empty($set['status']))style="display:none"@endif>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div style="float:left; width:15%; height:30px;">
+                                            <label class='radio-inline' style="padding-left:0px">提现手续费</label>
+                                        </div>
+                                        <div style="float:left; width:85%; height:30px;">
+                                            <label class='radio-inline' style="width:70%;">
+                                                <input class="col-sm-6" style="width:100%;" type="text" name="withdraw[balance][poundage]" value="{{ $set['poundage'] or '' }}"/>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div style="float:left; width:15%; height:30px;">
+                                            <label class='radio-inline' style="padding-left:0px">余额提现限制</label>
+                                        </div>
+                                        <div style="float:left; width:85%; height:30px;">
+                                            <label class='radio-inline' style="width:70%;">
+                                                <input class="col-sm-6" style="width:100%;" type="text" name="withdraw[balance][withdrawmoney]" value="{{ $set['withdrawmoney'] or '' }}"/>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{--余额提现 end--}}
 
                         </div>
 
@@ -53,5 +95,17 @@
 
         </form>
     </div>
+    <script language="javascript">
+        $(function () {
+            $(":radio[name='withdraw[balance][status]']").click(function () {
+                if ($(this).val() == 1) {
+                    $("#withdraw").show();
+                }
+                else {
+                    $("#withdraw").hide();
+                }
+            });
+        })
+    </script>
 
 @endsection

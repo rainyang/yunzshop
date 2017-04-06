@@ -33,13 +33,20 @@ class CreateController extends ApiController
 
         $goods_ids = [];
         foreach ($params['goods'] as $goods_params) {
-            foreach ($event->getMap()['goods_ids'] as $key => $goods_id) {
-                if ($key == $goods_params['goods_id']) {
-                    $goods_ids['plugin'][] = new MemberCart($goods_params);
-                } else {
-                    $goods_ids['shop'][] = new MemberCart($goods_params);
+            if (!$event->getMap()['goods_ids']) {
+                foreach ($event->getMap()['goods_ids'] as $key => $goods_id) {
+                    if ($key == $goods_params['goods_id']) {
+                        $goods_ids['plugin'][] = new MemberCart($goods_params);
+                    } else {
+                        $goods_ids['shop'][] = new MemberCart($goods_params);
+                    }
                 }
+            } else {
+                $goods_ids['shop'][] = new MemberCart($goods_params);
             }
+        }
+        if(!count($goods_ids)){
+            throw new AppException('分单失败');
         }
         return $goods_ids;
     }
@@ -65,7 +72,6 @@ class CreateController extends ApiController
 
         $shop_model = ShopService::getCurrentShopModel();
         //todo 根据参数
-        //echo '<pre>';print_r(\YunShop::request()->get()['goods']);
         foreach ($this->getMemberCarts() as $carts) {
             //echo '<pre>';print_r($carts);exit;
             $order_goods_models = OrderService::getOrderGoodsModels($carts);
