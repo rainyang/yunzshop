@@ -10,6 +10,7 @@
                     <input type="hidden" name="c" value="site"/>
                     <input type="hidden" name="a" value="entry"/>
                     <input type="hidden" name="m" value="sz_yi"/>
+
                     <div class="form-group">
                         <div class="col-sm-8 col-lg-12 col-xs-12">
                             <div class='input-group'>
@@ -34,6 +35,22 @@
                                 </select>
 
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">价格区间</label>
+                        <div class="col-xs-6 col-sm-4 col-lg-4">
+                            {!! tpl_form_field_daterange(
+                                'search[time_range]',
+                                array(
+                                    'starttime'=>array_get($requestSearch,'time_range.start',0),
+                                    'endtime'=>array_get($requestSearch,'time_range.end',0),
+                                    'start'=>0,
+                                    'end'=>0
+                                ),
+                                true
+                            )!!}
                         </div>
                     </div>
 
@@ -120,6 +137,18 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function () {
+            $("#ambiguous-field").on('change',function(){
 
+                $(this).next('input').attr('placeholder',$(this).find(':selected').text().trim())
+            });
+        })
+        $('#export').click(function () {
+            $('#form_p').val("order.list.export");
+            $('#form1').submit();
+            $('#form_p').val("order.list");
+        });
+    </script>
 
 @endsection

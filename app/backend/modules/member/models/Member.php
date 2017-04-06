@@ -149,6 +149,14 @@ class Member extends \app\common\models\Member
             });
         }
 
+        //余额区间搜索
+        if ($parame['min_credit2']) {
+            $result = $result->where('credit2', '>', $parame['min_credit2']);
+        }
+        if ($parame['max_credit2']) {
+            $result = $result->where('credit2', '<', $parame['max_credit2']);
+        }
+
         if ($parame['followed'] != '') {
             $result = $result->whereHas('hasOneFans', function ($q2) use ($parame) {
                 $q2->where('follow', $parame['followed']);

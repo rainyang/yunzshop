@@ -149,8 +149,7 @@ class PreGeneratedOrderModel extends OrderModel
         });
         $this->id = $order->id;
         $this->order = $order->find($order->id);
-        event(new AfterOrderCreatedEvent($this->order,$this));
-        return true;
+        return $order->id;
     }
     /**
      * 订单商品生成
@@ -192,6 +191,7 @@ class PreGeneratedOrderModel extends OrderModel
             'uniacid' => $this->shop->uniacid,
         );
         //todo 测试
+        dump($data);
 
         return $data;
     }
