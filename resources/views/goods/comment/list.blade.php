@@ -15,8 +15,8 @@
             <div class="panel panel-info">
                 <div class="panel-body">
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键词</label>
-                        <div class="col-xs-12 col-sm-8 col-lg-9">
+                       <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键词</label>-->
+                        <div class="col-xs-12 col-sm-8 col-lg-9 col-lg-3">
                             <input class="form-control" name="search[keyword]" id="" type="text"
                                    value="{{$search['keyword']}}" placeholder="商品标题">
                         </div>
