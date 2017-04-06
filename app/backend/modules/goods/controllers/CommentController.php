@@ -78,6 +78,7 @@ class CommentController extends BaseController
             } else {
                 //数据保存
                 if ($commentModel->save()) {
+                    Goods::updatedComment($commentModel->goods_id);
                     //显示信息并跳转
                     return $this->message('评论创建成功', Url::absoluteWeb('goods.comment.index'));
                 } else {
