@@ -96,7 +96,7 @@ class AliPay extends Pay
         return $alipay->refund($out_refund_no);
     }
 
-    public function doWithdraw($member_id, $money, $desc, $type=1)
+    public function doWithdraw($member_id, $money, $desc = '', $type=1)
     {
         $out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
