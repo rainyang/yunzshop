@@ -50,8 +50,6 @@
                                 <input type="submit" class="btn btn-default" value="搜索">
                             </div>
                         </div>
-
-
                     </form>
                 </div>
             </div>
@@ -71,8 +69,6 @@
                             </tr>
                             </thead>
                             <tbody>
-
-
                             @foreach($memberList as $list)
                             <tr>
                                 <td style="text-align: center;">{{ $list->uid }}</td>
@@ -91,20 +87,15 @@
                                 <td>
                                     <label class="label label-danger">余额：{{ $list->credit2 }}</label>
                                 </td>
-
-
                                 <td  style="overflow:visible;">
                                     <a class='btn btn-default' href="{{ yzWebUrl('finance.balance.recharge', array('member_id' => $list->uid)) }}" style="margin-bottom: 2px">充值余额</a>
                                 </td>
-
                             </tr>
                             @endforeach
                             </tbody>
                         </table>
 
-
                         {!! $pager !!}
-
 
                     </div>
                 </div>

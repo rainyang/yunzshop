@@ -62,12 +62,12 @@ class BalanceTransfer extends BaseModel
      * @Author yitian */
     public static function getMemberTransferRecord($transferId) {
         return self::uniacid()
+            ->select('recipient', 'money', 'created_at', 'status')
             ->where('transferor', $transferId)
             ->with(['recipientInfo' => function($query) {
                 return $query->select('uid', 'nickname', 'realname');
             }])
-            ->get()
-            ->toArray();
+            ->get();
     }
 
     /*
@@ -79,11 +79,12 @@ class BalanceTransfer extends BaseModel
      * @Author yitian */
     public static function getMemberRecipientRecord($recipientId) {
         return self::uniacid()
+            ->select('transferor', 'money', 'created_at', 'status')
             ->where('recipient', $recipientId)
             ->with(['transferorInfo' => function($query) {
                 return $query->select('uid', 'nickname', 'realname');
             }])
-            ->get()->toArray();
+            ->get();
     }
 
 }

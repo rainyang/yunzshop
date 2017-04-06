@@ -21,6 +21,32 @@ class Balance extends BaseModel
 
     public $timestamps = false;
 
+    /*
+     * 模型管理，关联会员数据表
+     *
+     * @Author yitian */
+    public function member()
+    {
+        return $this->hasOne('app\common\models\member', 'uid', 'member_id');
+    }
+
+    /*
+     * 获取分页列表
+     *
+     * @params int $pageSize
+     *
+     * @return object
+     * @Autho yitian */
+    public static function getPageList($pageSize)
+    {
+        return self::uniacid()
+            ->with(['member' => function($query) {
+                return $query->select('uid', 'nickname', 'realname', 'avatar', 'mobile', 'credit2');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->paginate($pageSize);
+    }
+
 
 
 }

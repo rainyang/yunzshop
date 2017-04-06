@@ -75,8 +75,7 @@ class Member extends \app\common\models\Member
                 return $query2->select(['uid', 'follow as followed'])->uniacid();
             }
             ])
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**
