@@ -28,7 +28,6 @@ class WithdrawController extends BaseController
             }
             return $this->message('设置保存成功', Url::absoluteWeb('finance.withdraw.set'));
         }
-
         return view('finance.withdraw.withdraw-set', [
             'set' => $set
         ])->render();
