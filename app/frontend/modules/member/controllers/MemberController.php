@@ -66,7 +66,7 @@ class MemberController extends ApiController
     }
 
     /**
-     * 会员关系链
+     * 检查会员推广资格
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -89,6 +89,7 @@ class MemberController extends ApiController
 
         $account = AccountWechats::getAccountInfoById(\YunShop::app()->uniacid);
         switch ($info['become']) {
+            case 0:
             case 1:
                 $apply_qualification = 1;
                 $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
@@ -169,7 +170,7 @@ class MemberController extends ApiController
      */
     public function isAgent()
     {
-        $info = MemberRelation::getSetInfo()->first()->toArray();
+        MemberRelation::checkAgent();
 
         $uid = \YunShop::app()->getMemberId();
 
@@ -179,13 +180,6 @@ class MemberController extends ApiController
             return $this->errorJson('会员不存在');
         } else {
             $data = $member_info->toArray();
-        }
-
-        if ($data['is_agent'] == 0 && $info['become'] == 0) {
-            $member_info->is_agent = 1;
-            $member_info->save();
-
-            $data['is_agent'] == 1;
         }
 
         return $this->successJson('', ['is_agent' => $data['is_agent']]);
@@ -218,6 +212,11 @@ class MemberController extends ApiController
         return $this->successJson('', ['qr' => storage_path('qr/') . $filename]);
     }
 
+    /**
+     * 用户推广申请
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function addAgentApply()
     {
         $mid = (\YunShop::request()->mid && \YunShop::request()->mid != 'undefined') ? \YunShop::request()->mid : 0;

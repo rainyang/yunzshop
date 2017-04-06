@@ -49,7 +49,7 @@ class MemberRelation extends BackendModel
      *
      * @return bool
      */
-    public static function getAgentData()
+    public static function checkAgent()
     {
         $info = self::getSetInfo()->first()->toArray();
 
@@ -85,10 +85,13 @@ class MemberRelation extends BackendModel
                 default:
                     $isAgent = false;
             }
+        }
 
-            return $isAgent;
-        } else {
-            return true;
+        if ($isAgent) {
+            if ($info['become_check'] == 0) {
+                $member_info->is_agent = 1;
+                $member_info->save();
+            }
         }
     }
 
