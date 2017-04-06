@@ -25,12 +25,12 @@ class PreGeneratedController extends ApiController
     public function index()
     {
 
-        $this->param['goods'][] = [
+        $this->param['goods'] = [
             'goods_id'=>\YunShop::request()->get('goods_id'),
             'total'=>\YunShop::request()->get('total'),
             'option_id'=>\YunShop::request()->get('option_id'),
         ];
-        $this->memberCarts[] = (new MemberCart($this->param['goods'][0]));
+        $this->memberCarts[] = (new MemberCart($this->param['goods']));
 
         $this->run();
     }

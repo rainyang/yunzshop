@@ -10,6 +10,7 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 use app\common\components\BaseController;
+use app\common\events\cart\GroupingCartEvent;
 use app\common\exceptions\AppException;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\models\MemberCart;
@@ -19,8 +20,41 @@ use app\frontend\modules\shop\services\ShopService;
 
 class CreateController extends ApiController
 {
-    private function getMemberCarts(){
+    private function getGroupingCart()
+    {
         $params = \YunShop::request()->get();
+        $params['goods'][] = [
+            'goods_id' => 2,
+            'total' => 1
+        ];
+
+        $event = new GroupingCartEvent();
+        event($event);
+
+        $goods_ids = [];
+        foreach ($params['goods'] as $goods_params) {
+            if (!$event->getMap()['goods_ids']) {
+                foreach ($event->getMap()['goods_ids'] as $key => $goods_id) {
+                    if ($key == $goods_params['goods_id']) {
+                        $goods_ids['plugin'][] = new MemberCart($goods_params);
+                    } else {
+                        $goods_ids['shop'][] = new MemberCart($goods_params);
+                    }
+                }
+            } else {
+                $goods_ids['shop'][] = new MemberCart($goods_params);
+            }
+        }
+        if(!count($goods_ids)){
+            throw new AppException('分单失败');
+        }
+        return $goods_ids;
+    }
+
+    private function getMemberCarts(){
+        return $this->getGroupingCart();
+        $params = \YunShop::request()->get();
+
         $result = [];
         foreach ($params['goods'] as $goods_params){
             $result[] = new MemberCart($goods_params);
@@ -33,18 +67,30 @@ class CreateController extends ApiController
             return;
         }*/
         $params = \YunShop::request()->get();
-        $this->validator($params['goods']);
+        //$this->validator($params['goods']);
         $member_model = MemberService::getCurrentMemberModel();
 
         $shop_model = ShopService::getCurrentShopModel();
         //todo 根据参数
-        $order_goods_models = OrderService::getOrderGoodsModels($this->getMemberCarts());
+        foreach ($this->getMemberCarts() as $carts) {
+            //echo '<pre>';print_r($carts);exit;
+            $order_goods_models = OrderService::getOrderGoodsModels($carts);
+
+            list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
+            if ($result === false) {
+                return $this->errorJson($message);
+            }
+            $order_model = OrderService::getPreGeneratedOrder($order_goods_models,$member_model,$shop_model);
+            $order_model->generate();
+        }
+        /*$order_goods_models = OrderService::getOrderGoodsModels($this->getMemberCarts());
+
         list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
         if ($result === false) {
             return $this->errorJson($message);
         }
         $order_model = OrderService::getPreGeneratedOrder($order_goods_models,$member_model,$shop_model);
-        $order_model->generate();
+        $order_model->generate();*/
         $this->successJson();
     }
     private function validator($params){
@@ -55,6 +101,8 @@ class CreateController extends ApiController
             throw new AppException('请选择下单商品(空数组)');
         }
         foreach ($params as $param){
+            dd($param);
+            exit;
             if(!isset($param['goods_id'])){
                 throw new AppException('请选择下单商品(缺少goods_id)');
             }

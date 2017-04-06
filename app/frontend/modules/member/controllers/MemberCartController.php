@@ -2,9 +2,9 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
 use app\common\exceptions\AppException;
-use app\frontend\modules\goods\services\GoodsService;
+
+
 use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
 
@@ -16,38 +16,37 @@ use app\frontend\modules\member\services\MemberCartService;
  */
 class MemberCartController extends ApiController
 {
+    //购物车列表
     public function index()
     {
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = '9';
-
-        $cartList = MemberCart::getMemberCartList($memberId);
-        //dd($cartList);
-        foreach ($cartList as $key => $cart) {
-            $cartList[$key]['option_str'] = '';
-            if (empty($cart['goods'])) {
-                //销毁未找到商品的数据
-                //unset($cartList[$key]);
-            } elseif (!empty($cart['goods_option'])) {
-                //规格数据替换商品数据
-                if ($cart['goods_option']['title']) {
-                    $cartList[$key]['option_str'] = $cart['goods_option']['title'];
+        if ($memberId) {
+            $cartList = MemberCart::getMemberCartList($memberId);
+            foreach ($cartList as $key => $cart) {
+                $cartList[$key]['option_str'] = '';
+                if (empty($cart['goods'])) {
+                    //销毁未找到商品的数据
+                    //unset($cartList[$key]);
+                } elseif (!empty($cart['goods_option'])) {
+                    //规格数据替换商品数据
+                    if ($cart['goods_option']['title']) {
+                        $cartList[$key]['option_str'] = $cart['goods_option']['title'];
+                    }
+                    if ($cart['goods_option']['thumb']) {
+                        $cart['goods']['thumb'] = $cart['goods_option']['thumb'];
+                    }
+                    if ($cart['goods_option']['market_price']) {
+                        $cart['goods']['price'] = $cart['goods_option']['market_price'];
+                    }
+                    if ($cart['goods_option']['market_price']) {
+                        $cart['goods']['price'] = $cart['goods_option']['market_price'];
+                    }
                 }
-                if ($cart['goods_option']['thumb']) {
-                    $cart['goods']['thumb'] = $cart['goods_option']['thumb'];
-                }
-                if ($cart['goods_option']['market_price']) {
-                    $cart['goods']['price'] = $cart['goods_option']['market_price'];
-                }
-                if ($cart['goods_option']['market_price']) {
-                    $cart['goods']['price'] = $cart['goods_option']['market_price'];
-                }
+                //unset ($cartList[$key]['goods_option']);
             }
-            //unset ($cartList[$key]['goods_option']);
+            return $this->successJson('获取列表成功', $cartList);
         }
-        //dd($cartList);
-
-        return $this->successJson('获取列表成功', $cartList);
+        return $this->errorJson('未获取到会员ID');
     }
 
     /**
@@ -58,16 +57,16 @@ class MemberCartController extends ApiController
         $cartModel = new membercart();
 
         $requestcart = \YunShop::request();
-        if($requestcart) {
+        $goodsId = \YunShop::request()->goods_id;
+        $total   = \YunShop::request()->total;
+        if($goodsId && $total) {
             $data = array(
-                'member_id' => '9',
+                'member_id' => \YunShop::app()->getMemberId(),
                 'uniacid'   => \YunShop::app()->uniacid,
-                'goods_id'  => $requestcart->goods_id,
-                'total'     => $requestcart->total,
+                'goods_id'  => $goodsId,
+                'total'     => $total,
                 'option_id' => $requestcart->option_id ? $requestcart->option_id : '0'
             );
-
-
             //验证商品是否存在购物车,存在则修改数量
             $hasGoodsModel = MemberCart::hasGoodsToMemberCart($data);
             if ($hasGoodsModel) {
@@ -78,29 +77,19 @@ class MemberCartController extends ApiController
                 return $this->errorJson('数据更新失败，请重试！');
             }
 
-
-            //将数据赋值到model
             $cartModel->setRawAttributes($data);
-            //字段检测
             $validator = $cartModel->validator($cartModel->getAttributes());
-            if ($validator->fails()) {//检测失败
+            if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
-                //数据保存
                 if ($cartModel->save()) {
-                    //输出
-                    $msg = "添加购物车成功";
-                    return $this->errorJson($msg);
+                    return $this->errorJson("添加购物车成功");
                 }else{
-                    $msg = "写入出错，添加购物车失败！！！";
-                    return $this->successJson($msg);
+                    return $this->successJson("写入出错，添加购物车失败！！！");
                 }
             }
-
-
         }
-        $msg = "接收数据出错，添加购物车失败！";
-        return $this->errorJson($msg);
+        return $this->errorJson("接收数据出错，添加购物车失败！");
     }
 
     /*
@@ -121,7 +110,7 @@ class MemberCartController extends ApiController
             }
         }
 
-        return $this->errorJson('未找到数据或已删除，请重试！');
+        return $this->errorJson('未获取到数据，请重试！');
     }
 
     /*
@@ -132,8 +121,6 @@ class MemberCartController extends ApiController
         $ids = explode(',', \YunShop::request()->ids);
 
         $result = MemberCartService::clearCartByIds($ids);
-
-
         if($result) {
             $this->successJson('移除购物车成功。');
         }

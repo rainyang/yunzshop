@@ -9,26 +9,23 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用时间限制</label>
 
-    <div class="col-sm-5">
-        <div class='input-group'>
+    <div class="col-sm-9 form-inline">
+        <div class='input-group form-group col-sm-4'>
                         <span class='input-group-addon'>
                              <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="coupon[time_limit]" value="0" @if ($coupon['time_limit']==0) checked  @endif>获得后</label>
                         </span>
-
             <input type='text' class='form-control' name='coupon[time_days]' value="{{$coupon['time_days']}}" />
             <span class='input-group-addon'>天内有效(空为不限时间使用)</span>
         </div>
-    </div>
-
-    <div class="col-sm-3">
-        <div class='input-group'>
+        <div class='input-group form-group col-sm-3'>
                         <span class='input-group-addon'>
                              <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="coupon[time_limit]" value="1" >日期</label>
                         </span>
-
+            {!! app\common\helpers\DateRange::tplFormFieldDateRange('time', array('starttime'=>date('Y-m-d', $starttime),'endtime'=>date('Y-m-d', $endtime))) !!}
             <span class='input-group-addon'>内有效</span>
         </div>
     </div>
+
 </div>
 @include('coupon.consume')
 <div class="form-group">
@@ -151,19 +148,26 @@
 
 <div class="form-group gettype" @if($coupon['get_type']!=1)style="display:none" @endif>
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-    <div class="col-sm-6">
-        <div class="input-group">
+    <div class="col-sm-6 form-inline">
+
+        <div class="input-group form-group col-sm-1">
             <span class="input-group-addon">每个限领</span>
             <input type='text' class='form-control' value="{{$coupon['get_max']}}" name='coupon[get_max]' style="width: 80px" />
-            <span class="input-group-addon">张 消耗</span>
+            </div>
+        <div class="input-group form-group col-sm-1">
+        <span class="input-group-addon">张 消耗</span>
             <input style="width: 80px"  type='text' class='form-control' value="{{$coupon['credit']}}" name='coupon[credit]'/>
-            <span class="input-group-addon">积分 + 花费</span>
+            </div>
+        <div class="input-group form-group col-sm-1">
+        <span class="input-group-addon">积分 + 花费</span>
             <input style="width: 80px"  type='text' class='form-control' value="{{$coupon['money']}}" name='coupon[money]'/>
-                              <span class="input-group-addon">元&nbsp;&nbsp;
-                                  <label class="checkbox-inline" style='margin-top:-8px;'>
+                              <span class="input-group-addon">元</span>
+        </div>
+        <div class="input-group form-group col-sm-3">
+        <label class="checkbox-inline" style='margin-top:-8px;'>
                                       <input type="checkbox" name='coupon[usecredit2]' value="1" @if($coupon['usecredit2']==1)checked @endif /> 优先使用余额支付
                                   </label>
-                              </span></div>
+                              </div>
         <span class="help-block">每人限领，空不限制，领取方式可任意组合，可以单独积分兑换，单独现金兑换，或者积分+现金形式兑换, 如果都为空，则可以免费领取</span>
 
     </div>

@@ -29,7 +29,9 @@ class MemberController extends ApiController
      */
     public function getUserInfo()
     {
-        $member_id = \YunShop::request()->uid;
+        //$member_id = \YunShop::request()->uid;
+
+        $member_id = \YunShop::app()->getMemberId();
 
         if (!empty($member_id)) {
             $member_info = MemberModel::getUserInfos($member_id)->first();
@@ -169,12 +171,8 @@ class MemberController extends ApiController
     {
         $info = MemberRelation::getSetInfo()->first()->toArray();
 
-        if (empty(\YunShop::app()->getMemberId())) {
-            $uid = \YunShop::request()->uid;
-        } else {
-            $uid = \YunShop::app()->getMemberId();
-        }
-echo '<pre>';print_r($uid);exit;
+        $uid = \YunShop::app()->getMemberId();
+
         $member_info = SubMemberModel::getMemberShopInfo($uid);
 
         if (empty($member_info)) {

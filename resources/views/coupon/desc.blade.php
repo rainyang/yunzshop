@@ -1,7 +1,4 @@
 
-<div class='panel-heading'>
-    使用说明
-</div>
 <div class='panel-body'>
 
     <div class="form-group">

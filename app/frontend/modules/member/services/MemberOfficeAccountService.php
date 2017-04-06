@@ -40,6 +40,7 @@ class MemberOfficeAccountService extends MemberService
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         $state = 'yz-' . session_id();
+
         if (!Session::get('member_id')) {
             $authurl = $this->_getAuthUrl($appId, $callback, $state);
         } else {
@@ -77,6 +78,7 @@ class MemberOfficeAccountService extends MemberService
                 }
 
                 if (!empty($UnionidInfo['unionid'])) {
+                    \Log::debug();
                     $types = explode('|', $UnionidInfo['type']);
                     $member_id = $UnionidInfo['member_id'];
 
@@ -107,6 +109,7 @@ class MemberOfficeAccountService extends MemberService
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
+                    \Log::debug();
                     //添加mc_members表
                     $default_groupid = McGroupsModel::getDefaultGroupId();
 
@@ -193,11 +196,6 @@ class MemberOfficeAccountService extends MemberService
         }
 
         //redirect('http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.test.login')->send();
-        $split = explode('?', $redirect_url);
-
-        if (strrpos($split[0], '/') > 6) {
-          //  $redirect_url = substr($split[0], 0, strrpos($split[0], '/'));
-        }
 
         header('Access-Control-Allow-Origin: http://localhost:8081' );
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
