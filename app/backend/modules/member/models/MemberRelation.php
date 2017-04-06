@@ -143,7 +143,7 @@ class MemberRelation extends BackendModel
     }
 
     /**
-     * 成为下线
+     * 检查是否能成为下线
      *
      * @param $mid
      * @param MemberShopInfo $user
