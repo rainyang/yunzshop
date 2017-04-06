@@ -29,20 +29,40 @@ class ExpressController extends ApiController
         if (!isset($order->express)) {
             throw new AppException('未找到配送信息');
         }
-
-        $data = $this->getExpress($order->express->express_code, $order->express->express_sn);
+        //$data
+        $express = $this->getExpress($order->express->express_code, $order->express->express_sn);
+        $data['express_sn'] = $order->express->express_sn;
+        $data['company_name'] = $order->express->express_company_name;
+        $data['data'] = $express['data'];
+        $data['thumb'] = $order->hasManyOrderGoods[0]->thumb;
+        $data['tel'] = '95533';
+        $data['status_name'] = $this->expressStatusName($express['state']);
         $this->successJson('成功', $data);
     }
 
-    private function getExpress($express, $expresssn)
+    private function getExpress($express, $express_sn)
     {
-        $url = sprintf('https://m.kuaidi100.com/query?type=%s&postid=%s&id=1&valicode=&temp=%s', $express, $expresssn, time());
+        $url = sprintf('https://m.kuaidi100.com/query?type=%s&postid=%s&id=1&valicode=&temp=%s', $express, $express_sn, time());
 
         $result = Curl::to($url)
             ->asJsonResponse(true)->get();
         if (empty($result)) {
             return array();
         }
-        return $result['data'];
+        return $result;
+    }
+
+    private function expressStatusName($key)
+    {
+        $state_name_map = [
+            0 => '在途',
+            1 => '揽件',
+            2 => '疑难',
+            3 => '签收',
+            4 => '退签',
+            5 => '派件',
+            6 => '退回',
+        ];
+        return $state_name_map[$key];
     }
 }

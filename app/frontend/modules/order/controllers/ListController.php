@@ -20,7 +20,7 @@ class ListController extends ApiController
         $pageSize = $pageSize ? $pageSize : 100;//todo 配合app测试
 
         //返回的订单不包括"已删除订单"
-        $list = OrderListModel::getRequestOrderList($status, $uid)->where('status','<>','-1')->paginate($pageSize)->toArray();
+        $list = OrderListModel::getRequestOrderList($status, $uid)->where('status','<>','-1')->paginate($pageSize)->appends('button_models')->toArray();
 //dd($list);
 
         if ($list['total'] == 0) {

@@ -171,9 +171,9 @@ class MemberController extends ApiController
      */
     public function isAgent()
     {
-        MemberRelation::checkAgent();
-
         $uid = \YunShop::app()->getMemberId();
+
+        MemberRelation::checkAgent($uid);
 
         $member_info = SubMemberModel::getMemberShopInfo($uid);
 

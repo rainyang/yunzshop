@@ -21,6 +21,8 @@ class DetailController extends ApiController
             return $this->errorJson($msg = '缺少访问参数', $data = []);
         } else {
             $orderDetail = OrderDetailModel::getOrderDetail($orderId);
+            $orderDetail->button_models = $orderDetail->button_models;
+
             $data= $orderDetail->toArray();
 
             //todo 配送类型
