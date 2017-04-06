@@ -17,6 +17,8 @@ class MemberShopInfo extends BackendModel
 
     public $timestamps = false;
 
+    public $primaryKey = 'member_id';
+
     public static function getMemberShopInfo($memberId)
     {
         return self::select('*')->where('member_id', $memberId)

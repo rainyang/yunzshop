@@ -11,6 +11,7 @@ namespace app\frontend\models;
 
 use app\common\models\Coupon;
 use app\common\models\MemberCoupon;
+use app\frontend\modules\member\models\MemberAddress;
 
 class Member extends \app\common\models\Member
 {
@@ -27,5 +28,10 @@ class Member extends \app\common\models\Member
                 $query->where('back_type',$backType);
             }
         });
+    }
+
+    public function defaultAddress()
+    {
+        return $this->hasOne(MemberAddress::class,'uid','uid')->where('isdefault',1);
     }
 }
