@@ -29,7 +29,7 @@ use app\common\services\fiance\Balance;
  * */
 class BalanceController extends BaseController
 {
-    //余额基础设置页面
+    //余额基础设置页面[完成]
     public function index()
     {
         $balance = Setting::get('balance.recharge');
@@ -51,7 +51,7 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    //余额明细记录
+    //余额明细记录[完成]
     public function balanceDetail()
     {
         $pageSize = 3;

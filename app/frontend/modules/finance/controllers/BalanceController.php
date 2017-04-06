@@ -14,6 +14,7 @@ use app\common\components\ApiController;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use app\common\services\fiance\Balance;
+use app\common\services\PayFactory;
 
 class BalanceController extends ApiController
 {
@@ -30,6 +31,9 @@ class BalanceController extends ApiController
         $balanceModel = new Balance();
         $resultId = $balanceModel->memberBalanceRecharge($memberId, $rechargeMoney);
         if (is_numeric($resultId)) {
+            $pay = PayFactory::create($type);
+
+            $pay->doPay([]);
             //todo 调取支付接口
 
             if ($balanceModel->updateBalance($memberId, $rechargeMoney) === true) {
