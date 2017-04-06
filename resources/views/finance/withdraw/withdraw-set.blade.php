@@ -36,17 +36,17 @@
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额提现</label>
                                 <div class="col-sm-9 col-xs-12">
                                     <label class='radio-inline'>
-                                        <input type='radio' name='balance[withdraw][status]' value='1' @if($balance['withdraw']['status'] == 1) checked @endif />
+                                        <input type='radio' name='withdraw[balance][status]' value='1' @if($withdraw['balance']['status'] == 1) checked @endif />
                                         开启
                                     </label>
                                     <label class='radio-inline'>
-                                        <input type='radio' name='balance[withdraw][status]' value='0' @if($balance['withdraw']['status'] == 0) checked @endif />
+                                        <input type='radio' name='withdraw[balance][status]' value='0' @if($withdraw['balance']['status'] == 0) checked @endif />
                                         关闭
                                     </label>
                                     <span class='help-block'>是否允许用户将余额提出</span>
                                 </div>
                             </div>
-                            <div id='withdraw' @if(empty($balance['withdraw']['status']))style="display:none"@endif>
+                            <div id='withdraw' @if(empty($withdraw['balance']['status']))style="display:none"@endif>
                                 <div class="form-group">
                                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                     <div class="col-sm-9 col-xs-12">
@@ -55,7 +55,7 @@
                                         </div>
                                         <div style="float:left; width:85%; height:30px;">
                                             <label class='radio-inline' style="width:70%;">
-                                                <input class="col-sm-6" style="width:100%;" type="text" name="balance[withdraw][poundage]" value=" "/>
+                                                <input class="col-sm-6" style="width:100%;" type="text" name="withdraw[balance][poundage]" value=" "/>
                                             </label>
                                         </div>
                                     </div>
@@ -68,7 +68,7 @@
                                         </div>
                                         <div style="float:left; width:85%; height:30px;">
                                             <label class='radio-inline' style="width:70%;">
-                                                <input class="col-sm-6" style="width:100%;" type="text" name="balance[withdraw][withdrawmoney]" value=" "/>
+                                                <input class="col-sm-6" style="width:100%;" type="text" name="withdraw[balance][withdrawmoney]" value=" "/>
                                             </label>
                                         </div>
                                     </div>
@@ -97,7 +97,7 @@
     </div>
     <script language="javascript">
         $(function () {
-            $(":radio[name='balance[withdraw][status]']").click(function () {
+            $(":radio[name='withdraw[balance][status]']").click(function () {
                 if ($(this).val() == 1) {
                     $("#withdraw").show();
                 }
