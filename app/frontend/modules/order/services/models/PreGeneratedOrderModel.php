@@ -191,6 +191,7 @@ class PreGeneratedOrderModel extends OrderModel
             'uniacid' => $this->shop->uniacid,
         );
         //todo 测试
+        dump($data);
 
         return $data;
     }

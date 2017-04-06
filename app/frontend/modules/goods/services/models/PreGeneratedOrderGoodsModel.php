@@ -151,6 +151,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
                 'goods_option_title' => $this->goodsOption->title,
             ];
         }
+        dump($data);
         return new OrderGoods($data);
     }
 

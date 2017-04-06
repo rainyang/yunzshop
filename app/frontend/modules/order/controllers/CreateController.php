@@ -9,12 +9,9 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
 use app\common\events\cart\GroupingCartEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\exceptions\AppException;
-use app\frontend\modules\goods\services\GoodsService;
-use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
@@ -25,6 +22,9 @@ class CreateController extends ApiController
     private function getGroupingCart()
     {
         $params = \YunShop::request()->get();
+        if(!is_array($params['goods'])){
+            $params['goods'] = json_decode($params['goods'],true);
+        }
         $this->validator($params['goods']);
 
         $event = new GroupingCartEvent();
