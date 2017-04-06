@@ -56,10 +56,11 @@ class WithdrawController extends BaseController
         if (!$withdrawModel) {
             return $this->message('数据不存在或已被删除!','',error);
         }
-
-        dd($withdrawModel->toArray());
+        $withdrawModel = $withdrawModel->toArray();
+//        dd($withdrawModel);
         return view('finance.withdraw.withdraw-info', [
             'item' => $withdrawModel,
+            'order_total' => $withdrawModel['type_data']['order_total'],
             'set' => $set,
         ])->render();
     }

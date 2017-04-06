@@ -81,22 +81,26 @@ class Withdraw extends BackendModel
      */
     public function getTypeDataAttribute()
     {
-        
+
         if (!isset($this->TypeData)) {
             $configs = Config::get('income');
+
             foreach ($configs as $key => $config) {
-                if ($key === $this->type) {
+                if ($config['class'] === $this->type) {
+
                     $orders = Income::getIncomeByIds($this->type_id)->get();
                     if($orders){
-                        foreach ($orders as $order) {
-                            $this->TypeData[] = $order->incometable->ordertable->toArray();
+                        $this->TypeData['order_total'] = $orders->count();
+                        foreach ($orders as $k => $order) {
+                            $this->TypeData['orders'][$k] = $order->incometable->ordertable->toArray();
                         }
+
                     }
                 }
 
+
             }
         }
-
         return $this->TypeData;
     }
 

@@ -74,8 +74,7 @@ class Income extends BackendModel
     public static function getIncomeByIds($ids)
     {
         return self::uniacid()
-            ->whereIn('id', explode(',', $ids))
-            ->first();
+            ->whereIn('id', explode(',', $ids));
     }
     
 

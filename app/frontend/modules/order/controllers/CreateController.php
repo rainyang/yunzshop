@@ -24,10 +24,7 @@ class CreateController extends ApiController
     private function getGroupingCart()
     {
         $params = \YunShop::request()->get();
-        $params['goods'][] = [
-            'goods_id' => 2,
-            'total' => 1
-        ];
+        
 
         $event = new GroupingCartEvent();
         event($event);
