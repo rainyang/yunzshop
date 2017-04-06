@@ -54,10 +54,16 @@ class GoodsService
     public static function GoodsListAvailable(array $preGeneratedOrderGoodsModels)
     {
         foreach ($preGeneratedOrderGoodsModels as $preGeneratedOrderGoodsModel) {
-            $result = self::GoodsAvailable($preGeneratedOrderGoodsModel);
+            foreach ($preGeneratedOrderGoodsModel as $orderGoodsModel) {
+                $result = self::GoodsAvailable($orderGoodsModel);
+                if($result !== true) {
+                    return $result;
+                }
+            }
+            /*$result = self::GoodsAvailable($preGeneratedOrderGoodsModel);
             if($result !== true) {
                 return $result;
-            }
+            }*/
         }
         return true;
     }

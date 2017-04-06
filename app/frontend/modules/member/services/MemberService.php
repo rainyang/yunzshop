@@ -22,6 +22,7 @@ class MemberService
             return self::$_current_member;
         }
         $uid = \YunShop::app()->getMemberId();
+        $uid = 1;
         if(!isset($uid)){
             throw new AppException('uid不存在');
         }
