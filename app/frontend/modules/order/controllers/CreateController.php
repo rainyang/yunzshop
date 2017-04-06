@@ -33,7 +33,7 @@ class CreateController extends ApiController
 
         $goods_ids = [];
         foreach ($params['goods'] as $goods_params) {
-            if (!$event->getMap()['goods_ids']) {
+            if ($event->getMap()['goods_ids']) {
                 foreach ($event->getMap()['goods_ids'] as $key => $goods_id) {
                     if ($key == $goods_params['goods_id']) {
                         $goods_ids['plugin'][] = new MemberCart($goods_params);
@@ -53,13 +53,6 @@ class CreateController extends ApiController
 
     private function getMemberCarts(){
         return $this->getGroupingCart();
-        $params = \YunShop::request()->get();
-
-        $result = [];
-        foreach ($params['goods'] as $goods_params){
-            $result[] = new MemberCart($goods_params);
-        }
-        return $result;
     }
     public function index(){
         //dd(defined('IS_TEST'));exit;
