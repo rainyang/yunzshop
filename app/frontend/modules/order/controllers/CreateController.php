@@ -11,6 +11,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\cart\GroupingCartEvent;
+use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\exceptions\AppException;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\models\MemberCart;
@@ -24,7 +25,7 @@ class CreateController extends ApiController
     private function getGroupingCart()
     {
         $params = \YunShop::request()->get();
-        
+        $this->validator($params['goods']);
 
         $event = new GroupingCartEvent();
         event($event);
@@ -53,35 +54,23 @@ class CreateController extends ApiController
         return $this->getGroupingCart();
     }
     public function index(){
-        //dd(defined('IS_TEST'));exit;
-        /*if (!defined('IS_TEST')) {
-            return;
-        }*/
-        $params = \YunShop::request()->get();
-        //$this->validator($params['goods']);
+
         $member_model = MemberService::getCurrentMemberModel();
 
         $shop_model = ShopService::getCurrentShopModel();
         //todo 根据参数
         foreach ($this->getMemberCarts() as $carts) {
-            //echo '<pre>';print_r($carts);exit;
             $order_goods_models = OrderService::getOrderGoodsModels($carts);
 
-            list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
-            if ($result === false) {
-                return $this->errorJson($message);
-            }
             $order_model = OrderService::getPreGeneratedOrder($order_goods_models,$member_model,$shop_model);
-            $order_model->generate();
-        }
-        /*$order_goods_models = OrderService::getOrderGoodsModels($this->getMemberCarts());
+            $result = $order_model->generate();
+            if(!$result){
+                throw new AppException('订单生成失败');
+            }
+            event(new AfterOrderCreatedEvent($order_model));
 
-        list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
-        if ($result === false) {
-            return $this->errorJson($message);
         }
-        $order_model = OrderService::getPreGeneratedOrder($order_goods_models,$member_model,$shop_model);
-        $order_model->generate();*/
+
         $this->successJson();
     }
     private function validator($params){
@@ -92,8 +81,7 @@ class CreateController extends ApiController
             throw new AppException('请选择下单商品(空数组)');
         }
         foreach ($params as $param){
-            dd($param);
-            exit;
+
             if(!isset($param['goods_id'])){
                 throw new AppException('请选择下单商品(缺少goods_id)');
             }

@@ -89,6 +89,8 @@ class TestService
     private function getMemberCoupon()
     {
         //dd($this->order->getMemberModel()->hasManyMemberCoupon($this->back_type)->get());
+        //dd($this->order);
+        //exit;
         return $this->order->getMember()->hasManyMemberCoupon($this->back_type)->get();
     }
 
