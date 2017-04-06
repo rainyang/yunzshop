@@ -29,17 +29,12 @@ class ApiController extends BaseController
 //        if (config('app.debug')) {
 //            return true;
 //        }
+        $this->setCookie();
+        if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
+            $yz_redirect  = \YunShop::request()->yz_redirect;
+            $type  = \YunShop::request()->type;
 
-
-        if (!in_array($this->action,$this->publicAction)) {
-            $this->setCookie();
-
-            if (!MemberService::isLogged()) {
-                $yz_redirect  = \YunShop::request()->yz_redirect;
-                $type  = \YunShop::request()->type;
-
-                //redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
-            }
+            //redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
         }
     }
 
@@ -53,22 +48,26 @@ class ApiController extends BaseController
             unset($pieces);
         }
 
-        if (empty($session_id) && \YunShop::request()->session_id &&
+        if (\YunShop::request()->session_id &&
             \YunShop::request()->session_id != 'undefined') {
-            echo 2;
-            $session_id = \YunShop::request()->session_id;
+            if (empty($session_id)) {
+                echo 2;
+                $session_id = \YunShop::request()->session_id;
+            }
+
+            if (empty($session_id)) {
+                echo 3;
+                $session_id = $_COOKIE[session_name()];
+            }
+            
+            if (empty($session_id)) {
+                echo 4;
+                $session_id = \YunShop::app()->uniacid . '-' . Client::random(20) ;
+                $session_id = md5($session_id);
+                setcookie(session_name(), $session_id);
+            }
         }
 
-        if (empty($session_id)) {
-            echo 3;
-            $session_id = $_COOKIE[session_name()];
-        }
-        if (empty($session_id)) {
-            echo 4;
-            $session_id = \YunShop::app()->uniacid . '-' . Client::random(20) ;
-            $session_id = md5($session_id);
-            setcookie(session_name(), $session_id);
-        }
 
         session_save_path('/tmp');
 
