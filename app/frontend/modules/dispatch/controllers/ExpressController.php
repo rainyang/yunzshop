@@ -29,8 +29,6 @@ class ExpressController extends ApiController
     private function getExpress($express, $expresssn)
     {
         $url = sprintf('https://m.kuaidi100.com/query?type=%s&postid=%s&id=1&valicode=&temp=%s', $express, $expresssn, time());
-        //$url = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$express}&fromWeb=null&postid={$expresssn}";
-        //\load()->func('communication');
 
         $result = Curl::to($url)
             ->asJsonResponse(true)->get();
