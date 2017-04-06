@@ -2,12 +2,9 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
-<<<<<<< HEAD
-=======
-use app\common\components\BaseController;
 use app\common\exceptions\AppException;
-use app\frontend\modules\goods\services\GoodsService;
->>>>>>> 74756ba6e8bd3ab4970b5ea24ed853e1b0f0775d
+
+
 use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
 
