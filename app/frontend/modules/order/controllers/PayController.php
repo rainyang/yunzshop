@@ -27,7 +27,7 @@ class PayController extends ApiController
         }
         $member = $order->belongsToMember()->select(['credit2'])->first()->toArray();
         $data = ['order' => $order,'member'=>$member];
-        
+
         return $this->successJson('成功', $data);
     }
 
