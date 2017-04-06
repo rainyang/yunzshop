@@ -91,6 +91,7 @@ class MemberRelation extends BackendModel
         if ($isAgent) {
             if ($info['become_check'] == 0) {
                 $member_info->is_agent = 1;
+                $member_info->status = 2;
                 $member_info->save();
             }
         }
@@ -121,6 +122,12 @@ class MemberRelation extends BackendModel
         }
     }
 
+    /**
+     * 检查用户订单中是否包含指定商品
+     *
+     * @param $goods_id
+     * @return bool
+     */
     public static function checkOrderGoods($goods_id)
     {
         $list = OrderListModel::getRequestOrderList(3,\YunShop::app()->getMemberId());

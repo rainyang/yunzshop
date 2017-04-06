@@ -12,6 +12,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\models\AccountWechats;
 use app\common\models\Goods;
+use app\common\models\MemberShopInfo;
 use app\common\models\Order;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
@@ -245,5 +246,15 @@ class MemberController extends ApiController
         }
 
         return $this->successJson('ok');
+    }
+
+    /**
+     * 获取我的下线
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyAgentCount()
+    {
+         return $this->successJson('', ['count'=>MemberShopInfo::getAgentCount()]);
     }
 }
