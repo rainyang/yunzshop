@@ -18,6 +18,7 @@
                         <div class="col-sm-8 col-lg-9 col-xs-12">
                             <input type="text" class="form-control" name="realname" value="{$_GPC['realname']}"
                                    placeholder='可搜索会员昵称/姓名/手机号/绑定手机号'/>
+
                         </div>
                     </div>
 
