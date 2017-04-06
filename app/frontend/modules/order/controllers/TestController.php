@@ -2,17 +2,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
-use app\common\events\order\AfterOrderCanceledEvent;
-use app\common\events\order\AfterOrderCancelSentEvent;
-use app\common\events\order\AfterOrderPaidEvent;
-use app\common\events\order\AfterOrderReceivedEvent;
-use app\common\events\order\AfterOrderSentEvent;
-use app\common\events\order\BeforeOrderCancelPayEvent;
-use app\common\models\MemberCoupon;
-use app\common\models\Order;
-use app\common\requests\Request;
-use app\frontend\models\Member;
+
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
