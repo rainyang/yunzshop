@@ -19,10 +19,29 @@ class MemberShopInfo extends BackendModel
 
     public $primaryKey = 'member_id';
 
+    /**
+     * 获取用户信息
+     *
+     * @param $memberId
+     * @return mixed
+     */
     public static function getMemberShopInfo($memberId)
     {
         return self::select('*')->where('member_id', $memberId)
             ->uniacid()
             ->first(1);
+    }
+
+    /**
+     * 获取我的下线
+     *
+     * @return mixed
+     */
+    public static function getAgentCount()
+    {
+        return self::uniacid()
+             ->where('parent_id', \YunShop::app()->getMemberId())
+             ->where('is_black', 0)
+             ->count();
     }
 }
