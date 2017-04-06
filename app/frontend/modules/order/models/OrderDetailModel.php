@@ -16,7 +16,7 @@ class OrderDetailModel extends Order
     {
         $orderModels = self::with(['hasManyOrderGoods'=>function($query){
             return $query->select(['order_id','goods_option_title','goods_id','goods_price','total','price','title','thumb']);
-        }])->select(['id','uid','order_sn','price','goods_price','create_time','finish_time','pay_time','send_time','cancel_time','dispatch_type_id','status'])->find($orderId);
+        }])->select(['id','uid','order_sn','price','goods_price','create_time','finish_time','pay_time','send_time','cancel_time','dispatch_type_id','pay_type_id','status'])->find($orderId);
         return $orderModels;
     }
 }

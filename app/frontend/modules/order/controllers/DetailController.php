@@ -22,7 +22,7 @@ class DetailController extends ApiController
         } else {
             $orderDetail = OrderDetailModel::getOrderDetail($orderId);
             $data= $orderDetail->toArray();
-            
+
             //todo 配送类型
             //dd($orderDetail);
             if($orderDetail['dispatch_type_id'] == 1){
