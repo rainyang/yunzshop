@@ -33,8 +33,10 @@ class ExpressController extends ApiController
         $express = $this->getExpress($order->express->express_code, $order->express->express_sn);
         $data['express_sn'] = $order->express->express_sn;
         $data['company_name'] = $order->express->express_company_name;
-        $data['data'] = $express;
-
+        $data['data'] = $express['data'];
+        $data['thumb'] = $order->hasManyOrderGoods[0]->thumb;
+        $data['tel'] = '95533';
+        $data['status_name'] = $this->expressStatusName($express['state']);
         $this->successJson('成功', $data);
     }
 
@@ -47,20 +49,19 @@ class ExpressController extends ApiController
         if (empty($result)) {
             return array();
         }
-        $result['status_name'] = $this->expressStatusName($result['state']);
         return $result;
     }
 
     private function expressStatusName($key)
     {
         $state_name_map = [
-            0=>'在途',
-            1=>'揽件',
-            2=>'疑难',
-            3=>'签收',
-            4=>'退签',
-            5=>'派件',
-            6=>'退回',
+            0 => '在途',
+            1 => '揽件',
+            2 => '疑难',
+            3 => '签收',
+            4 => '退签',
+            5 => '派件',
+            6 => '退回',
         ];
         return $state_name_map[$key];
     }
