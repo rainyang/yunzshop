@@ -171,7 +171,7 @@ class GoodsController extends ApiController
         if (empty($brand_id)) {
             $this->errorJson('请输入正确的品牌id.');
         }
-dd('11');
+
         $brand = Brand::uniacid()->select("name", "logo", "id")->where(['id' => $brand_id])->first();
 
         if (!$brand) {
