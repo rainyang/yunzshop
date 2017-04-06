@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\services;
 
 
+use app\common\exceptions\AppException;
 use app\frontend\modules\member\models\MemberCart;
 
 class MemberCartService
@@ -27,5 +28,12 @@ class MemberCartService
         }
 
         return MemberCart::destroyMemberCart($ids);
+    }
+    public function newMemberCart($params){
+        $cart = new MemberCart($params);
+        if(!isset($cart->goods)){
+            throw new AppException('未找到商品或已经删除');
+        }
+        return $cart;
     }
 }
