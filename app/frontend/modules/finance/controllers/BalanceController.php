@@ -25,16 +25,26 @@ class BalanceController extends ApiController
     public function recharge()
     {
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = 55;
         $rechargeMoney = trim(\YunShop::request()->recharge_money);
+        $payTypr = \YunShop::request()->pay_type;
+
+
         $rechargeMoney = 100;
+        $memberId = 55;
+
         $balanceModel = new Balance();
         $resultId = $balanceModel->memberBalanceRecharge($memberId, $rechargeMoney);
         if (is_numeric($resultId)) {
-            $pay = PayFactory::create($type);
-
-            $pay->doPay([]);
             //todo 调取支付接口
+            $pay = PayFactory::create($payTypr);
+
+            $result = $pay->doPay([]);
+
+            //$result 返给前端
+            // todo 监听支付后 回掉
+
+
+
 
             if ($balanceModel->updateBalance($memberId, $rechargeMoney) === true) {
                 $result = $balanceModel->updateRecordStatus($resultId, 1);

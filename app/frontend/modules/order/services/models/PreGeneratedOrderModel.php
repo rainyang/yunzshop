@@ -144,7 +144,6 @@ class PreGeneratedOrderModel extends OrderModel
             foreach ($orderGoodsModels as $orderGoodsModel){
                 $orderGoodsModel->order_id = $order->id;
                 $orderGoodsModel->save();
-
             }
             return $order;
         });
