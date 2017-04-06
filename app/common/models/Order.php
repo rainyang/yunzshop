@@ -13,7 +13,6 @@ use app\common\models\order\Address;
 use app\common\models\order\Express;
 use app\common\models\order\Pay;
 use app\common\models\order\Remark;
-use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\status\StatusServiceFactory;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
@@ -24,7 +23,7 @@ class Order extends BaseModel
     private $StatusService;
     protected $fillable = [];
     protected $guarded = ['id'];
-    protected $appends = ['status_name','pay_type_name', 'button_models'];
+    protected $appends = ['status_name','pay_type_name'];
     protected $search_fields = ['id', 'order_sn'];
     protected $attributes = ['discount_price'=>0];
     const CLOSE = -1;
