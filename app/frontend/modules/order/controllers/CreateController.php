@@ -9,11 +9,9 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
 use app\common\events\cart\GroupingCartEvent;
+use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\exceptions\AppException;
-use app\frontend\modules\goods\services\GoodsService;
-use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\OrderService;
@@ -24,10 +22,10 @@ class CreateController extends ApiController
     private function getGroupingCart()
     {
         $params = \YunShop::request()->get();
-        $params['goods'][] = [
-            'goods_id' => 2,
-            'total' => 1
-        ];
+        if (!is_array($params['goods'])) {
+            $params['goods'] = json_decode($params['goods'], true);
+        }
+        $this->validator($params['goods']);
 
         $event = new GroupingCartEvent();
         event($event);
@@ -46,61 +44,53 @@ class CreateController extends ApiController
                 $goods_ids['shop'][] = MemberCartService::newMemberCart($goods_params);
             }
         }
-        if(!count($goods_ids)){
+        if (!count($goods_ids)) {
             throw new AppException('分单失败');
         }
         return $goods_ids;
     }
 
-    private function getMemberCarts(){
+    private function getMemberCarts()
+    {
         return $this->getGroupingCart();
     }
-    public function index(){
-        //dd(defined('IS_TEST'));exit;
-        /*if (!defined('IS_TEST')) {
-            return;
-        }*/
-        $params = \YunShop::request()->get();
-        //$this->validator($params['goods']);
+
+    public function index()
+    {
+
         $member_model = MemberService::getCurrentMemberModel();
 
         $shop_model = ShopService::getCurrentShopModel();
         //todo 根据参数
         foreach ($this->getMemberCarts() as $carts) {
-            //echo '<pre>';print_r($carts);exit;
             $order_goods_models = OrderService::getOrderGoodsModels($carts);
 
-            list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
-            if ($result === false) {
-                return $this->errorJson($message);
+            $order_model = OrderService::getPreGeneratedOrder($order_goods_models, $member_model, $shop_model);
+            $result = $order_model->generate();
+            if (!$result) {
+                throw new AppException('订单生成失败');
             }
-            $order_model = OrderService::getPreGeneratedOrder($order_goods_models,$member_model,$shop_model);
-            $order_model->generate();
-        }
-        /*$order_goods_models = OrderService::getOrderGoodsModels($this->getMemberCarts());
+            event(new AfterOrderCreatedEvent($order_model));
 
-        list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
-        if ($result === false) {
-            return $this->errorJson($message);
         }
-        $order_model = OrderService::getPreGeneratedOrder($order_goods_models,$member_model,$shop_model);
-        $order_model->generate();*/
-        $this->successJson();
+
+        $this->successJson('成功', ['order_id' => $order_model->id]);
     }
-    private function validator($params){
-        if(!is_array($params)){
+
+    private function validator($params)
+    {
+        if (!is_array($params)) {
             throw new AppException('请选择下单商品(非数组)');
         }
-        if(!count($params)){
+        if (!count($params)) {
             throw new AppException('请选择下单商品(空数组)');
         }
-        foreach ($params as $param){
-            dd($param);
-            exit;
-            if(!isset($param['goods_id'])){
+        foreach ($params as $param) {
+
+            if (!isset($param['goods_id'])) {
                 throw new AppException('请选择下单商品(缺少goods_id)');
             }
-            if(!isset($param['total'])){
+            if (!isset($param['total'])) {
                 throw new AppException('请选择下单商品(缺少total)');
             }
         }

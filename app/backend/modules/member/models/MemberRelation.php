@@ -9,6 +9,7 @@
 namespace app\backend\modules\member\models;
 
 use app\backend\models\BackendModel;
+use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\order\models\OrderListModel;
 
 class MemberRelation extends BackendModel
@@ -49,7 +50,7 @@ class MemberRelation extends BackendModel
      *
      * @return bool
      */
-    public static function getAgentData()
+    public static function checkAgent()
     {
         $info = self::getSetInfo()->first()->toArray();
 
@@ -85,10 +86,14 @@ class MemberRelation extends BackendModel
                 default:
                     $isAgent = false;
             }
+        }
 
-            return $isAgent;
-        } else {
-            return true;
+        if ($isAgent) {
+            if ($info['become_check'] == 0) {
+                $member_info->is_agent = 1;
+                $member_info->status = 2;
+                $member_info->save();
+            }
         }
     }
 
@@ -117,6 +122,12 @@ class MemberRelation extends BackendModel
         }
     }
 
+    /**
+     * 检查用户订单中是否包含指定商品
+     *
+     * @param $goods_id
+     * @return bool
+     */
     public static function checkOrderGoods($goods_id)
     {
         $list = OrderListModel::getRequestOrderList(3,\YunShop::app()->getMemberId());
