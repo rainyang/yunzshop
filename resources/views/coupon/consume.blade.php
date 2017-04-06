@@ -13,7 +13,7 @@
     <div class="col-sm-2 backtype backtype0" @if($coupon['backtype']!=0)style='display:none' @endif>
     <div class='input-group'>
         <span class='input-group-addon'>立减</span>
-        <input style="width: 120px" type='text' class='form-control' name='deduct' value="{{$coupon['deduct']}}"/>
+        <input type='text' class='form-control' name='deduct' value="{{$coupon['deduct']}}"/>
         <span class='input-group-addon'>元</span>
     </div>
 </div>
@@ -22,21 +22,32 @@
     <span class='input-group-addon'>打</span>
     <input type='text' class='form-control' name='discount'  placeholder='0.1-10' value="{{$coupon['discount']}}"/>
     <span class='input-group-addon'>折</span>
-</div>   </div>
-<div class="col-sm-5 backtype backtype2"  @if($coupon['backtype']!=2)style='display:none' @endif>
-<div class='input-group'>
-    <span class='input-group-addon'>返</span>
-    <input type='text' class='form-control' name='backmoney' value="{{$coupon['backmoney']}}"/>
-    <span class='input-group-addon'>余额 返</span>
-    <input type='text' class='form-control' name='backcredit' value="{{$coupon['backcredit']}}"/>
-    <span class='input-group-addon'>积分 返</span>
-    <input type='text' class='form-control'  name='backredpack'  value="{{$coupon['backredpack']}}"/>
-    <span class='input-group-addon'>现金</span>
 </div>
-　<span class='help-block'>带%为返消费金额的百分比: 如10% ，消费200元，返20元，反现金，需要商户平台有钱，并需要上传微信证书</span>
 </div>
+<div class="row backtype backtype2"  @if($coupon['backtype']!=2)style='display:none' @endif>
+    <div class='input-group form-inline col-sm-9'>
+        <div class="input-group form-group col-sm-2">
+        <span class='input-group-addon'>返</span>
+        <input type='text' class='form-control' name='backmoney' value="{{$coupon['backmoney']}}"/>
+        <span class='input-group-addon'>余额</span>
+        </div>
 
+        <div class="input-group form-group col-sm-2">
+        <span class='input-group-addon'>返</span>
+        <input type='text' class='form-control' name='backcredit' value="{{$coupon['backcredit']}}"/>
+        <span class='input-group-addon'>积分</span>
+        </div>
+
+        <div class="input-group form-group col-sm-2">
+        <span class='input-group-addon'>返</span>
+        <input type='text' class='form-control'  name='backredpack'  value="{{$coupon['backredpack']}}"/>
+        <span class='input-group-addon'>现金</span>
+        </div>
+    </div>
 </div>
+</div>
+<div class='input-group'><div class='help-block  col-sm-9'>带%为返消费金额的百分比: 如10% ，消费200元，返20元，反现金，需要商户平台有钱，并需要上传微信证书</div></div>
+
 
 
 <div class="form-group backtype backtype2"  @if($coupon['backtype']!=2)style='display:none' @endif>
