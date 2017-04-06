@@ -10,7 +10,9 @@ namespace app\common\models;
 
 
 use app\backend\models\BackendModel;
+use app\backend\modules\finance\models\IncomeOrder;
 use app\frontend\modules\finance\services\WithdrawService;
+use Illuminate\Support\Facades\Config;
 
 class Withdraw extends BackendModel
 {
@@ -31,7 +33,7 @@ class Withdraw extends BackendModel
     protected $guarded = [];
 
 
-    protected $appends = ['status_name', 'pay_way_name', 'type'];
+    protected $appends = ['status_name', 'pay_way_name', 'type_data'];
 
     /**
      * @return string
@@ -73,27 +75,44 @@ class Withdraw extends BackendModel
         return $this->getPayWayService();
     }
 
+
     /**
      * @return string
      */
-    public function getTypeData()
+    public function getTypeDataAttribute()
     {
+        
         if (!isset($this->TypeData)) {
+            $configs = Config::get('income');
+            foreach ($configs as $key => $config) {
+                if ($key === $this->type) {
+                    $orders = Income::getIncomeByIds($this->type_id)->get();
+                    if($orders){
+                        foreach ($orders as $order) {
+                            $this->TypeData[] = $order->incometable->ordertable->toArray();
+                        }
+                    }
+                }
 
-            //$this->TypeData = WithdrawService::createPayWayService($this);
-            $this->TypeData = $this->type;
+            }
         }
+
         return $this->TypeData;
     }
 
-    /**
-     * @return string
-     */
-    public function getTypeAttribute()
+    public static function getWithdrawById($id)
     {
-        return $this->getTypeData();
-    }
+        $Model = self::where('id', $id);
 
+        $Model->with(['hasOneMember' => function ($query) {
+            $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
+        }]);
+        $Model->with(['hasOneAgent' => function ($query) {
+            $query->select('member_id', 'agent_level_id', 'commission_total');
+        }]);
+
+        return $Model;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -103,6 +122,10 @@ class Withdraw extends BackendModel
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
+    public function hasOneAgent()
+    {
+        return $this->hasOne('Yunshop\Commission\models\Agents', 'member_id', 'member_id');
+    }
 
     /**
      *  定义字段名

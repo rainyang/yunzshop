@@ -273,7 +273,12 @@ class GoodsController extends BaseController
 
     public function edit()
     {
-        $this->goods_id = \YunShop::request()->id;
+        $this->goods_id = intval(\YunShop::request()->id);
+
+        if (!$this->goods_id){
+            $this->error('请传入正确参数.');
+        }
+
         $requestGoods = \YunShop::request()->goods;
         $goodsModel = Goods::with('hasManyParams')->with('hasManySpecs')->with('hasManyGoodsCategory')->find($this->goods_id);//->getGoodsById(2);
         //dd($goodsModel->hasManyGoodsCategory->toArray());
@@ -326,8 +331,6 @@ class GoodsController extends BaseController
                     //显示信息并跳转
                     return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
                 } else {
-                    //dd($goodsModel);
-                    //dd('商品修改失败');
                     !session()->has('flash_notification.message') && $this->error('商品修改失败');
                     //$this->error('商品修改失败');
                 }

@@ -16,14 +16,11 @@ class AlipayController extends PaymentController
 {
     public function notifyUrl()
     {
-        file_put_contents('../../../../addons/sz_yi/data/n.log', print_r($_POST,1));
-        // TODO 访问记录
-        // TODO 保存响应数据
+        $this->log($_POST);
 
         $verify_result = $this->getSignResult();
 
         if($verify_result) {
-            file_put_contents('../../../../addons/sz_yi/data/s.log', print_r($_POST,1));
             //商户订单号
             $out_trade_no = $_POST['out_trade_no'];
             //支付宝交易号
@@ -42,7 +39,6 @@ class AlipayController extends PaymentController
             echo "success";
 
         } else {
-            file_put_contents('../../../../addons/sz_yi/data/k.log', print_r($_POST,1));
             echo "fail";
         }
     }
@@ -79,5 +75,16 @@ class AlipayController extends PaymentController
         $alipay->setKey($key);
 
         return $alipay->verify();
+    }
+
+    public function log($post)
+    {
+        $pay = new WechatPay();
+
+        //访问记录
+        $pay->payAccessLog();
+        //保存响应数据
+        $pay_order_info = PayOrder::getPayOrderInfo($post['out_trade_no'])->first()->toArray();
+        $pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
     }
 }

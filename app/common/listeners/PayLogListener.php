@@ -15,12 +15,14 @@ class PayLogListener
 {
     public function handle(PayLog $event)
     {
+        $pay_type = config('app.pay_type');
+
         $params = $event->getPayRequestParams();
         $pay = $event->getPayObject();
 
         $pay_order_info = PayOrder::getPayOrderInfo($params['out_trade_no'])->first()->toArray();
 
-        $pay->payRequestDataLog($pay_order_info['id'], $pay_order_info['type'],
-            $pay_order_info['third_type'], json_encode($params));
+        $pay->payRequestDataLog($pay_order_info['id'], $pay_order_info['out_order_no'],
+            $pay_type[$pay_order_info['third_type']], json_encode($params));
     }
 }

@@ -91,9 +91,14 @@ class BalanceController extends BaseController
     {
 //todo 缺少会员头像路径转换
 
+<<<<<<< HEAD
         $memberId = \YunShop::request()->member_id;
         $rechargeMoney = trim(\YunShop::request()->num);
         $memberInfo = Member::getMemberInfoById($memberId);
+=======
+        $memberId = \YunShop::app()->getMemberId();
+        $memberInfo = Member::getMemberInfoById($memberId)->toArray();
+>>>>>>> 74756ba6e8bd3ab4970b5ea24ed853e1b0f0775d
         if (!$memberInfo) {
             $this->error('未获取到会员信息，请刷新重试');
         }

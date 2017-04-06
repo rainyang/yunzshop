@@ -71,21 +71,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list['data'] as $row)
+                    @foreach($list as $row)
                         <tr>
-                            <td>{{$row['id']}}</td>
-                            <td> <img src="{{tomedia($row['has_one_member']['avatar'])}}"
+                            <td>{{$row->id}}</td>
+                            <td> <img src="{{tomedia($row->hasOneMember['avatar'])}}"
                                       style="width: 30px; height: 30px;border:1px solid #ccc;padding:1px;">
                                 </br>
-                                {{$row['has_one_member']['nickname']}}</td>
-                            <td>{{$row['has_one_member']['realname']}}</br>{{$row['has_one_member']['mobile']}}</td>
-                            <td>{{$row['type_name']}}</td>
-                            <td>{{$row['pay_way_name']}}</td>
-                            <td>{{$row['amounts']}}</td>
-                            <td>{{$row['created_at']}}</td>
+                                {{$row->hasOneMember['nickname']}}</td>
+                            <td>{{$row->hasOneMember['realname']}}</br>{{$row->hasOneMember['mobile']}}</td>
+                            <td>{{$row->type_name}}</td>
+                            <td>{{$row->pay_way_name}}</td>
+                            <td>{{$row->amounts}}</td>
+                            <td>{{$row->created_at}}</td>
                             <td>
                                     <a class='btn btn-default'
-                                       href="{{yzWebUrl('finance.withdraw.info', ['id' => $row['id']])}}"
+                                       href="{{yzWebUrl('finance.withdraw.info', ['id' => $row->id])}}"
                                        title='详情'>详情
                                     </a>
                             </td>

@@ -40,6 +40,7 @@ class MemberOfficeAccountService extends MemberService
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         $state = 'yz-' . session_id();
+
         if (!Session::get('member_id')) {
             $authurl = $this->_getAuthUrl($appId, $callback, $state);
         } else {
@@ -67,6 +68,7 @@ class MemberOfficeAccountService extends MemberService
                 ->get();
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+                file_put_contents(storage_path('logs/unid.log'), print_r($userinfo, 1));
                 \YunShop::app()->openid = $userinfo['openid'];
 
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
@@ -76,6 +78,7 @@ class MemberOfficeAccountService extends MemberService
                 }
 
                 if (!empty($UnionidInfo['unionid'])) {
+                    \Log::debug();
                     $types = explode('|', $UnionidInfo['type']);
                     $member_id = $UnionidInfo['member_id'];
 
@@ -106,6 +109,7 @@ class MemberOfficeAccountService extends MemberService
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
+                    \Log::debug();
                     //添加mc_members表
                     $default_groupid = McGroupsModel::getDefaultGroupId();
 
@@ -192,14 +196,17 @@ class MemberOfficeAccountService extends MemberService
         }
 
         //redirect('http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.test.login')->send();
-        $split = explode('?', $redirect_url);
 
-        if (strrpos($split[0], '/') > 6) {
-          //  $redirect_url = substr($split[0], 0, strrpos($split[0], '/'));
-        }
-
-file_put_contents(storage_path('logs/red.log'), $redirect_url, FILE_APPEND);
-        redirect($redirect_url . '?login&session_id=' . session_id())->send();
+        header('Access-Control-Allow-Origin: http://localhost:8081' );
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
+        header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With');
+        header('Access-Control-Allow-Credentials: true');
+        header('location:' . $redirect_url . '?login&session_id=' . session_id() . '&uid=' . \YunShop::app()->getMemberId());
+        exit;
+//file_put_contents(storage_path('logs/red.log'), $redirect_url, FILE_APPEND);
+        redirect($redirect_url . '?login&session_id=' . session_id() . '&uid=' . \YunShop::app()->getMemberId(),302,[
+            'Access-Control-Allow-Origin'=>'http://localhost:8081'
+        ])->send();
     }
 
     /**

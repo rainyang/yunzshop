@@ -2,7 +2,14 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
+<<<<<<< HEAD
+=======
+use app\common\components\BaseController;
+use app\common\exceptions\AppException;
+use app\frontend\modules\goods\services\GoodsService;
+>>>>>>> 74756ba6e8bd3ab4970b5ea24ed853e1b0f0775d
 use app\frontend\modules\member\models\MemberCart;
+use app\frontend\modules\member\services\MemberCartService;
 
 /**
  * Created by PhpStorm.
@@ -126,20 +133,13 @@ class MemberCartController extends ApiController
     {
         $ids = explode(',', \YunShop::request()->ids);
 
-        $cart = MemberCart::getMemberCartByIds($ids);
+        $result = MemberCartService::clearCartByIds($ids);
 
-        if(!$cart) {
-            $msg = "未找到商品或已经删除";
-            return $this->errorJson($msg);
-        }
 
-        $result = MemberCart::destroyMemberCart($ids);
         if($result) {
-            $msg = "移除购物车成功。";
-            return $this->successJson($msg);
+            $this->successJson('移除购物车成功。');
         }
-        $msg = "写入出错，移除购物车失败！";
-        return $this->errorJson($msg);
+        throw new AppException('写入出错，移除购物车失败！');
     }
 
 }

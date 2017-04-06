@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\goods\controllers;
 
+use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
@@ -33,14 +34,14 @@ class GoodsController extends ApiController
         }])->with(['hasManyOptions' => function ($query) {
             return $query->select('id', 'goods_id', 'title', 'thumb', 'product_price', 'market_price', 'stock', 'specs', 'weight');
         }])
-            ->with('hasOneShare')
-            ->with('hasOneDiscount')
-            ->with('hasOneGoodsDispatch')
-            ->with('hasOnePrivilege')
-            ->with(['hasOneBrand' => function ($query) {
-                return $query->select('id', 'name');
-            }])
-            ->find($id);
+        ->with('hasOneShare')
+        ->with('hasOneDiscount')
+        ->with('hasOneGoodsDispatch')
+        ->with('hasOnePrivilege')
+        ->with(['hasOneBrand' => function ($query) {
+            return $query->select('id', 'name');
+        }])
+        ->find($id);
 
         if (!$goodsModel) {
             $this->errorJson('商品不存在.');
@@ -84,6 +85,14 @@ class GoodsController extends ApiController
     {
         $requestSearch = \YunShop::request()->search;
 
+        $order_field = \YunShop::request()->order_field;
+        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
+            $order_field = 'display_order';
+        }
+
+        $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
+
+
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
                 return !empty($item) && $item !== 0;
@@ -99,7 +108,11 @@ class GoodsController extends ApiController
         }
         //dd($requestSearch);
 
-        $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')->where("status", 1)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate(20)->toArray();
+        $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
+            ->where("status", 1)
+            ->orderBy($order_field, $order_by)
+            ->paginate(20)->toArray();
+        
         if (empty($list)) {
             $this->errorJson('没有找到商品.');
         }
@@ -114,13 +127,19 @@ class GoodsController extends ApiController
             $this->errorJson('请输入正确的商品分类.');
         }
 
+        $order_field = \YunShop::request()->order_field;
+        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
+            $order_field = 'display_order';
+        }
+
+        $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
+
         $categorys = Category::uniacid()->select("name", "thumb", "id")->where(['id' => $category_id])->first();
         $goodsList = Goods::uniacid()->select('yz_goods.id','yz_goods.id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')
             ->where("category_id", $category_id)
             ->where('status', '1')
-            ->orderBy('display_order', 'desc')
-            ->orderBy('yz_goods.id', 'desc')
+            ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
 
         $categorys->goods = $goodsList;
@@ -129,6 +148,42 @@ class GoodsController extends ApiController
             $this->errorJson('此分类下没有商品.');
         }
         $this->successJson('成功', $categorys);
+    }
+
+    public function getGoodsBrandList()
+    {
+        $brand_id = intval(\YunShop::request()->brand_id);
+        $order_field = \YunShop::request()->order_field;
+        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
+            $order_field = 'display_order';
+        }
+
+        $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
+
+
+        if (empty($brand_id)) {
+            $this->errorJson('请输入正确的品牌id.');
+        }
+
+        $brand = Brand::uniacid()->select("name", "logo", "id")->where(['id' => $brand_id])->first();
+
+        if (!$brand) {
+            $this->errorJson('没有此品牌.');
+        }
+        //dd($brand);
+        $goodsList = Goods::uniacid()->select('id','id as goods_id', 'title', 'thumb', 'price', 'market_price')
+            ->where('status', '1')
+            ->where('brand_id', $brand_id)
+            ->orderBy($order_field, $order_by)
+            ->paginate(20)->toArray();
+
+        if (empty($brand)) {
+            $this->errorJson('此品牌下没有商品.');
+        }
+
+        $brand->goods = $goodsList;
+
+        $this->successJson('成功', $brand);
     }
 
     /**

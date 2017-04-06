@@ -36,7 +36,8 @@ class OrderDispatch extends Dispatch
     //todo 获取配送类型
     public function getDispatchTypeId()
     {
-        return \YunShop::request()->get('dispatch_type_id');
+        $dispatchTypeId = array_get(\YunShop::request()->get('address'),'dispatch_type_id',0);
+        return $dispatchTypeId;
     }
 
 }

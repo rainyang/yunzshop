@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\shop\controllers;
 
+use app\api\Base;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\Category;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\DB;
  * Date: 2017/3/3
  * Time: 22:16
  */
-class IndexController extends ApiController
+class IndexController extends BaseController
 {
     public function getDefaultIndex()
     {

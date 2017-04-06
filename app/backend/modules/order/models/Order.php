@@ -62,7 +62,7 @@ class Order extends \app\common\models\Order
             'hasOneAddress',
             'hasOneOrderRemark',
             'hasOneOrderExpress',
-            'hasOneOrderPay'
+            'hasOnePayType'
         ]);
         return $orders;
     }
@@ -77,7 +77,7 @@ class Order extends \app\common\models\Order
             'hasOneDispatchType',
             'hasOnePayType',
             'hasOneAddress',
-            'hasOneOrderPay'
+            'hasOnePayType'
         ]);
         return $list;
     }
