@@ -21,11 +21,11 @@ abstract class CreatedOrderEvent extends Event
      * AfterOrderReceivedEvent constructor.
      * @param Order $order_model
      */
-    public function __construct(Order $order_model,PreGeneratedOrderModel $order)
+    public function __construct(PreGeneratedOrderModel $order)
     {
         //$order_model = Order::find($order_id);
-        $this->orderModel = $order_model;
-        $this->order = $order;
+        $this->orderModel = $order;
+        $this->order = $order->getOrder();
     }
     /**
      * (监听者)获取订单model

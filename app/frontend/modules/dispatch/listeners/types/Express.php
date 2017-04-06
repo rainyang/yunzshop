@@ -39,16 +39,11 @@ class Express
         }
         //返回信息 todo 需要获取用户当前默认地址
 
-        $data = [
-            'dispatch_type_id' => 1,
-            'id' => '1',
-            'address' => '云霄路188-1',
-            'mobile' => '18545571024',
-            'username' => '高启',
-            'province' => '广东省',
-            'city' => '广州市',
-            'district' => '白云区',
-        ];
+        $data = $event->getOrderModel()->getMember()->defaultAddress;
+        if(!isset($data)){
+            return;
+        }
+
         $event->addMap('default_member_address', $data);
         return;
     }
@@ -60,19 +55,23 @@ class Express
 
     private function saveExpressInfo()
     {
-        return ;
-        $addressId = \YunShop::request()->get('address_id');
-        //dd($this->event->getOrderModel());exit;
-        $member_address = MemberAddress::find($addressId);
-        $address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
-        $data = [
-            'order_id' => $this->event->getOrderModel()->id,
-            'address' => $address,
-            'mobile' => $member_address->mobile,
-            'realname' => $member_address->username,
-        ];
-        //return ;
-        OrderAddress::create($data);
+        $address = \YunShop::request()->get('address');
+        /*$address =['address' => '云霄路188-1',
+            'mobile' => '18545571024',
+            'username' => '高启',
+            'province' => '广东省',
+            'city' => '广州市',
+            'district' => '白云区',];*/
+        $member_address = new MemberAddress($address);
+
+        $order_address = new OrderAddress();
+
+        $order_address->order_id = $this->event->getOrderModel()->id;
+        $order_address->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
+        $order_address->mobile = $member_address->mobile;
+        $order_address->realname = $member_address->username;
+        $order_address->save();
+        return true;
     }
 
     public function subscribe($events)

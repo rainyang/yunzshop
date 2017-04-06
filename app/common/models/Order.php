@@ -21,7 +21,7 @@ class Order extends BaseModel
     private $StatusService;
     protected $fillable = [];
     protected $guarded = ['id'];
-    protected $appends = ['status_name', 'button_models'];
+    protected $appends = ['status_name','pay_type_name', 'button_models'];
     protected $search_fields = ['id', 'order_sn'];
     protected $attributes = ['discount_price'=>0];
     const CLOSE = -1;
@@ -124,6 +124,11 @@ class Order extends BaseModel
     public function getStatusNameAttribute()
     {
         return $this->getStatusService()->getStatusName();
+    }
+
+    public function getPayTypeNameAttribute()
+    {
+        return $this->hasOnePayType->name;
     }
 
     public function getButtonModelsAttribute()

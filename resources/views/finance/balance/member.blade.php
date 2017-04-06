@@ -18,6 +18,7 @@
                         <input type="hidden" name="a" value="entry" />
                         <input type="hidden" name="m" value="sz_yi" />
                         <input type="hidden" name="do" value="member" id="form_do" />
+
                         <div class="form-group">
                             <div class="col-sm-8 col-lg-12 col-xs-12">
                                 <div class='input-group'>
@@ -38,6 +39,11 @@
                                         <option value="{{ $group['id'] }}" @if($search['groupid'] == $group['id']) selected @endif>{{ $group['group_name'] }}</option>
                                         @endforeach
                                     </select>
+                                    <div class='input-group-addon'>余额区间</div>
+                                    <input class="form-control" name="search[min_credit2]" type="text" value="{{ $search['min_credit2'] or ''}}" placeholder="最小">
+                                    <div class='input-group-addon'>—</div>
+                                    <input class="form-control" name="search[max_credit2]" type="text" value="{{ $search['max_credit2'] or ''}}" placeholder="最大">
+
 
                                 </div>
                             </div>

@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\common\components\BaseController;
+use app\common\components\ApiController;
 use app\frontend\modules\order\models\OrderAddress;
 use app\frontend\modules\order\models\OrderDetailModel;
 
@@ -22,6 +22,7 @@ class DetailController extends ApiController
         } else {
             $orderDetail = OrderDetailModel::getOrderDetail($orderId);
             $data= $orderDetail->toArray();
+
             //todo 配送类型
             //dd($orderDetail);
             if($orderDetail['dispatch_type_id'] == 1){

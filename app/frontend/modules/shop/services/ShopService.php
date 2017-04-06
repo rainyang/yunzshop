@@ -9,6 +9,7 @@
 namespace app\frontend\modules\shop\services;
 
 
+use app\common\exceptions\AppException;
 use app\frontend\modules\shop\services\models\ShopModel;
 
 class ShopService
@@ -16,7 +17,10 @@ class ShopService
     private static $_current_shop;
     //todo 待实现
     public static function getCurrentShopModel(){
-
-        return new ShopModel();
+        $result = new ShopModel();
+        if(!isset($result)){
+            throw new AppException('读取商城信息出错');
+        }
+        return $result;
     }
 }
