@@ -44,16 +44,12 @@ class ApiController extends BaseController
             unset($pieces);
         }
 
-        if (!empty($session_id)) {
-            session_id($session_id);
+
+
+        if (empty($session_id) && \YunShop::request()->session_id &&
+            \YunShop::request()->session_id != 'undefined') {
+            $session_id = \YunShop::request()->session_id;
         }
-
-
-
-//        if (empty($session_id) && \YunShop::request()->session_id &&
-//            \YunShop::request()->session_id != 'undefined') {
-//            $session_id = \YunShop::request()->session_id;
-//        }
 
 //        if (empty($session_id)) {
 //            $session_id = $_COOKIE[session_name()];
@@ -68,6 +64,11 @@ class ApiController extends BaseController
 //        }
 
  //       session_save_path('/tmp');
+
+        if (!empty($session_id)) {
+            session_id($session_id);
+        }
+
         session_start();
 
         \Log::debug('apiController: path : '. $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
