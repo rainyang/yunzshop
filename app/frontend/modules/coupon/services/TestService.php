@@ -2,6 +2,7 @@
 
 namespace app\frontend\modules\coupon\services;
 
+use app\common\models\Order;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\coupon\services\models\DiscountCoupon;
 use app\frontend\modules\coupon\services\models\MoneyOffCoupon;
@@ -31,9 +32,10 @@ class TestService
             /**
              * @var $coupon Coupon
              */
+            $coupon->activate();
+
             $result += $coupon->getDiscountPrice();
             //将优惠金额分配到订单商品中
-            $coupon->activate();
         }
         return $result;
     }
@@ -88,9 +90,10 @@ class TestService
      */
     private function getMemberCoupon()
     {
-        //dd($this->order->getMemberModel()->hasManyMemberCoupon($this->back_type)->get());
-        //dd($this->order);
-        //exit;
+        if( $this->order instanceof Order){
+            return $this->order->belongsToMember->hasManyMemberCoupon($this->back_type)->get();
+
+        }
         return $this->order->getMember()->hasManyMemberCoupon($this->back_type)->get();
     }
 

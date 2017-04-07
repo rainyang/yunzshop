@@ -147,12 +147,13 @@ abstract class Pay
      * 提现
      *
      * @param $member_id 提现者用户ID
+     * @param $out_trade_no 提现批次单号
      * @param $money 提现金额
      * @param $desc 提现说明
      * @param $type 只针对微信 1-企业支付(钱包) 2-红包
      * @return mixed
      */
-    abstract function doWithdraw($member_id, $money, $desc, $type);
+    abstract function doWithdraw($member_id, $out_trade_no, $money, $desc, $type);
 
     /**
      * init
@@ -418,10 +419,10 @@ abstract class Pay
      * @param $strleng 统一公众号长度
      * @return string
      */
-    public function setUniacidNo($uniacid, $strleng=5)
+    public static function setUniacidNo($uniacid, $strleng=5)
     {
         $part1 = date('Ymd', time());
-        $part2 = $this->generate_string();
+        $part2 = self::generate_string();
 
         $uniacid_lenght = strlen($uniacid);
 
@@ -444,7 +445,7 @@ abstract class Pay
      * @param int $length
      * @return string
      */
-    private function generate_string ($length = 19)
+    private static function generate_string ($length = 19)
     {
         $nps = "";
         for($i=0;$i<$length;$i++)

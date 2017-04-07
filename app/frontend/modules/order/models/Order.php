@@ -11,5 +11,6 @@ namespace app\frontend\modules\order\models;
 
 class Order extends \app\common\models\Order
 {
+    protected $appends = ['status_name','pay_type_name','button_models'];
 
 }
