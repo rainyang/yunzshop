@@ -21,6 +21,8 @@ class BalanceRecharge extends BaseModel
 
     protected $guarded = [''];
 
+    const PAY_TYPE_SHOP = 0;
+
     /*
      * 模型管理，关联会员数据表
      *
