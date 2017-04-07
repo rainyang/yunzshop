@@ -24,8 +24,10 @@ class Income extends BackendModel
     protected $guarded = [];
 
     public $StatusService;
+    
+    public $PayStatusService;
 
-    protected $appends = ['status_name'];
+    protected $appends = ['status_name','pay_status_name'];
 
     /**
      * @return mixed
@@ -46,7 +48,19 @@ class Income extends BackendModel
     {
         return $this->getStatusService();
     }
+    
+    public function getPayStatusService()
+    {
+        if (!isset($this->PayStatusService)) {
 
+            $this->PayStatusService = IncomeService::createPayStatusService($this);
+        }
+        return $this->PayStatusService;
+    }
+    public function getPayStatusNameAttribute()
+    {
+        return $this->getPayStatusService();
+    }
     /**
      * @param $id
      * @return mixed
@@ -126,7 +140,13 @@ class Income extends BackendModel
             ->whereIn('id', explode(',', $typeId))
             ->update(['status' => $status]);
     }
-
+    
+    public static function updatedIncomePayStatus($id, $status)
+    {
+        return self::where('id',$id)
+            ->update(['pay_status' => $status]);
+    }
+    
     public function hasManyIncome()
     {
         return $this->hasMany(self::class, "create_month", "create_month");

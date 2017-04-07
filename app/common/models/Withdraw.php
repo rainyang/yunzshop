@@ -90,10 +90,15 @@ class Withdraw extends BackendModel
 
                     $orders = Income::getIncomeByIds($this->type_id)->get();
                     if($orders){
-                        $this->TypeData['order_total'] = $orders->count();
-                        foreach ($orders as $k => $order) {
-                            $this->TypeData['orders'][$k] = $order->incometable->ordertable->toArray();
+                        $this->TypeData['income_total'] = $orders->count();
+                        $this->TypeData['incomes'] = $orders->toArray();
+                        foreach ($this->TypeData['incomes'] as &$item) {
+                            $item['detail'] = json_decode($item['detail']);
                         }
+//                        foreach ($orders as $k => $order) {
+////                            $this->TypeData['orders'][$k] = $order->incometable->ordertable->toArray();
+//                            $this->TypeData['incomes'][$k] = $order->incometable->toArray();
+//                        }
 
                     }
                 }
