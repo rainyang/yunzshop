@@ -33,6 +33,7 @@ class TestController extends ApiController
 //
       $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
       echo '<pre>';print_r($data);
+       $data['js'] = json_decode($data['js'], 1);
 echo '<pre>';print_r(json_encode($data));exit;
        return view('order.pay', [
            'data' => json_encode($data)
