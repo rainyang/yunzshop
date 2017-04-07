@@ -243,7 +243,8 @@ class Balance
     private function updateMemberBalance()
     {
         $memberModel = Member::getMemberById($this->data['member_id']);
-        $memberModel->credit2 = $memberModel->credit2 + $this->data['change_money'];
+        $memberModel->credit2 = ($memberModel->credit2 + $this->data['change_money']) >= 0 ?: 0;
+
         if ($memberModel->save()) {
             //接口调用完成
             return true;
@@ -264,7 +265,7 @@ class Balance
             'member_id' => $this->data['member_id'],
             'old_money' => $memberModel->credit2,
             'money'     => $this->data['change_money'],
-            'new_money' => $this->data['change_money'] + $memberModel->credit2,
+            'new_money' => $this->data['change_money'] + $memberModel->credit2 >= 0 ?: 0,
             'type'      => $this->data['type'],
             'ordersn'   => $this->getRechargeOrderSN(),
             'status'    => '-1'
@@ -284,7 +285,7 @@ class Balance
             'member_id'     => $this->data['member_id'],    // 会员ID
             'old_money'     => $memberModel->credit2,
             'change_money'  => $this->data['change_money'], // 改变余额值 100 或 -100
-            'new_money'     => $memberModel->credit2 + $this->data['change_money'],
+            'new_money'     => $memberModel->credit2 + $this->data['change_money'] >= 0 ?: 0,
             'type'          => $this->type,
             'service_type'  => $this->service_type,
             'serial_number' => $this->data['serial_number'], // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
