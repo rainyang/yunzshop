@@ -117,7 +117,11 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     public function getGoodsPrice()
     {
-        return $this->total * $this->goods->price;
+        if (isset($this->goodsOption)) {
+
+            return $this->goodsOption->product_price * $this->getTotal();
+        }
+        return $this->getTotal() * $this->goods->price;
 
     }
 
