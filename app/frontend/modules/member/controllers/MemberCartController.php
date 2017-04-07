@@ -24,10 +24,7 @@ class MemberCartController extends ApiController
             $cartList = MemberCart::getMemberCartList($memberId);
             foreach ($cartList as $key => $cart) {
                 $cartList[$key]['option_str'] = '';
-                if (empty($cart['goods'])) {
-                    //销毁未找到商品的数据
-                    //unset($cartList[$key]);
-                } elseif (!empty($cart['goods_option'])) {
+                if (!empty($cart['goods_option'])) {
                     //规格数据替换商品数据
                     if ($cart['goods_option']['title']) {
                         $cartList[$key]['option_str'] = $cart['goods_option']['title'];
