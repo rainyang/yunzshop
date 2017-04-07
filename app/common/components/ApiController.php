@@ -12,7 +12,6 @@ namespace app\common\components;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\member\services\factory\MemberFactory;
 
 class ApiController extends BaseController
 {
@@ -31,24 +30,23 @@ class ApiController extends BaseController
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             $yz_redirect  = \YunShop::request()->yz_redirect;
             $type  = \YunShop::request()->type;
-            $member = MemberFactory::create($type);
-            $member->login();
-          //  return $this->errorJson('',['login_status'=>0,'login_url'=>Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect])]);
+
+            return $this->errorJson('',['login_status'=>0,'login_url'=>Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect])]);
         }
     }
 
     private function setCookie()
     {
-//        $session_id = '';
-//        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
-//            $pieces = explode('-', \YunShop::request()->state);
-//            $session_id = $pieces[1];
-//            unset($pieces);
-//        }
-//
-//        if (!empty($session_id)) {
-//            session_id($session_id);
-//        }
+        $session_id = '';
+        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
+            $pieces = explode('-', \YunShop::request()->state);
+            $session_id = $pieces[1];
+            unset($pieces);
+        }
+
+        if (!empty($session_id)) {
+            session_id($session_id);
+        }
 
 
 
@@ -69,7 +67,7 @@ class ApiController extends BaseController
 //            \Log::debug('apiController: create session_id : '.$session_id);
 //        }
 
-        session_save_path('/tmp');
+ //       session_save_path('/tmp');
         session_start();
 
         \Log::debug('apiController: path : '. $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
