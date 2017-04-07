@@ -108,7 +108,7 @@ class User extends BaseModel
                 return $profile->select('uid', 'realname', 'mobile')
                     ->where('realname', 'like', '%' . $keyword['keyword'] . '%')
                     ->orWhere('mobile', 'like', '%' . $keyword['keyword'] . '%');
-            })->orWhere('username', 'like', $keyword['keyword']);
+            })->orWhere('username', 'like', '%' . $keyword['keyword'] . '%');
         }
         if ($keyword['status']) {
             $query = $query->where('status', $keyword['status']);
