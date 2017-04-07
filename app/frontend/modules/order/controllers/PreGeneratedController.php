@@ -64,7 +64,7 @@ class PreGeneratedController extends ApiController
             if(!count($memberCart)){
                 throw new AppException('未找到购物车信息');
             }
-            $this->memberCarts[] = MemberCart::getCartsByIds($memberCart);
+            $this->memberCarts[] = $memberCart;
         }
 
         $this->run();
@@ -78,38 +78,40 @@ class PreGeneratedController extends ApiController
         }
         $shop = ShopService::getCurrentShopModel();
 
-        $order_goods_models = [];
+        $orderGoodsModels = [];
 
-        foreach ($this->memberCarts as $member_cart) {
-            $orderGoods = OrderService::getOrderGoodsModels($member_cart);
-            $order_goods_models[] = $orderGoods;
+        foreach ($this->memberCarts as $memberCart) {
+            $orderGoods = OrderService::getOrderGoodsModels($memberCart);
+            $orderGoodsModels[] = $orderGoods;
             if(!count($orderGoods)){
-                throw new AppException('未找到商品');
+
+                throw new AppException('未找到商品(ID:)'.$memberCart->goods_id);
             }
         }
-        if(!count($order_goods_models)){
+        if(!count($orderGoodsModels)){
             throw new AppException('未找到商品');
         }
 
 
         $order_models = [];
-        foreach ($order_goods_models as $order_goods_model) {
-            dd($order_goods_model);
-            exit;
+        foreach ($orderGoodsModels as $order_goods_model) {
+
             $order_models[] = OrderService::getPreGeneratedOrder($order_goods_model, $member, $shop);
         }
 
         $order_data = [];
         $total_price = 0;
+        $total_dispatch_price = 0;
         foreach ($order_models as $order_model) {
             $order = $order_model->toArray();
             $data = [
                 'order' => $order
             ];
             $total_price += $order['price'];
+            $total_dispatch_price += $order['dispatch_price'];
             $order_data[] = array_merge($data, $this->getDiscountEventData($order_model), $this->getDispatchEventData($order_model));
         }
-        $data = compact('total_price','order_data');
+        $data = compact('total_price','total_dispatch_price','order_data');
         return $this->successJson('成功',$data);
 
 
