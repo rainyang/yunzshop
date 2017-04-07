@@ -37,12 +37,12 @@ class ApiController extends BaseController
 
     private function setCookie()
     {
-        $session_id = '';
-        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
-            $pieces = explode('-', \YunShop::request()->state);
-            $session_id = $pieces[1];
-            unset($pieces);
-        }
+//        $session_id = '';
+//        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
+//            $pieces = explode('-', \YunShop::request()->state);
+//            $session_id = $pieces[1];
+//            unset($pieces);
+//        }
 
 //        if (empty($session_id) && \YunShop::request()->session_id &&
 //            \YunShop::request()->session_id != 'undefined') {
@@ -62,9 +62,11 @@ class ApiController extends BaseController
 //        }
 
         session_save_path('/tmp');
-        session_id($session_id);
+       // session_id($session_id);
         session_start();
-        \Log::debug('apiController: setCookie session_start : '.$session_id);
+        \Log::debug('apiController: path : '. $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+        \Log::debug('apiController: setCookie session_start : '. session_id());
+        \Log::debug('apiController: setCookie print cookie : '. print_r($_COOKIE, 1));
         \Log::debug('apicontroller: printCookie result : ' . print_r($_SESSION, 1));
     }
 }
