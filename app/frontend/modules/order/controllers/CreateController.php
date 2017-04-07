@@ -70,7 +70,7 @@ class CreateController extends ApiController
             if (!$result) {
                 throw new AppException('订单生成失败');
             }
-            event(new AfterOrderCreatedEvent($order_model));
+            event(new AfterOrderCreatedEvent($order_model->getOrder()));
 
         }
 
