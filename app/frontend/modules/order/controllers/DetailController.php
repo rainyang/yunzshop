@@ -21,10 +21,11 @@ class DetailController extends ApiController
             return $this->errorJson($msg = '缺少访问参数', $data = []);
         } else {
             $orderDetail = OrderDetailModel::getOrderDetail($orderId);
+            $orderDetail->button_models = $orderDetail->button_models;
+
             $data= $orderDetail->toArray();
 
             //todo 配送类型
-            //dd($orderDetail);
             if($orderDetail['dispatch_type_id'] == 1){
                 $data['address_info'] = OrderAddress::select('address','mobile','realname')->where('order_id',$orderDetail['id'])->first();
             }

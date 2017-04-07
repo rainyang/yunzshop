@@ -24,8 +24,10 @@ class Income extends BackendModel
     protected $guarded = [];
 
     public $StatusService;
+    
+    public $PayStatusService;
 
-    protected $appends = ['status_name'];
+    protected $appends = ['status_name','pay_status_name'];
 
     /**
      * @return mixed
@@ -46,7 +48,19 @@ class Income extends BackendModel
     {
         return $this->getStatusService();
     }
+    
+    public function getPayStatusService()
+    {
+        if (!isset($this->PayStatusService)) {
 
+            $this->PayStatusService = IncomeService::createPayStatusService($this);
+        }
+        return $this->PayStatusService;
+    }
+    public function getPayStatusNameAttribute()
+    {
+        return $this->getPayStatusService();
+    }
     /**
      * @param $id
      * @return mixed
@@ -74,8 +88,7 @@ class Income extends BackendModel
     public static function getIncomeByIds($ids)
     {
         return self::uniacid()
-            ->whereIn('id', explode(',', $ids))
-            ->first();
+            ->whereIn('id', explode(',', $ids));
     }
     
 
@@ -92,10 +105,16 @@ class Income extends BackendModel
         return self::uniacid();
     }
 
-    public static function getIncomeInMonth()
+    public static function getIncomeInMonth($type)
     {
         $model = self::select('create_month');
         $model->uniacid();
+        if(!empty($type)){
+            $model->whereHas('hasManyIncome', function ($query) use ($type) {
+                return $query->where('incometable_type',$type);
+            });
+        }
+
         $model->with(['hasManyIncome' => function ($query) {
             $query->select('id', 'create_month', 'type_name', 'amount', 'created_at');
             $query->get();
@@ -127,7 +146,13 @@ class Income extends BackendModel
             ->whereIn('id', explode(',', $typeId))
             ->update(['status' => $status]);
     }
-
+    
+    public static function updatedIncomePayStatus($id, $status)
+    {
+        return self::where('id',$id)
+            ->update(['pay_status' => $status]);
+    }
+    
     public function hasManyIncome()
     {
         return $this->hasMany(self::class, "create_month", "create_month");

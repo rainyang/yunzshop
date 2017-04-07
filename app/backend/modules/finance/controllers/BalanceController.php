@@ -57,8 +57,6 @@ class BalanceController extends BaseController
         $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
         $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
-
-
         return view('finance.balance.detail', [
             'detailList' => $detailList,
             'pager' => $pager
@@ -89,16 +87,24 @@ class BalanceController extends BaseController
     public function recharge()
     {
 //todo 缺少会员头像路径转换
-
         $memberId = \YunShop::request()->member_id;
         $rechargeMoney = trim(\YunShop::request()->num);
-        $memberInfo = Member::getMemberInfoById($memberId);
 
+        $memberInfo = Member::getMemberInfoById($memberId);
         if (!$memberInfo) {
             $this->error('未获取到会员信息，请刷新重试');
         }
+//todo 需要获取商城登陆操作者ID  operator_id 字段
+        $data = array(
+            'member_id'     => $memberId,
+            'change_money'  => $rechargeMoney,
+            'operator'      => '0',
+            'operator_id'   => '0', // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
+            'remark'        => '后台充值' . '余额' . $rechargeMoney .'元',
+            'type'          => 1,
+        );
         if ($rechargeMoney && $memberInfo['uid']) {
-            $result = (new Balance())->shopBalanceRecharge($memberInfo['uid'], $rechargeMoney);
+            $result = (new Balance())->rechargeBalance($data);
             if ($result === true ) {
                 return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $memberId)), 'success');
             } else {
@@ -151,7 +157,7 @@ class BalanceController extends BaseController
     //余额充值菜单
     private function getRechargeMenu()
     {
-        $rechargeMenu = array(
+        return array(
             'title'     => '余额充值',
             'name'      => '粉丝',
             'profile'   => '会员信息',
@@ -159,7 +165,6 @@ class BalanceController extends BaseController
             'charge_value' => '充值金额',
             'type'      => 'balance'
         );
-        return $rechargeMenu;
     }
 
 }

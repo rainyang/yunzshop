@@ -45,7 +45,6 @@ class UnifyOrderDispatchPrice
         $result = 0;
         //dd($this->even->getOrderModel()->getOrderGoodsModels());
         foreach ($this->event->getOrderModel()->getOrderGoodsModels() as $order_goods){
-            //dd($order_goods);exit;
 
             foreach ($order_goods->getDispatchDetails() as $dispatch_detail){
 

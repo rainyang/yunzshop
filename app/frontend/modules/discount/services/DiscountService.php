@@ -28,8 +28,7 @@ class DiscountService
         return new OrderDiscount($preGeneratedOrderModel);
     }
     public static function getCreatedOrderDiscountModel(Order $order){
-        $order->discount_details;
-        return new OrderDiscount($order->discount_details);
+        return new OrderDiscount($order);
     }
     public static function getPreOrderGoodsDiscountModel(PreGeneratedOrderGoodsModel $preGeneratedOrderGoodsModel){
         //触发事件

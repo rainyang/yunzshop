@@ -15,31 +15,20 @@ use Ixudra\Curl\Facades\Curl;
 
 class PayController extends ApiController
 {
-    public function index()
+    public function index(\Request $request)
     {
-        $Order = Order::first();
-        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
-        /*$result = $pay->setyue('50');
-        if($result == false){
-            $this->errorJson($pay->getMessage());
-        }*/
-        $query_str = [
-            'order_no' => time(),
-            'amount' => 0.1,
-            'subject' => '微信支付',
-            'body' => '商品的描述:2',
-            'extra' => ''
-        ];
-        $url = 'http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=order.testPay';
-        //$url = 'http://www.yunzhong.com/app/index.php?i=3&c=entry&do=shop&m=sz_yi&route=order.testPay';
-        $data = Curl::to($url)
-            ->withData( $query_str )
-            ->asJsonResponse(true)->post();
+        $order_id = $request->query('order_id');
+        $order = Order::select(['status','id','order_sn','price','uid'])->find($order_id);
+        if (!isset($order)) {
+            throw new AppException('未找到订单');
+        }
+        if ($order->status != Order::WAIT_PAY) {
+            throw new AppException('订单已付款');
+        }
+        $member = $order->belongsToMember()->select(['credit2'])->first()->toArray();
+        $data = ['order' => $order,'member'=>$member];
 
-        //返回支付方式列表
-        //$data['data']['js'] = json_decode($data['data']['js'],true);
-        //dd($data);exit;
-        return view('order.pay',$data['data'])->render();
+        return $this->successJson('成功', $data);
     }
 
     public function wechatPay()
@@ -53,16 +42,17 @@ class PayController extends ApiController
             $this->errorJson($pay->getMessage());
         }*/
         $query_str = [
-            'order_no' => 'sn'.time(),
+            'order_no' => 'sn' . time(),
             'amount' => 0.1,
             'subject' => '微信支付',
             'body' => '商品的描述:2',
-            'extra' => ['type'=>1]
+            'extra' => ['type' => 1]
         ];
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay($query_str);
-        
-        return $this->successJson('成功',$data);
+
+        $data['js'] = json_decode($data['js'], 1);
+        return $this->successJson('成功', $data);
 
         //return view('order.pay', $data)->render();
     }

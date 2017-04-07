@@ -12,7 +12,10 @@ namespace app\frontend\modules\finance\controllers;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\Income;
+use app\common\services\Pay;
+use app\common\services\PayFactory;
 use app\frontend\modules\finance\models\Withdraw;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Yunshop\Commission\models\CommissionOrder;
 
@@ -57,7 +60,17 @@ class IncomeController extends ApiController
      */
     public function getIncomeList()
     {
-        $incomeModel = Income::getIncomeInMonth()->where('member_id', \YunShop::app()->getMemberId())->get();
+        $type = \YunShop::request()->type;
+        $configs = Config::get('income');
+        $typeData = '';
+        foreach ($configs as $key=>$config) {
+            if($key == $type){
+                $typeData = $config['class'];
+            }
+        }
+        $type = 'Yunshop\Commission\models\CommissionOrder';
+        $incomeModel = Income::getIncomeInMonth($typeData)->where('member_id', \YunShop::app()->getMemberId())->get();
+
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
         }
@@ -172,6 +185,7 @@ class IncomeController extends ApiController
 
         \Log::info("POST - Withdraw Data /r/n");
         \Log::info($withdrawData);
+
         /**
          * 验证数据
          */
@@ -237,8 +251,11 @@ class IncomeController extends ApiController
      */
     public function setWithdraw($withdrawData, $withdrawTotal)
     {
+
+
         foreach ($withdrawData as $item) {
             $data[] = [
+                'withdraw_sn' => Pay::setUniacidNo(\YunShop::app()->uniacid),
                 'uniacid' => \YunShop::app()->uniacid,
                 'member_id' => \YunShop::app()->getMemberId(),
                 'type' => $item['type'],
@@ -247,6 +264,8 @@ class IncomeController extends ApiController
                 'amounts' => $item['amounts'],
                 'poundage' => $item['poundage'],
                 'poundage_rate' => $item['poundage_rate'],
+                'actual_amounts' => $item['amounts']-$item['poundage'],
+                'actual_poundage' => $item['poundage'],
                 'pay_way' => $withdrawTotal['pay_way'],
                 'status' => 0,
                 'created_at' => time(),

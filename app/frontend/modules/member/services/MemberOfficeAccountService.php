@@ -185,24 +185,12 @@ class MemberOfficeAccountService extends MemberService
             }
         } else {
             $this->_setClientRequestUrl();
-//            if (!Session::get('openid')) {
-//                $redirect_url = $this->_getClientRequestUrl();
-//                redirect($redirect_url . '?login')->send();exit;
-//            }
 
             redirect($authurl)->send();
             exit;
         }
 
-        header('Access-Control-Allow-Origin: http://localhost:8081' );
-        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
-        header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With');
-        header('Access-Control-Allow-Credentials: true');
-        header('location:' . $redirect_url . '?login&session_id=' . session_id() . '&uid=' . \YunShop::app()->getMemberId());
-        exit;
-//        redirect($redirect_url . '?login&session_id=' . session_id() . '&uid=' . \YunShop::app()->getMemberId(),302,[
-//            'Access-Control-Allow-Origin'=>'http://localhost:8081'
-//        ])->send();
+        redirect($redirect_url . '?uid=' . \YunShop::app()->getMemberId())->send();
     }
 
     /**

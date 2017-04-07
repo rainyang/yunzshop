@@ -39,7 +39,7 @@ class MemberCart extends \app\common\models\MemberCart
         if(!is_array($cartIds)){
             $cartIds = explode(',',$cartIds);
         }
-        $result = static::carts()->whereIn('id', $cartIds)
+        $result = static::whereIn('id', $cartIds)
             ->get();
         return $result;
     }
