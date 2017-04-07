@@ -50,7 +50,7 @@ class PayController extends ApiController
         ];
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay($query_str);
-return $data;
+return json_encode($data);
         return $this->successJson('成功', $data);
 
         //return view('order.pay', $data)->render();
