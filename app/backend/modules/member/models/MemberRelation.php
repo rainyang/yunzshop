@@ -55,7 +55,7 @@ class MemberRelation extends BackendModel
         $member_info = SubMemberModel::getMemberShopInfo($uid)->first();
 
         if (!empty($member_info)) {
-           $data = $member_info->toArray();
+            $data = $member_info->toArray();
         }
 
         if ($data['is_agent'] == 0) {
@@ -142,6 +142,12 @@ class MemberRelation extends BackendModel
         return false;
     }
 
+    /**
+     * 检查是否能成为下线
+     *
+     * @param $mid
+     * @param MemberShopInfo $user
+     */
     public function createChildAgent($mid, MemberShopInfo $user)
     {
         $child_info = $this->getChildAgentInfo();
@@ -149,13 +155,33 @@ class MemberRelation extends BackendModel
         if ($child_info != -1) {
             switch ($child_info) {
                 case 0:
-                    $this->becomeChildAgentByShare($mid, $user);
+                    $this->becomeChildAgent($mid, $user);
                     break;
                 case 1:
+                    $list = OrderListModel::getRequestOrderList(0,\YunShop::app()->getMemberId())->get();
+
+                    if (!empty($list)) {
+                        $result = $list->toArray();
+                        $count = count($result);
+
+                        if ($count == 1) {
+                            $this->becomeChildAgent($mid, $user);
+                        }
+                    }
                     break;
                 case 2:
+                    $list = OrderListModel::getRequestOrderList(1,\YunShop::app()->getMemberId())->get();
+
+                    if (!empty($list)) {
+                        $result = $list->toArray();
+
+                        $count = count($result);
+
+                        if ($count == 1) {
+                            $this->becomeChildAgent($mid, $user);
+                        }
+                    }
                     break;
-                default:
             }
         }
     }
@@ -181,13 +207,15 @@ class MemberRelation extends BackendModel
     }
 
     /**
-     * 首次分享链接成为下线
+     * 成为下线
      *
      * @param $mid
      * @param MemberShopInfo $user
      */
-    private function becomeChildAgentByShare($mid, MemberShopInfo $user)
+    private function becomeChildAgent($mid, MemberShopInfo $user)
     {
+        $info = self::getSetInfo()->first()->toArray();
+
         $member_info = SubMemberModel::getMemberShopInfo($mid)->first();
 
         if ($member_info && $member_info->is_agent) {

@@ -2,7 +2,6 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">操作权限</label>
     <div class="col-sm-9 col-xs-12">
         <div class='panel panel-default'>
-            <?php print_r($rolePermission); ?>
             <!-- 第一级-->
             @foreach($permissions as $keyOne=>$valueOne)
                 @if(isset($valueOne['permit']) && $valueOne['permit'] === 1)

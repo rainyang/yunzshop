@@ -9,13 +9,15 @@
 namespace app\common\events;
 
 
+use app\common\services\Pay;
+
 class PayLog extends Event
 {
     protected $pay_request_params;
 
     protected $pay;
 
-    public function __construct($params, PayLog $pay)
+    public function __construct($params, Pay $pay)
     {
         $this->pay_request_params = $params;
 
