@@ -31,6 +31,11 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             $attributes['goods_option_id'] = $attributes['option_id'];
             unset($attributes['option_id']);
         }
+        if(isset($attributes['goods'])){
+            unset($attributes['goods']);
+
+        }
+
         parent::__construct($attributes);
         $this->setGoodsDiscount();
         $this->setGoodsDispatch();
@@ -109,6 +114,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     public function getGoodsPrice()
     {
+        //dd($this);
 
         if (isset($this->goodsOption)) {
             return $this->goodsOption->product_price * $this->getTotal();
@@ -133,11 +139,11 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'goods_price' => $this->getGoodsPrice(),
             'discount_price' => $this->getDiscountPrice(),
             'price' => $this->getPrice(),
-            'goods_id' => $this->goods['id'],
+            'goods_id' => $this->goods->id,
             'total' => $this->getTotal(),
-            'goods_sn' => $this->goods['goods_sn'],
-            'title' => $this->goods['title'],
-            'thumb' => $this->goods['thumb'],
+            'goods_sn' => $this->goods->goods_sn,
+            'title' => $this->goods->title,
+            'thumb' => $this->goods->thumb,
             'uid' => $this->order->getMember()->uid,
             'order_id' => $this->order->id,
             'uniacid' => $this->order->uniacid,
@@ -148,7 +154,6 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
                 'goods_option_title' => $this->goodsOption->title,
             ];
         }
-
         return new OrderGoods($data);
     }
 
@@ -161,9 +166,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
     public function getVipPrice()
     {
         if (isset($this->goodsOption)) {
+
             return $this->goodsOption->product_price * $this->getTotal();
         }
-
         return $this->goods->vip_price * $this->getTotal();
     }
 
