@@ -12,6 +12,7 @@ namespace app\frontend\modules\finance\controllers;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\Income;
+use app\common\services\PayFactory;
 use app\frontend\modules\finance\models\Withdraw;
 use Illuminate\Support\Facades\Log;
 use Yunshop\Commission\models\CommissionOrder;
@@ -238,8 +239,11 @@ class IncomeController extends ApiController
      */
     public function setWithdraw($withdrawData, $withdrawTotal)
     {
+        PayFactory::create(1);
+        //setUniacidNo(\YunShop::app()->uniacid)
         foreach ($withdrawData as $item) {
             $data[] = [
+                'withdraw_sn' => \YunShop::app()->uniacid,
                 'uniacid' => \YunShop::app()->uniacid,
                 'member_id' => \YunShop::app()->getMemberId(),
                 'type' => $item['type'],
