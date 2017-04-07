@@ -18,14 +18,18 @@ abstract class CreatedOrderEvent extends Event
     protected $orderModel;
     protected $order;
     /**
+     * todo 需要重写,订单生成后与订单操作 使用的order对象冲突
      * AfterOrderReceivedEvent constructor.
      * @param Order $order_model
      */
-    public function __construct(PreGeneratedOrderModel $order)
+    public function __construct($order)
     {
         //$order_model = Order::find($order_id);
         $this->orderModel = $order;
-        $this->order = $order->getOrder();
+        if($order instanceof PreGeneratedOrderModel){
+
+            $this->order = $order->getOrder();
+        }
     }
     /**
      * (监听者)获取订单model

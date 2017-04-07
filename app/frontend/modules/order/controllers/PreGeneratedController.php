@@ -75,6 +75,8 @@ class PreGeneratedController extends ApiController
         $shop = ShopService::getCurrentShopModel();
 
         $order_goods_models = [];
+        dd($this->memberCarts);
+        exit;
         foreach ($this->memberCarts as $member_cart) {
             $order_goods_models[] = OrderService::getOrderGoodsModels($member_cart);
         }
