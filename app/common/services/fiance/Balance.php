@@ -137,6 +137,10 @@ class Balance
         if ($this->type == 2 && in_array($this->service_type, [2,3,4,6,9])) {
             return $this->resolveInterface();
         }
+        //后台充值可以充值负数
+        if ($this->type == 2 && $this->data['operator'] == 0 && $this->data['type'] == 1) {
+            return $this->resolveInterface();
+        }
         return '接口请求错误';
     }
 
