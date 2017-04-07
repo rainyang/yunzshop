@@ -1,8 +1,8 @@
 @extends('layouts.base')
 
 @section('content')
-
-        <div class="rightlist">
+<link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
+        <div id="member-blade" class="rightlist">
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
                 <ul class="add-snav">
@@ -19,41 +19,48 @@
                         <input type="hidden" name="m" value="sz_yi" />
                         <input type="hidden" name="do" value="member" id="form_do" />
 
-                        <div class="form-group">
-                            <div class="col-sm-8 col-lg-12 col-xs-12">
+                        <div class="form-group col-sm-11 col-lg-11 col-xs-12">
+                            <div class="">
                                 <div class='input-group'>
-                                    <div class='input-group-addon'>会员信息</div>
-                                    <input class="form-control" name="search[realname]" type="text" value="{{ $search['realname'] or ''}}" placeholder="会员姓名／昵称／手机号">
+                                    <!--<div class='input-group-addon'>会员信息</div>-->
 
-                                    <div class='input-group-addon'>会员等级</div>
-                                    <select name="search[level]" class="form-control">
-                                        <option value="" selected>不限</option>
-                                        @foreach($memberLevel as $level)
-                                        <option value="{{ $level['id'] }}" @if($search['level'] == $level['id']) selected @endif>{{ $level['level_name'] }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class='input-group-addon'>会员分组</div>
-                                    <select name="search[groupid]" class="form-control">
-                                        <option value="" selected >不限</option>
-                                        @foreach($memberGroup as $group)
-                                        <option value="{{ $group['id'] }}" @if($search['groupid'] == $group['id']) selected @endif>{{ $group['group_name'] }}</option>
-                                        @endforeach
-                                    </select>
-                                    <div class='input-group-addon'>余额区间</div>
-                                    <input class="form-control" name="search[min_credit2]" type="text" value="{{ $search['min_credit2'] or ''}}" placeholder="最小">
-                                    <div class='input-group-addon'>—</div>
-                                    <input class="form-control" name="search[max_credit2]" type="text" value="{{ $search['max_credit2'] or ''}}" placeholder="最大">
+                                        <input class="form-control" name="search[realname]" type="text" value="{{ $search['realname'] or ''}}" placeholder="会员姓名／昵称／手机号">
 
+                                    <div class='form-input'>
+                                        <p class="input-group-addon" >会员等级</p>
+                                        <select name="search[level]" class="form-control">
+                                            <option value="" selected>不限</option>
+                                            @foreach($memberLevel as $level)
+                                            <option value="{{ $level['id'] }}" @if($search['level'] == $level['id']) selected @endif>{{ $level['level_name'] }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class='form-input'>
+                                        <p class="input-group-addon" >会员分组</p>
+                                        <select name="search[groupid]" class="form-control">
+                                            <option value="" selected >不限</option>
+                                            @foreach($memberGroup as $group)
+                                            <option value="{{ $group['id'] }}" @if($search['groupid'] == $group['id']) selected @endif>{{ $group['group_name'] }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class='form-input'>
+                                        <p class="input-group-addon price">余额区间</p>
+                                        <input class="form-control price" name="search[min_credit2]" type="text" value="{{ $search['min_credit2'] or ''}}" placeholder="最小">
+                                        <p class="line">—</p>
+                                        <input class="form-control price" name="search[max_credit2]" type="text" value="{{ $search['max_credit2'] or ''}}" placeholder="最大">
+                                    </div>
 
                                 </div>
                             </div>
                         </div>
 
 
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
-                            <div class="col-sm-7 col-lg-9 col-xs-12">
-                                <input type="submit" class="btn btn-default" value="搜索">
+                        <div class="form-group col-sm-1 col-lg-1 col-xs-12">
+                            <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
+                            <div class="">
+                                <input type="submit" class="btn btn-block btn-success" value="搜索">
                             </div>
                         </div>
                     </form>

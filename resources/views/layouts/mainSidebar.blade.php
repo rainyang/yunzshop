@@ -17,7 +17,7 @@
                         <li class="treeview {{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
                             <a href="javascript:void(0);" ><i class="fa {{$value['icon'] or 'fa-circle-o'}}"></i> <span>{{$value['name'] or ''}}</span>
                             <span class="pull-right-container"><i
-                                        class="fa fa-angle-right pull-right"></i>
+                                        class="fa fa-angle-left pull-right"></i>
                             </span>
                         </a>
                              @include('layouts.childMenu',['childs'=>$value['child'],'item'=>$key])
