@@ -60,7 +60,11 @@ class PreGeneratedController extends ApiController
         }
 
         foreach ($goods_ids as $goods_id) {
-            $this->memberCarts[] = MemberCart::getCartsByIds($goods_id);
+            $memberCart = MemberCart::getCartsByIds($goods_id);
+            if(!count($memberCart)){
+                throw new AppException('未找到购物车信息');
+            }
+            $this->memberCarts[] = MemberCart::getCartsByIds($memberCart);
         }
 
         $this->run();
@@ -75,10 +79,13 @@ class PreGeneratedController extends ApiController
         $shop = ShopService::getCurrentShopModel();
 
         $order_goods_models = [];
-        dd($this->memberCarts);
-        exit;
+
         foreach ($this->memberCarts as $member_cart) {
-            $order_goods_models[] = OrderService::getOrderGoodsModels($member_cart);
+            $orderGoods = OrderService::getOrderGoodsModels($member_cart);
+            $order_goods_models[] = $orderGoods;
+            if(!count($orderGoods)){
+                throw new AppException('未找到商品');
+            }
         }
         if(!count($order_goods_models)){
             throw new AppException('未找到商品');
@@ -87,7 +94,8 @@ class PreGeneratedController extends ApiController
 
         $order_models = [];
         foreach ($order_goods_models as $order_goods_model) {
-
+            dd($order_goods_model);
+            exit;
             $order_models[] = OrderService::getPreGeneratedOrder($order_goods_model, $member, $shop);
         }
 
