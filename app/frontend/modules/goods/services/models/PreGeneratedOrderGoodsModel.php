@@ -13,7 +13,6 @@ use app\common\models\OrderGoods;
 
 use app\frontend\modules\discount\services\DiscountService;
 use app\frontend\modules\dispatch\services\DispatchService;
-use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class PreGeneratedOrderGoodsModel extends OrderGoodsModel
@@ -22,27 +21,19 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      * @var PreGeneratedOrderModel
      */
     protected $order;
-    /**
-     * app\common\models\Goods的实例
-     * @var Goods
-     */
-    protected $goods;
-    protected $goodsOption;
+
     public $couponMoneyOffPrice;
     public $couponDiscountPrice;
 
-    /**
-     * PreGeneratedOrderGoodsModel constructor.
-     * @param MemberCart $memberCart
-     */
-    public function __construct(MemberCart $memberCart)
+    public function __construct(array $attributes = [])
     {
-        $this->goods = $memberCart->goods;
-        $this->total = $memberCart->total;
-        $this->goodsOption = $memberCart->goodsOption;
-
-        parent::__construct();
-
+        if(isset($attributes['option_id'])){
+            $attributes['goods_option_id'] = $attributes['option_id'];
+            unset($attributes['option_id']);
+        }
+        parent::__construct($attributes);
+        $this->setGoodsDiscount();
+        $this->setGoodsDispatch();
     }
 
     protected function setGoodsDiscount()
@@ -111,14 +102,16 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      */
     public function getTotal()
     {
+
         return $this->total;
 
     }
 
     public function getGoodsPrice()
     {
-        if (isset($this->goodsOption)) {
+        //dd($this);
 
+        if (isset($this->goodsOption)) {
             return $this->goodsOption->product_price * $this->getTotal();
         }
         return $this->getTotal() * $this->goods->price;
@@ -147,7 +140,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'thumb' => $this->goods->thumb,
             'uid' => $this->order->getMember()->uid,
             'order_id' => $this->order->id,
-            'uniacid' => $this->order->getShop()->uniacid,
+            'uniacid' => $this->order->uniacid,
         );
         if(isset($this->goodsOption)){
             $data += [

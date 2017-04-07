@@ -38,7 +38,7 @@ class RuleKeyword extends BaseModel
      * @return mixed   $id or false*/
     public static function hasKeyword($keyword)
     {
-        $id = self::select('id')->uniacid()->where('module', static::$module)->where('content', $keyword)->first();
+        $id = self::uniacid()->where('module', static::$module)->where('content', $keyword)->value('id');
 
         return empty($id) ? false : $id;
     }

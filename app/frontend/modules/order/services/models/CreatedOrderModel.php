@@ -23,9 +23,9 @@ class CreatedOrderModel extends OrderModel
         parent::__construct($OrderGoodsModels);
     }
 
-    protected function setOrderGoodsModels(array $OrderGoodsModels)
+    public function setOrderGoodsModels(array $orderGoodsModels)
     {
-        $this->orderGoodsModels = $OrderGoodsModels;
+        $this->orderGoodsModels = $orderGoodsModels;
 
     }
 
@@ -36,7 +36,7 @@ class CreatedOrderModel extends OrderModel
 
     protected function setDiscount()
     {
-        $this->_OrderDiscount = DiscountService::getCreatedOrderDiscountModel($this->getOrder());
+        $this->orderDiscount = DiscountService::getCreatedOrderDiscountModel($this->getOrder());
     }
 
     public function addChangePriceInfo($price)
@@ -49,7 +49,7 @@ class CreatedOrderModel extends OrderModel
             'price' => (string)$change_price,
             'plugin' => '0',
         ];
-        $this->_OrderDiscount->addDiscountDetail($detail);
+        $this->orderDiscount->addDiscountDetail($detail);
     }
 
     public function addChangeDispatchPriceInfo($dispatch_price)
@@ -76,7 +76,7 @@ class CreatedOrderModel extends OrderModel
             //配送类获取订单配送信息
             'dispatch_details' => $this->orderDispatch->getDispatchDetails(),
             //优惠类记录订单配送信息
-            'discount_details' => $this->_OrderDiscount->getDiscountDetails(),
+            'discount_details' => $this->orderDiscount->getDiscountDetails(),
             'discount_price' => $this->getDiscountPrice(),
             'dispatch_price' => $this->getDispatchPrice(),
             'price' => $this->getPrice(),

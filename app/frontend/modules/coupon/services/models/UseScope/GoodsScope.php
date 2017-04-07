@@ -28,7 +28,6 @@ class GoodsScope extends CouponUseScope
     private function setOrderGoodsGroup()
     {
         $this->orderGoodsGroup = new PreGeneratedOrderGoodsModelGroup($this->getOrderGoodsOfUsedCoupon());
-        //dd($this->orderGoodsGroup);exit;
     }
     protected function getOrderGoodsOfUsedCoupon(){
         if(isset($this->orderGoods)){
@@ -43,9 +42,6 @@ class GoodsScope extends CouponUseScope
             /**
              * @var $orderGoodsModel PreGeneratedOrderGoodsModel
              */
-            /*dd($this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids);
-            dd($orderGoodsModel->getGoodsId());
-            exit;*/
             if (in_array($orderGoodsModel->getGoodsId(), $this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids)) {
                 $result[] = $orderGoodsModel;
             }

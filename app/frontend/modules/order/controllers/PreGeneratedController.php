@@ -13,9 +13,11 @@ use app\common\events\cart\GroupingCartIdEvent;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\exceptions\AppException;
+use app\common\models\Order;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\ShopService;
 
@@ -95,9 +97,12 @@ class PreGeneratedController extends ApiController
 
 
         $order_models = [];
-        foreach ($orderGoodsModels as $order_goods_model) {
+        foreach ($orderGoodsModels as $orderGoodsModel) {
 
-            $order_models[] = OrderService::getPreGeneratedOrder($order_goods_model, $member, $shop);
+            $order = new PreGeneratedOrderModel(['uid'=>$member->uid,'uniacid'=>$shop->uniacid]);
+            $order->setOrderGoodsModels($orderGoodsModel);
+
+            $order_models[] = $order;
         }
 
         $order_data = [];
