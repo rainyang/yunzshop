@@ -31,6 +31,11 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             $attributes['goods_option_id'] = $attributes['option_id'];
             unset($attributes['option_id']);
         }
+        if(isset($attributes['goods'])){
+            unset($attributes['goods']);
+
+        }
+
         parent::__construct($attributes);
         $this->setGoodsDiscount();
         $this->setGoodsDispatch();
@@ -125,6 +130,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      */
     public function generate(PreGeneratedOrderModel $orderModel = null)
     {
+
         if (isset($orderModel)) {
             $this->setOrder($orderModel);
         }

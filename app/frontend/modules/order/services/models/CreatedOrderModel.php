@@ -54,7 +54,6 @@ class CreatedOrderModel extends OrderModel
 
     public function addChangeDispatchPriceInfo($dispatch_price)
     {
-        //dd($this->_Order);
         $change_dispatch_price = $dispatch_price - $this->_Order->dispatch_price;
         $dispatch_price = [
             'name' => '运费改价',

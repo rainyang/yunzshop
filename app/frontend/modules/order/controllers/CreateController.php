@@ -48,6 +48,7 @@ class CreateController extends ApiController
         if (!count($goods_ids)) {
             throw new AppException('分单失败');
         }
+
         return $goods_ids;
     }
 
@@ -64,6 +65,8 @@ class CreateController extends ApiController
         $shop = ShopService::getCurrentShopModel();
         //todo 根据参数
         foreach ($this->getMemberCarts() as $carts) {
+
+
             $orderGoodsModel = OrderService::getOrderGoodsModels($carts);
 
             $order = new PreGeneratedOrderModel(['uid'=>$member->uid,'uniacid'=>$shop->uniacid]);
