@@ -65,7 +65,8 @@
                             <div class="col-sm-8 col-lg-12 col-xs-12">
                                 @section('search_bar')
                                     <div class='input-group'>
-                                        <select name="search[ambiguous][field]" id="ambiguous-field" class="form-control">
+                                        <select name="search[ambiguous][field]" id="ambiguous-field"
+                                                class="form-control">
                                             <option value="order"
                                                     @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
                                                 订单号/支付号
@@ -244,26 +245,15 @@
                             @if( $order_goods_index == 0)
                                 <td rowspan="{!! count($order['has_many_order_goods']) !!}">
                                     <a href="{!! yzWebUrl('member.member.detail',array('id'=>$order['belongs_to_member']['uid'])) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
-                                    @else
-                                        {{$order['belongs_to_member']['nickname']}}
-                                    @endif
                                     <br/>
                                     {{$order['belongs_to_member']['realname']}}
                                     <br/>{{$order['belongs_to_member']['mobile']}}
                                 </td>
+
                                 <td rowspan="{!! count($order['has_many_order_goods']) !!}">
-                                    @if( $order['status'] > 0)
-                                        <label class='label label-1}'>{{$order['has_one_pay_type']['name']}}</label>
-                                        <br/>
-                                    @elseif (0&&$order['statusvalue'] == 0)
-                                        @if( 0&&$order['paytypevalue'] == 3)
-                                            <label class='label label-default'>货到付款</label><br/>
-                                        @else
-                                            <label class='label label-default'>未支付</label><br/>
-                                        @endif
-                                    @elseif( 0&&$order['statusvalue'] == -1)
-                                        <label class='label label-default'>{{$order['paytype']}}</label><br/>
-                                    @endif
+                                    <label class='label label-info'>{{$order['pay_type_name']}}</label>
+                                    <br/>
+
                                     {{$order['has_one_dispatch_type']['name']}}
                                     @if( 0&&$order['addressid']!=0 && $order['statusvalue']>=2)<br/>
                                     <button type='button' class='btn btn-default btn-sm'
@@ -307,10 +297,11 @@
                                     <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
                                 </td>
                                 <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">
-                                @section('operation'.$order_index)
+                                    @section('operation'.$order_index)
                                         @include('order.ops')
                                     @show
                                 </td>
+                            @endif
                         </tr>
                     @endforeach
                 </table>
@@ -323,9 +314,9 @@
     </div>
     <script>
         $(function () {
-            $("#ambiguous-field").on('change',function(){
+            $("#ambiguous-field").on('change', function () {
 
-                $(this).next('input').attr('placeholder',$(this).find(':selected').text().trim())
+                $(this).next('input').attr('placeholder', $(this).find(':selected').text().trim())
             });
         })
         $('#export').click(function () {
