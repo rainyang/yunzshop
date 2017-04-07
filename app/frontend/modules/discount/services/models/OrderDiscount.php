@@ -16,41 +16,15 @@ use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class OrderDiscount extends Discount
 {
-    protected $_Order;
-    private $_coupon_price;
-    private $_deduction_price;
+    protected $order;
+    private $couponPrice;
+    private $deductionPrice;
 
-    public function __construct(PreGeneratedOrderModel $Order)
+    public function __construct(PreGeneratedOrderModel $order)
     {
-        //dd($Order);exit;
-        $this->_Order = $Order;
+        $this->order = $order;
     }
 
-    // todo 获取订单可选的抵扣
-    public function getDeductions()
-    {
-        $data[] = [
-            'id' => 1,
-            'name' => '积分抵扣',
-            'value' => 20,
-            'price' => 20,
-            'plugin' => 0
-        ];
-        return $data;
-    }
-
-    // todo 获取订单可选的优惠券
-    public function getCoupons()
-    {
-        $data[] = [
-            'id' => 1,
-            'name' => '优惠券1',
-            'max_value' => 30,
-            'max_price' => 30,
-            'plugin' => 0
-        ];
-        return $data;
-    }
 
     /**
      * 获取订单抵扣金额
@@ -58,18 +32,18 @@ class OrderDiscount extends Discount
      */
     public function getDeductionPrice()
     {
-        if (isset($this->_deduction_price)) {
-            return $this->_deduction_price;
+        if (isset($this->deductionPrice)) {
+            return $this->deductionPrice;
         }
 
-        $this->_deduction_price = $this->_getDeductionPrice();
+        $this->deductionPrice = $this->_getDeductionPrice();
 
-        return $this->_deduction_price;
+        return $this->deductionPrice;
     }
 
     private function _getDeductionPrice()
     {
-        $Event = new OnDeductionPriceCalculatedEvent($this->_Order);
+        $Event = new OnDeductionPriceCalculatedEvent($this->order);
         $data = $Event->getData();
         return max(array_sum(array_column($data, 'price')), 0);
     }
@@ -86,20 +60,20 @@ class OrderDiscount extends Discount
 
     public function getCouponPrice()
     {
-        if (isset($this->_coupon_price)) {
-            return $this->_coupon_price;
+        if (isset($this->couponPrice)) {
+            return $this->couponPrice;
         }
 
-        $this->_coupon_price = $this->_getCouponPrice();
+        $this->couponPrice = $this->_getCouponPrice();
 
-        return $this->_coupon_price;
+        return $this->couponPrice;
     }
 
     private function _getCouponPrice()
     {
-        $discountPrice = (new TestService($this->_Order, Coupon::COUPON_DISCOUNT))->getOrderDiscountPrice();
+        $discountPrice = (new TestService($this->order, Coupon::COUPON_DISCOUNT))->getOrderDiscountPrice();
         //var_dump($discountPrice);
-        $moneyOffPrice = (new TestService($this->_Order, Coupon::COUPON_MONEY_OFF))->getOrderDiscountPrice();
+        $moneyOffPrice = (new TestService($this->order, Coupon::COUPON_MONEY_OFF))->getOrderDiscountPrice();
         //var_dump($moneyOffPrice);
 //exit;
         return $discountPrice + $moneyOffPrice;

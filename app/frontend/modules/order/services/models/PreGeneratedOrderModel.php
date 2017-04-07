@@ -1,15 +1,12 @@
 <?php
 namespace app\frontend\modules\order\services\models;
 
-use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Order;
-use app\common\models\Member;
 
 use app\frontend\modules\discount\services\DiscountService;
 use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\OrderService;
-use app\frontend\modules\shop\services\models\ShopModel;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -31,36 +28,28 @@ use Illuminate\Support\Facades\DB;
  */
 class PreGeneratedOrderModel extends OrderModel
 {
-    protected $id;
     /**
      * @var ShopModel 商城model实例
      */
-    protected $shop;
     /**
      * @var \app\frontend\models\Member
      */
-    protected $member;
-    protected $order;
     /**
      * 记录添加的商品
      * PreGeneratedOrderModel constructor.
-     * @param array|null $OrderGoodsModels
+     * @param array|null $orderGoodsModels
      */
-    public function __construct(array $OrderGoodsModels = null)
+
+    public function setOrderGoodsModels(array $orderGoodsModels)
     {
-        if (!isset($OrderGoodsModels)) {
-            echo '订单商品为空!';exit;
-        }
-        parent::__construct($OrderGoodsModels);
-    }
-    protected function setOrderGoodsModels(array $OrderGoodsModels)
-    {
-        $this->orderGoodsModels = $OrderGoodsModels;
+        $this->orderGoodsModels = $orderGoodsModels;
+        $this->setDispatch();
+        $this->setDiscount();
     }
 
     protected function setDiscount()
     {
-        $this->_OrderDiscount = DiscountService::getPreOrderDiscountModel($this);
+        $this->orderDiscount = DiscountService::getPreOrderDiscountModel($this);
     }
     protected function setDispatch()
     {
@@ -76,7 +65,7 @@ class PreGeneratedOrderModel extends OrderModel
         return $this->orderGoodsModels;
     }
     public function getOrder(){
-        return $this->order;
+        return $this;
     }
     /**
      * 添加订单商品
@@ -87,29 +76,9 @@ class PreGeneratedOrderModel extends OrderModel
         $this->orderGoodsModels = array_merge($this->orderGoodsModels, $pre_order_goods_models);
     }
 
-    /**
-     * 设置订单所属用户
-     * @param Member $member
-     */
-    public function setMember(Member $member)
-    {
-        $this->member = $member;
-    }
 
-    /**
-     * 设置订单所属店铺
-     * @param ShopModel $shop
-     */
-
-    public function setShop(ShopModel $shop)
-    {
-        $this->shop = $shop;
-    }
-    public function getShop(){
-        return $this->shop;
-    }
     public function getMember(){
-        return $this->member;
+        return $this->belongsToMember;
     }
 
     /**
@@ -148,7 +117,7 @@ class PreGeneratedOrderModel extends OrderModel
             return $order;
         });
         $this->id = $order->id;
-        $this->order = $order->find($order->id);
+
         return $order->id;
     }
     /**
@@ -187,8 +156,8 @@ class PreGeneratedOrderModel extends OrderModel
             'create_time' => time(),
             //配送类获取订单配送方式id
             'dispatch_type_id'=>$this->orderDispatch->getDispatchTypeId(),
-            'uid' => $this->member->uid,
-            'uniacid' => $this->shop->uniacid,
+            'uid' => $this->uid,
+            'uniacid' => $this->uniacid,
         );
         //todo 测试
 

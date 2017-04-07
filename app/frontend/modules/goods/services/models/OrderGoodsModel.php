@@ -9,7 +9,9 @@
 namespace app\frontend\modules\goods\services\models;
 
 
-abstract class OrderGoodsModel
+use app\common\models\OrderGoods;
+
+abstract class OrderGoodsModel extends OrderGoods
 {
     /**
      * @var \app\frontend\modules\dispatch\services\models\GoodsDispatch 的实例
@@ -19,21 +21,8 @@ abstract class OrderGoodsModel
      * @var \app\frontend\modules\discount\services\models\GoodsDiscount 的实例
      */
     protected $goodsDiscount;
-    protected $total;
 
-    public function __construct()
-    {
 
-    }
-
-    /**
-     * 设置商品数量
-     * @param $total
-     */
-    public function setTotal($total)
-    {
-        $this->total = $total;
-    }
     /**
      * 计算成交价格
      * @return int

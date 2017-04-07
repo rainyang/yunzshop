@@ -26,7 +26,6 @@ class DetailController extends ApiController
             $data= $orderDetail->toArray();
 
             //todo 配送类型
-            //dd($orderDetail);
             if($orderDetail['dispatch_type_id'] == 1){
                 $data['address_info'] = OrderAddress::select('address','mobile','realname')->where('order_id',$orderDetail['id'])->first();
             }
