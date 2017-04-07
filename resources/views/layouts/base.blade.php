@@ -71,7 +71,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
 
     <script type="text/javascript" src="./resource/js/app/util.js"></script>
-    <script type="text/javascript" src="./resource/js/app/common.min.js"></script>
+
     <script type="text/javascript" src="./resource/js/require.js"></script>
     <script type="text/javascript" src="../addons/sz_yi/static/js/app/config.js"></script>
     <script type="text/javascript" src="../addons/sz_yi/static/js/dist/tooltipbox.js"></script>

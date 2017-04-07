@@ -41,13 +41,13 @@
             </div>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label"> 姓名</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 姓名</label>
                 <div class="col-sm-9 col-xs-12">
                     <input type="text" name="widgets[profile][realname]" class="form-control" value="{{ $user->userProfile->realname or '' }}" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>电话</label>
                 <div class="col-sm-9 col-xs-12">
                     <input type="text" name="widgets[profile][mobile]" class="form-control" value="{{ $user->userProfile->mobile or '' }}" />
                 </div>

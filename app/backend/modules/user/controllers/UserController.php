@@ -24,12 +24,14 @@ class UserController extends BaseController
     public function index()
     {
         $pageSize = 5;
-
         $userList = User::getPageList($pageSize);
-        if (\YunShop::request()->keyword) {
+
+        $search = \YunShop::request()->search;
+        if ($search) {
+            //dd($search);
             //dd(\YunShop::request()->keyword);
-            $userList = User::searchPagelist($pageSize, \YunShop::request()->keyword);
-            dd($userList);
+            $userList = User::searchPagelist($pageSize, $search);
+            //dd($userList);
         }
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
 
@@ -38,7 +40,8 @@ class UserController extends BaseController
         return view('user.user.user', [
             'pager' => $pager,
             'roleList' => $roleList,
-            'userList' => $userList
+            'userList' => $userList,
+            'search' => $search
         ])->render();
     }
 

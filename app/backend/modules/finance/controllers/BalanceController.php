@@ -29,14 +29,13 @@ use app\common\services\fiance\Balance;
  * */
 class BalanceController extends BaseController
 {
-    //余额基础设置页面
+    //余额基础设置页面[完成]
     public function index()
     {
         $balance = Setting::get('balance.recharge');
 
         $requestModel = \YunShop::request()->balance;
         if ($requestModel) {
-            //dd($requestModel);
             $requestModel[''] = '';
             if (Setting::set('balance.recharge', $requestModel)) {
                 return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'));
@@ -51,7 +50,7 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    //余额明细记录
+    //余额明细记录[完成]
     public function balanceDetail()
     {
         $pageSize = 3;
@@ -126,6 +125,7 @@ class BalanceController extends BaseController
         }
         $pager = PaginationHelper::show($recordList->total(), $recordList->currentPage(), $recordList->perPage());
 
+        //支付类型：1后台支付，2 微信支付 3 支付宝， 4 其他支付
         return view('finance.balance.rechargeRecord', [
             'recordList'  => $recordList,
             'pager'    => $pager,

@@ -40,7 +40,7 @@ class Express
         //返回信息 todo 需要获取用户当前默认地址
 
         $data = $event->getOrderModel()->getMember()->defaultAddress;
-        if(!isset($data)){
+        if (!isset($data)) {
             return;
         }
 
@@ -56,6 +56,7 @@ class Express
     private function saveExpressInfo()
     {
         $address = \YunShop::request()->get('address');
+
         /*$address =['address' => '云霄路188-1',
             'mobile' => '18545571024',
             'username' => '高启',

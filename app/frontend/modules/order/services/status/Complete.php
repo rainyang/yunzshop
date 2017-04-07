@@ -34,6 +34,11 @@ class Complete implements StatusService
                     'value' => static::COMMENT
                 ],
                 [
+                    'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
+                    'api' => 'dispatch.express',
+                    'value' => static::EXPRESS
+                ],
+                [
                     'name' => '删除订单',
                     'api' => 'order.operation.delete',
                     'value' => static::DELETE

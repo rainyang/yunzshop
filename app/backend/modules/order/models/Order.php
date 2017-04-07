@@ -13,32 +13,32 @@ class Order extends \app\common\models\Order
     public static function getAllOrders($search,$pageSize){
         $builder = Order::orders($search,$pageSize);
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->toArray();
+        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
 
     }
     public static function getWaitPayOrders($search,$pageSize){
         $builder = Order::orders($search,$pageSize)->waitPay();
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->toArray();
+        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
     public static function getWaitSendOrders($search,$pageSize){
         $builder = Order::orders($search,$pageSize)->waitSend();
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->toArray();
+        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
     public static function getWaitReceiveOrders($search,$pageSize){
         $builder = Order::orders($search,$pageSize)->waitReceive();
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->toArray();
+        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
     public static function getCompletedOrders($search,$pageSize){
         $builder = Order::orders($search,$pageSize)->completed();
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->toArray();
+        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
 
@@ -59,7 +59,7 @@ class Order extends \app\common\models\Order
             'hasManyOrderGoods' => self::order_goods_builder(),
             'hasOneDispatchType',
             'hasOnePayType',
-            'hasOneAddress',
+            'address',
             'hasOneOrderRemark',
             'hasOneOrderExpress',
             'hasOnePayType'
@@ -76,7 +76,7 @@ class Order extends \app\common\models\Order
             'hasManyOrderGoods' => self::order_goods_builder(),
             'hasOneDispatchType',
             'hasOnePayType',
-            'hasOneAddress',
+            'address',
             'hasOnePayType'
         ]);
         return $list;

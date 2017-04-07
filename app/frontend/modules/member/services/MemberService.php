@@ -22,6 +22,7 @@ class MemberService
             return self::$_current_member;
         }
         $uid = \YunShop::app()->getMemberId();
+        $uid = 1;
         if(!isset($uid)){
             throw new AppException('uid不存在');
         }
@@ -45,7 +46,7 @@ class MemberService
      */
     public static function isLogged()
     {
-        return Session::get('member_id') && Session::get('member_id') > 0;
+        return \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0;
     }
 
     /**

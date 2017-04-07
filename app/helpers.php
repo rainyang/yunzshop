@@ -5,6 +5,28 @@ use Illuminate\Support\Arr;
 use app\common\services\PermissionService;
 use app\common\helpers\Url;
 
+if (!function_exists("html_images")) {
+
+    function html_images($detail = '')
+    {
+        $detail = htmlspecialchars_decode($detail);
+        preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg|\.png|\.jpeg]?))[\'|\"].*?[\/]?>/", $detail, $imgs);
+        $images = array();
+        if (isset($imgs[1])) {
+            foreach ($imgs[1] as $img) {
+                $im = array(
+                    "old" => $img,
+                    "new" => save_media($img)
+                );
+                $images[] = $im;
+            }
+        }
+        foreach ($images as $img) {
+            $detail = str_replace($img['old'], $img['new'], $detail);
+        }
+        return $detail;
+    }
+}
 if (!function_exists("xml_to_array")) {
     function xml_to_array($xml)
     {

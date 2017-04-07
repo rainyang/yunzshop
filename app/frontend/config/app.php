@@ -8,6 +8,7 @@
 
 return [
     'modules'=>[
-        'order'
+        'order',
+        'dispatch',
     ]
 ];
