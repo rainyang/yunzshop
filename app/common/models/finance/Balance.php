@@ -21,6 +21,8 @@ class Balance extends BaseModel
 
     public $timestamps = false;
 
+    protected $guarded= [''];
+
 
     const BALANCE_RECHARGE  = 1; //充值
 
@@ -35,6 +37,10 @@ class Balance extends BaseModel
     const BALANCE_WITHDRAWAL= 6; //余额提现
 
     const BALANCE_INCOME    = 7; //提现至余额
+
+    const CANCEL_DEDUCTION  = 8; //抵扣取消余额回滚
+
+    const CANCEL_AWARD      = 9; //奖励取消回滚
 
     /*
      * 模型管理，关联会员数据表
