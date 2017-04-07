@@ -30,6 +30,7 @@ class MemberCartService
         return MemberCart::destroyMemberCart($ids);
     }
     public static function newMemberCart($params){
+
         $cart = new MemberCart($params);
         if(!isset($cart->goods)){
             throw new AppException('(ID:'.$cart->goods_id.')未找到商品或已经删除');
@@ -37,6 +38,7 @@ class MemberCartService
         if($cart->total > $cart->goods->stock){
             throw new AppException($cart->goods->title.':库存不足');
         }
+
         return $cart;
     }
 }

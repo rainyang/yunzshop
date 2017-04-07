@@ -14,7 +14,6 @@ class TestController extends BaseController
     public function index()
     {
 
-        dd(\YunShop::app());
         dd($alipay = app('alipay.web'));
 
         $fans = weAccount()->fansAll();
