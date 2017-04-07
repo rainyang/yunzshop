@@ -34,6 +34,10 @@ class TestController extends ApiController
       $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
 
        return view('order.pay', [
+           'data' => json_encode($data)
+       ])->render();
+       exit;
+       return view('order.pay', [
            'config' => $data['config'],
            'js' => $data['js']
        ])->render();
