@@ -51,16 +51,19 @@ class ApiController extends BaseController
 
         if (empty($session_id)) {
             $session_id = $_COOKIE[session_name()];
+            \Log::debug('apiController:cookie session_name'.$session_id);
         }
 
         if (empty($session_id)) {
             $session_id = \YunShop::app()->uniacid . '-' . Client::random(20) ;
             $session_id = md5($session_id);
             setcookie(session_name(), $session_id);
+            \Log::debug('apiController: create session_id : '.$session_id);
         }
 
-       // session_save_path('/tmp');
+        session_save_path('/tmp');
         session_id($session_id);
         session_start();
+        \Log::debug('apiController: setCookie session_start '.$session_id);
     }
 }
