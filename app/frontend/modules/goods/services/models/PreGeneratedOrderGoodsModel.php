@@ -27,7 +27,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     public function __construct(array $attributes = [])
     {
-        if (isset($attributes['option_id'])) {
+        if(isset($attributes['option_id'])){
             $attributes['goods_option_id'] = $attributes['option_id'];
             unset($attributes['option_id']);
         }
@@ -52,6 +52,16 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
     }
 
     /**
+     * 为订单model提供的方法 ,设置所属的订单model
+     * @param PreGeneratedOrderModel $order
+     */
+    public function setOrder(PreGeneratedOrderModel $order)
+    {
+        $this->order = $order;
+
+    }
+
+    /**
      * 显示商品数据
      * @return array
      */
@@ -72,7 +82,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'coupon_discount_price' => $this->couponDiscountPrice,
             'coupon_money_off_price' => $this->couponMoneyOffPrice,
         );
-        if (isset($this->goodsOption)) {
+        if(isset($this->goodsOption)){
             $data += [
                 'goods_option_id' => $this->goodsOption->id,
                 'goods_option_title' => $this->goodsOption->title,
@@ -132,7 +142,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'order_id' => $this->order->id,
             'uniacid' => $this->order->uniacid,
         );
-        if (isset($this->goodsOption)) {
+        if(isset($this->goodsOption)){
             $data += [
                 'goods_option_id' => $this->goodsOption->id,
                 'goods_option_title' => $this->goodsOption->title,
