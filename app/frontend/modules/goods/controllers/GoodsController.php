@@ -72,7 +72,6 @@ class GoodsController extends ApiController
             $goodsModel->thumb_url = unserialize($goodsModel->thumb_url);
         }
 
-        //dd($goodsModel);
         foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
         }
@@ -106,7 +105,6 @@ class GoodsController extends ApiController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-        //dd($requestSearch);
 
         $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
             ->where("status", 1)
@@ -170,7 +168,6 @@ class GoodsController extends ApiController
         if (!$brand) {
             $this->errorJson('没有此品牌.');
         }
-        //dd($brand);
         $goodsList = Goods::uniacid()->select('id','id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->where('status', '1')
             ->where('brand_id', $brand_id)

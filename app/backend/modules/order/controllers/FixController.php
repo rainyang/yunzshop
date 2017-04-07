@@ -4,6 +4,7 @@ namespace app\backend\modules\order\controllers;
 
 use app\common\components\BaseController;
 use app\common\models\Order;
+use app\common\models\OrderGoods;
 use app\common\services\TestContract;
 
 /**
@@ -29,7 +30,8 @@ class FixController extends BaseController
     public function deleteInvalidOrders()
     {
         Order::doesntHave('hasManyOrderGoods')->delete();
-        Order::where('price','<=',0)->delete();
+        Order::where('goods_price','<=',0)->delete();
+        OrderGoods::where('goods_price','<=',0)->delete();
         echo 'ok';
 
     }

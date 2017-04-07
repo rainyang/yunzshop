@@ -108,7 +108,6 @@ class TestService
     {
         $coupon_id = explode(',', array_get($_GET, 'coupon_ids', ''));
         $result = [];
-        //dd(MemberCoupon::getMemberCoupon($this->order->getMemberModel())->get());exit;
         foreach ($this->getMemberCoupon() as $memberCoupon) {
             if (in_array($memberCoupon->coupon_id, $coupon_id)) {
                 $result[] = $memberCoupon;

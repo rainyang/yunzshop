@@ -113,7 +113,7 @@ class Client
         return $hash;
     }
 
-    function is_weixin()
+    static function is_weixin()
     {
         global $_W;
         if($_GET['app_type'] == 'wechat'){
@@ -126,5 +126,16 @@ class Client
             return false;
         }
         return true;
+    }
+
+    static function getType()
+    {
+        if (self::is_weixin()) {
+            return 1;
+        }
+
+        if (self::isMobile()) {
+            return 5;
+        }
     }
 }

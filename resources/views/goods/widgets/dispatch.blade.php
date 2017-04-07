@@ -1,19 +1,21 @@
-﻿    <div class="form-group" id="dispatch_info">
+﻿<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
+
+    <div class="form-group" id="dispatch_info">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">运费设置</label>
         <div class="col-sm-6 col-xs-6">
-            <label class="radio-inline" style="float: left;">
+            <label class="radio-inline" >
                 <input type="radio" name="widgets[dispatch][dispatch_type]" value="1"
                        @if ( $dispatch['dispatch_type'] == 1) checked="true" @endif /> 统一邮费
             </label>
 
-            <div class="input-group form-group" style="width: 180px; float: left;">
-                <input type="text" name="widgets[dispatch][dispatch_price]" style="margin:0 10px;" id="dispatchprice"
+            <div class="input-group form-group" >
+                <input type="text" name="widgets[dispatch][dispatch_price]" style="" id="dispatchprice"
                        class="form-control"
                        value="{{ $dispatch['dispatch_price'] }}"/>
                 <span class="input-group-addon">元</span>
             </div>
 
-            <label class="radio-inline" style="float: left;">
+            <label class="radio-inline" >
                 <input type="radio" name="widgets[dispatch][dispatch_type]" value="0"
                        @if ( empty($dispatch['dispatch_type'])) checked="true" @endif /> 运费模板
             </label>

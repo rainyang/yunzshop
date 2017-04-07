@@ -26,7 +26,6 @@ class OrderAddressObserver extends \app\common\observers\BaseObserver
     {
         dump($model);
 
-        //dd($model);exit;
     }
 
 

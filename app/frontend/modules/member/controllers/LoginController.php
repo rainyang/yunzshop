@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
+use app\common\helpers\Client;
 use app\frontend\modules\member\services\factory\MemberFactory;
 
 class LoginController extends ApiController
@@ -18,6 +19,10 @@ class LoginController extends ApiController
     public function index()
     {
         $type = \YunShop::request()->type ;
+
+        if (empty($type)) {
+            $type = Client::getType();
+        }
 
         if (!empty($type)) {
                 $member = MemberFactory::create($type);

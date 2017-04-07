@@ -535,23 +535,23 @@
 
 
     <link rel="stylesheet" type="text/css" href="{{static_url('css/font-awesome.min.css')}}">
-    <style type='text/css'>
-        .tab-pane {
-            padding: 20px 0 20px 0;
-        }
-
-    </style>
+    <link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
+<div class="right-titpos">
+    <ul class="add-snav">
+        <li class="active"><a href="#">商品编辑</a></li>
+    </ul>
+</div>
     {{--<div class="main rightlist">--}}
 
 
-    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+    <form id="goods-edit"  action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
         <div class="panel-default panel-center">
 
 <!--             <div class="panel-heading">
                 {if empty($goods['id'])}添加商品{else}编辑商品{/if}
             </div> -->
 
-			<div  >
+			<div  class="top">
 				<ul class="add-shopnav" id="myTab">
 					<li class="active" ><a href="#tab_basic">基本信息</a></li>
 					<li><a href="#tab_des">{{$lang['shopdesc']}}</a></li>
@@ -566,7 +566,7 @@
 
 				</ul>
 			</div>
-			<div style="padding-top:50px">
+			<div class="info" >
 				<div class="panel-body">
 					<div class="tab-content">
 						<div class="tab-pane  active" id="tab_basic">@include('goods.basic')</div>
@@ -578,11 +578,11 @@
 						@endforeach
 
 					</div>
-					<div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
-						<input type="submit" name="submit" value="{{$lang['shopsubmit']}}" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
+					<div class="form-group col-sm-12 mrleft40 border-t" >
+						<input type="submit" name="submit" value="{{$lang['shopsubmit']}}" class="btn btn-primary col-lg-1" onclick="return formcheck()"  />
 						<input type="hidden" name="token" value="{{$var['token']}}" />
                       @section('back')
-						<input type="button" name="back"  style='margin-left:10px;' value="返回列表" class="btn btn-default" />
+						<input type="button" name="back"   value="返回列表" class="btn btn-default" />
                         @show
 					</div>
 				</div>
