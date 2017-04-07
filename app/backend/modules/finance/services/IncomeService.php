@@ -23,4 +23,23 @@ class IncomeService
                 break;
         }
     }
+    public static function createPayStatusService($income)
+    {
+
+        switch ($income->pay_status) {
+            case -1:
+                return '无效';
+                break;
+            case 0:
+                return '未审核';
+                break;
+            case 1:
+                return '未打款';
+                break;
+            case 2:
+                return '已打款';
+                break;
+        }
+    }
+
 }

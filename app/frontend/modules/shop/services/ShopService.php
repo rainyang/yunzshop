@@ -10,6 +10,7 @@ namespace app\frontend\modules\shop\services;
 
 
 use app\common\exceptions\AppException;
+use app\common\models\uniAccount;
 use app\frontend\modules\shop\services\models\ShopModel;
 
 class ShopService
@@ -17,7 +18,8 @@ class ShopService
     private static $_current_shop;
     //todo 待实现
     public static function getCurrentShopModel(){
-        $result = new ShopModel();
+
+        $result = new uniAccount(['uniacid'=>\YunShop::app()->uniacid]);
         if(!isset($result)){
             throw new AppException('读取商城信息出错');
         }

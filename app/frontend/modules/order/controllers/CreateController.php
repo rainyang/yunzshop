@@ -14,6 +14,7 @@ use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\exceptions\AppException;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\shop\services\ShopService;
 
@@ -58,23 +59,24 @@ class CreateController extends ApiController
     public function index()
     {
 
-        $member_model = MemberService::getCurrentMemberModel();
+        $member = MemberService::getCurrentMemberModel();
 
-        $shop_model = ShopService::getCurrentShopModel();
+        $shop = ShopService::getCurrentShopModel();
         //todo 根据参数
         foreach ($this->getMemberCarts() as $carts) {
-            $order_goods_models = OrderService::getOrderGoodsModels($carts);
+            $orderGoodsModel = OrderService::getOrderGoodsModels($carts);
 
-            $order_model = OrderService::getPreGeneratedOrder($order_goods_models, $member_model, $shop_model);
-            $result = $order_model->generate();
+            $order = new PreGeneratedOrderModel(['uid'=>$member->uid,'uniacid'=>$shop->uniacid]);
+            $order->setOrderGoodsModels($orderGoodsModel);
+            $result = $order->generate();
             if (!$result) {
                 throw new AppException('订单生成失败');
             }
-            event(new AfterOrderCreatedEvent($order_model));
+            event(new AfterOrderCreatedEvent($order->getOrder()));
 
         }
 
-        $this->successJson('成功', ['order_id' => $order_model->id]);
+        $this->successJson('成功', ['order_id' => $order->id]);
     }
 
     private function validator($params)

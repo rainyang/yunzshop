@@ -190,7 +190,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        redirect($redirect_url . '?login&session_id=' . session_id() . '&uid=' . \YunShop::app()->getMemberId())->send();
+        redirect($redirect_url . '?uid=' . \YunShop::app()->getMemberId())->send();
     }
 
     /**

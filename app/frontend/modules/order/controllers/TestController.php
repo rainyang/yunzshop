@@ -5,6 +5,7 @@ use app\common\components\ApiController;
 
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\models\Order;
 use app\frontend\modules\order\services\OrderService;
 
 use app\common\events\order\AfterOrderCancelPaidEvent;
@@ -19,10 +20,12 @@ class TestController extends ApiController
 {
     public function index()
     {
-        dd(\Request::query());
-        exit;
+        $order = (new Order(['uid'=>4967]));
+        //exit;
+        dd($order->belongsToMember);
+        dd($order->belongsToMember);
+        exit;;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);
-        exit;
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
         /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));
         Event::fire(new AfterOrderCancelSentEvent(Order::find(1)));

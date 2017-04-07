@@ -30,23 +30,6 @@ use app\frontend\modules\shop\services\models\ShopModel;
 
 class OrderService
 {
-    /**
-     * 获取预下单对象
-     * @param array $order_goods_models
-     * @param Member|null $member_model
-     * @param ShopModel|null $shop_model
-     * @return models\PreGeneratedOrderModel
-     */
-    public static function getPreGeneratedOrder(array $order_goods_models, Member $member_model=null, ShopModel $shop_model=null){
-        $order_model = new PreGeneratedOrderModel($order_goods_models);
-        if(isset($member_model)){
-            $order_model->setMember($member_model);
-        }
-        if(isset($shop_model)){
-            $order_model->setShop($shop_model);
-        }
-        return $order_model;
-    }
 
     /**
      * 获取订单商品对象数组
@@ -62,7 +45,7 @@ class OrderService
             /**
              * @var $memberCart MemberCart
              */
-            $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart);
+            $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart->toArray());
             $result[] = $orderGoodsModel;
         }
         return $result;
@@ -169,7 +152,6 @@ class OrderService
      */
     public static function changeOrderPrice($param){
         $order_model = Order::find($param['order_id']);
-        //dd($order_model);exit;
 
         $OrderOperation = new OrderChangePrice($order_model);
         return self::OrderOperate($OrderOperation);
