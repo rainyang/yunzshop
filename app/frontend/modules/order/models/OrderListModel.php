@@ -2,7 +2,6 @@
 
 namespace app\frontend\modules\order\models;
 
-use app\common\models\Order;
 
 class OrderListModel extends Order
 {

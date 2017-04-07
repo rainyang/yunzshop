@@ -31,9 +31,10 @@ class TestService
             /**
              * @var $coupon Coupon
              */
+            $coupon->activate();
+
             $result += $coupon->getDiscountPrice();
             //将优惠金额分配到订单商品中
-            $coupon->activate();
         }
         return $result;
     }

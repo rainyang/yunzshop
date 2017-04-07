@@ -16,7 +16,7 @@ class MoneyOffCouponPrice extends CouponPrice
     public function valid()
     {
 
-        //优惠券商品价格不小于订单满减价格
+        //todo 之前用过的所有优惠券的 满足金额
         if (!float_lesser($this->getOrderGoodsGroupPrice(), $this->dbCoupon->enough)) {
 
             return true;
@@ -27,7 +27,7 @@ class MoneyOffCouponPrice extends CouponPrice
         return $this->coupon->getOrderGoodsInScope()->getVipPrice()-$this->coupon->getOrderGoodsInScope()->getCouponDiscountPrice();
     }
     private function getOrderGoodsPrice($orderGoods){
-
+        //之前的
         return $orderGoods->getVipPrice() - $orderGoods->couponDiscountPrice;
     }
     public function getPrice()
