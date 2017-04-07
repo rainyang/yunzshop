@@ -29,6 +29,28 @@ use app\common\services\fiance\Balance;
  * */
 class BalanceController extends BaseController
 {
+    public function test()
+    {
+        $data = array(
+            'member_id'     => '55', // 会员ID
+            'change_money'  => '10.11', // 改变余额值 100 或 -100
+            'serial_number' => '', // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
+            'operator'      => '0', // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID（没有ID值可以给插件标示）
+            'operator_id'   => '12', // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
+            'remark'        => '文章营销 \'奖励\' 余额 \'N\' 元', // 备注，文章营销 '奖励' 余额 'N' 元【越详细越好】
+
+            'type'          => 1,
+        );
+        $result = (new Balance())->rechargeBalance($data);
+
+        dd($result);
+
+    }
+
+
+
+
+
     //余额基础设置页面[完成]
     public function index()
     {
@@ -89,16 +111,24 @@ class BalanceController extends BaseController
     public function recharge()
     {
 //todo 缺少会员头像路径转换
-
         $memberId = \YunShop::request()->member_id;
         $rechargeMoney = trim(\YunShop::request()->num);
-        $memberInfo = Member::getMemberInfoById($memberId);
 
+        $memberInfo = Member::getMemberInfoById($memberId);
         if (!$memberInfo) {
             $this->error('未获取到会员信息，请刷新重试');
         }
+//todo 需要获取商城登陆操作者ID  operator_id 字段
+        $data = array(
+            'member_id'     => $memberId,
+            'change_money'  => $rechargeMoney,
+            'operator'      => '0',
+            'operator_id'   => 'o', // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
+            'remark'        => '后台充值' . '余额' . $rechargeMoney .'元',
+            'type'          => 1,
+        );
         if ($rechargeMoney && $memberInfo['uid']) {
-            $result = (new Balance())->shopBalanceRecharge($memberInfo['uid'], $rechargeMoney);
+            $result = (new Balance())->rechargeBalance($data);
             if ($result === true ) {
                 return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $memberId)), 'success');
             } else {

@@ -89,8 +89,10 @@ class Withdraw extends BackendModel
                 if ($config['class'] === $this->type) {
 
                     $orders = Income::getIncomeByIds($this->type_id)->get();
+//                    $is_pay = Income::getIncomeByIds($this->type_id)->where('pay_status','1')->get()->sum(amount);
                     if($orders){
                         $this->TypeData['income_total'] = $orders->count();
+//                        $this->TypeData['is_pay'] = $is_pay;
                         $this->TypeData['incomes'] = $orders->toArray();
                         foreach ($this->TypeData['incomes'] as &$item) {
                             $item['detail'] = json_decode($item['detail']);
@@ -112,7 +114,7 @@ class Withdraw extends BackendModel
     public static function getWithdrawById($id)
     {
         $Model = self::where('id', $id);
-
+        $Model->orWhere('withdraw_sn',$id);
         $Model->with(['hasOneMember' => function ($query) {
             $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
         }]);
@@ -136,6 +138,13 @@ class Withdraw extends BackendModel
         return $this->hasOne('Yunshop\Commission\models\Agents', 'member_id', 'member_id');
     }
 
+    public static function updatedWithdrawStatus($id, $updatedData)
+    {
+        return self::where('id',$id)
+            ->orWhere('withdraw_sn',$id)
+            ->update($updatedData);
+    }
+    
     /**
      *  定义字段名
      * 可使

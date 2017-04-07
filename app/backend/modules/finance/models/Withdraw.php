@@ -23,11 +23,7 @@ class Withdraw extends \app\common\models\Withdraw
 
         return $Model;
     }
-    public static function updatedWithdrawStatus($id, $status)
-    {
-        return self::where('id',$id)
-            ->update(['status' => $status]);
-    }
+
 
 
 
