@@ -64,7 +64,7 @@ class ApiController extends BaseController
         session_save_path('/tmp');
        // session_id($session_id);
         session_start();
-        \Log::debug('apiController: setCookie session_start : '. seesion_id());
+        \Log::debug('apiController: setCookie session_start : '. session_id());
         \Log::debug('apicontroller: printCookie result : ' . print_r($_SESSION, 1));
     }
 }
