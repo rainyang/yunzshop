@@ -43,6 +43,12 @@ class ApiController extends BaseController
 //            $session_id = $pieces[1];
 //            unset($pieces);
 //        }
+//
+//        if (!empty($session_id)) {
+//            session_id($session_id);
+//        }
+
+
 
 //        if (empty($session_id) && \YunShop::request()->session_id &&
 //            \YunShop::request()->session_id != 'undefined') {
@@ -62,8 +68,8 @@ class ApiController extends BaseController
 //        }
 
         session_save_path('/tmp');
-       // session_id($session_id);
         session_start();
+
         \Log::debug('apiController: path : '. $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
         \Log::debug('apiController: setCookie session_start : '. session_id());
         \Log::debug('apiController: setCookie print cookie : '. print_r($_COOKIE, 1));
