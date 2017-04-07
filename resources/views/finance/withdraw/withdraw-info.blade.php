@@ -168,15 +168,6 @@
                 </table>
             </div>
 
-            <div class='panel-heading'>
-                打款信息
-            </div>
-            <div class='panel-body'>
-                佣金总额: <span style='color:red'>{{$item['amounts']}}</span> 元
-                手续费: <span style='color:red'>{{$item['poundage']}}</span> 元
-                应该打款：<span style='color:red'>{{$item['amounts'] - $item['poundage']}}</span>元
-
-            </div>
 
             <div class="form-group col-sm-12">
                 @if($item['status'] == '0')
@@ -185,13 +176,26 @@
                 @endif
 
                 @if($item['status'] == '1')
+
+                    <div class='panel-heading'>
+                        打款信息
+                    </div>
+                    <div class='panel-body'>
+                        审核金额: <span style='color:red'>{{$item['actual_amounts'] + $item['actual_poundage']}}</span> 元
+                        手续费: <span style='color:red'>{{$item['actual_poundage']}}</span> 元
+                        应打款：<span style='color:red'>{{$item['actual_amounts']}}</span>元
+
+                    </div>
                     @if($item['pay_way'] == 'balance')
+                        <input type="hidden" name="pay_way" value="3">
                         <input type="submit" name="submit_pay" value="打款到余额" class="btn btn-primary col-lg-1"
                                style='margin-left:10px;' onclick='return '/>
                     @elseif($item['pay_way'] == 'wecht')
+                        <input type="hidden" name="pay_way" value="1">
                         <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary col-lg-1"
                                style='margin-left:10px;' onclick='return '/>
                     @elseif($item['pay_way'] == 'alipay')
+                        <input type="hidden" name="pay_way" value="2">
                         <input type="submit" name="submit_pay" value="打款到支付宝"
                                class="btn btn-primary col-lg-1" style='margin-left:10px;'
                                onclick='return '/>

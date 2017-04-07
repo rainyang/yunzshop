@@ -15,15 +15,17 @@ use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\Income;
+use app\common\services\fiance\Balance;
+use app\common\services\PayFactory;
 
 class WithdrawController extends BaseController
 {
     public function set()
     {
         $set = Setting::get('withdraw.balance');
-        $requestModel = \YunShop::request()->withdraw;
-        if ($requestModel) {
-            foreach ($requestModel as $key => $item) {
+        $resultModel = \YunShop::request()->withdraw;
+        if ($resultModel) {
+            foreach ($resultModel as $key => $item) {
                 Setting::set('withdraw.' . $key, $item);
             }
             return $this->message('设置保存成功', Url::absoluteWeb('finance.withdraw.set'));
@@ -69,53 +71,156 @@ class WithdrawController extends BaseController
 
     public function dealt()
     {
-        $requestData = \YunShop::request();
-
-        if (isset($requestData['submit_check'])) {
+        $resultData = \YunShop::request();
+        if (isset($resultData['submit_check'])) {
             //提交审核
-            $request = $this->submitCheck($requestData['id'], $requestData['audit']);
+            $result = $this->submitCheck($resultData['id'], $resultData['audit']);
+            return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
 
-            return $this->message($request['msg'],yzWebUrl("finance.withdraw.info",['id'=>$requestData['id']]));
-
-        } elseif (isset($requestData['submit_pay'])) {
+        } elseif (isset($resultData['submit_pay'])) {
             //打款
-            $request = $this->submitPay();
-        } elseif (isset($requestData['submit_cancel'])) {
+            $result = $this->submitPay($resultData['id'], $resultData['pay_way']);
+            return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
+
+        } elseif (isset($resultData['submit_cancel'])) {
             //重新审核
-            $request = $this->submitCancel();
+            $result = $this->submitCancel($resultData['id'], $resultData['audit']);
+            return $this->message($result['msg'], yzWebUrl("finance.withdraw.info", ['id' => $resultData['id']]));
+
         }
 
     }
 
     public function submitCheck($withdrawId, $incomeData)
     {
+
         $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
-        if($withdraw->status !== '0'){
-            return ['msg'=>'审核失败,数据不符合提现规则!'];
+        if ($withdraw->status !== '0') {
+            return ['msg' => '审核失败,数据不符合提现规则!'];
         }
         $withdrawStatus = "-1";
+        $actual_amounts = 0;
         foreach ($incomeData as $key => $income) {
-            if($income){
+            if ($income) {
+                $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
                 $withdrawStatus = "1";
-                Income::updatedIncomePayStatus($key,'1');
-            }else{
-                Income::updatedIncomePayStatus($key,'-1');
+                Income::updatedIncomePayStatus($key, '1');
+
+            } else {
+                Income::updatedIncomePayStatus($key, '-1');
             }
         }
-        $request = Withdraw::updatedWithdrawStatus($withdrawId,$withdrawStatus);
-        if($request){
-            return ['msg'=>'审核成功!'];
+        $actual_poundage = $actual_amounts / 100 * $withdraw['poundage_rate'];
+        $updatedData = [
+            'status' => $withdrawStatus,
+            'actual_amounts' => $actual_amounts - $actual_poundage,
+            'actual_poundage' => $actual_poundage,
+        ];
+        $result = Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
+        if ($result) {
+            return ['msg' => '审核成功!'];
         }
-        return ['msg'=>'审核失败!'];
+        return ['msg' => '审核失败!'];
     }
 
-    public static function submitPay()
+    public function submitCancel($withdrawId, $incomeData)
     {
+        $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
+        if ($withdraw->status !== '-1') {
+            return ['msg' => '审核失败,数据不符合提现规则!'];
+        }
+        $withdrawStatus = "-1";
+        $actual_amounts = 0;
+        foreach ($incomeData as $key => $income) {
+            if ($income) {
+                $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
+                $withdrawStatus = "1";
+                Income::updatedIncomePayStatus($key, '1');
 
+            } else {
+                Income::updatedIncomePayStatus($key, '-1');
+            }
+        }
+        $actual_poundage = $actual_amounts / 100 * $withdraw['poundage_rate'];
+        $updatedData = [
+            'status' => $withdrawStatus,
+            'actual_amounts' => $actual_amounts - $actual_poundage,
+            'actual_poundage' => $actual_poundage,
+        ];
+        $result = Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
+        if ($result) {
+            return ['msg' => '审核成功!'];
+        }
+        return ['msg' => '审核失败!'];
     }
 
-    public static function submitCancel()
+
+    public function submitPay($withdrawId, $payWay)
     {
+        $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
+        if ($withdraw->status !== '1') {
+            return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
+        }
+        if ($payWay === '3') {
+            $data = array(
+                'member_id' => $withdraw->member_id, // 会员ID
+                'change_money' => $withdraw->actual_amounts, // 改变余额值 100 或 -100
+                'serial_number' => '', // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
+                'operator' => '-2', // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID（没有ID值可以给插件标示）
+                'operator_id' => $withdraw->id, // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
+                'remark' => '提现打款-' . $withdraw->type_name . '-金额:' . $withdraw->actual_amounts . '元', // 备注，文章营销 '奖励' 余额 'N' 元【越详细越好】
+            );
+            
+            $resultPay = (new Balance())->incomeBalance($data);
+            if ($resultPay) {
+                $result = $this->paySuccess($withdrawId);
+                if ($result) {
+                    return ['msg' => '提现打款成功!'];
+                }
+            }
+            return ['msg' => '提现打款失败!'];
+
+        } elseif ($payWay === '2') {
+            $resultPay = 1;
+
+            if ($resultPay) {
+                $result = $this->paySuccess($withdrawId);
+                if ($result) {
+                    return ['msg' => '提现打款成功!'];
+                }
+            }
+            return ['msg' => '提现打款失败!'];
+        } elseif ($payWay === '1') {
+
+            $data = [
+
+            ];
+            $resultPay = PayFactory::create($payWay);
+            $resultPay = $resultPay->doWithdraw();
+            if ($resultPay) {
+                $result = $this->paySuccess($withdrawId);
+                if ($result) {
+                    return ['msg' => '提现打款成功!'];
+                }
+            }
+            return ['msg' => '提现打款失败!'];
+        }
+        return ['msg' => '提现打款失败!'];
+    }
+
+
+    public function paySuccess($withdrawId)
+    {
+        $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
+        if ($withdraw->status !== '1') {
+            return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
+        }
+        $withdraw = $withdraw->toArray();
+        foreach ($withdraw['type_data']['incomes'] as $item) {
+            Income::updatedIncomePayStatus($item['id'], '2');
+        }
+        $updatedData = ['status' => 2];
+        return Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
 
     }
 }
