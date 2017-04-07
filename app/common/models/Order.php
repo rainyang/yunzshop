@@ -25,7 +25,7 @@ class Order extends BaseModel
     protected $guarded = ['id'];
     protected $appends = ['status_name','pay_type_name'];
     protected $search_fields = ['id', 'order_sn'];
-    protected $attributes = ['discount_price'=>0];
+    //protected $attributes = ['discount_price'=>0];
     const CLOSE = -1;
     const WAIT_PAY = 0;
     const WAIT_SEND = 1;

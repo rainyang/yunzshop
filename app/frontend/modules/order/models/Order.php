@@ -9,8 +9,13 @@
 namespace app\frontend\modules\order\models;
 
 
+use app\frontend\models\Member;
+
 class Order extends \app\common\models\Order
 {
     protected $appends = ['status_name','pay_type_name','button_models'];
-
+    public function belongsToMember()
+    {
+        return $this->belongsTo(Member::class, 'uid', 'uid');
+    }
 }

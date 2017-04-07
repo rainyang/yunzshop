@@ -15,6 +15,7 @@ class TestService
 
     public function __construct(PreGeneratedOrderModel $order, $back_type = null)
     {
+
         $this->order = $order;
         $this->back_type = $back_type;
 
@@ -90,11 +91,13 @@ class TestService
      */
     private function getMemberCoupon()
     {
-        if( $this->order instanceof Order){
-            return $this->order->belongsToMember->hasManyMemberCoupon($this->back_type)->get();
+        /*if( $this->order instanceof PreGeneratedOrderModel){
+            return $this->order->getMember()->hasManyMemberCoupon($this->back_type)->get();
 
-        }
-        return $this->order->getMember()->hasManyMemberCoupon($this->back_type)->get();
+
+        }*/
+        return $this->order->belongsToMember->hasManyMemberCoupon($this->back_type)->get();
+
     }
 
     /**
