@@ -70,7 +70,6 @@ class IncomeController extends ApiController
         }
         $type = 'Yunshop\Commission\models\CommissionOrder';
         $incomeModel = Income::getIncomeInMonth($typeData)->where('member_id', \YunShop::app()->getMemberId())->get();
-        echo "<pre>"; print_r($incomeModel->toArray());exit;
 
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
