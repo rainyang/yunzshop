@@ -31,7 +31,10 @@ class EventServiceProvider extends ServiceProvider
             \app\frontend\modules\dispatch\listeners\prices\UnifyOrderDispatchPrice::class, //统一运费
         ],
         PayLog::class => [ //支付日志请求
-            PayLogListener::class, //保存支付参数
+            PayLogListener::class //保存支付参数
+        ],
+        \app\common\events\member\BecomeAgent::class => [
+          \app\common\listeners\member\BecomeAgentListener::class
         ],
         //微信接口回调触发事件进程
         WechatProcessor::class => [
