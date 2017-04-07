@@ -1,4 +1,4 @@
-
+<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级浏览权限</label>
