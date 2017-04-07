@@ -215,6 +215,7 @@ class Balance
     //提现到余额
     public function incomeBalance()
     {
+        return 1;
         $this->service_type = \app\common\models\finance\Balance::BALANCE_INCOME;
     }
 

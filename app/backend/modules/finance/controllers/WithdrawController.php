@@ -10,6 +10,7 @@ namespace app\backend\modules\finance\controllers;
 
 
 use app\backend\modules\finance\models\Withdraw;
+use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
@@ -17,6 +18,8 @@ use app\common\helpers\Url;
 use app\common\models\Income;
 use app\common\services\fiance\Balance;
 use app\common\services\PayFactory;
+//use app\common\services\fiance\Withdraw as WithdrawService;
+use Illuminate\Support\Facades\Log;
 
 class WithdrawController extends BaseController
 {
@@ -161,45 +164,33 @@ class WithdrawController extends BaseController
         if ($withdraw->status !== '1') {
             return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
         }
-        if ($payWay === '3') {
-            $data = array(
-                'member_id' => $withdraw->member_id, // 会员ID
-                'change_money' => $withdraw->actual_amounts, // 改变余额值 100 或 -100
-                'serial_number' => '', // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
-                'operator' => '-2', // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID（没有ID值可以给插件标示）
-                'operator_id' => $withdraw->id, // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
-                'remark' => '提现打款-' . $withdraw->type_name . '-金额:' . $withdraw->actual_amounts . '元', // 备注，文章营销 '奖励' 余额 'N' 元【越详细越好】
-            );
+        $remark = '提现打款-' . $withdraw->type_name . '-金额:' . $withdraw->actual_amounts . '元,' .
+            '手续费:' . $withdraw->actual_poundage;
+        if ($payWay == '3') {
+            //余额打款
+            $resultPay = WithdrawService::balanceWithdrawPay($withdraw, $remark);
+            if ($resultPay) {
+                $result = WithdrawService::paySuccess($withdrawId);
+                if ($result) {
+                    Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "打款到余额!");
+                    return ['msg' => '提现打款成功!'];
+                }
+            }
+            return ['msg' => '提现打款失败!'];
+
+        } elseif ($payWay == '2') {
+            //支付宝打款
             
-            $resultPay = (new Balance())->incomeBalance($data);
+            $resultPay = WithdrawService::alipayWithdrawPay($withdraw, $remark);
+            Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "支付宝打款中!");
+            
+        } elseif ($payWay == '1') {
+            //微信打款
+            $resultPay = WithdrawService::wechtWithdrawPay($withdraw, $remark);
             if ($resultPay) {
-                $result = $this->paySuccess($withdrawId);
+                $result = WithdrawService::paySuccess($withdrawId);
                 if ($result) {
-                    return ['msg' => '提现打款成功!'];
-                }
-            }
-            return ['msg' => '提现打款失败!'];
-
-        } elseif ($payWay === '2') {
-            $resultPay = 1;
-
-            if ($resultPay) {
-                $result = $this->paySuccess($withdrawId);
-                if ($result) {
-                    return ['msg' => '提现打款成功!'];
-                }
-            }
-            return ['msg' => '提现打款失败!'];
-        } elseif ($payWay === '1') {
-
-            $data = [
-
-            ];
-            $resultPay = PayFactory::create($payWay);
-            $resultPay = $resultPay->doWithdraw();
-            if ($resultPay) {
-                $result = $this->paySuccess($withdrawId);
-                if ($result) {
+                    Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "微信打款!");
                     return ['msg' => '提现打款成功!'];
                 }
             }
@@ -209,18 +200,4 @@ class WithdrawController extends BaseController
     }
 
 
-    public function paySuccess($withdrawId)
-    {
-        $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
-        if ($withdraw->status !== '1') {
-            return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
-        }
-        $withdraw = $withdraw->toArray();
-        foreach ($withdraw['type_data']['incomes'] as $item) {
-            Income::updatedIncomePayStatus($item['id'], '2');
-        }
-        $updatedData = ['status' => 2];
-        return Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
-
-    }
 }

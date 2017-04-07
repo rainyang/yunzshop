@@ -114,7 +114,7 @@ class Withdraw extends BackendModel
     public static function getWithdrawById($id)
     {
         $Model = self::where('id', $id);
-
+        $Model->orWhere('withdraw_sn',$id);
         $Model->with(['hasOneMember' => function ($query) {
             $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
         }]);
@@ -138,6 +138,13 @@ class Withdraw extends BackendModel
         return $this->hasOne('Yunshop\Commission\models\Agents', 'member_id', 'member_id');
     }
 
+    public static function updatedWithdrawStatus($id, $updatedData)
+    {
+        return self::where('id',$id)
+            ->orWhere('withdraw_sn',$id)
+            ->update($updatedData);
+    }
+    
     /**
      *  定义字段名
      * 可使
