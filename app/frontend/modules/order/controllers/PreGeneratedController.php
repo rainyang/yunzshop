@@ -102,6 +102,7 @@ class PreGeneratedController extends ApiController
 
         $order_data = [];
         $total_price = 0;
+        $total_goods_price = 0;
         $total_dispatch_price = 0;
         foreach ($order_models as $order_model) {
             $order = $order_model->toArray();
@@ -109,10 +110,11 @@ class PreGeneratedController extends ApiController
                 'order' => $order
             ];
             $total_price += $order['price'];
+            $total_goods_price += $order['goods_price'];
             $total_dispatch_price += $order['dispatch_price'];
             $order_data[] = array_merge($data, $this->getDiscountEventData($order_model));
         }
-        $data = compact('total_price', 'total_dispatch_price', 'order_data');
+        $data = compact('total_price', 'total_dispatch_price', 'order_data','total_goods_price');
         $data += $this->getDispatchEventData($order_model);
         return $this->successJson('成功', $data);
 
