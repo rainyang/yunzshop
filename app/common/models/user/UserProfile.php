@@ -117,7 +117,7 @@ class UserProfile extends BaseModel
     public  function rules()
     {
         return [
-            'realname' => 'required',
+            'realname' => 'required|max:10',
             'mobile' => 'required|regex:/^1[34578]\d{9}$/'
         ];
     }
