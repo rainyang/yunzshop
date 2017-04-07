@@ -20,7 +20,6 @@ class MemberCartController extends ApiController
     public function index()
     {
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = 77;
         if ($memberId) {
             $cartList = MemberCart::getMemberCartList($memberId);
             foreach ($cartList as $key => $cart) {

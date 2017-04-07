@@ -15,7 +15,6 @@ use app\common\models\Income;
 use app\common\services\Pay;
 use app\common\services\PayFactory;
 use app\frontend\modules\finance\models\Withdraw;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Yunshop\Commission\models\CommissionOrder;
 
@@ -60,17 +59,11 @@ class IncomeController extends ApiController
      */
     public function getIncomeList()
     {
-        $type = \YunShop::request()->type;
-        $configs = Config::get('income');
-        $typeData = '';
-        foreach ($configs as $key=>$config) {
-            if($key == $type){
-                $typeData = $config['class'];
-            }
-        }
-        $type = 'Yunshop\Commission\models\CommissionOrder';
-        $incomeModel = Income::getIncomeInMonth($typeData)->where('member_id', \YunShop::app()->getMemberId())->get();
-
+        $incomeModel = Income::getIncomeInMonth()->where('member_id', \YunShop::app()->getMemberId());
+        $incomeModel = $incomeModel->whereHas('hasManyIncome', function ($query) use ($search) {
+            return $query->searchLike($search['member']);
+        });
+        $incomeModel = $incomeModel->get();
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
         }

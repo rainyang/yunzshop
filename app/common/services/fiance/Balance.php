@@ -25,143 +25,88 @@ class Balance
     private $data;
 
     //类型：收入
-    const INCOME      = 1;
+    const INCOME = 1;
 
     //类型：支出
     const EXPENDITURE = 2;
 
-    /*
-     *
-        $data = array(
-            'member_id'     => '', // 会员ID
-            'change_money'  => '', // 改变余额值 100 或 -100
-            'serial_number' => '', // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
-            'operator'      => '', // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID（没有ID值可以给插件标示）
-            'operator_id'   => '', // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
-            'remark'        => '', // 备注，文章营销 '奖励' 余额 'N' 元【越详细越好】
 
-            'type'          => '', //充值时需要增加type字段，支付类型 ,后台充值1，微信支付2，支付宝3，其他支付4，
-        );
-        //use app\common\services\fiance\Balance;
-        $result = (new Balance())->rechargeBalance($data);
-     *
-     */
-
-    //1余额充值接口 +
-    public function rechargeBalance($data = [])
-    {
-        $this->service_type = \app\common\models\finance\Balance::BALANCE_RECHARGE;
-
-        return $this->acceptInterface($data);
-    }
-
-    //2余额消费接口 -
     /**
-     * 2余额消费接口 -
-     * @param array $data
+     * 余额变动接口
+     * $data 参数说明
+     *     $data = array(
+     *           'member_id'     => '', // 会员ID
+     *           'change_money'  => '', // 改变余额值 100 或 -100
+     *           'serial_number' => '', // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
+     *           'operator'      => '', // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID（没有ID值可以给插件标示）
+     *           'operator_id'   => '', // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
+     *           'remark'        => '', // 备注，文章营销 '奖励' 余额 'N' 元【越详细越好】
+     *           'service_type'  => '', // 例：\app\common\models\finance\Balance::BALANCE_RECHARGE，
+     *                                  // service_type 到 Balance 类中找自己所属类型
+
+     *           'rechrage_type'          => '', //充值时需要增加 rechrage_type 字段，支付类型 ,后台充值0，微信支付1，支付宝2，其他支付3，
+     *      );
+     *       //use app\common\services\fiance\Balance;
+     *      $result = (new Balance())->rechargeBalance($data);
+     *
+     * @param $data
      * @return bool|\Illuminate\Support\MessageBag|string
      */
-    public function consumeBalance($data = [])
-    {
-        $this->service_type = \app\common\models\finance\Balance::BALANCE_CONSUME;
-
-        return $this->acceptInterface($data);
-    }
-
-    //3余额转让接口 +-
-    public function transferBalance($data = [])
-    {
-        $this->service_type = \app\common\models\finance\Balance::BALANCE_TRANSFER;
-
-        return $this->acceptInterface($data);
-    }
-
-    //4余额抵扣 -
-    public function deductionBalance($data = [])
-    {
-        $this->service_type = \app\common\models\finance\Balance::BALANCE_DEDUCTION;
-
-        return $this->acceptInterface($data);
-    }
-
-    //5余额奖励 +
-    public function awardBalance($data = [])
-    {
-        $this->service_type = \app\common\models\finance\Balance::BALANCE_AWARD;
-
-        return $this->acceptInterface($data);
-    }
-
-    //6余额提现 -
-    public function withdrawalBalance($data = [])
-    {
-        $this->service_type = \app\common\models\finance\Balance::BALANCE_WITHDRAWAL;
-
-        return $this->acceptInterface($data);
-    }
-
-    //7提现到余额  +
-    public function incomeBalance($data = [])
-    {
-        $this->service_type = \app\common\models\finance\Balance::BALANCE_INCOME;
-
-        return $this->acceptInterface($data);
-    }
-
-    //8抵扣取消余额回滚 +
-    public function cancelDeductionBalance($data = [])
-    {
-        $this->service_type = \app\common\models\finance\Balance::CANCEL_DEDUCTION;
-
-        return $this->acceptInterface($data);
-    }
-
-    //9奖励取消余额回滚 -
-    public function cancelAwardBalance($data =[])
-    {
-        $this->service_type = \app\common\models\finance\Balance::CANCEL_AWARD;
-
-        return $this->acceptInterface($data);
-    }
-
-
-    /*
-     * 承接接口
-     *
-     * @params array $data
-     *
-     * @retrun mixed
-     * @Author yitian */
-    private function acceptInterface($data = [])
+    public function changeBalance($data)
     {
         $this->data = $data;
+        $this->service_type = $data['service_type'];
+
+        return $this->validatorServiceType();
+    }
+
+
+    /**
+     * @return bool|\Illuminate\Support\MessageBag|string
+     */
+    private function validatorServiceType()
+    {
         $this->attachedType();
 
-        if ($this->type == 1 && in_array($this->service_type, [1,3,5,7,8])) {
-            return $this->resolveInterface();
+        if ($this->type == static::INCOME && in_array($this->service_type,
+                [
+                    \app\common\models\finance\Balance::BALANCE_RECHARGE,
+                    \app\common\models\finance\Balance::BALANCE_TRANSFER,
+                    \app\common\models\finance\Balance::BALANCE_AWARD,
+                    \app\common\models\finance\Balance::BALANCE_INCOME,
+                    \app\common\models\finance\Balance::CANCEL_DEDUCTION
+                ])
+        ) {
+            return $this->judgeMethod();
         }
-        if ($this->type == 2 && in_array($this->service_type, [2,3,4,6,9])) {
-            return $this->resolveInterface();
+        if ($this->type == static::EXPENDITURE && in_array($this->service_type,
+                [
+                    \app\common\models\finance\Balance::BALANCE_CONSUME,
+                    \app\common\models\finance\Balance::BALANCE_TRANSFER,
+                    \app\common\models\finance\Balance::BALANCE_DEDUCTION,
+                    \app\common\models\finance\Balance::BALANCE_WITHDRAWAL,
+                    \app\common\models\finance\Balance::CANCEL_AWARD
+                ])
+        ) {
+            return $this->judgeMethod();
         }
         //后台充值可以充值负数
-        if ($this->type == 2 && $this->data['operator'] == 0 && $this->data['type'] == 1) {
-            return $this->resolveInterface();
+        if ($this->type == static::EXPENDITURE && $this->data['operator'] == BalanceRecharge::PAY_TYPE_SHOP && $this->data['service_type'] == \app\common\models\finance\Balance::BALANCE_RECHARGE ) {
+            return $this->judgeMethod();
         }
         return '接口请求错误';
     }
 
-    /*
-     * 分解承接接口 调用不同方法
-     *
-     * @Author yitian */
-    private function resolveInterface()
+    /**
+     * @return bool|\Illuminate\Support\MessageBag|string
+     */
+    private function judgeMethod()
     {
-        switch ($this->service_type)
-        {
-            case 1:
+        switch ($this->service_type) {
+            case \app\common\models\finance\Balance::BALANCE_RECHARGE:
                 return $this->rechargeRecord();
                 break;
-            case 3:
+            case \app\common\models\finance\Balance::BALANCE_TRANSFER:
                 return $this->transferRecord();
                 break;
             default:
@@ -223,9 +168,8 @@ class Balance
      * @Author yitian */
     private function rechargeTypeFor($type, $recordId)
     {
-        switch ($type)
-        {
-            case 1:
+        switch ($type) {
+            case BalanceRecharge::PAY_TYPE_SHOP:
                 return $this->updateRrechargeStatus($recordId);
                 break;
             default:
@@ -249,7 +193,10 @@ class Balance
     private function updateMemberBalance()
     {
         $memberModel = Member::getMemberById($this->data['member_id']);
-        $memberModel->credit2 = ($memberModel->credit2 + $this->data['change_money']) >= 0 ?: 0;
+        $memberModel->credit2 = $memberModel->credit2 + $this->data['change_money'];
+        if ($memberModel->credit2 < 0 ) {
+            $memberModel->credit2 = 0;
+        }
 
         if ($memberModel->save()) {
             //接口调用完成
@@ -266,13 +213,17 @@ class Balance
     private function getRechargeData()
     {
         $memberModel = Member::getMemberById($this->data['member_id']);
+        $new_money = $this->data['change_money'] + $memberModel->credit2;
+        if ($new_money < 0) {
+            $new_money = 0;
+        }
         return array(
             'uniacid'   => \YunShop::app()->uniacid,
             'member_id' => $this->data['member_id'],
             'old_money' => $memberModel->credit2,
             'money'     => $this->data['change_money'],
-            'new_money' => $this->data['change_money'] + $memberModel->credit2 >= 0 ?: 0,
-            'type'      => $this->data['type'],
+            'new_money' => $new_money,
+            'type'      => $this->data['recharge_type'],
             'ordersn'   => $this->getRechargeOrderSN(),
             'status'    => '-1'
         );
@@ -286,24 +237,26 @@ class Balance
     private function getDetailData()
     {
         $memberModel = Member::getMemberById($this->data['member_id']);
+        $new_money = $this->data['change_money'] + $memberModel->credit2;
+        if ($new_money < 0) {
+            $new_money = 0;
+        }
         return array(
             'uniacid'       => \YunShop::app()->uniacid,
-            'member_id'     => $this->data['member_id'],    // 会员ID
+            'member_id'     => $this->data['member_id'],        // 会员ID
             'old_money'     => $memberModel->credit2,
-            'change_money'  => $this->data['change_money'], // 改变余额值 100 或 -100
-            'new_money'     => $memberModel->credit2 + $this->data['change_money'] >= 0 ?: 0,
+            'change_money'  => $this->data['change_money'],     // 改变余额值 100 或 -100
+            'new_money'     => $new_money,
             'type'          => $this->type,
             'service_type'  => $this->service_type,
-            'serial_number' => $this->data['serial_number'], // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
+            'serial_number' => $this->data['serial_number'],    // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
 //todo operator 字段值需要如果是插件标示需要主动回去插件ID
-            'operator'      => $this->data['operator'], // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID（没有ID值可以给插件标示）
-            'operator_id'   => $this->data['operator_id'], // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
-            'remark'        => $this->data['remark'], // 备注，文章营销 '奖励' 余额 'N' 元【越详细越好】
+            'operator'      => $this->data['operator'],         // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID（没有ID值可以给插件标示）
+            'operator_id'   => $this->data['operator_id'],      // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
+            'remark'        => $this->data['remark'],           // 备注，文章营销 '奖励' 余额 'N' 元【越详细越好】
             'created_at'    => time()
         );
     }
-
-
 
 
     /*

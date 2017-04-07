@@ -105,16 +105,10 @@ class Income extends BackendModel
         return self::uniacid();
     }
 
-    public static function getIncomeInMonth($type)
+    public static function getIncomeInMonth()
     {
         $model = self::select('create_month');
         $model->uniacid();
-        if(!empty($type)){
-            $model->whereHas('hasManyIncome', function ($query) use ($type) {
-                return $query->where('incometable_type',$type);
-            });
-        }
-
         $model->with(['hasManyIncome' => function ($query) {
             $query->select('id', 'create_month', 'type_name', 'amount', 'created_at');
             $query->get();
@@ -146,13 +140,12 @@ class Income extends BackendModel
             ->whereIn('id', explode(',', $typeId))
             ->update(['status' => $status]);
     }
-    
-    public static function updatedIncomePayStatus($id, $status)
+    public static function updatedIncomeStatus($type, $Id, $status)
     {
-        return self::where('id',$id)
-            ->update(['pay_status' => $status]);
+        return self::where('member_id', \YunShop::app()->getMemberId())
+            ->whereIn('id', explode(',', $typeId))
+            ->update(['status' => $status]);
     }
-    
     public function hasManyIncome()
     {
         return $this->hasMany(self::class, "create_month", "create_month");
