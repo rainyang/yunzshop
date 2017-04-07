@@ -43,8 +43,6 @@ class ApiController extends BaseController
             unset($pieces);
         }
 
-
-
         if (empty($session_id) && \YunShop::request()->session_id &&
             \YunShop::request()->session_id != 'undefined') {
             $session_id = \YunShop::request()->session_id;

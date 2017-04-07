@@ -112,4 +112,30 @@ class Client
         }
         return $hash;
     }
+
+    static function is_weixin()
+    {
+        global $_W;
+        if($_GET['app_type'] == 'wechat'){
+            return false;
+        }
+        if ($_W['uniaccount']['level'] == 1 OR $_W['uniaccount']['level'] == 3) {
+            return false;
+        }
+        if (empty($_SERVER['HTTP_USER_AGENT']) || strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') === false && strpos($_SERVER['HTTP_USER_AGENT'], 'Windows Phone') === false) {
+            return false;
+        }
+        return true;
+    }
+
+    static function getType()
+    {
+        if (self::is_weixin()) {
+            return 1;
+        }
+
+        if (self::isMobile()) {
+            return 5;
+        }
+    }
 }

@@ -32,6 +32,8 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             unset($attributes['option_id']);
         }
         parent::__construct($attributes);
+        $this->setGoodsDiscount();
+        $this->setGoodsDispatch();
     }
 
     protected function setGoodsDiscount()
