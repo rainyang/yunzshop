@@ -12,6 +12,7 @@ namespace app\common\components;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\member\services\factory\MemberFactory;
 
 class ApiController extends BaseController
 {
@@ -30,8 +31,9 @@ class ApiController extends BaseController
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             $yz_redirect  = \YunShop::request()->yz_redirect;
             $type  = \YunShop::request()->type;
-
-            return $this->errorJson('',['login_status'=>0,'login_url'=>Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect])]);
+            $member = MemberFactory::create($type);
+            $member->login();
+          //  return $this->errorJson('',['login_status'=>0,'login_url'=>Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect])]);
         }
     }
 
