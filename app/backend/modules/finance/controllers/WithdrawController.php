@@ -168,33 +168,30 @@ class WithdrawController extends BaseController
             '手续费:' . $withdraw->actual_poundage;
         if ($payWay == '3') {
             //余额打款
+
             $resultPay = WithdrawService::balanceWithdrawPay($withdraw, $remark);
-            if ($resultPay) {
-                $result = WithdrawService::paySuccess($withdrawId);
-                if ($result) {
-                    Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "打款到余额!");
-                    return ['msg' => '提现打款成功!'];
-                }
-            }
-            return ['msg' => '提现打款失败!'];
+            Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "打款到余额中!");
 
         } elseif ($payWay == '2') {
             //支付宝打款
-            
+
             $resultPay = WithdrawService::alipayWithdrawPay($withdraw, $remark);
             Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "支付宝打款中!");
-            
+
         } elseif ($payWay == '1') {
             //微信打款
+
             $resultPay = WithdrawService::wechtWithdrawPay($withdraw, $remark);
-            if ($resultPay) {
-                $result = WithdrawService::paySuccess($withdrawId);
-                if ($result) {
-                    Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "微信打款!");
-                    return ['msg' => '提现打款成功!'];
-                }
+            Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "微信打款中!");
+
+        }
+
+        if ($resultPay) {
+            $result = WithdrawService::paySuccess($withdrawId);
+            if ($result) {
+                Log::info('打款完成!');
+                return ['msg' => '提现打款成功!'];
             }
-            return ['msg' => '提现打款失败!'];
         }
         return ['msg' => '提现打款失败!'];
     }
