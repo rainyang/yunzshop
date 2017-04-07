@@ -12,6 +12,7 @@ namespace app\common\services\fiance;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\Member;
 
+
 class Balance
 {
     //余额变动方式，
@@ -55,6 +56,11 @@ class Balance
     }
 
     //2余额消费接口 -
+    /**
+     * 2余额消费接口 -
+     * @param array $data
+     * @return bool|\Illuminate\Support\MessageBag|string
+     */
     public function consumeBalance($data = [])
     {
         $this->service_type = \app\common\models\finance\Balance::BALANCE_CONSUME;
