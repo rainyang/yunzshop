@@ -91,7 +91,7 @@ class User extends BaseModel
     }
 
     /*
-     * 条件搜索分页列表
+     * 条件搜索分页列表  注意查询先后顺序关系
      *
      * @params int $pageSize
      * @params array $keyword
@@ -100,13 +100,26 @@ class User extends BaseModel
     public static function searchPagelist($pageSize, $keyword = [])
     {
         //todo 查询语句，
-        $query = new static();
+        $query = self::whereHas('uniAccount', function($query){
+            return $query->uniacid();
+        });
+        if ($keyword['keyword']) {
+            $query = $query->whereHas('userProfile', function ($profile) use ($keyword) {
+                return $profile->select('uid', 'realname', 'mobile')
+                    ->where('realname', 'like', '%' . $keyword['keyword'] . '%')
+                    ->orWhere('mobile', 'like', '%' . $keyword['keyword'] . '%');
+            })->orWhere('username', 'like', $keyword['keyword']);
+        }
+        if ($keyword['status']) {
+            $query = $query->where('status', $keyword['status']);
+        }
+        if ($keyword['role_id']) {
+            $query =$query->whereHas('userRole', function ($userRole) use ($keyword) {
+                return $userRole->where('role_id', $keyword['role_id']);
+            });
+        }
 
-        $keyword['user'] && $query::where('username', 'like', $keyword['user'] . '%');
-
-
-        dd($query->get());
-        return $query->get();
+        return $query->paginate($pageSize);
     }
 
     /*

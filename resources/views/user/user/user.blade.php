@@ -14,16 +14,16 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
-                        <input class="form-control" name="keyword[user]" id="" type="text" value="" placeholder="可搜索操作名帐号/姓名/手机号">
+                        <input class="form-control" name="search[keyword]" id="" type="text" value="{{ $search['keyword'] }}" placeholder="可搜索操作名帐号/姓名/手机号">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">角色</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
-                        <select name="roleid" class='form-control'>
+                        <select name="search[role_id]" class='form-control'>
                             <option value="" selected >无角色</option>
                             @foreach($roleList as $list)
-                            <option value="{{ $list['id'] }}" {if $_GPC['roleid']== $role['id']} selected{/if}>{{ $list['name'] }}</option>
+                            <option value="{{ $list['id'] }}" @if($search['role_id'] == $list['id']) selected @endif>{{ $list['name'] }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -32,10 +32,10 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
-                        <select name="status" class='form-control'>
-                            <option value="" {if $_GPC['status']==''} selected{/if}></option>
-                            <option value="1" {if $_GPC['status'] == '1'} selected{/if}>启用</option>
-                            <option value="0" {if $_GPC['status'] == '0'} selected{/if}>禁用</option>
+                        <select name="search[status]" class='form-control'>
+                            <option value="" selected >无状态</option>
+                            <option value="2" @if($search['status'] == 2) selected @endif>启用</option>
+                            <option value="1" @if($search['status'] == 1) selected @endif>禁用</option>
                         </select>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>登录ID</th>
+                    <th>操作员账号</th>
                     <th>角色</th>
                     <th>姓名</th>
                     <th>手机</th>

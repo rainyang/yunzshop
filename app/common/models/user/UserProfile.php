@@ -107,7 +107,7 @@ class UserProfile extends BaseModel
     public  function atributeNames() {
         return [
             'realname'=> "姓名不能为空",
-            'moblie' => "电话不能为空"
+            'moblie' => "请输入正确的手机号码"
         ];
     }
     /**
@@ -118,7 +118,7 @@ class UserProfile extends BaseModel
     {
         return [
             'realname' => 'required',
-            'mobile' => 'required'
+            'mobile' => 'required|regex:/^1[34578]\d{9}$/'
         ];
     }
 
