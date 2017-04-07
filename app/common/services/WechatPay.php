@@ -107,9 +107,9 @@ class WechatPay extends Pay
      * @param int $type
      * @return array
      */
-    public function doWithdraw($member_id, $money, $desc='', $type=1)
+    public function doWithdraw($member_id, $out_trade_no, $money, $desc='', $type=1)
     {
-        $out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
+        //$out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money;
         $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_WECHAT, $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
@@ -181,9 +181,13 @@ class WechatPay extends Pay
 
             $this->payResponseDataLog();
 
+            return true;
+
         } else {
             throw new \AppException('退款失败');
         }
+
+        return false;
     }
 
     /**

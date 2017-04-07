@@ -28,7 +28,6 @@ class ApiController extends BaseController
 
         $this->setCookie();
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
-            $yz_redirect  = \YunShop::request()->yz_redirect;
             $type  = \YunShop::request()->type;
 
             return $this->errorJson('',['login_status'=>0,'login_url'=>Url::absoluteApi('member.login.index', ['type'=>$type,'session_id'=>session_id()])]);
@@ -51,29 +50,10 @@ class ApiController extends BaseController
             $session_id = \YunShop::request()->session_id;
         }
 
-//        if (empty($session_id)) {
-//            $session_id = $_COOKIE[session_name()];
-//            \Log::debug('apiController:cookie session_name : '.$session_id);
-//        }
-//
-//        if (empty($session_id)) {
-//            $session_id = \YunShop::app()->uniacid . '-' . Client::random(20) ;
-//            $session_id = md5($session_id);
-//            setcookie(session_name(), $session_id);
-//            \Log::debug('apiController: create session_id : '.$session_id);
-//        }
-
- //       session_save_path('/tmp');
-
         if (!empty($session_id)) {
             session_id($session_id);
         }
 
         session_start();
-
-        \Log::debug('apiController: path : '. $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-        \Log::debug('apiController: setCookie session_start : '. session_id());
-        \Log::debug('apiController: setCookie print cookie : '. print_r($_COOKIE, 1));
-        \Log::debug('apicontroller: printCookie result : ' . print_r($_SESSION, 1));
     }
 }

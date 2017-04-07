@@ -38,7 +38,7 @@ class MemberOfficeAccountService extends MemberService
         $appSecret    = $pay['weixin_secret'];
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-file_put_contents(storage_path('logs/callback.log'), $callback, FILE_APPEND);
+
         $state = 'yz-' . session_id();
 
         if (!Session::get('member_id')) {
