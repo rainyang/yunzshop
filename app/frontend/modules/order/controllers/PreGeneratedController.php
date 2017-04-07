@@ -23,13 +23,14 @@ class PreGeneratedController extends ApiController
 {
     private $param;
     private $memberCarts;
+
     public function index()
     {
 
         $this->param['goods'] = [
-            'goods_id'=>\YunShop::request()->get('goods_id'),
-            'total'=>\YunShop::request()->get('total'),
-            'option_id'=>\YunShop::request()->get('option_id'),
+            'goods_id' => \YunShop::request()->get('goods_id'),
+            'total' => \YunShop::request()->get('total'),
+            'option_id' => \YunShop::request()->get('option_id'),
         ];
         $this->memberCarts[] = (new MemberCart($this->param['goods']));
 
@@ -38,13 +39,13 @@ class PreGeneratedController extends ApiController
 
     public function cart()
     {
-        if(!isset($_GET['cart_ids'])){
+        if (!isset($_GET['cart_ids'])) {
             return $this->errorJson('请选择要结算的商品');
         }
-        if(!is_array($_GET['cart_ids'])){
-            $cartIds = explode(',',$_GET['cart_ids']);
+        if (!is_array($_GET['cart_ids'])) {
+            $cartIds = explode(',', $_GET['cart_ids']);
         }
-        if(!count($cartIds)){
+        if (!count($cartIds)) {
             return $this->errorJson('参数格式有误');
         }
 
@@ -61,7 +62,7 @@ class PreGeneratedController extends ApiController
 
         foreach ($goods_ids as $goods_id) {
             $memberCart = MemberCart::getCartsByIds($goods_id);
-            if(!count($memberCart)){
+            if (!count($memberCart)) {
                 throw new AppException('未找到购物车信息');
             }
             $this->memberCarts[] = $memberCart;
@@ -73,7 +74,7 @@ class PreGeneratedController extends ApiController
     private function run()
     {
         $member = MemberService::getCurrentMemberModel();
-        if(!isset($member)){
+        if (!isset($member)) {
             throw new AppException('用户登录状态过期');
         }
         $shop = ShopService::getCurrentShopModel();
@@ -83,12 +84,12 @@ class PreGeneratedController extends ApiController
         foreach ($this->memberCarts as $memberCart) {
             $orderGoods = OrderService::getOrderGoodsModels($memberCart);
             $orderGoodsModels[] = $orderGoods;
-            if(!count($orderGoods)){
+            if (!count($orderGoods)) {
 
-                throw new AppException('未找到商品(ID:)'.$memberCart->goods_id);
+                throw new AppException('未找到商品(ID:)' . $memberCart->goods_id);
             }
         }
-        if(!count($orderGoodsModels)){
+        if (!count($orderGoodsModels)) {
             throw new AppException('未找到商品');
         }
 
@@ -109,10 +110,11 @@ class PreGeneratedController extends ApiController
             ];
             $total_price += $order['price'];
             $total_dispatch_price += $order['dispatch_price'];
-            $order_data[] = array_merge($data, $this->getDiscountEventData($order_model), $this->getDispatchEventData($order_model));
+            $order_data[] = array_merge($data, $this->getDiscountEventData($order_model));
         }
-        $data = compact('total_price','total_dispatch_price','order_data');
-        return $this->successJson('成功',$data);
+        $data = compact('total_price', 'total_dispatch_price', 'order_data');
+        $data += $this->getDispatchEventData($order_model);
+        return $this->successJson('成功', $data);
 
 
     }
