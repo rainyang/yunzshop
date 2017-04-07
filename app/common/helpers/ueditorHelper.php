@@ -20,7 +20,6 @@ class UeditorHelper
                 'dest_dir' => '',
             ];
         }
-
         return tpl_ueditor($id, $value, $options);
     }
 }
