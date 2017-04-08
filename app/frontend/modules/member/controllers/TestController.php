@@ -140,9 +140,39 @@ exit;
 
    public function getMyAgent()
    {
-       $reslut = MemberModel::getMyAgentInfo(\YunShop::app()->getMemberId());
 
-       dd($reslut->get()->toArray());
+       $result = MemberShopInfo::getAgentAllCount([5,9]);
+
+     //  dd($result->toArray());
+       $agent_ids = [];
+
+       $agent_info = MemberModel::getMyAgentInfo(\YunShop::app()->getMemberId());
+       $agent_model = $agent_info->get();
+
+       if (!empty($agent_model)) {
+           $agent_data = $agent_model->toArray();
+
+           foreach ($agent_data as $key => $item) {
+               $agent_ids[$key] = $item['uid'];
+               $agent_data[$key]['agent_count'] = 0;
+           }
+       } else {
+           return $this->errorJson('数据为空');
+       }
+
+       $all_count = MemberShopInfo::getAgentAllCount($agent_ids);
+
+       foreach ($all_count as $k => $rows) {
+           foreach ($agent_data as $key => $item) {
+               if ($rows['parent_id'] == $item['uid']) {
+                   $agent_data[$key]['agent_count'] = $rows['total'];
+
+                   break 1;
+               }
+           }
+       }
+       dd($agent_data);
+
    }
 
 

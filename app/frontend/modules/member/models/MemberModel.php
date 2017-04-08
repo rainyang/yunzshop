@@ -110,21 +110,23 @@ class MemberModel extends Member
             ]);
     }
 
+    /**
+     * 我的下线信息
+     *
+     * @param $uid
+     * @return mixed
+     */
     public static function getMyAgentInfo($uid)
     {
-        $result = self::uniacid();
-
-        $result = $result->whereHas('yzMember', function($q) use ($uid){
-            $q->where('parent_id', $uid);
-        });
-
-        $result = $result->with([
-            'yzMember'=>function($query) {
-            return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black']);
-        }, 'hasOneFans' => function($query4) {
-            return $query4->select(['uid', 'follow as followed'])->uniacid();
+        return self::uniacid()
+            ->whereHas('yzMember', function($query) use ($uid){
+                         $query->where('parent_id', $uid);
+            })
+            ->with(['hasOneOrder' => function($query) {
+                return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                    ->uniacid()
+                    ->where('status', 3)
+                    ->groupBy('uid');
         }]);
-
-        return $result;
     }
 }

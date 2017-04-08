@@ -290,6 +290,42 @@ class MemberController extends ApiController
 
     public function getMyAgent()
     {
+        $agent_ids = [];
 
+        $agent_info = MemberModel::getMyAgentInfo(\YunShop::app()->getMemberId());
+        $agent_model = $agent_info->get();
+
+        if (!empty($agent_model)) {
+            $agent_data = $agent_model->toArray();
+
+            foreach ($agent_data as $key => $item) {
+                $agent_ids[$key] = $item['uid'];
+                $agent_data[$key]['agent_total'] = 0;
+            }
+        } else {
+            return $this->errorJson('数据为空');
+        }
+
+        $all_count = MemberShopInfo::getAgentAllCount($agent_ids);
+
+        foreach ($all_count as $k => $rows) {
+            foreach ($agent_data as $key => $item) {
+                if ($rows['parent_id'] == $item['uid']) {
+                    $agent_data[$key]['agent_total'] = $rows['total'];
+
+                    break 1;
+                }
+            }
+        }
+
+        $data = [
+            'uid' => $agent_data['uid'],
+            'avatar' => $agent_data['avatar'],
+            'nickname' => $agent_data['nickname'],
+            'order_total' => $agent_data['has_one_order']['total'],
+            'order_price' => $agent_data['has_one_order']['sum'],
+            'agent_total' => $agent_data['agent_total'],
+        ];
+        return $this->successJson('', $data);
     }
 }
