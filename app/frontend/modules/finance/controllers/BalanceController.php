@@ -52,8 +52,6 @@ class BalanceController extends ApiController
                 $rechargeModel = BalanceRecharge::getRechargeRecordByid($result);
                 $data['serial_number'] = $rechargeModel->ordersn;
                 //支付返回数据直接反给前端
-                //return $this->payOrder($data);
-                echo '<pre>'; print_r($this->payOrder($this->payData($data))); exit;
                 return $this->successJson('支付接口对接成功',$this->payOrder($data));
             }
             return $this->errorJson($result);
