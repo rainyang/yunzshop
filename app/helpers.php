@@ -80,6 +80,18 @@ if (!function_exists("set_medias")) {
         }
     }
 }
+if (!function_exists('is_array2')) {
+    function is_array2($array)
+    {
+        if (is_array($array)) {
+            foreach ($array as $k => $v) {
+                return is_array($v);
+            }
+            return false;
+        }
+        return false;
+    }
+}
 
 if (!function_exists("show_json")) {
     function show_json($status = 1, $return = null, $variable = null)
