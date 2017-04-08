@@ -10,15 +10,18 @@ namespace app\frontend\modules\member\controllers;
 
 use app\api\model\Good;
 use app\common\components\ApiController;
+use app\common\components\BaseController;
+use app\common\events\member\BecomeAgent;
 use app\common\models\AccountWechats;
 use app\common\models\Goods;
+use app\common\models\MemberShopInfo;
 use app\common\services\AliPay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class TestController extends ApiController
+class TestController extends BaseController //ApiController
 {
    public function index()
    {
@@ -106,4 +109,10 @@ exit;
        echo QrCode::format('png')->size(100)->generate('http:www.baidu.com', storage_path('qr/' . time().'.png'));
    }
 
+   public function runEvent()
+   {
+       $model = MemberShopInfo::getMemberShopInfo(146);
+
+       event(new BecomeAgent(139, $model));
+   }
 }
