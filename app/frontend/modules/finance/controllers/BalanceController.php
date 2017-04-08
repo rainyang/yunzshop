@@ -54,7 +54,7 @@ class BalanceController extends ApiController
                 //支付返回数据直接反给前端
                 //return $this->payOrder($data);
                 //echo '<pre>'; print_r($this->payData($data)); exit;
-                return $this->successJson($this->payOrder($data));
+                return $this->successJson('支付接口对接成功',$this->payOrder($data));
             }
             return $this->errorJson($result);
         }
