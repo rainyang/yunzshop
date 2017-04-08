@@ -20,7 +20,6 @@ class BecomeAgentListener
         $mid = $event->getMid();
 
         $relation = new MemberRelation();
-
         $relation->createChildAgent($mid, $model);
     }
 }
