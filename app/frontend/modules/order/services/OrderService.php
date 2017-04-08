@@ -30,6 +30,7 @@ use app\frontend\modules\goods\services\models\Goods;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\shop\services\ShopService;
+use Illuminate\Support\Collection;
 
 class OrderService
 {
@@ -49,12 +50,18 @@ class OrderService
         return $Event->getMap();
     }
 
-    private static function getDispatchEventData($order_model)
+    public static function getDispatchEventData($order_model)
     {
         $Event = new OnDispatchTypeInfoDisplayEvent($order_model);
         event($Event);
         return ['dispatch' => $Event->getMap()];
     }
+
+    /**
+     * @param $callback
+     * @return Collection
+     * @throws AppException
+     */
     public static function getMemberCarts($callback)
     {
         $cartIds = [];
@@ -81,13 +88,13 @@ class OrderService
 
     /**
      * 获取订单商品对象数组
-     * @param array $memberCarts
-     * @return array
+     * @param Collection $memberCarts
+     * @return Collection
      * @throws \Exception
      */
-    public static function getOrderGoodsModels(array $memberCarts)
+    public static function getOrderGoodsModels(Collection $memberCarts)
     {
-        $result = [];
+        $result = new Collection();
         foreach ($memberCarts as $memberCart) {
             if (!($memberCart instanceof MemberCart)) {
                 throw new \Exception("请传入" . MemberCart::class . "的实例");
@@ -96,12 +103,12 @@ class OrderService
              * @var $memberCart MemberCart
              */
             $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart->toArray());
-            $result[] = $orderGoodsModel;
+            $result->push($orderGoodsModel);
         }
         return $result;
     }
 
-    public static function createOrderByMemberCarts(array $memberCarts)
+    public static function createOrderByMemberCarts(Collection $memberCarts)
     {
         $member = MemberService::getCurrentMemberModel();
         if (!isset($member)) {
