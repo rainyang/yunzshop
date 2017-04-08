@@ -98,13 +98,14 @@ class BalanceController extends BaseController
         $data = array(
             'member_id'     => $memberId,
             'change_money'  => $rechargeMoney,
-            'operator'      => '0',
+            'operator'      => BalanceRecharge::PAY_TYPE_SHOP,
             'operator_id'   => '0', // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
             'remark'        => '后台充值' . '余额' . $rechargeMoney .'元',
-            'type'          => 1,
+            'service_type'  => \app\common\models\finance\Balance::BALANCE_RECHARGE,
+            'recharge_type' => BalanceRecharge::PAY_TYPE_SHOP
         );
         if ($rechargeMoney && $memberInfo['uid']) {
-            $result = (new Balance())->rechargeBalance($data);
+            $result = (new Balance())->changeBalance($data);
             if ($result === true ) {
                 return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $memberId)), 'success');
             } else {
@@ -145,7 +146,7 @@ class BalanceController extends BaseController
     {
 //todo 搜索功能
         $pageSize = 10;
-        $tansferList = BalanceTransfer::getTansferPageList($pageSize);
+        $tansferList = BalanceTransfer::getTransferPageList($pageSize);
         $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());
 
         return view('finance.balance.transferRecord', [

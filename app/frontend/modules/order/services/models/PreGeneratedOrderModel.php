@@ -67,15 +67,6 @@ class PreGeneratedOrderModel extends OrderModel
     public function getOrder(){
         return $this;
     }
-    /**
-     * 添加订单商品
-     * @param array $pre_order_goods_models
-     */
-    private function addPreGeneratedOrderGoods(array $pre_order_goods_models)
-    {
-        $this->orderGoodsModels = array_merge($this->orderGoodsModels, $pre_order_goods_models);
-    }
-
 
     public function getMember(){
         return $this->belongsToMember;

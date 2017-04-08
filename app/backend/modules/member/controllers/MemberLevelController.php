@@ -17,14 +17,6 @@ use app\common\helpers\Url;
 
 class MemberLevelController extends BaseController
 {
-    public $shopset;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->shopset = Setting::get('shop');
-    }
-
     /*
      * Member level pager list
      * 17.3,31 restructure
@@ -103,10 +95,10 @@ class MemberLevelController extends BaseController
             }
         }
 
-        $this->render('member/edit_level', [
-            'level'     => $levelModel,
-            'shopset'   => $this->shopset
-        ]);
+        return view('member.level.form', [
+            'levelModel' => $levelModel,
+            'shopSet' => Setting::get('shop.member')
+        ])->render();
     }
     /*
      * Delete membership

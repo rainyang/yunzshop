@@ -6,7 +6,7 @@
  * Time: 下午9:55
  */
 
-namespace app\common\listeners;
+namespace app\common\listeners\member;
 
 
 use app\backend\modules\member\models\MemberRelation;
@@ -16,12 +16,10 @@ class BecomeAgentListener
 {
     public function handle(BecomeAgent $event)
     {
-
         $model = $event->getMemberModel();
         $mid = $event->getMid();
-
-        $relation =MemberRelation();
-
+echo $mid;exit;
+        $relation = new MemberRelation();
         $relation->createChildAgent($mid, $model);
     }
 }

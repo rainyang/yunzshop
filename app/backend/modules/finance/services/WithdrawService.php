@@ -42,8 +42,9 @@ class WithdrawService extends Withdraw
             'operator' => '-2',
             'operator_id' => $withdraw->id,
             'remark' => $remark,
+            'service_type' => \app\common\models\finance\Balance::BALANCE_INCOME,
         );
-        return (new Balance())->incomeBalance($data);
+        return (new Balance())->changeBalance($data);
     }
 
     public static function wechtWithdrawPay($withdraw, $remark)
