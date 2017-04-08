@@ -190,7 +190,7 @@ class IncomeController extends ApiController
                     'poundage_rate' => '5'
                 ]
             );
-            $incomeModel = $incomeModel->whereIn('id', [$item['type_id']]);
+            $incomeModel = $incomeModel->whereIn('id', explode(',', $item['type_id']));
             $incomes = $incomeModel->get();
             \Log::info("INCOME:");
             \Log::info($incomes);

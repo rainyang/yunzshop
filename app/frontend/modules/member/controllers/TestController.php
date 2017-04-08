@@ -19,6 +19,7 @@ use app\common\services\AliPay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
+use app\frontend\modules\member\models\MemberModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class TestController extends BaseController //ApiController
@@ -104,15 +105,45 @@ exit;
        echo '<pre>';print_r($g->toArray());exit;
    }
 
+    /**
+     * 二维码
+     */
    public function getQR()
    {
        echo QrCode::format('png')->size(100)->generate('http:www.baidu.com', storage_path('qr/' . time().'.png'));
    }
 
+    /**
+     * 事件
+     */
    public function runEvent()
    {
        $model = MemberShopInfo::getMemberShopInfo(146);
 
        event(new BecomeAgent(\YunShop::request()->mid, $model));
    }
+
+    /**
+     * 我的推荐人
+     */
+   public function getReferrerInfo()
+   {
+       $member_info = MemberModel::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
+
+       if (!empty($member_info)) {
+           $member_info = $member_info->toArray();
+
+           $referrer_info = MemberModel::getUserInfos($member_info['yz_member']['parent_id'])->first();
+
+       }
+   }
+
+   public function getMyAgent()
+   {
+       $reslut = MemberModel::getMyAgentInfo(\YunShop::app()->getMemberId());
+
+       dd($reslut->get()->toArray());
+   }
+
+
 }

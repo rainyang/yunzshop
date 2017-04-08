@@ -168,7 +168,6 @@ class MemberOfficeAccountService extends MemberService
                     );
                     McMappingFansModel::create($record);
 
-
                     //添加ims_yz_member_unique表
                     MemberUniqueModel::insertData(array(
                         'uniacid' => $uniacid,

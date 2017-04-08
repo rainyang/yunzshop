@@ -107,10 +107,10 @@ class WithdrawController extends BaseController
             if ($income) {
                 $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
                 $withdrawStatus = "1";
-                Income::updatedIncomePayStatus($key, '1');
+                Income::updatedIncomePayStatus($key, ['pay_status'=>'1']);
 
             } else {
-                Income::updatedIncomePayStatus($key, '-1');
+                Income::updatedIncomePayStatus($key, ['pay_status'=>'-1']);
             }
         }
         $actual_poundage = $actual_amounts / 100 * $withdraw['poundage_rate'];
@@ -118,6 +118,7 @@ class WithdrawController extends BaseController
             'status' => $withdrawStatus,
             'actual_amounts' => $actual_amounts - $actual_poundage,
             'actual_poundage' => $actual_poundage,
+            'audit_at' => time(),
         ];
         $result = Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
         if ($result) {
@@ -138,10 +139,10 @@ class WithdrawController extends BaseController
             if ($income) {
                 $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
                 $withdrawStatus = "1";
-                Income::updatedIncomePayStatus($key, '1');
+                Income::updatedIncomePayStatus($key, ['pay_status'=>'1']);
 
             } else {
-                Income::updatedIncomePayStatus($key, '-1');
+                Income::updatedIncomePayStatus($key, ['pay_status'=>'-1']);
             }
         }
         $actual_poundage = $actual_amounts / 100 * $withdraw['poundage_rate'];
@@ -149,6 +150,7 @@ class WithdrawController extends BaseController
             'status' => $withdrawStatus,
             'actual_amounts' => $actual_amounts - $actual_poundage,
             'actual_poundage' => $actual_poundage,
+            'audit_at' => time(),
         ];
         $result = Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
         if ($result) {
@@ -187,6 +189,8 @@ class WithdrawController extends BaseController
         }
 
         if ($resultPay) {
+            $updatedData = [ 'pay_at' => time()];
+            Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::paySuccess($withdrawId);
             if ($result) {
                 Log::info('打款完成!');
