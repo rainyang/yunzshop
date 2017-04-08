@@ -9,6 +9,12 @@
 @section('content')
     {!! BootForm::open(['model'=>$model,'url'=>yzWebFullUrl(request()->get('route')),'method'=>'POST']) !!}
     {!! $model->id ? BootForm::hidden('id',$model->id) : '' !!}
+<div class="right-titpos">
+    <ul class="add-snav">
+        <li class="active"><a href="#">菜单管理 &nbsp;<i class="fa fa-angle-double-right"></i>&nbsp;编辑</a></li>
+    </ul>
+</div>
+
     <div class="panel panel-default">
         <div class="panel-body">
 

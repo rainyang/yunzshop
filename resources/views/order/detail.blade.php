@@ -2,14 +2,8 @@
 
 @section('js')
     <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
-    <style type="text/css">
-        .main .form-horizontal .form-group{margin-bottom:0;}
-        .main .form-horizontal .modal .form-group{margin-bottom:15px;}
-        #modal-confirmsend .control-label{margin-top:0;}
-        .ad2 {display: none;}
-        .ex2  {display: none;}
-        .label {white-space: normal;text-align: left;line-height: 16px}
-    </style>
+<link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
+
     <script language="javascript">
         function sub()
         {
@@ -82,8 +76,8 @@
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">
             <ul class="add-snav">
-                <li class="active"><a href="#">订单管理</a></li>
-                <li><a href="#">订单详情</a></li>
+                <li class="active"><a href="#">订单管理 &nbsp;  <i class="fa fa-angle-double-right"></i> &nbsp;  订单详情</a></li>
+
             </ul>
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->
@@ -396,13 +390,13 @@
                         <table class="table table-hover">
                             <thead class="navbar-inner">
                             <tr>
-                                <th style="width:8%;">ID</th>
-                                <th style="width:16%;">商品标题</th>
-                                <th style="width:10%;">商品编号</th>
-                                <th style="width:16%;">现价/原价/成本价</th>
-                                <th style="width:8%;">购买数量</th>
-                                <th style="width:10%;color:red;">折扣前<br/>折扣后</th>
-                                <th style="width:10%;">操作</th>
+                                <th class="col-md-5 col-lg-1" >ID</th>
+                                <th class="col-md-5 col-lg-3" >商品标题</th>
+                                <th class="col-md-5 col-lg-2" >商品编号</th>
+                                <th class="col-md-5 col-lg-2" >现价/原价/成本价</th>
+                                <th class="col-md-5 col-lg-1" >购买数量</th>
+                                <th class="col-md-5 col-lg-2" style="color:red;">折扣前<br/>折扣后</th>
+                                <th class="col-md-5 col-lg-1" >操作</th>
                             </tr>
                             </thead>
                             @foreach ($order['has_many_order_goods'] as $goods)

@@ -4,6 +4,11 @@
 <div class="w1200 m0a">
 <div class="rightlist">
 <!-- 新增加右侧顶部三级菜单 -->
+    <div class="right-titpos">
+        <ul class="add-snav">
+            <li class="active"><a href="#">商城设置</a></li>
+        </ul>
+    </div>
     @include('setting.shop.tabs')
 <!-- 新增加右侧顶部三级菜单结束 -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
@@ -43,7 +48,7 @@
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+                            <input type="submit" name="submit" value="提交" class="btn btn-primary"  />
                      </div>
             </div>
                        
