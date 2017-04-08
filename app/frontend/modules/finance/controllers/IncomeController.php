@@ -123,7 +123,7 @@ class IncomeController extends ApiController
                     $type_id .= $ids->id . ",";
                 }
                 $incomeData[$key] = [
-                    'type' => $item['type'],
+                    'type' => $item['class'],
                     'key_name' => $item['title'],
                     'type_name' => $item['type_name'],
                     'type_id' => rtrim($type_id, ','),
@@ -135,7 +135,7 @@ class IncomeController extends ApiController
                 ];
             } else {
                 $incomeData[$key] = [
-                    'type' => $item['type'],
+                    'type' => $item['class'],
                     'key_name' => $item['title'],
                     'type_name' => $item['type_name'],
                     'type_id' => '',
