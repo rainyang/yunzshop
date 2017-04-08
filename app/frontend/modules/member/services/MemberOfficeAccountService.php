@@ -12,6 +12,7 @@ use app\common\facades\Setting;
 use app\common\helpers\Client;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
+use app\common\models\MemberShopInfo;
 use app\common\services\Session;
 use app\frontend\models\McGroupsModel;
 use app\frontend\modules\member\models\McMappingFansModel;
@@ -77,7 +78,6 @@ class MemberOfficeAccountService extends MemberService
                 }
 
                 if (!empty($UnionidInfo['unionid'])) {
-                    \Log::debug();
                     $types = explode('|', $UnionidInfo['type']);
                     $member_id = $UnionidInfo['member_id'];
 
@@ -108,7 +108,6 @@ class MemberOfficeAccountService extends MemberService
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
-                    \Log::debug();
                     //添加mc_members表
                     $default_groupid = McGroupsModel::getDefaultGroupId();
 
@@ -177,6 +176,14 @@ class MemberOfficeAccountService extends MemberService
                         'member_id' => $member_id,
                         'type' => self::LOGIN_TYPE
                     ));
+
+                    //触发会员成为下线事件
+                    $model = MemberShopInfo::getMemberShopInfo($member_id);
+                    event(new BecomeAgent(\YunShop::request()->mid(), $model));
+
+                    //触发分销事件
+
+
                 }
                 Session::set('member_id', $member_id);
             } else {

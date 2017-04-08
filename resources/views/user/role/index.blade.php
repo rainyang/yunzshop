@@ -1,10 +1,15 @@
 @extends('layouts.base')
 
 @section('content')
+<div class="right-titpos">
+    <ul class="add-snav">
+        <li class="active"><a href="#">角色管理</a></li>
+    </ul>
+</div>
 
         <form action="" method="get" class='form form-horizontal'>
             <div class="panel panel-info">
-                <div class="panel-heading">筛选</div>
+
                 <div class="panel-body">
                     <form action=" " method="get" class="form-horizontal" role="form">
                         <input type="hidden" name="c" value="site"/>
@@ -12,25 +17,25 @@
                         <input type="hidden" name="m" value="sz_yi"/>
                         <input type="hidden" name="do" value="QDaf"/>
                         <input type="hidden" name="route" value="user.role.index"/>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>
-                            <div class="col-xs-12 col-sm-8 col-lg-9">
-                                <input class="form-control" name="keyword" id="" type="text" value=" " placeholder="可搜索角色名称">
+                        <div class="form-group col-xs-12 col-sm-6 col-lg-6">
+                            <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>-->
+                            <div class="">
+                                <input class="form-control" name="keyword" id="" type="text" value="" placeholder="可搜索角色名称">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
-                            <div class="col-xs-12 col-sm-8 col-lg-9">
+                        <div class="form-group col-xs-12 col-sm-6 col-md-5 col-lg-5 ">
+                            <!--<label class="">状态</label>-->
+                            <div class="c">
                                 <select name="status" class='form-control'>
-                                    <option value="" {if $_GPC['status']==''} selected{/if}></option>
+                                    <option value="" {if $_GPC['status']==''} selected{/if}>状态不限</option>
                                     <option value="1" {if $_GPC['status'] == '1'} selected{/if}>启用</option>
                                     <option value="0" {if $_GPC['status'] == '0'} selected{/if}>禁用</option>
                                 </select>  </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">&nbsp;</label>
-                            <div class="col-xs-12 col-sm-8 col-lg-9">
-                                <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                        <div class="form-group col-xs-12 col-sm-6 col-md-5 col-lg-1 ">
+                            <!--<label class="control-label">&nbsp;</label>-->
+                            <div class="">
+                                <button class="btn btn-block btn-success"><i class="fa fa-search"></i> 搜索</button>
                             </div>
                         </div>
 

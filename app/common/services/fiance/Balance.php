@@ -13,6 +13,7 @@ use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use app\common\models\Member;
 use app\common\services\Pay;
+use app\common\services\PayFactory;
 
 
 class Balance
@@ -52,7 +53,7 @@ class Balance
      *           'service_type'  => '', // 例：\app\common\models\finance\Balance::BALANCE_RECHARGE，
      *                                  // service_type 到 Balance 类中找自己所属类型
 
-     *           'rechrage_type'          => '', //充值时需要增加 rechrage_type 字段，支付类型 ,后台充值0，微信支付1，支付宝2，其他支付3，
+     *           'recharge_type'          => '', //充值时需要增加 rechrage_type 字段，支付类型 ,后台充值0，微信支付1，支付宝2，其他支付3，
      *      );
      *       //use app\common\services\fiance\Balance;
      *      $result = (new Balance())->changeBalance($data);
@@ -66,6 +67,12 @@ class Balance
         $this->service_type = $data['service_type'];
 
         return $this->validatorServiceType();
+    }
+
+    //todo 支付回调
+    public function payResult()
+    {
+
     }
 
 
@@ -129,7 +136,6 @@ class Balance
     private function rechargeRecord()
     {
         $rechargeModel = new BalanceRecharge();
-
         $rechargeModel->fill($this->getRechargeData());
         $validator = $rechargeModel->validator();
         if ($validator->fails()) {
@@ -179,7 +185,7 @@ class Balance
     /*
      * 充值类型，后台充值直接写入，修改会员余额， 会员自行充值需调用支付接口
      *
-     * @params int $type 充值类型，后台充值1，微信支付2，支付宝3，其他支付4，
+     * @params int $type 充值类型，后台充值0，微信支付1，支付宝2，其他支付4，
      *
      * @return mixed
      * @Author yitian */
@@ -190,19 +196,12 @@ class Balance
             case BalanceRecharge::PAY_TYPE_SHOP:
                 return $this->updateRechargeStatus($recordId);
                 break;
-            //充值支付类型：1 微信支付
-            case Pay::PAY_MODE_WECHAT:
-                return '微信支付';
-                break;
-            //充值支付类型：2 支付宝
-            case Pay::PAY_MODE_ALIPAY:
-                return '支付宝';
-                break;
             default:
-                //todo 调用支付接口
-                return '需要调用支付接口';
+                return $recordId;
         }
     }
+
+
 
     /**
      * 修改充值记录充值状态

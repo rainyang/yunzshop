@@ -194,7 +194,7 @@
                              <div class="form-group" style="overflow: hidden; margin-bottom: 0px;i">
                                  <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="line-height: 34px;"></label>
                                  <div class="col-sm-9 col-xs-12">
-                                     <div class="btn btn-primary col-lg-1 mylink-nav2" style="margin-left: 20px; width: auto; overflow: hidden; margin-left: 0px;"> 插入 </div>
+                                     <div class="btn btn-primary mylink-nav2" style="margin-left: 20px; width: auto; overflow: hidden; margin-left: 0px;"> 插入 </div>
                                  </div>
                              </div>
                          </div>

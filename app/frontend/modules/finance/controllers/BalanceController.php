@@ -28,31 +28,35 @@ class BalanceController extends ApiController
         $rechargeMoney = trim(\YunShop::request()->recharge_money);
         $payType = \YunShop::request()->pay_type;
 
+        //$memberId = 55;
+        //$rechargeMoney = 100;
+        //$payType = 2;
 
-        $rechargeMoney = 100;
-        $memberId = 55;
-
-        $balanceModel = new Balance();
-        $resultId = $balanceModel->memberBalanceRecharge($memberId, $rechargeMoney);
-        if (is_numeric($resultId)) {
-            //todo 调取支付接口
-            $pay = PayFactory::create($payType);
-
-            $result = $pay->doPay([]);
-
-            //$result 返给前端
-            // todo 监听支付后 回掉
-
-
-
-
-            if ($balanceModel->updateBalance($memberId, $rechargeMoney) === true) {
-                $result = $balanceModel->updateRecordStatus($resultId, 1);
-            }
-            return $this->errorJson('更新会员余额失败');
+        if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $rechargeMoney)) {
+            return $this->errorJson('请输入有效的充值金额，允许两位小数');
         }
+        if ($memberId && $rechargeMoney && $payType) {
+            $data = array(
+                'member_id'     => $memberId,
+                'change_money'  => $rechargeMoney,
+                'serial_number' => '',
+                'operator'      => BalanceRecharge::PAY_TYPE_MEMBER,
+                'operator_id'   => $memberId,
+                'remark'        => '会员充值余额'. $rechargeMoney. '元',
+                'service_type'  => \app\common\models\finance\Balance::BALANCE_RECHARGE,
+                'recharge_type' => $payType,
+            );
 
-        return $this->errorJson($resultId ?: '数据有误');
+            $result = (new Balance())->changeBalance($data);
+            if (is_numeric($result)) {
+                $rechargeModel = BalanceRecharge::getRechargeRecordByid($result);
+                $data['serial_number'] = $rechargeModel->ordersn;
+                //支付返回数据直接反给前端
+                return $this->successJson('支付接口对接成功',$this->payOrder($data));
+            }
+            return $this->errorJson($result);
+        }
+        return $this->errorJson('数据有误，请刷新重试');
     }
     /*
      * 转让接口
@@ -72,7 +76,7 @@ class BalanceController extends ApiController
         $recipientModel = Member::getMemberById($recipient);
         $transferModel = Member::getMemberById($transfer);
         if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $transferMoney) || $transferModel->credit2 < $transferMoney) {
-            return $this->errorJson('转账金额必须是大于0且大于您的余额的两位小数数值');
+            return $this->errorJson('转让金额必须是大于0且大于您的余额，允许两位小数');
         }
         if ($transfer == $recipient) {
             return $this->errorJson('受让人不可以是您自己');
@@ -145,5 +149,34 @@ class BalanceController extends ApiController
         }
         return $this->errorJson('未获取到会员ID');
     }
+
+    /**
+     * 调取支付接口
+     * @return array|mixed|string|void
+     * @Author yitian */
+    private function payOrder($data)
+    {
+        $pay = PayFactory::create($data['recharge_type']);
+
+        return $pay->doPay($this->payData($data));
+    }
+
+    /**
+     * 支付请求数据
+     *
+     * @return array
+     * @Author yitian */
+    private function payData($data)
+    {
+        return array(
+            'subject'   => '会员充值',
+            'body'      => '会员充值金额'. $data['change_money']. '元',
+            'amount'    => $data['change_money'],
+            'order_no'  => $data['serial_number'],
+            'extra'     => ['type'=> 1]
+        );
+    }
+
+
 
 }
