@@ -10,7 +10,9 @@ namespace app\common\services\fiance;
 
 
 use app\common\models\finance\BalanceRecharge;
+use app\common\models\finance\BalanceTransfer;
 use app\common\models\Member;
+use app\common\services\Pay;
 
 
 class Balance
@@ -30,6 +32,12 @@ class Balance
     //类型：支出
     const EXPENDITURE = 2;
 
+    //状态：失败
+    const STATUS_FAIL = -1;
+
+    //状态：成功
+    const STATUS_SUCCESS = 1;
+
 
     /**
      * 余额变动接口
@@ -47,7 +55,7 @@ class Balance
      *           'rechrage_type'          => '', //充值时需要增加 rechrage_type 字段，支付类型 ,后台充值0，微信支付1，支付宝2，其他支付3，
      *      );
      *       //use app\common\services\fiance\Balance;
-     *      $result = (new Balance())->rechargeBalance($data);
+     *      $result = (new Balance())->changeBalance($data);
      *
      * @param $data
      * @return bool|\Illuminate\Support\MessageBag|string
@@ -82,7 +90,6 @@ class Balance
         if ($this->type == static::EXPENDITURE && in_array($this->service_type,
                 [
                     \app\common\models\finance\Balance::BALANCE_CONSUME,
-                    \app\common\models\finance\Balance::BALANCE_TRANSFER,
                     \app\common\models\finance\Balance::BALANCE_DEDUCTION,
                     \app\common\models\finance\Balance::BALANCE_WITHDRAWAL,
                     \app\common\models\finance\Balance::CANCEL_AWARD
@@ -135,10 +142,20 @@ class Balance
         return '充值记录写入失败';
     }
 
-    //
     private function transferRecord()
     {
-        return 'transferRecord';
+        $transferModel = new BalanceTransfer();
+
+        $transferModel->fill($this->getTransferData());
+        $validator = $transferModel->validator();
+        if ($validator->fails()) {
+            return $validator->messages();
+        }
+        if ($transferModel->save()) {
+
+            return $this->updateTransferStatus($transferModel->id);
+        }
+        return '转让记录写入失败';
     }
 
     /*
@@ -169,8 +186,17 @@ class Balance
     private function rechargeTypeFor($type, $recordId)
     {
         switch ($type) {
+            //充值支付类型：0 后台充值
             case BalanceRecharge::PAY_TYPE_SHOP:
-                return $this->updateRrechargeStatus($recordId);
+                return $this->updateRechargeStatus($recordId);
+                break;
+            //充值支付类型：1 微信支付
+            case Pay::PAY_MODE_WECHAT:
+                return '微信支付';
+                break;
+            //充值支付类型：2 支付宝
+            case Pay::PAY_MODE_ALIPAY:
+                return '支付宝';
                 break;
             default:
                 //todo 调用支付接口
@@ -178,15 +204,35 @@ class Balance
         }
     }
 
-    //
-    private function updateRrechargeStatus($recordId)
+    /**
+     * 修改充值记录充值状态
+     * @param $recordId
+     * @return bool|\Illuminate\Support\MessageBag|string
+     * @Author yitian */
+    private function updateRechargeStatus($recordId)
     {
         $rechargeModel = BalanceRecharge::getRechargeRecordByid($recordId);
-        $rechargeModel->status = 1;
+        $rechargeModel->status = static::STATUS_SUCCESS;
         if ($rechargeModel->save()) {
             return $this->detailRecord();
         }
         return '充值记录状态修改失败';
+    }
+
+    private function updateTransferStatus($recordId)
+    {
+        $transferModel = BalanceTransfer::getTransferRecordByRecordId($recordId);
+        $transferModel->status = static::STATUS_SUCCESS;
+        if ($transferModel->save()) {
+            $this->data['change_money'] = -$this->data['change_money'];
+            if ($this->detailRecord() === true) {
+                $this->data['change_money'] = -$this->data['change_money'];
+                $this->data['member_id'] = $this->data['recipient_id'];
+                return $this->detailRecord();
+            }
+            return '修改转让值余额明细记录失败';
+        }
+        return '修改转让记录状态失败';
     }
 
     //修改会员余额
@@ -225,7 +271,18 @@ class Balance
             'new_money' => $new_money,
             'type'      => $this->data['recharge_type'],
             'ordersn'   => $this->getRechargeOrderSN(),
-            'status'    => '-1'
+            'status'    => static::STATUS_FAIL
+        );
+    }
+
+    private function getTransferData()
+    {
+        return $data = array(
+            'uniacid' => \YunShop::app()->uniacid,
+            'transferor' => $this->data['member_id'],
+            'recipient' => $this->data['recipient_id'],
+            'money' => $this->data['change_money'],
+            'status' => static::STATUS_FAIL
         );
     }
 
@@ -249,7 +306,7 @@ class Balance
             'new_money'     => $new_money,
             'type'          => $this->type,
             'service_type'  => $this->service_type,
-            'serial_number' => $this->data['serial_number'],    // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
+            'serial_number' => $this->data['serial_number'] ?: '',    // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
 //todo operator 字段值需要如果是插件标示需要主动回去插件ID
             'operator'      => $this->data['operator'],         // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID（没有ID值可以给插件标示）
             'operator_id'   => $this->data['operator_id'],      // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID

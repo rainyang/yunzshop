@@ -146,7 +146,7 @@ class BalanceController extends BaseController
     {
 //todo 搜索功能
         $pageSize = 10;
-        $tansferList = BalanceTransfer::getTansferPageList($pageSize);
+        $tansferList = BalanceTransfer::getTransferPageList($pageSize);
         $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());
 
         return view('finance.balance.transferRecord', [
