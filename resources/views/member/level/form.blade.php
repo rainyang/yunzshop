@@ -23,7 +23,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>等级权重</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="level[level]" class="form-control" value="{{ $levelModele->level }}"/>
+                                <input type="text" name="level[level]" class="form-control" value="{{ $levelModel->level }}"/>
                                 <span class='help-block'>等级权重，数字越大越高级</span>
                             </div>
                         </div>
