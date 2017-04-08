@@ -1,13 +1,20 @@
 @extends('layouts.base')
 
 @section('content')
+
+<link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
+
     <div class="w1200 m0a">
         <div class="rightlist">
+            <div class="right-titpos">
+                <ul class="add-snav">
+                    <li class="active"><a href="#">会员关系设置</a></li>
+
+                </ul>
+            </div>
             <form id="setform"  action="{{ yzWebUrl('member.member-relation.save') }}" method="post" class="form-horizontal form">
                 <div class='panel panel-default'>
-                    <div class='panel-heading'>
-                        会员关系设置
-                    </div>
+
                     <div class='panel-body'>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">启用关系链</label>
@@ -37,22 +44,22 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
-                                <div class='input-group' style='border:none;margin-left:-12px;'>
-                                    <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become]" value="2" @if($set['become'] ==2) checked="checked"
+                                <div class='input-group become' >
+                                    <div class='input-group-addon become' ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="2" @if($set['become'] ==2) checked="checked"
                                                     @endif /> 消费达到</label></div>
                                     <input type='text' class='form-control' name='setdata[become_ordercount]' value="{{$set['become_ordercount']}}" />
-                                    <div class='input-group-addon'  style='border:none;background:#fff;'>次</div>
+                                    <div class='input-group-addon ' >次</div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
-                                <div class='input-group' style='border:none;margin-left:-12px;'>
-                                    <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become]" value="3" @if($set['become'] ==3) checked="checked"
+                                <div class='input-group' >
+                                    <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="3" @if($set['become'] ==3) checked="checked"
                                                     @endif /> 消费达到</label></div>
                                     <input type='text' class='form-control' name='setdata[become_moneycount]' value="{{$set['become_moneycount']}}" />
-                                    <div class='input-group-addon'  style='border:none;background:#fff;'>元</div>
+                                    <div class='input-group-addon'  >元</div>
                                 </div>
                             </div>
                         </div>
@@ -61,8 +68,8 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
                                 <input type='hidden' class='form-control' id='goods_id' name='setdata[become_goods_id]' value="{{$set['become_goods_id']}}" />
-                                <div class='input-group' style='border:none;margin-left:-12px;'>
-                                    <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become]" value="4" @if($set['become'] ==4) checked="checked"
+                                <div class='input-group' >
+                                    <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="4" @if($set['become'] ==4) checked="checked"
                                                     @endif /> 购买商品</label></div>
                                     <input type='text' class='form-control' id='goods' value="@if(!empty($goods))[{{$goods['id']}}]{{$goods['title']}}
 @endif" readonly />
@@ -121,7 +128,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9">
-                                <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick='return formcheck()' />
+                                <input type="submit" name="submit" value="提交" class="btn btn-primary" onclick='return formcheck()' />
                                 <input type="hidden" name="token" value="{{$var['token']}}" />
                             </div>
                         </div>

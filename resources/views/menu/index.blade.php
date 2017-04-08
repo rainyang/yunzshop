@@ -7,10 +7,15 @@
 @section('pageDesc','菜单列表desc')
 
 @section('content')
+
+
+<div class="right-titpos">
+    <ul class="add-snav">
+        <li class="active"><a href="#">菜单管理</a></li>
+    </ul>
+</div>
 <div class='panel panel-default'>
-    <div class='panel-heading'>
-        菜单管理
-    </div>
+
     <div class='panel-body'>
 
         <table class="table">

@@ -150,6 +150,12 @@ class Income extends BackendModel
     {
         return $this->hasMany(self::class, "create_month", "create_month");
     }
+    
+    public static function updatedIncomePayStatus($id,$updatedData)
+    {
+        return self::where('id',$id)
+            ->update($updatedData);
+    }
 
 
 }

@@ -136,7 +136,6 @@ class Balance
     private function rechargeRecord()
     {
         $rechargeModel = new BalanceRecharge();
-
         $rechargeModel->fill($this->getRechargeData());
         $validator = $rechargeModel->validator();
         if ($validator->fails()) {
