@@ -257,4 +257,39 @@ class MemberController extends ApiController
     {
          return $this->successJson('', ['count'=>MemberShopInfo::getAgentCount()]);
     }
+
+    /**
+     * 我的推荐人
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyReferral()
+    {
+        $member_info = MemberModel::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
+
+        if (!empty($member_info)) {
+            $member_info = $member_info->toArray();
+
+            $referrer_info = MemberModel::getUserInfos($member_info['yz_member']['parent_id'])->first();
+
+            if (!empty($referrer_info)) {
+                $data = [
+                  'uid' => $referrer_info['uid'],
+                  'avatar' => $referrer_info['avatar'],
+                  'nickname' => $referrer_info['nickname'],
+                  'level' => $referrer_info['yz_member']['level']['level_name']
+                ];
+                return $this->successJson('',$data);
+            } else {
+                return $this->errorJson('会员不存在');
+            }
+        } else {
+            return $this->errorJson('会员不存在');
+        }
+    }
+
+    public function getMyAgent()
+    {
+
+    }
 }

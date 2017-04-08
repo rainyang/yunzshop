@@ -92,4 +92,39 @@ class MemberModel extends Member
             ->where('uid', $uid)
             ->update($data);
     }
+
+    /**
+     * 我的推荐人信息
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getMyReferrerInfo($uid)
+    {
+        return self::uniacid()
+            ->where('uid', $uid)
+            ->with([
+                'yzMember' => function ($query) {
+                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])->where('is_black', 0);
+                }
+            ]);
+    }
+
+    public static function getMyAgentInfo($uid)
+    {
+        $result = self::uniacid();
+
+        $result = $result->whereHas('yzMember', function($q) use ($uid){
+            $q->where('parent_id', $uid);
+        });
+
+        $result = $result->with([
+            'yzMember'=>function($query) {
+            return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black']);
+        }, 'hasOneFans' => function($query4) {
+            return $query4->select(['uid', 'follow as followed'])->uniacid();
+        }]);
+
+        return $result;
+    }
 }
