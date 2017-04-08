@@ -148,14 +148,12 @@ class MemberRelation extends BackendModel
      * @param $mid
      * @param MemberShopInfo $user
      */
-    public function createChildAgent($mid, MemberShopInfo $user)
+    public function createChildAgent($mid, MemberShopInfo $model)
     {
         $child_info = $this->getChildAgentInfo();
-
-        if ($child_info != -1) {
             switch ($child_info) {
                 case 0:
-                    $this->becomeChildAgent($mid, $user);
+                    $this->becomeChildAgent($mid, $model);
                     break;
                 case 1:
                     $list = OrderListModel::getRequestOrderList(0,\YunShop::app()->getMemberId())->get();
@@ -165,7 +163,7 @@ class MemberRelation extends BackendModel
                         $count = count($result);
 
                         if ($count == 1) {
-                            $this->becomeChildAgent($mid, $user);
+                            $this->becomeChildAgent($mid, $model);
                         }
                     }
                     break;
@@ -178,12 +176,12 @@ class MemberRelation extends BackendModel
                         $count = count($result);
 
                         if ($count == 1) {
-                            $this->becomeChildAgent($mid, $user);
+                            $this->becomeChildAgent($mid, $model);
                         }
                     }
                     break;
             }
-        }
+
     }
 
     /**
@@ -198,29 +196,26 @@ class MemberRelation extends BackendModel
         if (!empty($info)) {
             $data = $info->toArray();
 
-            if ($info['become_child']) {
-                return $info['become_child'];
-            }
-        }
+            return $data['become_child'];
 
-        return -1;
+        }
     }
 
     /**
      * 成为下线
      *
      * @param $mid
-     * @param MemberShopInfo $user
+     * @param MemberShopInfo $model
      */
-    private function becomeChildAgent($mid, MemberShopInfo $user)
+    private function becomeChildAgent($mid, MemberShopInfo $model)
     {
         $info = self::getSetInfo()->first()->toArray();
 
-        $member_info = SubMemberModel::getMemberShopInfo($mid)->first();
+        $member_info = SubMemberModel::getMemberShopInfo($mid);
 
         if ($member_info && $member_info->is_agent) {
-            $user->parent_id = $mid;
-            $user->save();
+            $model->parent_id = $mid;
+            $model->save();
         }
     }
 

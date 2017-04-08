@@ -9,14 +9,8 @@
 namespace app\backend\modules\finance\models;
 
 
-use app\common\models\Order;
-
-class IncomeOrder extends Order
+class IncomeOrder extends \app\common\models\finance\IncomeOrder
 {
-    public function commissionorders()
-    {
-        return $this->morphMany('Yunshop\Commission\models\CommissionOrder', 'ordertable');
-    }
 
-
+    
 }

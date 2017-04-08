@@ -21,6 +21,12 @@ class BalanceRecharge extends BaseModel
 
     protected $guarded = [''];
 
+    const PAY_TYPE_SHOP = 0;
+
+    const PAY_TYPE_ORDER = -1;
+
+    const PAY_TYPE_MEMBER = -2;
+
     /*
      * 模型管理，关联会员数据表
      *
@@ -116,7 +122,7 @@ class BalanceRecharge extends BaseModel
             'uniacid'   => "公众号ID不能为空",
             'member_id' => "会员ID不能为空",
             'old_money' => '余额必须是有效的数字',
-            'money'     => '充值金额必须是有效的数字',
+            'money'     => '充值金额必须是有效的数字，允许两位小数',
             'new_money' => '计算后金额必须是有效的数字',
             'type'      => '充值类型不能为空',
             'ordersn'   => '充值订单号不能为空',

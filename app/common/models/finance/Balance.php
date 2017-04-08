@@ -24,6 +24,7 @@ class Balance extends BaseModel
     protected $guarded= [''];
 
 
+
     const BALANCE_RECHARGE  = 1; //充值
 
     const BALANCE_CONSUME   = 2; //消费

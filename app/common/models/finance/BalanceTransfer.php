@@ -41,7 +41,7 @@ class BalanceTransfer extends BaseModel
      * 获取余额转让记录分页列表，后台使用
      *
      * @return objece */
-    public static function getTansferPageList($pageSize)
+    public static function getTransferPageList($pageSize)
     {
         return self::uniacid()
             ->with(['transferorInfo' => function($transferorInfo) {
@@ -51,6 +51,15 @@ class BalanceTransfer extends BaseModel
                 return $recipientInfo->select('uid', 'nickname', 'realname', 'avatar', 'mobile');
             }])
             ->orderBy('created_at')->paginate($pageSize);
+    }
+
+    /**
+     * @param $recordId
+     *
+     * @return mixed */
+    public static function getTransferRecordByRecordId($recordId)
+    {
+        return self::where('id', $recordId)->first();
     }
 
     /*
@@ -85,6 +94,35 @@ class BalanceTransfer extends BaseModel
                 return $query->select('uid', 'nickname', 'realname');
             }])
             ->get();
+    }
+
+    /**
+     * 定义字段名
+     *
+     * @return array */
+    public  function atributeNames() {
+        return [
+            'uniacid'   => "公众号ID不能为空",
+            'transferor'=> "转让者ID不能为空",
+            'recipient' => '被转让者ID不能为空',
+            'money'     => '充值金额必须是有效的数字，允许两位小数',
+            'status'    => '状态不能为空'
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array */
+    public  function rules()
+    {
+        return [
+            'uniacid'   => "required",
+            'transferor'=> "required",
+            'recipient' => 'required',
+            'money'     => 'numeric|regex:/^[0-9]+(.[0-9]{1,2})?$/',
+            'status'    => 'required'
+        ];
     }
 
 }
