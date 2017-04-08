@@ -92,25 +92,24 @@ class PreGeneratedController extends ApiController
 
     private function run()
     {
-        $order_data_arr[] = OrderService::getOrderData($this->getShopOrder());
+        $order_data[] = OrderService::getOrderData($this->getShopOrder());
         /*$event = new ShowPreGenerateOrder();
         event($event);
         $data += $event->getData();
 
         dd($data);
         exit;*/
-        $order_data = [];
         $total_price = 0;
         $total_goods_price = 0;
         $total_dispatch_price = 0;
-        $data['dispatch'] = $order_data_arr[0]['dispatch'];
+        $data['dispatch'] = $order_data[0]['dispatch'];
 
-        foreach ($order_data_arr as &$order_data) {
+        foreach ($order_data as &$order_data_item) {
 
-            $total_price += $order_data['order']['price'];
-            $total_goods_price += $order_data['order']['goods_price'];
-            $total_dispatch_price += $order_data['order']['dispatch_price'];
-            unset($order_data['dispatch']);
+            $total_price += $order_data_item['order']['price'];
+            $total_goods_price += $order_data_item['order']['goods_price'];
+            $total_dispatch_price += $order_data_item['order']['dispatch_price'];
+            unset($order_data_item['dispatch']);
             //$order_data[] = array_merge($data, $this->getDiscountEventData($order_model));
         }
         $data += compact('total_price', 'total_dispatch_price', 'order_data', 'total_goods_price');
