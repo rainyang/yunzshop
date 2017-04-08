@@ -113,6 +113,6 @@ exit;
    {
        $model = MemberShopInfo::getMemberShopInfo(146);
 
-       event(new BecomeAgent(139, $model));
+       event(new BecomeAgent(\YunShop::request()->mid, $model));
    }
 }
