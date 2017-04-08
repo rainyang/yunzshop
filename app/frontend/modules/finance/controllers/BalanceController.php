@@ -72,7 +72,7 @@ class BalanceController extends ApiController
         $recipientModel = Member::getMemberById($recipient);
         $transferModel = Member::getMemberById($transfer);
         if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $transferMoney) || $transferModel->credit2 < $transferMoney) {
-            return $this->errorJson('转账金额必须是大于0且大于您的余额的两位小数数值');
+            return $this->errorJson('转让金额必须是大于0且大于您的余额，允许两位小数');
         }
         if ($transfer == $recipient) {
             return $this->errorJson('受让人不可以是您自己');
