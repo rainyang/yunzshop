@@ -28,9 +28,9 @@ class BalanceController extends ApiController
         $rechargeMoney = trim(\YunShop::request()->recharge_money);
         $payType = \YunShop::request()->pay_type;
 
-        //$memberId = 55;
-        //$rechargeMoney = 100;
-        //$payType = 2;
+        $memberId = 55;
+        $rechargeMoney = 100;
+        $payType = 2;
 
         if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $rechargeMoney)) {
             return $this->errorJson('请输入有效的充值金额，允许两位小数');
@@ -52,10 +52,7 @@ class BalanceController extends ApiController
                 $rechargeModel = BalanceRecharge::getRechargeRecordByid($result);
                 $data['serial_number'] = $rechargeModel->ordersn;
                 //支付返回数据直接反给前端
-                //return $this->payOrder($data);
-                //echo '<pre>'; print_r(123); exit;
-                //echo '<pre>'; print_r($this->payOrder($this->payData($data))); exit;
-                return $this->successJson('支付接口对接成功',$this->payOrder($this->payData($data)));
+                return $this->successJson('支付接口对接成功',$this->payOrder($data));
             }
             return $this->errorJson($result);
         }
