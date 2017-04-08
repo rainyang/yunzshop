@@ -20,7 +20,11 @@ class BecomeAgent extends Event
 
     public function __construct($mid, MemberShopInfo $model)
     {
-        $this->mid = $mid;
+        if (!empty($mid)) {
+            $this->mid = $mid;
+        } else {
+            $this->mid = 0;
+        }
 
         $this->user = $model;
     }
