@@ -53,7 +53,7 @@ class BalanceController extends BaseController
     //余额明细记录[完成]
     public function balanceDetail()
     {
-        $pageSize = 3;
+        $pageSize = 20;
         $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
         $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
@@ -66,7 +66,7 @@ class BalanceController extends BaseController
     //用户余额管理 【完成】
     public function member()
     {
-        $pageSize = 10;
+        $pageSize = 20;
         $search = \YunShop::request()->search;
         $memberList = Member::getMembers()->paginate($pageSize);
         if ($search) {
@@ -126,18 +126,19 @@ class BalanceController extends BaseController
         $pageSize = 10;
         $recordList = BalanceRecharge::getPageList($pageSize);
         if ($search = \YunShop::request()->search) {
-            $recordList = BalanceRecharge::getSearchPageList($pageSize,$search);
-            dd($recordList);
+            $recordList = BalanceRecharge::getSearchPageList($pageSize, $search);
+            //dd($search);
 
         }
         $pager = PaginationHelper::show($recordList->total(), $recordList->currentPage(), $recordList->perPage());
 
         //支付类型：1后台支付，2 微信支付 3 支付宝， 4 其他支付
         return view('finance.balance.rechargeRecord', [
-            'recordList'  => $recordList,
-            'pager'    => $pager,
+            'recordList'    => $recordList,
+            'pager'         => $pager,
             'memberGroup'   => MemberGroup::getMemberGroupList(),
-            'memberLevel'   => MemberLevel::getMemberLevelList()
+            'memberLevel'   => MemberLevel::getMemberLevelList(),
+            'search'        => $search
         ])->render();
     }
 
