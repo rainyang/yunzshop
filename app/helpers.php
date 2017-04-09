@@ -46,6 +46,51 @@ if (!function_exists("xml_to_array")) {
         return $arr;
     }
 }
+
+if (!function_exists("tomedia")) {
+    /**
+     * 获取附件的HTTP绝对路径
+     * @param string $src 附件地址
+     * @param bool $local_path 是否直接返回本地图片路径
+     * @return string
+     */
+    function tomedia($src, $local_path = false)
+    {
+        if (empty($src)) {
+            return '';
+        }
+        if (strexists($src, 'addons/')) {
+            return YunShop::app()->siteroot . substr($src, strpos($src, 'addons/'));
+        }
+        //如果远程地址中包含本地host也检测是否远程图片
+        if (strexists($src, YunShop::app()->siteroot) && !strexists($src, '/addons/')) {
+            $urls = parse_url($src);
+            $src = $t = substr($urls['path'], strpos($urls['path'], 'images'));
+        }
+        $t = strtolower($src);
+        if (strexists($t, 'http://') || strexists($t, 'https://') || substr($t, 0, 2) == '//') {
+            return $src;
+        }
+        if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+            $src = YunShop::app()->siteroot . YunShop::app()->config['upload']['attachdir'] . '/' . $src;
+        } else {
+            $src = YunShop::app()->attachurl_remote . $src;
+        }
+        return $src;
+    }
+}
+if (!function_exists("strexists")) {
+    /**
+     * 判断字符串是否包含子串
+     * @param string $string 在该字符串中进行查找
+     * @param string $find 需要查找的字符串
+     * @return boolean
+     */
+    function strexists($string, $find)
+    {
+        return !(strpos($string, $find) === false);
+    }
+}
 if (!function_exists("set_medias")) {
     function set_medias($list = array(), $fields = null)
     {
