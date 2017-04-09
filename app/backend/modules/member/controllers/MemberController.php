@@ -175,7 +175,7 @@ class MemberController extends BaseController
         if (MemberShopInfo::setMemberBlack($uid, $data)) {
             return $this->message('黑名单设置成功', yzWebUrl('member.member.index'));
         } else {
-            return $this->message('黑名单设置失败', '', 'error');
+            return $this->message('黑名单设置失败', yzWebUrl('member.member.index'), 'error');
         }
     }
 
