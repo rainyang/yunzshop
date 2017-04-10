@@ -114,7 +114,7 @@ class BalanceController extends ApiController
     {
         $memberId = \YunShop::app()->getMemberId();
         $type = \YunShop::request()->type;
-        //$memberId = '55';
+        $memberId = '55';
         if ($memberId) {
             $recordList = \app\common\models\finance\Balance::getMemberDeatilRecord($memberId, $type);
             return $this->successJson('获取记录成功',$this->attachedServiceType($recordList->toArray()));
@@ -236,6 +236,7 @@ class BalanceController extends ApiController
                     default:
                         $data[$i]['service_type'] = "未知来源";
                 }
+                $data[$i]['created_at'] = date('Y-m-d H:i:s', $key['created_at']);
                 $i++;
             }
         }
