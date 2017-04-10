@@ -24,24 +24,20 @@ class RoleController extends BaseController
      */
     public function index()
     {
-        $pageSize = '3';
+        $pageSize = '10';
+        $search = \YunShop::request()->search;
+        $roleList = YzRole::getPageList($pageSize,$search);
 
-        $roleList = YzRole::getRoleList($pageSize);
         $pager = PaginationHelper::show($roleList->total(), $roleList->currentPage(), $roleList->perPage());
         //dd($roleList->items());
         return view('user.role.index',[
             'pager'     => $pager,
-            'roleList'  => $roleList
+            'roleList'  => $roleList,
+            'search'    => $search
         ])->render();
     }
 
-    /**
-     * 搜索
-     */
-    public function search()
-    {
-        dd(111);
-    }
+
 
     /**
      * 创建角色
@@ -98,8 +94,8 @@ class RoleController extends BaseController
         }
         $permissions = \Config::get('menu');
         return view('user.role.form',[
-            'role'=>array( 'status' => 0, 'id' => ''),
-            'permissions'=>$permissions,
+            'role'          => $roleModel,
+            'permissions'   =>$permissions,
             'userPermissons'=>[],
         ])->render();
     }
