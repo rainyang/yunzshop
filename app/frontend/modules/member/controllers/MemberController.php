@@ -273,11 +273,12 @@ class MemberController extends ApiController
             $referrer_info = MemberModel::getUserInfos($member_info['yz_member']['parent_id'])->first();
 
             if (!empty($referrer_info)) {
+                $info = $referrer_info->toArray();
                 $data = [
-                  'uid' => $referrer_info['uid'],
-                  'avatar' => $referrer_info['avatar'],
-                  'nickname' => $referrer_info['nickname'],
-                  'level' => $referrer_info['yz_member']['level']['level_name']
+                  'uid' => $info['uid'],
+                  'avatar' => $info['avatar'],
+                  'nickname' => $info['nickname'],
+                  'level' => $info['yz_member']['level']['level_name']
                 ];
 
                 return $data;
@@ -324,14 +325,17 @@ class MemberController extends ApiController
             }
         }
 
-        $data = [
-            'uid' => $agent_data['uid'],
-            'avatar' => $agent_data['avatar'],
-            'nickname' => $agent_data['nickname'],
-            'order_total' => $agent_data['has_one_order']['total'],
-            'order_price' => $agent_data['has_one_order']['sum'],
-            'agent_total' => $agent_data['agent_total'],
-        ];
+        foreach ($agent_data as $item) {
+            $data[] = [
+                'uid' => $item['uid'],
+                'avatar' => $item['avatar'],
+                'nickname' => $item['nickname'],
+                'order_total' => $item['has_one_order']['total'],
+                'order_price' => $item['has_one_order']['sum'],
+                'agent_total' => $item['agent_total'],
+            ];
+        }
+
 
         return $data;
     }

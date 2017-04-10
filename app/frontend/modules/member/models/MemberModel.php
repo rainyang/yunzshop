@@ -101,11 +101,15 @@ class MemberModel extends Member
      */
     public static function getMyReferrerInfo($uid)
     {
-        return self::uniacid()
+        return self::select(['uid'])->uniacid()
             ->where('uid', $uid)
             ->with([
                 'yzMember' => function ($query) {
-                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])->where('is_black', 0);
+                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])
+                        ->where('is_black', 0)
+                        ->with(['level'=>function($query2){
+                            return $query2->select(['id','level_name'])->uniacid();
+                        }]);
                 }
             ]);
     }

@@ -64,8 +64,14 @@ class MemberRelationController extends BaseController
 
         $goods_model= Goods::getGoodsByName($kwd);
 
+        if (!empty($goods_model)) {
+            $data = $goods_model->toArray();
+        } else {
+            $data = [];
+        }
+echo '<pre>';print_r($data);exit;
         return view('member.goods_query', [
-            'goods' => []
+            'goods' => $data
         ])->render();
     }
 }
