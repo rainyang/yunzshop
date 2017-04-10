@@ -15,12 +15,12 @@ use app\common\models\Member;
 
 class MemberModel extends Member
 {
-    protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4' , 'credit5'];
+    protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4', 'credit5'];
 
-    protected $fillable = ['uniacid','mobile','groupid','createtime','nickname','avatar','gender'
-    ,'salt','password'];
+    protected $fillable = ['uniacid', 'mobile', 'groupid', 'createtime', 'nickname', 'avatar', 'gender'
+        , 'salt', 'password'];
 
-    protected $attributes = ['bio' => '','resideprovince'=>'','residecity'=>'','nationality'=>'','interest'=>''];
+    protected $attributes = ['bio' => '', 'resideprovince' => '', 'residecity' => '', 'nationality' => '', 'interest' => ''];
 
     /**
      * 获取用户uid
@@ -122,11 +122,23 @@ class MemberModel extends Member
             ->whereHas('yzMember', function($query) use ($uid){
                          $query->where('parent_id', $uid);
             })
-            ->with(['hasOneOrder' => function($query) {
+            ->with(['hasOneOrder' => function ($query) {
                 return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
                     ->uniacid()
                     ->where('status', 3)
                     ->groupBy('uid');
-        }]);
+            }])
+            ->where('uid', $uid);
+    }
+
+    
+
+    /**
+     *
+     * @return mixed
+     */
+    public function hasManyYzMember()
+    {
+        return $this->hasMany('app\common\models\MemberShopInfo', 'parent_id', 'uid');
     }
 }
