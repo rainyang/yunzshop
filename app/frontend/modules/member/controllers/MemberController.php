@@ -30,8 +30,6 @@ class MemberController extends ApiController
      */
     public function getUserInfo()
     {
-        //$member_id = \YunShop::request()->uid;
-
         $member_id = \YunShop::app()->getMemberId();
 
         if (!empty($member_id)) {
