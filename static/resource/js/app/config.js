@@ -30,6 +30,7 @@ require.config({
 		'select2' : '../../components/select2/zh-CN',
 		'clockpicker': '../../components/clockpicker/clockpicker.min',
 		'jquery.qrcode': '../lib/jquery.qrcode.min',
+		'contextMenu':'../lib/jquery.contextMenu',
 		'raty': '../lib/raty.min'
 	},
 	shim:{
@@ -117,6 +118,10 @@ require.config({
 		'jquery.qrcode': {
 			exports: "$",
 			deps: ['jquery']
-		}
+		},
+        'contextMenu': {
+            exports: "$",
+            deps: ['jquery']
+        }
 	}
 });
