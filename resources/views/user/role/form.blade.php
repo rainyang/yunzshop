@@ -20,14 +20,14 @@
                     <!--div class='form-control-static'>{$item['rolename']}</div-->
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group">1
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">状态</label>
                 <div class="col-sm-9 col-xs-12">
                     <label class='radio-inline'>
-                        <input type='radio' name='YzRole[status]' value='1' @if($role['status'] == 1) checked @endif /> 启用
+                        <input type='radio' name='YzRole[status]' value='{{ \app\common\models\user\YzRole::ROLE_ENABLE }}' @if($role['status'] == \app\common\models\user\YzRole::ROLE_ENABLE) checked @endif /> 启用
                     </label>
                     <label class='radio-inline'>
-                        <input type='radio' name='YzRole[status]' value='0' @if($role['status'] == 0) checked @endif /> 禁用
+                        <input type='radio' name='YzRole[status]' value='{{ \app\common\models\user\YzRole::ROLE_DISABLE }}' @if($role['status'] == \app\common\models\user\YzRole::ROLE_DISABLE) checked @endif /> 禁用
                     </label>
                     <span class="help-block">如果禁用，则当前角色的操作员全部会禁止使用</span>
                     <!--div class='form-control-static'>{if $item['status']==1}启用{else}禁用{/if}</div-->

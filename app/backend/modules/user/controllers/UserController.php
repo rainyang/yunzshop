@@ -23,7 +23,7 @@ class UserController extends BaseController
      **/
     public function index()
     {
-        $pageSize = 5;
+        $pageSize = 10;
         $userList = User::getPageList($pageSize);
 
         $search = \YunShop::request()->search;
