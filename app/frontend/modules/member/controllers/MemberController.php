@@ -279,7 +279,8 @@ class MemberController extends ApiController
                   'nickname' => $referrer_info['nickname'],
                   'level' => $referrer_info['yz_member']['level']['level_name']
                 ];
-                return $this->successJson('',$data);
+
+                return $data;
             } else {
                 return $this->errorJson('会员不存在');
             }
@@ -331,6 +332,26 @@ class MemberController extends ApiController
             'order_price' => $agent_data['has_one_order']['sum'],
             'agent_total' => $agent_data['agent_total'],
         ];
+
+        return $data;
+    }
+
+    /**
+     * 会员中心我的关系
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyRelation()
+    {
+        $my_referral = $this->getMyReferral();
+
+        $my_agent = $this->getMyAgent();
+
+        $data = [
+            'my_referral' => $my_referral,
+            'my_agent' => $my_agent
+        ];
+
         return $this->successJson('', $data);
     }
 }

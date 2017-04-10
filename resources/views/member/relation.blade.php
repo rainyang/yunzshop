@@ -102,18 +102,6 @@
                                 <span class='help-block'>首次下单/首次付款： 无条件不可用</span>
                             </div>
                         </div>
-                        <!--
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">发展下线必须完善资料</label>
-                            <div class="col-sm-9 col-xs-12">
-                                <label class="radio-inline"><input type="radio"  name="setdata[become_info]" value="0" @if($set['become_info'] ==0) checked="checked"
-                                            @endif /> 需要</label>
-                                <label class="radio-inline"><input type="radio"  name="setdata[become_info]" value="1" @if($set['become_info'] ==1) checked="checked"
-                                            @endif  /> 不需要</label>
-                                <span class="help-block">分销商在分销或提现时是否必须完善资料</span>
-                            </div>
-                        </div>
-                        -->
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">发展下线是否需要审核</label>
                             <div class="col-sm-9 col-xs-12">
@@ -162,7 +150,7 @@
                 return;
             }
             $("#module-goods").html("正在搜索....")
-            $.get('{php echo $this->createWebUrl('shop/query')}', {
+            $.get('{!! yzWebUrl('member.member-relation.query') !!}', {
                 keyword: $.trim($('#search-kwd-goods').val())
             }, function(dat){
                 $('#module-menus-goods').html(dat);
