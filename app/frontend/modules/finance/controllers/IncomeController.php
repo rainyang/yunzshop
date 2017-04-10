@@ -112,7 +112,7 @@ class IncomeController extends ApiController
         }
 
         foreach ($config as $key => $item) {
-            $set[$key] = \Setting::get('withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
+            $set[$key] = \Setting::get('withdraw.' . $key);
             $incomeModel = $incomeModel->where('incometable_type', $item['class']);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
@@ -124,7 +124,7 @@ class IncomeController extends ApiController
                 }
                 $incomeData[$key] = [
                     'type' => $item['class'],
-                    'key_name' => $item['title'],
+                    'key_name' => $item['type'],
                     'type_name' => $item['type_name'],
                     'type_id' => rtrim($type_id, ','),
                     'income' => $incomeModel->sum('amount'),
@@ -136,7 +136,7 @@ class IncomeController extends ApiController
             } else {
                 $incomeData[$key] = [
                     'type' => $item['class'],
-                    'key_name' => $item['title'],
+                    'key_name' => $item['type'],
                     'type_name' => $item['type_name'],
                     'type_id' => '',
                     'income' => $incomeModel->sum('amount'),
@@ -184,12 +184,7 @@ class IncomeController extends ApiController
          */
         foreach ($withdrawData as $key => $item) {
 
-            $set[$key] = \Setting::get('withdraw.' . $key,
-                [
-                    'roll_out_limit' => '100',
-                    'poundage_rate' => '5'
-                ]
-            );
+            $set[$key] = \Setting::get('withdraw.' . $key);
             $incomeModel = $incomeModel->whereIn('id', explode(',', $item['type_id']));
             $incomes = $incomeModel->get();
             \Log::info("INCOME:");
