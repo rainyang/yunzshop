@@ -8,13 +8,15 @@
 
 namespace app\common\listeners\member;
 
+use app\common\events\member\BecomeAgent;
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\models\MemberShopInfo;
 
 class AfterOrderCreatedListener
 {
     public function handle(AfterOrderCreatedEvent $event)
     {
         $model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
-        event(new BecomeAgent(\YunShop::request()->mid(), $model));
+        event(new BecomeAgent(\YunShop::request()->mid, $model));
     }
 }

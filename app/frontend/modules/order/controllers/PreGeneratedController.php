@@ -9,20 +9,10 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\events\cart\GroupingCartIdEvent;
-use app\common\events\discount\OnDiscountInfoDisplayEvent;
-use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\ShowPreGenerateOrder;
-use app\common\exceptions\AppException;
-use app\common\models\Order;
-use app\frontend\modules\goods\services\GoodsService;
-use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
-use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\order\services\OrderService;
-use app\frontend\modules\shop\services\ShopService;
-use Illuminate\Support\Arr;
+use Request;
 
 class PreGeneratedController extends ApiController
 {
@@ -33,9 +23,9 @@ class PreGeneratedController extends ApiController
     {
 
         $this->param['goods'] = [
-            'goods_id' => \YunShop::request()->get('goods_id'),
-            'total' => \YunShop::request()->get('total'),
-            'option_id' => \YunShop::request()->get('option_id'),
+            'goods_id' => Request::query('goods_id'),
+            'total' => Request::query('total'),
+            'option_id' => Request::query('option_id'),
         ];
 
         $this->memberCarts[] = MemberCartService::newMemberCart($this->param['goods']);
@@ -56,16 +46,7 @@ class PreGeneratedController extends ApiController
 
     private function getShopOrder()
     {
-        $callback = function ($memberCart) {
-            /**
-             * @var $memberCart MemberCart
-             */
-            if (empty($memberCart->goods->is_plugin)) {
-                return true;
-            }
-            return false;
-        };
-        $memberCarts = OrderService::getMemberCarts($callback);
+        $memberCarts = OrderService::getShopMemberCarts();
         return OrderService::createOrderByMemberCarts($memberCarts);
     }
 
