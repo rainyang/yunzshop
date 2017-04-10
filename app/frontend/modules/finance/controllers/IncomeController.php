@@ -124,7 +124,7 @@ class IncomeController extends ApiController
                 }
                 $incomeData[$key] = [
                     'type' => $item['class'],
-                    'key_name' => $item['title'],
+                    'key_name' => $item['type'],
                     'type_name' => $item['type_name'],
                     'type_id' => rtrim($type_id, ','),
                     'income' => $incomeModel->sum('amount'),
@@ -136,7 +136,7 @@ class IncomeController extends ApiController
             } else {
                 $incomeData[$key] = [
                     'type' => $item['class'],
-                    'key_name' => $item['title'],
+                    'key_name' => $item['type'],
                     'type_name' => $item['type_name'],
                     'type_id' => '',
                     'income' => $incomeModel->sum('amount'),
