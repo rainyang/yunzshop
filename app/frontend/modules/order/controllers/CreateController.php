@@ -9,77 +9,42 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\events\cart\GroupingCartEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\exceptions\AppException;
-use app\frontend\modules\member\services\MemberCartService;
-use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\order\services\OrderService;
-use app\frontend\modules\shop\services\ShopService;
 
 class CreateController extends ApiController
 {
-    private function getGroupingCart()
+
+    private function getPluginOrders()
     {
-        $params = \YunShop::request()->get();
-        if (!is_array($params['goods'])) {
-            $params['goods'] = json_decode($params['goods'], true);
-        }
-        $this->validator($params['goods']);
-
-        $event = new GroupingCartEvent();
+        $event = new getPreGenerateOrder();
         event($event);
-
-        $goods_ids = [];
-        foreach ($params['goods'] as $goods_params) {
-            if ($event->getMap()['goods_ids']) {
-                foreach ($event->getMap()['goods_ids'] as $key => $goods_id) {
-                    if ($key == $goods_params['goods_id']) {
-                        $goods_ids['plugin'][] = MemberCartService::newMemberCart($goods_params);
-                    } else {
-                        $goods_ids['shop'][] = MemberCartService::newMemberCart($goods_params);
-                    }
-                }
-            } else {
-                $goods_ids['shop'][] = MemberCartService::newMemberCart($goods_params);
-            }
-        }
-        if (!count($goods_ids)) {
-            throw new AppException('分单失败');
-        }
-
-        return $goods_ids;
+        return $event->getData();
     }
 
-    private function getMemberCarts()
+    private function getShopOrder()
     {
-        return $this->getGroupingCart();
+        $memberCarts = OrderService::getShopMemberCarts();
+
+        return OrderService::createOrderByMemberCarts($memberCarts);
     }
 
     public function index()
     {
-
-        $member = MemberService::getCurrentMemberModel();
-
-        $shop = ShopService::getCurrentShopModel();
-        //todo 根据参数
-        foreach ($this->getMemberCarts() as $carts) {
-
-
-            $orderGoodsModel = OrderService::getOrderGoodsModels($carts);
-
-            $order = new PreGeneratedOrderModel(['uid'=>$member->uid,'uniacid'=>$shop->uniacid]);
-            $order->setOrderGoodsModels($orderGoodsModel);
-            $result = $order->generate();
-            if (!$result) {
-                throw new AppException('订单生成失败');
-            }
+        $orders = collect();
+        $orders->push($this->getShopOrder());
+        //$orders->merge($this->getPluginOrders());
+        $orders->map(function ($order) {
+            /**
+             * @var $order PreGeneratedOrderModel
+             */
+            $order->generate();
             event(new AfterOrderCreatedEvent($order->getOrder()));
-
-        }
-
-        $this->successJson('成功', ['order_id' => $order->id]);
+        });
+        //todo 返回什么信息
+        $this->successJson('成功', []);
     }
 
     private function validator($params)
