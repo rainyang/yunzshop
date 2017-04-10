@@ -15,7 +15,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class YzRole extends BaseModel
 {
     use SoftDeletes;
+
     public $table = 'yz_role';
+
+    const ROLE_ENABLE = 2;
+
+    const ROLE_DISABLE = 1;
 
     /**
      *  定义字段名
@@ -56,11 +61,16 @@ class YzRole extends BaseModel
      * @param int $pageSize
      * @return object
      */
-    public static function getRoleList($pageSize)
+    public static function getPageList($pageSize,$search)
     {
-        return static::uniacid()
-            ->with(['roleUser'])
-            ->paginate($pageSize);
+        $query = static::uniacid();
+        if ($search['keyword']) {
+            $query = $query->where('name', 'like', $search['keyword'] . '%');
+        }
+        if ($search['status']) {
+            $query = $query->where('status', $search['status']);
+        }
+        return $query->with(['roleUser'])->paginate($pageSize);
     }
 
     public static function getRolelistToUser()

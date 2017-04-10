@@ -19,6 +19,7 @@ use app\common\services\AliPay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
+use app\frontend\modules\member\models\MemberModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class TestController extends BaseController //ApiController
@@ -104,15 +105,75 @@ exit;
        echo '<pre>';print_r($g->toArray());exit;
    }
 
+    /**
+     * 二维码
+     */
    public function getQR()
    {
        echo QrCode::format('png')->size(100)->generate('http:www.baidu.com', storage_path('qr/' . time().'.png'));
    }
 
+    /**
+     * 事件
+     */
    public function runEvent()
    {
        $model = MemberShopInfo::getMemberShopInfo(146);
 
        event(new BecomeAgent(\YunShop::request()->mid, $model));
    }
+
+    /**
+     * 我的推荐人
+     */
+   public function getReferrerInfo()
+   {
+       $member_info = MemberModel::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
+
+       if (!empty($member_info)) {
+           $member_info = $member_info->toArray();
+
+           $referrer_info = MemberModel::getUserInfos($member_info['yz_member']['parent_id'])->first();
+
+       }
+   }
+
+   public function getMyAgent()
+   {
+
+       $result = MemberShopInfo::getAgentAllCount([5,9]);
+
+     //  dd($result->toArray());
+       $agent_ids = [];
+
+       $agent_info = MemberModel::getMyAgentInfo(\YunShop::app()->getMemberId());
+       $agent_model = $agent_info->get();
+
+       if (!empty($agent_model)) {
+           $agent_data = $agent_model->toArray();
+
+           foreach ($agent_data as $key => $item) {
+               $agent_ids[$key] = $item['uid'];
+               $agent_data[$key]['agent_count'] = 0;
+           }
+       } else {
+           return $this->errorJson('数据为空');
+       }
+
+       $all_count = MemberShopInfo::getAgentAllCount($agent_ids);
+
+       foreach ($all_count as $k => $rows) {
+           foreach ($agent_data as $key => $item) {
+               if ($rows['parent_id'] == $item['uid']) {
+                   $agent_data[$key]['agent_count'] = $rows['total'];
+
+                   break 1;
+               }
+           }
+       }
+       dd($agent_data);
+
+   }
+
+
 }

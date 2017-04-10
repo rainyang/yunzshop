@@ -18,7 +18,7 @@
 			<div class='panel-body'>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">自动关闭未付款订单天数</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <div class="input-group">
                             <input type="text" name="trade[close_order_days]" class="form-control" value="{{ $set['close_order_days'] }}" />
                             <div class="input-group-addon">天</div>
@@ -29,7 +29,7 @@
 
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-3 col-md-2 control-label">自动关闭未付款订单执行间隔时间</label>
-					<div class="col-sm-5">
+					<div class="col-sm-9">
 						<div class="input-group">
 							<input type="text" name="trade[close_order_time]" class="form-control" value="{{ $set['close_order_time'] }}" />
 							<div class="input-group-addon">分钟</div>
@@ -46,7 +46,7 @@
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">自动收货天数</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <div class="input-group">
                             <input type="text" name="trade[receive]" class="form-control" value="{{ $set['receive'] }}" />
                             <div class="input-group-addon">天</div>
@@ -57,7 +57,7 @@
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">自动收货执行间隔时间</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <div class="input-group">
                             <input type="text" name="trade[receive_time]" class="form-control" value="{{ $set['receive_time'] }}" />
                             <div class="input-group-addon">分钟</div>
@@ -75,7 +75,7 @@
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">完成订单多少天内可申请退款</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <div class="input-group">
                             <input type="text" name="trade[refund_days]" class="form-control" value="{{ $set['refund_days'] }}" />
                             <div class="input-group-addon">天</div>
@@ -85,14 +85,14 @@
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款说明</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <textarea  name="trade[refund_content]" class="form-control" value="{{ $set['refund_content'] }}" >{{ $set['refund_content'] }}</textarea>
                         <span class='help-block'>用户在申请退款页面的说明</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否显示用户下单飘窗</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <label class='radio-inline'><input type='radio' name='trade[show_last_order]' value='1' @if ($set['show_last_order'] == 1) checked @endif/> 开启</label>
                         <label class='radio-inline'><input type='radio' name='trade[show_last_order]' value='0' @if (empty($set['show_last_order'])) checked @endif /> 关闭</label>
                         <span class='help-block'>是否显示商城用户下单飘窗提示</span>
@@ -202,7 +202,7 @@
           
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付回调日志</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
 
                         <label class='radio-inline'><input type='radio' name='trade[pay_log]' value='0' @if ($set['pay_log'] == 0) checked @endif /> 关闭</label>
                         <label class='radio-inline'><input type='radio' name='trade[pay_log]' value='1' @if ($set['pay_log'] == 1) checked @endif/> 开启</label>
@@ -217,7 +217,7 @@
             <div class="form-group">
 				<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
 				<div class="col-sm-9 col-xs-12">
-					<input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+					<input type="submit" name="submit" value="提交" class="btn btn-primary"  />
 				</div>
             </div>
 

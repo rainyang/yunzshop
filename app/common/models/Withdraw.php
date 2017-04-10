@@ -95,7 +95,7 @@ class Withdraw extends BackendModel
 //                        $this->TypeData['is_pay'] = $is_pay;
                         $this->TypeData['incomes'] = $orders->toArray();
                         foreach ($this->TypeData['incomes'] as &$item) {
-                            $item['detail'] = json_decode($item['detail']);
+                            $item['detail'] = json_decode($item['detail'],true);
                         }
 //                        foreach ($orders as $k => $order) {
 ////                            $this->TypeData['orders'][$k] = $order->incometable->ordertable->toArray();

@@ -18,7 +18,7 @@
                             @foreach($valueOne['child'] as $keyTwo=>$valueTwo)
                                 @if(isset($valueTwo['permit']) && $valueTwo['permit'] === 1)
                                     <span>
-                                           <label class='checkbox-inline' style='width:100px;'>
+                                           <label class='checkbox-inline' >
                                                <input type='checkbox' name='perms[]' value='{{$keyTwo}}'
                                                       class='perm-all-item' data-group='{{$keyOne}}'
                                                       data-child='{{$keyTwo}}' {{in_array($keyTwo, $rolePermission) ? 'disabled' : ''}}

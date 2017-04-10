@@ -151,14 +151,17 @@ class BalanceController extends ApiController
     }
 
     /**
-     * 调取支付接口
-     * @return array|mixed|string|void
-     * @Author yitian */
+     * @param $data
+     * @return array|mixed|string
+     */
     private function payOrder($data)
     {
         $pay = PayFactory::create($data['recharge_type']);
 
-        return $pay->doPay($this->payData($data));
+        $result = $pay->doPay($this->payData($data));
+        $result['js'] = json_decode($result['js'], 1);
+
+        return $result;
     }
 
     /**

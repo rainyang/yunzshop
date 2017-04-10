@@ -265,7 +265,7 @@ class Balance
         return array(
             'uniacid'   => \YunShop::app()->uniacid,
             'member_id' => $this->data['member_id'],
-            'old_money' => $memberModel->credit2,
+            'old_money' => (double)$memberModel->credit2,
             'money'     => $this->data['change_money'],
             'new_money' => $new_money,
             'type'      => $this->data['recharge_type'],

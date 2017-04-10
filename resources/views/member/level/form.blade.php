@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-
+<link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="rightlist">
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">
@@ -11,7 +11,7 @@
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->
 
-        <div class="main">
+        <div  id="member-level" class="main">
             @if(!$levelModel->id)
             <form action="{{ yzWebUrl('member.member-level.store') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
             @else
@@ -84,7 +84,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"/>
+                                <input type="submit" name="submit" value="提交" class="btn btn-primary"/>
                                 <input type="hidden" name="token" value="token"/>
                                 <input type="button" name="back" onclick='history.back()' style='margin-left:10px;' value="返回列表" class="btn btn-default" />
                             </div>

@@ -1,13 +1,14 @@
 @extends('layouts.base')
 
 @section('content')
+<link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="w1200 m0a">
         <div class="rightlist">
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
                 <ul class="add-snav">
                     <li class="active"><a href="{{yzWebUrl('member.member.index')}}">会员管理</a></li>
-                    <li><a href="#">会员详情</a></li>
+                    <li><a href="#">&nbsp;<i class="fa fa-angle-double-right"></i> &nbsp;会员详情</a></li>
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
@@ -168,7 +169,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+                                <input type="submit" name="submit" value="提交" class="btn btn-primary" />
                                 <input type="hidden" name="token" value="{{$var['token']}}" />
                                 <input type="button" class="btn btn-default" name="submit" onclick="location.href='{{yzWebUrl('member.member.index')}}'" value="返回列表" style='margin-left:10px;' />
                             </div>

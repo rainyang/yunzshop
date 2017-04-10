@@ -82,7 +82,7 @@ class Member extends BackendModel
             ->where('uid', $member_id)
             ->with([
                 'yzMember' => function ($query) {
-                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])
+                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])->where('is_black', 0)
                         ->with([
                             'group' => function ($query1) {
                                 return $query1->select(['id', 'group_name']);
