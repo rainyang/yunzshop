@@ -112,6 +112,7 @@ class BalanceController extends ApiController
      */
     public function getDetailRecord()
     {
+        echo '<pre>'; print_r('test'); exit;
         $memberId = \YunShop::app()->getMemberId();
         $type = \YunShop::request()->type;
         //$memberId = '55';
