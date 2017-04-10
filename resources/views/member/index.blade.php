@@ -39,11 +39,13 @@
                             <div class="">
                                 <select name='followed' class='form-control'>
                                     <option value=''>不限关注</option>
-                                    <option value='0'
-                                            @if($request['followed']=='0')
+                                   <!--
+                                    <option value='2'
+                                            @if($request['followed']=='2')
                                             selected
                                             @endif
                                     >未关注
+                                    -->
                                     </option>
                                     <option value='1'
                                             @if($request['followed']=='1')
@@ -51,8 +53,8 @@
                                             @endif
                                     >已关注
                                     </option>
-                                    <option value='2'
-                                            @if($request['followed']=='2')
+                                    <option value='0'
+                                            @if($request['followed']=='0')
                                             selected
                                             @endif
                                     >取消关注
@@ -233,7 +235,7 @@
                                             <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
                                         @else
                                             @if(empty($row['has_one_fans']['followed']))
-                                                @if(empty($row['uid']))
+                                                @if(empty($row['has_one_fans']['uid']))
                                                     <label class='label label-default'>未关注</label>
                                                 @else
                                                     <label class='label label-warning'>取消关注</label>
