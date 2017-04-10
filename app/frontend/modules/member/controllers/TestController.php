@@ -177,6 +177,11 @@ exit;
 
    }
 
+    /**
+     * 获取会员信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
    public function getUserInfo()
    {
        $member_id = \YunShop::app()->getMemberId();
@@ -188,6 +193,18 @@ exit;
                $member_info = $member_info->toArray();
 
                if (!empty($member_info['yz_member'])) {
+                   $member_info['telephone'] = $member_info['yz_member']['telephone'];
+                   $member_info['alipay_name'] = $member_info['yz_member']['alipay_name'];
+                   $member_info['alipay'] = $member_info['yz_member']['alipay'];
+                   $member_info['province_name'] = $member_info['yz_member']['province_name'];
+                   $member_info['city_name'] = $member_info['yz_member']['city_name'];
+                   $member_info['area_name'] = $member_info['yz_member']['area_name'];
+                   $member_info['province'] = $member_info['yz_member']['province'];
+                   $member_info['city'] = $member_info['yz_member']['city'];
+                   $member_info['area'] = $member_info['yz_member']['area'];
+                   $member_info['address'] = $member_info['yz_member']['address'];
+                   $member_info['birthday'] = $member_info['yz_member']['birthday'];
+
                    if (!empty($member_info['yz_member']['group'])) {
                        $member_info['group_id'] = $member_info['yz_member']['group']['id'];
                        $member_info['group_name'] = $member_info['yz_member']['group']['group_name'];
@@ -197,13 +214,14 @@ exit;
                        $member_info['level_id'] = $member_info['yz_member']['level']['id'];
                        $member_info['level_name'] = $member_info['yz_member']['level']['level_name'];
                    }
+
                }
 
                $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
 
                $member_info['order'] = $order_info;
 
-               $member_info['Provinces'] = Area::getProvincesList();
+               //$member_info['Provinces'] = Area::getProvincesList();
                return $this->successJson('', $member_info);
            } else {
                return $this->errorJson('用户不存在');
@@ -211,6 +229,31 @@ exit;
 
        } else {
            return $this->errorJson('缺少访问参数');
+       }
+   }
+
+   public function updateUserInfo()
+   {
+       $data = \YunShop::request()->data;
+
+       if ($data['uid'] == \YunShop::app()->getMemberId()) {
+           $member_model = Member::getUserInfos($data['uid']);
+
+           $member_model->setRawAttributes($data);
+
+           $validator = $member_model->validator($member_model->getAttributes());
+           if ($validator->fails()) {
+               $this->error($validator->messages());
+           }
+           else {
+               if ($member_model->save()) {
+                   return $this->successJson('用户资料更新成功');
+               } else {
+                   return $this->errorJson('更新用户资料失败');
+               }
+           }
+       } else {
+           return $this->errorJson('用户不存在');
        }
    }
 }

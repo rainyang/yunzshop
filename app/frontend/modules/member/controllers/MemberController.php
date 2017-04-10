@@ -13,6 +13,7 @@ use app\common\components\ApiController;
 use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
+use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
 use app\frontend\modules\member\models\MemberModel;
@@ -40,6 +41,18 @@ class MemberController extends ApiController
                 $member_info = $member_info->toArray();
 
                 if (!empty($member_info['yz_member'])) {
+                    $member_info['telephone'] = $member_info['yz_member']['telephone'];
+                    $member_info['alipay_name'] = $member_info['yz_member']['alipay_name'];
+                    $member_info['alipay'] = $member_info['yz_member']['alipay'];
+                    $member_info['province_name'] = $member_info['yz_member']['province_name'];
+                    $member_info['city_name'] = $member_info['yz_member']['city_name'];
+                    $member_info['area_name'] = $member_info['yz_member']['area_name'];
+                    $member_info['province'] = $member_info['yz_member']['province'];
+                    $member_info['city'] = $member_info['yz_member']['city'];
+                    $member_info['area'] = $member_info['yz_member']['area'];
+                    $member_info['address'] = $member_info['yz_member']['address'];
+                    $member_info['birthday'] = $member_info['yz_member']['birthday'];
+
                     if (!empty($member_info['yz_member']['group'])) {
                         $member_info['group_id'] = $member_info['yz_member']['group']['id'];
                         $member_info['group_name'] = $member_info['yz_member']['group']['group_name'];
@@ -393,6 +406,36 @@ class MemberController extends ApiController
             return $this->successJson('', $data->toArray());
         } else {
             return $this->errorJson('查无数据');
+        }
+    }
+
+    /**
+     * 更新会员资料
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateUserInfo()
+    {
+        $data = \YunShop::request()->data;
+
+        if ($data['uid'] == \YunShop::app()->getMemberId()) {
+            $member_model = Member::getUserInfos($data['uid']);
+
+            $member_model->setRawAttributes($data);
+
+            $validator = $member_model->validator($member_model->getAttributes());
+            if ($validator->fails()) {
+                $this->error($validator->messages());
+            }
+            else {
+                if ($member_model->save()) {
+                    return $this->successJson('商品修改成功');
+                } else {
+                    return $this->errorJson('更新用户资料失败');
+                }
+            }
+        } else {
+            return $this->errorJson('用户不存在');
         }
     }
 }
