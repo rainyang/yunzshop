@@ -97,7 +97,7 @@ class MemberGroupController extends BaseController
     {
         $groupModel = MemberGroup::getMemberGroupByGroupId(\YunShop::request()->group_id);
         if (!$groupModel) {
-            $this->error('未找到会员分组或已删除', Url::absoluteWeb('member.membergroup.index'));
+            $this->error('未找到会员分组或已删除', Url::absoluteWeb('member.member-group.index'));
         }
         if ($groupModel->delete()) {
             return $this->message("删除会员分组成功。", Url::absoluteWeb('member.member-group.index'));
