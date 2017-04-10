@@ -10,6 +10,7 @@ namespace app\backend\modules\member\controllers;
 
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberRelation as Relation;
+use app\common\models\Goods;
 
 class MemberRelationController extends BaseController
 {
@@ -55,5 +56,22 @@ class MemberRelationController extends BaseController
         }
 
         return $this->message('保存成功', yzWebUrl('member.member-relation.index'));
+    }
+
+    public function query()
+    {
+        $kwd                = trim(\YunShop::request()->keyword);
+
+        $goods_model= Goods::getGoodsByName($kwd);
+
+        if (!empty($goods_model)) {
+            $data = $goods_model->toArray();
+        } else {
+            $data = [];
+        }
+echo '<pre>';print_r($data);exit;
+        return view('member.goods_query', [
+            'goods' => $data
+        ])->render();
     }
 }

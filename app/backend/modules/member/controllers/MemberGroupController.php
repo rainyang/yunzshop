@@ -23,7 +23,7 @@ class MemberGroupController extends BaseController
      * @autor yitian */
     public function index()
     {
-        $pageSize = 1;
+        $pageSize = 10;
         $groupList = MemberGroup::getGroupPageList($pageSize);
         $pager = PaginationHelper::show($groupList->total(), $groupList->currentPage(), $groupList->perPage());
 
@@ -51,7 +51,7 @@ class MemberGroupController extends BaseController
                 $this->error($validator->messages());
             } else {
                 if ($groupModel->save()) {
-                    return $this->message("添加会员分组成功",Url::absoluteWeb('member.membergroup.index'),'success');
+                    return $this->message("添加会员分组成功",Url::absoluteWeb('member.member-group.index'),'success');
                 } else {
                     $this->error("添加会员分组失败");
                 }
@@ -97,10 +97,10 @@ class MemberGroupController extends BaseController
     {
         $groupModel = MemberGroup::getMemberGroupByGroupId(\YunShop::request()->group_id);
         if (!$groupModel) {
-            $this->error('未找到会员分组或已删除', Url::absoluteWeb('member.membergroup.index'));
+            $this->error('未找到会员分组或已删除', Url::absoluteWeb('member.member-group.index'));
         }
         if ($groupModel->delete()) {
-            return $this->message("删除会员分组成功。", Url::absoluteWeb('member.membergroup.index'));
+            return $this->message("删除会员分组成功。", Url::absoluteWeb('member.member-group.index'));
         } else {
             $this->error("删除会员分组失败");
         }

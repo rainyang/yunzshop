@@ -273,13 +273,15 @@ class MemberController extends ApiController
             $referrer_info = MemberModel::getUserInfos($member_info['yz_member']['parent_id'])->first();
 
             if (!empty($referrer_info)) {
+                $info = $referrer_info->toArray();
                 $data = [
-                  'uid' => $referrer_info['uid'],
-                  'avatar' => $referrer_info['avatar'],
-                  'nickname' => $referrer_info['nickname'],
-                  'level' => $referrer_info['yz_member']['level']['level_name']
+                  'uid' => $info['uid'],
+                  'avatar' => $info['avatar'],
+                  'nickname' => $info['nickname'],
+                  'level' => $info['yz_member']['level']['level_name']
                 ];
-                return $this->successJson('',$data);
+
+                return $data;
             } else {
                 return $this->errorJson('会员不存在');
             }
@@ -323,14 +325,37 @@ class MemberController extends ApiController
             }
         }
 
+        foreach ($agent_data as $item) {
+            $data[] = [
+                'uid' => $item['uid'],
+                'avatar' => $item['avatar'],
+                'nickname' => $item['nickname'],
+                'order_total' => $item['has_one_order']['total'],
+                'order_price' => $item['has_one_order']['sum'],
+                'agent_total' => $item['agent_total'],
+            ];
+        }
+
+
+        return $data;
+    }
+
+    /**
+     * 会员中心我的关系
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyRelation()
+    {
+        $my_referral = $this->getMyReferral();
+
+        $my_agent = $this->getMyAgent();
+
         $data = [
-            'uid' => $agent_data['uid'],
-            'avatar' => $agent_data['avatar'],
-            'nickname' => $agent_data['nickname'],
-            'order_total' => $agent_data['has_one_order']['total'],
-            'order_price' => $agent_data['has_one_order']['sum'],
-            'agent_total' => $agent_data['agent_total'],
+            'my_referral' => $my_referral,
+            'my_agent' => $my_agent
         ];
+
         return $this->successJson('', $data);
     }
 }
