@@ -60,4 +60,10 @@ class MemberShopInfo extends BackendModel
             ->groupBy('parent_id')
             ->get();
     }
+
+    public function hasManySelf()
+    {
+        return $this->hasMany('app\common\models\MemberShopInfo', 'parent_id', 'member_id');
+    }
+
 }

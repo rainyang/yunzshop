@@ -74,12 +74,44 @@ class OrderService
     }
 
     /**
+     * 获取自营商品购物车记录
+     * @return Collection
+     */
+    public static function getShopMemberCarts()
+    {
+        return self::getMemberCarts(function ($memberCart) {
+            /**
+             * @var $memberCart MemberCart
+             */
+            if (empty($memberCart->goods->is_plugin)) {
+                return true;
+            }
+            return false;
+        });
+    }
+    /**
+     * 获取插件商品购物车记录
+     * @return Collection
+     */
+    public static function getPluginMemberCarts()
+    {
+        return self::getMemberCarts(function ($memberCart) {
+            /**
+             * @var $memberCart MemberCart
+             */
+            if (!empty($memberCart->goods->is_plugin)) {
+                return true;
+            }
+            return false;
+        });
+    }
+    /**
      * 从url中获取购物车记录并验证
      * @param $callback
      * @return Collection
      * @throws AppException
      */
-    public static function getMemberCarts($callback)
+    private static function getMemberCarts($callback)
     {
         $cartIds = [];
         if (!is_array($_GET['cart_ids'])) {
