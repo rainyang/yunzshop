@@ -288,6 +288,11 @@ class MemberController extends ApiController
         }
     }
 
+    /**
+     * 我推荐的人
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getMyAgent()
     {
         $agent_ids = [];

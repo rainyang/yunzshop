@@ -175,7 +175,7 @@ class MemberController extends BaseController
         if (MemberShopInfo::setMemberBlack($uid, $data)) {
             return $this->message('黑名单设置成功', yzWebUrl('member.member.index'));
         } else {
-            return $this->message('黑名单设置失败', '', 'error');
+            return $this->message('黑名单设置失败', yzWebUrl('member.member.index'), 'error');
         }
     }
 
@@ -201,7 +201,7 @@ class MemberController extends BaseController
             $endtime   = time();
         }
 
-        $this->render('member/member_list',[
+        return view('member.index', [
             'list' => $list,
             'levels' => $levels,
             'groups' => $groups,
@@ -211,8 +211,7 @@ class MemberController extends BaseController
             'pager' => $pager,
             'request' => \YunShop::request(),
             'opencommission'=>false
-        ]);
-
+        ])->render();
     }
 
     /**
