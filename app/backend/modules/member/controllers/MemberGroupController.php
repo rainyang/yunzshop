@@ -23,7 +23,7 @@ class MemberGroupController extends BaseController
      * @autor yitian */
     public function index()
     {
-        $pageSize = 10;
+        $pageSize = 20;
         $groupList = MemberGroup::getGroupPageList($pageSize);
         $pager = PaginationHelper::show($groupList->total(), $groupList->currentPage(), $groupList->perPage());
 

@@ -131,8 +131,7 @@ class MemberModel extends Member
                     ->uniacid()
                     ->where('status', 3)
                     ->groupBy('uid');
-            }])
-            ->where('uid', $uid);
+            }]);
     }
 
     /**
