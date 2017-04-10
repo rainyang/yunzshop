@@ -53,6 +53,18 @@ class BalanceTransfer extends BaseModel
             ->orderBy('created_at')->paginate($pageSize);
     }
 
+    public static function getSearchPageList($pageSize, $search)
+    {
+        $query = static::uniacid();
+        if ($search['keyword']) {
+            $query = $query->whereHas('transferorInfo', function ($transferorInfo)use($search) {
+                $transferorInfo->select('uid', 'nickname', 'realname', 'avatar', 'mobile')
+                    ->where('nickname', 'like', $search['keyword']);
+            });
+        }
+        return $query->orderBy('created_at')->paginate($pageSize);
+    }
+
     /**
      * @param $recordId
      *
