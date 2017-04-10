@@ -113,9 +113,10 @@ class BalanceController extends ApiController
     public function getDetailRecord()
     {
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = '55';
+        $type = \YunShop::request()->type;
+        //$memberId = '55';
         if ($memberId) {
-            $recordList = \app\common\models\finance\Balance::getMemberDeatilRecord($memberId);
+            $recordList = \app\common\models\finance\Balance::getMemberDeatilRecord($memberId, $type);
             return $this->successJson($this->attachedServiceType($recordList->toArray()));
         }
         return $this->errorJson('未获取到会员ID');
@@ -128,6 +129,7 @@ class BalanceController extends ApiController
     public function rechargeRecord()
     {
         $memberId = \YunShop::app()->getMemberId();
+
         //$memberId= '55';
         if ($memberId) {
             $rechargeRecord = BalanceRecharge::getMemberRechargeRecord($memberId);

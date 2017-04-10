@@ -58,7 +58,7 @@ class Balance extends BaseModel
      * @params int $pageSize
      *
      * @return object
-     * @Autho yitian */
+     * @Autho yitian */\
     public static function getPageList($pageSize)
     {
         return self::uniacid()
@@ -69,12 +69,13 @@ class Balance extends BaseModel
             ->paginate($pageSize);
     }
 
-    public static function getMemberDeatilRecord($memberId)
+    public static function getMemberDeatilRecord($memberId, $type= '')
     {
-     return self::uniacid()
-         ->select(['id', 'change_money', 'new_money', 'service_type', 'created_at'])
-         ->where('member_id', $memberId)
-         ->get();
+        $query = self::uniacid()->where('member_id',$memberId);
+        if ($type == \app\common\services\fiance\Balance::INCOME || $type == \app\common\services\fiance\Balance::EXPENDITURE) {
+            $query = $query->where('type', $type);
+        }
+        return $query->get();
     }
 
 
