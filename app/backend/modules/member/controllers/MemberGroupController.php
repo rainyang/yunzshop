@@ -100,7 +100,7 @@ class MemberGroupController extends BaseController
             $this->error('未找到会员分组或已删除', Url::absoluteWeb('member.membergroup.index'));
         }
         if ($groupModel->delete()) {
-            return $this->message("删除会员分组成功。", Url::absoluteWeb('member.membergroup.index'));
+            return $this->message("删除会员分组成功。", Url::absoluteWeb('member.member-group.index'));
         } else {
             $this->error("删除会员分组失败");
         }
