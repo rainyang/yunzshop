@@ -122,7 +122,6 @@ class BalanceController extends BaseController
     //充值记录
     public function rechargeRecord()
     {
-//todo 搜索功能
         $pageSize = 10;
         $recordList = BalanceRecharge::getPageList($pageSize);
         if ($search = \YunShop::request()->search) {
@@ -145,14 +144,19 @@ class BalanceController extends BaseController
     //会员余额转让记录
     public function transferRecord()
     {
-//todo 搜索功能
-        $pageSize = 10;
+        $pageSize = 20;
         $tansferList = BalanceTransfer::getTransferPageList($pageSize);
+        if ($search = \YunShop::request()->search) {
+            $tansferList = BalanceTransfer::getSearchPageList($pageSize, $search);
+            //dd($tansferList);
+        }
+
         $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());
 
         return view('finance.balance.transferRecord', [
             'tansferList'  => $tansferList,
             'pager'    => $pager,
+            'search' => $search
         ])->render();
     }
 
