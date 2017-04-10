@@ -69,6 +69,14 @@ class Balance extends BaseModel
             ->paginate($pageSize);
     }
 
+    public static function getMemberDeatilRecord($memberId)
+    {
+     return self::uniacid()
+         ->select(['id', 'change_money', 'new_money', 'service_type', 'created_at'])
+         ->where('member_id', $memberId)
+         ->get();
+    }
+
 
 
 }
