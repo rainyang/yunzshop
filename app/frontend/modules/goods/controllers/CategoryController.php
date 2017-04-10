@@ -21,7 +21,7 @@ use Illuminate\Session\Store;
 use app\frontend\modules\goods\models\Category;
 use app\frontend\modules\goods\services\CategoryService;
 
-class CategoryController extends ApiController
+class CategoryController extends BaseController
 {
     public function getCategory()
     {
