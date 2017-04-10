@@ -38,7 +38,7 @@ class MemberCartService
         if($cart->total > $cart->goods->stock){
             throw new AppException($cart->goods->title.':库存不足');
         }
-
+        //todo 验证option_id是否属于goods_id
         return $cart;
     }
 }
