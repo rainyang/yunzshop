@@ -14,26 +14,22 @@
                     <div class="form-group">
                         <div class="col-sm-12 col-lg-12 col-xs-12">
                             <div class='input-group'>
-                                <!--<div class='input-group-addon'>会员信息</div>-->
+                                <input class="form-control" name="search[ordersn]" type="text" value="{{ $search['ordersn'] or ''}}" placeholder="充值单号">
                                 <input class="form-control" name="search[realname]" type="text" value="{{ $search['realname'] or ''}}" placeholder="会员姓名／昵称／手机号">
-                                <!--<div class='input-group-addon'>充值单号</div>-->
-                                <input class="form-control" name="search[ordersn]" type="text" value="{{ $search['realname'] or ''}}" placeholder="充值单号">
 
                                 <div class="form-input">
-                                    <p class='input-group-addon'>会员等级</p>
-                                    <select name="search[level]" class="form-control">
-                                        <option value="" selected>不限</option>
+                                    <select name="search[level_id]" class="form-control">
+                                        <option value="" selected>会员等级</option>
                                         @foreach($memberLevel as $level)
-                                            <option value="{{ $level['id'] }}" @if($search['level'] == $level['id']) selected @endif>{{ $level['level_name'] }}</option>
+                                            <option value="{{ $level['id'] }}" @if($search['level_id'] == $level['id']) selected @endif>{{ $level['level_name'] }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <div class='form-input'>
-                                    <P class="input-group-addon">会员分组</P>
-                                    <select name="search[groupid]" class="form-control">
-                                        <option value="" selected >不限</option>
+                                    <select name="search[group_id]" class="form-control">
+                                        <option value="" selected >会员分组</option>
                                         @foreach($memberGroup as $group)
-                                            <option value="{{ $group['id'] }}" @if($search['groupid'] == $group['id']) selected @endif>{{ $group['group_name'] }}</option>
+                                            <option value="{{ $group['id'] }}" @if($search['group_id'] == $group['id']) selected @endif>{{ $group['group_name'] }}</option>
                                         @endforeach
                                     </select>
                                 </div>

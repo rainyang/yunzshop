@@ -39,11 +39,13 @@
                             <div class="">
                                 <select name='followed' class='form-control'>
                                     <option value=''>不限关注</option>
-                                    <option value='0'
-                                            @if($request['followed']=='0')
+                                   <!--
+                                    <option value='2'
+                                            @if($request['followed']=='2')
                                             selected
                                             @endif
                                     >未关注
+                                    -->
                                     </option>
                                     <option value='1'
                                             @if($request['followed']=='1')
@@ -51,8 +53,8 @@
                                             @endif
                                     >已关注
                                     </option>
-                                    <option value='2'
-                                            @if($request['followed']=='2')
+                                    <option value='0'
+                                            @if($request['followed']=='0')
                                             selected
                                             @endif
                                     >取消关注
@@ -233,7 +235,7 @@
                                             <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
                                         @else
                                             @if(empty($row['has_one_fans']['followed']))
-                                                @if(empty($row['uid']))
+                                                @if(empty($row['has_one_fans']['uid']))
                                                     <label class='label label-default'>未关注</label>
                                                 @else
                                                     <label class='label label-warning'>取消关注</label>
@@ -252,7 +254,7 @@
                                                 <li><a href="{{yzWebUrl('finance/recharge',['op'=>'credit1','id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
                                                 <li><a href="{{yzWebUrl('finance/recharge', ['op'=>'credit2','id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
                                                 @if($row['yz_member']['is_black']==1)
-                                                    <li><a href="yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
+                                                    <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                                                 @else
                                                     <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>1])}}" title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a></li>
                                                 @endif

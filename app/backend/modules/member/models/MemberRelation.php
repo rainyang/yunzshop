@@ -197,7 +197,6 @@ class MemberRelation extends BackendModel
             $data = $info->toArray();
 
             return $data['become_child'];
-
         }
     }
 

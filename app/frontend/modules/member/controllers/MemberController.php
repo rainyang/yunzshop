@@ -257,4 +257,80 @@ class MemberController extends ApiController
     {
          return $this->successJson('', ['count'=>MemberShopInfo::getAgentCount()]);
     }
+
+    /**
+     * 我的推荐人
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyReferral()
+    {
+        $member_info = MemberModel::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
+
+        if (!empty($member_info)) {
+            $member_info = $member_info->toArray();
+
+            $referrer_info = MemberModel::getUserInfos($member_info['yz_member']['parent_id'])->first();
+
+            if (!empty($referrer_info)) {
+                $data = [
+                  'uid' => $referrer_info['uid'],
+                  'avatar' => $referrer_info['avatar'],
+                  'nickname' => $referrer_info['nickname'],
+                  'level' => $referrer_info['yz_member']['level']['level_name']
+                ];
+                return $this->successJson('',$data);
+            } else {
+                return $this->errorJson('会员不存在');
+            }
+        } else {
+            return $this->errorJson('会员不存在');
+        }
+    }
+
+    /**
+     * 我推荐的人
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMyAgent()
+    {
+        $agent_ids = [];
+
+        $agent_info = MemberModel::getMyAgentInfo(\YunShop::app()->getMemberId());
+        $agent_model = $agent_info->get();
+
+        if (!empty($agent_model)) {
+            $agent_data = $agent_model->toArray();
+
+            foreach ($agent_data as $key => $item) {
+                $agent_ids[$key] = $item['uid'];
+                $agent_data[$key]['agent_total'] = 0;
+            }
+        } else {
+            return $this->errorJson('数据为空');
+        }
+
+        $all_count = MemberShopInfo::getAgentAllCount($agent_ids);
+
+        foreach ($all_count as $k => $rows) {
+            foreach ($agent_data as $key => $item) {
+                if ($rows['parent_id'] == $item['uid']) {
+                    $agent_data[$key]['agent_total'] = $rows['total'];
+
+                    break 1;
+                }
+            }
+        }
+
+        $data = [
+            'uid' => $agent_data['uid'],
+            'avatar' => $agent_data['avatar'],
+            'nickname' => $agent_data['nickname'],
+            'order_total' => $agent_data['has_one_order']['total'],
+            'order_price' => $agent_data['has_one_order']['sum'],
+            'agent_total' => $agent_data['agent_total'],
+        ];
+        return $this->successJson('', $data);
+    }
 }

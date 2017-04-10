@@ -92,4 +92,41 @@ class MemberModel extends Member
             ->where('uid', $uid)
             ->update($data);
     }
+
+    /**
+     * 我的推荐人信息
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getMyReferrerInfo($uid)
+    {
+        return self::uniacid()
+            ->where('uid', $uid)
+            ->with([
+                'yzMember' => function ($query) {
+                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])->where('is_black', 0);
+                }
+            ]);
+    }
+
+    /**
+     * 我的下线信息
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getMyAgentInfo($uid)
+    {
+        return self::uniacid()
+            ->whereHas('yzMember', function($query) use ($uid){
+                         $query->where('parent_id', $uid);
+            })
+            ->with(['hasOneOrder' => function($query) {
+                return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                    ->uniacid()
+                    ->where('status', 3)
+                    ->groupBy('uid');
+        }]);
+    }
 }
