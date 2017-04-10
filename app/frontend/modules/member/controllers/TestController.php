@@ -8,21 +8,18 @@
 
 namespace app\frontend\modules\member\controllers;
 
-use app\api\model\Good;
-use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\member\BecomeAgent;
 use app\common\models\AccountWechats;
-use app\common\models\Area;
-use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
+use app\common\models\Order;
 use app\common\services\AliPay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\services\MemberService;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use app\common\models\Order;
 
 class TestController extends BaseController //ApiController
 {
@@ -292,6 +289,32 @@ exit;
            }
        } else {
            return $this->errorJson('用户不存在');
+       }
+   }
+
+   public function bindMobile()
+   {
+       $data = [
+           'uid' => 146,
+           'mobile' => '15046198888',
+           'password' => 'abcdef',
+           'confirm_password' => 'abcdef',
+       ];
+       $member_model = MemberModel::getMemberById($data['uid']);
+
+       if (MemberService::validate($data['mobile'], $data['password'], $data['confirm_password'])) {
+           $salt = \Illuminate\Support\Str::random(8);
+           $member_model->salt = $salt;
+           $member_model->mobile = $data['mobile'];
+           $member_model->password = md5($data['password'] . $salt);
+
+           if ($member_model->save()) {
+               return $this->successJson('手机号码绑定成功');
+           } else {
+               return $this->errorJson('手机号码绑定失败');
+           }
+       } else {
+           return $this->errorJson('手机号或密码错误');
        }
    }
 }

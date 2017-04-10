@@ -55,7 +55,7 @@ class RegisterController extends BaseController
             );
             $data['salt'] = Str::random(8);
 
-            $data['password'] = md5($password . $data['salt'] . \YunShop::app()->config['setting']['authkey']);
+            $data['password'] = md5($password . $data['salt']);
 
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;

@@ -17,8 +17,10 @@ use app\common\models\MemberShopInfo;
 use app\common\models\Order;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\OrderListModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
 
 
 class MemberController extends ApiController
@@ -474,8 +476,30 @@ class MemberController extends ApiController
         }
     }
 
+    /**
+     * 绑定手机号
+     *
+     */
     public function bindMobile()
     {
+        $data = \YunShop::request()->data;
 
+        $member_model = MemberModel::getMemberById($data['uid']);
+
+        if ($data['uid'] == \YunShop::app()->getMemberId() &&
+               MemberService::validate($data['mobile'], $data['password'], $data['confirm_password'])) {
+            $salt = Str::random(8);
+            $member_model->salt = $salt;
+            $member_model->mobile = $data['mobile'];
+            $member_model->password = md5($data['password'] . $salt);
+
+            if ($member_model->save()) {
+                return $this->successJson('手机号码绑定成功');
+            } else {
+                return $this->errorJson('手机号码绑定失败');
+            }
+        } else {
+            return $this->errorJson('手机号或密码格式错误');
+        }
     }
 }
