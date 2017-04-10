@@ -18,10 +18,10 @@ use app\common\services\PayFactory;
 
 class BalanceController extends ApiController
 {
-    /*
-     * 充值接口
-     *
-     * */
+    /**
+     * 会员余额充值接口
+     * @return \Illuminate\Http\JsonResponse
+     * @Author yitian */
     public function recharge()
     {
         $memberId = \YunShop::app()->getMemberId();
@@ -52,15 +52,16 @@ class BalanceController extends ApiController
                 $rechargeModel = BalanceRecharge::getRechargeRecordByid($result);
                 $data['serial_number'] = $rechargeModel->ordersn;
                 //支付返回数据直接反给前端
-                return $this->payOrder($data);
+                return $this->successJson('支付接口对接成功',$this->payOrder($data));
             }
             return $this->errorJson($result);
         }
         return $this->errorJson('数据有误，请刷新重试');
     }
-    /*
-     * 转让接口
-     *
+
+    /**
+     * 会员余额转让接口
+     * @return \Illuminate\Http\JsonResponse
      * @Author yitian */
     public function transfer()
     {
@@ -105,13 +106,30 @@ class BalanceController extends ApiController
         return $this->errorJson('请求数据错误，未进行余额转让操作');
     }
 
-    /*
-     * 会员充值记录
-     *
-     * @Author yitian */
+    /**
+     * 余额变动明细记录
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDetailRecord()
+    {
+        $memberId = \YunShop::app()->getMemberId();
+        $type = \YunShop::request()->type;
+        //$memberId = '55';
+        if ($memberId) {
+            $recordList = \app\common\models\finance\Balance::getMemberDeatilRecord($memberId, $type);
+            return $this->successJson($this->attachedServiceType($recordList->toArray()));
+        }
+        return $this->errorJson('未获取到会员ID');
+    }
+
+    /**
+     * 获取会员充值记录接口
+     * @return \Illuminate\Http\JsonResponse
+     * Author yitian */
     public function rechargeRecord()
     {
         $memberId = \YunShop::app()->getMemberId();
+
         //$memberId= '55';
         if ($memberId) {
             $rechargeRecord = BalanceRecharge::getMemberRechargeRecord($memberId);
@@ -120,9 +138,9 @@ class BalanceController extends ApiController
         return $this->errorJson('未获取到会员ID');
     }
 
-    /*
-     * 会员余额转让记录
-     *
+    /**
+     * 余额转让记录
+     * @return \Illuminate\Http\JsonResponse
      * @Author yitian */
     public function transferRecord()
     {
@@ -135,9 +153,9 @@ class BalanceController extends ApiController
         return $this->errorJson('未获取到会员ID');
     }
 
-    /*
+    /**
      * 会员余额被转让记录
-     *
+     * @return \Illuminate\Http\JsonResponse
      * @Author yitian */
     public function recipientRecord()
     {
@@ -151,14 +169,19 @@ class BalanceController extends ApiController
     }
 
     /**
-     * 调取支付接口
-     * @return array|mixed|string|void
+     * 会员余额充值支付接口
+     *
+     * @param $data
+     * @return array|string|
      * @Author yitian */
     private function payOrder($data)
     {
         $pay = PayFactory::create($data['recharge_type']);
 
-        return $pay->doPay($this->payData($data));
+        $result = $pay->doPay($this->payData($data));
+        $result['js'] = json_decode($result['js'], 1);
+
+        return $result;
     }
 
     /**
@@ -177,6 +200,47 @@ class BalanceController extends ApiController
         );
     }
 
+    private function attachedServiceType($data = [])
+    {
+        if ($data) {
+            $i = 0;
+            foreach ($data as $key) {
+                switch ($key['service_type']) {
+                    case \app\common\models\finance\Balance::BALANCE_RECHARGE:
+                        $data[$i]['service_type'] = "充值";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_CONSUME:
+                        $data[$i]['service_type'] = "消费";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_TRANSFER:
+                        $data[$i]['service_type'] = "转让";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_DEDUCTION:
+                        $data[$i]['service_type'] = "抵扣";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_AWARD:
+                        $data[$i]['service_type'] = "奖励";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_WITHDRAWAL:
+                        $data[$i]['service_type'] = "余额提现";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_INCOME:
+                        $data[$i]['service_type'] = "提现至余额";
+                        break;
+                    case \app\common\models\finance\Balance::CANCEL_DEDUCTION:
+                        $data[$i]['service_type'] = "抵扣取消返回";
+                        break;
+                    case \app\common\models\finance\Balance::CANCEL_AWARD:
+                        $data[$i]['service_type'] = "奖励取消扣除";
+                        break;
+                    default:
+                        $data[$i]['service_type'] = "未知来源";
+                }
+                $i++;
+            }
+        }
+        return $data;
+    }
 
 
 }

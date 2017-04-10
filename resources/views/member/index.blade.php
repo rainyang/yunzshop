@@ -1,18 +1,20 @@
 @extends('layouts.base')
 
 @section('content')
+
+<link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="w1200 m0a">
         <div class="rightlist">
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
                 <ul class="add-snav">
                     <li class="active"><a href="{{yzWebUrl('member.member.index')}}">会员管理</a></li>
-                    <li><a href="javascript:void">全部会员</a></li>
+                    <li><a href="javascript:void"> &nbsp;  <i class="fa fa-angle-double-right"></i> &nbsp;全部会员</a></li>
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
-            <div class="panel panel-info">
-                <div class="panel-heading">筛选</div>
+            <div class="panel panel-info"><!--
+                <div class="panel-heading">筛选</div>-->
                 <div class="panel-body">
                     <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
                         <input type="hidden" name="c" value="site" />
@@ -20,28 +22,30 @@
                         <input type="hidden" name="m" value="sz_yi" />
                         <input type="hidden" name="do" value="1234" id="form_do" />
                         <input type="hidden" name="route" value="member.member.search" id="route" />
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
-                                <input type="text" class="form-control"  name="mid" value="{{$request['mid']}}"/>
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">
+                            <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>-->
+                            <div class="">
+                                <input type="text" placeholder="会员ID" class="form-control"  name="mid" value="{{$request['mid']}}"/>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                           <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->
+                            <div class="">
                                 <input type="text" class="form-control"  name="realname" value="{{$request['realname']}}" placeholder="可搜索昵称/姓名/手机号"/>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">是否关注</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                      <!--      <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">是否关注</label>-->
+                            <div class="">
                                 <select name='followed' class='form-control'>
-                                    <option value=''></option>
-                                    <option value='0'
-                                            @if($request['followed']=='0')
+                                    <option value=''>不限关注</option>
+                                   <!--
+                                    <option value='2'
+                                            @if($request['followed']=='2')
                                             selected
                                             @endif
                                     >未关注
+                                    -->
                                     </option>
                                     <option value='1'
                                             @if($request['followed']=='1')
@@ -49,8 +53,8 @@
                                             @endif
                                     >已关注
                                     </option>
-                                    <option value='2'
-                                            @if($request['followed']=='2')
+                                    <option value='0'
+                                            @if($request['followed']=='0')
                                             selected
                                             @endif
                                     >取消关注
@@ -58,11 +62,11 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员等级</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                           <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员等级</label>-->
+                            <div class="">
                                 <select name='level' class='form-control'>
-                                    <option value=''></option>
+                                    <option value=''>会员等级不限</option>
                                     @foreach($levels as $level)
                                         <option value='{{$level['id']}}'
                                                 @if($request['level']==$level['id'])
@@ -73,11 +77,11 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员分组</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                          <!--  <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员分组</label>-->
+                            <div class="">
                                 <select name='groupid' class='form-control'>
-                                    <option value=''></option>
+                                    <option value=''>会员分组不限</option>
                                     @foreach($groups as $group)
                                         <option value='{{$group['id']}}'
                                                 @if($request['groupid']==$group['id'])
@@ -88,52 +92,52 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">注册时间</label>
-                            <div class="col-sm-2">
-                                <label class='radio-inline'>
-                                    <input type='radio' value='0' name='searchtime'
-                                           @if($request['searchtime']=='0')
-                                           checked
-                                            @endif>不搜索
-                                </label>
-                                <label class='radio-inline'>
-                                    <input type='radio' value='1' name='searchtime'
-                                           @if($request['searchtime']=='1')
-                                           checked{
-                                            @endif>搜索
-                                </label>
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <!--        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">黑名单</label>-->
+                        <div class="">
+                            <select name='isblack' class='form-control'>
+                                <option value=''>不限黑名单</option>
+                                <option value='0'
+                                        @if($request['isblack']=='0')
+                                selected
+                                @endif>否</option>
+                                <option value='1'
+                                        @if($request['isblack']=='1')
+                                selected
+                                @endif>是</option>
+                            </select>
+                        </div>
+                    </div>
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-8">
+
+                            <div class="time">
+
+                                <select name='isblack' class='form-control'>
+                                    <option value=''>注册时间不限</option>
+                                    <option value='0'
+                                            @if($request['searchtime']=='0')
+                                    selected
+                                    @endif>不搜索注册时间</option>
+                                    <option value='1'
+                                            @if($request['searchtime']=='1')
+                                    selected
+                                    @endif>搜索注册时间</option>
+                                </select>
                             </div>
-                            <div class="col-sm-7 col-lg-7 col-xs-12">
+                            <div class="search-select">
                                 时间
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">黑名单</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
-                                <select name='isblack' class='form-control'>
-                                    <option value=''></option>
-                                    <option value='0'
-                                            @if($request['isblack']=='0')
-                                            selected
-                                            @endif>否</option>
-                                    <option value='1'
-                                            @if($request['isblack']=='1')
-                                            selected
-                                            @endif>是</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
-                            <div class="col-sm-7 col-lg-9 col-xs-12">
+
+                        <div class="form-group col-sm-7 col-lg-4 col-xs-12">
+                            <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
+                            <div class="">
                                 <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                                 <input type="hidden" name="token" value="{{$var['token']}}" />
-                                <button type="button" name="export" value="1" id="export" class="btn btn-primary">导出 Excel</button>
+                                <button type="button" name="export" value="1" id="export" class="btn btn-primary excel">导出 Excel</button>
                             </div>
                         </div>
-                        <div class="form-group">
-                        </div>
+
                     </form>
                 </div>
             </div><div class="clearfix">
@@ -231,7 +235,7 @@
                                             <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
                                         @else
                                             @if(empty($row['has_one_fans']['followed']))
-                                                @if(empty($row['uid']))
+                                                @if(empty($row['has_one_fans']['uid']))
                                                     <label class='label label-default'>未关注</label>
                                                 @else
                                                     <label class='label label-warning'>取消关注</label>
@@ -250,7 +254,7 @@
                                                 <li><a href="{{yzWebUrl('finance/recharge',['op'=>'credit1','id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
                                                 <li><a href="{{yzWebUrl('finance/recharge', ['op'=>'credit2','id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
                                                 @if($row['yz_member']['is_black']==1)
-                                                    <li><a href="yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
+                                                    <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                                                 @else
                                                     <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>1])}}" title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a></li>
                                                 @endif

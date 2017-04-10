@@ -44,4 +44,26 @@ class MemberShopInfo extends BackendModel
              ->where('is_black', 0)
              ->count();
     }
+
+    /**
+     * 获取指定推荐人的下线
+     *
+     * @param $uids
+     * @return mixed
+     */
+    public static function getAgentAllCount($uids)
+    {
+        return self::selectRaw('parent_id, count(member_id) as total')
+            ->uniacid()
+            ->whereIn('parent_id', $uids)
+            ->where('is_black', 0)
+            ->groupBy('parent_id')
+            ->get();
+    }
+
+    public function hasManySelf()
+    {
+        return $this->hasMany('app\common\models\MemberShopInfo', 'parent_id', 'member_id');
+    }
+
 }

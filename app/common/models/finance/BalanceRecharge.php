@@ -33,7 +33,7 @@ class BalanceRecharge extends BaseModel
      * @Author yitian */
     public function member()
     {
-        return $this->hasOne('app\common\models\member', 'uid', 'member_id');
+        return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
     /*
@@ -92,12 +92,37 @@ class BalanceRecharge extends BaseModel
      * @Author yitian */
     public static function getSearchPageList($pageSize, $search =[])
     {
-        $query = self::select('member_id')->whereHas('member', function ($query)use($search) {
-            return $query->select('uid')->where('realname', 'like', '%'.$search['realname'].'%');
-        })
-        ->orderBy('created_at', 'desc')
-        ->paginate($pageSize);
-        return $query;
+        $query = self::uniacid();
+        if ($search['ordersn']) {
+            $query = $query->where('ordersn', 'like', $search['ordersn'] . '%');
+        }
+        if ($search['realname'] || $search['level_id'] || $search['group_id']) {
+            $query = $query->whereHas('member', function($member)use($search) {
+                if ($search['realname']) {
+                    $member = $member->select('uid', 'nickname','realname','mobile','avatar')
+                        ->where('realname', 'like', '%' . $search['realname'] . '%')
+                        ->orWhere('mobile', 'like', '%' . $search['realname'] . '%')
+                        ->orWhere('nickname', 'like', '%' . $search['realname'] . '%');
+                }
+                if ($search['level_id']) {
+                    $member = $member->whereHas('yzMember', function ($level)use($search) {
+                        $level->where('level_id', $search['level_id']);
+                    });
+                }
+                if ($search['group_id']) {
+                    $member = $member->whereHas('yzMember', function ($group)use($search) {
+                        $group->where('group_id', $search['group_id']);
+                    });
+                }
+
+            });
+        }
+        if ($search['searchtime']) {
+            $query = $query->whereBetween('updated_at', [strtotime($search['time_range']['start']),strtotime($search['time_range']['end'])]);
+        }
+
+
+        return $query->orderBy('created_at', 'desc')->paginate($pageSize);
     }
 
     /*
@@ -121,7 +146,7 @@ class BalanceRecharge extends BaseModel
         return [
             'uniacid'   => "公众号ID不能为空",
             'member_id' => "会员ID不能为空",
-            'old_money' => '余额必须是有效的数字',
+            //'old_money' => '余额必须是有效的数字',
             'money'     => '充值金额必须是有效的数字，允许两位小数',
             'new_money' => '计算后金额必须是有效的数字',
             'type'      => '充值类型不能为空',
@@ -139,7 +164,7 @@ class BalanceRecharge extends BaseModel
         return [
             'uniacid'   => "required",
             'member_id' => "required",
-            'old_money' => 'numeric',
+            //'old_money' => 'numeric',
             'money'     => 'numeric|regex:/^[\-\+]?\d+(?:\.\d{1,2})?$/',
             'new_money' => 'numeric',
             'type'      => 'required',

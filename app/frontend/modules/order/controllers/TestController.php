@@ -3,6 +3,7 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 
+use app\common\events\order\ShowPreGenerateOrder;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\Order;
@@ -20,11 +21,6 @@ class TestController extends ApiController
 {
     public function index()
     {
-        $order = (new Order(['uid'=>4967]));
-        //exit;
-        dd($order->belongsToMember);
-        dd($order->belongsToMember);
-        exit;;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
         /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));

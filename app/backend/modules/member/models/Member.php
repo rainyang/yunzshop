@@ -163,6 +163,7 @@ class Member extends \app\common\models\Member
             });
         }
 
+
         $result = $result->with(['yzMember'=>function($query){
                 return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])
                     ->with(['group'=>function($query1){
@@ -174,6 +175,11 @@ class Member extends \app\common\models\Member
                     }]);
             }, 'hasOneFans' => function($query4) {
                 return $query4->select(['uid', 'follow as followed'])->uniacid();
+            }, 'hasOneOrder' => function ($query5) {
+                return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                    ->uniacid()
+                    ->where('status', 3)
+                    ->groupBy('uid');
             }]);
 
         return $result;

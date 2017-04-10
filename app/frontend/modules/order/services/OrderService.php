@@ -30,18 +30,30 @@ use app\frontend\modules\goods\services\models\Goods;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\shop\services\ShopService;
+use Illuminate\Support\Collection;
 
 class OrderService
 {
+    /**
+     * 获取订单信息组
+     * @param Order $order
+     * @return Collection
+     */
     public static function getOrderData(Order $order)
     {
-        $data = [
-            'order' => $order->toArray(),
-        ];
-        $data += self::getDiscountEventData($order);
-        $data += self::getDispatchEventData($order);
-        return $data;
+        $result = collect();
+        $result->put('order',$order->toArray());
+        $result->put('discount',self::getDiscountEventData($order));
+        $result->put('dispatch',self::getDispatchEventData($order));
+
+        return $result;
     }
+
+    /**
+     * 获取优惠信息
+     * @param $order_model
+     * @return array
+     */
     private static function getDiscountEventData($order_model)
     {
         $Event = new OnDiscountInfoDisplayEvent($order_model);
@@ -49,13 +61,57 @@ class OrderService
         return $Event->getMap();
     }
 
-    private static function getDispatchEventData($order_model)
+    /**
+     * 获取配送信息
+     * @param $order_model
+     * @return array
+     */
+    public static function getDispatchEventData($order_model)
     {
         $Event = new OnDispatchTypeInfoDisplayEvent($order_model);
         event($Event);
-        return ['dispatch' => $Event->getMap()];
+        return $Event->getMap();
     }
-    public static function getMemberCarts($callback)
+
+    /**
+     * 获取自营商品购物车记录
+     * @return Collection
+     */
+    public static function getShopMemberCarts()
+    {
+        return self::getMemberCarts(function ($memberCart) {
+            /**
+             * @var $memberCart MemberCart
+             */
+            if (empty($memberCart->goods->is_plugin)) {
+                return true;
+            }
+            return false;
+        });
+    }
+    /**
+     * 获取插件商品购物车记录
+     * @return Collection
+     */
+    public static function getPluginMemberCarts()
+    {
+        return self::getMemberCarts(function ($memberCart) {
+            /**
+             * @var $memberCart MemberCart
+             */
+            if (!empty($memberCart->goods->is_plugin)) {
+                return true;
+            }
+            return false;
+        });
+    }
+    /**
+     * 从url中获取购物车记录并验证
+     * @param $callback
+     * @return Collection
+     * @throws AppException
+     */
+    private static function getMemberCarts($callback)
     {
         $cartIds = [];
         if (!is_array($_GET['cart_ids'])) {
@@ -81,13 +137,13 @@ class OrderService
 
     /**
      * 获取订单商品对象数组
-     * @param array $memberCarts
-     * @return array
+     * @param Collection $memberCarts
+     * @return Collection
      * @throws \Exception
      */
-    public static function getOrderGoodsModels(array $memberCarts)
+    public static function getOrderGoodsModels(Collection $memberCarts)
     {
-        $result = [];
+        $result = new Collection();
         foreach ($memberCarts as $memberCart) {
             if (!($memberCart instanceof MemberCart)) {
                 throw new \Exception("请传入" . MemberCart::class . "的实例");
@@ -96,12 +152,18 @@ class OrderService
              * @var $memberCart MemberCart
              */
             $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart->toArray());
-            $result[] = $orderGoodsModel;
+            $result->push($orderGoodsModel);
         }
         return $result;
     }
 
-    public static function createOrderByMemberCarts(array $memberCarts)
+    /**
+     * 根据购物车记录 获取订单信息
+     * @param Collection $memberCarts
+     * @return PreGeneratedOrderModel
+     * @throws AppException
+     */
+    public static function createOrderByMemberCarts(Collection $memberCarts)
     {
         $member = MemberService::getCurrentMemberModel();
         if (!isset($member)) {

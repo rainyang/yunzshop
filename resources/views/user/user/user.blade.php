@@ -1,9 +1,15 @@
 @extends('layouts.base')
 
 @section('content')
+
+<div class="right-titpos">
+    <ul class="add-snav">
+        <li class="active"><a href="#">操作员</a></li>
+    </ul>
+</div>
 <form action="" method="get" class='form form-horizontal'>
     <div class="panel panel-info">
-        <div class="panel-heading">筛选</div>
+        <!--<div class="panel-heading">筛选</div>-->
         <div class="panel-body">
             <form action="./index.php" method="get" class="form-horizontal" role="form">
                 <input type="hidden" name="c" value="site"/>
@@ -11,15 +17,15 @@
                 <input type="hidden" name="m" value="sz_yi"/>
                 <input type="hidden" name="do" value="QDaf"/>
                 <input type="hidden" name="route" value="user.user.index"/>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>
-                    <div class="col-xs-12 col-sm-8 col-lg-9">
+                <div class="form-group col-xs-12 col-sm-8 col-lg-5">
+                   <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>-->
+                    <div class="">
                         <input class="form-control" name="search[keyword]" id="" type="text" value="{{ $search['keyword'] }}" placeholder="可搜索操作名帐号/姓名/手机号">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">角色</label>
-                    <div class="col-xs-12 col-sm-8 col-lg-9">
+                <div class="form-group col-xs-12 col-sm-8 col-lg-3">
+                    <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">角色</label>-->
+                    <div class="">
                         <select name="search[role_id]" class='form-control'>
                             <option value="" selected >无角色</option>
                             @foreach($roleList as $list)
@@ -29,9 +35,9 @@
                     </div>
 
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
-                    <div class="col-xs-12 col-sm-8 col-lg-9">
+                <div class="form-group col-xs-12 col-sm-8 col-lg-3">
+                   <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>-->
+                    <div class="">
                         <select name="search[status]" class='form-control'>
                             <option value="" selected >无状态</option>
                             <option value="2" @if($search['status'] == 2) selected @endif>启用</option>
@@ -39,10 +45,10 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"> </label>
-                    <div class="col-xs-12 col-sm-8 col-lg-9">
-                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                <div class="form-group col-xs-12 col-sm-8 col-lg-1">
+                   <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"> </label>-->
+                    <div class="">
+                        <button class="btn btn-block btn-success"><i class="fa fa-search"></i> 搜索</button>
                     </div>
                 </div>
             </form>

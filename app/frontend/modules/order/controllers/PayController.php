@@ -51,7 +51,7 @@ class PayController extends ApiController
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay($query_str);
 
-        //$data['js'] = json_decode($data['js'], 1);
+        $data['js'] = json_decode($data['js'], 1);
         return $this->successJson('成功', $data);
 
         //return view('order.pay', $data)->render();

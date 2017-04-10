@@ -276,7 +276,7 @@ class GoodsController extends BaseController
         $this->goods_id = intval(\YunShop::request()->id);
 
         if (!$this->goods_id){
-            $this->error('请传入正确参数.');
+            $this->message('请传入正确参数.');
         }
 
         $requestGoods = \YunShop::request()->goods;

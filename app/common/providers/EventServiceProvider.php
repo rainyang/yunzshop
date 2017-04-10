@@ -33,8 +33,11 @@ class EventServiceProvider extends ServiceProvider
         PayLog::class => [ //支付日志请求
             PayLogListener::class //保存支付参数
         ],
-        \app\common\events\member\BecomeAgent::class => [
+        \app\common\events\member\BecomeAgent::class => [ //会员成为下线
           \app\common\listeners\member\BecomeAgentListener::class
+        ],
+        \app\common\events\order\AfterOrderCreatedEvent::class => [ //下单成功后调用会员成为下线事件
+            \app\common\listeners\member\AfterOrderCreatedListener::class
         ],
         //微信接口回调触发事件进程
         WechatProcessor::class => [
