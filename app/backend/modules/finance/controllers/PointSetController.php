@@ -23,9 +23,10 @@ class PointSetController extends BaseController
     public function index()
     {
         $set = Setting::get('point.set');
-        echo '<pre>';print_r($set);exit;
+        //echo '<pre>';print_r($set);exit;
         $point_data = \YunShop::request()->set;
         if ($point_data) {
+            //echo '<pre>';print_r($point_data);exit;
             if (Setting::set('point.set', $point_data)) {
                 return $this->message('积分基础设置保存成功', Url::absoluteWeb('finance.point-set'));
             } else {
