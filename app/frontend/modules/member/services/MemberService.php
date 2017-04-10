@@ -65,7 +65,7 @@ class MemberService
                     'digits:11',
                     'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
                 ),
-                'password' => 'required'
+                'password' => 'required|min:6|confirmed|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
             );
         } else {
             $data = array(
@@ -78,7 +78,7 @@ class MemberService
                     'digits:11',
                     'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
                 ),
-                'password' => 'required',
+                'password' => 'required|min:6|confirmed|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
                 'confirm_password' => 'same:password'
             );
         }

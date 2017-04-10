@@ -247,7 +247,7 @@ exit;
        $meber_data = [
            'uid' => '146',
            'realname' => '贝贝',
-           'mobile' => '15046101111',
+           'mobile' => '15046101',
            'telephone' => '15046102222',
            'avatar' => 'a.jpg',
            'gender' => '2',

@@ -473,4 +473,9 @@ class MemberController extends ApiController
             return $this->errorJson('用户不存在');
         }
     }
+
+    public function bindMobile()
+    {
+
+    }
 }
