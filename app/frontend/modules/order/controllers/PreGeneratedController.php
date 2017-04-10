@@ -9,20 +9,10 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\events\cart\GroupingCartIdEvent;
-use app\common\events\discount\OnDiscountInfoDisplayEvent;
-use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\ShowPreGenerateOrder;
-use app\common\exceptions\AppException;
-use app\common\models\Order;
-use app\frontend\modules\goods\services\GoodsService;
-use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
-use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\order\services\OrderService;
-use app\frontend\modules\shop\services\ShopService;
-use Illuminate\Support\Arr;
+use Request;
 
 class PreGeneratedController extends ApiController
 {
@@ -33,9 +23,9 @@ class PreGeneratedController extends ApiController
     {
 
         $this->param['goods'] = [
-            'goods_id' => \YunShop::request()->get('goods_id'),
-            'total' => \YunShop::request()->get('total'),
-            'option_id' => \YunShop::request()->get('option_id'),
+            'goods_id' => Request::query('goods_id'),
+            'total' => Request::query('total'),
+            'option_id' => Request::query('option_id'),
         ];
 
         $this->memberCarts[] = MemberCartService::newMemberCart($this->param['goods']);
@@ -49,26 +39,6 @@ class PreGeneratedController extends ApiController
             return $this->errorJson('请选择要结算的商品');
         }
 
-
-        /* $event = new GroupingCartIdEvent($cartIds);
-         event($event);
-
-         $goods_ids = [];
-         if ($event->getMap()) {
-             $goods_ids[] = $event->getMap();
-             $goods_ids[] = array_diff($cartIds, $event->getMap());
-         } else {
-             $goods_ids[] = $cartIds;
-         }
-
-         foreach ($goods_ids as $goods_id) {
-             $memberCart = MemberCart::getCartsByIds($goods_id);
-             if (!count($memberCart)) {
-                 throw new AppException('未找到购物车信息');
-             }
-             $this->memberCarts[] = $memberCart;
-         }*/
-
         $this->run();
     }
 
@@ -76,29 +46,24 @@ class PreGeneratedController extends ApiController
 
     private function getShopOrder()
     {
-        $callback = function ($memberCart) {
-            /**
-             * @var $memberCart MemberCart
-             */
-            if (empty($memberCart->goods->is_plugin)) {
-                return true;
-            }
-            return false;
-        };
-        $memberCarts = OrderService::getMemberCarts($callback);
+        $memberCarts = OrderService::getShopMemberCarts();
         return OrderService::createOrderByMemberCarts($memberCarts);
     }
 
-
+    private function getPluginOrderData(){
+        $event = new ShowPreGenerateOrder();
+        event($event);
+        return $event->getData();
+    }
     private function run()
     {
-        $order_data[] = OrderService::getOrderData($this->getShopOrder());
-        /*$event = new ShowPreGenerateOrder();
-        event($event);
-        $data += $event->getData();
+        $order_data = collect();
+        $order_data->push(OrderService::getOrderData($this->getShopOrder()));
 
-        dd($data);
-        exit;*/
+
+        $order_data = $order_data->merge($this->getPluginOrderData()[0]);
+
+
         $total_price = 0;
         $total_goods_price = 0;
         $total_dispatch_price = 0;

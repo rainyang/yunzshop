@@ -21,10 +21,6 @@ class TestController extends ApiController
 {
     public function index()
     {
-        $event = new ShowPreGenerateOrder();
-        event($event);
-        echo 'end';
-        exit;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
         /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));

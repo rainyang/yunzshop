@@ -32,6 +32,7 @@ require.config({
         'jquery.qrcode': '../lib/jquery.qrcode.min',
         'raty': '../lib/raty.min',
         'district' : '../lib/district',
+        'contextMenu':window.sysinfo['static_url'] + 'js/app/contextMenu/jquery.contextMenu',
         'hammer': '../lib/hammer.min'
     },
     shim:{
@@ -123,6 +124,10 @@ require.config({
         },
         'hammer' : {
             exports : 'hammer'
+        },
+        'contextMenu': {
+            exports: "$",
+            deps: ['jquery','css!'+window.sysinfo['static_url'] + 'js/app/contextMenu/jquery.contextMenu']
         }
     }
 });

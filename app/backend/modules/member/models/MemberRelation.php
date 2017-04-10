@@ -208,8 +208,6 @@ class MemberRelation extends BackendModel
      */
     private function becomeChildAgent($mid, MemberShopInfo $model)
     {
-        $info = self::getSetInfo()->first()->toArray();
-
         $member_info = SubMemberModel::getMemberShopInfo($mid);
 
         if ($member_info && $member_info->is_agent) {
