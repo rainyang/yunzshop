@@ -51,7 +51,7 @@ class MemberGroupController extends BaseController
                 $this->error($validator->messages());
             } else {
                 if ($groupModel->save()) {
-                    return $this->message("添加会员分组成功",Url::absoluteWeb('member.membergroup.index'),'success');
+                    return $this->message("添加会员分组成功",Url::absoluteWeb('member.member-group.index'),'success');
                 } else {
                     $this->error("添加会员分组失败");
                 }
