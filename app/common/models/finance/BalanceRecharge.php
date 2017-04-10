@@ -33,7 +33,7 @@ class BalanceRecharge extends BaseModel
      * @Author yitian */
     public function member()
     {
-        return $this->hasOne('app\common\models\member', 'uid', 'member_id');
+        return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
     /*
