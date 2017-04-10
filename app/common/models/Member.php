@@ -180,12 +180,8 @@ class Member extends BackendModel
         return [
             'mobile' => '绑定手机号',
             'realname' => '真实姓名',
-            'telephone' => '联系手机号',
             'avatar' => '头像',
-            'apipay' => '支付宝账号',
-            'apipay_name' => '支付宝名字',
-            'birthday' => '生日',
-            'address' => '详细地址'
+            'telephone' => '联系手机号',
         ];
     }
 
@@ -197,14 +193,10 @@ class Member extends BackendModel
     public function rules()
     {
         return [
-            'mobile' => 'required',
-            'realname' => 'required|numeric|min:0',
-            'telephone' => 'required|numeric|min:0',
+            'mobile' => 'required|digits:11|regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/',
+            'realname' => 'required',
             'avatar' => 'required',
-            'apipay' => 'required',
-            'apipay_name' => 'required|numeric|min:0',
-            'birthday' => 'required|numeric|min:0',
-            'address' => 'required|numeric|min:0',
+            'telephone' => 'required|digits:11|regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/',
         ];
     }
 }

@@ -13,18 +13,16 @@ use app\common\components\ApiController;
 use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
-use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\frontend\modules\order\models\OrderListModel;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 class MemberController extends ApiController
 {
-
     /**
      * 获取用户信息
      *
@@ -41,7 +39,6 @@ class MemberController extends ApiController
                 $member_info = $member_info->toArray();
 
                 if (!empty($member_info['yz_member'])) {
-                    $member_info['telephone'] = $member_info['yz_member']['telephone'];
                     $member_info['alipay_name'] = $member_info['yz_member']['alipay_name'];
                     $member_info['alipay'] = $member_info['yz_member']['alipay'];
                     $member_info['province_name'] = $member_info['yz_member']['province_name'];
@@ -51,7 +48,6 @@ class MemberController extends ApiController
                     $member_info['city'] = $member_info['yz_member']['city'];
                     $member_info['area'] = $member_info['yz_member']['area'];
                     $member_info['address'] = $member_info['yz_member']['address'];
-                    $member_info['birthday'] = $member_info['yz_member']['birthday'];
 
                     if (!empty($member_info['yz_member']['group'])) {
                         $member_info['group_id'] = $member_info['yz_member']['group']['id'];
@@ -63,6 +59,13 @@ class MemberController extends ApiController
                         $member_info['level_name'] = $member_info['yz_member']['level']['level_name'];
                     }
                 }
+
+                if (!empty($member_info['birthyear'] )) {
+                    $member_info['birthday'] = $member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday'];
+                } else {
+                    $member_info['birthday'] = '1970-01-01';
+                }
+
 
                 $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
 
@@ -418,21 +421,53 @@ class MemberController extends ApiController
     {
         $data = \YunShop::request()->data;
 
+        $birthday = explode('-', $data['birthday']);
+
+        $meber_data = [
+            'realname' => $data['realname'],
+            'mobile' => $data['mobile'],
+            'telephone' => $data['telephone'],
+            'avatar' => $data['avatar'],
+            'gender' => $data['gender'],
+            'birthyear' => $birthday[0],
+            'birthmonth' => $birthday[1],
+            'birthday' => $birthday[2]
+        ];
+
+        $member_shop_info_data = [
+            'alipay' => $data['alipay'],
+            'alipayname' => $data['alipay_name'],
+            'province_name' => $data['province_name'],
+            'city_name' => $data['city_name'],
+            'area_name' => $data['area_name'],
+            'province' => $data['province'],
+            'city' => $data['city'],
+            'area' => $data['area'],
+            'address' => $data['address'],
+        ];
+
         if ($data['uid'] == \YunShop::app()->getMemberId()) {
-            $member_model = Member::getUserInfos($data['uid']);
+            $member_model = MemberModel::getMemberById($data['uid']);
+            $member_model->setRawAttributes($meber_data);
 
-            $member_model->setRawAttributes($data);
+            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($data['uid']);
+            $member_shop_info_model->setRawAttributes($member_shop_info_data);
 
-            $validator = $member_model->validator($member_model->getAttributes());
-            if ($validator->fails()) {
-                $this->error($validator->messages());
+            $member_validator = $member_model->validator($member_model->getAttributes());
+            $member_shop_info_validator = $member_shop_info_model->validator($member_shop_info_model->getAttributes());
+
+            if ($member_validator->fails()) {
+                return $this->errorJson($member_validator->messages());
             }
-            else {
-                if ($member_model->save()) {
-                    return $this->successJson('商品修改成功');
-                } else {
+
+            if ($member_shop_info_validator->fails()) {
+                return $this->errorJson($member_shop_info_model->messages());
+            }
+
+            if ($member_model->save() && $member_shop_info_model->save()) {
+                    return $this->successJson('用户资料修改成功');
+            } else {
                     return $this->errorJson('更新用户资料失败');
-                }
             }
         } else {
             return $this->errorJson('用户不存在');

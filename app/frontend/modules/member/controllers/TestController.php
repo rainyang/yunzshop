@@ -232,25 +232,63 @@ exit;
        }
    }
 
+    /**
+     * 修改用户资料
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
    public function updateUserInfo()
    {
-       $data = \YunShop::request()->data;
+       //$data = \YunShop::request()->data;
+
+       $data = [
+           'uid' => 146
+       ];
+       $meber_data = [
+           'uid' => '146',
+           'realname' => '贝贝',
+           'mobile' => '15046101111',
+           'telephone' => '15046102222',
+           'avatar' => 'a.jpg',
+           'gender' => '2',
+           'birthyear' => '1990',
+           'birthmonth' => '12',
+           'birthday' =>'12'
+       ];
+       $member_shop_info_data = [
+           'alipay' => '423@163.com',
+           'alipayname' => 'baobao',
+           'province_name' => '北京',
+           'city_name' => '北京市',
+           'area_name' => '朝阳区',
+           'province' => '110000',
+           'city' => '110100',
+           'area' => '110105',
+           'address' => '你猜',
+       ];
 
        if ($data['uid'] == \YunShop::app()->getMemberId()) {
-           $member_model = Member::getUserInfos($data['uid']);
+           $member_model = MemberModel::getMemberById($data['uid']);
+           $member_model->setRawAttributes($meber_data);
 
-           $member_model->setRawAttributes($data);
+           $member_shop_info_model = MemberShopInfo::getMemberShopInfo($data['uid']);
+           $member_shop_info_model->setRawAttributes($member_shop_info_data);
 
-           $validator = $member_model->validator($member_model->getAttributes());
-           if ($validator->fails()) {
-               $this->error($validator->messages());
+           $member_validator = $member_model->validator($member_model->getAttributes());
+           $member_shop_info_validator = $member_shop_info_model->validator($member_shop_info_model->getAttributes());
+
+           if ($member_validator->fails()) {
+               return $this->errorJson($member_validator->messages());
            }
-           else {
-               if ($member_model->save()) {
-                   return $this->successJson('用户资料更新成功');
-               } else {
-                   return $this->errorJson('更新用户资料失败');
-               }
+
+           if ($member_shop_info_validator->fails()) {
+               return $this->errorJson($member_shop_info_model->messages());
+           }
+
+           if ($member_model->save() && $member_shop_info_model->save()) {
+               return $this->successJson('用户资料修改成功');
+           } else {
+               return $this->errorJson('更新用户资料失败');
            }
        } else {
            return $this->errorJson('用户不存在');
