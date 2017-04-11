@@ -334,14 +334,7 @@ exit;
         $pay = \Setting::get('shop.pay');
         $options = [
             'app_id'  => $pay['weixin_appid'],
-            'secret'  => $pay['weixin_secret'],
-            // payment
-            'payment' => [
-                'merchant_id'        => $pay['weixin_mchid'],
-                'key'                => $pay['weixin_apisecret'],
-                'cert_path'          => $pay['weixin_cert'],
-                'key_path'           => $pay['weixin_key'],
-            ]
+            'secret'  => $pay['weixin_secret']
         ];
 
         $app = new Application($options);

@@ -15,7 +15,6 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
-use app\common\models\Setting;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
@@ -503,22 +502,18 @@ class MemberController extends ApiController
         }
     }
 
+    /**
+     * 微信JSSDKConfig
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function wxJsSdkConfig()
     {
         $pay = \Setting::get('shop.pay');
 
         $options = [
             'app_id'  => $pay['weixin_appid'],
-            'secret'  => $pay['weixin_secret'],
-            'token'   => \YunShop::app()->account['token'],
-            'aes_key' => \YunShop::app()->account['encodingaeskey'],
-            // payment
-            'payment' => [
-                'merchant_id'        => $pay['weixin_mchid'],
-                'key'                => $pay['weixin_apisecret'],
-                'cert_path'          => $pay['weixin_cert'],
-                'key_path'           => $pay['weixin_key'],
-            ]
+            'secret'  => $pay['weixin_secret']
         ];
 
         $app = new Application($options);
