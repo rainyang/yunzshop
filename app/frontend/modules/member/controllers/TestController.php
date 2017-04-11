@@ -347,6 +347,10 @@ exit;
         $app = new Application($options);
 
         $js = $app->js;
-        echo '<pre>';print_r($js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo')));exit;
+
+        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'));
+        $config = json_decode($config, 1);
+
+        return $this->successJson('', ['config' => $config]);
     }
 }

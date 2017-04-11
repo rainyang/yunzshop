@@ -522,5 +522,12 @@ class MemberController extends ApiController
         ];
 
         $app = new Application($options);
+
+        $js = $app->js;
+
+        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'));
+        $config = json_decode($config, 1);
+
+        return $this->successJson('', ['config' => $config]);
     }
 }
