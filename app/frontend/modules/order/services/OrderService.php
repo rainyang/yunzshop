@@ -113,6 +113,7 @@ class OrderService
      */
     private static function getMemberCarts($callback)
     {
+
         $cartIds = [];
         if (!is_array($_GET['cart_ids'])) {
             $cartIds = explode(',', $_GET['cart_ids']);
@@ -123,16 +124,17 @@ class OrderService
         }
 
         $memberCarts = MemberCart::getCartsByIds($cartIds);
-        if (!count($memberCarts)) {
+        if ($memberCarts->isEmpty()) {
             throw new AppException('未找到购物车信息');
         }
 
-        $result = $memberCarts->filter($callback);
+        $memberCarts->filter($callback);
 
-        if (!count($result)) {
+        if ($memberCarts->isEmpty()) {
+
             throw new AppException('请选择下单商品');
         }
-        return $result;
+        return $memberCarts;
     }
 
     /**

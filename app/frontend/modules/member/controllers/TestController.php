@@ -8,21 +8,18 @@
 
 namespace app\frontend\modules\member\controllers;
 
-use app\api\model\Good;
-use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\member\BecomeAgent;
 use app\common\models\AccountWechats;
-use app\common\models\Area;
-use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
+use app\common\models\Order;
 use app\common\services\AliPay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\services\MemberService;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use app\common\models\Order;
 
 class TestController extends BaseController //ApiController
 {
@@ -177,6 +174,11 @@ exit;
 
    }
 
+    /**
+     * 获取会员信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
    public function getUserInfo()
    {
        $member_id = \YunShop::app()->getMemberId();
@@ -188,6 +190,18 @@ exit;
                $member_info = $member_info->toArray();
 
                if (!empty($member_info['yz_member'])) {
+                   $member_info['telephone'] = $member_info['yz_member']['telephone'];
+                   $member_info['alipay_name'] = $member_info['yz_member']['alipay_name'];
+                   $member_info['alipay'] = $member_info['yz_member']['alipay'];
+                   $member_info['province_name'] = $member_info['yz_member']['province_name'];
+                   $member_info['city_name'] = $member_info['yz_member']['city_name'];
+                   $member_info['area_name'] = $member_info['yz_member']['area_name'];
+                   $member_info['province'] = $member_info['yz_member']['province'];
+                   $member_info['city'] = $member_info['yz_member']['city'];
+                   $member_info['area'] = $member_info['yz_member']['area'];
+                   $member_info['address'] = $member_info['yz_member']['address'];
+                   $member_info['birthday'] = $member_info['yz_member']['birthday'];
+
                    if (!empty($member_info['yz_member']['group'])) {
                        $member_info['group_id'] = $member_info['yz_member']['group']['id'];
                        $member_info['group_name'] = $member_info['yz_member']['group']['group_name'];
@@ -197,13 +211,14 @@ exit;
                        $member_info['level_id'] = $member_info['yz_member']['level']['id'];
                        $member_info['level_name'] = $member_info['yz_member']['level']['level_name'];
                    }
+
                }
 
                $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
 
                $member_info['order'] = $order_info;
 
-               $member_info['Provinces'] = Area::getProvincesList();
+               //$member_info['Provinces'] = Area::getProvincesList();
                return $this->successJson('', $member_info);
            } else {
                return $this->errorJson('用户不存在');
@@ -211,6 +226,95 @@ exit;
 
        } else {
            return $this->errorJson('缺少访问参数');
+       }
+   }
+
+    /**
+     * 修改用户资料
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+   public function updateUserInfo()
+   {
+       //$data = \YunShop::request()->data;
+
+       $data = [
+           'uid' => 146
+       ];
+       $meber_data = [
+           'uid' => '146',
+           'realname' => '贝贝',
+           'mobile' => '15046101888',
+           'telephone' => '15046102222',
+           'avatar' => 'a.jpg',
+           'gender' => '2',
+           'birthyear' => '1990',
+           'birthmonth' => '12',
+           'birthday' =>'12'
+       ];
+       $member_shop_info_data = [
+           'alipay' => '423@163.com',
+           'alipayname' => 'baobao',
+           'province_name' => '北京',
+           'city_name' => '北京市',
+           'area_name' => '朝阳区',
+           'province' => '110000',
+           'city' => '110100',
+           'area' => '110105',
+           'address' => '你猜',
+       ];
+
+       if (\YunShop::app()->getMemberId()) {
+           $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
+           $member_model->setRawAttributes($meber_data);
+
+           $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
+           $member_shop_info_model->setRawAttributes($member_shop_info_data);
+
+           $member_validator = $member_model->validator($member_model->getAttributes());
+           $member_shop_info_validator = $member_shop_info_model->validator($member_shop_info_model->getAttributes());
+
+           if ($member_validator->fails()) {
+               return $this->errorJson($member_validator->messages());
+           }
+
+           if ($member_shop_info_validator->fails()) {
+               return $this->errorJson($member_shop_info_model->messages());
+           }
+
+           if ($member_model->save() && $member_shop_info_model->save()) {
+               return $this->successJson('用户资料修改成功');
+           } else {
+               return $this->errorJson('更新用户资料失败');
+           }
+       } else {
+           return $this->errorJson('用户不存在');
+       }
+   }
+
+   public function bindMobile()
+   {
+       $data = [
+           'uid' => 146,
+           'mobile' => '15046198888',
+           'password' => 'abcdef',
+           'confirm_password' => 'abcdef',
+       ];
+       $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
+
+       if (MemberService::validate($data['mobile'], $data['password'], $data['confirm_password'])) {
+           $salt = \Illuminate\Support\Str::random(8);
+           $member_model->salt = $salt;
+           $member_model->mobile = $data['mobile'];
+           $member_model->password = md5($data['password'] . $salt);
+
+           if ($member_model->save()) {
+               return $this->successJson('手机号码绑定成功');
+           } else {
+               return $this->errorJson('手机号码绑定失败');
+           }
+       } else {
+           return $this->errorJson('手机号或密码错误');
        }
    }
 }

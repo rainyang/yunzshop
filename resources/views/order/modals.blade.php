@@ -127,7 +127,7 @@
                     <div id="module-menus"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary span2" name="confirmsend" value="yes">确认发货</button>
+                    <button type="submit" class="btn btn-primary span2" name="confirmsend" onclick="confirmSend(this)" value="yes">确认发货</button>
                     <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
                 </div>
             </div>
@@ -315,6 +315,10 @@
 </script>
 
 <script language="javascript">
+    function confirmSend(btn) {
+        //todo 当未选择其他快递的时候,不允许提交
+        return false;
+    }
 
     function send(btn){
         var modal =$('#modal-confirmsend');
