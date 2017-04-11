@@ -113,6 +113,7 @@ class OrderService
      */
     private static function getMemberCarts($callback)
     {
+
         $cartIds = [];
         if (!is_array($_GET['cart_ids'])) {
             $cartIds = explode(',', $_GET['cart_ids']);
@@ -123,7 +124,7 @@ class OrderService
         }
 
         $memberCarts = MemberCart::getCartsByIds($cartIds);
-        if (!count($memberCarts)) {
+        if ($memberCarts->isEmpty()) {
             throw new AppException('未找到购物车信息');
         }
 
