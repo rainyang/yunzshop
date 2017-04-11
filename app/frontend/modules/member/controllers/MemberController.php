@@ -448,7 +448,7 @@ class MemberController extends ApiController
             'address' => $data['address'],
         ];
 
-        if ($data['uid'] == \YunShop::app()->getMemberId()) {
+        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
             $member_model = MemberModel::getMemberById($data['uid']);
             $member_model->setRawAttributes($meber_data);
 
@@ -486,8 +486,8 @@ class MemberController extends ApiController
 
         $member_model = MemberModel::getMemberById($data['uid']);
 
-        if ($data['uid'] == \YunShop::app()->getMemberId() &&
-               MemberService::validate($data['mobile'], $data['password'], $data['confirm_password'])) {
+        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0
+            && MemberService::validate($data['mobile'], $data['password'], $data['confirm_password'])) {
             $salt = Str::random(8);
             $member_model->salt = $salt;
             $member_model->mobile = $data['mobile'];
