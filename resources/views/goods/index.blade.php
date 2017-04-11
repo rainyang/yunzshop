@@ -241,7 +241,7 @@
 							@endforeach
 
 							@section('release_gods')
-							<tr>
+						<!--	<tr>
 								<td colspan='10'>
 									@section('add_goods')
 									<a class='btn btn-primary' href="{{yzWebUrl('goods.goods.create')}}"><i class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
@@ -250,14 +250,25 @@
 									<input type="hidden" name="token" value="{{$var['token']}}" />
 
 								</td>
-							</tr>
+							</tr>-->
 							@show
 							</tr>
 							</tbody>
 						</table>
+
+
+
 						{!!$pager!!}
 						<!--分页-->
+
+
 					</div>
+					<div class='panel-footer'>
+						<a class='btn btn-success ' href="{{yzWebUrl('goods.goods.create')}}"><i
+								class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
+						<input name="submit" type="submit" class="btn btn-default back" value="提交排序">
+					</div>
+
 				</div>
 			</form>
 		</div>

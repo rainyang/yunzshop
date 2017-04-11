@@ -51,11 +51,51 @@
                                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                     <div class="col-sm-9 col-xs-12">
                                         <div style="float:left; width:15%; height:30px;">
+                                            <label class='radio-inline' style="padding-left:0px">提现到微信</label>
+                                        </div>
+                                        <div style="float:left; width:85%; height:30px;">
+                                            <label class='radio-inline'>
+                                                <input type='radio' name='withdraw[balance][wechat]' value='1' @if($set['wechat'] == 1) checked @endif />
+                                                开启
+                                            </label>
+                                            <label class='radio-inline'>
+                                                <input type='radio' name='withdraw[balance][wechat]' value='0' @if($set['wechat'] == 0) checked @endif />
+                                                关闭
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div style="float:left; width:15%; height:30px;">
+                                            <label class='radio-inline' style="padding-left:0px">提现到支付宝</label>
+                                        </div>
+                                        <div style="float:left; width:85%; height:30px;">
+                                            <label class='radio-inline'>
+                                                <input type='radio' name='withdraw[balance][alipay]' value='1' @if($set['alipay'] == 1) checked @endif />
+                                                开启
+                                            </label>
+                                            <label class='radio-inline'>
+                                                <input type='radio' name='withdraw[balance][alipay]' value='0' @if($set['alipay'] == 0) checked @endif />
+                                                关闭
+                                            </label>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div style="float:left; width:15%; height:30px;">
                                             <label class='radio-inline' style="padding-left:0px">提现手续费</label>
                                         </div>
                                         <div style="float:left; width:85%; height:30px;">
                                             <label class='radio-inline' style="width:70%;">
-                                                <input class="col-sm-6" style="width:100%;" type="text" name="withdraw[balance][poundage]" value="{{ $set['poundage'] or '' }}"/>
+                                                <input class="col-sm-6" style="width:100%;" type="text" name="withdraw[balance][poundage]" value="{{ $set['poundage'] or '' }}" placeholder="大于0小于1的两位小数"/>
                                             </label>
                                         </div>
                                     </div>
@@ -68,7 +108,7 @@
                                         </div>
                                         <div style="float:left; width:85%; height:30px;">
                                             <label class='radio-inline' style="width:70%;">
-                                                <input class="col-sm-6" style="width:100%;" type="text" name="withdraw[balance][withdrawmoney]" value="{{ $set['withdrawmoney'] or '' }}"/>
+                                                <input class="col-sm-6" style="width:100%;" type="text" name="withdraw[balance][withdrawmoney]" value="{{ $set['withdrawmoney'] or '' }}" placeholder="余额提现最小金额值"/>
                                             </label>
                                         </div>
                                     </div>

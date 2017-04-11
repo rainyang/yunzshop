@@ -180,11 +180,6 @@ class MemberOfficeAccountService extends MemberService
                     //触发会员成为下线事件
                     $model = MemberShopInfo::getMemberShopInfo($member_id);
                     event(new BecomeAgent(\YunShop::request()->mid, $model));
-
-                    //触发分销事件
-                    $agent_data = [];
-
-                    event(new RegisterByAgent($agent_data));
                 }
 
                 Session::set('member_id', $member_id);
@@ -199,7 +194,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        redirect($redirect_url . '?uid=' . \YunShop::app()->getMemberId())->send();
+        redirect($redirect_url)->send();
     }
 
     /**
