@@ -244,7 +244,7 @@ exit;
        $meber_data = [
            'uid' => '146',
            'realname' => '贝贝',
-           'mobile' => '15046101',
+           'mobile' => '15046101888',
            'telephone' => '15046102222',
            'avatar' => 'a.jpg',
            'gender' => '2',
@@ -264,11 +264,11 @@ exit;
            'address' => '你猜',
        ];
 
-       if ($data['uid'] == \YunShop::app()->getMemberId()) {
-           $member_model = MemberModel::getMemberById($data['uid']);
+       if (\YunShop::app()->getMemberId()) {
+           $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
            $member_model->setRawAttributes($meber_data);
 
-           $member_shop_info_model = MemberShopInfo::getMemberShopInfo($data['uid']);
+           $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
            $member_shop_info_model->setRawAttributes($member_shop_info_data);
 
            $member_validator = $member_model->validator($member_model->getAttributes());
@@ -300,7 +300,7 @@ exit;
            'password' => 'abcdef',
            'confirm_password' => 'abcdef',
        ];
-       $member_model = MemberModel::getMemberById($data['uid']);
+       $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
 
        if (MemberService::validate($data['mobile'], $data['password'], $data['confirm_password'])) {
            $salt = \Illuminate\Support\Str::random(8);
