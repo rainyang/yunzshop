@@ -45,7 +45,7 @@
                 {!! $pager !!}
             </div>
             <div class='panel-footer'>
-                <a class='btn btn-primary' href="{{ yzWebUrl('member.member-group.store') }}"><i class="fa fa-plus"></i>
+                <a class='btn btn-success' href="{{ yzWebUrl('member.member-group.store') }}"><i class="fa fa-plus"></i>
                     添加新分组</a>
             </div>
         </div>

@@ -59,7 +59,7 @@
                 @endforeach
                 <tr>
                     <td colspan='9'>
-                        <a class='btn btn-primary' href="{{ yzWebUrl('goods.dispatch.add') }}"><i class='fa fa-plus'></i> 添加配送方式</a>
+                        <a class='btn btn-info' href="{{ yzWebUrl('goods.dispatch.add') }}"><i class='fa fa-plus'></i> 添加配送方式</a>
                         <input name="submit" type="submit" class="btn btn-default" value="提交排序">
                     </td>
                 </tr>

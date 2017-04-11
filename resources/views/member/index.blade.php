@@ -132,9 +132,10 @@
                         <div class="form-group col-sm-7 col-lg-4 col-xs-12">
                             <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
                             <div class="">
-                                <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                                <button type="button" name="export" value="1" id="export" class="btn btn-default excel back ">导出 Excel</button>
                                 <input type="hidden" name="token" value="{{$var['token']}}" />
-                                <button type="button" name="export" value="1" id="export" class="btn btn-primary excel">导出 Excel</button>
+                                <button class="btn btn-success "><i class="fa fa-search"></i> 搜索</button>
+
                             </div>
                         </div>
 
@@ -218,8 +219,8 @@
                                     <td>
                                         {{date('Y-m-d',$row['createtime'])}}<br/>
                                         {{date('H:i',$row['createtime'])}}</td>
-                                    <td><label class="label label-primary">积分：{{$row['credit1']}}</label><br/><label class="label label-danger">余额：{{$row['credit2']}}</label></td>
-                                    <td><label class="label label-primary">订单：
+                                    <td><label class="label label-info">积分：{{$row['credit1']}}</label><br/><label class="label label-danger">余额：{{$row['credit2']}}</label></td>
+                                    <td><label class="label label-info">订单：
                                         @if(!empty($row['has_one_order']['total']))
                                                 {{$row['has_one_order']['total']}}
                                         @else
