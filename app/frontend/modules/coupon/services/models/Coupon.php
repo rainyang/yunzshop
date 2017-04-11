@@ -137,6 +137,8 @@ class Coupon
     public function activate()
     {
         $this->getMemberCoupon()->used = 1;
+        //dd($this->getMemberCoupon());
+        //exit;
         return $this->setOrderGoodsDiscountPrice();
     }
 
@@ -166,7 +168,13 @@ class Coupon
 //        dd($this->price->valid());
 //        dd($this->timeLimit->valid());
 //        exit;
-        return $this->useScope->valid() && $this->price->valid() && $this->timeLimit->valid();
+//        if(!empty($this->getMemberCoupon()->used)){
+//            return false;
+//        }
+        //dd($this->getMemberCoupon()->used);
+        //dd($this->useScope->valid() && $this->price->valid() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used));
+        //exit;
+        return $this->useScope->valid() && $this->price->valid() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used);
     }
 
     public function destroy()
