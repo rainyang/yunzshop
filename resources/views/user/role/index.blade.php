@@ -7,7 +7,7 @@
     </ul>
 </div>
 
-        <form action="" method="get" class='form form-horizontal'>
+        <form action="" method="post" class='form form-horizontal'>
             <div class="panel panel-info">
 
                 <div class="panel-body">
@@ -20,16 +20,16 @@
                         <div class="form-group col-xs-12 col-sm-6 col-lg-6">
                             <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>-->
                             <div class="">
-                                <input class="form-control" name="keyword" id="" type="text" value="" placeholder="可搜索角色名称">
+                                <input class="form-control" name="search[keyword]" id="" type="text" value="{{ $search['keyword'] or '' }}" placeholder="可搜索角色名称">
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-6 col-md-5 col-lg-5 ">
                             <!--<label class="">状态</label>-->
                             <div class="c">
-                                <select name="status" class='form-control'>
-                                    <option value="" {if $_GPC['status']==''} selected{/if}>状态不限</option>
-                                    <option value="1" {if $_GPC['status'] == '1'} selected{/if}>启用</option>
-                                    <option value="0" {if $_GPC['status'] == '0'} selected{/if}>禁用</option>
+                                <select name="search[status]" class='form-control'>
+                                    <option value="" selected>状态不限</option>
+                                    <option value="2" @if($search['status'] == \app\common\models\user\YzRole::ROLE_ENABLE) selected @endif>启用</option>
+                                    <option value="1" @if($search['status'] == \app\common\models\user\YzRole::ROLE_DISABLE) selected @endif>禁用</option>
                                 </select>  </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-6 col-md-5 col-lg-1 ">
@@ -65,7 +65,7 @@
                             <td> {{ $role->name }}</td>
                             <td>{{$role->roleUser->count()}}</td>
                             <td>
-                                @if($role['status'] == 1)
+                                @if($role['status'] == \app\common\models\user\YzRole::ROLE_ENABLE)
                                 <span class='label label-success'>启用</span>
                                 @else
                                 <span class='label label-danger'>禁用</span>

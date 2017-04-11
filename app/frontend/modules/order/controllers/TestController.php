@@ -21,9 +21,16 @@ class TestController extends ApiController
 {
     public function index()
     {
-        $event = new ShowPreGenerateOrder();
-        event($event);
-        echo 'end';
+        $order1 = collect(['price'=>1]);
+        $order2 = collect(['price'=>2]);
+        $order_data_1 = collect(['order'=>$order1]);
+        $order_data_2 = collect(['order'=>$order2]);
+        $order_data_n = collect([$order_data_1,$order_data_2]);
+        $result = $order_data_n->forget('order.prices');
+        dd($order_data_n);
+        dd($result);
+        exit;
+        dd($result);
         exit;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));

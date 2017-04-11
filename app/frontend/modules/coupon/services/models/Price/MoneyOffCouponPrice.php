@@ -15,25 +15,53 @@ class MoneyOffCouponPrice extends CouponPrice
 {
     public function valid()
     {
-
-        //todo 之前用过的所有优惠券的 满足金额
-        if (!float_lesser($this->getOrderGoodsGroupPrice(), $this->dbCoupon->enough)) {
-
+        //todo 商品价格中未使用优惠的金额 不小于 满减额度
+        if (!float_lesser($this->getOrderGoodsGroupUnusedEnoughMoney(), $this->dbCoupon->enough)) {
             return true;
         }
         return false;
     }
-    private function getOrderGoodsGroupPrice(){
-        return $this->coupon->getOrderGoodsInScope()->getVipPrice()-$this->coupon->getOrderGoodsInScope()->getCouponDiscountPrice();
+
+    /**
+     * 累加所有商品会员价
+     * @return int
+     */
+    private function getOrderGoodsGroupPrice()
+    {
+        //会员价-折扣券优惠金额
+        return $this->coupon->getOrderGoodsInScope()->getVipPrice() - $this->coupon->getOrderGoodsInScope()->getCouponDiscountPrice();
     }
-    private function getOrderGoodsPrice($orderGoods){
+
+    /**
+     * 累加所有商品未使用优惠的金额
+     * @return mixed
+     */
+    private function getOrderGoodsGroupUnusedEnoughMoney()
+    {
+
+        return $this->getOrderGoodsGroupPrice() - $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->sum('coupons.enough');
+    }
+
+    /**
+     * 单件商品当前成交价
+     * @param $orderGoods
+     * @return mixed
+     */
+    private function getOrderGoodsPrice($orderGoods)
+    {
         //之前的
         return $orderGoods->getVipPrice() - $orderGoods->couponDiscountPrice;
     }
+
+    /**
+     * 优惠券价格
+     * @return mixed
+     */
     public function getPrice()
     {
         return $this->dbCoupon->deduct;
     }
+
     /**
      * 分配优惠金额 立减折扣券使用 商品折扣后价格计算
      */
@@ -46,10 +74,10 @@ class MoneyOffCouponPrice extends CouponPrice
              * @var $orderGoods PreGeneratedOrderGoodsModel
              */
             //(优惠券金额/折扣优惠券后价格)*折扣优惠券后价格
-            /*dd($this->getPrice());
-            dd($this->getOrderGoodsGroupPrice());
-            dd($this->getOrderGoodsPrice($orderGoods));
-            */
+//            dd($this->getPrice());
+//            dd($this->getOrderGoodsGroupPrice());
+//            dd($this->getOrderGoodsPrice($orderGoods));
+//            exit;
             $orderGoods->couponMoneyOffPrice += number_format(($this->getPrice() / $this->getOrderGoodsGroupPrice()) * $this->getOrderGoodsPrice($orderGoods), 2);
 
         }

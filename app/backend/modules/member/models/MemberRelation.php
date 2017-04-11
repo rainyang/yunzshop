@@ -9,6 +9,7 @@
 namespace app\backend\modules\member\models;
 
 use app\backend\models\BackendModel;
+use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\order\models\OrderListModel;
 
@@ -182,6 +183,8 @@ class MemberRelation extends BackendModel
                     break;
             }
 
+        return 0;
+
     }
 
     /**
@@ -197,7 +200,6 @@ class MemberRelation extends BackendModel
             $data = $info->toArray();
 
             return $data['become_child'];
-
         }
     }
 
@@ -209,15 +211,25 @@ class MemberRelation extends BackendModel
      */
     private function becomeChildAgent($mid, MemberShopInfo $model)
     {
-        $info = self::getSetInfo()->first()->toArray();
-
         $member_info = SubMemberModel::getMemberShopInfo($mid);
 
         if ($member_info && $member_info->is_agent) {
             $model->parent_id = $mid;
-            $model->save();
+
+            if ($model->save()) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 
+    public static function setMemberRelations($member_id)
+    {
+        $mid = \YunShop::app()->mid ? \YunShop::app()->mid : 0;
 
+        if (!empty($mid)) {
+            MemberModel::getMyAgentsParentInfo();
+        }
+    }
 }

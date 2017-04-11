@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\events\member\RegisterByAgent;
 use app\common\facades\Setting;
 use app\common\helpers\Client;
 use app\common\models\MemberGroup;
@@ -168,7 +169,6 @@ class MemberOfficeAccountService extends MemberService
                     );
                     McMappingFansModel::create($record);
 
-
                     //添加ims_yz_member_unique表
                     MemberUniqueModel::insertData(array(
                         'uniacid' => $uniacid,
@@ -179,15 +179,12 @@ class MemberOfficeAccountService extends MemberService
 
                     //触发会员成为下线事件
                     $model = MemberShopInfo::getMemberShopInfo($member_id);
-                    event(new BecomeAgent(\YunShop::request()->mid(), $model));
-
-                    //触发分销事件
-
-
+                    event(new BecomeAgent(\YunShop::request()->mid, $model));
                 }
+
                 Session::set('member_id', $member_id);
             } else {
-                //redirect($authurl)->send();
+                redirect($authurl)->send();
                 exit;
             }
         } else {
@@ -197,7 +194,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        redirect($redirect_url . '?uid=' . \YunShop::app()->getMemberId())->send();
+        redirect($redirect_url)->send();
     }
 
     /**

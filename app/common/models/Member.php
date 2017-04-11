@@ -82,7 +82,7 @@ class Member extends BackendModel
             ->where('uid', $member_id)
             ->with([
                 'yzMember' => function ($query) {
-                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])
+                    return $query->select(['*'])->where('is_black', 0)
                         ->with([
                             'group' => function ($query1) {
                                 return $query1->select(['id', 'group_name']);
@@ -168,5 +168,35 @@ class Member extends BackendModel
                 return self::INVALID_OPENID;
             }
         }
+    }
+
+    /**
+     * 定义字段名
+     *
+     * @return array
+     */
+    public function atributeNames()
+    {
+        return [
+            'mobile' => '绑定手机号',
+            'realname' => '真实姓名',
+            'avatar' => '头像',
+            'telephone' => '联系手机号',
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'mobile' => 'required|digits:11',
+            'realname' => 'required',
+            'avatar' => 'required',
+            'telephone' => 'required|digits:11',
+        ];
     }
 }

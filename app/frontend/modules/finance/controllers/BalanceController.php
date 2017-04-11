@@ -13,24 +13,21 @@ use app\backend\modules\member\models\Member;
 use app\common\components\ApiController;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
-use app\common\services\fiance\Balance;
+use app\common\models\Withdraw;
+use app\common\services\finance\Balance;
 use app\common\services\PayFactory;
 
 class BalanceController extends ApiController
 {
-    /*
-     * 充值接口
-     *
-     * */
+    /**
+     * 会员余额充值接口
+     * @return \Illuminate\Http\JsonResponse
+     * @Author yitian */
     public function recharge()
     {
         $memberId = \YunShop::app()->getMemberId();
         $rechargeMoney = trim(\YunShop::request()->recharge_money);
         $payType = \YunShop::request()->pay_type;
-
-        //$memberId = 55;
-        //$rechargeMoney = 100;
-        //$payType = 2;
 
         if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $rechargeMoney)) {
             return $this->errorJson('请输入有效的充值金额，允许两位小数');
@@ -58,9 +55,66 @@ class BalanceController extends ApiController
         }
         return $this->errorJson('数据有误，请刷新重试');
     }
-    /*
-     * 转让接口
-     *
+
+    public function withdraw()
+    {
+        $memberId = \YunShop::app()->getMemberId();
+        $withdrawMoney = trim(\YunShop::request()->withdraw_money);
+        $withdrawType = \YunShop::request()->withdraw_type;
+
+        $memberId = '55';
+        $withdrawMoney = 100;
+        $withdrawType = 1;
+
+
+        $memberInfo = Member::getMemberInfoById($memberId);
+        if (!$memberInfo) {
+            return $this->errorJson('会员不存在');
+        }
+        if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $withdrawMoney)|| $withdrawMoney > $memberInfo->credit2) {
+            return $this->errorJson('提现金额必须是大于0且小于您的余额，允许两位小数');
+        }
+
+        if ($memberId && $withdrawMoney && $withdrawType) {
+            $withdrawModel = new Withdraw();
+            $withdrawData = array(
+                'withdraw'      => '',
+                'uniacic'       => \YunShop::app()->uniacid,
+                'member_id'     => $memberId,
+                'type'          => 'balance',
+                'type_id'       => '',
+                'type_name'     => '',
+                'amounts'       => $withdrawMoney,      //提现金额
+                'poundage'      => '',                  //提现手续费
+                'poundage_rate' => '',                  //手续费比例
+                'pay_way'       => '',                  //打款方式
+                'status'        => ''                   //0未审核，1未打款，2已打款， -1无效
+
+            );
+
+
+            echo '<pre>'; print_r('开发中'); exit;
+            $data = array(
+                'member_id'     => $memberId,
+                'change_money'  => -$withdrawMoney,
+                'serial_number' => '',
+                'operator'      => BalanceRecharge::PAY_TYPE_MEMBER,
+                'operator_id'   => $memberId,
+                'remark'        => '会员提现余额'. $withdrawMoney. '元',
+                'service_type'  => \app\common\models\finance\Balance::BALANCE_WITHDRAWAL,
+                'withdraw_type' => $withdrawType
+            );
+            $result = (new Balance())->changeBalance($data);
+            if ($result === true) {
+
+            }
+            echo '<pre>'; print_r($result); exit;
+        }
+    }
+
+    /**
+     * 会员余额转让接口
+     * @return \Illuminate\Http\JsonResponse
      * @Author yitian */
     public function transfer()
     {
@@ -68,10 +122,6 @@ class BalanceController extends ApiController
         $transfer = \YunShop::app()->getMemberId();
         $recipient = \YunShop::request()->recipient;
         $transferMoney = trim(\YunShop::request()->transfer_money);
-
-        //$transferMoney = '1.11';
-        //$transfer = 55;
-        //$recipient = 57;
 
         $recipientModel = Member::getMemberById($recipient);
         $transferModel = Member::getMemberById($transfer);
@@ -105,13 +155,30 @@ class BalanceController extends ApiController
         return $this->errorJson('请求数据错误，未进行余额转让操作');
     }
 
-    /*
-     * 会员充值记录
-     *
-     * @Author yitian */
+    /**
+     * 余额变动明细记录
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getDetailRecord()
+    {
+        $memberId = \YunShop::app()->getMemberId();
+        $type = \YunShop::request()->type;
+        //$memberId = '55';
+        if ($memberId) {
+            $recordList = \app\common\models\finance\Balance::getMemberDeatilRecord($memberId, $type);
+            return $this->successJson('获取记录成功',$this->attachedServiceType($recordList->toArray()));
+        }
+        return $this->errorJson('未获取到会员ID');
+    }
+
+    /**
+     * 获取会员充值记录接口
+     * @return \Illuminate\Http\JsonResponse
+     * Author yitian */
     public function rechargeRecord()
     {
         $memberId = \YunShop::app()->getMemberId();
+
         //$memberId= '55';
         if ($memberId) {
             $rechargeRecord = BalanceRecharge::getMemberRechargeRecord($memberId);
@@ -120,9 +187,9 @@ class BalanceController extends ApiController
         return $this->errorJson('未获取到会员ID');
     }
 
-    /*
-     * 会员余额转让记录
-     *
+    /**
+     * 余额转让记录
+     * @return \Illuminate\Http\JsonResponse
      * @Author yitian */
     public function transferRecord()
     {
@@ -135,9 +202,9 @@ class BalanceController extends ApiController
         return $this->errorJson('未获取到会员ID');
     }
 
-    /*
+    /**
      * 会员余额被转让记录
-     *
+     * @return \Illuminate\Http\JsonResponse
      * @Author yitian */
     public function recipientRecord()
     {
@@ -151,14 +218,19 @@ class BalanceController extends ApiController
     }
 
     /**
-     * 调取支付接口
-     * @return array|mixed|string|void
+     * 会员余额充值支付接口
+     *
+     * @param $data
+     * @return array|string|
      * @Author yitian */
     private function payOrder($data)
     {
         $pay = PayFactory::create($data['recharge_type']);
 
-        return $pay->doPay($this->payData($data));
+        $result = $pay->doPay($this->payData($data));
+        $result['js'] = json_decode($result['js'], 1);
+
+        return $result;
     }
 
     /**
@@ -177,6 +249,48 @@ class BalanceController extends ApiController
         );
     }
 
+    private function attachedServiceType($data = [])
+    {
+        if ($data) {
+            $i = 0;
+            foreach ($data as $key) {
+                switch ($key['service_type']) {
+                    case \app\common\models\finance\Balance::BALANCE_RECHARGE:
+                        $data[$i]['service_type'] = "充值";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_CONSUME:
+                        $data[$i]['service_type'] = "消费";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_TRANSFER:
+                        $data[$i]['service_type'] = "转让";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_DEDUCTION:
+                        $data[$i]['service_type'] = "抵扣";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_AWARD:
+                        $data[$i]['service_type'] = "奖励";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_WITHDRAWAL:
+                        $data[$i]['service_type'] = "余额提现";
+                        break;
+                    case \app\common\models\finance\Balance::BALANCE_INCOME:
+                        $data[$i]['service_type'] = "提现至余额";
+                        break;
+                    case \app\common\models\finance\Balance::CANCEL_DEDUCTION:
+                        $data[$i]['service_type'] = "抵扣取消返回";
+                        break;
+                    case \app\common\models\finance\Balance::CANCEL_AWARD:
+                        $data[$i]['service_type'] = "奖励取消扣除";
+                        break;
+                    default:
+                        $data[$i]['service_type'] = "未知来源";
+                }
+                $data[$i]['created_at'] = date('Y-m-d H:i:s', $key['created_at']);
+                $i++;
+            }
+        }
+        return $data;
+    }
 
 
 }

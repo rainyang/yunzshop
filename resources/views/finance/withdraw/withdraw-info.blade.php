@@ -52,17 +52,17 @@
                 </p>
                 @if($item['audit_at'])
                     <p>
-                        <b>审核时间: </b>{{$item['audit_at']}}
+                        <b>审核时间: </b>{{date('Y-m-d H:i:s',$item['audit_at'])}}
                     </p>
                 @endif
                 @if($item['pay_at'])
                     <p>
-                        <b>打款时间: </b>{{$item['pay_at']}}
+                        <b>打款时间: </b>{{date('Y-m-d H:i:s',$item['pay_at'])}}
                     </p>
                 @endif
                 @if($item['arrival_at'])
                     <p>
-                        <b>到账时间: </b>{{$item['arrival_at']}}
+                        <b>到账时间: </b>{{date('Y-m-d H:i:s',$item['arrival_at'])}}
                     </p>
                 @endif
 
@@ -125,37 +125,45 @@
                                         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×
                                         </button>
                                         <h3>收入信息</h3>
-                                        @foreach($row['detail'] as $key1 => $value1)
-                                            <div class="form-group">{{$key1}}</div>
-                                            @foreach($value1 as $key2 => $value2)
-                                                @if(is_object($value2))
-                                                    @foreach($value2 as $key3 => $value3)
-                                                        <div class="modal-body" style="background: #eee">
 
+                                        @foreach($row['detail'] as $data)
+                                            <div class="form-group">{{$data['title']}}</div>
+                                            @foreach($data['data'] as $value)
+
+
+
+
+
+
+                                                @if(!isset($value['title']))
+                                                    @foreach($value as $v)
+                                                        <div class="modal-body" style="background: #eee">
                                                             <div class="form-group">
-                                                                <label class="col-xs-10 col-sm-3 col-md-3 control-label">{{$key3}}</label>
+                                                                <label class="col-xs-10 col-sm-3 col-md-3 control-label">{{$v['title']}}</label>
                                                                 <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-                                                                    {{$value3}}
+                                                                    {{$v['value']}}
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     @endforeach
                                                 @else
+
                                                     <div class="modal-body" style="background: #eee">
                                                         <div class="form-group">
-                                                            <label class="col-xs-10 col-sm-3 col-md-3 control-label">{{$key2}}</label>
+                                                            <label class="col-xs-10 col-sm-3 col-md-3 control-label">{{$value['title']}}</label>
                                                             <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-                                                                @if($key2 === '订单号')
-                                                                    {{$value2}}
+                                                                @if($value['title'] === '订单号')
+                                                                    {{$value['value']}}
                                                                     <a target="_blank"
-                                                                       href="{{yzWebUrl('order.list',['search'=>['ambiguous'=>['field'=>'order','string'=>$value2]]])}}">订单详情</a>
+                                                                       href="{{yzWebUrl('order.list',['search'=>['ambiguous'=>['field'=>'order','string'=>$value['value']]]])}}">订单详情</a>
                                                                 @else
-                                                                    {{$value2}}
+                                                                    {{$value['value']}}
                                                                 @endif
                                                             </div>
                                                         </div>
                                                     </div>
                                                 @endif
+
                                             @endforeach
                                         @endforeach
 

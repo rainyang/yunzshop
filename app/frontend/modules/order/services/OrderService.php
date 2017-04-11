@@ -34,15 +34,26 @@ use Illuminate\Support\Collection;
 
 class OrderService
 {
+    /**
+     * 获取订单信息组
+     * @param Order $order
+     * @return Collection
+     */
     public static function getOrderData(Order $order)
     {
-        $data = [
-            'order' => $order->toArray(),
-        ];
-        $data += self::getDiscountEventData($order);
-        $data += self::getDispatchEventData($order);
-        return $data;
+        $result = collect();
+        $result->put('order',$order->toArray());
+        $result->put('discount',self::getDiscountEventData($order));
+        $result->put('dispatch',self::getDispatchEventData($order));
+
+        return $result;
     }
+
+    /**
+     * 获取优惠信息
+     * @param $order_model
+     * @return array
+     */
     private static function getDiscountEventData($order_model)
     {
         $Event = new OnDiscountInfoDisplayEvent($order_model);
@@ -50,20 +61,63 @@ class OrderService
         return $Event->getMap();
     }
 
+    /**
+     * 获取配送信息
+     * @param $order_model
+     * @return array
+     */
     public static function getDispatchEventData($order_model)
     {
         $Event = new OnDispatchTypeInfoDisplayEvent($order_model);
         event($Event);
-        return ['dispatch' => $Event->getMap()];
+        return $Event->getMap();
     }
 
     /**
+     * 获取自营商品购物车记录
+     * @return Collection
+     */
+    public static function getShopMemberCarts()
+    {
+        return self::getMemberCarts(function ($memberCart) {
+            /**
+             * @var $memberCart MemberCart
+             */
+            dd($memberCart->goods->is_plugin);
+
+            if (empty($memberCart->goods->is_plugin)) {
+                echo 1;
+                return true;
+            }
+            echo 2;
+            return false;
+        });
+    }
+    /**
+     * 获取插件商品购物车记录
+     * @return Collection
+     */
+    public static function getPluginMemberCarts()
+    {
+        return self::getMemberCarts(function ($memberCart) {
+            /**
+             * @var $memberCart MemberCart
+             */
+            if (!empty($memberCart->goods->is_plugin)) {
+                return true;
+            }
+            return false;
+        });
+    }
+    /**
+     * 从url中获取购物车记录并验证
      * @param $callback
      * @return Collection
      * @throws AppException
      */
-    public static function getMemberCarts($callback)
+    public static function getMemberCarts($callback = null)
     {
+        static $memberCarts;
         $cartIds = [];
         if (!is_array($_GET['cart_ids'])) {
             $cartIds = explode(',', $_GET['cart_ids']);
@@ -72,18 +126,22 @@ class OrderService
         if (!count($cartIds)) {
             throw new AppException('参数格式有误');
         }
-
-        $memberCarts = MemberCart::getCartsByIds($cartIds);
-        if (!count($memberCarts)) {
+        if(!isset($memberCarts)){
+            $memberCarts = MemberCart::getCartsByIds($cartIds);
+        }
+        if ($memberCarts->isEmpty()) {
             throw new AppException('未找到购物车信息');
         }
+        if(isset($callback)){
 
-        $result = $memberCarts->filter($callback);
+            $result = $memberCarts->filter($callback);
+        }
 
-        if (!count($result)) {
+        if ($memberCarts->isEmpty()) {
+
             throw new AppException('请选择下单商品');
         }
-        return $result;
+        return $memberCarts;
     }
 
     /**
@@ -95,6 +153,9 @@ class OrderService
     public static function getOrderGoodsModels(Collection $memberCarts)
     {
         $result = new Collection();
+        if($memberCarts->isEmpty()){
+            throw new \AppException("未找到订单商品");
+        }
         foreach ($memberCarts as $memberCart) {
             if (!($memberCart instanceof MemberCart)) {
                 throw new \Exception("请传入" . MemberCart::class . "的实例");
@@ -108,12 +169,23 @@ class OrderService
         return $result;
     }
 
+    /**
+     * 根据购物车记录 获取订单信息
+     * @param Collection $memberCarts
+     * @return PreGeneratedOrderModel
+     * @throws AppException
+     */
     public static function createOrderByMemberCarts(Collection $memberCarts)
     {
         $member = MemberService::getCurrentMemberModel();
         if (!isset($member)) {
             throw new AppException('用户登录状态过期');
         }
+
+        if($memberCarts->isEmpty()){
+            return false;
+        }
+
         $shop = ShopService::getCurrentShopModel();
 
         $orderGoodsArr = OrderService::getOrderGoodsModels($memberCarts);
