@@ -136,6 +136,7 @@ class Coupon
 
     public function activate()
     {
+        $this->getMemberCoupon()->used = 1;
         return $this->setOrderGoodsDiscountPrice();
     }
 
@@ -161,6 +162,10 @@ class Coupon
      */
     public function valid()
     {
+//        dd($this->useScope->valid());
+//        dd($this->price->valid());
+//        dd($this->timeLimit->valid());
+//        exit;
         return $this->useScope->valid() && $this->price->valid() && $this->timeLimit->valid();
     }
 

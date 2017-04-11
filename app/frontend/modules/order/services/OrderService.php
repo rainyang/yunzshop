@@ -127,12 +127,13 @@ class OrderService
             throw new AppException('未找到购物车信息');
         }
 
-        $result = $memberCarts->filter($callback);
+        $memberCarts->filter($callback);
 
-        if (!count($result)) {
+        if ($memberCarts->isEmpty()) {
+
             throw new AppException('请选择下单商品');
         }
-        return $result;
+        return $memberCarts;
     }
 
     /**
