@@ -19,7 +19,6 @@ class DateTimeRange extends TimeLimit
             //已结束
             return false;
         }
-
         return true;
     }
 }

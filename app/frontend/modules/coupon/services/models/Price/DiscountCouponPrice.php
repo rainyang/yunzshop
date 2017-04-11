@@ -19,6 +19,7 @@ class DiscountCouponPrice extends CouponPrice
 {
 
     public function valid(){
+
         return true;
     }
     public function getPrice()
