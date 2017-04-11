@@ -13,6 +13,7 @@ use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\member\BecomeAgent;
 use app\common\models\AccountWechats;
+use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
 use app\common\services\AliPay;
@@ -21,6 +22,7 @@ use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use app\common\models\Order;
 
 class TestController extends BaseController //ApiController
 {
@@ -175,5 +177,40 @@ exit;
 
    }
 
+   public function getUserInfo()
+   {
+       $member_id = \YunShop::app()->getMemberId();
 
+       if (!empty($member_id)) {
+           $member_info = MemberModel::getUserInfos($member_id)->first();
+
+           if (!empty($member_info)) {
+               $member_info = $member_info->toArray();
+
+               if (!empty($member_info['yz_member'])) {
+                   if (!empty($member_info['yz_member']['group'])) {
+                       $member_info['group_id'] = $member_info['yz_member']['group']['id'];
+                       $member_info['group_name'] = $member_info['yz_member']['group']['group_name'];
+                   }
+
+                   if (!empty($member_info['yz_member']['level'])) {
+                       $member_info['level_id'] = $member_info['yz_member']['level']['id'];
+                       $member_info['level_name'] = $member_info['yz_member']['level']['level_name'];
+                   }
+               }
+
+               $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
+
+               $member_info['order'] = $order_info;
+
+               $member_info['Provinces'] = Area::getProvincesList();
+               return $this->successJson('', $member_info);
+           } else {
+               return $this->errorJson('用户不存在');
+           }
+
+       } else {
+           return $this->errorJson('缺少访问参数');
+       }
+   }
 }

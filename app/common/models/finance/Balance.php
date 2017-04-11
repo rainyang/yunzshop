@@ -58,7 +58,7 @@ class Balance extends BaseModel
      * @params int $pageSize
      *
      * @return object
-     * @Autho yitian */\
+     * @Autho yitian */
     public static function getPageList($pageSize)
     {
         return self::uniacid()

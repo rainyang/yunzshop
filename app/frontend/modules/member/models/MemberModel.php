@@ -115,7 +115,7 @@ class MemberModel extends Member
     }
 
     /**
-     * 我的下线信息
+     * 我的下线信息 1级
      *
      * @param $uid
      * @return mixed
@@ -134,7 +134,33 @@ class MemberModel extends Member
             }]);
     }
 
-    
+    /**
+     * 我的下线信息 3级
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getMyAgentsInfo($uid)
+    {
+        return self::uniacid()
+            ->with(['hasManyYzMember' => function ($query) {
+
+                return $query->with(['hasManySelf' => function ($query) {
+
+                    return $query->with(['hasManySelf' => function ($query) {
+
+                        return $query->get();
+                    }])->get();
+                }])->get();
+            }])
+            ->with(['hasOneOrder' => function ($query) {
+                return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                    ->uniacid()
+                    ->where('status', 3)
+                    ->groupBy('uid');
+            }])
+            ->where('uid', $uid);
+    }
 
     /**
      *

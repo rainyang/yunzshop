@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\controllers;
 use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\models\AccountWechats;
+use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
@@ -53,6 +54,8 @@ class MemberController extends ApiController
                 $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
 
                 $member_info['order'] = $order_info;
+
+                $member_info['Provinces'] = Area::getProvincesList();
                 return $this->successJson('', $member_info);
             } else {
                 return $this->errorJson('用户不存在');
@@ -355,5 +358,41 @@ class MemberController extends ApiController
         ];
 
         return $this->successJson('', $data);
+    }
+
+    /**
+     * 通过省份id获取对应的市信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCitysByProvince()
+    {
+        $id = \YunShop::request()->parent_id;
+
+        $data = Area::getCitysByProvince($id);
+
+        if (!empty($data)) {
+            return $this->successJson('', $data->toArray());
+        } else {
+            return $this->errorJson('查无数据');
+        }
+    }
+
+    /**
+     * 通过市id获取对应的区信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAreasByCity()
+    {
+        $id = \YunShop::request()->parent_id;
+
+        $data = Area::getAreasByCity($id);
+
+        if (!empty($data)) {
+            return $this->successJson('', $data->toArray());
+        } else {
+            return $this->errorJson('查无数据');
+        }
     }
 }
