@@ -76,6 +76,7 @@ class OrderDiscount extends Discount
         $moneyOffPrice = (new TestService($this->order, Coupon::COUPON_MONEY_OFF))->getOrderDiscountPrice();
         //var_dump($moneyOffPrice);
 //exit;
+
         return $discountPrice + $moneyOffPrice;
     }
 }

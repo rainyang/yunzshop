@@ -43,43 +43,38 @@ class PreGeneratedController extends ApiController
     }
 
 
-
     private function getShopOrder()
     {
         $memberCarts = OrderService::getShopMemberCarts();
         return OrderService::createOrderByMemberCarts($memberCarts);
     }
 
-    private function getPluginOrderData(){
+    private function getPluginOrderData()
+    {
         $event = new ShowPreGenerateOrder();
         event($event);
         return $event->getData();
     }
+
     private function run()
     {
         $order_data = collect();
         $order_data->push(OrderService::getOrderData($this->getShopOrder()));
 
-
         $order_data = $order_data->merge($this->getPluginOrderData()[0]);
 
+        $total_price = $order_data->sum('order.price');
+        $total_goods_price = $order_data->sum('order.goods_price');
+        $total_dispatch_price = $order_data->sum('order.dispatch_price');
 
-        $total_price = 0;
-        $total_goods_price = 0;
-        $total_dispatch_price = 0;
         $data['dispatch'] = $order_data[0]['dispatch'];
+        $order_data->map(function ($order_data)
+        {
+            return $order_data->forget('dispatch');
+        });
 
-        foreach ($order_data as &$order_data_item) {
-
-            $total_price += $order_data_item['order']['price'];
-            $total_goods_price += $order_data_item['order']['goods_price'];
-            $total_dispatch_price += $order_data_item['order']['dispatch_price'];
-            unset($order_data_item['dispatch']);
-            //$order_data[] = array_merge($data, $this->getDiscountEventData($order_model));
-        }
         $data += compact('total_price', 'total_dispatch_price', 'order_data', 'total_goods_price');
         return $this->successJson('成功', $data);
-
 
     }
 
