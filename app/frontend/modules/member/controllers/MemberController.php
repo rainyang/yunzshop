@@ -449,7 +449,7 @@ class MemberController extends ApiController
         ];
 
         if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
-            $member_model = MemberModel::getMemberById($data['uid']);
+            $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
             $member_model->setRawAttributes($meber_data);
 
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
