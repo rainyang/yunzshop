@@ -103,7 +103,7 @@ class TestService
     {
         $coupon_id = explode(',', array_get($_GET, 'coupon_ids', ''));
         return $this->getMemberCoupon()->filter(function ($memberCoupon) use ($coupon_id){
-            return  in_array($memberCoupon->coupon_id, $coupon_id);
+            return in_array($memberCoupon->coupon_id, $coupon_id);
         });
     }
 }

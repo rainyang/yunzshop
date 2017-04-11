@@ -8,34 +8,31 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\common\components\ApiController;
+use app\common\events\order\CreatingOrder;
+use app\frontend\modules\member\services\MemberCartService;
+use Request;
 use app\common\events\order\AfterOrderCreatedEvent;
-use app\common\exceptions\AppException;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
-use app\frontend\modules\order\services\OrderService;
 
-class CreateController extends ApiController
+class CreateController extends PreGeneratedController
 {
-
-    private function getPluginOrders()
+    protected function getMemberCarts()
     {
-        $event = new getPreGenerateOrder();
-        event($event);
-        return $event->getData();
+        //dd(Request::query('goods'));
+        $goods_params = json_decode(Request::query('goods'),true);
+        return collect($goods_params)->map(function ($memberCart) {
+            //dd($memberCart);exit;
+            return MemberCartService::newMemberCart($memberCart);
+        });
     }
 
-    private function getShopOrder()
+    public function index(Request $request)
     {
-        $memberCarts = OrderService::getShopMemberCarts();
-
-        return OrderService::createOrderByMemberCarts($memberCarts);
-    }
-
-    public function index()
-    {
+        //dd(Request::all());
+        //exit;
         $orders = collect();
         $orders->push($this->getShopOrder());
-        //$orders->merge($this->getPluginOrders());
+        $orders->merge($this->getPluginOrders());
         $orders->map(function ($order) {
             /**
              * @var $order PreGeneratedOrderModel
@@ -46,23 +43,9 @@ class CreateController extends ApiController
         //todo 返回什么信息
         $this->successJson('成功', []);
     }
-
-    private function validator($params)
-    {
-        if (!is_array($params)) {
-            throw new AppException('请选择下单商品(非数组)');
-        }
-        if (!count($params)) {
-            throw new AppException('请选择下单商品(空数组)');
-        }
-        foreach ($params as $param) {
-
-            if (!isset($param['goods_id'])) {
-                throw new AppException('请选择下单商品(缺少goods_id)');
-            }
-            if (!isset($param['total'])) {
-                throw new AppException('请选择下单商品(缺少total)');
-            }
-        }
+    private function getPluginOrders(){
+        $event = new CreatingOrder($this->getMemberCarts());
+        event($event);
+        return $event->getData();
     }
 }

@@ -4,11 +4,14 @@
 
     <div class="rightlist">
         <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+            <div class="right-titpos">
+                <ul class="add-snav">
+                    <li class="active"><a href="#"> {{ $rechargeMenu['title'] }}</a></li>
+                </ul>
+            </div>
             <div class="panel panel-default">
 
-                <div class="panel-heading">
-                    {{ $rechargeMenu['title'] }}
-                </div>
+
                 <div class="panel-body">
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">{{ $rechargeMenu['name'] }}</label>
@@ -43,7 +46,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
                             <input type="hidden" name="uid" value="{{ $memberInfo['uid'] }}"/>
-                            <input name="submit" type="submit" value="充 值" class="btn btn-primary span2"
+                            <input name="submit" type="submit" value="充 值" class="btn btn-success span2"
                                    onclick="return confirm('确认充值？');return false;">
                         </div>
                     </div>

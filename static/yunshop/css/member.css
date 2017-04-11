@@ -10,16 +10,17 @@
      margin: 0 !important;
 }
 /*会员关系设置*/
-.input-group{border:none;margin-left:-12px;}
-.input-group .input-group-addon{border:none;background:#fff;}
+.input-group{border:none;}
+.input-group .input-group-addon{background:#fff;    width: 200px;
+     text-align: left;}
 .input-group-addon .radio-inline{margin-top:-3px;}
 
-.btn.btn-default{margin: 0 !important;}
+
 .row .input-group{margin-left: 0 !important;}
 
 /*会员等级设置*/
 #member-level .input-group .input-group-addon {
-     border-radius: 0;
+     border-radius: 2px;
      border:1px solid #d2d6de !important;
      background-color: #fff;
 }
