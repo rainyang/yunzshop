@@ -11,7 +11,7 @@ use app\common\facades\Setting;
  * Date: 2017/3/25
  * Time: 上午11:57
  */
-class SettingController extends ApiController
+class SettingController extends BaseController
 {
     /**
      * 商城设置接口
@@ -26,6 +26,7 @@ class SettingController extends ApiController
         } else {
             $setting = Setting::get('shop');
         }
+//        echo "<pre>"; print_r($setting);exit;
         if (!$setting) {
             $this->errorJson('未进行设置.');
         }

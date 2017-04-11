@@ -153,11 +153,30 @@ class MemberModel extends Member
                     }])->get();
                 }])->get();
             }])
-            ->with(['hasOneOrder' => function ($query) {
-                return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
-                    ->uniacid()
-                    ->where('status', 3)
-                    ->groupBy('uid');
+            ->where('uid', $uid);
+    }
+
+    /**
+     * 我的上级 3级
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getMyAgentsParentInfo($uid)
+    {
+        return self::select(['uid'])
+            ->uniacid()
+            ->with(['yzMember' => function ($query) {
+                return $query->select(['member_id', 'parent_id'])
+                    ->with(['hasOnePreSelf' => function ($query) {
+                        return $query->select(['member_id', 'parent_id'])
+                        ->with(['hasOnePreSelf' => function ($query) {
+                            return $query->select(['member_id', 'parent_id'])
+                            ->with(['hasOnePreSelf' => function ($query) {
+                                return $query->select(['member_id', 'parent_id'])->first();
+                        }])->first();
+                    }])->first();
+                }])->first();
             }])
             ->where('uid', $uid);
     }

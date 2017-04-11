@@ -40,15 +40,25 @@
                             @endforeach
                         </ol>
                         {!! $pager !!}
-                        <table class='table'>
+
+
+                        <!--<table class='table'>
                             <tr>
                                 <td>
                                     <a href="{{yzWebUrl('goods.brand.add')}}"
-                                       class="btn btn-primary"><i class="fa fa-plus"></i> 添加新品牌</a>
+                                       class="btn btn-success"><i class="fa fa-plus"></i> 添加新品牌</a>
                                 </td>
                             </tr>
-                        </table>
+                        </table>-->
+
+
                     </div>
+
+                </div>
+
+                <div class='panel-footer'>
+                    <a class='btn btn-success' href="{{yzWebUrl('goods.brand.add')}}"><i class='fa fa-plus'></i> 添加新品牌</a>
+
                 </div>
             </div>
         </div>

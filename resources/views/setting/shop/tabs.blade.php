@@ -1,4 +1,4 @@
-<div class="right-titpos">
+<div class="panel panel-info">
     <ul class="add-shopnav">
         <li @if(\YunShop::request()->route == 'setting.shop.index') class="active" @endif ><a href="{{ yzWebUrl('setting.shop.index')}}">商城设置</a></li>
         <li @if(\YunShop::request()->route == 'setting.shop.member') class="active" @endif ><a href="{{ yzWebUrl('setting.shop.member')}}">会员设置</a></li>

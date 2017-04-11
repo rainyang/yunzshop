@@ -38,10 +38,10 @@
 					<!--		<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">状态</label>-->
 							<div class="">
 								<select name="search[status]" class='form-control'>
-									<option value="" selected >状态不限</option>
+									<option value="" >状态不限</option>
 
-									<option value="1" >{{$lang['putaway']}}</option>
-									<option value="0" >{{$lang['soldout']}}</option>
+									<option value="1" @if($requestSearch['status'] == '1') selected @endif>{{$lang['putaway']}}</option>
+									<option value="0" @if($requestSearch['status'] == '0') selected @endif>{{$lang['soldout']}}</option>
 								</select>
 							</div>
 						</div>
@@ -56,10 +56,10 @@
 							<!--<label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>-->
 							<div class="col-sm-8 col-xs-12">
 								<select name="search[brand_id]" id="brand">
-									<option value="0">请选择品牌</option>
+									<option value="">请选择品牌</option>
 									@if(!empty($brands))
 									@foreach($brands as $brand)
-									<option value="{{$brand['id']}}">{{$brand['name']}}</option>
+									<option value="{{$brand['id']}}" @if($requestSearch['brand_id'] == $brand['id']) selected @endif>{{$brand['name']}}</option>
 									@endforeach
 									@endif
 								</select>
@@ -241,7 +241,7 @@
 							@endforeach
 
 							@section('release_gods')
-							<tr>
+						<!--	<tr>
 								<td colspan='10'>
 									@section('add_goods')
 									<a class='btn btn-primary' href="{{yzWebUrl('goods.goods.create')}}"><i class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
@@ -250,14 +250,25 @@
 									<input type="hidden" name="token" value="{{$var['token']}}" />
 
 								</td>
-							</tr>
+							</tr>-->
 							@show
 							</tr>
 							</tbody>
 						</table>
+
+
+
 						{!!$pager!!}
 						<!--分页-->
+
+
 					</div>
+					<div class='panel-footer'>
+						<a class='btn btn-success ' href="{{yzWebUrl('goods.goods.create')}}"><i
+								class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
+						<input name="submit" type="submit" class="btn btn-default back" value="提交排序">
+					</div>
+
 				</div>
 			</form>
 		</div>
