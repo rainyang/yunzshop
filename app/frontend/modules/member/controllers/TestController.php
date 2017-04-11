@@ -331,9 +331,6 @@ exit;
 
     public function wxJsSdkConfig()
     {
-
-        $a = weAccount();
-        echo '<pre>';print_r($a);exit;
         $pay = \Setting::get('shop.pay');
         $options = [
             'app_id'  => $pay['weixin_appid'],
