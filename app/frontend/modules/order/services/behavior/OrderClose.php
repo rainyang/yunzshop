@@ -18,5 +18,5 @@ class OrderClose extends ChangeStatusOperation
     protected $status_after_changed = ORDER::CLOSE;
     protected $name = '关闭';
     protected $time_field = 'cancel_time';
-    protected $past_tense_class_name = 'OrderClosed';
+    protected $past_tense_class_name = 'OrderCanceled';
 }
