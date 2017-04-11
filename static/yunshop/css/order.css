@@ -62,8 +62,9 @@
 .order-info .order-title tbody tr td.left{ border-bottom:1px solid #ccc;background:#f8f8f8;border-top:1px solid #ccc;}
 .order-info .order-title tbody tr td.right{ border-bottom:1px solid #ccc;background:#f8f8f8;text-align: center;border-top:1px solid #ccc;}
 #pager{background: #fff;
-    padding: 0 15px 15px;}
-
+    padding: 0 15px 15px;overflow: hidden}
+.label.label-info{margin-top: 0 !important;}
+.date-title{font-size: 12px;}
 /*订单详情*/
 .main .form-horizontal .form-group{margin-bottom:0;}
 .main .form-horizontal .modal .form-group{margin-bottom:15px;}
@@ -78,6 +79,5 @@
     margin-bottom: 0;}
 .col-sm-9.col-xs-12 textarea{  height: 150px;  margin-top: 10px;}
 .form-control-static tr td{border:none;text-align:right}
-.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{padding: 10px 0 !important;}
 
 .label.label-default.text-default.label-info.text-pinfo{margin-right: 15px;}

@@ -145,11 +145,11 @@
                             <input type="hidden" name="category[level]" class="form-control"
                                    value="{{$item->level}}"/>
 
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"
+                            <input type="submit" name="submit" value="提交" class="btn btn-success"
                                    onclick="return formcheck()"/>
-                            <input type="button" name="back" onclick='history.back()' style='margin-left:10px;'
+                            <input type="button" name="back" onclick='history.back()' style=''
                                    value="返回列表"
-                                   class="btn btn-default col-lg-1"/>
+                                   class="btn btn-default back"/>
                         </div>
                     </div>
                 </div>

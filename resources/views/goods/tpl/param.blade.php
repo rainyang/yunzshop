@@ -30,7 +30,7 @@
             <tr>
                 <td>&nbsp;</td>
                 <td colspan="2">
-                    <a href="javascript:;" id='add-param' onclick="addParam()" style="margin-top:10px;" class="btn btn-primary"  title="添加属性"><i class='fa fa-plus'></i> 添加属性</a>
+                    <a href="javascript:;" id='add-param' onclick="addParam()" class="btn btn-success"  title="添加属性"><i class='fa fa-plus'></i> 添加属性</a>
                 </td>
             </tr>
         </tbody>

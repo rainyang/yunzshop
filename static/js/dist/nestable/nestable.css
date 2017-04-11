@@ -38,6 +38,7 @@
     -webkit-border-radius: 3px;
             border-radius: 3px;
     overflow: hidden;
+    line-height: 28px;
 }
 .dd-handle:hover {background: #fff; }
 .dd-handle p {

@@ -8,12 +8,7 @@
 
 	</div>
 </div>
-<style type="text/css">
-.top_menu{
-    top: 100px !important;
-}
-    #edui1{width: auto !important;}
-</style>
+
 <script type="text/javascript">
   require(['bootstrap'], function ($) {
     $(document).scroll(function () {
