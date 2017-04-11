@@ -112,7 +112,7 @@ class GoodsController extends ApiController
             ->where("status", 1)
             ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
-        
+
         if (empty($list)) {
             $this->errorJson('没有找到商品.');
         }
