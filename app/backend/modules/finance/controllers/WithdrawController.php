@@ -16,9 +16,9 @@ use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\Income;
-use app\common\services\fiance\Balance;
+use app\common\services\finance\Balance;
 use app\common\services\PayFactory;
-//use app\common\services\fiance\Withdraw as WithdrawService;
+//use app\common\services\finance\Withdraw as WithdrawService;
 use Illuminate\Support\Facades\Log;
 
 class WithdrawController extends BaseController

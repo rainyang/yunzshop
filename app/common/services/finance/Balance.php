@@ -6,7 +6,7 @@
  * Time: 上午10:31
  */
 
-namespace app\common\services\fiance;
+namespace app\common\services\finance;
 
 
 use app\common\models\finance\BalanceRecharge;
