@@ -57,6 +57,19 @@ class BalanceController extends ApiController
         return $this->errorJson('数据有误，请刷新重试');
     }
 
+    public function balance()
+    {
+        $memberId = \YunShop::app()->getMemberId();
+        if ($memberId) {
+            $memberModel = Member::getMemberInfoById($memberId);
+            if (!$memberModel) {
+                return $this->errorJson('会员不存在');
+            }
+            return $this->successJson('获取会员余额成功', $memberModel->credit2);
+        }
+        return $this->errorJson('数据有误，请刷新重试');
+    }
+
     public function withdraw()
     {
         //$test = (new BalanceSet())->getWithdrawSet();
