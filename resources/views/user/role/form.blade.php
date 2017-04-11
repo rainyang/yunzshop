@@ -8,10 +8,13 @@
 @else
 <form action="{{ yzWebUrl('user.role.store') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
 @endif
+    <div class="right-titpos">
+        <ul class="add-snav">
+            <li class="active"><a href="#">角色管理&nbsp;  <i class="fa fa-angle-double-right"></i> &nbsp;角色设置</a></li>
+        </ul>
+    </div>
     <div class='panel panel-default'>
-        <div class='panel-heading'>
-            角色设置
-        </div>
+
         <div class='panel-body'>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 角色</label>
@@ -40,8 +43,8 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                 <div class="col-sm-9 col-xs-12">
-                    <input type="submit" name="submit" value="提交" class="btn btn-primary"  />
-                    <input type="button" name="back" onclick='history.back()' style="margin-left: 10px" value="返回列表" class="btn btn-default" />
+                    <input type="submit" name="submit" value="提交" class="btn btn-success"  />
+                    <input type="button" name="back" onclick='history.back()'  value="返回列表" class="btn btn-default back" />
                 </div>
             </div>
         </div>

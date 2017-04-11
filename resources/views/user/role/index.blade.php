@@ -85,7 +85,7 @@
                     {!! $pager !!}
                 </div>
                 <div class='panel-footer'>
-                    <a class='btn btn-primary' href="{{ yzWebUrl('user.role.store') }}"><i class="fa fa-plus"></i> 添加新角色</a>
+                    <a class='btn btn-success' href="{{ yzWebUrl('user.role.store') }}"><i class="fa fa-plus"></i> 添加新角色</a>
                 </div>
 
 

@@ -15,7 +15,7 @@
         }
     </script>
 @if ($order['status'] == 0)
-<a class="btn btn-primary btn-sm disbut"
+<a class="btn btn-success btn-sm disbut"
    href="javascript:;"
    onclick="pay({{$order['id']}})">确认付款</a>
 <a class="label label-default">等待付款</a>
