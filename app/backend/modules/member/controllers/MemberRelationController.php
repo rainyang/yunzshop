@@ -23,8 +23,15 @@ class MemberRelationController extends BaseController
             $relation = $relation->toArray();
         }
 
+        if (!empty($relation['become_goods_id'])) {
+            $goods = Goods::getGoodsById($relation['become_goods_id']);
+            $goods = $goods->toArray();
+        } else {
+            $goods = [];
+        }
         return view('member.relation', [
-            'set' => $relation
+            'set' => $relation,
+            'goods' => $goods
         ])->render();
     }
 
@@ -69,7 +76,7 @@ class MemberRelationController extends BaseController
         } else {
             $data = [];
         }
-echo '<pre>';print_r($data);exit;
+
         return view('member.goods_query', [
             'goods' => $data
         ])->render();

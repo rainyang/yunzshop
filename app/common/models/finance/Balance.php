@@ -69,6 +69,15 @@ class Balance extends BaseModel
             ->paginate($pageSize);
     }
 
+    public static function getMemberDeatilRecord($memberId, $type= '')
+    {
+        $query = self::uniacid()->where('member_id',$memberId);
+        if ($type == \app\common\services\fiance\Balance::INCOME || $type == \app\common\services\fiance\Balance::EXPENDITURE) {
+            $query = $query->where('type', $type);
+        }
+        return $query->get();
+    }
+
 
 
 }

@@ -11,18 +11,20 @@ namespace app\frontend\modules\member\controllers;
 use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\models\AccountWechats;
+use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\OrderListModel;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
 
 
 class MemberController extends ApiController
 {
-
     /**
      * 获取用户信息
      *
@@ -30,8 +32,6 @@ class MemberController extends ApiController
      */
     public function getUserInfo()
     {
-        //$member_id = \YunShop::request()->uid;
-
         $member_id = \YunShop::app()->getMemberId();
 
         if (!empty($member_id)) {
@@ -41,6 +41,16 @@ class MemberController extends ApiController
                 $member_info = $member_info->toArray();
 
                 if (!empty($member_info['yz_member'])) {
+                    $member_info['alipay_name'] = $member_info['yz_member']['alipay_name'];
+                    $member_info['alipay'] = $member_info['yz_member']['alipay'];
+                    $member_info['province_name'] = $member_info['yz_member']['province_name'];
+                    $member_info['city_name'] = $member_info['yz_member']['city_name'];
+                    $member_info['area_name'] = $member_info['yz_member']['area_name'];
+                    $member_info['province'] = $member_info['yz_member']['province'];
+                    $member_info['city'] = $member_info['yz_member']['city'];
+                    $member_info['area'] = $member_info['yz_member']['area'];
+                    $member_info['address'] = $member_info['yz_member']['address'];
+
                     if (!empty($member_info['yz_member']['group'])) {
                         $member_info['group_id'] = $member_info['yz_member']['group']['id'];
                         $member_info['group_name'] = $member_info['yz_member']['group']['group_name'];
@@ -52,9 +62,18 @@ class MemberController extends ApiController
                     }
                 }
 
+                if (!empty($member_info['birthyear'] )) {
+                    $member_info['birthday'] = $member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday'];
+                } else {
+                    $member_info['birthday'] = '1970-01-01';
+                }
+
+
                 $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
 
                 $member_info['order'] = $order_info;
+
+                $member_info['Provinces'] = Area::getProvincesList();
                 return $this->successJson('', $member_info);
             } else {
                 return $this->errorJson('用户不存在');
@@ -357,5 +376,130 @@ class MemberController extends ApiController
         ];
 
         return $this->successJson('', $data);
+    }
+
+    /**
+     * 通过省份id获取对应的市信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCitysByProvince()
+    {
+        $id = \YunShop::request()->parent_id;
+
+        $data = Area::getCitysByProvince($id);
+
+        if (!empty($data)) {
+            return $this->successJson('', $data->toArray());
+        } else {
+            return $this->errorJson('查无数据');
+        }
+    }
+
+    /**
+     * 通过市id获取对应的区信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getAreasByCity()
+    {
+        $id = \YunShop::request()->parent_id;
+
+        $data = Area::getAreasByCity($id);
+
+        if (!empty($data)) {
+            return $this->successJson('', $data->toArray());
+        } else {
+            return $this->errorJson('查无数据');
+        }
+    }
+
+    /**
+     * 更新会员资料
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateUserInfo()
+    {
+        $data = \YunShop::request()->data;
+
+        $birthday = explode('-', $data['birthday']);
+
+        $meber_data = [
+            'realname' => $data['realname'],
+            'mobile' => $data['mobile'],
+            'telephone' => $data['telephone'],
+            'avatar' => $data['avatar'],
+            'gender' => $data['gender'],
+            'birthyear' => $birthday[0],
+            'birthmonth' => $birthday[1],
+            'birthday' => $birthday[2]
+        ];
+
+        $member_shop_info_data = [
+            'alipay' => $data['alipay'],
+            'alipayname' => $data['alipay_name'],
+            'province_name' => $data['province_name'],
+            'city_name' => $data['city_name'],
+            'area_name' => $data['area_name'],
+            'province' => $data['province'],
+            'city' => $data['city'],
+            'area' => $data['area'],
+            'address' => $data['address'],
+        ];
+
+        if ($data['uid'] == \YunShop::app()->getMemberId()) {
+            $member_model = MemberModel::getMemberById($data['uid']);
+            $member_model->setRawAttributes($meber_data);
+
+            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($data['uid']);
+            $member_shop_info_model->setRawAttributes($member_shop_info_data);
+
+            $member_validator = $member_model->validator($member_model->getAttributes());
+            $member_shop_info_validator = $member_shop_info_model->validator($member_shop_info_model->getAttributes());
+
+            if ($member_validator->fails()) {
+                return $this->errorJson($member_validator->messages());
+            }
+
+            if ($member_shop_info_validator->fails()) {
+                return $this->errorJson($member_shop_info_model->messages());
+            }
+
+            if ($member_model->save() && $member_shop_info_model->save()) {
+                    return $this->successJson('用户资料修改成功');
+            } else {
+                    return $this->errorJson('更新用户资料失败');
+            }
+        } else {
+            return $this->errorJson('用户不存在');
+        }
+    }
+
+    /**
+     * 绑定手机号
+     *
+     */
+    public function bindMobile()
+    {
+        $data = \YunShop::request()->data;
+
+        $member_model = MemberModel::getMemberById($data['uid']);
+
+        if ($data['uid'] == \YunShop::app()->getMemberId() &&
+               MemberService::validate($data['mobile'], $data['password'], $data['confirm_password'])) {
+            $salt = Str::random(8);
+            $member_model->salt = $salt;
+            $member_model->mobile = $data['mobile'];
+            $member_model->password = md5($data['password'] . $salt);
+
+            if ($member_model->save()) {
+                return $this->successJson('手机号码绑定成功');
+            } else {
+                return $this->errorJson('手机号码绑定失败');
+            }
+        } else {
+            return $this->errorJson('手机号或密码格式错误');
+        }
     }
 }

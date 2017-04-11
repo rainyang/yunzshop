@@ -161,14 +161,14 @@
             $("#goods").val( "[" + o.id + "]" + o.title);
             $("#modal-goods .close").click();
         }
-        function formcheck(){alert(3)
+        function formcheck(){
             var become_child =$(":radio[name='setdata[become_child]']:checked").val();
             if( become_child=='1'  || become_child=='2' ){
                 if( $(":radio[name='setdata[become]']:checked").val() =='0'){
                     alert('成为下线条件选择了首次下单/首次付款，发展下线不能选择无条件!')   ;
                     return false;
                 }
-            }alert(1)
+            }
             return true;
         }
         function credit_avoid_audit() {

@@ -58,6 +58,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         'openid': '{{YunShop::app()->openid}}',
         'uid': '{{YunShop::app()->uid}}',
         'siteroot': './',
+          'static_url': '{{static_url('')}}',
         'siteurl': '{!! YunShop::app()->siteurl !!}',
         'attachurl': '{{YunShop::app()->attachurl}}',
         'attachurl_local': '{{YunShop::app()->attachurl_local}}',
