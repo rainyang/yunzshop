@@ -15,10 +15,12 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
+use app\common\models\Setting;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\OrderListModel;
+use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 
@@ -499,5 +501,26 @@ class MemberController extends ApiController
         } else {
             return $this->errorJson('手机号或密码格式错误');
         }
+    }
+
+    public function wxJsSdkConfig()
+    {
+        $pay = \Setting::get('shop.pay');
+
+        $options = [
+            'app_id'  => $pay['weixin_appid'],
+            'secret'  => $pay['weixin_secret'],
+            'token'   => \YunShop::app()->account['token'],
+            'aes_key' => \YunShop::app()->account['encodingaeskey'],
+            // payment
+            'payment' => [
+                'merchant_id'        => $pay['weixin_mchid'],
+                'key'                => $pay['weixin_apisecret'],
+                'cert_path'          => $pay['weixin_cert'],
+                'key_path'           => $pay['weixin_key'],
+            ]
+        ];
+
+        $app = new Application($options);
     }
 }

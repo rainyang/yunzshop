@@ -19,6 +19,7 @@ use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\services\MemberService;
+use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class TestController extends BaseController //ApiController
@@ -327,4 +328,25 @@ exit;
        echo count($a['yz_member'], 1);
        exit;
    }
+
+    public function wxJsSdkConfig()
+    {
+        $pay = \Setting::get('shop.pay');
+        $options = [
+            'app_id'  => $pay['weixin_appid'],
+            'secret'  => $pay['weixin_secret'],
+            // payment
+            'payment' => [
+                'merchant_id'        => $pay['weixin_mchid'],
+                'key'                => $pay['weixin_apisecret'],
+                'cert_path'          => $pay['weixin_cert'],
+                'key_path'           => $pay['weixin_key'],
+            ]
+        ];
+
+        $app = new Application($options);
+
+        $js = $app->js;
+        echo '<pre>';print_r($js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo')));exit;
+    }
 }
