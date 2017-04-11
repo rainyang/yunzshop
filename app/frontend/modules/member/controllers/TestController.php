@@ -331,6 +331,9 @@ exit;
 
     public function wxJsSdkConfig()
     {
+
+        $a = weAccount();
+        echo '<pre>';print_r($a);exit;
         $pay = \Setting::get('shop.pay');
         $options = [
             'app_id'  => $pay['weixin_appid'],
@@ -340,10 +343,11 @@ exit;
         $app = new Application($options);
 
         $js = $app->js;
+        $js->setUrl('http://www.yunzshop.com');
 
-        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'));
+        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'), 1);
         $config = json_decode($config, 1);
-
+echo '<pre>';print_r($config);exit;
         return $this->successJson('', ['config' => $config]);
     }
 }
