@@ -130,8 +130,9 @@
 .add-snav .back{    float: right;  padding: 10px 0 0 0;}
 .add-snav .fa{margin-right: 5px;}
 .add-snav .back a{margin-right: 5px;}
+.add-snav .btn.btn-success{  float: right;  margin: 5px;  }
 
-/*商品发布*/
+    /*商品发布*/
 
 #goods-index.rightlist .control-label.goods-type{
     padding-top: 0;
@@ -208,7 +209,7 @@
     padding-right: 0;
 
 }
-.form-horizontal .form-group{padding-top: 0;margin-bottom: 0;}
+.form-horizontal .form-group{padding-top: 0;}
 .form-input{    margin-bottom: 15px;}
 
 .select2-container--default .select2-selection--single {
@@ -375,3 +376,16 @@
     top: 100px !important;
 }
 #edui1{width: auto !important;}
+
+
+/*选择地区*/
+.province { float:left; position:relative;width:190px; height:35px; line-height:35px;border:1px solid #fff;}
+/*.province:hover { border:1px solid #f7e4a5;border-bottom:1px solid #fffec6; background:#fffec6;}*/
+.province .cityall { margin-top:10px;}
+.province ul { list-style: outside none none;position:absolute;padding:0;background:#fffec6;display:none;
+    width:auto; width:300px; z-index:999999;left:-1px;top:32px;}
+.province ul li  { float:left;min-width:60px;margin-left:20px; height:30px;line-height:30px; }
+.modal-dialog{width: 980px;}
+label.checkbox-inline{margin-left:20px;}
+label.checkbox-inline .citycount{color:#f15353;}
+.modal-body{height: 280px;}

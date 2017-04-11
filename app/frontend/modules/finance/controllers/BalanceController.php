@@ -57,17 +57,30 @@ class BalanceController extends ApiController
         return $this->errorJson('数据有误，请刷新重试');
     }
 
+    public function balance()
+    {
+        $memberId = \YunShop::app()->getMemberId();
+        if ($memberId) {
+            $memberModel = Member::getMemberInfoById($memberId);
+            if (!$memberModel) {
+                return $this->errorJson('会员不存在');
+            }
+            return $this->successJson('获取会员余额成功', $memberModel->credit2);
+        }
+        return $this->errorJson('数据有误，请刷新重试');
+    }
+
     public function withdraw()
     {
-        $test = (new BalanceSet())->getWithdrawSet();
-        echo '<pre>'; print_r($test); exit;
+        //$test = (new BalanceSet())->getWithdrawSet();
+        //echo '<pre>'; print_r($test); exit;
         $memberId = \YunShop::app()->getMemberId();
         $withdrawMoney = trim(\YunShop::request()->withdraw_money);
         $withdrawType = \YunShop::request()->withdraw_type;
 
-        $memberId = '55';
-        $withdrawMoney = 100;
-        $withdrawType = 1;
+        //$memberId = '55';
+        //$withdrawMoney = 100;
+        //$withdrawType = 1;
 
 
         $memberInfo = Member::getMemberInfoById($memberId);
@@ -77,9 +90,9 @@ class BalanceController extends ApiController
         if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $withdrawMoney)|| $withdrawMoney > $memberInfo->credit2) {
             return $this->errorJson('提现金额必须是大于0且小于您的余额，允许两位小数');
         }
-
         if ($memberId && $withdrawMoney && $withdrawType) {
             $withdrawModel = new Withdraw();
+
             $withdrawData = array(
                 'withdraw_sn'      => '',
                 'uniacid'       => \YunShop::app()->uniacid,
@@ -90,7 +103,7 @@ class BalanceController extends ApiController
                 'amounts'       => $withdrawMoney,      //提现金额
                 'poundage'      => '0',                  //提现手续费
                 'poundage_rate' => '0',                  //手续费比例
-                'pay_way'       => '',                  //打款方式
+                'pay_way'       => $this->attachedWithdrawType($withdrawType),                  //打款方式
                 'status'        => '0',                  //0未审核，1未打款，2已打款， -1无效
                 'actual_amounts'=> '0',
                 'actual_poundage' => '0'
@@ -98,28 +111,30 @@ class BalanceController extends ApiController
             );
             $withdrawModel->fill($withdrawData);
             $validator = $withdrawModel->validator();
-            if ($withdrawModel->save()) {
-                echo '<pre>'; print_r(1233); exit;
+            if ($validator->fails()) {
+                return $this->errorJson($validator->messages());
+            } else {
+                if ($withdrawModel->save()) {
+                    $data = array(
+                        'member_id'     => $memberId,
+                        'change_money'  => -$withdrawMoney,
+                        'serial_number' => '',
+                        'operator'      => BalanceRecharge::PAY_TYPE_MEMBER,
+                        'operator_id'   => $memberId,
+                        'remark'        => '会员提现余额'. $withdrawMoney. '元',
+                        'service_type'  => \app\common\models\finance\Balance::BALANCE_WITHDRAWAL,
+                        'withdraw_type' => $withdrawType
+                    );
+                    $result = (new Balance())->changeBalance($data);
+                    if ($result === true) {
+                        return $this->successJson('余额提现申请已经提交，请等待审核');
+                    }
+                    return $this->errorJson($result);
+                }
+                return $this->errorJson('提现记录写入失败,请重试');
             }
-
-
-            echo '<pre>'; print_r('开发中'); exit;
-            $data = array(
-                'member_id'     => $memberId,
-                'change_money'  => -$withdrawMoney,
-                'serial_number' => '',
-                'operator'      => BalanceRecharge::PAY_TYPE_MEMBER,
-                'operator_id'   => $memberId,
-                'remark'        => '会员提现余额'. $withdrawMoney. '元',
-                'service_type'  => \app\common\models\finance\Balance::BALANCE_WITHDRAWAL,
-                'withdraw_type' => $withdrawType
-            );
-            $result = (new Balance())->changeBalance($data);
-            if ($result === true) {
-
-            }
-            echo '<pre>'; print_r($result); exit;
         }
+        return $this->errorJson('请提交正确的请求数据');
     }
 
     /**
@@ -302,5 +317,20 @@ class BalanceController extends ApiController
         return $data;
     }
 
+
+    private function attachedWithdrawType($withdrawType)
+    {
+        switch ($withdrawType)
+        {
+            case 1:
+                return 'wecht';
+                break;
+            case 2:
+                return 'alipay';
+                break;
+            default:
+                return '未知提现类型';
+        }
+    }
 
 }

@@ -3,11 +3,15 @@
 @section('content')
 
     <div class="main rightlist">
+        <div class="right-titpos">
+            <ul class="add-snav">
+                <li class="active"><a href="#"> 余额设置</a></li>
+            </ul>
+        </div>
+
         <form action="{{ yzWebUrl('finance.balance.index') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    余额设置
-                </div>
+
                 <div class="alert alert-warning">
                     余额支付开关、及其他支付设置，请到交易设置查看<a href="{{ yzWebUrl('setting.shop.pay') }}" target="_blank">【点击跳转交易设置】</a>.
                 </div>
@@ -73,7 +77,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"/>
+                            <input type="submit" name="submit" value="提交" class="btn btn-success"/>
                         </div>
                     </div>
 

@@ -83,9 +83,9 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分</label>
                             <div class="col-sm-3">
                                 <div class='input-group'>
-                                    <div class=' input-group-addon'  style='width:200px;text-align: left;'>{{$member['credit1']}}</div>
+                                    <div class=' input-group-addon' >{{$member['credit1']}}</div>
                                     <div class='input-group-btn'>
-                                        <a class='btn btn-primary' href="{{yzWebUrl('finance.point-recharge',['id'=>$member['uid']])}}">充值</a>
+                                        <a class='btn btn-success' href="{{yzWebUrl('finance.point-recharge',['id'=>$member['uid']])}}">充值</a>
                                     </div>
                                 </div>
                             </div>
@@ -94,8 +94,8 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额</label>
                             <div class="col-sm-3">
                                 <div class='input-group'>
-                                    <div class=' input-group-addon' style='width:200px;text-align: left;'>{{$member['credit2']}}</div>
-                                    <div class='input-group-btn'><a class='btn btn-primary' href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$member['uid']])}}">充值</a>
+                                    <div class=' input-group-addon' >{{$member['credit2']}}</div>
+                                    <div class='input-group-btn'><a class='btn btn-success' href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$member['uid']])}}">充值</a>
                                     </div>
                                 </div>
                             </div>
@@ -169,9 +169,9 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="submit" name="submit" value="提交" class="btn btn-primary" />
+                                <input type="submit" name="submit" value="提交" class="btn btn-success" />
                                 <input type="hidden" name="token" value="{{$var['token']}}" />
-                                <input type="button" class="btn btn-default" name="submit" onclick="location.href='{{yzWebUrl('member.member.index')}}'" value="返回列表" style='margin-left:10px;' />
+                                <input type="button" class="btn btn-default back" name="submit" onclick="location.href='{{yzWebUrl('member.member.index')}}'" value="返回列表"  />
                             </div>
                         </div>
                     </div>

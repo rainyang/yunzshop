@@ -1,4 +1,4 @@
-﻿<!-- 确认发货 -->
+<!-- 确认发货 -->
 <div id="modal-confirmsend" class="modal fade" tabindex="-1" role="dialog" style="width:600px;margin:0px auto;">
     <form class="form-horizontal form" action="{!! yzWebUrl('order.operation.send') !!}" method="post" enctype="multipart/form-data">
         <input type='hidden' name='order_id' value='' />

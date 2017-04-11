@@ -57,7 +57,7 @@
                 </div>
 
                 <div class='panel-footer'>
-                    <a class='btn btn-success' href="{{yzWebUrl('goods.brand.add')}}"><i class='fa fa-plus'></i> 添加新品牌</a>
+                    <a class='btn btn-info' href="{{yzWebUrl('goods.brand.add')}}"><i class='fa fa-plus'></i> 添加新品牌</a>
 
                 </div>
             </div>

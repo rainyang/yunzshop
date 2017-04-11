@@ -9,11 +9,13 @@
 namespace app\frontend\modules\coupon\services;
 
 
+use Illuminate\Support\Collection;
+
 class MemberCouponService
 {
     static private $memberCoupons;
 
-    public static function getStaticCurrentMemberCoupon($member)
+    public static function getCurrentMemberCouponCache($member)
     {
         if(!isset(self::$memberCoupons)){
             return self::$memberCoupons = self::getCurrentMemberCoupon($member);
@@ -21,10 +23,12 @@ class MemberCouponService
         return self::$memberCoupons;
 
     }
-
+    /**
+     * @param $member
+     * @return Collection
+     */
     public static function getCurrentMemberCoupon($member)
     {
-
         return $member->hasManyMemberCoupon()->get();
     }
 }
