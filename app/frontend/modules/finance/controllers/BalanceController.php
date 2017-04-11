@@ -13,6 +13,7 @@ use app\backend\modules\member\models\Member;
 use app\common\components\ApiController;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
+use app\common\models\Withdraw;
 use app\common\services\fiance\Balance;
 use app\common\services\PayFactory;
 
@@ -27,10 +28,6 @@ class BalanceController extends ApiController
         $memberId = \YunShop::app()->getMemberId();
         $rechargeMoney = trim(\YunShop::request()->recharge_money);
         $payType = \YunShop::request()->pay_type;
-
-        //$memberId = 55;
-        //$rechargeMoney = 100;
-        //$payType = 2;
 
         if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $rechargeMoney)) {
             return $this->errorJson('请输入有效的充值金额，允许两位小数');
@@ -59,6 +56,62 @@ class BalanceController extends ApiController
         return $this->errorJson('数据有误，请刷新重试');
     }
 
+    public function withdraw()
+    {
+        $memberId = \YunShop::app()->getMemberId();
+        $withdrawMoney = trim(\YunShop::request()->withdraw_money);
+        $withdrawType = \YunShop::request()->withdraw_type;
+
+        $memberId = '55';
+        $withdrawMoney = 100;
+        $withdrawType = 1;
+
+
+        $memberInfo = Member::getMemberInfoById($memberId);
+        if (!$memberInfo) {
+            return $this->errorJson('会员不存在');
+        }
+        if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $withdrawMoney)|| $withdrawMoney > $memberInfo->credit2) {
+            return $this->errorJson('提现金额必须是大于0且小于您的余额，允许两位小数');
+        }
+
+        if ($memberId && $withdrawMoney && $withdrawType) {
+            $withdrawModel = new Withdraw();
+            $withdrawData = array(
+                'withdraw'      => '',
+                'uniacic'       => \YunShop::app()->uniacid,
+                'member_id'     => $memberId,
+                'type'          => 'balance',
+                'type_id'       => '',
+                'type_name'     => '',
+                'amounts'       => $withdrawMoney,      //提现金额
+                'poundage'      => '',                  //提现手续费
+                'poundage_rate' => '',                  //手续费比例
+                'pay_way'       => '',                  //打款方式
+                'status'        => ''                   //0未审核，1未打款，2已打款， -1无效
+
+            );
+
+
+            echo '<pre>'; print_r('开发中'); exit;
+            $data = array(
+                'member_id'     => $memberId,
+                'change_money'  => -$withdrawMoney,
+                'serial_number' => '',
+                'operator'      => BalanceRecharge::PAY_TYPE_MEMBER,
+                'operator_id'   => $memberId,
+                'remark'        => '会员提现余额'. $withdrawMoney. '元',
+                'service_type'  => \app\common\models\finance\Balance::BALANCE_WITHDRAWAL,
+                'withdraw_type' => $withdrawType
+            );
+            $result = (new Balance())->changeBalance($data);
+            if ($result === true) {
+
+            }
+            echo '<pre>'; print_r($result); exit;
+        }
+    }
+
     /**
      * 会员余额转让接口
      * @return \Illuminate\Http\JsonResponse
@@ -69,10 +122,6 @@ class BalanceController extends ApiController
         $transfer = \YunShop::app()->getMemberId();
         $recipient = \YunShop::request()->recipient;
         $transferMoney = trim(\YunShop::request()->transfer_money);
-
-        //$transferMoney = '1.11';
-        //$transfer = 55;
-        //$recipient = 57;
 
         $recipientModel = Member::getMemberById($recipient);
         $transferModel = Member::getMemberById($transfer);
