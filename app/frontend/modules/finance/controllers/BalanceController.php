@@ -65,9 +65,9 @@ class BalanceController extends ApiController
         $withdrawMoney = trim(\YunShop::request()->withdraw_money);
         $withdrawType = \YunShop::request()->withdraw_type;
 
-        $memberId = '55';
-        $withdrawMoney = 100;
-        $withdrawType = 1;
+        //$memberId = '55';
+        //$withdrawMoney = 100;
+        //$withdrawType = 1;
 
 
         $memberInfo = Member::getMemberInfoById($memberId);
