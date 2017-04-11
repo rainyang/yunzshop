@@ -74,77 +74,6 @@ class OrderService
     }
 
     /**
-     * 获取自营商品购物车记录
-     * @return Collection
-     */
-    public static function getShopMemberCarts()
-    {
-        return self::getMemberCarts(function ($memberCart) {
-            /**
-             * @var $memberCart MemberCart
-             */
-            dd($memberCart->goods->is_plugin);
-
-            if (empty($memberCart->goods->is_plugin)) {
-                echo 1;
-                return true;
-            }
-            echo 2;
-            return false;
-        });
-    }
-    /**
-     * 获取插件商品购物车记录
-     * @return Collection
-     */
-    public static function getPluginMemberCarts()
-    {
-        return self::getMemberCarts(function ($memberCart) {
-            /**
-             * @var $memberCart MemberCart
-             */
-            if (!empty($memberCart->goods->is_plugin)) {
-                return true;
-            }
-            return false;
-        });
-    }
-    /**
-     * 从url中获取购物车记录并验证
-     * @param $callback
-     * @return Collection
-     * @throws AppException
-     */
-    public static function getMemberCarts($callback = null)
-    {
-        static $memberCarts;
-        $cartIds = [];
-        if (!is_array($_GET['cart_ids'])) {
-            $cartIds = explode(',', $_GET['cart_ids']);
-        }
-
-        if (!count($cartIds)) {
-            throw new AppException('参数格式有误');
-        }
-        if(!isset($memberCarts)){
-            $memberCarts = MemberCart::getCartsByIds($cartIds);
-        }
-        if ($memberCarts->isEmpty()) {
-            throw new AppException('未找到购物车信息');
-        }
-        if(isset($callback)){
-
-            $result = $memberCarts->filter($callback);
-        }
-
-        if ($memberCarts->isEmpty()) {
-
-            throw new AppException('请选择下单商品');
-        }
-        return $memberCarts;
-    }
-
-    /**
      * 获取订单商品对象数组
      * @param Collection $memberCarts
      * @return Collection
@@ -154,7 +83,7 @@ class OrderService
     {
         $result = new Collection();
         if($memberCarts->isEmpty()){
-            throw new \AppException("未找到订单商品");
+            throw new AppException("未找到订单商品");
         }
         foreach ($memberCarts as $memberCart) {
             if (!($memberCart instanceof MemberCart)) {

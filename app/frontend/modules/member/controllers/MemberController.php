@@ -19,6 +19,7 @@ use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\OrderListModel;
+use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 
@@ -499,5 +500,29 @@ class MemberController extends ApiController
         } else {
             return $this->errorJson('手机号或密码格式错误');
         }
+    }
+
+    /**
+     * 微信JSSDKConfig
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function wxJsSdkConfig()
+    {
+        $pay = \Setting::get('shop.pay');
+
+        $options = [
+            'app_id'  => $pay['weixin_appid'],
+            'secret'  => $pay['weixin_secret']
+        ];
+
+        $app = new Application($options);
+
+        $js = $app->js;
+
+        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'));
+        $config = json_decode($config, 1);
+
+        return $this->successJson('', ['config' => $config]);
     }
 }

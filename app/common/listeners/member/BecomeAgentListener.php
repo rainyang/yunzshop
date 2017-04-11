@@ -50,7 +50,7 @@ class BecomeAgentListener
                 ];
 
                 $model->relation = $relation_str;
-                
+
                 if ($model->save()) {
                     $agent_data['parent'] = $relation_str;
                 } else {

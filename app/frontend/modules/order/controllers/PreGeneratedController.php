@@ -62,7 +62,7 @@ abstract class PreGeneratedController extends ApiController
      * 获取商城的订单
      * @return \app\frontend\modules\order\services\models\PreGeneratedOrderModel
      */
-    private function getShopOrder()
+    protected function getShopOrder()
     {
 
         return OrderService::createOrderByMemberCarts($this->getShopMemberCarts());

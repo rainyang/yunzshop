@@ -60,6 +60,7 @@ class OrderDiscount extends Discount
 
     public function getCouponPrice()
     {
+
         if (isset($this->couponPrice)) {
             return $this->couponPrice;
         }
@@ -71,11 +72,11 @@ class OrderDiscount extends Discount
 
     private function _getCouponPrice()
     {
+
         $discountPrice = (new TestService($this->order, Coupon::COUPON_DISCOUNT))->getOrderDiscountPrice();
-        //var_dump($discountPrice);
+        //dd($discountPrice);
         $moneyOffPrice = (new TestService($this->order, Coupon::COUPON_MONEY_OFF))->getOrderDiscountPrice();
-        //var_dump($moneyOffPrice);
-//exit;
+        //dd($moneyOffPrice);
 
         return $discountPrice + $moneyOffPrice;
     }
