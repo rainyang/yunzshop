@@ -317,4 +317,14 @@ exit;
            return $this->errorJson('手机号或密码错误');
        }
    }
+
+   public function getRelation()
+   {
+       $model = MemberModel::getMyAgentsParentInfo(10);
+
+       $a = $model->first()->toArray();
+       echo '<pre>';print_r($model->first()->toArray());
+       echo count($a['yz_member'], 1);
+       exit;
+   }
 }

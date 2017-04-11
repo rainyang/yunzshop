@@ -72,8 +72,6 @@ class MemberController extends ApiController
                 $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
 
                 $member_info['order'] = $order_info;
-
-                $member_info['Provinces'] = Area::getProvincesList();
                 return $this->successJson('', $member_info);
             } else {
                 return $this->errorJson('用户不存在');
