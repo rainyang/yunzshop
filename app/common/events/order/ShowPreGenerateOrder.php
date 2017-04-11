@@ -8,19 +8,7 @@
 
 namespace app\common\events\order;
 
-
-use app\common\events\Event;
-use Illuminate\Support\Collection;
-
-class ShowPreGenerateOrder extends Event
+class ShowPreGenerateOrder extends CreatingOrder
 {
-    private $memberCarts;
-    public function __construct(Collection $memberCarts)
-    {
-        $this->memberCarts = $memberCarts;
-    }
 
-    public function getMemberCarts(){
-        return $this->memberCarts;
-    }
 }
