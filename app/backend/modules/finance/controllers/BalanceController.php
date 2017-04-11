@@ -122,7 +122,6 @@ class BalanceController extends BaseController
     //充值记录
     public function rechargeRecord()
     {
-        dd(123);
         $pageSize = 10;
         $recordList = BalanceRecharge::getPageList($pageSize);
         if ($search = \YunShop::request()->search) {

@@ -90,9 +90,9 @@ class BalanceController extends ApiController
         if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $withdrawMoney)|| $withdrawMoney > $memberInfo->credit2) {
             return $this->errorJson('提现金额必须是大于0且小于您的余额，允许两位小数');
         }
-
         if ($memberId && $withdrawMoney && $withdrawType) {
             $withdrawModel = new Withdraw();
+
             $withdrawData = array(
                 'withdraw_sn'      => '',
                 'uniacid'       => \YunShop::app()->uniacid,
@@ -103,7 +103,7 @@ class BalanceController extends ApiController
                 'amounts'       => $withdrawMoney,      //提现金额
                 'poundage'      => '0',                  //提现手续费
                 'poundage_rate' => '0',                  //手续费比例
-                'pay_way'       => $withdrawType,                  //打款方式
+                'pay_way'       => $this->attachedWithdrawType($withdrawType),                  //打款方式
                 'status'        => '0',                  //0未审核，1未打款，2已打款， -1无效
                 'actual_amounts'=> '0',
                 'actual_poundage' => '0'
@@ -317,5 +317,20 @@ class BalanceController extends ApiController
         return $data;
     }
 
+
+    private function attachedWithdrawType($withdrawType)
+    {
+        switch ($withdrawType)
+        {
+            case 1:
+                return 'wecht';
+                break;
+            case 2:
+                return 'alipay';
+                break;
+            default:
+                return '未知提现类型';
+        }
+    }
 
 }
