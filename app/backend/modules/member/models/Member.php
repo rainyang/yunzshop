@@ -184,4 +184,15 @@ class Member extends \app\common\models\Member
 
         return $result;
     }
+
+    public static function getMembersToApply()
+    {
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile'])
+            ->uniacid()
+            ->with(['yzMember'=>function($query){
+                return $query->select(['member_id','parent_id', 'apply_time', 'is_black'])
+                    ->where('status', 1);
+            }])
+            ->get();
+    }
 }

@@ -340,10 +340,11 @@ exit;
         $app = new Application($options);
 
         $js = $app->js;
+        $js->setUrl('http://www.yunzshop.com');
 
-        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'));
+        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'), 1);
         $config = json_decode($config, 1);
-
+echo '<pre>';print_r($config);exit;
         return $this->successJson('', ['config' => $config]);
     }
 }

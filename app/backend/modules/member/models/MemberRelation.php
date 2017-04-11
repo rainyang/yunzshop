@@ -223,13 +223,4 @@ class MemberRelation extends BackendModel
             }
         }
     }
-
-    public static function setMemberRelations($member_id)
-    {
-        $mid = \YunShop::app()->mid ? \YunShop::app()->mid : 0;
-
-        if (!empty($mid)) {
-            MemberModel::getMyAgentsParentInfo();
-        }
-    }
 }
