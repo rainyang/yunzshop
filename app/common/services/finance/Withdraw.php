@@ -6,7 +6,7 @@
  * Time: 下午3:08
  */
 
-namespace app\common\services\fiance;
+namespace app\common\services\finance;
 
 use app\common\models\Income;
 use app\common\models\Withdraw as WithdrawModel;

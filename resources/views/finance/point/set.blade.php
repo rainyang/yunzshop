@@ -78,12 +78,12 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-4">
                             <div class='recharge-items'>
-                                @foreach ($set['enoughs'] as $item)
+                                @foreach ($set['enough'] as $item)
                                 <div class="input-group recharge-item" style="margin-top:5px">
                                     <span class="input-group-addon">单笔订单满</span>
-                                    <input type="text" class="form-control  wid100" name='enough[]' value='{{$item['enough']}}' />
+                                    <input type="text" class="form-control  wid100" name='set[enough][]' value='{{$item}}' />
                                     <span class="input-group-addon">元 赠送</span>
-                                    <input type="text" class="form-control wid100"  name='give[]' value='{{$item['give']}}' />
+                                    <input type="text" class="form-control wid100"  name='set[give][]' value='{{$item}}' />
                                     <span class="input-group-addon">积分</span>
                                     <div class='input-group-btn'>
                                         <button class='btn btn-danger' type='button' onclick="removeConsumeItem(this)"><i class='fa fa-remove'></i></button>
@@ -114,15 +114,15 @@
         function addConsumeItem(){
             var html= '<div class="input-group recharge-item"  style="margin-top:5px">';
             html+='<span class="input-group-addon">单笔订单满</span>';
-            html+='<input type="text" class="form-control wid100" name="enough[]"  />';
+            html+='<input type="text" class="form-control wid100" name="set[enough][]"  />';
             html+='<span class="input-group-addon">元 赠送</span>';
-            html+='<input type="text" class="form-control wid100"  name="give[]"  />';
+            html+='<input type="text" class="form-control wid100"  name="set[give][]"  />';
             html+='<span class="input-group-addon">积分</span>';
             html+='<div class="input-group-btn"><button class="btn btn-danger" onclick="removeRechargeItem(this)"><i class="fa fa-remove"></i></button></div>';
             html+='</div>';
             $('.recharge-items').append(html);
         }
-        function removeRechargeItem(obj){
+        function removeConsumeItem(obj){
             $(obj).closest('.recharge-item').remove();
         }
 

@@ -14,7 +14,7 @@ use app\common\components\ApiController;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use app\common\models\Withdraw;
-use app\common\services\fiance\Balance;
+use app\common\services\finance\Balance;
 use app\common\services\PayFactory;
 
 class BalanceController extends ApiController
