@@ -95,7 +95,7 @@
                             <div class="col-sm-3">
                                 <div class='input-group'>
                                     <div class=' input-group-addon' style='width:200px;text-align: left;'>{{$member['credit2']}}</div>
-                                    <div class='input-group-btn'><a class='btn btn-primary' href="{{yzWebUrl('finance/recharge', ['op'=>'credit2','id'=>$member['uid']])}}">充值</a>
+                                    <div class='input-group-btn'><a class='btn btn-primary' href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$member['uid']])}}">充值</a>
                                     </div>
                                 </div>
                             </div>
