@@ -24,6 +24,7 @@ class MemberCouponService
 
     public static function getCurrentMemberCoupon($member)
     {
+
         return $member->hasManyMemberCoupon()->get();
     }
 }

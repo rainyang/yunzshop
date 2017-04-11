@@ -83,9 +83,13 @@ class OrderService
             /**
              * @var $memberCart MemberCart
              */
+            dd($memberCart->goods->is_plugin);
+
             if (empty($memberCart->goods->is_plugin)) {
+                echo 1;
                 return true;
             }
+            echo 2;
             return false;
         });
     }
@@ -111,8 +115,9 @@ class OrderService
      * @return Collection
      * @throws AppException
      */
-    private static function getMemberCarts($callback)
+    public static function getMemberCarts($callback = null)
     {
+        static $memberCarts;
         $cartIds = [];
         if (!is_array($_GET['cart_ids'])) {
             $cartIds = explode(',', $_GET['cart_ids']);
@@ -121,13 +126,16 @@ class OrderService
         if (!count($cartIds)) {
             throw new AppException('参数格式有误');
         }
-
-        $memberCarts = MemberCart::getCartsByIds($cartIds);
-        if (!count($memberCarts)) {
+        if(!isset($memberCarts)){
+            $memberCarts = MemberCart::getCartsByIds($cartIds);
+        }
+        if ($memberCarts->isEmpty()) {
             throw new AppException('未找到购物车信息');
         }
+        if(isset($callback)){
 
-        $memberCarts->filter($callback);
+            $result = $memberCarts->filter($callback);
+        }
 
         if ($memberCarts->isEmpty()) {
 
@@ -145,6 +153,9 @@ class OrderService
     public static function getOrderGoodsModels(Collection $memberCarts)
     {
         $result = new Collection();
+        if($memberCarts->isEmpty()){
+            throw new \AppException("未找到订单商品");
+        }
         foreach ($memberCarts as $memberCart) {
             if (!($memberCart instanceof MemberCart)) {
                 throw new \Exception("请传入" . MemberCart::class . "的实例");
@@ -170,6 +181,11 @@ class OrderService
         if (!isset($member)) {
             throw new AppException('用户登录状态过期');
         }
+
+        if($memberCarts->isEmpty()){
+            return false;
+        }
+
         $shop = ShopService::getCurrentShopModel();
 
         $orderGoodsArr = OrderService::getOrderGoodsModels($memberCarts);

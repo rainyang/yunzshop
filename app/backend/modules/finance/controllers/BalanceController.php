@@ -18,7 +18,7 @@ use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
-use app\common\services\fiance\Balance;
+use app\common\services\finance\Balance;
 
 /*
  * 余额基础设置页面

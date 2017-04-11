@@ -90,10 +90,10 @@ class TestService
             return $this->order->getMember()->hasManyMemberCoupon($this->back_type)->get();
 
         }*/
+
         $result = MemberCouponService::getStaticCurrentMemberCoupon($this->order->belongsToMember);
-        return $result;exit;
-        dd($result);
-        exit;
+        return $result;
+
     }
     /**
      * 用户拥有并选中的优惠券

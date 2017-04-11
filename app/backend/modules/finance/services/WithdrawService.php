@@ -1,8 +1,8 @@
 <?php
 namespace app\backend\modules\finance\services;
 
-use app\common\services\fiance\Balance;
-use app\common\services\fiance\Withdraw;
+use app\common\services\finance\Balance;
+use app\common\services\finance\Withdraw;
 use app\common\services\PayFactory;
 
 /**
