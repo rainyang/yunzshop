@@ -15,6 +15,7 @@ use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use app\common\models\Withdraw;
 use app\common\services\finance\Balance;
+use app\common\services\finance\BalanceSet;
 use app\common\services\PayFactory;
 
 class BalanceController extends ApiController
@@ -58,6 +59,8 @@ class BalanceController extends ApiController
 
     public function withdraw()
     {
+        $test = (new BalanceSet())->getWithdrawSet();
+        echo '<pre>'; print_r($test); exit;
         $memberId = \YunShop::app()->getMemberId();
         $withdrawMoney = trim(\YunShop::request()->withdraw_money);
         $withdrawType = \YunShop::request()->withdraw_type;
@@ -78,19 +81,26 @@ class BalanceController extends ApiController
         if ($memberId && $withdrawMoney && $withdrawType) {
             $withdrawModel = new Withdraw();
             $withdrawData = array(
-                'withdraw'      => '',
-                'uniacic'       => \YunShop::app()->uniacid,
+                'withdraw_sn'      => '',
+                'uniacid'       => \YunShop::app()->uniacid,
                 'member_id'     => $memberId,
                 'type'          => 'balance',
                 'type_id'       => '',
-                'type_name'     => '',
+                'type_name'     => '余额提现',
                 'amounts'       => $withdrawMoney,      //提现金额
-                'poundage'      => '',                  //提现手续费
-                'poundage_rate' => '',                  //手续费比例
+                'poundage'      => '0',                  //提现手续费
+                'poundage_rate' => '0',                  //手续费比例
                 'pay_way'       => '',                  //打款方式
-                'status'        => ''                   //0未审核，1未打款，2已打款， -1无效
+                'status'        => '0',                  //0未审核，1未打款，2已打款， -1无效
+                'actual_amounts'=> '0',
+                'actual_poundage' => '0'
 
             );
+            $withdrawModel->fill($withdrawData);
+            $validator = $withdrawModel->validator();
+            if ($withdrawModel->save()) {
+                echo '<pre>'; print_r(1233); exit;
+            }
 
 
             echo '<pre>'; print_r('开发中'); exit;

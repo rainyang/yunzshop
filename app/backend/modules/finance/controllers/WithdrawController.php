@@ -16,9 +16,7 @@ use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\Income;
-use app\common\services\finance\Balance;
-use app\common\services\PayFactory;
-//use app\common\services\finance\Withdraw as WithdrawService;
+use app\common\services\finance\BalanceSet;
 use Illuminate\Support\Facades\Log;
 
 class WithdrawController extends BaseController
@@ -28,11 +26,27 @@ class WithdrawController extends BaseController
         $set = Setting::get('withdraw.balance');
         $resultModel = \YunShop::request()->withdraw;
         if ($resultModel) {
+
+            $validator = null;
             foreach ($resultModel as $key => $item) {
-                Setting::set('withdraw.' . $key, $item);
+                if ($key == 'balance') {
+                    $validator = (new BalanceSet())->validator($item);
+                    if($validator->fails()){
+                        $this->error($validator->messages());
+                        break;
+                    }
+                }
+
             }
-            return $this->message('设置保存成功', Url::absoluteWeb('finance.withdraw.set'));
+            if($validator && !$validator->fails()){
+                foreach ($resultModel as $key => $item) {
+                    Setting::set('withdraw.'. $key,$item);
+
+                }
+                return $this->message('设置保存成功', Url::absoluteWeb('finance.withdraw.set'));
+            }
         }
+
         return view('finance.withdraw.withdraw-set', [
             'set' => $set
         ])->render();
