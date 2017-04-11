@@ -13,10 +13,10 @@
             <div class="right-titpos">
                 <ul class="add-snav">
                     <li class="active"><a href="#">商品发布</a></li>
-                    <li class="active">
+
                         <a class='btn btn-success ' href="{{yzWebUrl('goods.goods.create')}}"><i
                                     class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
-                    </li>
+
                 </ul>
             </div>
 

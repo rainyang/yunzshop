@@ -61,7 +61,7 @@
                         </table>
                     </div>
                     <div class='panel-footer'>
-                        <a class='btn btn-success' href="{{ yzWebUrl('member.member-level.store') }}"><i class="fa fa-plus"></i> 添加新等级</a>
+                        <a class='btn btn-info' href="{{ yzWebUrl('member.member-level.store') }}"><i class="fa fa-plus"></i> 添加新等级</a>
                     </div>
                 </div>
             </form>
