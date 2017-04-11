@@ -85,7 +85,7 @@
                                 <div class='input-group'>
                                     <div class=' input-group-addon'  style='width:200px;text-align: left;'>{{$member['credit1']}}</div>
                                     <div class='input-group-btn'>
-                                        <a class='btn btn-primary' href="{{yzWebUrl('finance/recharge',['op'=>'credit1','id'=>$member['uid']])}}">充值</a>
+                                        <a class='btn btn-primary' href="{{yzWebUrl('finance.point-recharge',['id'=>$member['uid']])}}">充值</a>
                                     </div>
                                 </div>
                             </div>
