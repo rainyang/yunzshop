@@ -3,16 +3,24 @@
 @section('content')
 
     <div class="rightlist">
+        <div class="right-titpos">
+            <ul class="add-snav">
+                <li class="active"><a href="#">余额转让记录</a></li>
+
+
+            </ul>
+        </div>
+
         <div class="panel panel-info">
-            <div class="panel-heading">筛选</div>
+
             <div class="panel-body">
                 <form action="" method="post" class="form-horizontal" role="form" id="form1">
                     <input type="hidden" name="c" value="site"/>
                     <input type="hidden" name="a" value="entry"/>
                     <input type="hidden" name="m" value="sz_yi"/>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
-                        <div class="col-sm-8 col-lg-9 col-xs-12">
+                    <div class="form-group col-sm-8 col-lg-11 col-xs-12">
+                        <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->
+                        <div class="">
                             <input type="text" class="form-control" name="search[keyword]" value="{{ $search['keyword'] or '' }}"
                                    placeholder='可搜索会员昵称/姓名/手机号'/>
 
@@ -20,16 +28,15 @@
                     </div>
 
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
-                        <div class="col-sm-7 col-lg-9 col-xs-12">
-                            <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    <div class="form-group col-sm-7 col-lg-1 col-xs-12">
+                     <!--   <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
+                        <div  >
+                            <button class="btn btn-block btn-success"><i class="fa fa-search"></i> 搜索</button>
                             <input type="hidden" name="token" value="{$_W['token']}"/>
                             <!--<button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button> -->
                         </div>
                     </div>
-                    <div class="form-group">
-                    </div>
+
                 </form>
             </div>
         </div>

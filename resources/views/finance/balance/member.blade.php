@@ -6,12 +6,12 @@
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
                 <ul class="add-snav">
-                    <li class="active"><a href="#">财务／余额管理</a></li>
+                    <li class="active"><a href="#">余额管理</a></li>
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
             <div class="panel panel-info">
-                <div class="panel-heading">筛选</div>
+              <!--  <div class="panel-heading">筛选</div>-->
                 <div class="panel-body">
                     <form action="" method="post" class="form-horizontal" role="form" id="form1">
                         <input type="hidden" name="c" value="site" />
