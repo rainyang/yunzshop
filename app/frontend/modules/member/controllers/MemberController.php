@@ -15,10 +15,12 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
+use app\common\models\Setting;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\OrderListModel;
+use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 
@@ -72,8 +74,6 @@ class MemberController extends ApiController
                 $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
 
                 $member_info['order'] = $order_info;
-
-                $member_info['Provinces'] = Area::getProvincesList();
                 return $this->successJson('', $member_info);
             } else {
                 return $this->errorJson('用户不存在');
@@ -501,5 +501,33 @@ class MemberController extends ApiController
         } else {
             return $this->errorJson('手机号或密码格式错误');
         }
+    }
+
+    public function wxJsSdkConfig()
+    {
+        $pay = \Setting::get('shop.pay');
+
+        $options = [
+            'app_id'  => $pay['weixin_appid'],
+            'secret'  => $pay['weixin_secret'],
+            'token'   => \YunShop::app()->account['token'],
+            'aes_key' => \YunShop::app()->account['encodingaeskey'],
+            // payment
+            'payment' => [
+                'merchant_id'        => $pay['weixin_mchid'],
+                'key'                => $pay['weixin_apisecret'],
+                'cert_path'          => $pay['weixin_cert'],
+                'key_path'           => $pay['weixin_key'],
+            ]
+        ];
+
+        $app = new Application($options);
+
+        $js = $app->js;
+
+        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'));
+        $config = json_decode($config, 1);
+
+        return $this->successJson('', ['config' => $config]);
     }
 }

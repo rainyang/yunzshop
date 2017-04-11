@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\services;
 
 use app\common\exceptions\AppException;
 use app\frontend\modules\member\models\MemberCart;
+use Illuminate\Support\Collection;
 
 class MemberCartService
 {
@@ -40,5 +41,27 @@ class MemberCartService
         }
         //todo 验证option_id是否属于goods_id
         return $cart;
+    }
+    public static function filterShopMemberCart(Collection $memberCarts){
+        return $memberCarts->filter(function ($memberCart) {
+            /**
+             * @var $memberCart MemberCart
+             */
+            if (empty($memberCart->goods->is_plugin)) {
+                return true;
+            }
+            return false;
+        });
+    }
+    public static function filterPluginMemberCart(Collection $memberCarts){
+        return $memberCarts->filter(function ($memberCart) {
+            /**
+             * @var $memberCart MemberCart
+             */
+            if (!empty($memberCart->goods->is_plugin)) {
+                return true;
+            }
+            return false;
+        });
     }
 }
