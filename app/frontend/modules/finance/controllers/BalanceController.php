@@ -90,7 +90,7 @@ class BalanceController extends ApiController
                 'amounts'       => $withdrawMoney,      //提现金额
                 'poundage'      => '0',                  //提现手续费
                 'poundage_rate' => '0',                  //手续费比例
-                'pay_way'       => '',                  //打款方式
+                'pay_way'       => $withdrawType,                  //打款方式
                 'status'        => '0',                  //0未审核，1未打款，2已打款， -1无效
                 'actual_amounts'=> '0',
                 'actual_poundage' => '0'
