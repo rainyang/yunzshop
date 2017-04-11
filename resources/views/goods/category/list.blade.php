@@ -65,7 +65,7 @@
                 </div>
 
                 <div class='panel-footer'>
-                    <a class='btn btn-success' href="{{yzWebUrl('goods.category.add-category',['parent_id'=>$parent->id, 'level'=>$parent->level+1])}}"><i class='fa fa-plus'></i> 添加新分类</a>
+                    <a class='btn btn-info' href="{{yzWebUrl('goods.category.add-category',['parent_id'=>$parent->id, 'level'=>$parent->level+1])}}"><i class='fa fa-plus'></i> 添加新分类</a>
 
                 </div>
             </div>

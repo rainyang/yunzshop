@@ -6,8 +6,8 @@
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
                 <ul class="add-snav">
-                    <li class="active"><a href="#">会员管理</a></li>
-                    <li><a href="#">会员等级</a></li>
+                    <li class="active"><a href="#">会员等级</a></li>
+
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
@@ -61,7 +61,7 @@
                         </table>
                     </div>
                     <div class='panel-footer'>
-                        <a class='btn btn-primary' href="{{ yzWebUrl('member.member-level.store') }}"><i class="fa fa-plus"></i> 添加新等级</a>
+                        <a class='btn btn-success' href="{{ yzWebUrl('member.member-level.store') }}"><i class="fa fa-plus"></i> 添加新等级</a>
                     </div>
                 </div>
             </form>
