@@ -59,7 +59,7 @@ class ApplyController extends ApiController
             'images.json' => 'images非json格式'
         ]);
 
-        $refundApply = new RefundApply($request->query());
+        $refundApply = new RefundApply($request->input());
         $refundApply->price = Order::find($refundApply->order_id)->price;
         if (!$refundApply->save()) {
             throw new AppException('请求失败');
