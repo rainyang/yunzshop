@@ -24,7 +24,8 @@ class MemberController extends BaseController
     private $pageSize = 20;
 
     public function __construct()
-    {}
+    {
+    }
 
     /**
      * 列表
@@ -36,14 +37,13 @@ class MemberController extends BaseController
         $levels = MemberLevel::getMemberLevelList();
 
         $list = Member::getMembers()
-                    ->paginate($this->pageSize)
-                    ->toArray();
-
+            ->paginate($this->pageSize)
+            ->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
         if (empty($starttime) || empty($endtime)) {
             $starttime = strtotime('-1 month');
-            $endtime   = time();
+            $endtime = time();
         }
 
         return view('member.index', [
@@ -54,7 +54,7 @@ class MemberController extends BaseController
             'starttime' => $starttime,
             'total' => $list['total'],
             'pager' => $pager,
-            'opencommission'=>1
+            'opencommission' => 1
         ])->render();
     }
 
@@ -70,8 +70,8 @@ class MemberController extends BaseController
         $uid = \YunShop::request()->id ? intval(\YunShop::request()->id) : 0;
 
         if ($uid == 0 || !is_int($uid)) {
-           $this->message('参数错误', '', 'error');
-           exit;
+            $this->message('参数错误', '', 'error');
+            exit;
         }
 
         $member = Member::getMemberInfoById($uid);
@@ -120,10 +120,10 @@ class MemberController extends BaseController
         MemberShopInfo::updateMemberInfoById($yz, $uid);
 
         if ($uid == 0 || !is_int($uid)) {
-           return $this->message('参数错误', '', 'error');
+            return $this->message('参数错误', '', 'error');
         }
 
-        return $this->message("用户资料更新成功", yzWebUrl('member.member.detail', ['id'=>$uid]));
+        return $this->message("用户资料更新成功", yzWebUrl('member.member.detail', ['id' => $uid]));
     }
 
     /**
@@ -191,16 +191,21 @@ class MemberController extends BaseController
         $parames = \YunShop::request();
 
         $list = Member::searchMembers($parames)
-                    ->paginate($this->pageSize)
-                    ->toArray();
+            ->paginate($this->pageSize)
+            ->toArray();
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
-        if (empty($starttime) || empty($endtime)) {
-            $starttime = strtotime('-1 month');
-            $endtime   = time();
-        }
+        $starttime = strtotime('-1 month');
+        $endtime = time();
+        
+        if ($parames['searchtime']) {
+            if ($parames['time']['start'] != '请选择' && $parames['time']['end'] != '请选择') {
+                $starttime = strtotime($parames['time']['start']);
+                $endtime = strtotime($parames['time']['end']);
+            }
 
+        }
         return view('member.index', [
             'list' => $list,
             'levels' => $levels,
@@ -210,7 +215,7 @@ class MemberController extends BaseController
             'total' => $list['total'],
             'pager' => $pager,
             'request' => \YunShop::request(),
-            'opencommission'=>false
+            'opencommission' => false
         ])->render();
     }
 
@@ -224,7 +229,7 @@ class MemberController extends BaseController
         $keyword = \YunShop::request()->keyword;
         $member = Member::getMemberByName($keyword);
         $member = set_medias($member, array('avatar', 'share_icon'));
-        return $this->render('web/member/query',['ds'=>$member->toArray()]);
+        return $this->render('web/member/query', ['ds' => $member->toArray()]);
     }
 
     /**
@@ -237,8 +242,8 @@ class MemberController extends BaseController
 
         $parames = \YunShop::request();
         $list = Member::searchMembers($parames)
-                        ->get()
-                        ->toArray();
+            ->get()
+            ->toArray();
 
         $export_data[0] = ['会员ID', '粉丝', '姓名', '手机号', '等级', '分组', '注册时间', '积分', '余额', '订单', '金额', '关注'];
 
@@ -270,28 +275,28 @@ class MemberController extends BaseController
                 $fans = '';
             }
 
-            $export_data[$key+1] = [$item['uid'], $item['nickname'], $item['realname'], $item['mobile'],
+            $export_data[$key + 1] = [$item['uid'], $item['nickname'], $item['realname'], $item['mobile'],
                 $level, $group, date('YmdHis', $item['createtime']), $item['credit1'], $item['credit2'], $order,
                 $price, $fans];
         }
 
-       \Excel::create($file_name, function ($excel) use ($export_data) {
-           // Set the title
-           $excel->setTitle('Office 2005 XLSX Document');
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
 
-           // Chain the setters
-           $excel->setCreator('芸众商城')
-               ->setLastModifiedBy("芸众商城")
-               ->setSubject("Office 2005 XLSX Test Document")
-               ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
-               ->setKeywords("office 2005 openxml php")
-               ->setCategory("report file");
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
 
-           $excel->sheet('info', function($sheet) use ($export_data){
-               $sheet->rows($export_data);
-           });
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
 
 
-      })->export('xls');
+        })->export('xls');
     }
 }

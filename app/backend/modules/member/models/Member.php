@@ -127,6 +127,13 @@ class Member extends \app\common\models\Member
         if (!empty($parame['mid'])) {
             $result = $result->where('uid', $parame['mid']);
         }
+        if (!empty($parame['searchtime'])) {
+
+            if ($parame['times']['start'] != '请选择' && $parame['times']['end'] != '请选择') {
+                $range = [strtotime($parame['times']['start']), strtotime($parame['times']['end'])];
+                $result = $result->whereBetween('createtime', $range);
+            }
+        }
 
         if (!empty($parame['realname'])) {
             $result = $result->where(function ($w) use ($parame) {

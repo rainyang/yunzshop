@@ -143,49 +143,44 @@ class MemberRelation extends BackendModel
         return false;
     }
 
-    /**
-     * 检查是否能成为下线
-     *
-     * @param $mid
-     * @param MemberShopInfo $user
-     */
-    public function createChildAgent($mid, MemberShopInfo $model)
-    {
-        $child_info = $this->getChildAgentInfo();
-            switch ($child_info) {
-                case 0:
-                    $this->becomeChildAgent($mid, $model);
-                    break;
-                case 1:
-                    $list = OrderListModel::getRequestOrderList(0,\YunShop::app()->getMemberId())->get();
 
-                    if (!empty($list)) {
-                        $result = $list->toArray();
-                        $count = count($result);
-
-                        if ($count == 1) {
-                            $this->becomeChildAgent($mid, $model);
-                        }
-                    }
-                    break;
-                case 2:
-                    $list = OrderListModel::getRequestOrderList(1,\YunShop::app()->getMemberId())->get();
-
-                    if (!empty($list)) {
-                        $result = $list->toArray();
-
-                        $count = count($result);
-
-                        if ($count == 1) {
-                            $this->becomeChildAgent($mid, $model);
-                        }
-                    }
-                    break;
-            }
-
-        return 0;
-
-    }
+//    public function createChildAgent($mid, MemberShopInfo $model)
+//    {
+//        $child_info = $this->getChildAgentInfo();
+//            switch ($child_info) {
+//                case 0:
+//                    $this->becomeChildAgent($mid, $model);
+//                    break;
+//                case 1:
+//                    $list = OrderListModel::getRequestOrderList(0,\YunShop::app()->getMemberId())->get();
+//
+//                    if (!empty($list)) {
+//                        $result = $list->toArray();
+//                        $count = count($result);
+//
+//                        if ($count == 1) {
+//                            $this->becomeChildAgent($mid, $model);
+//                        }
+//                    }
+//                    break;
+//                case 2:
+//                    $list = OrderListModel::getRequestOrderList(1,\YunShop::app()->getMemberId())->get();
+//
+//                    if (!empty($list)) {
+//                        $result = $list->toArray();
+//
+//                        $count = count($result);
+//
+//                        if ($count == 1) {
+//                            $this->becomeChildAgent($mid, $model);
+//                        }
+//                    }
+//                    break;
+//            }
+//
+//        return 0;
+//
+//    }
 
     /**
      * 获取成为下线条件
@@ -209,18 +204,76 @@ class MemberRelation extends BackendModel
      * @param $mid
      * @param MemberShopInfo $model
      */
-    private function becomeChildAgent($mid, MemberShopInfo $model)
+    private function changeChildAgent($mid, MemberShopInfo $model)
     {
         $member_info = SubMemberModel::getMemberShopInfo($mid);
 
         if ($member_info && $member_info->is_agent) {
             $model->parent_id = $mid;
+            $model->child_time = time();
 
             if ($model->save()) {
                 return 1;
             } else {
                 return 0;
             }
+        }
+    }
+
+    /**
+     * 检查是否能成为下线
+     *
+     * @param $mid
+     * @param MemberShopInfo $user
+     */
+    public function becomeChildAgent($mid, MemberShopInfo $model)
+    {
+        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+        if (empty($member)) {
+            return;
+        }
+
+        $parent = false;
+
+        if (!empty($mid)) {
+            $parent =  SubMemberModel::getMemberShopInfo($mid);
+        }
+
+        $parent_is_agent = !empty($parent) && $parent['is_agent'] == 1;
+
+        if ($member->is_agent == 1) {
+            return;
+        }
+        $time = time();
+        $set = self::getSetInfo()->first()->toArray();
+
+        $become_child =  intval($set['become_child']);
+        $become_check = intval($set['become_check']);
+
+        if ($parent_is_agent && empty($member->parent_id)) {
+            if ($member->member_id != $parent['member_id']) {
+                if (empty($become_child)) {
+                    $this->changeChildAgent($mid, $model);
+
+                    // TODO message notice
+                }
+            }
+        }
+
+        if (empty($set['become']) ) {
+            $member->is_agent = 1;
+
+            if ($become_check == 0) {
+                $member->status = 2;
+                $member->apply_time = $time;
+
+                // TODO message notice
+            } else {
+                $member->status = 1;
+            }
+
+            $member->save();
         }
     }
 }
