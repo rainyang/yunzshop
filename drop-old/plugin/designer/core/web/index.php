@@ -116,10 +116,13 @@ if ($op == 'display') {
             $p                     = json_decode($p, true);
             $keyword               = empty($p[0]['params']['kw']) ? "" : $p[0]['params']['kw'];
             $p[0]['params']['img'] = save_media($p[0]['params']['img']);
+
+
+
             foreach ($datas as &$data) {
                 if ($data['temp'] == 'banner' || $data['temp'] == 'menu' || $data['temp'] == 'picture') {
                     foreach ($data['data'] as &$d) {
-                        $d['imgurl'] = save_media($d['imgurl']);
+                        $d['imgurl'] = tomedia($d['imgurl']);
                     }
                     unset($d);
                 } else if ($data['temp'] == 'shop') {

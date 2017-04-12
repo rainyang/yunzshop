@@ -82,12 +82,13 @@
                             <td>{{$row->type_name}}</td>
                             <td>{{$row->pay_way_name}}</td>
                             <td>{{$row->amounts}}</td>
-                            <td>{{$row->created_at}}</td>
+                            <td>{{$row->type}}{{$row->created_at}}</td>
                             <td>
-                                    <a class='btn btn-default'
-                                       href="{{yzWebUrl('finance.withdraw.info', ['id' => $row->id])}}"
-                                       title='详情'>详情
-                                    </a>
+                                @if($row->type == 'balance')
+                                    <a class='btn btn-default' href="{{yzWebUrl('finance.balance.withdrawInfo', ['id' => $row->id])}}" title='详情'>详情</a>
+                                @else
+                                    <a class='btn btn-default' href="{{yzWebUrl('finance.withdraw.info', ['id' => $row->id])}}" title='详情'>详情</a>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
