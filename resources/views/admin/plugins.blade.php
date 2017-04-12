@@ -34,7 +34,6 @@
                             <td style="color:#f39c12" class="tip" title="{{$plugin->description}}">
                                 {{$plugin->description}}
                             </td>
-
                             <td>@if($plugin->isEnabled())
                                     启用
                                 @else
