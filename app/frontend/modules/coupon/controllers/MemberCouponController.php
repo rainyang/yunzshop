@@ -4,7 +4,7 @@ namespace app\frontend\modules\coupon\controllers;
 use app\common\components\BaseController;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\models\MemberCoupon;
-use app\common\models\Member;
+use app\common\helpers\PaginationHelper;
 
 
 class MemberCouponController extends BaseController
@@ -13,38 +13,40 @@ class MemberCouponController extends BaseController
     public function couponsOfMember()
     {
 //        $uid = \YunShop::request()->get('test_uid'); //临时调试: 路由&test_uid=7
-//        $uid = 7; //临时调试
         $uid = \YunShop::app()->getMemberId();
+        $pageSize = \YunShop::app()->get('pagesize');
+        $pageSize = $pageSize ? $pageSize : 10;
 
-        $coupons = MemberCoupon::getCouponsOfMember($uid)->get()->toArray();
-        if (empty($coupons)){
+        $coupons = MemberCoupon::getCouponsOfMember($uid)->paginate($pageSize)->toArray();
+        if (empty($coupons['data'])){
             return $this->errorJson('没有找到记录', []);
         }
 
+        //给优惠券增加 "是否可用" & "是否过期" 的属性
         $now = strtotime('now');
-        foreach($coupons as $k=>$v){
+        foreach($coupons['data'] as $k=>$v){
             if ($v['used'] == MemberCoupon::USED){
-                $coupons[$k]['available'] = 0;
+                $coupons['data'][$k]['available'] = 0;
             } elseif ($v['used'] == MemberCoupon::NOT_USED){
                 if($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT_TYPE){
                     if (($now - $v['get_time']) < ($v['belongs_to_coupon']['time_days']*3600)){
-                        $coupons[$k]['overdue'] = 0;
-                        $coupons[$k]['available'] = 1;
+                        $coupons['data'][$k]['overdue'] = 0;
+                        $coupons['data'][$k]['available'] = 1;
                     } else{
-                        $coupons[$k]['overdue'] = 1;
-                        $coupons[$k]['available'] = 0;
+                        $coupons['data'][$k]['overdue'] = 1;
+                        $coupons['data'][$k]['available'] = 0;
                     }
                 } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT_TYPE){
                     if (($now > $v['belongs_to_coupon']['time_end'])){
-                        $coupons[$k]['overdue'] = 1;
-                        $coupons[$k]['available'] = 0;
+                        $coupons['data'][$k]['overdue'] = 1;
+                        $coupons['data'][$k]['available'] = 0;
                     } else{
-                        $coupons[$k]['overdue'] = 0;
-                        $coupons[$k]['available'] = 1;
+                        $coupons['data'][$k]['overdue'] = 0;
+                        $coupons['data'][$k]['available'] = 1;
                     }
                 }
             } else{
-                $coupons[$k]['available'] = 1;
+                $coupons['data'][$k]['available'] = 1;
             }
         }
         return $this->successJson('ok', $coupons);
