@@ -53,7 +53,6 @@ class MemberAddressController extends ApiController
      * */
     public function setDefatult()
     {
-        echo '<pre>'; print_r(123); exit;
         $memberId = \YunShop::app()->getMemberId();
         $addressModel = MemberAddress::getAddressById(\YunShop::request()->address_id);
         if ($addressModel) {
