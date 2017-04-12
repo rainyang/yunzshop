@@ -15,6 +15,7 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
+use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
@@ -285,6 +286,8 @@ class MemberController extends ApiController
     {
         $member_info = MemberModel::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
 
+        $data = [];
+
         if (!empty($member_info)) {
             $member_info = $member_info->toArray();
 
@@ -299,7 +302,7 @@ class MemberController extends ApiController
                   'level' => $info['yz_member']['level']['level_name']
                 ];
 
-                return $data;
+                return $this->successJson('', $data);
             } else {
                 return $this->errorJson('会员不存在');
             }
@@ -316,6 +319,7 @@ class MemberController extends ApiController
     public function getMyAgent()
     {
         $agent_ids = [];
+        $data = [];
 
         $agent_info = MemberModel::getMyAgentInfo(\YunShop::app()->getMemberId());
         $agent_model = $agent_info->get();
@@ -343,19 +347,20 @@ class MemberController extends ApiController
             }
         }
 
-        foreach ($agent_data as $item) {
-            $data[] = [
-                'uid' => $item['uid'],
-                'avatar' => $item['avatar'],
-                'nickname' => $item['nickname'],
-                'order_total' => $item['has_one_order']['total'],
-                'order_price' => $item['has_one_order']['sum'],
-                'agent_total' => $item['agent_total'],
-            ];
+        if ($agent_data) {
+            foreach ($agent_data as $item) {
+                $data[] = [
+                    'uid' => $item['uid'],
+                    'avatar' => $item['avatar'],
+                    'nickname' => $item['nickname'],
+                    'order_total' => $item['has_one_order']['total'],
+                    'order_price' => $item['has_one_order']['sum'],
+                    'agent_total' => $item['agent_total'],
+                ];
+            }
         }
-
-
-        return $data;
+        
+        return $this->successJson('', $data);
     }
 
     /**
@@ -522,9 +527,23 @@ class MemberController extends ApiController
         $js = $app->js;
         $js->setUrl($url);
 
-        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'));
+        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage', 'showOptionMenu'));
         $config = json_decode($config, 1);
 
-        return $this->successJson('', ['config' => $config]);
+        $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+
+        if (!empty($info)) {
+            $info = $info->toArray();
+        } else {
+            $info = [];
+        }
+
+        $data = [
+            'config' => $config,
+            'info' => $info,
+            'shop' => \Setting::get('shop')
+        ];
+
+        return $this->successJson('', $data);
     }
 }
