@@ -52,7 +52,7 @@ class ApplyController extends ApiController
         $this->validate($request, [
             'reason' => 'required|string',
             'content' => 'sometimes|string',
-            'images' => 'sometimes|json',
+            'images' => 'sometimes|filled|json',
             'refund_type' => 'required|int',
             'order_id' => 'required|int'
         ], [
