@@ -25,17 +25,21 @@ class PointRechargeController extends BaseController
         $point = \YunShop::request()->point;
         if ($point) {
             $data = [
-                'point_income_type' => 1,
                 'point_mode'        => 5,
                 'member_id'         => $member_id,
-                'point'             => $point,
-                'remark'            => '后台充值积分',
                 'uniacid'           => \YunShop::app()->uniacid
             ];
+            if ($point < 0) {
+                $data['point_income_type'] = -1;
+                $data['remark'] = '后台扣除[' . $point . ']积分';
+            } else {
+                $data['point_income_type'] = 1;
+                $data['remark'] = '后台充值[' . $point . ']积分';
+            }
             $point_service = new PointService($data);
             $point_model = $point_service->changePoint();
             if ($point_model) {
-                return $this->message('充值成功!', Url::absoluteWeb('finance.point-recharge'));
+                return $this->message('充值成功!', Url::absoluteWeb('finance.point-recharge', ['id' => $member_id]));
             }
         }
 

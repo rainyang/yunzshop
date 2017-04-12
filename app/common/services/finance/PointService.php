@@ -19,14 +19,24 @@ class PointService
     const POINT_INCOME_LOSE = -1; //失去
 
     const POINT_MODE_GOODS = 1; //商品赠送
+    const POINT_MODE_GOODS_ATTACHED = '商品赠送';
 
     const POINT_MODE_ORDER = 2; //订单赠送
+    const POINT_MODE_ORDER_ATTACHED = '订单赠送';
 
     const POINT_MODE_POSTER = 3; //超级海报
+    const POINT_MODE_POSTER_ATTACHED = '超级海报';
 
     const POINT_MODE_ARTICLE = 4; //文章营销
+    const POINT_MODE_ARTICLE_ATTACHED = '文章营销';
 
     const POINT_MODE_ADMIN = 5; //后台充值
+    const POINT_MODE_ADMIN_ATTACHED = '后台充值';
+
+    const POINT_MODE_BY = 6; //购物抵扣
+    const POINT_MODE_BY_ATTACHED = '购物抵扣';
+
+    const POINT = 0;
 
     public $point_data;
 
@@ -77,13 +87,14 @@ class PointService
     public function getAfterPoint()
     {
         $this->point_data['before_point'] = $this->member_point;
-        if ($this->point_data['point_income_type'] == PointService::POINT_INCOME_GET) {
+        /*if ($this->point_data['point_income_type'] == PointService::POINT_INCOME_GET) {
             $this->member_point += $this->point_data['point'];
         } else if ($this->point_data['point_income_type'] == PointService::POINT_INCOME_LOSE) {
             $this->member_point -= $this->point_data['point'];
-        }
-        if ($this->member_point < 0) {
-            $this->member_point = 0;
+        }*/
+        $this->member_point += $this->point_data['point'];
+        if ($this->member_point < PointService::POINT) {
+            $this->member_point = PointService::POINT;
         }
         $this->point_data['after_point'] = $this->member_point;
     }

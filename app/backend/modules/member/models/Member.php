@@ -184,4 +184,24 @@ class Member extends \app\common\models\Member
 
         return $result;
     }
+
+    /**
+     * 获取会员关系链资料申请
+     *
+     * @return mixed
+     */
+    public static function getMembersToApply()
+    {
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile'])
+            ->uniacid()
+            ->whereHas('yzMember', function($query){
+                $query->where('status', 1);
+            })
+            ->with(['yzMember'=>function($query){
+                return $query->select(['member_id','parent_id', 'apply_time'])
+                    ->with([ 'agent'=>function($query3){
+                        return $query3->select(['uid', 'avatar', 'nickname']);
+                    }]);
+            }]);
+    }
 }

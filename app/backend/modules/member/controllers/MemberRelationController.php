@@ -8,12 +8,17 @@
 
 namespace app\backend\modules\member\controllers;
 
+use app\backend\modules\member\models\Member;
+use app\backend\modules\member\models\MemberShopInfo;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberRelation as Relation;
+use app\common\helpers\PaginationHelper;
 use app\common\models\Goods;
 
 class MemberRelationController extends BaseController
 {
+    public $pageSize = 20;
+
     public function index()
     {
 
@@ -80,5 +85,39 @@ class MemberRelationController extends BaseController
         return view('member.goods_query', [
             'goods' => $data
         ])->render();
+    }
+
+    public function apply()
+    {
+        $list = Member::getMembersToApply()
+            ->paginate($this->pageSize)
+            ->toArray();
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
+
+        return view('member.apply', [
+            'list' => $list,
+            'total' => $list['total'],
+            'pager' => $pager,
+        ])->render();
+    }
+
+    public function chkApply()
+    {
+        $id = \YunShop::request()->id;
+
+        $member_shop_info_model = MemberShopInfo::getMemberShopInfo($id);
+
+        if ($member_shop_info_model) {
+            $member_shop_info_model->status = 2;
+
+            if ($member_shop_info_model->save()) {
+                return $this->successJson('审核通过');
+            } else {
+                return $this->errorJson('审核失败');
+            }
+        } else {
+            return $this->errorJson('会员不存在');
+        }
     }
 }

@@ -43,6 +43,11 @@ class Complete implements StatusService
                     'api' => 'order.operation.delete',
                     'value' => static::DELETE
                 ],
+                [
+                    'name' => '申请退款',
+                    'api' => 'order.refund.apply', //todo
+                    'value' => static::REFUND
+                ]
             ];
         return $result;
     }

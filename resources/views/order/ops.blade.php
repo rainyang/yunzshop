@@ -1,4 +1,3 @@
-﻿
     <script language="javascript">
         function pay(order_id)
         {

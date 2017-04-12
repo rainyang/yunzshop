@@ -52,11 +52,12 @@ class CommentController extends BaseController
         $goods = [];
         if (!empty($goods_id)) {
             $goods = Goods::getGoodsById($goods_id);
+            if(!$goods){
+                return $this->message('未找到此商品或该商品已被删除', Url::absoluteWeb('goods.comment.index'));
+            }
+            $goods = $goods->toArray();
         }
-        if(!$goods){
-            return $this->message('未找到此商品或该商品已被删除', Url::absoluteWeb('goods.comment.index'));
-        }
-        $goods = $goods->toArray();
+
         
         $commentModel = new Comment();
         $commentModel->goods_id = $goods_id;

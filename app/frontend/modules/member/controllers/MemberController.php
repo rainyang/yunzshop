@@ -15,12 +15,12 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
+use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 
 
@@ -73,6 +73,11 @@ class MemberController extends ApiController
                 $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
 
                 $member_info['order'] = $order_info;
+
+                $member_info['is_agent'] = MemberModel::isAgent()->toArray();
+                $member_info['referral'] = MemberModel::getMyReferral();
+                $member_info['qr'] = MemberModel::getAgentQR();
+
                 return $this->successJson('', $member_info);
             } else {
                 return $this->errorJson('用户不存在');
@@ -189,11 +194,7 @@ class MemberController extends ApiController
      */
     public function isAgent()
     {
-        $uid = \YunShop::app()->getMemberId();
-
-        MemberRelation::checkAgent($uid);
-
-        $member_info = SubMemberModel::getMemberShopInfo($uid);
+        $member_info = MemberModel::isAgent();
 
         if (empty($member_info)) {
             return $this->errorJson('会员不存在');
@@ -211,24 +212,15 @@ class MemberController extends ApiController
      * @param string $extra
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getAgentQR($url, $extra='')
+    public function getAgentQR($extra='')
     {
         if (empty(\YunShop::app()->getMemberId())) {
             return $this->errorJson('请重新登录');
         }
 
-        $url = $url . '&mid=' . \YunShop::app()->getMemberId();
+        $qr_url = MemberModel::getAgentQR($extra='');
 
-        if (!empty($extra)) {
-            $extra = '_' . $extra;
-        }
-
-        $extend = 'png';
-        $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
-
-        echo QrCode::format($extend)->size(100)->generate($url, storage_path('qr/') . $filename);
-
-        return $this->successJson('', ['qr' => storage_path('qr/') . $filename]);
+        return $this->successJson('', ['qr' => $qr_url]);
     }
 
     /**
@@ -283,26 +275,10 @@ class MemberController extends ApiController
      */
     public function getMyReferral()
     {
-        $member_info = MemberModel::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
+        $data = MemberModel::getMyReferral();
 
-        if (!empty($member_info)) {
-            $member_info = $member_info->toArray();
-
-            $referrer_info = MemberModel::getUserInfos($member_info['yz_member']['parent_id'])->first();
-
-            if (!empty($referrer_info)) {
-                $info = $referrer_info->toArray();
-                $data = [
-                  'uid' => $info['uid'],
-                  'avatar' => $info['avatar'],
-                  'nickname' => $info['nickname'],
-                  'level' => $info['yz_member']['level']['level_name']
-                ];
-
-                return $data;
-            } else {
-                return $this->errorJson('会员不存在');
-            }
+        if (!empty($data)) {
+            return $this->successJson('', $data);
         } else {
             return $this->errorJson('会员不存在');
         }
@@ -316,6 +292,7 @@ class MemberController extends ApiController
     public function getMyAgent()
     {
         $agent_ids = [];
+        $data = [];
 
         $agent_info = MemberModel::getMyAgentInfo(\YunShop::app()->getMemberId());
         $agent_model = $agent_info->get();
@@ -343,19 +320,20 @@ class MemberController extends ApiController
             }
         }
 
-        foreach ($agent_data as $item) {
-            $data[] = [
-                'uid' => $item['uid'],
-                'avatar' => $item['avatar'],
-                'nickname' => $item['nickname'],
-                'order_total' => $item['has_one_order']['total'],
-                'order_price' => $item['has_one_order']['sum'],
-                'agent_total' => $item['agent_total'],
-            ];
+        if ($agent_data) {
+            foreach ($agent_data as $item) {
+                $data[] = [
+                    'uid' => $item['uid'],
+                    'avatar' => $item['avatar'],
+                    'nickname' => $item['nickname'],
+                    'order_total' => $item['has_one_order']['total'],
+                    'order_price' => $item['has_one_order']['sum'],
+                    'agent_total' => $item['agent_total'],
+                ];
+            }
         }
 
-
-        return $data;
+        return $this->successJson('', $data);
     }
 
     /**
@@ -509,6 +487,7 @@ class MemberController extends ApiController
      */
     public function wxJsSdkConfig()
     {
+        $url = \YunShop::request()->url;
         $pay = \Setting::get('shop.pay');
 
         $options = [
@@ -519,10 +498,25 @@ class MemberController extends ApiController
         $app = new Application($options);
 
         $js = $app->js;
+        $js->setUrl($url);
 
-        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'));
+        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage', 'showOptionMenu'));
         $config = json_decode($config, 1);
 
-        return $this->successJson('', ['config' => $config]);
+        $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+
+        if (!empty($info)) {
+            $info = $info->toArray();
+        } else {
+            $info = [];
+        }
+
+        $data = [
+            'config' => $config,
+            'info' => $info,
+            'shop' => \Setting::get('shop')
+        ];
+
+        return $this->successJson('', $data);
     }
 }

@@ -19,7 +19,6 @@ class TestService
 
         $this->order = $order;
         $this->back_type = $back_type;
-
     }
 
     /**
@@ -43,13 +42,18 @@ class TestService
      */
     public function getOptionalCoupons()
     {
+        //dd(MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember));
+        //dd($this->getMemberCoupon());
         $coupons = $this->getMemberCoupon()->map(function ($memberCoupon){
             return new Coupon($memberCoupon, $this->order);
         });
-        $coupons->filter(function($coupon){
+        $result = $coupons->filter(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
             return $coupon->valid();
         });
-        return $coupons;
+        return $result;
     }
 
     /**
@@ -74,10 +78,14 @@ class TestService
         $coupon = $this->getSelectedMemberCoupon()->map(function ($memberCoupon){
             return new Coupon($memberCoupon, $this->order);
         });
-        $coupon->filter(function($coupon){
+        $result = $coupon->filter(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
             return $coupon->valid();
         });
-        return $coupon;
+
+        return $result;
     }
 
     /**
@@ -86,12 +94,14 @@ class TestService
      */
     private function getMemberCoupon()
     {
-        /*if( $this->order instanceof PreGeneratedOrderModel){
-            return $this->order->getMember()->hasManyMemberCoupon($this->back_type)->get();
-
-        }*/
-
-        $result = MemberCouponService::getStaticCurrentMemberCoupon($this->order->belongsToMember);
+        $back_type = $this->back_type;
+        $result = MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember);
+        if(isset($back_type)){
+            $result->filter(function ($memberCoupon) use($back_type){
+                return $memberCoupon->belongsToCoupon->back_type == $back_type;
+            });
+        }
+        //dd($result);
         return $result;
 
     }
@@ -101,9 +111,9 @@ class TestService
      */
     private function getSelectedMemberCoupon()
     {
-        $coupon_id = explode(',', array_get($_GET, 'coupon_ids', ''));
-        return $this->getMemberCoupon()->filter(function ($memberCoupon) use ($coupon_id){
-            return in_array($memberCoupon->coupon_id, $coupon_id);
+        $member_coupon_ids = explode(',', array_get($_GET, 'member_coupon_ids', ''));
+        return $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids){
+            return in_array($memberCoupon->id, $member_coupon_ids);
         });
     }
 }

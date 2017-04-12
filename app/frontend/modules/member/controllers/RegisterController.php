@@ -85,8 +85,7 @@ class RegisterController extends BaseController
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
         if (!empty($info)) {
-            //return $this->errorJson('该手机号已被注册！不能获取验证码');
-            //exit;
+            return $this->errorJson('该手机号已被注册！不能获取验证码');
         }
         $code = rand(1000, 9999);
 
@@ -131,7 +130,7 @@ class RegisterController extends BaseController
      */
     public function sendSms($mobile, $code, $templateType = 'reg')
     {
-        $sms = Setting::get('shop.sms');
+        $sms = \Setting::get('shop.sms');
 
         //互亿无线
         if ($sms['type'] == 1) {
@@ -162,10 +161,14 @@ class RegisterController extends BaseController
                 $content = json_encode(array('code' => (string)$code, 'product' => $explode_param[1]));
             }
 
-            $top_client = new \iscms\AlismsSdk\TopClient();
+            $top_client = new \iscms\AlismsSdk\TopClient($sms['appkey'], $sms['secret']);
             $name = $sms['signname'];
             $templateCode = $sms['templateCode'];
 
+            config([
+                'alisms.KEY' => $sms['appkey'],
+                'alisms.SECRETKEY' => $sms['secret']
+            ]);
             $sms = new Sms($top_client);
             $issendsms = $sms->send($mobile, $name, $content, $templateCode);
 
