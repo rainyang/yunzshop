@@ -17,25 +17,6 @@ use Request;
  */
 class RefundController extends ApiController
 {
-    public function apply(Request $request)
-    {
-//        $params = $request->only(['reason','images','order_id']);
-//        dd($params);
-        $this->validate($request, [
-            'reason' => 'required',
-            'images' => 'sometimes|json',
-            'order_id' => 'required'
-        ],[
-            'images.json'=>'images非json格式'
-        ]);
 
-        $refundApply = new RefundApply($request->query());
-        $refundApply->price = Order::find($refundApply->order_id)->price;
-        if(!$refundApply->save()){
-            throw new AppException('请求失败');
-        }
-
-        return $this->successJson('成功',$refundApply->toArray());
-    }
 
 }
