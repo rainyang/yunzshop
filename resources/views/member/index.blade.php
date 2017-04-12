@@ -112,7 +112,7 @@
 
                             <div class="time">
 
-                                <select name='isblack' class='form-control'>
+                                <select name='searchtime' class='form-control'>
                                     <option value=''>注册时间不限</option>
                                     <option value='0'
                                             @if($request['searchtime']=='0')
@@ -125,7 +125,7 @@
                                 </select>
                             </div>
                             <div class="search-select">
-                                时间
+                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('times', ['starttime'=>date('Y-m-d H:i', $starttime), 'endtime'=>date('Y-m-d H:i',$endtime)], true) !!}
                             </div>
                         </div>
 

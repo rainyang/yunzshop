@@ -28,10 +28,18 @@
                     @foreach($installed as $plugin)
                         <tr>
                             <td>[{{$plugin->version}}]</td>
-                            <td>{{$plugin->title}}</td>
-                            <td style="color:#f39c12" class="tip"
-                                title="{{$plugin->description}}">{{$plugin->description}}</td>
-                            <td>{{($plugin->isEnabled() ? '启用' : '禁用')}}</td>
+                            <td class="tip" title="{{$plugin->title}}">
+                                {{$plugin->title}}
+                            </td>
+                            <td style="color:#f39c12" class="tip" title="{{$plugin->description}}">
+                                {{$plugin->description}}
+                            </td>
+                            <td>@if($plugin->isEnabled())
+                                    启用
+                                @else
+                                    禁用
+                                @endif
+                            </td>
                             <td>
                                 <a class='btn btn-default btn-sm'
                                    href="{{yzWebUrl('plugins.manage', ['name'=>$plugin['name'],'action'=>($plugin->isEnabled() ? 'disable' : 'enable')])}}"

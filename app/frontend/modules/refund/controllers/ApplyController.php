@@ -4,6 +4,7 @@ namespace app\frontend\modules\refund\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
+use app\common\models\refund\RefundApply;
 use app\frontend\modules\order\models\Order;
 use Request;
 
@@ -51,13 +52,14 @@ class ApplyController extends ApiController
         $this->validate($request, [
             'reason' => 'required|string',
             'content' => 'sometimes|string',
-            'images' => 'sometimes|json',
+            'images' => 'sometimes|filled|json',
+            'refund_type' => 'required|int',
             'order_id' => 'required|int'
         ], [
             'images.json' => 'images非json格式'
         ]);
 
-        $refundApply = new RefundApply($request->query());
+        $refundApply = new RefundApply($request->input());
         $refundApply->price = Order::find($refundApply->order_id)->price;
         if (!$refundApply->save()) {
             throw new AppException('请求失败');
