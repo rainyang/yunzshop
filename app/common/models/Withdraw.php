@@ -110,6 +110,21 @@ class Withdraw extends BackendModel
         return $this->TypeData;
     }
 
+    public static function getBalanceWithdrawById($id)
+    {
+        return self::uniacid()->where('id', $id)
+            ->with(['hasOneMember' => function($query) {
+                return $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar')
+                    ->with(['yzMember' => function($member) {
+                        return $member->select('member_id', 'group_id')
+                            ->with(['group' => function($group) {
+                                return $group->select('id', 'group_name');
+                            }]);
+                    }]);
+            }])
+            ->first();
+
+    }
     public static function getWithdrawById($id)
     {
         $Model = self::where('id', $id);

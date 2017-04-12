@@ -49,10 +49,8 @@ class Url
         if(empty($route) && self::isHttp($route)){
             return $route;
         }
-        $defaultParams = ['i'=>\YunShop::app()->uniacid,'c'=>'entry','m'=>'sz_yi','do'=>rand(1000,9999),'route'=>$route];
-        $params = array_merge($defaultParams, $params);
-
-        return   '/app/index.php?'. http_build_query($params);
+        $module = request()->get('m','sz_yi');
+        return   '/addons/' . $module . '/#'.$route .  ($params ? '?'.http_build_query($params) : '');
     }
 
     /**

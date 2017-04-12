@@ -30,7 +30,7 @@ class SettingController extends BaseController
         if (!$setting) {
             $this->errorJson('未进行设置.');
         }
-
+        $setting['logo'] = tomedia($setting['logo']);
         $this->successJson('获取商城设置成功', $setting);
     }
 }
