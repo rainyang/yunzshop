@@ -536,7 +536,8 @@ class MemberController extends ApiController
 
         $data = [
             'config' => $config,
-            'info' => $info
+            'info' => $info,
+            'shop' => \Setting::get('shop')
         ];
 
         return $this->successJson('', $data);
