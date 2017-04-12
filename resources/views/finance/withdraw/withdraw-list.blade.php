@@ -8,16 +8,16 @@
             </ul>
         </div>
 
-        <form action="" method="post" class="form-horizontal">
-            <div class="panel panel-info">
-                <div class="panel-body">
-                    <div class="form-group col-xs-12 col-sm-8 col-lg-11">
-                        <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->
-                        <div class="">
-                            <input class="form-control" name="search[member]" id="" type="text"
-                                   value="{{$search['member']}}" placeholder="昵称/姓名/手机">
-                        </div>
-                    </div>
+        {{--<form action="" method="post" class="form-horizontal">--}}
+            {{--<div class="panel panel-info">--}}
+                {{--<div class="panel-body">--}}
+                    {{--<div class="form-group col-xs-12 col-sm-8 col-lg-11">--}}
+                        {{--<!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->--}}
+                        {{--<div class="">--}}
+                            {{--<input class="form-control" name="search[member]" id="" type="text"--}}
+                                   {{--value="{{$search['member']}}" placeholder="昵称/姓名/手机">--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
 
                     {{--<div class="form-group">--}}
                         {{--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">类型</label>--}}
@@ -44,16 +44,16 @@
 
                     {{--</div>--}}
 
-                    <div class="form-group col-xs-12 col-sm-2 col-lg-1">
-                        <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"> </label>-->
+                    {{--<div class="form-group col-xs-12 col-sm-2 col-lg-1">--}}
+                        {{--<!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"> </label>-->--}}
 
-                            <input type="submit" class="btn btn-block btn-success" value="搜索">
+                            {{--<input type="submit" class="btn btn-block btn-success" value="搜索">--}}
 
-                    </div>
+                    {{--</div>--}}
 
-                </div>
-            </div>
-        </form>
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</form>--}}
 
         <div class='panel panel-default'>
             <div class='panel-body'>
@@ -95,10 +95,6 @@
                 </table>
                 {!! $pager !!}
 
-            </div>
-            <div class='panel-footer'>
-                <a class='btn btn-info' href="{{yzWebUrl('goods.comment.add-comment')}}"><i
-                            class='fa fa-plus'></i> 添加评价</a>
             </div>
         </div>
 
