@@ -101,13 +101,28 @@ class Order extends \app\common\models\Order
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单
             if ($params['ambiguous']['field'] == 'order') {
-                $order_builder->searchLike($params['ambiguous']['string']);
+                $keyWords = explode(':',$params['ambiguous']['string']);
+                if(is_array($keyWords)){
+                    list($field,$value) = $keyWords;
+                    $order_builder->where($field,$value);
+                }else{
+                    $order_builder->searchLike($params['ambiguous']['string']);
+                }
             }
             //用户
             if ($params['ambiguous']['field'] == 'member') {
-                $order_builder->whereHas('belongsToMember', function ($query) use ($params) {
-                    $query->searchLike($params['ambiguous']['string']);
-                });
+                //当传入 id:1 时,按照id准确查找 todo 需要处理,非法字段时数据库报错
+                $keyWords = explode(':',$params['ambiguous']['string']);
+                if(is_array($keyWords)){
+                    list($field,$value) = $keyWords;
+                    $order_builder->where($field,$value);
+                }else{
+                    $order_builder->whereHas('belongsToMember', function ($query) use ($params) {
+
+                        return $query->searchLike($params['ambiguous']['string']);
+                    });
+                }
+
             }
             //订单商品
             if ($params['ambiguous']['field'] == 'order_goods') {
