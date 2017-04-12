@@ -526,13 +526,19 @@ class MemberController extends ApiController
         $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage', 'showOptionMenu'));
         $config = json_decode($config, 1);
 
-        $info = Member::getUserInfos(\YunShop::app()->getMemberId());
+        $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+
+        if (!empty($info)) {
+            $info = $info->toArray();
+        } else {
+            $info = [];
+        }
 
         $data = [
             'config' => $config,
             'info' => $info
         ];
-        
+
         return $this->successJson('', $data);
     }
 }
