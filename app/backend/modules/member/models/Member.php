@@ -115,8 +115,11 @@ class Member extends \app\common\models\Member
      * @param $parame
      * @return mixed
      */
-    public static function searchMembers($parame)
+    public static function searchMembers($parame, $credit = null)
     {
+        if (!isset($credit)) {
+            $credit = 'credit2';
+        }
         $result = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
             'credit1', 'credit2'])
             ->uniacid();
@@ -151,10 +154,10 @@ class Member extends \app\common\models\Member
 
         //余额区间搜索
         if ($parame['min_credit2']) {
-            $result = $result->where('credit2', '>', $parame['min_credit2']);
+            $result = $result->where($credit, '>', $parame['min_credit2']);
         }
         if ($parame['max_credit2']) {
-            $result = $result->where('credit2', '<', $parame['max_credit2']);
+            $result = $result->where($credit, '<', $parame['max_credit2']);
         }
 
         if ($parame['followed'] != '') {
