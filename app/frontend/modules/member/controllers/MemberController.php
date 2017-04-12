@@ -509,6 +509,7 @@ class MemberController extends ApiController
      */
     public function wxJsSdkConfig()
     {
+        $url = \YunShop::request()->url;
         $pay = \Setting::get('shop.pay');
 
         $options = [
@@ -519,6 +520,7 @@ class MemberController extends ApiController
         $app = new Application($options);
 
         $js = $app->js;
+        $js->setUrl($url);
 
         $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'));
         $config = json_decode($config, 1);

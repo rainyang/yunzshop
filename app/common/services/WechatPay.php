@@ -215,8 +215,6 @@ class WechatPay extends Pay
         $options = [
             'app_id'  => $pay['weixin_appid'],
             'secret'  => $pay['weixin_secret'],
-            'token'   => \YunShop::app()->account['token'],
-            'aes_key' => \YunShop::app()->account['encodingaeskey'],
             // payment
             'payment' => [
                 'merchant_id'        => $pay['weixin_mchid'],

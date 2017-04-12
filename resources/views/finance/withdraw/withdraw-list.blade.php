@@ -96,10 +96,6 @@
                 {!! $pager !!}
 
             </div>
-            <div class='panel-footer'>
-                <a class='btn btn-info' href="{{yzWebUrl('goods.comment.add-comment')}}"><i
-                            class='fa fa-plus'></i> 添加评价</a>
-            </div>
         </div>
 
     </div>
