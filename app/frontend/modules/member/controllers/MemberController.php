@@ -522,7 +522,7 @@ class MemberController extends ApiController
         $js = $app->js;
         $js->setUrl($url);
 
-        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'));
+        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage', 'showOptionMenu'));
         $config = json_decode($config, 1);
 
         return $this->successJson('', ['config' => $config]);
