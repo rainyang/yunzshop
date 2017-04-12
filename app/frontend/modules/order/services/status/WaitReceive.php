@@ -39,6 +39,11 @@ class WaitReceive implements StatusService
                     'api' => 'dispatch.express',
                     'value' => static::EXPRESS
                 ],
+                [
+                    'name' => '申请退款',
+                    'api' => 'order.refund.apply', //todo
+                    'value' => static::REFUND
+                ]
             ];
         return $result;
     }

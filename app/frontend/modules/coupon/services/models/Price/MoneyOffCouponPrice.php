@@ -9,6 +9,7 @@
 
 namespace app\frontend\modules\coupon\services\models\Price;
 
+use app\common\models\coupon\GoodsMemberCoupon;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 
 class MoneyOffCouponPrice extends CouponPrice

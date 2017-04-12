@@ -19,7 +19,7 @@
                             <label class="radio-inline">
                                 <input type="radio" name="set[point_deduct]" value='0' @if (empty($set['point_deduct'])) checked @endif /> 关闭
                             </label>
-                            <span class='help-block'>开启积分抵扣, 商品最多抵扣的数目需要在商品【营销设置】中单独设置</span>
+                            <span class='help-block'>开启积分抵扣, 商品最多抵扣的数目需要在商品【营销设置】中单独设置, 否则同意设置</span>
                         </div>
                     </div>
                     <div class="form-group">
@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品最高抵扣比例</label>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品最高抵扣</label>
                         <div class="col-sm-5">
                             <div class='input-group'>
                                 <span class='input-group-addon'>最多可抵扣</span>
@@ -59,12 +59,13 @@
                                 <input type="text" name="set[give_point]"  value="{{$set['give_point']}}" class="form-control" />
                                 <span class='input-group-addon'>积分</span>
                             </div>
-                            <span class='help-block'>购买商品赠送积分,商品【营销设置】中单独设置</span>
+                            <span class='help-block'>购买<span style="color:red; font-weight:bold">单个</span>商品赠送积分,商品【营销设置】中单独设置</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费赠送</label>
                         <div class="col-sm-4">
+                            <span class="help-block">两项都填写才能生效 <span style="color:red; font-weight:bold">且阶梯优先级最大</span></span>
                             <div class='input-group'>
                                 <span class="input-group-addon">单笔订单满</span>
                                 <input type="text" name="set[enough_money]"  value="{{$set['enough_money']}}" class="form-control wid100" />
@@ -78,12 +79,12 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-4">
                             <div class='recharge-items'>
-                                @foreach ($set['enough'] as $item)
+                                @foreach ($set['enoughs'] as $item)
                                 <div class="input-group recharge-item" style="margin-top:5px">
                                     <span class="input-group-addon">单笔订单满</span>
-                                    <input type="text" class="form-control  wid100" name='set[enough][]' value='{{$item}}' />
+                                    <input type="text" class="form-control  wid100" name='enough[]' value='{{$item['enough']}}' />
                                     <span class="input-group-addon">元 赠送</span>
-                                    <input type="text" class="form-control wid100"  name='set[give][]' value='{{$item}}' />
+                                    <input type="text" class="form-control wid100"  name='give[]' value='{{$item['give']}}' />
                                     <span class="input-group-addon">积分</span>
                                     <div class='input-group-btn'>
                                         <button class='btn btn-danger' type='button' onclick="removeConsumeItem(this)"><i class='fa fa-remove'></i></button>
@@ -94,7 +95,6 @@
                             <div style="margin-top:5px">
                                 <button type='button' class="btn btn-default" onclick='addConsumeItem()' style="margin-bottom:5px"><i class='fa fa-plus'></i> 增加项</button>
                             </div>
-                            <span class="help-block">两项都填写才能生效</span>
                         </div>
                     </div>
                 </div>
@@ -114,9 +114,9 @@
         function addConsumeItem(){
             var html= '<div class="input-group recharge-item"  style="margin-top:5px">';
             html+='<span class="input-group-addon">单笔订单满</span>';
-            html+='<input type="text" class="form-control wid100" name="set[enough][]"  />';
+            html+='<input type="text" class="form-control wid100" name="enough[]"  />';
             html+='<span class="input-group-addon">元 赠送</span>';
-            html+='<input type="text" class="form-control wid100"  name="set[give][]"  />';
+            html+='<input type="text" class="form-control wid100"  name="give[]"  />';
             html+='<span class="input-group-addon">积分</span>';
             html+='<div class="input-group-btn"><button class="btn btn-danger" onclick="removeRechargeItem(this)"><i class="fa fa-remove"></i></button></div>';
             html+='</div>';

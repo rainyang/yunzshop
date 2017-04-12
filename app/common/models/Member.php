@@ -171,6 +171,17 @@ class Member extends BackendModel
     }
 
     /**
+     * 触发会员成为下线事件
+     *
+     * @param $member_id
+     */
+    public static function chkAgent($member_id)
+    {
+        $model = MemberShopInfo::getMemberShopInfo($member_id);
+        event(new BecomeAgent(\YunShop::request()->mid, $model));
+    }
+
+    /**
      * 定义字段名
      *
      * @return array
