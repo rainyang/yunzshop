@@ -15,6 +15,7 @@ use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
+use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
@@ -525,6 +526,13 @@ class MemberController extends ApiController
         $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage', 'showOptionMenu'));
         $config = json_decode($config, 1);
 
-        return $this->successJson('', ['config' => $config]);
+        $info = Member::getUserInfos(\YunShop::app()->getMemberId());
+
+        $data = [
+            'config' => $config,
+            'info' => $info
+        ];
+        
+        return $this->successJson('', $data);
     }
 }
