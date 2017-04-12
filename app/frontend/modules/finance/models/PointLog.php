@@ -36,7 +36,7 @@ class PointLog extends \app\common\models\finance\PointLog
 
     public function scopeType($query, $type)
     {
-        if (!isset($type)) {
+        if (!isset($type) || $type == 0) {
             return $query;
         }
         return $query->where('point_income_type', $type);
