@@ -39,7 +39,7 @@
             <div class="form-group ">
                 <label for="menu[icon]" class="control-label col-xs-12 col-md-2">图标</label>
                 <div class="col-sm-9 col-xs-12">
-                    <button class="btn btn-default" name="menu[icon]" data-iconset="fontawesome" data-icon="{{ $model->icon?$model->icon:'fa-sliders' }}" role="iconpicker"></button>
+                    <button class="btn btn-default" name="menu[icon]" data-iconset="fontawesome" data-icon="{{ $model->icon?:'fa-circle-o' }}" role="iconpicker"></button>
                 </div>
             </div>
             @section('js')
