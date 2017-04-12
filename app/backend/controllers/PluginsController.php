@@ -10,6 +10,7 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\helpers\Url;
 use app\common\repositories\OptionRepository;
 use Datatables;
 use Illuminate\Events\Dispatcher;
@@ -46,18 +47,18 @@ class PluginsController extends BaseController
             switch (\YunShop::request()->action) {
                 case 'enable':
                     $plugins->enable($name);
-
-                    return json(trans('admin.plugins.operations.enabled', ['plugin' => $plugin->title]), 0);
+                    return $this->message('启用成功!', Url::absoluteWeb('plugins.get-plugin-data'));
+//                    return json(trans('admin.plugins.operations.enabled', ['plugin' => $plugin->title]), 0);
 
                 case 'disable':
                     $plugins->disable($name);
-
-                    return json(trans('admin.plugins.operations.disabled', ['plugin' => $plugin->title]), 0);
+                    return $this->message('禁用成功!', Url::absoluteWeb('plugins.get-plugin-data'));
+//                    return json(trans('admin.plugins.operations.disabled', ['plugin' => $plugin->title]), 0);
 
                 case 'delete':
                     $plugins->uninstall($name);
-
-                    return json(trans('admin.plugins.operations.deleted'), 0);
+                    return $this->message('删除成功!', Url::absoluteWeb('plugins.get-plugin-data'));
+//                    return json(trans('admin.plugins.operations.deleted'), 0);
 
                 default:
                     # code...

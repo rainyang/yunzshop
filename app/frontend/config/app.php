@@ -10,5 +10,6 @@ return [
     'modules'=>[
         'order',
         'dispatch',
+        'refund',
     ]
 ];
