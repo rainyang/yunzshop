@@ -13,10 +13,30 @@ class MemberCouponController extends BaseController
     public function couponsOfMember()
     {
         $uid = \YunShop::request()->get('test_uid'); //todo
-        $member = Member::getMemberById($uid);
-        $memberCoupon = new MemberCoupon;
 
-        $coupons = $memberCoupon::getMemberCoupon($member);
+        $coupons = MemberCoupon::getCouponsOfMember($uid)->get()->toArray();
+        $now = strtotime('now');
+        foreach($coupons as $k=>$v){
+            if ($v['used'] == 0){
+                if($v['belongs_to_coupon']['time_limit'] == 0){
+                    if (($now - $k['get_time']) < ($v['belongs_to_coupon']['time_days']*3600)){
+                        $coupons[$k]['overdue'] = 0;
+                    } else{
+                        $coupons[$k]['overdue'] = 1;
+                        $coupons[$k]['available'] = 0;
+                    }
+                } elseif($v['belongs_to_coupon']['time_limit'] == 1){
+                    if (($now > $v['belongs_to_coupon']['time_end'])){
+                        $coupons[$k]['overdue'] = 1;
+                        $coupons[$k]['available'] = 0;
+                    }
+                }
+            } elseif ($v['used'] == 1){
+                $coupons[$k]['available'] = 0;
+            } else{
+                $coupons[$k]['available'] = 1;
+            }
+        }
         dd($coupons);
 //        return $this->successJson('ok', $coupons);
     }
