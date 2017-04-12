@@ -2,14 +2,14 @@
 
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{{ SZ_YI_INTEGRAL }}抵扣</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣</label>
     <div class="col-xs-12 col-sm-9 col-md-10">
         <div class='input-group'>
             <span class="input-group-addon">最多抵扣</span>
             <input type="text" name="widgets[sale][max_point_deduct]"  value="{{ $item->max_point_deduct }}" class="form-control" />
             <span class="input-group-addon">元</span>
         </div>
-        <span class="help-block">如果设置0，则不支持{{ SZ_YI_INTEGRAL }}抵扣</span>
+        <span class="help-block">如果设置0，则不支持积分抵扣</span>
 
     </div>
 </div>

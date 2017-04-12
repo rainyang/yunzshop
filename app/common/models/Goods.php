@@ -8,6 +8,7 @@
 
 namespace app\common\models;
 
+use app\backend\modules\goods\models\Sale;
 use app\frontend\modules\discount\services\models\GoodsDiscount;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
@@ -131,6 +132,11 @@ class Goods extends BaseModel
     public function hasManySpecs()
     {
         return $this->hasMany('app\common\models\GoodsSpec');
+    }
+
+    public function hasOneSale()
+    {
+        return $this->hasOne(Sale::class, 'goods_id', 'id');
     }
 
     public function scopeSearch($query, $filters)
