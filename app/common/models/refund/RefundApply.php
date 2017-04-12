@@ -16,7 +16,7 @@ class RefundApply extends BaseModel
     protected $table = 'yz_order_refund';
     protected $fillable = ['reason','images','order_id'];
     protected $attributes = [
-        'images'=>[],
+        'images'=>'[]',
         'content'=>''
     ];
     protected $casts = [
