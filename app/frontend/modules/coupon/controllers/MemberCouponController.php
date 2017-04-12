@@ -4,8 +4,7 @@ namespace app\frontend\modules\coupon\controllers;
 use app\common\components\BaseController;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\models\MemberCoupon;
-use app\common\helpers\PaginationHelper;
-
+use app\common\models\Member;
 
 class MemberCouponController extends BaseController
 {
@@ -55,7 +54,37 @@ class MemberCouponController extends BaseController
     //提供给用户"优惠券中心"的数据
     public function couponsForMember()
     {
-        $coupons = Coupon::getCoupons();
+//        $pageSize = \YunShop::app()->get('pagesize');
+//        $pageSize = $pageSize ? $pageSize : 10; //todo 分页, 记得数据是在['data']下面
+        $uid = \YunShop::app()->getMemberId();
+//        $member = Member::getMemberById($uid);
+
+        $coupons = Coupon::getCouponsForMember($uid)->get()->toArray();
+        if(empty($coupons)){
+            return $this->errorJson('没有找到记录', []);
+        }
+
+        //增加"是否可领取 available" & "是否已抢光 exhaust" & "是否已领取 alredyGot" & "领取数量是否达到个人上限 touchLimit"的属性
+        $now = strtotime('now');
+        foreach($coupons as $k=>$v){
+            if($v['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT_TYPE && ($now > $v['time_end'])){ //优惠券已过期
+                $coupons[$k]['available'] = 0;
+                $coupons[$k]['overdue'] = 1;
+            } elseif($v['has_many_member_coupon_count'] >= $v['total']){ //优惠券已抢光
+                $coupons[$k]['available'] = 0;
+                $coupon[$k]['exhaust'] = 1;
+            } elseif($v['member_got_count'] >= $v['get_max']){ //达到个人可领取的上限
+                $coupons[$k]['available'] = 0;
+                $coupons[$k]['touchLimit'] = 1;
+                $coupons[$k]['alredyGot'] = 1;
+            } elseif($v['member_got_count'] > 0){
+                $coupons[$k]['available'] = 1;
+                $coupons[$k]['touchLimit'] = 0;
+                $coupons[$k]['alredyGot'] = 1;
+            } else{
+                $coupons[$k]['available'] = 1;
+            }
+        }
 
         return $this->successJson('ok', $coupons);
     }
