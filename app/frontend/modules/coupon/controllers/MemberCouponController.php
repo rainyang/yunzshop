@@ -13,6 +13,7 @@ class MemberCouponController extends BaseController
     const EXHAUST = 2;
     const ALREADY_GOT = 3;
     const ALREADY_GOT_AND_TOUCH_LIMIT = 4;
+    const IS_USED = 5;
 
     /**
      * 获取用户所有的优惠券的数据接口
@@ -29,11 +30,12 @@ class MemberCouponController extends BaseController
             return $this->errorJson('没有找到记录', []);
         }
 
-        //给优惠券增加 "是否可用" & "是否过期" 的标识
+        //给优惠券增加 "是否可用" & "是否已经使用" & "是否过期" 的标识
         $now = strtotime('now');
         foreach($coupons['data'] as $k=>$v){
             if ($v['used'] == MemberCoupon::USED){ //已使用
                 $coupons['data'][$k]['availability_dec'] = self::NOT_AVAILABLE;
+                $coupons['data'][$k]['status_dec'] = self::IS_USED;
             } elseif ($v['used'] == MemberCoupon::NOT_USED){ //未使用
                 if($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT_TYPE){ //时间限制类型是"领取后几天有效"
                     if (($now - $v['get_time']) < ($v['belongs_to_coupon']['time_days']*3600)){ //优惠券在有效期内
