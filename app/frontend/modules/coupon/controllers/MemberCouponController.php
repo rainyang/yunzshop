@@ -34,33 +34,33 @@ class MemberCouponController extends BaseController
         $now = strtotime('now');
         foreach($coupons['data'] as $k=>$v){
             if ($v['used'] == MemberCoupon::USED){ //已使用
-                $coupons['data'][$k]['availability_dec'] = self::NOT_AVAILABLE;
-                $coupons['data'][$k]['status_dec'] = self::IS_USED;
+                $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
+                $coupons['data'][$k]['api_status'] = self::IS_USED;
             } elseif ($v['used'] == MemberCoupon::NOT_USED){ //未使用
-                if($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT_TYPE){ //时间限制类型是"领取后几天有效"
+                if($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT){ //时间限制类型是"领取后几天有效"
                     if (($now - $v['get_time']) < ($v['belongs_to_coupon']['time_days']*3600)){ //优惠券在有效期内
-                        $coupons['data'][$k]['availability_dec'] = self::IS_AVAILABLE; //可用时, 就没有status_dec描述
+                        $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE; //可用时, 就没有api_status描述
                     } else{ //优惠券在有效期外
-                        $coupons['data'][$k]['availability_dec'] = self::NOT_AVAILABLE;
-                        $coupons['data'][$k]['status_dec'] = self::OVERDUE;
+                        $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
+                        $coupons['data'][$k]['api_status'] = self::OVERDUE;
                     }
-                } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT_TYPE){ //时间限制类型是"时间范围"
+                } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT){ //时间限制类型是"时间范围"
                     if (($now > $v['belongs_to_coupon']['time_end'])){ //优惠券在有效期外
                         $coupons['data'][$k]['availability'] = self::NOT_AVAILABLE;
-                        $coupons['data'][$k]['status_dec'] = self::OVERDUE;
+                        $coupons['data'][$k]['api_status'] = self::OVERDUE;
                     } else{ //优惠券在有效期内
-                        $coupons['data'][$k]['availability_dec'] = self::IS_AVAILABLE;
+                        $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
                     }
                 }
             } else{
-                $coupons['data'][$k]['availability_dec'] = self::IS_AVAILABLE;
+                $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
             }
         }
         return $this->successJson('ok', $coupons);
     }
 
     /**
-     * 提供给用户"优惠券中心"的数据接口
+     * 提供给用户的"优惠券中心"的数据接口
      * @return \Illuminate\Http\JsonResponse
      */
     public function couponsForMember()
@@ -73,24 +73,25 @@ class MemberCouponController extends BaseController
         if(empty($coupons)){
             return $this->errorJson('没有找到记录', []);
         }
+//        dd($coupons);
 
         //增加"是否可领取" & "是否已抢光" & "是否已领取" & "领取数量是否达到个人上限"的标识
         $now = strtotime('now');
         foreach($coupons['data'] as $k=>$v){
-            if($v['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT_TYPE && ($now > $v['time_end'])){ //优惠券已过期
-                $coupons['data'][$k]['availability_dec'] = self::NOT_AVAILABLE;
-                $coupons['data'][$k]['status_dec'] = self::OVERDUE;
+            if($v['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT && ($now > $v['time_end'])){ //优惠券已过期
+                $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
+                $coupons['data'][$k]['api_status'] = self::OVERDUE;
             } elseif($v['has_many_member_coupon_count'] >= $v['total']){ //优惠券已抢光
-                $coupons['data'][$k]['availability_dec'] = self::NOT_AVAILABLE;
-                $coupons['data'][$k]['status_dec'] = self::EXHAUST;
+                $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
+                $coupons['data'][$k]['api_status'] = self::EXHAUST;
             } elseif($v['member_got_count'] >= $v['get_max']){ //达到个人可领取的上限
-                $coupons['data'][$k]['availability_dec'] = self::NOT_AVAILABLE;
-                $coupons['data'][$k]['status_dec'] = self::ALREADY_GOT_AND_TOUCH_LIMIT;
+                $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
+                $coupons['data'][$k]['api_status'] = self::ALREADY_GOT_AND_TOUCH_LIMIT;
             } elseif($v['member_got_count'] > 0){ //已领取,但没有达到个人可领取的上限
-                $coupons['data'][$k]['availability_dec'] = self::IS_AVAILABLE;
-                $coupons['data'][$k]['status_dec'] = self::ALREADY_GOT;
+                $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
+                $coupons['data'][$k]['api_status'] = self::ALREADY_GOT;
             } else{
-                $coupons['data'][$k]['availability_dec'] = self::IS_AVAILABLE;
+                $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
             }
         }
 
