@@ -511,10 +511,13 @@ class MemberController extends ApiController
             $info = [];
         }
 
+        $shop = \Setting::get('shop');
+        $shop['logo'] = tomedia($shop['logo']);
+        
         $data = [
             'config' => $config,
             'info' => $info,
-            'shop' => \Setting::get('shop')
+            'shop' => $shop
         ];
 
         return $this->successJson('', $data);
