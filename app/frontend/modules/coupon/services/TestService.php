@@ -19,7 +19,6 @@ class TestService
 
         $this->order = $order;
         $this->back_type = $back_type;
-
     }
 
     /**
@@ -43,10 +42,15 @@ class TestService
      */
     public function getOptionalCoupons()
     {
+        //dd(MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember));
+        //dd($this->getMemberCoupon());
         $coupons = $this->getMemberCoupon()->map(function ($memberCoupon){
             return new Coupon($memberCoupon, $this->order);
         });
         $result = $coupons->filter(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
             return $coupon->valid();
         });
         return $result;
@@ -75,6 +79,9 @@ class TestService
             return new Coupon($memberCoupon, $this->order);
         });
         $result = $coupon->filter(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
             return $coupon->valid();
         });
 
@@ -88,9 +95,13 @@ class TestService
     private function getMemberCoupon()
     {
         $back_type = $this->back_type;
-        $result = MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember)->filter(function ($memberCoupon) use($back_type){
-            return $memberCoupon->belongsToCoupon->back_type == $back_type;
-        });
+        $result = MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember);
+        if(isset($back_type)){
+            $result->filter(function ($memberCoupon) use($back_type){
+                return $memberCoupon->belongsToCoupon->back_type == $back_type;
+            });
+        }
+        //dd($result);
         return $result;
 
     }
