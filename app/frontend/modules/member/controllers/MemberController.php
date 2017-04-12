@@ -74,6 +74,11 @@ class MemberController extends ApiController
                 $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
 
                 $member_info['order'] = $order_info;
+
+                $member_info['is_agent'] = MemberModel::isAgent()->toArray();
+                $member_info['referral'] = MemberModel::getMyReferral();
+                $member_info['qr'] = MemberModel::getAgentQR();
+
                 return $this->successJson('', $member_info);
             } else {
                 return $this->errorJson('用户不存在');
@@ -190,11 +195,7 @@ class MemberController extends ApiController
      */
     public function isAgent()
     {
-        $uid = \YunShop::app()->getMemberId();
-
-        MemberRelation::checkAgent($uid);
-
-        $member_info = SubMemberModel::getMemberShopInfo($uid);
+        $member_info = MemberModel::isAgent();
 
         if (empty($member_info)) {
             return $this->errorJson('会员不存在');
@@ -212,24 +213,15 @@ class MemberController extends ApiController
      * @param string $extra
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getAgentQR($url, $extra='')
+    public function getAgentQR($extra='')
     {
         if (empty(\YunShop::app()->getMemberId())) {
             return $this->errorJson('请重新登录');
         }
 
-        $url = $url . '&mid=' . \YunShop::app()->getMemberId();
+        $qr_url = MemberModel::getAgentQR($extra='');
 
-        if (!empty($extra)) {
-            $extra = '_' . $extra;
-        }
-
-        $extend = 'png';
-        $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
-
-        echo QrCode::format($extend)->size(100)->generate($url, storage_path('qr/') . $filename);
-
-        return $this->successJson('', ['qr' => storage_path('qr/') . $filename]);
+        return $this->successJson('', ['qr' => $qr_url]);
     }
 
     /**
@@ -284,28 +276,10 @@ class MemberController extends ApiController
      */
     public function getMyReferral()
     {
-        $member_info = MemberModel::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
+        $data = MemberModel::getMyReferral();
 
-        $data = [];
-
-        if (!empty($member_info)) {
-            $member_info = $member_info->toArray();
-
-            $referrer_info = MemberModel::getUserInfos($member_info['yz_member']['parent_id'])->first();
-
-            if (!empty($referrer_info)) {
-                $info = $referrer_info->toArray();
-                $data = [
-                  'uid' => $info['uid'],
-                  'avatar' => $info['avatar'],
-                  'nickname' => $info['nickname'],
-                  'level' => $info['yz_member']['level']['level_name']
-                ];
-
-                return $this->successJson('', $data);
-            } else {
-                return $this->errorJson('会员不存在');
-            }
+        if (!empty($data)) {
+            return $this->successJson('', $data);
         } else {
             return $this->errorJson('会员不存在');
         }
@@ -359,7 +333,7 @@ class MemberController extends ApiController
                 ];
             }
         }
-        
+
         return $this->successJson('', $data);
     }
 
