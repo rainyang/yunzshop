@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\member\BecomeAgent;
 use app\common\models\AccountWechats;
