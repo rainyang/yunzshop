@@ -22,7 +22,7 @@ use app\frontend\modules\member\services\MemberService;
 use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class TestController extends BaseController //ApiController
+class TestController extends ApiController
 {
    public function index()
    {
