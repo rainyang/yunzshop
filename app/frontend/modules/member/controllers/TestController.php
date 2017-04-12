@@ -331,6 +331,8 @@ exit;
 
     public function wxJsSdkConfig()
     {
+        $url = \YunShop::request()->url;
+
         $pay = \Setting::get('shop.pay');
         $options = [
             'app_id'  => $pay['weixin_appid'],
@@ -340,7 +342,7 @@ exit;
         $app = new Application($options);
 
         $js = $app->js;
-        $js->setUrl('http://www.yunzshop.com');
+        $js->setUrl($url);
 
         $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'), 1);
         $config = json_decode($config, 1);
