@@ -11,7 +11,7 @@ namespace app\frontend\modules\finance\models;
 
 class PointLog extends \app\common\models\finance\PointLog
 {
-    public static function getPointTotal($member_id, $type = null)
+    /*public static function getPointTotal($member_id, $type = null)
     {
         $builder = PointLog::select()->byMemberId($member_id)->type($type)->limit(5)->orderBy('id', 'desc');
         return $builder;
@@ -21,7 +21,7 @@ class PointLog extends \app\common\models\finance\PointLog
     {
         $time = PointLog::select('created_at')->byMemberId($member_id)->type($type)->first();
         return $time;
-    }
+    }*/
 
     public static function getPointLogList($member_id, $type = null)
     {

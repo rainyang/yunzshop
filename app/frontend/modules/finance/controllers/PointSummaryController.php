@@ -19,16 +19,12 @@ class PointSummaryController extends ApiController
         $member_id = \YunShop::app()->getMemberId();
         $point_total = Member::getMemberById($member_id)['credit1'];
 
-        $income_point = PointLog::getPointTotal($member_id, 1)->get()->sum('point');
-        $cost_point = PointLog::getPointTotal($member_id, -1)->get()->sum('point');
-
+        $list = PointLog::getPointLogList($member_id)->limit(5)->get();
+        
         return $this->successJson('成功',
             [
                 'point_total'       => $point_total,
-                'income_point'      => $income_point,
-                'cost_point'        => $cost_point,
-                'last_income_time'  => PointLog::getLastTime($member_id, 1)->created_at,
-                'last_cost_time'    => PointLog::getLastTime($member_id, -1)->created_at
+                'list'              => $list,
             ]
         );
     }
