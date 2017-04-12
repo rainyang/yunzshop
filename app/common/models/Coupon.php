@@ -29,7 +29,7 @@ class Coupon extends BaseModel
         'categoryids' => [],
     ];
 
-    public static function getMemberCoupon($used = 0) {
+    public static function getMemberCoupon($used = 0) { //todo 没有used这个字段
         return static::uniacid()->where('used', $used);
     }
 
