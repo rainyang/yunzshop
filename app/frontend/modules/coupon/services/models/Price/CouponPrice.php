@@ -38,7 +38,7 @@ abstract class CouponPrice
         $this->coupon = $coupon;
         $this->dbCoupon = $coupon->getMemberCoupon()->belongsToCoupon;
         $this->orderModel = $coupon->getPreGeneratedOrderModel();
-
+        //dd($this->orderModel);
     }
     abstract public function valid();
     /**

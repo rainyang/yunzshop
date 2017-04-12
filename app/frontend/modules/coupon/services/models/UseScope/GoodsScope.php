@@ -17,7 +17,12 @@ class GoodsScope extends CouponUseScope
     protected $orderGoods;
     public function valid()
     {
-        if(count($this->getOrderGoodsOfUsedCoupon())){
+        //dd($this->getOrderGoodsOfUsedCoupon());
+        //exit;
+        if($this->getOrderGoodsOfUsedCoupon()->isNotEmpty()){
+            //dd($this->getOrderGoodsOfUsedCoupon());
+            //exit;
+            //todo 此处有bug ,如果调用处提前结束了判断条件,会导致 orderGoodsGroup属性获取失败
             $this->setOrderGoodsGroup();
             return true;
         }
@@ -30,6 +35,7 @@ class GoodsScope extends CouponUseScope
      */
     private function setOrderGoodsGroup()
     {
+        //dd($this->getOrderGoodsOfUsedCoupon());
         $this->orderGoodsGroup = new PreGeneratedOrderGoodsModelGroup($this->getOrderGoodsOfUsedCoupon());
     }
 

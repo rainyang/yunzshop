@@ -11,6 +11,11 @@
 </div>
 <!-- 新增加右侧顶部三级菜单结束 -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
+
+            <div class='alert alert-info'>
+                请将公众平台模板消息所在行业选择为： IT科技/互联网|电子商务
+            </div>
+
         <div class="panel panel-default">
             <style type='text/css'>
                 .multi-item { height:110px;}
@@ -19,11 +24,7 @@
                                 color:#fff;text-align:center;width:90px;bottom:55px;background:rgba(0,0,0,0.8);left:5px;}
                 .multi-img-details { padding:5px;}
             </style>
-            <div class='panel-body'>
-                <div class='alert alert-info'>
-                    请将公众平台模板消息所在行业选择为： IT科技/互联网|电子商务
-                </div>
-            </div>
+
             <div class='panel-heading'>
                 卖家通知
             </div>
@@ -209,7 +210,7 @@
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary"  />
+                            <input type="submit" name="submit" value="提交" class="btn btn-success"  />
                      </div>
             </div>
                        

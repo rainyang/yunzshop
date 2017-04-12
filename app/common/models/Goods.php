@@ -163,6 +163,9 @@ class Goods extends BaseModel
                         $query->where($attr, 1);
                     }
                     break;
+                case 'status':
+                    $query->where(status, $value);
+                    break;
                 case 'min_price':
                     $query->where('price', '>', $value);
                     break;

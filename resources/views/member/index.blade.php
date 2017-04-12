@@ -132,9 +132,10 @@
                         <div class="form-group col-sm-7 col-lg-4 col-xs-12">
                             <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
                             <div class="">
-                                <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                                <button type="button" name="export" value="1" id="export" class="btn btn-default excel back ">导出 Excel</button>
                                 <input type="hidden" name="token" value="{{$var['token']}}" />
-                                <button type="button" name="export" value="1" id="export" class="btn btn-primary excel">导出 Excel</button>
+                                <button class="btn btn-success "><i class="fa fa-search"></i> 搜索</button>
+
                             </div>
                         </div>
 
@@ -168,11 +169,11 @@
 
                                     @if($opencommission)
                                         <td style="text-align: center;"
-                                            @if(!empty($row['yz_member']['agent_id']))
-                                            title='ID: {{$row['yz_member']['agent_id']}}'
+                                            @if(!empty($row['yz_member']['parent_id']))
+                                            title='ID: {{$row['yz_member']['parent_id']}}'
                                                 @endif
                                         >
-                                            @if(empty($row['yz_member']['agent_id']))
+                                            @if(empty($row['yz_member']['parent_id']))
                                                 @if($row['yz_member']['is_agent']==1)
                                                     <label class='label label-primary'>总店</label>
                                                 @else
@@ -218,8 +219,8 @@
                                     <td>
                                         {{date('Y-m-d',$row['createtime'])}}<br/>
                                         {{date('H:i',$row['createtime'])}}</td>
-                                    <td><label class="label label-primary">积分：{{$row['credit1']}}</label><br/><label class="label label-danger">余额：{{$row['credit2']}}</label></td>
-                                    <td><label class="label label-primary">订单：
+                                    <td><label class="label label-info">积分：{{$row['credit1']}}</label><br/><label class="label label-danger">余额：{{$row['credit2']}}</label></td>
+                                    <td><label class="label label-info">订单：
                                         @if(!empty($row['has_one_order']['total']))
                                                 {{$row['has_one_order']['total']}}
                                         @else
@@ -250,7 +251,7 @@
                                             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
                                             <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 9999'>
                                                 <li><a href="{{yzWebUrl('member.member.detail', ['id' => $row['uid']])}}" title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>
-                                                <li><a  href="{{yzWebUrl('order', ['op' => 'display','openid'=>$row['uid']])}}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
+                                                <li><a  href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'order','search[ambiguous][string'=>'uid:'.$row['uid']])}}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
                                                 <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
                                                 <li><a href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
                                                 @if($row['yz_member']['is_black']==1)

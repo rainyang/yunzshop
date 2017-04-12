@@ -55,7 +55,7 @@ class PaginationHelper
 
         if ($context['isajax'] === true) {
             if (empty($url)) {
-                $url = \YunShop::app()->script_name . '?' . http_build_query($_GET);
+                $url = \YunShop::app()->script_name . '?' . http_build_query($_REQUEST);
             }
             $pdata['faa'] = 'href="javascript:;" page="' . $pdata['findex'] . '" '. ($callbackfunc ? 'onclick="'.$callbackfunc.'(\'' . $url . '\', \'' . $pdata['findex'] . '\', this);return false;"' : '');
             $pdata['paa'] = 'href="javascript:;" page="' . $pdata['pindex'] . '" '. ($callbackfunc ? 'onclick="'.$callbackfunc.'(\'' . $url . '\', \'' . $pdata['pindex'] . '\', this);return false;"' : '');
@@ -68,14 +68,14 @@ class PaginationHelper
                 $pdata['naa'] = 'href="?' . str_replace('*', $pdata['nindex'], $url) . '"';
                 $pdata['laa'] = 'href="?' . str_replace('*', $pdata['lindex'], $url) . '"';
             } else {
-                $_GET['page'] = $pdata['findex'];
-                $pdata['faa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_GET) . '"';
-                $_GET['page'] = $pdata['pindex'];
-                $pdata['paa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_GET) . '"';
-                $_GET['page'] = $pdata['nindex'];
-                $pdata['naa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_GET) . '"';
-                $_GET['page'] = $pdata['lindex'];
-                $pdata['laa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_GET) . '"';
+                $_REQUEST['page'] = $pdata['findex'];
+                $pdata['faa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_REQUEST) . '"';
+                $_REQUEST['page'] = $pdata['pindex'];
+                $pdata['paa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_REQUEST) . '"';
+                $_REQUEST['page'] = $pdata['nindex'];
+                $pdata['naa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_REQUEST) . '"';
+                $_REQUEST['page'] = $pdata['lindex'];
+                $pdata['laa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_REQUEST) . '"';
             }
         }
 
@@ -107,8 +107,8 @@ class PaginationHelper
                     if ($url) {
                         $aa = 'href="?' . str_replace('*', $i, $url) . '"';
                     } else {
-                        $_GET['page'] = $i;
-                        $aa = 'href="?' . http_build_query($_GET) . '"';
+                        $_REQUEST['page'] = $i;
+                        $aa = 'href="?' . http_build_query($_REQUEST) . '"';
                     }
                 }
                 $html .= ($i == $pdata['cindex'] ? '<li class="active"><a href="javascript:;">' . $i . '</a></li>' : "<li><a {$aa}>" . $i . '</a></li>');

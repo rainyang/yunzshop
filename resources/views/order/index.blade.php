@@ -1,4 +1,4 @@
-﻿@extends('layouts.base')
+@extends('layouts.base')
 
 @section('content')
 
@@ -113,9 +113,9 @@
                         <div class="form-group">
 
                             <div class="col-sm-7 col-lg-9 col-xs-12">
-                                <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                                <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
                                 <input type="hidden" name="token" value="{{$var['token']}}"/>
-                                <button type="button" name="export" value="1" id="export" class="btn btn-primary">导出
+                                <button type="button" name="export" value="1" id="export" class="btn btn-default">导出
                                     Excel
                                 </button>
                                 @if( $requestSearch['plugin'] != "fund")
@@ -176,7 +176,7 @@
                             @if( 0&&empty($var['isagent']) && $order['isempty'] == 1 && $order['ismaster'] == 1)
                                 <td >
                                     <input class='itemid' type='hidden' value="{{$order['id']}}"/>
-                                    <a class="btn btn-primary btn-sm" href="javascript:;" onclick="sendagent(this)"
+                                    <a class="btn btn-success btn-sm" href="javascript:;" onclick="sendagent(this)"
                                        data-toggle="modal" data-target="#modal-changeagent">选择门店</a>
                                 </td>
                             @endif
@@ -198,8 +198,8 @@
                                     @endif
                                     <br/>{{$order_goods['goods_sn']}}
                                 </td>
-                                <td class="price">@if( $requestSearch['plugin'] != "fund")
-                                        原价: {!! number_format($order_goods['goods_price']/$order_goods['total'],2)!!} @endif
+                                <td class="price">
+                                        原价: {!! number_format($order_goods['goods_price']/$order_goods['total'],2)!!}
                                     <br/>应付: {!! number_format($order_goods['price']/$order_goods['total'],2) !!}
                                     <br/>数量: {{$order_goods['total']}}
                                 </td>

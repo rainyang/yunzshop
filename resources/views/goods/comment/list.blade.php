@@ -88,7 +88,7 @@
                                      style="width: 30px; height: 30px;border:1px solid #ccc;padding:1px;">
                                 {{$row['nick_name']}}
                             </td>
-                            <td style="color:#ff6600">
+                            <td style="color:#f39c12">
                                 @if($row['level'] >= 1) <i class='fa fa-star'></i> @else <i
                                         class='fa fa-star-o'></i> @endif
                                 @if($row['level'] >= 2) <i class='fa fa-star'></i> @else <i
@@ -132,7 +132,7 @@
 
             </div>
             <div class='panel-footer'>
-                <a class='btn btn-primary' href="{{yzWebUrl('goods.comment.add-comment')}}"><i
+                <a class='btn btn-info' href="{{yzWebUrl('goods.comment.add-comment')}}"><i
                             class='fa fa-plus'></i> 添加评价</a>
             </div>
         </div>

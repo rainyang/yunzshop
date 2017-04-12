@@ -42,17 +42,17 @@
                         </label>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">三级分类显示形式</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class="radio-inline">
-                            <input type="radio" name="category[cat_show]" value="0" @if (empty($set['cat_show'])) checked @endif /> 单页
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="category[cat_show]" value="1" @if ($set['cat_show'] == 1) checked @endif/> 多页
-                        </label>
-                    </div>
-                </div>
+                {{--<div class="form-group">--}}
+                    {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">三级分类显示形式</label>--}}
+                    {{--<div class="col-sm-9 col-xs-12">--}}
+                        {{--<label class="radio-inline">--}}
+                            {{--<input type="radio" name="category[cat_show]" value="0" @if (empty($set['cat_show'])) checked @endif /> 单页--}}
+                        {{--</label>--}}
+                        {{--<label class="radio-inline">--}}
+                            {{--<input type="radio" name="category[cat_show]" value="1" @if ($set['cat_show'] == 1) checked @endif/> 多页--}}
+                        {{--</label>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">推荐分类广告</label>
                     <div class="col-sm-9 col-xs-12">
@@ -93,7 +93,7 @@
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary" onclick="return formcheck();" />
+                            <input type="submit" name="submit" value="提交" class="btn btn-success" onclick="return formcheck();" />
                      </div>
             </div>
                    

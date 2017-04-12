@@ -11,7 +11,9 @@
  */
 namespace app\frontend\modules\member\models;
 
+use app\backend\modules\member\models\MemberRelation;
 use app\common\models\Member;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class MemberModel extends Member
 {
@@ -153,11 +155,30 @@ class MemberModel extends Member
                     }])->get();
                 }])->get();
             }])
-            ->with(['hasOneOrder' => function ($query) {
-                return $query->selectRaw('uid, count(uid) as total, sum(price) as sum')
-                    ->uniacid()
-                    ->where('status', 3)
-                    ->groupBy('uid');
+            ->where('uid', $uid);
+    }
+
+    /**
+     * 我的上级 3级
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getMyAgentsParentInfo($uid)
+    {
+        return self::select(['uid'])
+            ->uniacid()
+            ->with(['yzMember' => function ($query) {
+                return $query->select(['member_id', 'parent_id'])
+                    ->with(['hasOnePreSelf' => function ($query) {
+                        return $query->select(['member_id', 'parent_id'])
+                        ->with(['hasOnePreSelf' => function ($query) {
+                            return $query->select(['member_id', 'parent_id'])
+                            ->with(['hasOnePreSelf' => function ($query) {
+                                return $query->select(['member_id', 'parent_id'])->first();
+                        }])->first();
+                    }])->first();
+                }])->first();
             }])
             ->where('uid', $uid);
     }
@@ -169,5 +190,74 @@ class MemberModel extends Member
     public function hasManyYzMember()
     {
         return $this->hasMany('app\common\models\MemberShopInfo', 'parent_id', 'uid');
+    }
+
+    /**
+     * 用户是否有推广权限
+     *
+     * @return mixed
+     */
+    public static function isAgent()
+    {
+        $uid = \YunShop::app()->getMemberId();
+
+        MemberRelation::checkAgent($uid);
+
+        $member_info = SubMemberModel::getMemberShopInfo($uid);
+
+        return $member_info;
+    }
+
+    /**
+     * 我的推荐人
+     *
+     * @return array
+     */
+    public static function getMyReferral()
+    {
+        $member_info = self::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
+
+        $data = [];
+
+        if (!empty($member_info)) {
+            $member_info = $member_info->toArray();
+
+            $referrer_info = self::getUserInfos($member_info['yz_member']['parent_id'])->first();
+
+            if (!empty($referrer_info)) {
+                $info = $referrer_info->toArray();
+                $data = [
+                    'uid' => $info['uid'],
+                    'avatar' => $info['avatar'],
+                    'nickname' => $info['nickname'],
+                    'level' => $info['yz_member']['level']['level_name']
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * 推广二维码
+     *
+     * @param string $extra
+     * @return mixed
+     */
+    public static function getAgentQR($extra='')
+    {
+        $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/addons/sz_yi/home#/home';
+        $url = $url . '?mid=' . \YunShop::app()->getMemberId();
+
+        if (!empty($extra)) {
+            $extra = '_' . $extra;
+        }
+
+        $extend = 'png';
+        $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
+
+        echo QrCode::format($extend)->size(100)->generate($url, storage_path('qr/') . $filename);
+
+        return storage_path('qr/') . $filename;
     }
 }

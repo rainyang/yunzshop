@@ -29,7 +29,7 @@
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header">
-                <img src="/123.png" class="img-circle" alt="User Image">
+                <img src="" class="img-circle" alt="User Image">{{--/123.png--}}
                 <p>
                   username - 系统管理员
                   <small>最后登录:{{date('Y-m-d H:i',time())}}</small>

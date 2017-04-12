@@ -66,4 +66,9 @@ class MemberShopInfo extends BackendModel
         return $this->hasMany('app\common\models\MemberShopInfo', 'parent_id', 'member_id');
     }
 
+    public function hasOnePreSelf()
+    {
+        return $this->hasOne('app\common\models\MemberShopInfo', 'member_id', 'parent_id');
+    }
+
 }

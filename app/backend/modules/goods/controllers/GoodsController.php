@@ -76,7 +76,7 @@ class GoodsController extends BaseController
         $requestSearch = \YunShop::request()->search;
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
-                return !empty($item) && $item !== 0;
+                return $item !== '';// && $item !== 0;
             });
 
             $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
@@ -94,9 +94,10 @@ class GoodsController extends BaseController
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
             ]
         );
-        //dd($requestSearch);
         $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+
+
 
         $edit_url = 'goods.goods.edit';
         $delete_url = 'goods.goods.destroy';

@@ -1,4 +1,3 @@
-﻿
     <script language="javascript">
         function pay(order_id)
         {
@@ -15,7 +14,7 @@
         }
     </script>
 @if ($order['status'] == 0)
-<a class="btn btn-primary btn-sm disbut"
+<a class="btn btn-success btn-sm disbut"
    href="javascript:;"
    onclick="pay({{$order['id']}})">确认付款</a>
 <a class="label label-default">等待付款</a>
@@ -25,7 +24,7 @@
 <div>
     <input class='addressdata' type='hidden' value='{{$order['address']['address']}}' />
     <input class='itemid' type='hidden' value="{{$order['id']}}"/>
-    <a class="btn btn-primary btn-sm disbut" href="javascript:;" onclick="send(this)"  data-toggle="modal"
+    <a class="btn btn-success btn-sm disbut" href="javascript:;" onclick="send(this)"  data-toggle="modal"
        data-target="#modal-confirmsend">确认发货</a>
 </div>
 @endif

@@ -32,7 +32,7 @@ class DiscountCouponPrice extends CouponPrice
     public function setOrderGoodsDiscountPrice()
     {
         //echo 1;exit;
-        //dd($this->getOrderGoodsInScope());
+        //dd($this->coupon);
         foreach ($this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup() as $OrderGoods) {
             /**
              * @var $OrderGoods PreGeneratedOrderGoodsModel

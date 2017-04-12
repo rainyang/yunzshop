@@ -75,7 +75,8 @@
 #member-blade.rightlist .input-group .form-input p{
     width: 40%;
     float: left;
-
+    height: 34px;
+    line-height: 20px;
     margin:0;
 }
 #member-blade.rightlist .input-group .form-input .form-control{
@@ -105,3 +106,9 @@
     margin: 0;
     width: auto!important;
 }
+.wechat,.alipay{float:left; width:15%; height:30px;}
+.wechat .radio-inline,.alipay .radio-inline{padding-left:0;}
+.switch,.cost {float:left; width:85%; height:30px;}
+.cost .radio-inline{width:70%;    padding-left: 0;}
+.cost .radio-inline input{padding-left: 10px !important;}
+.success-btn.col-sm-9.col-xs-12{margin-top: 20px;}

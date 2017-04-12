@@ -1,4 +1,4 @@
-﻿@extends('layouts.base')
+@extends('layouts.base')
 
 @section('content')
     <script type="text/javascript">
@@ -579,10 +579,10 @@
 
 					</div>
 					<div class="form-group col-sm-12 mrleft40 border-t" >
-						<input type="submit" name="submit" value="{{$lang['shopsubmit']}}" class="btn btn-primary" onclick="return formcheck()"  />
+						<input type="submit" name="submit" value="{{$lang['shopsubmit']}}" class="btn btn-success" onclick="return formcheck()"  />
 						<input type="hidden" name="token" value="{{$var['token']}}" />
                       @section('back')
-						<input type="button" name="back"   value="返回列表" class="btn btn-default" />
+						<input type="button" name="back"   value="返回列表" class="btn btn-default back" />
                         @show
 					</div>
 				</div>

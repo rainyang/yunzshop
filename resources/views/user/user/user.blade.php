@@ -105,7 +105,7 @@
 
         </div>
         <div class='panel-footer'>
-            <a class='btn btn-primary' href="{{ yzWebUrl('user.user.store') }}"><i class="fa fa-plus"></i> 添加新操作员</a>
+            <a class='btn btn-info' href="{{ yzWebUrl('user.user.store') }}"><i class="fa fa-plus"></i> 添加新操作员</a>
         </div>
     </div>
 </form>

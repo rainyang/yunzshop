@@ -74,70 +74,6 @@ class OrderService
     }
 
     /**
-     * 获取自营商品购物车记录
-     * @return Collection
-     */
-    public static function getShopMemberCarts()
-    {
-        return self::getMemberCarts(function ($memberCart) {
-            /**
-             * @var $memberCart MemberCart
-             */
-            if (empty($memberCart->goods->is_plugin)) {
-                return true;
-            }
-            return false;
-        });
-    }
-    /**
-     * 获取插件商品购物车记录
-     * @return Collection
-     */
-    public static function getPluginMemberCarts()
-    {
-        return self::getMemberCarts(function ($memberCart) {
-            /**
-             * @var $memberCart MemberCart
-             */
-            if (!empty($memberCart->goods->is_plugin)) {
-                return true;
-            }
-            return false;
-        });
-    }
-    /**
-     * 从url中获取购物车记录并验证
-     * @param $callback
-     * @return Collection
-     * @throws AppException
-     */
-    private static function getMemberCarts($callback)
-    {
-
-        $cartIds = [];
-        if (!is_array($_GET['cart_ids'])) {
-            $cartIds = explode(',', $_GET['cart_ids']);
-        }
-
-        if (!count($cartIds)) {
-            throw new AppException('参数格式有误');
-        }
-
-        $memberCarts = MemberCart::getCartsByIds($cartIds);
-        if ($memberCarts->isEmpty()) {
-            throw new AppException('未找到购物车信息');
-        }
-
-        $memberCarts->filter($callback);
-
-        if ($memberCarts->isEmpty()) {
-
-            throw new AppException('请选择下单商品');
-        }
-        return $memberCarts;
-    }
-
-    /**
      * 获取订单商品对象数组
      * @param Collection $memberCarts
      * @return Collection
@@ -146,6 +82,9 @@ class OrderService
     public static function getOrderGoodsModels(Collection $memberCarts)
     {
         $result = new Collection();
+        if($memberCarts->isEmpty()){
+            throw new AppException("未找到订单商品");
+        }
         foreach ($memberCarts as $memberCart) {
             if (!($memberCart instanceof MemberCart)) {
                 throw new \Exception("请传入" . MemberCart::class . "的实例");
@@ -171,6 +110,11 @@ class OrderService
         if (!isset($member)) {
             throw new AppException('用户登录状态过期');
         }
+
+        if($memberCarts->isEmpty()){
+            return false;
+        }
+
         $shop = ShopService::getCurrentShopModel();
 
         $orderGoodsArr = OrderService::getOrderGoodsModels($memberCarts);

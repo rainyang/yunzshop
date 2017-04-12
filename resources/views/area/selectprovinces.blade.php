@@ -1,24 +1,17 @@
+<link rel="stylesheet" type="text/css" href="{{static_url('yunshop/goods/goods.css')}}"/>
 
-<style type='text/css'>
-    .province { float:left; position:relative;width:150px; height:35px; line-height:35px;border:1px solid #fff;}
-    .province:hover { border:1px solid #f7e4a5;border-bottom:1px solid #fffec6; background:#fffec6;}
-    .province .cityall { margin-top:10px;}
-    .province ul { list-style: outside none none;position:absolute;padding:0;background:#fffec6;border:1px solid #f7e4a5;display:none;
-    width:auto; width:300px; z-index:999999;left:-1px;top:32px;}
-    .province ul li  { float:left;min-width:60px;margin-left:20px; height:30px;line-height:30px; }
- </style>
  <div id="modal-areas"  class="modal fade" tabindex="-1">
-    <div class="modal-dialog" style='width: 920px;'>
+    <div class="modal-dialog" >
         <div class="modal-content">
             <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择区域</h3></div>
-            <div class="modal-body" style='height:280px;' >
+            <div class="modal-body"  >
 
                 @foreach ($parents as $value)
 				@if ($value['areaname'] == '请选择省份') {{--{php continue }--}} @endif
                 <div class='province' data-parent-id="{{ $value['id'] }}">
-                     <label class='checkbox-inline' style='margin-left:20px;'>
+                     <label class='checkbox-inline' >
                          <input type='checkbox' class='cityall' /> {{ $value['areaname'] }}
-                         <span class="citycount" style='color:#ff6600'></span>
+                         <span class="citycount" ></span>
                      </label>
 
                     <ul></ul>

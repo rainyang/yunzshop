@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\member\BecomeAgent;
 use app\common\models\AccountWechats;
@@ -19,9 +20,10 @@ use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\services\MemberService;
+use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class TestController extends BaseController //ApiController
+class TestController extends ApiController
 {
    public function index()
    {
@@ -317,4 +319,35 @@ exit;
            return $this->errorJson('手机号或密码错误');
        }
    }
+
+   public function getRelation()
+   {
+       $model = MemberModel::getMyAgentsParentInfo(10);
+
+       $a = $model->first()->toArray();
+       echo '<pre>';print_r($model->first()->toArray());
+       echo count($a['yz_member'], 1);
+       exit;
+   }
+
+    public function wxJsSdkConfig()
+    {
+        $url = \YunShop::request()->url;
+
+        $pay = \Setting::get('shop.pay');
+        $options = [
+            'app_id'  => $pay['weixin_appid'],
+            'secret'  => $pay['weixin_secret']
+        ];
+
+        $app = new Application($options);
+
+        $js = $app->js;
+        $js->setUrl($url);
+
+        $config = $js->config(array('onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo'), 1);
+        $config = json_decode($config, 1);
+echo '<pre>';print_r($config);exit;
+        return $this->successJson('', ['config' => $config]);
+    }
 }

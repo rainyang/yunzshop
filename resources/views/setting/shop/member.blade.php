@@ -96,7 +96,7 @@
                     <div class="col-sm-8">
                         <div class="input-group col-xs-12">
                             <input type="text" name="member[term_time]" class="form-control" value="{{ $set['term_time'] }}"  />
-                            <div class="input-group-addon ">
+                            <div class="input-group-addon " style="padding: 4px 12px;">
                                 <select name="member[term_unit]">
                                     <option value ="1" @if ($set['term_unit'] ==1) selected @endif>--天--</option>
                                     <option value ="2" @if ($set['term_unit'] ==2) selected @endif>--周--</option>
@@ -145,7 +145,7 @@
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
-                        <input type="submit" name="submit" value="提交" class="btn btn-primary"  onclick="return formcheck();"/>
+                        <input type="submit" name="submit" value="提交" class="btn btn-success"  onclick="return formcheck();"/>
                      </div>
             </div>
                        
