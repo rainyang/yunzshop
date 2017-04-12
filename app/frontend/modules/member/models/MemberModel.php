@@ -13,6 +13,7 @@ namespace app\frontend\modules\member\models;
 
 use app\backend\modules\member\models\MemberRelation;
 use app\common\models\Member;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class MemberModel extends Member
 {

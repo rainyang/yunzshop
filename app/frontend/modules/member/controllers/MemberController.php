@@ -21,7 +21,6 @@ use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 
 
