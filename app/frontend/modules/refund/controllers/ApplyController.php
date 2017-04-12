@@ -4,6 +4,7 @@ namespace app\frontend\modules\refund\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
+use app\common\models\refund\RefundApply;
 use app\frontend\modules\order\models\Order;
 use Request;
 
@@ -52,6 +53,7 @@ class ApplyController extends ApiController
             'reason' => 'required|string',
             'content' => 'sometimes|string',
             'images' => 'sometimes|json',
+            'refund_type' => 'required|int',
             'order_id' => 'required|int'
         ], [
             'images.json' => 'images非json格式'
