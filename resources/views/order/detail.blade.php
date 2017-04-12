@@ -1,4 +1,4 @@
-﻿@extends('layouts.base')
+@extends('layouts.base')
 
 @section('js')
     <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>

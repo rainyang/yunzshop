@@ -1,4 +1,5 @@
-﻿@extends('layouts.base')
+@extends('layouts.base')
+
 @section('content')
 
     <div class="w1200 ">
@@ -12,10 +13,10 @@
             <div class="right-titpos">
                 <ul class="add-snav">
                     <li class="active"><a href="#">商品发布</a></li>
-                    <li class="active">
+
                         <a class='btn btn-success ' href="{{yzWebUrl('goods.goods.create')}}"><i
                                     class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
-                    </li>
+
                 </ul>
             </div>
 
@@ -161,11 +162,10 @@
                                             <img src="{{tomedia($item['thumb'])}}"
                                                  style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"/>
                                         </td>
-                                        <td title="{{$item['title']}}" class='tdedit' width="26%">
-                                            <span class=' fa-edit-item' style='cursor:pointer'>
-                                                <i class='fa fa-pencil' style="display:none"></i>
-                                                <span class="title">{{$item['title']}}</span>
-                                            </span>
+                                        <td title="{$item['title']}" class='tdedit' width="26%">
+                                            <span class=' fa-edit-item' style='cursor:pointer'><i class='fa fa-pencil'
+                                                                                                  style="display:none"></i> <span
+                                                        class="title">{{$item['title']}}</span> </span>
                                             <div class="input-group goodstitle" style="display:none"
                                                  data-goodsid="{{$item['id']}}">
                                                 <input type='text' class='form-control' value="{{$item['title']}}"/>

@@ -10,7 +10,6 @@ namespace app\common\models;
 
 
 use app\backend\models\BackendModel;
-use app\backend\modules\finance\models\IncomeOrder;
 use app\frontend\modules\finance\services\WithdrawService;
 use Illuminate\Support\Facades\Config;
 
@@ -163,14 +162,16 @@ class Withdraw extends BackendModel
     /**
      * 字段规则
      * @return array
-     */
+     * @Author yitian */
     public function rules()
     {
-        return [
+        $rule =  [
             'member_id' => 'required',
             'type' => 'required',
             'amounts' => 'required',
             'pay_way' => 'required',
         ];
+
+        return $rule;
     }
 }

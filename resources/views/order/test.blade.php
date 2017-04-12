@@ -1,4 +1,4 @@
-﻿@extends('order.index')
+@extends('order.index')
 
 @section('search_bar')
     @parent
