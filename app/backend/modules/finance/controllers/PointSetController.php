@@ -23,8 +23,21 @@ class PointSetController extends BaseController
     public function index()
     {
         $set = Setting::get('point.set');
-        //echo '<pre>';print_r($set);exit;
         $point_data = \YunShop::request()->set;
+        $enoughs_data = \YunShop::request()->enough;
+        $give = \YunShop::request()->give;
+        if (!empty($enoughs_data)) {
+            foreach ($enoughs_data as $key => $value) {
+                //echo '<pre>';print_r(floatval($enoughs_data[$key]));exit;
+                $enough = floatval($value);
+                //echo '<pre>';print_r($enough);exit;
+                if ($enough > 0) {
+                    $enoughs[] = array('enough' => floatval($enoughs_data[$key]), 'give' => floatval($give[$key]));
+                }
+            }
+            $point_data['enoughs'] = $enoughs;
+            //echo '<pre>';print_r($point_data);exit;
+        }
         if ($point_data) {
             //echo '<pre>';print_r($point_data);exit;
             if (Setting::set('point.set', $point_data)) {

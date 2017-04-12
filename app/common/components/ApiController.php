@@ -9,6 +9,7 @@
 namespace app\common\components;
 
 
+use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\frontend\modules\member\services\MemberService;
@@ -53,5 +54,13 @@ class ApiController extends BaseController
         }
 
         session_start();
+    }
+    public function validate(Request $request, array $rules, array $messages = [], array $customAttributes = [])
+    {
+        $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
+        //$validator->errors();
+        if ($validator->fails()) {
+            throw new AppException(current($this->formatValidationErrors($validator)));
+        }
     }
 }
