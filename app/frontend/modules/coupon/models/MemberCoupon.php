@@ -10,10 +10,10 @@ class MemberCoupon extends \app\common\models\MemberCoupon
     const NOT_USED = 0;
 
     //获取指定用户名下的优惠券
-    public static function getCouponsOfMember($memberId, $param = [])
+    public static function getCouponsOfMember($memberId)
     {
-        $rawCoupons = static::with(['belongsToCoupon'])->where('uid', $memberId);
-        return $rawCoupons;
+        $coupons = static::with(['belongsToCoupon'])->where('uid', $memberId);
+        return $coupons;
     }
 
 }
