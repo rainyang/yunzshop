@@ -21,8 +21,6 @@ class OrderGoods extends BaseModel
     ];
     protected $search_fields = ['goods_sn', 'title'];
 
-
-
     public function hasOneGoods()
     {
         return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');

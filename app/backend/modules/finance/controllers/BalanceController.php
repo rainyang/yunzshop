@@ -37,30 +37,48 @@ class BalanceController extends BaseController
 
         $requestModel = \YunShop::request()->balance;
         if ($requestModel) {
-            $requestModel[''] = '';
+            $requestModel['sale'] = $this->rechargeSale($requestModel);
+            unset($requestModel['enough']);
+            unset($requestModel['give']);
             if (Setting::set('balance.recharge', $requestModel)) {
                 return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'));
             } else {
                 $this->error('余额基础设置保存失败！！');
             }
         }
-
         return view('finance.balance.index', [
             'balance' => $balance,
-            'pager' => ''
         ])->render();
     }
 
     //余额明细记录[完成]
     public function balanceDetail()
     {
+        //todo 搜索
         $pageSize = 20;
         $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
         $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
         return view('finance.balance.detail', [
             'detailList' => $detailList,
-            'pager' => $pager
+            'pager' => $pager,
+            'memberGroup'   => MemberGroup::getMemberGroupList(),
+            'memberLevel'   => MemberLevel::getMemberLevelList()
+        ])->render();
+    }
+
+    //查看余额明细详情
+    public function lookBalanceDetail()
+    {
+        $id = \YunShop::request()->id;
+        $detailModel = \app\common\models\finance\Balance::getDetailById($id);
+
+        //echo '<pre>'; print_r($detailModel); exit;
+        //echo '<pre>'; print_r(123); exit;
+
+        return view('finance.balance.look-detail', [
+            'detailModel' => $detailModel,
+            'pager' => ''
         ])->render();
     }
 
@@ -183,6 +201,23 @@ class BalanceController extends BaseController
             'charge_value' => '充值金额',
             'type'      => 'balance'
         );
+    }
+
+    private function rechargeSale($data)
+    {
+        $result = array();
+        $sale = is_array($data['enough']) ? $data['enough'] : array();
+        foreach ($sale as $key => $value) {
+            $enough = trim($value);
+            if ($enough) {
+                $result[] = array(
+                    'enough' => trim($data['enough'][$key]),
+                    'give' => trim($data['give'][$key])
+                );
+
+            }
+        }
+        return $result;
     }
 
 }
