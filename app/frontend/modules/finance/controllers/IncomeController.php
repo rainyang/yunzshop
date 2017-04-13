@@ -59,11 +59,20 @@ class IncomeController extends ApiController
      */
     public function getIncomeList()
     {
-        $incomeModel = Income::getIncomeInMonth()->where('member_id', \YunShop::app()->getMemberId());
-        $incomeModel = $incomeModel->whereHas('hasManyIncome', function ($query) use ($search) {
-            return $query->searchLike($search['member']);
-        });
+        $configs = \Config::get('income');
+        $type = \YunShop::request()->type;
+        $search = [];
+        foreach ($configs as $key => $config) {
+            if($config['type'] == $type){
+                $search['type'] = $config['class'];
+                break;
+            }
+        }
+
+        $incomeModel = Income::getIncomeInMonth($search)->where('member_id', \YunShop::app()->getMemberId());
+
         $incomeModel = $incomeModel->get();
+        echo "<pre>"; print_r($incomeModel->toArray());exit;
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
         }
