@@ -17,7 +17,6 @@
                 <div class="panel-heading">筛选</div>-->
                 <div class="panel-body">
                     <form action="" method="post" class="form-horizontal" role="form" id="form1">
-
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">
                             <div>
                                 <input type="text" placeholder="ID/昵称/姓名/手机号" class="form-control" name="search[member]"

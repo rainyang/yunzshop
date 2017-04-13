@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="w1200 m0a">
-        <script language="javascript" src="../addons/sz_yi/static/js/dist/nestable/jquery.nestable.js"></script>
+        <script language="javascript" src="{{static_url('js/dist/nestable/jquery.nestable.js')}}"></script>
         <link rel="stylesheet" type="text/css" href="{{static_url('yunshop/goods/goods.css')}}"/>
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">

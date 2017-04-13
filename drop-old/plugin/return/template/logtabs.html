@@ -1,8 +1,0 @@
-<div class="ulleft-nav">
-<ul class="nav nav-tabs"> 
-    {ifp 'return.return_log'}<li {if $_GPC['returntype']=='1'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/return_log',array('returntype'=>'1'))}">会员等级返现</a></li>{/if}
-    {ifp 'return.return_log'}<li {if $_GPC['returntype']=='2'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/return_log',array('returntype'=>'2'))}">单笔订单返现</a></li>{/if}
-    {ifp 'return.return_log'}<li {if $_GPC['returntype']=='3'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/return_log',array('returntype'=>'3'))}">订单累计金额返现</a></li>{/if}
-    {ifp 'return.return_log'}<li {if $_GPC['returntype']=='4'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/return_log',array('returntype'=>'4'))}">队列排列返现</a></li>{/if}
-</ul>
-</div>

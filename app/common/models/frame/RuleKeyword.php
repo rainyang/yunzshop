@@ -20,14 +20,14 @@ class RuleKeyword extends BaseModel
     protected $guarded = [''];
 
     public $attributes = array(
-        'module'        => 'sz_yi',
+        'module'        => 'yun_shop',
         'type'          => 1,
         'displayorder'  => 0,
         'status'        => 1
     );
 
 
-    protected static $module = 'sz_yi';
+    protected static $module = 'yun_shop';
 
 
     /*

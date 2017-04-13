@@ -25,8 +25,8 @@
 <script src="./resource/js/app/util.js"></script>
 <script src="./resource/js/require.js" ></script>
 <script src="./resource/js/app/config.js" ></script>
-<script src="../addons/sz_yi/static/resource/js/jquery-1.11.1.min.js"></script>
+<script src="{{static_url('resource/js/jquery-1.11.1.min.js')}}"></script>
 <!--[if lt IE 9]>
-<script src="../addons/sz_yi/static/resource/js/html5shiv.min.js"></script>
-<script src="../addons/sz_yi/static/resource/js/respond.min.js"></script>
+<script src="{{static_url('resource/js/html5shiv.min.js')}}"></script>
+<script src="{{static_url('resource/js/respond.min.js')}}"></script>
 <![endif]-->
