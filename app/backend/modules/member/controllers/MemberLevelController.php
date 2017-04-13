@@ -94,7 +94,6 @@ class MemberLevelController extends BaseController
                 }
             }
         }
-
         return view('member.level.form', [
             'levelModel' => $levelModel,
             'shopSet' => Setting::get('shop.member')
