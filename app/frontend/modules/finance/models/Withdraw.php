@@ -49,8 +49,7 @@ class Withdraw extends \app\common\models\Withdraw
                         ->select('id', 'incometable_type','incometable_id')
                         ->get();
                     foreach ($incomes as $key => $income) {
-                        $this->Incomes[$key] = $income->incometable->ordertable->toArray();
-                        $this->Incomes[$key]['goods'] = $income->incometable->ordertable->hasManyOrderGoods->toArray();
+                        $this->Incomes[$key] = $income->incometable->toArray();
                     }
                 }
 
