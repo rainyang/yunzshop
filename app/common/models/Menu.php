@@ -146,6 +146,29 @@ class Menu extends BaseModel
         return $current;
     }
 
+    /**
+     * 获取 item from route
+     * @param $route
+     * @param array $menuList
+     * @return array|int|mixed|string
+     */
+    public static function getCurrentItemByRoute($route, array $menuList)
+    {
+        static $current = null;
+        foreach($menuList as $key=>$value){
+            if(isset($value['url']) && $value['url'] == $route){
+                $current = $key;
+                break;
+            }
+            if(isset($value['child']) && $value['child']){
+                $current = self::getCurrentItemByRoute($route,$value['child']);
+            }
+        }
+
+        return $current;
+    }
+
+
     public static function getItemByRoute($route)
     {
         $data = static::select('item')->where(['url'=>$route])->first();
