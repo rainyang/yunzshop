@@ -92,7 +92,7 @@ class MemberOfficeAccountService extends MemberService
                     }
 
                     if (MemberShopInfo::isBlack($member_id)) {
-                        return json_encode(['status'=>-1, 'result'=>'黑名单用户，请联系管理员']);
+                        return show_json(-1, '黑名单用户，请联系管理员');
                     }
 
                     //更新mc_members
