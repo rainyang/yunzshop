@@ -108,6 +108,7 @@ class Menu extends BaseModel
             $menuList = static::select('id','name','url','url_params','permit','menu','icon','parent_id','sort','item')
                 ->where(['parent_id' => $parentId,'status'=>self::STATUS_ENABLED])
                 ->with('childs')
+                ->orderby('sort')
                 ->get();
 
             if($menuList){
