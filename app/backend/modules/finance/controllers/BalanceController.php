@@ -54,13 +54,31 @@ class BalanceController extends BaseController
     //余额明细记录[完成]
     public function balanceDetail()
     {
+        //todo 搜索
         $pageSize = 20;
         $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
         $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
         return view('finance.balance.detail', [
             'detailList' => $detailList,
-            'pager' => $pager
+            'pager' => $pager,
+            'memberGroup'   => MemberGroup::getMemberGroupList(),
+            'memberLevel'   => MemberLevel::getMemberLevelList()
+        ])->render();
+    }
+
+    //查看余额明细详情
+    public function lookBalanceDetail()
+    {
+        $id = \YunShop::request()->id;
+        $detailModel = \app\common\models\finance\Balance::getDetailById($id);
+
+        //echo '<pre>'; print_r($detailModel); exit;
+        //echo '<pre>'; print_r(123); exit;
+
+        return view('finance.balance.look-detail', [
+            'detailModel' => $detailModel,
+            'pager' => ''
         ])->render();
     }
 
