@@ -105,9 +105,9 @@
                                         <label class="label label-warning">不限</label>
                                         @endif
 
-                                        <br/>@if($row['backtype']==0)
+                                        <br/>@if($row['coupon_method']==1)
                                         立减 {{$row['deduct']}} 元
-                                        @elseif( $row['backtype']==1)
+                                        @elseif( $row['coupon_method']==2)
                                         打 {{$row['discount']}} 折
                                         @endif
                                     </td>
