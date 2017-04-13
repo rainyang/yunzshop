@@ -9,7 +9,6 @@
 namespace app\backend\modules\member\models;
 
 
-use app\common\frame\Rule;
 
 class MemberLevel extends \app\common\models\MemberLevel
 {
@@ -84,7 +83,7 @@ class MemberLevel extends \app\common\models\MemberLevel
      * @return array */
     public  function atributeNames() {
         return [
-            //'level'         => '等级权重不能为空且为唯一整数',
+            'level'         => '等级权重不能为空且为为整数',
             'level_name'    => '等级名称不能为空',
             'discount'      => '请输入正确的折扣',
             'order_money'   => '请输入正确的订单金额',
@@ -99,7 +98,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     public  function rules()
     {
         return [
-            //'level'      => ['required',\Illuminate\Validation\Rule::unique($this->table)->ignore($this->id),'integer'],
+            'level'      => ['required',\Illuminate\Validation\Rule::unique($this->table)->ignore($this->id)],
             'level_name' => 'required',
             'discount'   => 'numeric',
             'order_money'=> 'numeric',
