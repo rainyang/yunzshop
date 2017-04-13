@@ -157,6 +157,7 @@ class MemberRelationController extends BaseController
         $member_shop_info_model = MemberShopInfo::getMemberShopInfo($id);
 
         if ($member_shop_info_model) {
+            $member_shop_info_model->is_agent = 1;
             $member_shop_info_model->status = 2;
 
             if ($member_shop_info_model->save()) {

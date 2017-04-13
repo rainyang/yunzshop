@@ -1,4 +1,3 @@
-<link href="../addons/sz_yi/plugin/article/template/imgsrc/article.css" rel="stylesheet">
 <!-- mylink start -->
     <div id="modal-mylink" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" style="width: 720px;">

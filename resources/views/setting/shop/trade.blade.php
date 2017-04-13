@@ -207,7 +207,7 @@
                         <label class='radio-inline'><input type='radio' name='trade[pay_log]' value='0' @if ($set['pay_log'] == 0) checked @endif /> 关闭</label>
                         <label class='radio-inline'><input type='radio' name='trade[pay_log]' value='1' @if ($set['pay_log'] == 1) checked @endif/> 开启</label>
                         <span class='help-block'>支付回调日志，如果出现手机付款而后台显示待付款状态，请开启日志，查错误</span>
-                        <span class='help-block'>日志路径为 addon/sz_yi/data/paylog/[公众号ID]</span>
+                        <span class='help-block'>日志路径为 addon/yun_shop/data/paylog/[公众号ID]</span>
 
                     </div>
                 </div>

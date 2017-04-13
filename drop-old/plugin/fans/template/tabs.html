@@ -1,6 +1,0 @@
-<div class="ulleft-nav">
-<ul class="nav nav-tabs">
-    {ifp 'fans.member'}<li {if $_GPC['method']=='member'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('fans/member')}">会员更新</a></li>{/if}
-    {ifp 'fans.agent'}<li {if $_GPC['method']=='agent'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('fans/agent')}">更新上级</a></li>{/if}
-</ul>
-</div>

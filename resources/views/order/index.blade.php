@@ -5,9 +5,9 @@
 <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
 
     <div class="w1200 m0a">
-        <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery.gcjs.js"></script>
-        <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery.form.js"></script>
-        <script type="text/javascript" src="../addons/sz_yi/static/js/dist/tooltipbox.js"></script>
+        <script type="text/javascript" src="{{static_url('js/dist/jquery.gcjs.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('js/dist/jquery.form.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
 
         <div class="rightlist">
             <div class="right-titpos">
@@ -20,7 +20,7 @@
                     <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
                         <input type="hidden" name="c" value="site"/>
                         <input type="hidden" name="a" value="entry"/>
-                        <input type="hidden" name="m" value="sz_yi"/>
+                        <input type="hidden" name="m" value="yun_shop"/>
                         <input type="hidden" name="do" value="order" id="form_do"/>
                         <input type="hidden" name="route" value="{{$url}}" id="form_p"/>
 

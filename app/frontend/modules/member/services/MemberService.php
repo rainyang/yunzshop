@@ -251,7 +251,7 @@ class MemberService
     {
         Session::set('member_id', $member_info['uid']);
 
-        $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
+        $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
 
         Cookie::queue($cookieid, $member_info['uid']);
         Cookie::queue('member_id', $member_info['uid']);

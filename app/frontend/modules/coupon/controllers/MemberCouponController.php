@@ -168,5 +168,12 @@ class MemberCouponController extends BaseController
         $coupons['data'] = $availableCoupons;
         return $coupons;
     }
+
+    //领取优惠券
+    public function getCoupon($couponId)
+    {
+
+    }
+
 }
 

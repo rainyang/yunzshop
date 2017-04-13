@@ -16,7 +16,7 @@
                     <form action="" method="post" class="form-horizontal" role="form" id="form1">
                         <input type="hidden" name="c" value="site" />
                         <input type="hidden" name="a" value="entry" />
-                        <input type="hidden" name="m" value="sz_yi" />
+                        <input type="hidden" name="m" value="yun_shop" />
                         <input type="hidden" name="do" value="member" id="form_do" />
 
                         <div class="form-group col-sm-11 col-lg-11 col-xs-12">
