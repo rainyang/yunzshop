@@ -14,6 +14,10 @@
                 <ul class="add-snav">
                     <li class="active"><a href="#">商品发布</a></li>
 
+                    @section('add_goods')
+                        <a class='btn btn-primary' href="{{yzWebUrl('goods.goods.create')}}" style="margin-bottom:5px;"><i class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
+                    @show
+
                 </ul>
             </div>
 

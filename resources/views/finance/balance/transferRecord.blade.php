@@ -31,7 +31,7 @@
                     <div class="form-group col-sm-7 col-lg-1 col-xs-12">
                      <!--   <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
                         <div  >
-                            <button class="btn btn-block btn-success"><i class="fa fa-search"></i> 搜索</button>
+                            <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
                             <input type="hidden" name="token" value="{$_W['token']}"/>
                             <!--<button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button> -->
                         </div>
