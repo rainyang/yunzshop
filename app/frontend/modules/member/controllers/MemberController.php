@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
@@ -486,4 +487,16 @@ class MemberController extends ApiController
 
         return $this->successJson('', $data);
     }
+
+    public function applyProtocol()
+    {
+       $protocol = Setting::get('apply_protocol');
+
+        if($protocol){
+            return $this->successJson('获取数据成功!', $protocol);
+        }
+        return $this->successJson('未检测到数据!', []);
+    }
+
+
 }

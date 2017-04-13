@@ -12,7 +12,9 @@ use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberShopInfo;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberRelation as Relation;
+use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
+use app\common\helpers\Url;
 use app\common\models\Goods;
 
 class MemberRelationController extends BaseController
@@ -128,6 +130,23 @@ class MemberRelationController extends BaseController
             'requestSearch' => $requestSearch,
             'starttime' => $starttime,
             'endtime' => $endtime,
+        ])->render();
+    }
+
+    public function applyProtocol()
+    {
+        $info = Setting::get("apply_protocol");
+        
+        $requestProtocol = \YunShop::request()->protocol;
+        if($requestProtocol){
+            $request = Setting::set('apply_protocol',$requestProtocol);
+            if($request){
+                return $this->message('保存成功', Url::absoluteWeb('member.member-relation.apply-protocol'));
+            }
+        }
+        
+        return view('member.apply-protocol', [
+            'info' => $info,
         ])->render();
     }
 
