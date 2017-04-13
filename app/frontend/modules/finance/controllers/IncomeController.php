@@ -72,7 +72,6 @@ class IncomeController extends ApiController
         $incomeModel = Income::getIncomeInMonth($search)->where('member_id', \YunShop::app()->getMemberId());
 
         $incomeModel = $incomeModel->get();
-        echo "<pre>"; print_r($incomeModel->toArray());exit;
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
         }
