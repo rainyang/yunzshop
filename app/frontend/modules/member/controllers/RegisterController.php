@@ -56,7 +56,7 @@ class RegisterController extends BaseController
             $data['salt'] = Str::random(8);
 
             $data['password'] = md5($password . $data['salt']);
-
+echo '<pre>';print_r($data);exit;
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
 
