@@ -54,7 +54,6 @@ class WithdrawController extends BaseController
 
     public function index()
     {
-
         $pageSize = 20;
 
         $search = \YunShop::request()->search;
