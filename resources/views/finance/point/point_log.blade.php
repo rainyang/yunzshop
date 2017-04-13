@@ -71,11 +71,10 @@
                             <th style='width:5%; text-align: center;'>ID</th>
                             <th style='width:8%; text-align: center;'>粉丝</th>
                             <th style='width:8%; text-align: center;'>会员信息<br/>手机号</th>
-                            <th style='width:5%; text-align: center;' class='hidden-xs'>等级/分组</th>
                             <th style='width:10%; text-align: center;'>时间</th>
-                            <th style='width:6%; text-align: center;'>获取方式</th>
-                            <th style='width:6%; text-align: center;'>获取之前<br>获取之后<br>获取金额</th>
-                            <th style='width:20%; text-align: center;'>备注</th>
+                            <th style='width:6%; text-align: center;'>业务类型</th>
+                            <th style='width:10%; text-align: center;'>积分</th>
+                            <th style='width:10%; text-align: center;'>收入/支出</th>
                             <th style='width:12%; text-align: center;'>操作</th>
                         </tr>
                     </thead>
@@ -93,12 +92,6 @@
                             {{ $log->hasOneMember->mobile }}
                         </td>
 
-                        <td class='hidden-xs'>
-                            {{ $log->member->yzMember->level->level_name or '普通会员'}}
-                            <br />
-                            {{ $log->member->yzMember->group->group_name or '无分组' }}
-                        </td>
-
                         <td>{{ $log->created_at }}</td>
                         <td>
                             @if ($log->point_mode == 1)
@@ -114,11 +107,11 @@
                             @endif
                         </td>
                         <td>
-                            <span class='label label-success'>{{ $log->before_point }}</span><br />
-                            <span class='label label-success'>{{ $log->after_point }}</span><br />
-                            <span class='label label-danger'>{{ $log->point }}</span>
+                            {{--<span class='label label-success'>{{ $log->before_point }}</span><br />--}}
+                            <span class='label label-danger'>积分：{{ $log->after_point }}</span><br />
+                            {{--<span class='label label-danger'>{{ $log->point }}</span>--}}
                         </td>
-                        <td>{{ $log->remark }}</td>
+                        <td><span class='label label-success'>{{ $log->point }}</span></td>
                         <td>
                             <a class='btn btn-default' href="{{ yzWebUrl('member.member.detail', array('id' => $log->hasOneMember->uid)) }}" style="margin-bottom: 2px">用户信息</a>
                         </td>

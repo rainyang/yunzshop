@@ -513,7 +513,7 @@ class MemberController extends ApiController
 
         $shop = \Setting::get('shop');
         $shop['logo'] = tomedia($shop['logo']);
-        
+
         $data = [
             'config' => $config,
             'info' => $info,

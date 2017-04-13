@@ -20,26 +20,14 @@
                     <b>手机号:</b>
                     {{$item['has_one_member']['mobile']}}
                 </p>
-                <p><b>分销等级:</b> {{$item['has_one_agent']['agent_level']['name']}} (
-                    @if($set['level']>=1)一级比例: <span style='color:blue'>{{$item['has_one_agent']['agent_level']['first_level']}}
-                        %</span>
-                    @endif
-                    @if($set['level']>=2)二级比例: <span style='color:blue'>{{$item['has_one_agent']['agent_level']['second_level']}}
-                        %</span>
-                    @endif
-                    @if($set['level']>=3)三级比例: <span style='color:blue'>{{$item['has_one_agent']['agent_level']['third_level']}}
-                        %</span>
-                    @endif
-                     )
-                </p>
                 <p>
-                    <b>累计收入: </b><span style='color:red'>{{$item['has_one_agent']['commission_total']}}</span> 元
+                    <b>会员等级:</b> {{$item['has_one_member']['yz_member']['group']['group_name']}}
                 </p>
                 <p>
                     <b>提现金额: </b><span style='color:red'>{{$item['amounts']}}</span> 元
                 <p>
                 <p>
-                    <b>收入类型: </b>{{$item['type_name']}}
+                    <b>提现类型: </b>{{$item['type_name']}}
                 <p>
                 <p>
                     <b>提现方式: </b>{{$item['pay_way_name']}}
@@ -70,7 +58,7 @@
         </div>
 
         <div class='panel-heading'>
-            收入提现申请信息 共计 <span style="color:red; ">{{$item['type_data']['income_total']}}</span> 条收入
+            余额提现申请信息
         </div>
         <form action="{{yzWebUrl("finance.withdraw.dealt",['id'=>$item['id']])}}" method='post' class='form-horizontal'>
             <div class='panel-body'>
@@ -78,17 +66,16 @@
                     <thead class="navbar-inner">
                     <tr>
                         <td></td>
-                        <th>收入ID</th>
-                        <th>收入类型</th>
-                        <th>收入金额</th>
-                        <th>收入状态</th>
-                        <th>打款状态</th>
-                        <th>收入时间</th>
-                        <td>收入详情</td>
+                        <th>ID</th>
+                        <th>提现类型</th>
+                        <th>提现金额</th>
+                        <th>提现状态</th>
+                        <th>提现时间</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($item['type_data']['incomes'] as $k=>$row)
+
+
                         <tr style="background: #eee">
                             <td>
                                 @if($item['status'] == '0' || $item['status'] == '-1')
@@ -105,83 +92,22 @@
                                 @endif
 
                             </td>
-                            <td>{{$row['id']}}</td>
-                            <td>{{$row['type_name']}}</td>
-                            <td>{{$row['amount']}}</td>
-                            <td>{{$row['status_name']}}</td>
-                            <td>{{$row['pay_status_name']}}</td>
-                            <td>{{$row['created_at']}}</td>
-                            <td>
-                                <a class="btn btn-danger btn-sm" href="javascript:;" data-toggle="modal"
-                                   data-target="#modal-refund{{$k}}">详情</a>
-                            </td>
+                            <td>{{$item['id']}}</td>
+                            <td>{{$item['type_name']}}</td>
+                            <td>{{$item['amounts']}}</td>
+                            <td>{{$item['status_name']}}</td>
+                            <td>{{$item['created_at']}}</td>
+
                         </tr>
 
-                        <div id="modal-refund{{$k}}" class="modal fade" tabindex="-1" role="dialog"
-                             style="width:600px;margin:0px auto;">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×
-                                        </button>
-                                        <h3>收入信息</h3>
 
-                                        @foreach($row['detail'] as $data)
-                                            <div class="form-group">{{$data['title']}}</div>
-                                            @foreach($data['data'] as $value)
-
-
-
-
-
-
-                                                @if(!isset($value['title']))
-                                                    @foreach($value as $v)
-                                                        <div class="modal-body" style="background: #eee">
-                                                            <div class="form-group">
-                                                                <label class="col-xs-10 col-sm-3 col-md-3 control-label">{{$v['title']}}</label>
-                                                                <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-                                                                    {{$v['value']}}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                @else
-
-                                                    <div class="modal-body" style="background: #eee">
-                                                        <div class="form-group">
-                                                            <label class="col-xs-10 col-sm-3 col-md-3 control-label">{{$value['title']}}</label>
-                                                            <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-                                                                @if($value['title'] === '订单号')
-                                                                    {{$value['value']}}
-                                                                    <a target="_blank"
-                                                                       href="{{yzWebUrl('order.list',['search'=>['ambiguous'=>['field'=>'order','string'=>$value['value']]]])}}">订单详情</a>
-                                                                @else
-                                                                    {{$value['value']}}
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
-
-                                            @endforeach
-                                        @endforeach
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    @endforeach
                 </table>
             </div>
-            <div class='panel-heading'>
-                打款信息
-            </div>
             <div class='panel-body'>
+                打款信息【
                 审核金额: <span style='color:red'>{{$item['actual_amounts'] + $item['actual_poundage']}}</span> 元
                 手续费: <span style='color:red'>{{$item['actual_poundage']}}</span> 元
-                应打款：<span style='color:red'>{{$item['actual_amounts']}}</span>元
+                应打款：<span style='color:red'>{{$item['actual_amounts']}}</span>元】
 
             </div>
 
