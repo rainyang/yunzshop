@@ -89,7 +89,33 @@ class MemberRelationController extends BaseController
 
     public function apply()
     {
-        $list = Member::getMembersToApply()
+        $starttime = strtotime('-1 month');
+        $endtime = time();
+
+        $requestSearch = \YunShop::request()->search;
+
+
+        if($requestSearch){
+
+            if ($requestSearch['searchtime']) {
+                if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
+                    $requestSearch['times']['start'] = strtotime($requestSearch['times']['start']);
+                    $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
+                    $starttime = strtotime($requestSearch['times']['start']);
+                    $endtime = strtotime($requestSearch['times']['end']);
+                }else{
+                    $requestSearch['times'] = '';
+                }
+            }else{
+                $requestSearch['times'] = '';
+            }
+
+            $requestSearch = array_filter($requestSearch, function ($item) {
+                return $item !== '';// && $item !== 0;
+            });
+        }
+
+        $list = Member::getMembersToApply($requestSearch)
             ->paginate($this->pageSize)
             ->toArray();
 
@@ -99,6 +125,9 @@ class MemberRelationController extends BaseController
             'list' => $list,
             'total' => $list['total'],
             'pager' => $pager,
+            'requestSearch' => $requestSearch,
+            'starttime' => $starttime,
+            'endtime' => $endtime,
         ])->render();
     }
 

@@ -154,7 +154,7 @@
                                 @if( 0&&$order['pay_ordersn']=0)
                                     <b>支付单号:</b>  {{$order['pay_ordersn']=0}}
                                 @endif
-                                <b>下单时间: </b>{!! date('Y-m-d H:i:s', $order['create_time']) !!}
+                                <b>下单时间: </b>{{$order['create_time']}}
                                 @if( 0&&!empty($order['refundstate']))<label
                                         class='label label-danger'>{{$r_type[$order['rtype']]}}申请</label>@endif
                                 @if( 0&&$order['rstatus'] == 4)<label class='label label-primary'>客户已经寄出快递</label>@endif
@@ -189,7 +189,7 @@
                         @foreach( $order['has_many_order_goods'] as $order_goods_index => $order_goods)
                             <tr class='trbody'>
                                 <td class="goods_info">
-                                    <img src="@if( 0&&$order['cashier']==1){{$order['name']['thumb']}}@else{!! tomedia($order_goods['thumb']) !!}@endif">
+                                    <img src="{{tomedia($order_goods['thumb'])}}">
                                 </td>
                                 <td class="top" valign='top' >
                                     {{$order_goods['title']}}
