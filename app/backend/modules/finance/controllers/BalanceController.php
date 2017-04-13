@@ -30,28 +30,36 @@ use app\common\services\finance\Balance;
  * */
 class BalanceController extends BaseController
 {
-    //余额基础设置页面[完成]
+    /**
+     * 余额基础设置页面[完成]
+     *
+     * @return mixed|string
+     * @Author yitian */
     public function index()
     {
+        //todo 数值验证
         $balance = Setting::get('balance.recharge');
-
         $requestModel = \YunShop::request()->balance;
         if ($requestModel) {
-            $requestModel[''] = '';
+            $requestModel['sale'] = $this->rechargeSale($requestModel);
+            unset($requestModel['enough']);
+            unset($requestModel['give']);
             if (Setting::set('balance.recharge', $requestModel)) {
                 return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'));
             } else {
                 $this->error('余额基础设置保存失败！！');
             }
         }
-
         return view('finance.balance.index', [
             'balance' => $balance,
-            'pager' => ''
         ])->render();
     }
 
-    //余额明细记录[完成]
+    /**
+     * 余额明细记录[完成]
+     *
+     * @return string
+     * @Author yitian */
     public function balanceDetail()
     {
         //todo 搜索
@@ -67,14 +75,15 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    //查看余额明细详情
+    /**
+     * 查看余额明细详情
+     *
+     * @return string
+     * @Author yitian */
     public function lookBalanceDetail()
     {
         $id = \YunShop::request()->id;
         $detailModel = \app\common\models\finance\Balance::getDetailById($id);
-
-        //echo '<pre>'; print_r($detailModel); exit;
-        //echo '<pre>'; print_r(123); exit;
 
         return view('finance.balance.look-detail', [
             'detailModel' => $detailModel,
@@ -82,7 +91,11 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    //用户余额管理 【完成】
+    /**
+     * 用户余额管理 【完成】
+     *
+     * @return string
+     * @Author yitian */
     public function member()
     {
         $pageSize = 20;
@@ -102,10 +115,14 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    //后台会员充值
+    /**
+     * 后台会员充值
+     *
+     * @return mixed|string
+     * @Author yitian */
     public function recharge()
     {
-//todo 缺少会员头像路径转换
+        //todo 缺少会员头像路径转换
         $memberId = \YunShop::request()->member_id;
         $rechargeMoney = trim(\YunShop::request()->num);
 
@@ -113,7 +130,7 @@ class BalanceController extends BaseController
         if (!$memberInfo) {
             $this->error('未获取到会员信息，请刷新重试');
         }
-//todo 需要获取商城登陆操作者ID  operator_id 字段
+        //todo 需要获取商城登陆操作者ID  operator_id 字段
         $data = array(
             'member_id'     => $memberId,
             'change_money'  => $rechargeMoney,
@@ -138,10 +155,14 @@ class BalanceController extends BaseController
         ])->render();
     }
 
+    /**
+     * 余额提现详情
+     *
+     * @return string
+     * @Author yitian */
     public function withdrawInfo()
     {
         $withdrawModel = Withdraw::getBalanceWithdrawById(\YunShop::request()->id)->toArray();
-//dd($withdrawModel);
 
         return view('finance.balance.withdraw', [
             'item' => $withdrawModel,
@@ -149,7 +170,11 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    //充值记录
+    /**
+     * 充值记录
+     *
+     * @return string
+     * @Author yitian */
     public function rechargeRecord()
     {
         $pageSize = 10;
@@ -171,7 +196,11 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    //会员余额转让记录
+    /**
+     * 会员余额转让记录
+     *
+     * @return string
+     * @Author yitian */
     public function transferRecord()
     {
         $pageSize = 20;
@@ -190,7 +219,11 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    //余额充值菜单
+    /**
+     * 余额充值菜单
+     *
+     * @return array
+     * @Author yitian */
     private function getRechargeMenu()
     {
         return array(
@@ -201,6 +234,29 @@ class BalanceController extends BaseController
             'charge_value' => '充值金额',
             'type'      => 'balance'
         );
+    }
+
+    /**
+     * 处理充值赠送数据，满额赠送数据
+     *
+     * @param $data
+     * @return array
+     * @Author yitian */
+    private function rechargeSale($data)
+    {
+        $result = array();
+        $sale = is_array($data['enough']) ? $data['enough'] : array();
+        foreach ($sale as $key => $value) {
+            $enough = trim($value);
+            if ($enough) {
+                $result[] = array(
+                    'enough' => trim($data['enough'][$key]),
+                    'give' => trim($data['give'][$key])
+                );
+
+            }
+        }
+        return $result;
     }
 
 }
