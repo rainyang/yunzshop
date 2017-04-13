@@ -60,7 +60,7 @@ class RegisterController extends BaseController
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
 
-            $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
+            $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);
             session()->put('member_id', $member_id);
 

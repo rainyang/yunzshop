@@ -19,7 +19,7 @@
                     <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
                         <input type="hidden" name="c" value="site" />
                         <input type="hidden" name="a" value="entry" />
-                        <input type="hidden" name="m" value="sz_yi" />
+                        <input type="hidden" name="m" value="yun_shop" />
                         <input type="hidden" name="do" value="1234" id="form_do" />
                         <input type="hidden" name="route" value="member.member.search" id="route" />
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">

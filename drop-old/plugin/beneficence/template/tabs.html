@@ -1,7 +1,0 @@
-<div class="ulleft-nav">
-<ul class="nav nav-tabs"> 
- 	{ifp 'beneficence.set'}<li {if $_GPC['method']=='beneficence'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('beneficence/beneficence',array(type=>1))}">行善池</a></li>{/if}
-
-    {ifp 'beneficence.set'}<li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('beneficence/set')}">基础设置</a></li>{/if}
-</ul>
-</div>

@@ -8,7 +8,7 @@
             <input type="hidden" name="op" value="detail">
             <input type="hidden" name="c" value="site" />
             <input type="hidden" name="a" value="entry" />
-            <input type="hidden" name="m" value="sz_yi" />
+            <input type="hidden" name="m" value="yun_shop" />
             <input type="hidden" name="p" value="coupon" />
             <input type="hidden" name="method" value="coupon" />
             <input type="hidden" name="op" value="post" />

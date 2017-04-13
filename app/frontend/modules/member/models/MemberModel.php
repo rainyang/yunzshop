@@ -246,7 +246,7 @@ class MemberModel extends Member
      */
     public static function getAgentQR($extra='')
     {
-        $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . '/addons/sz_yi/home#/home';
+        $url = request()->getSchemeAndHttpHost() . '/addons/yun_shop/#/home';
         $url = $url . '?mid=' . \YunShop::app()->getMemberId();
 
         if (!empty($extra)) {

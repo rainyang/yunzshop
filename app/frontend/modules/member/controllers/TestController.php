@@ -55,7 +55,7 @@ exit;
 
    public function loginApi()
    {
-       $login_api = 'http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.login.index&type=1';
+       $login_api = request()->getSchemeAndHttpHost() . '/addons/sz_yi/api.php?i=2&route=member.login.index&type=1';
 
        redirect($login_api)->send();
    }
