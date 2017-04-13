@@ -223,11 +223,16 @@ class MemberRelation extends BackendModel
     /**
      * 检查是否能成为下线
      *
+     * 首次点击分享连接 / 无条件发展下线权利
+     *
+     * 触发 注册
+     *
      * @param $mid
      * @param MemberShopInfo $user
      */
     public function becomeChildAgent($mid, MemberShopInfo $model)
     {
+        $set = self::getSetInfo()->first()->toArray();
         $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         if (empty($member)) {
@@ -240,23 +245,25 @@ class MemberRelation extends BackendModel
             $parent =  SubMemberModel::getMemberShopInfo($mid);
         }
 
-        $parent_is_agent = !empty($parent) && $parent['is_agent'] == 1;
+        $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
         if ($member->is_agent == 1) {
             return;
         }
-        $time = time();
-        $set = self::getSetInfo()->first()->toArray();
 
         $become_child =  intval($set['become_child']);
         $become_check = intval($set['become_check']);
 
         if ($parent_is_agent && empty($member->parent_id)) {
-            if ($member->member_id != $parent['member_id']) {
+            if ($member->member_id != $parent->member_id) {
                 if (empty($become_child)) {
                     $this->changeChildAgent($mid, $model);
 
                     // TODO message notice
+                } else {
+                    $model->inviter = $parent->member_id;
+
+                    $model->save();
                 }
             }
         }
@@ -266,7 +273,7 @@ class MemberRelation extends BackendModel
 
             if ($become_check == 0) {
                 $member->status = 2;
-                $member->apply_time = $time;
+                $member->agent_time = time();
 
                 // TODO message notice
             } else {
@@ -274,6 +281,211 @@ class MemberRelation extends BackendModel
             }
 
             $member->save();
+        }
+    }
+
+    /**
+     * 成为下线条件 首次下单
+     *
+     * 触发 确认订单
+     *
+     * @return void
+     */
+    public function checkOrderConfirm()
+    {
+        $set = self::getSetInfo()->first()->toArray();
+        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+        if (empty($member)) {
+            return;
+        }
+
+        $become_child = intval($set['become_child']);
+
+        if (empty($become_child)) {
+            $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
+        } else {
+            $parent = SubMemberModel::getMemberShopInfo($member->inviter);
+        }
+
+        $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
+
+        if ($parent_is_agent) {
+            if ($become_child == 1) {
+                if (empty($member->parent_id) && $member->member_id != $parent->member_id) {
+                    $member->parent_id = $parent->member_id;
+                    $member->child_time = time();
+
+                    $member->save();
+
+                    // TODO message notice
+                }
+            }
+        }
+    }
+
+    /**
+     * 发展下线资格 付款后
+     *
+     * 成为下线条件 首次付款
+     *
+     * 触发 支付回调
+     *
+     * @return void
+     */
+    public function checkOrderPay()
+    {
+        $set = self::getSetInfo()->first()->toArray();
+        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        if (empty($member)) {
+            return;
+        }
+
+        $become_child = intval($set['become_child']);
+
+        if (empty($become_child)) {
+            $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
+        } else {
+            $parent = SubMemberModel::getMemberShopInfo($member->inviter);
+        }
+
+        $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
+
+        //成为下线
+        if ($parent_is_agent) {
+            if ($become_child == 2) {
+                if (empty($member->parent_id) && $member->member_id != $parent->member_id) {
+                    $member->parent_id = $parent->member_id;
+                    $member->child_time = time();
+
+                    $member->save();
+
+                    // TODO message notice
+                }
+            }
+        }
+        $isagent = $member->is_agent == 1 && $member->status == 2;
+
+        if (!$isagent) {
+            if (intval($set['become']) == 4 && !empty($set['become_goods_id'])) {
+                $result = $this->checkOrderGoods($set['become_goods_id']);
+
+                if ($result) {
+                    $member->status = 2;
+                    $member->is_agent = 1;
+                    $member->agent_time = time();
+
+                    // TODO message notice
+                }
+            }
+        }
+
+        //发展下线资格
+        if (!$isagent && empty($set['become_order'])) {
+            if ($set['become'] == 2 || $set['become'] == 3) {
+                $parentisagent = true;
+
+                if (!empty($member->parent_id)) {
+                    $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
+                    if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
+                        $parentisagent = false;
+                    }
+                }
+
+                if ($parentisagent) {
+                    $can = false;
+
+                    if ($set['become'] == '2') {
+                        $ordercount = OrderListModel::getCostTotalNum($member->member_id);
+
+                        $can = $ordercount >= intval($set['become_ordercount']);
+                    } else if ($set['become'] == '3') {
+                        $moneycount = OrderListModel::getCostTotalPrice($member->member_id);
+
+                        $can = $moneycount >= floatval($set['become_moneycount']);
+                    }
+
+                    if ($can) {
+                        $become_check = intval($set['become_check']);
+
+                        $member->is_agent = 1;
+
+                        if ($become_check == 0) {
+                            $member->status = 2;
+                            $member->agent_time = time();
+
+                            // TODO message notice
+                        } else {
+                            $member->status = 1;
+                        }
+
+                        $member->save();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 发现下线资格 完成后
+     *
+     * 触发 订单完成
+     *
+     * @return void
+     */
+    public function checkOrderFinish()
+    {
+        $set = self::getSetInfo()->first()->toArray();
+        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+        if (empty($member)) {
+            return;
+        }
+
+        $isagent = $member->is_agent == 1 && $member->status == 2;
+
+        if (!$isagent && $set['become_order'] == 1) {
+            if ($set['become'] == 2 || $set['become'] == 3) {
+                $parentisagent = true;
+
+                if (!empty($member->parent_id)) {
+                    $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
+                    if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
+                        $parentisagent = false;
+                    }
+                }
+
+                if ($parentisagent) {
+                    $can = false;
+
+                    if ($set['become'] == '2') {
+                        $ordercount = OrderListModel::getCostTotalNum($member->member_id);
+
+                        $can = $ordercount >= intval($set['become_ordercount']);
+                    } else if ($set['become'] == '3') {
+                        $moneycount = OrderListModel::getCostTotalPrice($member->member_id);
+
+                        $can = $moneycount >= floatval($set['become_moneycount']);
+                    }
+
+                    if ($can) {
+                        $become_check = intval($set['become_check']);
+
+                        $member->is_agent = 1;
+
+                        if ($become_check == 0) {
+                            $member->status = 2;
+                            $member->agent_time = time();
+
+                            // TODO message notice
+                        } else {
+                            $member->status = 1;
+                        }
+
+                        $member->save();
+                    }
+                }
+            }
         }
     }
 }
