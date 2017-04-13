@@ -6,7 +6,7 @@
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">
             <ul class="add-snav">
-                <li class="active"><a href="#">财务／余额管理</a></li>
+                <li class="active"><a href="#">财务／余额明细</a></li>
             </ul>
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->
@@ -80,10 +80,10 @@
                                 </td>
                                 <td>{{ $list->member->realname }}<br/>{{ $list->member->mobile }}</td>
                                 <td><label class="label label-danger">余额：{{ $list->new_money }}</label></td>
-                                <td>{{ $list->type }}</td>
+                                <td>{{ $list->type_name }}</td>
                                 <td>{{ $list->change_money }}</td>
                                 <td  style="overflow:visible;">
-                                    <a class='btn btn-default' href="" style="margin-bottom: 2px">查看详情</a>
+                                    <a class='btn btn-default' href="{{ yzWebUrl('finance.balance.lookBalanceDetail', array('id' => $list->id )) }}" style="margin-bottom: 2px">查看详情</a>
                                 </td>
                             </tr>
                         @endforeach

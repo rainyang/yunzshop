@@ -110,10 +110,6 @@ class Withdraw extends BackendModel
         return $this->TypeData;
     }
 
-    public function WithdrawSum()
-    {
-        return $this->hasMany('app\common\models\withdraw','member_id', 'member_id');
-    }
 
     public static function getBalanceWithdrawById($id)
     {

@@ -194,7 +194,7 @@ class BalanceController extends ApiController
         $type = \YunShop::request()->type;
         //$memberId = '55';
         if ($memberId) {
-            $recordList = \app\common\models\finance\Balance::getMemberDeatilRecord($memberId, $type);
+            $recordList = \app\common\models\finance\Balance::getMemberDetailRecord($memberId, $type);
             return $this->successJson('获取记录成功',$this->attachedServiceType($recordList->toArray()));
         }
         return $this->errorJson('未获取到会员ID');

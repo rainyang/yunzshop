@@ -64,6 +64,21 @@ class BalanceController extends BaseController
         ])->render();
     }
 
+    //查看余额明细详情
+    public function lookBalanceDetail()
+    {
+        $id = \YunShop::request()->id;
+        $detailModel = \app\common\models\finance\Balance::getDetailById($id);
+
+        //echo '<pre>'; print_r($detailModel); exit;
+        //echo '<pre>'; print_r(123); exit;
+
+        return view('finance.balance.look-detail', [
+            'detailModel' => $detailModel,
+            'pager' => ''
+        ])->render();
+    }
+
     //用户余额管理 【完成】
     public function member()
     {
