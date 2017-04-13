@@ -34,7 +34,7 @@ class MemberAddress extends \app\common\models\MemberAddress
      * */
     public static function getAddressById($addressId)
     {
-        return static::where('id', $addressId)->first();
+        return static::uniacid()->where('id', $addressId)->first();
     }
 
     /*

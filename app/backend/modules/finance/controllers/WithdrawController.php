@@ -54,7 +54,6 @@ class WithdrawController extends BaseController
 
     public function index()
     {
-
         $pageSize = 20;
 
         $search = \YunShop::request()->search;
@@ -77,7 +76,6 @@ class WithdrawController extends BaseController
             return $this->message('数据不存在或已被删除!', '', error);
         }
         $withdrawModel = $withdrawModel->toArray();
-dd($withdrawModel);
 
 //        dd($withdrawModel);
         return view('finance.withdraw.withdraw-info', [

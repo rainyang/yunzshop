@@ -122,8 +122,8 @@ class BalanceController extends BaseController
 
     public function withdrawInfo()
     {
-        $withdrawModel = Withdraw::getBalanceWithdrawById(9);
-        //dd($withdrawModel->toArray());
+        $withdrawModel = Withdraw::getBalanceWithdrawById(\YunShop::request()->id)->toArray();
+//dd($withdrawModel);
 
         return view('finance.balance.withdraw', [
             'item' => $withdrawModel,

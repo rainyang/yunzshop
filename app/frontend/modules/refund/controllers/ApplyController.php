@@ -19,7 +19,7 @@ class ApplyController extends ApiController
     public function index(Request $request)
     {
         $this->validate($request, [
-            'order_id' => 'required'
+            'order_id' => 'required|integer'
         ]);
         $order = Order::find($request->query('order_id'));
         if (!isset($order)) {
@@ -53,8 +53,8 @@ class ApplyController extends ApiController
             'reason' => 'required|string',
             'content' => 'sometimes|string',
             'images' => 'sometimes|filled|json',
-            'refund_type' => 'required|int',
-            'order_id' => 'required|int'
+            'refund_type' => 'required|integer',
+            'order_id' => 'required|integer'
         ], [
             'images.json' => 'images非json格式'
         ]);
