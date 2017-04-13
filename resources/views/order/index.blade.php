@@ -1,4 +1,4 @@
-@extends('layouts.base')
+﻿@extends('layouts.base')
 
 @section('content')
 
@@ -115,9 +115,11 @@
                             <div class="col-sm-7 col-lg-9 col-xs-12">
                                 <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
                                 <input type="hidden" name="token" value="{{$var['token']}}"/>
+                                @section('export')
                                 <button type="button" name="export" value="1" id="export" class="btn btn-default">导出
                                     Excel
                                 </button>
+                                @show
                                 @if( $requestSearch['plugin'] != "fund")
                                     <a class="btn btn-warning"
                                        href="{php echo $this->createWebUrl('order/export')}">自定义导出</a>
