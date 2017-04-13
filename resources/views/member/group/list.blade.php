@@ -30,11 +30,11 @@
 
                             </td>
                             <td>
-                                <a class='btn btn-default' href="{{ yzWebUrl('member.member.search', array('groupid' => $list->id)) }}">
+                                <a title="查看" class='btn btn-default' href="{{ yzWebUrl('member.member.search', array('groupid' => $list->id)) }}">
                                     <i class='fa fa-users'></i></a>
-                                <a class='btn btn-default' href="{{ yzWebUrl('member.member-group.update', array('group_id' => $list->id)) }}">
+                                <a title="编辑" class='btn btn-default' href="{{ yzWebUrl('member.member-group.update', array('group_id' => $list->id)) }}">
                                     <i class='fa fa-edit'></i></a>
-                                <a class='btn btn-default' href="{{ yzWebUrl('member.member-group.destroy', array('group_id' => $list->id)) }}" onclick="return confirm('确认删除此会员分组吗？');return false;">
+                                <a title="删除" class='btn btn-default' href="{{ yzWebUrl('member.member-group.destroy', array('group_id' => $list->id)) }}" onclick="return confirm('确认删除此会员分组吗？');return false;">
                                     <i class='fa fa-remove'></i></a>
                             </td>
                         </tr>
