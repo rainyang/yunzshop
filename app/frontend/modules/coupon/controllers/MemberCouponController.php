@@ -105,7 +105,8 @@ class MemberCouponController extends BaseController
     public function couponsOfMemberByStatus()
     {
         $status = \YunShop::request()->get('status_request');
-        $uid = \YunShop::app()->getMemberId();
+//        $uid = \YunShop::app()->getMemberId();
+        $uid = 140;
         $pageSize = \YunShop::request()->get('pagesize');
         $pageSize = $pageSize ? $pageSize : 10;
 
@@ -168,5 +169,12 @@ class MemberCouponController extends BaseController
         $coupons['data'] = $availableCoupons;
         return $coupons;
     }
+
+    //领取优惠券
+    public function getCoupon($couponId)
+    {
+
+    }
+
 }
 
