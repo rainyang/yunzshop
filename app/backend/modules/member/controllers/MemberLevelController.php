@@ -24,7 +24,7 @@ class MemberLevelController extends BaseController
      * @autor yitian */
     public function index()
     {
-        $pageSize = 5;
+        $pageSize = 10;
         $levelList = MemberLevel::getLevelPageList($pageSize);
         $pager = PaginationHelper::show($levelList->total(), $levelList->currentPage(), $levelList->perPage());
 
