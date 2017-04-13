@@ -42,12 +42,14 @@
                                     </button>
                                 </h4>
 
+
                                 <div class='recharge-items'>
+                                    @foreach( $balance['sale'] as $list)
                                     <div class="input-group recharge-item" style="margin-top:5px; width: 60%">
                                         <span class="input-group-addon">满</span>
-                                        <input type="text" class="form-control" name='balance[enough][]' value=' '/>
+                                        <input type="text" class="form-control" name='balance[enough][]' value='{{ $list['enough'] or '' }}'/>
                                         <span class="input-group-addon">赠送</span>
-                                        <input type="text" class="form-control" name='balance[give][]' value=' '/>
+                                        <input type="text" class="form-control" name='balance[give][]' value='{{ $list['give'] or '' }}'/>
                                         <span class="input-group-addon">元</span>
                                         <div class='input-group-btn'>
                                             <button class='btn btn-danger' type='button'
@@ -56,7 +58,9 @@
                                         </div>
 
                                     </div>
+                                    @endforeach
                                 </div>
+
                                 <span class="help-block">两项都填写才能生效，赠送的余额可以固定数或比例(带%)号</span>
                                 <span class="help-block">例如：充值满100，赠送10</span>
                                 <span class="help-block">例如：充值满200，赠送15%，实际赠送30(200*15%)</span>
