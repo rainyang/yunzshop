@@ -30,6 +30,10 @@ class BalanceController extends ApiController
         $rechargeMoney = trim(\YunShop::request()->recharge_money);
         $payType = \YunShop::request()->pay_type;
 
+        $memberId = 55;
+        $rechargeMoney = 100;
+        $payType = 2;
+
         if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $rechargeMoney)) {
             return $this->errorJson('请输入有效的充值金额，允许两位小数');
         }
