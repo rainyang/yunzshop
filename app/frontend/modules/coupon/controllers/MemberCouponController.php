@@ -12,14 +12,12 @@ class MemberCouponController extends BaseController
     const IS_AVAILABLE = 2;
 
     //优惠券的状态
-
-    const OVERDUE = 1;
-    const EXHAUST = 2;
-    const ALREADY_GOT = 3;
-    const ALREADY_GOT_AND_TOUCH_LIMIT = 4;
-    const IS_USED = 5;
-    const NOT_USED = 6;
-
+    const NOT_USED = 1;
+    const OVERDUE = 2;
+    const IS_USED = 3;
+    const EXHAUST = 4;
+    const ALREADY_GOT = 5;
+    const ALREADY_GOT_AND_TOUCH_LIMIT = 6;
 
     /**
      * 获取用户所拥有的优惠券的数据接口
