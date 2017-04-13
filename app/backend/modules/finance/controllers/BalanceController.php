@@ -37,17 +37,17 @@ class BalanceController extends BaseController
 
         $requestModel = \YunShop::request()->balance;
         if ($requestModel) {
-            $requestModel[''] = '';
+            $requestModel['sale'] = $this->rechargeSale($requestModel);
+            unset($requestModel['enough']);
+            unset($requestModel['give']);
             if (Setting::set('balance.recharge', $requestModel)) {
                 return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'));
             } else {
                 $this->error('余额基础设置保存失败！！');
             }
         }
-
         return view('finance.balance.index', [
             'balance' => $balance,
-            'pager' => ''
         ])->render();
     }
 
@@ -201,6 +201,23 @@ class BalanceController extends BaseController
             'charge_value' => '充值金额',
             'type'      => 'balance'
         );
+    }
+
+    private function rechargeSale($data)
+    {
+        $result = array();
+        $sale = is_array($data['enough']) ? $data['enough'] : array();
+        foreach ($sale as $key => $value) {
+            $enough = trim($value);
+            if ($enough) {
+                $result[] = array(
+                    'enough' => trim($data['enough'][$key]),
+                    'give' => trim($data['give'][$key])
+                );
+
+            }
+        }
+        return $result;
     }
 
 }
