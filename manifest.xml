@@ -2,7 +2,7 @@
 <manifest xmlns="http://www.we7.cc" versionCode="0.6">
 	<application setting="true">
 		<name><![CDATA[商城]]></name>
-		<identifie><![CDATA[yun_shop]]></identifie>
+		<identifie><![CDATA[yunshop]]></identifie>
 		<version><![CDATA[1.0]]></version>
 		<type><![CDATA[biz]]></type>
 		<ability><![CDATA[商城]]></ability>

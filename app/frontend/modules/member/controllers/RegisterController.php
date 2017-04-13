@@ -46,7 +46,7 @@ class RegisterController extends BaseController
             $data = array(
                 'uniacid' => $uniacid,
                 'mobile' => $mobile,
-                'groupid' => $default_groupid->id,
+                'groupid' => $default_groupid->id ? $default_groupid->id : 0,
                 'createtime' => time(),
                 'nickname' => $mobile,
                 'avatar' => Url::shopUrl('static/images/photo-mr.jpg'),

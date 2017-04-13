@@ -24,7 +24,7 @@ class MemberLevelController extends BaseController
      * @autor yitian */
     public function index()
     {
-        $pageSize = 5;
+        $pageSize = 10;
         $levelList = MemberLevel::getLevelPageList($pageSize);
         $pager = PaginationHelper::show($levelList->total(), $levelList->currentPage(), $levelList->perPage());
 
@@ -94,7 +94,6 @@ class MemberLevelController extends BaseController
                 }
             }
         }
-
         return view('member.level.form', [
             'levelModel' => $levelModel,
             'shopSet' => Setting::get('shop.member')
@@ -111,7 +110,7 @@ class MemberLevelController extends BaseController
             return $this->message('未找到记录或已删除','','error');
         }
         if($levelModel->delete()) {
-            return $this->message('删等级成功',Url::absoluteWeb('member.member-level.index'));
+            return $this->message('删除等级成功',Url::absoluteWeb('member.member-level.index'));
         }else{
             return $this->message('删除等级失败','','error');
         }

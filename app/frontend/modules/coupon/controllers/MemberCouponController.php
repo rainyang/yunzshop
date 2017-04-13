@@ -7,22 +7,26 @@ use app\frontend\modules\coupon\models\MemberCoupon;
 
 class MemberCouponController extends BaseController
 {
+    //优惠券对于该用户是否可用
     const NOT_AVAILABLE = 1;
     const IS_AVAILABLE = 2;
-    const OVERDUE = 1;
-    const EXHAUST = 2;
-    const ALREADY_GOT = 3;
-    const ALREADY_GOT_AND_TOUCH_LIMIT = 4;
-    const IS_USED = 5;
+
+    //优惠券的状态
+    const NOT_USED = 1;
+    const OVERDUE = 2;
+    const IS_USED = 3;
+    const EXHAUST = 4;
+    const ALREADY_GOT = 5;
+    const ALREADY_GOT_AND_TOUCH_LIMIT = 6;
 
     /**
-     * 获取用户所有的优惠券的数据接口
+     * 获取用户所拥有的优惠券的数据接口
      * @return \Illuminate\Http\JsonResponse
      */
     public function couponsOfMember()
     {
         $uid = \YunShop::app()->getMemberId();
-        $pageSize = \YunShop::app()->get('pagesize');
+        $pageSize = \YunShop::request()->get('pagesize');
         $pageSize = $pageSize ? $pageSize : 10;
 
         $coupons = MemberCoupon::getCouponsOfMember($uid)->paginate($pageSize)->toArray();
@@ -46,7 +50,7 @@ class MemberCouponController extends BaseController
                     }
                 } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT){ //时间限制类型是"时间范围"
                     if (($now > $v['belongs_to_coupon']['time_end'])){ //优惠券在有效期外
-                        $coupons['data'][$k]['availability'] = self::NOT_AVAILABLE;
+                        $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
                         $coupons['data'][$k]['api_status'] = self::OVERDUE;
                     } else{ //优惠券在有效期内
                         $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
@@ -65,7 +69,7 @@ class MemberCouponController extends BaseController
      */
     public function couponsForMember()
     {
-        $pageSize = \YunShop::app()->get('pagesize');
+        $pageSize = \YunShop::request()->get('pagesize');
         $pageSize = $pageSize ? $pageSize : 10;
         $uid = \YunShop::app()->getMemberId();
 
@@ -73,7 +77,6 @@ class MemberCouponController extends BaseController
         if(empty($coupons)){
             return $this->errorJson('没有找到记录', []);
         }
-//        dd($coupons);
 
         //增加"是否可领取" & "是否已抢光" & "是否已领取" & "领取数量是否达到个人上限"的标识
         $now = strtotime('now');
@@ -97,5 +100,80 @@ class MemberCouponController extends BaseController
 
         return $this->successJson('ok', $coupons);
     }
+
+    //获取用户所拥有的不同状态的优惠券 - 待使用(NOT_USED) & 已过期(OVERDUE) & 已使用(IS_USED)
+    public function couponsOfMemberByStatus()
+    {
+        $status = \YunShop::request()->get('status_request');
+        $uid = \YunShop::app()->getMemberId();
+        $pageSize = \YunShop::request()->get('pagesize');
+        $pageSize = $pageSize ? $pageSize : 10;
+
+        $now = strtotime('now');
+
+        switch ($status) {
+            case self::IS_USED:
+                $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 1)->paginate($pageSize)->toArray();
+                break;
+            case self::OVERDUE:
+                $coupons = self::getOverdueCoupons($uid, $now, $pageSize);
+                break;
+            case self::NOT_USED:
+                $coupons = self::getAvailableCoupons($uid, $now, $pageSize);
+        }
+
+        if (empty($coupons)){
+            return $this->errorJson('没有找到记录', []);
+        } else{
+            return $this->successJson('ok', $coupons);
+        }
+    }
+
+    //用户所拥有的已过期的优惠券
+    public static function getOverdueCoupons($uid, $time, $pageSize=10)
+    {
+        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 0)->paginate($pageSize)->toArray();
+
+        $overdueCoupons = array();
+        //获取已经过期的优惠券
+        foreach($coupons['data'] as $k=>$v){
+            if($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT
+                && ($time - $v['get_time']) > ($v['belongs_to_coupon']['time_days']*3600) ){ //时间限制类型是"领取后几天有效",且过期
+                $overdueCoupons[] = $coupons['data'][$k];
+            } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT
+                && ($time > $v['belongs_to_coupon']['time_end'])){
+                $overdueCoupons[] = $coupons['data'][$k];
+            }
+        }
+        $coupons['data'] = $overdueCoupons;
+        return $coupons;
+    }
+
+    //用户所拥有的可使用的优惠券
+    public static function getAvailableCoupons($uid, $time, $pageSize=10)
+    {
+        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 0)->paginate($pageSize)->toArray();
+
+        //获取可以使用的优惠券
+        $availableCoupons = array();
+        foreach($coupons['data'] as $k=>$v){
+            if($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT
+                && (($time - $v['get_time']) < $v['belongs_to_coupon']['time_days']*3600)){ //时间限制类型是"领取后几天有效",且过期
+                $availableCoupons[] = $coupons['data'][$k];
+            } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT
+                && ($time < $v['belongs_to_coupon']['time_end'])){
+                $availableCoupons[] = $coupons['data'][$k];
+            }
+        }
+        $coupons['data'] = $availableCoupons;
+        return $coupons;
+    }
+
+    //领取优惠券
+    public function getCoupon($couponId)
+    {
+
+    }
+
 }
 

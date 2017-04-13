@@ -12,7 +12,9 @@ use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberShopInfo;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberRelation as Relation;
+use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
+use app\common\helpers\Url;
 use app\common\models\Goods;
 
 class MemberRelationController extends BaseController
@@ -89,7 +91,33 @@ class MemberRelationController extends BaseController
 
     public function apply()
     {
-        $list = Member::getMembersToApply()
+        $starttime = strtotime('-1 month');
+        $endtime = time();
+
+        $requestSearch = \YunShop::request()->search;
+
+
+        if($requestSearch){
+
+            if ($requestSearch['searchtime']) {
+                if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
+                    $requestSearch['times']['start'] = strtotime($requestSearch['times']['start']);
+                    $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
+                    $starttime = strtotime($requestSearch['times']['start']);
+                    $endtime = strtotime($requestSearch['times']['end']);
+                }else{
+                    $requestSearch['times'] = '';
+                }
+            }else{
+                $requestSearch['times'] = '';
+            }
+
+            $requestSearch = array_filter($requestSearch, function ($item) {
+                return $item !== '';// && $item !== 0;
+            });
+        }
+
+        $list = Member::getMembersToApply($requestSearch)
             ->paginate($this->pageSize)
             ->toArray();
 
@@ -99,6 +127,26 @@ class MemberRelationController extends BaseController
             'list' => $list,
             'total' => $list['total'],
             'pager' => $pager,
+            'requestSearch' => $requestSearch,
+            'starttime' => $starttime,
+            'endtime' => $endtime,
+        ])->render();
+    }
+
+    public function applyProtocol()
+    {
+        $info = Setting::get("apply_protocol");
+        
+        $requestProtocol = \YunShop::request()->protocol;
+        if($requestProtocol){
+            $request = Setting::set('apply_protocol',$requestProtocol);
+            if($request){
+                return $this->message('保存成功', Url::absoluteWeb('member.member-relation.apply-protocol'));
+            }
+        }
+        
+        return view('member.apply-protocol', [
+            'info' => $info,
         ])->render();
     }
 
@@ -109,6 +157,7 @@ class MemberRelationController extends BaseController
         $member_shop_info_model = MemberShopInfo::getMemberShopInfo($id);
 
         if ($member_shop_info_model) {
+            $member_shop_info_model->is_agent = 1;
             $member_shop_info_model->status = 2;
 
             if ($member_shop_info_model->save()) {
