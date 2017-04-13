@@ -98,8 +98,10 @@ class IncomeController extends ApiController
     {
         $configs = \Config::get('income');
         foreach ($configs as $key => $config) {
-            $searchType[$key]['title'] = $config['type_name'];
-            $searchType[$key]['type'] = $config['type'];
+            $searchType[] = [
+                'title' => $config['type_name'],
+                'type' => $config['type']
+            ];
         }
         if ($searchType) {
             return $this->successJson('获取数据成功!', $searchType);
