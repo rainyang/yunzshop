@@ -22,6 +22,7 @@ class Coupon extends \app\common\models\Coupon
         return $value * 10;
     }
 
+    //获取该公众号下所有优惠券的数据
     public static function getCouponsForMember($memberId)
     {
         return static::uniacid()
