@@ -71,4 +71,21 @@ class MemberShopInfo extends BackendModel
         return $this->hasOne('app\common\models\MemberShopInfo', 'member_id', 'parent_id');
     }
 
+    /**
+     * 用户是否为黑名单用户
+     *
+     * @param $member_id
+     * @return bool
+     */
+    public static function isBlack($member_id)
+    {
+        $member_model = self::getMemberShopInfo($member_id);
+
+        if (1 == $member_model->is_black) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
