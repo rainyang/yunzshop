@@ -110,7 +110,7 @@ class MemberLevelController extends BaseController
             return $this->message('未找到记录或已删除','','error');
         }
         if($levelModel->delete()) {
-            return $this->message('删等级成功',Url::absoluteWeb('member.member-level.index'));
+            return $this->message('删除等级成功',Url::absoluteWeb('member.member-level.index'));
         }else{
             return $this->message('删除等级失败','','error');
         }
