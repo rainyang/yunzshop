@@ -35,4 +35,11 @@ class Coupon extends \app\common\models\Coupon
                         }])
                         ->where('status', '=', 1);
     }
+
+    //获取优惠券详细信息
+    public static function getCouponById($couponId)
+    {
+        return static::uniacid()
+                    ->where('id', '=', $couponId);
+    }
 }

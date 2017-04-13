@@ -89,7 +89,6 @@ class CouponController extends \app\common\components\BaseController
         } else {
             return $this->message('删除优惠券失败', '', 'error');
         }
-
     }
 
 }
