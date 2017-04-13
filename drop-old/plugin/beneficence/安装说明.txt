@@ -1,3 +1,0 @@
-1、安装
-域名/web/index.php?c=site&a=entry&method=upgrade&p=beneficence&do=plugin&m=sz_yi
-安装后清除缓存

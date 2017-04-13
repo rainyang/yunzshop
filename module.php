@@ -7,7 +7,7 @@
  */
 defined('IN_IA') or exit('Access Denied');
 
-class Sz_yiModule extends WeModule {
+class Yun_shopModule extends WeModule {
 
 	public function settingsDisplay($settings) {
 		global $_W, $_GPC;

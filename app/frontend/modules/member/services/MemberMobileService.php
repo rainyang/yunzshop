@@ -21,12 +21,12 @@ class MemberMobileService extends MemberService
 
         $uniacid  = \YunShop::app()->uniacid;
 
-        if (\YunShop::app()->ispost
+        if ($_SERVER['REQUEST_METHOD'] == 'POST'
                                   && MemberService::validate($mobile, $password)) {
             $has_mobile = MemberModel::checkMobile($uniacid, $mobile);
 
             if (!empty($has_mobile)) {
-                $password = md5($password. $has_mobile['salt'] . \YunShop::app()->config['setting']['authkey']);
+                $password = md5($password. $has_mobile['salt']);
 
                 $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
 

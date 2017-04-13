@@ -1,4 +1,0 @@
- 域名/web/index.php?c=site&a=entry&method=upgrade&p=yunbi&do=plugin&m=sz_yi
-
-清除缓存
-
