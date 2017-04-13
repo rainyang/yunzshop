@@ -32,7 +32,7 @@ class Withdraw extends BackendModel
     protected $guarded = [];
 
 
-    protected $appends = ['status_name', 'pay_way_name', 'type_data'];
+    protected $appends = ['status_name', 'pay_way_name'];
 
     /**
      * @return string

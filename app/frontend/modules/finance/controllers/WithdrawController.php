@@ -23,4 +23,16 @@ class WithdrawController extends ApiController
         }
         return $this->errorJson('未检测到数据!');
     }
+    
+    public function withdrawInfo()
+    {
+        $id = \YunShop::request()->id;
+        $request = Withdraw::getWithdrawInfoById($id)->first();
+
+        if ($request) {
+            
+            return $this->successJson('获取数据成功!', $request->toArray());
+        }
+        return $this->errorJson('未检测到数据!');
+    }
 }

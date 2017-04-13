@@ -10,7 +10,7 @@ namespace app\backend\modules\finance\models;
 
 class Withdraw extends \app\common\models\Withdraw
 {
-    
+    protected $appends = ['type_data'];
     
     public static function getWithdrawList($search = [])
     {
