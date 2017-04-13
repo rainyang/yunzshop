@@ -197,18 +197,36 @@ class Member extends \app\common\models\Member
      *
      * @return mixed
      */
-    public static function getMembersToApply()
+    public static function getMembersToApply($filters)
     {
-        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile'])
-            ->uniacid()
-            ->whereHas('yzMember', function($query){
+        $query = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile']);
+        $query->uniacid();
+
+        if(isset($filters['member'])){
+            $query->searchLike($filters['member']);
+        }
+        if($filters['referee'] == '0'){
+            $query->where('parent_id', $filters['referee']);
+        }elseif($filters['referee'] == '1'){
+
+            //推荐人 信息检索 $filters['referee_info']
+        }
+        if($filters['searchtime']){
+            if($filters['times']){
+                $range = [strtotime($filters['times']['start']), strtotime($filters['times']['end'])];
+                $query->whereBetween('createtime', $range);
+            }
+        }
+
+        $query->whereHas('yzMember', function($query){
                 $query->where('status', 1);
-            })
-            ->with(['yzMember'=>function($query){
+            });
+        $query->with(['yzMember'=>function($query){
                 return $query->select(['member_id','parent_id', 'apply_time'])
                     ->with([ 'agent'=>function($query3){
                         return $query3->select(['uid', 'avatar', 'nickname']);
                     }]);
             }]);
+        return $query;
     }
 }
