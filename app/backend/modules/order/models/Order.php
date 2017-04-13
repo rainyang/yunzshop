@@ -10,33 +10,42 @@ namespace app\backend\modules\order\models;
 
 class Order extends \app\common\models\Order
 {
-    public static function getAllOrders($search,$pageSize){
-        $builder = Order::orders($search,$pageSize);
+    public static function getAllOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize);
         $list['total_price'] = $builder->sum('price');
         $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
 
     }
-    public static function getWaitPayOrders($search,$pageSize){
-        $builder = Order::orders($search,$pageSize)->waitPay();
+
+    public static function getWaitPayOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->waitPay();
         $list['total_price'] = $builder->sum('price');
         $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
-    public static function getWaitSendOrders($search,$pageSize){
-        $builder = Order::orders($search,$pageSize)->waitSend();
+
+    public static function getWaitSendOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->waitSend();
         $list['total_price'] = $builder->sum('price');
         $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
-    public static function getWaitReceiveOrders($search,$pageSize){
-        $builder = Order::orders($search,$pageSize)->waitReceive();
+
+    public static function getWaitReceiveOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->waitReceive();
         $list['total_price'] = $builder->sum('price');
         $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
-    public static function getCompletedOrders($search,$pageSize){
-        $builder = Order::orders($search,$pageSize)->completed();
+
+    public static function getCompletedOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->completed();
         $list['total_price'] = $builder->sum('price');
         $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
@@ -67,7 +76,7 @@ class Order extends \app\common\models\Order
         return $orders;
     }
 
-    public function scopeOrders($order_builder,$search)
+    public function scopeOrders($order_builder, $search)
     {
         $order_builder->search($search);
 
@@ -81,6 +90,7 @@ class Order extends \app\common\models\Order
         ]);
         return $list;
     }
+
     private static function member_builder()
     {
         return function ($query) {
@@ -101,27 +111,29 @@ class Order extends \app\common\models\Order
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单
             if ($params['ambiguous']['field'] == 'order') {
-                $keyWords = explode(':',$params['ambiguous']['string']);
-                if(is_array($keyWords)){
-                    list($field,$value) = $keyWords;
-                    $order_builder->where($field,$value);
-                }else{
-                    $order_builder->searchLike($params['ambiguous']['string']);
-                }
+                call_user_func(function () use (&$order_builder, $params) {
+                    list($field, $value) = explode(':', $params['ambiguous']['string']);
+                    if (isset($value)) {
+                        return $order_builder->where($field, $value);
+                    } else {
+                        return $order_builder->searchLike($params['ambiguous']['string']);
+                    }
+                });
+
+
             }
             //用户
             if ($params['ambiguous']['field'] == 'member') {
-                //当传入 id:1 时,按照id准确查找 todo 需要处理,非法字段时数据库报错
-                $keyWords = explode(':',$params['ambiguous']['string']);
-                if(is_array($keyWords)){
-                    list($field,$value) = $keyWords;
-                    $order_builder->where($field,$value);
-                }else{
-                    $order_builder->whereHas('belongsToMember', function ($query) use ($params) {
-
-                        return $query->searchLike($params['ambiguous']['string']);
-                    });
-                }
+                call_user_func(function () use (&$order_builder, $params) {
+                    list($field, $value) = explode(':', $params['ambiguous']['string']);
+                    if (isset($value)) {
+                        return $order_builder->where($field, $value);
+                    } else {
+                        return $order_builder->whereHas('belongsToMember', function ($query) use ($params) {
+                            return $query->searchLike($params['ambiguous']['string']);
+                        });
+                    }
+                });
 
             }
             //订单商品

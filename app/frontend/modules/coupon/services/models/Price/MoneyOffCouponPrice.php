@@ -70,17 +70,22 @@ class MoneyOffCouponPrice extends CouponPrice
     {
 
         //dd($this->getOrderGoodsInScope());
-        foreach ($this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup() as $orderGoods) {
-            /**
-             * @var $orderGoods PreGeneratedOrderGoodsModel
-             */
-            //(优惠券金额/折扣优惠券后价格)*折扣优惠券后价格
+        $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->map(function($orderGoods){
+                /**
+                 * @var $orderGoods PreGeneratedOrderGoodsModel
+                 */
+                //(优惠券金额/折扣优惠券后价格)*折扣优惠券后价格
 //            dd($this->getPrice());
 //            dd($this->getOrderGoodsGroupPrice());
 //            dd($this->getOrderGoodsPrice($orderGoods));
 //            exit;
-            $orderGoods->couponMoneyOffPrice += number_format(($this->getPrice() / $this->getOrderGoodsGroupPrice()) * $this->getOrderGoodsPrice($orderGoods), 2);
+                $goodsMemberCoupon = new GoodsMemberCoupon();
+                $goodsMemberCoupon->amount = number_format(( $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsGroupPrice()) * $this->getPrice(), 2);
+                $goodsMemberCoupon->enough = number_format(( $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsGroupPrice()) * $this->dbCoupon->enough, 2);
+                $orderGoods->setRelation('coupon',$goodsMemberCoupon);
+            });
 
-        }
+
+
     }
 }
