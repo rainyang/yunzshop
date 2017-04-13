@@ -29,7 +29,7 @@ ul{list-style:none;}
 }
 .form-group input.form-control,button.btn.btn-default{height: 34px;}
 
-.rightlist{width: 100%;padding-bottom: 125px;min-width: 960px;/*background: #fff;border: 1px #e0e0e0 solid*/}
+.rightlist{width: 100%;padding-bottom: 25px;min-width: 960px;/*background: #fff;border: 1px #e0e0e0 solid*/}
 .rightlist2{margin: 52px 6px 6px 250px;
     padding-bottom: 125px;
     min-width: 960px;}

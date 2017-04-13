@@ -11,7 +11,7 @@
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
             <div class="panel panel-info">
-              <!--  <div class="panel-heading">筛选</div>-->
+                <div class="panel-heading">筛选</div>
                 <div class="panel-body">
                     <form action="" method="post" class="form-horizontal" role="form" id="form1">
                         <input type="hidden" name="c" value="site" />
@@ -22,9 +22,9 @@
                         <div class="form-group col-sm-11 col-lg-11 col-xs-12">
                             <div class="">
                                 <div class='input-group'>
-                                    <!--<div class='input-group-addon'>会员信息</div>-->
 
-                                        <input class="form-control" name="search[realname]" type="text" value="{{ $search['realname'] or ''}}" placeholder="会员姓名／昵称／手机号">
+                                    <input class="form-control" name="search[realname]" type="text"
+                                    value="{{ $search['realname'] or ''}}" placeholder="会员姓名／昵称／手机号">
 
                                     <div class='form-input'>
                                         <p class="input-group-addon" >会员等级</p>

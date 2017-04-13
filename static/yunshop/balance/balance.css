@@ -78,6 +78,7 @@
     height: 34px;
     line-height: 20px;
     margin:0;
+    background:#eee;
 }
 #member-blade.rightlist .input-group .form-input .form-control{
     width: 60%;
