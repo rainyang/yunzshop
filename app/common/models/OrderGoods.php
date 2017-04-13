@@ -21,19 +21,25 @@ class OrderGoods extends BaseModel
     ];
     protected $search_fields = ['goods_sn', 'title'];
 
+
+
     public function hasOneGoods()
     {
         return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');
     }
+
     public function goods()
     {
         return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');
     }
+
     public function belongsToGood()
     {
         return $this->belongsTo('\app\common\models\Goods', 'goods_id', 'id');
     }
-    public function goodsOption(){
+
+    public function goodsOption()
+    {
         return $this->hasOne('\app\common\models\GoodsOption', 'id', 'goods_option_id');
 
     }

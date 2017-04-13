@@ -189,7 +189,7 @@
                         @foreach( $order['has_many_order_goods'] as $order_goods_index => $order_goods)
                             <tr class='trbody'>
                                 <td class="goods_info">
-                                    <img src="@if( 0&&$order['cashier']==1){{$order['name']['thumb']}}@else{!! tomedia($order_goods['thumb']) !!}@endif">
+                                    <img src="{{tomedia($order_goods['thumb'])}}">
                                 </td>
                                 <td class="top" valign='top' >
                                     {{$order_goods['title']}}
