@@ -10,6 +10,18 @@ class Coupon extends \app\common\models\Coupon
     const RELATIVE_TIME_LIMIT = 0;
     const ABSOLUTE_TIME_LIMIT = 1;
 
+    //前台需要整数的"立减值"
+    public function getDeductAttribute($value)
+    {
+        return intval($value);
+    }
+
+    //前台需要整数的"折扣值", 即"打几折"
+    public function getDiscountAttribute($value)
+    {
+        return $value * 10;
+    }
+
     public static function getCouponsForMember($memberId)
     {
         return static::uniacid()

@@ -13,9 +13,18 @@ use app\frontend\models\Member;
 
 class Order extends \app\common\models\Order
 {
-    protected $appends = ['status_name','pay_type_name','button_models'];
+    protected $hidden = ['uniacid', 'create_time', 'is_deleted', 'is_member_deleted',
+        'finish_time', 'pay_time', ',send_time', 'send_time', 'uid',
+        'cancel_time', 'created_at', 'updated_at', 'deleted_at']; //在 Json 中隐藏的字段
+    protected $appends = ['status_name', 'pay_type_name', 'button_models'];
+
     public function belongsToMember()
     {
         return $this->belongsTo(Member::class, 'uid', 'uid');
+    }
+
+    public function scopeOrders($query)
+    {
+        return $query->with('hasManyOrderGoods');
     }
 }

@@ -34,28 +34,28 @@ class ListController extends BaseController
         $params = \YunShop::request();
         
         $this->_order_model = Order::getWaitPayOrders($params['search'],self::PAGE_SIZE);
-        $this->render('order/list', $this->getData());
+        return view('order.index', $this->getData())->render();
     }
     public function waitSend()
     {
         $params = \YunShop::request();
         
         $this->_order_model = Order::getWaitSendOrders($params['search'],self::PAGE_SIZE);
-        $this->render('order/list', $this->getData());
+        return view('order.index', $this->getData())->render();
     }
     public function waitReceive()
     {
         $params = \YunShop::request();
         
         $this->_order_model = Order::getWaitReceiveOrders($params['search'],self::PAGE_SIZE);
-        $this->render('order/list', $this->getData());
+        return view('order.index', $this->getData())->render();
     }
     public function completed()
     {
         $params = \YunShop::request();
         
         $this->_order_model = Order::getCompletedOrders($params['search'],self::PAGE_SIZE);
-        $this->render('order/list', $this->getData());
+        return view('order.index', $this->getData())->render();
     }
 
     public function test()
