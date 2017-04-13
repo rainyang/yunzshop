@@ -18,6 +18,7 @@ use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
+use app\common\models\Withdraw;
 use app\common\services\finance\Balance;
 
 /*
@@ -116,6 +117,17 @@ class BalanceController extends BaseController
         return view('finance.balance.recharge', [
             'rechargeMenu'  => $this->getRechargeMenu(),
             'memberInfo'    => $memberInfo,
+        ])->render();
+    }
+
+    public function withdrawInfo()
+    {
+        $withdrawModel = Withdraw::getBalanceWithdrawById(\YunShop::request()->id)->toArray();
+//dd($withdrawModel);
+
+        return view('finance.balance.withdraw', [
+            'item' => $withdrawModel,
+            'set' => '',
         ])->render();
     }
 

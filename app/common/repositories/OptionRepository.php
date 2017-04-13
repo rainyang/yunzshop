@@ -93,11 +93,11 @@ class OptionRepository extends Repository
     protected function doSetOption($key, $value)
     {
         try {
-            if (!DB::table('options')->where('option_name', $key)->first()) {
-                DB::table('options')
+            if (!DB::table('yz_options')->where('option_name', $key)->first()) {
+                DB::table('yz_options')
                     ->insert(['option_name' => $key, 'option_value' => $value]);
             } else {
-                DB::table('options')
+                DB::table('yz_options')
                         ->where('option_name', $key)
                         ->update(['option_value' => $value]);
             }

@@ -134,7 +134,7 @@
                                     @if (!empty($refund) && $refund['status'] == 1)
                                         <span class="label label-default">已{{$r_type[$refund['rtype']]}}</span>
                                             @if (!empty($refund['refundtime']))
-                                                退款时间: {{date('Y-m-d H:i:s',$refund['refundtime'])}}
+                                                退款时间: {{$refund['refundtime']}}
                                             @endif
                                     @else
                                         <span class="label label-default">已关闭</span>
@@ -158,7 +158,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款时间 :</label>
                         <div class="col-sm-9 col-xs-12">
-                            <div class="form-control-static">{{date('Y-m-d H:i:s',$order['refundtime'])}}</div>
+                            <div class="form-control-static">{{$order['refundtime']}}</div>
                         </div>
                     </div>
                     @endif
@@ -166,14 +166,14 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单日期 :</label>
                         <div class="col-sm-9 col-xs-12">
-                            <p class="form-control-static">{{date('Y-m-d H:i:s', $order['create_time'])}}</p>
+                            <p class="form-control-static">{{$order['create_time']}}</p>
                         </div>
                     </div>
                     @if ($order['status'] >= 1)
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">付款时间 :</label>
                         <div class="col-sm-9 col-xs-12">
-                            <p class="form-control-static">{{date('Y-m-d H:i:s', $order['pay_time'])}}</p>
+                            <p class="form-control-static">{{$order['pay_time']}}</p>
                         </div>
                     </div>
                     @endif
@@ -181,7 +181,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">完成时间 :</label>
                         <div class="col-sm-9 col-xs-12">
-                            <p class="form-control-static">{{date('Y-m-d H:i:s', $order['finish_time'])}}</p>
+                            <p class="form-control-static">{{$order['finish_time']}}</p>
                         </div>
                     </div>
                     @endif
@@ -254,7 +254,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款时间 :</label>
                             <div class="col-sm-9 col-xs-12">
                                 <div class="form-control-static">
-                                    {{date('Y-m-d H:i:s',$order['refundtime'])}}
+                                    {{$order['refundtime']}}
                                 </div>
                             </div>
                         </div>
@@ -335,7 +335,7 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">填写快递单号时间 :</label>
                                 <div class="col-sm-9 col-xs-12">
-                                    <div class="form-control-static">{{date('Y-m-d H:i:s',$refund['sendtime'])}}</div>
+                                    <div class="form-control-static">{{$refund['sendtime']}}</div>
                                 </div>
                             </div>
                             @endif
@@ -373,7 +373,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">确认发货时间 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <div class="form-control-static">{{date('Y-m-d H:i:s',$refund['returntime'])}}</div>
+                                <div class="form-control-static">{{$refund['returntime']}}</div>
                             </div>
                         </div>
                         <div style="width:100%; height:60px;"></div>

@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\services;
 use app\common\events\member\RegisterByAgent;
 use app\common\facades\Setting;
 use app\common\helpers\Client;
+use app\common\models\Member;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
 use app\common\models\MemberShopInfo;
@@ -178,8 +179,7 @@ class MemberOfficeAccountService extends MemberService
                     ));
 
                     //触发会员成为下线事件
-                    $model = MemberShopInfo::getMemberShopInfo($member_id);
-                    event(new BecomeAgent(\YunShop::request()->mid, $model));
+                    Member::chkAgent($member_id);
                 }
 
                 Session::set('member_id', $member_id);

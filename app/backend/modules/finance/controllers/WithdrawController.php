@@ -77,7 +77,6 @@ class WithdrawController extends BaseController
         }
         $withdrawModel = $withdrawModel->toArray();
 
-
 //        dd($withdrawModel);
         return view('finance.withdraw.withdraw-info', [
             'item' => $withdrawModel,

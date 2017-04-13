@@ -6,6 +6,7 @@ namespace app\common\providers;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
+use app\common\listeners\point\PointLisrener;
 use app\common\listeners\WechatProcessorListener;
 use app\frontend\modules\discount\listeners\MemberLevelGoodsDiscount;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -52,7 +53,7 @@ class EventServiceProvider extends ServiceProvider
         \app\common\listeners\goods\GoodsTestListener::class,
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
         \app\frontend\modules\discount\listeners\MemberLevelGoodsDiscount::class,
-
+        PointLisrener::class
 
     ];
     /**
