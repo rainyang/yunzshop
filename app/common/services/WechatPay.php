@@ -246,7 +246,7 @@ class WechatPay extends Pay
             'out_trade_no'     => $data['order_no'],
             'total_fee'        => $data['amount'] * 100, // 单位：分
             'nonce_str'        => Client::random(8) . "",
-            'device_info'      => 'sz_yi',
+            'device_info'      => 'yun_shop',
             'attach'           => $data['extra']['type'],
             'spbill_create_ip' => $this->ip,
             'openid'           => $openid
