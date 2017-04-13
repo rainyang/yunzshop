@@ -23,7 +23,7 @@ class Order extends BaseModel
     private $StatusService;
     protected $fillable = [];
     protected $guarded = ['id'];
-    protected $appends = ['status_name','pay_type_name'];
+    protected $appends = ['status_name', 'pay_type_name'];
     protected $search_fields = ['id', 'order_sn'];
     //protected $attributes = ['discount_price'=>0];
     const CLOSE = -1;
@@ -31,6 +31,11 @@ class Order extends BaseModel
     const WAIT_SEND = 1;
     const WAIT_RECEIVE = 2;
     const COMPLETE = 3;
+
+    public function getDates()
+    {
+        return ['create_time', 'refund_time', 'operate_time', 'send_time', 'return_time', 'end_time', 'pay_time', 'send_time', 'cancel_time', 'create_time', 'cancel_pay_time', 'cancel_send_time', 'finish_time'] + parent::getDates();
+    }
 
     public function scopeWaitPay($query)
     {
@@ -165,6 +170,6 @@ class Order extends BaseModel
     public static function getOrderInfoByMemberId($member_id)
     {
         return self::uniacid()
-                   ->where('uid', $member_id);
+            ->where('uid', $member_id);
     }
 }
