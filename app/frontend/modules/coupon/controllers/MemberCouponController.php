@@ -105,8 +105,7 @@ class MemberCouponController extends BaseController
     public function couponsOfMemberByStatus()
     {
         $status = \YunShop::request()->get('status_request');
-//        $uid = \YunShop::app()->getMemberId();
-        $uid = 140;
+        $uid = \YunShop::app()->getMemberId();
         $pageSize = \YunShop::request()->get('pagesize');
         $pageSize = $pageSize ? $pageSize : 10;
 
