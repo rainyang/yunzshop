@@ -57,7 +57,7 @@
                     <table class="table table-hover" style="overflow:visible;">
                         <thead class="navbar-inner">
                         <tr>
-                            <th style='width:8%;text-align: center;'>时间</th>
+                            <th style='width:11%;text-align: center;'>时间</th>
                             <th style='width:8%;text-align: center;'>会员ID</th>
                             <th style='width:8%;text-align: center;'>粉丝</th>
                             <th style='width:12%;text-align: center'>姓名<br/>手机号码</th>
@@ -70,7 +70,7 @@
                         <tbody>
                         @foreach($detailList as $list)
                             <tr style="text-align: center">
-                                <td style="text-align: center;">{{ $list->created_at }}</td>
+                                <td style="text-align: center;">{{ date('Y-m-d H:i:s', $list->created_at) }}</td>
                                 <td style="text-align: center;">{{ $list->member_id }}</td>
                                 <td style="text-align: center;">
                                     @if($list->member->avatar)

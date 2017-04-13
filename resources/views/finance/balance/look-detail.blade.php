@@ -23,7 +23,7 @@
                     <b>金额: </b><span style='color:red'>{{ $detailModel->change_money }}</span> 元
                 <p>
                 <p>
-                    <b>业务类型: </b>
+                    <b>业务类型: </b>{{ $detailModel->type_name }}
                 <p>
                 <p>
                     <b>余额: </b>{{ $detailModel->new_money }}

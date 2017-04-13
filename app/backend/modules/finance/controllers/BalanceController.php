@@ -54,13 +54,16 @@ class BalanceController extends BaseController
     //余额明细记录[完成]
     public function balanceDetail()
     {
+        //todo 搜索
         $pageSize = 20;
         $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
         $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
         return view('finance.balance.detail', [
             'detailList' => $detailList,
-            'pager' => $pager
+            'pager' => $pager,
+            'memberGroup'   => MemberGroup::getMemberGroupList(),
+            'memberLevel'   => MemberLevel::getMemberLevelList()
         ])->render();
     }
 
