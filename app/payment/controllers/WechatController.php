@@ -8,28 +8,30 @@
 
 namespace app\payment\controllers;
 
+use app\common\models\Order;
 use app\payment\PaymentController;
 use EasyWeChat\Foundation\Application;
 use app\common\services\WechatPay;
 use app\common\models\PayOrder;
+
 
 class WechatController extends PaymentController
 {
     public function notifyUrl()
     {
         $post = $this->getResponseResult();
-
         $this->log($post);
 
         $verify_result = $this->getSignResult();
 
         if ($verify_result) {
-            $total_fee = $post['total_fee'];
-            $pay_log = [];
-            if (bccomp($pay_log['price'], $total_fee, 2) == 0) {
-                // TODO 更新支付单状态
-                // TODO 更新订单状态
-            }
+            $data = [
+                'total_fee'    => $post['total_fee'],
+                'out_trade_no' => $post['out_trade_no'],
+                'trade_no'     => ''
+            ];
+
+            $this->payResutl($data);
             echo "success";
         } else {
             echo "fail";
@@ -64,8 +66,6 @@ class WechatController extends PaymentController
         $options = [
             'app_id' => $pay['weixin_appid'],
             'secret' => $pay['weixin_secret'],
-            'token' => \YunShop::app()->account['token'],
-            'aes_key' => \YunShop::app()->account['encodingaeskey'],
             // payment
             'payment' => [
                 'merchant_id' => $pay['weixin_mchid'],
@@ -105,7 +105,11 @@ class WechatController extends PaymentController
         return $post;
     }
 
-
+    /**
+     * 支付日志
+     *
+     * @param $post
+     */
     public function log($post)
     {
         $pay = new WechatPay();
@@ -115,5 +119,20 @@ class WechatController extends PaymentController
         //保存响应数据
         $pay_order_info = PayOrder::getPayOrderInfo($post['out_trade_no'])->first()->toArray();
         $pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
+    }
+
+    public function getPayType($order_id)
+    {
+        if (!empty($order_id)) {
+            $tag = substr($order_id, 0, 2);
+
+            if ('SN' == strtoupper($tag)) {
+                return 'charge.succeeded';
+            } elseif ('RV' == strtoupper($tag)) {
+                return 'recharge.succeeded';
+            }
+        }
+
+        return '';
     }
 }

@@ -3,6 +3,7 @@
 namespace  app\payment;
 
 use app\common\components\BaseController;
+use app\frontend\modules\order\services\OrderService;
 
 /**
  * Created by PhpStorm.
@@ -36,7 +37,6 @@ class PaymentController extends BaseController
         }
 
        \Setting::$uniqueAccountId = \YunShop::app()->uniacid;
-
     }
 
     private function getUniacid()
@@ -48,6 +48,27 @@ class PaymentController extends BaseController
             return intval($splits[1]);
         } else {
             return 0;
+        }
+    }
+
+    public function payResutl($data)
+    {
+        $type = $this->getPayType($data['out_trade_no']);
+
+        $pay_order_model = PayOrder::uniacid()->where('order_sn', $data['out_trade_no']);
+        $pay_order_model->status = 2;
+        $pay_order_model->save();
+
+        switch ($type) {
+            case "charge.succeeded":
+                $order_info = Order::uniacid()->where('order_sn', $data['out_trade_no']);
+
+                if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
+                    OrderService::orderPay(['order_id' => $data['out_trade_no']]);
+                }
+                break;
+            case "recharge.succeeded":
+                break;
         }
     }
 }
