@@ -25,6 +25,6 @@ class Order extends \app\common\models\Order
 
     public function scopeOrders($query)
     {
-
+        return $query->with('hasManyOrderGoods');
     }
 }

@@ -17,7 +17,7 @@ class RefundApply extends BaseModel
     protected $table = 'yz_order_refund';
     protected $hidden = ['updated_at', 'created_at', 'uniacid', 'uid', 'order_id'];
     protected $fillable = ['reason', 'images', 'order_id'];
-    protected $appends = ['refund_type_name' , 'status_name'];
+    protected $appends = ['refund_type_name' , 'status_name' , 'button_models'];
     protected $attributes = [
         'images' => '[]',
         'refund_proof_imgs' => '[]',
@@ -41,7 +41,23 @@ class RefundApply extends BaseModel
             $this->uid = \YunShop::app()->getMemberId();
         }
     }
-
+    public function getButtonModelsAttribute()
+    {
+        $result =
+            [
+                [
+                    'name' => '填写快递',
+                    'api' => 'dispatch.refundExpress',
+                    'value' => 2 //todo
+                ],
+                [
+                    'name' => '查看详情',
+                    'api' => 'refund.detail',
+                    'value' => 1
+                ],
+            ];
+        return $result;
+    }
     public function getDates()
     {
         return ['create_time', 'refund_time', 'operate_time', 'send_time', 'return_time', 'end_time', 'cancel_pay_time', 'cancel_send_time'] + parent::getDates();

@@ -5,8 +5,8 @@
     <div class="w1200 ">
 
 
-        <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/font-awesome.min.css">
+        <script type="text/javascript" src="./resource/js/lib/jquery-ui-1.10.3.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{static_url('css/font-awesome.min.css')}}">
         <link rel="stylesheet" type="text/css" href="{{static_url('yunshop/goods/goods.css')}}"/>
 
         <div id="goods-index" class=" rightlist ">
@@ -24,7 +24,7 @@
                         <form action="" method="post" class="form-horizontal" role="form">
                             <input type="hidden" name="c" value="site"/>
                             <input type="hidden" name="a" value="entry"/>
-                            <input type="hidden" name="m" value="sz_yi"/>
+                            <input type="hidden" name="m" value="yun_shop"/>
                             <input type="hidden" name="do" value="shop"/>
                             <input type="hidden" name="p" value="goods"/>
                             <input type="hidden" name="op" value="display"/>

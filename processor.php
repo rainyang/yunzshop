@@ -15,7 +15,7 @@ if (!defined('IN_IA')) {
 }
 define('IS_API', true);
 
-class Sz_yiModuleProcessor extends WeModuleProcessor
+class Yun_shopModuleProcessor extends WeModuleProcessor
 {
     public function __construct()
     {

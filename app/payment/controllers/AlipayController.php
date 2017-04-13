@@ -45,7 +45,6 @@ class AlipayController extends PaymentController
 
     public function returnUrl()
     {
-        file_put_contents('../../../../addons/sz_yi/data/r.log', print_r($_GET,1));
         // TODO 访问记录
         // TODO 保存响应数据
 

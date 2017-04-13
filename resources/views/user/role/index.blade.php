@@ -14,7 +14,7 @@
                     <form action=" " method="get" class="form-horizontal" role="form">
                         <input type="hidden" name="c" value="site"/>
                         <input type="hidden" name="a" value="entry"/>
-                        <input type="hidden" name="m" value="sz_yi"/>
+                        <input type="hidden" name="m" value="yun_shop"/>
                         <input type="hidden" name="do" value="QDaf"/>
                         <input type="hidden" name="route" value="user.role.index"/>
                         <div class="form-group col-xs-12 col-sm-6 col-lg-6">

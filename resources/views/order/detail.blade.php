@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('js')
-    <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
+    <script type="text/javascript" src="{{static_url('js/dist/area/cascade.js')}}"></script>
 <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
 
     <script language="javascript">
