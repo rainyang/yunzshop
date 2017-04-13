@@ -64,7 +64,7 @@
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费赠送</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-4 col-lg-3">
                             <span class="help-block">两项都填写才能生效 <span style="color:red; font-weight:bold">且阶梯优先级最大</span></span>
                             <div class='input-group'>
                                 <span class="input-group-addon">单笔订单满</span>
@@ -77,7 +77,7 @@
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-4 col-lg-3">
                             <div class='recharge-items'>
                                 @foreach ($set['enoughs'] as $item)
                                 <div class="input-group recharge-item" style="margin-top:5px">

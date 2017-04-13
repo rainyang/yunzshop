@@ -26,8 +26,8 @@ class Coupon extends \app\common\models\Coupon
     public static function getCouponsForMember($memberId)
     {
         return static::uniacid()
-                        ->select(['id', 'name', 'deduct', 'discount', 'enough', 'use_type',
-                                'categorynames', 'goods_names', 'time_limit', 'time_days', 'time_end', 'get_max', 'total',
+                        ->select(['id', 'name', 'coupon_method', 'deduct', 'discount', 'enough', 'use_type',
+                                'categorynames', 'goods_names', 'time_limit', 'time_days', 'time_start', 'time_end', 'get_max', 'total',
                                 'money', 'credit'])
                         ->withCount(['hasManyMemberCoupon'])
                         ->withCount(['hasManyMemberCoupon as member_got' => function($query) use($memberId){

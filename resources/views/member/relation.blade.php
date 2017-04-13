@@ -48,7 +48,7 @@
                                     <div class='input-group-addon become' ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="2" @if($set['become'] ==2) checked="checked"
                                                     @endif /> 消费达到</label></div>
                                     <input type='text' class='form-control' name='setdata[become_ordercount]' value="{{$set['become_ordercount']}}" />
-                                    <div class='input-group-addon ' >次</div>
+                                    <div class='input-group-addon' style="border:0" >次</div>
                                 </div>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                                     <div class='input-group-addon'  ><label class="radio-inline" ><input type="radio"  name="setdata[become]" value="3" @if($set['become'] ==3) checked="checked"
                                                     @endif /> 消费达到</label></div>
                                     <input type='text' class='form-control' name='setdata[become_moneycount]' value="{{$set['become_moneycount']}}" />
-                                    <div class='input-group-addon'  >元</div>
+                                    <div class='input-group-addon' style="border:0">元</div>
                                 </div>
                             </div>
                         </div>
