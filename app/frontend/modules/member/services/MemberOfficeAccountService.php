@@ -137,6 +137,7 @@ class MemberOfficeAccountService extends MemberService
                     //添加yz_member表
                     $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
                     $default_sub_level_id = MemberLevel::getDefaultLevelId()->first();
+
                     if (!empty($default_sub_group_id)) {
                         $default_subgroup_id = $default_sub_group_id->id;
                     } else {
