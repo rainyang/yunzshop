@@ -17,8 +17,7 @@ class RefundOperationService
         if(!$refundSend){
             throw new AppException('售后申请记录不存在');
         }
-        $result = $refundSend->execute();
-        dd($result);
-        exit;
+        return $refundSend->execute();
+
     }
 }
