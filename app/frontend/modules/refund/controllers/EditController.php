@@ -18,11 +18,30 @@ class EditController extends ApiController
         $this->validate($request, [
             'refund_id' => 'required|integer',
         ]);
+        $reasons = [
+            '不想要了',
+            '卖家缺货',
+            '拍错了/订单信息错误',
+            '其他',
+        ];
+        $refundTypes = [
+            [
+                'name' => '退款(仅退款不退货)',
+                'value' => 0
+            ], [
+                'name' => '退款退货',
+                'value' => 1
+            ], [
+                'name' => '换货',
+                'value' => 2
+            ]
+        ];
         $refundApply = RefundApply::find($request->query('refund_id'));
         if(!isset($refundApply)){
             throw new AppException('未找到该退款申请');
         }
-        $this->successJson('成功',$refundApply);
+        $data = compact('refundApply','reasons','refundTypes');
+        $this->successJson('成功',$data);
     }
     public function store(\Request $request){
         $this->validate($request, [
