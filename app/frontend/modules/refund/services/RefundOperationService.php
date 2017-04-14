@@ -2,6 +2,7 @@
 namespace app\frontend\modules\refund\services;
 
 use app\common\exceptions\AppException;
+use app\frontend\modules\refund\services\operation\RefundCancel;
 use app\frontend\modules\refund\services\operation\RefundSend;
 
 /**
@@ -21,7 +22,7 @@ class RefundOperationService
 
     }
     public static function refundCancel(){
-        $refundCancel = RefundSend::find(\Request::query('refund_id'));
+        $refundCancel = RefundCancel::find(\Request::query('refund_id'));
         if(!$refundCancel){
             throw new AppException('售后申请记录不存在');
         }
