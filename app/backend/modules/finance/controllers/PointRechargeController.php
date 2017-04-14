@@ -19,34 +19,13 @@ class PointRechargeController extends BaseController
     public function index()
     {
         $member_id = \YunShop::request()->id;
-
-        $member = Member::getMemberInfoById($member_id);
-
-        $point = \YunShop::request()->point;
-        if ($point) {
-            $data = [
-                'point_mode'        => 5,
-                'member_id'         => $member_id,
-                'uniacid'           => \YunShop::app()->uniacid,
-                'point'             => floatval($point)
-            ];
-            //echo '<pre>';print_r($data['point']);exit;
-            if ($point < 0) {
-                $data['point_income_type'] = -1;
-                $data['remark'] = '后台扣除[' . $data['point'] . ']积分';
-            } else {
-                $data['point_income_type'] = 1;
-                $data['remark'] = '后台充值[' . $data['point'] . ']积分';
-            }
-            $point_service = new PointService($data);
-            $point_model = $point_service->changePoint();
-            if ($point_model) {
-                return $this->message('充值成功!', Url::absoluteWeb('finance.point-recharge', ['id' => $member_id]));
-            }
+        $result = (new PointService())->verifyPointRecharge(\YunShop::request()->point, Member::getMemberInfoById($member_id));
+        if ($result) {
+            return $this->message($result, Url::absoluteWeb('finance.point-recharge', ['id' => $member_id]));
         }
 
         return view('finance.point.point_recharge', [
-            'memberInfo'    => $member,
+            'memberInfo'    => Member::getMemberInfoById($member_id),
             'rechargeMenu'  => $this->getRechargeMenu()
         ])->render();
     }
