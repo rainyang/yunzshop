@@ -195,6 +195,10 @@ return [
 
         //二维码
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+
+        //短信发送
+        Toplan\PhpSms\PhpSmsServiceProvider::class,
+        Toplan\Sms\SmsManagerServiceProvider::class,
     ],
 
     /*
@@ -257,6 +261,9 @@ return [
         'Curl'          => Ixudra\Curl\Facades\Curl::class,
 
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        //php短信发送
+        'PhpSms' => Toplan\PhpSms\Facades\Sms::class,
+        'SmsManager' => Toplan\Sms\Facades\SmsManager::class,
     ],
 
     'pay_type' => [
