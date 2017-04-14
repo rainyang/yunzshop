@@ -144,7 +144,7 @@
             </div><div class="clearfix">
                 <div class="panel panel-default">
                     <div class="panel-heading">总数：{{$total}}   </div>
-                    <div class="panel-body">
+                    <div class="panel-body" style="margin-bottom:100px">
                         <table class="table table-hover" style="overflow:visible;">
                             <thead class="navbar-inner">
                             <tr>
@@ -157,9 +157,9 @@
                                 <th style='width:8%;'>等级/分组</th>
                                 <th style='width:10%;'>注册时间</th>
                                 <th style='width:15%;'>积分/余额</th>
-                                <th style='width:15%;'>成交</th>
+                                <th style='width:10%;'>成交</th>
                                 <th style='width:8%'>关注</th>
-                                <th style='width:8%'>操作</th>
+                                <th style='width:13%'>操作</th>
                             </tr>
                             </thead>
                             <tbody>
