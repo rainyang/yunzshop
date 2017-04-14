@@ -37,7 +37,7 @@
                                     <!--	<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
                                     <div class="">
                                         <input class="form-control" placeholder="请输入关键字" name="search[keyword]" id=""
-                                               type="text" value="{{$requestSearch['keyword']}}" onclick="value='';" ／>
+                                               type="text" value="{{$requestSearch['keyword']}}" ／>
                                     </div>
                                 </div>
                                 <div class="form-group col-xs-12 col-sm-8 col-lg-2">

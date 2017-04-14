@@ -9,7 +9,10 @@
 namespace app\frontend\modules\coupon\services\models\UseScope;
 
 
-class CategoryScope
+class CategoryScope extends CouponUseScope
 {
-
+    public function valid()
+    {
+        return false;
+    }
 }

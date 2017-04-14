@@ -31,16 +31,16 @@ class WithdrawController extends BaseController
             foreach ($resultModel as $key => $item) {
                 if ($key == 'balance') {
                     $validator = (new BalanceSet())->validator($item);
-                    if($validator->fails()){
+                    if ($validator->fails()) {
                         $this->error($validator->messages());
                         break;
                     }
                 }
 
             }
-            if($validator && !$validator->fails()){
+            if ($validator && !$validator->fails()) {
                 foreach ($resultModel as $key => $item) {
-                    Setting::set('withdraw.'. $key,$item);
+                    Setting::set('withdraw.' . $key, $item);
 
                 }
                 return $this->message('设置保存成功', Url::absoluteWeb('finance.withdraw.set'));
@@ -58,7 +58,11 @@ class WithdrawController extends BaseController
 
         $search = \YunShop::request()->search;
 
-        $list = Withdraw::getWithdrawList($search)->paginate($pageSize);
+        $list = Withdraw::getWithdrawList($search)
+            ->orderBy('created_at','desc')
+            ->paginate($pageSize);
+
+
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         return view('finance.withdraw.withdraw-list', [
             'list' => $list,
@@ -119,10 +123,10 @@ class WithdrawController extends BaseController
             if ($income) {
                 $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
                 $withdrawStatus = "1";
-                Income::updatedIncomePayStatus($key, ['pay_status'=>'1']);
+                Income::updatedIncomePayStatus($key, ['pay_status' => '1']);
 
             } else {
-                Income::updatedIncomePayStatus($key, ['pay_status'=>'-1']);
+                Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
         }
         $actual_poundage = $actual_amounts / 100 * $withdraw['poundage_rate'];
@@ -151,10 +155,10 @@ class WithdrawController extends BaseController
             if ($income) {
                 $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
                 $withdrawStatus = "1";
-                Income::updatedIncomePayStatus($key, ['pay_status'=>'1']);
+                Income::updatedIncomePayStatus($key, ['pay_status' => '1']);
 
             } else {
-                Income::updatedIncomePayStatus($key, ['pay_status'=>'-1']);
+                Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
         }
         $actual_poundage = $actual_amounts / 100 * $withdraw['poundage_rate'];
@@ -201,7 +205,7 @@ class WithdrawController extends BaseController
         }
 
         if ($resultPay) {
-            $updatedData = [ 'pay_at' => time()];
+            $updatedData = ['pay_at' => time()];
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::paySuccess($withdrawId);
             if ($result) {
