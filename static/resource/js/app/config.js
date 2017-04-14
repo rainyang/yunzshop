@@ -1,5 +1,5 @@
 require.config({
-	baseUrl: '/addons/sz_yi/static/resource/js/app',
+	baseUrl: '/addons/yun_shop/static/resource/js/app',
 	paths: {
 		'jquery': '../jquery.1.12.4.min',
 		'jquery.ui': '../lib/jquery-ui-1.10.3.min',

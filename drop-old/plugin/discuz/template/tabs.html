@@ -1,7 +1,0 @@
-<div class="ulleft-nav">
-    <ul class="nav nav-tabs">
-        {ifp 'dz.index'}<li {if empty($_GPC['method']) || $_GPC['method']=='index'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('discuz/index')}">基本设置</a></li>{/if}
-        {ifp 'dz.syn'}<li {if $_GPC['method']=='syn'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('discuz/syn')}">数据同步</a></li>{/if}
-        {ifp 'dz.login'}<li {if $_GPC['method']=='login'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('discuz/login')}">一键登录</a></li>{/if}
-    </ul>
-</div>

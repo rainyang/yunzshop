@@ -1,8 +1,0 @@
-<div class="ulleft-nav">
-    <ul class="nav nav-tabs">
-        {ifp 'app.index'}<li {if empty($_GPC['method']) || $_GPC['method']=='index'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('app/index')}">基本设置</a></li>{/if}
-        {ifp 'app.slider'}<li {if $_GPC['method']=='slider'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('app/slider')}">广告图片设置</a></li>{/if}
-        {ifp 'app.push'}<li {if $_GPC['method']=='push'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('app/push')}">推送消息</a></li>{/if}
-        {ifp 'app.type'}<li {if $_GPC['method']=='type'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('app/type')}">支付方式</a></li>{/if}
-    </ul>
-</div>

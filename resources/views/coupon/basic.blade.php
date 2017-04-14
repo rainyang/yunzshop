@@ -13,13 +13,6 @@
     </div>
 </div>
 
-
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类</label>
-    <div class="col-sm-9 col-xs-12">
-
-    </div>
-</div>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">缩略图</label>
     <div class="col-sm-9 col-xs-12">

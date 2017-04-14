@@ -1,13 +1,13 @@
-@extends('layouts.base')
+﻿@extends('layouts.base')
 
 @section('content')
 
 <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
 
     <div class="w1200 m0a">
-        <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery.gcjs.js"></script>
-        <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery.form.js"></script>
-        <script type="text/javascript" src="../addons/sz_yi/static/js/dist/tooltipbox.js"></script>
+        <script type="text/javascript" src="{{static_url('js/dist/jquery.gcjs.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('js/dist/jquery.form.js')}}"></script>
+        <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
 
         <div class="rightlist">
             <div class="right-titpos">
@@ -20,7 +20,7 @@
                     <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
                         <input type="hidden" name="c" value="site"/>
                         <input type="hidden" name="a" value="entry"/>
-                        <input type="hidden" name="m" value="sz_yi"/>
+                        <input type="hidden" name="m" value="yun_shop"/>
                         <input type="hidden" name="do" value="order" id="form_do"/>
                         <input type="hidden" name="route" value="{{$url}}" id="form_p"/>
 
@@ -115,9 +115,11 @@
                             <div class="col-sm-7 col-lg-9 col-xs-12">
                                 <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
                                 <input type="hidden" name="token" value="{{$var['token']}}"/>
+                                @section('export')
                                 <button type="button" name="export" value="1" id="export" class="btn btn-default">导出
                                     Excel
                                 </button>
+                                @show
                                 @if( $requestSearch['plugin'] != "fund")
                                     <a class="btn btn-warning"
                                        href="{php echo $this->createWebUrl('order/export')}">自定义导出</a>

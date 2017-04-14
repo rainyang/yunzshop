@@ -10,6 +10,7 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
+use app\common\services\finance\BalanceService;
 
 /*
  * 余额变动记录表
@@ -23,6 +24,7 @@ class Balance extends BaseModel
 
     protected $guarded= [''];
 
+    protected $appends = ['service_type_name'];
 
 
     const BALANCE_RECHARGE  = 1; //充值
@@ -43,6 +45,23 @@ class Balance extends BaseModel
 
     const CANCEL_AWARD      = 9; //奖励取消回滚
 
+    public static $balanceComment = [
+        self::BALANCE_RECHARGE=>'充值',
+        self::BALANCE_CONSUME=>'消费',
+        self::BALANCE_TRANSFER=>'转让',
+        self::BALANCE_DEDUCTION=>'抵扣',
+        self::BALANCE_AWARD=>'奖励',
+        self::BALANCE_WITHDRAWAL=>'余额提现',
+        self::BALANCE_INCOME=>'提现至余额',
+        self::CANCEL_DEDUCTION=>'抵扣取消余额回滚',
+        self::CANCEL_AWARD=>'奖励取消回滚',
+    ];
+
+    public static function getBalanceComment($balance)
+    {
+        return isset(static::$balanceComment[$balance]) ? static::$balanceComment[$balance]: '';
+    }
+
     /*
      * 模型管理，关联会员数据表
      *
@@ -50,6 +69,24 @@ class Balance extends BaseModel
     public function member()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
+    }
+
+    /**
+     * 通过字段 type 输出 type_name ;
+     * @return string
+     * @Author yitian */
+    public function getTypeNameAttribute()
+    {
+        return BalanceService::attachedTypeName($this);
+    }
+
+    /**
+     * 通过字段 service_type 输出 service_type_name ;
+     * @return string
+     * @Author yitian */
+    public function getServiceTypeNameAttribute()
+    {
+        return static::getBalanceComment($this->attributes['service_type']);
     }
 
     /*
@@ -69,15 +106,33 @@ class Balance extends BaseModel
             ->paginate($pageSize);
     }
 
-    public static function getMemberDeatilRecord($memberId, $type= '')
+    /**
+     * 前端接口，通过 type 查看会员余额变动明细
+     * @param $memberId
+     * @param string $type
+     * @return mixed
+     * @Author yitia */
+    public static function getMemberDetailRecord($memberId, $type= '')
     {
         $query = self::uniacid()->where('member_id',$memberId);
-        if ($type == \app\common\services\fiance\Balance::INCOME || $type == \app\common\services\finance\Balance::EXPENDITURE) {
+        if ($type == \app\common\services\finance\Balance::INCOME || $type == \app\common\services\finance\Balance::EXPENDITURE) {
             $query = $query->where('type', $type);
         }
         return $query->get();
     }
 
-
+    /**
+     * 通过记录ID获取记录详情
+     * @param $id
+     * @return mixed
+     * @Author yitian */
+    public static function getDetailById($id)
+    {
+        return static::uniacid()->where('id', $id)
+            ->with(['member' => function($member) {
+                return $member->select('uid', 'nickname', 'realname', 'avatar', 'mobile', 'credit2');
+            }])
+            ->first();
+    }
 
 }

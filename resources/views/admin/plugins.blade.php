@@ -2,8 +2,8 @@
 @section('title', trans('插件管理'))
 @section('content')
     <div class="w1200 m0a">
-        <script language="javascript" src="../addons/sz_yi/static/js/dist/nestable/jquery.nestable.js"></script>
-        <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/js/dist/nestable/nestable.css"/>
+        <script language="javascript" src="{{static_url('js/dist/nestable/jquery.nestable.js')}}"></script>
+        <link rel="stylesheet" type="text/css" href="{{static_url('js/dist/nestable/nestable.css')}}"/>
 
         <!-- 新增加右侧顶部三级菜单 -->
         <section class="content-header">

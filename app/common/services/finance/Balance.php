@@ -12,8 +12,6 @@ namespace app\common\services\finance;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use app\common\models\Member;
-use app\common\services\Pay;
-use app\common\services\PayFactory;
 
 
 class Balance
