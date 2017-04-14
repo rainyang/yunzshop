@@ -17,6 +17,7 @@ use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\Income;
 use app\common\services\finance\BalanceSet;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
 class WithdrawController extends BaseController
@@ -53,24 +54,43 @@ class WithdrawController extends BaseController
     {
         $pageSize = 20;
 
+        $starttime = strtotime('-1 month');
+        $endtime = time();
+
         $requestSearch = \YunShop::request()->search;
         if($requestSearch){
+
+            if ($requestSearch['searchtime']) {
+                if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
+                    $requestSearch['times']['start'] = strtotime($requestSearch['times']['start']);
+                    $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
+                    $starttime = strtotime($requestSearch['times']['start']);
+                    $endtime = strtotime($requestSearch['times']['end']);
+                }else{
+                    $requestSearch['times'] = '';
+                }
+            }else{
+                $requestSearch['times'] = '';
+            }
             $requestSearch = array_filter($requestSearch, function ($item) {
                 return $item !== '';// && $item !== 0;
             });
-
         }
-
 
         $list = Withdraw::getWithdrawList($requestSearch)
             ->orderBy('created_at','desc')
             ->paginate($pageSize);
 
-
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+        $incomeConfug = Config::get('income');
+        
         return view('finance.withdraw.withdraw-list', [
             'list' => $list,
             'pager' => $pager,
+            'search' => $requestSearch,
+            'starttime' => $starttime,
+            'endtime' => $endtime,
+            'types' => $incomeConfug
         ])->render();
     }
 

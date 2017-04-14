@@ -40,7 +40,7 @@
                             <div class='input-group'>
                                 <span class='input-group-addon'>最多可抵扣</span>
                                 <input type="text" name="set[money_max]"  value="{{$set['money_max']}}" class="form-control" />
-                                <span class='input-group-addon'>元</span>
+                                <span class='input-group-addon'>%</span>
                             </div>
                             <span class='help-block'>商品最高抵扣比例</span>
                         </div>

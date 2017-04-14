@@ -144,8 +144,8 @@
             </div><div class="clearfix">
                 <div class="panel panel-default">
                     <div class="panel-heading">总数：{{$total}}   </div>
-                    <div class="panel-body" style="margin-bottom:100px">
-                        <table class="table table-hover" style="overflow:visible;">
+                    <div class="panel-body" style="margin-bottom:200px">
+                        <table class="table table-hover" style="overflow:visible">
                             <thead class="navbar-inner">
                             <tr>
                                 <th style='width:8%;text-align: center;'>会员ID</th>
