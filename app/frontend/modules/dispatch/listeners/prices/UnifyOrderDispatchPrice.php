@@ -43,7 +43,6 @@ class UnifyOrderDispatchPrice
     private function getDispatchPrice(){
         //取商品数组 统一运费的最大值
         $result = 0;
-        //dd($this->even->getOrderModel()->getOrderGoodsModels());
         foreach ($this->event->getOrderModel()->getOrderGoodsModels() as $order_goods){
 
             foreach ($order_goods->getDispatchDetails() as $dispatch_detail){

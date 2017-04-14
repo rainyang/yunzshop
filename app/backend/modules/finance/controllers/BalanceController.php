@@ -187,7 +187,6 @@ class BalanceController extends BaseController
         $recordList = BalanceRecharge::getPageList($pageSize);
         if ($search = \YunShop::request()->search) {
             $recordList = BalanceRecharge::getSearchPageList($pageSize, $search);
-            //dd($search);
 
         }
         $pager = PaginationHelper::show($recordList->total(), $recordList->currentPage(), $recordList->perPage());
@@ -213,7 +212,6 @@ class BalanceController extends BaseController
         $tansferList = BalanceTransfer::getTransferPageList($pageSize);
         if ($search = \YunShop::request()->search) {
             $tansferList = BalanceTransfer::getSearchPageList($pageSize, $search);
-            //dd($tansferList);
         }
 
         $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());
