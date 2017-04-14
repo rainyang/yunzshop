@@ -11,21 +11,17 @@ namespace app\frontend\modules\refund\services\operation;
 use app\common\models\refund\RefundExpress;
 use \Request;
 
-class RefundPass extends ChangeStatusOperation
+class RefundCancel extends ChangeStatusOperation
 {
     protected $statusBeforeChange = [self::WAIT_CHECK];
-    protected $statusAfterChanged = self::WAIT_SEND;
-    protected $name = '通过';
+    protected $statusAfterChanged = self::CANCEL;
+    protected $name = '取消';
     protected $timeField = 'send_time';
 
-    protected $past_tense_class_name = 'OrderSent';
+    protected $pastTenseClassName = '';
 
     protected function updateTable()
     {
-        $data = Request::only(['refund_id', 'express_code', 'express_sn', 'express_company_name']);
-        $db_express_model = new RefundExpress($data);
-
-        $db_express_model->save();
         parent::updateTable();
     }
 }

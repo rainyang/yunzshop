@@ -62,16 +62,22 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function balanceDetail()
     {
+
         //todo 搜索
         $pageSize = 20;
+        $search = \YunShop::request()->search;
         $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
+        if ($search) {
+            $detailList = \app\common\models\finance\Balance::getSearchPageList($pageSize,$search);
+        }
+
         $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
         return view('finance.balance.detail', [
-            'detailList' => $detailList,
-            'pager' => $pager,
-            'memberGroup'   => MemberGroup::getMemberGroupList(),
-            'memberLevel'   => MemberLevel::getMemberLevelList()
+            'detailList'    => $detailList,
+            'pager'         => $pager,
+            'search'        => $search,
+            'serviceType'   => \app\common\models\finance\Balance::$balanceComment
         ])->render();
     }
 
@@ -181,7 +187,6 @@ class BalanceController extends BaseController
         $recordList = BalanceRecharge::getPageList($pageSize);
         if ($search = \YunShop::request()->search) {
             $recordList = BalanceRecharge::getSearchPageList($pageSize, $search);
-            //dd($search);
 
         }
         $pager = PaginationHelper::show($recordList->total(), $recordList->currentPage(), $recordList->perPage());
@@ -207,7 +212,6 @@ class BalanceController extends BaseController
         $tansferList = BalanceTransfer::getTransferPageList($pageSize);
         if ($search = \YunShop::request()->search) {
             $tansferList = BalanceTransfer::getSearchPageList($pageSize, $search);
-            //dd($tansferList);
         }
 
         $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());

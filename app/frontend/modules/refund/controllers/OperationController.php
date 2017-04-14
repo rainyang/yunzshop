@@ -17,9 +17,10 @@ class OperationController extends ApiController
     public function send(\Request $request){
         $this->validate($request,[
             'refund_id' => 'required|filled|integer',
-            'express_code' => 'required|filled|string',
+            'express_company' => 'required|json',
+            'express_company.code' => 'required|string',
+            'express_company.name' => 'required|string',
             'express_sn' => 'required|filled|string',
-            'express_company_name' => 'required|filled|string',
         ]);
         RefundOperationService::refundSend();
         return $this->successJson();
@@ -28,7 +29,7 @@ class OperationController extends ApiController
         $this->validate($request,[
             'refund_id' => 'required|filled|integer',
         ]);
-        RefundOperationService::cancel();
+        RefundOperationService::refundCancel();
         return $this->successJson();
 
     }
