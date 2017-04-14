@@ -33,15 +33,15 @@ class CreateController extends PreGeneratedController
         $orders = collect();
         $orders->push($this->getShopOrder());
         $orders->merge($this->getPluginOrders());
-        $orders->map(function ($order) {
+        $order_ids = $orders->map(function ($order) {
             /**
              * @var $order PreGeneratedOrderModel
              */
-            $order->generate();
+            return $order->generate();
             event(new AfterOrderCreatedEvent($order->getOrder()));
         });
         //todo 返回什么信息
-        $this->successJson('成功', []);
+        $this->successJson('成功', ['order_id' => $order_ids[0]]);
     }
     private function getPluginOrders(){
         $event = new CreatingOrder($this->getMemberCarts());
