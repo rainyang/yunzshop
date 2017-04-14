@@ -16,7 +16,9 @@ class RefundApply extends BaseModel
 {
     protected $table = 'yz_order_refund';
     protected $hidden = ['updated_at', 'created_at', 'uniacid', 'uid', 'order_id'];
-    protected $fillable = ['reason', 'images', 'order_id'];
+    protected $fillable = [];
+    protected $guarded = ['id'];
+
     protected $appends = ['refund_type_name', 'status_name', 'button_models'];
     protected $attributes = [
         'images' => '[]',
@@ -104,7 +106,6 @@ class RefundApply extends BaseModel
             self::WAIT_REFUND => '待退款',
             self::COMPLETE => '完成',
         ];
-
 
         return $mapping[$this->status];
     }

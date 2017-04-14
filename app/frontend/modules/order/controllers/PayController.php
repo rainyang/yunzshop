@@ -32,23 +32,35 @@ class PayController extends ApiController
         return $this->successJson('成功', $data);
     }
 
-    public function wechatPay()
+    public function wechatPay(\Request $request)
     {
+        $this->validate($request,[
+            'order_id' => 'required|integer'
+        ]);
+        $order = Order::find($request->query('order_id'));
+//        dd($request->query('order_id'));
+//        exit;
+        if(!isset($order)){
+            throw new AppException('订单不存在');
+        }
+        if($order->uid != \YunShop::app()->getMemberId()){
+            throw new AppException('无效申请,该订单属于其他用户');
+        }
+        if($order->status > Order::WAIT_SEND){
+            throw new AppException('订单已付款,请勿重复付款');
+        }
+        if($order->status == Order::CLOSE){
+            throw new AppException('订单已关闭,无法付款');
+        }
 
-
-        //$order_id = '';
-        //$pay = PayFactory::create(PayFactory::PAY_WEACHAT);
-        /*$result = $pay->setyue('50');
-        if($result == false){
-            $this->errorJson($pay->getMessage());
-        }*/
         $query_str = [
-            'order_no' => 'sn' . time(),
-            'amount' => 0.1,
+            'order_no' => $order->order_sn,
+            'amount' => $order->price,
             'subject' => '微信支付',
-            'body' => '商品的描述:2',
+            'body' => $order->hasManyOrderGoods[0]->title,
             'extra' => ['type' => 1]
         ];
+
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay($query_str);
 
