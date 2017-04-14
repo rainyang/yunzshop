@@ -27,8 +27,10 @@ class PointRechargeController extends BaseController
             $data = [
                 'point_mode'        => 5,
                 'member_id'         => $member_id,
-                'uniacid'           => \YunShop::app()->uniacid
+                'uniacid'           => \YunShop::app()->uniacid,
+                'point'             => floatval($point)
             ];
+            //echo '<pre>';print_r($data['point']);exit;
             if ($point < 0) {
                 $data['point_income_type'] = -1;
                 $data['remark'] = '后台扣除[' . $point . ']积分';
