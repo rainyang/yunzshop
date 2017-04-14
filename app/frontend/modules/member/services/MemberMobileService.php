@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\models\MemberShopInfo;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\member\models\MemberModel;
 
@@ -38,9 +39,10 @@ class MemberMobileService extends MemberService
 
                 $this->save($member_info, $uniacid);
 
-                return show_json(1, array(
-                    'member_id' => $member_info['uid'],
-                ));
+                $yz_member = MemberShopInfo::getMemberShopInfo($member_info['uid'])->toArray();
+                $data = MemberModel::userData($member_info, $yz_member);
+                
+                return show_json(1, $data);
             } else{
                 return show_json(0, "手机号或密码错误");
             }
