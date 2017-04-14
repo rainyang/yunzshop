@@ -25,7 +25,7 @@ class AlipayController extends PaymentController
                 $data = [
                     'total_fee'    => $_POST['total_fee'],
                     'out_trade_no' => $_POST['out_trade_no'],
-                    'trade_no'     => $_POST['trade_no']    //支付宝交易号
+                    'trade_no'     => $_POST['trade_no']
                 ];
 
                 $this->payResutl($data);
@@ -78,6 +78,6 @@ class AlipayController extends PaymentController
         $pay->payAccessLog();
         //保存响应数据
         $pay_order_info = PayOrder::getPayOrderInfo($post['out_trade_no'])->first()->toArray();
-        $pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
+        $pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '支付宝支付', json_encode($post));
     }
 }

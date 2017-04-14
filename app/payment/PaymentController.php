@@ -2,6 +2,7 @@
 
 namespace  app\payment;
 
+use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
 use app\common\models\Order;
 use app\common\models\PayOrder;
@@ -73,6 +74,8 @@ class PaymentController extends BaseController
                 $order_info = Order::uniacid()->where('order_sn', $data['out_trade_no'])->first();
 
                 if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
+                    MemberRelation::checkOrderPay();
+
                     OrderService::orderPay(['order_id' => $data['out_trade_no']]);
                 }
                 break;
