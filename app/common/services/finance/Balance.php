@@ -71,13 +71,13 @@ class Balance
      * @param $data = array( 'order_sn'=> '', 'pay_sn'=> '' );
      * use app\common\services\finance\Balance;
      * (new Balance())->payResult($data);
+     *
      * 充值支付完成回调方法
      * @param $data = array( 'order_sn'=> '', 'pay_sn'=> '' );
      */
     public function payResult($data = [])
     {
-        $order_sn = 'RV20170414092235224369';
-        $rechargeMode = BalanceRecharge::getRechargeRecordBy0rdersn($order_sn);
+        $rechargeMode = BalanceRecharge::getRechargeRecordBy0rdersn($data['order_sn']);
 
         $this->data = array(
             'member_id'         => $rechargeMode->member_id,
@@ -86,7 +86,7 @@ class Balance
             'serial_number'     => $ordersn,
             'operator'          => BalanceRecharge::PAY_TYPE_MEMBER,
             'operator_id'       => $rechargeMode->id,
-            'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：',
+            'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
             'service_type'      => \app\common\models\finance\Balance::BALANCE_RECHARGE,
         );
         $this->service_type = \app\common\models\finance\Balance::BALANCE_RECHARGE;
