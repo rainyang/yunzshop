@@ -7,6 +7,7 @@ use app\common\components\BaseController;
 use app\common\models\Order;
 use app\common\models\PayOrder;
 use app\frontend\modules\order\services\OrderService;
+use app\common\services\finance\Balance;
 
 /**
  * Created by PhpStorm.
@@ -80,6 +81,10 @@ class PaymentController extends BaseController
                 }
                 break;
             case "recharge.succeeded":
+                (new Balance())->payResult([
+                    'order_sn'=> $data['out_trade_no'],
+                    'pay_sn'=> $data['trade_no']
+                ]);
                 break;
         }
     }

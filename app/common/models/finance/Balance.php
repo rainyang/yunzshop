@@ -106,6 +106,29 @@ class Balance extends BaseModel
             ->paginate($pageSize);
     }
 
+    public static function getSearchPageList($pageSize, $search)
+    {
+        $query = static::uniacid();
+        if ($search['realname']) {
+            $query = $query->whereHas('member', function ($member)use($search) {
+                if ($search['realname']) {
+                    $member = $member->select('uid', 'nickname','realname','mobile','avatar','credit2')
+                        ->where('realname', 'like', '%' . $search['realname'] . '%')
+                        ->orWhere('mobile', 'like', '%' . $search['realname'] . '%')
+                        ->orWhere('nickname', 'like', '%' . $search['realname'] . '%');
+                }
+            });
+        }
+        if ($search['service_type']) {
+            $query = $query->where('service_type', $search['service_type']);
+        }
+        if ($search['searchtime'] == 1) {
+            $query = $query->whereBetween('created_at', [strtotime($search['time_range']['start']),strtotime($search['time_range']['end'])]);
+        }
+
+        return $query->orderBy('created_at', 'desc')->paginate($pageSize);
+    }
+
     /**
      * 前端接口，通过 type 查看会员余额变动明细
      * @param $memberId

@@ -54,18 +54,23 @@ class RefundApply extends BaseModel
 
     public function getButtonModelsAttribute()
     {
-        $result = [
-                [
-                    'name' => '查看详情',
-                    'api' => 'refund.detail',
-                    'value' => 1
-                ],
+        if($this->status == self::WAIT_CHECK){
+            $result[] = [
+                'name' => '修改申请',
+                'api' => 'refund.edit',
+                'value' => 1
             ];
+            $result[] = [
+                'name' => '取消申请',
+                'api' => 'refund.cancel',
+                'value' => 3
+            ];
+        }
         if($this->status == self::WAIT_SEND){
             $result[] = [
                 'name' => '填写快递',
-                'api' => 'dispatch.refundExpress',
-                'value' => 2 //todo
+                'api' => 'refund.send',
+                'value' => 2
             ];
         }
         return $result;
