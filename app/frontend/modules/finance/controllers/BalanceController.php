@@ -276,7 +276,10 @@ class BalanceController extends ApiController
         $pay = PayFactory::create($data['recharge_type']);
 
         $result = $pay->doPay($this->payData($data));
-        $result['js'] = json_decode($result['js'], 1);
+        if ($data['recharge_type'] == 1) {
+            $result['js'] = json_decode($result['js'], 1);
+        }
+
 
         echo '<pre>'; print_r($result); exit;
         return $result;

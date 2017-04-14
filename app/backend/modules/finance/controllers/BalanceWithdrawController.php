@@ -31,11 +31,11 @@ class BalanceWithdrawController extends BaseController
 
         $this->attachedMode();
 
-        echo '<pre>'; print_r($this->withdrawModel); exit;
+        echo '<pre>'; print_r($this->getExamine()); exit;
 
         return view('finance.balance.withdraw', [
             'item' => $this->withdrawModel->toArray(),
-            'examine' => '',
+            'examine' => $this->getExamine(),
         ])->render();
     }
 
@@ -51,17 +51,18 @@ class BalanceWithdrawController extends BaseController
         $this->withdrawPoundage = $withdrawSet['poundage'];
     }
 
-    private function withdrawMath()
+    //余额提现手续费N元
+    private function withdrawPoundageMath()
     {
-
+        return round(floatval($this->withdrawModel->amounts * $this->withdrawPoundage), 2);
     }
 
     private function getExamine()
     {
         return array(
             'examine_money' => $this->withdrawModel->amounts,
-            'poundage'      => '',
-            'result_money'  => ''
+            'poundage'      => $this->withdrawPoundageMath(),
+            'result_money'  => $this->withdrawModel->amounts - $this->withdrawPoundageMath()
 
         );
     }
