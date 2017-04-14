@@ -44,7 +44,7 @@ class BalanceController extends BaseController
             $requestModel['sale'] = $this->rechargeSale($requestModel);
             unset($requestModel['enough']);
             unset($requestModel['give']);
-            if (Setting::set('balance.recharge', $requestModel)) {
+            if (Setting::set('finance.balance', $requestModel)) {
                 return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'));
             } else {
                 $this->error('余额基础设置保存失败！！');

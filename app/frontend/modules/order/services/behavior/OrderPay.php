@@ -18,4 +18,5 @@ class OrderPay extends ChangeStatusOperation
     protected $name = '支付';
     protected $time_field = 'pay_time';
     protected $past_tense_class_name = 'OrderPaid';
+
 }

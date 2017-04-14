@@ -25,7 +25,7 @@ use app\frontend\modules\order\services\behavior\OrderDelete;
 use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
-use app\frontend\modules\order\services\behavior\OrderSend;
+use app\frontend\modules\order\services\behavior\Send;
 use app\frontend\modules\goods\services\models\Goods;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
@@ -230,7 +230,7 @@ class OrderService
     {
         $order_model = Order::find($param['order_id']);
 
-        $OrderOperation = new OrderSend($order_model);
+        $OrderOperation = new Send($order_model);
         return self::OrderOperate($OrderOperation);
     }
 

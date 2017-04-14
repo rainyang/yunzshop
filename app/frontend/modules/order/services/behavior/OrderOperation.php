@@ -17,7 +17,7 @@ abstract class OrderOperation
     /**
      * @var Order
      */
-    protected $_DbOrderModel;
+    protected $order;
     /**
      * @var string 默认返回信息
      */
@@ -50,7 +50,7 @@ abstract class OrderOperation
      */
     public function __construct(Order $order_model)
     {
-        $this->_DbOrderModel = $order_model;
+        $this->order = $order_model;
     }
 
     /**
@@ -77,7 +77,7 @@ abstract class OrderOperation
     protected function _getBeforeEvent()
     {
         $event_name = '\app\common\events\order\Before' . $this->_getOperationName() . 'Event';
-        return new $event_name($this->_DbOrderModel);
+        return new $event_name($this->order);
     }
 
     /**
@@ -95,7 +95,7 @@ abstract class OrderOperation
         }
 
 
-        if (!in_array($this->_DbOrderModel['status'], $this->status_before_change)) {
+        if (!in_array($this->order['status'], $this->status_before_change)) {
             $this->message = "订单状态不满足{$this->name}操作";
             return false;
         }
@@ -114,7 +114,7 @@ abstract class OrderOperation
     protected function _fireEvent()
     {
         $event_name = '\app\common\events\order\After' . $this->_getPastTense() . 'Event';
-        event(new $event_name($this->_DbOrderModel));
+        event(new $event_name($this->order));
         return;
     }
 }

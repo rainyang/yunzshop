@@ -4,6 +4,7 @@ namespace app\frontend\modules\coupon\controllers;
 use app\common\components\BaseController;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\models\MemberCoupon;
+use app\common\helpers\Url;
 
 class MemberCouponController extends BaseController
 {
@@ -213,21 +214,9 @@ class MemberCouponController extends BaseController
         return $usedCoupons;
     }
 
-    ////在"优惠券中心"点击领取优惠券
-//    public function getCoupon($couponId)
-//    {
-//        $memberCoupon = new MemberCoupon;
-//        $memberCoupon::create([
-//           'uniacid' => \YunShop::app()->get('uniacid'),
-//            'uid' => \YunShop::
-//        ]);
-//
-//    }
-
-    //描述
     /**
      * @param $couponInArrayFormat array
-     * @return string
+     * @return string 优惠券适用范围的描述
      */
     public static function usageLimitDescription($couponInArrayFormat)
     {
@@ -254,6 +243,47 @@ class MemberCouponController extends BaseController
                 break;
             default:
                 return ('Enjoy shopping');
+        }
+    }
+
+    //在"优惠券中心"点击领取优惠券
+    //需要提供$couponId
+    public function getCoupon($couponId)
+    {
+        $couponId = \YunShop::request()->get('coupon_id');
+        $coupon = Coupon::getCouponById($couponId)->first();
+
+        if(!$coupon){
+            return $this->errorJson('没有该优惠券ID,领取失败','');
+        }
+
+        $memberCoupon = new MemberCoupon;
+        $data = [
+            'uniacid' => \YunShop::app()->get('uniacid'),
+            'uid' => \YunShop::app()->getMemberId(),
+            'coupon_id' => $couponId,
+            'get_type' => 1,
+            'get_time' => strtotime('now'),
+        ];
+        $memberCoupon->fill($data);
+        $validator = $memberCoupon->validator();
+        if ($validator->fails()) {
+            return $this->errorJson('领取失败', $validator->messages());
+        } else {
+            $res = $memberCoupon->save();
+            if(!$res){
+                return $this->errorJson('领取失败','');
+            } else{
+                $coupon = Coupon::getCouponById($couponId)
+                                ->select([
+                                    'id','name','coupon_method','deduct','discount','enough',
+                                    'use_type', 'categorynames', 'goods_names', 'time_limit',
+                                    'time_days', 'time_start', 'time_end', 'total', 'money', 'credit',
+                                ])
+                                ->first()
+                                ->toArray();
+                return $this->successJson('ok', $coupon);
+            }
         }
     }
 
