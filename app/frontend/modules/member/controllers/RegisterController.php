@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\helpers\Url;
 use app\common\models\MemberLevel;
+use app\common\models\MemberShopInfo;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
