@@ -30,7 +30,6 @@ class OrderGoods extends BaseModel
     {
         return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');
     }
-
     public function belongsToGood()
     {
         return $this->belongsTo('\app\common\models\Goods', 'goods_id', 'id');
@@ -40,5 +39,8 @@ class OrderGoods extends BaseModel
     {
         return $this->hasOne('\app\common\models\GoodsOption', 'id', 'goods_option_id');
 
+    }
+    public function isOption(){
+        return !empty($this->goods_option_id);
     }
 }
