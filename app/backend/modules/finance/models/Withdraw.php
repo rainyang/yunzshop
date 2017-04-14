@@ -11,11 +11,16 @@ namespace app\backend\modules\finance\models;
 class Withdraw extends \app\common\models\Withdraw
 {
     protected $appends = ['type_data'];
-    
+
     public static function getWithdrawList($search = [])
     {
 
         $Model = self::uniacid();
+        if ($search['status'] == '3') {
+            $Model->whereNotNull(arrival_at);
+        } elseif (isset($search['status'])) {
+            $Model->where('status', $search['status']);
+        }
 
         $Model->with(['hasOneMember' => function ($query) {
             $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
@@ -27,18 +32,19 @@ class Withdraw extends \app\common\models\Withdraw
     public function rules()
     {
         return [
-            'poundage'      => 'regex:/^[\d]?(\.[\d]{0,2})?$/',
+            'poundage' => 'regex:/^[\d]?(\.[\d]{0,2})?$/',
             'withdrawmoney' => 'regex:/^[0-9]+(.[0-9]{1,2})?$/',
             'roll_out_limit' => 'regex:/^[0-9]+(.[0-9]{1,2})?$/',
             'poundage_rate' => 'regex:/^[\d]{1,2}+(\.[0-9]{1,2})?$/',
         ];
     }
-    
-    public  function atributeNames() {
+
+    public function atributeNames()
+    {
         return [
-            'poundage'=> "请输入正确的提现手续费",
+            'poundage' => "请输入正确的提现手续费",
             'withdrawmoney' => "请输入正确的提现限制金额",
-            'roll_out_limit'=> "请输入正确的佣金提现额度",
+            'roll_out_limit' => "请输入正确的佣金提现额度",
             'poundage_rate' => "请输入正确的佣金提现手续费"
         ];
     }
