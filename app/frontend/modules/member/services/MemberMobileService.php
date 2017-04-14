@@ -15,9 +15,8 @@ class MemberMobileService extends MemberService
 {
     public function login()
     {
-        $memberdata= \YunShop::request()->memberdata;
-        $mobile   = $memberdata['mobile'];
-        $password = $memberdata['password'];
+        $mobile   = \YunShop::request()->mobile;
+        $password = \YunShop::request()->password;
 
         $uniacid  = \YunShop::app()->uniacid;
 
