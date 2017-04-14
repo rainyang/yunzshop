@@ -232,7 +232,12 @@ class MemberRelation extends BackendModel
      */
     public function becomeChildAgent($mid, MemberShopInfo $model)
     {
-        $set = self::getSetInfo()->first()->toArray();
+        $set = self::getSetInfo()->first();
+
+        if (empty($set)) {
+            return;
+        }
+
         $member = SubMemberModel::getMemberShopInfo($model->member_id);
 
         if (empty($member)) {
