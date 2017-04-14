@@ -201,8 +201,8 @@
                                     <br/>{{$order_goods['goods_sn']}}
                                 </td>
                                 <td class="price">
-                                        原价: {!! number_format($order_goods['goods_price']/$order_goods['total'],2)!!}
-                                    <br/>应付: {!! number_format($order_goods['price']/$order_goods['total'],2) !!}
+                                        原价: {{ number_format($order_goods['goods_price']/$order_goods['total'],2)}}
+                                    <br/>应付: {{ number_format($order_goods['price']/$order_goods['total'],2) }}
                                     <br/>数量: {{$order_goods['total']}}
                                 </td>
 
