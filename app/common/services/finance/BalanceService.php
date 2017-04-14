@@ -9,10 +9,13 @@
 namespace app\common\services\finance;
 
 
+use app\common\facades\Setting;
 use app\common\models\finance\Balance;
 
 class BalanceService
 {
+
+
     public static function attachedTypeName($model)
     {
         switch ($model->type)

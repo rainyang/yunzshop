@@ -9,12 +9,10 @@
 namespace app\common\services\finance;
 
 
+use app\common\facades\Setting;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use app\common\models\Member;
-use app\common\services\Pay;
-use app\common\services\PayFactory;
-
 
 class Balance
 {
@@ -69,11 +67,87 @@ class Balance
         return $this->validatorServiceType();
     }
 
-    //todo 支付回调
-    public function payResult()
+    /**
+     * @param $data = array( 'order_sn'=> '', 'pay_sn'=> '' );
+     * use app\common\services\finance\Balance;
+     * (new Balance())->payResult($data);
+     *
+     * 充值支付完成回调方法
+     * @param $data = array( 'order_sn'=> '', 'pay_sn'=> '' );
+     */
+    public function payResult($data = [])
     {
+        $rechargeMode = BalanceRecharge::getRechargeRecordBy0rdersn($data['order_sn']);
+
+        $this->data = array(
+            'member_id'         => $rechargeMode->member_id,
+            //todo 验证余额值
+            'change_money'      => $rechargeMode->money,
+            'serial_number'     => $ordersn,
+            'operator'          => BalanceRecharge::PAY_TYPE_MEMBER,
+            'operator_id'       => $rechargeMode->id,
+            'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
+            'service_type'      => \app\common\models\finance\Balance::BALANCE_RECHARGE,
+        );
+        $this->service_type = \app\common\models\finance\Balance::BALANCE_RECHARGE;
+        $this->attachedType();
+
+        $result = $this->updateRechargeStatus($rechargeMode->id);
+        if ($result === true) {
+            $this->rechargeSale();
+        }
+    }
+
+    /**
+     * 充值设置，？应该增加开关判断 ？
+     */
+    private function rechargeSale()
+    {
+        $rechargeSet = Setting::get('finance.balance');
+        return $this->rechargeSaleMath($rechargeSet['sale']);
+    }
+
+    /**
+     * 充值满额送计算，
+     * @param array $data
+     */
+    private function rechargeSaleMath($data = [])
+    {
+        $data = array_values(array_sort($data, function ($value) {
+
+            return $value['enough'];
+        }));
+        rsort($data);
+        foreach ($data as $key) {
+            if (empty($key['enough']) || empty($key['give'])) {
+                continue;
+            }
+            if ($this->data['change_money'] >= floatval($key['enough'])) {
+                if (strexists($key['give'], '%')) {
+                    $result = round(floatval(str_replace('%', '', $key['give'])) / 100 * $this->data['change_money'], 2);
+                } else {
+                    $result = round(floatval($key['give']), 2);
+                }
+                $enough = floatval($key['enough']);
+                $give = $key['give'];
+                break;
+            }
+        }
+        $result = array(
+            'member_id'         => $this->data['member_id'],
+            //todo 验证余额值
+            'change_money'      => $result,
+            'serial_number'     => $this->data['serial_number'],
+            'operator'          => BalanceRecharge::PAY_TYPE_MEMBER,
+            'operator_id'       => $this->data['member_id'],
+            'remark'            => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['change_money'] . '元)',
+            'service_type'      => \app\common\models\finance\Balance::BALANCE_AWARD,
+        );
+        $this->changeBalance($result);
 
     }
+
+
 
 
     /**

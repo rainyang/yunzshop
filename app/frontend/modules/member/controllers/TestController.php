@@ -23,12 +23,12 @@ use app\frontend\modules\member\services\MemberService;
 use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class TestController extends ApiController
+class TestController extends BaseController
 {
    public function index()
    {
 
-       $pay = new WechatPay();
+//       $pay = new WechatPay();
 //       $str  = $pay->setUniacidNo(122, 5);
 //       echo $str . '<BR>';
 //       echo substr($str, 17, 5);
@@ -36,20 +36,21 @@ class TestController extends ApiController
      //  $result = $pay->doRefund('1491193485',  0.1, 0.1);
 //       echo '<pre>';print_r($result);exit;
 //
-      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
+ //     $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
 
 
-       return view('order.pay', [
+/*       return view('order.pay', [
            'config' => $data['config'],
            'js' => $data['js']
        ])->render();
-exit;
+exit;*/
        $pay = new AliPay();
 
       //\\ $p = $pay->doRefund('2017032421001004920213140182', '1', '0.1');
 
        $p = $pay->doPay(['order_no'=>time(),'amount'=>0.01, 'subject'=>'支付宝支付', 'body'=>'测试:2', 'extra'=>['type'=>2]]);
        //$p = $pay->doWithdraw(4,time(),'0.1','提现');
+       echo $p;exit;
        redirect($p)->send();
    }
 
@@ -120,8 +121,8 @@ exit;
    public function runEvent()
    {
        $model = MemberShopInfo::getMemberShopInfo(146);
-
        event(new BecomeAgent(\YunShop::request()->mid, $model));
+
    }
 
     /**

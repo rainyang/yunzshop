@@ -17,28 +17,40 @@
                     <input type="hidden" name="c" value="site" />
                     <input type="hidden" name="a" value="entry" />
                     <input type="hidden" name="m" value="yun_shop" />
-                    <input type="hidden" name="do" value="member" id="form_do" />
                     <div class="form-group">
                         <div class="col-sm-8 col-lg-12 col-xs-12">
                             <div class='input-group'>
                                 <div class='input-group-addon'>会员信息</div>
                                 <input class="form-control" name="search[realname]" type="text" value="{{ $search['realname'] or ''}}" placeholder="会员姓名／昵称／手机号">
-                                <div class='input-group-addon'>会员等级</div>
-                                <select name="search[level]" class="form-control">
+                                <div class='input-group-addon'>业务类型</div>
+                                <select name="search[service_type]" class="form-control">
                                     <option value="" selected>不限</option>
-                                    @foreach($memberLevel as $level)
-                                        <option value="{{ $level['id'] }}" @if($search['level'] == $level['id']) selected @endif>{{ $level['level_name'] }}</option>
-                                    @endforeach
-                                </select>
-                                <div class='input-group-addon'>会员分组</div>
-                                <select name="search[groupid]" class="form-control">
-                                    <option value="" selected >不限</option>
-                                    @foreach($memberGroup as $group)
-                                        <option value="{{ $group['id'] }}" @if($search['groupid'] == $group['id']) selected @endif>{{ $group['group_name'] }}</option>
+                                    @foreach($serviceType as $key => $value)
+                                        <option value="{{ $key }}" @if($search['service_type'] == $key) selected @endif>{{ $value }}</option>
                                     @endforeach
                                 </select>
 
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-lg-6 search-time">
+                        <div class="time-select" >
+                            <select name='search[searchtime]' class='form-control'>
+                                <option value='' @if(empty($search['searchtime'])) selected @endif>不搜索充值时间</option>
+                                <option value='1' @if($search['searchtime']==1) selected @endif >搜索充值时间</option>
+                            </select>
+                        </div>
+                        <div class="time-btn">
+                            {!! tpl_form_field_daterange(
+                                'search[time_range]',
+                                array(
+                                    'starttime'=>array_get($requestSearch,'time_range.start',0),
+                                    'endtime'=>array_get($requestSearch,'time_range.end',0),
+                                    'start'=>0,
+                                    'end'=>0
+                                ),
+                                true
+                            )!!}
                         </div>
                     </div>
                     <div class="form-group">

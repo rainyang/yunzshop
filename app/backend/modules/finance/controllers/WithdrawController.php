@@ -17,6 +17,7 @@ use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\Income;
 use app\common\services\finance\BalanceSet;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
 class WithdrawController extends BaseController
@@ -29,18 +30,15 @@ class WithdrawController extends BaseController
 
             $validator = null;
             foreach ($resultModel as $key => $item) {
-                if ($key == 'balance') {
-                    $validator = (new BalanceSet())->validator($item);
-                    if($validator->fails()){
-                        $this->error($validator->messages());
-                        break;
-                    }
+                $validator = (new Withdraw())->validator($item);
+                if ($validator->fails()) {
+                    $this->error($validator->messages());
+                    break;
                 }
-
             }
-            if($validator && !$validator->fails()){
+            if ($validator && !$validator->fails()) {
                 foreach ($resultModel as $key => $item) {
-                    Setting::set('withdraw.'. $key,$item);
+                    Setting::set('withdraw.' . $key, $item);
 
                 }
                 return $this->message('设置保存成功', Url::absoluteWeb('finance.withdraw.set'));
@@ -56,13 +54,43 @@ class WithdrawController extends BaseController
     {
         $pageSize = 20;
 
-        $search = \YunShop::request()->search;
+        $starttime = strtotime('-1 month');
+        $endtime = time();
 
-        $list = Withdraw::getWithdrawList($search)->paginate($pageSize);
+        $requestSearch = \YunShop::request()->search;
+        if($requestSearch){
+
+            if ($requestSearch['searchtime']) {
+                if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
+                    $requestSearch['times']['start'] = strtotime($requestSearch['times']['start']);
+                    $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
+                    $starttime = strtotime($requestSearch['times']['start']);
+                    $endtime = strtotime($requestSearch['times']['end']);
+                }else{
+                    $requestSearch['times'] = '';
+                }
+            }else{
+                $requestSearch['times'] = '';
+            }
+            $requestSearch = array_filter($requestSearch, function ($item) {
+                return $item !== '';// && $item !== 0;
+            });
+        }
+
+        $list = Withdraw::getWithdrawList($requestSearch)
+            ->orderBy('created_at','desc')
+            ->paginate($pageSize);
+
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+        $incomeConfug = Config::get('income');
+        
         return view('finance.withdraw.withdraw-list', [
             'list' => $list,
             'pager' => $pager,
+            'search' => $requestSearch,
+            'starttime' => $starttime,
+            'endtime' => $endtime,
+            'types' => $incomeConfug
         ])->render();
     }
 
@@ -77,7 +105,6 @@ class WithdrawController extends BaseController
         }
         $withdrawModel = $withdrawModel->toArray();
 
-//        dd($withdrawModel);
         return view('finance.withdraw.withdraw-info', [
             'item' => $withdrawModel,
             'set' => $set,
@@ -119,10 +146,10 @@ class WithdrawController extends BaseController
             if ($income) {
                 $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
                 $withdrawStatus = "1";
-                Income::updatedIncomePayStatus($key, ['pay_status'=>'1']);
+                Income::updatedIncomePayStatus($key, ['pay_status' => '1']);
 
             } else {
-                Income::updatedIncomePayStatus($key, ['pay_status'=>'-1']);
+                Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
         }
         $actual_poundage = $actual_amounts / 100 * $withdraw['poundage_rate'];
@@ -151,10 +178,10 @@ class WithdrawController extends BaseController
             if ($income) {
                 $actual_amounts += Income::getIncomeById($key)->get()->sum('amount');
                 $withdrawStatus = "1";
-                Income::updatedIncomePayStatus($key, ['pay_status'=>'1']);
+                Income::updatedIncomePayStatus($key, ['pay_status' => '1']);
 
             } else {
-                Income::updatedIncomePayStatus($key, ['pay_status'=>'-1']);
+                Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
         }
         $actual_poundage = $actual_amounts / 100 * $withdraw['poundage_rate'];
@@ -201,7 +228,7 @@ class WithdrawController extends BaseController
         }
 
         if ($resultPay) {
-            $updatedData = [ 'pay_at' => time()];
+            $updatedData = ['pay_at' => time()];
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::paySuccess($withdrawId);
             if ($result) {

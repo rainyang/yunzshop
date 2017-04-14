@@ -47,7 +47,8 @@ class Member extends \app\common\models\Member
                               ->uniacid()
                               ->where('status', 3)
                               ->groupBy('uid');
-            }]);
+            }])
+            ->orderBy('uid', 'desc');
     }
 
     /**
@@ -216,7 +217,7 @@ class Member extends \app\common\models\Member
         }
         if($filters['searchtime']){
             if($filters['times']){
-                $range = [strtotime($filters['times']['start']), strtotime($filters['times']['end'])];
+                $range = [$filters['times']['start'], $filters['times']['end']];
                 $query->whereBetween('createtime', $range);
             }
         }
@@ -229,7 +230,8 @@ class Member extends \app\common\models\Member
                     ->with([ 'agent'=>function($query3){
                         return $query3->select(['uid', 'avatar', 'nickname']);
                     }]);
-            }]);
+            }])
+        ->orderBy('uid', 'desc');
         return $query;
     }
 }

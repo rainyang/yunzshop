@@ -21,7 +21,7 @@ class GoodsDiscount extends Discount
 
     public static function getVipPrice(Goods $goodsModel)
     {
-        return $goodsModel->price * 0.9;
+        return $goodsModel->price;
     }
 
     public static function getOptionVipPrice(GoodsOption $goodsOption)

@@ -26,7 +26,6 @@ class ListController extends BaseController
         //phpinfo();
         $params = \YunShop::request()->get();
         $this->_order_model = Order::getAllOrders($params['search'],self::PAGE_SIZE);
-        //dd($this->_order_model);
         return view('order.index', $this->getData())->render();
     }
     public function waitPay()
@@ -58,10 +57,20 @@ class ListController extends BaseController
         return view('order.index', $this->getData())->render();
     }
 
+    /**
+     * @return mixed
+     * 退换货订单
+     */
+    public function refund()
+    {
+        $params = \YunShop::request();
+        $this->_order_model = Order::getRefundOrders($params['search'],self::PAGE_SIZE);
+        return view('order.index', $this->getData())->render();
+    }
+    
     public function test()
     {
         $data = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
-        dd($data);
     }
 
 
@@ -89,7 +98,6 @@ class ListController extends BaseController
         }
         $list = $this->_order_model;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-        //dd($list);
         $data = [
             'list' => $list,
             'total_price' => $list['total_price'],

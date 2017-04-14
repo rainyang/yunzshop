@@ -6,6 +6,8 @@ namespace app\frontend\modules\coupon\models;
 class MemberCoupon extends \app\common\models\MemberCoupon
 {
     public $table = 'yz_member_coupon';
+    public $timestamps = false;
+
     const USED = 1;
     const NOT_USED = 0;
 
@@ -19,4 +21,15 @@ class MemberCoupon extends \app\common\models\MemberCoupon
         }])->where('uid', $memberId)->select(['id', 'coupon_id', 'used', 'get_time']);
         return $coupons;
     }
+
+    //获取用户名下指定优惠券的总数
+    public static function getMemberCouponCount($memberId, $couponId)
+    {
+        $count = static::uniacid()
+                    ->where('uid', '=', $memberId)
+                    ->where('coupon_id', '=', $couponId)
+                    ->count();
+        return $count;
+    }
+
 }

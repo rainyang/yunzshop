@@ -20,15 +20,48 @@ class WechatController extends PaymentController
     public function notifyUrl()
     {
         $post = $this->getResponseResult();
+
+//        if (config('app.debug')) {
+//            $post = Array
+//            (
+//                 'appid'  => 'wx6be17f352e859277',
+//                 'attach'  => 1,
+//                 'bank_type'  => 'CFT',
+//                 'cash_fee'  => 10,
+//                 'fee_type'  => 'CNY',
+//                 'is_subscribe'  => 'Y',
+//                 'mch_id'  => '1429240702',
+//                 'nonce_str'  => '58e0c7fdb1c90',
+//                 'openid'  => 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y',
+//                 'out_trade_no'  => 'SN1491126269',
+//                 'result_code'  => 'SUCCESS',
+//                 'return_code'  => 'SUCCESS',
+//                 'sign'  => 'F3FA8FBD018A1B00B7B7D264A089794C',
+//                 'time_end'  => 20170402174504,
+//                 'total_fee'  => 10,
+//                 'trade_type'  => 'JSAPI',
+//                 'transaction_id'  => '4001322001201704025593308407'  //微信支付单号 可用于退款
+//            );
+//
+//            $data = [
+//                'total_fee'    => $post['total_fee'] ,
+//                'out_trade_no' => $post['out_trade_no'],
+//                'trade_no'     => $post['transaction_id']
+//            ];
+//
+//            $this->payResutl($data);
+//            exit;
+//        }
+
         $this->log($post);
 
         $verify_result = $this->getSignResult();
 
         if ($verify_result) {
             $data = [
-                'total_fee'    => $post['total_fee'],
+                'total_fee'    => $post['total_fee'] ,
                 'out_trade_no' => $post['out_trade_no'],
-                'trade_no'     => ''
+                'trade_no'     => $post['transaction_id']
             ];
 
             $this->payResutl($data);
@@ -121,6 +154,12 @@ class WechatController extends PaymentController
         $pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
     }
 
+    /**
+     * 支付方式
+     *
+     * @param $order_id
+     * @return string
+     */
     public function getPayType($order_id)
     {
         if (!empty($order_id)) {

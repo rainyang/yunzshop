@@ -38,13 +38,13 @@ class BalanceController extends BaseController
     public function index()
     {
         //todo 数值验证
-        $balance = Setting::get('balance.recharge');
+        $balance = Setting::get('finance.balance');
         $requestModel = \YunShop::request()->balance;
         if ($requestModel) {
             $requestModel['sale'] = $this->rechargeSale($requestModel);
             unset($requestModel['enough']);
             unset($requestModel['give']);
-            if (Setting::set('balance.recharge', $requestModel)) {
+            if (Setting::set('finance.balance', $requestModel)) {
                 return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'));
             } else {
                 $this->error('余额基础设置保存失败！！');
@@ -62,16 +62,22 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function balanceDetail()
     {
+
         //todo 搜索
         $pageSize = 20;
+        $search = \YunShop::request()->search;
         $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
+        if ($search) {
+            $detailList = \app\common\models\finance\Balance::getSearchPageList($pageSize,$search);
+        }
+
         $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
         return view('finance.balance.detail', [
-            'detailList' => $detailList,
-            'pager' => $pager,
-            'memberGroup'   => MemberGroup::getMemberGroupList(),
-            'memberLevel'   => MemberLevel::getMemberLevelList()
+            'detailList'    => $detailList,
+            'pager'         => $pager,
+            'search'        => $search,
+            'serviceType'   => \app\common\models\finance\Balance::$balanceComment
         ])->render();
     }
 
@@ -155,20 +161,7 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    /**
-     * 余额提现详情
-     *
-     * @return string
-     * @Author yitian */
-    public function withdrawInfo()
-    {
-        $withdrawModel = Withdraw::getBalanceWithdrawById(\YunShop::request()->id)->toArray();
 
-        return view('finance.balance.withdraw', [
-            'item' => $withdrawModel,
-            'set' => '',
-        ])->render();
-    }
 
     /**
      * 充值记录
@@ -181,7 +174,6 @@ class BalanceController extends BaseController
         $recordList = BalanceRecharge::getPageList($pageSize);
         if ($search = \YunShop::request()->search) {
             $recordList = BalanceRecharge::getSearchPageList($pageSize, $search);
-            //dd($search);
 
         }
         $pager = PaginationHelper::show($recordList->total(), $recordList->currentPage(), $recordList->perPage());
@@ -207,7 +199,6 @@ class BalanceController extends BaseController
         $tansferList = BalanceTransfer::getTransferPageList($pageSize);
         if ($search = \YunShop::request()->search) {
             $tansferList = BalanceTransfer::getSearchPageList($pageSize, $search);
-            //dd($tansferList);
         }
 
         $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());

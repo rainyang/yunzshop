@@ -15,6 +15,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use app\common\models\Order;
 
 class MemberModel extends Member
 {
@@ -202,11 +203,16 @@ class MemberModel extends Member
     {
         $uid = \YunShop::app()->getMemberId();
 
-        MemberRelation::checkAgent($uid);
+        if (!empty($uid)) {
+            MemberRelation::checkAgent($uid);
 
-        $member_info = SubMemberModel::getMemberShopInfo($uid);
+            $member_info = SubMemberModel::getMemberShopInfo($uid);
 
-        return $member_info;
+            return $member_info->toArray();
+        }
+
+        return [];
+
     }
 
     /**
@@ -311,5 +317,54 @@ class MemberModel extends Member
         }
 
         return $data;
+    }
+
+    /**
+     * 会员中心返回数据
+     *
+     * @param $member_info
+     * @param $yz_member
+     * @return mixed
+     */
+    public static function userData($member_info, $yz_member)
+    {
+        if (!empty($yz_member)) {
+            $member_info['alipay_name'] = $yz_member['alipay_name'];
+            $member_info['alipay'] =  $yz_member['alipay'];
+            $member_info['province_name'] =  $yz_member['province_name'];
+            $member_info['city_name'] =  $yz_member['city_name'];
+            $member_info['area_name'] =  $yz_member['area_name'];
+            $member_info['province'] =  $yz_member['province'];
+            $member_info['city'] =  $yz_member['city'];
+            $member_info['area'] =  $yz_member['area'];
+            $member_info['address'] =  $yz_member['address'];
+
+            if (!empty( $yz_member['group'])) {
+                $member_info['group_id'] =  $yz_member['group']['id'];
+                $member_info['group_name'] =  $yz_member['group']['group_name'];
+            }
+
+            if (!empty( $yz_member['level'])) {
+                $member_info['level_id'] =  $yz_member['level']['id'];
+                $member_info['level_name'] =  $yz_member['level']['level_name'];
+            }
+        }
+
+        if (!empty($member_info['birthyear'] )) {
+            $member_info['birthday'] = $member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday'];
+        } else {
+            $member_info['birthday'] = '1970-01-01';
+        }
+
+
+        $order_info = \app\frontend\modules\order\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
+
+        $member_info['order'] = $order_info;
+
+        $member_info['is_agent'] = self::isAgent();
+        $member_info['referral'] = self::getMyReferral();
+        $member_info['qr'] = self::getAgentQR();
+
+        return $member_info;
     }
 }

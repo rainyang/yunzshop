@@ -21,7 +21,7 @@ class BecomeAgentListener
         $mid = $event->getMid();
 
         $relation = new MemberRelation();
-        $relation->createChildAgent($mid, $model);
+        $relation->becomeChildAgent($mid, $model);
 
         //生成关系3级关系链
         $member_model = MemberModel::getMyAgentsParentInfo($mid)->first();

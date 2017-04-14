@@ -42,7 +42,7 @@ class Dispatch extends BaseModel
      */
     public static function getDispatchList()
     {
-        $dispatchList = self::uniacid()->where('enabled', 1)
+        $dispatchList = self::uniacid()->where('enabled', 1)->Where('is_plugin', 0)
             ->get()->toArray();
         return $dispatchList;
     }

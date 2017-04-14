@@ -11,7 +11,7 @@ class ListController extends ApiController
     //获取指定状态的订单
     public function getOrders($status = '')
     {
-        $uid = 9;//\YunShop::app()->getMemberId();
+        $uid = \YunShop::app()->getMemberId();
         if (!$uid) {
             return $this->errorJson( $msg = '缺少访问参数', $data = []);
         }

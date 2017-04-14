@@ -70,7 +70,9 @@
             <input type="text" name="widgets[sale][point]"  value="{{ $item->point }}" class="form-control" />
             <span class="input-group-addon">积分</span>
         </div>
-        <span class="help-block">如果设置0，则不赠送</span>
+        <span class="help-block">如果设置0，则不赠送<br>
+        如: 购买2件，设置10 积分, 不管成交价格是多少， 则购买后获得20积分<br>
+            如: 购买2件，设置10%积分, 成交价格2 * 200= 400， 则购买后获得 40 积分（400*10%）</span>
     </div>
 </div>
 
