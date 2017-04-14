@@ -203,11 +203,16 @@ class MemberModel extends Member
     {
         $uid = \YunShop::app()->getMemberId();
 
-        MemberRelation::checkAgent($uid);
+        if (!empty($uid)) {
+            MemberRelation::checkAgent($uid);
 
-        $member_info = SubMemberModel::getMemberShopInfo($uid);
+            $member_info = SubMemberModel::getMemberShopInfo($uid);
 
-        return $member_info;
+            return $member_info->toArray();
+        }
+
+        return [];
+
     }
 
     /**
@@ -356,9 +361,9 @@ class MemberModel extends Member
 
         $member_info['order'] = $order_info;
 
-        $member_info['is_agent'] = MemberModel::isAgent()->toArray();
-        $member_info['referral'] = MemberModel::getMyReferral();
-        $member_info['qr'] = MemberModel::getAgentQR();
+        $member_info['is_agent'] = self::isAgent();
+        $member_info['referral'] = self::getMyReferral();
+        $member_info['qr'] = self::getAgentQR();
 
         return $member_info;
     }

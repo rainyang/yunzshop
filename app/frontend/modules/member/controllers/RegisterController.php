@@ -92,7 +92,7 @@ class RegisterController extends BaseController
             Cookie::queue($cookieid, $member_id);
             session()->put('member_id', $member_id);
 
-
+            $password = $data['password'];
             $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
             $yz_member = MemberShopInfo::getMemberShopInfo($member_id)->toArray();
 
