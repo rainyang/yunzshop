@@ -22,4 +22,6 @@ class Goods extends \app\common\models\Goods
     {
         return $this->hasOne('app\common\models\GoodsOption');
     }
+
+
 }
