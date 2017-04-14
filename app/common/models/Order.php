@@ -62,7 +62,7 @@ class Order extends BaseModel
     }
     public function scopeRefund($query)
     {
-        return $query->whereNotNull('refund_id');
+        return $query->where('refund_id','0');
     }
     public function scopeCancelled($query)
     {
