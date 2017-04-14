@@ -13,19 +13,15 @@ use \Request;
 
 class RefundCancel extends ChangeStatusOperation
 {
-    protected $statusBeforeChange = [self::WAIT_SEND];
-    protected $statusAfterChanged = self::WAIT_RECEIVE;
-    protected $name = '发货';
+    protected $statusBeforeChange = [self::WAIT_CHECK];
+    protected $statusAfterChanged = self::CANCEL;
+    protected $name = '取消';
     protected $timeField = 'send_time';
 
-    protected $past_tense_class_name = 'OrderSent';
+    protected $pastTenseClassName = '';
 
     protected function updateTable()
     {
-        $data = Request::only(['refund_id', 'express_code', 'express_sn', 'express_company_name']);
-        $db_express_model = new RefundExpress($data);
-
-        $db_express_model->save();
         parent::updateTable();
     }
 }

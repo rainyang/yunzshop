@@ -62,16 +62,22 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function balanceDetail()
     {
+
         //todo 搜索
         $pageSize = 20;
+        $search = \YunShop::request()->search;
         $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
+        if ($search) {
+            $detailList = \app\common\models\finance\Balance::getSearchPageList($pageSize,$search);
+        }
+
         $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
         return view('finance.balance.detail', [
-            'detailList' => $detailList,
-            'pager' => $pager,
-            'memberGroup'   => MemberGroup::getMemberGroupList(),
-            'memberLevel'   => MemberLevel::getMemberLevelList()
+            'detailList'    => $detailList,
+            'pager'         => $pager,
+            'search'        => $search,
+            'serviceType'   => \app\common\models\finance\Balance::$balanceComment
         ])->render();
     }
 
