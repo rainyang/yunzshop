@@ -18,7 +18,7 @@ class Rule extends BaseModel
     public $timestamps = false;
 
     public $attributes = [
-        'module'        => 'sz_yi',
+        'module'        => 'yun_shop',
         'displayorder'  => 0,
         'status'        => 1
     ];

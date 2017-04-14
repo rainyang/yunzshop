@@ -65,7 +65,7 @@ class MemberService
                     'digits:11',
                     'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
                 ),
-                'password' => 'required|min:6|confirmed|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
+                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
             );
         } else {
             $data = array(
@@ -78,7 +78,7 @@ class MemberService
                     'digits:11',
                     'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
                 ),
-                'password' => 'required|min:6',
+                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
                 'confirm_password' => 'same:password'
             );
         }
@@ -86,6 +86,7 @@ class MemberService
         $validator = \Validator::make($data, $check);
 
         if ($validator->fails()) {
+            echo $validator->messages();
             return false;
         } else {
             return true;
@@ -251,7 +252,7 @@ class MemberService
     {
         Session::set('member_id', $member_info['uid']);
 
-        $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
+        $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
 
         Cookie::queue($cookieid, $member_info['uid']);
         Cookie::queue('member_id', $member_info['uid']);

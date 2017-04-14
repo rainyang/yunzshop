@@ -21,7 +21,7 @@ function cascdeInit(v1,v2,v3,v4){
 // 获取省数据
 function getProvinceData(v1,v2,v3,v4){
     $.ajax({
-        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=sz_yi',
+        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=yun_shop',
         data:{type:'province'},
         type:'GET', //GET
         async:true,    //或false,是否异步
@@ -44,7 +44,7 @@ function getCityData(v1,v2,v3,v4){
         }
     }
     $.ajax({
-        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=sz_yi',
+        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=yun_shop',
         data:{type:'city',parentid:parentid},
         type:'GET', //GET
         async:true,    //或false,是否异步
@@ -67,7 +67,7 @@ function getDistrictData(v1,v2,v3,v4){
         }
     }
     $.ajax({
-        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=sz_yi',
+        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=yun_shop',
         data:{type:'district',parentid:parentid},
         type:'GET', //GET
         async:true,    //或false,是否异步
@@ -90,7 +90,7 @@ function getStreetData(v1,v2,v3,v4){
         }
     }
     $.ajax({
-        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=sz_yi',
+        url:'/app/index.php?i='+uniacid+'&c=entry&p=getaddress&do=shop&m=yun_shop',
         data:{type:'street',parentid:parentid},
         type:'GET', //GET
         async:true,    //或false,是否异步

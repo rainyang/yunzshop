@@ -24,10 +24,10 @@ class Income extends BackendModel
     protected $guarded = [];
 
     public $StatusService;
-    
+
     public $PayStatusService;
 
-    protected $appends = ['status_name','pay_status_name'];
+    protected $appends = ['status_name', 'pay_status_name'];
 
     /**
      * @return mixed
@@ -48,7 +48,7 @@ class Income extends BackendModel
     {
         return $this->getStatusService();
     }
-    
+
     public function getPayStatusService()
     {
         if (!isset($this->PayStatusService)) {
@@ -57,10 +57,12 @@ class Income extends BackendModel
         }
         return $this->PayStatusService;
     }
+
     public function getPayStatusNameAttribute()
     {
         return $this->getPayStatusService();
     }
+
     /**
      * @param $id
      * @return mixed
@@ -90,7 +92,7 @@ class Income extends BackendModel
         return self::uniacid()
             ->whereIn('id', explode(',', $ids));
     }
-    
+
 
     public function incometable()
     {
@@ -105,12 +107,15 @@ class Income extends BackendModel
         return self::uniacid();
     }
 
-    public static function getIncomeInMonth()
+    public static function getIncomeInMonth($search)
     {
         $model = self::select('create_month');
         $model->uniacid();
-        $model->with(['hasManyIncome' => function ($query) {
-            $query->select('id', 'create_month', 'type_name', 'amount', 'created_at');
+        $model->with(['hasManyIncome' => function ($query) use ($search) {
+            $query->select('id', 'create_month', 'incometable_type', 'type_name', 'amount', 'created_at');
+            if ($search['type']) {
+                return $query->where('incometable_type', $search['type']);
+            }
             $query->get();
         }]);
         $model->groupBy('create_month');
@@ -140,20 +145,22 @@ class Income extends BackendModel
             ->whereIn('id', explode(',', $typeId))
             ->update(['status' => $status]);
     }
+
     public static function updatedIncomeStatus($type, $Id, $status)
     {
         return self::where('member_id', \YunShop::app()->getMemberId())
             ->whereIn('id', explode(',', $typeId))
             ->update(['status' => $status]);
     }
+
     public function hasManyIncome()
     {
         return $this->hasMany(self::class, "create_month", "create_month");
     }
-    
-    public static function updatedIncomePayStatus($id,$updatedData)
+
+    public static function updatedIncomePayStatus($id, $updatedData)
     {
-        return self::where('id',$id)
+        return self::where('id', $id)
             ->update($updatedData);
     }
 

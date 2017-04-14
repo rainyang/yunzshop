@@ -7,7 +7,7 @@
             <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
                 <input type="hidden" name="c" value="site" />
                 <input type="hidden" name="a" value="entry" />
-                <input type="hidden" name="m" value="sz_yi" />
+                <input type="hidden" name="m" value="yun_shop" />
                 <input type="hidden" name="do" value="plugin" />
                 <input type="hidden" name="p" value="coupon" />
                 <input type="hidden" name="method" value="coupon" />
@@ -105,9 +105,9 @@
                                         <label class="label label-warning">不限</label>
                                         @endif
 
-                                        <br/>@if($row['backtype']==0)
+                                        <br/>@if($row['coupon_method']==1)
                                         立减 {{$row['deduct']}} 元
-                                        @elseif( $row['backtype']==1)
+                                        @elseif( $row['coupon_method']==2)
                                         打 {{$row['discount']}} 折
                                         @endif
                                     </td>

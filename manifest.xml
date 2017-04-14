@@ -21,7 +21,7 @@
 	</platform>
 	<bindings>
 		<cover>
-			<entry title="商城管理" do="shop" />
+			<entry title="芸商城管理" do="shop" />
 		</cover>
 	</bindings>
 	<permissions>

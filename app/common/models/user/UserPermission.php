@@ -25,7 +25,7 @@ class UserPermission extends BaseModel
         return $this->insert([
             'uniacid' => \YunShop::app()->uniacid,
             'uid' => $userId,
-            'type' => 'sz_yi',
+            'type' => 'yun_shop',
             'permission' => 'all',
             'url' => ''
         ]);
