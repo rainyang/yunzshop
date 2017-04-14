@@ -33,7 +33,7 @@ class MemberOfficeAccountService extends MemberService
     {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
-        $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
+        $mid          = \YunShop::app()->mid ? \YunShop::app()->mid : 0;
 
         $pay = Setting::get('shop.pay');
 
