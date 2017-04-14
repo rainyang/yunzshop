@@ -26,14 +26,14 @@ class OrderChangePrice extends OrderOperation
      */
     protected function _updateTable()
     {
-        return $this->_DbOrderModel->save();
+        return $this->order->save();
     }
 
     public function execute()
     {
         $this->addChangeOrderGoodsPriceInfo();
 
-        $order = new CreatedOrderModel($this->_DbOrderModel, $this->getOrderGoodsModels());
+        $order = new CreatedOrderModel($this->order, $this->getOrderGoodsModels());
         //改订单价格 todo 测试
         //$order->addChangePriceInfo('380');
         //改运费 todo 测试
@@ -49,7 +49,7 @@ class OrderChangePrice extends OrderOperation
         if (count($this->_orderGoodsModels)) {
             return $this->_orderGoodsModels;
         }
-        $order_goods_list = $this->_DbOrderModel->hasManyOrderGoods;
+        $order_goods_list = $this->order->hasManyOrderGoods;
         foreach ($order_goods_list as $_DbOrderGoods) {
             $_OrderGoods = new CreatedOrderGoodsModel($_DbOrderGoods);
             $this->_orderGoodsModels[] = $_OrderGoods;
