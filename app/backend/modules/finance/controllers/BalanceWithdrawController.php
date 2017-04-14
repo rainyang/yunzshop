@@ -54,6 +54,7 @@ class BalanceWithdrawController extends BaseController
     //余额提现手续费N元
     private function withdrawPoundageMath()
     {
+        $this->withdrawSet();
         return round(floatval($this->withdrawModel->amounts * $this->withdrawPoundage), 2);
     }
 

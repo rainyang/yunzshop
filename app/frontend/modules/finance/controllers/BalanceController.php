@@ -279,9 +279,6 @@ class BalanceController extends ApiController
         if ($data['recharge_type'] == 1) {
             $result['js'] = json_decode($result['js'], 1);
         }
-
-
-        echo '<pre>'; print_r($result); exit;
         return $result;
     }
 
