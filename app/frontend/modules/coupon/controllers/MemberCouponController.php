@@ -254,10 +254,10 @@ class MemberCouponController extends ApiController
             return $this->errorJson('没有提供优惠券ID','');
         }
 
-        $coupon = Coupon::getCouponById($couponId)->first();
+        $coupon = Coupon::getCouponById($couponId)->where('status','=',1)->first();
 
         if(!$coupon){
-            return $this->errorJson('没有该优惠券,领取失败','');
+            return $this->errorJson('没有该优惠券或者优惠券不可用','');
         }
 
         $memberCoupon = new MemberCoupon;

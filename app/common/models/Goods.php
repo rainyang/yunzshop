@@ -139,9 +139,14 @@ class Goods extends BaseModel
         return $this->hasOne(Sale::class, 'goods_id', 'id');
     }
 
+    public function scopeIsPlugin($query)
+    {
+        return $query->where('is_plugin', 0);
+    }
+
     public function scopeSearch($query, $filters)
     {
-        $query->uniacid();
+        $query->uniacid()->isPlugin();
 
         if (!$filters) {
             return;

@@ -16,6 +16,7 @@ class CreateImsYzDispatchTable extends Migration {
 		{
 			$table->integer('id', true);
 			$table->integer('uniacid')->nullable()->default(0)->comment('公众号id');
+            $table->integer('is_plugin')->nullable()->default(0)->comment('0 = 不是插件， 1 = 插件');
 			$table->string('dispatch_name', 50)->nullable()->default('')->comment('配送模板名称');
 			$table->integer('display_order')->nullable()->default(0)->comment('排序');
 			$table->integer('first_weight_price')->unsigned()->nullable()->default(0)->comment('首重价格');
