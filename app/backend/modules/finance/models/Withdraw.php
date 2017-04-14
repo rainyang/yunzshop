@@ -22,10 +22,27 @@ class Withdraw extends \app\common\models\Withdraw
             $Model->where('status', $search['status']);
         }
 
-        $Model->with(['hasOneMember' => function ($query) {
-            $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
-        }]);
+        if($search['member']) {
+            $Model->whereHas('hasOneMember', function($query)use($search){
+                return $query->searchLike($search['member']);
+            });
+        }
+        if($search['withdraw_sn']) {
+            $Model->where('withdraw_sn', $search['withdraw_sn']);
+        }
+        if($search['type']) {
+            $Model->where('type', $search['type']);
+        }
+        if($search['searchtime']){
+            if($search['times']){
+                $range = [$search['times']['start'], $search['times']['end']];
+                $Model->whereBetween('created_at', $range);
+            }
+        }
 
+        $Model->with(['hasOneMember' => function ($query) {
+            return $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
+        }]);
         return $Model;
     }
 
