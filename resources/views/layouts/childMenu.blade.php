@@ -11,7 +11,7 @@
                     @include('layouts.childMenu',['childs'=>$value['child']])
                 </li>
             @else
-                <li class="{{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}"><a href="{{isset($value['url']) ? yzWebFullUrl($value['url']) : ''}}">
+                <li class="{{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}"><a href="{{isset($value['url']) ? yzWebFullUrl($value['url']) : ''}}{{$value['url_params'] or ''}}">
                         <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>{{$value['name'] or ''}}
                     </a>
                 </li>
