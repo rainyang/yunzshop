@@ -16,10 +16,18 @@ use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use app\common\models\Withdraw;
 use app\common\models\finance\Balance as BalanceModel;
+use app\common\services\finance\Balance;
 use app\common\services\PayFactory;
 
 class BalanceController extends ApiController
 {
+    public function test()
+    {
+        $model = new Balance();
+        $result = $model->payResult();
+        echo '<pre>'; print_r($result); exit;
+    }
+
     /**
      * 会员余额充值接口
      * @return \Illuminate\Http\JsonResponse

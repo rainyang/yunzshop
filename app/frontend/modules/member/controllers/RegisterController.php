@@ -9,6 +9,8 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\helpers\Url;
+use app\common\models\MemberLevel;
+use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\frontend\modules\member\models\MemberModel;
@@ -41,6 +43,7 @@ class RegisterController extends BaseController
                 return $this->errorJson('该手机号已被注册');
             }
 
+            //添加mc_members表
             $default_groupid = MemberGroup::getDefaultGroupId($uniacid)->first();
 
             $data = array(
@@ -59,6 +62,30 @@ class RegisterController extends BaseController
 
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
+
+            //添加yz_member表
+            $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
+            $default_sub_level_id = MemberLevel::getDefaultLevelId()->first();
+
+            if (!empty($default_sub_group_id)) {
+                $default_subgroup_id = $default_sub_group_id->id;
+            } else {
+                $default_subgroup_id = 0;
+            }
+
+            if (!empty($default_sub_level_id)) {
+                $default_sublevel_id = $default_sub_level_id->id;
+            } else {
+                $default_sublevel_id = 0;
+            }
+
+            $sub_data = array(
+                'member_id' => $member_id,
+                'uniacid' => $uniacid,
+                'group_id' => $default_subgroup_id,
+                'level_id' => $default_sublevel_id,
+            );
+            SubMemberModel::insertData($sub_data);
 
             $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);

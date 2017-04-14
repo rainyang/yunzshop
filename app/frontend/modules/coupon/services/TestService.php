@@ -96,7 +96,7 @@ class TestService
     {
         $back_type = $this->back_type;
         $result = MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember);
-        if(isset($back_type)){
+        if(isset($back_type)){// 折扣/立减
             $result->filter(function ($memberCoupon) use($back_type){
                 return $memberCoupon->belongsToCoupon->back_type == $back_type;
             });

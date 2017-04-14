@@ -16,8 +16,10 @@ class RefundApply extends BaseModel
 {
     protected $table = 'yz_order_refund';
     protected $hidden = ['updated_at', 'created_at', 'uniacid', 'uid', 'order_id'];
-    protected $fillable = ['reason', 'images', 'order_id'];
-    protected $appends = ['refund_type_name' , 'status_name' , 'button_models'];
+    protected $fillable = [];
+    protected $guarded = ['id'];
+
+    protected $appends = ['refund_type_name', 'status_name', 'button_models'];
     protected $attributes = [
         'images' => '[]',
         'refund_proof_imgs' => '[]',
@@ -31,6 +33,14 @@ class RefundApply extends BaseModel
         'refund_proof_imgs' => 'json'
     ];
 
+    const CANCEL = '-2';
+    const REJECT = '-1';
+    const WAIT_CHECK = '0';
+    const WAIT_SEND = '1';
+    const WAIT_RECEIVE = '2';
+    const WAIT_REFUND = '3';
+    const COMPLETE = '4';
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -41,23 +51,26 @@ class RefundApply extends BaseModel
             $this->uid = \YunShop::app()->getMemberId();
         }
     }
+
     public function getButtonModelsAttribute()
     {
-        $result =
-            [
-                [
-                    'name' => '填写快递',
-                    'api' => 'dispatch.refundExpress',
-                    'value' => 2 //todo
-                ],
+        $result = [
                 [
                     'name' => '查看详情',
                     'api' => 'refund.detail',
                     'value' => 1
                 ],
             ];
+        if($this->status == self::WAIT_SEND){
+            $result[] = [
+                'name' => '填写快递',
+                'api' => 'dispatch.refundExpress',
+                'value' => 2 //todo
+            ];
+        }
         return $result;
     }
+
     public function getDates()
     {
         return ['create_time', 'refund_time', 'operate_time', 'send_time', 'return_time', 'end_time', 'cancel_pay_time', 'cancel_send_time'] + parent::getDates();
@@ -85,14 +98,15 @@ class RefundApply extends BaseModel
     public function getStatusNameAttribute()
     {
         $mapping = [
-            '-2' => '用户取消',
-            '-1' => '驳回',
-            '0' => '待审核',
-            '1' => '通过',
-            '2' => '退货中',
-            '3' => '待退款',
-            '4' => '完成',
+            self::CANCEL => '用户取消',
+            self::REJECT => '驳回',
+            self::WAIT_CHECK => '待审核',
+            self::WAIT_SEND => '待退货',
+            self::WAIT_RECEIVE => '待收货',
+            self::WAIT_REFUND => '待退款',
+            self::COMPLETE => '完成',
         ];
+
         return $mapping[$this->status];
     }
 

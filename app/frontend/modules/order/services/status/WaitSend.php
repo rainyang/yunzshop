@@ -28,12 +28,15 @@ class WaitSend implements StatusService
     {
         $result =
             [
-                [
-                    'name' => '申请退款',
-                    'api' => 'order.refund.apply', //todo
-                    'value' => static::REFUND
-                ]
+
             ];
+        if(empty($this->order->refund_id)){
+            $result[] = [
+                'name' => '申请退款',
+                'api' => 'order.refund.apply', //todo
+                'value' => static::REFUND
+            ];
+        }
         return $result;
     }
 }
