@@ -39,18 +39,16 @@ class AlipayController extends PaymentController
 
     public function returnUrl()
     {
-        // TODO 访问记录
-        // TODO 保存响应数据
-
         $verify_result = $this->getSignResult();
 
         if($verify_result) {
             if($_GET['trade_status'] == 'TRADE_SUCCESS') {
-                echo 'ok';exit;
-                redirect()->send();
+                redirect(request()->getSchemeAndHttpHost() . '/#success')->send();
+            } else {
+                redirect(request()->getSchemeAndHttpHost() . '/#fail')->send();
             }
         } else {
-            echo "您提交的订单验证失败";
+            redirect(request()->getSchemeAndHttpHost() . '/#fail')->send();
         }
     }
 
