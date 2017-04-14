@@ -16,8 +16,12 @@ class CalculationPointService
     {
         $point_set = Setting::get('point.set');
         $point_data = [];
-        if ($order_goods_model->hasOneGoods->hasOneSale->point > 0) {
-            $point_data['point'] = $order_goods_model->hasOneGoods->hasOneSale->point * $order_goods_model->total;
+        if (trim($order_goods_model->hasOneGoods->hasOneSale->point)) {
+            if (strexists($order_goods_model->hasOneGoods->hasOneSale->point, '%')) {
+                $point_data['point'] = floatval(str_replace('%', '', $order_goods_model->hasOneGoods->hasOneSale->point) / 100 * $order_goods_model->goods_price);
+            } else {
+                $point_data['point'] = $order_goods_model->hasOneGoods->hasOneSale->point * $order_goods_model->total;
+            }
             $point_data['remark'] = '购买商品[' . $order_goods_model->hasOneGoods->title .']赠送[$order_goods->hasOneGoods->hasOneSale->point]积分！';
         } else if ($point_set['give_point'] > 0) {
             $point_data['point'] = $point_set['give_point'];

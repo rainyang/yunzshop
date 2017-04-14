@@ -40,7 +40,7 @@
                             <div class='input-group'>
                                 <span class='input-group-addon'>最多可抵扣</span>
                                 <input type="text" name="set[money_max]"  value="{{$set['money_max']}}" class="form-control" />
-                                <span class='input-group-addon'>元</span>
+                                <span class='input-group-addon'>%</span>
                             </div>
                             <span class='help-block'>商品最高抵扣比例</span>
                         </div>
@@ -59,7 +59,9 @@
                                 <input type="text" name="set[give_point]"  value="{{$set['give_point']}}" class="form-control" />
                                 <span class='input-group-addon'>积分</span>
                             </div>
-                            <span class='help-block'>购买<span style="color:red; font-weight:bold">单个</span>商品赠送积分,商品【营销设置】中单独设置</span>
+                            <span class='help-block'>如: 购买2件，设置10 积分, 不管成交价格是多少， 则购买后获得20积分
+
+如: 购买2件，设置10%积分, 成交价格2 * 200= 400， 则购买后获得 40 积分（400*10%）</span>
                         </div>
                     </div>
                     <div class="form-group">
