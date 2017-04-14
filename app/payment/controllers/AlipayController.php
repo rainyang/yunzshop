@@ -43,12 +43,12 @@ class AlipayController extends PaymentController
 
         if($verify_result) {
             if($_GET['trade_status'] == 'TRADE_SUCCESS') {
-                redirect(request()->getSchemeAndHttpHost() . '/#/success')->send();
+                redirect(request()->getSchemeAndHttpHost() . '/#/member/payYes')->send();
             } else {
-                redirect(request()->getSchemeAndHttpHost() . '/#/fail')->send();
+                redirect(request()->getSchemeAndHttpHost() . '/#/member/payErr')->send();
             }
         } else {
-            redirect(request()->getSchemeAndHttpHost() . '/#fail')->send();
+            redirect(request()->getSchemeAndHttpHost() . '/#/member/payErr')->send();
         }
     }
 
