@@ -23,6 +23,10 @@
 		<cover>
 			<entry title="芸商城管理" do="shop" />
 		</cover>
+		<menu>
+		<entry title="芸商城entry" do="shop" state="" direct="false" />
+		<entry title="芸商城" do="shop" state="" direct="true" />
+		</menu>
 	</bindings>
 	<permissions>
 	</permissions>
