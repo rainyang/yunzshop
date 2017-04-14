@@ -3,6 +3,8 @@
 namespace  app\payment;
 
 use app\common\components\BaseController;
+use app\common\models\Order;
+use app\common\models\PayOrder;
 use app\frontend\modules\order\services\OrderService;
 
 /**
@@ -41,6 +43,10 @@ class PaymentController extends BaseController
 
     private function getUniacid()
     {
+//        if (config('app.debug')) {
+//            return 2;
+//        }
+
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
 
@@ -54,14 +60,17 @@ class PaymentController extends BaseController
     public function payResutl($data)
     {
         $type = $this->getPayType($data['out_trade_no']);
+        $pay_order_model = PayOrder::uniacid()->where('out_order_no', $data['out_trade_no'])->first();
 
-        $pay_order_model = PayOrder::uniacid()->where('order_sn', $data['out_trade_no']);
-        $pay_order_model->status = 2;
-        $pay_order_model->save();
+        if ($pay_order_model) {
+            $pay_order_model->status = 2;
+            $pay_order_model->trade_no = $data['trade_no'];
+            $pay_order_model->save();
+        }
 
         switch ($type) {
             case "charge.succeeded":
-                $order_info = Order::uniacid()->where('order_sn', $data['out_trade_no']);
+                $order_info = Order::uniacid()->where('order_sn', $data['out_trade_no'])->first();
 
                 if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
                     OrderService::orderPay(['order_id' => $data['out_trade_no']]);
