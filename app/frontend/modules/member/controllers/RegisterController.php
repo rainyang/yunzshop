@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\helpers\Url;
 use app\common\models\MemberLevel;
+use app\common\models\MemberShopInfo;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
@@ -91,7 +92,13 @@ class RegisterController extends BaseController
             Cookie::queue($cookieid, $member_id);
             session()->put('member_id', $member_id);
 
-            return $this->successJson(['member_id' => $member_id]);
+            $password = $data['password'];
+            $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
+            $yz_member = MemberShopInfo::getMemberShopInfo($member_id)->toArray();
+
+            $data = MemberModel::userData($member_info, $yz_member);
+
+            return $this->successJson('', $data);
         } else {
             return $this->errorJson('手机号或密码格式错误');
         }

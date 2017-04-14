@@ -26,7 +26,7 @@ class DispatchController extends BaseController
     {
         $shopset = Setting::get('shop');
         $pageSize = 10;
-        $list = Dispatch::uniacid()->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate($pageSize)->toArray();
+        $list = Dispatch::uniacid()->where('is_plugin', 0)->orderBy('display_order', 'desc')->orderBy('id', 'desc')->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         return view('goods.dispatch.list', [
             'list' => $list,

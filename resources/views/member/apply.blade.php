@@ -141,7 +141,7 @@
                                         {{$row['mobile']}}
                                     </td>
                                     <td>
-                                        {{date('Y.m.d',$row['apply_time'])}}</td>
+                                        {{date('Y.m.d',$row['yz_member']['apply_time'])}}</td>
                                     <td><a href="{{yzWebUrl('member.member.detail', ['id'=>$row['uid']])}}">查看会员详情</a>
                                     </td>
                                     <td style="overflow:visible;">

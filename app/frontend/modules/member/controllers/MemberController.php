@@ -165,7 +165,7 @@ class MemberController extends ApiController
         if (empty($member_info)) {
             return $this->errorJson('会员不存在');
         } else {
-            $data = $member_info->toArray();
+            $data = $member_info;
         }
 
         return $this->successJson('', ['is_agent' => $data['is_agent']]);
@@ -196,18 +196,16 @@ class MemberController extends ApiController
      */
     public function addAgentApply()
     {
-        $mid = (\YunShop::request()->mid && \YunShop::request()->mid != 'undefined') ? \YunShop::request()->mid : 0;
-
         if (!\YunShop::app()->getMemberId()) {
             return $this->errorJson('请重新登录');
         }
         $sub_member_model = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
-        $sub_member_model->parent_id = $mid;
         $sub_member_model->status = 1;
+        $sub_member_model->apply_time = time();
 
         if (!$sub_member_model->save()) {
-           return $this->errorJson('会员上级信息保存失败');
+           return $this->errorJson('会员信息保存失败');
         }
 
         $realname = \YunShop::request()->realname;
@@ -217,6 +215,7 @@ class MemberController extends ApiController
 
         $member_mode->realname = $realname;
         $member_mode->mobile = $moible;
+
         if (!$member_mode->save()) {
             return $this->errorJson('会员信息保存失败');
         }

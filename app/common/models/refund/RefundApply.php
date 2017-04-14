@@ -58,19 +58,19 @@ class RefundApply extends BaseModel
             $result[] = [
                 'name' => '修改申请',
                 'api' => 'refund.edit',
-                'value' => 1 //todo
+                'value' => 1
             ];
             $result[] = [
                 'name' => '取消申请',
                 'api' => 'refund.cancel',
-                'value' => 3 //todo
+                'value' => 3
             ];
         }
         if($this->status == self::WAIT_SEND){
             $result[] = [
                 'name' => '填写快递',
                 'api' => 'refund.send',
-                'value' => 2 //todo
+                'value' => 2
             ];
         }
         return $result;
@@ -126,4 +126,14 @@ class RefundApply extends BaseModel
 
         static::observe(new RefundApplyObserver());
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public static function getRefundById($id)
+    {
+        return self::find($id);
+    }
+    
 }

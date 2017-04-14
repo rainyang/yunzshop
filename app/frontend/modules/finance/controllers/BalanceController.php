@@ -23,9 +23,8 @@ class BalanceController extends ApiController
 {
     public function test()
     {
-        $model = new Balance();
-        $result = $model->payResult();
-        echo '<pre>'; print_r($result); exit;
+
+
     }
 
     /**
@@ -277,8 +276,9 @@ class BalanceController extends ApiController
         $pay = PayFactory::create($data['recharge_type']);
 
         $result = $pay->doPay($this->payData($data));
-        $result['js'] = json_decode($result['js'], 1);
-
+        if ($data['recharge_type'] == 1) {
+            $result['js'] = json_decode($result['js'], 1);
+        }
         return $result;
     }
 
