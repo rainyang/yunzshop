@@ -24,7 +24,6 @@ class IndexController extends BaseController
     {
 
         $data = [
-
             'ads' => $this->getAds(),
             'category' => $this->getRecommentCategoryList(),
             'goods' => $this->getRecommentGoods(),
@@ -60,6 +59,8 @@ class IndexController extends BaseController
     public function getAds()
     {
         $set = Setting::get('shop');
+        $set['logo'] = tomedia($set['logo']);
+        $set['img'] = tomedia($set['img']);
         return $set;
     }
 
