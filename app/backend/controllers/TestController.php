@@ -2,11 +2,13 @@
 namespace  app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\services\JsonRpc;
 use Illuminate\Support\Str;
 use Setting;
 use app\common\services\PluginManager;
 use Datatables;
 use Cookie;
+
 
 class TestController extends BaseController
 {
@@ -14,13 +16,8 @@ class TestController extends BaseController
     public function index()
     {
 
-        dd($alipay = app('alipay.web'));
-
-        $fans = weAccount()->fansAll();
-        dd($fans);
-        return view('test.index',['a'=>'f']);
-
-
+        $result = (new JsonRpc())->client('plus',['user'=>'1','pass'=>2]);
+        dd($result);
     }
 
     public function testJson()
