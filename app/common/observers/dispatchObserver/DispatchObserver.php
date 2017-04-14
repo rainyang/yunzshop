@@ -14,7 +14,12 @@ class DispatchObserver extends BaseObserver
 {
     public function saved(Model $model)
     {
-        $this->pluginObserver('observer.dispatch', $model, 'saved');
+        //$this->pluginObserver('observer.dispatch', $model, 'saved');
+    }
+
+    public function created(Model $model)
+    {
+        $this->pluginObserver('observer.dispatch', $model, 'created');
     }
 
     public function deleted(Model $model)
