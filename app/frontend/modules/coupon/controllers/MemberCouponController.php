@@ -251,6 +251,13 @@ class MemberCouponController extends BaseController
     public function getCoupon($couponId)
     {
         $couponId = \YunShop::request()->get('coupon_id');
+        $coupon = Coupon::getCouponById($couponId)->first();
+
+        if(!$coupon){
+            return $this->errorJson('没有该优惠券ID,领取失败','');
+        }
+
+        $memberCoupon = new MemberCoupon;
         $data = [
             'uniacid' => \YunShop::app()->get('uniacid'),
             'uid' => \YunShop::app()->getMemberId(),
@@ -258,7 +265,6 @@ class MemberCouponController extends BaseController
             'get_type' => 1,
             'get_time' => strtotime('now'),
         ];
-        $memberCoupon = new MemberCoupon;
         $memberCoupon->fill($data);
         $validator = $memberCoupon->validator();
         if ($validator->fails()) {
