@@ -24,7 +24,7 @@ class BalanceController extends ApiController
     public function test()
     {
 
-       
+
     }
 
     /**
