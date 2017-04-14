@@ -99,18 +99,18 @@
                                     Tip.focus($(':input[name=couponname]'),'请输入优惠券名称!');
                                     return false;
                                 }
-                                var backtype = $(':radio[name=backtype]:checked').val();
-                                if(backtype=='0'){
+                                var coupon_method = $(':radio[name=coupon_method]:checked').val();
+                                if(coupon_method=='1'){
                                     if($(':input[name=deduct]').isEmpty()){
                                         Tip.focus($(':input[name=deduct]'),'请输入立减多少!');
                                         return false;
                                     }
-                                }else if(backtype=='1'){
+                                }else if(coupon_method=='2'){
                                     if($(':input[name=discount]').isEmpty()){
                                         Tip.focus($(':input[name=discount]'),'请输入折扣多少!');
                                         return false;
                                     }
-                                }else if(backtype=='2'){
+                                }else if(coupon_method=='3'){
                                     if($(':input[name=backcredit]').isEmpty() && $(':input[name=backmoney]').isEmpty() && $(':input[name=backredpack]').isEmpty()){
                                         Tip.focus($(':input[name=backcredit]'),'至少输入一种返利!');
                                         return false;

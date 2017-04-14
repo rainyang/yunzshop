@@ -4,6 +4,7 @@ namespace app\frontend\modules\coupon\controllers;
 use app\common\components\BaseController;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\models\MemberCoupon;
+use app\common\helpers\Url;
 
 class MemberCouponController extends BaseController
 {
@@ -34,7 +35,7 @@ class MemberCouponController extends BaseController
             return $this->errorJson('没有找到记录', []);
         }
 
-        //给优惠券增加 "是否可用" & "是否已经使用" & "是否过期" 的标识
+        //添加 "是否可用" & "是否已经使用" & "是否过期" 的标识
         $now = strtotime('now');
         foreach($coupons['data'] as $k=>$v){
             if ($v['used'] == MemberCoupon::USED){ //已使用
@@ -78,7 +79,7 @@ class MemberCouponController extends BaseController
             return $this->errorJson('没有找到记录', []);
         }
 
-        //增加"是否可领取" & "是否已抢光" & "是否已领取" & "领取数量是否达到个人上限"的标识
+        //添加"是否可领取" & "是否已抢光" & "是否已领取" & "领取数量是否达到个人上限"的标识
         $now = strtotime('now');
         foreach($coupons['data'] as $k=>$v){
             if($v['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT && ($now > $v['time_end'])){ //优惠券已过期
@@ -96,6 +97,28 @@ class MemberCouponController extends BaseController
             } else{
                 $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
             }
+
+            //添加优惠券使用范围描述
+            switch($v['use_type']){
+                case 1:
+                    $coupons['data'][$k]['api_limit'] = '仅下订单时可用';
+                    break;
+                case 2:
+                    $coupons['data'][$k]['api_limit'] = '商城通用';
+                    break;
+                case 3:
+                    $coupons['data'][$k]['api_limit'] = '适用于下列分类: ';
+                    foreach($v['categorynames'] as $sub){
+                        $coupons['data'][$k]['api_limit'] .= ' "'.$sub.'"';
+                    }
+                    break;
+                case 4:
+                    $coupons['data'][$k]['api_limit'] = '适用于下列商品: ';
+                    foreach($v['goods_names'] as $sub){
+                        $coupons['data'][$k]['api_limit'] .= ' "'.$sub.'"';
+                    }
+                    break;
+            }
         }
 
         return $this->successJson('ok', $coupons);
@@ -106,20 +129,19 @@ class MemberCouponController extends BaseController
     {
         $status = \YunShop::request()->get('status_request');
         $uid = \YunShop::app()->getMemberId();
-        $pageSize = \YunShop::request()->get('pagesize');
-        $pageSize = $pageSize ? $pageSize : 10;
 
         $now = strtotime('now');
 
         switch ($status) {
-            case self::IS_USED:
-                $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 1)->paginate($pageSize)->toArray();
+            case self::NOT_USED:
+                $coupons = self::getAvailableCoupons($uid, $now);
                 break;
             case self::OVERDUE:
-                $coupons = self::getOverdueCoupons($uid, $now, $pageSize);
+                $coupons = self::getOverdueCoupons($uid, $now);
                 break;
-            case self::NOT_USED:
-                $coupons = self::getAvailableCoupons($uid, $now, $pageSize);
+            case self::IS_USED:
+                $coupons = self::getUsedCoupons($uid);
+                break;
         }
 
         if (empty($coupons)){
@@ -129,50 +151,140 @@ class MemberCouponController extends BaseController
         }
     }
 
-    //用户所拥有的已过期的优惠券
-    public static function getOverdueCoupons($uid, $time, $pageSize=10)
+    //用户所拥有的可使用的优惠券
+    public static function getAvailableCoupons($uid, $time)
     {
-        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 0)->paginate($pageSize)->toArray();
+        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 0)->get()->toArray();
+
+        $availableCoupons = array();
+        foreach($coupons as $k=>$v){
+            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']); //todo 待优化
+            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10; //todo 待优化
+            if(
+                ($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT
+                    && (($time - $v['get_time']) < $v['belongs_to_coupon']['time_days']*3600)) //时间限制类型是"领取后几天有效",且没过期
+                ||
+                ($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT
+                    && ($time < $v['belongs_to_coupon']['time_end'])) //时间限制类型是"时间范围",且没过期
+            ){
+                $usageLimit = array('api_limit' => self::usageLimitDescription($v)); //增加属性 - 优惠券的适用范围
+                $availableCoupons[] = array_merge($coupons[$k], $usageLimit);
+            }
+        }
+        return $availableCoupons;
+    }
+
+    //用户所拥有的已过期的优惠券
+    public static function getOverdueCoupons($uid, $time)
+    {
+        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 0)->get()->toArray();
 
         $overdueCoupons = array();
         //获取已经过期的优惠券
-        foreach($coupons['data'] as $k=>$v){
-            if($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT
-                && ($time - $v['get_time']) > ($v['belongs_to_coupon']['time_days']*3600) ){ //时间限制类型是"领取后几天有效",且过期
-                $overdueCoupons[] = $coupons['data'][$k];
-            } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT
-                && ($time > $v['belongs_to_coupon']['time_end'])){
-                $overdueCoupons[] = $coupons['data'][$k];
+        foreach($coupons as $k=>$v){
+            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']); //todo 待优化
+            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10; //todo 待优化
+            if(
+                ($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT
+                && ($time - $v['get_time']) > ($v['belongs_to_coupon']['time_days']*3600)) //时间限制类型是"领取后几天有效", 且过期
+                ||
+                (($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT
+                    && ($time > $v['belongs_to_coupon']['time_end']))) //时间限制类型是"时间范围",且过期
+            ){
+                $usageLimit = array('api_limit' => self::usageLimitDescription($v)); //增加属性 - 优惠券的适用范围
+                $overdueCoupons[] = array_merge($coupons[$k], $usageLimit);
             }
         }
-        $coupons['data'] = $overdueCoupons;
-        return $coupons;
+        return $overdueCoupons;
     }
 
-    //用户所拥有的可使用的优惠券
-    public static function getAvailableCoupons($uid, $time, $pageSize=10)
+    //用户所拥有的已使用的优惠券
+    public static function getUsedCoupons($uid)
     {
-        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 0)->paginate($pageSize)->toArray();
+        $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 1)->get()->toArray();
 
-        //获取可以使用的优惠券
-        $availableCoupons = array();
-        foreach($coupons['data'] as $k=>$v){
-            if($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT
-                && (($time - $v['get_time']) < $v['belongs_to_coupon']['time_days']*3600)){ //时间限制类型是"领取后几天有效",且过期
-                $availableCoupons[] = $coupons['data'][$k];
-            } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT
-                && ($time < $v['belongs_to_coupon']['time_end'])){
-                $availableCoupons[] = $coupons['data'][$k];
-            }
+        $usedCoupons = array();
+        //增加属性 - 优惠券的适用范围
+        foreach($coupons as $k=>$v){
+            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']); //todo 待优化
+            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10; //todo 待优化
+            $usageLimit = array('api_limit' => self::usageLimitDescription($v));
+            $usedCoupons[] = array_merge($coupons[$k], $usageLimit);
         }
-        $coupons['data'] = $availableCoupons;
-        return $coupons;
+        return $usedCoupons;
     }
 
-    //领取优惠券
+    /**
+     * @param $couponInArrayFormat array
+     * @return string 优惠券适用范围的描述
+     */
+    public static function usageLimitDescription($couponInArrayFormat)
+    {
+        switch($couponInArrayFormat['belongs_to_coupon']['use_type']){
+            case 1:
+                return ('仅下订单时可用');
+                break;
+            case 2:
+                return ('商城通用');
+                break;
+            case 3:
+                $res = '适用于下列分类: ';
+                foreach($couponInArrayFormat['belongs_to_coupon']['categorynames'] as $sub){
+                    $res .= ' "'.$sub.'"';
+                }
+                return $res;
+                break;
+            case 4:
+                $res = '适用于下列商品222: ';
+                foreach($couponInArrayFormat['belongs_to_coupon']['goods_names'] as $sub){
+                    $res .= ' "'.$sub.'"';
+                }
+                return $res;
+                break;
+            default:
+                return ('Enjoy shopping');
+        }
+    }
+
+    //在"优惠券中心"点击领取优惠券
+    //需要提供$couponId
     public function getCoupon($couponId)
     {
+        $couponId = \YunShop::request()->get('coupon_id');
+        $coupon = Coupon::getCouponById($couponId)->first();
 
+        if(!$coupon){
+            return $this->errorJson('没有该优惠券ID,领取失败','');
+        }
+
+        $memberCoupon = new MemberCoupon;
+        $data = [
+            'uniacid' => \YunShop::app()->get('uniacid'),
+            'uid' => \YunShop::app()->getMemberId(),
+            'coupon_id' => $couponId,
+            'get_type' => 1,
+            'get_time' => strtotime('now'),
+        ];
+        $memberCoupon->fill($data);
+        $validator = $memberCoupon->validator();
+        if ($validator->fails()) {
+            return $this->errorJson('领取失败', $validator->messages());
+        } else {
+            $res = $memberCoupon->save();
+            if(!$res){
+                return $this->errorJson('领取失败','');
+            } else{
+                $coupon = Coupon::getCouponById($couponId)
+                                ->select([
+                                    'id','name','coupon_method','deduct','discount','enough',
+                                    'use_type', 'categorynames', 'goods_names', 'time_limit',
+                                    'time_days', 'time_start', 'time_end', 'total', 'money', 'credit',
+                                ])
+                                ->first()
+                                ->toArray();
+                return $this->successJson('ok', $coupon);
+            }
+        }
     }
 
 }

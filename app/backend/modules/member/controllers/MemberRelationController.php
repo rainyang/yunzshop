@@ -133,6 +133,7 @@ class MemberRelationController extends BaseController
         ])->render();
     }
 
+
     public function applyProtocol()
     {
         $info = Setting::get("apply_protocol");
