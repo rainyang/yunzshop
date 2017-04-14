@@ -37,7 +37,7 @@ class TestController extends ApiController
 //       echo '<pre>';print_r($result);exit;
 //
       $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
-
+exit;
 
        return view('order.pay', [
            'config' => $data['config'],

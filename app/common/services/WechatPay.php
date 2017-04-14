@@ -19,7 +19,7 @@ use EasyWeChat\Payment\Order as easyOrder;
 class WechatPay extends Pay
 {
     public function doPay($data = [])
-    {
+    {echo 1;
         $op = '微信订单支付 订单号：' . $data['order_no'];
         $pay_order_model = $this->log($data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
 
