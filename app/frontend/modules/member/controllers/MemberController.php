@@ -165,7 +165,7 @@ class MemberController extends ApiController
         if (empty($member_info)) {
             return $this->errorJson('会员不存在');
         } else {
-            $data = $member_info->toArray();
+            $data = $member_info;
         }
 
         return $this->successJson('', ['is_agent' => $data['is_agent']]);

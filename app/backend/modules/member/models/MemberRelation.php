@@ -233,7 +233,7 @@ class MemberRelation extends BackendModel
     public function becomeChildAgent($mid, MemberShopInfo $model)
     {
         $set = self::getSetInfo()->first()->toArray();
-        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $member = SubMemberModel::getMemberShopInfo($model->member_id);
 
         if (empty($member)) {
             return;

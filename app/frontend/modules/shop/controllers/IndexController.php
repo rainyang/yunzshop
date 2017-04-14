@@ -4,6 +4,7 @@ namespace app\frontend\modules\shop\controllers;
 use app\api\Base;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
+use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\Goods;
 use app\common\models\GoodsCategory;
@@ -21,6 +22,7 @@ class IndexController extends BaseController
 {
     public function getDefaultIndex()
     {
+
         $data = [
             'ads' => $this->getAds(),
             'category' => $this->getRecommentCategoryList(),
@@ -56,8 +58,10 @@ class IndexController extends BaseController
      */
     public function getAds()
     {
-
-        return [];
+        $set = Setting::get('shop');
+        $set['logo'] = tomedia($set['logo']);
+        $set['img'] = tomedia($set['img']);
+        return $set;
     }
 
 }

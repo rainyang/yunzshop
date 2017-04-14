@@ -48,6 +48,7 @@ class CreateImsYzGoodsTable extends Migration {
 			$table->integer('created_at')->nullable()->comment('建立时间');
 			$table->integer('deleted_at')->nullable();
 			$table->integer('updated_at')->nullable()->comment('更新时间');
+            $table->integer('is_plugin')->unsigned()->default(0)->comment('0为自营');
 		});
 	}
 

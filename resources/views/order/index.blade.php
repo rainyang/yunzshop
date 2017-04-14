@@ -163,6 +163,9 @@
                                 @section('shop_name')
                                     <label class="label label-info">总店</label>
                                 @show
+                                @if(!empty($order['refund_data']))
+                                    <label class="label label-info" style="background-color: #ef5555 !important;">{{$order['refund_data']['refund_type_name']}}</label>
+                                @endif
                                 @if( 0&&!empty($order['storename']))
                                     <label class="label label-primary">所属门店：{{$order['storename']}}</label>
                             @endif

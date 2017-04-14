@@ -46,6 +46,20 @@ class Order extends \app\common\models\Order
         return self::format($builder,$pageSize);
     }
 
+    /**
+     * @param $search
+     * @param $pageSize
+     * @return mixed
+     * 获取退换货订单
+     */
+    public static function getRefundOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->refund();
+        $list['total_price'] = $builder->sum('price');
+        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
+        return $list;
+    }
+
     //订单导出订单数据
     public static function getExportOrders($search)
     {
@@ -100,9 +114,14 @@ class Order extends \app\common\models\Order
         };
     }
 
+    public function scopeIsPlugin($query)
+    {
+        return $query->where('is_plugin', 0);
+    }
+
     public function scopeSearch($order_builder, $params)
     {
-
+        $order_builder->isPlugin();
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单
             if ($params['ambiguous']['field'] == 'order') {
