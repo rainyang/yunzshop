@@ -10,6 +10,7 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\events\order\CreatingOrder;
 use app\frontend\modules\member\services\MemberCartService;
+use Illuminate\Support\Facades\DB;
 use Request;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
@@ -33,13 +34,17 @@ class CreateController extends PreGeneratedController
         $orders = collect();
         $orders->push($this->getShopOrder());
         $orders->merge($this->getPluginOrders());
-        $order_ids = $orders->map(function ($order) {
-            /**
-             * @var $order PreGeneratedOrderModel
-             */
-            return $order->generate();
-            event(new AfterOrderCreatedEvent($order->getOrder()));
+        $order_ids = DB::transaction(function () use ($orders) {
+            return $orders->map(function ($order) {
+                /**
+                 * @var $order PreGeneratedOrderModel
+                 */
+                $order_id = $order->generate();
+                event(new AfterOrderCreatedEvent($order->getOrder()));
+                return $order_id;
+            });
         });
+
         //todo 返回什么信息
         $this->successJson('成功', ['order_id' => $order_ids[0]]);
     }

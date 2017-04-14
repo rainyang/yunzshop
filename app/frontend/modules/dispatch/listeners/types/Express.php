@@ -12,11 +12,14 @@ namespace app\frontend\modules\dispatch\listeners\types;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\OrderCreatedEvent;
 
+use app\common\exceptions\AppException;
 use app\common\models\OrderAddress;
 use app\frontend\modules\member\models\MemberAddress;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class Express
 {
+    use ValidatesRequests;
     private $event;
 
     public function onSave(OrderCreatedEvent $even)
@@ -55,8 +58,19 @@ class Express
 
     private function saveExpressInfo()
     {
-        $address = \YunShop::request()->get('address');
-
+        $request = \Request::capture();
+        //$request->input('address');
+        $address = json_decode($request->input('address'),true);
+        $this->validate(['address'=>$address],[
+                //'address' => 'required|array',
+                'address.address' => 'required|string',
+                'address.mobile' => 'required|string',
+                'address.username' => 'required|string',
+                'address.province' => 'required|string',
+                'address.city' => 'required|string',
+                'address.district' => 'required|string',
+            ]
+        );
         /*$address =['address' => '云霄路188-1',
             'mobile' => '18545571024',
             'username' => '高启',
@@ -86,5 +100,13 @@ class Express
             Express::class . '@onSave'
         );
     }
+    private function validate( $request, array $rules, array $messages = [], array $customAttributes = [])
+    {
 
+        $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
+        //$validator->errors();
+        if ($validator->fails()) {
+            throw new AppException($validator->errors()->first());
+        }
+    }
 }
