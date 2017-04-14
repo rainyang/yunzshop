@@ -140,7 +140,7 @@
                         </td>
 
                         <td>
-                            <a class='btn btn-default' href="{{ yzWebUrl('member.member.detail', array('uid' => $list->member_id)) }}" style="margin-bottom: 2px">用户信息</a>
+                            <a class='btn btn-default' href="{{ yzWebUrl('member.member.detail', array('id' => $list->member_id)) }}" style="margin-bottom: 2px">用户信息</a>
                         </td>
                     </tr>
                 @endforeach
