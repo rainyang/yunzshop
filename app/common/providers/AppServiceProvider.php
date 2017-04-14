@@ -2,6 +2,7 @@
 
 namespace app\common\providers;
 
+use app\common\models\AccountWechats;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Setting;
 use Illuminate\Support\ServiceProvider;
@@ -18,14 +19,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        /*Relation::morphMap([
-            'CommissionOrder' => \Yunshop\Commission\models\CommissionOrder::class,
-            //'videos' => App\Video::class,
-        ]);*/
+
         //微信接口不输出错误
         if (strpos(request()->getRequestUri(), '/api.php') >= 0) {
             error_reporting(0);
         }
+
+        //设置uniacid
+        Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+        //设置公众号信息
+        AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
 
         //开发模式下记录SQL
         if ($this->app->environment() !== 'production') {
@@ -66,8 +69,6 @@ class AppServiceProvider extends ServiceProvider
             );
         }
 
-        //设置uniacid
-        Setting::$uniqueAccountId = \YunShop::app()->uniacid;
 
     }
 
