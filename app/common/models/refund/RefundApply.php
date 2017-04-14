@@ -16,7 +16,7 @@ class RefundApply extends BaseModel
 {
     protected $table = 'yz_order_refund';
     protected $hidden = ['updated_at', 'created_at', 'uniacid', 'uid', 'order_id'];
-    protected $fillable = ['reason', 'images', 'order_id'];
+    protected $fillable = [];
     protected $appends = ['refund_type_name', 'status_name', 'button_models'];
     protected $attributes = [
         'images' => '[]',

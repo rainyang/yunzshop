@@ -60,7 +60,7 @@ class PayController extends ApiController
             'body' => $order->hasManyOrderGoods[0]->title,
             'extra' => ['type' => 1]
         ];
-        
+
         $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
         $data = $pay->doPay($query_str);
 

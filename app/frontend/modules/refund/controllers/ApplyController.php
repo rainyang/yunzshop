@@ -72,9 +72,10 @@ class ApplyController extends ApiController
         if (RefundApply::where('order_id', $request->input('order_id'))->count()) {
             throw new AppException('申请已提交,处理中');
         }
-        $refundApply = new RefundApply($request->input(['reason', 'content', 'images', 'refund_type', 'order_id']));
-
+        $refundApply = new RefundApply($request->only(['reason', 'content', 'images', 'refund_type', 'order_id']));
+        
         $refundApply->price = $order->price;
+        $refundApply->create_time = time();
         if (!$refundApply->save()) {
             throw new AppException('请求失败');
         }
