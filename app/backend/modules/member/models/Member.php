@@ -216,7 +216,7 @@ class Member extends \app\common\models\Member
         }
         if($filters['searchtime']){
             if($filters['times']){
-                $range = [strtotime($filters['times']['start']), strtotime($filters['times']['end'])];
+                $range = [$filters['times']['start'], $filters['times']['end']];
                 $query->whereBetween('createtime', $range);
             }
         }

@@ -42,44 +42,9 @@ class MemberController extends ApiController
             if (!empty($member_info)) {
                 $member_info = $member_info->toArray();
 
-                if (!empty($member_info['yz_member'])) {
-                    $member_info['alipay_name'] = $member_info['yz_member']['alipay_name'];
-                    $member_info['alipay'] = $member_info['yz_member']['alipay'];
-                    $member_info['province_name'] = $member_info['yz_member']['province_name'];
-                    $member_info['city_name'] = $member_info['yz_member']['city_name'];
-                    $member_info['area_name'] = $member_info['yz_member']['area_name'];
-                    $member_info['province'] = $member_info['yz_member']['province'];
-                    $member_info['city'] = $member_info['yz_member']['city'];
-                    $member_info['area'] = $member_info['yz_member']['area'];
-                    $member_info['address'] = $member_info['yz_member']['address'];
+                $data = MemberModel::userData($member_info, $member_info['yz_member']);
 
-                    if (!empty($member_info['yz_member']['group'])) {
-                        $member_info['group_id'] = $member_info['yz_member']['group']['id'];
-                        $member_info['group_name'] = $member_info['yz_member']['group']['group_name'];
-                    }
-
-                    if (!empty($member_info['yz_member']['level'])) {
-                        $member_info['level_id'] = $member_info['yz_member']['level']['id'];
-                        $member_info['level_name'] = $member_info['yz_member']['level']['level_name'];
-                    }
-                }
-
-                if (!empty($member_info['birthyear'] )) {
-                    $member_info['birthday'] = $member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday'];
-                } else {
-                    $member_info['birthday'] = '1970-01-01';
-                }
-
-
-                $order_info = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
-
-                $member_info['order'] = $order_info;
-
-                $member_info['is_agent'] = MemberModel::isAgent()->toArray();
-                $member_info['referral'] = MemberModel::getMyReferral();
-                $member_info['qr'] = MemberModel::getAgentQR();
-
-                return $this->successJson('', $member_info);
+                return $this->successJson('', $data);
             } else {
                 return $this->errorJson('用户不存在');
             }
@@ -231,18 +196,16 @@ class MemberController extends ApiController
      */
     public function addAgentApply()
     {
-        $mid = (\YunShop::request()->mid && \YunShop::request()->mid != 'undefined') ? \YunShop::request()->mid : 0;
-
         if (!\YunShop::app()->getMemberId()) {
             return $this->errorJson('请重新登录');
         }
         $sub_member_model = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
-        $sub_member_model->parent_id = $mid;
         $sub_member_model->status = 1;
+        $sub_member_model->apply_time = time();
 
         if (!$sub_member_model->save()) {
-           return $this->errorJson('会员上级信息保存失败');
+           return $this->errorJson('会员信息保存失败');
         }
 
         $realname = \YunShop::request()->realname;
@@ -252,6 +215,7 @@ class MemberController extends ApiController
 
         $member_mode->realname = $realname;
         $member_mode->mobile = $moible;
+
         if (!$member_mode->save()) {
             return $this->errorJson('会员信息保存失败');
         }
