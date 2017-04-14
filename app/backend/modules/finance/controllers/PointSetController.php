@@ -24,7 +24,11 @@ class PointSetController extends BaseController
     public function index()
     {
         $set = Setting::get('point.set');
-        $point_data = PointService::getPointData(\YunShop::request()->set, \YunShop::request()->enough, \YunShop::request()->give);
+        $point_data = PointService::getPointData(
+            \YunShop::request()->set,
+            \YunShop::request()->enough,
+            \YunShop::request()->give
+        );
         if ($point_data) {
             $point_data = $this->verifySetData($point_data);
             $result = (new PointService())->verifyPointData($point_data);
@@ -38,6 +42,12 @@ class PointSetController extends BaseController
         ])->render();
     }
 
+    /**
+     * @name 转换类型
+     * @author yangyang
+     * @param array $point_data
+     * @return mixed array
+     */
     private function verifySetData($point_data)
     {
         $point_data['money'] = floatval($point_data['money']);
