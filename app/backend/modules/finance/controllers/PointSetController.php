@@ -9,6 +9,7 @@
 namespace app\backend\modules\finance\controllers;
 
 
+use app\backend\modules\finance\services\PointService;
 use app\common\components\BaseController;
 use Setting;
 use app\common\helpers\Url;
@@ -23,28 +24,16 @@ class PointSetController extends BaseController
     public function index()
     {
         $set = Setting::get('point.set');
-        $point_data = \YunShop::request()->set;
-        $enoughs_data = \YunShop::request()->enough;
-        $give = \YunShop::request()->give;
-        if (!empty($enoughs_data)) {
-            foreach ($enoughs_data as $key => $value) {
-                //echo '<pre>';print_r(floatval($enoughs_data[$key]));exit;
-                $enough = floatval($value);
-                //echo '<pre>';print_r($enough);exit;
-                if ($enough > 0) {
-                    $enoughs[] = array('enough' => floatval($enoughs_data[$key]), 'give' => floatval($give[$key]));
-                }
-            }
-            $point_data['enoughs'] = $enoughs;
-            //echo '<pre>';print_r($point_data);exit;
-        }
+        $point_data = PointService::getPointData(
+            \YunShop::request()->set,
+            \YunShop::request()->enough,
+            \YunShop::request()->give
+        );
         if ($point_data) {
             $point_data = $this->verifySetData($point_data);
-            //echo '<pre>';print_r($point_data);exit;
-            if (Setting::set('point.set', $point_data)) {
-                return $this->message('积分基础设置保存成功', Url::absoluteWeb('finance.point-set'));
-            } else {
-                $this->error('积分基础设置保存失败！！');
+            $result = (new PointService())->verifyPointData($point_data);
+            if ($result) {
+                return $this->message($result, Url::absoluteWeb('finance.point-set'));
             }
         }
 
@@ -53,6 +42,12 @@ class PointSetController extends BaseController
         ])->render();
     }
 
+    /**
+     * @name 转换类型
+     * @author yangyang
+     * @param array $point_data
+     * @return mixed array
+     */
     private function verifySetData($point_data)
     {
         $point_data['money'] = floatval($point_data['money']);
