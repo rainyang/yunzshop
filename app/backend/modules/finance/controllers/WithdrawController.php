@@ -53,9 +53,16 @@ class WithdrawController extends BaseController
     {
         $pageSize = 20;
 
-        $search = \YunShop::request()->search;
+        $requestSearch = \YunShop::request()->search;
+        if($requestSearch){
+            $requestSearch = array_filter($requestSearch, function ($item) {
+                return $item !== '';// && $item !== 0;
+            });
 
-        $list = Withdraw::getWithdrawList($search)
+        }
+
+
+        $list = Withdraw::getWithdrawList($requestSearch)
             ->orderBy('created_at','desc')
             ->paginate($pageSize);
 

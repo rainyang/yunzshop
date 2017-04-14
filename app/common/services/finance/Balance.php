@@ -9,11 +9,25 @@
 namespace app\common\services\finance;
 
 
+use app\common\facades\Setting;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use app\common\models\Member;
 
 
+
+
+
+function sort_recharges($a, $b)
+{
+    $enough1 = floatval($a['enough']);
+    $enough2 = floatval($b['enough']);
+    if ($enough1 == $enough2) {
+        return 0;
+    } else {
+        return ($enough1 < $enough2) ? 1 : -1;
+    }
+}
 class Balance
 {
     //余额变动方式，
@@ -67,7 +81,6 @@ class Balance
         return $this->validatorServiceType();
     }
 
-    //todo 支付回调
     public function payResult($data)
     {
         $ordersn = 'RV20170414092235224369';
@@ -86,10 +99,39 @@ class Balance
         $this->service_type = \app\common\models\finance\Balance::BALANCE_RECHARGE;
         $this->attachedType();
 
-        //echo '<pre>'; print_r($rechargeMode->toArray()); exit;
-
-        return $this->updateRechargeStatus($rechargeMode->id);
+        $result = $this->updateRechargeStatus($rechargeMode->id);
+        if ($result === true) {
+            $result = $this->rechargeSale();
+            echo '<pre>'; print_r($result); exit;
+        }
     }
+
+    private function rechargeSale()
+    {
+        $rechargeSet = Setting::get('finance.balance');
+        return $this->rechargeSaleMath($rechargeSet['sale']);
+    }
+
+    private function rechargeSaleMath($data = [])
+    {
+        usort($data, "sort_recharges");
+        echo '<pre>'; print_r($data); exit;
+        foreach ($data as $datum) {
+
+        }
+
+    }
+    function sort_recharges($a, $b)
+    {
+        $enough1 = floatval($a['enough']);
+        $enough2 = floatval($b['enough']);
+        if ($enough1 == $enough2) {
+            return 0;
+        } else {
+            return ($enough1 < $enough2) ? 1 : -1;
+        }
+    }
+
 
 
     /**
