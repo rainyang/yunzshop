@@ -24,6 +24,7 @@ class Balance extends BaseModel
 
     protected $guarded= [''];
 
+    protected $appends = ['service_type_name'];
 
 
     const BALANCE_RECHARGE  = 1; //充值
@@ -43,6 +44,23 @@ class Balance extends BaseModel
     const CANCEL_DEDUCTION  = 8; //抵扣取消余额回滚
 
     const CANCEL_AWARD      = 9; //奖励取消回滚
+
+    public static $balanceComment = [
+        self::BALANCE_RECHARGE=>'充值',
+        self::BALANCE_CONSUME=>'消费',
+        self::BALANCE_TRANSFER=>'转让',
+        self::BALANCE_DEDUCTION=>'抵扣',
+        self::BALANCE_AWARD=>'奖励',
+        self::BALANCE_WITHDRAWAL=>'余额提现',
+        self::BALANCE_INCOME=>'提现至余额',
+        self::CANCEL_DEDUCTION=>'抵扣取消余额回滚',
+        self::CANCEL_AWARD=>'奖励取消回滚',
+    ];
+
+    public static function getBalanceComment($balance)
+    {
+        return isset(static::$balanceComment[$balance]) ? static::$balanceComment[$balance]: '';
+    }
 
     /*
      * 模型管理，关联会员数据表
@@ -68,7 +86,7 @@ class Balance extends BaseModel
      * @Author yitian */
     public function getServiceTypeNameAttribute()
     {
-        return BalanceService::attachedServiceTypeName($this);
+        return static::getBalanceComment($this->attributes['service_type']);
     }
 
     /*
