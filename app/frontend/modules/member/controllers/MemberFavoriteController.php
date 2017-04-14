@@ -17,13 +17,10 @@ class MemberFavoriteController extends ApiController
 {
     public function index()
     {
-        //todo 需要增加商品信息显示
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = '9';
         $favoriteList = MemberFavorite::getFavoriteList($memberId);
 
         return $this->successJson('成功', $favoriteList);
-
     }
 
     public function isFavorite()
