@@ -106,7 +106,7 @@ class RefundApply extends BaseModel
             self::WAIT_REFUND => '待退款',
             self::COMPLETE => '完成',
         ];
-        
+
         return $mapping[$this->status];
     }
 
