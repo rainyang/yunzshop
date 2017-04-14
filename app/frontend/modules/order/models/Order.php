@@ -29,6 +29,6 @@ class Order extends \app\common\models\Order
     }
     public function scopeGetOrderCountGroupByStatus($query, $status = []){
         $query->where('uid',\YunShop::app()->getMemberId());
-        return parent::scopeGetOrderCountGroupByStatus($query, $status = []);
+        return parent::scopeGetOrderCountGroupByStatus($query, $status);
     }
 }

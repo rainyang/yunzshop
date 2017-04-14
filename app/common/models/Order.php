@@ -155,7 +155,7 @@ class Order extends BaseModel
     {
         //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
-            ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'button_models'])->toArray();
+            ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name','has_one_pay_type','button_models'])->toArray();
         foreach ($status as $state) {
             if (!in_array($state, array_column($status_counts, 'status'))) {
                 $status_counts[] = ['status' => $state, 'total' => 0];
