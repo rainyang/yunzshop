@@ -58,6 +58,18 @@ class BalanceRecharge extends BaseModel
     }
 
     /*
+    * 通过记录 ordersn 值获取记录
+    *
+    * @params int $recordId 记录ID
+    *
+    * @return object
+    * @Author yitian */
+    public static function getRechargeRecordBy0rdersn($ordersn)
+    {
+        return self::uniacid()->where('ordersn', $ordersn)->first();
+    }
+
+    /*
      * 获取充值记录分页列表
      *
      * return object

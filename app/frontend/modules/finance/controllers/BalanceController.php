@@ -16,10 +16,18 @@ use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use app\common\models\Withdraw;
 use app\common\models\finance\Balance as BalanceModel;
+use app\common\services\finance\Balance;
 use app\common\services\PayFactory;
 
 class BalanceController extends ApiController
 {
+    public function test()
+    {
+        $model = new Balance();
+        $result = $model->payResult();
+        echo '<pre>'; print_r($result); exit;
+    }
+
     /**
      * 会员余额充值接口
      * @return \Illuminate\Http\JsonResponse
@@ -32,9 +40,9 @@ class BalanceController extends ApiController
             $rechargeMoney = trim(\YunShop::request()->recharge_money);
             $payType = \YunShop::request()->pay_type;
 
-            //$memberId = 55;
-            //$rechargeMoney = 100;
-            //$payType = 2;
+            $memberId = 55;
+            $rechargeMoney = 100;
+            $payType = 2;
 
             if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $rechargeMoney)) {
                 return $this->errorJson('请输入有效的充值金额，允许两位小数');
