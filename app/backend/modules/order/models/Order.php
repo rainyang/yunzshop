@@ -51,6 +51,20 @@ class Order extends \app\common\models\Order
         return $list;
     }
 
+    /**
+     * @param $search
+     * @param $pageSize
+     * @return mixed
+     * 获取退换货订单
+     */
+    public static function getRefundOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->refund();
+        $list['total_price'] = $builder->sum('price');
+        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
+        return $list;
+    }
+
     //订单导出订单数据
     public static function getExportOrders($search)
     {

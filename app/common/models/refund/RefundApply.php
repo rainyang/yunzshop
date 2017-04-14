@@ -121,4 +121,14 @@ class RefundApply extends BaseModel
 
         static::observe(new RefundApplyObserver());
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public static function getRefundById($id)
+    {
+        return self::find($id);
+    }
+    
 }
