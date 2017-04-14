@@ -11,7 +11,7 @@ namespace app\frontend\modules\dispatch\controllers;
 
 use app\common\components\ApiController;
 
-class ListController extends ApiController
+class ExpressListController extends ApiController
 {
     public function index()
     {
