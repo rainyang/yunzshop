@@ -10,42 +10,51 @@ namespace app\backend\modules\order\models;
 
 class Order extends \app\common\models\Order
 {
+    private static function format($builder,$pageSize){
+        $list['total_price'] = $builder->sum('price');
+        $list += $builder->orderBy('id','desc')->paginate($pageSize)->appends(['button_models'])->toArray();
+        return $list;
+    }
     public static function getAllOrders($search, $pageSize)
     {
-        $builder = Order::orders($search, $pageSize);
-        $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
-        return $list;
-
+        $builder = Order::orders($search);
+        return self::format($builder,$pageSize);
     }
 
     public static function getWaitPayOrders($search, $pageSize)
     {
         $builder = Order::orders($search, $pageSize)->waitPay();
-        $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
-        return $list;
+        return self::format($builder,$pageSize);
     }
 
     public static function getWaitSendOrders($search, $pageSize)
     {
         $builder = Order::orders($search, $pageSize)->waitSend();
-        $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
-        return $list;
+        return self::format($builder,$pageSize);
     }
 
     public static function getWaitReceiveOrders($search, $pageSize)
     {
         $builder = Order::orders($search, $pageSize)->waitReceive();
-        $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
-        return $list;
+        return self::format($builder,$pageSize);
+
     }
 
     public static function getCompletedOrders($search, $pageSize)
     {
         $builder = Order::orders($search, $pageSize)->completed();
+        return self::format($builder,$pageSize);
+    }
+
+    /**
+     * @param $search
+     * @param $pageSize
+     * @return mixed
+     * 获取退换货订单
+     */
+    public static function getRefundOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->refund();
         $list['total_price'] = $builder->sum('price');
         $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
@@ -80,7 +89,7 @@ class Order extends \app\common\models\Order
     {
         $order_builder->search($search);
 
-        $list = $order_builder->with([
+        $orders = $order_builder->with([
             'belongsToMember' => self::member_builder(),
             'hasManyOrderGoods' => self::order_goods_builder(),
             'hasOneDispatchType',
@@ -88,7 +97,7 @@ class Order extends \app\common\models\Order
             'address',
             'hasOnePayType'
         ]);
-        return $list;
+        return $orders;
     }
 
     private static function member_builder()

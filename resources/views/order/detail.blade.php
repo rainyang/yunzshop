@@ -188,7 +188,7 @@
 
                 </div>
 
-                @if (!empty($refund))
+                @if (!empty($order['refund_data']))
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         退款申请
@@ -197,22 +197,22 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款类型 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{{$r_type[$refund['rtype']]}}</p>
+                                <p class="form-control-static">{{$order['refund_data']['refund_type_name']}}</p>
                             </div>
                         </div>
 
-                        @if ($refund['rtype'] != 2)
+                        @if ($order['refund_data']['refund_way_type'] != 2)
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款金额 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{{$refund['applyprice']}}</p>
+                                <p class="form-control-static">{{$order['refund_data']['apply_price']}}</p>
                             </div>
                         </div>
                         @endif
 
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">
-                                @if ($refund['rtype'] == 2)
+                                @if ($order['refund_data']['refund_way_type'] == 2)
                                     换货
                                 @else
                                     退款
@@ -220,12 +220,12 @@
                                     原因 :
                             </label>
                             <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{{$refund['reason']}}</p>
+                                <p class="form-control-static">{{$order['refund_data']['reason']}}</p>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">
-                                @if ($refund['rtype'] == 2)
+                                @if ($order['refund_data']['refund_way_type'] == 2)
                                     换货
                                 @else
                                     退款
@@ -234,33 +234,33 @@
                             </label>
                             <div class="col-sm-9 col-xs-12">
                                 <p class="form-control-static">
-                                    {!! empty($refund['content'])?'无':$refund['content'] !!}</p>
+                                    {!! empty($order['refund_data']['content'])?'无':$order['refund_data']['content'] !!}</p>
                             </div>
                         </div>
-                        @if (!empty($refund['imgs']))
+                        @if (!empty($order['refund_data']['images']))
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">图片凭证 :</label>
                             <div class="col-sm-9 col-xs-12">
                                 <p class="form-control-static">
-                                    @foreach ($refund['imgs'] as $k1 => $v1)
+                                    @foreach ($order['refund_data']['images'] as $k1 => $v1)
                                         <a target="_blank" href="{{tomedia($v1)}}"><img style='width:100px;;padding:1px;border:1px solid #ccc'  src="{{tomedia($v1)}}"></a>
                                     @endforeach
                                 </p>
                             </div>
                         </div>
                         @endif
-                        @if ($refund['status'] == 1)
+                        @if ($order['refund_data']['status'] == 1)
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款时间 :</label>
                             <div class="col-sm-9 col-xs-12">
                                 <div class="form-control-static">
-                                    {{$order['refundtime']}}
+                                    {{$order['refund_data']['refund_time']}}
                                 </div>
                             </div>
                         </div>
                         @endif
 
-                        @if ($order['paytype'] == 26 || $order['paytype'] == 25)
+                        @if ($order['has_one_pay_type']['id'] == 1)
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">到账时间 :</label>
                             <div class="col-sm-9 col-xs-12">
@@ -269,7 +269,7 @@
                         </div>
                         @endif
 
-                        @if ($order['paytype'] == 27 || $order['paytype'] == 28) && empty($order['trade_no'])
+                        @if ($order['has_one_pay_type']['id'] != 1)
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款操作 :</label>
                             <div class="col-sm-9 col-xs-12">
@@ -281,13 +281,13 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
-                                @if ($refund['status'] == 0 || $refund['status'] >= 3)
+                                @if ($order['refund_data']['status'] == 0 || $order['refund_data']['status'] >= 3)
                                 <a class="btn btn-danger btn-sm" href="javascript:;" onclick="$('#modal-refund').find(':input[name=id]').val('{{$order['id']}}')" data-toggle="modal" data-target="#modal-refund">处理{{$r_type[$refund['rtype']]}}申请</a>
-                                @elseif ($refund['status'] == -1 || $refund['status'] == 2)
+                                @elseif ($order['refund_data']['status'] == -1 || $order['refund_data']['status'] == 2)
                                 <span class='label label-default'>已拒绝</span>
-                                @elseif ($refund['status'] == -2)
+                                @elseif ($order['refund_data']['status'] == -2)
                                 <span class='label label-default'>客户取消</span>
-                                @elseif($refund['status'] == 1)
+                                @elseif($order['refund_data']['status'] == 1)
                                 <span class='label label-danger'>已完成</span>
                                 @endif
                             </div>
