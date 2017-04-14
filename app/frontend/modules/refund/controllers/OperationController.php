@@ -22,5 +22,15 @@ class OperationController extends ApiController
             'express_company_name' => 'required|filled|string',
         ]);
         RefundOperationService::refundSend();
+        return $this->successJson();
     }
+    public function cancel(\Request $request){
+        $this->validate($request,[
+            'refund_id' => 'required|filled|integer',
+        ]);
+        RefundOperationService::cancel();
+        return $this->successJson();
+
+    }
+
 }
