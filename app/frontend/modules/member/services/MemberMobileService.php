@@ -41,7 +41,7 @@ class MemberMobileService extends MemberService
 
                 $yz_member = MemberShopInfo::getMemberShopInfo($member_info['uid'])->toArray();
                 $data = MemberModel::userData($member_info, $yz_member);
-                
+
                 return show_json(1, $data);
             } else{
                 return show_json(0, "手机号或密码错误");
