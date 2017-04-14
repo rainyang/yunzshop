@@ -199,6 +199,8 @@ return [
         //短信发送
         Toplan\PhpSms\PhpSmsServiceProvider::class,
         Toplan\Sms\SmsManagerServiceProvider::class,
+        //计划任务
+        Liebig\Cron\Laravel5ServiceProvider::class,
     ],
 
     /*
