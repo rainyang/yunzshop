@@ -18,7 +18,7 @@ class RefundCancel extends ChangeStatusOperation
     protected $name = '取消';
     protected $timeField = 'send_time';
 
-    protected $past_tense_class_name = 'OrderSent';
+    protected $pastTenseClassName = '';
 
     protected function updateTable()
     {

@@ -69,14 +69,14 @@ class BalanceController extends BaseController
         $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
         if ($search) {
             $detailList = \app\common\models\finance\Balance::getSearchPageList($pageSize,$search);
-            //echo '<pre>'; print_r($detailList->toArray()); exit;
         }
 
         $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
         return view('finance.balance.detail', [
-            'detailList' => $detailList,
-            'pager' => $pager,
+            'detailList'    => $detailList,
+            'pager'         => $pager,
+            'search'        => $search,
             'serviceType'   => \app\common\models\finance\Balance::$balanceComment
         ])->render();
     }
