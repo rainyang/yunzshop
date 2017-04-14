@@ -13,6 +13,7 @@ use app\common\models\order\Address;
 use app\common\models\order\Express;
 use app\common\models\order\Pay;
 use app\common\models\order\Remark;
+use app\common\models\refund\RefundApply;
 use app\frontend\modules\order\services\status\StatusServiceFactory;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
@@ -21,9 +22,10 @@ class Order extends BaseModel
 {
     public $table = 'yz_order';
     private $StatusService;
+    private $RefundData;
     protected $fillable = [];
     protected $guarded = ['id'];
-    protected $appends = ['status_name', 'pay_type_name'];
+    protected $appends = ['status_name', 'pay_type_name', 'refund_data'];
     protected $search_fields = ['id', 'order_sn'];
     //protected $attributes = ['discount_price'=>0];
     const CLOSE = -1;
@@ -58,7 +60,10 @@ class Order extends BaseModel
     {
         return $query->where(['status' => 3]);
     }
-
+    public function scopeRefund($query)
+    {
+        return $query->whereNotNull('refund_id');
+    }
     public function scopeCancelled($query)
     {
         return $query->where(['status' => -1]);
@@ -116,6 +121,18 @@ class Order extends BaseModel
         return $this->StatusService;
     }
 
+    /**
+     * @return mixed
+     * 增加退换货订单 退换数据
+     */
+    public function getRefundDataAttribute()
+    {
+        if (!empty($this->refund_id)) {
+            $this->RefundData = RefundApply::getRefundById($this->refund_id);
+        }
+        return $this->RefundData;
+    }
+    
     //收货地址
     public function address()
     {
