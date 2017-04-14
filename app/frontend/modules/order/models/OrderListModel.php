@@ -16,7 +16,7 @@ class OrderListModel extends Order
     {
         $orders = self::with(['hasManyOrderGoods'=>function($query){
             return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title','goods_option_id','goods_option_title']);
-        }])->where('uid','=',$uid);
+        }])->where('uid','=',$uid)->orderBy('id','desc');
         return $orders;
     }
 
