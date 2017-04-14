@@ -62,6 +62,7 @@ class Order extends BaseModel
     }
     public function scopeRefund($query)
     {
+        echo "<pre>"; print_r(2);exit;
         return $query->where('refund_id','>','0');
     }
     public function scopeCancelled($query)
