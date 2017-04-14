@@ -118,7 +118,7 @@
             html+='<span class="input-group-addon">元 赠送</span>';
             html+='<input type="text" class="form-control wid100"  name="give[]"  />';
             html+='<span class="input-group-addon">积分</span>';
-            html+='<div class="input-group-btn"><button class="btn btn-danger" onclick="removeRechargeItem(this)"><i class="fa fa-remove"></i></button></div>';
+            html+='<div class="input-group-btn"><button class="btn btn-danger" onclick="removeConsumeItem(this)"><i class="fa fa-remove"></i></button></div>';
             html+='</div>';
             $('.recharge-items').append(html);
         }
