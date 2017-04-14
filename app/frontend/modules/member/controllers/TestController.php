@@ -23,12 +23,12 @@ use app\frontend\modules\member\services\MemberService;
 use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class TestController extends BaseController
+class TestController extends ApiController
 {
    public function index()
    {
 
-//       $pay = new WechatPay();
+       $pay = new WechatPay();
 //       $str  = $pay->setUniacidNo(122, 5);
 //       echo $str . '<BR>';
 //       echo substr($str, 17, 5);
@@ -36,14 +36,15 @@ class TestController extends BaseController
      //  $result = $pay->doRefund('1491193485',  0.1, 0.1);
 //       echo '<pre>';print_r($result);exit;
 //
- //     $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
+      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
+      echo '<pre>';print_r($data);exit;
+exit;
 
-
-/*       return view('order.pay', [
+       return view('order.pay', [
            'config' => $data['config'],
            'js' => $data['js']
        ])->render();
-exit;*/
+exit;
        $pay = new AliPay();
 
       //\\ $p = $pay->doRefund('2017032421001004920213140182', '1', '0.1');
