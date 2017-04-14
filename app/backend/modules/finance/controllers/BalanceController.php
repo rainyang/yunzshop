@@ -161,20 +161,7 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    /**
-     * 余额提现详情
-     *
-     * @return string
-     * @Author yitian */
-    public function withdrawInfo()
-    {
-        $withdrawModel = Withdraw::getBalanceWithdrawById(\YunShop::request()->id)->toArray();
 
-        return view('finance.balance.withdraw', [
-            'item' => $withdrawModel,
-            'set' => '',
-        ])->render();
-    }
 
     /**
      * 充值记录

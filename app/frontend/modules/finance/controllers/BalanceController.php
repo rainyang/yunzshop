@@ -278,6 +278,7 @@ class BalanceController extends ApiController
         $result = $pay->doPay($this->payData($data));
         $result['js'] = json_decode($result['js'], 1);
 
+        echo '<pre>'; print_r($result); exit;
         return $result;
     }
 
