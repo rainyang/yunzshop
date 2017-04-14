@@ -256,8 +256,8 @@ class MemberRelation extends BackendModel
             return;
         }
 
-        $become_child =  intval($set['become_child']);
-        $become_check = intval($set['become_check']);
+        $become_child =  intval($set->become_child);
+        $become_check = intval($set->become_check);
 
         if ($parent_is_agent && empty($member->parent_id)) {
             if ($member->member_id != $parent->member_id) {
@@ -273,7 +273,7 @@ class MemberRelation extends BackendModel
             }
         }
 
-        if (empty($set['become']) ) {
+        if (empty($set->become) ) {
             $member->is_agent = 1;
 
             if ($become_check == 0) {
@@ -298,14 +298,20 @@ class MemberRelation extends BackendModel
      */
     public static function checkOrderConfirm()
     {
-        $set = self::getSetInfo()->first()->toArray();
+        $set = self::getSetInfo()->first();
+
+        if (empty($set)) {
+            return;
+        }
+
+
         $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         if (empty($member)) {
             return;
         }
 
-        $become_child = intval($set['become_child']);
+        $become_child = intval($set->become_child);
 
         if (empty($become_child)) {
             $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
@@ -340,13 +346,18 @@ class MemberRelation extends BackendModel
      */
     public static function checkOrderPay()
     {
-        $set = self::getSetInfo()->first()->toArray();
+        $set = self::getSetInfo()->first();
+
+        if (empty($set)) {
+            return;
+        }
+
         $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
         if (empty($member)) {
             return;
         }
 
-        $become_child = intval($set['become_child']);
+        $become_child = intval($set->become_child);
 
         if (empty($become_child)) {
             $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
@@ -372,7 +383,7 @@ class MemberRelation extends BackendModel
         $isagent = $member->is_agent == 1 && $member->status == 2;
 
         if (!$isagent) {
-            if (intval($set['become']) == 4 && !empty($set['become_goods_id'])) {
+            if (intval($set->become) == 4 && !empty($set->become_goods_id)) {
                 $result = self::checkOrderGoods($set['become_goods_id']);
 
                 if ($result) {
@@ -386,8 +397,8 @@ class MemberRelation extends BackendModel
         }
 
         //发展下线资格
-        if (!$isagent && empty($set['become_order'])) {
-            if ($set['become'] == 2 || $set['become'] == 3) {
+        if (!$isagent && empty($set->become_order)) {
+            if ($set->become == 2 || $set->become == 3) {
                 $parentisagent = true;
 
                 if (!empty($member->parent_id)) {
@@ -400,18 +411,18 @@ class MemberRelation extends BackendModel
                 if ($parentisagent) {
                     $can = false;
 
-                    if ($set['become'] == '2') {
+                    if ($set->become == '2') {
                         $ordercount = OrderListModel::getCostTotalNum($member->member_id);
 
-                        $can = $ordercount >= intval($set['become_ordercount']);
-                    } else if ($set['become'] == '3') {
+                        $can = $ordercount >= intval($set->become_ordercount);
+                    } else if ($set->become == '3') {
                         $moneycount = OrderListModel::getCostTotalPrice($member->member_id);
 
-                        $can = $moneycount >= floatval($set['become_moneycount']);
+                        $can = $moneycount >= floatval($set->become_moneycount);
                     }
 
                     if ($can) {
-                        $become_check = intval($set['become_check']);
+                        $become_check = intval($set->become_check);
 
                         $member->is_agent = 1;
 
@@ -440,7 +451,12 @@ class MemberRelation extends BackendModel
      */
     public static function checkOrderFinish()
     {
-        $set = self::getSetInfo()->first()->toArray();
+        $set = self::getSetInfo()->first();
+
+        if (empty($set)) {
+            return;
+        }
+
         $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         if (empty($member)) {
@@ -449,8 +465,8 @@ class MemberRelation extends BackendModel
 
         $isagent = $member->is_agent == 1 && $member->status == 2;
 
-        if (!$isagent && $set['become_order'] == 1) {
-            if ($set['become'] == 2 || $set['become'] == 3) {
+        if (!$isagent && $set->become_order == 1) {
+            if ($set->become == 2 || $set->become == 3) {
                 $parentisagent = true;
 
                 if (!empty($member->parent_id)) {
@@ -463,18 +479,18 @@ class MemberRelation extends BackendModel
                 if ($parentisagent) {
                     $can = false;
 
-                    if ($set['become'] == '2') {
+                    if ($set->become == '2') {
                         $ordercount = OrderListModel::getCostTotalNum($member->member_id);
 
-                        $can = $ordercount >= intval($set['become_ordercount']);
-                    } else if ($set['become'] == '3') {
+                        $can = $ordercount >= intval($set->become_ordercount);
+                    } else if ($set->become == '3') {
                         $moneycount = OrderListModel::getCostTotalPrice($member->member_id);
 
-                        $can = $moneycount >= floatval($set['become_moneycount']);
+                        $can = $moneycount >= floatval($set->become_moneycount);
                     }
 
                     if ($can) {
-                        $become_check = intval($set['become_check']);
+                        $become_check = intval($set->become_check);
 
                         $member->is_agent = 1;
 
