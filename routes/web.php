@@ -52,6 +52,9 @@ Route::any('/', function () {
 
         return;
     }
+    if (strpos(request()->getRequestUri(), '/app/') !== false) {
+        return redirect('/addons/yun_shop/index.html');
+    }
     //后台
     if (strpos(request()->getRequestUri(), '/web/') !== false) {
         //如未设置当前公众号则加到选择公众号列表
