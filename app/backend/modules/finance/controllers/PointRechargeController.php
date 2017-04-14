@@ -33,10 +33,10 @@ class PointRechargeController extends BaseController
             //echo '<pre>';print_r($data['point']);exit;
             if ($point < 0) {
                 $data['point_income_type'] = -1;
-                $data['remark'] = '后台扣除[' . $point . ']积分';
+                $data['remark'] = '后台扣除[' . $data['point'] . ']积分';
             } else {
                 $data['point_income_type'] = 1;
-                $data['remark'] = '后台充值[' . $point . ']积分';
+                $data['remark'] = '后台充值[' . $data['point'] . ']积分';
             }
             $point_service = new PointService($data);
             $point_model = $point_service->changePoint();
