@@ -78,6 +78,7 @@
     height: 34px;
     line-height: 20px;
     margin:0;
+    background:#eee;
 }
 #member-blade.rightlist .input-group .form-input .form-control{
     width: 60%;
@@ -90,7 +91,7 @@
     margin:0;
 }
 #member-blade.rightlist .input-group .form-input .form-control.price{
-    width:33%;
+    width:32%;
     float: left;
     margin-right:0 ;
 }

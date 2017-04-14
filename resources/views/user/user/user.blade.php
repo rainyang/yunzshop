@@ -14,7 +14,7 @@
             <form action="./index.php" method="get" class="form-horizontal" role="form">
                 <input type="hidden" name="c" value="site"/>
                 <input type="hidden" name="a" value="entry"/>
-                <input type="hidden" name="m" value="sz_yi"/>
+                <input type="hidden" name="m" value="yun_shop"/>
                 <input type="hidden" name="do" value="QDaf"/>
                 <input type="hidden" name="route" value="user.user.index"/>
                 <div class="form-group col-xs-12 col-sm-8 col-lg-5">

@@ -12,7 +12,9 @@ use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberShopInfo;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberRelation as Relation;
+use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
+use app\common\helpers\Url;
 use app\common\models\Goods;
 
 class MemberRelationController extends BaseController
@@ -131,6 +133,24 @@ class MemberRelationController extends BaseController
         ])->render();
     }
 
+
+    public function applyProtocol()
+    {
+        $info = Setting::get("apply_protocol");
+        
+        $requestProtocol = \YunShop::request()->protocol;
+        if($requestProtocol){
+            $request = Setting::set('apply_protocol',$requestProtocol);
+            if($request){
+                return $this->message('保存成功', Url::absoluteWeb('member.member-relation.apply-protocol'));
+            }
+        }
+        
+        return view('member.apply-protocol', [
+            'info' => $info,
+        ])->render();
+    }
+
     public function chkApply()
     {
         $id = \YunShop::request()->id;
@@ -138,6 +158,7 @@ class MemberRelationController extends BaseController
         $member_shop_info_model = MemberShopInfo::getMemberShopInfo($id);
 
         if ($member_shop_info_model) {
+            $member_shop_info_model->is_agent = 1;
             $member_shop_info_model->status = 2;
 
             if ($member_shop_info_model->save()) {

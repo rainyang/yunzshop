@@ -108,6 +108,7 @@ class Menu extends BaseModel
             $menuList = static::select('id','name','url','url_params','permit','menu','icon','parent_id','sort','item')
                 ->where(['parent_id' => $parentId,'status'=>self::STATUS_ENABLED])
                 ->with('childs')
+                ->orderby('sort')
                 ->get();
 
             if($menuList){
@@ -145,6 +146,29 @@ class Menu extends BaseModel
 
         return $current;
     }
+
+    /**
+     * 获取 item from route
+     * @param $route
+     * @param array $menuList
+     * @return array|int|mixed|string
+     */
+    public static function getCurrentItemByRoute($route, array $menuList)
+    {
+        static $current = null;
+        foreach($menuList as $key=>$value){
+            if(isset($value['url']) && $value['url'] == $route){
+                $current = $key;
+                break;
+            }
+            if(isset($value['child']) && $value['child']){
+                $current = self::getCurrentItemByRoute($route,$value['child']);
+            }
+        }
+
+        return $current;
+    }
+
 
     public static function getItemByRoute($route)
     {

@@ -4,6 +4,7 @@ namespace app\backend\modules\coupon\controllers;
 use app\backend\modules\coupon\models\Coupon;
 use app\common\helpers\PaginationHelper;
 use app\common\models\MemberCoupon;
+use app\common\helpers\Url;
 
 /**
  * Created by PhpStorm.
@@ -13,6 +14,7 @@ use app\common\models\MemberCoupon;
  */
 class CouponController extends \app\common\components\BaseController
 {
+    //优惠券列表
     public function index()
     {
         $list = Coupon::uniacid()->paginate(20)->toArray();
@@ -32,6 +34,7 @@ class CouponController extends \app\common\components\BaseController
         ])->render();
     }
 
+    //添加优惠券
     public function create()
     {
         $coupon = new Coupon();
@@ -41,6 +44,7 @@ class CouponController extends \app\common\components\BaseController
         ])->render();
     }
 
+    //编辑优惠券
     public function edit()
     {
         $coupon_id = intval(\YunShop::request()->id);
@@ -59,6 +63,32 @@ class CouponController extends \app\common\components\BaseController
             'coupon' => $coupon,
             'var' => \YunShop::app()->get(),
         ])->render();
+    }
+
+    //删除优惠券
+    public function destory()
+    {
+        $coupon_id = intval(\YunShop::request()->id);
+        if (!$coupon_id) {
+            $this->error('请传入正确参数.');
+        }
+
+        $coupon = Coupon::getCouponById($coupon_id);
+        if (!($coupon->first())) {  //空collection
+            return $this->message('无此记录或者已被删除.', '', 'error');
+        }
+
+        $usageCount = Coupon::getUsageCount($coupon_id)->first()->toArray();
+        if($usageCount['has_many_member_coupon_count'] > 0){
+            return $this->message('优惠券已被领取且尚未使用,因此无法删除', Url::absoluteWeb('coupon.coupon'), 'error');
+        }
+
+        $res = $coupon->delete();
+        if ($res) {
+            return $this->message('删除优惠券成功', Url::absoluteWeb('coupon.coupon'));
+        } else {
+            return $this->message('删除优惠券失败', '', 'error');
+        }
     }
 
 }

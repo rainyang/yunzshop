@@ -23,7 +23,7 @@ use app\frontend\modules\member\services\MemberService;
 use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class TestController extends ApiController
+class TestController extends BaseController
 {
    public function index()
    {
@@ -55,7 +55,7 @@ exit;
 
    public function loginApi()
    {
-       $login_api = 'http://test.yunzshop.com/addons/sz_yi/api.php?i=2&route=member.login.index&type=1';
+       $login_api = request()->getSchemeAndHttpHost() . '/addons/sz_yi/api.php?i=2&route=member.login.index&type=1';
 
        redirect($login_api)->send();
    }
@@ -120,8 +120,8 @@ exit;
    public function runEvent()
    {
        $model = MemberShopInfo::getMemberShopInfo(146);
-
        event(new BecomeAgent(\YunShop::request()->mid, $model));
+
    }
 
     /**

@@ -33,7 +33,7 @@ class MemberOfficeAccountService extends MemberService
     {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
-        $mid          = \YunShop::app()->uniacid ? \YunShop::app()->uniacid : 0;
+        $mid          = \YunShop::app()->mid ? \YunShop::app()->mid : 0;
 
         $pay = Setting::get('shop.pay');
 
@@ -92,7 +92,7 @@ class MemberOfficeAccountService extends MemberService
                     }
 
                     if (MemberShopInfo::isBlack($member_id)) {
-                        return json_encode(['status'=>-1, 'result'=>'黑名单用户，请联系管理员']);
+                        return show_json(-1, '黑名单用户，请联系管理员');
                     }
 
                     //更新mc_members
@@ -152,7 +152,6 @@ class MemberOfficeAccountService extends MemberService
                     $sub_data = array(
                         'member_id' => $member_id,
                         'uniacid' => $uniacid,
-                        'parent_id' => $mid,
                         'group_id' => $default_subgroup_id,
                         'level_id' => $default_sublevel_id,
                     );

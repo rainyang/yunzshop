@@ -12,8 +12,6 @@ namespace app\common\services\finance;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use app\common\models\Member;
-use app\common\services\Pay;
-use app\common\services\PayFactory;
 
 
 class Balance
@@ -70,9 +68,27 @@ class Balance
     }
 
     //todo 支付回调
-    public function payResult()
+    public function payResult($data)
     {
+        $ordersn = 'RV20170414092235224369';
+        $rechargeMode = BalanceRecharge::getRechargeRecordBy0rdersn($ordersn);
 
+        $this->data = array(
+            'member_id'         => $rechargeMode->member_id,
+            //todo 验证余额值
+            'change_money'      => $rechargeMode->money,
+            'serial_number'     => $ordersn,
+            'operator'          => BalanceRecharge::PAY_TYPE_MEMBER,
+            'operator_id'       => $rechargeMode->id,
+            'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：',
+            'service_type'      => \app\common\models\finance\Balance::BALANCE_RECHARGE,
+        );
+        $this->service_type = \app\common\models\finance\Balance::BALANCE_RECHARGE;
+        $this->attachedType();
+
+        //echo '<pre>'; print_r($rechargeMode->toArray()); exit;
+
+        return $this->updateRechargeStatus($rechargeMode->id);
     }
 
 

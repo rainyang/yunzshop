@@ -9,7 +9,7 @@
 
     <div class="sidebar-collapse">
         <div class="sidebar-header t-center">
-            <a><img class="text-logo" src="/addons/sz_yi/static/resource/images/logo.png"></a>
+            <a><img class="text-logo" src="{{static_url('resource/images/logo.png')}}"></a>
         </div>
         <div class="sidebar-menu">
 
