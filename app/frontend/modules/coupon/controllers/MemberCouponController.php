@@ -1,12 +1,11 @@
 <?php
 namespace app\frontend\modules\coupon\controllers;
 
-use app\common\components\BaseController;
+use app\common\components\ApiController;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\models\MemberCoupon;
-use app\common\helpers\Url;
 
-class MemberCouponController extends BaseController
+class MemberCouponController extends ApiController
 {
     //优惠券对于该用户是否可用
     const NOT_AVAILABLE = 1;
@@ -131,7 +130,6 @@ class MemberCouponController extends BaseController
         $uid = \YunShop::app()->getMemberId();
 
         $now = strtotime('now');
-
         switch ($status) {
             case self::NOT_USED:
                 $coupons = self::getAvailableCoupons($uid, $now);

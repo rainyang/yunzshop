@@ -291,7 +291,7 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public function checkOrderConfirm()
+    public static function checkOrderConfirm()
     {
         $set = self::getSetInfo()->first()->toArray();
         $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
@@ -333,7 +333,7 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public function checkOrderPay()
+    public static function checkOrderPay()
     {
         $set = self::getSetInfo()->first()->toArray();
         $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
@@ -368,7 +368,7 @@ class MemberRelation extends BackendModel
 
         if (!$isagent) {
             if (intval($set['become']) == 4 && !empty($set['become_goods_id'])) {
-                $result = $this->checkOrderGoods($set['become_goods_id']);
+                $result = self::checkOrderGoods($set['become_goods_id']);
 
                 if ($result) {
                     $member->status = 2;
@@ -433,7 +433,7 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public function checkOrderFinish()
+    public static function checkOrderFinish()
     {
         $set = self::getSetInfo()->first()->toArray();
         $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());

@@ -9,6 +9,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
+use app\common\exceptions\AppException;
 use app\common\models\Order;
 use app\common\services\PayFactory;
 use Ixudra\Curl\Facades\Curl;

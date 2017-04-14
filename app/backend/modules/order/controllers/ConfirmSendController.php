@@ -12,14 +12,14 @@ namespace app\backend\modules\order\controllers;
 use app\common\components\BaseController;
 use app\common\models\Order;
 use app\common\models\order\Express;
-use app\frontend\modules\order\services\behavior\OrderSend;
+use app\frontend\modules\order\services\behavior\Send;
 
 class ConfirmSendController extends BaseController
 {
     public function index()
     {
         $order = Order::find(\YunShop::request()->order_id);
-        $order_send = new OrderSend($order);
+        $order_send = new Send($order);
         if (!$order_send->sendable()) {
             $this->message('该订单不能发货');
         }

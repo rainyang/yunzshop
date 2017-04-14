@@ -52,8 +52,6 @@ class Withdraw extends \app\common\models\Withdraw
                         $this->Incomes[$key] = $income->incometable->toArray();
                     }
                 }
-
-
             }
         }
         return $this->Incomes;

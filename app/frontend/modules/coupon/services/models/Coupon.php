@@ -80,8 +80,9 @@ class Coupon
                 return new DiscountCouponPrice($this);
                 break;
             default:
-                dd($this->memberCoupon);
-                throw new AppException('优惠券优惠类型不存在');
+//                dd($this->memberCoupon);
+//                throw new AppException('优惠券优惠类型不存在');
+                return null;
                 break;
         }
     }
@@ -99,9 +100,11 @@ class Coupon
                 return new CategoryScope($this);
                 break;
             default:
-                dd($this->memberCoupon->belongsToCoupon);
+//                dd($this->memberCoupon->belongsToCoupon);
+//
+//                throw new AppException('优惠券范围不存在');
+                return null;
 
-                throw new AppException('优惠券范围不存在');
                 break;
         }
     }
@@ -119,9 +122,9 @@ class Coupon
                 return new SinceReceive($this);
                 break;
             default:
-                dd($this->memberCoupon->belongsToCoupon);
-
-                throw new AppException('时限类型不存在');
+                //dd($this->memberCoupon->belongsToCoupon);
+                return null;
+                //throw new AppException('时限类型不存在');
                 break;
         }
     }
@@ -164,6 +167,15 @@ class Coupon
      */
     public function valid()
     {
+        if(!isset($this->useScope)){
+            return false;
+        }
+        if(!isset($this->price)){
+            return false;
+        }
+        if(!isset($this->timeLimit)){
+            return false;
+        }
 //        dd($this->useScope->valid());
 //        dd($this->price->valid());
 //        dd($this->timeLimit->valid());
