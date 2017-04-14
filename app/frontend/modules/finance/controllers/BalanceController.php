@@ -23,9 +23,8 @@ class BalanceController extends ApiController
 {
     public function test()
     {
-        $model = new Balance();
-        $result = $model->payResult();
-        echo '<pre>'; print_r($result); exit;
+
+       
     }
 
     /**
