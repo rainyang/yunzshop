@@ -39,6 +39,7 @@ class PointSetController extends BaseController
             //echo '<pre>';print_r($point_data);exit;
         }
         if ($point_data) {
+            $point_data = $this->verifySetData($point_data);
             //echo '<pre>';print_r($point_data);exit;
             if (Setting::set('point.set', $point_data)) {
                 return $this->message('积分基础设置保存成功', Url::absoluteWeb('finance.point-set'));
@@ -50,5 +51,15 @@ class PointSetController extends BaseController
         return view('finance.point.set', [
             'set' => $set
         ])->render();
+    }
+
+    private function verifySetData($point_data)
+    {
+        $point_data['money'] = floatval($point_data['money']);
+        $point_data['money_max'] = floatval($point_data['money_max']);
+        $point_data['give_point'] = trim($point_data['give_point']);
+        $point_data['enough_money'] = floatval($point_data['enough_money']);
+        $point_data['enough_point'] = floatval($point_data['enough_point']);
+        return $point_data;
     }
 }
