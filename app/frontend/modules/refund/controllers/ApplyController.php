@@ -6,6 +6,7 @@ use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\common\models\refund\RefundApply;
 use app\frontend\modules\order\models\Order;
+use app\frontend\modules\refund\services\RefundService;
 use Request;
 
 /**
@@ -47,6 +48,7 @@ class ApplyController extends ApiController
         return $this->successJson('成功', $data);
     }
 
+
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -76,6 +78,7 @@ class ApplyController extends ApiController
         $refundApply->images = $request->input('images',[]);
         $refundApply->content = $request->input('content','');
         $refundApply->price = $order->price;
+        $refundApply->refund_sn = RefundService::createOrderRN();
         $refundApply->create_time = time();
         if (!$refundApply->save()) {
             throw new AppException('请求失败');

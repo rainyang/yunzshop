@@ -12,6 +12,7 @@ namespace app\frontend\modules\order\services;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\exceptions\AppException;
+use app\common\models\finance\BalanceRecharge;
 use app\common\models\Order;
 
 use app\frontend\modules\goods\services\models\GoodsModel;
@@ -129,9 +130,15 @@ class OrderService
      */
     public static function createOrderSN()
     {
-        return 'sn' . time();//m('common')->createNO('order', 'ordersn', 'SH');
+        $orderSN = createNo('SN', true);
+        while (1) {
+            if (!Order::where('order_sn', $orderSN)->first()) {
+                break;
+            }
+            $orderSN = createNo('SN', true);
+        }
+        return $orderSN;
     }
-
     private static function OrderOperate(OrderOperation $OrderOperate)
     {
         if (!$OrderOperate->enable()) {
