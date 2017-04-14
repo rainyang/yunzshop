@@ -22,10 +22,12 @@ class RefundSend extends ChangeStatusOperation
 
     protected function updateTable()
     {
-        $data = Request::only(['refund_id', 'express_code', 'express_sn', 'express_company_name']);
-        $db_express_model = new RefundExpress($data);
-
-        $db_express_model->save();
+        $data = Request::only(['refund_id', 'express_sn']);
+        $refundExpress = new RefundExpress($data);
+        //$data = Request::only(['refund_id', 'express_code', 'express_sn', 'express_company_name']);
+        $refundExpress->express_company_name = Request::get('express_company.name');
+        $refundExpress->express_code = Request::get('express_company.code');
+        $refundExpress->save();
         parent::updateTable();
     }
 }
