@@ -29,6 +29,15 @@ abstract class RefundOperation extends RefundApply
      */
     protected $name;
 
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        if ($this->uid != \YunShop::app()->getMemberId()) {
+            throw new AppException('无效申请,该订单属于其他用户');
+        }
+
+    }
 
     /**
      * 获取不带命名空间的类名
