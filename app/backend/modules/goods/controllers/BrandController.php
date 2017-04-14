@@ -21,7 +21,7 @@ class BrandController extends BaseController
      */
     public function index()
     {
-        $pageSize = 5;
+        $pageSize = 20;
         $list = Brand::getBrands()->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         

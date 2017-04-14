@@ -150,6 +150,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+
+                                @section('foreach')
                                 @foreach($list as $item)
 
                                     <tr>
@@ -292,6 +294,8 @@
                                     </tr>
 
                                     @endforeach
+
+                                    @show
 
                                     @section('release_gods')
                                             <!--	<tr>

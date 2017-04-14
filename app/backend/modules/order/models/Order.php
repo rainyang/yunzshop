@@ -114,9 +114,14 @@ class Order extends \app\common\models\Order
         };
     }
 
+    public function scopeIsPlugin($query)
+    {
+        return $query->where('is_plugin', 0);
+    }
+
     public function scopeSearch($order_builder, $params)
     {
-
+        $order_builder->isPlugin();
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单
             if ($params['ambiguous']['field'] == 'order') {

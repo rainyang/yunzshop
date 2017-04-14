@@ -9,6 +9,7 @@ use app\common\models\Category;
 use app\common\models\Goods;
 use app\common\models\GoodsCategory;
 use app\common\models\GoodsSpecItem;
+use app\common\models\Slide;
 use app\frontend\modules\goods\services\GoodsService;
 use Illuminate\Support\Facades\DB;
 
@@ -58,10 +59,12 @@ class IndexController extends BaseController
      */
     public function getAds()
     {
-        $set = Setting::get('shop');
-        $set['logo'] = tomedia($set['logo']);
-        $set['img'] = tomedia($set['img']);
-        return $set;
+        $slide = [];
+        $slide = Slide::getSlidesIsEnabled()->get();
+        if($slide){
+            $slide->toArray();
+        }
+        return $slide;
     }
 
 }
