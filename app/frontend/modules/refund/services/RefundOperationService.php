@@ -20,4 +20,12 @@ class RefundOperationService
         return $refundSend->execute();
 
     }
+    public static function refundCancel(){
+        $refundCancel = RefundSend::find(\Request::query('refund_id'));
+        if(!$refundCancel){
+            throw new AppException('售后申请记录不存在');
+        }
+        return $refundCancel->execute();
+
+    }
 }
