@@ -246,9 +246,10 @@ class MemberCouponController extends ApiController
 
     //在"优惠券中心"点击领取优惠券
     //需要提供$couponId
-    public function getCoupon($couponId, $memberId)
+    public function getCoupon()
     {
         $couponId = \YunShop::request()->get('coupon_id');
+        $memberId = \YunShop::request()->get('member_id');
         if(!$couponId){
             return $this->errorJson('没有提供优惠券ID','');
         }
@@ -260,6 +261,13 @@ class MemberCouponController extends ApiController
         }
 
         $memberCoupon = new MemberCoupon;
+        $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
+        $couponMaxLimit = Coupon::getter($couponId, 'get_max'); //优惠券的限制每人的领取总数
+
+        if($count >= $couponMaxLimit){
+            return $this->errorJson('该用户已经达到个人领取上限','');
+        }
+
         $data = [
             'uniacid' => \YunShop::app()->get('uniacid'),
             'uid' => \YunShop::app()->getMemberId(),
@@ -275,7 +283,7 @@ class MemberCouponController extends ApiController
             $res = $memberCoupon->save();
             if(!$res){
                 return $this->errorJson('领取失败','');
-            } else{ //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
+            } else{ //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据 todo 单独提出一个方法, 复用
                 $coupon = Coupon::getCouponById($couponId)
                                 ->select([
                                     'id','name','coupon_method','deduct','discount','enough',
@@ -292,7 +300,7 @@ class MemberCouponController extends ApiController
                 $usageLimit = array('api_limit' => self::usageLimitDescription($coupon)); //增加属性 - 优惠券的适用范围
                 $coupon = array_merge($coupon, $usageLimit);
 
-                //增加状态属性 todo 优化(因为和couponsForMember()方法用到的逻辑完全一致)
+                //增加状态属性 todo 优化,合并成单独方法(因为和couponsForMember()方法用到的逻辑完全一致)
                 $now = strtotime('now');
                 if($coupon['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT && ($now > $coupon['time_end'])){ //优惠券已过期
                     $coupon['api_availability'] = self::NOT_AVAILABLE;
