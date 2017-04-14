@@ -23,7 +23,7 @@ use app\frontend\modules\member\services\MemberService;
 use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class TestController extends ApiController
+class TestController extends BaseController
 {
    public function index()
    {
@@ -120,8 +120,8 @@ exit;
    public function runEvent()
    {
        $model = MemberShopInfo::getMemberShopInfo(146);
-
        event(new BecomeAgent(\YunShop::request()->mid, $model));
+
    }
 
     /**

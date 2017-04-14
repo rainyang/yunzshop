@@ -60,21 +60,23 @@ class ApplyController extends ApiController
         ]);
 
         $order = Order::find($request->input('order_id'));
-        if(!isset($order)){
+        if (!isset($order)) {
             throw new AppException('订单不存在');
         }
-        if($order->uid != \YunShop::app()->getMemberId()){
+        if ($order->uid != \YunShop::app()->getMemberId()) {
             throw new AppException('无效申请,该订单属于其他用户');
         }
-        if($order < Order::WAIT_SEND){
+        if ($order < Order::WAIT_SEND) {
             throw new AppException('订单未付款,无法退款');
         }
-        if(RefundApply::where('order_id',$request->input('order_id'))->count()) {
+        if (RefundApply::where('order_id', $request->input('order_id'))->count()) {
             throw new AppException('申请已提交,处理中');
         }
-        $refundApply = new RefundApply($request->input(['reason','content','images','refund_type','order_id']));
-
+        $refundApply = new RefundApply($request->only(['reason', 'content', 'refund_type', 'order_id']));
+        $refundApply->images = $request->input('images',[]);
+        $refundApply->content = $request->input('content','');
         $refundApply->price = $order->price;
+        $refundApply->create_time = time();
         if (!$refundApply->save()) {
             throw new AppException('请求失败');
         }

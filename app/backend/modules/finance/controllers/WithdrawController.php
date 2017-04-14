@@ -29,14 +29,11 @@ class WithdrawController extends BaseController
 
             $validator = null;
             foreach ($resultModel as $key => $item) {
-                if ($key == 'balance') {
-                    $validator = (new BalanceSet())->validator($item);
-                    if ($validator->fails()) {
-                        $this->error($validator->messages());
-                        break;
-                    }
+                $validator = (new Withdraw())->validator($item);
+                if ($validator->fails()) {
+                    $this->error($validator->messages());
+                    break;
                 }
-
             }
             if ($validator && !$validator->fails()) {
                 foreach ($resultModel as $key => $item) {
