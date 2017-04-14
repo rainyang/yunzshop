@@ -120,7 +120,7 @@ class MemberRelationController extends BaseController
         $list = Member::getMembersToApply($requestSearch)
             ->paginate($this->pageSize)
             ->toArray();
-
+echo '<pre>';print_r($list);exit;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
         return view('member.apply', [
