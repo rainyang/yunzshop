@@ -296,9 +296,9 @@
                                     @section('release_gods')
                                             <!--	<tr>
 								<td colspan='10'>
-									@section('add_goods')
+
                                             <a class='btn btn-primary' href="{{yzWebUrl('goods.goods.create')}}"><i class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
-									@show
+
                                             <input name="submit" type="submit" class="btn btn-default" value="提交排序">
                                             <input type="hidden" name="token" value="{{$var['token']}}" />
 
@@ -316,8 +316,10 @@
 
                         </div>
                         <div class='panel-footer'>
+                            @section('add_goods')
                             <a class='btn btn-success ' href="{{yzWebUrl('goods.goods.create')}}"><i
                                         class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
+                            @show
                             <input name="submit" type="submit" class="btn btn-default back" value="提交排序">
                         </div>
 

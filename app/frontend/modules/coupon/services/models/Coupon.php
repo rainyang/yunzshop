@@ -19,6 +19,7 @@ use app\frontend\modules\coupon\services\models\Price\MoneyOffCouponPrice;
 use app\frontend\modules\coupon\services\models\TimeLimit\DateTimeRange;
 use app\frontend\modules\coupon\services\models\TimeLimit\SinceReceive;
 use app\frontend\modules\coupon\services\models\TimeLimit\TimeLimit;
+use app\frontend\modules\coupon\services\models\UseScope\CategoryScope;
 use app\frontend\modules\coupon\services\models\UseScope\CouponUseScope;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;

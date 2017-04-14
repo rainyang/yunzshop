@@ -140,7 +140,15 @@ class Order extends BaseModel
 
     public function getButtonModelsAttribute()
     {
-        return $this->getStatusService()->getButtonModels();
+        $result = $this->getStatusService()->getButtonModels();
+        if(!empty($this->order->refund_id)){
+            $result[] = [
+                'name' => '申请退款',
+                'api' => 'order.refund.apply', //todo
+                'value' => static::REFUND
+            ];
+        }
+        return $result;
     }
 
     public function scopeGetOrderCountGroupByStatus($query, $status = [])
