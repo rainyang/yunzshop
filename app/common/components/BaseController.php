@@ -25,7 +25,7 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        //session_start();
+        $this->setCookie();
     }
 
     /**
@@ -57,6 +57,27 @@ class BaseController extends Controller
             'message' => $message,
             'status' => $status
         ])->render();
+    }
+
+    private function setCookie()
+    {
+        $session_id = '';
+        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
+            $pieces = explode('-', \YunShop::request()->state);
+            $session_id = $pieces[1];
+            unset($pieces);
+        }
+
+        if (empty($session_id) && \YunShop::request()->session_id &&
+            \YunShop::request()->session_id != 'undefined') {
+            $session_id = \YunShop::request()->session_id;
+        }
+
+        if (!empty($session_id)) {
+            session_id($session_id);
+        }
+
+        session_start();
     }
 
 
