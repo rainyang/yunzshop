@@ -24,7 +24,8 @@
     "simplesoftwareio/simple-qrcode": "~1",
     "fguillot/json-rpc": "@stable",
     "toplan/laravel-sms": "~2.6",
-    "liebig/cron": "dev-master"
+    "liebig/cron": "dev-master",
+    "zgldh/laravel-upload-manager": "^0.4.4"
   },
   "require-dev": {
     "filp/whoops": "^2.1",

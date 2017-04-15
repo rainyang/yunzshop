@@ -55,6 +55,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'avatar' => [
+            'driver' => 'local',
+            'root' => base_path('../../attachment/avatar'),
+            'url' => env('APP_URL').'/attachment/avatar',
+            'visibility' => 'public',
+        ],
+
         'cert' => [
             'driver' => 'local',
             'root' => storage_path('cert'),
