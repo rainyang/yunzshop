@@ -28,6 +28,7 @@ class RegisterController extends ApiController
     public function index()
     {
         if (MemberService::isLogged()) {
+            echo '<pre>';print_r($_SESSION);exit;
             return $this->errorJson('会员已登录');
         }
 

@@ -15,7 +15,7 @@ use app\common\models\Order;
 class OrderClose extends ChangeStatusOperation
 {
     protected $status_before_change = [ORDER::WAIT_PAY];
-    protected $status_after_changed = ORDER::CLOSE;
+    protected $statusAfterChanged = ORDER::CLOSE;
     protected $name = '关闭';
     protected $time_field = 'cancel_time';
     protected $past_tense_class_name = 'OrderCanceled';

@@ -22,8 +22,8 @@ class WechatController extends PaymentController
         file_put_contents(storage_path('logs/1.log'), 1);
         $post = $this->getResponseResult();
 
-        /*if (config('app.debug')) {
-            $post = Array
+        if (config('app.debug')) {
+      /*      $post = Array
             (
                  'appid'  => 'wx6be17f352e859277',
                  'attach'  => 1,
@@ -42,17 +42,16 @@ class WechatController extends PaymentController
                  'total_fee'  => 10,
                  'trade_type'  => 'JSAPI',
                  'transaction_id'  => '4001322001201704025593308407'  //微信支付单号 可用于退款
-            );
+            );*/
 
-            $data = [
-                'total_fee'    => $post['total_fee'] ,
-                'out_trade_no' => $post['out_trade_no'],
-                'trade_no'     => $post['transaction_id']
-            ];
 
-            $this->payResutl($data);
-            exit;
-        }*/
+        $post = $this->getResponseResult();
+        if(isset($_GET['test_uid'])){
+            $post = json_decode('{"trade_type":"JSAPI","body":"ss:2","out_trade_no":"SN20170415104105888074","total_fee":1,"nonce_str":"qvlNyG3N","device_info":"yun_shop","attach":1,"spbill_create_ip":"219.137.203.42","openid":"oNnNJwpdYZI0HNWQjnvZY99WEOpM"}',true);
+        }
+        \Log::debug(file_get_contents('php://input'));
+        }
+
 file_put_contents(storage_path('logs/2.log'), print_r($post, 1));
         //$this->log($post);
 
@@ -69,6 +68,8 @@ file_put_contents(storage_path('logs/2.log'), print_r($post, 1));
             $this->payResutl($data);
             echo "success";
         } else {
+            if(isset($_GET['test_uid'])) {
+            }
             echo "fail";
         }
     }
@@ -152,8 +153,9 @@ file_put_contents(storage_path('logs/2.log'), print_r($post, 1));
         //访问记录
         $pay->payAccessLog();
         //保存响应数据
-        $pay_order_info = PayOrder::getPayOrderInfo($post['out_trade_no'])->first()->toArray();
-        $pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
+
+        //$pay_order_info = PayOrder::getPayOrderInfo($post['out_trade_no'])->first()->toArray();
+        //$pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
     }
 
     /**
