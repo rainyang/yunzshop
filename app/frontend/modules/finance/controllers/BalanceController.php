@@ -21,6 +21,8 @@ use app\common\services\PayFactory;
 
 class BalanceController extends ApiController
 {
+    protected $publicAction = ['recharge'];
+
     public function test()
     {
 

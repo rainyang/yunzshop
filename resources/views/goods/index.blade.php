@@ -320,8 +320,9 @@
                             @section('add_goods')
                             <a class='btn btn-success ' href="{{yzWebUrl('goods.goods.create')}}"><i
                                         class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
-                            @show
+
                             <input name="submit" type="submit" class="btn btn-default back" value="提交排序">
+                            @show
                         </div>
 
                     </div>

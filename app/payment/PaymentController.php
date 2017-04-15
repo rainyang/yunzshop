@@ -22,9 +22,9 @@ class PaymentController extends BaseController
         parent::__construct();
 
         $script_info = pathinfo($_SERVER['SCRIPT_NAME']);
-        \Log::debug('入口' . print_r($_POST));
-        echo '<pre>';print_r($script_info, 1);exit;
-        file_put_contents(storage_path('logs/100.log'), print_r($_POST,1));
+
+        file_put_contents(storage_path('logs/100.log'), 1);
+
         if (!empty($script_info)) {
             switch ($script_info['filename']) {
                 case 'notifyUrl':
