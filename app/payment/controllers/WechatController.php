@@ -17,6 +17,17 @@ use app\common\models\PayOrder;
 
 class WechatController extends PaymentController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        
+        if (empty(\YunShop::app()->uniacid)) {
+            $post = $this->getResponseResult();
+
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $post['attach'];
+        }
+    }
+
     public function notifyUrl()
     {
         file_put_contents(storage_path('logs/1.log'), 1);
