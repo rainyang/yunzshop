@@ -48,9 +48,9 @@ class PaymentController extends BaseController
 
     private function getUniacid()
     {
-        if (config('app.debug')) {
+        /*if (config('app.debug')) {
             return 2;
-        }
+        }*/
 
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
