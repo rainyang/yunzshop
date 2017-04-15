@@ -9,7 +9,9 @@
 namespace app\common\models;
 
 
-class PayResponseDataLog
+class PayResponseDataLog extends BaseModel
 {
     public $table = 'yz_pay_response_data';
+    protected $fillable = [];
+    protected $guarded = [];
 }
