@@ -15,7 +15,6 @@ use app\frontend\modules\member\models\MemberAddress;
 
 class MemberAddressController extends ApiController
 {
-    protected $publicAction = ['address'];
     /*
      * 会员收货地址列表
      *

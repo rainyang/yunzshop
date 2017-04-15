@@ -35,7 +35,7 @@ class BalanceController extends ApiController
     {
         $rechargeSet = Setting::get('finance.balance');
         if ($rechargeSet['recharge'] == 1) {
-            $memberId = \YunShop::app()->getMemberId();
+            $memberId = \YunShop::app()->getMemberId() ?: \YunShop::request()->uid;
             $rechargeMoney = trim(\YunShop::request()->recharge_money);
             $payType = \YunShop::request()->pay_type;
 
