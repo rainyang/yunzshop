@@ -76,6 +76,8 @@ class PaymentController extends BaseController
         switch ($type) {
             case "charge.succeeded":
                 $order_info = Order::uniacid()->where('order_sn', $data['out_trade_no'])->first();
+                $order_info->price = $order_info->price * 100;
+
                 file_put_contents(storage_path('logs/6.log'), 1);
                 if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
                     file_put_contents(storage_path('logs/7.log'), 1);
