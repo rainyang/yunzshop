@@ -201,6 +201,8 @@ return [
         Toplan\Sms\SmsManagerServiceProvider::class,
         //计划任务
         Liebig\Cron\Laravel5ServiceProvider::class,
+        //上传
+        zgldh\UploadManager\UploadManagerServiceProvider::class,
     ],
 
     /*

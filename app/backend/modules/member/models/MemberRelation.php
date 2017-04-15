@@ -53,7 +53,7 @@ class MemberRelation extends BackendModel
     {
         $info = self::getSetInfo()->first()->toArray();
 
-        $member_info = SubMemberModel::getMemberShopInfo($uid)->first();
+        $member_info = SubMemberModel::getMemberShopInfo($uid);
 
         if (!empty($member_info)) {
             $data = $member_info->toArray();

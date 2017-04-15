@@ -73,7 +73,7 @@ class Coupon
      */
     private function getPriceInstance()
     {
-        switch ($this->memberCoupon->belongsToCoupon->back_type) {
+        switch ($this->memberCoupon->belongsToCoupon->coupon_method) {
             case DbCoupon::COUPON_MONEY_OFF:
                 return new MoneyOffCouponPrice($this);
                 break;
@@ -81,8 +81,11 @@ class Coupon
                 return new DiscountCouponPrice($this);
                 break;
             default:
-//                dd($this->memberCoupon);
-//                throw new AppException('优惠券优惠类型不存在');
+                if(config('app.debug')){
+                    dd($this->memberCoupon->belongsToCoupon->coupon_method);
+                    dd($this->memberCoupon);
+                    throw new AppException('优惠券优惠类型不存在');
+                }
                 return null;
                 break;
         }
@@ -101,9 +104,11 @@ class Coupon
                 return new CategoryScope($this);
                 break;
             default:
-//                dd($this->memberCoupon->belongsToCoupon);
-//
-//                throw new AppException('优惠券范围不存在');
+                if(config('app.debug')){
+                    dd($this->memberCoupon->belongsToCoupon->use_type);
+                    dd($this->memberCoupon->belongsToCoupon);
+                    throw new AppException('优惠券范围不存在');
+                }
                 return null;
 
                 break;
@@ -123,9 +128,12 @@ class Coupon
                 return new SinceReceive($this);
                 break;
             default:
-                //dd($this->memberCoupon->belongsToCoupon);
+                if(config('app.debug')){
+                    dd($this->memberCoupon->belongsToCoupon);
+                    throw new AppException('时限类型不存在');
+                }
+
                 return null;
-                //throw new AppException('时限类型不存在');
                 break;
         }
     }
@@ -179,7 +187,7 @@ class Coupon
         }
 //        dd($this->useScope->valid());
 //        dd($this->price->valid());
-//        dd($this->timeLimit->valid());
+//        dd($this->timeLimit);
 //        exit;
 //        if(!empty($this->getMemberCoupon()->used)){
 //            return false;
