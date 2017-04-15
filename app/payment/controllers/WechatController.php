@@ -20,7 +20,7 @@ class WechatController extends PaymentController
     public function __construct()
     {
         parent::__construct();
-        
+
         if (empty(\YunShop::app()->uniacid)) {
             $post = $this->getResponseResult();
 
@@ -30,47 +30,13 @@ class WechatController extends PaymentController
 
     public function notifyUrl()
     {
-        file_put_contents(storage_path('logs/1.log'), 1);
         $post = $this->getResponseResult();
 
-        if (config('app.debug')) {
-            /*$post = Array
-            (
-                 'appid'  => 'wx6be17f352e859277',
-                 'attach'  => 1,
-                 'bank_type'  => 'CFT',
-                 'cash_fee'  => 1,
-                 'fee_type'  => 'CNY',
-                 'is_subscribe'  => 'Y',
-                 'mch_id'  => '1429240702',
-                 'nonce_str'  => '58f1ee9b589d8',
-                 'openid'  => 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y',
-                 'out_trade_no'  => 'SN20170415175743883225',
-                 'result_code'  => 'SUCCESS',
-                 'return_code'  => 'SUCCESS',
-                 'sign'  => '8B2EB0D7D9574B4516F5A4F61BB5474B',
-                 'time_end'  => 20170415175807,
-                 'total_fee'  => 1,
-                 'trade_type'  => 'JSAPI',
-                 'transaction_id'  => '4001322001201704157112987431'  //微信支付单号 可用于退款
-            );*/
-
-
-        //$post = $this->getResponseResult();
-        if(isset($_GET['test_uid'])){
-            $post = json_decode('{"trade_type":"JSAPI","body":"ss:2","out_trade_no":"SN20170415104105888074","total_fee":1,"nonce_str":"qvlNyG3N","device_info":"yun_shop","attach":1,"spbill_create_ip":"219.137.203.42","openid":"oNnNJwpdYZI0HNWQjnvZY99WEOpM"}',true);
-        }
-        \Log::debug(file_get_contents('php://input'));
-        }
-
-file_put_contents(storage_path('logs/2.log'), print_r($post, 1));
         //$this->log($post);
 
         $verify_result = $this->getSignResult();
-        file_put_contents(storage_path('logs/3.log'), print_r($verify_result, 1));
-        if (1) {
 
-            file_put_contents(storage_path('logs/4.log'), 1);
+        if ($verify_result) {
             $data = [
                 'total_fee'    => $post['total_fee'] ,
                 'out_trade_no' => $post['out_trade_no'],

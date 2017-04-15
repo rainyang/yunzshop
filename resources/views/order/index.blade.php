@@ -191,7 +191,6 @@
                         </tr>
                     </table>
                     <table class='table order-main' >
-                        @section('foreach')
                         @foreach( $order['has_many_order_goods'] as $order_goods_index => $order_goods)
                             <tr class='trbody'>
                                 <td class="goods_info">
@@ -273,7 +272,6 @@
                                 @endif
                             </tr>
                         @endforeach
-                        @show
                     </table>
                 </div>
                 @endforeach
@@ -297,4 +295,6 @@
             $('#form_p').val("order.list");
         });
     </script>
+    @section('plugin_js')
+        @show
 @endsection('content')
