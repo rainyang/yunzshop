@@ -29,6 +29,8 @@ class Coupon extends BaseModel
         'categoryids' => 'json',
         'goods_names' => 'json',
         'categorynames' => 'json',
+        'time_start' => 'datetime',
+        'time_end' =>'datetime',
     ];
 
     protected $attributes = [
