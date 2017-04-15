@@ -147,7 +147,7 @@ file_put_contents(storage_path('logs/2.log'), print_r($post, 1));
      * @param $post
      */
     public function log($post)
-    {
+    {exit;
         $pay = new WechatPay();
 
         //访问记录
