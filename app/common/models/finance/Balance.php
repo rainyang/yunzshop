@@ -20,7 +20,6 @@ class Balance extends BaseModel
 {
     public $table = 'yz_balance';
 
-    public $timestamps = false;
 
     protected $guarded= [''];
 
@@ -141,7 +140,7 @@ class Balance extends BaseModel
         if ($type == \app\common\services\finance\Balance::INCOME || $type == \app\common\services\finance\Balance::EXPENDITURE) {
             $query = $query->where('type', $type);
         }
-        return $query->get();
+        return $query->orderBy('created_at','desc')->get();
     }
 
     /**
