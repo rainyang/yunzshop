@@ -8,7 +8,6 @@
 
 namespace app\frontend\modules\goods\services\models;
 
-use app\common\models\Goods;
 use app\common\models\OrderGoods;
 
 use app\frontend\modules\discount\services\DiscountService;
@@ -22,16 +21,15 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      */
     protected $order;
 
-    public $couponMoneyOffPrice;
-    public $couponDiscountPrice;
+    public $coupons;
 
     public function __construct(array $attributes = [])
     {
-        if(isset($attributes['option_id'])){
+        if (isset($attributes['option_id'])) {
             $attributes['goods_option_id'] = $attributes['option_id'];
             unset($attributes['option_id']);
         }
-        if(isset($attributes['goods'])){
+        if (isset($attributes['goods'])) {
             unset($attributes['goods']);
 
         }
@@ -84,10 +82,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'goods_price' => $this->getGoodsPrice(),
             'vip_price' => $this->getVipPrice(),
             'coupon_price' => $this->getCouponPrice(),
-            'coupon_discount_price' => $this->couponDiscountPrice,
-            'coupon_money_off_price' => $this->couponMoneyOffPrice,
+            'coupons'=>$this->coupons
         );
-        if(isset($this->goodsOption)){
+        if (isset($this->goodsOption)) {
             $data += [
                 'goods_option_id' => $this->goodsOption->id,
                 'goods_option_title' => $this->goodsOption->title,
@@ -98,7 +95,8 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     public function getCouponPrice()
     {
-        return $this->couponMoneyOffPrice + $this->couponDiscountPrice;
+
+        return $this->coupons->sum('amount');
     }
 
     /**
@@ -148,7 +146,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'order_id' => $this->order->id,
             'uniacid' => $this->order->uniacid,
         );
-        if(isset($this->goodsOption)){
+        if (isset($this->goodsOption)) {
             $data += [
                 'goods_option_id' => $this->goodsOption->id,
                 'goods_option_title' => $this->goodsOption->title,
