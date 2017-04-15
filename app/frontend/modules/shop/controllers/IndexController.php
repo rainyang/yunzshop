@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
  * Date: 2017/3/3
  * Time: 22:16
  */
-class IndexController extends ApiController
+class IndexController extends BaseController
 {
     public function getDefaultIndex()
     {
