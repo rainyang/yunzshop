@@ -74,7 +74,11 @@ class MemberLevel extends \app\common\models\MemberLevel
      * @return object */
     public static function getMemberLevelById($levelId)
     {
-        return static::where('id', $levelId)->first();
+        return static::where('id', $levelId)
+            ->with(['goods' => function($query) {
+                return $query->select('id','title');
+            }])
+            ->first();
     }
 
     /**
