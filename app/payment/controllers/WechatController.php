@@ -19,8 +19,11 @@ class WechatController extends PaymentController
 {
     public function notifyUrl()
     {
-        $post = $this->getResponseResult();
 
+        $post = $this->getResponseResult();
+        if(isset($_GET['test_uid'])){
+            $post = json_decode('{"trade_type":"JSAPI","body":"ss:2","out_trade_no":"SN20170415104105888074","total_fee":1,"nonce_str":"qvlNyG3N","device_info":"yun_shop","attach":1,"spbill_create_ip":"219.137.203.42","openid":"oNnNJwpdYZI0HNWQjnvZY99WEOpM"}',true);
+        }
 //        if (config('app.debug')) {
 //            $post = Array
 //            (
@@ -49,8 +52,7 @@ class WechatController extends PaymentController
 //                'trade_no'     => $post['transaction_id']
 //            ];
 //
-//            $this->payResutl($data);
-//            exit;
+//
 //        }
 
         $this->log($post);
@@ -67,6 +69,8 @@ class WechatController extends PaymentController
             $this->payResutl($data);
             echo "success";
         } else {
+            if(isset($_GET['test_uid'])) {
+            }
             echo "fail";
         }
     }
@@ -150,8 +154,9 @@ class WechatController extends PaymentController
         //访问记录
         $pay->payAccessLog();
         //保存响应数据
+
         $pay_order_info = PayOrder::getPayOrderInfo($post['out_trade_no'])->first()->toArray();
-        $pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
+        //$pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
     }
 
     /**
