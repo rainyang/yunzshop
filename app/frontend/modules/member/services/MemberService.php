@@ -86,9 +86,9 @@ class MemberService
         $validator = \Validator::make($data, $check);
 
         if ($validator->fails()) {
-            return false;
+            return show_json('0', $validator->messages());
         } else {
-            return true;
+            return show_json('1');
         }
     }
 
