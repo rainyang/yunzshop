@@ -50,6 +50,8 @@ class GoodsStock
          * @var $goods_option Goods
          */
         $goods = $orderGoods->goods;
+        dd($goods);
+        exit;
         $goods->reduceStock($orderGoods->total);
         $goods->save();
     }
