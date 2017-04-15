@@ -10,7 +10,7 @@ use app\common\models\Order;
 class OrderCancelSend extends ChangeStatusOperation
 {
     protected $status_before_change = [Order::WAIT_RECEIVE];
-    protected $status_after_changed = Order::WAIT_SEND;
+    protected $statusAfterChanged = Order::WAIT_SEND;
     protected $name = '取消发货';
     protected $time_field = 'cancel_send_time';
 

@@ -14,7 +14,7 @@ use app\common\models\order\Express;
 class OrderSend extends ChangeStatusOperation
 {
     protected $status_before_change = [ORDER::WAIT_SEND];
-    protected $status_after_changed = ORDER::WAIT_RECEIVE;
+    protected $statusAfterChanged = ORDER::WAIT_RECEIVE;
     protected $name = '发货';
     protected $time_field = 'send_time';
 

@@ -50,7 +50,7 @@ class GoodsStock
          * @var $goods Goods
          */
         $goods = $orderGoods->hasOneGoods;
-        
+
         $goods->reduceStock($orderGoods->total);
         $goods->save();
     }
