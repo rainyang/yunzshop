@@ -36,14 +36,22 @@ class MemberController extends BaseController
         $groups = MemberGroup::getMemberGroupList();
         $levels = MemberLevel::getMemberLevelList();
 
-        $list = Member::getMembers()
+        $parames = \YunShop::request();
+
+        $list = Member::searchMembers($parames)
             ->paginate($this->pageSize)
             ->toArray();
+
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
-        if (empty($starttime) || empty($endtime)) {
-            $starttime = strtotime('-1 month');
-            $endtime = time();
+        $starttime = strtotime('-1 month');
+        $endtime = time();
+
+        if (isset($parames['searchtime']) &&  $parames['searchtime'] == 1) {
+            if ($parames['times']['start'] != '请选择' && $parames['times']['end'] != '请选择') {
+                $starttime = strtotime($parames['times']['start']);
+                $endtime = strtotime($parames['times']['end']);
+            }
         }
 
         return view('member.index', [
@@ -54,6 +62,7 @@ class MemberController extends BaseController
             'starttime' => $starttime,
             'total' => $list['total'],
             'pager' => $pager,
+            'request' => \YunShop::request(),
             'opencommission' => 1
         ])->render();
     }
@@ -177,46 +186,6 @@ class MemberController extends BaseController
         } else {
             return $this->message('黑名单设置失败', yzWebUrl('member.member.index'), 'error');
         }
-    }
-
-    /**
-     * 用户检索
-     *
-     */
-    public function search()
-    {
-        $groups = MemberGroup::getMemberGroupList();
-        $levels = MemberLevel::getMemberLevelList();
-
-        $parames = \YunShop::request();
-
-        $list = Member::searchMembers($parames)
-            ->paginate($this->pageSize)
-            ->toArray();
-
-        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
-
-        $starttime = strtotime('-1 month');
-        $endtime = time();
-        
-        if ($parames['searchtime']) {
-            if ($parames['time']['start'] != '请选择' && $parames['time']['end'] != '请选择') {
-                $starttime = strtotime($parames['time']['start']);
-                $endtime = strtotime($parames['time']['end']);
-            }
-
-        }
-        return view('member.index', [
-            'list' => $list,
-            'levels' => $levels,
-            'groups' => $groups,
-            'endtime' => $endtime,
-            'starttime' => $starttime,
-            'total' => $list['total'],
-            'pager' => $pager,
-            'request' => \YunShop::request(),
-            'opencommission' => false
-        ])->render();
     }
 
     /**

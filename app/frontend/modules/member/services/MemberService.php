@@ -63,7 +63,7 @@ class MemberService
             $check = array(
                 'mobile' => array('required',
                     'digits:11',
-                    'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
+                    'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/'
                 ),
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
             );
@@ -76,7 +76,7 @@ class MemberService
             $check = array(
                 'mobile' => array('required',
                     'digits:11',
-                    'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
+                    'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/'
                 ),
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
                 'confirm_password' => 'same:password'
@@ -86,9 +86,9 @@ class MemberService
         $validator = \Validator::make($data, $check);
 
         if ($validator->fails()) {
-            return false;
+            return show_json('0', $validator->messages());
         } else {
-            return true;
+            return show_json('1');
         }
     }
 

@@ -210,7 +210,6 @@ class BalanceController extends ApiController
     {
         $memberId = \YunShop::app()->getMemberId();
         $type = \YunShop::request()->type;
-        $memberId = '55';
         if ($memberId) {
             $recordList = \app\common\models\finance\Balance::getMemberDetailRecord($memberId, $type);
 
@@ -226,8 +225,6 @@ class BalanceController extends ApiController
     public function rechargeRecord()
     {
         $memberId = \YunShop::app()->getMemberId();
-
-        //$memberId= '55';
         if ($memberId) {
             $rechargeRecord = BalanceRecharge::getMemberRechargeRecord($memberId);
             return $this->successJson('充值记录获取成功', $rechargeRecord);
@@ -242,7 +239,6 @@ class BalanceController extends ApiController
     public function transferRecord()
     {
         $memberId = \YunShop::app()->getMemberId();
-        //$memberId= '55';
         if ($memberId) {
             $transferRecord = BalanceTransfer::getMemberTransferRecord($memberId);
             return $this->successJson('转让记录获取成功', $transferRecord);
@@ -257,7 +253,6 @@ class BalanceController extends ApiController
     public function recipientRecord()
     {
         $memberId = \YunShop::app()->getMemberId();
-        //$memberId= '55';
         if ($memberId) {
             $recipientRecord = BalanceTransfer::getMemberRecipientRecord($memberId);
             return $this->successJson('被转让记录获取成功', $recipientRecord);
@@ -276,8 +271,9 @@ class BalanceController extends ApiController
         $pay = PayFactory::create($data['recharge_type']);
 
         $result = $pay->doPay($this->payData($data));
-        $result['js'] = json_decode($result['js'], 1);
-
+        if ($data['recharge_type'] == 1) {
+            $result['js'] = json_decode($result['js'], 1);
+        }
         return $result;
     }
 

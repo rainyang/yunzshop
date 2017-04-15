@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 use app\backend\modules\goods\models\Sale;
+use app\common\exceptions\AppException;
 use app\frontend\modules\discount\services\models\GoodsDiscount;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
@@ -139,9 +140,14 @@ class Goods extends BaseModel
         return $this->hasOne(Sale::class, 'goods_id', 'id');
     }
 
+    public function scopeIsPlugin($query)
+    {
+        return $query->where('is_plugin', 0);
+    }
+
     public function scopeSearch($query, $filters)
     {
-        $query->uniacid();
+        $query->uniacid()->isPlugin();
 
         if (!$filters) {
             return;
@@ -203,6 +209,15 @@ class Goods extends BaseModel
         return self::where('id', $goodsId)
             ->update(['comment_num' => DB::raw('`comment_num` + 1')]);
     }
-
+    public function reduceStock($num)
+    {
+        //拍下立减
+        if ($this->reduce_stock_method != 2) {
+            if ($this->stock - $num < 0) {
+                throw new AppException('下单失败,商品:' . $this->title . ' 库存不足');
+            }
+            $this->stock -= $num;
+        }
+    }
 
 }

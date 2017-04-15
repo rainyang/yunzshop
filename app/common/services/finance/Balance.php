@@ -83,7 +83,7 @@ class Balance
             'member_id'         => $rechargeMode->member_id,
             //todo 验证余额值
             'change_money'      => $rechargeMode->money,
-            'serial_number'     => $ordersn,
+            'serial_number'     => $data['order_sn'],
             'operator'          => BalanceRecharge::PAY_TYPE_MEMBER,
             'operator_id'       => $rechargeMode->id,
             'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
@@ -298,9 +298,12 @@ class Balance
         $transferModel->status = static::STATUS_SUCCESS;
         if ($transferModel->save()) {
             $this->data['change_money'] = -$this->data['change_money'];
+            $this->type = static::EXPENDITURE;
             if ($this->detailRecord() === true) {
+                $this->type = static::INCOME;
                 $this->data['change_money'] = -$this->data['change_money'];
                 $this->data['member_id'] = $this->data['recipient_id'];
+                //echo '<pre>'; print_r($this->getDetailData()); exit;
                 return $this->detailRecord();
             }
             return '修改转让值余额明细记录失败';
@@ -384,7 +387,8 @@ class Balance
             'operator'      => $this->data['operator'],         // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID（没有ID值可以给插件标示）
             'operator_id'   => $this->data['operator_id'],      // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
             'remark'        => $this->data['remark'],           // 备注，文章营销 '奖励' 余额 'N' 元【越详细越好】
-            'created_at'    => time()
+            'created_at'    => time(),
+            'updated_at'    => time(),
         );
     }
 

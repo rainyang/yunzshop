@@ -17,19 +17,16 @@ class MemberFavoriteController extends ApiController
 {
     public function index()
     {
-        //todo 需要增加商品信息显示
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = '9';
         $favoriteList = MemberFavorite::getFavoriteList($memberId);
 
         return $this->successJson('成功', $favoriteList);
-
     }
 
     public function isFavorite()
     {
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = '9';
+        $memberId = \YunShop::app()->getMemberId();
         if (\YunShop::request()->goods_id){
             if (MemberFavorite::getFavoriteByGoodsId(\YunShop::request()->goods_id, $memberId)){
                 $data = array(
@@ -50,7 +47,7 @@ class MemberFavoriteController extends ApiController
     public function store()
     {
         if (\YunShop::request()->goods_id) {
-            $memberId = 9;
+            $memberId = \YunShop::app()->getMemberId();
             if (MemberFavorite::getFavoriteByGoodsId(\YunShop::request()->goods_id, $memberId)){
                 return $this->errorJson('商品已收藏，不需要重复添加！');
             }
@@ -81,7 +78,7 @@ class MemberFavoriteController extends ApiController
     public function destroy()
     {
         if (\YunShop::request()->goods_id) {
-            $memberId = '9';
+            $memberId = \YunShop::app()->getMemberId();
             $favoriteModel = MemberFavorite::getFavoriteByGoodsId(\YunShop::request()->goods_id, $memberId);
             if (!$favoriteModel) {
                 return $this->errorJson("未找到记录或已删除");

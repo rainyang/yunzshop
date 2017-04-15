@@ -57,7 +57,7 @@
                                             <div class='input-group-addon' style='border:none;background:#fff;'>
                                                 <label class="radio-inline" style='margin-top:-3px;'> 购买指定商品</label>
                                             </div>
-                                            <input type='text' class='form-control' id='goods' value="此处功能需要完善" readonly/>
+                                            <input type='text' class='form-control' id='goods' value="{{ $levelModel->goods->title }}" readonly/>
                                             <div class="input-group-btn">
                                                 <button type="button" onclick="$('#modal-goods').modal()"
                                                         class="btn btn-default">选择商品
@@ -124,7 +124,7 @@
                     return;
                 }
                 $("#module-goods").html("正在搜索....")
-                $.get('{!! yzWebUrl('') !!}', {
+                $.get('{!! yzWebUrl('member.member-level.searchGoods') !!}', {
                     keyword: $.trim($('#search-kwd-goods').val())
                 }, function (dat) {
                     $('#module-menus-goods').html(dat);

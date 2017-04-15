@@ -48,11 +48,11 @@ class MemberFavorite extends \app\common\models\MemberFavorite
      * @return object */
     public static function getFavoriteList($memberId)
     {
-        return static::select('id', 'goods_id')->uniacid()->where('member_id', $memberId)
+        return static::select('id', 'goods_id', 'created_at')->uniacid()->where('member_id', $memberId)
             ->with(['goods' => function($query) {
                 return $query->select('id', 'thumb', 'price', 'market_price', 'title');
             }])
-            ->get()->toArray();
+            ->orderBy('created_at', 'desc')->get()->toArray();
     }
     /**
      * remove collection

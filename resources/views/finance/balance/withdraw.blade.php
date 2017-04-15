@@ -60,7 +60,7 @@
         <div class='panel-heading'>
             余额提现申请信息
         </div>
-        <form action="{{yzWebUrl("finance.withdraw.dealt",['id'=>$item['id']])}}" method='post' class='form-horizontal'>
+        <form action="{{yzWebUrl("finance.balance-withdraw.examine",['id'=>$item['id']])}}" method='post' class='form-horizontal'>
             <div class='panel-body'>
                 <table class="table table-hover">
                     <thead class="navbar-inner">
@@ -80,11 +80,11 @@
                             <td>
                                 @if($item['status'] == '0' || $item['status'] == '-1')
                                     <label class="radio-inline">
-                                        <input type="radio" name="audit[{{$row['id']}}]" value="1" checked="checked"/>
+                                        <input type="radio" name="status" value="1" @if($item['status'] == 0 || $item['status'] == 1 )checked="checked"@endif/>
                                         通过
                                     </label>
                                     <label class="radio-inline">
-                                        <input type="radio" name="audit[{{$row['id']}}]" value="0"/> 无效
+                                        <input type="radio" name="status" value="-1" @if($item['status'] == -1 )checked="checked"@endif/> 无效
                                     </label>
                                 @endif
                                 @if($item['status'] == '1' || $item['status'] == '2')
@@ -105,39 +105,33 @@
             </div>
             <div class='panel-body'>
                 打款信息【
-                审核金额: <span style='color:red'>{{$item['actual_amounts'] + $item['actual_poundage']}}</span> 元
-                手续费: <span style='color:red'>{{$item['actual_poundage']}}</span> 元
-                应打款：<span style='color:red'>{{$item['actual_amounts']}}</span>元】
+                审核金额: <span style='color:red'>{{ $examine['examine_money'] }}</span> 元
+                手续费: <span style='color:red'>{{ $examine['poundage'] }}</span> 元
+                应打款：<span style='color:red'>{{ $examine['result_money'] }}</span>元】
 
             </div>
 
             <div class="form-group col-sm-12">
                 @if($item['status'] == '0')
-                    <input type="submit" name="submit_check" value="提交审核" class="btn btn-primary col-lg-1"
-                           onclick='return check()'/>
+                    <input type="submit" name="submit_check" value="提交审核" class="btn btn-primary col-lg-1" onclick='return check()'/>
                 @endif
 
                 @if($item['status'] == '1')
 
                     @if($item['pay_way'] == 'balance')
                         <input type="hidden" name="pay_way" value="3">
-                        <input type="submit" name="submit_pay" value="打款到余额" class="btn btn-primary col-lg-1"
-                               style='margin-left:10px;' onclick='return '/>
+                        <input type="submit" name="submit_pay" value="打款到余额" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
                     @elseif($item['pay_way'] == 'wecht')
                         <input type="hidden" name="pay_way" value="1">
-                        <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary col-lg-1"
-                               style='margin-left:10px;' onclick='return '/>
+                        <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
                     @elseif($item['pay_way'] == 'alipay')
                         <input type="hidden" name="pay_way" value="2">
-                        <input type="submit" name="submit_pay" value="打款到支付宝"
-                               class="btn btn-primary col-lg-1" style='margin-left:10px;'
-                               onclick='return '/>
+                        <input type="submit" name="submit_pay" value="打款到支付宝" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
                     @endif
                 @endif
 
                 @if($item['status'] == '-1')
-                    <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default col-lg-1"
-                           onclick='return '/>
+                    <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default col-lg-1" onclick='return '/>
                 @endif
 
 

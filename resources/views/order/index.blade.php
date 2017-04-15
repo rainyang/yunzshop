@@ -160,9 +160,13 @@
                                 @if( 0&&!empty($order['refundstate']))<label
                                         class='label label-danger'>{{$r_type[$order['rtype']]}}申请</label>@endif
                                 @if( 0&&$order['rstatus'] == 4)<label class='label label-primary'>客户已经寄出快递</label>@endif
-                                @section('shop_name')
-                                    <label class="label label-info">总店</label>
-                                @show
+
+                                @yield('shop_name')
+                                @section('shop_name','<label class="label label-info">总店</label>')
+
+                                @if(!empty($order['refund_data']))
+                                    <label class="label label-info" style="background-color: #ef5555 !important;">{{$order['refund_data']['refund_type_name']}}</label>
+                                @endif
                                 @if( 0&&!empty($order['storename']))
                                     <label class="label label-primary">所属门店：{{$order['storename']}}</label>
                             @endif
@@ -187,7 +191,7 @@
                         </tr>
                     </table>
                     <table class='table order-main' >
-
+                        @section('foreach')
                         @foreach( $order['has_many_order_goods'] as $order_goods_index => $order_goods)
                             <tr class='trbody'>
                                 <td class="goods_info">
@@ -201,8 +205,8 @@
                                     <br/>{{$order_goods['goods_sn']}}
                                 </td>
                                 <td class="price">
-                                        原价: {!! number_format($order_goods['goods_price']/$order_goods['total'],2)!!}
-                                    <br/>应付: {!! number_format($order_goods['price']/$order_goods['total'],2) !!}
+                                        原价: {{ number_format($order_goods['goods_price']/$order_goods['total'],2)}}
+                                    <br/>应付: {{ number_format($order_goods['price']/$order_goods['total'],2) }}
                                     <br/>数量: {{$order_goods['total']}}
                                 </td>
 
@@ -262,13 +266,14 @@
                                         <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
                                     </td>
                                     <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">
-                                        @section('operation'.$order_index)
+                                        @section('operation')
                                             @include('order.ops')
                                         @show
                                     </td>
                                 @endif
                             </tr>
                         @endforeach
+                        @show
                     </table>
                 </div>
                 @endforeach

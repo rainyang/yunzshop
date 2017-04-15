@@ -47,7 +47,8 @@ class Member extends \app\common\models\Member
                               ->uniacid()
                               ->where('status', 3)
                               ->groupBy('uid');
-            }]);
+            }])
+            ->orderBy('uid', 'desc');
     }
 
     /**
@@ -127,8 +128,7 @@ class Member extends \app\common\models\Member
         if (!empty($parame['mid'])) {
             $result = $result->where('uid', $parame['mid']);
         }
-        if (!empty($parame['searchtime'])) {
-
+        if (isset($parame['searchtime']) && $parame['searchtime'] == 1) {
             if ($parame['times']['start'] != '请选择' && $parame['times']['end'] != '请选择') {
                 $range = [strtotime($parame['times']['start']), strtotime($parame['times']['end'])];
                 $result = $result->whereBetween('createtime', $range);
@@ -202,34 +202,54 @@ class Member extends \app\common\models\Member
      */
     public static function getMembersToApply($filters)
     {
+        $filters['referee_id'] = [];
+        if ($filters['referee'] == '1' && $filters['referee_info']) {
+            $query = self::select(['uid'])
+                     ->uniacid()
+                     ->searchLike($filters['referee_info'])
+                     ->get();
+
+            if (!empty($query)) {
+                $data = $query->toArray();
+
+                foreach ($data as $item) {
+                    $filters['referee_id'][] = $item['uid'];
+                }
+            }
+        }
+
         $query = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile']);
         $query->uniacid();
 
         if(isset($filters['member'])){
             $query->searchLike($filters['member']);
         }
-        if($filters['referee'] == '0'){
-            $query->where('parent_id', $filters['referee']);
-        }elseif($filters['referee'] == '1'){
 
-            //推荐人 信息检索 $filters['referee_info']
-        }
-        if($filters['searchtime']){
-            if($filters['times']){
-                $range = [$filters['times']['start'], $filters['times']['end']];
-                $query->whereBetween('createtime', $range);
+        $query->whereHas('yzMember', function($query) use ($filters){
+            if(isset($filters['searchtime']) && $filters['searchtime'] == 1){
+                if($filters['times']){
+                    $range = [strtotime($filters['times']['start']), strtotime($filters['times']['end'])];
+                    $query = $query->whereBetween('apply_time', $range);
+                }
             }
-        }
 
-        $query->whereHas('yzMember', function($query){
-                $query->where('status', 1);
-            });
+            if($filters['referee'] == '0'){
+                $query->where('parent_id', $filters['referee']);
+            } elseif ($filters['referee'] == '1' && !empty($filters['referee_id'])){
+
+                $query->whereIn('parent_id', $filters['referee_id']);
+            }
+
+            $query->where('status', 1);
+        });
+
         $query->with(['yzMember'=>function($query){
                 return $query->select(['member_id','parent_id', 'apply_time'])
                     ->with([ 'agent'=>function($query3){
                         return $query3->select(['uid', 'avatar', 'nickname']);
                     }]);
-            }]);
+        }])
+        ->orderBy('uid', 'desc');
         return $query;
     }
 }

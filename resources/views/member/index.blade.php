@@ -16,12 +16,8 @@
             <div class="panel panel-info"><!--
                 <div class="panel-heading">筛选</div>-->
                 <div class="panel-body">
-                    <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
-                        <input type="hidden" name="c" value="site" />
-                        <input type="hidden" name="a" value="entry" />
-                        <input type="hidden" name="m" value="yun_shop" />
-                        <input type="hidden" name="do" value="1234" id="form_do" />
-                        <input type="hidden" name="route" value="member.member.search" id="route" />
+                    <form action="" method="post" class="form-horizontal" role="form" id="form1">
+                        <input type="hidden" name="route" value="member.member.index" id="route" />
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">
                             <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>-->
                             <div class="">
@@ -125,7 +121,12 @@
                                 </select>
                             </div>
                             <div class="search-select">
-                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('times', ['starttime'=>date('Y-m-d H:i', $starttime), 'endtime'=>date('Y-m-d H:i',$endtime)], true) !!}
+                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('times', [
+                                'starttime'=>date('Y-m-d H:i', $starttime),
+                                'endtime'=>date('Y-m-d H:i',$endtime),
+                                'start'=>0,
+                                'end'=>0
+                                ], true) !!}
                             </div>
                         </div>
 

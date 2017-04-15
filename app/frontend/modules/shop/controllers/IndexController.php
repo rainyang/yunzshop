@@ -4,10 +4,12 @@ namespace app\frontend\modules\shop\controllers;
 use app\api\Base;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
+use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\Goods;
 use app\common\models\GoodsCategory;
 use app\common\models\GoodsSpecItem;
+use app\common\models\Slide;
 use app\frontend\modules\goods\services\GoodsService;
 use Illuminate\Support\Facades\DB;
 
@@ -21,6 +23,7 @@ class IndexController extends BaseController
 {
     public function getDefaultIndex()
     {
+
         $data = [
             'ads' => $this->getAds(),
             'category' => $this->getRecommentCategoryList(),
@@ -56,8 +59,12 @@ class IndexController extends BaseController
      */
     public function getAds()
     {
-
-        return [];
+        $slide = [];
+        $slide = Slide::getSlidesIsEnabled()->get();
+        if($slide){
+            $slide->toArray();
+        }
+        return $slide;
     }
 
 }

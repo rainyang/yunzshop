@@ -9,6 +9,7 @@
 namespace app\backend\modules\member\controllers;
 
 
+use app\backend\modules\goods\models\Goods;
 use app\backend\modules\member\models\MemberLevel;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
@@ -34,6 +35,14 @@ class MemberLevelController extends BaseController
             'shopSet' => Setting::get('shop.member')
         ])->render();
 
+    }
+
+    public function searchGoods()
+    {
+        $goods = Goods::getGoodsByName(\YunShop::request()->keyword);
+        return view('member.goods_query', [
+            'goods' => $goods,
+        ])->render();
     }
 
     /*
@@ -83,6 +92,9 @@ class MemberLevelController extends BaseController
         $requestLevel = \YunShop::request()->level;
         if($requestLevel) {
             $levelModel->setRawAttributes($requestLevel);
+            if (empty($requestLevel['goods_id'])) {
+                $levelModel->goods_id = 0;
+            }
             $validator = $levelModel->validator($levelModel->getAttributes());
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
