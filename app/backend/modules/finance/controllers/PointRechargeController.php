@@ -19,7 +19,7 @@ class PointRechargeController extends BaseController
     public function index()
     {
         $member_id = \YunShop::request()->id;
-        $result = (new PointService())->verifyPointRecharge(\YunShop::request()->point, Member::getMemberInfoById($member_id));
+        $result = (new PointService())->verifyPointRecharge(\YunShop::request()->point, Member::getMemberById($member_id));
         if ($result) {
             return $this->message($result, Url::absoluteWeb('finance.point-recharge', ['id' => $member_id]));
         }
