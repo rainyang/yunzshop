@@ -10,21 +10,19 @@
 namespace app\frontend\modules\coupon\services\models\Price;
 
 
-use app\frontend\modules\coupon\services\models\Coupon;
+use app\common\models\coupon\GoodsMemberCoupon;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
-use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModelGroup;
-use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class DiscountCouponPrice extends CouponPrice
 {
-
-    public function valid(){
-
-        return true;
-    }
     public function getPrice()
     {
         return (1 - $this->dbCoupon->discount) * $this->coupon->getOrderGoodsInScope()->getVipPrice();
+    }
+    protected function getOrderGoodsGroupPrice()
+    {
+        //会员价-折扣券优惠金额
+        return $this->coupon->getOrderGoodsInScope()->getVipPrice();
     }
     /**
      * 分配优惠金额 ,折扣商品使用 销售价计算
@@ -33,14 +31,20 @@ class DiscountCouponPrice extends CouponPrice
     {
         //echo 1;exit;
         //dd($this->coupon);
-        foreach ($this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup() as $OrderGoods) {
+        $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->map(function($orderGoods){
             /**
              * @var $OrderGoods PreGeneratedOrderGoodsModel
              */
             //(优惠券金额/订单商品总金额)*订单商品价格
             //dd(number_format(-($this->getDiscountPrice() / $this->getOrderGoodsInScope()->getPrice()) * $OrderGoods->getPrice(), 2));exit;
-            $OrderGoods->couponDiscountPrice += number_format(($this->getPrice() / $this->coupon->getOrderGoodsInScope()->getVipPrice()) * $OrderGoods->getVipPrice(), 2);
+            $goodsMemberCoupon = new GoodsMemberCoupon();
 
-        }
+            $goodsMemberCoupon->amount = number_format(($orderGoods->getVipPrice() / $this->coupon->getOrderGoodsInScope()->getVipPrice()) * $this->getPrice(), 2);
+            $goodsMemberCoupon->enough = number_format(($orderGoods->getVipPrice() / $this->coupon->getOrderGoodsInScope()->getVipPrice()) * $this->dbCoupon->enough, 2);
+            if(!isset($orderGoods->coupons)){
+                $orderGoods->coupons = collect();
+            }
+            $orderGoods->coupons->push($goodsMemberCoupon);
+        });
     }
 }
