@@ -20,7 +20,7 @@ class PaymentController extends BaseController
     public function __construct()
     {
         parent::__construct();
-
+      
         $script_info = pathinfo($_SERVER['SCRIPT_NAME']);
 
         file_put_contents(storage_path('logs/100.log'), 1);
@@ -75,7 +75,7 @@ class PaymentController extends BaseController
         file_put_contents(storage_path('logs/5.log'), 1);
         switch ($type) {
             case "charge.succeeded":
-                $order_info = Order::uniacid()->where('order_sn', $data['out_trade_no'])->first();
+                $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
                 $order_info->price = $order_info->price * 100;
 
                 file_put_contents(storage_path('logs/6.log'), $order_info->price . '/' . $data['total_fee']);
