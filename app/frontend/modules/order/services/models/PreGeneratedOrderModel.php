@@ -99,14 +99,12 @@ class PreGeneratedOrderModel extends OrderModel
     {
         $orderModel = $this->createOrder();
         $orderGoodsModels = $this->createOrderGoods();
-        $order = DB::transaction(function () use ($orderModel,$orderGoodsModels){
             $order = Order::create($orderModel);
             foreach ($orderGoodsModels as $orderGoodsModel){
                 $orderGoodsModel->order_id = $order->id;
                 $orderGoodsModel->save();
             }
-            return $order;
-        });
+
         $this->id = $order->id;
 
         return $order->id;

@@ -83,7 +83,7 @@ class Balance
             'member_id'         => $rechargeMode->member_id,
             //todo 验证余额值
             'change_money'      => $rechargeMode->money,
-            'serial_number'     => $ordersn,
+            'serial_number'     => $data['order_sn'],
             'operator'          => BalanceRecharge::PAY_TYPE_MEMBER,
             'operator_id'       => $rechargeMode->id,
             'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
@@ -247,6 +247,7 @@ class Balance
         $balanceMode = new \app\common\models\finance\Balance();
         $balanceMode->fill($this->getDetailData());
         $validator = $balanceMode->validator();
+        echo '<pre>'; print_r($this->getDetailData());
         if ($validator->fails()) {
             return $validator->messages();
         }
@@ -298,9 +299,12 @@ class Balance
         $transferModel->status = static::STATUS_SUCCESS;
         if ($transferModel->save()) {
             $this->data['change_money'] = -$this->data['change_money'];
+            $this->type = static::EXPENDITURE;
             if ($this->detailRecord() === true) {
+                $this->type = static::INCOME;
                 $this->data['change_money'] = -$this->data['change_money'];
                 $this->data['member_id'] = $this->data['recipient_id'];
+                //echo '<pre>'; print_r($this->getDetailData()); exit;
                 return $this->detailRecord();
             }
             return '修改转让值余额明细记录失败';

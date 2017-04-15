@@ -266,6 +266,8 @@ return [
         //php短信发送
         'PhpSms' => Toplan\PhpSms\Facades\Sms::class,
         'SmsManager' => Toplan\Sms\Facades\SmsManager::class,
+        //微信接口封装
+        'wechat' => Overtrue\LaravelWechat\Facade::class,
     ],
 
     'pay_type' => [

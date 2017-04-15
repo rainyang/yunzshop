@@ -24,6 +24,7 @@ class MemberCart extends \app\common\models\MemberCart
     public static function getMemberCartList($memberId)
     {
         $cartList = static::carts()->where('member_id', $memberId)
+            ->orderBy('created_at', 'desc')
             ->get()
             ->toArray();
         return $cartList;
