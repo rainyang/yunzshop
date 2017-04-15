@@ -39,9 +39,16 @@ class MemberMobileService extends MemberService
 
                 $this->save($member_info, $uniacid);
 
-                $yz_member = MemberShopInfo::getMemberShopInfo($member_info['uid'])->toArray();
-                $data = MemberModel::userData($member_info, $yz_member);
+                $yz_member = MemberShopInfo::getMemberShopInfo($member_info['uid']);
 
+                if (!empty($yz_member)) {
+                    $yz_member = $yz_member->toArray();
+
+                    $data = MemberModel::userData($member_info, $yz_member);
+                } else {
+                    $data = $member_info;
+                }
+                
                 return show_json(1, $data);
             } else{
                 return show_json(0, "手机号或密码错误");

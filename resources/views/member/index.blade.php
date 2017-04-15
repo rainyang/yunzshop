@@ -17,6 +17,7 @@
                 <div class="panel-heading">筛选</div>-->
                 <div class="panel-body">
                     <form action="" method="post" class="form-horizontal" role="form" id="form1">
+                        <input type="hidden" name="route" value="member.member.index" id="route" />
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">
                             <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>-->
                             <div class="">
