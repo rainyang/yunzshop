@@ -247,7 +247,6 @@ class Balance
         $balanceMode = new \app\common\models\finance\Balance();
         $balanceMode->fill($this->getDetailData());
         $validator = $balanceMode->validator();
-        echo '<pre>'; print_r($this->getDetailData());
         if ($validator->fails()) {
             return $validator->messages();
         }
