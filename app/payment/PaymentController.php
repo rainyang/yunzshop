@@ -51,7 +51,7 @@ class PaymentController extends BaseController
         /*if (config('app.debug')) {
             return 2;
         }*/
-
+        file_put_contents(storage_path('logs/9.log'), print_r($_REQUEST, 1));
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
 
