@@ -19,45 +19,47 @@ class WechatController extends PaymentController
 {
     public function notifyUrl()
     {
+        file_put_contents(storage_path('logs/1.log'), 1);
         $post = $this->getResponseResult();
 
-//        if (config('app.debug')) {
-//            $post = Array
-//            (
-//                 'appid'  => 'wx6be17f352e859277',
-//                 'attach'  => 1,
-//                 'bank_type'  => 'CFT',
-//                 'cash_fee'  => 10,
-//                 'fee_type'  => 'CNY',
-//                 'is_subscribe'  => 'Y',
-//                 'mch_id'  => '1429240702',
-//                 'nonce_str'  => '58e0c7fdb1c90',
-//                 'openid'  => 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y',
-//                 'out_trade_no'  => 'SN1491126269',
-//                 'result_code'  => 'SUCCESS',
-//                 'return_code'  => 'SUCCESS',
-//                 'sign'  => 'F3FA8FBD018A1B00B7B7D264A089794C',
-//                 'time_end'  => 20170402174504,
-//                 'total_fee'  => 10,
-//                 'trade_type'  => 'JSAPI',
-//                 'transaction_id'  => '4001322001201704025593308407'  //微信支付单号 可用于退款
-//            );
-//
-//            $data = [
-//                'total_fee'    => $post['total_fee'] ,
-//                'out_trade_no' => $post['out_trade_no'],
-//                'trade_no'     => $post['transaction_id']
-//            ];
-//
-//            $this->payResutl($data);
-//            exit;
-//        }
+        /*if (config('app.debug')) {
+            $post = Array
+            (
+                 'appid'  => 'wx6be17f352e859277',
+                 'attach'  => 1,
+                 'bank_type'  => 'CFT',
+                 'cash_fee'  => 10,
+                 'fee_type'  => 'CNY',
+                 'is_subscribe'  => 'Y',
+                 'mch_id'  => '1429240702',
+                 'nonce_str'  => '58e0c7fdb1c90',
+                 'openid'  => 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y',
+                 'out_trade_no'  => 'SN1491126269',
+                 'result_code'  => 'SUCCESS',
+                 'return_code'  => 'SUCCESS',
+                 'sign'  => 'F3FA8FBD018A1B00B7B7D264A089794C',
+                 'time_end'  => 20170402174504,
+                 'total_fee'  => 10,
+                 'trade_type'  => 'JSAPI',
+                 'transaction_id'  => '4001322001201704025593308407'  //微信支付单号 可用于退款
+            );
 
-        $this->log($post);
+            $data = [
+                'total_fee'    => $post['total_fee'] ,
+                'out_trade_no' => $post['out_trade_no'],
+                'trade_no'     => $post['transaction_id']
+            ];
+
+            $this->payResutl($data);
+            exit;
+        }*/
+file_put_contents(storage_path('logs/2.log'), print_r($post, 1));
+        //$this->log($post);
 
         $verify_result = $this->getSignResult();
-
+        file_put_contents(storage_path('logs/3.log'), print_r($verify_result, 1));
         if ($verify_result) {
+            file_put_contents(storage_path('logs/4.log'), 1);
             $data = [
                 'total_fee'    => $post['total_fee'] ,
                 'out_trade_no' => $post['out_trade_no'],
