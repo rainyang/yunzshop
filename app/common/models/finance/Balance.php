@@ -20,7 +20,7 @@ class Balance extends BaseModel
 {
     public $table = 'yz_balance';
 
- 
+
     protected $guarded= [''];
 
     protected $appends = ['service_type_name'];
