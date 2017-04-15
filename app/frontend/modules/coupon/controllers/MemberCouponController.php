@@ -100,19 +100,16 @@ class MemberCouponController extends ApiController
 
             //添加优惠券使用范围描述
             switch($v['use_type']){
-                case 1:
-                    $coupons['data'][$k]['api_limit'] = '仅下订单时可用';
-                    break;
-                case 2:
+                case Coupon::COUPON_ALL_USE:
                     $coupons['data'][$k]['api_limit'] = '商城通用';
                     break;
-                case 3:
+                case Coupon::COUPON_CATEGORY_USE:
                     $coupons['data'][$k]['api_limit'] = '适用于下列分类: ';
                     foreach($v['categorynames'] as $sub){
                         $coupons['data'][$k]['api_limit'] .= ' "'.$sub.'"';
                     }
                     break;
-                case 4:
+                case Coupon::COUPON_GOODS_USE:
                     $coupons['data'][$k]['api_limit'] = '适用于下列商品: ';
                     foreach($v['goods_names'] as $sub){
                         $coupons['data'][$k]['api_limit'] .= ' "'.$sub.'"';
