@@ -96,25 +96,14 @@ class MemberRelationController extends BaseController
 
         $requestSearch = \YunShop::request()->search;
 
+        $starttime = strtotime('-1 month');
+        $endtime = time();
 
-        if($requestSearch){
-
-            if ($requestSearch['searchtime']) {
-                if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
-                    $requestSearch['times']['start'] = strtotime($requestSearch['times']['start']);
-                    $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
-                    $starttime = strtotime($requestSearch['times']['start']);
-                    $endtime = strtotime($requestSearch['times']['end']);
-                }else{
-                    $requestSearch['times'] = '';
-                }
-            }else{
-                $requestSearch['times'] = '';
+        if (isset($requestSearch['searchtime']) && $requestSearch['searchtime'] == 1) {
+            if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
+                $starttime = strtotime($requestSearch['times']['start']);
+                $endtime = strtotime($requestSearch['times']['end']);
             }
-
-            $requestSearch = array_filter($requestSearch, function ($item) {
-                return $item !== '';// && $item !== 0;
-            });
         }
 
         $list = Member::getMembersToApply($requestSearch)
