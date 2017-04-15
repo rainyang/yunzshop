@@ -95,7 +95,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     public function getCouponPrice()
     {
-
+        if(!isset($this->coupons)){
+            return 0;
+        }
         return $this->coupons->sum('amount');
     }
 

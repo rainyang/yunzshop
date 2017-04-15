@@ -31,9 +31,7 @@ class PayController extends ApiController
 
         return $this->successJson('成功', $data);
     }
-
-    public function wechatPay(\Request $request)
-    {
+    private function pay($request){
         $this->validate($request,[
             'order_id' => 'required|integer'
         ]);
@@ -66,11 +64,15 @@ class PayController extends ApiController
 
         $data['js'] = json_decode($data['js'], 1);
         return $this->successJson('成功', $data);
+    }
+    public function wechatPay(\Request $request)
+    {
 
+        //return $this->
         //return view('order.pay', $data)->render();
     }
 
-    public function alipay()
+    public function alipay(\Request $request)
     {
         //获取支付宝 支付单 数据
     }
