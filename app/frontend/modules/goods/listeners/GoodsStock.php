@@ -47,11 +47,10 @@ class GoodsStock
             $goods_option->save();
         }
         /**
-         * @var $goods_option Goods
+         * @var $goods Goods
          */
-        $goods = $orderGoods->goods;
-        dd($goods);
-        exit;
+        $goods = $orderGoods->hasOneGoods;
+        
         $goods->reduceStock($orderGoods->total);
         $goods->save();
     }

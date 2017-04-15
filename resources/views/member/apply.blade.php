@@ -49,17 +49,22 @@
                                     <option value='0'
                                             @if($requestSearch['searchtime']=='0')
                                             selected
-                                            @endif>不搜索注册时间
+                                            @endif>不搜索申请时间
                                     </option>
                                     <option value='1'
                                             @if($requestSearch['searchtime']=='1')
                                             selected
-                                            @endif>搜索注册时间
+                                            @endif>搜索申请时间
                                     </option>
                                 </select>
                             </div>
                             <div class="search-select">
-                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', ['starttime'=>date('Y-m-d H:i', $starttime), 'endtime'=>date('Y-m-d H:i',$endtime)], true) !!}
+                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', [
+                                'starttime'=>date('Y-m-d H:i', $starttime),
+                                'endtime'=>date('Y-m-d H:i',$endtime),
+                                'start'=>0,
+                                'end'=>0
+                                ], true) !!}
                             </div>
                         </div>
 
