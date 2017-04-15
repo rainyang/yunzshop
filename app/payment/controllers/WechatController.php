@@ -58,6 +58,7 @@ file_put_contents(storage_path('logs/2.log'), print_r($post, 1));
         $verify_result = $this->getSignResult();
         file_put_contents(storage_path('logs/3.log'), print_r($verify_result, 1));
         if ($verify_result) {
+            echo 1;exit;
             file_put_contents(storage_path('logs/4.log'), 1);
             $data = [
                 'total_fee'    => $post['total_fee'] ,
@@ -87,11 +88,7 @@ file_put_contents(storage_path('logs/2.log'), print_r($post, 1));
         $payment = $app->payment;
 
         $notify = $payment->getNotify();
-if ($notify->isValid()) {
-    echo 2;
-} else {
-    echo 1;
-}exit;
+
         return $notify->isValid();
     }
 
