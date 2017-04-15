@@ -17,7 +17,7 @@ abstract class TimeLimit
 {
     /**
      * 优惠券数据库model
-     * @var
+     * @var \app\common\models\Coupon
      */
     protected $dbCoupon;
     /**

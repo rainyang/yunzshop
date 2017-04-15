@@ -15,7 +15,10 @@ class DateTimeRange extends TimeLimit
             //未开始
             return false;
         }
+
         if(time() > $this->dbCoupon->time_end){
+//dd($this->dbCoupon->time_end);
+            exit;
             //已结束
             return false;
         }
