@@ -4,6 +4,7 @@ namespace app\frontend\modules\coupon\controllers;
 use app\common\components\ApiController;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\models\MemberCoupon;
+use app\common\models\MemberShopInfo;
 
 class MemberCouponController extends ApiController
 {
@@ -254,20 +255,26 @@ class MemberCouponController extends ApiController
             return $this->errorJson('没有提供优惠券ID','');
         }
 
-        $coupon = Coupon::getCouponById($couponId)->where('status','=',1)->first();
-
-        if(!$coupon){
+        //是否有该优惠券
+        $couponModel = Coupon::getCouponById($couponId)->where('status','=',1)->first();
+        if(!$couponModel){
             return $this->errorJson('没有该优惠券或者优惠券不可用','');
         }
 
-        $memberCoupon = new MemberCoupon;
+        //是否达到优惠券要求的会员等级
+        $memberLevel = MemberShopInfo::getMemberShopInfo($memberId);
+        if (($memberLevel->level_id > $couponModel->level_limit) && ($couponModel->level_limit !=-1)){ //todo 怎么对比, level_id越小越大还是反之? level_limit=-1是没有限制
+            return $this->errorJson('用户没有达到优惠券的会员等级要求','');
+        }
+
+        //是否达到个人领取上限
         $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
         $couponMaxLimit = Coupon::getter($couponId, 'get_max'); //优惠券的限制每人的领取总数
-
         if($count >= $couponMaxLimit){
             return $this->errorJson('该用户已经达到个人领取上限','');
         }
 
+        //表单验证, 保存
         $data = [
             'uniacid' => \YunShop::app()->get('uniacid'),
             'uid' => \YunShop::app()->getMemberId(),
@@ -275,6 +282,7 @@ class MemberCouponController extends ApiController
             'get_type' => 1,
             'get_time' => strtotime('now'),
         ];
+        $memberCoupon = new MemberCoupon;
         $memberCoupon->fill($data);
         $validator = $memberCoupon->validator();
         if ($validator->fails()) {
