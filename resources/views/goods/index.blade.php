@@ -130,7 +130,7 @@
                 <style type="text/css">
 
                 </style>
-                <form id="goods-list" action="{!! yzWebUrl('goods.goods.displayorder') !!}" method="post">
+                <form id="goods-list" action="{!! yzWebUrl($sort_url) !!}" method="post">
                     <div class="panel panel-default">
                         <div class="panel-body table-responsive">
                             <table class="table table-hover">
@@ -229,9 +229,6 @@
                                                     {{$lang['soldout']}}
                                                 @endif
                                             </label>
-
-                                            @section('putaway')
-                                            @show
 
                                         </td>
 
