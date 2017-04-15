@@ -33,6 +33,7 @@ class ApiController extends BaseController
 
 
             if (5 == $type) {
+                echo request()->getSchemeAndHttpHost();exit;
                 redirect(request()->getSchemeAndHttpHost() . '/addons/yun_shop/#/login')->send();
                 exit;
             }
