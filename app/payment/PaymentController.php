@@ -23,7 +23,7 @@ class PaymentController extends BaseController
 
         $script_info = pathinfo($_SERVER['SCRIPT_NAME']);
         echo 1;
-        file_put_contents(storage_path('logs/100.log'), print_r($_POST,1));
+        file_put_contents(storage_path('logs/100.log'), 1);
         exit;
         if (!empty($script_info)) {
             switch ($script_info['filename']) {
