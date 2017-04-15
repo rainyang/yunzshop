@@ -12,10 +12,13 @@ use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 use app\common\services\PayFactory;
+use app\common\services\Session;
 use Ixudra\Curl\Facades\Curl;
 
 class PayController extends ApiController
 {
+    protected $publicAction = ['alipay'];
+
     public function index(\Request $request)
     {
         $order_id = $request->query('order_id');
@@ -60,21 +63,26 @@ class PayController extends ApiController
         ];
 
         $pay = PayFactory::create($payType);
-        $data = $pay->doPay($query_str);
+        return $pay->doPay($query_str);
 
-        $data['js'] = json_decode($data['js'], 1);
-        return $this->successJson('成功', $data);
+
     }
     public function wechatPay(\Request $request)
     {
-        return $this->pay($request,PayFactory::PAY_WEACHAT);
+        $data = $this->pay($request,PayFactory::PAY_WEACHAT);
+        $data['js'] = json_decode($data['js'], 1);
+        return $this->successJson('成功', $data);
         //return $this->
         //return view('order.pay', $data)->render();
     }
 
     public function alipay(\Request $request)
     {
-        return $this->pay($request,PayFactory::PAY_ALIPAY);
+        if($request->has('uid')){
+            Session::set('member_id',$request->query('uid'));
+        }
+        $data =  $this->pay($request,PayFactory::PAY_ALIPAY);
+        return $this->successJson('成功', $data);
 
         //获取支付宝 支付单 数据
     }
