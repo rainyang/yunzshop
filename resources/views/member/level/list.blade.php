@@ -29,7 +29,7 @@
                                 <td>{{ $list->level }}</td>
                                 <td>{{ $list->level_name }}</td>
                                 <td>
-                                    @if(empty($shopSet))
+                                    @if(empty($shopSet['level_type']))
                                         @if($list->order_money > 0)
                                             完成订单金额满{{ $list->order_money }}元
                                         @else
@@ -47,7 +47,7 @@
 
                                     @if($shopSet['level_type'] == 2)
                                         @if($list->goods_id)
-                                        购买商品ID：[{{ $list->goods_id }}]升级
+                                            购买商品ID：[{{ $list->goods_id }}]升级
                                         @endif
                                     @endif
                                 </td>
