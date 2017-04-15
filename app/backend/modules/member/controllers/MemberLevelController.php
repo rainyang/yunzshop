@@ -24,7 +24,6 @@ class MemberLevelController extends BaseController
      * @autor yitian */
     public function index()
     {
-        echo '<pre>'; print_r(Setting::get('shop.member')); exit;
         $pageSize = 10;
         $levelList = MemberLevel::getLevelPageList($pageSize);
         $pager = PaginationHelper::show($levelList->total(), $levelList->currentPage(), $levelList->perPage());
