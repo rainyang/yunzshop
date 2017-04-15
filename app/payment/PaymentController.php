@@ -78,12 +78,12 @@ class PaymentController extends BaseController
                 $order_info = Order::uniacid()->where('order_sn', $data['out_trade_no'])->first();
                 $order_info->price = $order_info->price * 100;
 
-                file_put_contents(storage_path('logs/6.log'), 1);
+                file_put_contents(storage_path('logs/6.log'), print_r([$order_info->price,$data['total_fee']]));
                 if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
                     file_put_contents(storage_path('logs/7.log'), 1);
                     MemberRelation::checkOrderPay();
 
-                    OrderService::orderPay(['order_id' => $data['out_trade_no']]);
+                    OrderService::orderPay(['order_id' => $order_info->id]);
                 }
                 break;
             case "recharge.succeeded":
