@@ -48,7 +48,7 @@ class MemberMobileService extends MemberService
                 } else {
                     $data = $member_info;
                 }
-                
+
                 return show_json(1, $data);
             } else{
                 return show_json(0, "手机号或密码错误");

@@ -31,6 +31,12 @@ class ApiController extends BaseController
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             $type  = \YunShop::request()->type;
 
+
+            if (5 == $type) {
+                redirect(request()->getSchemeAndHttpHost() . '/addons/yun_shop/#/login')->send();
+                exit;
+            }
+
             return $this->errorJson('',['login_status'=>0,'login_url'=>Url::absoluteApi('member.login.index', ['type'=>$type,'session_id'=>session_id()])]);
         }
     }
