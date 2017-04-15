@@ -169,7 +169,7 @@ z-index: 2;position: fixed;
 /*.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{border-top:0;}*/
 
 .sx-border{border:1px #ddd solid!important;/*margin-left:13px;*/}
-.panel-default{border-color: transparent }
+/*.panel-default{border-color: transparent }*/
 .mrleft40{margin-left: 150px!important}
 .form-horizontal .form-group {margin-left:0 !important;margin-right:0 !important; padding-top: 10px;}
 .panel-body .form-group{padding-top: 0 !important;}

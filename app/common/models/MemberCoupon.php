@@ -64,8 +64,8 @@ class MemberCoupon extends BaseModel
     public static function getMemberCoupon($MemberModel,$param = [])
     {
         return static::with(['belongsToCoupon' => function ($query) use ($param) {
-            if(isset($param['coupon']['back_type'])){
-                //$query->where('back_type', $param['coupon']['back_type']);
+            if(isset($param['coupon']['coupon_method'])){
+                //$query->where('coupon_method', $param['coupon']['coupon_method']);
             }
             return $query->where('status', 0);
         }])->where('member_id', $MemberModel->uid)->where('used', 0);

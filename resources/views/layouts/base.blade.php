@@ -108,7 +108,7 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="hold-transition skin-red sidebar-mini">
+<body class="hold-transition skin-red sidebar-mini" >
 <div id="loading">
     <div id="loading-center">
         <div id="loading-center-absolute">
