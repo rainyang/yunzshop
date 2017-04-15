@@ -34,6 +34,9 @@ class ApiController extends BaseController
 
             if (5 == $type) {
 
+                return $this->errorJson('',['login_status'=>0,'login_url'=>request()->getSchemeAndHttpHost() . '/addons/yun_shop/#/login', ['type'=>$type,'session_id'=>session_id()]]);
+
+
                // redirect(request()->getSchemeAndHttpHost() . '/addons/yun_shop/#/login')->send();
                // exit;
             }
