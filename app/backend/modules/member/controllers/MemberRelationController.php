@@ -32,7 +32,13 @@ class MemberRelationController extends BaseController
 
         if (!empty($relation['become_goods_id'])) {
             $goods = Goods::getGoodsById($relation['become_goods_id']);
-            $goods = $goods->toArray();
+
+            if (!empty($goods)) {
+                $goods = $goods->toArray();
+            } else {
+                $goods = [];
+            }
+
         } else {
             $goods = [];
         }
@@ -95,9 +101,6 @@ class MemberRelationController extends BaseController
         $endtime = time();
 
         $requestSearch = \YunShop::request()->search;
-
-        $starttime = strtotime('-1 month');
-        $endtime = time();
 
         if (isset($requestSearch['searchtime']) && $requestSearch['searchtime'] == 1) {
             if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
