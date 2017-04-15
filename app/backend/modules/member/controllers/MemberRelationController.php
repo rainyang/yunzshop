@@ -21,6 +21,11 @@ class MemberRelationController extends BaseController
 {
     public $pageSize = 20;
 
+    /**
+     * 列表
+     *
+     * @return string
+     */
     public function index()
     {
 
@@ -32,7 +37,13 @@ class MemberRelationController extends BaseController
 
         if (!empty($relation['become_goods_id'])) {
             $goods = Goods::getGoodsById($relation['become_goods_id']);
-            $goods = $goods->toArray();
+
+            if (!empty($goods)) {
+                $goods = $goods->toArray();
+            } else {
+                $goods = [];
+            }
+
         } else {
             $goods = [];
         }
@@ -42,6 +53,11 @@ class MemberRelationController extends BaseController
         ])->render();
     }
 
+    /**
+     * 保存关系链数据
+     *
+     * @return mixed
+     */
     public function save()
     {
         $setData = \YunShop::request()->setdata;
@@ -72,6 +88,11 @@ class MemberRelationController extends BaseController
         return $this->message('保存成功', yzWebUrl('member.member-relation.index'));
     }
 
+    /**
+     * 成为推广员 指定商品查询
+     *
+     * @return string
+     */
     public function query()
     {
         $kwd                = trim(\YunShop::request()->keyword);
@@ -89,6 +110,11 @@ class MemberRelationController extends BaseController
         ])->render();
     }
 
+    /**
+     * 会员资格申请列表
+     *
+     * @return string
+     */
     public function apply()
     {
         $starttime = strtotime('-1 month');
@@ -96,25 +122,11 @@ class MemberRelationController extends BaseController
 
         $requestSearch = \YunShop::request()->search;
 
-
-        if($requestSearch){
-
-            if ($requestSearch['searchtime']) {
-                if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
-                    $requestSearch['times']['start'] = strtotime($requestSearch['times']['start']);
-                    $requestSearch['times']['end'] = strtotime($requestSearch['times']['end']);
-                    $starttime = strtotime($requestSearch['times']['start']);
-                    $endtime = strtotime($requestSearch['times']['end']);
-                }else{
-                    $requestSearch['times'] = '';
-                }
-            }else{
-                $requestSearch['times'] = '';
+        if (isset($requestSearch['searchtime']) && $requestSearch['searchtime'] == 1) {
+            if ($requestSearch['times']['start'] != '请选择' && $requestSearch['times']['end'] != '请选择') {
+                $starttime = strtotime($requestSearch['times']['start']);
+                $endtime = strtotime($requestSearch['times']['end']);
             }
-
-            $requestSearch = array_filter($requestSearch, function ($item) {
-                return $item !== '';// && $item !== 0;
-            });
         }
 
         $list = Member::getMembersToApply($requestSearch)
@@ -133,7 +145,11 @@ class MemberRelationController extends BaseController
         ])->render();
     }
 
-
+    /**
+     * 申请协议
+     *
+     * @return mixed|string
+     */
     public function applyProtocol()
     {
         $info = Setting::get("apply_protocol");
@@ -151,6 +167,11 @@ class MemberRelationController extends BaseController
         ])->render();
     }
 
+    /**
+     * 检查审核
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function chkApply()
     {
         $id = \YunShop::request()->id;
@@ -169,5 +190,73 @@ class MemberRelationController extends BaseController
         } else {
             return $this->errorJson('会员不存在');
         }
+    }
+
+    /**
+     * 数据导出
+     *
+     */
+    public function export()
+    {
+        $file_name = date('Ymdhis', time()) . '会员导出';
+
+        $parames = \YunShop::request();
+        $list = Member::searchMembers($parames)
+            ->get()
+            ->toArray();
+
+        $export_data[0] = ['会员ID', '粉丝', '姓名', '手机号', '等级', '分组', '注册时间', '积分', '余额', '订单', '金额', '关注'];
+
+        foreach ($list as $key => $item) {
+            if (!empty($item['yz_member']) && !empty($item['yz_member']['group'])) {
+                $group = $item['yz_member']['group']['group_name'];
+
+            } else {
+                $group = '';
+            }
+
+            if (!empty($item['yz_member']) && !empty($item['yz_member']['level'])) {
+                $level = $item['yz_member']['level']['level_name'];
+
+            } else {
+                $level = '';
+            }
+
+            $order = 0;
+            $price = 0;
+
+            if (!empty($item['has_one_fans'])) {
+                if ($item['has_one_fans']['followed'] == 1) {
+                    $fans = '已关注';
+                } else {
+                    $fans = '未关注';
+                }
+            } else {
+                $fans = '';
+            }
+
+            $export_data[$key + 1] = [$item['uid'], $item['nickname'], $item['realname'], $item['mobile'],
+                $level, $group, date('YmdHis', $item['createtime']), $item['credit1'], $item['credit2'], $order,
+                $price, $fans];
+        }
+
+        \Excel::create($file_name, function ($excel) use ($export_data) {
+            // Set the title
+            $excel->setTitle('Office 2005 XLSX Document');
+
+            // Chain the setters
+            $excel->setCreator('芸众商城')
+                ->setLastModifiedBy("芸众商城")
+                ->setSubject("Office 2005 XLSX Test Document")
+                ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
+                ->setKeywords("office 2005 openxml php")
+                ->setCategory("report file");
+
+            $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->rows($export_data);
+            });
+
+
+        })->export('xls');
     }
 }

@@ -27,6 +27,8 @@ use Illuminate\Support\Str;
 
 class MemberController extends ApiController
 {
+    protected $publicAction = ['wxJsSdkConfig'];
+
     /**
      * 获取用户信息
      *

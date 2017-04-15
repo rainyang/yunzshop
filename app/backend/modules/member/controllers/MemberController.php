@@ -47,7 +47,7 @@ class MemberController extends BaseController
         $starttime = strtotime('-1 month');
         $endtime = time();
 
-        if (isset($parames['searchtime']) && ($parames['searchtime'] == '' || $parames['searchtime'] == 1)) {
+        if (isset($parames['searchtime']) &&  $parames['searchtime'] == 1) {
             if ($parames['times']['start'] != '请选择' && $parames['times']['end'] != '请选择') {
                 $starttime = strtotime($parames['times']['start']);
                 $endtime = strtotime($parames['times']['end']);

@@ -57,7 +57,7 @@ class PayController extends ApiController
             'order_no' => $order->order_sn,
             'amount' => $order->price,
             'subject' => '微信支付',
-            'body' => $order->hasManyOrderGoods[0]->title,
+            'body' => $order->hasManyOrderGoods[0]->title.':'.\YunShop::app()->uniacid,
             'extra' => ['type' => 1]
         ];
 

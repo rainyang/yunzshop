@@ -8,24 +8,27 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\common\components\ApiController;
 use app\common\helpers\Url;
+use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
 use app\common\models\MemberShopInfo;
-use app\frontend\modules\member\models\SubMemberModel;
-use Illuminate\Support\Facades\Cookie;
-use app\common\components\BaseController;
+use app\common\services\Session;
 use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
-use app\common\models\MemberGroup;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 use iscms\Alisms\SendsmsPusher as Sms;
-use Setting;
 
-class RegisterController extends BaseController
+class RegisterController extends ApiController
 {
+    protected $publicAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
+
     public function index()
     {
         if (MemberService::isLogged()) {
+            echo '<pre>';print_r($_SESSION);exit;
             return $this->errorJson('会员已登录');
         }
 
@@ -34,10 +37,19 @@ class RegisterController extends BaseController
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid = \YunShop::app()->uniacid;
 
+        if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
+            $check_code = $this->checkCode();
 
-        if (($_SERVER['REQUEST_METHOD'] == 'POST')
-            && MemberService::validate($mobile, $password, $confirm_password)
-        ) {
+            if ($check_code['status'] != 1) {
+                return $this->errorJson($check_code['json']);
+            }
+
+            $msg = MemberService::validate($mobile, $password, $confirm_password);
+
+            if ($msg['status'] != 1) {
+                return $this->errorJson($msg['json']);
+            }
+
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             if (!empty($member_info)) {
@@ -123,9 +135,9 @@ class RegisterController extends BaseController
         }
         $code = rand(1000, 9999);
 
-        session()->put('codetime', time());
-        session()->put('code', $code);
-        session()->put('code_mobile', $mobile);
+        Session::set(codetime, time());
+        Session::set(code, $code);
+        Session::set(code_mobile, $mobile);
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
@@ -145,13 +157,13 @@ class RegisterController extends BaseController
     {
         $code = \YunShop::request()->code;
 
-        if ((session('codetime') + 60 * 5) < time()) {
-            return $this->errorJson('验证码已过期,请重新获取');
+        if ((Session::get('codetime') + 60 * 5) < time()) {
+            return show_json('0', '验证码已过期,请重新获取');
         }
-        if (session('code') != $code) {
-            return $this->errorJson('验证码错误,请重新获取');
+        if (Session::get('code') != $code) {
+            return show_json('0', '验证码错误,请重新获取');
         }
-        return $this->successJson();
+        return show_json('1');
     }
 
     /**
@@ -203,6 +215,7 @@ class RegisterController extends BaseController
                 'alisms.KEY' => $sms['appkey'],
                 'alisms.SECRETKEY' => $sms['secret']
             ]);
+
             $sms = new Sms($top_client);
             $issendsms = $sms->send($mobile, $name, $content, $templateCode);
 

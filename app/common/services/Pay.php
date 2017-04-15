@@ -308,7 +308,8 @@ abstract class Pay
             'member_id' => \YunShop::app()->getMemberId(),
             'url' => $this->url,
             'http_method' => $this->method,
-            'ip' => $this->ip
+            'ip' => $this->ip,
+            'input' => file_get_contents('php://input'),
         ]);
     }
 

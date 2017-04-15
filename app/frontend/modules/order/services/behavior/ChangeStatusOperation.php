@@ -14,13 +14,13 @@ abstract class ChangeStatusOperation extends OrderOperation
     /**
      * @var改变后状态
      */
-    protected $status_after_changed;
+    protected $statusAfterChanged;
     /**
      * 更新订单表
      * @return bool
      */
     protected function updateTable(){
-        $this->order->status = $this->status_after_changed;
+        $this->order->status = $this->statusAfterChanged;
         if(isset($this->time_field)){
             $time_fields = $this->time_field;
             $this->order->$time_fields = time();
