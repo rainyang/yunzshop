@@ -119,6 +119,29 @@
                             })
 
                         })
+
+                        {{--下面是新增的js--}}
+                        function search_goods() {
+                            if ($.trim($('#search-kwd-goods').val()) == '') {
+                                Tip.focus('#search-kwd-goods', '请输入关键词');
+                                return;
+                            }
+                            $("#module-menus-goods").html("正在搜索....");
+                            $.get('{!! yzWebUrl('goods.goods.get-search-goods') !!}', {
+                                    keyword: $.trim($('#search-kwd-goods').val())
+                                }, function (dat) {
+                                    $('#module-menus-goods').html(dat);
+                                }
+                            )
+                            ;
+                        }
+                        function select_good(o) {
+                            $("#goodsid").val(o.id);
+                            $("#goodsthumb").show();
+                            $("#goodsthumb").find('img').attr('src', o.thumb);
+                            $("#goods").val("[" + o.id + "]" + o.title);
+                            $("#modal-module-menus-goods .close").click();
+                        }
                     </script>
     </div>
     </div>
