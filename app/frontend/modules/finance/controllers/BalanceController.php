@@ -72,6 +72,7 @@ class BalanceController extends ApiController
         return $this->errorJson('未开启充值接口');
     }
 
+    //获取会员余额值接口
     public function balance()
     {
         $memberId = \YunShop::app()->getMemberId();
@@ -85,6 +86,7 @@ class BalanceController extends ApiController
         return $this->errorJson('数据有误，请刷新重试');
     }
 
+    //余额提现接口
     public function withdraw()
     {
         $withdrawSet = Setting::get('withdraw.balance');

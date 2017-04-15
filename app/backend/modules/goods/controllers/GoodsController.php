@@ -102,6 +102,7 @@ class GoodsController extends BaseController
         $edit_url = 'goods.goods.edit';
         $delete_url = 'goods.goods.destroy';
         $delete_msg = '确认删除此商品？';
+        $sort_url = 'goods.goods.displayorder';
 
         return view('goods.index', [
             'list' => $list['data'],
@@ -116,7 +117,8 @@ class GoodsController extends BaseController
             'product_attr_list' => $product_attr_list,
             'edit_url' => $edit_url,
             'delete_url' => $delete_url,
-            'delete_msg' => $delete_msg
+            'delete_msg' => $delete_msg,
+            'sort_url'  => $sort_url
         ])->render();
     }
 
