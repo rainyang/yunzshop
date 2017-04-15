@@ -26,7 +26,7 @@ class ExcelModel
             die('This example should only be run from a Web Browser');
         }
         //ob_end_clean();
-        require_once IA_ROOT . '/addons/sz_yi/vendor/phpoffice/phpexcel/Classes/PHPExcel.php';
+        require_once IA_ROOT . '/addons/yun_shop/vendor/phpoffice/phpexcel/Classes/PHPExcel.php';
         //echo '<pre>';print_r(IA_ROOT . '/addons/sz_yi/vendor/phpoffice/phpexcel/Classes/PHPExcel.php');exit;
         $excel = new \PHPExcel();
         $excel->getProperties()->setCreator("芸众商城")->setLastModifiedBy("芸众商城")->setTitle("Office 2007 XLSX Test Document")->setSubject("Office 2007 XLSX Test Document")->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")->setKeywords("office 2007 openxml php")->setCategory("report file");
