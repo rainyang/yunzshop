@@ -25,6 +25,6 @@ class LogoutController extends ApiController
 
         Session::clear('member_id');
 
-        $this->successJson();
+        $this->successJson('退出成功');
     }
 }

@@ -11,6 +11,7 @@ use app\common\models\GoodsCategory;
 use app\common\models\GoodsSpecItem;
 use app\common\models\Slide;
 use app\frontend\modules\goods\services\GoodsService;
+use EasyWeChat\Payment\API;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\DB;
  * Date: 2017/3/3
  * Time: 22:16
  */
-class IndexController extends BaseController
+class IndexController extends ApiController
 {
     public function getDefaultIndex()
     {

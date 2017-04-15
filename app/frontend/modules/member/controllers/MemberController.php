@@ -390,16 +390,29 @@ class MemberController extends ApiController
      */
     public function bindMobile()
     {
-        $data = \YunShop::request()->data;
+        $mobile = \YunShop::request()->mobile;
+        $password = \YunShop::request()->password;
+        $confirm_password = \YunShop::request()->password;
 
         $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
 
-        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0
-            && MemberService::validate($data['mobile'], $data['password'], $data['confirm_password'])) {
+        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
+            $check_code = MemberService::checkCode();
+
+            if ($check_code['status'] != 1) {
+                return $this->errorJson($check_code['json']);
+            }
+            
+            $msg = MemberService::validate($mobile, $password, $confirm_password);
+
+            if ($msg['status'] != 1) {
+                return $this->errorJson($msg['json']);
+            }
+
             $salt = Str::random(8);
             $member_model->salt = $salt;
-            $member_model->mobile = $data['mobile'];
-            $member_model->password = md5($data['password'] . $salt);
+            $member_model->mobile = $mobile;
+            $member_model->password = md5($password . $salt);
 
             if ($member_model->save()) {
                 return $this->successJson('手机号码绑定成功');
@@ -463,6 +476,4 @@ class MemberController extends ApiController
         }
         return $this->successJson('未检测到数据!', []);
     }
-
-
 }

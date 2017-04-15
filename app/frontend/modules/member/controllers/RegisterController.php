@@ -28,7 +28,6 @@ class RegisterController extends ApiController
     public function index()
     {
         if (MemberService::isLogged()) {
-            echo '<pre>';print_r($_SESSION);exit;
             return $this->errorJson('会员已登录');
         }
 
@@ -38,7 +37,7 @@ class RegisterController extends ApiController
         $uniacid = \YunShop::app()->uniacid;
 
         if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
-            $check_code = $this->checkCode();
+            $check_code = MemberService::checkCode();
 
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
@@ -148,23 +147,6 @@ class RegisterController extends ApiController
         }
     }
 
-    /**
-     * 检查验证码
-     *
-     * @return array
-     */
-    public function checkCode()
-    {
-        $code = \YunShop::request()->code;
-
-        if ((Session::get('codetime') + 60 * 5) < time()) {
-            return show_json('0', '验证码已过期,请重新获取');
-        }
-        if (Session::get('code') != $code) {
-            return show_json('0', '验证码错误,请重新获取');
-        }
-        return show_json('1');
-    }
 
     /**
      * 发送短信
