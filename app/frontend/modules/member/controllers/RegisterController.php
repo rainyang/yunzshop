@@ -37,7 +37,7 @@ class RegisterController extends ApiController
         $uniacid = \YunShop::app()->uniacid;
 
         if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
-            $check_code = $this->checkCode();
+            $check_code = MemberService::checkCode();
 
             if ($check_code['status'] != 1) {
                 return $this->errorJson($check_code['json']);
@@ -137,7 +137,7 @@ class RegisterController extends ApiController
         Session::set(codetime, time());
         Session::set(code, $code);
         Session::set(code_mobile, $mobile);
-        
+
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
@@ -147,23 +147,6 @@ class RegisterController extends ApiController
         }
     }
 
-    /**
-     * 检查验证码
-     *
-     * @return array
-     */
-    public function checkCode()
-    {
-        $code = \YunShop::request()->code;
-
-        if ((Session::get('codetime') + 60 * 5) < time()) {
-            return show_json('0', '验证码已过期,请重新获取');
-        }
-        if (Session::get('code') != $code) {
-            return show_json('0', '验证码错误,请重新获取');
-        }
-        return show_json('1');
-    }
 
     /**
      * 发送短信

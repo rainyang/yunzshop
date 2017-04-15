@@ -15,7 +15,7 @@ class Coupon extends BaseModel
     const COUPON_CATEGORY_USE = 3;
     const COUPON_GOODS_USE = 4;
     const COUPON_MONEY_OFF = 1;
-    const COUPON_DISCOUNT = 3;
+    const COUPON_DISCOUNT = 2;
     const COUPON_DATE_TIME_RANGE = 0;
     const COUPON_SINCE_RECEIVE = 1;
 
