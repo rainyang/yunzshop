@@ -82,7 +82,6 @@
                         }
 
                         function showusetype(type){
-
                             $('.usetype').hide();
                             $('.usetype' + type).show();
                         }

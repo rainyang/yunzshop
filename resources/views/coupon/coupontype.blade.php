@@ -54,25 +54,21 @@
 
                     </thead>
                     <tbody id="param-itemscategory">
-                    {{--{loop $coupon[categoryids] $k $v}
-                    <tr>
-                        <td>
-                            <a href="javascript:;" class="fa fa-move" title="拖动调整此显示顺序" ><i class="fa fa-arrows"></i></a>&nbsp;
-                            <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
-                        </td>
-                        <td  colspan="2">
-                            <input type="hidden" class="form-control" name="categoryids[]" data-id="{$v}" data-name="categoryids"  value="{$v}" style="width:200px;float:left"  />
-
-                            <input class="form-control" type="text" data-id="{$v}" data-name="categorynames" name="categorynames[]"  value="{{$coupon[categorynames][$k]}}" style="width:200px;float:left">
-                                          <span class="input-group-btn">
-                                              <button class="btn btn-default nav-link" type="button" data-id="{$v}" >选择分类</button>
-                                          </span>
-
-
-                        </td>
-
-                    </tr>
-                    {/loop}--}}
+                    @foreach($coupon['category_ids'] as $k=>$v)
+                        <tr>
+                            <td>
+                                <a href="javascript:;" class="fa fa-move" title="拖动调整此显示顺序" ><i class="fa fa-arrows"></i></a>&nbsp;
+                                <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
+                            </td>
+                            <td  colspan="2">
+                                <input type="hidden" class="form-control" name="categoryids[]" data-id="{{$v}}" data-name="categoryids"  value="{{$v}}" style="width:200px;float:left"  />
+                                <input class="form-control" type="text" data-id="{{$v}}" data-name="categorynames" name="categorynames[]"  value="{{$coupon['categorynames'][$k]}}" style="width:200px;float:left">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default nav-link" type="button" data-id="{{$v}}" >选择分类</button>
+                                </span>
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
                     <tbody>
                     <tr>
@@ -99,11 +95,11 @@
                                     <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
                                 </td>
                                 <td  colspan="2">
-                                    <input type="hidden" class="form-control" name="goods_ids[]" data-id="{$v}" data-name="goods_ids"  value="{$v}" style="width:200px;float:left"  />
+                                    <input type="hidden" class="form-control" name="goods_ids[]" data-id="{{$v}}" data-name="goods_ids"  value="{{$v}}" style="width:200px;float:left"  />
 
-                                    <input class="form-control" type="text" data-id="{$v}" data-name="goodsnames" name="goods_names[]"  value="{$coupon[goods_names][$k]}" style="width:200px;float:left">
+                                    <input class="form-control" type="text" data-id="{{$v}}" data-name="goodsnames" name="goods_names[]"  value="{{$coupon['goods_names'][$k]}}" style="width:200px;float:left">
                                               <span class="input-group-btn">
-                                                  <button class="btn btn-default nav-link-goods" type="button" data-id="{$v}" >选择商品</button>
+                                                  <button class="btn btn-default nav-link-goods" type="button" data-id="{{$v}}" >选择商品</button>
                                               </span>
                                 </td>
                             </tr>
