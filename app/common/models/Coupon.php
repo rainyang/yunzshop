@@ -10,10 +10,9 @@ class Coupon extends BaseModel
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
-    const COUPON_ORDER_USE = 1;
-    const COUPON_ALL_USE = 2;
-    const COUPON_CATEGORY_USE = 3;
-    const COUPON_GOODS_USE = 4;
+    const COUPON_ALL_USE = 0;
+    const COUPON_CATEGORY_USE = 1;
+    const COUPON_GOODS_USE = 2;
     const COUPON_MONEY_OFF = 1;
     const COUPON_DISCOUNT = 3;
     const COUPON_DATE_TIME_RANGE = 0;
