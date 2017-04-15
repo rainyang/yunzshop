@@ -28,8 +28,13 @@ class ApiController extends BaseController
         parent::preAction();
 
         $this->setCookie();
+
         if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
             $type  = \YunShop::request()->type;
+
+            if (5 == $type) {
+                return $this->errorJson('',['login_status'=>1,'login_url'=>'']);
+            }
 
             return $this->errorJson('',['login_status'=>0,'login_url'=>Url::absoluteApi('member.login.index', ['type'=>$type,'session_id'=>session_id()])]);
         }

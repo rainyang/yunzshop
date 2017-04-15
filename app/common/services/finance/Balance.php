@@ -247,7 +247,6 @@ class Balance
         $balanceMode = new \app\common\models\finance\Balance();
         $balanceMode->fill($this->getDetailData());
         $validator = $balanceMode->validator();
-        echo '<pre>'; print_r($this->getDetailData());
         if ($validator->fails()) {
             return $validator->messages();
         }
@@ -388,7 +387,8 @@ class Balance
             'operator'      => $this->data['operator'],         // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID（没有ID值可以给插件标示）
             'operator_id'   => $this->data['operator_id'],      // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
             'remark'        => $this->data['remark'],           // 备注，文章营销 '奖励' 余额 'N' 元【越详细越好】
-            'created_at'    => time()
+            'created_at'    => time(),
+            'updated_at'    => time(),
         );
     }
 
