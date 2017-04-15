@@ -25,7 +25,7 @@ class Coupon extends BaseModel
 
     protected $casts = [
         'goods_ids' => 'json',
-        'categoryids' => 'json',
+        'category_ids' => 'json',
         'goods_names' => 'json',
         'categorynames' => 'json',
     ];
