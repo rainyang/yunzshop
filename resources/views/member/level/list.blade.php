@@ -47,7 +47,7 @@
 
                                     @if($shopSet['level_type'] == 2)
                                         @if($list->goods_id)
-                                            购买商品ID：[{{ $list->goods_id }}]升级
+                                            购买商品[ID：{{ $list->goods_id }}]{{ $list->goods->title }}升级
                                         @else
                                             不自动升级
                                         @endif
