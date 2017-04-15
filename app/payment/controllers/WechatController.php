@@ -19,12 +19,11 @@ class WechatController extends PaymentController
 {
     public function notifyUrl()
     {
-
         $post = $this->getResponseResult();
         if(isset($_GET['test_uid'])){
             $post = json_decode('{"trade_type":"JSAPI","body":"ss:2","out_trade_no":"SN20170415104105888074","total_fee":1,"nonce_str":"qvlNyG3N","device_info":"yun_shop","attach":1,"spbill_create_ip":"219.137.203.42","openid":"oNnNJwpdYZI0HNWQjnvZY99WEOpM"}',true);
         }
-        \Log::debug(file_get_contents('php://input'));
+
 //        if (config('app.debug')) {
 //            $post = Array
 //            (
