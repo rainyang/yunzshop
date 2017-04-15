@@ -23,7 +23,7 @@ class WechatController extends PaymentController
         $post = $this->getResponseResult();
 
         if (config('app.debug')) {
-            /*$post = Array
+            $post = Array
             (
                  'appid'  => 'wx6be17f352e859277',
                  'attach'  => 1,
@@ -42,7 +42,7 @@ class WechatController extends PaymentController
                  'total_fee'  => 1,
                  'trade_type'  => 'JSAPI',
                  'transaction_id'  => '4001322001201704157112987431'  //微信支付单号 可用于退款
-            );*/
+            );
 
 
         //$post = $this->getResponseResult();
