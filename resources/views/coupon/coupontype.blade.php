@@ -99,7 +99,7 @@
 
                                     <input class="form-control" type="text" data-id="{{$v}}" data-name="goodsnames" name="goods_names[]"  value="{{$coupon['goods_names'][$k]}}" style="width:200px;float:left">
                                               <span class="input-group-btn">
-                                                  <button class="btn btn-default nav-link-goods" type="button" data-id="{{$v}}" >选择商品</button>
+                                                  <button class="btn btn-default nav-link-goods" type="button" data-id="{{$v}}" onclick="popwin = $('#modal-module-menus-goods').modal();">选择商品</button>
                                               </span>
                                 </td>
                             </tr>
@@ -125,6 +125,35 @@
 
 <div id="goods" style="display: none">
 
+</div>
+
+<div id="modal-module-menus-goods" class="modal fade" tabindex="-1">
+    <div class="modal-dialog" style='width: 920px;'>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">
+                    ×
+                </button>
+                <h3>选择商品</h3></div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" value=""
+                               id="search-kwd-goods" placeholder="请输入商品名称"/>
+                        <span class='input-group-btn'>
+                                                        <button type="button" class="btn btn-default"
+                                                                onclick="search_goods();">搜索
+                                                        </button></span>
+                    </div>
+                </div>
+                <div id="module-menus-goods" style="padding-top:5px;"></div>
+            </div>
+            <div class="modal-footer"><a href="#" class="btn btn-default"
+                                         data-dismiss="modal" aria-hidden="true">关闭</a>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 
