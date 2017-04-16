@@ -20,7 +20,7 @@ class LoginController extends ApiController
     {
         $type = \YunShop::request()->type ;
 
-        if (empty($type)) {
+        if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
         }
 

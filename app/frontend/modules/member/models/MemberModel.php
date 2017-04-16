@@ -208,7 +208,9 @@ class MemberModel extends Member
 
             $member_info = SubMemberModel::getMemberShopInfo($uid);
 
-            return $member_info->toArray();
+            if ($member_info) {
+                return $member_info->toArray();
+            }
         }
 
         return [];

@@ -14,33 +14,16 @@ use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 
 class MoneyOffCouponPrice extends CouponPrice
 {
-    public function valid()
-    {
-        //todo 商品价格中未使用优惠的金额 不小于 满减额度
-        if (!float_lesser($this->getOrderGoodsGroupUnusedEnoughMoney(), $this->dbCoupon->enough)) {
-            return true;
-        }
-        return false;
-    }
+
 
     /**
      * 累加所有商品会员价
      * @return int
      */
-    private function getOrderGoodsGroupPrice()
+    protected function getOrderGoodsGroupPrice()
     {
         //会员价-折扣券优惠金额
         return $this->coupon->getOrderGoodsInScope()->getVipPrice() - $this->coupon->getOrderGoodsInScope()->getCouponDiscountPrice();
-    }
-
-    /**
-     * 累加所有商品未使用优惠的金额
-     * @return mixed
-     */
-    private function getOrderGoodsGroupUnusedEnoughMoney()
-    {
-
-        return $this->getOrderGoodsGroupPrice() - $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->sum('coupons.enough');
     }
 
     /**
@@ -79,13 +62,18 @@ class MoneyOffCouponPrice extends CouponPrice
 //            dd($this->getOrderGoodsGroupPrice());
 //            dd($this->getOrderGoodsPrice($orderGoods));
 //            exit;
+
                 $goodsMemberCoupon = new GoodsMemberCoupon();
                 $goodsMemberCoupon->amount = number_format(( $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsGroupPrice()) * $this->getPrice(), 2);
                 $goodsMemberCoupon->enough = number_format(( $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsGroupPrice()) * $this->dbCoupon->enough, 2);
-                $orderGoods->setRelation('coupon',$goodsMemberCoupon);
+                if(!isset($orderGoods->coupons)){
+                    $orderGoods->coupons = collect();
+                }
+                $orderGoods->coupons->push($goodsMemberCoupon);
+
+                //$orderGoods->setRelation('coupon',$goodsMemberCoupon);
             });
 
-
-
     }
+
 }

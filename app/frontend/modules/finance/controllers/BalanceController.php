@@ -21,6 +21,8 @@ use app\common\services\PayFactory;
 
 class BalanceController extends ApiController
 {
+    protected $publicAction = ['recharge'];
+
     public function test()
     {
 
@@ -35,7 +37,7 @@ class BalanceController extends ApiController
     {
         $rechargeSet = Setting::get('finance.balance');
         if ($rechargeSet['recharge'] == 1) {
-            $memberId = \YunShop::app()->getMemberId();
+            $memberId = \YunShop::app()->getMemberId() ?: \YunShop::request()->uid;
             $rechargeMoney = trim(\YunShop::request()->recharge_money);
             $payType = \YunShop::request()->pay_type;
 
@@ -72,6 +74,7 @@ class BalanceController extends ApiController
         return $this->errorJson('未开启充值接口');
     }
 
+    //获取会员余额值接口
     public function balance()
     {
         $memberId = \YunShop::app()->getMemberId();
@@ -85,6 +88,7 @@ class BalanceController extends ApiController
         return $this->errorJson('数据有误，请刷新重试');
     }
 
+    //余额提现接口
     public function withdraw()
     {
         $withdrawSet = Setting::get('withdraw.balance');
