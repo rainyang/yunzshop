@@ -120,6 +120,29 @@
                         })
 
                         {{--下面是新增的js--}}
+                        {{--搜索分类--}}
+                        function search_categorys() {
+                            if ($.trim($('#search-kwd-categorys').val()) == '') {
+                                Tip.focus('#search-kwd-categorys', '请输入关键词');
+                                return;
+                            }
+                            $("#module-menus-categorys").html("正在搜索....");
+                            $.get('{!! yzWebUrl('goods.category.get-search-categorys') !!}', {
+                                    keyword: $.trim($('#search-kwd-categorys').val())
+                                }, function (dat) {
+                                    $('#module-menus-categorys').html(dat);
+                                }
+                            )
+                            ;
+                        }
+                        function select_category(o) {
+                            $(".focuscategory #categoryid").val(o.id);
+                            $(".focuscategory #categoryname").val(o.name);
+                            $(".focuscategory").removeClass("focuscategory");
+                            $("#modal-module-menus-categorys .close").click();
+                        }
+
+                        {{--搜索商品--}}
                         function search_goods() {
                             if ($.trim($('#search-kwd-goods').val()) == '') {
                                 Tip.focus('#search-kwd-goods', '请输入关键词');
@@ -135,9 +158,9 @@
                             ;
                         }
                         function select_good(o) {
-                            $(".focusthis #goodid").val(o.id);
-                            $(".focusthis #goodname").val(o.title);
-                            $(".focusthis").removeClass("focusthis");
+                            $(".focusgood #goodid").val(o.id);
+                            $(".focusgood #goodname").val(o.title);
+                            $(".focusgood").removeClass("focusgood");
                             $("#modal-module-menus-goods .close").click();
                         }
                     </script>

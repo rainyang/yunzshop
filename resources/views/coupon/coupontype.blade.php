@@ -55,10 +55,10 @@
                                 <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
                             </td>
                             <td  colspan="2">
-                                <input type="hidden" class="form-control" name="categoryids[]" data-id="{{$v}}" data-name="categoryids"  value="{{$v}}" style="width:200px;float:left"  />
-                                <input class="form-control" type="text" data-id="{{$v}}" data-name="categorynames" name="categorynames[]"  value="{{$coupon['categorynames'][$k]}}" style="width:200px;float:left">
+                                <input id="categoryid" type="hidden" class="form-control" name="categoryids[]" data-id="{{$v}}" data-name="categoryids"  value="{{$v}}" style="width:200px;float:left"  />
+                                <input id="categoryname" class="form-control" type="text" data-id="{{$v}}" data-name="categorynames" name="categorynames[]"  value="{{$coupon['categorynames'][$k]}}" style="width:200px;float:left">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default nav-link" type="button" data-id="{{$v}}" >选择分类</button>
+                                    <button class="btn btn-default nav-link" type="button" data-id="{{$v}}" onclick="$('#modal-module-menus-categorys').modal();$(this).parent().parent().addClass('focuscategory')" >选择分类</button>
                                 </span>
                             </td>
                         </tr>
@@ -91,7 +91,7 @@
                                 <input id="goodid" type="hidden" class="form-control" name="goods_ids[]" data-id="{{$v}}" data-name="goods_ids"  value="{{$v}}" style="width:200px;float:left"  />
                                 <input id="goodname" class="form-control" type="text" name="goods_names[]" data-id="{{$v}}" data-name="goodsnames" value="{{$coupon['goods_names'][$k]}}" style="width:200px;float:left">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default nav-link-goods" type="button" data-id="{{$v}}" onclick="$('#modal-module-menus-goods').modal();$(this).parent().parent().addClass('focusthis')">选择商品</button>
+                                    <button class="btn btn-default nav-link-goods" type="button" data-id="{{$v}}" onclick="$('#modal-module-menus-goods').modal();$(this).parent().parent().addClass('focusgood')">选择商品</button>
                                 </span>
                             </td>
                         </tr>
@@ -117,6 +117,36 @@
 
 <div id="goods" style="display: none">
 
+</div>
+
+<div id="modal-module-menus-categorys" class="modal fade" tabindex="-1">
+    <div class="modal-dialog" style='width: 920px;'>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">
+                    ×
+                </button>
+                <h3>选择分类</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" value=""
+                               id="search-kwd-categorys" placeholder="请输入分类名称"/>
+                        <span class='input-group-btn'>
+                            <button type="button" class="btn btn-default" onclick="search_categorys();">搜索
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div id="module-menus-categorys" style="padding-top:5px;"></div>
+            </div>
+            <div class="modal-footer"><a href="#" class="btn btn-default"
+                                         data-dismiss="modal" aria-hidden="true">关闭</a>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <div id="modal-module-menus-goods" class="modal fade" tabindex="-1">
