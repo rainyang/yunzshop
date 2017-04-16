@@ -181,7 +181,7 @@
 
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">领券中心是否可获得</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否可直接领取</label>
     <div class="col-sm-9 col-xs-12" >
         <label class="radio-inline">
             <input type="radio" name="coupon[get_type]" value="0" @if($coupon['get_type'] == 0)checked="true" @endif  onclick="$('.gettype').hide()"/> 不可以
