@@ -135,9 +135,9 @@
                             ;
                         }
                         function select_good(o) {
-                            console.log(o);
                             $(".focusthis #goodid").val(o.id);
                             $(".focusthis #goodname").val(o.title);
+                            $(".focusthis").removeClass("focusthis");
                             $("#modal-module-menus-goods .close").click();
                         }
                     </script>

@@ -89,7 +89,7 @@
                             </td>
                             <td  colspan="2">
                                 <input id="goodid" type="hidden" class="form-control" name="goods_ids[]" data-id="{{$v}}" data-name="goods_ids"  value="{{$v}}" style="width:200px;float:left"  />
-                                <input id="goodname" class="form-control" type="text" data-id="{{$v}}" data-name="goodsnames" name="goods_names[]"  value="{{$coupon['goods_names'][$k]}}" style="width:200px;float:left">
+                                <input id="goodname" class="form-control" type="text" name="goods_names[]" data-id="{{$v}}" data-name="goodsnames" value="{{$coupon['goods_names'][$k]}}" style="width:200px;float:left">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default nav-link-goods" type="button" data-id="{{$v}}" onclick="$('#modal-module-menus-goods').modal();$(this).parent().parent().addClass('focusthis')">选择商品</button>
                                 </span>
