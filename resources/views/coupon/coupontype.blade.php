@@ -8,24 +8,22 @@
 </div>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用时间限制</label>
-
     <div class="col-sm-9 form-inline">
         <div class='input-group form-group col-sm-4'>
-                        <span class='input-group-addon'>
-                             <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="coupon[time_limit]" value="0" @if ($coupon['time_limit']==0) checked  @endif>获得后</label>
-                        </span>
+            <span class='input-group-addon'>
+                 <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="coupon[time_limit]" value="0" @if ($coupon['time_limit']==0) checked  @endif>获得后</label>
+            </span>
             <input type='text' class='form-control' name='coupon[time_days]' value="{{$coupon['time_days']}}" />
             <span class='input-group-addon'>天内有效(空为不限时间使用)</span>
         </div>
         <div class='input-group form-group col-sm-3'>
-                        <span class='input-group-addon'>
-                             <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="coupon[time_limit]" value="1" >日期</label>
-                        </span>
+            <span class='input-group-addon'>
+                 <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="coupon[time_limit]" value="1" >日期</label>
+            </span>
             {!! app\common\helpers\DateRange::tplFormFieldDateRange('time', array('starttime'=>date('Y-m-d', $starttime),'endtime'=>date('Y-m-d', $endtime))) !!}
             <span class='input-group-addon'>内有效</span>
         </div>
     </div>
-
 </div>
 @include('coupon.consume')
 <div class="form-group">
@@ -50,14 +48,10 @@
         <div class='input-group'>
             <div id="category" >
                 <table class="table">
-                    <thead>
-
-                    </thead>
                     <tbody id="param-itemscategory">
                     @foreach($coupon['category_ids'] as $k=>$v)
                         <tr>
                             <td>
-                                <a href="javascript:;" class="fa fa-move" title="拖动调整此显示顺序" ><i class="fa fa-arrows"></i></a>&nbsp;
                                 <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
                             </td>
                             <td  colspan="2">
@@ -89,20 +83,18 @@
                     <tbody id="param-itemsgoods">
                     @if ($coupon['goods_ids'])
                         @foreach ($coupon['goods_ids'] as $k=>$v)
-                            <tr>
-                                <td>
-                                    <a href="javascript:;" class="fa fa-move" title="拖动调整此显示顺序" ><i class="fa fa-arrows"></i></a>&nbsp;
-                                    <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
-                                </td>
-                                <td  colspan="2">
-                                    <input type="hidden" class="form-control" name="goods_ids[]" data-id="{{$v}}" data-name="goods_ids"  value="{{$v}}" style="width:200px;float:left"  />
-
-                                    <input class="form-control" type="text" data-id="{{$v}}" data-name="goodsnames" name="goods_names[]"  value="{{$coupon['goods_names'][$k]}}" style="width:200px;float:left">
-                                              <span class="input-group-btn">
-                                                  <button class="btn btn-default nav-link-goods" type="button" data-id="{{$v}}" onclick="popwin = $('#modal-module-menus-goods').modal();">选择商品</button>
-                                              </span>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>
+                                <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
+                            </td>
+                            <td  colspan="2">
+                                <input id="goodid" type="hidden" class="form-control" name="goods_ids[]" data-id="{{$v}}" data-name="goods_ids"  value="{{$v}}" style="width:200px;float:left"  />
+                                <input id="goodname" class="form-control" type="text" data-id="{{$v}}" data-name="goodsnames" name="goods_names[]"  value="{{$coupon['goods_names'][$k]}}" style="width:200px;float:left">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default nav-link-goods" type="button" data-id="{{$v}}" onclick="$('#modal-module-menus-goods').modal();$(this).parent().parent().addClass('focusthis')">选择商品</button>
+                                </span>
+                            </td>
+                        </tr>
                         @endforeach
                     @endif
                     </tbody>
@@ -134,16 +126,17 @@
                 <button aria-hidden="true" data-dismiss="modal" class="close" type="button">
                     ×
                 </button>
-                <h3>选择商品</h3></div>
+                <h3>选择商品</h3>
+            </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="input-group">
                         <input type="text" class="form-control" name="keyword" value=""
                                id="search-kwd-goods" placeholder="请输入商品名称"/>
                         <span class='input-group-btn'>
-                                                        <button type="button" class="btn btn-default"
-                                                                onclick="search_goods();">搜索
-                                                        </button></span>
+                            <button type="button" class="btn btn-default" onclick="search_goods();">搜索
+                            </button>
+                        </span>
                     </div>
                 </div>
                 <div id="module-menus-goods" style="padding-top:5px;"></div>
@@ -180,19 +173,19 @@
             <input type='text' class='form-control' value="{{$coupon['get_max']}}" name='coupon[get_max]' style="width: 80px" />
             </div>
         <div class="input-group form-group col-sm-1">
-        <span class="input-group-addon">张 消耗</span>
+            <span class="input-group-addon">张 消耗</span>
             <input style="width: 80px"  type='text' class='form-control' value="{{$coupon['credit']}}" name='coupon[credit]'/>
-            </div>
+        </div>
         <div class="input-group form-group col-sm-1">
-        <span class="input-group-addon">积分 + 花费</span>
-            <input style="width: 80px"  type='text' class='form-control' value="{{$coupon['money']}}" name='coupon[money]'/>
-                              <span class="input-group-addon">元</span>
+            <span class="input-group-addon">积分 + 花费</span>
+                <input style="width: 80px"  type='text' class='form-control' value="{{$coupon['money']}}" name='coupon[money]'/>
+            <span class="input-group-addon">元</span>
         </div>
         <div class="input-group form-group col-sm-3">
-        <label class="checkbox-inline" style='margin-top:-8px;'>
-                                      <input type="checkbox" name='coupon[usecredit2]' value="1" @if($coupon['usecredit2']==1)checked @endif /> 优先使用余额支付
-                                  </label>
-                              </div>
+            <label class="checkbox-inline" style='margin-top:-8px;'>
+                <input type="checkbox" name='coupon[usecredit2]' value="1" @if($coupon['usecredit2']==1)checked @endif /> 优先使用余额支付
+            </label>
+        </div>
         <span class="help-block">每人限领数量 (-1为不限制数量); 领取方式可任意组合，可以单独积分兑换，单独现金兑换，或者积分+现金形式兑换, 如果都为空，则可以免费领取</span>
 
     </div>

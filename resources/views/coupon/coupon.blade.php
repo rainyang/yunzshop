@@ -117,7 +117,6 @@
                                 }
                                 return true;
                             })
-
                         })
 
                         {{--下面是新增的js--}}
@@ -136,10 +135,9 @@
                             ;
                         }
                         function select_good(o) {
-                            $("#goodsid").val(o.id);
-                            $("#goodsthumb").show();
-                            $("#goodsthumb").find('img').attr('src', o.thumb);
-                            $("#goods").val("[" + o.id + "]" + o.title);
+                            console.log(o);
+                            $(".focusthis #goodid").val(o.id);
+                            $(".focusthis #goodname").val(o.title);
                             $("#modal-module-menus-goods .close").click();
                         }
                     </script>
