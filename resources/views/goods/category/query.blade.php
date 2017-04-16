@@ -11,7 +11,7 @@
         @endforeach
         @if(count($categorys)<=0)
         <tr>
-            <td colspan='4' align='center'>未找到商品</td>
+            <td colspan='4' align='center'>未找到商品分类</td>
         </tr>
         @endif
         </tbody>
