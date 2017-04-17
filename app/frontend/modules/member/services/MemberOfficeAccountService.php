@@ -36,6 +36,8 @@ class MemberOfficeAccountService extends MemberService
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->mid ? \YunShop::app()->mid : 0;
 
+        echo '<pre>';print_r(\YunShop::app());
+        echo 'uniacid : ' . \YunShop::app()->uniacid;exit;
         $pay = Setting::get('shop.pay');
 
         $appId        = $pay['weixin_appid'];
@@ -295,7 +297,7 @@ class MemberOfficeAccountService extends MemberService
     private function _setClientRequestUrl()
     {
         if (\YunShop::request()->yz_redirect) {
-           Session::set('client_url', \YunShop::request()->yz_redirect);
+           Session::set('client_url', urldecode(\YunShop::request()->yz_redirect));
         } else {
             Session::set('client_url', '');
         }
