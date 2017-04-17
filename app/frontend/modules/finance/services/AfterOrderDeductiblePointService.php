@@ -42,6 +42,9 @@ class AfterOrderDeductiblePointService
 
     private function getPointData()
     {
+        if (!$this->point_set['money']) {
+            return [];
+        }
         return [
             'point_income_type' => -1,
             'point_mode'        => 6,
