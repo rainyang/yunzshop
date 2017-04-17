@@ -183,39 +183,37 @@
             <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择区域</h3></div>
             <div class="modal-body" style='height:280px;;' >
 
-                {loop $areas['address']['province'] $value}
-                {if $value['@attributes']['name']=='请选择省份'}
-                {php continue;}
-                {/if}
-                <div class='province'>
-                    <label class='checkbox-inline' style='margin-left:20px;'>
-                        <input type='checkbox' class='cityall' /> {php echo $value['@attributes']['name']}
-                        <span class="citycount" style='color:#ff6600'></span>
-                    </label>
-                    {if !empty($value['city']['0'])}
-                    <ul>
-                        {loop $value['city'] $c}
-                        <li>
-                            <label class='checkbox-inline'>
-                                <input type='checkbox' class='city' style='margin-top:8px;' city="{php echo $c['@attributes']['name']}" /> {php echo $c['@attributes']['name']}
-                            </label>
-                        </li>
-                        {/loop}
-                    </ul>
-                    {else}
-                    <ul>
+                @foreach($areas['address']['province'] as $value)
+                    @if ($value['@attributes']['name'] == '请选择省份')
+                        @continue
+                    @endif
+                    <div class='province'>
+                        <label class='checkbox-inline' style='margin-left:20px;'>
+                            <input type='checkbox' class='cityall' /> {{$value['@attributes']['name']}}
+                            <span class="citycount" style='color:#ff6600'></span>
+                        </label>
 
-                        <li>
-                            <label class='checkbox-inline'>
-                                <input type='checkbox' class='city' style='margin-top:8px;' city="{php echo $value['city']['@attributes']['name']}" /> {php echo $value['city']['@attributes']['name']}
-                            </label>
-                        </li>
-
-                    </ul>
-
-                    {/if}
-                </div>
-                {/loop}
+                        @if (!empty($value['city']['0']))
+                        <ul>
+                            @foreach ($value['city'] as $c)
+                            <li>
+                                <label class='checkbox-inline'>
+                                    <input type='checkbox' class='city' style='margin-top:8px;' city="{{$c['@attributes']['name']}}" /> {{$c['@attributes']['name']}}
+                                </label>
+                            </li>
+                            @endforeach
+                        </ul>
+                        @else
+                        <ul>
+                            <li>
+                                <label class='checkbox-inline'>
+                                    <input type='checkbox' class='city' style='margin-top:8px;' city="{{$value['city']['@attributes']['name']}}" /> {{$value['city']['@attributes']['name']}}
+                                </label>
+                            </li>
+                        </ul>
+                        @endif
+                    </div>
+                @endforeach
 
             </div>
             <div class="modal-footer">
