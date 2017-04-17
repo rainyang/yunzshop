@@ -159,6 +159,7 @@ class MemberOfficeAccountService extends MemberService
                         $memberModel = MemberModel::create($mc_data);
                         $member_id = $memberModel->uid;
 
+                        $patten = '';
                         //添加mapping_fans表
                         $record = array(
                             'openid' => $userinfo['openid'],

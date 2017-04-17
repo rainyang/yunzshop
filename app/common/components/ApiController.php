@@ -30,7 +30,7 @@ class ApiController extends BaseController
         $relaton_set = MemberRelation::getSetInfo()->first();
 
         if (!MemberService::isLogged()
-            && ($relaton_set->status == 1
+            && (($relaton_set->status == 1 && $this->action != 'alipay' )
                 || ($relaton_set->status == 0 && !in_array($this->action,$this->publicAction))
                )
         ) {
