@@ -72,7 +72,9 @@ class MemberOfficeAccountService extends MemberService
                 ->get();
 
             $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
-            $nickname = preg_replace($patten, "", $userinfo['nickname']);
+            $tmpStr = json_encode($userinfo['nickname']);
+            $tmpStr = preg_replace($patten, "", $tmpStr);
+            $nickname = json_decode($tmpStr);
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 \YunShop::app()->openid = $userinfo['openid'];
