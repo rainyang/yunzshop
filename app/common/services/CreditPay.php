@@ -30,7 +30,7 @@ class CreditPay extends Pay
         ];
 
         $operation = '余额订单支付 订单号：' . $params['order_no'];
-        $this->log($params['extra']['type'], '余额', $params['amount'], $operation,$params['order_no'], json_encode($params));
+        $this->log($params['extra']['type'], '余额', $params['amount'], $operation,$params['order_no'], Pay::ORDER_STATUS_NON);
 
         self::payRequestDataLog($params['order_no'],$params['extra']['type'], '余额支付', json_encode($params));
 
