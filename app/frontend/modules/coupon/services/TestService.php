@@ -12,13 +12,13 @@ use Illuminate\Support\Collection;
 class TestService
 {
     private $order;
-    private $back_type = null;
+    private $coupon_method = null;
 
-    public function __construct(PreGeneratedOrderModel $order, $back_type = null)
+    public function __construct(PreGeneratedOrderModel $order, $coupon_method = null)
     {
 
         $this->order = $order;
-        $this->back_type = $back_type;
+        $this->coupon_method = $coupon_method;
     }
 
     /**
@@ -94,11 +94,11 @@ class TestService
      */
     private function getMemberCoupon()
     {
-        $back_type = $this->back_type;
+        $coupon_method = $this->coupon_method;
         $result = MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember);
-        if(isset($back_type)){// 折扣/立减
-            $result->filter(function ($memberCoupon) use($back_type){
-                return $memberCoupon->belongsToCoupon->back_type == $back_type;
+        if(isset($coupon_method)){// 折扣/立减
+            $result->filter(function ($memberCoupon) use($coupon_method){
+                return $memberCoupon->belongsToCoupon->coupon_method == $coupon_method;
             });
         }
         //dd($result);

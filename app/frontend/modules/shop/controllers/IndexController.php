@@ -11,6 +11,7 @@ use app\common\models\GoodsCategory;
 use app\common\models\GoodsSpecItem;
 use app\common\models\Slide;
 use app\frontend\modules\goods\services\GoodsService;
+use EasyWeChat\Payment\API;
 use Illuminate\Support\Facades\DB;
 
 /**

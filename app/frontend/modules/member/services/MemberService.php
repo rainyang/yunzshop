@@ -86,9 +86,9 @@ class MemberService
         $validator = \Validator::make($data, $check);
 
         if ($validator->fails()) {
-            return false;
+            return show_json('0', $validator->messages());
         } else {
-            return true;
+            return show_json('1');
         }
     }
 
@@ -247,6 +247,12 @@ class MemberService
         return $arr;
     }
 
+    /**
+     * pc端注册 保存信息
+     *
+     * @param $member_info
+     * @param $uniacid
+     */
     protected function save($member_info, $uniacid)
     {
         Session::set('member_id', $member_info['uid']);
@@ -255,5 +261,23 @@ class MemberService
 
         Cookie::queue($cookieid, $member_info['uid']);
         Cookie::queue('member_id', $member_info['uid']);
+    }
+
+    /**
+     * 检查验证码
+     *
+     * @return array
+     */
+    public static function checkCode()
+    {
+        $code = \YunShop::request()->code;
+
+        if ((Session::get('codetime') + 60 * 5) < time()) {
+            return show_json('0', '验证码已过期,请重新获取');
+        }
+        if (Session::get('code') != $code) {
+            return show_json('0', '验证码错误,请重新获取');
+        }
+        return show_json('1');
     }
 }

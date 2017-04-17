@@ -45,10 +45,6 @@ class PaymentController extends BaseController
 
     private function getUniacid()
     {
-//        if (config('app.debug')) {
-//            return 2;
-//        }
-
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
 
@@ -72,12 +68,13 @@ class PaymentController extends BaseController
 
         switch ($type) {
             case "charge.succeeded":
-                $order_info = Order::uniacid()->where('order_sn', $data['out_trade_no'])->first();
+                $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
+                $order_info->price = $order_info->price * 100;
 
                 if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
                     MemberRelation::checkOrderPay();
 
-                    OrderService::orderPay(['order_id' => $data['out_trade_no']]);
+                    OrderService::orderPay(['order_id' => $order_info->id]);
                 }
                 break;
             case "recharge.succeeded":

@@ -130,7 +130,7 @@
                 <style type="text/css">
 
                 </style>
-                <form id="goods-list" action="{!! yzWebUrl('goods.goods.displayorder') !!}" method="post">
+                <form id="goods-list" action="{!! yzWebUrl($sort_url) !!}" method="post">
                     <div class="panel panel-default">
                         <div class="panel-body table-responsive">
                             <table class="table table-hover">
@@ -230,9 +230,6 @@
                                                 @endif
                                             </label>
 
-                                            @section('putaway')
-                                            @show
-
                                         </td>
 
                                         <td style="position:relative; overflow:visible;" width="20%">
@@ -323,8 +320,9 @@
                             @section('add_goods')
                             <a class='btn btn-success ' href="{{yzWebUrl('goods.goods.create')}}"><i
                                         class='fa fa-plus'></i> 发布{{$lang['good']}}</a>
-                            @show
+
                             <input name="submit" type="submit" class="btn btn-default back" value="提交排序">
+                            @show
                         </div>
 
                     </div>

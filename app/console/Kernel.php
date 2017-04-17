@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        'make:yz-controller'=>'app\console\Commands\CustomControllerMakeCommand'
+
     ];
 
     /**

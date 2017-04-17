@@ -25,7 +25,7 @@ class Member extends \app\common\models\Member
         return $this->hasMany(MemberCoupon::class, 'uid', 'uid')
             ->where('used',0)->with('belongsToCoupon',function($query) use($backType){
             if(isset($backType)){
-                $query->where('back_type',$backType);
+                $query->where('coupon_method',$backType);
             }
         });
     }
