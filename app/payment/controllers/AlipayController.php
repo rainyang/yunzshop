@@ -10,6 +10,7 @@ namespace app\payment\controllers;
 
 
 use app\common\facades\Setting;
+use app\common\services\AliPay;
 use app\payment\PaymentController;
 
 class AlipayController extends PaymentController
@@ -71,7 +72,7 @@ class AlipayController extends PaymentController
 
     public function log($post)
     {
-        $pay = new WechatPay();
+        $pay = new AliPay();
 
         //访问记录
         $pay->payAccessLog();
