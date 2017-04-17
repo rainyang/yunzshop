@@ -27,10 +27,6 @@ class RegisterController extends ApiController
 
     public function index()
     {
-        if (MemberService::isLogged()) {
-            return $this->errorJson('会员已登录');
-        }
-
         $mobile = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->confirm_password;
