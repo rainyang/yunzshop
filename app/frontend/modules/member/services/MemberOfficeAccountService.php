@@ -35,9 +35,7 @@ class MemberOfficeAccountService extends MemberService
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
         $mid          = \YunShop::app()->mid ? \YunShop::app()->mid : 0;
-
-        echo '<pre>';print_r(\YunShop::app());
-        echo 'uniacid : ' . \YunShop::app()->uniacid;exit;
+        
         $pay = Setting::get('shop.pay');
 
         $appId        = $pay['weixin_appid'];

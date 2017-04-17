@@ -381,4 +381,18 @@ echo '<pre>';print_r($nick);
 
         return $str;
     }
+
+    public function log()
+    {
+        $post = '';
+
+        $pay = new WechatPay();
+
+        //访问记录
+        $pay->payAccessLog();
+        //保存响应数据
+
+        $pay_order_info = PayOrder::getPayOrderInfo($post['out_trade_no'])->first()->toArray();
+        $pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
+    }
 }
