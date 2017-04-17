@@ -99,7 +99,12 @@ Route::any('/', function () {
         }
 
         //解析商城路由
-        YunShop::parseRoute(YunShop::request()->route);
+        if(YunShop::request()->route){
+            YunShop::parseRoute(YunShop::request()->route);
+        }else{
+            return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=index.index');
+
+        }
     }
     return;
 });

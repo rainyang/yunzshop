@@ -87,4 +87,15 @@ class Category extends \app\common\models\Category
                 :$rule->where('uniacid', \YunShop::app()->uniacid)],
         ];
     }
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getCategorysByName($keyword)
+    {
+        return static::uniacid()->select('id', 'name', 'thumb')
+            ->where('name', 'like', '%' . $keyword . '%')
+            ->get();
+    }
 }

@@ -21,10 +21,12 @@ class CreditPay extends Pay
         //pay.php 980
         //支付单
         //订单 支付类型
-        Member::setCredit($data['member_id'], $data['type'], $data['amount']);
+        Member::setCredit($data);
+
+
     }
 
-    public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
+    public function doRefund($out_trade_no, $totalmoney, $refundmoney)
     {
         // TODO: Implement doRefund() method.
     }

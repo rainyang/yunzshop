@@ -23,12 +23,9 @@ class PaymentController extends BaseController
 
         $script_info = pathinfo($_SERVER['SCRIPT_NAME']);
 
-        file_put_contents(storage_path('logs/100.log'), 1);
-
         if (!empty($script_info)) {
             switch ($script_info['filename']) {
                 case 'notifyUrl':
-                    file_put_contents(storage_path('logs/8.log'), $this->getUniacid());
                     \YunShop::app()->uniacid = $this->getUniacid();
                     break;
                 case 'refundNotifyUrl':
@@ -48,10 +45,6 @@ class PaymentController extends BaseController
 
     private function getUniacid()
     {
-//        if (config('app.debug')) {
-//            return 2;
-//        }
-
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
 
@@ -72,16 +65,16 @@ class PaymentController extends BaseController
             $pay_order_model->trade_no = $data['trade_no'];
             $pay_order_model->save();
         }
-        file_put_contents(storage_path('logs/5.log'), 1);
+
         switch ($type) {
             case "charge.succeeded":
-                $order_info = Order::uniacid()->where('order_sn', $data['out_trade_no'])->first();
-                file_put_contents(storage_path('logs/6.log'), 1);
+                $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
+                $order_info->price = $order_info->price * 100;
+
                 if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
-                    file_put_contents(storage_path('logs/7.log'), 1);
                     MemberRelation::checkOrderPay();
 
-                    OrderService::orderPay(['order_id' => $data['out_trade_no']]);
+                    OrderService::orderPay(['order_id' => $order_info->id]);
                 }
                 break;
             case "recharge.succeeded":

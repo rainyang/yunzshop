@@ -56,7 +56,7 @@
     </div>
     <div class='panel-footer'>
         <a class='btn btn-info' href="{{yzWebUrl('menu.add')}}"><i class="fa fa-plus"></i> 添加新菜单</a>
-        @if(request()->getHost() != 'test.yunzshop.com')
+        @if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production')
         <a class='btn btn-success back' href="{{yzWebUrl('menu.get-remote-update')}}"><i class="fa fa-flash"></i> 更新远程菜单</a>
             @endif
     </div>
