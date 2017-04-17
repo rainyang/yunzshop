@@ -15,7 +15,7 @@
             {{--<div class='alert alert-info'>
                 在开启以下支付方式前，请到 <a href='{php echo url('profile/payment')}'>支付选项</a> 去设置好参数。
             </div>--}}
-            <div class="alert alert-warning">
+            <div class="alert alert-warning alert-important">
                 易宝支付，含银联，信用卡等多种支付方式, PC版支付成功后台通知请登录商户后台添加通知地址,<a href="http://www.yeepay.com/" target="_blank">申请及详情请查看这里</a>.
             </div>
         
