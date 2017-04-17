@@ -114,6 +114,10 @@ class MemberOfficeAccountService extends MemberService
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
+
+
+
+
                     //添加mc_members表
                     $default_groupid = McGroupsModel::getDefaultGroupId();
 
