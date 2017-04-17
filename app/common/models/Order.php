@@ -152,6 +152,9 @@ class Order extends BaseModel
 
     public function getPayTypeNameAttribute()
     {
+        if($this->status == self::WAIT_PAY){
+            return PayType::defaultTypeName();
+        }
         return $this->hasOnePayType->name;
     }
 

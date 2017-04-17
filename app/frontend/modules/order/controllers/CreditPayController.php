@@ -11,8 +11,8 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
+use app\common\models\PayType;
 use app\common\services\PayFactory;
-use app\frontend\modules\order\models\Order;
 use app\frontend\modules\order\services\OrderService;
 
 class CreditPayController extends PayController
@@ -34,7 +34,6 @@ class CreditPayController extends PayController
     protected function pay($request, $payType)
     {
         $this->_validate($request);
-        $this->order = Order::find($request->query('order_id'));
 
         $query_str = [
             'order_no' => $this->order()->order_sn,
@@ -49,6 +48,15 @@ class CreditPayController extends PayController
             'service_type' => Balance::BALANCE_CONSUME,
         ];
         $pay = PayFactory::create($payType);
-        return $pay->doPay($query_str);
+        $result = $pay->doPay($query_str);
+        if (!isset($result)) {
+            throw new AppException('获取支付参数失败');
+        }
+        $this->order()->pay_type_id = PayType::CREDIT;
+
+        if (!$this->order()->save()) {
+            throw new AppException('支付方式选择失败');
+        }
+        return $result;
     }
 }
