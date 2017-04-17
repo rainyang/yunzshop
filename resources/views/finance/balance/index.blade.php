@@ -12,7 +12,7 @@
         <form action="{{ yzWebUrl('finance.balance.index') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
             <div class="panel panel-default">
 
-                <div class="alert alert-warning">
+                <div class="alert alert-warning alert-important">
                     余额支付开关、及其他支付设置，请到交易设置查看<a href="{{ yzWebUrl('setting.shop.pay') }}" target="_blank">【点击跳转交易设置】</a>.
                 </div>
 

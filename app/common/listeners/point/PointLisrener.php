@@ -54,7 +54,7 @@ class PointLisrener
 
     private function addPointLog($point_data)
     {
-        if ($point_data['point']) {
+        if (isset($point_data['point'])) {
             $point_service = new PointService($point_data);
             $point_model = $point_service->changePoint();
             if ($point_model) {
