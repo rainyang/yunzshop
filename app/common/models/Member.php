@@ -2,6 +2,7 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
+use app\common\services\finance\Balance;
 
 /**
  * Created by PhpStorm.
@@ -143,18 +144,22 @@ class Member extends BackendModel
      * @param string $credittype
      * @param int $credits
      */
-    public static function setCredit($member_id = '', $credittype = 'credit1', $credits = 0)
+    public static function setCredit($params)
     {
-        $data = self::getMemberById($member_id)->toArray();
+        $data = [
+            'member_id' => $params['extra']['member_id'],
+            'change_money' => $params['amount'],
+            'serial_number' => $params['order_no'],
+            'operator' => $params['operator'],
+            'operator_id' => $params['operator_id'],
+            'remark' => $params['remark'],
+            'service_type' => $params['service_type'],
+            'rechrage_type' => $params['rechrage_type']
+        ];
 
-        $newcredit = $credits + $data[$credittype];
-        if ($newcredit <= 0) {
-            $newcredit = 0;
-        }
+        $result = (new Balance())->changeBalance($data);
 
-        self::uniacid()
-            ->where('uid', $member_id)
-            ->update([$credittype=>$newcredit]);
+        return $result;
     }
 
     public static function getOpenId($member_id){
