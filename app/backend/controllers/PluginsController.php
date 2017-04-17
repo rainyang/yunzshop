@@ -71,28 +71,7 @@ class PluginsController extends BaseController
     {
         $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
         $installed = $plugins->getPlugins();
-
-
-//        $pluginsData = Datatables::of($installed)
-//            ->setRowId('plugin-{{ $name }}')
-//            ->editColumn('title', function ($plugin) {
-//                return trans($plugin->title);
-//            })
-//            ->editColumn('description', function ($plugin) {
-//                return trans($plugin->description);
-//            })
-//            ->editColumn('author', function ($plugin) {
-//                return "<a href='{$plugin->url}' target='_blank'>".trans($plugin->author)."</a>";
-//            })
-//            ->addColumn('status', function ($plugin) {
-//                return trans('admin.plugins.status.'.($plugin->isEnabled() ? 'enabled' : 'disabled'));
-//            })
-//            ->addColumn('operations', function ($plugin) {
-//                dd($plugin);
-//                //return view('vendor.admin-operations.plugins.operations', compact('plugin'))->render();
-//            })
-//            ->make(true);
-
+        
         return view('admin.plugins',[
             'installed' => $installed
         ]);
