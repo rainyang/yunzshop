@@ -75,7 +75,7 @@ class PayController extends ApiController
     }
     protected function pay($request, $payType)
     {
-        $this->_validate();
+        $this->_validate($request);
         $order = $this->order();
 
         $query_str = [

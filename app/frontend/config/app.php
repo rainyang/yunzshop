@@ -7,7 +7,7 @@
  */
 
 return [
-    'modules'=>[
+    'modules' => [
         'order',
         'dispatch',
         'refund',
