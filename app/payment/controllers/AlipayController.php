@@ -25,7 +25,8 @@ class AlipayController extends PaymentController
                 $data = [
                     'total_fee'    => $_POST['total_fee'],
                     'out_trade_no' => $_POST['out_trade_no'],
-                    'trade_no'     => $_POST['trade_no']
+                    'trade_no'     => $_POST['trade_no'],
+                    'unit'         => 'yuan'
                 ];
 
                 $this->payResutl($data);

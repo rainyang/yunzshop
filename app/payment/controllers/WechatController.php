@@ -40,7 +40,8 @@ class WechatController extends PaymentController
             $data = [
                 'total_fee'    => $post['total_fee'] ,
                 'out_trade_no' => $post['out_trade_no'],
-                'trade_no'     => $post['transaction_id']
+                'trade_no'     => $post['transaction_id'],
+                'unit'         => 'fen'
             ];
 
             $this->payResutl($data);
