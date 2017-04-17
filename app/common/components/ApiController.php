@@ -13,6 +13,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
+use app\common\models\UniAccount;
 use app\frontend\modules\member\services\MemberService;
 
 class ApiController extends BaseController
@@ -22,11 +23,16 @@ class ApiController extends BaseController
     public function __construct()
     {
         parent::__construct();
+
     }
 
     public function preAction()
     {
         parent::preAction();
+
+        if(!UniAccount::checkIsExistsAccount(\YunShop::app()->uniacid)){
+            return $this->errorJson('无此公众号', ['status' => -1]);
+        }
 
         $relaton_set = MemberRelation::getSetInfo()->first();
 
@@ -57,4 +63,5 @@ class ApiController extends BaseController
             throw new AppException(current($this->formatValidationErrors($validator)));
         }
     }
+
 }

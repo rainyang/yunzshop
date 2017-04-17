@@ -363,25 +363,6 @@ echo '<pre>';print_r($info);exit;
         }
     }
 
-    public function enj()
-    {
-            $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
-           // $userinfo = json_decode($userinfo, true);
-            $tmpStr = json_encode("你好  hello 123");
-            $tmpStr = preg_replace($patten, "", $tmpStr);
-            $nickname = json_decode($tmpStr, true);
-            $nick = $this->filterEmoji("你好  hello 123");
-            echo '<pre>';print_r($nickname);
-echo '<pre>';print_r($nick);
-    }
-
-    function filterEmoji($str)
-    {
-        preg_match_all('/[\x{4e00}-\x{9fff}]+/u', $str, $matches);
-
-        return $str;
-    }
-
     public function log()
     {
         $post = '';
