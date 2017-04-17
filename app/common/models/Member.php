@@ -153,8 +153,7 @@ class Member extends BackendModel
             'operator' => $params['operator'],
             'operator_id' => $params['operator_id'],
             'remark' => $params['remark'],
-            'service_type' => $params['service_type'],
-            'rechrage_type' => $params['rechrage_type']
+            'service_type' => $params['service_type']
         ];
 
         $result = (new Balance())->changeBalance($data);
