@@ -17,6 +17,7 @@
                 <div class="panel-heading">筛选</div>-->
                 <div class="panel-body">
                     <form action="" method="post" class="form-horizontal" role="form" id="form1">
+                        <input type="hidden" name="route" value="member.member.apply" id="route" />
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">
                             <div>
                                 <input type="text" placeholder="ID/昵称/姓名/手机号" class="form-control" name="search[member]"
@@ -93,7 +94,7 @@
                                 <th style='width:8%;text-align: center;'>推荐人</th>
                                 <th style='width:8%;text-align: center;'>粉丝</th>
                                 <th style='width:12%;'>姓名</th>
-                                <th style='width:8%;'>电话</th>
+                                <th style='width:8%;'>手机号</th>
                                 <th style='width:10%;'>申请时间</th>
                                 <th style='width:15%;'>详情</th>
                                 <th style='width:8%'>操作</th>
@@ -169,9 +170,9 @@
     <script language='javascript'>
         $(function () {
             $('#export').click(function () {
-                $('#route').val("member.member.export");
+                $('#route').val("member.member-relation.export");
                 $('#form1').submit();
-                $('#route').val("member.member.index");
+                $('#route').val("member.member-relation.apply");
             });
 
             $('.pass').click(function () {
