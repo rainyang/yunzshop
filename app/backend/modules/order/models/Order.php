@@ -79,7 +79,7 @@ class Order extends \app\common\models\Order
             'hasOnePayType',
             'address',
             'hasOneOrderRemark',
-            'hasOneOrderExpress',
+            'express',
             'hasOnePayType'
         ]);
         return $orders;
