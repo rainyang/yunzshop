@@ -18,41 +18,31 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
 
+          <!-- User Account Menu -->
+          <li class="dropdown user user-menu">
+            <!-- Menu Toggle Button -->
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <span class="hidden-xs"> <span  class="fa fa-group"></span>项目早知道</span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="about"> <i></i><a href=""> <span class="fa fa-wechat"></span>编辑当前账号资料</a> </li>
+              <li> <a href=""><span class="fa fa-cogs fa-fw"></span>管理其他公众号</a> </li>
+              <li> <a href=""><span class="fa fa-mobile fa-fw"></span>模拟测试</a> </li>
+            </ul>
+          </li>
 
           <!-- User Account Menu -->
           <li class="dropdown user user-menu">
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-
-              <span class="hidden-xs">{{YunShop::app()->username}}</span>
+              <span class="hidden-xs"> <span class="fa fa-user fa-fw"></span>admin(系统管理员)</span>
             </a>
             <ul class="dropdown-menu">
-
-
-              <!-- The user image in the menu -->
-              <!--<li class="user-header">
-                <img src="" class="img-circle" alt="User Image">
-                <p>
-                  {{YunShop::app()->username}} - {{YunShop::app()->role}}
-                  <small>最后登录:{{date('Y-m-d H:i',YunShop::app()->user['lastvisit'])}}</small>
-                </p>
-              </li>
-
-              </li>
-              <!-- Menu Footer
-              <li class="user-footer">
-
-                <div class="pull-right">
-                  <a href="?c=user&a=logout" class="btn btn-default btn-flat">登出</a>
-                </div>
-              </li>-->
-
-
-
-              <li class="about"> <i></i> <b>关于我们</b></li>
-              <li><span class="fa fa-user"></span>我的账号</li>
-              <li><span class="fa fa-gears"></span>设置</li>
-              <li><span class="fa fa-share"></span>退出</li>
+              <li class="about"> <i></i> <a href=""> <span class="fa fa-wechat fa-fw"></span>我的账号</a> </li>
+              <li class="system one"> <a href=""><span class="fa fa-sitemap fa-fw"></span>系统选项</a> </li>
+              <li class="system"> <a href=""><span class="fa fa-cloud-download fa-fw"></span>自动更新</a> </li>
+              <li class="system three"> <a href=""><span class="fa fa-refresh fa-fw"></span>更新缓存</a> </li>
+              <li class="drop_out"> <a href=""><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>
             </ul>
           </li>
         </ul>
