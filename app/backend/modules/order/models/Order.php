@@ -45,6 +45,11 @@ class Order extends \app\common\models\Order
         $builder = Order::orders($search, $pageSize)->completed();
         return self::format($builder,$pageSize);
     }
+    public static function getCancelledOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->cancelled();
+        return self::format($builder,$pageSize);
+    }
 
     /**
      * @param $search

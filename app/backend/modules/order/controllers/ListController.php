@@ -56,6 +56,13 @@ class ListController extends BaseController
         $this->_order_model = Order::getCompletedOrders($params['search'],self::PAGE_SIZE);
         return view('order.index', $this->getData())->render();
     }
+    public function cancelled()
+    {
+        $params = \YunShop::request();
+
+        $this->_order_model = Order::getCancelledOrders($params['search'],self::PAGE_SIZE);
+        return view('order.index', $this->getData())->render();
+    }
 
     /**
      * @return mixed
