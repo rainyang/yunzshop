@@ -66,6 +66,12 @@ class BaseController extends Controller
             echo $this->message($validator->errors()->first());exit;
         }
     }
+
+    /**
+     * 设置Cookie存储
+     *
+     * @return void
+     */
     private function setCookie()
     {
         $session_id = '';
