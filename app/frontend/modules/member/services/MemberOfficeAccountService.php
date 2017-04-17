@@ -76,7 +76,7 @@ class MemberOfficeAccountService extends MemberService
             $tmpStr = json_encode($userinfo['nickname']);
             $tmpStr = preg_replace($patten, "", $tmpStr);
             $nickname = json_decode($tmpStr, true);
-            $nick = filterEmoji($userinfo['nickname']);
+            $nick = $this->filterEmoji($userinfo['nickname']);
             echo '<pre>';print_r($nickname);
 echo '<pre>';print_r($nick);exit;
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
