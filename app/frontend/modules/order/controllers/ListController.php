@@ -22,12 +22,9 @@ class ListController extends ApiController
         //返回的订单不包括"已删除订单"
         $list = OrderListModel::getRequestOrderList($status, $uid)->where('status','<>','-1')->paginate($pageSize)->toArray();
 //dd($list);
+        
+        return $this->successJson($msg = 'ok', $data = $list);
 
-        if ($list['total'] == 0) {
-            return $this->errorJson($msg = '未找到数据', $data = []);
-        } else {
-            return $this->successJson($msg = 'ok', $data = $list);
-        }
     }
 
     //所有订单(不包括"已删除"订单)
