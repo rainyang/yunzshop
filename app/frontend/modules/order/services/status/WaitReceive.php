@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services\status;
 
 use app\common\models\Order;
 
-class WaitReceive implements StatusService
+class WaitReceive extends Status
 {
     private $order;
     public function __construct(Order $order)
@@ -40,13 +40,7 @@ class WaitReceive implements StatusService
                     'value' => static::EXPRESS
                 ]
             ];
-        if(empty($this->order->refund_id)){
-            $result[] = [
-                'name' => '申请退款',
-                'api' => 'order.refund.apply', //todo
-                'value' => static::REFUND
-            ];
-        }
+        $result += self::getRefundButtons($this->order);
         return $result;
     }
 }

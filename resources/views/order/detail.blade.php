@@ -404,7 +404,7 @@
                                     <td>{{$goods['belongs_to_good']['id']}}</td>
                                     <td>{{$goods['belongs_to_good']['title']}}</td>
                                     <td>{{$goods['belongs_to_good']['goods_sn']}}</td>
-                                    <td>{{$goods['belongs_to_good']['market_price']}}元</td>
+                                    <td>{{$goods['belongs_to_good']['price']}}/{{$goods['belongs_to_good']['market_price']}}/{{$goods['belongs_to_good']['cost_price']}}元</td>
                                     <td>{{$goods['total']}}</td>
                                     <td style='color:red;font-weight:bold;'>{{$order['goods_price']}}<br/>{{$order['price']}}
                                     </td>

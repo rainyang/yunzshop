@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services\status;
 
 use app\common\models\Order;
 
-class WaitPay implements StatusService
+class WaitPay extends Status
 {
     private $order;
     public function __construct(Order $order)
