@@ -32,7 +32,7 @@ class CreditPay extends Pay
         $operation = '余额订单支付 订单号：' . $params['order_no'];
         $this->log($params['extra']['type'], '余额', $params['amount'], $operation,$params['order_no'], Pay::ORDER_STATUS_NON);
 
-        self::payRequestDataLog($params['order_no'],$params['extra']['type'], '余额支付', json_encode($params));
+        self::payRequestDataLog($params['order_no'],$params['extra']['type'], '余额', json_encode($params));
 
         $result = (new Balance())->changeBalance($data);
 
@@ -41,8 +41,8 @@ class CreditPay extends Pay
 
             if ($pay_order_model) {
                 $pay_order_model->status = 2;
-                $pay_order_model->trade_no = $data['trade_no'];
-                $pay_order_model->third_type = $data['pay_type'];
+                $pay_order_model->trade_no = $params['trade_no'];
+                $pay_order_model->third_type = '余额';
                 $pay_order_model->save();
             }
 
