@@ -11,10 +11,11 @@
  */
 namespace app\frontend\modules\member\models;
 
-use app\common\models\McMappingFans;
+use app\backend\models\BackendModel;
 
-class McMappingFansModel extends McMappingFans
+class McMappingFansModel extends BackendModel
 {
+    public $table = 'mc_mapping_fans';
     public $timestamps = false;
 
     protected $guarded = [];
