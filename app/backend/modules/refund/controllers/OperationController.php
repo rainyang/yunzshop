@@ -1,4 +1,8 @@
 <?php
+namespace app\backend\modules\refund\controllers;
+
+use app\backend\modules\refund\services\RefundOperationService;
+use app\common\components\ApiController;
 
 /**
  * 退款申请操作
@@ -7,7 +11,7 @@
  * Date: 2017/4/13
  * Time: 下午3:05
  */
-class OperationController
+class OperationController extends ApiController
 {
     public function pass(\Request $request)
     {
