@@ -8,13 +8,12 @@
 
 namespace app\frontend\modules\member\controllers;
 
-use app\common\components\ApiController;
 use app\common\components\BaseController;
 
 use app\common\services\Session;
 use Illuminate\Support\Facades\Cookie;
 
-class LogoutController extends ApiController
+class LogoutController extends BaseController
 {
     public function index()
     {
