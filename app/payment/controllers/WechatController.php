@@ -33,7 +33,7 @@ class WechatController extends PaymentController
     {
         $post = $this->getResponseResult();
 
-        //$this->log($post);
+        $this->log($post);
 
         $verify_result = $this->getSignResult();
 
@@ -42,7 +42,8 @@ class WechatController extends PaymentController
                 'total_fee'    => $post['total_fee'] ,
                 'out_trade_no' => $post['out_trade_no'],
                 'trade_no'     => $post['transaction_id'],
-                'unit'         => 'fen'
+                'unit'         => 'fen',
+                'pay_type'     => '微信'
             ];
 
             $this->payResutl($data);

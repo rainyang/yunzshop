@@ -28,7 +28,8 @@ class AlipayController extends PaymentController
                     'total_fee'    => $_POST['total_fee'],
                     'out_trade_no' => $_POST['out_trade_no'],
                     'trade_no'     => $_POST['trade_no'],
-                    'unit'         => 'yuan'
+                    'unit'         => 'yuan',
+                    'pay_type'     => '支付宝'
                 ];
 
                 $this->payResutl($data);
