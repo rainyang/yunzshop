@@ -27,8 +27,10 @@
               <span class="hidden-xs">{{YunShop::app()->username}}</span>
             </a>
             <ul class="dropdown-menu">
+
+
               <!-- The user image in the menu -->
-              <li class="user-header">
+              <!--<li class="user-header">
                 <img src="" class="img-circle" alt="User Image">
                 <p>
                   {{YunShop::app()->username}} - {{YunShop::app()->role}}
@@ -37,13 +39,20 @@
               </li>
 
               </li>
-              <!-- Menu Footer-->
+              <!-- Menu Footer
               <li class="user-footer">
 
                 <div class="pull-right">
                   <a href="?c=user&a=logout" class="btn btn-default btn-flat">登出</a>
                 </div>
-              </li>
+              </li>-->
+
+
+
+              <li class="about"> <i></i> <b>关于我们</b></li>
+              <li><span class="fa fa-user"></span>我的账号</li>
+              <li><span class="fa fa-gears"></span>设置</li>
+              <li><span class="fa fa-share"></span>退出</li>
             </ul>
           </li>
         </ul>
