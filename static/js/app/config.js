@@ -2,6 +2,7 @@ require.config({
     baseUrl: 'resource/js/app',
     paths: {
         'jquery': '//cdn.bootcss.com/jquery/2.2.3/jquery.min',
+        'jquery.ui': '../lib/jquery-ui-1.10.3.min',
         'jquery.caret': '../lib/jquery.caret',
         'jquery.jplayer': '../../components/jplayer/jquery.jplayer.min',
         'jquery.zclip': '../../components/zclip/jquery.zclip.min',

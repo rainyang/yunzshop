@@ -2,6 +2,7 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
+use app\common\events\member\BecomeAgent;
 use app\common\services\finance\Balance;
 
 /**
@@ -147,7 +148,7 @@ class Member extends BackendModel
     public static function setCredit($params)
     {
         $data = [
-            'member_id' => $params['extra']['member_id'],
+            'member_id' => $params['member_id'],
             'change_money' => $params['amount'],
             'serial_number' => $params['order_no'],
             'operator' => $params['operator'],
