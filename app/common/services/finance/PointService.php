@@ -55,6 +55,9 @@ class PointService
 
     public function __construct(array $point_data)
     {
+        if (!$point_data) {
+            return;
+        }
         $this->point_data = $point_data;
         $member = Member::getMemberById($point_data['member_id']);
         $this->member_point = $member['credit1'];
