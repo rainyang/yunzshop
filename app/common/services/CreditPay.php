@@ -8,6 +8,7 @@
 
 namespace app\common\services;
 
+use app\common\models\PayOrder;
 use app\common\services\finance\Balance;
 
 class CreditPay extends Pay
@@ -28,11 +29,23 @@ class CreditPay extends Pay
             'service_type' => $params['service_type']
         ];
 
-        $this->log($params);
+        $operation = '余额订单支付 订单号：' . $params['order_no'];
+        $this->log($params['extra']['type'], '余额', $params['amount'], $operation,$params['order_no'], json_encode($params));
+
+        self::payRequestDataLog($params['order_no'],$params['extra']['type'], '余额支付', json_encode($params));
 
         $result = (new Balance())->changeBalance($data);
 
         if ($result === true) {
+            $pay_order_model = PayOrder::uniacid()->where('out_order_no', $params['order_no'])->first();
+
+            if ($pay_order_model) {
+                $pay_order_model->status = 2;
+                $pay_order_model->trade_no = $data['trade_no'];
+                $pay_order_model->third_type = $data['pay_type'];
+                $pay_order_model->save();
+            }
+
             return true;
         } else {
             return false;
@@ -54,18 +67,5 @@ class CreditPay extends Pay
     public function buildRequestSign()
     {
         // TODO: Implement buildRequestSign() method.
-    }
-
-    /**
-     * 响应日志
-     *
-     * @param $post
-     */
-    public function log($post)
-    {
-        //访问记录
-        self::payAccessLog();
-        //保存请求数据
-        self::payRequestDataLog($post['order_no'], '支付宝支付', json_encode($post));
     }
 }
