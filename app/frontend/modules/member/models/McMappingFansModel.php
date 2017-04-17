@@ -40,8 +40,7 @@ class McMappingFansModel extends McMappingFans
         return self::select('uid')
             ->uniacid()
             ->where('openid', $openid)
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**
