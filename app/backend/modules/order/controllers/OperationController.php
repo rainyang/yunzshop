@@ -51,30 +51,30 @@ class OperationController extends BaseController
     public function send(){
         list($result,$data) = OrderService::orderSend($this->_params);
         if($result === false){
-            return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'success');
+            return $this->message($data);
         }
-        return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'error');
+        return $this->message($data, 'error');
     }
     public function cancelSend(){
         list($result,$data) = OrderService::orderCancelSend($this->_params);
         if($result === false){
-            return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'error');
+            return $this->message($data, 'error');
         }
-        return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'success');
+        return $this->message($data);
     }
     public function Receive(){
         list($result,$data) = OrderService::orderReceive($this->_params);
         if($result === false){
-            return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'error');
+            return $this->message($data, 'error');
         }
-        return $this->message($data, Url::absoluteWeb('order.detail', ['id' => $this->_params['order_id']]), 'success');
+        return $this->message($data);
     }
     public function Delete()
     {
         list($result,$data) = OrderService::orderDelete($this->_params);
         if($result === false){
-            return $this->message($data, Url::absoluteWeb('order.list'), 'error');
+            return $this->message($data, 'error');
         }
-        return $this->message($data, Url::absoluteWeb('order.list'), 'success');
+        return $this->message($data);
     }
 }

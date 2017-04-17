@@ -205,7 +205,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款金额 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{{$order['refund_data']['apply_price']}}</p>
+                                <p class="form-control-static">{{$order['refund_data']['price']}}</p>
                             </div>
                         </div>
                         @endif

@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\member\BecomeAgent;
@@ -23,7 +24,7 @@ use app\frontend\modules\member\services\MemberService;
 use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class TestController extends ApiController
+class TestController extends BaseController
 {
    public function index()
    {
@@ -350,5 +351,15 @@ exit;
         $config = json_decode($config, 1);
 echo '<pre>';print_r($config);exit;
         return $this->successJson('', ['config' => $config]);
+    }
+
+    public function getChildAgentInfo()
+    {
+        $info = MemberRelation::getSetInfo()->first();
+echo '<pre>';print_r($info);exit;
+        if (!empty($info)) {
+
+            return $info->become_child;
+        }
     }
 }

@@ -81,9 +81,12 @@ class ApplyController extends ApiController
         $refundApply->refund_sn = RefundService::createOrderRN();
         $refundApply->create_time = time();
         if (!$refundApply->save()) {
-            throw new AppException('请求失败');
+            throw new AppException('请求信息保存失败');
         }
-
+        $order->refund_id = $refundApply->id;
+        if(!$order->save()){
+            throw new AppException('订单退款状态改变失败');
+        }
         return $this->successJson('成功', $refundApply->toArray());
     }
 }
