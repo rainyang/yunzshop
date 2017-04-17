@@ -66,7 +66,7 @@ class PayController extends ApiController
         if ($order->uid != \YunShop::app()->getMemberId()) {
             throw new AppException('该订单属于其他用户');
         }
-        if ($order->status > Order::WAIT_SEND) {
+        if ($order->status > Order::WAIT_PAY) {
             throw new AppException('订单已付款,请勿重复付款');
         }
         if ($order->status == Order::CLOSE) {
