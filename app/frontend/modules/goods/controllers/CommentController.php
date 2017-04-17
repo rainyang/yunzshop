@@ -12,6 +12,7 @@ namespace app\frontend\modules\goods\controllers;
 use app\common\components\ApiController;
 use app\common\models\Goods;
 use app\common\models\Member;
+use app\common\models\OrderGoods;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
@@ -80,6 +81,11 @@ class CommentController extends ApiController
             //数据保存
             if ($commentModel->save()) {
                 Goods::updatedComment($commentModel->goods_id);
+
+                OrderGoods::where('order_id',$commentModel->order_id)
+                    ->where('goods_id',$commentModel->goods_id)
+                    ->update(['comment_status'=>'1']);
+
                 //显示信息并跳转
                 return $this->successJson('评论成功!');
             }else{
