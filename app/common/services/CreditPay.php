@@ -8,7 +8,7 @@
 
 namespace app\common\services;
 
-use app\common\models\Member;
+use app\common\services\finance\Balance;
 
 class CreditPay extends Pay
 {
@@ -16,15 +16,30 @@ class CreditPay extends Pay
     {
     }
 
-    public function doPay($data = [])
+    public function doPay($params = [])
     {
-        //pay.php 980
-        //支付单
-        //订单 支付类型
-        Member::setCredit($data['member_id'], $data['type'], $data['amount']);
+        $data = [
+            'member_id' => $params['member_id'],
+            'change_money' => $params['amount'],
+            'serial_number' => $params['order_no'],
+            'operator' => $params['operator'],
+            'operator_id' => $params['operator_id'],
+            'remark' => $params['remark'],
+            'service_type' => $params['service_type']
+        ];
+
+        $result = (new Balance())->changeBalance($data);
+
+        if ($result === true) {
+            return true;
+        } else {
+            return false;
+        }
+
+
     }
 
-    public function doRefund($out_trade_no, $out_refund_no, $totalmoney, $refundmoney)
+    public function doRefund($out_trade_no, $totalmoney, $refundmoney)
     {
         // TODO: Implement doRefund() method.
     }

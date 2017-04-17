@@ -69,7 +69,10 @@ class PaymentController extends BaseController
         switch ($type) {
             case "charge.succeeded":
                 $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
-                $order_info->price = $order_info->price * 100;
+
+                if ($data['unit'] == 'fen') {
+                    $order_info->price = $order_info->price * 100;
+                }
 
                 if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
                     MemberRelation::checkOrderPay();

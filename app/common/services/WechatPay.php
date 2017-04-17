@@ -48,7 +48,7 @@ class WechatPay extends Pay
 
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
         } else {
-            throw new AppException('微信预下单失败');
+            throw new AppException($result->err_code_des);
         }
 
         $config = $payment->configForJSSDKPayment($prepayId);
@@ -59,12 +59,6 @@ class WechatPay extends Pay
         $js['timestamp'] = strval($js['timestamp']);
 
         return ['config'=>$config, 'js'=>json_encode($js)];
-//
-//        return ['config'=>$config, 'js'=>json_decode($js, 1)];
-
-        //$js = $app->js;
-
-        //return ['config'=>$config, 'js'=>$js->config(array('chooseWXPay'))];
     }
 
     /**

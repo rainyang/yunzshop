@@ -2,6 +2,7 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
+use app\common\events\member\BecomeAgent;
 
 /**
  * Created by PhpStorm.
@@ -134,27 +135,6 @@ class Member extends BackendModel
             ->whereNotNull('avatar')
             ->inRandomOrder()
             ->first();
-    }
-
-    /**
-     * 设置会员积分/余额
-     *
-     * @param string $member_id
-     * @param string $credittype
-     * @param int $credits
-     */
-    public static function setCredit($member_id = '', $credittype = 'credit1', $credits = 0)
-    {
-        $data = self::getMemberById($member_id)->toArray();
-
-        $newcredit = $credits + $data[$credittype];
-        if ($newcredit <= 0) {
-            $newcredit = 0;
-        }
-
-        self::uniacid()
-            ->where('uid', $member_id)
-            ->update([$credittype=>$newcredit]);
     }
 
     public static function getOpenId($member_id){

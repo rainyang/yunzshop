@@ -13,16 +13,22 @@ use app\common\exceptions\AppException;
 use app\common\models\Order;
 use app\common\services\PayFactory;
 use app\common\services\Session;
+use app\frontend\modules\order\services\OrderService;
 use Ixudra\Curl\Facades\Curl;
 
 class PayController extends ApiController
 {
+    protected $order;
     protected $publicAction = ['alipay'];
-
+    protected function order(){
+        if(isset($this->order)){
+            return $this->order;
+        }
+        return $this->order = Order::select(['status', 'id', 'order_sn', 'price', 'uid'])->find(\Request::query('order_id'));
+    }
     public function index(\Request $request)
     {
-        $order_id = $request->query('order_id');
-        $order = Order::select(['status', 'id', 'order_sn', 'price', 'uid'])->find($order_id);
+        $order = $this->order();
         if (!isset($order)) {
             throw new AppException('未找到订单');
         }
@@ -31,6 +37,10 @@ class PayController extends ApiController
         }
         $member = $order->belongsToMember()->select(['credit2'])->first()->toArray();
         $buttons = [
+            [
+                'name' => '余额支付',
+                'value' => '3'
+            ],
             [
                 'name' => '微信支付',
                 'value' => '1'
@@ -43,13 +53,11 @@ class PayController extends ApiController
 
         return $this->successJson('成功', $data);
     }
-
-    private function pay($request, $payType)
-    {
+    protected function _validate($request){
         $this->validate($request, [
             'order_id' => 'required|integer'
         ]);
-        $order = Order::find($request->query('order_id'));
+        $order = $this->order();
 //        dd($request->query('order_id'));
 //        exit;
         if (!isset($order)) {
@@ -64,6 +72,11 @@ class PayController extends ApiController
         if ($order->status == Order::CLOSE) {
             throw new AppException('订单已关闭,无法付款');
         }
+    }
+    protected function pay($request, $payType)
+    {
+        $this->_validate($request);
+        $order = $this->order();
 
         $query_str = [
             'order_no' => $order->order_sn,
@@ -71,11 +84,11 @@ class PayController extends ApiController
             'subject' => '微信支付',
             'body' => $order->hasManyOrderGoods[0]->title . ':' . \YunShop::app()->uniacid,
             'extra' => ['type' => 1]
+
         ];
 
         $pay = PayFactory::create($payType);
         return $pay->doPay($query_str);
-
 
     }
 
@@ -98,4 +111,5 @@ class PayController extends ApiController
 
         //获取支付宝 支付单 数据
     }
+
 }

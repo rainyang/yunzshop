@@ -3,9 +3,9 @@
     <!-- Logo -->
     <a href="/" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>芸众</b></span>
+      <span class="logo-mini"><b>芸</b></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>芸众</b>商城</span>
+      <span class="logo-lg"><b>芸</b>商城</span>
     </a>
 
     <!-- Header Navbar -->
@@ -24,26 +24,35 @@
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 
-              <span class="hidden-xs">username</span>
+              <span class="hidden-xs">{{YunShop::app()->username}}</span>
             </a>
             <ul class="dropdown-menu">
+
+
               <!-- The user image in the menu -->
-              <li class="user-header">
-                <img src="" class="img-circle" alt="User Image">{{--/123.png--}}
+              <!--<li class="user-header">
+                <img src="" class="img-circle" alt="User Image">
                 <p>
-                  username - 系统管理员
-                  <small>最后登录:{{date('Y-m-d H:i',time())}}</small>
+                  {{YunShop::app()->username}} - {{YunShop::app()->role}}
+                  <small>最后登录:{{date('Y-m-d H:i',YunShop::app()->user['lastvisit'])}}</small>
                 </p>
               </li>
 
               </li>
-              <!-- Menu Footer-->
+              <!-- Menu Footer
               <li class="user-footer">
 
                 <div class="pull-right">
-                  <a href="/admin/logout" class="btn btn-default btn-flat">登出</a>
+                  <a href="?c=user&a=logout" class="btn btn-default btn-flat">登出</a>
                 </div>
-              </li>
+              </li>-->
+
+
+
+              <li class="about"> <i></i> <b>关于我们</b></li>
+              <li><span class="fa fa-user"></span>我的账号</li>
+              <li><span class="fa fa-gears"></span>设置</li>
+              <li><span class="fa fa-share"></span>退出</li>
             </ul>
           </li>
         </ul>
