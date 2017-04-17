@@ -3,7 +3,6 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use app\common\events\member\BecomeAgent;
-use app\common\services\finance\Balance;
 
 /**
  * Created by PhpStorm.
@@ -136,34 +135,6 @@ class Member extends BackendModel
             ->whereNotNull('avatar')
             ->inRandomOrder()
             ->first();
-    }
-
-    /**
-     * 设置会员积分/余额
-     *
-     * @param string $member_id
-     * @param string $credittype
-     * @param int $credits
-     */
-    public static function setCredit($params)
-    {
-        $data = [
-            'member_id' => $params['member_id'],
-            'change_money' => $params['amount'],
-            'serial_number' => $params['order_no'],
-            'operator' => $params['operator'],
-            'operator_id' => $params['operator_id'],
-            'remark' => $params['remark'],
-            'service_type' => $params['service_type']
-        ];
-
-        $result = (new Balance())->changeBalance($data);
-
-        if ($result === true) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public static function getOpenId($member_id){

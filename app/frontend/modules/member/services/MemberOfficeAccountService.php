@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\services;
 use app\common\events\member\RegisterByAgent;
 use app\common\facades\Setting;
 use app\common\helpers\Client;
+use app\common\models\McMappingFans;
 use app\common\models\Member;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
@@ -114,29 +115,66 @@ class MemberOfficeAccountService extends MemberService
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
+                    $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
 
+                    if ($mc_mapping_fans_model->uid) {
+                        //更新mc_members
+                        $mc_data = array(
+                            'nickname' => stripslashes($userinfo['nickname']),
+                            'avatar' => $userinfo['headimgurl'],
+                            'gender' => $userinfo['sex'],
+                            'nationality' => $userinfo['country'],
+                            'resideprovince' => $userinfo['province'] . '省',
+                            'residecity' => $userinfo['city'] . '市'
+                        );
+                        MemberModel::updataData($UnionidInfo['member_id'], $mc_data);
 
+                        $member_id = $mc_mapping_fans_model->uid;
 
+                        //更新mapping_fans
+                        $record = array(
+                            'openid' => $userinfo['openid'],
+                            'nickname' => stripslashes($userinfo['nickname']),
+                            'tag' => base64_encode(serialize($userinfo))
+                        );
+                        McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
+                    } else {
+                        //添加mc_members表
+                        $default_groupid = McGroupsModel::getDefaultGroupId();
 
-                    //添加mc_members表
-                    $default_groupid = McGroupsModel::getDefaultGroupId();
+                        $mc_data = array(
+                            'uniacid' => $uniacid,
+                            'email' => '',
+                            'groupid' => $default_groupid['groupid'],
+                            'createtime' => time(),
+                            'nickname' => stripslashes($userinfo['nickname']),
+                            'avatar' => $userinfo['headimgurl'],
+                            'gender' => $userinfo['sex'],
+                            'nationality' => $userinfo['country'],
+                            'resideprovince' => $userinfo['province'] . '省',
+                            'residecity' => $userinfo['city'] . '市',
+                            'salt' => '',
+                            'password' => ''
+                        );
+                        $memberModel = MemberModel::create($mc_data);
+                        $member_id = $memberModel->uid;
 
-                    $mc_data = array(
-                        'uniacid' => $uniacid,
-                        'email' => '',
-                        'groupid' => $default_groupid['groupid'],
-                        'createtime' => time(),
-                        'nickname' => stripslashes($userinfo['nickname']),
-                        'avatar' => $userinfo['headimgurl'],
-                        'gender' => $userinfo['sex'],
-                        'nationality' => $userinfo['country'],
-                        'resideprovince' => $userinfo['province'] . '省',
-                        'residecity' => $userinfo['city'] . '市',
-                        'salt' => '',
-                        'password' => ''
-                    );
-                    $memberModel = MemberModel::create($mc_data);
-                    $member_id = $memberModel->uid;
+                        //添加mapping_fans表
+                        $record = array(
+                            'openid' => $userinfo['openid'],
+                            'uid' => $member_id,
+                            'acid' => $uniacid,
+                            'uniacid' => $uniacid,
+                            'salt' => Client::random(8),
+                            'updatetime' => time(),
+                            'nickname' => stripslashes($userinfo['nickname']),
+                            'follow' => 1,
+                            'followtime' => time(),
+                            'unfollowtime' => 0,
+                            'tag' => base64_encode(serialize($userinfo))
+                        );
+                        McMappingFansModel::create($record);
+                    }
 
                     //添加yz_member表
                     $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
@@ -161,22 +199,6 @@ class MemberOfficeAccountService extends MemberService
                         'level_id' => $default_sublevel_id,
                     );
                     SubMemberModel::insertData($sub_data);
-
-                    //添加mapping_fans表
-                    $record = array(
-                        'openid' => $userinfo['openid'],
-                        'uid' => $member_id,
-                        'acid' => $uniacid,
-                        'uniacid' => $uniacid,
-                        'salt' => Client::random(8),
-                        'updatetime' => time(),
-                        'nickname' => stripslashes($userinfo['nickname']),
-                        'follow' => 1,
-                        'followtime' => time(),
-                        'unfollowtime' => 0,
-                        'tag' => base64_encode(serialize($userinfo))
-                    );
-                    McMappingFansModel::create($record);
 
                     //添加ims_yz_member_unique表
                     MemberUniqueModel::insertData(array(
