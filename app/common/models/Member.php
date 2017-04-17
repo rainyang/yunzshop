@@ -158,7 +158,11 @@ class Member extends BackendModel
 
         $result = (new Balance())->changeBalance($data);
 
-        return $result;
+        if ($result === true) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public static function getOpenId($member_id){
