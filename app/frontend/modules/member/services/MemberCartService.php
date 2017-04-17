@@ -41,11 +41,10 @@ class MemberCartService
         }
         if($cart->isOption() && !isset($cart->goodsOption)) {
             throw new AppException('(ID:' . $cart->option_id . ')未找到商品规格或已经删除');
-
         }
-        if ($cart->total > $cart->goods->stock) {
-            throw new AppException($cart->goods->title . ':库存不足');
-        }
+//        if ($cart->total > $cart->goods->stock) {
+//            throw new AppException($cart->goods->title . ':库存不足');
+//        }
         //todo 验证option_id是否属于goods_id
         return $cart;
     }
