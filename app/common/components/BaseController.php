@@ -58,7 +58,14 @@ class BaseController extends Controller
             'status' => $status
         ])->render();
     }
+    public function validate(\Request $request, array $rules, array $messages = [], array $customAttributes = [])
+    {
+        $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
 
+        if ($validator->fails()) {
+            echo $this->message($validator->errors()->first());exit;
+        }
+    }
     private function setCookie()
     {
         $session_id = '';

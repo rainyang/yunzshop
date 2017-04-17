@@ -1,6 +1,7 @@
 <?php
 namespace app\frontend\modules\coupon\services\models\TimeLimit;
 
+use app\common\exceptions\AppException;
 use Carbon\Carbon;
 
 /**
@@ -13,6 +14,9 @@ class DateTimeRange extends TimeLimit
 {
     public function valid()
     {
+        if(!isset($this->dbCoupon->time_start) || !isset($this->dbCoupon->time_end)){
+            throw new AppException('(ID:'.$this->dbCoupon->id.')非法优惠券数据,请联系客服');
+        }
         if($this->dbCoupon->time_start->greaterThan(Carbon::now())){
             //未开始
             return false;

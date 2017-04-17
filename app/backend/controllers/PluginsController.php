@@ -48,14 +48,17 @@ class PluginsController extends BaseController
                 case 'enable':
                     $plugins->enable($name);
                     return $this->message('启用成功!', Url::absoluteWeb('plugins.get-plugin-data'));
+//                    return json(trans('admin.plugins.operations.enabled', ['plugin' => $plugin->title]), 0);
 
                 case 'disable':
                     $plugins->disable($name);
                     return $this->message('禁用成功!', Url::absoluteWeb('plugins.get-plugin-data'));
+//                    return json(trans('admin.plugins.operations.disabled', ['plugin' => $plugin->title]), 0);
 
                 case 'delete':
                     $plugins->uninstall($name);
                     return $this->message('删除成功!', Url::absoluteWeb('plugins.get-plugin-data'));
+//                    return json(trans('admin.plugins.operations.deleted'), 0);
 
                 default:
                     # code...
@@ -68,8 +71,7 @@ class PluginsController extends BaseController
     {
         $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
         $installed = $plugins->getPlugins();
-
-
+        
         return view('admin.plugins',[
             'installed' => $installed
         ]);
