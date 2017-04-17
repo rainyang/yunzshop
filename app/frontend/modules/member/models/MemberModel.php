@@ -12,6 +12,7 @@
 namespace app\frontend\modules\member\models;
 
 use app\backend\modules\member\models\MemberRelation;
+use app\common\helpers\Url;
 use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -255,7 +256,7 @@ class MemberModel extends Member
      */
     public static function getAgentQR($extra='')
     {
-        $url = request()->getSchemeAndHttpHost() . '/addons/yun_shop/#/home';
+        $url = Url::absoluteApp('/home');
         $url = $url . '?mid=' . \YunShop::app()->getMemberId();
 
         if (!empty($extra)) {
@@ -265,9 +266,10 @@ class MemberModel extends Member
         $extend = 'png';
         $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
 
-        echo QrCode::format($extend)->size(100)->generate($url, storage_path('qr/') . $filename);
+        $path = storage_path('app/public/qr/');
+        echo QrCode::format($extend)->size(100)->generate($url,  $path . $filename);
 
-        return storage_path('qr/') . $filename;
+        return $path . $filename;
     }
 
     /**

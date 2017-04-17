@@ -67,4 +67,9 @@ class McMappingFansModel extends BackendModel
             ->where('uid', $uid)
             ->update($data);
     }
+
+    public static function getMemberInfo($oppenid)
+    {
+
+    }
 }
