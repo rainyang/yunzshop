@@ -27,7 +27,7 @@ class CreditPay extends Pay
             'remark' => $params['remark'],
             'service_type' => $params['service_type']
         ];
-echo '<pre>';print_r($data);exit;
+
         $result = (new Balance())->changeBalance($data);
 
         if ($result === true) {
