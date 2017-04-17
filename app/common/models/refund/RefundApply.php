@@ -18,7 +18,7 @@ class RefundApply extends BaseModel
     protected $hidden = ['updated_at', 'created_at', 'uniacid', 'uid', 'order_id'];
     protected $fillable = [];
     protected $guarded = ['id'];
-    
+
     protected $appends = ['refund_type_name', 'status_name', 'button_models'];
     protected $attributes = [
         'images' => '[]',
