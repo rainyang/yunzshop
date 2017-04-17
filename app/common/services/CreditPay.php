@@ -28,6 +28,8 @@ class CreditPay extends Pay
             'service_type' => $params['service_type']
         ];
 
+        $this->log($params);
+
         $result = (new Balance())->changeBalance($data);
 
         if ($result === true) {
@@ -52,5 +54,18 @@ class CreditPay extends Pay
     public function buildRequestSign()
     {
         // TODO: Implement buildRequestSign() method.
+    }
+
+    /**
+     * 响应日志
+     *
+     * @param $post
+     */
+    public function log($post)
+    {
+        //访问记录
+        self::payAccessLog();
+        //保存请求数据
+        self::payRequestDataLog($post['order_no'], '支付宝支付', json_encode($post));
     }
 }
