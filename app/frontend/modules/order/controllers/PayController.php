@@ -13,6 +13,7 @@ use app\common\exceptions\AppException;
 use app\common\models\Order;
 use app\common\services\PayFactory;
 use app\common\services\Session;
+use app\frontend\modules\order\services\OrderService;
 use Ixudra\Curl\Facades\Curl;
 
 class PayController extends ApiController
@@ -97,5 +98,16 @@ class PayController extends ApiController
         return $this->successJson('成功', $data);
 
         //获取支付宝 支付单 数据
+    }
+    public function credit2(\Request $request){
+        $result = $this->pay($request, PayFactory::PAY_CREDIT);
+        if(!$result){
+            throw new AppException('余额扣除失败,请联系客服');
+        }
+        if(!OrderService::orderPay(['order_id'=>6])){
+            throw new AppException('订单状态改变失败,请联系客服');
+        }
+
+        return $this->successJson('成功', []);
     }
 }
