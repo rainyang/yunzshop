@@ -10,6 +10,7 @@
 namespace app\frontend\modules\dispatch\listeners\types;
 
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
+use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\OrderCreatedEvent;
 
 use app\common\exceptions\AppException;
@@ -22,7 +23,7 @@ class Express
     use ValidatesRequests;
     private $event;
 
-    public function onSave(OrderCreatedEvent $even)
+    public function onSave(AfterOrderCreatedEvent $even)
     {
         return ;
         $this->event = $even;
