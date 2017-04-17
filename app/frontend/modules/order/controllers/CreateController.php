@@ -9,6 +9,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\events\order\CreatingOrder;
+use app\common\exceptions\AppException;
 use app\frontend\modules\member\services\MemberCartService;
 use Illuminate\Support\Facades\DB;
 use Request;
@@ -32,8 +33,14 @@ class CreateController extends PreGeneratedController
         //dd(Request::all());
         //exit;
         $orders = collect();
-        $orders->push($this->getShopOrder());
+        if($this->getShopOrder()){
+
+            $orders->push($this->getShopOrder());
+        }
         $orders->merge($this->getPluginOrders());
+        if($orders->isEmpty()){
+            throw new AppException('未找到订单商品');
+        }
         $order_ids = DB::transaction(function () use ($orders) {
             return $orders->map(function ($order) {
                 /**
