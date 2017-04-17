@@ -66,7 +66,7 @@ class PointLisrener
 
     private function verifyData($point_data)
     {
-        if (!array_key_exists('key',$point_data)) {
+        if (!array_key_exists('point',$point_data)) {
             return;
         }
     }
