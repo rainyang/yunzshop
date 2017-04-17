@@ -39,7 +39,7 @@ class MemberCartService
         if (!isset($cart->goods)) {
             throw new AppException('(ID:' . $cart->goods_id . ')未找到商品或已经删除');
         }
-        if($cart->isOption && !isset($cart->goodsOption)) {
+        if($cart->isOption() && !isset($cart->goodsOption)) {
             throw new AppException('(ID:' . $cart->option_id . ')未找到商品规格或已经删除');
 
         }
