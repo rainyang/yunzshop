@@ -56,6 +56,13 @@ class ListController extends BaseController
         $this->_order_model = Order::getCompletedOrders($params['search'],self::PAGE_SIZE);
         return view('order.index', $this->getData())->render();
     }
+    public function cancelled()
+    {
+        $params = \YunShop::request();
+
+        $this->_order_model = Order::getCancelledOrders($params['search'],self::PAGE_SIZE);
+        return view('order.index', $this->getData())->render();
+    }
 
     /**
      * @return mixed
@@ -67,7 +74,12 @@ class ListController extends BaseController
         $this->_order_model = Order::getRefundOrders($params['search'],self::PAGE_SIZE);
         return view('order.index', $this->getData())->render();
     }
-    
+    public function refunded()
+    {
+        $params = \YunShop::request();
+        $this->_order_model = Order::getRefundedOrders($params['search'],self::PAGE_SIZE);
+        return view('order.index', $this->getData())->render();
+    }
     public function test()
     {
         $data = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
