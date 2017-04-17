@@ -71,14 +71,14 @@ class MemberOfficeAccountService extends MemberService
                 ->asJsonResponse(true)
                 ->get();
 
-            $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
-            $userinfo = json_decode($userinfo, true);
-            $tmpStr = json_encode($userinfo['nickname']);
-            $tmpStr = preg_replace($patten, "", $tmpStr);
-            $nickname = json_decode($tmpStr, true);
-            $nick = $this->filterEmoji($userinfo['nickname']);
-            echo '<pre>';print_r($nickname);
-echo '<pre>';print_r($nick);exit;
+//            $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
+//            $userinfo = json_decode($userinfo, true);
+//            $tmpStr = json_encode($userinfo['nickname']);
+//            $tmpStr = preg_replace($patten, "", $tmpStr);
+//            $nickname = json_decode($tmpStr, true);
+//            $nick = $this->filterEmoji($userinfo['nickname']);
+//            echo '<pre>';print_r($nickname);
+//echo '<pre>';print_r($nick);exit;
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 \YunShop::app()->openid = $userinfo['openid'];
 
