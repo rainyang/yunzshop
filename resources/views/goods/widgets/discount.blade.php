@@ -4,7 +4,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣类型</label>
     <div class="col-sm-6 col-xs-6">
         <label class="radio-inline">
-            <input type="radio" name="widgets[discount][level_discount_type]" value="1" checked/>
+            <input type="radio" name="widgets[discount][level_discount_type]" value="1" />
             会员等级
         </label>
     </div>
@@ -15,7 +15,7 @@
     <div class="col-sm-6 col-xs-6">
         <div class='input-group'>
             <label class="radio-inline">
-                <input type="radio" name="widgets[discount][discount_method]" value="1" checked/> 折扣
+                <input type="radio" name="widgets[discount][discount_method]" value="1" /> 折扣
             </label>
             <label class="radio-inline">
                 <input type="radio" name="widgets[discount][discount_method]" value="2"/>

@@ -22,7 +22,7 @@
 
 @if ($order['status'] == 1)
 <div>
-    <input class='addressdata' type='hidden' value='{{$order['address']['address']}}' />
+    <input class='addressdata' type='hidden' value='{!! json_encode($order['address']) !!}' />
     <input class='itemid' type='hidden' value="{{$order['id']}}"/>
     <a class="btn btn-success btn-sm disbut" href="javascript:;" onclick="send(this)"  data-toggle="modal"
        data-target="#modal-confirmsend">确认发货</a>
