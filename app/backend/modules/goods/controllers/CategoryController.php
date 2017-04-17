@@ -52,8 +52,10 @@ class CategoryController extends BaseController
         $categoryModel->level = $level;
         $categoryModel->parent_id = $parent_id;
         $parent = [];
+        $url = Url::absoluteWeb('goods.category.index');
         if($parent_id > 0) {
             $parent = Category::getCategory($parent_id);
+            $url = Url::absoluteWeb('goods.category.index',['parent_id'=>$parent_id]);
         }
         
         $requestCategory = \YunShop::request()->category;
@@ -71,7 +73,7 @@ class CategoryController extends BaseController
                 //数据保存
                 if ($categoryModel->save()) {
                     //显示信息并跳转
-                    return $this->message('分类创建成功', Url::absoluteWeb('goods.category.index'));
+                    return $this->message('分类创建成功', $url);
                 }else{
                     $this->error('分类创建失败');
                 }
@@ -94,6 +96,7 @@ class CategoryController extends BaseController
         if(!$categoryModel){
             return $this->message('无此记录或已被删除','','error');
         }
+        $url = Url::absoluteWeb('goods.category.index',['parent_id'=>$categoryModel->parent_id]);
 
         $requestCategory = \YunShop::request()->category;
         if($requestCategory) {
@@ -107,7 +110,7 @@ class CategoryController extends BaseController
                 //数据保存
                 if ($categoryModel->save()) {
                     //显示信息并跳转
-                    return $this->message('分类保存成功', Url::absoluteWeb('goods.category.index'));
+                    return $this->message('分类保存成功', $url);
                 }else{
                     $this->error('分类保存失败');
                 }
