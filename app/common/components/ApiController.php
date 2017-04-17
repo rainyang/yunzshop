@@ -11,6 +11,7 @@ namespace app\common\components;
 
 use app\backend\modules\member\models\MemberRelation;
 use app\common\exceptions\AppException;
+use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\frontend\modules\member\services\MemberService;
 
@@ -30,7 +31,7 @@ class ApiController extends BaseController
         $relaton_set = MemberRelation::getSetInfo()->first();
 
         if (!MemberService::isLogged()
-            && ($relaton_set->status == 1
+            && (($relaton_set->status == 1 && $this->action != 'alipay' )
                 || ($relaton_set->status == 0 && !in_array($this->action,$this->publicAction))
                )
         ) {

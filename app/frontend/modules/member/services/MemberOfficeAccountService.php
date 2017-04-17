@@ -71,6 +71,9 @@ class MemberOfficeAccountService extends MemberService
                 ->asJsonResponse(true)
                 ->get();
 
+            $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
+            $nickname = preg_replace($patten, "", $userinfo['nickname']);
+
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 \YunShop::app()->openid = $userinfo['openid'];
 
@@ -98,7 +101,7 @@ class MemberOfficeAccountService extends MemberService
 
                     //更新mc_members
                     $mc_data = array(
-                        'nickname' => stripslashes($userinfo['nickname']),
+                        'nickname' => stripslashes($nickname),
                         'avatar' => $userinfo['headimgurl'],
                         'gender' => $userinfo['sex'],
                         'nationality' => $userinfo['country'],
@@ -110,7 +113,7 @@ class MemberOfficeAccountService extends MemberService
                     //更新mapping_fans
                     $record = array(
                         'openid' => $userinfo['openid'],
-                        'nickname' => stripslashes($userinfo['nickname']),
+                        'nickname' => stripslashes($nickname),
                         'tag' => base64_encode(serialize($userinfo))
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
@@ -120,7 +123,7 @@ class MemberOfficeAccountService extends MemberService
                     if ($mc_mapping_fans_model->uid) {
                         //更新mc_members
                         $mc_data = array(
-                            'nickname' => stripslashes($userinfo['nickname']),
+                            'nickname' => stripslashes($nickname),
                             'avatar' => $userinfo['headimgurl'],
                             'gender' => $userinfo['sex'],
                             'nationality' => $userinfo['country'],
@@ -134,7 +137,7 @@ class MemberOfficeAccountService extends MemberService
                         //更新mapping_fans
                         $record = array(
                             'openid' => $userinfo['openid'],
-                            'nickname' => stripslashes($userinfo['nickname']),
+                            'nickname' => stripslashes($nickname),
                             'tag' => base64_encode(serialize($userinfo))
                         );
                         McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
@@ -147,7 +150,7 @@ class MemberOfficeAccountService extends MemberService
                             'email' => '',
                             'groupid' => $default_groupid['groupid'],
                             'createtime' => time(),
-                            'nickname' => stripslashes($userinfo['nickname']),
+                            'nickname' => stripslashes($nickname),
                             'avatar' => $userinfo['headimgurl'],
                             'gender' => $userinfo['sex'],
                             'nationality' => $userinfo['country'],
@@ -167,7 +170,7 @@ class MemberOfficeAccountService extends MemberService
                             'uniacid' => $uniacid,
                             'salt' => Client::random(8),
                             'updatetime' => time(),
-                            'nickname' => stripslashes($userinfo['nickname']),
+                            'nickname' => stripslashes($nickname),
                             'follow' => 1,
                             'followtime' => time(),
                             'unfollowtime' => 0,
