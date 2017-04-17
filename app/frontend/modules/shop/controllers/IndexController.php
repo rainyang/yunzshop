@@ -50,6 +50,9 @@ class IndexController extends BaseController
         $request = Category::getRecommentCategoryList()
         ->where('is_home','1')
         ->get();
+        foreach ($request as &$item) {
+            $item['thumb'] = tomedia($item['thumb']);
+        }
         return $request;
     }
 

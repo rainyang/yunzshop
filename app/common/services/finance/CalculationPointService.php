@@ -16,7 +16,7 @@ class CalculationPointService
     {
         $point_set = Setting::get('point.set');
         $point_data = [];
-        if (trim($order_goods_model->hasOneGoods->hasOneSale->point)) {
+        if ($order_goods_model->hasOneGoods->hasOneSale->point) {
             if (strexists($order_goods_model->hasOneGoods->hasOneSale->point, '%')) {
                 $point_data['point'] = floatval(str_replace('%', '', $order_goods_model->hasOneGoods->hasOneSale->point) / 100 * $order_goods_model->goods_price);
             } else {

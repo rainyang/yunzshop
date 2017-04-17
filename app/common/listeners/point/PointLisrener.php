@@ -54,12 +54,20 @@ class PointLisrener
 
     private function addPointLog($point_data)
     {
+        $this->verifyData($point_data);
         if ($point_data['point']) {
             $point_service = new PointService($point_data);
             $point_model = $point_service->changePoint();
             if ($point_model) {
                 //通知成功
             }
+        }
+    }
+
+    private function verifyData($point_data)
+    {
+        if (!array_key_exists('key',$point_data)) {
+            return;
         }
     }
 
