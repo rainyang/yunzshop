@@ -63,7 +63,6 @@ class BaseController extends Controller
         $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            throw new \HttpException('aa');
             echo $this->message($validator->errors()->first());exit;
         }
     }
