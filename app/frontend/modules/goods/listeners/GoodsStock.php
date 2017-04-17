@@ -18,7 +18,8 @@ class GoodsStock
 
         $order = $event->getOrderModel();
         $order->hasManyOrderGoods->map(function ($orderGoods){
-            dd($orderGoods->hasOneGoods);
+
+            dd($orderGoods->belongsToGood);
             exit;
             if($orderGoods->goods->reduce_stock_method != 0){
                 return false;
