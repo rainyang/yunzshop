@@ -155,9 +155,9 @@ class Member extends BackendModel
             'remark' => $params['remark'],
             'service_type' => $params['service_type']
         ];
-
+        echo '<pre>';print_r($data);
         $result = (new Balance())->changeBalance($data);
-
+echo '<pre>';print_r($result);exit;
         if ($result === true) {
             return true;
         } else {
