@@ -27,15 +27,19 @@ class ApiController extends BaseController
     {
         parent::preAction();
 
-        $set = MemberRelation::getSetInfo();
+        $relaton_set = MemberRelation::getSetInfo()->first();
 
-        if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
+        if (!MemberService::isLogged()
+            && ($relaton_set->status == 1
+                || ($relaton_set->status == 0 && !in_array($this->action,$this->publicAction))
+               )
+        ) {
             $type  = \YunShop::request()->type;
 
             if (empty($type) || $type == 'undefined') {
                 $type = Client::getType();
             }
-            
+
             if (5 == $type) {
                 return $this->errorJson('',['login_status'=>1,'login_url'=>'']);
             }
