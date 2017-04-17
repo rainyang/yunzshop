@@ -91,4 +91,18 @@ class CouponController extends \app\common\components\BaseController
         }
     }
 
+
+    /**
+     * 获取搜索优惠券
+     * @return html
+     */
+    public function getSearchCoupons()
+    {
+        $keyword = \YunShop::request()->keyword;
+        $coupons = Coupon::getCouponsByName($keyword);
+        return view('coupon.query', [
+            'coupons' => $coupons
+        ])->render();
+    }
+
 }

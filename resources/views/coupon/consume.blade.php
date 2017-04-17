@@ -20,7 +20,7 @@
 <div class="col-sm-2 backtype backtype1"  @if($coupon['coupon_method']!=2)style='display:none' @endif>
 <div class='input-group'>
     <span class='input-group-addon'>打</span>
-    <input type='text' class='form-control' name='discount'  placeholder='0.1-10' value="{{$coupon['discount']}}"/>
+    <input type='text' class='form-control' name='discount'  placeholder='0.1-1' value="{{$coupon['discount']}}"/>
     <span class='input-group-addon'>折</span>
 </div>
 </div>

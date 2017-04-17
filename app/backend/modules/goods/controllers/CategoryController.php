@@ -138,4 +138,17 @@ class CategoryController extends BaseController
         }
     }
 
+    /**
+     * 获取搜索分类
+     * @return html
+     */
+    public function getSearchCategorys()
+    {
+        $keyword = \YunShop::request()->keyword;
+        $categorys = Category::getCategorysByName($keyword);
+        return view('goods.category.query', [
+            'categorys' => $categorys
+        ])->render();
+    }
+
 }
