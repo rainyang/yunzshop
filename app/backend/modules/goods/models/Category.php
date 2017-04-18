@@ -82,9 +82,9 @@ class Category extends \app\common\models\Category
     {
         $rule = Rule::unique($this->table);
         return [
-            'name' => ['required', $this->id ?
-                $rule->ignore($this->id)->where('uniacid',\YunShop::app()->uniacid)
-                :$rule->where('uniacid', \YunShop::app()->uniacid)],
+            'name' => ['required', $this->id ? $rule->ignore($this->id)
+                    ->where('uniacid',\YunShop::app()->uniacid)
+                :$rule->where('uniacid', \YunShop::app()->uniacid)->where('parent_id',$this->parent_id)],
         ];
     }
 

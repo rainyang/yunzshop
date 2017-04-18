@@ -45,6 +45,11 @@ class Order extends \app\common\models\Order
         $builder = Order::orders($search, $pageSize)->completed();
         return self::format($builder,$pageSize);
     }
+    public static function getCancelledOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->cancelled();
+        return self::format($builder,$pageSize);
+    }
 
     /**
      * @param $search
@@ -60,6 +65,13 @@ class Order extends \app\common\models\Order
         return $list;
     }
 
+    public static function getRefundedOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->refunded();
+        $list['total_price'] = $builder->sum('price');
+        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
+        return $list;
+    }
     //订单导出订单数据
     public static function getExportOrders($search)
     {

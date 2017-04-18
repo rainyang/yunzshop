@@ -15,7 +15,7 @@
             {{--<div class='alert alert-info'>
                 在开启以下支付方式前，请到 <a href='{php echo url('profile/payment')}'>支付选项</a> 去设置好参数。
             </div>--}}
-            <div class="alert alert-warning">
+            <div class="alert alert-warning alert-important">
                 易宝支付，含银联，信用卡等多种支付方式, PC版支付成功后台通知请登录商户后台添加通知地址,<a href="http://www.yeepay.com/" target="_blank">申请及详情请查看这里</a>.
             </div>
         
@@ -105,6 +105,7 @@
             </div>
 
         <!-- 借用微信支付设置 _start -->
+            <!--
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">借用微信支付</label>
                 <div class="col-sm-9 col-xs-12">
@@ -179,9 +180,9 @@
                     </div>
                 </div>
             </div>
-
+-->
 <!-- paypal支付设置 _start -->
-
+<!--
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">Paypal支付</label>
                     <div class="col-sm-9 col-xs-12">
@@ -247,6 +248,7 @@
                     </div>
 
                 </div>
+                -->
 <!-- paypal支付设置 _end -->
 
                 <div class="form-group">
@@ -279,7 +281,7 @@
                         </div>
                     </div>
                 </div>
-
+<!--
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">易宝支付</label>
                     <div class="col-sm-9 col-xs-12">
@@ -324,7 +326,7 @@
                         </div>
                     </div>
                 </div>
-
+-->
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额支付</label>
                     <div class="col-sm-9 col-xs-12">
@@ -332,6 +334,7 @@
                         <label class='radio-inline'><input type='radio' name='pay[credit]' value='0' @if ( $set['credit'] == 0) checked @endif /> 关闭</label>
                     </div>
                 </div>
+<!--
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">货到付款</label>
                     <div class="col-sm-9 col-xs-12">
@@ -339,6 +342,7 @@
                         <label class='radio-inline'><input type='radio' name='pay[cash]' value='0' @if ( $set['cash'] == 0) checked @endif /> 关闭</label>
                     </div>
                 </div>
+-->
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝提现</label>
                     <div class="col-sm-9 col-xs-12">

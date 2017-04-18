@@ -198,46 +198,27 @@ class MemberRelationController extends BaseController
      */
     public function export()
     {
-        $file_name = date('Ymdhis', time()) . '会员导出';
+        $file_name = date('Ymdhis', time()) . '会员资格申请导出';
 
-        $parames = \YunShop::request();
-        $list = Member::searchMembers($parames)
+        $requestSearch = \YunShop::request()->search;
+
+        $list = Member::getMembersToApply($requestSearch)
             ->get()
             ->toArray();
 
-        $export_data[0] = ['会员ID', '粉丝', '姓名', '手机号', '等级', '分组', '注册时间', '积分', '余额', '订单', '金额', '关注'];
+        $export_data[0] = ['会员ID', '推荐人姓名', '粉丝姓名', '会员姓名', '手机号', '申请时间'];
 
         foreach ($list as $key => $item) {
-            if (!empty($item['yz_member']) && !empty($item['yz_member']['group'])) {
-                $group = $item['yz_member']['group']['group_name'];
+            if (!empty($item['yz_member']) && !empty($item['yz_member']['agent'])) {
+                $agent_name = $item['yz_member']['agent']['nickname'];
 
             } else {
-                $group = '';
+                $agent_name = '';
             }
 
-            if (!empty($item['yz_member']) && !empty($item['yz_member']['level'])) {
-                $level = $item['yz_member']['level']['level_name'];
 
-            } else {
-                $level = '';
-            }
-
-            $order = 0;
-            $price = 0;
-
-            if (!empty($item['has_one_fans'])) {
-                if ($item['has_one_fans']['followed'] == 1) {
-                    $fans = '已关注';
-                } else {
-                    $fans = '未关注';
-                }
-            } else {
-                $fans = '';
-            }
-
-            $export_data[$key + 1] = [$item['uid'], $item['nickname'], $item['realname'], $item['mobile'],
-                $level, $group, date('YmdHis', $item['createtime']), $item['credit1'], $item['credit2'], $order,
-                $price, $fans];
+            $export_data[$key + 1] = [$item['uid'], $agent_name, $item['nickname'], $item['realname'],
+                $item['mobile'], date('Y.m.d', $item['apply_time'])];
         }
 
         \Excel::create($file_name, function ($excel) use ($export_data) {

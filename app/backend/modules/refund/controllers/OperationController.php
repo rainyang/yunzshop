@@ -2,7 +2,7 @@
 namespace app\backend\modules\refund\controllers;
 
 use app\backend\modules\refund\services\RefundOperationService;
-use app\common\components\ApiController;
+use app\common\components\BaseController;
 
 /**
  * 退款申请操作
@@ -11,13 +11,14 @@ use app\common\components\ApiController;
  * Date: 2017/4/13
  * Time: 下午3:05
  */
-class OperationController extends ApiController
+class OperationController extends BaseController
 {
     public function pass(\Request $request)
     {
         $this->validate($request, [
             'refund_id' => 'required|filled|integer'
         ]);
+exit;
         RefundOperationService::refundPass();
 
     }

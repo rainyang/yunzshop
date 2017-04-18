@@ -24,7 +24,12 @@
                         }, 3000);
                     </script>
                 @else
-                    <p>[<a href="javascript:history.go(-1);">点击这里返回上一页</a>] &nbsp; [<a href="./?refresh">首页</a>]</p>
+                    <script type="text/javascript">
+                      setTimeout(function () {
+                        history.go(-1);
+                      }, 3000);
+                    </script>
+                    <p>[<a href="javascript:history.go(-1);">点击这里返回上一页</a>] &nbsp; [<a href="{{yzWebUrl('index.index')}}">首页</a>]</p>
                 @endif
             </div>
         </div>
