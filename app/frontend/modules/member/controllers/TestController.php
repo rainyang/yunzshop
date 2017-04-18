@@ -443,8 +443,8 @@ $pay->doPay($data);
         Pay::payResponseDataLog($post['out_trade_no'], '微信支付', json_encode($post));
     }
 
-    public function validate()
+    public function domain()
     {
-        //|regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/
+        echo request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
     }
 }
