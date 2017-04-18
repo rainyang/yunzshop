@@ -369,6 +369,7 @@ class MemberModel extends Member
         $member_info['referral'] = self::getMyReferral();
         $member_info['qr'] = self::getAgentQR();
         $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
+
         return $member_info;
     }
 }

@@ -32,7 +32,7 @@ class ApiController extends BaseController
         parent::preAction();
 
         if(!UniAccount::checkIsExistsAccount(\YunShop::app()->uniacid)){
-            return $this->errorJson('无此公众号', ['status' => -1]);
+            return $this->errorJson('无此公众号', ['status' => -2]);
         }
 
         $relaton_set = MemberRelation::getSetInfo()->first();
