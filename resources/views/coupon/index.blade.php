@@ -25,16 +25,6 @@
                                     <input type="text" class="form-control"  name="keyword" value="" placeholder='可搜索优惠券名称'/>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">分类</label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <select name='catid' class='form-control'>
-                                        <option value=''></option>
-
-                                    </select>
-
-                                </div>
-                            </div>
 
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">领取中心是否显示</label>

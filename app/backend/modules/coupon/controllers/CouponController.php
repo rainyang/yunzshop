@@ -31,7 +31,6 @@ class CouponController extends BaseController
         return view('coupon.index', [
             'list' => $list['data'],
             'pager' => $pager,
-            'var' => \YunShop::app()->get(),
         ])->render();
     }
 
