@@ -154,7 +154,7 @@
                     <span class="help-block">如果您选择了常用快递，则客户可以订单中查询快递信息，如果缺少您想要的快递，您可以联系我们! </span>
                 </div>
             </div>-->
-
+<!--====================================================================================================-->
             <div class="form-group dispatch0" >
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">配送区域</label>
                 <div class="col-sm-9 col-xs-12">
@@ -203,6 +203,7 @@
                         </tr>
                         </tbody>
                     </table>
+<!--====================================================================================================-->
                     <a class='btn btn-default' href="javascript:;" onclick='selectAreas()'><span class="fa fa-plus"></span> 新增配送区域</a>
                     <span class='help-block show_h' @if ( $dispatch->dispatch_type == 1 ) style='display:block' @endif>根据重量来计算运费，当物品不足《首重重量》时，按照《首重费用》计算，超过部分按照《续重重量》和《续重费用》乘积来计算</span>
                     <span class='help-block show_n' @if ( $dispatch->dispatch_type == 0 ) style='display:block' @endif>根据件数来计算运费，当物品不足《首件数量》时，按照《首件费用》计算，超过部分按照《续件数量》和《续件费用》乘积来计算</span>
@@ -268,6 +269,7 @@
         })
 
     });
+
 </script>
 @include('area.selectprovinces')
 @endsection
