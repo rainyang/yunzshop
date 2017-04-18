@@ -244,6 +244,7 @@ class MemberCouponController extends ApiController
 
     //在"优惠券中心"点击领取优惠券
     //需要提供$couponId
+    //todo 需要扣除余额或者积分
     public function getCoupon()
     {
         $couponId = \YunShop::request()->get('coupon_id');

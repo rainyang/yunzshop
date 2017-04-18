@@ -1,6 +1,7 @@
 <?php
 namespace app\backend\modules\coupon\controllers;
 
+use app\common\components\BaseController;
 use app\backend\modules\coupon\models\Coupon;
 use app\common\helpers\PaginationHelper;
 use app\common\models\MemberCoupon;
@@ -12,7 +13,7 @@ use app\common\helpers\Url;
  * Date: 2017/3/20
  * Time: 16:20
  */
-class CouponController extends \app\common\components\BaseController
+class CouponController extends BaseController
 {
     //优惠券列表
     public function index()
