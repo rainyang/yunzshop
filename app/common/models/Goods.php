@@ -230,6 +230,7 @@ class Goods extends BaseModel
             $this->stock -= $num;
         }
     }
+
     /**
      * 判断实物
      */
