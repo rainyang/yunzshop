@@ -20,10 +20,23 @@ class Balance extends BaseModel
 {
     public $table = 'yz_balance';
 
-
     protected $guarded= [''];
 
+
+
     protected $appends = ['service_type_name'];
+
+    const OPERATOR_SHOP     = 0;  //操作者 商城
+
+    const OPERATOR_ORDER_   = -1; //操作者 订单
+
+    const OPERRTOR_MEMBER   = -2; //操作者 会员
+
+    //类型：收入
+    const TYPE_INCOME = 1;
+
+    //类型：支出
+    const TYPE_EXPENDITURE = 2;
 
 
     const BALANCE_RECHARGE  = 1; //充值
@@ -40,20 +53,20 @@ class Balance extends BaseModel
 
     const BALANCE_INCOME    = 7; //提现至余额
 
-    const CANCEL_DEDUCTION  = 8; //抵扣取消余额回滚
+    const BALANCE_CANCEL_DEDUCTION  = 8; //抵扣取消余额回滚
 
-    const CANCEL_AWARD      = 9; //奖励取消回滚
+    const BALANCE_CANCEL_AWARD      = 9; //奖励取消回滚
 
     public static $balanceComment = [
-        self::BALANCE_RECHARGE=>'充值',
-        self::BALANCE_CONSUME=>'消费',
-        self::BALANCE_TRANSFER=>'转让',
-        self::BALANCE_DEDUCTION=>'抵扣',
-        self::BALANCE_AWARD=>'奖励',
-        self::BALANCE_WITHDRAWAL=>'余额提现',
-        self::BALANCE_INCOME=>'提现至余额',
-        self::CANCEL_DEDUCTION=>'抵扣取消余额回滚',
-        self::CANCEL_AWARD=>'奖励取消回滚',
+        self::BALANCE_RECHARGE      => '充值',
+        self::BALANCE_CONSUME       => '消费',
+        self::BALANCE_TRANSFER      => '转让',
+        self::BALANCE_DEDUCTION     => '抵扣',
+        self::BALANCE_AWARD         => '奖励',
+        self::BALANCE_WITHDRAWAL    => '余额提现',
+        self::BALANCE_INCOME        => '提现至余额',
+        self::BALANCE_CANCEL_DEDUCTION      => '抵扣取消余额回滚',
+        self::BALANCE_CANCEL_AWARD          => '奖励取消回滚',
     ];
 
     public static function getBalanceComment($balance)
@@ -133,7 +146,7 @@ class Balance extends BaseModel
      * @param $memberId
      * @param string $type
      * @return mixed
-     * @Author yitia */
+     * @Author yitian */
     public static function getMemberDetailRecord($memberId, $type= '')
     {
         $query = self::uniacid()->where('member_id',$memberId);

@@ -11,8 +11,8 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
+use app\common\models\PayType;
 use app\common\services\PayFactory;
-use app\frontend\modules\order\models\Order;
 use app\frontend\modules\order\services\OrderService;
 
 class CreditPayController extends PayController
@@ -34,7 +34,6 @@ class CreditPayController extends PayController
     protected function pay($request, $payType)
     {
         $this->_validate($request);
-        $this->order = Order::find($request->query('order_id'));
 
         $query_str = [
             'order_no' => $this->order()->order_sn,
@@ -43,12 +42,21 @@ class CreditPayController extends PayController
             'body' => $this->order()->hasManyOrderGoods[0]->title . ':' . \YunShop::app()->uniacid,
             'extra' => ['type' => 1],
             'member_id' => $this->order()->uid,
-            'operator' => '-1',//订单
+            'operator' => Balance::OPERATOR_ORDER_,//订单
             'operator_id' => $this->order()->id,
             'remark' => '订单(id:' . $this->order()->id . '),余额支付' . $this->order()->price . '元',
-            'service_type' => Balance::BALANCE_CONSUME,
+            'service_type' => Balance::BALANCE_CONSUME  ,
         ];
         $pay = PayFactory::create($payType);
-        return $pay->doPay($query_str);
+        $result = $pay->doPay($query_str);
+        if (!isset($result)) {
+            throw new AppException('获取支付参数失败');
+        }
+        $this->order()->pay_type_id = PayType::CREDIT;
+
+        if (!$this->order()->save()) {
+            throw new AppException('支付方式选择失败');
+        }
+        return $result;
     }
 }

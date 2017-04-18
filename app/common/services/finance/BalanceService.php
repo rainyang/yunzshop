@@ -9,13 +9,90 @@
 namespace app\common\services\finance;
 
 
-use app\common\facades\Setting;
+
+use app\backend\modules\member\models\Member;
+use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
 
-class BalanceService
+abstract class BalanceService
 {
+    protected $memberModel;
+
+    protected $balanceModel;
 
 
+    protected $data;
+
+    protected $type;
+
+    protected $service_type;
+
+
+
+
+    public function test()
+    {
+
+    }
+
+    abstract protected function getNewMoney();
+
+    abstract protected function getMemberInfo();
+
+    abstract protected function attachedType();
+
+
+
+    //余额明细记录写入 protected
+    protected function updateBalanceRecord()
+    {
+        $this->balanceModel = new Balance();
+
+        $this->balanceModel->fill($this->getRecordData());
+        $validator = $this->balanceModel->validator();
+        if ($validator->fails()) {
+            throw new AppException($validator->messages());
+        }
+        if ($this->balanceModel->save()) {
+            return $this->updateMemberBalance();
+        }
+        throw new AppException('余额变动记录写入失败，请联系管理员！');
+    }
+
+    //修改会员余额
+    protected function updateMemberBalance()
+    {
+        $this->memberModel->credit2 = $this->getNewMoney();
+        if ($this->memberModel->save()) {
+            return true;
+        }
+        throw new AppException('会员余额写入失败，请联系管理员、');
+    }
+
+
+
+
+    protected function getRecordData()
+    {
+        return array(
+            'uniacid'       => \YunShop::app()->uniacid,
+            'member_id'     => \YunShop::app()->getMemberId(),
+            'old_money'     => $this->memberModel->credit2 ?: 0,
+            'change_money'  => $this->data['money'],
+            'new_money'     => $this->getNewMoney() > 0 ? $this->getNewMoney() : 0,
+            'type'          => $this->type,
+            'service_type'  => $this->service_type,
+            'serial_number' => $this->data['serial_number'] ?: '',
+            'operator'      => $this->data['operator'],
+            'operator_id'   => $this->data['operator_id'],
+            'remark'        => $this->data['remark'],
+        );
+    }
+
+
+
+
+    // todo 应该移到余额充值
     public static function attachedTypeName($model)
     {
         switch ($model->type)
@@ -30,42 +107,6 @@ class BalanceService
                 return '';
         }
 
-    }
-
-    public static function attachedServiceTypeName($model)
-    {
-        switch ($model->service_type)
-        {
-            case Balance::BALANCE_RECHARGE:
-                return '充值';
-                break;
-            case Balance::BALANCE_CONSUME:
-                return '消费';
-                break;
-            case Balance::BALANCE_TRANSFER:
-                return '转让';
-                break;
-            case Balance::BALANCE_DEDUCTION:
-                return '抵扣';
-                break;
-            case Balance::BALANCE_AWARD:
-                return '充值';
-                break;
-            case Balance::BALANCE_WITHDRAWAL:
-                return '余额提现';
-                break;
-            case Balance::BALANCE_INCOME:
-                return '提现至余额';
-                break;
-            case Balance::CANCEL_DEDUCTION:
-                return '抵扣取消余额回滚';
-                break;
-            case Balance::CANCEL_AWARD:
-                return '奖励取消回滚';
-                break;
-            default:
-                return '未知';
-        }
     }
 
 

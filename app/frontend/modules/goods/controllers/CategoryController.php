@@ -29,6 +29,9 @@ class CategoryController extends BaseController
         $pageSize = 10;
         $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
         $list = Category::getCategorys($parent_id)->where('enabled', 1)->paginate($pageSize)->toArray();
+        foreach ($list['data'] as &$item) {
+            $item['thumb'] = tomedia($item['thumb']);
+        }
         $list['set'] = $set;
         if($list['data']){
             return $this->successJson('获取分类数据成功!', $list);
@@ -38,10 +41,16 @@ class CategoryController extends BaseController
     
     public function getChildrenCategory()
     {
-        //$pageSize = 10;
+        $pageSize = 10;
         $set = Setting::get('shop.category');
         $parent_id = intval(\YunShop::request()->parent_id);
-        $list = Category::getChildrenCategorys($parent_id,$set)->get()->toArray();//->paginate($pageSize)
+        $list = Category::getChildrenCategorys($parent_id,$set)->paginate($pageSize)->toArray();
+        foreach ($list['data'] as &$item) {
+            $item['thumb'] = tomedia($item['thumb']);
+            foreach ($item['has_many_children'] as &$has_many_child) {
+                $has_many_child['thumb'] = tomedia($has_many_child['thumb']);
+            }
+        }
         $list['set'] = $set;
         if($list){
             return $this->successJson('获取子分类数据成功!', $list);

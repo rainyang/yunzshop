@@ -15,7 +15,9 @@ use app\common\events\member\BecomeAgent;
 use app\common\models\AccountWechats;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
+use app\common\models\PayOrder;
 use app\common\services\AliPay;
+use app\common\services\Pay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
 use app\frontend\modules\member\models\Member;
@@ -361,5 +363,88 @@ echo '<pre>';print_r($info);exit;
 
             return $info->become_child;
         }
+    }
+
+    public function log()
+    {
+        $pay = new WechatPay();
+        $data = [
+            'subject' => '微信测试',
+            'body'    => '测试',
+            'amount'  => '0.01',
+            'order_no' => '1490714386',
+            'extra'   => ['type'=>1]
+        ];
+        $pay_type = config('app.pay_type');
+        $op = "支付宝订单支付 订单号：" . $data['order_no'];
+$pay->doPay($data);
+
+        exit;
+
+        $post = Array
+        (
+            "discount" => "0.00",
+    "payment_type" => "1",
+    "subject" => "支付宝支付",
+    "trade_no" => "2017032421001004920212917701",
+    "buyer_email" => "iam_dingran@163.com",
+    "gmt_create" => "2017-03-24 16:05:38",
+    "notify_type" => "trade_status_sync",
+    "quantity" => "1",
+    "out_trade_no" => "1490342715",
+    "seller_id" => "2088121517115776",
+    "notify_time" => "2017-03-24 16:05:43",
+    "body" => "测试:2",
+    "trade_status" => "TRADE_SUCCESS",
+    "is_total_fee_adjust" => "N",
+    "total_fee" => "0.01",
+    "gmt_payment" => "2017-03-24 16:05:43",
+    "seller_email" => "3303063404@qq.com",
+    "price" => "0.01",
+    "buyer_id" => "2088002177565922",
+    "notify_id" => "9ba58b830eb82a9b81835f53f83913an3m",
+    "use_coupon" => "N",
+    "sign_type" => "MD5",
+    "sign" => "7a15554d67e6a286f86e6735561c1cd9"
+);
+
+
+        //访问记录
+        Pay::payAccessLog();
+        //保存响应数据
+        Pay::payResponseDataLog($post['out_trade_no'], '支付宝支付', json_encode($post));
+
+
+        $post = Array
+        (
+             "appid" => "wx6be17f352e859277",
+             "attach" => "1",
+     "bank_type" => "CFT",
+     "cash_fee" => "10",
+     "fee_type" => "CNY",
+     "is_subscribe" => "Y",
+     "mch_id" => "1429240702",
+     "nonce_str" => "58e0c7fdb1c90",
+     "openid" => "oNnNJwqQwIWjAoYiYfdnfiPuFV9Y",
+     "out_trade_no" => "1492163175",
+     "result_code" => "SUCCESS",
+     "return_code" => "SUCCESS",
+     "sign" => "F3FA8FBD018A1B00B7B7D264A089794C",
+     "time_end" => "20170402174504",
+     "total_fee" => "10",
+     "trade_type" => "JSAPI",
+     "transaction_id" => "4001322001201704025593308407"
+);
+
+
+        //访问记录
+        Pay::payAccessLog();
+        //保存响应数据
+        Pay::payResponseDataLog($post['out_trade_no'], '微信支付', json_encode($post));
+    }
+
+    public function domain()
+    {
+        echo request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
     }
 }

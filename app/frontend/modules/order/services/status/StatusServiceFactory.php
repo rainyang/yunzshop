@@ -12,7 +12,6 @@ namespace app\frontend\modules\order\services\status;
 class StatusServiceFactory
 {
     public static function createStatusService($order){
-
         switch ($order->status){
             case -1:
                 return new Close($order);

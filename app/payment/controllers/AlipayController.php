@@ -10,6 +10,8 @@ namespace app\payment\controllers;
 
 
 use app\common\facades\Setting;
+use app\common\services\AliPay;
+use app\common\services\Pay;
 use app\payment\PaymentController;
 
 class AlipayController extends PaymentController
@@ -26,7 +28,8 @@ class AlipayController extends PaymentController
                     'total_fee'    => $_POST['total_fee'],
                     'out_trade_no' => $_POST['out_trade_no'],
                     'trade_no'     => $_POST['trade_no'],
-                    'unit'         => 'yuan'
+                    'unit'         => 'yuan',
+                    'pay_type'     => '支付宝'
                 ];
 
                 $this->payResutl($data);
@@ -69,14 +72,16 @@ class AlipayController extends PaymentController
         return $alipay->verify();
     }
 
+    /**
+     * 响应日志
+     *
+     * @param $post
+     */
     public function log($post)
     {
-        $pay = new WechatPay();
-
         //访问记录
-        $pay->payAccessLog();
+        Pay::payAccessLog();
         //保存响应数据
-        $pay_order_info = PayOrder::getPayOrderInfo($post['out_trade_no'])->first()->toArray();
-        $pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '支付宝支付', json_encode($post));
+        Pay::payResponseDataLog($post['out_trade_no'], '支付宝支付', json_encode($post));
     }
 }

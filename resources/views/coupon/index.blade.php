@@ -134,7 +134,7 @@
                                         <a href="javascript:;" data-url="{{yzWebUrl('coupon.coupon.create')}}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
                                         <a class='btn btn-default btn-sm' href="{{yzWebUrl('coupon.coupon.edit', ['id' => $row["id"]])}}" title="编辑" ><i class='fa fa-edit'></i></a>
                                         <a class='btn btn-default  btn-sm' href="{{yzWebUrl('coupon.coupon.destory', ['id' => $row["id"]])}}" title="删除" onclick="return confirm('确定要删除该优惠券吗？');"><i class='fa fa-remove'></i></a>
-                                        <a  class='btn btn-primary  btn-sm' href="{{yzWebUrl('coupon.coupon.send', ['id' => $row["id"]])}}" title="发放优惠券" ><i class='fa fa-send'></i></a>
+                                        <a  class='btn btn-primary  btn-sm' href="{{yzWebUrl('coupon.send-coupon', ['id' => $row["id"]])}}" title="发放优惠券" ><i class='fa fa-send'></i></a>
                                     </td>
                                 </tr>
                                 @endforeach

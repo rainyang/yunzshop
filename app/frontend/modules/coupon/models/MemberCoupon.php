@@ -6,7 +6,6 @@ namespace app\frontend\modules\coupon\models;
 class MemberCoupon extends \app\common\models\MemberCoupon
 {
     public $table = 'yz_member_coupon';
-    public $timestamps = false;
 
     const USED = 1;
     const NOT_USED = 0;

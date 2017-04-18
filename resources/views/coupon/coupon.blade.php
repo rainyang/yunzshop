@@ -132,8 +132,7 @@
                                 }, function (dat) {
                                     $('#module-menus-categorys').html(dat);
                                 }
-                            )
-                            ;
+                            );
                         }
                         function select_category(o) {
                             $(".focuscategory #categoryid").val(o.id);
@@ -154,8 +153,7 @@
                                 }, function (dat) {
                                     $('#module-menus-goods').html(dat);
                                 }
-                            )
-                            ;
+                            );
                         }
                         function select_good(o) {
                             $(".focusgood #goodid").val(o.id);

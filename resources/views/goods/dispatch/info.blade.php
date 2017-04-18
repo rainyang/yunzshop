@@ -178,6 +178,7 @@
                         </thead>
                         <tbody id='tbody-areas'>
                         <tr>
+                            <td style="padding:10px;">全国 [默认运费]</td>
                             <input type="hidden" id="selectedareas" value="{{ $dispatch->areas }}" class="form-control" name="dispatch[areas]">
                             <td style="padding:10px;" id="areas">{{ $dispatch->areas }}</td>
                             <td class="show_h text-center">

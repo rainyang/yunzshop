@@ -71,24 +71,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启自定义分类</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class="radio-inline">
-                            <input type="radio" name="category[category_diy]" value="1" @if ($set['category_diy'] == 1) checked @endif /> 是
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" name="category[category_diy]" value="0" @if ($set['category_diy'] == 0 || empty($set['category_diy'])) checked @endif/> 否
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义分类前缀</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <input type="text" name="category[category_diy_name]" class="form-control" value="{{ $set['category_diy_name'] }}" />
-                         <span class='help-block'>设置分类2的自定义名称功能，例如品牌，用途等。</span>
-                    </div>
-                </div>
+
                    <div class="form-group"></div>
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>

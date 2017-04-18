@@ -35,13 +35,16 @@ class AfterOrderDeductiblePointService
     private function isDeductible()
     {
         //假如 deductible = 1为使用抵扣，抵扣积分 point_money
-        if ($this->order_model->deductible != 1) {
+        if (isset($this->order_model->deductible) && $this->order_model->deductible != 1) {
             return;
         }
     }
 
     private function getPointData()
     {
+        if (!$this->point_set['money']) {
+            return [];
+        }
         return [
             'point_income_type' => -1,
             'point_mode'        => 6,
