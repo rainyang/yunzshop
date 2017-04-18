@@ -63,6 +63,7 @@ class PaymentController extends BaseController
         if ($pay_order_model) {
             $pay_order_model->status = 2;
             $pay_order_model->trade_no = $data['trade_no'];
+            $pay_order_model->third_type = $data['pay_type'];
             $pay_order_model->save();
         }
 

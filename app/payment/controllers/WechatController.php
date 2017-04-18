@@ -9,6 +9,7 @@
 namespace app\payment\controllers;
 
 use app\common\models\Order;
+use app\common\services\Pay;
 use app\payment\PaymentController;
 use EasyWeChat\Foundation\Application;
 use app\common\services\WechatPay;
@@ -32,7 +33,7 @@ class WechatController extends PaymentController
     {
         $post = $this->getResponseResult();
 
-        //$this->log($post);
+        $this->log($post);
 
         $verify_result = $this->getSignResult();
 
@@ -41,7 +42,8 @@ class WechatController extends PaymentController
                 'total_fee'    => $post['total_fee'] ,
                 'out_trade_no' => $post['out_trade_no'],
                 'trade_no'     => $post['transaction_id'],
-                'unit'         => 'fen'
+                'unit'         => 'fen',
+                'pay_type'     => '微信'
             ];
 
             $this->payResutl($data);
@@ -127,14 +129,10 @@ class WechatController extends PaymentController
      */
     public function log($post)
     {
-        $pay = new WechatPay();
-
         //访问记录
-        $pay->payAccessLog();
+        Pay::payAccessLog();
         //保存响应数据
-
-        //$pay_order_info = PayOrder::getPayOrderInfo($post['out_trade_no'])->first()->toArray();
-        //$pay->payResponseDataLog($pay_order_info['id'], $pay_order_info['out_order_no'], '微信支付', json_encode($post));
+        Pay::payResponseDataLog($post['out_trade_no'], '微信支付', json_encode($post));
     }
 
     /**

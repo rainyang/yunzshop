@@ -17,7 +17,7 @@
             </div>
             <div class="panel panel-info" >
                 <div class="panel-body">
-                    <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+                    <form action="" method="get" class="form-horizontal" role="form" id="form1">
                         <input type="hidden" name="c" value="site"/>
                         <input type="hidden" name="a" value="entry"/>
                         <input type="hidden" name="m" value="yun_shop"/>
@@ -292,7 +292,6 @@
         $('#export').click(function () {
             $('#form_p').val("order.list.export");
             $('#form1').submit();
-            $('#form_p').val("order.list");
         });
     </script>
     @section('plugin_js')
