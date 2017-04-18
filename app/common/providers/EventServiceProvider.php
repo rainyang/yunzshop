@@ -32,6 +32,9 @@ class EventServiceProvider extends ServiceProvider
         \app\common\events\dispatch\OrderDispatchWasCalculated::class => [ //订单邮费计算
             \app\frontend\modules\dispatch\listeners\prices\UnifyOrderDispatchPrice::class, //统一运费
         ],
+        \app\common\events\dispatch\OrderDispatchWasCalculated::class => [ //订单邮费计算
+            \app\frontend\modules\dispatch\listeners\prices\TemplateOrderDispatchPrice::class, //模板运费
+        ],
         PayLog::class => [ //支付日志请求
             PayLogListener::class //保存支付参数
         ],
