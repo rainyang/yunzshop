@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services\status;
 
 use app\common\models\Order;
 
-class Complete implements StatusService
+class Complete extends Status
 {
     private $order;
     public function __construct(Order $order)
@@ -45,24 +45,9 @@ class Complete implements StatusService
                 ],
 
             ];
-        $can_comment = $this->order->hasManyOrderGoods->contains(function ($orderGoods){
-            return $orderGoods->comment_status == 0;
-        });
+        $result += self::getCommentButtons($this->order);
+        $result += self::getRefundButtons($this->order);
 
-        if($can_comment){
-            $result[] = [
-                'name' => '评价',
-                'api' => '',
-                'value' => static::COMMENT
-            ];
-        }
-        if(empty($this->order->refund_id)){
-            $result[] = [
-                'name' => '申请退款',
-                'api' => 'order.refund.apply', //todo
-                'value' => static::REFUND
-            ];
-        }
         return $result;
     }
 }
