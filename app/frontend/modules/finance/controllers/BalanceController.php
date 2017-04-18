@@ -127,7 +127,14 @@ class BalanceController extends ApiController
         if ($this->model->save()) {
             //todo 消息通知
             //echo '<pre>'; print_r($this->getChangeBalanceDataToTransfer()); exit;
-            return (new BalanceService())->balanceChange($this->getChangeBalanceDataToTransfer());
+            $result = (new BalanceService())->balanceChange($this->getChangeBalanceDataToTransfer());
+            if ($result === true) {
+                $this->model->status = BalanceTransfer::TRANSFER_STATUS_SUCCES;
+                if ($this->model->save()) {
+                    return true;
+                }
+            }
+            return '修改转让状态失败';
         }
         return '转让写入出错，请联系管理员';
     }
