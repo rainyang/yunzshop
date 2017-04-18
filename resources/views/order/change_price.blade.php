@@ -1,12 +1,7 @@
 
 <!-- 订单改价 -->
 <div id="modal-changeprice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <form class="form-horizontal form" action="{{yzWebUrl('test')}}" method="post" enctype="multipart/form-data">
-        <input type='hidden' name='id' value="{{$item['id']}}" />
-        <input type='hidden' name='op' value='deal' />
-        <input type='hidden' id='changeprice-orderprice' value=""/>
-        <input type='hidden' id='changeprice-dispatchprice' value=""/>
-        <input type='hidden' name='to' value='confirmchangeprice' />
+    <form class="form-horizontal form" action="{{yzWebUrl('order.change-order-price.store')}}" method="post" enctype="multipart/form-data">
         <div class="modal-dialog"  style="width:750px;margin:0px auto;">
             <div class="modal-content" >
                 <div class="modal-header">
@@ -27,7 +22,7 @@
                                     <th style='width:10%;'>加价或减价</th>
                                     <th style='width:15%;'>运费</th>
                                 </tr>
-                                @foreach($order_goods_model as $order_goods)
+                                @foreach($order_goods_model as $key => $order_goods)
                                     <tr>
                                         <td>{{$order_goods->hasOneGoods->title}}</td>
                                         <td class='realprice'>
@@ -42,10 +37,11 @@
                                         </td>
 
                                         <td valign="top" >
-                                            <input type='text' class='form-control changeprice_orderprice' name="changegoodsprice[{{$order_goods->id}}}]"  />
+                                            <input type='hidden' name="order_goods[{{$key}}][id]" value="{{$order_goods->id}}"  />
+                                            <input type='text' class='form-control changeprice_orderprice' name="order_goods[{{$key}}][change_price]"  />
                                         </td>
                                         <td valign="top" rowspan='{{$order_goods->hasOneGoods->goods_sn[$order_goods->hasOneGoods->order_id]}}' style='vertical-align: top' >
-                                            <input type='text' class='form-control'  value="{{$order_goods->hasOneGoodsDispatch?$order_goods->hasOneGoodsDispatch->dispatch_price:0.00}}" name='changedispatchprice' />
+                                            <input type='text' class='form-control'  value="{{$order_goods->hasOneGoodsDispatch?$order_goods->hasOneGoodsDispatch->dispatch_price:0.00}}" name='dispatch_price' />
                                             <a href='javascript:;' onclick="$(this).prev().val('0');mc_calc()">直接免运费</a>
                                         </td>
                                     </tr>

@@ -27,6 +27,7 @@ class ChangeOrderPriceController extends BaseController
 
     public function store(\Request $request)
     {
+        dd($request);
         $request['order_goods'] = [
             [
                 'id' => 1,
