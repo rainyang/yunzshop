@@ -37,16 +37,20 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >发送类型</label>
                 <div class="col-sm-9 col-xs-12">
                     <label class="radio-inline"><input type="radio" name="sendtype" value="1" checked /> 按 Member ID 发送</label>
-                    <label class="radio-inline"><input type="radio" name="sendtype" value="2" /> 按用户等级发送</label>
-                    <label class="radio-inline"><input type="radio" name="sendtype" value="3" /> 按用户分组发送</label>
-                    <label class="radio-inline"><input type="radio" name="sendtype" value="4" /> 按分销商等级发送</label>
-                    <label class="radio-inline"><input type="radio" name="sendtype" value="5" /> 发送给全部用户</label>
+                    <label class="radio-inline"><input type="radio" name="sendtype" value="2" @if($sendtype == '2') checked @endif/> 按用户等级发送</label>
+                    <label class="radio-inline"><input type="radio" name="sendtype" value="3" @if($sendtype == '3') checked @endif/> 按用户分组发送</label>
+                    <?php $i=5;?>
+                    @foreach($configs as $v)
+                    <label class="radio-inline"><input type="radio" name="sendtype" value="{{$i}}" @if($sendtype == $i) checked @endif/> {{$v['name']}}</label>
+                    <?php $i++;?>
+                    @endforeach
+                    <label class="radio-inline"><input type="radio" name="sendtype" value="4" @if($sendtype == '4') checked @endif/> 发送给全部用户</label>
                 </div>
             </div>
             <div class="form-group choose choose_1">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >会员 Member ID</label>
                 <div class="col-sm-9 col-xs-12">
-                    <textarea name="send_memberid" class="form-control" style="height:250px;" placeholder="请用&quot;半角逗号&quot;隔开 Member ID, 如 1,2,3" id="value_1"></textarea>
+                    <textarea name="send_memberid" class="form-control" style="height:250px;" placeholder="请用&quot;半角逗号&quot;隔开 Member ID, 比如 1,2,3" id="value_1"></textarea>
                 </div>
             </div>
             <div class="form-group choose choose_2" style='display: none' >
@@ -55,7 +59,7 @@
                     <select name="send_level" class="form-control" id="value_2" >
                         <option value="0">全部</option>
                         @foreach($memberLevels as $v)
-                        <option value="{{$v['id']}}">{{$v['level_name']}}</option>
+                        <option value="{{$v['level']}}">{{$v['level_name']}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -65,23 +69,27 @@
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <select name="send_group" class="form-control"  id="value_3">
                         <option value="0">全部</option>
-                        @foreach($groups as $v)
+                        @foreach($memberGroups as $v)
                         <option value="{{$v['id']}}">{{$v['group_name']}}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
-            <div class="form-group choose choose_5" style='display:none '>
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label" >选择分销商等级</label>
+            <?php $j=5?>
+            @foreach($lists as $k => $v)
+            <div class="form-group choose choose_{{$j}}" style='display:none '>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label" >{{$v['name']}}</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
-                    <select name="send_agentlevel" class="form-control"  id="value_5">
+                    <select name="send_level" class="form-control"  id="value_{{$j}}">
                         <option value="0">全部</option>
-                        @foreach($agentLevels as $v)
-                        <option value="{{$v['id']}}">{{$v['name']}}</option>
+                        @foreach($v as $subv)
+                        <option value="{{$subv['level']}}">{{$subv['name']}}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
+            <?php $j++?>
+            @endforeach
         </div>
         <div class='panel-heading'>
             推送设置
@@ -90,27 +98,27 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送标题</label>
                 <div class="col-sm-9 col-xs-12">
-                    <input type="text" name="coupon[resp_title]" id="title" class="form-control" value="{{$coupon['resp_title']}}" />
+                    <input type="text" name="couponresponse[resp_title]" id="title" class="form-control" value="{{$couponresponse['resp_title']}}" />
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送图片</label>
                 <div class="col-sm-9 col-xs-12">
-                    {!! tpl_form_field_image('coupon[resp_thumb]', $coupon['resp_thumb']) !!}
+                    {!! tpl_form_field_image($couponresponse['resp_thumb'], $couponresponse['resp_thumb']) !!}
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送描述</label>
                 <div class="col-sm-9 col-xs-12">
-                    <textarea name="coupon[resp_desc]" class="form-control" >{{$coupon['resp_desc']}}</textarea>
+                    <textarea name="couponresponse[resp_desc]" class="form-control" >{{$couponresponse['resp_desc']}}</textarea>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送连接</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送链接</label>
                 <div class="col-sm-9 col-xs-12">
-                    <input type="text" name="coupon[resp_url]" class="form-control" value="{{$coupon['resp_url']}}"  />
-                    <span class='help-block'>消息推送点击的连接，为空默认为优惠券详情</span>
+                    <input type="text" name="couponresponse[resp_url]" class="form-control" value="{{$couponresponse['resp_url']}}" />
+                    <span class='help-block'>消息推送点击的链接，为空默认为优惠券详情</span>
                 </div>
             </div>
         </div>
