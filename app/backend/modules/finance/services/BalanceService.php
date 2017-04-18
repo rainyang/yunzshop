@@ -16,10 +16,15 @@ class BalanceService extends BaseBalanceService
 
     public function changeBalance($data)
     {
-        echo '<pre>'; print_r($data); exit;
         $this->data = $data;
         $this->service_type = $data['service_type'];
         $this->getMemberInfo();
+
+        if ($data['money'] < 0 && $data['operator'] == Balance::OPERATOR_SHOP && $this->service_type == Balance::BALANCE_RECHARGE) {
+            $this->attachedMoney();
+            $this->type = Balance::TYPE_EXPENDITURE;
+            return $this->subtraction();
+        }
 
         return $this->judgeMethod();
     }
@@ -39,50 +44,13 @@ class BalanceService extends BaseBalanceService
         if ($this->result_money >= 0) {
             return true;
         }
-        if ($this->result_money < 0 && $this->type == Balance::TYPE_EXPENDITURE && $this->data['operator'] == Balance::OPERATOR_SHOP && $this->data['service_type'] == Balance::BALANCE_RECHARGE ) {
+        if ($this->result_money < 0 && $this->data['operator'] == Balance::OPERATOR_SHOP && $this->data['service_type'] == Balance::BALANCE_RECHARGE ) {
             $this->result_money = 0;
             return true;
         }
         return false;
     }
 
-    private function judgeMethod()
-    {
-
-        $this->attachedType();
-
-        if ($this->type == Balance::TYPE_INCOME && in_array($this->service_type,
-                [
-                    Balance::BALANCE_RECHARGE,
-                    Balance::BALANCE_TRANSFER,
-                    Balance::BALANCE_AWARD,
-                    Balance::BALANCE_INCOME,
-                    Balance::BALANCE_CANCEL_DEDUCTION
-                ])
-        ) {
-            $this->money = $this->data['money'];
-            return $this->addition();
-        }
-        if ($this->type == Balance::TYPE_EXPENDITURE && in_array($this->service_type,
-                [
-                    Balance::BALANCE_CONSUME,
-                    Balance::BALANCE_DEDUCTION,
-                    Balance::BALANCE_WITHDRAWAL,
-                    Balance::BALANCE_CANCEL_AWARD
-                ])
-        ) {
-            $this->money = $this->data['money'];
-            return $this->subtraction();
-        }
-        //后台充值可以充值负数
-        if ($this->type == Balance::TYPE_EXPENDITURE && $this->data['operator'] == Balance::OPERATOR_SHOP
-            && $this->data['service_type'] == Balance::BALANCE_RECHARGE ) {
-            $this->money = -$this->data['money'];
-            return $this->subtraction();
-        }
-        return '服务类型选择错误';
-
-    }
 
 
 

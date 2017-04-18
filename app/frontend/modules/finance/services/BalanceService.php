@@ -93,28 +93,17 @@ class BalanceService extends BaseBalanceService
     {
         $this->data = $data;
         $this->getMemberInfo();
+        $this->service_type = $data['service_type'];
 
-        return  $this->detectionBalance() ? $this->updateBalanceRecord() : '金额必须大于零';
+        return  $this->detectionBalance() ? $this->judgeMethod() : '余额必须大于零';
     }
 
-    protected function getNewMoney()
+    protected function validatorResultMoney()
     {
-        $this->attachedType();
-        switch ($this->type)
-        {
-            case Balance::TYPE_INCOME:
-                $new_money = $this->data['money'] + $this->memberModel->credit2;
-                break;
-            case Balance::TYPE_EXPENDITURE:
-                $new_money = $this->memberModel->credit2 - $this->data['money'];
-                break;
-            default:
-                $new_money = 0;
+        if ($this->result_money >= 0) {
+            return true;
         }
-        if ($new_money < 0) {
-            throw new AppException('会员余额不足！');
-        }
-        return $new_money;
+        throw new AppException('余额不足');
     }
 
     protected function getMemberInfo()
@@ -125,39 +114,15 @@ class BalanceService extends BaseBalanceService
         }
     }
 
-    protected function attachedType()
-    {
-        if (in_array($this->data['service_type'], [
-            Balance::BALANCE_RECHARGE,
-            Balance::BALANCE_TRANSFER,
-            Balance::BALANCE_AWARD,
-            Balance::BALANCE_INCOME,
-            Balance::BALANCE_CANCEL_DEDUCTION
-        ])) {
-            $this->type = Balance::TYPE_INCOME;
-            $this->service_type = $this->data['service_type'];
-        } elseif (in_array($this->data['service_type'], [
-            Balance::BALANCE_CONSUME,
-            Balance::BALANCE_DEDUCTION,
-            Balance::BALANCE_WITHDRAWAL,
-            Balance::BALANCE_CANCEL_AWARD
-        ])) {
-            $this->type = Balance::TYPE_EXPENDITURE;
-            $this->service_type = $this->data['service_type'];
-        } else {
-            throw new AppException('服务类型不存在');
-        }
-    }
 
     private function detectionBalance()
     {
         return $this->data['money'] > 0 ? true : false;
     }
 
-    private function detectionMemberBalance()
-    {
 
-    }
+
+
 
 
 
