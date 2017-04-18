@@ -161,7 +161,7 @@ class WechatPay extends Pay
             $luckyMoney = $app->lucky_money;
 
             $luckyMoneyData = [
-                'mch_billno'       => $app['weixin_mchid'] . date('YmdHis') . rand(1000, 9999),
+                'mch_billno'       => $pay['weixin_mchid'] . date('YmdHis') . rand(1000, 9999),
                 'send_name'        => \YunShop::app()->account['name'],
                 're_openid'        => $openid,
                 'total_num'        => 1,
