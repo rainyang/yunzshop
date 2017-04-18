@@ -14,7 +14,6 @@ class UnifyGoodsDispatch
 {
     public function handle(OrderGoodsDispatchWasCalculated $even)
     {
-
         if (!$this->needDispatch()) {
             return;
         }

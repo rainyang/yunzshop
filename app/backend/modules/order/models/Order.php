@@ -101,7 +101,7 @@ class Order extends \app\common\models\Order
     {
         $order_builder->search($search);
 
-        $orders = $order_builder->with([
+        $orders = $order_builder->uniacid()->with([
             'belongsToMember' => self::member_builder(),
             'hasManyOrderGoods' => self::order_goods_builder(),
             'hasOneDispatchType',
