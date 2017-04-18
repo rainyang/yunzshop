@@ -42,4 +42,5 @@ class McMappingFans extends BackendModel
         return self::where('uid', $memberId)
             ->first();
     }
+
 }
