@@ -133,7 +133,7 @@
                         {{$pager}}
                     </div>
                     <div class='panel-footer'>
-                        <input name="submit" type="submit" class="btn btn-default" value="提交排序">
+                        {{--<input name="submit" type="submit" class="btn btn-default" value="提交排序">--}}
                         <a class='btn btn-primary' href="{{yzWebUrl('coupon.coupon.create')}}"><i class='fa fa-plus'></i> 添加优惠券</a>
                     </div>
                 </div>
