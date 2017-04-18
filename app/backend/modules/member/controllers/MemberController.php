@@ -208,7 +208,7 @@ class MemberController extends BaseController
      */
     public function agent()
     {
-        $uid = \YunShop::request()->member_id;
+        $uid = \YunShop::request()->id;
 
         $member_info = Member::getUserInfos($uid)->first();
 
@@ -216,10 +216,17 @@ class MemberController extends BaseController
             return $this->message('会员不存在','', 'error');
         }
 
-        $agent_info = Member::getAgentInfoByMemberId($uid)->first();
-echo '<pre>';print_r($agent_info->toArray());exit;
+        $list = Member::getAgentInfoByMemberId($uid)
+            ->paginate($this->pageSize)
+            ->toArray();
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
+
         return view('member.agent', [
             'member' => $member_info,
+            'list'  => $list,
+            'pager' => $pager,
+            'total' => $list['total'],
             'request' => \YunShop::request()
         ])->render();
     }
