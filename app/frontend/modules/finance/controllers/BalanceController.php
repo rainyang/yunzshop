@@ -103,19 +103,7 @@ class BalanceController extends ApiController
         if ($validator->fails()) {
             return $validator->messages();
         }
-        if ($this->model->pay_way == 1 && !(new BalanceService())->withdrawWechat()) {
-            return '提现到微信未开启，请更换提现方式';
-        }
-        if ($this->model->pay_way == 2 && !(new BalanceService())->withdrawAlipay()) {
-            return '提现到微信未开启，请更换提现方式';
-        }
-        if ($this->model->amounts > $this->memberInfo->credit2) {
-            return '提现金额不能大于您的余额';
-        }
-        $withdrawAstric = (new BalanceService())->withdrawAstrict();
-        if ($this->model->amounts < $withdrawAstric) {
-            return '提现金额不能低于' . $withdrawAstric . '元';
-        }
+
         if ($this->model->save()) {
             //调取余额修改接口
             return $this->balanceChange();
