@@ -11,6 +11,7 @@ namespace app\common\services\finance;
 
 use app\common\facades\Setting;
 use app\common\traits\ValidatorTrait;
+use Hamcrest\Core\Set;
 
 class BalanceSet
 {
@@ -20,25 +21,7 @@ class BalanceSet
 
     const BALANCE_WITHDRAW_CLOSE = 0;   //关闭余额提现
 
-    private $withdraw_set;
 
-
-
-    public function __construct()
-    {
-        $this->withdraw_set = Setting::get('withdraw.balance');
-    }
-
-    public function getRechargeSet()
-    {
-
-    }
-
-    public function getWithdrawSet()
-    {
-        //echo '<pre>'; print_r($this->withdraw_set); exit;
-        return $withdrawSet = Setting::get('withdraw.balance');
-    }
 
 
 
