@@ -1,6 +1,6 @@
 <!-- 确认发货 -->
 <div id="modal-confirmsend" class="modal fade" tabindex="-1" role="dialog" style="width:600px;margin:0px auto;">
-    <form class="form-horizontal form" action="" method="post"
+    <form class="form-horizontal form" action="{{yzWebUrl('refund.Operation-controller.pass')}}" method="post"
           enctype="multipart/form-data">
         <input type='hidden' name='order_id' value=''/>
         <input type='hidden' name='route' value='order.operation.send' id="send_form"/>
