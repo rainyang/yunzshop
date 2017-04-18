@@ -115,7 +115,8 @@ exit;
      */
    public function getQR()
    {
-       echo QrCode::format('png')->size(100)->generate('http:www.baidu.com', storage_path('qr/' . time().'.png'));
+       $this->createDir(storage_path('app/public/qr'));
+       echo QrCode::format('png')->size(100)->generate('http:www.baidu.com', storage_path('app/public/qr/' . time().'.png'));
    }
 
     /**
@@ -446,5 +447,12 @@ $pay->doPay($data);
     public function domain()
     {
         echo request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
+    }
+
+    function createDir($dest)
+    {
+        if (!is_dir($dest)) {
+            (@mkdir($dest, 0777, true));
+        }
     }
 }

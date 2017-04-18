@@ -6721,7 +6721,8 @@ button.close {
     display: table !important;
   }
   tr.visible-print {
-    display: table-row !important;
+    display
+    : table-row !important;
   }
   th.visible-print,
   td.visible-print {
