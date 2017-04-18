@@ -7,6 +7,7 @@ class MemberCoupon extends BaseModel
 {
     public $table = 'yz_member_coupon';
     protected $guarded = [''];
+    public $timestamps = false;
 
     /*
      *  定义字段名

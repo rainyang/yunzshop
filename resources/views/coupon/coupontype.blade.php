@@ -3,7 +3,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用条件</label>
     <div class="col-sm-9 col-xs-12">
         <input type="text" name="coupon[enough]" class="form-control" value="{{$coupon['enough']}}"  />
-        <span class='help-block' >满多少可用, 空或0 不限制</span>
+        <span class='help-block' >消费满多少金额才可以使用该优惠券 (设置为空或 0 则不限制消费金额)</span>
     </div>
 </div>
 <div class="form-group">
@@ -29,7 +29,6 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">适用范围</label>
     <div class="col-sm-9 col-xs-12">
-        <input type="hidden" name="coupon_type" value="0"/>
         <label class="radio-inline " ><input type="radio" name="coupon[use_type]" onclick='showusetype(0)' value="0" @if($coupon['use_type']==0)checked @endif>全类适用</label>
         <label class="radio-inline"><input type="radio" name="coupon[use_type]" onclick='showusetype(1)' value="1" @if($coupon['use_type']==1)checked @endif>指定商品分类</label>
         <label class="radio-inline "><input type="radio" name="coupon[use_type]" onclick='showusetype(2)' value="2" @if($coupon['use_type']==2)checked @endif>指定商品</label>

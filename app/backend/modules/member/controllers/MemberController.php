@@ -202,6 +202,20 @@ class MemberController extends BaseController
     }
 
     /**
+     * 推广下线
+     *
+     * @return mixed
+     */
+    public function agent()
+    {
+        $uid = \YunShop::request()->member_id;
+
+        return view('member.agent', [
+            'request' => \YunShop::request()
+        ])->render();
+    }
+
+    /**
      * 数据导出
      *
      */

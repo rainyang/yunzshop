@@ -32,7 +32,7 @@ class ApiController extends BaseController
         parent::preAction();
 
         if(!UniAccount::checkIsExistsAccount(\YunShop::app()->uniacid)){
-            return $this->errorJson('无此公众号', ['status' => -1]);
+            return $this->errorJson('无此公众号', ['status' => -2]);
         }
 
         $relaton_set = MemberRelation::getSetInfo()->first();
@@ -51,10 +51,10 @@ class ApiController extends BaseController
             $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid];
 
             if (5 == $type) {
-                return $this->errorJson('',['login_status'=>1,'login_url'=>'', $queryString]);
+                return $this->errorJson('',['login_status'=> 1,'login_url'=>'', 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid]);
             }
 
-            return $this->errorJson('',['login_status'=>0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
+            return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
         }
     }
 

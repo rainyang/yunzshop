@@ -12,7 +12,7 @@ class Order extends \app\common\models\Order
 {
     private static function format($builder,$pageSize){
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->orderBy('id','desc')->paginate($pageSize)->appends(['button_models'])->toArray();
+        $list += $builder->uniacid()->orderBy('id','desc')->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
     public static function getAllOrders($search, $pageSize)
@@ -101,7 +101,7 @@ class Order extends \app\common\models\Order
     {
         $order_builder->search($search);
 
-        $orders = $order_builder->uniacid()->with([
+        $orders = $order_builder->with([
             'belongsToMember' => self::member_builder(),
             'hasManyOrderGoods' => self::order_goods_builder(),
             'hasOneDispatchType',
