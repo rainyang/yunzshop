@@ -189,7 +189,7 @@ class Member extends BackendModel
         return [
             'mobile' => '绑定手机号',
             'realname' => '真实姓名',
-            'avatar' => '头像',
+            //'avatar' => '头像',
             'telephone' => '联系手机号',
         ];
     }
@@ -204,7 +204,7 @@ class Member extends BackendModel
         return [
             'mobile' => 'regex:/^1[34578]\d{9}$/',
             'realname' => 'required',
-            'avatar' => 'required',
+            //'avatar' => 'required',
             'telephone' => 'regex:/^1[34578]\d{9}$/',
         ];
     }

@@ -16,7 +16,7 @@ class GoodsDispatch extends BaseModel
 {
     public $table = 'yz_goods_dispatch';
     const UNIFY_TYPE = 1;
-    const TEMPLATE_TYPE = 2;
+    const TEMPLATE_TYPE = 0;
     /**
      *  不可填充字段.
      *

@@ -81,41 +81,6 @@
     });
 
 
-    function clearSelects(){
-             $('.city').attr('checked',false).removeAttr('disabled');
-             $('.cityall').attr('checked',false).removeAttr('disabled');
-             $('.citycount').html('');
-        }
-
-        function selectAreas(){
-            clearSelects();
-            var old_citys = $('#areas').html().split(';');
-
-            $('.city').each(function(){
-                var parentcheck = false;
-                for(var i in old_citys){
-                    if(old_citys[i]==$(this).attr('city')){
-                        parentcheck = true;
-                        $(this).get(0).checked = true;
-                        break;
-                    }
-                }
-                if(parentcheck){
-                    $(this).parent().parent().parent().parent().find('.cityall').get(0).checked=  true;
-                }
-            });
-
-            $("#modal-areas").modal();
-            var citystrs = '';
-            $('#btnSubmitArea').unbind('click').click(function(){
-               $('.city:checked').each(function(){
-                   citystrs += $(this).attr('city') +";";
-               });
-               $('#areas').html(citystrs);
-               $("#selectedareas").val(citystrs);
-            })
-
-        }
 
 
 

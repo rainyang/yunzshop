@@ -8,22 +8,16 @@
 
 namespace app\backend\modules\order\controllers;
 
-
 use app\common\components\BaseController;
 use app\frontend\modules\order\services\OrderService;
 
-class ChangePrice extends BaseController
+class ChangeOrderPriceController extends BaseController
 {
-    private $_params;
-    public function __construct()
-    {
-        parent::__construct();
-        $this->_params = \YunShop::request()->get();
-    }
 
-    public function index()
+    public function index(\Request $request)
     {
-        list($result,$message) = OrderService::changeOrderPrice($this->_params);
+        //dd(\YunShop::app()->user->name);
+        list($result,$message) = OrderService::changeOrderPrice($this->param);
         if($result === false){
             return $this->errorJson($message);
         }
