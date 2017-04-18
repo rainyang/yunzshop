@@ -136,6 +136,17 @@
 </div>
 
 <div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">重量</label>
+    <div class="col-sm-6 col-xs-12">
+        <div class="input-group">
+            <input type="text" name="goods[weight]" id="weight" class="form-control" value="{{$item['weight']?$item['weight']:0}}" />
+            <span class="input-group-addon">克</span>
+        </div>
+        <div class='help-block'>商品重量设置空或0，则为包邮，如启用多规格，多规格内也需进行设置</div>
+    </div>
+</div>
+
+<div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>库存</label>
     <div class="col-sm-6 col-xs-12">
         <div class="input-group form-group col-sm-3">

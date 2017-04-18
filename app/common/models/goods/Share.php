@@ -51,7 +51,7 @@ class Share extends BaseModel
     public  function atributeNames()
     {
         return [
-            'need_follow' => '强制关注',
+//            'need_follow' => '强制关注',
             'no_follow_message' => '未关注提示信息',
             'follow_message' => '关注引导信息',
             'share_title' => '分享标题',
@@ -64,7 +64,7 @@ class Share extends BaseModel
     public  function rules()
     {
         return [
-            'need_follow' => 'required|digits_between:0,1',
+//            'need_follow' => 'required|digits_between:0,1',
             'no_follow_message' => 'max:255',
             'follow_message' => 'max:255',
             'share_title' => 'max:50',
