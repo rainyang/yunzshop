@@ -11,6 +11,7 @@ use app\common\models\Member;
 use app\common\models\Coupon;
 use EasyWeChat\Foundation\Application;
 use app\common\models\CouponLog;
+use app\common\helpers\Url;
 
 
 class SendCouponController extends BaseController
@@ -92,19 +93,24 @@ class SendCouponController extends BaseController
             }
 
             //发放优惠券
-            $this->sendCoupon($memberIds, $sendTotal, $couponResponse);
+            $res = $this->sendCoupon($memberIds, $sendTotal, $couponResponse);
+            if ($res){
+                return $this->message('手动发送优惠券成功');
+            } else{
+                return $this->message('有部分优惠券未能发送, 请检查数据库','','error');
+            }
         }
 
         return view('coupon.send', [
             'couponid' => \YunShop::app()->uniacid,
             'coupondec' => \YunShop::request()->coupondec,
-            'send_total' => $sendTotal,
-            'sendtype' => $sendType,
+            'send_total' => isset($sendTotal) ? $sendTotal : 0,
+            'sendtype' => isset($sendType) ? $sendType : 1,
             'memberLevels' => $memberLevels, //用户等级列表 //bingo
             'memberGroups' => $memberGroups, //用户分组列表 //bingo
-            'send_level' => $sendLevel,
-            'memberGroupId' => $sendGroup,
-            'agentLevelId' => $sendLevel,
+            'send_level' => isset($sendLevel) ? $sendLevel : 1,
+            'memberGroupId' => isset($sendGroup) ? $sendGroup : 1,
+            'agentLevelId' => isset($sendLevel) ? $sendLevel : 1,
             'couponresponse' => $couponResponse,
         ])->render();
     }
@@ -128,19 +134,28 @@ class SendCouponController extends BaseController
 
             //获取Openid
             $memberOpenid = McMappingFans::getFansById($memberId)->openid;
-            $memberCoupon = new MemberCoupon;
-            $data['uid'] = $memberId;
-            $res = $memberCoupon->create($data);
 
-            //写入log
-            if ($res){ //发放优惠券成功
-                $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )';
-                //$this->sendTemplateMessage($memberOpenid, self::TEMPLATEID, $couponResponse); //成功时, 发送模板消息
-            } else{ //发放优惠券失败
-                $log = '手动发放优惠券失败: 管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )时失败!';
-                $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
+            for ($i = 0; $i < $sendTotal; $i++){
+                $memberCoupon = new MemberCoupon;
+                $data['uid'] = $memberId;
+                $res = $memberCoupon->create($data);
+
+                //写入log
+                if ($res){ //发放优惠券成功
+                    $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )';
+                    //$this->sendTemplateMessage($memberOpenid, self::TEMPLATEID, $couponResponse); //成功时, 发送模板消息
+                } else{ //发放优惠券失败
+                    $log = '手动发放优惠券失败: 管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )时失败!';
+                    $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
+                }
+                $this->log($log, $memberId);
             }
-            $this->log($log, $memberId);
+        }
+
+        if(empty($this->failedSend)){
+            return true;
+        } else {
+            return false;
         }
     }
 
