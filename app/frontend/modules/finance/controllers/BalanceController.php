@@ -39,7 +39,7 @@ class BalanceController extends ApiController
     //转让（是否做独立文件）
 
     //提现+提现限制+提现手续费
-    public function subtraction()
+    public function withdraw()
     {
         $result = (new BalanceService())->withdrawSet() ? $this->withdrawStart() : '未开启余额提现';
 
