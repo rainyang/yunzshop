@@ -58,7 +58,7 @@ class MemberGroup extends \app\common\models\MemberGroup
         $memberGroup = MemberGroup::select('id', 'group_name', 'uniacid')
             ->uniacid()
             ->with(['member' => function($query){
-                return $query->select(['group_id'])->where('uniacid', \YunShop::app()->uniacid);
+                return $query->select(['group_id','member_id'])->where('uniacid', \YunShop::app()->uniacid);
             }])
             ->get()
             ->toArray();
