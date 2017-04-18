@@ -24,7 +24,7 @@ class OrderChangePrice extends OrderOperation
      * 更新订单表
      * @return bool
      */
-    protected function _updateTable()
+    protected function updateTable()
     {
         return $this->order->save();
     }

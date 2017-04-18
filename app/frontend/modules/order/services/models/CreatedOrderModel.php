@@ -29,28 +29,41 @@ class CreatedOrderModel extends OrderModel
 
     }
 
-    protected function getDiscountPrice(){
+    protected function getDiscountPrice()
+    {
         return $this->discount_price;
     }
-    protected function getDispatchPrice(){
+
+    protected function getDispatchPrice()
+    {
         return $this->dispatch_price;
 
     }
-    protected function getChangePrice(){
+
+    protected function getChangePrice()
+    {
+        return $this->hasManyOrderGoods->sum(function ($orderGoods) {
+            return $orderGoods->orderGoodschangePriceLog->change_price;
+        });
+    }
+
+    protected function getChangeVipPrice()
+    {
         //todo
         return 0;
     }
-    protected function getChangeVipPrice(){
-        //todo
-        return 0;
-    }
-    protected function getVipPrice(){
+
+    protected function getVipPrice()
+    {
         return parent::getVipPrice() - $this->getChangeVipPrice();
 
     }
-    protected function getPrice(){
+
+    protected function getPrice()
+    {
         return parent::getPrice() - $this->getChangePrice();
     }
+
     public function changePrice()
     {
         $data = [
@@ -64,8 +77,10 @@ class CreatedOrderModel extends OrderModel
         dump($data);
         $this->updateOrderGoods();
     }
-    private function updateOrderGoods(){
-        foreach ($this->orderGoodsModels as $orderGoodsModel){
+
+    private function updateOrderGoods()
+    {
+        foreach ($this->orderGoodsModels as $orderGoodsModel) {
             //$orderGoodsModel->update();
         }
     }
