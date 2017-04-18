@@ -59,6 +59,7 @@ abstract class Status
      */
     public static function getCommentButtons($order)
     {
+        $result = [];
         $can_comment = $order->hasManyOrderGoods->contains(function ($orderGoods){
             return $orderGoods->comment_status == 0;
         });
