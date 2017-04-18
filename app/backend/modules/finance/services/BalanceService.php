@@ -11,6 +11,25 @@ namespace app\backend\modules\finance\services;
 use \app\common\services\finance\BalanceService as BaseBalanceService;
 class BalanceService extends BaseBalanceService
 {
-    //调用基类余额明细记录写入
+
+    public function changeBalance()
+    {
+
+    }
+
+    protected function getNewMoney()
+    {
+
+    }
+
+    protected function getMemberInfo()
+    {
+
+    }
+
+    protected function attachedType()
+    {
+
+    }
 
 }
