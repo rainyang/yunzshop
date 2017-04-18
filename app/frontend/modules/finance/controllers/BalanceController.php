@@ -73,7 +73,7 @@ class BalanceController extends ApiController
     public function record()
     {
         if ($this->getMemberInfo()) {
-            $type = \YunShop::request()->type;
+            $type = \YunShop::request()->record_type;
             $recordList = BalanceCommon::getMemberDetailRecord($this->memberInfo->uid, $type);
 
             return $this->successJson('获取记录成功', $recordList->toArray());
