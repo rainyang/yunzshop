@@ -16,7 +16,7 @@ class RefundPass extends ChangeStatusOperation
     protected $statusBeforeChange = [self::WAIT_CHECK];
     protected $statusAfterChanged = self::WAIT_SEND;
     protected $name = '通过';
-    protected $timeField = 'operate_time';
+    protected $timeField = ['operate_time','refund_time'];
 
 
     protected function updateTable()
