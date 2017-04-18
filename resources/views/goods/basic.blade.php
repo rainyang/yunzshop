@@ -142,7 +142,7 @@
             <input type="text" name="goods[weight]" id="weight" class="form-control" value="{{$item['weight']?$item['weight']:0}}" />
             <span class="input-group-addon">克</span>
         </div>
-        <div class='help-block'>商品重量设置空或0，则为包邮，如启用多规格，多规格内也需进行设置</div>
+        <div class='help-block'>商品重量设置空或0，取首重（设置配送模板相关）</div>
     </div>
 </div>
 
