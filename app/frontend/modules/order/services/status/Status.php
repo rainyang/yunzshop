@@ -24,6 +24,7 @@ abstract class Status
     const IN_REFUND = 16;
     const IN_AFTER_SALE = 17;
     const REFUND_INFO = 18;
+    const COMMENTED = 19;
 
     abstract function getStatusName();
 
@@ -61,6 +62,7 @@ abstract class Status
     {
         $result = [];
         $can_comment = $order->hasManyOrderGoods->contains(function ($orderGoods){
+
             return $orderGoods->comment_status == 0;
         });
 
@@ -70,7 +72,14 @@ abstract class Status
                 'api' => '',
                 'value' => static::COMMENT
             ];
+        }else{
+            $result[] = [
+                'name' => '已评价',
+                'api' => '',
+                'value' => static::COMMENTED
+            ];
         }
+
         return $result;
     }
 }
