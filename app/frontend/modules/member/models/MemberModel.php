@@ -367,9 +367,20 @@ class MemberModel extends Member
 
         $member_info['is_agent'] = self::isAgent();
         $member_info['referral'] = self::getMyReferral();
+
+        self::createDir(storage_path('app/public/qr'));
+        self::createDir(storage_path('app/public/avatar'));
+
         $member_info['qr'] = self::getAgentQR();
         $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
 
         return $member_info;
+    }
+
+    function createDir($dest)
+    {
+        if (!is_dir($dest)) {
+            (@mkdir($dest, 0777, true));
+        }
     }
 }
