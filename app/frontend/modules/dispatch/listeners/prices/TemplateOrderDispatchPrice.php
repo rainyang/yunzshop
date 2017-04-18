@@ -50,9 +50,6 @@ class TemplateOrderDispatchPrice
                     return $dispatch->first_piece_price;
                 }
             } else if ($dispatch->calculate_type == 0) {
-                if ($orderGoods->hasOneGoods->weight <= 0) {
-                    return 0;
-                }
                 $weight = $orderGoods->hasOneGoods->weight * $orderGoods->total;
                 if ($weight > $dispatch->first_weight) {
                     return $dispatch->first_weight_price + ceil(($weight - $dispatch->first_weight) / $dispatch->another_weight) * $dispatch->another_weight_price;
