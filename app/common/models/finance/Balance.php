@@ -53,9 +53,9 @@ class Balance extends BaseModel
 
     const BALANCE_INCOME    = 7; //提现至余额
 
-    const CANCEL_DEDUCTION  = 8; //抵扣取消余额回滚
+    const BALANCE_CANCEL_DEDUCTION  = 8; //抵扣取消余额回滚
 
-    const CANCEL_AWARD      = 9; //奖励取消回滚
+    const BALANCE_CANCEL_AWARD      = 9; //奖励取消回滚
 
     public static $balanceComment = [
         self::BALANCE_RECHARGE      => '充值',
@@ -65,8 +65,8 @@ class Balance extends BaseModel
         self::BALANCE_AWARD         => '奖励',
         self::BALANCE_WITHDRAWAL    => '余额提现',
         self::BALANCE_INCOME        => '提现至余额',
-        self::CANCEL_DEDUCTION      => '抵扣取消余额回滚',
-        self::CANCEL_AWARD          => '奖励取消回滚',
+        self::BALANCE_CANCEL_DEDUCTION      => '抵扣取消余额回滚',
+        self::BALANCE_CANCEL_AWARD          => '奖励取消回滚',
     ];
 
     public static function getBalanceComment($balance)

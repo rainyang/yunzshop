@@ -42,7 +42,7 @@ class CreditPayController extends PayController
             'body' => $this->order()->hasManyOrderGoods[0]->title . ':' . \YunShop::app()->uniacid,
             'extra' => ['type' => 1],
             'member_id' => $this->order()->uid,
-            'operator' => '-1',//订单
+            'operator' => Balance::OPERATOR_ORDER_,//订单
             'operator_id' => $this->order()->id,
             'remark' => '订单(id:' . $this->order()->id . '),余额支付' . $this->order()->price . '元',
             'service_type' => Balance::BALANCE_CONSUME,
