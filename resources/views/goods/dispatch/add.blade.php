@@ -103,8 +103,8 @@
                                 <td style="word-break:break-all;overflow:hidden;width:auto;padding:10px;line-height:22px;">
                                     <span class='cityshtml'>{{$row['citys']}}</span>
                                     <input type="hidden" name="random[]" value="{{$random}}" />
-                                    <input type="hidden" class='citys' name="citys[{{{$random}}}]" value="{{$row['citys']}}" />
-                                    <a href='javascript:;' onclick='editArea(this)' random="{{{$random}}}">编辑</a>
+                                    <input type="hidden" class='citys' name="citys[{{$random}}]" value="{{$row['citys']}}" />
+                                    <a href='javascript:;' onclick='editArea(this)' random="{{$random}}">编辑</a>
                                 </td>
                                 <td class="text-center weight">
                                     <input type="number" value="{{empty($dispatch['firstweight']) ? 1000 : $dispatch['firstweight']}}" class="form-control" name="firstweight[{{$random}}]" style="width:100px;">

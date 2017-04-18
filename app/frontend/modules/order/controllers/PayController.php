@@ -21,6 +21,7 @@ class PayController extends ApiController
 {
     protected $order;
     protected $publicAction = ['alipay'];
+    protected $ignoreAction = ['alipay'];
 
     protected function order()
     {

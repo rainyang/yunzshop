@@ -39,7 +39,7 @@ class BalanceController extends ApiController
     //转让（是否做独立文件）
 
     //提现+提现限制+提现手续费
-    public function subtraction()
+    public function withdraw()
     {
         $result = (new BalanceService())->withdrawSet() ? $this->withdrawStart() : '未开启余额提现';
 
@@ -103,19 +103,7 @@ class BalanceController extends ApiController
         if ($validator->fails()) {
             return $validator->messages();
         }
-        if ($this->model->pay_way == 1 && !(new BalanceService())->withdrawWechat()) {
-            return '提现到微信未开启，请更换提现方式';
-        }
-        if ($this->model->pay_way == 2 && !(new BalanceService())->withdrawAlipay()) {
-            return '提现到微信未开启，请更换提现方式';
-        }
-        if ($this->model->amounts > $this->memberInfo->credit2) {
-            return '提现金额不能大于您的余额';
-        }
-        $withdrawAstric = (new BalanceService())->withdrawAstrict();
-        if ($this->model->amounts < $withdrawAstric) {
-            return '提现金额不能低于' . $withdrawAstric . '元';
-        }
+
         if ($this->model->save()) {
             //调取余额修改接口
             return $this->balanceChange();

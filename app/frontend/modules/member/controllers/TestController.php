@@ -442,4 +442,9 @@ $pay->doPay($data);
         //保存响应数据
         Pay::payResponseDataLog($post['out_trade_no'], '微信支付', json_encode($post));
     }
+
+    public function validate()
+    {
+        //|regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/
+    }
 }

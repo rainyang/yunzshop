@@ -196,10 +196,10 @@ class Member extends BackendModel
     public function rules()
     {
         return [
-            'mobile' => 'required|digits:11|regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/',
+            'mobile' => 'regex:/^1[34578]\d{9}$/',
             'realname' => 'required',
             'avatar' => 'required',
-            'telephone' => 'required|digits:11|regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/',
+            'telephone' => 'regex:/^1[34578]\d{9}$/',
         ];
     }
 }

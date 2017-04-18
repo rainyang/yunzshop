@@ -143,7 +143,9 @@ class Member extends \app\common\models\Member
             });
         }
 
-        if (!empty($parame['groupid']) || !empty($parame['level']) || !empty($parame['isblack'])) {
+        if (!empty($parame['groupid']) || !empty($parame['level']) || $parame['isblack'] != ''
+            || $parame['isagent'] != '') {
+
             $result = $result->whereHas('yzMember', function($q) use ($parame){
                 if (!empty($parame['groupid'])) {
                     $q = $q->where('group_id', $parame['groupid']);
@@ -153,8 +155,12 @@ class Member extends \app\common\models\Member
                     $q = $q->where('level_id',$parame['level']);
                 }
 
-                if (!empty($parame['isblack'])) {
+                if ($parame['isblack'] != '') {
                     $q->where('is_black', $parame['isblack']);
+                }
+
+                if ($parame['isagent'] != '') {
+                    $q->where('is_agent', $parame['isagent']);
                 }
             });
         }
