@@ -81,7 +81,7 @@ class Withdraw extends \app\common\models\Withdraw
             'type'              => '提现类型',
             //'type_id'           => '充值订单号不能为空',
             'type_name'         => '状态不能为空',
-            'amounts'           => "会员ID不能为空",
+            'amounts'           => "请输入正确的提现金额",
             //'poundage'          => "会员ID不能为空",
             //'poundage_rate'     => "会员ID不能为空",
             'pay_way'           => "未找到提现类型",
