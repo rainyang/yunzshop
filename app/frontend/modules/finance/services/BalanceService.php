@@ -94,7 +94,7 @@ class BalanceService extends BaseBalanceService
         $this->data = $data;
         $this->getMemberInfo();
 
-        return $this->updateBalanceRecord();
+        return  $this->detectionBalance() ? $this->updateBalanceRecord() : '金额必须大于零';
     }
 
     protected function getNewMoney()
@@ -148,6 +148,17 @@ class BalanceService extends BaseBalanceService
             throw new AppException('服务类型不存在');
         }
     }
+
+    private function detectionBalance()
+    {
+        return $this->data['money'] > 0 ? true : false;
+    }
+
+    private function detectionMemberBalance()
+    {
+
+    }
+
 
 
 }
