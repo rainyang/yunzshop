@@ -21,23 +21,19 @@ class SendCouponController extends BaseController
     const TO_ALL_MEMBERS = 4;
     const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
 
-    public $uniacid;
     public $couponId;
     public $failedSend = []; //发送失败时的记录
     public $adminId; //后台操作者的ID
 
     public function index()
     {
-        $this->uniaicd = \YunShop::app()->uniacid;
-        $this->couponId = \YunShop::request()->coupon_id;
-
-        $couponId = \YunShop::request()->id;
-        $couponModel = Coupon::getCouponById($couponId);
+        $this->couponId = \YunShop::request()->id;
+        $couponModel = Coupon::getCouponById($this->couponId);
         $couponResponse = [
-            'resp_title' => Coupon::getter($couponId, 'resp_title'),
-            'resp_thumb' => Coupon::getter($couponId, 'resp_thumb'),
-            'resp_desc' => Coupon::getter($couponId, 'resp_desc'),
-            'resp_url' => Coupon::getter($couponId, 'resp_url'),
+            'resp_title' => Coupon::getter($this->couponId, 'resp_title'),
+            'resp_thumb' => Coupon::getter($this->couponId, 'resp_thumb'),
+            'resp_desc' => Coupon::getter($this->couponId, 'resp_desc'),
+            'resp_url' => Coupon::getter($this->couponId, 'resp_url'),
         ];
 
         //获取会员等级列表
@@ -100,7 +96,7 @@ class SendCouponController extends BaseController
         }
 
         return view('coupon.send', [
-            'couponid' => $this->couponid,
+            'couponid' => \YunShop::app()->uniacid,
             'coupondec' => \YunShop::request()->coupondec,
             'send_total' => $sendTotal,
             'sendtype' => $sendType,
@@ -121,12 +117,13 @@ class SendCouponController extends BaseController
         //todo 后期任务: 在前台设置验证, 如果达到个人领取上限,ajax后提醒
 
         $data = [
-            'uniacid' => $this->uniacid,
+            'uniacid' => \YunShop::app()->uniacid,
             'coupon_id' => $this->couponId,
             'get_type' => 0,
             'used' => 0,
             'get_time' => strtotime('now'),
         ];
+
         foreach ($memberIds as $memberId) {
 
             //获取Openid
@@ -137,10 +134,10 @@ class SendCouponController extends BaseController
 
             //写入log
             if ($res){ //发放优惠券成功
-                $log = '管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$this->couponId.' )给用户 (Member ID 为 '.$memberId.' )';
-                $this->sendTemplateMessage($memberOpenid, self::TEMPLATEID, $couponResponse); //成功时, 发送模板消息
+                $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )';
+                //$this->sendTemplateMessage($memberOpenid, self::TEMPLATEID, $couponResponse); //成功时, 发送模板消息
             } else{ //发放优惠券失败
-                $log = '管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$this->couponId.' )给用户 (Member ID 为 '.$memberId.' )时失败!';
+                $log = '手动发放优惠券失败: 管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )时失败!';
                 $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
             }
             $this->log($log, $memberId);
@@ -151,7 +148,7 @@ class SendCouponController extends BaseController
     public function log($log, $memberId)
     {
         $logData = [
-            'uniacid' => $this->uniacid,
+            'uniacid' => \YunShop::app()->uniacid,
             'logno' => $log,
             'member_id' => $memberId,
             'couponid' => $this->couponId,
@@ -162,8 +159,7 @@ class SendCouponController extends BaseController
             'status' => 0,
             'createtime' => time(),
         ];
-        $couponLog = new CouponLog();
-        $res = $couponLog->create($logData);
+        $res = CouponLog::create($logData);
         return $res;
     }
 
