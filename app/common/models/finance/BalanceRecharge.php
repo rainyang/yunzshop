@@ -27,6 +27,14 @@ class BalanceRecharge extends BaseModel
 
     const PAY_TYPE_MEMBER = -2;
 
+
+
+
+
+    const PAY_STATUS_SUCCESS = 1;
+
+    const PAY_STATUS_ERROR = -1;
+
     /*
      * 模型管理，关联会员数据表
      *

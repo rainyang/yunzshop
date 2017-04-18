@@ -86,7 +86,7 @@ class SendCouponController extends BaseController
                 $members = '';
         }
 
-        根据"configs"中的设置获取 Member ID
+        //根据"configs"中的设置获取 Member ID
         if(!empty($configs)){
             foreach ($configs as $key => $config) {
                 $leveldata[$key]['name'] = $key;
