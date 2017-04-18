@@ -263,8 +263,9 @@ class Member extends \app\common\models\Member
         return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
             'credit1', 'credit2'])
             ->uniacid()
-            ->where('uid', $member_id)
-
+            ->whereHas('yzMember', function($query) use ($member_id){
+                $query->where('parent_id', $member_id);
+            })
             ->with(['yzMember'=>function($query){
                 return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])->orderBy('member_id', 'desc')
                     ->with(['agent'=>function($query){

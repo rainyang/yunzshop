@@ -19,25 +19,39 @@ class OperationController extends BaseController
         $this->validate($request, [
             'refund_id' => 'required|filled|integer'
         ]);
-        dd($request->toArray());
-//        switch ($request) {
-//            case 'first_level':
-//                $hierarchy = '1';//分销层级
-//                break;
-//            case 'second_level':
-//                $hierarchy = '2';//分销层级
-//                break;
-//            default:
-//                $hierarchy = '3';//分销层级
-//        }
+
+        switch ($request->refundstatus) {
+            case '-1':
+                //驳回
+
+                break;
+            case '1':
+                //通过
+                $this-> pass();
+                break;
+            default:
+                //手动打款
+                $this-> manual();
+
+        }
         
         
-        $this->pass();
+
     }
 
     public function pass()
     {
         
+        
+        if(RefundOperationService::refundPass()){
+            return $this->message('操作成功');
+        }
+        return $this->message('操作失败','','error');
+
+    }
+
+    public function  manual()
+    {
         if(RefundOperationService::refundPass()){
             return $this->message('操作成功');
         }

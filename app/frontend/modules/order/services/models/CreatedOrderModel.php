@@ -45,6 +45,7 @@ class CreatedOrderModel extends OrderModel
         return $this->hasManyOrderGoods->sum(function ($orderGoods) {
             return $orderGoods->orderGoodschangePriceLog->change_price;
         });
+
     }
 
     protected function getChangeVipPrice()
