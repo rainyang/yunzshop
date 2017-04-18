@@ -442,4 +442,9 @@ $pay->doPay($data);
         //保存响应数据
         Pay::payResponseDataLog($post['out_trade_no'], '微信支付', json_encode($post));
     }
+
+    public function domain()
+    {
+        echo request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
+    }
 }
