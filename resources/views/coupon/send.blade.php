@@ -39,11 +39,6 @@
                     <label class="radio-inline"><input type="radio" name="sendtype" value="1" checked /> 按 Member ID 发送</label>
                     <label class="radio-inline"><input type="radio" name="sendtype" value="2" @if($sendtype == '2') checked @endif/> 按用户等级发送</label>
                     <label class="radio-inline"><input type="radio" name="sendtype" value="3" @if($sendtype == '3') checked @endif/> 按用户分组发送</label>
-                    <?php $i=5;?>
-                    @foreach($configs as $v)
-                    <label class="radio-inline"><input type="radio" name="sendtype" value="{{$i}}" @if($sendtype == $i) checked @endif/> {{$v['name']}}</label>
-                    <?php $i++;?>
-                    @endforeach
                     <label class="radio-inline"><input type="radio" name="sendtype" value="4" @if($sendtype == '4') checked @endif/> 发送给全部用户</label>
                 </div>
             </div>
@@ -75,21 +70,7 @@
                     </select>
                 </div>
             </div>
-            <?php $j=5?>
-            @foreach($lists as $k => $v)
-            <div class="form-group choose choose_{{$j}}" style='display:none '>
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label" >{{$v['name']}}</label>
-                <div class="col-sm-8 col-lg-9 col-xs-12">
-                    <select name="send_level" class="form-control"  id="value_{{$j}}">
-                        <option value="0">全部</option>
-                        @foreach($v as $subv)
-                        <option value="{{$subv['level']}}">{{$subv['name']}}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <?php $j++?>
-            @endforeach
+
         </div>
         <div class='panel-heading'>
             推送设置

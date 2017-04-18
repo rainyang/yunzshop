@@ -86,15 +86,15 @@ class SendCouponController extends BaseController
                 $members = '';
         }
 
-        //根据"configs"中的设置获取 Member ID
-        if(!empty($configs)){
-            foreach ($configs as $key => $config) {
-                $leveldata[$key]['name'] = $key;
-                $leveldata[$key]['data'] = call_user_func([new $config['list']['class'], $config['list']['function']])->toArray();
-                $members = call_user_func([new $config['member']['class'], $config['member']['function']],2);
-            }
-            $memberIds = array_column($members->toArray(), 'member_id');
-        }
+//        //根据"configs"中的设置获取 Member ID
+//        if(!empty($configs)){
+//            foreach ($configs as $key => $config) {
+//                $leveldata[$key]['name'] = $key;
+//                $leveldata[$key]['data'] = call_user_func([new $config['list']['class'], $config['list']['function']])->toArray();
+//                $members = call_user_func([new $config['member']['class'], $config['member']['function']],2);
+//            }
+//            $memberIds = array_column($members->toArray(), 'member_id');
+//        }
 
         if(empty($members)){
             $this->error('该类别下没有用户');
