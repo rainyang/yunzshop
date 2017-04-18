@@ -14,6 +14,7 @@ use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\OrderCreatedEvent;
 
 use app\common\exceptions\AppException;
+use app\common\models\Goods;
 use app\common\models\OrderAddress;
 use app\frontend\modules\member\models\MemberAddress;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -45,6 +46,8 @@ class Express
 
         $data = $event->getOrderModel()->getMember()->defaultAddress;
         if (!isset($data)) {
+            dd($data);
+            exit;
             return;
         }
 
@@ -54,7 +57,17 @@ class Express
 
     private function needDispatch()
     {
-        return true;
+
+        $allGoodsIsReal = ($this->event->getOrderModel()->getOrderGoodsModels()->contains(function ($orderGoods){
+
+            return $orderGoods->belongsToGood->isRealGoods();
+        }));
+        
+        if($allGoodsIsReal){
+            return true;
+        }
+
+        return false;
     }
 
     private function saveExpressInfo()
