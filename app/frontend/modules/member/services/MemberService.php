@@ -60,9 +60,18 @@ class MemberService
                 'mobile' => $mobile,
                 'password' => $password
             );
-            $check = array(
-                'mobile' => 'regex:/^1[34578]{1}\d{9})$/',
+            $rules = array(
+                'mobile' => 'regex:/^1[34578]\d{9}$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
+            );
+            $message = array(
+                'regex'    => ':attribute 格式错误',
+                'required' => ':attribute 不能为空',
+                'min' => ':attribute 最少6位'
+            );
+            $attributes = array(
+                "mobile" => '手机号',
+                'password' => '密码',
             );
         } else {
             $data = array(
@@ -70,17 +79,31 @@ class MemberService
                 'password' => $password,
                 'confirm_password' => $confirm_password
             );
-            $check = array(
-                'mobile' => 'regex:/^1[34578]{1}\d{9})$/',
+            $rules = array(
+                'mobile' => 'regex:/^1[34578]\d{9}$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
                 'confirm_password' => 'same:password'
             );
+            $message = array(
+                'regex'    => ':attribute 格式错误',
+                'required' => ':attribute 不能为空',
+                'min' => ':attribute 最少6位',
+                'same' => ':attribute 不匹配'
+            );
+            $attributes = array(
+                "mobile" => '手机号',
+                'password' => '密码',
+                'confirm_password' => '密码',
+            );
         }
 
-        $validator = \Validator::make($data, $check);
+        $validate = \Validator::make($data,$rules,$message,$attributes);
 
-        if ($validator->fails()) {
-            return show_json('0', $validator->messages());
+        if ($validate->fails()) {
+            $warnings = $validate->messages();
+            $show_warning = $warnings->first();
+
+            return show_json('0', $show_warning);
         } else {
             return show_json('1');
         }

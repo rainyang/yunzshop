@@ -20,6 +20,7 @@ use app\frontend\modules\member\services\MemberService;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 use iscms\Alisms\SendsmsPusher as Sms;
+use app\common\exceptions\AppException;
 
 class RegisterController extends ApiController
 {
@@ -35,16 +36,18 @@ class RegisterController extends ApiController
         $uniacid = \YunShop::app()->uniacid;
 
         if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
-            $check_code = MemberService::checkCode();
-
-            if ($check_code['status'] != 1) {
-                return $this->errorJson($check_code['json']);
-            }
+//            $check_code = MemberService::checkCode();
+//
+//            if ($check_code['status'] != 1) {
+//                return $this->errorJson($check_code['json']);
+//            }
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
                 return $this->errorJson($msg['json']);
+            } else {
+                throw new AppException(current($this->formatValidationErrors($msg)));
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
