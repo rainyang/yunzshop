@@ -266,7 +266,7 @@ class MemberModel extends Member
         $extend = 'png';
         $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
 
-        $path = request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/qr/';
+        $path = $path = storage_path('app/public/qr/');
         echo QrCode::format($extend)->size(100)->generate($url,  $path . $filename);
 
         return $path . $filename;
