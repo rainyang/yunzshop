@@ -27,7 +27,7 @@ class DetailController extends BaseController
         )->find($orderId);
         $order->button_models = $order->button_models;
         $order = $order->toArray();
-        //dd($order);
+//        dd($order);
         //exit;
         return view('order.detail', [
             'order' => $order,

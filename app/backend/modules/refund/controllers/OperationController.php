@@ -14,11 +14,29 @@ use app\common\models\refund\RefundApply;
  */
 class OperationController extends BaseController
 {
-    public function pass(\Request $request)
+    public function entrance(\Request $request)
     {
         $this->validate($request, [
             'refund_id' => 'required|filled|integer'
         ]);
+        dd($request->toArray());
+//        switch ($request) {
+//            case 'first_level':
+//                $hierarchy = '1';//分销层级
+//                break;
+//            case 'second_level':
+//                $hierarchy = '2';//分销层级
+//                break;
+//            default:
+//                $hierarchy = '3';//分销层级
+//        }
+        
+        
+        $this->pass();
+    }
+
+    public function pass()
+    {
         
         if(RefundOperationService::refundPass()){
             return $this->message('操作成功');
