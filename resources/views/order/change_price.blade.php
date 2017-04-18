@@ -22,30 +22,30 @@
                                 <tr>
                                     <th style='width:30%;'>商品名称</th>
                                     <th style='width:15%;'>单价</th>
-                                    <th style='width:8%;'>数量</th>
+                                    <th style='width:10%;'>数量</th>
                                     <th style='width:20%;'>小计</th>
                                     <th style='width:10%;'>加价或减价</th>
                                     <th style='width:15%;'>运费</th>
                                 </tr>
-                                @foreach($order_goods as $goods)
+                                @foreach($order_goods_model as $order_goods)
                                     <tr>
-                                        <td>{{$goods['title']}}</td>
+                                        <td>{{$order_goods->hasOneGoods->title}}</td>
                                         <td class='realprice'>
-                                            {{number_format($goods['oldprice']/$goods['total'],2)}}
+                                            {{number_format($order_goods->price/$order_goods->total,2)}}
                                         </td>
-                                        <td>{{$goods['total']}}</td>
+                                        <td>{{$order_goods->total}}</td>
                                         <td>
-                                            {{$goods['realprice']}}
-                                            @if ($goods['realprice'] != $goods['oldprice'])
+                                            {{$order_goods->price}}
+                                            {{--@if ($goods['realprice'] != $goods['oldprice'])--}}
                                             <label class='label label-danger'>改价</label>
-                                            @endif
+                                            {{--@endif--}}
                                         </td>
 
                                         <td valign="top" >
-                                            <input type='text' class='form-control changeprice_orderprice' name="changegoodsprice[{{$goods['id']}}}]"  />
+                                            <input type='text' class='form-control changeprice_orderprice' name="changegoodsprice[{{$order_goods->id}}}]"  />
                                         </td>
-                                        <td valign="top" rowspan='{{$item['goodsnum'][$goods['orderid']]}}' style='vertical-align: top' >
-                                            <input type='text' class='form-control'  value="{{$item['dispatchprice']}}" name='changedispatchprice' />
+                                        <td valign="top" rowspan='{{$order_goods->hasOneGoods->goods_sn[$order_goods->hasOneGoods->order_id]}}' style='vertical-align: top' >
+                                            <input type='text' class='form-control'  value="{{$order_goods->hasOneGoodsDispatch?$order_goods->hasOneGoodsDispatch->dispatch_price:0.00}}" name='changedispatchprice' />
                                             <a href='javascript:;' onclick="$(this).prev().val('0');mc_calc()">直接免运费</a>
                                         </td>
                                     </tr>
@@ -53,7 +53,7 @@
                                 <tr>
                                     <td colspan='2'></td>
                                     <td colspan='' style='color:green'>应收款</td>
-                                    <td colspan='' style='color:green'>{{$item['price']}}</td>
+                                    <td colspan='' style='color:green'>{{number_format($order_model->price)}}</td>
                                     <td colspan='2'  style='color:red'>改价后价格不能小于0元</td>
                                 </tr>
 
@@ -74,10 +74,10 @@
                         <div class="col-xs-12 col-sm-9 col-md-8 col-lg-12">
                             <div class="form-control-static">
 
-                                <b>购买者信息</b>  {{$item['addressdata']['address']}} {{$item['addressdata']['realname']}} {{$item['addressdata']['mobile']}}<br/>
-                                <b>买家实付</b>： <span id='orderprice'>{{$item['price']-$item['dispatchprice']}}</span> + <span id='dispatchprice'>{{$item['dispatchprice']}}</span> <span id='changeprice'></span> = <span id='lastprice'>{{$item['price']}}</span><br/>
+                                <b>购买者信息</b>  {{$order_model->address->address}} {{$order_model->address->realname}} {{$order_model->address->mobile}}<br/>
+                                <b>买家实付</b>： <span id='orderprice'>{{$order_model->price-$order_model->dispatch_price}}</span> + <span id='dispatchprice'>{{$order_model->dispatch_price}}</span> <span id='changeprice'></span> = <span id='lastprice'>{{$order_model->price}}</span><br/>
                                 <b>买家实付</b> = 原价 + 运费 + 涨价或减价<br/><br/>
-                                <b><span style='color:red'>*</span>该订单最多支持99次改价，您已经修改 <span style='color:red'>{{$item['ordersn2']}}</span> 次<br/>
+                                <b><span style='color:red'>*</span>该订单最多支持99次改价，您已经修改 <span style='color:red'>{{$change_num}}</span> 次<br/>
                             </div>
                         </div>
                     </div>

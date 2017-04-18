@@ -8,19 +8,20 @@
 
 namespace app\backend\modules\order\controllers;
 
+use app\backend\modules\order\models\Order;
 use app\common\components\BaseController;
 use app\frontend\modules\order\services\OrderService;
 
 class ChangeOrderPriceController extends BaseController
 {
 
-    public function index(\Request $request)
+    public function index()
     {
-        //dd(\YunShop::app()->user->name);
-        list($result,$message) = OrderService::changeOrderPrice($this->param);
-        if($result === false){
-            return $this->errorJson($message);
-        }
-        return $this->successJson($message);
+        $order_model = Order::find(\YunShop::request()->order_id);
+        return view('order.change_price',[
+            'order_goods_model' => $order_model->hasManyOrderGoods,
+            'order_model'       => $order_model,
+            'change_num'        => 1//改价次数
+        ]);
     }
 }
