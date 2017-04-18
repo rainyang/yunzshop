@@ -43,4 +43,6 @@ class OrderGoods extends BaseModel
     public function isOption(){
         return !empty($this->goods_option_id);
     }
+
+
 }
