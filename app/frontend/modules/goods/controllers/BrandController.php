@@ -29,7 +29,7 @@ class BrandController extends ApiController
         $list = Brand::getBrands()->paginate($pageSize)->toArray();
         if($list['data']){
             foreach ($list['data'] as &$item) {
-                $item['thumb'] = tomedia($item['thumb']);
+                $item['logo'] = tomedia($item['logo']);
             }
             return $this->successJson('获取品牌数据成功!', $list);
         }
