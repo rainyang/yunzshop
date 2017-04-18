@@ -24,6 +24,7 @@ class DispatchService
         event($Event);
         //获取反馈
         $dispatch_detail = $Event->getData();
+
         return new OrderDispatch($dispatch_detail);
     }
     public static function getCreatedOrderDispatchModel(Order $order){
