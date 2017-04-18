@@ -8,6 +8,8 @@
 
 namespace app\common\models;
 
+use app\common\models\goods\GoodsDispatch;
+
 class OrderGoods extends BaseModel
 {
     public $table = 'yz_order_goods';
@@ -21,6 +23,7 @@ class OrderGoods extends BaseModel
     ];
     protected $search_fields = ['goods_sn', 'title'];
 
+    //public function
     public function hasOneGoods()
     {
         return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');
@@ -30,6 +33,12 @@ class OrderGoods extends BaseModel
     {
         return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');
     }
+
+    public function hasOneGoodsDispatch()
+    {
+        return $this->hasOne(GoodsDispatch::class, 'goods_id', 'goods_id');
+    }
+
     public function belongsToGood()
     {
         return $this->belongsTo('\app\common\models\Goods', 'goods_id', 'id');
@@ -40,7 +49,9 @@ class OrderGoods extends BaseModel
         return $this->hasOne('\app\common\models\GoodsOption', 'id', 'goods_option_id');
 
     }
-    public function isOption(){
+
+    public function isOption()
+    {
         return !empty($this->goods_option_id);
     }
 
