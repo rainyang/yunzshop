@@ -27,6 +27,7 @@ class UnifyOrderDispatchPrice
             }
             return 0;
         });
+
         //返回给事件
         $event->addData(['price'=>$price]);
         return;

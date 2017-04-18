@@ -21,18 +21,8 @@ abstract class OrderModel extends Order
      */
     protected $orderGoodsModels = [];
 
-    /**
-     * @var \app\frontend\modules\dispatch\services\models\OrderDispatch 运费类实例
-     */
-    protected $orderDispatch;
-    /**
-     * @var OrderDiscount 优惠类实例
-     */
-    protected $orderDiscount;
 
-    abstract protected function setDispatch();
 
-    abstract protected function setDiscount();
 
     abstract public function setOrderGoodsModels(array $orderGoodsModels);
 
@@ -50,32 +40,7 @@ abstract class OrderModel extends Order
         return $result;
     }
 
-    /**
-     * 计算订单优惠金额
-     * @return number
-     */
-    protected function getDiscountPrice()
-    {
-        return $this->orderDiscount->getDiscountPrice();
-    }
 
-    /**
-     * 获取订单抵扣金额
-     * @return number
-     */
-    protected function getDeductionPrice()
-    {
-        return $this->orderDiscount->getDeductionPrice();
-    }
-
-    /**
-     * 计算订单运费
-     * @return int|number
-     */
-    protected function getDispatchPrice()
-    {
-        return $this->orderDispatch->getDispatchPrice();
-    }
 
     /**
      * 计算订单成交价格

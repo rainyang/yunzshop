@@ -41,23 +41,15 @@ class BaseController extends Controller
         return $validator->errors()->all();
     }
 
-    /**
-     * 显示信息并跳转
-     *
-     * @param $message
-     * @param string $redirect
-     * @param string $status success  error danger warning  info
-     * @return mixed
-     */
-    public function message($message, $redirect = '', $status = 'success')
-    {
 
-        return view('message', [
-            'redirect' => $redirect,
-            'message' => $message,
-            'status' => $status
-        ])->render();
-    }
+
+    /**
+     * 后台url参数验证
+     * @param \Request $request
+     * @param array $rules
+     * @param array $messages
+     * @param array $customAttributes
+     */
     public function validate(\Request $request, array $rules, array $messages = [], array $customAttributes = [])
     {
         $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);

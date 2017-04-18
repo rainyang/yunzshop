@@ -14,12 +14,12 @@ use app\frontend\modules\dispatch\services\DispatchService;
 
 class CreatedOrderModel extends OrderModel
 {
-    private $_Order;
+    private $order;
     protected $orderGoodsModels = [];
 
     public function __construct($Order, $OrderGoodsModels)
     {
-        $this->_Order = $Order;
+        $this->order = $Order;
         parent::__construct($OrderGoodsModels);
     }
 
@@ -29,65 +29,44 @@ class CreatedOrderModel extends OrderModel
 
     }
 
-    public function getOrder()
-    {
-        return $this->_Order;
+    protected function getDiscountPrice(){
+        return $this->discount_price;
     }
+    protected function getDispatchPrice(){
+        return $this->dispatch_price;
 
-    protected function setDiscount()
-    {
-        $this->orderDiscount = DiscountService::getCreatedOrderDiscountModel($this->getOrder());
     }
-
-    public function addChangePriceInfo($price)
-    {
-        $change_price = $price - $this->_Order->price;
-
-        $detail = [
-            'name' => '订单改价',
-            'value' => "{$this->_Order->price}->{$price}",
-            'price' => (string)$change_price,
-            'plugin' => '0',
-        ];
-        $this->orderDiscount->addDiscountDetail($detail);
+    protected function getChangePrice(){
+        //todo
+        return 0;
     }
-
-    public function addChangeDispatchPriceInfo($dispatch_price)
-    {
-        $change_dispatch_price = $dispatch_price - $this->_Order->dispatch_price;
-        $dispatch_price = [
-            'name' => '运费改价',
-            'value' => "{$this->_Order->dispatch_price}->{$dispatch_price}",
-            'price' => (string)$change_dispatch_price,
-            'plugin' => '0',
-        ];
-        $this->orderDispatch->addDispatchDetail($dispatch_price);
+    protected function getChangeVipPrice(){
+        //todo
+        return 0;
     }
+    protected function getVipPrice(){
+        return parent::getVipPrice() - $this->getChangeVipPrice();
 
-    protected function setDispatch()
-    {
-        $this->orderDispatch = DispatchService::getCreatedOrderDispatchModel($this->getOrder());
     }
-
-    public function update()
+    protected function getPrice(){
+        return parent::getPrice() - $this->getChangePrice();
+    }
+    public function changePrice()
     {
         $data = [
-            //配送类获取订单配送信息
-            'dispatch_details' => $this->orderDispatch->getDispatchDetails(),
-            //优惠类记录订单配送信息
-            'discount_details' => $this->orderDiscount->getDiscountDetails(),
             'discount_price' => $this->getDiscountPrice(),
             'dispatch_price' => $this->getDispatchPrice(),
+            'deduction_price' => $this->getDeductionPrice(),
             'price' => $this->getPrice(),
             'goods_price' => $this->getVipPrice(),
         ];
         dump('订单改价信息:');
         dump($data);
-        $this->_updateOrderGoods();
+        $this->updateOrderGoods();
     }
-    private function _updateOrderGoods(){
-        foreach ($this->orderGoodsModels as $_orderGoodsModel){
-            $_orderGoodsModel->update();
+    private function updateOrderGoods(){
+        foreach ($this->orderGoodsModels as $orderGoodsModel){
+            //$orderGoodsModel->update();
         }
     }
 }
