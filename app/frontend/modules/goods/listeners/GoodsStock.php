@@ -53,6 +53,8 @@ class GoodsStock
         $goods = $orderGoods->hasOneGoods;
 
         $goods->reduceStock($orderGoods->total);
+        $goods->addSales($orderGoods->total);
+
         $goods->save();
     }
     public function subscribe($events)
