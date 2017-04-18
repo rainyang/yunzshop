@@ -210,6 +210,8 @@ class MemberController extends BaseController
     {
         $uid = \YunShop::request()->member_id;
 
+        Member::getMemberById();
+
         return view('member.agent', [
             'request' => \YunShop::request()
         ])->render();

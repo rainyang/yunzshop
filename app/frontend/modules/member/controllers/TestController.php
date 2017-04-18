@@ -127,9 +127,10 @@ exit;
        $filename = \YunShop::app()->uniacid  . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
 
        $path = storage_path('app/public/qr/');
-       echo QrCode::format($extend)->size(100)->generate($url,  $path . $filename);
+      // echo QrCode::format($extend)->size(100)->generate($url,  $path . $filename);
 
-       return $path . $filename;
+
+       echo request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'addons')) . $filename;
    }
 
     /**

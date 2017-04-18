@@ -9,6 +9,7 @@
 namespace app\backend\modules\finance\controllers;
 
 
+use app\backend\modules\finance\services\BalanceService;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\member\models\MemberGroup;
 use app\backend\modules\member\models\MemberLevel;
@@ -16,10 +17,9 @@ use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
+use app\common\models\finance\Balance;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
-use app\common\models\Withdraw;
-use app\common\services\finance\Balance;
 
 /*
  * 余额基础设置页面
@@ -30,6 +30,10 @@ use app\common\services\finance\Balance;
  * */
 class BalanceController extends BaseController
 {
+
+    private $_memebr_model;
+
+    private $_recharge_model;
     /**
      * 余额基础设置页面[完成]
      *
@@ -128,38 +132,105 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function recharge()
     {
-        //todo 缺少会员头像路径转换
-        $memberId = \YunShop::request()->member_id;
-        $rechargeMoney = trim(\YunShop::request()->num);
-
-        $memberInfo = Member::getMemberInfoById($memberId);
-        if (!$memberInfo) {
-            $this->error('未获取到会员信息，请刷新重试');
+        $memberInfo =$this->getMemberInfo();
+        if (!$this->_memebr_model) {
+            return $this->message('未获取到会员信息', Url::absoluteWeb('finance.balance.member'), 'error');
         }
-        //todo 需要获取商城登陆操作者ID  operator_id 字段
-        $data = array(
-            'member_id'     => $memberId,
-            'change_money'  => $rechargeMoney,
-            'operator'      => BalanceRecharge::PAY_TYPE_SHOP,
-            'operator_id'   => '0', // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
-            'remark'        => '后台充值' . '余额' . $rechargeMoney .'元',
-            'service_type'  => \app\common\models\finance\Balance::BALANCE_RECHARGE,
-            'recharge_type' => BalanceRecharge::PAY_TYPE_SHOP
-        );
-        if ($rechargeMoney && $memberInfo['uid']) {
-            $result = (new Balance())->changeBalance($data);
-            if ($result === true ) {
-                return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $memberId)), 'success');
-            } else {
-                $this->error($result);
+        if ($this->_memebr_model && \YunShop::request()->num) {
+            $result = $this->getMemberInfo() ? $this->rechargeStart() : '未获取到会员信息，轻刷新重试';
+            if ($result === true) {
+                return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $this->_memebr_model->uid)), 'success');
             }
+            $this->error($result);
         }
+
 
         return view('finance.balance.recharge', [
             'rechargeMenu'  => $this->getRechargeMenu(),
             'memberInfo'    => $memberInfo,
         ])->render();
     }
+
+    private function rechargeStart()
+    {
+        $this->_recharge_model = new BalanceRecharge();
+
+        $this->_recharge_model->fill($this->getRechargeData());
+        $validator = $this->_recharge_model->validator();
+        if ($validator->fails()) {
+            return $validator->messages();
+        }
+        if ($this->_recharge_model->save()) {
+            $result = (new BalanceService())->changeBalance($this->getChangeBalanceData());
+            return $result === true ? $this->updateRechargeStatus() : $result;
+        }
+        return '充值记录写入出错，请联系管理员';
+    }
+
+    private function updateRechargeStatus()
+    {
+        $this->_recharge_model->status = BalanceRecharge::PAY_STATUS_SUCCESS;
+        if ($this->_recharge_model->save()) {
+            return true;
+        }
+        return '充值状态修改失败';
+    }
+
+    private function getMemberInfo()
+    {
+        return $this->_memebr_model = Member::getMemberInfoById(\YunShop::request()->member_id) ?: false;
+    }
+
+    //充值记录数据
+    private function getRechargeData()
+    {
+        $rechargeMoney = trim(\YunShop::request()->num);
+        return array(
+            'uniacid'       => \YunShop::app()->uniacid,
+            'member_id'     => \YunShop::request()->member_id,
+            'old_money'     => $this->_memebr_model->credit2,
+            'money'  => $rechargeMoney,
+            'new_money'     => $this->getNewMoney(),
+            'type'          => BalanceRecharge::PAY_TYPE_SHOP,
+            'ordersn'       => $this->getRechargeOrderSN(),
+            'status'        => BalanceRecharge::PAY_STATUS_ERROR,
+        );
+    }
+
+    //获取计算后的余额值
+    private function getNewMoney()
+    {
+        $newMoney = $this->_memebr_model->credit2 + trim(\YunShop::request()->num);
+        return $newMoney > 0 ? $newMoney : 0;
+    }
+
+    //生成充值订单号
+    private function getRechargeOrderSN()
+    {
+        $ordersn = createNo('RV', true);
+        while (1) {
+            if (!BalanceRecharge::validatorOrderSn($ordersn)) {
+                break;
+            }
+            $ordersn = createNo('RV', true);
+        }
+        return $ordersn;
+    }
+
+    private function getChangeBalanceData()
+    {
+        return array(
+            'member_id'     => $this->_recharge_model->member_id,
+            'serial_number' => $this->_recharge_model->ordersn,
+            'money'         => $this->_recharge_model->money,
+            'remark'        => '后台充值' . $this->_recharge_model->money . "元",
+            'service_type'  => Balance::BALANCE_RECHARGE,
+            'operator'      => Balance::OPERATOR_SHOP,
+            'operator_id'   => \YunShop::app()->uid
+        );
+    }
+
+
 
 
 
@@ -209,6 +280,7 @@ class BalanceController extends BaseController
             'search' => $search
         ])->render();
     }
+
 
     /**
      * 余额充值菜单
