@@ -210,9 +210,16 @@ class MemberController extends BaseController
     {
         $uid = \YunShop::request()->member_id;
 
-        Member::getMemberById();
+        $member_info = Member::getUserInfos($uid)->first();
 
+        if (empty($member_info)) {
+            return $this->message('会员不存在','', 'error');
+        }
+
+        $agent_info = Member::getAgentInfoByMemberId($uid)->first();
+echo '<pre>';print_r($agent_info->toArray());exit;
         return view('member.agent', [
+            'member' => $member_info,
             'request' => \YunShop::request()
         ])->render();
     }
