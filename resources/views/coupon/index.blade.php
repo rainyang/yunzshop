@@ -92,12 +92,12 @@
                                 <tr>
                                     <td>{{$row['id']}}</td>
                                     <td>
-                                        <input type="text" class="form-control" name="displayorder[{$row['id']}]" value="{{$row['display_order']}}">
+                                        {{--<input type="text" class="form-control" name="displayorder[{$row['id']}]" value="{{$row['display_order']}}">--}}
+                                        {{$row['display_order']}}
                                     </td>
 
                                     <td>
-
-                                        <br/>{{$row['name']}}
+                                        {{$row['name']}}
                                     </td>
                                     <td>@if($row['enough']>0)
                                         <label class="label label-danger">满{{$row['enough']}}可用</label>

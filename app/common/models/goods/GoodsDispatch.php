@@ -15,7 +15,8 @@ use Illuminate\Contracts\Validation\Validator;
 class GoodsDispatch extends BaseModel
 {
     public $table = 'yz_goods_dispatch';
-
+    const UNIFY_TYPE = 1;
+    const TEMPLATE_TYPE = 2;
     /**
      *  不可填充字段.
      *
@@ -46,7 +47,7 @@ class GoodsDispatch extends BaseModel
             'dispatch_type' => '配送方式',
             'dispatch_price' => '统一配送价格',
             'dispatch_id' => '配送模板',
-            'is_cod' => '是否支持货到付款',
+            //'is_cod' => '是否支持货到付款',
         ];
     }
 
@@ -57,7 +58,7 @@ class GoodsDispatch extends BaseModel
             'dispatch_type' => 'required|integer|min:0|max:1',
             'dispatch_price' => 'numeric|min:0',
             'dispatch_id' => 'integer',
-            'is_cod' => 'required|integer|min:0|max:1',
+            //'is_cod' => 'required|integer|min:0|max:1',
         ];
     }
 

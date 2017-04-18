@@ -2,6 +2,7 @@
 namespace app\backend\modules\refund\services;
 
 use app\common\exceptions\AppException;
+use app\frontend\modules\refund\services\operation\RefundPass;
 use app\frontend\modules\refund\services\operation\RefundSend;
 
 /**
@@ -13,7 +14,7 @@ use app\frontend\modules\refund\services\operation\RefundSend;
 class RefundOperationService
 {
     public static function refundPass(){
-        $refundSend = RefundSend::find(\Request::query('refund_id'));
+        $refundSend = RefundPass::find(\Request::query('refund_id'));
         if(!$refundSend){
             throw new AppException('售后申请记录不存在');
         }

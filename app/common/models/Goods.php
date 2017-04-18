@@ -33,8 +33,14 @@ class Goods extends BaseModel
     public $widgets = [];
 
     protected $search_fields = ['title'];
-
-
+    /**
+     * 实物
+     */
+    const REAL_GOODS = 1;
+    /**
+     * 虚拟物品
+     */
+    const VIRTUAL_GOODS = 2;
     /**
      * 定义字段名
      *
@@ -209,15 +215,38 @@ class Goods extends BaseModel
         return self::where('id', $goodsId)
             ->update(['comment_num' => DB::raw('`comment_num` + 1')]);
     }
+
+    /**
+     * 减库存
+     * @param $num
+     * @return bool
+     * @throws AppException
+     */
     public function reduceStock($num)
     {
-        //拍下立减
         if ($this->reduce_stock_method != 2) {
             if ($this->stock - $num < 0) {
                 throw new AppException('下单失败,商品:' . $this->title . ' 库存不足');
             }
             $this->stock -= $num;
         }
+        return true;
     }
 
+
+    public function addSales($num){
+        $this->real_sales += $num;
+        $this->show_sales += $num;
+        return true;
+    }
+    /**
+     * 判断实物
+     */
+    public function isRealGoods()
+    {
+        if(!isset($this->type)){
+            return false;
+        }
+        return $this->type == self::REAL_GOODS;
+    }
 }

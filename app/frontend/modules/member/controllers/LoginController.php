@@ -14,7 +14,9 @@ use app\frontend\modules\member\services\factory\MemberFactory;
 
 class LoginController extends ApiController
 {
+    protected $publicController = ['Login'];
     protected $publicAction = ['index'];
+    protected $ignoreAction = ['index'];
 
     public function index()
     {

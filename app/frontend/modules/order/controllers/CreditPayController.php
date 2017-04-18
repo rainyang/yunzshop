@@ -37,7 +37,7 @@ class CreditPayController extends PayController
 
         $query_str = [
             'order_no' => $this->order()->order_sn,
-            'amount' => -($this->order()->price),
+            'amount' => $this->order()->price,
             'subject' => '微信支付',
             'body' => $this->order()->hasManyOrderGoods[0]->title . ':' . \YunShop::app()->uniacid,
             'extra' => ['type' => 1],
@@ -45,7 +45,7 @@ class CreditPayController extends PayController
             'operator' => Balance::OPERATOR_ORDER_,//订单
             'operator_id' => $this->order()->id,
             'remark' => '订单(id:' . $this->order()->id . '),余额支付' . $this->order()->price . '元',
-            'service_type' => Balance::BALANCE_CONSUME,
+            'service_type' => Balance::BALANCE_CONSUME  ,
         ];
         $pay = PayFactory::create($payType);
         $result = $pay->doPay($query_str);

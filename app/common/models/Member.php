@@ -98,8 +98,26 @@ class Member extends BackendModel
                 },
                 'hasOneFans' => function ($query4) {
                     return $query4->select(['uid', 'openid', 'follow as followed']);
+                },
+                'hasOneOrder' => function ($query5) {
+                    return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                        ->uniacid()
+                        ->where('status', 3)
+                        ->groupBy('uid');
                 }
             ]);
+    }
+
+    /**
+     * 获取该公众号下所有用户的 member ID
+     *
+     * @return mixed
+     */
+    public static function getMembersId()
+    {
+        return static::uniacid()
+                    ->select (['uid'])
+                    ->get();
     }
 
     /**
@@ -184,10 +202,10 @@ class Member extends BackendModel
     public function rules()
     {
         return [
-            'mobile' => 'required|digits:11|regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/',
+            'mobile' => 'regex:/^1[34578]\d{9}$/',
             'realname' => 'required',
             'avatar' => 'required',
-            'telephone' => 'required|digits:11|regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/',
+            'telephone' => 'regex:/^1[34578]\d{9}$/',
         ];
     }
 }
