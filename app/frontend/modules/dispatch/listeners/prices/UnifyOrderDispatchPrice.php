@@ -10,6 +10,7 @@ namespace app\frontend\modules\dispatch\listeners\prices;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\common\models\goods\GoodsDispatch;
+use app\frontend\modules\order\services\OrderService;
 
 class UnifyOrderDispatchPrice
 {
@@ -27,15 +28,21 @@ class UnifyOrderDispatchPrice
             }
             return 0;
         });
+
         //返回给事件
         $event->addData(['price'=>$price]);
         return;
     }
 
-    //订单满足本插件 todo 需要重写
-    public function needDispatch()
+    private function needDispatch()
     {
-        return true;
+        $allGoodsIsReal = OrderService::allGoodsIsReal($this->event->getOrderModel()->getOrderGoodsModels());
+
+        if($allGoodsIsReal){
+            return true;
+        }
+
+        return false;
     }
 
 }

@@ -5,15 +5,12 @@
  * Date: 2017/3/14
  * Time: 下午5:37
  */
-
 namespace app\backend\modules\order\models;
 
 
-use app\common\models\Order;
-
 class OrderOperationLog extends \app\common\models\order\OrderOperationLog
 {
-    public static function insertOperationLog(Order $order_model)
+    public static function insertOperationLog( $order_model)
     {
         $log = [
             'order_id'                  => $order_model->id,

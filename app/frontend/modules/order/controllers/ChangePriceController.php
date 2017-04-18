@@ -24,6 +24,7 @@ class ChangePriceController extends ApiController
             'dispatch_price'=>'8'
 
         ];
+
         list($result,$message) = OrderService::changeOrderPrice($param);
         if($result === false){
             return $this->errorJson($message);

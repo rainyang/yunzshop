@@ -219,6 +219,7 @@ class Goods extends BaseModel
     /**
      * 减库存
      * @param $num
+     * @return bool
      * @throws AppException
      */
     public function reduceStock($num)
@@ -229,6 +230,14 @@ class Goods extends BaseModel
             }
             $this->stock -= $num;
         }
+        return true;
+    }
+
+
+    public function addSales($num){
+        $this->real_sales += $num;
+        $this->show_sales += $num;
+        return true;
     }
     /**
      * 判断实物

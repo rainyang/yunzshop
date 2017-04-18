@@ -12,6 +12,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\member\BecomeAgent;
+use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
@@ -115,7 +116,21 @@ exit;
      */
    public function getQR()
    {
-       echo QrCode::format('png')->size(100)->generate('http:www.baidu.com', storage_path('qr/' . time().'.png'));
+       $url = Url::absoluteApp('/home');
+       $url = $url . '?mid=' . \YunShop::app()->getMemberId();
+
+       if (!empty($extra)) {
+           $extra = '_' . $extra;
+       }
+
+       $extend = 'png';
+       $filename = \YunShop::app()->uniacid  . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
+
+       $path = storage_path('app/public/qr/');
+      // echo QrCode::format($extend)->size(100)->generate($url,  $path . $filename);
+
+
+       echo request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'addons')) . $filename;
    }
 
     /**
@@ -446,5 +461,12 @@ $pay->doPay($data);
     public function domain()
     {
         echo request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
+    }
+
+    function createDir($dest)
+    {
+        if (!is_dir($dest)) {
+            (@mkdir($dest, 0777, true));
+        }
     }
 }

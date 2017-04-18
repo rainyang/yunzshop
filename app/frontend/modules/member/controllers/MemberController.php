@@ -368,11 +368,16 @@ class MemberController extends ApiController
             $member_shop_info_validator = $member_shop_info_model->validator($member_shop_info_model->getAttributes());
 
             if ($member_validator->fails()) {
-                return $this->errorJson($member_validator->messages());
+                $warnings = $member_validator->messages();
+                $show_warning = $warnings->first();
+
+                return $this->errorJson($show_warning);
             }
 
             if ($member_shop_info_validator->fails()) {
-                return $this->errorJson($member_shop_info_model->messages());
+                $warnings = $member_shop_info_validator->messages();
+                $show_warning = $warnings->first();
+                return $this->errorJson($show_warning);
             }
 
             if ($member_model->save() && $member_shop_info_model->save()) {

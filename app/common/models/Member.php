@@ -98,6 +98,12 @@ class Member extends BackendModel
                 },
                 'hasOneFans' => function ($query4) {
                     return $query4->select(['uid', 'openid', 'follow as followed']);
+                },
+                'hasOneOrder' => function ($query5) {
+                    return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                        ->uniacid()
+                        ->where('status', 3)
+                        ->groupBy('uid');
                 }
             ]);
     }
@@ -183,7 +189,7 @@ class Member extends BackendModel
         return [
             'mobile' => '绑定手机号',
             'realname' => '真实姓名',
-            'avatar' => '头像',
+            //'avatar' => '头像',
             'telephone' => '联系手机号',
         ];
     }
@@ -198,7 +204,7 @@ class Member extends BackendModel
         return [
             'mobile' => 'regex:/^1[34578]\d{9}$/',
             'realname' => 'required',
-            'avatar' => 'required',
+            //'avatar' => 'required',
             'telephone' => 'regex:/^1[34578]\d{9}$/',
         ];
     }

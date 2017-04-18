@@ -14,9 +14,13 @@ use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\OrderCreatedEvent;
 
 use app\common\exceptions\AppException;
+use app\common\models\DispatchType;
 use app\common\models\Goods;
+use app\common\models\Order;
 use app\common\models\OrderAddress;
+use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\member\models\MemberAddress;
+use app\frontend\modules\order\services\OrderService;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class Express
@@ -46,8 +50,6 @@ class Express
 
         $data = $event->getOrderModel()->getMember()->defaultAddress;
         if (!isset($data)) {
-            dd($data);
-            exit;
             return;
         }
 
@@ -57,12 +59,8 @@ class Express
 
     private function needDispatch()
     {
+        $allGoodsIsReal = OrderService::allGoodsIsReal($this->event->getOrderModel()->getOrderGoodsModels());
 
-        $allGoodsIsReal = ($this->event->getOrderModel()->getOrderGoodsModels()->contains(function ($orderGoods){
-
-            return $orderGoods->belongsToGood->isRealGoods();
-        }));
-        
         if($allGoodsIsReal){
             return true;
         }
@@ -100,7 +98,14 @@ class Express
         $order_address->address = implode(' ', [$member_address->province, $member_address->city, $member_address->district, $member_address->address]);
         $order_address->mobile = $member_address->mobile;
         $order_address->realname = $member_address->username;
-        $order_address->save();
+        if(!$order_address->save()){
+            throw new AppException('订单地址保存失败');
+        }
+        $order = Order::find($this->event->getOrderModel()->id);
+        $order->dispatch_type_id = DispatchType::EXPRESS;
+        if(!$order->save()){
+            throw new AppException('订单配送方式保存失败');
+        }
         return true;
     }
 

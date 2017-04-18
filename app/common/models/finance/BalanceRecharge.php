@@ -21,11 +21,10 @@ class BalanceRecharge extends BaseModel
 
     protected $guarded = [''];
 
+
+    //后台充值
     const PAY_TYPE_SHOP = 0;
 
-    const PAY_TYPE_ORDER = -1;
-
-    const PAY_TYPE_MEMBER = -2;
 
 
 
