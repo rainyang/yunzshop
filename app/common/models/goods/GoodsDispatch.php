@@ -15,7 +15,8 @@ use Illuminate\Contracts\Validation\Validator;
 class GoodsDispatch extends BaseModel
 {
     public $table = 'yz_goods_dispatch';
-
+    const UNIFY_TYPE = 1;
+    const TEMPLATE_TYPE = 2;
     /**
      *  不可填充字段.
      *
