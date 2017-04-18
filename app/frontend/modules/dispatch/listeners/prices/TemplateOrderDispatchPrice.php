@@ -24,8 +24,7 @@ class TemplateOrderDispatchPrice
         }
         $price = $event->getOrderModel()->getOrderGoodsModels()->sum(function ($orderGoods) {
             if ($orderGoods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::TEMPLATE_TYPE) {
-                $this->getPrice($orderGoods);
-                return $orderGoods->hasOneGoodsDispatch->dispatch_price;
+                return $this->getPrice($orderGoods);
             }
             return 0;
         });
@@ -46,24 +45,23 @@ class TemplateOrderDispatchPrice
         if ($dispatch) {
             if ($dispatch->calculate_type == 1) {
                 if ($orderGoods->total > $dispatch->first_piece) {
-                    $price = $dispatch->first_piece_price + ceil(($orderGoods->total - $dispatch->first_piece) / $dispatch->another_piece) * $dispatch->another_piece_price;
+                    return $dispatch->first_piece_price + ceil(($orderGoods->total - $dispatch->first_piece) / $dispatch->another_piece) * $dispatch->another_piece_price;
                 } else {
-                    $price = $dispatch->first_piece_price;
+                    return $dispatch->first_piece_price;
                 }
             } else if ($dispatch->calculate_type == 0) {
-                echo '<pre>';print_r($orderGoods->hasOneGoods->weight);exit;
                 if ($orderGoods->hasOneGoods->weight <= 0) {
-                    $price = 0;
+                    return 0;
                 }
                 $weight = $orderGoods->hasOneGoods->weight * $orderGoods->total;
                 if ($weight > $dispatch->first_weight) {
-                    $price = $dispatch->first_weight_price + ceil(($weight - $dispatch->first_weight) / $dispatch->another_weight) * $dispatch->another_weight_price;
+                    return $dispatch->first_weight_price + ceil(($weight - $dispatch->first_weight) / $dispatch->another_weight) * $dispatch->another_weight_price;
                 } else {
-                    $price = $dispatch->first_weight_price;
+                    return $dispatch->first_weight_price;
                 }
             }
-            echo '<pre>';print_r($price);exit;
         }
+        return 0;
     }
 
     //订单满足本插件 todo 需要重写

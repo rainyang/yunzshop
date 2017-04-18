@@ -40,11 +40,42 @@ abstract class BalanceService
     //获取会员信息
     abstract protected function getMemberInfo();
 
-    //附值 Type， 收入：Balance::TYPE_INCOME， 支出：Balance::TYPE_EXPENDITURE
-    protected function attachedType()
+    protected function judgeMethod()
     {
-        return $this->type = $this->data['money'] > 0 ? Balance::TYPE_INCOME : Balance::TYPE_EXPENDITURE;
 
+        $this->attachedMoney();
+
+        if (in_array($this->service_type,
+            [
+                Balance::BALANCE_RECHARGE,
+                Balance::BALANCE_TRANSFER,
+                Balance::BALANCE_AWARD,
+                Balance::BALANCE_INCOME,
+                Balance::BALANCE_CANCEL_DEDUCTION
+            ])
+        ) {
+            $this->type = Balance::TYPE_INCOME;
+            return $this->addition();
+        }
+        if (in_array($this->service_type,
+            [
+                Balance::BALANCE_CONSUME,
+                Balance::BALANCE_DEDUCTION,
+                Balance::BALANCE_WITHDRAWAL,
+                Balance::BALANCE_CANCEL_AWARD
+            ])
+        ) {
+            $this->type = Balance::TYPE_EXPENDITURE;
+            return $this->subtraction();
+        }
+
+        return '服务类型不存在';
+
+    }
+
+    protected function attachedMoney()
+    {
+        return $this->money = $this->data['money'] > 0 ? $this->data['money'] : -$this->data['money'];
     }
 
     //余额+
