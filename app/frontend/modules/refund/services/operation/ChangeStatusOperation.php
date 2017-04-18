@@ -18,7 +18,7 @@ abstract class ChangeStatusOperation extends RefundOperation
      */
     protected $statusAfterChanged;
     /**
-     * 更新订单表
+     * 更新申请表
      * @return bool
      */
     protected function updateTable(){
