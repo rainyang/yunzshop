@@ -15,6 +15,7 @@ class OperationController extends BaseController
 {
     public function pass(\Request $request)
     {
+        echo "<pre>"; print_r($request);exit;
         $this->validate($request, [
             'refund_id' => 'required|filled|integer'
         ]);
