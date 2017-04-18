@@ -12,7 +12,7 @@
 <!-- 新增加右侧顶部三级菜单结束 -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
 
-            <div class='alert alert-info'>
+            <div class='alert alert-info alert-important'>
                 请将公众平台模板消息所在行业选择为： IT科技/互联网|电子商务
             </div>
 

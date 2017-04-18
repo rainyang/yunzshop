@@ -13,9 +13,9 @@ use app\common\models\Order;
 
 class DetailController extends BaseController
 {
-    public function index()
+    public function index(\Request $request)
     {
-        $orderId = \YunShop::request()->id;
+        $orderId = $request->query('id');
         //$order_id = 1;
         $order = Order::with(
             [
@@ -27,6 +27,8 @@ class DetailController extends BaseController
         )->find($orderId);
         $order->button_models = $order->button_models;
         $order = $order->toArray();
+        //dd($order);
+        //exit;
         return view('order.detail', [
             'order' => $order,
             'lang' => $this->_lang(),

@@ -50,7 +50,9 @@ class Handler extends ExceptionHandler
         if ($exception instanceof AppException) {
             return $this->errorJson($exception->getMessage());
         }
+        if($exception instanceof AdminException){
 
+        }
         if ($this->isHttpException($exception)) {
             return $this->renderHttpException($exception);
         }

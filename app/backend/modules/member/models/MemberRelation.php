@@ -143,45 +143,6 @@ class MemberRelation extends BackendModel
         return false;
     }
 
-
-//    public function createChildAgent($mid, MemberShopInfo $model)
-//    {
-//        $child_info = $this->getChildAgentInfo();
-//            switch ($child_info) {
-//                case 0:
-//                    $this->becomeChildAgent($mid, $model);
-//                    break;
-//                case 1:
-//                    $list = OrderListModel::getRequestOrderList(0,\YunShop::app()->getMemberId())->get();
-//
-//                    if (!empty($list)) {
-//                        $result = $list->toArray();
-//                        $count = count($result);
-//
-//                        if ($count == 1) {
-//                            $this->becomeChildAgent($mid, $model);
-//                        }
-//                    }
-//                    break;
-//                case 2:
-//                    $list = OrderListModel::getRequestOrderList(1,\YunShop::app()->getMemberId())->get();
-//
-//                    if (!empty($list)) {
-//                        $result = $list->toArray();
-//
-//                        $count = count($result);
-//
-//                        if ($count == 1) {
-//                            $this->becomeChildAgent($mid, $model);
-//                        }
-//                    }
-//                    break;
-//            }
-//
-//        return 0;
-//
-//    }
-
     /**
      * 获取成为下线条件
      *
@@ -192,9 +153,8 @@ class MemberRelation extends BackendModel
         $info = self::getSetInfo()->first();
 
         if (!empty($info)) {
-            $data = $info->toArray();
 
-            return $data['become_child'];
+            return $info->become_child;
         }
     }
 

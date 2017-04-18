@@ -89,13 +89,6 @@ abstract class Pay
     protected $gateUrl;
 
     /**
-     * 统一公众号
-     *
-     * @var integer
-     */
-    protected $uniacid;
-
-    /**
      * url请求地址
      *
      * @var string
@@ -162,10 +155,7 @@ abstract class Pay
      */
     protected function init()
     {
-        $this->uniacid = \YunShop::app()->uniacid;
-        $this->url = $this->_getHttpURL();
-        $this->method = $this->_getHttpMethod();
-        $this->ip = $this->getClientIP();
+
     }
 
     /**
@@ -180,7 +170,7 @@ abstract class Pay
      *
      * @return string
      */
-    private function _getHttpURL()
+    private static function getHttpURL()
     {
         $url = \URL::current();
         $url .= '?' . $_SERVER['QUERY_STRING'];
@@ -193,7 +183,7 @@ abstract class Pay
      *
      * @return mixed
      */
-    private function _getHttpMethod()
+    private static function getHttpMethod()
     {
         return $_SERVER['REQUEST_METHOD'];
     }
@@ -203,7 +193,7 @@ abstract class Pay
      *
      * @return string
      */
-    protected function getClientIP()
+    protected static function getClientIP()
     {
         return \Request::getClientIp();
     }
@@ -301,14 +291,14 @@ abstract class Pay
      *
      * @var void
      */
-    public function payAccessLog()
+    public static function payAccessLog()
     {
         PayAccessLog::create([
-            'uniacid' => $this->uniacid,
+            'uniacid' => \YunShop::app()->uniacid,
             'member_id' => \YunShop::app()->getMemberId(),
-            'url' => $this->url,
-            'http_method' => $this->method,
-            'ip' => $this->ip,
+            'url' => self::getHttpURL(),
+            'http_method' => self::getHttpMethod(),
+            'ip' => self::getClientIP(),
             'input' => file_get_contents('php://input'),
         ]);
     }
@@ -321,16 +311,16 @@ abstract class Pay
      * @param $price
      * @param $operation
      */
-    public function payLog($type, $third_type, $price, $operation)
+    public static function payLog($type, $third_type, $price, $operation)
     {
         PayLog::create([
-            'uniacid' => $this->uniacid,
+            'uniacid' => \YunShop::app()->uniacid,
             'member_id' => \YunShop::app()->getMemberId(),
             'type' => $type,
             'third_type' => $third_type,
             'price' => $price,
             'operation' => $operation,
-            'ip' => $this->ip
+            'ip' => self::getClientIP()
         ]);
     }
 
@@ -343,12 +333,12 @@ abstract class Pay
      * @param $third_type 支付方式
      * @param $price 支付金额
      */
-    public function payOrder($out_order_no, $status, $type, $third_type, $price)
+    public static function payOrder($out_order_no, $status, $type, $third_type, $price)
     {
          return PayOrder::create([
-            'uniacid' => $this->uniacid,
+            'uniacid' => \YunShop::app()->uniacid,
             'member_id' => \YunShop::app()->getMemberId(),
-            'int_order_no' => $this->createPayOrderNo(),
+            'int_order_no' => self::createPayOrderNo(),
             'out_order_no' => $out_order_no,
             'status' => $status,
             'type' => $type,
@@ -366,16 +356,16 @@ abstract class Pay
     /**
      * 支付请求数据记录
      *
-     * @param $order_id  支付单号
-     * @param $type  订单号
-     * @param $third_type 支付类型
+     * @param $out_order_no  订单号
+     * @param $type  支付类型
+     * @param $third_type 支付方式
      * @param $params 请求数据
      */
-    public function payRequestDataLog($order_id, $type, $third_type, $params)
+    public static function payRequestDataLog($out_order_no, $type, $third_type, $params)
     {
         PayRequestDataLog::create([
             'uniacid' => \YunShop::app()->uniacid,
-            'order_id' => $order_id,
+            'out_order_no' => $out_order_no,
             'type' => $type,
             'third_type' => $third_type,
             'params' => $params
@@ -385,16 +375,14 @@ abstract class Pay
     /**
      * 支付响应数据记录
      *
-     * @param $order_id  支付单号
      * @param $out_order_no  订单号
      * @param $third_type 支付方式
      * @param $params 响应结果
      */
-    public function payResponseDataLog($order_id, $out_order_no, $third_type, $params)
+    public static function payResponseDataLog($out_order_no, $third_type, $params)
     {
         PayResponseDataLog::create([
             'uniacid' => \YunShop::app()->uniacid,
-            'order_id' => $order_id,
             'out_order_no' => $out_order_no,
             'third_type' => $third_type,
             'params' => $params
@@ -408,9 +396,9 @@ abstract class Pay
      *
      * @return string
      */
-    private function createPayOrderNo()
+    private static function createPayOrderNo()
     {
-        return 'P' . date('Ymd', time()) . $this->generate_string(23);
+        return 'P' . date('Ymd', time()) . self::generate_string(23);
     }
 
     /**
@@ -471,11 +459,11 @@ abstract class Pay
     protected function log($type, $third_type, $amount, $operation, $order_no, $status)
     {
         //访问日志
-        $this->payAccessLog();
+        self::payAccessLog();
         //支付日志
-        $this->payLog($type, $third_type, $amount, $operation);
+        self::payLog($type, $third_type, $amount, $operation);
         //支付单记录
-        $model = $this->payOrder($order_no, $status, $type, $third_type, $amount);
+        $model = self::payOrder($order_no, $status, $type, $third_type, $amount);
 
         return $model;
     }

@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services\status;
 
 use app\common\models\Order;
 
-class Complete implements StatusService
+class Complete extends Status
 {
     private $order;
     public function __construct(Order $order)
@@ -21,7 +21,7 @@ class Complete implements StatusService
 
     public function getStatusName()
     {
-        return '交易完成'; //todo 需要判断iscomment, 当iscomment==0 时, 显示"待评价"; 当iscomment==1 时, 显示"交易完成"
+        return '交易完成';
     }
 
     public function getButtonModels()
@@ -29,7 +29,7 @@ class Complete implements StatusService
         $result =
             [
                 [
-                    'name' => '评价', //todo 需要判断iscomment, 当iscomment==0 时, 显示"待评价"; 当iscomment==1 时, 显示"追加评价"
+                    'name' => '评价',
                     'api' => '', //todo
                     'value' => static::COMMENT
                 ],
@@ -45,13 +45,9 @@ class Complete implements StatusService
                 ],
 
             ];
-        if(empty($this->order->refund_id)){
-            $result[] = [
-                'name' => '申请退款',
-                'api' => 'order.refund.apply', //todo
-                'value' => static::REFUND
-            ];
-        }
+        $result += self::getCommentButtons($this->order);
+        $result += self::getRefundButtons($this->order);
+
         return $result;
     }
 }

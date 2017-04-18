@@ -74,8 +74,10 @@ class AliPay extends Pay
      */
     public function doPay($data = [])
     {
+        $pay_type = config('app.pay_type');
         $op = "支付宝订单支付 订单号：" . $data['order_no'];
-        $this->log($data['extra']['type'], Pay::PAY_MODE_ALIPAY, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
+
+        $this->log($data['extra']['type'], $pay_type[Pay::PAY_MODE_ALIPAY], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
 
         return $this->_pay->doPay($data);
     }
@@ -86,7 +88,6 @@ class AliPay extends Pay
 
         $op = '支付宝退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
         $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_ALIPAY, $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
-
 
         $alipay = app('alipay.web');
 

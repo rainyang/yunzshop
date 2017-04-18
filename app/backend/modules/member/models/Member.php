@@ -236,7 +236,6 @@ class Member extends \app\common\models\Member
             if($filters['referee'] == '0'){
                 $query->where('parent_id', $filters['referee']);
             } elseif ($filters['referee'] == '1' && !empty($filters['referee_id'])){
-
                 $query->whereIn('parent_id', $filters['referee_id']);
             }
 

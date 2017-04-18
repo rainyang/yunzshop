@@ -20,8 +20,9 @@ class WechatPay extends Pay
 {
     public function doPay($data = [])
     {
+        $pay_type = config('app.pay_type');
         $op = '微信订单支付 订单号：' . $data['order_no'];
-        $pay_order_model = $this->log($data['extra']['type'], Pay::PAY_MODE_WECHAT, $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log($data['extra']['type'], $pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
 
         if (empty(\YunShop::app()->getMemberId())) {
             throw new AppException('无法获取用户ID');
@@ -39,7 +40,7 @@ class WechatPay extends Pay
         $notify_url = Url::shopUrl('payment/wechat/notifyUrl.php');
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
-        $order = $this->getEasyWeChatOrder($data, $openid, $pay_order_model);
+        $order = self::getEasyWeChatOrder($data, $openid, $pay_order_model);
         $result = $payment->prepare($order);
         $prepayId = null;
 
@@ -48,7 +49,7 @@ class WechatPay extends Pay
 
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
         } else {
-            throw new AppException('微信预下单失败');
+            throw new AppException($result->err_code_des);
         }
 
         $config = $payment->configForJSSDKPayment($prepayId);
@@ -148,7 +149,7 @@ class WechatPay extends Pay
                 'check_name' => 'NO_CHECK',
                 'amount' => $money * 100,
                 'desc' => empty($desc) ? '佣金提现' : $desc,
-                'spbill_create_ip' => $this->ip,
+                'spbill_create_ip' => self::getClientIP(),
             ];
 
             //请求数据日志
@@ -166,7 +167,7 @@ class WechatPay extends Pay
                 'total_num'        => 1,
                 'total_amount'     => $money * 100,
                 'wishing'          => empty($desc) ? '佣金提现红包' : $desc,
-                'client_ip'        => $this->ip,
+                'client_ip'        => self::getClientIP(),
                 'act_name'         => empty($act_name) ? '佣金提现红包' : $act_name,
                 'remark'           => empty($remark) ? '佣金提现红包' : $remark,
             ];
@@ -236,7 +237,7 @@ class WechatPay extends Pay
      * @param $pay_order_model
      * @return easyOrder
      */
-    public function getEasyWeChatOrder($data, $openid, &$pay_order_model)
+    public static function getEasyWeChatOrder($data, $openid, &$pay_order_model)
     {
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...
@@ -246,12 +247,12 @@ class WechatPay extends Pay
             'nonce_str'        => Client::random(8) . "",
             'device_info'      => 'yun_shop',
             'attach'           => \YunShop::app()->uniacid,
-            'spbill_create_ip' => $this->ip,
+            'spbill_create_ip' => self::getClientIP(),
             'openid'           => $openid
         ];
 
         //请求数据日志
-        $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
+        self::payRequestDataLog($attributes['out_trade_no'], $pay_order_model->type,
             $pay_order_model->third_type, json_encode($attributes));
 
         return new easyOrder($attributes);

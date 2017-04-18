@@ -9,9 +9,14 @@
 namespace app\common\models;
 
 
-class uniAccount extends BaseModel
+class UniAccount extends BaseModel
 {
     protected $guarded = [];
     public $table = 'uni_account';
+    public $primaryKey = 'uniacid';
 
+    public static function checkIsExistsAccount($uniacid)
+    {
+        return self::find($uniacid);
+    }
 }

@@ -205,7 +205,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款金额 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <p class="form-control-static">{{$order['refund_data']['apply_price']}}</p>
+                                <p class="form-control-static">{{$order['refund_data']['price']}}</p>
                             </div>
                         </div>
                         @endif
@@ -404,7 +404,7 @@
                                     <td>{{$goods['belongs_to_good']['id']}}</td>
                                     <td>{{$goods['belongs_to_good']['title']}}</td>
                                     <td>{{$goods['belongs_to_good']['goods_sn']}}</td>
-                                    <td>{{$goods['belongs_to_good']['market_price']}}元</td>
+                                    <td>{{$goods['belongs_to_good']['price']}}/{{$goods['belongs_to_good']['market_price']}}/{{$goods['belongs_to_good']['cost_price']}}元</td>
                                     <td>{{$goods['total']}}</td>
                                     <td style='color:red;font-weight:bold;'>{{$order['goods_price']}}<br/>{{$order['price']}}
                                     </td>
