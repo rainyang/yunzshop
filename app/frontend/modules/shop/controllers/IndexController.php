@@ -62,10 +62,10 @@ class IndexController extends ApiController
         $slide = [];
         $slide = Slide::getSlidesIsEnabled()->get();
         if($slide){
-            $slide->toArray();
+            $slide = $slide->toArray();
             foreach ($slide as &$item)
             {
-                $item = tomedia($item);
+                $item['thumb'] = tomedia($item['thumb']);
             }
         }
         return $slide;
