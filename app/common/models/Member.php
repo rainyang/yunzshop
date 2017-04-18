@@ -103,6 +103,18 @@ class Member extends BackendModel
     }
 
     /**
+     * 获取该公众号下所有用户的 member ID
+     *
+     * @return mixed
+     */
+    public static function getMembersId()
+    {
+        return static::uniacid()
+                    ->select (['uid'])
+                    ->get();
+    }
+
+    /**
      * 通过id获取用户信息
      *
      * @param $member_id
