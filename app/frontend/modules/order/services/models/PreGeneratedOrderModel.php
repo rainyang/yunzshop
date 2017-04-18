@@ -5,6 +5,7 @@ namespace app\frontend\modules\order\services\models;
 use app\common\models\Order;
 
 use app\frontend\modules\discount\services\DiscountService;
+use app\frontend\modules\discount\services\models\OrderDiscount;
 use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\OrderService;
@@ -40,7 +41,14 @@ class PreGeneratedOrderModel extends OrderModel
      * PreGeneratedOrderModel constructor.
      * @param array|null $orderGoodsModels
      */
-
+    /**
+     * @var \app\frontend\modules\dispatch\services\models\OrderDispatch 运费类实例
+     */
+    protected $orderDispatch;
+    /**
+     * @var OrderDiscount 优惠类实例
+     */
+    protected $orderDiscount;
     public function setOrderGoodsModels(array $orderGoodsModels)
     {
         $this->orderGoodsModels = $orderGoodsModels;
@@ -76,7 +84,32 @@ class PreGeneratedOrderModel extends OrderModel
     {
         return $this->belongsToMember;
     }
+    /**
+     * 计算订单优惠金额
+     * @return number
+     */
+    protected function getDiscountPrice()
+    {
+        return $this->orderDiscount->getDiscountPrice();
+    }
 
+    /**
+     * 获取订单抵扣金额
+     * @return number
+     */
+    protected function getDeductionPrice()
+    {
+        return $this->orderDiscount->getDeductionPrice();
+    }
+
+    /**
+     * 计算订单运费
+     * @return int|number
+     */
+    protected function getDispatchPrice()
+    {
+        return $this->orderDispatch->getDispatchPrice();
+    }
     /**
      * 输出订单信息
      * @return array
@@ -130,10 +163,6 @@ class PreGeneratedOrderModel extends OrderModel
         return $result;
     }
 
-    protected function getDispatchPrice()
-    {
-        return $this->orderDispatch->getDispatchPrice();
-    }
 
     /**
      * 订单插入数据库

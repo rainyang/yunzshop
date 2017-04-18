@@ -18,7 +18,9 @@ use app\common\models\DispatchType;
 use app\common\models\Goods;
 use app\common\models\Order;
 use app\common\models\OrderAddress;
+use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\member\models\MemberAddress;
+use app\frontend\modules\order\services\OrderService;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class Express
@@ -57,11 +59,7 @@ class Express
 
     private function needDispatch()
     {
-    //实物
-        $allGoodsIsReal = ($this->event->getOrderModel()->getOrderGoodsModels()->contains(function ($orderGoods){
-
-            return $orderGoods->belongsToGood->isRealGoods();
-        }));
+        $allGoodsIsReal = OrderService::allGoodsIsReal($this->event->getOrderModel()->getOrderGoodsModels());
 
         if($allGoodsIsReal){
             return true;
