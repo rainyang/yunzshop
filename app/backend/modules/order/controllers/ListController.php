@@ -118,7 +118,8 @@ class ListController extends BaseController
             'pager' => $pager,
             'requestSearch' => $requestSearch,
             'var' => \YunShop::app()->get(),
-            'url' => \Request::query('route')
+            'url' => \Request::query('route'),
+            'include_ops' => 'order.ops'
         ];
         $data += $this->fakeData();
         return $data;
