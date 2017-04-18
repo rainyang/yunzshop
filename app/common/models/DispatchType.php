@@ -12,5 +12,5 @@ namespace app\common\models;
 class DispatchType extends BaseModel
 {
     public $table = 'yz_dispatch_type';
-
+    const EXPRESS = 1;
 }
