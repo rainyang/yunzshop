@@ -23,7 +23,9 @@ use iscms\Alisms\SendsmsPusher as Sms;
 
 class RegisterController extends ApiController
 {
+    protected $publicController = ['Register'];
     protected $publicAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
+    protected $ignoreAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
 
     public function index()
     {

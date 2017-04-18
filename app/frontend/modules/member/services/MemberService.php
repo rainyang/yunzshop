@@ -61,10 +61,7 @@ class MemberService
                 'password' => $password
             );
             $check = array(
-                'mobile' => array('required',
-                    'digits:11',
-                    'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/'
-                ),
+                'mobile' => 'regex:/^1[34578]{1}\d{9})$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
             );
         } else {
@@ -74,10 +71,7 @@ class MemberService
                 'confirm_password' => $confirm_password
             );
             $check = array(
-                'mobile' => array('required',
-                    'digits:11',
-                    'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1})|(18[0-9]{1}))+\d{8})$/'
-                ),
+                'mobile' => 'regex:/^1[34578]{1}\d{9})$/',
                 'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
                 'confirm_password' => 'same:password'
             );

@@ -3,15 +3,9 @@ namespace app\frontend\modules\shop\controllers;
 
 use app\api\Base;
 use app\common\components\ApiController;
-use app\common\components\BaseController;
-use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\Goods;
-use app\common\models\GoodsCategory;
-use app\common\models\GoodsSpecItem;
 use app\common\models\Slide;
-use app\frontend\modules\goods\services\GoodsService;
-use EasyWeChat\Payment\API;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -20,8 +14,10 @@ use Illuminate\Support\Facades\DB;
  * Date: 2017/3/3
  * Time: 22:16
  */
-class IndexController extends BaseController
+class IndexController extends ApiController
 {
+    protected $publicAction = ['getDefaultIndex'];
+
     public function getDefaultIndex()
     {
 
