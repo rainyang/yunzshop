@@ -98,6 +98,12 @@ class Member extends BackendModel
                 },
                 'hasOneFans' => function ($query4) {
                     return $query4->select(['uid', 'openid', 'follow as followed']);
+                },
+                'hasOneOrder' => function ($query5) {
+                    return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                        ->uniacid()
+                        ->where('status', 3)
+                        ->groupBy('uid');
                 }
             ]);
     }
