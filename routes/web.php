@@ -89,7 +89,7 @@ Route::any('/', function () {
         return;
     }
     if (strpos(request()->getRequestUri(), '/app/') !== false) {
-        return redirect('/addons/yun_shop/#/home?i='.request()->get('i'));
+        return redirect(request()->getSchemeAndHttpHost().'/addons/yun_shop/#/home?i='.request()->get('i'));
     }
     //后台
     if (strpos(request()->getRequestUri(), '/web/') !== false) {
