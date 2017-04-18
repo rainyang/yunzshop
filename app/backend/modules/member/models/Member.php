@@ -257,4 +257,22 @@ class Member extends \app\common\models\Member
         ->orderBy('uid', 'desc');
         return $query;
     }
+
+    public static function getAgentInfoByMemberId($member_id)
+    {
+        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+            'credit1', 'credit2'])
+            ->uniacid()
+            ->where('uid', $member_id)
+
+            ->with(['yzMember'=>function($query){
+                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])->orderBy('member_id', 'desc')
+                    ->with(['agent'=>function($query){
+                        return $query->select(['uid', 'avatar', 'nickname']);
+                    }]);
+            }, 'hasOneFans' => function($query) {
+                return $query->select(['uid', 'follow as followed']);
+            }
+            ]);
+    }
 }
