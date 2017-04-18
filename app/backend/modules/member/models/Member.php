@@ -64,16 +64,16 @@ class Member extends \app\common\models\Member
             ->uniacid()
             ->where('uid', $id)
             ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content'])->uniacid()
+                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content'])->where('is_black', 0)
                     ->with(['group'=>function($query1){
-                        return $query1->select(['id','group_name'])->uniacid();
+                        return $query1->select(['id','group_name']);
                     },'level'=>function($query2){
-                        return $query2->select(['id','level_name'])->uniacid();
+                        return $query2->select(['id','level_name']);
                     }, 'agent'=>function($query3){
-                        return $query3->select(['uid', 'avatar', 'nickname'])->uniacid();
+                        return $query3->select(['uid', 'avatar', 'nickname']);
                     }]);
             }, 'hasOneFans' => function($query2) {
-                return $query2->select(['uid', 'follow as followed'])->uniacid();
+                return $query2->select(['uid', 'follow as followed']);
             }, 'hasOneOrder' => function ($query5) {
                 return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
                               ->uniacid()
