@@ -49,6 +49,10 @@ class MemberCartService
         return $cart;
     }
 
+    /**
+     * @param Collection $memberCarts
+     * @return static
+     */
     public static function filterShopMemberCart(Collection $memberCarts)
     {
         return $memberCarts->filter(function ($memberCart) {

@@ -20,8 +20,8 @@
                         </div>
                         <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzApiUrl('home') }}">商城首页</div>
                         <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" data-href="{{ yzApiUrl('category') }}">分类导航</div>
-                        <div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>
-                        <div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>
+                        {{--<div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>--}}
+                        {{--<div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>--}}
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 会员中心链接</h4>
                         </div>
@@ -95,7 +95,7 @@
                                 <textarea name="mylink_href" class="form-control" style="height: 90px; resize: none;" placeholder="请以http://开头"></textarea>
                             </div>
                         </div>
-                        <div class="form-group" style="overflow: hidden; margin-bottom: 0px;i">
+                        <div class="form-group" style="overflow: hidden; margin-bottom: 0px;">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="line-height: 34px;"></label>
                             <div class="col-sm-9 col-xs-12">
                                 <div class="btn btn-primary col-lg-1 mylink-nav2" style="margin-left: 20px; width: auto; overflow: hidden; margin-left: 0px;"> 插入 </div>
@@ -145,7 +145,7 @@
         $("#modal-mylink .close").click();
     });
     $(".mylink-nav2").click(function(){
-        var href = $("textarea[name=mylink_href").val();
+        var href = $("textarea[name=mylink_href]").val();
         if(href){
             var id = $("#modal-mylink").attr("data-id");
             if(id){
@@ -155,9 +155,9 @@
                 ue.execCommand('link', {href:href});
             }
             $("#modal-mylink .close").click();
-            $("textarea[name=mylink_href").val("");
+            $("textarea[name=mylink_href]").val("");
         }else{
-            $("textarea[name=mylink_href").focus();
+            $("textarea[name=mylink_href]").focus();
             alert("链接不能为空!");
         }
     });

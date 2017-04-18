@@ -64,6 +64,12 @@ class Order extends BaseModel
     {
         return $query->where('refund_id','>','0');
     }
+    public function scopeRefunded($query)
+    {
+        return $query->where('refund_id','>','0')->whereHas('hasOneRefundApply',function ($query){
+            return $query->where('status',RefundApply::COMPLETE);
+        });
+    }
     public function scopeCancelled($query)
     {
         return $query->where(['status' => -1]);
@@ -78,7 +84,12 @@ class Order extends BaseModel
     {
         return $this->belongsTo(Member::class, 'uid', 'uid');
     }
+    //退款列表
+    public function hasOneRefundApply()
+    {
+        return $this->hasOne(RefundApply::class, 'id', 'refund_id');
 
+    }
     //订单配送方式
     public function hasOneDispatchType()
     {
@@ -152,6 +163,9 @@ class Order extends BaseModel
 
     public function getPayTypeNameAttribute()
     {
+        if($this->status == self::WAIT_PAY){
+            return PayType::defaultTypeName();
+        }
         return $this->hasOnePayType->name;
     }
 

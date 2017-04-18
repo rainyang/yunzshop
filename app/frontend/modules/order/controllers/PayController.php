@@ -11,6 +11,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
+use app\common\models\PayType;
 use app\common\services\PayFactory;
 use app\common\services\Session;
 use app\frontend\modules\order\services\OrderService;
@@ -20,12 +21,16 @@ class PayController extends ApiController
 {
     protected $order;
     protected $publicAction = ['alipay'];
-    protected function order(){
-        if(isset($this->order)){
+    protected $ignoreAction = ['alipay'];
+
+    protected function order()
+    {
+        if (isset($this->order)) {
             return $this->order;
         }
         return $this->order = Order::select(['status', 'id', 'order_sn', 'price', 'uid'])->find(\Request::query('order_id'));
     }
+
     public function index(\Request $request)
     {
         $order = $this->order();
@@ -53,7 +58,9 @@ class PayController extends ApiController
 
         return $this->successJson('成功', $data);
     }
-    protected function _validate($request){
+
+    protected function _validate($request)
+    {
         $this->validate($request, [
             'order_id' => 'required|integer'
         ]);
@@ -73,6 +80,7 @@ class PayController extends ApiController
             throw new AppException('订单已关闭,无法付款');
         }
     }
+
     protected function pay($request, $payType)
     {
         $this->_validate($request);
@@ -88,7 +96,17 @@ class PayController extends ApiController
         ];
 
         $pay = PayFactory::create($payType);
-        return $pay->doPay($query_str);
+        $order->pay_type_id = PayType::ONLINE;
+
+        $result = $pay->doPay($query_str);
+        if (!isset($result)) {
+            throw new AppException('获取支付参数失败');
+        }
+
+        if (!$order->save()) {
+            throw new AppException('支付方式选择失败');
+        }
+        return $result;
 
     }
 

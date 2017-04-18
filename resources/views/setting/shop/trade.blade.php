@@ -151,24 +151,6 @@
                 </div>
 			</div>
 			<div class="panel-heading">
-				积分比例
-			</div>	
-
-            <div class='panel-body'>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">充值积分比例</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <div class='input-group'>
-                            <input type="text" name="trade[money]" class="form-control" value="{{ $set['money'] }}" />
-                            <span class='input-group-addon'>元 增加</span>
-                            <input type="text" name="trade[point]" class="form-control" value="{{ $set['point'] }}" />
-                            <span class='input-group-addon'>分</span>
-                        </div>
-                        <span class='help-block'>用户充值获得的积分</span>
-                    </div>
-                </div>
-			</div>
-			<div class="panel-heading">
 				收货地址
 			</div>	
 

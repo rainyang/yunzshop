@@ -68,10 +68,16 @@ class GoodsController extends ApiController
                 'is_deleted',
                 'reduce_stock_method',
             ]);
-        if ($goodsModel->thumb_url) {
-            $goodsModel->thumb_url = unserialize($goodsModel->thumb_url);
+        if ($goodsModel->thumb) {
+            $goodsModel->thumb = tomedia($goodsModel->thumb);
         }
-
+        if ($goodsModel->thumb_url) {
+            $thumb_url = unserialize($goodsModel->thumb_url);
+            foreach ($thumb_url as &$item) {
+                $item = tomedia($item);
+            }
+            $goodsModel->thumb_url = $thumb_url;
+        }
         foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
         }
