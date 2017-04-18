@@ -179,9 +179,9 @@ class ShopController extends BaseController
         $requestModel = \YunShop::request()->notice;
         if ($requestModel) {
             if (Setting::set('shop.notice', $requestModel)) {
-                return $this->message(' 引导分享设置成功', Url::absoluteWeb('setting.shop.notice'));
+                return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.shop.notice'));
             } else {
-                $this->error('引导分享设置失败');
+                $this->error('消息提醒设置失败');
             }
         }
         return view('setting.shop.notice', [
