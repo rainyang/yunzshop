@@ -83,14 +83,7 @@ class Balance extends BaseModel
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
-    /**
-     * 通过字段 type 输出 type_name ;
-     * @return string
-     * @Author yitian */
-    public function getTypeNameAttribute()
-    {
-        return BalanceService::attachedTypeName($this);
-    }
+
 
     /**
      * 通过字段 service_type 输出 service_type_name ;
