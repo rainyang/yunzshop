@@ -24,4 +24,24 @@ class ChangeOrderPriceController extends BaseController
             'change_num'        => 1//改价次数
         ]);
     }
+
+    public function store(\Request $request)
+    {
+        $request['order_goods'] = [
+            [
+                'id' => 1,
+                'change_price' => 10,
+            ], [
+                'id' => 2,
+                'change_price' => 20,
+            ],
+        ];
+        $request['dispatch_price'] = 10;
+        //dd(\YunShop::app()->user->name);
+        list($result, $message) = OrderService::changeOrderPrice();
+        if ($result === false) {
+            return $this->errorJson($message);
+        }
+        return $this->successJson($message);
+    }
 }

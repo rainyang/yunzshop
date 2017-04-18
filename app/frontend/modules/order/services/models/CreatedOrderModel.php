@@ -17,10 +17,10 @@ class CreatedOrderModel extends OrderModel
     private $order;
     protected $orderGoodsModels = [];
 
-    public function __construct($Order, $OrderGoodsModels)
+    public function __construct($order, $orderGoodsModels)
     {
-        $this->order = $Order;
-        parent::__construct($OrderGoodsModels);
+        $this->order = $order;
+        parent::__construct($orderGoodsModels);
     }
 
     public function setOrderGoodsModels(array $orderGoodsModels)

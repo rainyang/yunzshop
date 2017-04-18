@@ -33,13 +33,13 @@ class RefundApply extends BaseModel
         'refund_proof_imgs' => 'json'
     ];
 
-    const CANCEL = '-2';
-    const REJECT = '-1';
-    const WAIT_CHECK = '0';
-    const WAIT_SEND = '1';
-    const WAIT_RECEIVE = '2';
-    const WAIT_REFUND = '3';
-    const COMPLETE = '4';
+    const CANCEL = '-2';//用户取消
+    const REJECT = '-1';//驳回
+    const WAIT_CHECK = '0';//待审核
+    const WAIT_SEND = '1';//待发货
+    const WAIT_RECEIVE = '2';//待收货
+    const WAIT_REFUND = '3';//待打款
+    const COMPLETE = '4';//已完成
 
     public function __construct(array $attributes = [])
     {

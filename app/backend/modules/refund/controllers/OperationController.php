@@ -14,12 +14,44 @@ use app\common\models\refund\RefundApply;
  */
 class OperationController extends BaseController
 {
-    public function pass(\Request $request)
+    public function entrance(\Request $request)
     {
         $this->validate($request, [
             'refund_id' => 'required|filled|integer'
         ]);
+
+        switch ($request->refundstatus) {
+            case '-1':
+                //驳回
+
+                break;
+            case '1':
+                //通过
+                $this-> pass();
+                break;
+            default:
+                //手动打款
+                $this-> manual();
+
+        }
         
+        
+
+    }
+
+    public function pass()
+    {
+        
+        
+        if(RefundOperationService::refundPass()){
+            return $this->message('操作成功');
+        }
+        return $this->message('操作失败','','error');
+
+    }
+
+    public function  manual()
+    {
         if(RefundOperationService::refundPass()){
             return $this->message('操作成功');
         }
