@@ -82,6 +82,21 @@ class MemberLevel extends \app\common\models\MemberLevel
     }
 
     /**
+     * get members by definite memberlevel
+     * @param $levelId
+     * @return mixed
+     */
+    public static function getMembersbyLevel($levelId)
+    {
+        return static::where('id', $levelId)
+                    ->select(['id', 'level'])
+                    ->with(['member' => function($query){
+                        return $query->select('member_id', 'level_id')->where('uniacid', \YunShop::app()->uniacid);
+                    }])
+                    ->first();
+    }
+
+    /**
      * 定义字段名
      *
      * @return array */
@@ -119,5 +134,12 @@ class MemberLevel extends \app\common\models\MemberLevel
     {
         return $this->hasOne('app\common\models\Goods', 'id', 'goods_id');
     }
+
+    //关联会员
+    public function member()
+    {
+        return $this->hasMany('app\common\models\MemberShopInfo', 'level_id', 'level');
+    }
+
 
 }
