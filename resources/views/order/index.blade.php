@@ -265,9 +265,9 @@
                                         <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
                                     </td>
                                     <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">
-                                        @section('operation'.$order_index)
-                                            @include('order.ops')
-                                        @show
+
+                                            @include($include_ops)
+
                                     </td>
                                 @endif
                             </tr>

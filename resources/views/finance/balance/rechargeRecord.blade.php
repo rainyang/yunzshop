@@ -115,11 +115,11 @@
 
                         <td>{{ $list->created_at }}</td>
                         <td>
-                            @if($list->type == 1)
+                            @if($list->type == 0)
                                 <span class='label label-default'>后台充值</span>
-                            @elseif($list->type ==2)
+                            @elseif($list->type ==1)
                                 <span class='label label-success'>微信支付</span>
-                            @elseif($lsit->type == 3)
+                            @elseif($lsit->type == 2)
                                 <span class='label label-warning'>支付宝</span>
                             @else
                                 <span class='label label-primary'>其他支付</span>

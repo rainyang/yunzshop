@@ -18,7 +18,7 @@ class CouponController extends BaseController
     //优惠券列表
     public function index()
     {
-        $list = Coupon::uniacid()->paginate(20)->toArray();
+        $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         foreach($list['data'] as &$item){
@@ -38,10 +38,25 @@ class CouponController extends BaseController
     //添加优惠券
     public function create()
     {
-        $coupon = new Coupon();
+        //获取表单提交的值
+        $couponRequest = \YunShop::request()->coupon;
+
+        //表单验证
+        if($couponRequest){
+            $coupon = new Coupon();
+            $coupon->fill($couponRequest);
+            $validator = $coupon->validator();
+            if($validator->fails()){
+                $this->error($validator->messages());
+            } elseif($coupon->save()) {
+                return $this->message('优惠券创建成功', Url::absoluteWeb('coupon.coupon.index'));
+            } else{
+                $this->error('优惠券创建失败');
+            }
+        }
+
         return view('coupon.coupon', [
             'coupon' => $coupon,
-            'var' => \YunShop::app()->get(),
         ])->render();
     }
 

@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送连接</label>
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送链接</label>
         <div class="col-sm-9 col-xs-12">
             <input type="text" name="coupon[resp_url]" class="form-control" value="{{$coupon['resp_url']}}"  />
             <span class='help-block'>消息推送点击的连接，为空默认为优惠券详情</span>

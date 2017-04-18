@@ -17,7 +17,7 @@ class PointInfoController extends ApiController
     public function index()
     {
         $member_id = \YunShop::app()->getMemberId();
-        $type = \YunShop::request()->type;
+        $type = \YunShop::request()->status;
         $list = PointLog::getPointLogList($member_id, $type)->get();
         $this->attachedServiceType($list);
         return $this->successJson('成功', [

@@ -1,7 +1,7 @@
 <?php
 namespace app\backend\modules\finance\services;
 
-use app\common\services\finance\Balance;
+use app\backend\modules\finance\services\BalanceService;
 use app\common\services\finance\Withdraw;
 use app\common\services\PayFactory;
 
@@ -37,14 +37,15 @@ class WithdrawService extends Withdraw
     {
         $data = array(
             'member_id' => $withdraw->member_id,
-            'change_money' => $withdraw->actual_amounts,
+            'money' => $withdraw->actual_amounts,
             'serial_number' => '',
             'operator' => '-2',
             'operator_id' => $withdraw->id,
             'remark' => $remark,
             'service_type' => \app\common\models\finance\Balance::BALANCE_INCOME,
         );
-        return (new Balance())->changeBalance($data);
+
+        return (new BalanceService())->changeBalance($data);
     }
 
     public static function wechtWithdrawPay($withdraw, $remark)
