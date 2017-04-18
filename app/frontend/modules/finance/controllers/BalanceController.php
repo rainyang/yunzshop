@@ -9,159 +9,267 @@
 namespace app\frontend\modules\finance\controllers;
 
 
-use app\backend\modules\member\models\Member;
-use app\common\components\ApiController;
-use app\common\facades\Setting;
-use app\common\models\finance\BalanceRecharge;
-use app\common\models\finance\BalanceTransfer;
-use app\common\models\Withdraw;
-use app\common\models\finance\Balance as BalanceModel;
+
 use app\common\services\finance\Balance;
 use app\common\services\PayFactory;
+use app\common\components\ApiController;
+use app\common\facades\Setting;
+use app\common\models\finance\Balance as BalanceCommon;
+
+use app\frontend\modules\finance\models\Withdraw;
+use app\frontend\modules\finance\models\BalanceRecharge;
+use app\frontend\modules\finance\services\BalanceService;
+
+use app\backend\modules\member\models\Member;
 
 class BalanceController extends ApiController
 {
-    protected $publicAction = ['recharge'];
-
     public function test()
     {
+        echo '<pre>'; print_r('test'); exit;
+    }
+
+    private $memberInfo;
+
+    private $model;
+
+    private $money;
 
 
+    //转让（是否做独立文件）
+
+    //提现+提现限制+提现手续费
+    public function subtraction()
+    {
+        $result = (new BalanceService())->withdrawSet() ? $this->withdrawStart() : '未开启余额提现';
+
+        return $result === true ? $this->successJson('提现申请提交成功') : $this->errorJson($result);
+    }
+
+
+    //余额设置+会员余额值
+    public function balance()
+    {
+        $memberInfo = $this->getMemberInfo();
+        if ($memberInfo) {
+            $result = (new BalanceService())->getBalanceSet();
+            $result['member_credit2'] = $memberInfo->credit2;
+
+            return $this->successJson('获取数据成功', $result);
+        }
+        return $this->errorJson('未获取到会员数据');
+
+    }
+
+    //余额充值+充值优惠 todo 充值支付回调 完成余额赠送事件 消息通知
+    public function recharge()
+    {
+        $result = (new BalanceService())->rechargeSet() ? $this->rechargeStart() : '未开启余额充值';
+
+        return $result === true ? $this->successJson('支付接口对接成功', $this->payOrder()) : $this->errorJson($result);
+    }
+
+    //记录【全部、收入、支出】
+    public function record()
+    {
+        if ($this->getMemberInfo()) {
+            $type = \YunShop::request()->type;
+            $recordList = BalanceCommon::getMemberDetailRecord($this->memberInfo->uid, $type);
+
+            return $this->successJson('获取记录成功', $recordList->toArray());
+        }
+        return $this->errorJson('未获取到会员信息');
+    }
+
+    //获取会员信息
+    private function getMemberInfo()
+    {
+        $member_id = \YunShop::app()->getMemberId();
+        $member_id = \YunShop::app()->getMemberId() ?: \YunShop::request()->member_id;
+        return $this->memberInfo = Member::getMemberInfoById($member_id) ?: false;
+    }
+
+    //提现开始
+    private function withdrawStart()
+    {
+        if (!$this->getMemberInfo()) {
+            return '未获取到会员数据,请重试！';
+        }
+
+        $this->model = new Withdraw();
+
+        $this->model->fill($this->getWithdrawData());
+        $validator = $this->model->validator();
+        if ($validator->fails()) {
+            return $validator->messages();
+        }
+
+        if ($this->model->save()) {
+            //调取余额修改接口
+            return $this->balanceChange();
+        }
+        return '提现写入失败，请联系管理员';
+    }
+
+    private function balanceChange()
+    {
+        //todo 可以增加余额提现申请通知
+        //todo 修改会员余额，增加余额明细记录
+        //echo '<pre>'; print_r($this->getChangeBalanceData()); exit;
+        return (new BalanceService())->balanceChange($this->getChangeBalanceData());
+    }
+
+    private function getChangeBalanceData()
+    {
+        return array(
+            'serial_number' => $this->model->withdraw_sn,
+            'money' => $this->model->amounts,
+            'remark' => '会员余额提现' . $this->model->amounts,
+            'service_type' => BalanceCommon::BALANCE_WITHDRAWAL,
+            'operator' => BalanceCommon::OPERRTOR_MEMBER,
+            'operator_id' => $this->model->member_id
+        );
+    }
+
+
+    //余额提现记录 data 数据
+    private function getWithdrawData()
+    {
+        return array(
+            'withdraw_sn' => $this->getWithdrawOrderSN(),
+            'uniacid' => \YunShop::app()->uniacid,
+            'member_id' => $this->memberInfo->uid,
+            'type' => 'balance',
+            'type_id' => '',
+            'type_name' => '余额提现',
+            'amounts' => \YunShop::request()->withdraw_money,         //提现金额
+            'poundage' => '0',                                         //提现手续费
+            'poundage_rate' => '0',                                         //手续费比例
+            'pay_way' => trim(\YunShop::request()->withdraw_type),    //打款方式
+            'status' => '0',                                         //0未审核，1未打款，2已打款， -1无效
+            'actual_amounts' => '0',
+            'actual_poundage' => '0'
+        );
+    }
+
+    //生成充值订单号
+    private function getWithdrawOrderSN()
+    {
+        $withdraw_sn = createNo('WS', true);
+        while (1) {
+            if (!Withdraw::validatorOrderSn($withdraw_sn)) {
+                break;
+            }
+            $withdraw_sn = createNo('WS', true);
+        }
+        return $withdraw_sn;
+    }
+
+    //充值开始
+    private function rechargeStart()
+    {
+        if (!$this->getMemberInfo()) {
+            return '未获取到会员数据,请重试！';
+        }
+        $this->model = new BalanceRecharge();
+
+        $this->model->fill($this->getRechargeData());
+        $validator = $this->model->validator();
+        if ($validator->fails()) {
+            return $validator->messages();
+        }
+        if ($this->model->save()) {
+            return true;
+        }
+        return '充值写入失败，请联系管理员';
+    }
+
+    //充值记录表data数据
+    private function getRechargeData()
+    {
+        //$change_money = substr(\YunShop::request()->recharge_money, 0, strpos(\YunShop::request()->recharge_money, '.')+3);
+        $change_money = \YunShop::request()->recharge_money;
+        return array(
+            'uniacid' => \YunShop::app()->uniacid,
+            'member_id' => $this->memberInfo->uid,
+            'old_money' => $this->memberInfo->credit2 ?: 0,
+            'money' => floatval($change_money),
+            'new_money' => $change_money + $this->memberInfo->credit2,
+            'ordersn' => $this->getRechargeOrderSN(),
+            'type' => intval(\YunShop::request()->pay_type),
+            'status' => BalanceRecharge::PAY_STATUS_ERROR
+        );
+    }
+
+    //生成充值订单号
+    private function getRechargeOrderSN()
+    {
+        $ordersn = createNo('RV', true);
+        while (1) {
+            if (!BalanceRecharge::validatorOrderSn($ordersn)) {
+                break;
+            }
+            $ordersn = createNo('RV', true);
+        }
+        return $ordersn;
     }
 
     /**
-     * 会员余额充值接口
-     * @return \Illuminate\Http\JsonResponse
-     * @Author yitian */
-    public function recharge()
+     * 会员余额充值支付接口
+     *
+     * @param $data
+     * @return array|string|
+     * @Author yitian
+     */
+    private function payOrder()
     {
-        $rechargeSet = Setting::get('finance.balance');
-        if ($rechargeSet['recharge'] == 1) {
-            $memberId = \YunShop::app()->getMemberId() ?: \YunShop::request()->uid;
-            $rechargeMoney = trim(\YunShop::request()->recharge_money);
-            $payType = \YunShop::request()->pay_type;
+        $pay = PayFactory::create($this->model->type);
 
-            //$memberId = 55;
-            //$rechargeMoney = 100;
-            //$payType = 2;
-
-            if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $rechargeMoney)) {
-                return $this->errorJson('请输入有效的充值金额，允许两位小数');
-            }
-            if ($memberId && $rechargeMoney && $payType) {
-                $data = array(
-                    'member_id'     => $memberId,
-                    'change_money'  => $rechargeMoney,
-                    'serial_number' => '',
-                    'operator'      => BalanceRecharge::PAY_TYPE_MEMBER,
-                    'operator_id'   => $memberId,
-                    'remark'        => '会员充值余额'. $rechargeMoney. '元',
-                    'service_type'  => \app\common\models\finance\Balance::BALANCE_RECHARGE,
-                    'recharge_type' => $payType,
-                );
-
-                $result = (new Balance())->changeBalance($data);
-                if (is_numeric($result)) {
-                    $rechargeModel = BalanceRecharge::getRechargeRecordByid($result);
-                    $data['serial_number'] = $rechargeModel->ordersn;
-                    //支付返回数据直接反给前端
-                    return $this->successJson('支付接口对接成功',$this->payOrder($data));
-                }
-                return $this->errorJson($result);
-            }
-            return $this->errorJson('数据有误，请刷新重试');
+        $result = $pay->doPay($this->payData());
+        if ($this->model->type == 1) {
+            $result['js'] = json_decode($result['js'], 1);
         }
-        return $this->errorJson('未开启充值接口');
+        return $result;
     }
 
-    //获取会员余额值接口
-    public function balance()
+    /**
+     * 支付请求数据
+     *
+     * @return array
+     * @Author yitian
+     */
+    private function payData()
     {
-        $memberId = \YunShop::app()->getMemberId();
-        if ($memberId) {
-            $memberModel = Member::getMemberInfoById($memberId);
-            if (!$memberModel) {
-                return $this->errorJson('会员不存在');
-            }
-            return $this->successJson('获取会员余额成功', $memberModel->credit2);
-        }
-        return $this->errorJson('数据有误，请刷新重试');
+        return array(
+            'subject' => '会员充值',
+            'body' => '会员充值金额' . $this->model->money . '元',
+            'amount' => $this->model->money,
+            'order_no' => $this->model->ordersn,
+            'extra' => ['type' => 1]
+        );
     }
 
-    //余额提现接口
-    public function withdraw()
-    {
-        $withdrawSet = Setting::get('withdraw.balance');
-        if ($withdrawSet['status'] == 1) {
-            $memberId = \YunShop::app()->getMemberId();
-            $withdrawMoney = trim(\YunShop::request()->withdraw_money);
-            $withdrawType = \YunShop::request()->withdraw_type;
-
-            //$memberId = '55';
-            //$withdrawMoney = 100;
-            //$withdrawType = 1;
 
 
-            $memberInfo = Member::getMemberInfoById($memberId);
-            if (!$memberInfo) {
-                return $this->errorJson('会员不存在');
-            }
-            if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $withdrawMoney)|| $withdrawMoney > $memberInfo->credit2) {
-                return $this->errorJson('提现金额必须是大于0且小于您的余额，允许两位小数');
-            }
-            if ($memberId && $withdrawMoney && $withdrawType) {
-                $withdrawModel = new Withdraw();
 
-                $withdrawData = array(
-                    'withdraw_sn'      => '',
-                    'uniacid'       => \YunShop::app()->uniacid,
-                    'member_id'     => $memberId,
-                    'type'          => 'balance',
-                    'type_id'       => '',
-                    'type_name'     => '余额提现',
-                    'amounts'       => $withdrawMoney,      //提现金额
-                    'poundage'      => '0',                  //提现手续费
-                    'poundage_rate' => '0',                  //手续费比例
-                    'pay_way'       => $this->attachedWithdrawType($withdrawType),                  //打款方式
-                    'status'        => '0',                  //0未审核，1未打款，2已打款， -1无效
-                    'actual_amounts'=> '0',
-                    'actual_poundage' => '0'
 
-                );
-                $withdrawModel->fill($withdrawData);
-                $validator = $withdrawModel->validator();
-                if ($validator->fails()) {
-                    return $this->errorJson($validator->messages());
-                } else {
-                    if ($withdrawModel->save()) {
-                        $data = array(
-                            'member_id'     => $memberId,
-                            'change_money'  => -$withdrawMoney,
-                            'serial_number' => '',
-                            'operator'      => BalanceRecharge::PAY_TYPE_MEMBER,
-                            'operator_id'   => $memberId,
-                            'remark'        => '会员提现余额'. $withdrawMoney. '元',
-                            'service_type'  => \app\common\models\finance\Balance::BALANCE_WITHDRAWAL,
-                            'withdraw_type' => $withdrawType
-                        );
-                        $result = (new Balance())->changeBalance($data);
-                        if ($result === true) {
-                            return $this->successJson('余额提现申请已经提交，请等待审核');
-                        }
-                        return $this->errorJson($result);
-                    }
-                    return $this->errorJson('提现记录写入失败,请重试');
-                }
-            }
-            return $this->errorJson('请提交正确的请求数据');
-        }
-        return $this->errorJson('未开启余额提现功能');
-    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * 会员余额转让接口
      * @return \Illuminate\Http\JsonResponse
-     * @Author yitian */
+     * @Author yitian
+     */
     public function transfer()
     {
 // todo 增加消息通知
@@ -184,12 +292,12 @@ class BalanceController extends ApiController
             }
             if ($transferMoney && $transfer && $recipient) {
                 $data = array(
-                    'member_id'     => $transfer,
-                    'change_money'  => $transferMoney,
-                    'operator'      => BalanceRecharge::PAY_TYPE_MEMBER,
-                    'operator_id'   => $transfer,
-                    'remark'        => '会员ID' . $transfer . '转让会员ID' . $recipient . '余额'. $transferMoney .'元',
-                    'service_type'  => \app\common\models\finance\Balance::BALANCE_TRANSFER,
+                    'member_id' => $transfer,
+                    'change_money' => $transferMoney,
+                    'operator' => BalanceRecharge::PAY_TYPE_MEMBER,
+                    'operator_id' => $transfer,
+                    'remark' => '会员ID' . $transfer . '转让会员ID' . $recipient . '余额' . $transferMoney . '元',
+                    'service_type' => \app\common\models\finance\Balance::BALANCE_TRANSFER,
 
                     'recipient_id' => $recipient
                 );
@@ -205,156 +313,4 @@ class BalanceController extends ApiController
         return $this->errorJson('未开启余额转让功能');
 
     }
-
-    /**
-     * 余额变动明细记录
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getDetailRecord()
-    {
-        $memberId = \YunShop::app()->getMemberId();
-        $type = \YunShop::request()->type;
-        if ($memberId) {
-            $recordList = \app\common\models\finance\Balance::getMemberDetailRecord($memberId, $type);
-
-            return $this->successJson('获取记录成功',$recordList->toArray());
-        }
-        return $this->errorJson('未获取到会员ID');
-    }
-
-    /**
-     * 获取会员充值记录接口
-     * @return \Illuminate\Http\JsonResponse
-     * Author yitian */
-    public function rechargeRecord()
-    {
-        $memberId = \YunShop::app()->getMemberId();
-        if ($memberId) {
-            $rechargeRecord = BalanceRecharge::getMemberRechargeRecord($memberId);
-            return $this->successJson('充值记录获取成功', $rechargeRecord);
-        }
-        return $this->errorJson('未获取到会员ID');
-    }
-
-    /**
-     * 余额转让记录
-     * @return \Illuminate\Http\JsonResponse
-     * @Author yitian */
-    public function transferRecord()
-    {
-        $memberId = \YunShop::app()->getMemberId();
-        if ($memberId) {
-            $transferRecord = BalanceTransfer::getMemberTransferRecord($memberId);
-            return $this->successJson('转让记录获取成功', $transferRecord);
-        }
-        return $this->errorJson('未获取到会员ID');
-    }
-
-    /**
-     * 会员余额被转让记录
-     * @return \Illuminate\Http\JsonResponse
-     * @Author yitian */
-    public function recipientRecord()
-    {
-        $memberId = \YunShop::app()->getMemberId();
-        if ($memberId) {
-            $recipientRecord = BalanceTransfer::getMemberRecipientRecord($memberId);
-            return $this->successJson('被转让记录获取成功', $recipientRecord);
-        }
-        return $this->errorJson('未获取到会员ID');
-    }
-
-    /**
-     * 会员余额充值支付接口
-     *
-     * @param $data
-     * @return array|string|
-     * @Author yitian */
-    private function payOrder($data)
-    {
-        $pay = PayFactory::create($data['recharge_type']);
-
-        $result = $pay->doPay($this->payData($data));
-        if ($data['recharge_type'] == 1) {
-            $result['js'] = json_decode($result['js'], 1);
-        }
-        return $result;
-    }
-
-    /**
-     * 支付请求数据
-     *
-     * @return array
-     * @Author yitian */
-    private function payData($data)
-    {
-        return array(
-            'subject'   => '会员充值',
-            'body'      => '会员充值金额'. $data['change_money']. '元',
-            'amount'    => $data['change_money'],
-            'order_no'  => $data['serial_number'],
-            'extra'     => ['type'=> 1]
-        );
-    }
-
-    //废弃0413
-    private function attachedServiceType($data = [])
-    {
-        if ($data) {
-            $i = 0;
-            foreach ($data as $key) {
-                switch ($key['service_type']) {
-                    case BalanceModel::BALANCE_RECHARGE:
-                        $data[$i]['service_type'] = "充值";
-                        break;
-                    case BalanceModel::BALANCE_CONSUME:
-                        $data[$i]['service_type'] = "消费";
-                        break;
-                    case BalanceModel::BALANCE_TRANSFER:
-                        $data[$i]['service_type'] = "转让";
-                        break;
-                    case BalanceModel::BALANCE_DEDUCTION:
-                        $data[$i]['service_type'] = "抵扣";
-                        break;
-                    case BalanceModel::BALANCE_AWARD:
-                        $data[$i]['service_type'] = "奖励";
-                        break;
-                    case BalanceModel::BALANCE_WITHDRAWAL:
-                        $data[$i]['service_type'] = "余额提现";
-                        break;
-                    case BalanceModel::BALANCE_INCOME:
-                        $data[$i]['service_type'] = "提现至余额";
-                        break;
-                    case BalanceModel::CANCEL_DEDUCTION:
-                        $data[$i]['service_type'] = "抵扣取消返回";
-                        break;
-                    case BalanceModel::CANCEL_AWARD:
-                        $data[$i]['service_type'] = "奖励取消扣除";
-                        break;
-                    default:
-                        $data[$i]['service_type'] = "未知来源";
-                }
-                $data[$i]['created_at'] = date('Y-m-d H:i:s', $key['created_at']);
-                $i++;
-            }
-        }
-        return $data;
-    }
-
-
-    private function attachedWithdrawType($withdrawType)
-    {
-        switch ($withdrawType)
-        {
-            case 1:
-                return 'wecht';
-                break;
-            case 2:
-                return 'alipay';
-                break;
-            default:
-                return '未知提现类型';
-        }
-    }
-
 }

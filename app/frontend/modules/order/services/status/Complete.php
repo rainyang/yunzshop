@@ -29,11 +29,6 @@ class Complete extends Status
         $result =
             [
                 [
-                    'name' => '评价',
-                    'api' => '', //todo
-                    'value' => static::COMMENT
-                ],
-                [
                     'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
                     'api' => 'dispatch.express',
                     'value' => static::EXPRESS
@@ -45,8 +40,9 @@ class Complete extends Status
                 ],
 
             ];
-        $result += self::getCommentButtons($this->order);
-        $result += self::getRefundButtons($this->order);
+        $result = array_merge($result, self::getCommentButtons($this->order));
+
+        $result = array_merge($result,self::getRefundButtons($this->order));
 
         return $result;
     }

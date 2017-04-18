@@ -60,7 +60,7 @@ class IncomeController extends ApiController
     public function getIncomeList()
     {
         $configs = \Config::get('income');
-        $type = \YunShop::request()->type;
+        $type = \YunShop::request()->income_type;
         $search = [];
         foreach ($configs as $key => $config) {
             if($config['type'] == $type){

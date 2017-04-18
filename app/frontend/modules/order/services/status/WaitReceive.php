@@ -40,7 +40,7 @@ class WaitReceive extends Status
                     'value' => static::EXPRESS
                 ]
             ];
-        $result += self::getRefundButtons($this->order);
+        $result = array_merge($result,self::getRefundButtons($this->order));
         return $result;
     }
 }
