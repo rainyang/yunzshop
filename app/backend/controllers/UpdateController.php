@@ -17,22 +17,28 @@ class UpdateController extends BaseController
     {
         $update = new AutoUpdate(null, null, 300);
         $update->setCurrentVersion('0.1.0');
-        $update->setUpdateUrl('http://php-auto-update.app/server'); //Replace with your server update directory
+        $update->setUpdateUrl('http://market.cc/update'); //Replace with your server update directory
         //Check for a new update
-        if ($update->checkUpdate() === false)
+        if ($update->checkUpdate() === false){
             die('Could not check for updates! See log file for details.');
+        }
+
         if ($update->newVersionAvailable()) {
             //Install new update
             echo 'New Version: ' . $update->getLatestVersion() . '<br>';
             echo 'Installing Updates: <br>';
+
             echo '<pre>';
             var_dump(array_map(function($version) {
                 return (string) $version;
             }, $update->getVersionsToUpdate()));
             echo '</pre>';
+
+
             // This call will only simulate an update.
             // Set the first argument (simulate) to "false" to install the update
             // i.e. $update->update(false);
+
             $result = $update->update();
             if ($result === true) {
                 echo 'Update simulation successful<br>';

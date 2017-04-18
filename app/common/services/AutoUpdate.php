@@ -402,7 +402,7 @@ class AutoUpdate
                     $this->_log->addError(sprintf('Unknown file extension "%s"', $updateFileExtension));
                     return false;
             }
-            $this->_cache->set('update-versions', $versions);
+            $this->_cache->put('update-versions', $versions);
         } else {
             $this->_log->addDebug('Got updates from cache');
         }
