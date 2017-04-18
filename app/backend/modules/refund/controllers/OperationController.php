@@ -3,6 +3,7 @@ namespace app\backend\modules\refund\controllers;
 
 use app\backend\modules\refund\services\RefundOperationService;
 use app\common\components\BaseController;
+use app\common\models\refund\RefundApply;
 
 /**
  * 退款申请操作
@@ -13,14 +14,48 @@ use app\common\components\BaseController;
  */
 class OperationController extends BaseController
 {
-    public function pass(\Request $request)
+    public function entrance(\Request $request)
     {
-        echo "<pre>"; print_r($request);exit;
         $this->validate($request, [
             'refund_id' => 'required|filled|integer'
         ]);
-exit;
-        RefundOperationService::refundPass();
+
+        switch ($request->refundstatus) {
+            case '-1':
+                //驳回
+
+                break;
+            case '1':
+                //通过
+                $this-> pass();
+                break;
+            default:
+                //手动打款
+                $this-> manual();
+
+        }
+        
+        
+
+    }
+
+    public function pass()
+    {
+        
+        
+        if(RefundOperationService::refundPass()){
+            return $this->message('操作成功');
+        }
+        return $this->message('操作失败','','error');
+
+    }
+
+    public function  manual()
+    {
+        if(RefundOperationService::refundPass()){
+            return $this->message('操作成功');
+        }
+        return $this->message('操作失败','','error');
 
     }
 }

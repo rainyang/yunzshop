@@ -13,6 +13,7 @@ use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
 use \app\common\services\finance\BalanceService as BaseBalanceService;
 use app\common\facades\Setting;
+use app\frontend\modules\finance\models\BalanceRecharge;
 
 class BalanceService extends BaseBalanceService
 {
@@ -85,6 +86,30 @@ class BalanceService extends BaseBalanceService
     public function withdrawAlipay()
     {
         return $this->_withdraw_set['alipay'] ? true : false;
+    }
+
+    public function payResult($data = [])
+    {
+        $rechargeMode = BalanceRecharge::getRechargeRecordBy0rdersn($data['order_sn']);
+
+        $rechargeMode->status = BalanceRecharge::PAY_STATUS_SUCCESS;
+        if ($rechargeMode->save) {
+            $this->data = array(
+                'member_id'         => $rechargeMode->member_id,
+                'money'             => $rechargeMode->money,
+                'serial_number'     => $rechargeMode->ordersn,
+                'operator'          => Balance::OPERRTOR_MEMBER,
+                'operator_id'       => $rechargeMode->member_id,
+                'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
+                'service_type'      => Balance::BALANCE_RECHARGE
+            );
+            $result = $this->balanceChange($data);
+            if ($result === true) {
+                return true;
+            }
+            throw new AppException($result);
+        }
+        throw new AppException('修改充值状态失败');
     }
 
 

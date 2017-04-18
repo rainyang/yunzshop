@@ -63,6 +63,7 @@ class CommentService
             'uniacid' => $comment->uniacid,
             'order_id' => $comment->order_id,
             'goods_id' => $comment->goods_id,
+            'nick_name' => $reply['nick_name'],
             'content' => $reply['reply_content'],
             'created_at' => time(),
             'comment_id' => $comment->id,

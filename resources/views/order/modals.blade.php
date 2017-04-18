@@ -1,6 +1,6 @@
 <!-- 确认发货 -->
 <div id="modal-confirmsend" class="modal fade" tabindex="-1" role="dialog" style="width:600px;margin:0px auto;">
-    <form class="form-horizontal form" action="{{yzWebUrl('refund.Operation-controller.pass')}}" method="post"
+    <form class="form-horizontal form" action="" method="post"
           enctype="multipart/form-data">
         <input type='hidden' name='order_id' value=''/>
         <input type='hidden' name='route' value='order.operation.send' id="send_form"/>
@@ -177,8 +177,9 @@
 <!-- 驳回退款 -->
 <div id="modal-refund" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
      style="width:620px;margin:0px auto;">
-    <form class="form-horizontal form" action="#" method="post" enctype="multipart/form-data">
+    <form class="form-horizontal form" action="{{yzWebUrl('refund.operation.entrance')}}" method="post" enctype="multipart/form-data">
         <input type='hidden' name='id' value=''/>
+        <input type='hidden' name='refund_id' value='{{$order['refund_data']['id']}}'/>
         <input type='hidden' name='op' value='deal'/>
         <input type='hidden' name='to' value='refund'/>
         <div class="modal-dialog">
@@ -575,7 +576,6 @@
     function send(btn) {
         var modal = $('#modal-confirmsend');
         var itemid = $(btn).parent().find('.itemid').val();
-
         $(".id").val(itemid);
 
         modal.find(':input[name=order_id]').val(itemid);
