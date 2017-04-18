@@ -67,6 +67,10 @@ class IndexController extends BaseController
         $slide = Slide::getSlidesIsEnabled()->get();
         if($slide){
             $slide->toArray();
+            foreach ($slide as &$item)
+            {
+                $item = tomedia($item);
+            }
         }
         return $slide;
     }
