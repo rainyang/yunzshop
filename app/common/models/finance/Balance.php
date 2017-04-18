@@ -146,7 +146,7 @@ class Balance extends BaseModel
      * @param $memberId
      * @param string $type
      * @return mixed
-     * @Author yitia */
+     * @Author yitian */
     public static function getMemberDetailRecord($memberId, $type= '')
     {
         $query = self::uniacid()->where('member_id',$memberId);

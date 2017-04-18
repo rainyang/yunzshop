@@ -76,15 +76,15 @@ abstract class BalanceService
     {
         return array(
             'uniacid'       => \YunShop::app()->uniacid,
-            'member_id'     => \YunShop::app()->getMemberId(),        // 会员ID
+            'member_id'     => \YunShop::app()->getMemberId(),
             'old_money'     => $this->memberModel->credit2 ?: 0,
-            'change_money'  => $this->data['money'],     // 改变余额值 100 或 -100
+            'change_money'  => $this->data['money'],
             'new_money'     => $this->getNewMoney() > 0 ? $this->getNewMoney() : 0,
             'type'          => $this->type,
             'service_type'  => $this->service_type,
-            'serial_number' => $this->data['serial_number'] ?: '',    // 订单号或流水号，有订单号记录的直接写订单号，未做记录的可以为空
-            'operator'      => $this->data['operator'],         // 来源，-2会员，-1，订单，0 商城， 1++ 插件ID
-            'operator_id'   => $this->data['operator_id'],      // 来源ID，如：文章营销某一篇文章的ID，订单ID，海报ID
+            'serial_number' => $this->data['serial_number'] ?: '',
+            'operator'      => $this->data['operator'],
+            'operator_id'   => $this->data['operator_id'],
             'remark'        => $this->data['remark'],
         );
     }
