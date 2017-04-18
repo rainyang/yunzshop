@@ -9,6 +9,7 @@
 namespace app\frontend\modules\order\services\models;
 
 
+use app\common\exceptions\AppException;
 use app\frontend\modules\discount\services\models\OrderDiscount;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\models\Order;
@@ -83,7 +84,11 @@ abstract class OrderModel extends Order
     protected function getPrice()
     {
         //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
-        return max($this->getVipPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(), 0);
+        $result = $this->getVipPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice();
+        if($result < 0 ){
+            throw new AppException('('.$result.')订单金额不能为负');
+        }
+        return $result;
     }
 
     /**
