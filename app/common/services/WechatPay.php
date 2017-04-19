@@ -78,7 +78,7 @@ class WechatPay extends Pay
         $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_WECHAT, $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
 
         $pay = \Setting::get('shop.pay');
-echo '<pre>';print_r();exit;
+
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
             return error(1, '没有设定支付参数');
         }
