@@ -168,7 +168,7 @@ class User extends BaseModel
                 ->where(['uid' => \YunShop::app()->uid])
                 ->where('type','!=', '1')
                 ->with([
-                    'userRoles' => function ($query) {
+                    'userRole' => function ($query) {
                         return $query->select(['user_id','role_id'])
                             ->with(['permissions']);
                     },
