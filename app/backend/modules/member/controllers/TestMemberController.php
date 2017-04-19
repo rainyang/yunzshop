@@ -15,6 +15,7 @@ use app\common\events\TestFailEvent;
 use app\common\events\UserActionEvent;
 use app\common\helpers\ImageHelper;
 use app\common\helpers\PaginationHelper;
+use app\common\services\WechatPay;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -115,5 +116,15 @@ class TestMemberController extends BaseController
     {
         echo PaginationHelper::show(18,1);
     }
+
+    public function pay()
+    {
+        $pay = WechatPay();
+        $result = $pay->doRefund('SN20170417200901044483', '0.01', '0.01');
+
+        dd($result);
+    }
+
+
 
 }

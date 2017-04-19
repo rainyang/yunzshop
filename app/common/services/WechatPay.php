@@ -87,7 +87,7 @@ class WechatPay extends Pay
             message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
         }
 
-        $notify_url = Url::shopUrl('payment/wechat/refundUrl.php');
+        $notify_url = '';
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
 
@@ -96,8 +96,9 @@ class WechatPay extends Pay
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
 
-            $this->payResponseDataLog();
+            $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
 
+            return true;
         } else {
             throw new \AppException('退款失败');
         }
@@ -115,7 +116,7 @@ class WechatPay extends Pay
         //$out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money;
-        $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_WECHAT, $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log(Pay::PAY_TYPE_WITHDRAW, Pay::PAY_MODE_WECHAT, $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
 
         $pay = \Setting::get('shop.pay');
 
@@ -133,11 +134,7 @@ class WechatPay extends Pay
             $openid = Member::getOpenId($order_info['uid']);
         }
 
-//        if (config('app.debug')) {
-//            $openid = 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y';
-//        }
-
-        $notify_url = Url::shopUrl('payment/wechat/withdrawUrl.php');
+        $notify_url = '';
         $app = $this->getEasyWeChatApp($pay, $notify_url);
 
         if ($type == 1) {//钱包
@@ -182,7 +179,7 @@ class WechatPay extends Pay
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
 
-            $this->payResponseDataLog();
+            $this->payResponseDataLog($out_trade_no, '微信提现', json_encode($result));
 
             return true;
 
