@@ -94,7 +94,7 @@ class BalanceController extends ApiController
     private function getMemberInfo()
     {
         $member_id = \YunShop::app()->getMemberId();
-        $member_id = \YunShop::app()->getMemberId() ?: \YunShop::request()->member_id;
+        $member_id = \YunShop::app()->getMemberId() ?: \YunShop::request()->uid;
         return $this->memberInfo = Member::getMemberInfoById($member_id) ?: false;
     }
 
