@@ -15,6 +15,7 @@ use app\common\events\TestFailEvent;
 use app\common\events\UserActionEvent;
 use app\common\helpers\ImageHelper;
 use app\common\helpers\PaginationHelper;
+use app\common\models\Setting;
 use app\common\services\WechatPay;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

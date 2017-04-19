@@ -10,6 +10,26 @@ namespace app\backend\modules\goods\services;
 
 class CommentService
 {
+
+    public static function getTypeName($type)
+    {
+
+        switch ($type) {
+            case '1':
+                return "评论";
+                break;
+            case '2':
+                return "回复";
+                break;
+            case '3':
+                return "追加评论";
+                break;
+            default:
+                return "追加回复";
+
+        }
+    }
+
     /**
      * @param array $search
      * @return mixed
@@ -57,20 +77,20 @@ class CommentService
     }
 
 
-    public static function reply($reply, $comment, $member)
+    public static function reply($reply, $member)
     {
         $data = [
-            'uniacid' => $comment->uniacid,
-            'order_id' => $comment->order_id,
-            'goods_id' => $comment->goods_id,
+            'uniacid' => \YunShop::app()->uniacid,
+            'order_id' => $reply['order_id'],
+            'goods_id' => $reply['goods_id'],
             'nick_name' => $reply['nick_name'],
             'content' => $reply['reply_content'],
             'created_at' => time(),
-            'comment_id' => $comment->id,
+            'comment_id' => $reply['comment_id'],
             'reply_id' => $reply['reply_id'],
-            'reply_name' => $member->nick_name,
+            'reply_name' => $member->nickname,
+            'type' => $reply['type'],
         ];
-
         if (isset($reply['reply_images']) && is_array($reply['reply_images'])) {
             $data['images'] = iserializer($reply['reply_images']);
         } else {

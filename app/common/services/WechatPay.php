@@ -238,7 +238,7 @@ class WechatPay extends Pay
     {
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...
-            'body'             => $data['body'],
+            'body'             => $data['subject'],
             'out_trade_no'     => $data['order_no'],
             'total_fee'        => $data['amount'] * 100, // 单位：分
             'nonce_str'        => Client::random(8) . "",

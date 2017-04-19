@@ -218,13 +218,14 @@ class ShopController extends BaseController
     public function pay()
     {
         $pay = Setting::get('shop.pay');
+
         $data = [
             'weixin_jie_cert' => '',
             'weixin_jie_key' => '',
             'weixin_jie_root' => ''
         ];//借用微信支付证书,在哪里取得数据待定?
         $requestModel = \YunShop::request()->pay;
-        //echo '<pre>';print_r($requestModel);exit;
+
         if ($requestModel) {
 
             if ($_FILES['weixin_cert_file']['name']) {
