@@ -35,7 +35,8 @@ class Coupon extends \app\common\models\Coupon
             'money'=> '领取时消耗的余额',
             'total' => '发放总数',
             'resp_title' => '推送标题',
-            'resp_desc' => '推送链接',
+            'resp_desc' => '推送说明',
+            'resp_url' => '推送链接',
         ];
     }
 
