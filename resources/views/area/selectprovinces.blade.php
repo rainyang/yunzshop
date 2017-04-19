@@ -71,7 +71,7 @@
             }
             var count = cityall.parent().parent().find('.city:checked').length;
             if(count>0){
-               cityall.next().html("(" + count + ")")    ;
+               cityall.next().html("(" + count + ")");
             }
             else{
                 cityall.next().html("");

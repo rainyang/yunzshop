@@ -4,6 +4,13 @@
     <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="w1200 m0a">
         <div class="rightlist">
+
+            <div class="right-titpos">
+                <ul class="add-snav">
+                    <li class="active"><a href="#">会员信息</a></li>
+                </ul>
+            </div>
+
             <div class="panel panel-default">
                 <div class='panel-body'>
                     <div style='height:100px;width:110px;float:left;'>
@@ -19,28 +26,26 @@
             </div>
 
                 <div class="panel panel-info">
-                    <div class="panel-heading">筛选</div>
+
                     <div class="panel-body">
                         <form action="" method="post" class="form-horizontal" role="form" id="form1">
                             <input type="hidden" name="route" value="member.member.agent" id="route" />
                             <input type="hidden" name="id" value="{{$request->id}}" />
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>
-                                <div class="col-sm-8 col-lg-9 col-xs-12">
-                                    <input type="text" class="form-control"  name="aid" value="{{$request->aid}}"/>
+
+                            <div class="form-group col-xs-12 col-sm-6 col-md-2">
+                                <div class="">
+                                    <input type="text" class="form-control"  name="aid" value="{{$request->aid}}" placeholder="请输入您的ID"/>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
-                                <div class="col-sm-8 col-lg-9 col-xs-12">
+                            <div class="form-group col-xs-12 col-sm-6 col-md-2">
+                                <div class="">
                                     <input type="text" class="form-control"  name="keyword" value="{{$request->keyword}}" placeholder='可搜索昵称/名称/手机号'/>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">是否关注</label>
-                                <div class="col-sm-8 col-lg-9 col-xs-12">
+                            <div class="form-group col-xs-12 col-sm-6 col-md-2">
+                                <div class="">
                                     <select name='followed' class='form-control'>
-                                        <option value=''></option>
+                                        <option value=''>是否关注</option>
                                     <!--
                                     <option value='2'
                                             @if($request->followed=='2')
@@ -64,9 +69,8 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">状态</label>
-                                <div class="col-sm-3">
+                            <div class="form-group col-xs-12 col-sm-6 col-md-2">
+                                <div class="">
                                     <select name='status' class='form-control'>
                                         <option value=''>状态</option>
                                         <option value='0'
@@ -81,7 +85,9 @@
                                         >已审核</option>
                                     </select>
                                 </div>
-                                <div class="col-sm-3">
+                            </div>
+                            <div  class="form-group col-xs-12 col-sm-6 col-md-2">
+                                <div class="">
                                     <select name='isblack' class='form-control'>
                                         <option value=''>黑名单状态</option>
                                         <option value='0'
@@ -97,9 +103,9 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
-                                <div class="col-sm-3"><button class="btn btn-default">
+                            <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                                <label class=" control-label"></label>
+                                <div class="col-sm-3 pull-right" style="margin-right:30px;"><button class="btn btn-success">
                                         <i class="fa fa-search"></i> 搜索</button>
                                 </div>
                             </div>
@@ -108,21 +114,21 @@
                 </div>
 
 
-            <div class="panel panel-default">
+            <div class="panel panel-default"  style="margin-bottom:200px!important">
                 <div class="panel-heading">总数：{{$total}}</div>
                 <div class="panel-body">
                     <table class="table table-hover"   style="overflow:visible;">
                         <thead class="navbar-inner">
                         <tr>
                             <th style='width:5%;'>会员ID</th>
-                            <th style='width:18%;text-align: center;'>推荐人</th>
+                            <th style='width:13%;text-align: center;'>推荐人</th>
                             <th style='width:10%;text-align: center;'>粉丝</th>
                             <th style='width:12%;'>姓名</th>
                             <th style='width:12%;'>手机号码</th>
                             <th style='width:12%;text-align: center;'>状态</th>
-                            <th style='width:14%;'>时间</th>
+                            <th style='width:14%;'>注册时间</th>
                             <th style='width:10%;text-align: center;'>关注</th>
-                            <th style='width:8%'>操作</th>
+                            <th style='width:13%'>操作</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -171,8 +177,8 @@
                                 @endif
 
                             </td>
-                            <td>注册时间：{{date('Y-m-d H:i',$row['createtime'])}}</td>
-                            <td>
+                            <td>{{date('Y-m-d H:i',$row['createtime'])}}</td>
+                            <td class="text-center">
                                 @if(empty($row['has_one_fans']['followed']))
                                     @if(empty($row['has_one_fans']['uid']))
                                         <label class='label label-default'>未关注</label>
@@ -192,7 +198,7 @@
                                         <li><a  href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'order','search[ambiguous][string'=>'uid:'.$row['uid']])}}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
                                         <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
                                         <li><a href="{{yzWebUrl('finance.balance.recharge', ['id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
-                                      <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-money'></i> 推广下线 </a></li>
+                                      <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
                                         @if($row['yz_member']['is_black']==1)
                                             <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                                         @else
