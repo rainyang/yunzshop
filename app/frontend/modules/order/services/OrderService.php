@@ -254,4 +254,15 @@ class OrderService
         $OrderOperation = new OrderChangePrice($order_model);
         return self::OrderOperate($OrderOperation);
     }
+    /**
+     * 所有订单商品都是实物
+     * @param Collection $orderGoodsCollect
+     * @return bool
+     */
+    public static function allGoodsIsReal(Collection $orderGoodsCollect){
+        return $orderGoodsCollect->contains(function ($orderGoods){
+
+            return $orderGoods->belongsToGood->isRealGoods();
+        });
+    }
 }

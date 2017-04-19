@@ -13,6 +13,7 @@ use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
 use \app\common\services\finance\BalanceService as BaseBalanceService;
 use app\common\facades\Setting;
+use app\frontend\modules\finance\models\BalanceRecharge;
 
 class BalanceService extends BaseBalanceService
 {
@@ -52,7 +53,7 @@ class BalanceService extends BaseBalanceService
     }
 
     //余额转让设置
-    protected function transferSet()
+    public function transferSet()
     {
         return $this->_recharge_set['transfer'] ? true : false;
     }
@@ -87,67 +88,92 @@ class BalanceService extends BaseBalanceService
         return $this->_withdraw_set['alipay'] ? true : false;
     }
 
+    public function payResult($data = [])
+    {
+        $rechargeMode = BalanceRecharge::getRechargeRecordBy0rdersn($data['order_sn']);
+
+        $rechargeMode->status = BalanceRecharge::PAY_STATUS_SUCCESS;
+        if ($rechargeMode->save) {
+            $this->data = array(
+                'member_id'         => $rechargeMode->member_id,
+                'money'             => $rechargeMode->money,
+                'serial_number'     => $rechargeMode->ordersn,
+                'operator'          => Balance::OPERRTOR_MEMBER,
+                'operator_id'       => $rechargeMode->member_id,
+                'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
+                'service_type'      => Balance::BALANCE_RECHARGE
+            );
+            $result = $this->balanceChange($data);
+            if ($result === true) {
+                return true;
+            }
+            throw new AppException($result);
+        }
+        throw new AppException('修改充值状态失败');
+    }
+
 
     //余额变动接口（对外接口）
     public function balanceChange($data)
     {
         $this->data = $data;
         $this->getMemberInfo();
+        $this->service_type = $data['service_type'];
 
-        return $this->updateBalanceRecord();
+        if ($this->service_type == Balance::BALANCE_TRANSFER) {
+           return $this->balanceTransfer();
+        }
+
+        return  $this->detectionBalance() ? $this->judgeMethod() : '余额必须大于零';
     }
 
-    protected function getNewMoney()
+    protected function validatorResultMoney()
     {
-        $this->attachedType();
-        switch ($this->type)
-        {
-            case Balance::TYPE_INCOME:
-                $new_money = $this->data['money'] + $this->memberModel->credit2;
-                break;
-            case Balance::TYPE_EXPENDITURE:
-                $new_money = $this->memberModel->credit2 - $this->data['money'];
-                break;
-            default:
-                $new_money = 0;
+        if ($this->result_money >= 0) {
+            return true;
         }
-        if ($new_money < 0) {
-            throw new AppException('会员余额不足！');
-        }
-        return $new_money;
+        throw new AppException('余额不足');
     }
 
     protected function getMemberInfo()
     {
         $this->memberModel = Member::getMemberInfoById(\YunShop::app()->getMemberId());
+        if ($this->data['member_id']) {
+            $this->memberModel = Member::getMemberInfoById($this->data['member_id']);
+        }
         if (!$this->memberModel) {
             throw new AppException('未获取到会员信息，请重试！');
         }
     }
 
-    protected function attachedType()
+
+    private function detectionBalance()
     {
-        if (in_array($this->data['service_type'], [
-            Balance::BALANCE_RECHARGE,
-            Balance::BALANCE_TRANSFER,
-            Balance::BALANCE_AWARD,
-            Balance::BALANCE_INCOME,
-            Balance::BALANCE_CANCEL_DEDUCTION
-        ])) {
-            $this->type = Balance::TYPE_INCOME;
-            $this->service_type = $this->data['service_type'];
-        } elseif (in_array($this->data['service_type'], [
-            Balance::BALANCE_CONSUME,
-            Balance::BALANCE_DEDUCTION,
-            Balance::BALANCE_WITHDRAWAL,
-            Balance::BALANCE_CANCEL_AWARD
-        ])) {
-            $this->type = Balance::TYPE_EXPENDITURE;
-            $this->service_type = $this->data['service_type'];
-        } else {
-            throw new AppException('服务类型不存在');
-        }
+        return $this->data['money'] > 0 ? true : false;
     }
+
+    private function balanceTransfer()
+    {
+        $this->attachedMoney();
+        $this->type = Balance::TYPE_EXPENDITURE;
+        //echo '<pre>'; print_r($this->memberModel); exit;
+        //echo '<pre>'; print_r($this->data); exit;
+        $result = $this->subtraction();
+        if ($result === true) {
+            $this->type = Balance::TYPE_INCOME;
+            $this->data['member_id'] = $this->data['recipient'];
+            $this->getMemberInfo();
+            return $this->addition();
+        }
+
+        //echo '<pre>'; print_r($result); exit;
+        throw new AppException($result);
+    }
+
+
+
+
+
 
 
 }

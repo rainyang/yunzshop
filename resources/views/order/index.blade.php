@@ -245,17 +245,15 @@
                                             </tr>
 
 
-                                            @if( empty($order['statusvalue']))
+                                            @if($order['status'] == 0)
                                                 <tr>
                                                     <td ></td>
-                                                    @if(0)
-                                                        @if( 0&&$order['ischangePrice'] == 1)
+                                                        @if($is_change_price)
                                                             <td style='color:green;'>
                                                                 <a href="javascript:;" class="btn btn-link "
                                                                    onclick="changePrice('{{$order['id']}}')">修改价格</a>
                                                             </td>
                                                         @endif
-                                                    @endif
                                                 </tr>
                                             @endif
                                         </table>
@@ -265,9 +263,9 @@
                                         <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
                                     </td>
                                     <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">
-                                        @section('operation'.$order_index)
-                                            @include('order.ops')
-                                        @show
+
+                                            @include($include_ops)
+
                                     </td>
                                 @endif
                             </tr>
@@ -293,6 +291,19 @@
             $('#form_p').val("order.list.export");
             $('#form1').submit();
         });
+
+        function changePrice(orderid) {
+            $.post("{!! yzWebUrl('order.change-order-price') !!}", {order_id:orderid}, function(html){
+                if (html == -1) {
+                    alert('订单不能改价!');
+                    return;
+                }
+                $('#changeprice_container').html(html);
+                $('#modal-changeprice').modal().on('shown.bs.modal', function () {
+                    mc_init();
+                })
+            });
+        }
     </script>
     @section('plugin_js')
         @show

@@ -24,7 +24,7 @@ class Balance extends BaseModel
 
 
 
-    protected $appends = ['service_type_name'];
+    protected $appends = ['service_type_name','type_name'];
 
     const OPERATOR_SHOP     = 0;  //操作者 商城
 
@@ -69,10 +69,10 @@ class Balance extends BaseModel
         self::BALANCE_CANCEL_AWARD          => '奖励取消回滚',
     ];
 
-    public static function getBalanceComment($balance)
-    {
-        return isset(static::$balanceComment[$balance]) ? static::$balanceComment[$balance]: '';
-    }
+    public static $type_name = [
+        self::TYPE_INCOME       => '收入',
+        self::TYPE_EXPENDITURE  => '支出'
+    ];
 
     /*
      * 模型管理，关联会员数据表
@@ -83,13 +83,13 @@ class Balance extends BaseModel
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
-    /**
-     * 通过字段 type 输出 type_name ;
-     * @return string
-     * @Author yitian */
-    public function getTypeNameAttribute()
+    public static function getBalanceComment($balance)
     {
-        return BalanceService::attachedTypeName($this);
+        return isset(static::$balanceComment[$balance]) ? static::$balanceComment[$balance]: '';
+    }
+    public static function getTypeNameComment($balance)
+    {
+        return isset(static::$type_name[$balance]) ? static::$type_name[$balance]: '';
     }
 
     /**
@@ -99,6 +99,11 @@ class Balance extends BaseModel
     public function getServiceTypeNameAttribute()
     {
         return static::getBalanceComment($this->attributes['service_type']);
+    }
+
+    public function getTypeNameAttribute()
+    {
+        return static::getTypeNameComment($this->attributes['type']);
     }
 
     /*

@@ -147,6 +147,7 @@
                     </div>
 
                     <input type="hidden" name="reply[reply_id]" id="reply_id" value="{{$comment->uid}}"/>
+                    <input type="hidden" name="reply[nick_name]" id="nick_name" value="管理员"/>
 
 
                     <div class="form-group"></div>

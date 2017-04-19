@@ -14,6 +14,7 @@ use app\frontend\modules\dispatch\services\models\GoodsDispatch;
 use app\frontend\modules\dispatch\services\models\OrderDispatch;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+use Illuminate\Support\Collection;
 
 
 class DispatchService
@@ -43,4 +44,6 @@ class DispatchService
         $OrderGoods->dispatch_details;
         return new GoodsDispatch($OrderGoods->dispatch_details);
     }
+
+
 }

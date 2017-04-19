@@ -110,6 +110,8 @@ class ListController extends BaseController
         }
         $list = $this->_order_model;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+
+        $is_change_price = true; //todo
         $data = [
             'list' => $list,
             'total_price' => $list['total_price'],
@@ -118,7 +120,9 @@ class ListController extends BaseController
             'pager' => $pager,
             'requestSearch' => $requestSearch,
             'var' => \YunShop::app()->get(),
-            'url' => \Request::query('route')
+            'url' => \Request::query('route'),
+            'include_ops' => 'order.ops',
+            'is_change_price' => $is_change_price
         ];
         $data += $this->fakeData();
         return $data;

@@ -27,21 +27,69 @@ abstract class BalanceService
 
     protected $service_type;
 
+    protected $money;   //正数
+
+    protected $result_money;
 
 
 
-    public function test()
+
+    //计算后金额值
+    abstract protected function validatorResultMoney();
+
+    //获取会员信息
+    abstract protected function getMemberInfo();
+
+    protected function judgeMethod()
     {
+
+        $this->attachedMoney();
+
+        if (in_array($this->service_type,
+            [
+                Balance::BALANCE_RECHARGE,
+                Balance::BALANCE_AWARD,
+                Balance::BALANCE_INCOME,
+                Balance::BALANCE_CANCEL_DEDUCTION
+            ])
+        ) {
+            $this->type = Balance::TYPE_INCOME;
+            return $this->addition();
+        }
+        if (in_array($this->service_type,
+            [
+                Balance::BALANCE_CONSUME,
+                Balance::BALANCE_DEDUCTION,
+                Balance::BALANCE_WITHDRAWAL,
+                Balance::BALANCE_CANCEL_AWARD
+            ])
+        ) {
+            $this->type = Balance::TYPE_EXPENDITURE;
+            return $this->subtraction();
+        }
+
+        return '服务类型不存在';
 
     }
 
-    abstract protected function getNewMoney();
+    protected function attachedMoney()
+    {
+        return $this->money = $this->data['money'] > 0 ? $this->data['money'] : -$this->data['money'];
+    }
 
-    abstract protected function getMemberInfo();
+    //余额+
+    protected function addition()
+    {
+        $this->result_money = $this->memberModel->credit2 + $this->money;
+        return $this->updateBalanceRecord();
+    }
 
-    abstract protected function attachedType();
-
-
+    //余额—
+    protected function subtraction()
+    {
+        $this->result_money = $this->memberModel->credit2 - $this->money;
+        return $this->validatorResultMoney() === true ? $this->updateBalanceRecord() : '余额不足';
+    }
 
     //余额明细记录写入 protected
     protected function updateBalanceRecord()
@@ -56,17 +104,18 @@ abstract class BalanceService
         if ($this->balanceModel->save()) {
             return $this->updateMemberBalance();
         }
-        throw new AppException('余额变动记录写入失败，请联系管理员！');
+        return '余额变动记录写入失败，请联系管理员！';
     }
 
     //修改会员余额
     protected function updateMemberBalance()
     {
-        $this->memberModel->credit2 = $this->getNewMoney();
+        //echo '<pre>'; print_r($this->result_money); exit;
+        $this->memberModel->credit2 = $this->result_money;
         if ($this->memberModel->save()) {
             return true;
         }
-        throw new AppException('会员余额写入失败，请联系管理员、');
+        return '会员余额写入出错，请联系管理员';
     }
 
 
@@ -76,10 +125,10 @@ abstract class BalanceService
     {
         return array(
             'uniacid'       => \YunShop::app()->uniacid,
-            'member_id'     => \YunShop::app()->getMemberId(),
+            'member_id'     => $this->memberModel->uid,
             'old_money'     => $this->memberModel->credit2 ?: 0,
-            'change_money'  => $this->data['money'],
-            'new_money'     => $this->getNewMoney() > 0 ? $this->getNewMoney() : 0,
+            'change_money'  => $this->type == Balance::TYPE_INCOME ? $this->data['money'] : -$this->data['money'],
+            'new_money'     => $this->result_money > 0 ? $this->result_money : 0,
             'type'          => $this->type,
             'service_type'  => $this->service_type,
             'serial_number' => $this->data['serial_number'] ?: '',
@@ -92,22 +141,6 @@ abstract class BalanceService
 
 
 
-    // todo 应该移到余额充值
-    public static function attachedTypeName($model)
-    {
-        switch ($model->type)
-        {
-            case \app\common\services\finance\Balance::INCOME:
-                return '收入';
-                break;
-            case \app\common\services\finance\Balance::EXPENDITURE:
-                return '支出';
-                break;
-            default:
-                return '';
-        }
-
-    }
 
 
 }

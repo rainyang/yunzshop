@@ -208,10 +208,26 @@ class MemberController extends BaseController
      */
     public function agent()
     {
-        $uid = \YunShop::request()->member_id;
+        $request = \YunShop::request();
+
+        $member_info = Member::getUserInfos($request->id)->first();
+
+        if (empty($member_info)) {
+            return $this->message('会员不存在','', 'error');
+        }
+
+        $list = Member::getAgentInfoByMemberId($request)
+            ->paginate($this->pageSize)
+            ->toArray();
+
+        $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
         return view('member.agent', [
-            'request' => \YunShop::request()
+            'member' => $member_info,
+            'list'  => $list,
+            'pager' => $pager,
+            'total' => $list['total'],
+            'request' => $request
         ])->render();
     }
 
