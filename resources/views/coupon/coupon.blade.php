@@ -27,8 +27,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
                             <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
-                            <input type="hidden" name="token" value="{{$var['token']}}" />
-                            <input type="button" name="back" onclick='history.back()' style='margin-left:10px;' value="返回列表" class="btn btn-default" />
+                            <a href="{{yzWebUrl('coupon.coupon.index')}}"><input type="button" name="back" style='margin-left:10px;' value="返回列表" class="btn btn-default" /></a>
                         </div>
                     </div>
 
