@@ -67,16 +67,29 @@ class CouponController extends BaseController
             $this->error('请传入正确参数.');
         }
 
-        $coupon = Coupon::uniacid()->find($coupon_id);
+        $coupon = Coupon::getCouponById($coupon_id)->first();
         $couponRequest = \YunShop::request()->coupon;
         if ($couponRequest) {
-            $coupon->setRawAttributes($couponRequest);
-            $coupon->save();
+
+            $couponRequest['time_start'] =\YunShop::request()->time['start'];
+            $couponRequest['time_end'] =\YunShop::request()->time['end'];
+
+            //todo 表单验证
+            $coupon->fill($couponRequest);
+            $validator = $coupon->validator();
+            if($validator->fails()){
+                $this->error($validator->messages());
+            } else{
+                if($coupon->save()){
+                    return $this->message('优惠券修改成功', Url::absoluteWeb('coupon.coupon.index'));
+                } else{
+                    $this->error('优惠券修改失败');
+                }
+            }
         }
 
         return view('coupon.coupon', [
             'coupon' => $coupon,
-            'var' => \YunShop::app()->get(),
         ])->render();
     }
 
