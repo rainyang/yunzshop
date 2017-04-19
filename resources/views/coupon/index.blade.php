@@ -130,7 +130,7 @@
                                 @endforeach
                         </tbody>
                         </table>
-                        {{$pager}}
+                        {!! $pager !!}
                     </div>
                     <div class='panel-footer'>
                         {{--<input name="submit" type="submit" class="btn btn-default" value="提交排序">--}}

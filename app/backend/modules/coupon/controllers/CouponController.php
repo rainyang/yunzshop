@@ -18,7 +18,8 @@ class CouponController extends BaseController
     //优惠券列表
     public function index()
     {
-        $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate(20)->toArray();
+        $pageSize = 10;
+        $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate($pageSize)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         foreach($list['data'] as &$item){
