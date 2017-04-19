@@ -15,6 +15,7 @@ use app\common\events\TestFailEvent;
 use app\common\events\UserActionEvent;
 use app\common\helpers\ImageHelper;
 use app\common\helpers\PaginationHelper;
+use app\common\models\Setting;
 use app\common\services\WechatPay;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -118,7 +119,10 @@ class TestMemberController extends BaseController
     }
 
     public function pay()
-    {
+    {   echo \YunShop::app()->uniacid;
+    echo '<BR>';
+    $set = \Setting::get('shop.pay');
+    echo '<pre>';print_r($set);exit;
         $pay = new WechatPay();
         $result = $pay->doRefund('SN20170417200901044483', '0.01', '0.01');
 
