@@ -119,7 +119,7 @@ class TestMemberController extends BaseController
 
     public function pay()
     {
-        $pay = WechatPay();
+        $pay = new WechatPay();
         $result = $pay->doRefund('SN20170417200901044483', '0.01', '0.01');
 
         dd($result);
