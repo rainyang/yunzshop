@@ -33,7 +33,9 @@ class MemberGroup extends \app\common\models\MemberGroup
     {
         //todo 获取分组内会员数量
         return self::uniacid()
-
+            ->with(['member' => function($query){
+                return $query->select(['member_id','group_id'])->where('uniacid', \YunShop::app()->uniacid);
+            }])
             ->paginate($pageSize);
     }
 

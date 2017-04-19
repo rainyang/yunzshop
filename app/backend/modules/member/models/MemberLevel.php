@@ -120,7 +120,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     public  function rules()
     {
         $rule =  [
-            'level'      => ['required',\Illuminate\Validation\Rule::unique($this->table)->ignore($this->id)],
+            'level'      => ['required',\Illuminate\Validation\Rule::unique($this->table)->ignore($this->id),'numeric','between:1,9999'],
             'level_name' => 'required',
             'discount'   => 'numeric|between:0.1,10'
         ];
