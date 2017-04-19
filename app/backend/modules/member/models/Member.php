@@ -258,22 +258,55 @@ class Member extends \app\common\models\Member
         return $query;
     }
 
-    public static function getAgentInfoByMemberId($member_id)
+    /**
+     * 推广下线
+     *
+     * @param $request
+     * @return mixed
+     */
+    public static function getAgentInfoByMemberId($request)
     {
-        return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
+        $query = self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
             'credit1', 'credit2'])
-            ->uniacid()
-            ->whereHas('yzMember', function($query) use ($member_id){
-                $query->where('parent_id', $member_id);
-            })
-            ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])->orderBy('member_id', 'desc')
-                    ->with(['agent'=>function($query){
+            ->uniacid();
+
+        if ($request->keyword) {
+            $query->searchLike($request->keyword);
+        }
+
+        $query->whereHas('yzMember', function($query) use ($request){
+            $query->where('parent_id', $request->id);
+
+            if ($request->aid) {
+                    $query->where('member_id', $request->aid);
+            }
+
+            if ($request->status != '') {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->isblack != '') {
+                $query->where('is_black', $request->isblack);
+            }
+
+        });
+
+        if ($request->followed != '') {
+            $query->whereHas('hasOneFans', function ($jq) use ($request) {
+                $jq->where('follow', $request->followed);
+            });
+        }
+
+        $query->with(['yzMember'=>function($query){
+                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])->with(['agent'=>function($query){
                         return $query->select(['uid', 'avatar', 'nickname']);
                     }]);
             }, 'hasOneFans' => function($query) {
                 return $query->select(['uid', 'follow as followed']);
             }
-            ]);
+        ])
+            ->orderBy('uid', 'desc');
+
+        return $query;
     }
 }

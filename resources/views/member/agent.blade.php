@@ -27,13 +27,13 @@
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>
                                 <div class="col-sm-8 col-lg-9 col-xs-12">
-                                    <input type="text" class="form-control"  name="mid" value="{$_GPC['mid']}"/>
+                                    <input type="text" class="form-control"  name="aid" value="{{$request->aid}}"/>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
                                 <div class="col-sm-8 col-lg-9 col-xs-12">
-                                    <input type="text" class="form-control"  name="realname" value="{$_GPC['realname']}" placeholder='可搜索昵称/名称/手机号'/>
+                                    <input type="text" class="form-control"  name="keyword" value="{{$request->keyword}}" placeholder='可搜索昵称/名称/手机号'/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -41,9 +41,26 @@
                                 <div class="col-sm-8 col-lg-9 col-xs-12">
                                     <select name='followed' class='form-control'>
                                         <option value=''></option>
-                                        <option value='0' {if $_GPC['followed']=='0'}selected{/if}>未关注</option>
-                                        <option value='1' {if $_GPC['followed']=='1'}selected{/if}>已关注</option>
-                                        <option value='2' {if $_GPC['followed']=='2'}selected{/if}>取消关注</option>
+                                    <!--
+                                    <option value='2'
+                                            @if($request->followed=='2')
+                                        selected
+                                        @endif
+                                            >未关注
+                                            -->
+                                        </option>
+                                        <option value='1'
+                                                @if($request->followed=='1')
+                                                selected
+                                                @endif
+                                        >已关注
+                                        </option>
+                                        <option value='0'
+                                                @if($request->followed=='0')
+                                                selected
+                                                @endif
+                                        >取消关注
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -52,15 +69,31 @@
                                 <div class="col-sm-3">
                                     <select name='status' class='form-control'>
                                         <option value=''>状态</option>
-                                        <option value='0' {if $_GPC['status']=='0'}selected{/if}>未审核</option>
-                                        <option value='1' {if $_GPC['status']=='1'}selected{/if}>已审核</option>
+                                        <option value='0'
+                                                @if($request->status == '0')
+                                                selected
+                                                @endif
+                                        >未审核</option>
+                                        <option value='2'
+                                                @if($request->status == '2')
+                                                selected
+                                                @endif
+                                        >已审核</option>
                                     </select>
                                 </div>
                                 <div class="col-sm-3">
-                                    <select name='agentblack' class='form-control'>
+                                    <select name='isblack' class='form-control'>
                                         <option value=''>黑名单状态</option>
-                                        <option value='0' {if $_GPC['agentblack']=='0'}selected{/if}>否</option>
-                                        <option value='1' {if $_GPC['agentblack']=='1'}selected{/if}>是</option>
+                                        <option value='0'
+                                           @if($request->isblack == '0')
+                                           selected
+                                           @endif
+                                        >否</option>
+                                        <option value='1'
+                                           @if($request->isblack == '1')
+                                           selected
+                                           @endif
+                                        >是</option>
                                     </select>
                                 </div>
                             </div>
