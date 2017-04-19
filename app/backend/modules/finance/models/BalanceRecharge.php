@@ -18,8 +18,8 @@ class BalanceRecharge
     public function rules()
     {
         return [
-            'enough'    => 'numeric',
-            'give'      => 'numeric',
+            'enough'    => 'numeric|min:0',
+            'give'      => 'numeric|min:0',
         ];
     }
 
