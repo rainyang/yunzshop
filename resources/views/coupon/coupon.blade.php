@@ -85,11 +85,11 @@
                         });
                         $('form').submit(function(){
 
-                            if($(':input[name=couponname]').isEmpty()){
+                            if($('#couponname').isEmpty()){
                                 Tip.focus($(':input[name=couponname]'),'请输入优惠券名称!');
                                 return false;
                             }
-                            var coupon_method = $(':radio[name=coupon_method]:checked').val();
+                            var coupon_method = $('#couponmethod:checked').val();
                             if(coupon_method=='1'){
                                 if($(':input[name=deduct]').isEmpty()){
                                     Tip.focus($(':input[name=deduct]'),'请输入立减多少!');
@@ -98,11 +98,6 @@
                             }else if(coupon_method=='2'){
                                 if($(':input[name=discount]').isEmpty()){
                                     Tip.focus($(':input[name=discount]'),'请输入折扣多少!');
-                                    return false;
-                                }
-                            }else if(coupon_method=='3'){
-                                if($(':input[name=backcredit]').isEmpty() && $(':input[name=backmoney]').isEmpty() && $(':input[name=backredpack]').isEmpty()){
-                                    Tip.focus($(':input[name=backcredit]'),'至少输入一种返利!');
                                     return false;
                                 }
                             }
