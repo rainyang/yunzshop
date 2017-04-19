@@ -42,6 +42,8 @@ class MemberOfficeAccountService extends MemberService
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
+        \Log::debug('微信登陆回调地址', $callback);
+
         $state = 'yz-' . session_id();
 
         if (!Session::get('member_id')) {
@@ -228,6 +230,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
+        \Log::debug('微信登陆成功跳转地址',$redirect_url);
         redirect($redirect_url)->send();
     }
 

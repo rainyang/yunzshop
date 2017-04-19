@@ -469,4 +469,10 @@ $pay->doPay($data);
             (@mkdir($dest, 0777, true));
         }
     }
+
+    public function prlog()
+    {
+        $url = 'badi.com';
+        \Log::debug('11111111', $url);
+    }
 }
