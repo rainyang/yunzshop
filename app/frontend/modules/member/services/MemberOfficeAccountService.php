@@ -220,8 +220,8 @@ class MemberOfficeAccountService extends MemberService
 
                 Session::set('member_id', $member_id);
             } else {
-                redirect($authurl)->send();
-                exit;
+                \Log::debug('微信登陆授权失败',$authurl);
+                return show_json('-3', '微信登陆授权失败');
             }
         } else {
             $this->_setClientRequestUrl();
