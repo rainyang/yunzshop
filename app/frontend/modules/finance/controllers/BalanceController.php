@@ -23,6 +23,9 @@ use app\backend\modules\member\models\Member;
 
 class BalanceController extends ApiController
 {
+    protected $publicAction = ['recharge'];
+    protected $ignoreAction = ['recharge'];
+
     public function test()
     {
         $data = array('order_sn' => 'RV20170418180852899391');
