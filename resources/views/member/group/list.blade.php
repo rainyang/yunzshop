@@ -26,8 +26,7 @@
                         <tr>
                             <td>{{ $list->group_name }}</td>
                             <td>
-                                <?php echo count($group['member']); ?>
-
+                                {{ $list->member->count() }}
                             </td>
                             <td>
                                 <a title="查看" class='btn btn-default' href="{{ yzWebUrl('member.member.search', array('groupid' => $list->id)) }}">

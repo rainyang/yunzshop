@@ -25,6 +25,7 @@ class MemberLevelController extends BaseController
      * @autor yitian */
     public function index()
     {
+        //echo '<pre>'; print_r(Setting::get('shop.member')); exit;
         $pageSize = 10;
         $levelList = MemberLevel::getLevelPageList($pageSize);
         $pager = PaginationHelper::show($levelList->total(), $levelList->currentPage(), $levelList->perPage());
@@ -56,12 +57,15 @@ class MemberLevelController extends BaseController
         $requestLevel = \YunShop::request()->level;
         if($requestLevel) {
             //将数据赋值到model
-            $levelModel->setRawAttributes($requestLevel);
+            $levelModel->fill($requestLevel);
             //其他字段赋值
             $levelModel->uniacid = \YunShop::app()->uniacid;
+            if (!$levelModel->goods_id) {
+                $levelModel->goods_id = 0;
+            }
 
             //字段检测
-            $validator = $levelModel->validator($levelModel->getAttributes());
+            $validator = $levelModel->validator();
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {
@@ -91,11 +95,11 @@ class MemberLevelController extends BaseController
         }
         $requestLevel = \YunShop::request()->level;
         if($requestLevel) {
-            $levelModel->setRawAttributes($requestLevel);
+            $levelModel->fill($requestLevel);
             if (empty($requestLevel['goods_id'])) {
                 $levelModel->goods_id = 0;
             }
-            $validator = $levelModel->validator($levelModel->getAttributes());
+            $validator = $levelModel->validator();
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {

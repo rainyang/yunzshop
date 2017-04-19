@@ -10,12 +10,11 @@ namespace app\frontend\modules\finance\controllers;
 
 
 
-use app\common\services\finance\Balance;
 use app\common\services\PayFactory;
 use app\common\components\ApiController;
-use app\common\facades\Setting;
 use app\common\models\finance\Balance as BalanceCommon;
 
+use app\frontend\modules\finance\models\BalanceTransfer;
 use app\frontend\modules\finance\models\Withdraw;
 use app\frontend\modules\finance\models\BalanceRecharge;
 use app\frontend\modules\finance\services\BalanceService;
@@ -24,6 +23,9 @@ use app\backend\modules\member\models\Member;
 
 class BalanceController extends ApiController
 {
+    protected $publicAction = ['recharge'];
+    protected $ignoreAction = ['recharge'];
+
     public function test()
     {
         $data = array('order_sn' => 'RV20170418180852899391');
@@ -71,6 +73,14 @@ class BalanceController extends ApiController
         return $result === true ? $this->successJson('支付接口对接成功', $this->payOrder()) : $this->errorJson($result);
     }
 
+    //余额转让
+    public function transfer()
+    {
+        $result = (new BalanceService())->transferSet() ? $this->transferStart() : '未开启余额转让';
+
+        return $result === true ? $this->successJson('转让成功') : $this->errorJson($result);
+    }
+
     //记录【全部、收入、支出】
     public function record()
     {
@@ -87,8 +97,49 @@ class BalanceController extends ApiController
     private function getMemberInfo()
     {
         $member_id = \YunShop::app()->getMemberId();
-        $member_id = \YunShop::app()->getMemberId() ?: \YunShop::request()->member_id;
+        $member_id = \YunShop::app()->getMemberId() ?: \YunShop::request()->uid;
         return $this->memberInfo = Member::getMemberInfoById($member_id) ?: false;
+    }
+
+    //余额转让开始
+    private function transferStart()
+    {
+        $recipient = \YunShop::request()->recipient;
+        if (!$this->getMemberInfo()) {
+            return '未获取到会员信息';
+        }
+        if (!Member::getMemberInfoById(\YunShop::request()->recipient)) {
+            return '被转让者不存在';
+        }
+        if ($this->memberInfo->uid == $recipient) {
+            return '转让者不能是自己';
+        }
+        if (\YunShop::request()->transfer_money <= 0){
+            return '转让金额必须大于零';
+        }
+        if ($this->memberInfo->credit2 < \YunShop::request()->transfer_money) {
+            return '转让余额不能大于您的余额';
+        }
+        $this->model = new BalanceTransfer();
+
+        $this->model->fill($this->getTransferData());
+        $validator = $this->model->validator();
+        if ($validator->fails()) {
+            return $validator->messages();
+        }
+        if ($this->model->save()) {
+            //todo 消息通知
+            //echo '<pre>'; print_r($this->getChangeBalanceDataToTransfer()); exit;
+            $result = (new BalanceService())->balanceChange($this->getChangeBalanceDataToTransfer());
+            if ($result === true) {
+                $this->model->status = BalanceTransfer::TRANSFER_STATUS_SUCCES;
+                if ($this->model->save()) {
+                    return true;
+                }
+            }
+            return '修改转让状态失败';
+        }
+        return '转让写入出错，请联系管理员';
     }
 
     //提现开始
@@ -107,29 +158,47 @@ class BalanceController extends ApiController
         }
 
         if ($this->model->save()) {
-            //调取余额修改接口
-            return $this->balanceChange();
+            //todo 消息通知
+            return (new BalanceService())->balanceChange($this->getChangeBalanceDataToWithdraw());
         }
         return '提现写入失败，请联系管理员';
     }
 
-    private function balanceChange()
-    {
-        //todo 可以增加余额提现申请通知
-        //todo 修改会员余额，增加余额明细记录
-        //echo '<pre>'; print_r($this->getChangeBalanceData()); exit;
-        return (new BalanceService())->balanceChange($this->getChangeBalanceData());
-    }
-
-    private function getChangeBalanceData()
+    //余额转让详细记录数据
+    private function getChangeBalanceDataToTransfer()
     {
         return array(
-            'serial_number' => $this->model->withdraw_sn,
-            'money' => $this->model->amounts,
-            'remark' => '会员余额提现' . $this->model->amounts,
-            'service_type' => BalanceCommon::BALANCE_WITHDRAWAL,
-            'operator' => BalanceCommon::OPERRTOR_MEMBER,
-            'operator_id' => $this->model->member_id
+            'serial_number'     => '',
+            'money'             => $this->model->money,
+            'remark'            => '会员【ID:'.$this->model->transferor.'】余额转让会员【ID：'.$this->model->recipient. '】' . $this->model->money . '元',
+            'service_type'      => BalanceCommon::BALANCE_TRANSFER,
+            'operator'          => BalanceCommon::OPERRTOR_MEMBER,
+            'operator_id'       => $this->model->transferor,
+            'transferor'    => \YunShop::app()->getMemberId(),
+            'recipient'     => \YunShop::request()->recipient
+        );
+    }
+
+    private function getChangeBalanceDataToWithdraw()
+    {
+        return array(
+            'serial_number'     => $this->model->withdraw_sn,
+            'money'             => $this->model->amounts,
+            'remark'            => '会员余额提现' . $this->model->amounts,
+            'service_type'      => BalanceCommon::BALANCE_WITHDRAWAL,
+            'operator'          => BalanceCommon::OPERRTOR_MEMBER,
+            'operator_id'       => $this->model->member_id
+        );
+    }
+
+    private function getTransferData()
+    {
+        return array(
+            'uniacid'       => \YunShop::app()->uniacid,
+            'transferor'    => \YunShop::app()->getMemberId(),
+            'recipient'     => \YunShop::request()->recipient,
+            'money'         => trim(\YunShop::request()->transfer_money),
+            'status'        => BalanceTransfer::TRANSFER_STATUS_ERROR
         );
     }
 
@@ -252,67 +321,4 @@ class BalanceController extends ApiController
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
-     * 会员余额转让接口
-     * @return \Illuminate\Http\JsonResponse
-     * @Author yitian
-     */
-    public function transfer()
-    {
-// todo 增加消息通知
-        $financeSet = Setting::get('finance.balance');
-        if ($financeSet['transfer'] == 1) {
-            $transfer = \YunShop::app()->getMemberId();
-            $recipient = \YunShop::request()->recipient;
-            $transferMoney = trim(\YunShop::request()->transfer_money);
-
-            $recipientModel = Member::getMemberById($recipient);
-            $transferModel = Member::getMemberById($transfer);
-            if (!preg_match('/^[0-9]+(.[0-9]{1,2})?$/', $transferMoney) || $transferModel->credit2 < $transferMoney) {
-                return $this->errorJson('转让金额必须是大于0且大于您的余额，允许两位小数');
-            }
-            if ($transfer == $recipient) {
-                return $this->errorJson('受让人不可以是您自己');
-            }
-            if (!$recipientModel || !$recipientModel) {
-                return $this->errorJson('未获取到被转让者ID或被转让者不存在');
-            }
-            if ($transferMoney && $transfer && $recipient) {
-                $data = array(
-                    'member_id' => $transfer,
-                    'change_money' => $transferMoney,
-                    'operator' => BalanceRecharge::PAY_TYPE_MEMBER,
-                    'operator_id' => $transfer,
-                    'remark' => '会员ID' . $transfer . '转让会员ID' . $recipient . '余额' . $transferMoney . '元',
-                    'service_type' => \app\common\models\finance\Balance::BALANCE_TRANSFER,
-
-                    'recipient_id' => $recipient
-                );
-
-                $result = (new Balance())->changeBalance($data);
-                if ($result == true) {
-                    return $this->successJson('余额转让成功');
-                }
-                return $this->errorJson($result);
-            }
-            return $this->errorJson('请求数据错误，未进行余额转让操作');
-        }
-        return $this->errorJson('未开启余额转让功能');
-
-    }
 }

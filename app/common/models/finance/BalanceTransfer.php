@@ -21,6 +21,10 @@ class BalanceTransfer extends BaseModel
 
     protected $guarded = [''];
 
+    const TRANSFER_STATUS_SUCCES = 1;
+
+    const TRANSFER_STATUS_ERROR =-1;
+
     /*
      * 关联会员数据表，一对一
      * @Author yitian */
@@ -50,7 +54,7 @@ class BalanceTransfer extends BaseModel
             ->with(['recipientInfo' => function($recipientInfo) {
                 return $recipientInfo->select('uid', 'nickname', 'realname', 'avatar', 'mobile');
             }])
-            ->orderBy('created_at')->paginate($pageSize);
+            ->orderBy('created_at','desc')->paginate($pageSize);
     }
 
     public static function getSearchPageList($pageSize, $search)
@@ -62,7 +66,7 @@ class BalanceTransfer extends BaseModel
                     ->where('nickname', 'like', $search['keyword']);
             });
         }
-        return $query->orderBy('created_at')->paginate($pageSize);
+        return $query->orderBy('created_at', 'desc')->paginate($pageSize);
     }
 
     /**
@@ -117,7 +121,7 @@ class BalanceTransfer extends BaseModel
             'uniacid'   => "公众号ID不能为空",
             'transferor'=> "转让者ID不能为空",
             'recipient' => '被转让者ID不能为空',
-            'money'     => '充值金额必须是有效的数字，允许两位小数',
+            'money'     => '转让金额必须是有效的数字，允许两位小数',
             'status'    => '状态不能为空'
         ];
     }

@@ -70,10 +70,12 @@ class BalanceController extends BaseController
         //todo 搜索
         $pageSize = 20;
         $search = \YunShop::request()->search;
-        $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
         if ($search) {
             $detailList = \app\common\models\finance\Balance::getSearchPageList($pageSize,$search);
+        } else {
+            $detailList = \app\common\models\finance\Balance::getPageList($pageSize);
         }
+        //echo '<pre>'; print_r($detailList); exit;
 
         $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
