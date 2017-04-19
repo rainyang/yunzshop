@@ -11,6 +11,7 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
+use app\common\models\AccountWechats;
 use app\common\services\MyLink;
 
 class ShopController extends BaseController
@@ -218,6 +219,13 @@ class ShopController extends BaseController
     public function pay()
     {
         $pay = Setting::get('shop.pay');
+
+        $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
+        if (empty($pay['weixin_appid']) && empty($pay['weixin_secret']) && !empty($account)) {
+            $pay['weixin_appid'] = $account->key;
+            $pay['weixin_secret'] = $account->secret;
+        }
 
         $data = [
             'weixin_jie_cert' => '',

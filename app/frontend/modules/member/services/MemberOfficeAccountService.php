@@ -35,7 +35,6 @@ class MemberOfficeAccountService extends MemberService
     {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
-        $mid          = \YunShop::app()->mid ? \YunShop::app()->mid : 0;
 
         $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
         $appId        = $account->key;
