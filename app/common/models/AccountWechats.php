@@ -12,13 +12,6 @@ class AccountWechats extends BaseModel
 {
     public $table = 'account_wechats';
 
-    public static function getAccountInfoById($id)
-    {
-        return self::uniacid()
-            ->where('acid', $id)
-            ->first();
-    }
-
     public static function getAccountByUniacid($uniacid)
     {
         return self::where('uniacid', $uniacid)->first();

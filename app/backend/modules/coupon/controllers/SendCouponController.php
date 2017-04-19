@@ -5,6 +5,7 @@ namespace app\backend\modules\coupon\controllers;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberGroup;
+use app\common\models\AccountWechats;
 use app\common\models\MemberCoupon;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
@@ -182,10 +183,11 @@ class SendCouponController extends BaseController
     //$resUrl 推送消息的链接
     public function sendTemplateMessage($openid, $templateid, $data)
     {
-        $pay = \Setting::get('shop.pay');
+        $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
         $options = [
-            'app_id' => $pay['weixin_appid'],
-            'secret' => $pay['weixin_secret'],
+            'app_id' => $account->key,
+            'secret' => $account->secret,
             'token' => \YunShop::app()->account['token'],
         ];
         $app = new Application($options);

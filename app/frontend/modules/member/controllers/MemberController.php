@@ -80,7 +80,7 @@ class MemberController extends ApiController
             $data = $member_info->toArray();
         }
 
-        $account = AccountWechats::getAccountInfoById(\YunShop::app()->uniacid);
+        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
         switch ($info['become']) {
             case 0:
             case 1:

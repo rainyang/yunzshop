@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\services;
 use app\common\events\member\RegisterByAgent;
 use app\common\facades\Setting;
 use app\common\helpers\Client;
+use app\common\models\AccountWechats;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
 use app\common\models\MemberGroup;
@@ -34,12 +35,10 @@ class MemberOfficeAccountService extends MemberService
     {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
-        $mid          = \YunShop::app()->mid ? \YunShop::app()->mid : 0;
 
-        $pay = Setting::get('shop.pay');
-
-        $appId        = $pay['weixin_appid'];
-        $appSecret    = $pay['weixin_secret'];
+        $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+        $appId        = $account->key;
+        $appSecret    = $account->secret;
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
