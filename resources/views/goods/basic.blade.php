@@ -139,7 +139,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">重量</label>
     <div class="col-sm-6 col-xs-12">
         <div class="input-group">
-            <input type="text" name="goods[weight]" id="weight" class="form-control" value="{{$item['weight']?$item['weight']:0}}" />
+            <input type="text" name="goods[weight]" id="weight" class="form-control" value="{{$goods['weight']?$goods['weight']:0}}" />
             <span class="input-group-addon">克</span>
         </div>
         <div class='help-block'>商品重量设置空或0，取首重（设置配送模板相关）</div>
