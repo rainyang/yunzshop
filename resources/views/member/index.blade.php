@@ -121,7 +121,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-8">
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
 
                             <div class="time">
 
@@ -147,7 +147,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-sm-7 col-lg-4 col-xs-12">
+                        <div class="form-group  col-xs-12 col-sm-7 col-lg-4">
                             <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
                             <div class="">
                                 <button type="button" name="export" value="1" id="export" class="btn btn-default excel back ">导出 Excel</button>
@@ -272,7 +272,7 @@
                                                 <li><a  href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'order','search[ambiguous][string'=>'uid:'.$row['uid']])}}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
                                                 <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
                                                 <li><a href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
-                                                <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-money'></i> 推广下线 </a></li>
+                                                <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
                                                 @if($row['yz_member']['is_black']==1)
                                                     <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                                                 @else

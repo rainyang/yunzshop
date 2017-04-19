@@ -61,7 +61,7 @@ class SendCouponController extends BaseController
                     break;
                 case self::BY_MEMBER_LEVEL: //根据"会员等级"获取 Member IDs
                     $sendLevel = \YunShop::request()->send_level;
-                    $res = MemberLevel::getMembersbyLevel($sendLevel)->toArray();//todo 当没有值时, toArray()没有对象,报错
+                    $res = MemberLevel::getMembersByLevel($sendLevel)->toArray();//todo 当没有值时, toArray()没有对象,报错
                     $memberIds = array_column($res['member'], 'member_id'); //提取member_id组成新的数组
                     break;
                 case self::BY_MEMBER_GROUP: //根据"会员分组"获取 Member IDs

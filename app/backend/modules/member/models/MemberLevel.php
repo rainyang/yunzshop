@@ -10,6 +10,8 @@ namespace app\backend\modules\member\models;
 
 
 
+use app\common\facades\Setting;
+
 class MemberLevel extends \app\common\models\MemberLevel
 {
     /****************************       需要考虑。注意！！！      *******************
@@ -86,7 +88,7 @@ class MemberLevel extends \app\common\models\MemberLevel
      * @param $levelId
      * @return mixed
      */
-    public static function getMembersbyLevel($levelId)
+    public static function getMembersByLevel($levelId)
     {
         return static::where('id', $levelId)
                     ->select(['id', 'level'])
@@ -102,12 +104,12 @@ class MemberLevel extends \app\common\models\MemberLevel
      * @return array */
     public  function atributeNames() {
         return [
-            'level'         => '等级权重不能为空且为为整数',
-            'level_name'    => '等级名称不能为空',
-            'discount'      => '请输入正确的折扣',
-            'order_money'   => '请输入正确的订单金额',
-            'order_count'   => '订单数量只能是整数',
-            'discount'      => '折扣为0.1～10之间的数字，允许一位小数'
+            'level'         => '等级权重',
+            'level_name'    => '等级名称',
+            'order_money'   => '订单金额',
+            'order_count'   => '订单数量',
+            'goods_id'      => '商品ID',
+            'discount'      => '折扣'
         ];
     }
 
@@ -117,16 +119,24 @@ class MemberLevel extends \app\common\models\MemberLevel
      * @return array */
     public  function rules()
     {
-        return [
-            //'level'      => ['required',\Illuminate\Validation\Rule::unique($this->table)->ignore($this->id)],
-            'level'      => 'numeric',
+        $rule =  [
+            'level'      => ['required',\Illuminate\Validation\Rule::unique($this->table)->ignore($this->id),'numeric','between:1,9999'],
             'level_name' => 'required',
-            'discount'   => 'numeric',
-            'order_money'=> 'numeric',
-            'order_count'=> 'integer|numeric',
-            'discount'   => 'numeric'
-
+            'discount'   => 'numeric|between:0.1,10'
         ];
+
+        $levelSet = Setting::get('shop.member');
+        if ($levelSet['level_type'] == 0) {
+            $rule = array_merge(['order_money' => 'numeric'], $rule);
+        }
+        if ($levelSet['level_type'] == 1) {
+            $rule = array_merge(['order_count' => 'integer|numeric'], $rule);
+        }
+        if ($levelSet['level_type'] == 2) {
+            $rule = array_merge(['goods_id' => 'numeric'], $rule);
+        }
+
+        return $rule;
     }
 
     //模型关联 关联商品
