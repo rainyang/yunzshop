@@ -99,57 +99,7 @@
                     </div>
                 </div>
 			</div>
-			<div class="panel-heading">
-				余额设置
-			</div>	
-
-            <div class='panel-body'>
-
-
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启账户充值</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='trade[close_recharge]' value='0' @if (empty($set['close_recharge'])) checked @endif/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='trade[close_recharge]' value='1' @if ($set['close_recharge'] == '1') checked @endif/> 关闭</label>
-                        <span class='help-block'>是否允许用户对账户余额进行充值</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额转账</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='trade[transfer]' value='0' @if (empty($set['transfer']))    checked @endif/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='trade[transfer]' value='1' @if ($set['transfer']=='1') checked @endif /> 关闭</label>
-                        <span class='help-block'>是否允许用户对账户余额进行转账</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额提现</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='trade[withdraw]' value='1' @if ($set['withdraw'] == 1) checked @endif/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='trade[withdraw]' value='0' @if ($set['withdraw'] == 0) checked @endif /> 关闭</label>
-                        <span class='help-block'>是否允许用户将余额提出</span>
-                    </div>
-                </div>
-
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现手续费</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <div class='input-group'>
-                                <input type="text" name="trade[poundage]" class="form-control" value="{{ $set['poundage'] }}" onkeyup="value=value.replace(/[^\d.]/g,'');if(value >= 100){value=''}" onafterpaste="value=value.replace(/[^\d.]/g,'');if(value >= 100){value=''"/>
-                                <span class='input-group-addon'>%</span>
-                            </div>
-                        </div>
-                    </div>
-
-
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现限制</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <input type="text" name="trade[withdraw_limit]" class="form-control" value="{{ $set['withdraw_limit'] }}" />
-                        <span class='help-block'>余额满多少才能提现,空或0不限制</span>
-                    </div>
-                </div>
-			</div>
+			
 			<div class="panel-heading">
 				收货地址
 			</div>	
