@@ -10,8 +10,8 @@
             </ul>
         </div>
 
-        <form id="dataform" action="" method="post" class="form-horizontal form" onsubmit='return formcheck()'>
-            <input type="hidden" name="id" value="{{$comment->id}}"/>
+        <form id="dataform" action="{{yzWebUrl("goods.comment.createReply")}}" method="post" class="form-horizontal form" onsubmit='return formcheck()'>
+
             <div class='panel panel-default'>
                 <div class='panel-heading'>
                     回复评价
@@ -34,26 +34,26 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">评价者</label>
                         <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="goods" maxlength="30" value="{{$comment->nick_name}}"
+                            <input type="text" name="goods" maxlength="30" value="{{$comment['nick_name']}}"
                                    id="goods" class="form-control" readonly/>
                             <span id="goodsthumb" class='help-block'><img
                                         style="width:100px;height:100px;border:1px solid #ccc;padding:1px"
-                                        src="{!! tomedia($comment->head_img_url) !!}"/></span>
+                                        src="{!! tomedia($comment['head_img_url']) !!}"/></span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">评分等级</label>
                         <div class="col-sm-9 col-xs-12">
                             <div class="form-control-static" style='color:#ff6600'>
-                                @if($comment->level>=1) <i class='fa fa-star'></i> @else <i
+                                @if($comment['level']>=1) <i class='fa fa-star'></i> @else <i
                                         class='fa fa-star-o'></i> @endif
-                                @if($comment->level>=2) <i class='fa fa-star'></i> @else <i
+                                @if($comment['level']>=2) <i class='fa fa-star'></i> @else <i
                                         class='fa fa-star-o'></i> @endif
-                                @if($comment->level>=3) <i class='fa fa-star'></i> @else <i
+                                @if($comment['level']>=3) <i class='fa fa-star'></i> @else <i
                                         class='fa fa-star-o'></i> @endif
-                                @if($comment->level>=4) <i class='fa fa-star'></i> @else <i
+                                @if($comment['level']>=4) <i class='fa fa-star'></i> @else <i
                                         class='fa fa-star-o'></i> @endif
-                                @if($comment->level>=5) <i class='fa fa-star'></i> @else <i
+                                @if($comment['level']>=5) <i class='fa fa-star'></i> @else <i
                                         class='fa fa-star-o'></i> @endif
                             </div>
                         </div>
@@ -63,14 +63,14 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>
                                 评论内容</label>
                             <div class="col-sm-9 col-xs-12">
-                                <div class="form-control-static">{{$comment->content}}</div>
+                                <div class="form-control-static">{{$comment['content']}}</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
                                 <div class="input-group multi-img-details">
-                                    @foreach(iunserializer($comment->images) as $img)
+                                    @foreach(iunserializer($comment['images']) as $img)
                                         <div class="multi-item">
                                             <a href='{!! tomedia($img) !!}' target='_blank'>
                                                 <img class="img-responsive img-thumbnail" src='{!! tomedia($img) !!}'
@@ -83,54 +83,12 @@
                         </div>
                     </div>
 
-                    @foreach($replys as $reply)
-                        <div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <div class="form-control-static">
-                                        @if(empty($reply['nick_name'])) 管理员 @else {{$reply['nick_name']}} @endif
-                                        回复
-                                        {{$reply['reply_name']}}
-                                        <span>时间:{{$reply['created_at']}}</span>
-                                        @if(!empty($reply['nick_name']))
-                                            <input type="button" name="reply" data-uid="{$reply['uid']}" value="回复"
-                                                   class="btn btn-default reply"/>
-                                        @endif
-                                        <a class='btn btn-default'
-                                           href="{{yzWebUrl('goods.comment.deleted', ['id' => $reply['id']])}}"
-                                           onclick="return confirm('确认删除此评价吗？');return false;"><i
-                                                    class="fa fa-remove"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                    {{--回复记录--}}
+                    {!! app\common\services\Comment::tplReplyAppend($comment['reply']) !!}
+                    <div class="form-group"></div>
+                    {!! app\common\services\Comment::tplReplyAppend($comment['append']) !!}
 
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">
-                                    回复内容
-                                </label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <div class="form-control-static">{{$reply['content']}}</div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <div class="input-group multi-img-details">
-                                        @foreach(iunserializer($reply['images']) as $img)
-                                        <div class="multi-item">
-                                            <a href='{!! tomedia($img) !!}' target='_blank'>
-                                                <img class="img-responsive img-thumbnail" src='{!! tomedia($img) !!}'
-                                                     onerror="this.src='./resource/images/nopic.jpg'; this.title='图片未找到.'">
-                                            </a>
-                                        </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+                    <div class="form-group"></div>
 
                     <div class="form-group" id="reply_seat">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">回复内容</label>
@@ -145,10 +103,15 @@
                             {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('reply[reply_images]','') !!}
                         </div>
                     </div>
+                    <input type="hidden" name="id" value="{{$comment['id']}}"/>
+                    <input type="hidden" name="reply[order_id]" value="{{$comment['order_id']}}"/>
+                    <input type="hidden" name="reply[goods_id]" value="{{$comment['goods_id']}}"/>
 
-                    <input type="hidden" name="reply[reply_id]" id="reply_id" value="{{$comment->uid}}"/>
                     <input type="hidden" name="reply[nick_name]" id="nick_name" value="管理员"/>
+                    <input type="hidden" name="reply[reply_id]" id="reply_id" value="{{$comment['uid']}}"/>
+                    <input type="hidden" name="reply[comment_id]" id="comment_id" value="{{$comment['id']}}"/>
 
+                    <input type="hidden" name="reply[type]" id="type" value="{{$comment['type']+1}}"/>
 
                     <div class="form-group"></div>
                     <div class="form-group">
@@ -178,6 +141,8 @@
 
         $('.reply').click(function () {
             $('#reply_id').val($(this).data('uid'));
+            $('#comment_id').val($(this).data('id'));
+            $('#type').val($(this).data('type'));
             $('#reply_content').focus();
             $('html,body').animate({scrollTop: $(document).height()}, 100);
             return false;
