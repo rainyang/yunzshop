@@ -9,7 +9,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用时间限制</label>
     <div class="col-sm-9 form-inline">
-        <div class='input-group form-group col-sm-4'>
+        <div class='input-group form-group col-sm-5'>
             <span class='input-group-addon'>
                  <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="coupon[time_limit]" value="0" @if ($coupon['time_limit']==0) checked  @endif>获得后</label>
             </span>
