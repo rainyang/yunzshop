@@ -111,6 +111,8 @@
 
 <!-- mylink end -->
 <script language="javascript">
+    require(['jquery'],function(){
+
     $(function() {
         $("#chkoption").click(function() {
             var obj = $(this);
@@ -194,4 +196,5 @@
         });
     });
 
+    })
 </script>
