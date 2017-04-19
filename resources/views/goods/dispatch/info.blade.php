@@ -255,8 +255,7 @@
 <script>
 var calculateType = {{ $dispatch['calculate_type'] ?: 0 }};
     function show_type(flag){
-    calculateType = flag;
-    console.log(calculateType)
+        calculateType = flag;
         if (flag == 1) {
             $('.weight').css("display", "none");
             $('.fnum').css("display", "");
