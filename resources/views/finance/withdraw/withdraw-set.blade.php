@@ -2,14 +2,19 @@
 
 @section('content')
     <script>
+        $(function(){
+            $("#myTab li.active>a").css("background","#ccc");
+        })
         window.optionchanged = false;
         require(['bootstrap'], function () {
             $('#myTab a').click(function (e) {
                 e.preventDefault();
                 $(this).tab('show');
+                $(this).css("background","#ccc").parent().siblings().children().css("background","none")
             })
         });
     </script>
+ <style> .add-snav >li>a {height:46px!important}</style>
 <link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="main rightlist">
         <div class="right-titpos">
