@@ -25,7 +25,10 @@
                      <input type="radio" name="coupon[time_limit]" value="1" @if ($coupon['time_limit']==1) checked  @endif>日期
                  </label>
             </span>
-            {!! tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d', $coupon['time_start']),'endtime'=>date('Y-m-d', $coupon['time_end']))) !!}
+            {!! tpl_form_field_daterange('time', array(
+                    'starttime'=>date('Y-m-d', isset($coupon['time_start']) ? $coupon['time_start'] : strtotime('today')),
+                    'endtime'=>date('Y-m-d', isset($coupon['time_end']) ? $coupon['time_end'] : strtotime('+7 days')))
+            ) !!}
             <span class='input-group-addon'>内有效</span>
         </div>
     </div>
