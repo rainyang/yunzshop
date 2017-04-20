@@ -70,7 +70,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
                                 <div class="input-group multi-img-details">
-                                    @foreach(iunserializer($comment['images']) as $img)
+                                    @foreach(unserialize($comment['images']) as $img)
                                         <div class="multi-item">
                                             <a href='{!! tomedia($img) !!}' target='_blank'>
                                                 <img class="img-responsive img-thumbnail" src='{!! tomedia($img) !!}'
@@ -83,10 +83,12 @@
                         </div>
                     </div>
 
-                    {{--回复记录--}}
-                    {!! app\common\services\Comment::tplReplyAppend($comment['reply']) !!}
+
+                    {!! app\common\services\Comment::tplReplyAppend($comment['append']['data']) !!}
                     <div class="form-group"></div>
-                    {!! app\common\services\Comment::tplReplyAppend($comment['append']) !!}
+                    {{--回复记录--}}
+                    {!! app\common\services\Comment::tplReplyAppend($comment['reply']['data']) !!}
+
 
                     <div class="form-group"></div>
 
@@ -142,7 +144,7 @@
         $('.reply').click(function () {
             $('#reply_id').val($(this).data('uid'));
             $('#comment_id').val($(this).data('id'));
-            $('#type').val($(this).data('type'));
+//            $('#type').val($(this).data('type'));
             $('#reply_content').focus();
             $('html,body').animate({scrollTop: $(document).height()}, 100);
             return false;

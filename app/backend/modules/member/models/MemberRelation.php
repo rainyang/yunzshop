@@ -51,7 +51,11 @@ class MemberRelation extends BackendModel
      */
     public static function checkAgent($uid)
     {
-        $info = self::getSetInfo()->first()->toArray();
+        $info = self::getSetInfo()->first();
+
+        if (empty($info)) {
+            return [];
+        }
 
         $member_info = SubMemberModel::getMemberShopInfo($uid);
 

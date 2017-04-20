@@ -29,7 +29,8 @@ class MemberUniqueModel extends BackendModel
     public static function getUnionidInfo($uniacid, $unionid)
     {
         return self::uniacid()
-            ->where('unionid', $unionid);
+            ->where('unionid', $unionid)
+            ->orderby('unique_id', 'desc');
     }
 
     /**

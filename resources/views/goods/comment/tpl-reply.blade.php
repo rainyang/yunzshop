@@ -11,7 +11,7 @@
                     @endif
 
                     <span>时间:{{$reply['created_at']}}</span>
-                    @if(!empty($reply['uid']))
+                    @if(!empty($reply['uid']) && $reply['type'] != 3)
                         <input type="button" name="reply" data-uid="{{$reply['uid']}}" data-id="{{$reply['id']}}" data-type="{{$reply['type']+1}}"
                                value="回复"
                                class="btn btn-default reply"/>
@@ -54,7 +54,7 @@
     </div>
     <div>
         @if(!empty($reply['reply']))
-            {!! app\common\services\Comment::tplReplyAppend($reply['reply']) !!}
+            {!! app\common\services\Comment::tplReplyAppend($reply['reply']['data']) !!}
         @endif
     </div>
 

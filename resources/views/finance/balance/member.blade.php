@@ -86,16 +86,16 @@
                             <tr>
                                 <td style="text-align: center;">{{ $list->uid }}</td>
                                 <td style="text-align: center;">
-                                    @if($list->avatar)
-                                    <img src='{{ $list->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                    @if($list->avatar || $shopSet['headimg'])
+                                    <img src='{{ $list->avatar or $shopSet['headimg']}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @endif
-                                    {{ $list->nickname or '' }}
+                                    {{ $list->nickname or '未更新' }}
                                 </td>
                                 <td>{{ $list->realname }}<br/>{{ $list->mobile }}</td>
                                 <td>
-                                    {{ $list->yzMember->level->level_name or '默认会员等级' }}
+                                    {{ $list->yzMember->level->level_name or $shopSet['level_name'] }}
                                     <br/>
-                                    {{ $list->yzMember->group->group_name or '默认会员分组' }}
+                                    {{ $list->yzMember->group->group_name or '' }}
                                 </td>
                                 <td>
                                     <label class="label label-danger">余额：{{ $list->credit2 }}</label>
