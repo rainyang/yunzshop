@@ -31,7 +31,7 @@ class MemberOfficeAccountService extends MemberService
     public function __construct()
     {}
 
-    public function login()
+    public function login($params = [])
     {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
@@ -47,7 +47,11 @@ class MemberOfficeAccountService extends MemberService
         $state = 'yz-' . session_id();
 
         if (!Session::get('member_id')) {
-            $authurl = $this->_getAuthUrl($appId, $callback, $state);
+            if (!empty($params) && $params['scope'] == 'user_info') {
+                $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+            } else {
+                $authurl = $this->_getAuthUrl($appId, $callback, $state);
+            }
         } else {
             $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
         }
@@ -220,7 +224,7 @@ class MemberOfficeAccountService extends MemberService
 
                 Session::set('member_id', $member_id);
             } else {
-                \Log::debug('微信登陆授权失败',$authurl);
+                \Log::debug('微信登陆授权失败', $userinfo);
                 return show_json('-3', '微信登陆授权失败');
             }
         } else {
@@ -230,8 +234,10 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        \Log::debug('微信登陆成功跳转地址',$redirect_url);
-        redirect($redirect_url)->send();
+        if (empty($params) || !empty($params) && $params['scope'] != 'user_info') {
+            \Log::debug('微信登陆成功跳转地址',$redirect_url);
+            redirect($redirect_url)->send();
+        }
     }
 
     /**
