@@ -2,7 +2,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用条件</label>
     <div class="col-sm-9 col-xs-12">
-        <input type="text" name="coupon[enough]" class="form-control" value="{{$coupon['enough']}}"  />
+        <input type="text" name="coupon[enough]" class="form-control" value="{{isset($coupon['enough']) ? $coupon['enough'] : 0}}"  />
         <span class='help-block' >消费满多少金额才可以使用该优惠券 (设置为空或 0 则不限制消费金额)</span>
     </div>
 </div>
@@ -11,16 +11,20 @@
     <div class="col-sm-9 form-inline">
         <div class='input-group form-group col-sm-5'>
             <span class='input-group-addon'>
-                 <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="coupon[time_limit]" value="0" @if ($coupon['time_limit']==0) checked  @endif>获得后</label>
+                 <label class="radio-inline" style='margin-top:-5px;' >
+                     <input type="radio" name="coupon[time_limit]" value="0" checked>获得后
+                 </label>
             </span>
-            <input type='text' class='form-control' name='coupon[time_days]' value="{{$coupon['time_days']}}" />
+            <input type='text' class='form-control' name='coupon[time_days]' value="{{isset($coupon['time_days']) ? $coupon['time_days'] : 0}}" />
             <span class='input-group-addon'>天内有效(空为不限时间使用)</span>
         </div>
         <div class='input-group form-group col-sm-3'>
             <span class='input-group-addon'>
-                 <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="coupon[time_limit]" value="1" >日期</label>
+                 <label class="radio-inline" style='margin-top:-5px;' >
+                     <input type="radio" name="coupon[time_limit]" value="1" @if ($coupon['time_limit']==1) checked  @endif>日期
+                 </label>
             </span>
-            {!! app\common\helpers\DateRange::tplFormFieldDateRange('time', array('starttime'=>date('Y-m-d', $starttime),'endtime'=>date('Y-m-d', $endtime))) !!}
+            {!! tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d', $coupon['time_start']),'endtime'=>date('Y-m-d', $coupon['time_end']))) !!}
             <span class='input-group-addon'>内有效</span>
         </div>
     </div>
@@ -183,7 +187,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否可直接领取</label>
     <div class="col-sm-9 col-xs-12" >
         <label class="radio-inline">
-            <input type="radio" name="coupon[get_type]" value="0" @if($coupon['get_type'] == 0)checked="true" @endif  onclick="$('.gettype').hide()"/> 不可以
+            <input type="radio" name="coupon[get_type]" value="0" checked  onclick="$('.gettype').hide()"/> 不可以
         </label>
         <label class="radio-inline">
             <input type="radio" name="coupon[get_type]" value="1" @if($coupon['get_type'] == 1)checked="true" @endif onclick="$('.gettype').show()" /> 可以
@@ -195,19 +199,19 @@
 
 <div class="form-group gettype" @if($coupon['get_type']!=1)style="display:none" @endif>
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-    <div class="col-sm-6 form-inline">
+    <div class="col-sm-9 form-inline">
 
         <div class="input-group form-group col-sm-1">
             <span class="input-group-addon">每个限领</span>
-            <input type='text' class='form-control' value="{{$coupon['get_max']}}" name='coupon[get_max]' style="width: 80px" />
+            <input type='text' class='form-control' value="{{isset($coupon['get_max']) ? $coupon['get_max'] : 1}}" name='coupon[get_max]' style="width: 80px" />
             </div>
         <div class="input-group form-group col-sm-1">
             <span class="input-group-addon">张 消耗</span>
-            <input style="width: 80px"  type='text' class='form-control' value="{{$coupon['credit']}}" name='coupon[credit]'/>
+            <input style="width: 80px"  type='text' class='form-control' value="{{isset($coupon['credit']) ? $coupon['credit'] : 0}}" name='coupon[credit]'/>
         </div>
         <div class="input-group form-group col-sm-1">
             <span class="input-group-addon">积分 + 花费</span>
-                <input style="width: 80px"  type='text' class='form-control' value="{{$coupon['money']}}" name='coupon[money]'/>
+                <input style="width: 80px"  type='text' class='form-control' value="{{isset($coupon['money']) ? $coupon['money'] : 0}}" name='coupon[money]'/>
             <span class="input-group-addon">元</span>
         </div>
         <div class="input-group form-group col-sm-3">
@@ -224,7 +228,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">发放总数</label>
     <div class="col-sm-9 col-xs-12">
-        <input type="text" name="coupon[total]" class="form-control" value="{{$coupon['total']}}"  />
+        <input type="text" name="coupon[total]" class="form-control" value="{{isset($coupon['total']) ? $coupon['total'] : 0}}"  />
         <span class='help-block' >优惠券总数量，没有则不能领取或发放, -1 为不限制数量</span>
     </div>
 </div>

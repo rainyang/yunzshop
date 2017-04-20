@@ -1,7 +1,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
     <div class="col-sm-5">
-        <input type="text" name="coupon[display_order]" class="form-control" value="{{$coupon['display_order']}}"  />
+        <input type="text" name="coupon[display_order]" class="form-control" value="{{isset($coupon['display_order']) ? $coupon['display_order'] : 0 }}"  />
         <span class='help-block'>数字越大越靠前</span>
     </div>
 </div>

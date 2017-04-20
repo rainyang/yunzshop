@@ -49,16 +49,16 @@
                         });
                     })
 
-                    function addParam(type) {
-                        var url = "{php echo $this->createWebUrl('shop/tpl')}&tpl="+type;
-                        $.ajax({
-                            "url": url,
-                            success: function(data) {
-                                $('#param-items'+type).append(data);
-                            }
-                        });
-                        return;
-                    }
+//                    function addParam(type) {
+//                        var url = "{php echo $this->createWebUrl('shop/tpl')}&tpl="+type;
+//                        $.ajax({
+//                            "url": url,
+//                            success: function(data) {
+//                                $('#param-items'+type).append(data);
+//                            }
+//                        });
+//                        return;
+//                    }
                     function deleteParam(o) {
                         $(o).parent().parent().remove();
                     }

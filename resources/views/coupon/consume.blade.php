@@ -11,14 +11,14 @@
     <div class="col-sm-2 backtype backtype0" @if($coupon['coupon_method']!=1)style='display:none' @endif>
         <div class='input-group'>
             <span class='input-group-addon'>立减</span>
-            <input type='text' class='form-control' name='coupon[deduct]' value="{{$coupon['deduct']}}"/>
+            <input type='text' class='form-control' name='coupon[deduct]' value="{{isset($coupon['deduct']) ? $coupon['deduct'] : 0}}"/>
             <span class='input-group-addon'>元</span>
         </div>
     </div>
     <div class="col-sm-2 backtype backtype1"  @if($coupon['coupon_method']!=2)style='display:none' @endif>
         <div class='input-group'>
             <span class='input-group-addon'>打</span>
-            <input type='text' class='form-control' name='coupon[discount]'  placeholder='0.1-1' value="{{$coupon['discount']}}"/>
+            <input type='text' class='form-control' name='coupon[discount]'  placeholder='0.1-1' value="{{isset($coupon['discount']) ? $coupon['discount'] : 1}}"/>
             <span class='input-group-addon'>折</span>
         </div>
     </div>

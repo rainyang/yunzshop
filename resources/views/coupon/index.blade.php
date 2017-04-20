@@ -96,9 +96,9 @@
                                         @endif
 
                                         <br/>@if($row['coupon_method']==1)
-                                        立减 {{$row['deduct']}} 元
+                                        立减 {{$row['deduct'] ? $row['deduct'] : 0}} 元
                                         @elseif( $row['coupon_method']==2)
-                                        打 {{$row['discount']}} 折
+                                        打 {{$row['discount'] ? $row['discount'] : 1}} 折
                                         @endif
                                     </td>
 
