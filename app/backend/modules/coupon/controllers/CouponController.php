@@ -29,7 +29,6 @@ class CouponController extends BaseController
             $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate($pageSize)->toArray();
         } else {
             $list = Coupon::getCouponsBySearch($keyword, $getType, $searchSearchSwitch, $timeStart, $timeEnd)->orderBy('display_order','desc')->paginate($pageSize)->toArray();
-            dd($list);
         }
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
