@@ -22,14 +22,11 @@ class  Coupon extends BaseModel
 
     protected $guarded = [];
 
-
     protected $casts = [
         'goods_ids' => 'json',
         'category_ids' => 'json',
         'goods_names' => 'json',
         'categorynames' => 'json',
-        'time_start' => 'datetime',
-        'time_end' =>'datetime',
     ];
 
     public static function getMemberCoupon($used = 0) { //todo 这张表没有used这个字段, 应该放在member_coupon表?

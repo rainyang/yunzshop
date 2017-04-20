@@ -38,12 +38,17 @@ class CouponController extends BaseController
     //添加优惠券
     public function create()
     {
+
         //获取表单提交的值
         $couponRequest = \YunShop::request()->coupon;
 
         //表单验证
         if($couponRequest){
             $coupon = new Coupon();
+            $coupon->uniacid = \YunShop::app()->uniacid;
+            $coupon->time_start = strtotime(\YunShop::request()->time['start']);
+            $coupon->time_end = strtotime(\YunShop::request()->time['end']);
+
             $coupon->fill($couponRequest);
             $validator = $coupon->validator();
             if($validator->fails()){
@@ -72,8 +77,8 @@ class CouponController extends BaseController
         $couponRequest = \YunShop::request()->coupon;
         if ($couponRequest) {
 
-            $couponRequest['time_start'] =\YunShop::request()->time['start'];
-            $couponRequest['time_end'] =\YunShop::request()->time['end'];
+            $couponRequest['time_start'] =strtotime(\YunShop::request()->time['start']);
+            $couponRequest['time_end'] =strtotime(\YunShop::request()->time['end']);
 
             //todo 表单验证
             $coupon->fill($couponRequest);
