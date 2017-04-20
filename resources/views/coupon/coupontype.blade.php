@@ -9,7 +9,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用时间限制</label>
     <div class="col-sm-9 form-inline">
-        <div class='input-group form-group col-sm-5'>
+        <div class='input-group form-group col-sm-6'>
             <span class='input-group-addon'>
                  <label class="radio-inline" style='margin-top:-5px;' >
                      <input type="radio" name="coupon[time_limit]" value="0" checked>获得后
@@ -18,13 +18,17 @@
             <input type='text' class='form-control' name='coupon[time_days]' value="{{isset($coupon['time_days']) ? $coupon['time_days'] : 0}}" />
             <span class='input-group-addon'>天内有效(空为不限时间使用)</span>
         </div>
+        <br>
         <div class='input-group form-group col-sm-3'>
             <span class='input-group-addon'>
                  <label class="radio-inline" style='margin-top:-5px;' >
                      <input type="radio" name="coupon[time_limit]" value="1" @if ($coupon['time_limit']==1) checked  @endif>日期
                  </label>
             </span>
-            {!! tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d', $coupon['time_start']),'endtime'=>date('Y-m-d', $coupon['time_end']))) !!}
+            {!! tpl_form_field_daterange('time', array(
+                    'starttime'=>date('Y-m-d', isset($coupon['time_start']) ? $coupon['time_start'] : strtotime('today')),
+                    'endtime'=>date('Y-m-d', isset($coupon['time_end']) ? $coupon['time_end'] : strtotime('+7 days')))
+            ) !!}
             <span class='input-group-addon'>内有效</span>
         </div>
     </div>

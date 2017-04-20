@@ -148,20 +148,37 @@ class BalanceController extends ApiController
         if (!$this->getMemberInfo()) {
             return '未获取到会员数据,请重试！';
         }
+        $result = $this->validatorWithdrawType();
+        if ($result === true) {
+            $this->model = new Withdraw();
 
-        $this->model = new Withdraw();
+            $this->model->fill($this->getWithdrawData());
+            $validator = $this->model->validator();
+            if ($validator->fails()) {
+                return $validator->messages();
+            }
 
-        $this->model->fill($this->getWithdrawData());
-        $validator = $this->model->validator();
-        if ($validator->fails()) {
-            return $validator->messages();
+            if ($this->model->save()) {
+                //todo 消息通知
+                return (new BalanceService())->balanceChange($this->getChangeBalanceDataToWithdraw());
+            }
+            return '提现写入失败，请联系管理员';
         }
+        return $result;
+    }
 
-        if ($this->model->save()) {
-            //todo 消息通知
-            return (new BalanceService())->balanceChange($this->getChangeBalanceDataToWithdraw());
+    private function validatorWithdrawType()
+    {
+        if (!$this->getWithdrawType()) {
+            return '未找到提现类型';
         }
-        return '提现写入失败，请联系管理员';
+        if (!(new BalanceService())->withdrawWecht() && $this->getWithdrawType() == 'wecht') {
+            return '未开启提现到微信';
+        }
+        if (!(new BalanceService())->withdrawAlipay() && $this->getWithdrawType() == 'alipay') {
+            return '未开启提现到支付宝';
+        }
+        return true;
     }
 
     //余额转让详细记录数据
@@ -216,11 +233,26 @@ class BalanceController extends ApiController
             'amounts' => \YunShop::request()->withdraw_money,         //提现金额
             'poundage' => '0',                                         //提现手续费
             'poundage_rate' => '0',                                         //手续费比例
-            'pay_way' => trim(\YunShop::request()->withdraw_type),    //打款方式
+            'pay_way' => $this->getWithdrawType(),    //打款方式
             'status' => '0',                                         //0未审核，1未打款，2已打款， -1无效
             'actual_amounts' => '0',
             'actual_poundage' => '0'
         );
+    }
+
+    private function getWithdrawType()
+    {
+        switch (trim(\YunShop::request()->withdraw_type))
+        {
+            case 1:
+                return 'wecht';
+                break;
+            case 2:
+                return 'alipay';
+                break;
+            default:
+                return '';
+        }
     }
 
     //生成充值订单号
