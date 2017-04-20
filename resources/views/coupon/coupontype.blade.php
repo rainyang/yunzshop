@@ -38,7 +38,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
 
-    <div class="col-sm-2 usetype usetype0"  @if($coupon['use_type']!=0)style='display:none' @endif>
+    <div class="col-sm-4 usetype usetype0"  @if($coupon['use_type']!=0)style='display:none' @endif>
         <div class='input-group'>
             <span class='help-block'>如选择此项,则支持商城所有商品使用!</span>
         </div>
