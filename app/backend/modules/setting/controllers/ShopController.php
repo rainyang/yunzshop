@@ -175,10 +175,11 @@ class ShopController extends BaseController
     public function notice()
     {
         $notice = Setting::get('shop.notice');
-        $salers = []; //订单通知的商家列表,数据如何取待定?
-        $new_type = []; //通知方式的数组,数据如何来的待定?
+//        $salers = []; //订单通知的商家列表,数据如何取待定?
+        //$new_type = []; //通知方式的数组,数据如何来的待定?
         $requestModel = \YunShop::request()->notice;
-        if ($requestModel) {
+        if (!empty($requestModel)) {
+
             if (Setting::set('shop.notice', $requestModel)) {
                 return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.shop.notice'));
             } else {
@@ -187,8 +188,6 @@ class ShopController extends BaseController
         }
         return view('setting.shop.notice', [
             'set' => $notice,
-            'salers' => $salers,
-            'new_type' => $new_type
         ])->render();
     }
 
@@ -295,7 +294,7 @@ class ShopController extends BaseController
 
                 // 获取文件相关信息
                 $originalName = $file->getClientOriginalName(); // 文件原名
-                $ext = $file->getClientOriginalExtension();     // 扩展名
+                //$ext = $file->getClientOriginalExtension();     // 扩展名
                 $realPath = $file->getRealPath();   //临时文件的绝对路径
 
                 $bool = \Storage::disk('cert')->put($originalName, file_get_contents($realPath));

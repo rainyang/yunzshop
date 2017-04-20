@@ -67,6 +67,13 @@ return [
             'root' => storage_path('cert'),
         ],
 
+        'upload' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/avatar'),
+            'url' => env('APP_URL').'/storage/public/avatar',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),
