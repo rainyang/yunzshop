@@ -18,8 +18,19 @@ class CouponController extends BaseController
     //优惠券列表
     public function index()
     {
+        $keyword = \YunShop::request()->keyword;
+        $getType = \YunShop::request()->gettype;
+        $searchSearchSwitch = \YunShop::request()->timesearchswtich;
+        $timeStart = strtotime(\YunShop::request()->time['start']);
+        $timeEnd = strtotime(\YunShop::request()->time['end']);
+
         $pageSize = 10;
-        $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate($pageSize)->toArray();
+        if (empty($keyword) && empty($getType) && ($searchSearchSwitch == 0)){
+            $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate($pageSize)->toArray();
+        } else {
+            $list = Coupon::getCouponsBySearch($keyword, $getType, $searchSearchSwitch, $timeStart, $timeEnd)->orderBy('display_order','desc')->paginate($pageSize)->toArray();
+            dd($list);
+        }
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         foreach($list['data'] as &$item){
@@ -28,7 +39,6 @@ class CouponController extends BaseController
             $item['lasttotal'] = $item['total'] - $item['gettotal'];
         }
 
-        //dd($list);
         return view('coupon.index', [
             'list' => $list['data'],
             'pager' => $pager,

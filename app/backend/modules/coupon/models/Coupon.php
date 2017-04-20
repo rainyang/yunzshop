@@ -75,4 +75,31 @@ class Coupon extends \app\common\models\Coupon
             ->where('name', 'like', '%' . $keyword . '%')
             ->get();
     }
+
+
+    /**
+     * @param $title 优惠券名称
+     * @param $type 优惠券是否再领取中心显示
+     * @param $timeSwitch 是否开启"创建时间"的搜索选项
+     * @param $timeStart 起始时间
+     * @param $timeEnd 结束时间
+     * @return mixed
+     */
+    static public function getCouponsBySearch($title, $type=NULL, $timeSwitch=0, $timeStart=NULL, $timeEnd=NULL)
+    {
+        $CouponsModel = self::uniacid()
+            ->select(['id','display_order','name', 'enough',
+                    'coupon_method', 'deduct', 'discount', 'get_type', 'created_at']);
+
+        if(!empty($title)){
+            $CouponsModel = $CouponsModel->where('name', 'like', '%'.$title.'%');
+        }
+        if(!empty($type)){
+            $CouponsModel = $CouponsModel->where('get_type', '=', $type);
+        }
+        if($timeSwitch == 1 && !empty($timeStart) && !empty($timeEnd)){
+            $CouponsModel = $CouponsModel->whereBetween('created_at', [$timeStart, $timeEnd]);
+        }
+        return $CouponsModel;
+    }
 }

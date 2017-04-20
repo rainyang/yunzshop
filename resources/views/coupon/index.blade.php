@@ -40,10 +40,10 @@
                         <div class="col-sm-7 col-lg-9 col-xs-12">
                             <div class="col-sm-5 col-lg-12 col-xs-12">
                                 <label class='radio-inline'>
-                                    <input type='radio' value='0' name='searchtime'>不搜索
+                                    <input type='radio' value='0' name='timesearchswtich'>不搜索
                                 </label>
                                 <label class='radio-inline'>
-                                    <input type='radio' value='1' name='searchtime' >搜索
+                                    <input type='radio' value='1' name='timesearchswtich' >搜索
                                 </label>
                             </div>
                             {!! tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d', strtotime('-7 days')),'endtime'=>date('Y-m-d', strtotime('today')))) !!}
