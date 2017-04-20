@@ -94,7 +94,7 @@ class AutoUpdate
      *
      * @var string
      */
-    public $updateScriptName = '_upgrade.php';
+    public $updateScriptName = 'UpdateController.php';
     /**
      * Username authentication
      *
