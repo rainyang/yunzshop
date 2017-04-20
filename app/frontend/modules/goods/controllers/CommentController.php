@@ -45,7 +45,7 @@ class CommentController extends ApiController
         if (!$member) {
             return $this->errorJson('评论失败!未检测到会员数据!');
         }
-        $commentStatus = \YunShop::request()->comment_status;
+        $commentStatus = '1';
 
         $comment = [
             'order_id' => \YunShop::request()->order_id,
@@ -66,13 +66,74 @@ class CommentController extends ApiController
             return $this->errorJson('评论失败!未检测到评论等级!');
         }
 
+        if (isset($comment['images']) && is_array($comment['images'])) {
+            $comment['images'] = serialize($comment['images']);
+        } else {
+            $comment['images'] = serialize([]);
+        }
         $commentModel->setRawAttributes($comment);
 
         $commentModel->uniacid = \YunShop::app()->uniacid;
         $commentModel->uid = $member->uid;
         $commentModel->nick_name = $member->nickname;
         $commentModel->head_img_url = $member->avatar;
+        $commentModel->type = '1';
 
+        $this->insertComment($commentModel, $commentStatus);
+
+    }
+
+    public function appendComment()
+    {
+        $commentModel = new \app\common\models\Comment();
+        $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+        if (!$member) {
+            return $this->errorJson('评论失败!未检测到会员数据!');
+        }
+        $commentStatus = '2';
+
+        $comment = [
+            'order_id' => \YunShop::request()->order_id,
+            'goods_id' => \YunShop::request()->goods_id,
+            'content' => \YunShop::request()->content,
+            'level' => \YunShop::request()->level,
+            'comment_id' => \YunShop::request()->comment_id,
+        ];
+        if (!$comment['order_id']) {
+            return $this->errorJson('评论失败!未检测到订单ID!');
+        }
+        if (!$comment['goods_id']) {
+            return $this->errorJson('评论失败!未检测到商品ID!');
+        }
+        if (!$comment['content']) {
+            return $this->errorJson('评论失败!未检测到评论内容!');
+        }
+        if (!$comment['level']) {
+            return $this->errorJson('评论失败!未检测到评论等级!');
+        }
+
+        if (isset($comment['images']) && is_array($comment['images'])) {
+            $comment['images'] = serialize($comment['images']);
+        } else {
+            $comment['images'] = serialize([]);
+        }
+
+        $commentModel->setRawAttributes($comment);
+
+        $commentModel->uniacid = \YunShop::app()->uniacid;
+        $commentModel->uid = $member->uid;
+        $commentModel->nick_name = $member->nickname;
+        $commentModel->head_img_url = $member->avatar;
+        $commentModel->reply_id = $member->uid;
+        $commentModel->reply_name = $member->nickname;
+        $commentModel->type = '3';
+
+        $this->insertComment($commentModel, $commentStatus);
+
+    }
+
+    public function insertComment($commentModel, $commentStatus = '')
+    {
         $validator = $commentModel->validator($commentModel->getAttributes());
         if ($validator->fails()) {
             //检测失败
@@ -82,9 +143,11 @@ class CommentController extends ApiController
             if ($commentModel->save()) {
                 Goods::updatedComment($commentModel->goods_id);
 
-                OrderGoods::where('order_id', $commentModel->order_id)
-                    ->where('goods_id', $commentModel->goods_id)
-                    ->update(['comment_status' => '1']);
+                if ($commentStatus) {
+                    OrderGoods::where('order_id', $commentModel->order_id)
+                        ->where('goods_id', $commentModel->goods_id)
+                        ->update(['comment_status' => $commentStatus]);
+                }
 
                 //显示信息并跳转
                 return $this->successJson('评论成功!');

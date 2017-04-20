@@ -29,7 +29,7 @@
                                 {{ $list->member->count() }}
                             </td>
                             <td>
-                                <a title="查看" class='btn btn-default' href="{{ yzWebUrl('member.member.search', array('groupid' => $list->id)) }}">
+                                <a title="查看" class='btn btn-default' href="{{ yzWebUrl('member.member.index', array('groupid' => $list->id)) }}">
                                     <i class='fa fa-users'></i></a>
                                 <a title="编辑" class='btn btn-default' href="{{ yzWebUrl('member.member-group.update', array('group_id' => $list->id)) }}">
                                     <i class='fa fa-edit'></i></a>

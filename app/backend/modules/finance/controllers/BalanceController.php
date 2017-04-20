@@ -143,6 +143,7 @@ class BalanceController extends BaseController
         $pager = PaginationHelper::show($memberList->total(), $memberList->currentPage(), $memberList->perPage());
 
         return view('finance.balance.member', [
+            'shopSet'       => Setting::get('shop.member'),
             'search'        => $search,
             'memberList'    => $memberList,
             'pager'         => $pager,
@@ -255,10 +256,6 @@ class BalanceController extends BaseController
             'operator_id'   => \YunShop::app()->uid
         );
     }
-
-
-
-
 
     /**
      * 充值记录
