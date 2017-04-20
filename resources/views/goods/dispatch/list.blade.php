@@ -57,15 +57,16 @@
                     </td>
                 </tr>
                 @endforeach
-                <tr>
-                    <td colspan='9'>
-                        <a class='btn btn-primary' href="{{ yzWebUrl('goods.dispatch.add') }}"><i class='fa fa-plus'></i> 添加配送方式</a>
-                        <input name="submit" type="submit" class="btn btn-default" value="提交排序">
-                    </td>
-                </tr>
+
             </tbody>
         </table>
         {!! $pager !!}
+        
+    </div>
+
+    <div class="panel-footer">
+        <a class="btn btn-info " href="{{ yzWebUrl('goods.dispatch.add') }}"><i class="fa fa-plus"></i> 添加配送方式</a>
+        <input name="submit" type="submit" class="btn btn-default back" value="提交排序">
     </div>
 </div>
 </form>

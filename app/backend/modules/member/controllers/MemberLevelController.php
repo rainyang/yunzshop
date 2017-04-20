@@ -9,6 +9,7 @@
 namespace app\backend\modules\member\controllers;
 
 
+use app\backend\modules\goods\models\Goods;
 use app\backend\modules\member\models\MemberLevel;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
@@ -17,14 +18,6 @@ use app\common\helpers\Url;
 
 class MemberLevelController extends BaseController
 {
-    public $shopset;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->shopset = Setting::get('shop');
-    }
-
     /*
      * Member level pager list
      * 17.3,31 restructure
@@ -32,7 +25,8 @@ class MemberLevelController extends BaseController
      * @autor yitian */
     public function index()
     {
-        $pageSize = 5;
+        //echo '<pre>'; print_r(Setting::get('shop.member')); exit;
+        $pageSize = 10;
         $levelList = MemberLevel::getLevelPageList($pageSize);
         $pager = PaginationHelper::show($levelList->total(), $levelList->currentPage(), $levelList->perPage());
 
@@ -42,6 +36,14 @@ class MemberLevelController extends BaseController
             'shopSet' => Setting::get('shop.member')
         ])->render();
 
+    }
+
+    public function searchGoods()
+    {
+        $goods = Goods::getGoodsByName(\YunShop::request()->keyword);
+        return view('member.goods_query', [
+            'goods' => $goods,
+        ])->render();
     }
 
     /*
@@ -55,12 +57,15 @@ class MemberLevelController extends BaseController
         $requestLevel = \YunShop::request()->level;
         if($requestLevel) {
             //将数据赋值到model
-            $levelModel->setRawAttributes($requestLevel);
+            $levelModel->fill($requestLevel);
             //其他字段赋值
             $levelModel->uniacid = \YunShop::app()->uniacid;
+            if (!$levelModel->goods_id) {
+                $levelModel->goods_id = 0;
+            }
 
             //字段检测
-            $validator = $levelModel->validator($levelModel->getAttributes());
+            $validator = $levelModel->validator();
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {
@@ -90,8 +95,11 @@ class MemberLevelController extends BaseController
         }
         $requestLevel = \YunShop::request()->level;
         if($requestLevel) {
-            $levelModel->setRawAttributes($requestLevel);
-            $validator = $levelModel->validator($levelModel->getAttributes());
+            $levelModel->fill($requestLevel);
+            if (empty($requestLevel['goods_id'])) {
+                $levelModel->goods_id = 0;
+            }
+            $validator = $levelModel->validator();
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
             } else {
@@ -102,11 +110,10 @@ class MemberLevelController extends BaseController
                 }
             }
         }
-
-        $this->render('member/edit_level', [
-            'level'     => $levelModel,
-            'shopset'   => $this->shopset
-        ]);
+        return view('member.level.form', [
+            'levelModel' => $levelModel,
+            'shopSet' => Setting::get('shop.member')
+        ])->render();
     }
     /*
      * Delete membership
@@ -119,7 +126,7 @@ class MemberLevelController extends BaseController
             return $this->message('未找到记录或已删除','','error');
         }
         if($levelModel->delete()) {
-            return $this->message('删等级成功',Url::absoluteWeb('member.member-level.index'));
+            return $this->message('删除等级成功',Url::absoluteWeb('member.member-level.index'));
         }else{
             return $this->message('删除等级失败','','error');
         }

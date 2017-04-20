@@ -7,10 +7,15 @@
 @section('pageDesc','菜单列表desc')
 
 @section('content')
+
+
+<div class="right-titpos">
+    <ul class="add-snav">
+        <li class="active"><a href="#">菜单管理</a></li>
+    </ul>
+</div>
 <div class='panel panel-default'>
-    <div class='panel-heading'>
-        菜单管理
-    </div>
+
     <div class='panel-body'>
 
         <table class="table">
@@ -50,9 +55,9 @@
 
     </div>
     <div class='panel-footer'>
-        <a class='btn btn-primary' href="{{yzWebUrl('menu.add')}}"><i class="fa fa-plus"></i> 添加新菜单</a>
-        @if(request()->getHost() != 'test.yunzshop.com')
-        <a class='btn btn-primary' href="{{yzWebUrl('menu.get-remote-update')}}"><i class="fa fa-flash"></i> 更新远程菜单</a>
+        <a class='btn btn-info' href="{{yzWebUrl('menu.add')}}"><i class="fa fa-plus"></i> 添加新菜单</a>
+        @if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production')
+        <a class='btn btn-success back' href="{{yzWebUrl('menu.get-remote-update')}}"><i class="fa fa-flash"></i> 更新远程菜单</a>
             @endif
     </div>
 </div>

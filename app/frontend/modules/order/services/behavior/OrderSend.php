@@ -14,18 +14,18 @@ use app\common\models\order\Express;
 class OrderSend extends ChangeStatusOperation
 {
     protected $status_before_change = [ORDER::WAIT_SEND];
-    protected $status_after_changed = ORDER::WAIT_RECEIVE;
+    protected $statusAfterChanged = ORDER::WAIT_RECEIVE;
     protected $name = '发货';
     protected $time_field = 'send_time';
 
     protected $past_tense_class_name = 'OrderSent';
-    protected function _updateTable(){
+    protected function updateTable(){
         $db_express_model = new Express();
         $db_express_model->order_id = \YunShop::request()->order_id;
         $db_express_model->express_code = \YunShop::request()->express_code;
         $db_express_model->express_company_name = \YunShop::request()->express_company_name;
         $db_express_model->express_sn = \YunShop::request()->express_sn;
         $db_express_model->save();
-        parent::_updateTable();
+        parent::updateTable();
     }
 }

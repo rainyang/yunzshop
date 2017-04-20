@@ -9,37 +9,22 @@
 namespace app\frontend\modules\order\services\models;
 
 
+use app\common\exceptions\AppException;
 use app\frontend\modules\discount\services\models\OrderDiscount;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\order\models\Order;
 
-abstract class OrderModel
+abstract class OrderModel extends Order
 {
     /**
      * @var array 未插入数据库的订单商品数组
      */
     protected $orderGoodsModels = [];
 
-    /**
-     * @var \app\frontend\modules\dispatch\services\models\OrderDispatch 运费类实例
-     */
-    protected $orderDispatch;
-    /**
-     * @var OrderDiscount 优惠类实例
-     */
-    protected $_OrderDiscount;
 
-    public function __construct($OrderGoodsModels)
-    {
-        $this->setOrderGoodsModels($OrderGoodsModels);
-        $this->setDispatch();
-        $this->setDiscount();
-    }
 
-    abstract protected function setDispatch();
 
-    abstract protected function setDiscount();
-
-    abstract protected function setOrderGoodsModels(array $OrderGoodsModels);
+    abstract public function setOrderGoodsModels(array $orderGoodsModels);
 
     /**
      * 统计商品总数
@@ -49,38 +34,13 @@ abstract class OrderModel
     {
         //累加所有商品数量
         $result = 0;
-        foreach ($this->orderGoodsModels as $pre_order_goods_model) {
-            $result += $pre_order_goods_model->getTotal();
+        foreach ($this->orderGoodsModels as $orderGoodsModel) {
+            $result += $orderGoodsModel->getTotal();
         }
         return $result;
     }
 
-    /**
-     * 计算订单优惠金额
-     * @return number
-     */
-    protected function getDiscountPrice()
-    {
-        return $this->_OrderDiscount->getDiscountPrice();
-    }
 
-    /**
-     * 获取订单抵扣金额
-     * @return number
-     */
-    protected function getDeductionPrice()
-    {
-        return $this->_OrderDiscount->getDeductionPrice();
-    }
-
-    /**
-     * 计算订单运费
-     * @return int|number
-     */
-    protected function getDispatchPrice()
-    {
-        return $this->orderDispatch->getDispatchPrice();
-    }
 
     /**
      * 计算订单成交价格
@@ -89,7 +49,11 @@ abstract class OrderModel
     protected function getPrice()
     {
         //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
-        return max($this->getVipPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(), 0);
+        $result = $this->getVipPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice();
+        if($result < 0 ){
+            throw new AppException('('.$result.')订单金额不能为负');
+        }
+        return $result;
     }
 
     /**
@@ -119,21 +83,6 @@ abstract class OrderModel
             $result += $OrderGoodsModel->getPrice();
         }
         return $result;
-    }
-
-    /**
-     * 属性获取器
-     * todo 准备删除这个方法
-     * @param $name
-     * @return null
-     */
-    public function __get($name)
-    {
-        if (isset($this->$name)) {
-            return $this->$name;
-        }
-
-        return null;
     }
 
 }

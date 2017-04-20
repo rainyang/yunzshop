@@ -9,11 +9,15 @@
 
 namespace app\frontend\modules\order\services;
 
+use app\common\events\discount\OnDiscountInfoDisplayEvent;
+use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
+use app\common\exceptions\AppException;
+use app\common\models\finance\BalanceRecharge;
 use app\common\models\Order;
-use app\common\models\Member;
 
 use app\frontend\modules\goods\services\models\GoodsModel;
 use app\frontend\modules\member\models\MemberCart;
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;
@@ -23,106 +27,176 @@ use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
+use app\frontend\modules\order\services\behavior\Send;
 use app\frontend\modules\goods\services\models\Goods;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
-use app\frontend\modules\shop\services\models\ShopModel;
+use app\frontend\modules\shop\services\ShopService;
+use Illuminate\Support\Collection;
 
 class OrderService
 {
     /**
-     * 获取预下单对象
-     * @param array $order_goods_models
-     * @param Member|null $member_model
-     * @param ShopModel|null $shop_model
-     * @return models\PreGeneratedOrderModel
+     * 获取订单信息组
+     * @param Order $order
+     * @return Collection
      */
-    public static function getPreGeneratedOrder(array $order_goods_models, Member $member_model=null, ShopModel $shop_model=null){
-        $order_model = new PreGeneratedOrderModel($order_goods_models);
-        if(isset($member_model)){
-            $order_model->setMember($member_model);
-        }
-        if(isset($shop_model)){
-            $order_model->setShop($shop_model);
-        }
-        return $order_model;
+    public static function getOrderData(Order $order)
+    {
+        $result = collect();
+        $result->put('order',$order->toArray());
+        $result->put('discount',self::getDiscountEventData($order));
+        $result->put('dispatch',self::getDispatchEventData($order));
+
+        return $result;
+    }
+
+    /**
+     * 获取优惠信息
+     * @param $order_model
+     * @return array
+     */
+    private static function getDiscountEventData($order_model)
+    {
+        $Event = new OnDiscountInfoDisplayEvent($order_model);
+        event($Event);
+        return $Event->getMap();
+    }
+
+    /**
+     * 获取配送信息
+     * @param $order_model
+     * @return array
+     */
+    public static function getDispatchEventData($order_model)
+    {
+        $Event = new OnDispatchTypeInfoDisplayEvent($order_model);
+        event($Event);
+        return $Event->getMap();
     }
 
     /**
      * 获取订单商品对象数组
-     * @param $memberCarts
-     * @return array
+     * @param Collection $memberCarts
+     * @return Collection
+     * @throws \Exception
      */
-    public static function getOrderGoodsModels(array $memberCarts){
-        $result = [];
+    public static function getOrderGoodsModels(Collection $memberCarts)
+    {
+        $result = new Collection();
+        if($memberCarts->isEmpty()){
+            throw new AppException("未找到订单商品");
+        }
         foreach ($memberCarts as $memberCart) {
-            if(!($memberCart instanceof MemberCart)){
-                throw new \Exception("请传入".MemberCart::class."的实例");
+            if (!($memberCart instanceof MemberCart)) {
+                throw new \Exception("请传入" . MemberCart::class . "的实例");
             }
             /**
              * @var $memberCart MemberCart
              */
-            $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart);
-            $result[] = $orderGoodsModel;
+            $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart->toArray());
+            $result->push($orderGoodsModel);
         }
         return $result;
+    }
+
+    /**
+     * 根据购物车记录 获取订单信息
+     * @param Collection $memberCarts
+     * @return PreGeneratedOrderModel
+     * @throws AppException
+     */
+    public static function createOrderByMemberCarts(Collection $memberCarts)
+    {
+        $member = MemberService::getCurrentMemberModel();
+        if (!isset($member)) {
+            throw new AppException('用户登录状态过期');
+        }
+
+        if($memberCarts->isEmpty()){
+            return false;
+        }
+
+        $shop = ShopService::getCurrentShopModel();
+
+        $orderGoodsArr = OrderService::getOrderGoodsModels($memberCarts);
+        $order = new PreGeneratedOrderModel(['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
+        $order->setOrderGoodsModels($orderGoodsArr);
+        return $order;
     }
 
     /**
      * 获取订单号
      * @return string
      */
-    public static function createOrderSN(){
-        return 'sn'.time();//m('common')->createNO('order', 'ordersn', 'SH');
-    }
-    private static function OrderOperate(OrderOperation $OrderOperate){
-        if(!$OrderOperate->enable()){
-            return [false,$OrderOperate->getMessage()];
+    public static function createOrderSN()
+    {
+        $orderSN = createNo('SN', true);
+        while (1) {
+            if (!Order::where('order_sn', $orderSN)->first()) {
+                break;
+            }
+            $orderSN = createNo('SN', true);
         }
-        if(!$OrderOperate->execute()){
-            return [false,$OrderOperate->getMessage()];
-        }
-        return [true,$OrderOperate->getMessage()];
+        return $orderSN;
     }
+    private static function OrderOperate(OrderOperation $OrderOperate)
+    {
+        if (!$OrderOperate->enable()) {
+            return [false, $OrderOperate->getMessage()];
+        }
+        if (!$OrderOperate->execute()) {
+            return [false, $OrderOperate->getMessage()];
+        }
+        return [true, $OrderOperate->getMessage()];
+    }
+
     /**
      * 取消付款
      * @param $param
      * @return array
      */
-    public static function orderCancelPay($param){
+    public static function orderCancelPay($param)
+    {
         $order_model = Order::find($param['order_id']);
 
         $OrderOperation = new OrderCancelPay($order_model);
         return self::OrderOperate($OrderOperation);
     }
+
     /**
      * 取消发货
      * @param $param
      * @return array
      */
-    public static function orderCancelSend($param){
+    public static function orderCancelSend($param)
+    {
         $order_model = Order::find($param['order_id']);
 
         $OrderOperation = new OrderCancelSend($order_model);
         return self::OrderOperate($OrderOperation);
     }
+
     /**
      * 关闭订单
      * @param $param
      * @return array
      */
-    public static function orderClose($param){
+    public static function orderClose($param)
+    {
         $order_model = Order::find($param['order_id']);
 
         $OrderOperation = new OrderClose($order_model);
         return self::OrderOperate($OrderOperation);
     }
+
     /**
      * 用户删除(隐藏)订单
      * @param $param
      * @return array
      */
-    public static function orderDelete($param){
+    public static function orderDelete($param)
+    {
         $order_model = Order::find($param['order_id']);
 
         $OrderOperation = new OrderDelete($order_model);
@@ -135,43 +209,60 @@ class OrderService
      * @return array
      */
 
-    public static function orderPay(array $param){
+    public static function orderPay(array $param)
+    {
         $order_model = Order::find($param['order_id']);
         $OrderOperation = new OrderPay($order_model);
         return self::OrderOperate($OrderOperation);
     }
+
     /**
      * 收货
      * @param $param
      * @return array
      */
-    public static function orderReceive($param){
+    public static function orderReceive($param)
+    {
         $order_model = Order::find($param['order_id']);
 
         $OrderOperation = new OrderReceive($order_model);
         return self::OrderOperate($OrderOperation);
     }
+
     /**
      * 发货
      * @param $param
      * @return array
      */
-    public static function orderSend($param){
+    public static function orderSend($param)
+    {
         $order_model = Order::find($param['order_id']);
 
         $OrderOperation = new OrderSend($order_model);
         return self::OrderOperate($OrderOperation);
     }
+
     /**
      * 改变订单价格
      * @param $param
      * @return array
      */
-    public static function changeOrderPrice($param){
+    public static function changeOrderPrice($param)
+    {
         $order_model = Order::find($param['order_id']);
-        //dd($order_model);exit;
 
         $OrderOperation = new OrderChangePrice($order_model);
         return self::OrderOperate($OrderOperation);
+    }
+    /**
+     * 所有订单商品都是实物
+     * @param Collection $orderGoodsCollect
+     * @return bool
+     */
+    public static function allGoodsIsReal(Collection $orderGoodsCollect){
+        return $orderGoodsCollect->contains(function ($orderGoods){
+
+            return $orderGoods->belongsToGood->isRealGoods();
+        });
     }
 }

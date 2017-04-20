@@ -1,10 +1,4 @@
-<style type="text/css">
-	.spectable td,.spectable th {border:1px solid #ccc; vertical-align: middle;text-align:center;}
-	.spectable th { font-weight: bold;}
-	.spectableinput { text-align: center;}
-	.f {border-color: #b94a48;-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);-moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);}
-	.table.table-bordered tr th,.table.table-bordered tr td{overflow:hidden; text-overflow:ellipsis;}
-</style>
+<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
 <div class="form-group">
        <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用{{$lang['shopoption']}}</label>
         <div class="col-sm-9 col-xs-12">

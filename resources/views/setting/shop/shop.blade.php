@@ -12,12 +12,12 @@
                 }
             }
 
-            if ($(':input[name="shop[img]"]').val() != '') {
-                if (!thumb.test($(':input[name="shop[img]"]').val())) {
-                    Tip.focus(':input[name="shop[img]"]', '图片类型必须是.gif,jpeg,jpg,png中的一种.');
-                    return false;
-                }
-            }
+//            if ($(':input[name="shop[img]"]').val() != '') {
+//                if (!thumb.test($(':input[name="shop[img]"]').val())) {
+//                    Tip.focus(':input[name="shop[img]"]', '图片类型必须是.gif,jpeg,jpg,png中的一种.');
+//                    return false;
+//                }
+//            }
 
             if ($(':input[name="shop[signimg]"]').val() != '') {
                 if (!thumb.test($(':input[name="shop[signimg]"]').val())) {
@@ -32,12 +32,18 @@
 
 <div class="w1200 m0a">
 <div class="rightlist">
+    <div class="right-titpos">
+        <ul class="add-snav">
+            <li class="active"><a href="#">商城设置</a></li>
+        </ul>
+    </div>
+
 <!-- 新增加右侧顶部三级菜单 -->
     @include('setting.shop.tabs')
 <!-- 新增加右侧顶部三级菜单结束 -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" id="shopform" >
         <div class="panel panel-default">
-            <div class='panel-body'>  
+            <div class='panel-body'>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商城名称</label>
                     <div class="col-sm-9 col-xs-12">
@@ -52,13 +58,13 @@
                         <span class='help-block'>正方型图片</span>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">店招</label>
-                    <div class="col-sm-9 col-xs-12">
-                        {!! app\common\helpers\ImageHelper::tplFormFieldImage('shop[img]', $set['img']) !!}
-                        <span class='help-block'>商城首页店招，建议尺寸640*450</span>
-                    </div>
-                </div>
+                {{--<div class="form-group">--}}
+                    {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">店招</label>--}}
+                    {{--<div class="col-sm-9 col-xs-12">--}}
+                        {{--{!! app\common\helpers\ImageHelper::tplFormFieldImage('shop[img]', $set['img']) !!}--}}
+                        {{--<span class='help-block'>商城首页店招，建议尺寸640*450</span>--}}
+                    {{--</div>--}}
+                {{--</div>--}}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商城海报</label>
                     <div class="col-sm-9 col-xs-12">
@@ -101,17 +107,17 @@
                         <input type="text" name="shop[credit1]" class="form-control" value="{{ $set['credit1']}}" />
                         <span class='help-block'>商城内积分字样的自定义功能</span>
                     </div>
-                </div>   
-  
+                </div>
+
                   <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  onclick="return formcheck()"/>
+                            <input type="submit" name="submit" value="提交" class="btn btn-success"  onclick="return formcheck()"/>
                      </div>
             </div>
-                       
+
             </div>
-        </div>     
+        </div>
     </form>
 </div>
 </div>

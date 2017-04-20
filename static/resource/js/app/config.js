@@ -1,5 +1,5 @@
 require.config({
-	baseUrl: '/addons/sz_yi/static/resource/js/app',
+	baseUrl: '/addons/yun_shop/static/resource/js/app',
 	paths: {
 		'jquery': '../jquery.1.12.4.min',
 		'jquery.ui': '../lib/jquery-ui-1.10.3.min',
@@ -30,6 +30,7 @@ require.config({
 		'select2' : '../../components/select2/zh-CN',
 		'clockpicker': '../../components/clockpicker/clockpicker.min',
 		'jquery.qrcode': '../lib/jquery.qrcode.min',
+		'contextMenu':'../lib/jquery.contextMenu',
 		'raty': '../lib/raty.min'
 	},
 	shim:{
@@ -117,6 +118,10 @@ require.config({
 		'jquery.qrcode': {
 			exports: "$",
 			deps: ['jquery']
-		}
+		},
+        'contextMenu': {
+            exports: "$",
+            deps: ['jquery']
+        }
 	}
 });

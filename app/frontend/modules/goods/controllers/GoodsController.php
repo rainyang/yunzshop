@@ -68,11 +68,16 @@ class GoodsController extends ApiController
                 'is_deleted',
                 'reduce_stock_method',
             ]);
-        if ($goodsModel->thumb_url) {
-            $goodsModel->thumb_url = unserialize($goodsModel->thumb_url);
+        if ($goodsModel->thumb) {
+            $goodsModel->thumb = tomedia($goodsModel->thumb);
         }
-
-        //dd($goodsModel);
+        if ($goodsModel->thumb_url) {
+            $thumb_url = unserialize($goodsModel->thumb_url);
+            foreach ($thumb_url as &$item) {
+                $item = tomedia($item);
+            }
+            $goodsModel->thumb_url = $thumb_url;
+        }
         foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
         }
@@ -89,10 +94,8 @@ class GoodsController extends ApiController
         if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
             $order_field = 'display_order';
         }
-
         $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
-
-
+        
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
                 return !empty($item) && $item !== 0;
@@ -106,7 +109,6 @@ class GoodsController extends ApiController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-        //dd($requestSearch);
 
         $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
             ->where("status", 1)
@@ -170,7 +172,6 @@ class GoodsController extends ApiController
         if (!$brand) {
             $this->errorJson('没有此品牌.');
         }
-        //dd($brand);
         $goodsList = Goods::uniacid()->select('id','id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->where('status', '1')
             ->where('brand_id', $brand_id)

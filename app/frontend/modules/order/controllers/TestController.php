@@ -1,17 +1,13 @@
 <?php
 namespace app\frontend\modules\order\controllers;
 
-use app\common\components\BaseController;
-use app\common\events\order\AfterOrderCanceledEvent;
-use app\common\events\order\AfterOrderCancelSentEvent;
-use app\common\events\order\AfterOrderPaidEvent;
-use app\common\events\order\AfterOrderReceivedEvent;
-use app\common\events\order\AfterOrderSentEvent;
-use app\common\events\order\BeforeOrderCancelPayEvent;
-use app\common\models\MemberCoupon;
-use app\common\models\Order;
+use app\common\components\ApiController;
+
+use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\ShowPreGenerateOrder;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\models\Order;
 use app\frontend\modules\order\services\OrderService;
 
 use app\common\events\order\AfterOrderCancelPaidEvent;
@@ -22,12 +18,15 @@ use app\common\events\order\AfterOrderCancelPaidEvent;
  * Date: 21/02/2017
  * Time: 11:34
  */
-class TestController extends BaseController
+class TestController extends ApiController
 {
     public function index()
     {
+        OrderService::orderPay(['order_id'=>6]);
 
-        Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
+        exit;
+        //dd(MemberService::getCurrentMemberModel()->defaultAddress);
+        //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
         /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));
         Event::fire(new AfterOrderCancelSentEvent(Order::find(1)));
         Event::fire(new AfterOrderPaidEvent(Order::find(1)));

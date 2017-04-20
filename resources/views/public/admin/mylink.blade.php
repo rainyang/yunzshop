@@ -1,4 +1,3 @@
-<link href="../addons/sz_yi/plugin/article/template/imgsrc/article.css" rel="stylesheet">
 <!-- mylink start -->
 <div id="modal-mylink" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" style="width: 720px;">
@@ -19,22 +18,22 @@
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 商城页面链接</h4>
                         </div>
-                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzAppUrl('shop.index') }}">商城首页</div>
-                        <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" data-href="{php echo $this->createMobileUrl('shop/category')}">分类导航</div>
-                        <div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>
-                        <div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>
+                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzAppUrl('home') }}">商城首页</div>
+                        <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" data-href="{{ yzAppUrl('category') }}">分类导航</div>
+                        {{--<div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>--}}
+                        {{--<div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>--}}
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 会员中心链接</h4>
                         </div>
-                        <div id="fe-tab-link-li-21" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 21)" data-href="{php echo $this->createMobileUrl('member')}">会员中心</div>
-                        <div id="fe-tab-link-li-22" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 22)" data-href="{php echo $this->createMobileUrl('order')}">我的订单</div>
-                        <div id="fe-tab-link-li-23" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 23)" data-href="{php echo $this->createMobileUrl('shop/cart')}">我的购物车</div>
-                        <div id="fe-tab-link-li-24" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 24)" data-href="{php echo $this->createMobileUrl('shop/favorite')}">我的收藏</div>
-                        <div id="fe-tab-link-li-25" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 25)" data-href="{php echo $this->createMobileUrl('shop/history')}">我的足迹</div>
-                        <div id="fe-tab-link-li-26" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 26)" data-href="{php echo $this->createMobileUrl('member/recharge')}">会员充值</div>
-                        <div id="fe-tab-link-li-27" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 27)" data-href="{php echo $this->createMobileUrl('member/log')}">余额明细</div>
-                        <div id="fe-tab-link-li-28" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 28)" data-href="{php echo $this->createMobileUrl('member/withdraw')}">余额提现</div>
-                        <div id="fe-tab-link-li-29" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 29)" data-href="{php echo $this->createMobileUrl('shop/address')}">我的收货地址</div>
+                        <div id="fe-tab-link-li-21" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 21)" data-href="{{ yzAppUrl('member') }}">会员中心</div>
+                        <div id="fe-tab-link-li-22" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 22)" data-href="{{ yzAppUrl('member.orderList') }}">我的订单</div>
+                        <div id="fe-tab-link-li-23" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 23)" data-href="{{ yzApiUrl('cart') }}">我的购物车</div>
+                        <div id="fe-tab-link-li-24" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 24)" data-href="{{ yzApiUrl('member.collection') }}">我的收藏</div>
+                        <div id="fe-tab-link-li-25" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 25)" data-href="{{ yzApiUrl('member.footprint') }}">我的足迹</div>
+                        <div id="fe-tab-link-li-26" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 26)" data-href="{{ yzApiUrl('member.balance_recharge') }}">会员充值</div>
+                        <div id="fe-tab-link-li-27" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 27)" data-href="{{ yzApiUrl('member.details') }}">余额明细</div>
+                        <div id="fe-tab-link-li-28" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 28)" data-href="{{ yzApiUrl('member.balance_withdrawal') }}">余额提现</div>
+                        <div id="fe-tab-link-li-29" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 29)" data-href="{{ yzApiUrl('member.address') }}">我的收货地址</div>
 
 
 
@@ -96,7 +95,7 @@
                                 <textarea name="mylink_href" class="form-control" style="height: 90px; resize: none;" placeholder="请以http://开头"></textarea>
                             </div>
                         </div>
-                        <div class="form-group" style="overflow: hidden; margin-bottom: 0px;i">
+                        <div class="form-group" style="overflow: hidden; margin-bottom: 0px;">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="line-height: 34px;"></label>
                             <div class="col-sm-9 col-xs-12">
                                 <div class="btn btn-primary col-lg-1 mylink-nav2" style="margin-left: 20px; width: auto; overflow: hidden; margin-left: 0px;"> 插入 </div>
@@ -112,6 +111,8 @@
 
 <!-- mylink end -->
 <script language="javascript">
+    require(['jquery'],function(){
+
     $(function() {
         $("#chkoption").click(function() {
             var obj = $(this);
@@ -140,12 +141,13 @@
             $("input[data-id="+id+"]").val(href);
             $("#modal-mylink").attr("data-id","");
         }else{
+            console.log(href);
             ue.execCommand('link', {href:href});
         }
         $("#modal-mylink .close").click();
     });
     $(".mylink-nav2").click(function(){
-        var href = $("textarea[name=mylink_href").val();
+        var href = $("textarea[name=mylink_href]").val();
         if(href){
             var id = $("#modal-mylink").attr("data-id");
             if(id){
@@ -155,9 +157,9 @@
                 ue.execCommand('link', {href:href});
             }
             $("#modal-mylink .close").click();
-            $("textarea[name=mylink_href").val("");
+            $("textarea[name=mylink_href]").val("");
         }else{
-            $("textarea[name=mylink_href").focus();
+            $("textarea[name=mylink_href]").focus();
             alert("链接不能为空!");
         }
     });
@@ -194,4 +196,5 @@
         });
     });
 
+    })
 </script>

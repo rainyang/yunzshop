@@ -9,8 +9,11 @@
 namespace app\common\models;
 
 
+use app\common\models\order\Address;
+use app\common\models\order\Express;
 use app\common\models\order\Pay;
-use app\frontend\modules\order\services\behavior\OrderPay;
+use app\common\models\order\Remark;
+use app\common\models\refund\RefundApply;
 use app\frontend\modules\order\services\status\StatusServiceFactory;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
@@ -19,16 +22,22 @@ class Order extends BaseModel
 {
     public $table = 'yz_order';
     private $StatusService;
+    private $RefundData;
     protected $fillable = [];
     protected $guarded = ['id'];
-    protected $appends = ['status_name', 'button_models'];
+    protected $appends = ['status_name', 'pay_type_name', 'refund_data'];
     protected $search_fields = ['id', 'order_sn'];
-    protected $attributes = ['discount_price'=>0];
+    //protected $attributes = ['discount_price'=>0];
     const CLOSE = -1;
     const WAIT_PAY = 0;
     const WAIT_SEND = 1;
     const WAIT_RECEIVE = 2;
     const COMPLETE = 3;
+
+    public function getDates()
+    {
+        return ['create_time', 'refund_time', 'operate_time', 'send_time', 'return_time', 'end_time', 'pay_time', 'send_time', 'cancel_time', 'create_time', 'cancel_pay_time', 'cancel_send_time', 'finish_time'] + parent::getDates();
+    }
 
     public function scopeWaitPay($query)
     {
@@ -51,7 +60,16 @@ class Order extends BaseModel
     {
         return $query->where(['status' => 3]);
     }
-
+    public function scopeRefund($query)
+    {
+        return $query->where('refund_id','>','0');
+    }
+    public function scopeRefunded($query)
+    {
+        return $query->where('refund_id','>','0')->whereHas('hasOneRefundApply',function ($query){
+            return $query->where('status',RefundApply::COMPLETE);
+        });
+    }
     public function scopeCancelled($query)
     {
         return $query->where(['status' => -1]);
@@ -59,29 +77,34 @@ class Order extends BaseModel
 
     public function hasManyOrderGoods()
     {
-        return $this->hasMany('\app\common\models\OrderGoods', 'order_id', 'id');
+        return $this->hasMany(OrderGoods::class, 'order_id', 'id');
     }
 
     public function belongsToMember()
     {
-        return $this->belongsTo('\app\common\models\Member', 'uid', 'uid');
+        return $this->belongsTo(Member::class, 'uid', 'uid');
     }
+    //退款列表
+    public function hasOneRefundApply()
+    {
+        return $this->hasOne(RefundApply::class, 'id', 'refund_id');
 
+    }
     //订单配送方式
     public function hasOneDispatchType()
     {
-        return $this->hasOne('\app\common\models\DispatchType', 'id', 'dispatch_type_id');
+        return $this->hasOne(DispatchType::class, 'id', 'dispatch_type_id');
     }
 
     //订单备注
     public function hasOneOrderRemark()
     {
-        return $this->hasOne('\app\common\models\order\Remark', 'order_id', 'id');
+        return $this->hasOne(Remark::class, 'order_id', 'id');
     }
 
     public function hasOnePayType()
     {
-        return $this->hasOne('\app\common\models\PayType', 'id', 'pay_type_id');
+        return $this->hasOne(PayType::class, 'id', 'pay_type_id');
     }
 
     //订单支付信息
@@ -91,9 +114,9 @@ class Order extends BaseModel
     }
 
     //订单快递
-    public function hasOneOrderExpress()
+    public function express()
     {
-        return $this->hasOne('\app\common\models\order\Express', 'order_id', 'id');
+        return $this->hasOne(Express::class, 'order_id', 'id');
     }
 
     public function scopeUn($query)
@@ -109,16 +132,28 @@ class Order extends BaseModel
         return $this->StatusService;
     }
 
-    //收货地址
-    public function hasOneAddress()
+    /**
+     * @return mixed
+     * 增加退换货订单 退换数据
+     */
+    public function getRefundDataAttribute()
     {
-        return $this->hasOne('\app\common\models\order\Address', 'order_id', 'id');
+        if (!empty($this->refund_id)) {
+            $this->RefundData = RefundApply::getRefundById($this->refund_id);
+        }
+        return $this->RefundData;
+    }
+    
+    //收货地址
+    public function address()
+    {
+        return $this->hasOne(Address::class, 'order_id', 'id');
     }
 
     //订单支付
     public function hasOnePay()
     {
-        return $this->hasOne('\app\common\models\order\Pay', 'order_id', 'id');
+        return $this->hasOne(Pay::class, 'order_id', 'id');
     }
 
     public function getStatusNameAttribute()
@@ -126,16 +161,32 @@ class Order extends BaseModel
         return $this->getStatusService()->getStatusName();
     }
 
+    public function getPayTypeNameAttribute()
+    {
+        if($this->status == self::WAIT_PAY){
+            return PayType::defaultTypeName();
+        }
+        return $this->hasOnePayType->name;
+    }
+
     public function getButtonModelsAttribute()
     {
-        return $this->getStatusService()->getButtonModels();
+        $result = $this->getStatusService()->getButtonModels();
+        if(!empty($this->order->refund_id)){
+            $result[] = [
+                'name' => '申请退款',
+                'api' => 'order.refund.apply', //todo
+                'value' => static::REFUND
+            ];
+        }
+        return $result;
     }
 
     public function scopeGetOrderCountGroupByStatus($query, $status = [])
     {
         //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
-            ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'button_models'])->toArray();
+            ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name','has_one_pay_type','button_models'])->toArray();
         foreach ($status as $state) {
             if (!in_array($state, array_column($status_counts, 'status'))) {
                 $status_counts[] = ['status' => $state, 'total' => 0];
@@ -158,6 +209,6 @@ class Order extends BaseModel
     public static function getOrderInfoByMemberId($member_id)
     {
         return self::uniacid()
-                   ->where('uid', $member_id);
+            ->where('uid', $member_id);
     }
 }

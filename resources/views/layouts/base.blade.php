@@ -7,7 +7,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@yield('title') | Yunshop</title>
+    <title>@yield('title') | 芸商城-Yun Shop</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="_token" content="{{ csrf_token() }}"/>
@@ -18,7 +18,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Ionicons -->
     <link rel="stylesheet" href="{{static_url('yunshop/libs/ionicons/2.0.1/css/ionicons.min.css')}}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{static_url('yunshop/dist/css/AdminLTE.min.css')}}">
+    <link rel="stylesheet" href="{{static_url('yunshop/dist/css/AdminLTE.css')}}">
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
           page. However, you can choose any other skin. Make sure you
           apply the skin class to the body tag so the changes take effect.
@@ -58,6 +58,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         'openid': '{{YunShop::app()->openid}}',
         'uid': '{{YunShop::app()->uid}}',
         'siteroot': './',
+          'static_url': '{{static_url('')}}',
         'siteurl': '{!! YunShop::app()->siteurl !!}',
         'attachurl': '{{YunShop::app()->attachurl}}',
         'attachurl_local': '{{YunShop::app()->attachurl_local}}',
@@ -70,11 +71,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- jQuery 2.2.0 -->
     <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
 
-    <script type="text/javascript" src="./resource/js/app/util.js"></script>
-    <script type="text/javascript" src="./resource/js/app/common.min.js"></script>
-    <script type="text/javascript" src="./resource/js/require.js"></script>
-    <script type="text/javascript" src="../addons/sz_yi/static/js/app/config.js"></script>
-    <script type="text/javascript" src="../addons/sz_yi/static/js/dist/tooltipbox.js"></script>
+    <script type="text/javascript" src="{{static_url('resource/js/app/util.js')}}"></script>
+
+    <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('resource/js/app/util.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('js/app/config.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
 
 </head>
 <style type="text/css">
@@ -107,7 +109,7 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="hold-transition skin-red sidebar-mini">
+<body class="hold-transition skin-red sidebar-mini" >
 <div id="loading">
     <div id="loading-center">
         <div id="loading-center-absolute">
@@ -146,7 +148,7 @@ desired effect
 
             </h6>
         </section>
-        @include('public.admin.message')
+      @include('public.admin.message')
         <!-- Main content -->
         <section class="content">
 

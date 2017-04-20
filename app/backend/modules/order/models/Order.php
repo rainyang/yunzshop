@@ -10,38 +10,68 @@ namespace app\backend\modules\order\models;
 
 class Order extends \app\common\models\Order
 {
-    public static function getAllOrders($search,$pageSize){
-        $builder = Order::orders($search,$pageSize);
+    private static function format($builder,$pageSize){
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->toArray();
-        return $list;
-
-    }
-    public static function getWaitPayOrders($search,$pageSize){
-        $builder = Order::orders($search,$pageSize)->waitPay();
-        $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->toArray();
+        $list += $builder->uniacid()->orderBy('id','desc')->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
-    public static function getWaitSendOrders($search,$pageSize){
-        $builder = Order::orders($search,$pageSize)->waitSend();
-        $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->toArray();
-        return $list;
-    }
-    public static function getWaitReceiveOrders($search,$pageSize){
-        $builder = Order::orders($search,$pageSize)->waitReceive();
-        $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->toArray();
-        return $list;
-    }
-    public static function getCompletedOrders($search,$pageSize){
-        $builder = Order::orders($search,$pageSize)->completed();
-        $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->toArray();
-        return $list;
+    public static function getAllOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search);
+        return self::format($builder,$pageSize);
     }
 
+    public static function getWaitPayOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->waitPay();
+        return self::format($builder,$pageSize);
+    }
+
+    public static function getWaitSendOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->waitSend();
+        return self::format($builder,$pageSize);
+    }
+
+    public static function getWaitReceiveOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->waitReceive();
+        return self::format($builder,$pageSize);
+
+    }
+
+    public static function getCompletedOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->completed();
+        return self::format($builder,$pageSize);
+    }
+    public static function getCancelledOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->cancelled();
+        return self::format($builder,$pageSize);
+    }
+
+    /**
+     * @param $search
+     * @param $pageSize
+     * @return mixed
+     * 获取退换货订单
+     */
+    public static function getRefundOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->refund();
+        $list['total_price'] = $builder->sum('price');
+        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
+        return $list;
+    }
+
+    public static function getRefundedOrders($search, $pageSize)
+    {
+        $builder = Order::orders($search, $pageSize)->refunded();
+        $list['total_price'] = $builder->sum('price');
+        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
+        return $list;
+    }
     //订单导出订单数据
     public static function getExportOrders($search)
     {
@@ -59,28 +89,29 @@ class Order extends \app\common\models\Order
             'hasManyOrderGoods' => self::order_goods_builder(),
             'hasOneDispatchType',
             'hasOnePayType',
-            'hasOneAddress',
+            'address',
             'hasOneOrderRemark',
-            'hasOneOrderExpress',
+            'express',
             'hasOnePayType'
         ]);
         return $orders;
     }
 
-    public function scopeOrders($order_builder,$search)
+    public function scopeOrders($order_builder, $search)
     {
         $order_builder->search($search);
 
-        $list = $order_builder->with([
+        $orders = $order_builder->with([
             'belongsToMember' => self::member_builder(),
             'hasManyOrderGoods' => self::order_goods_builder(),
             'hasOneDispatchType',
             'hasOnePayType',
-            'hasOneAddress',
+            'address',
             'hasOnePayType'
         ]);
-        return $list;
+        return $orders;
     }
+
     private static function member_builder()
     {
         return function ($query) {
@@ -95,19 +126,41 @@ class Order extends \app\common\models\Order
         };
     }
 
+    public function scopeIsPlugin($query)
+    {
+        return $query->where('is_plugin', 0);
+    }
+
     public function scopeSearch($order_builder, $params)
     {
-
+        $order_builder->isPlugin();
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单
             if ($params['ambiguous']['field'] == 'order') {
-                $order_builder->searchLike($params['ambiguous']['string']);
+                call_user_func(function () use (&$order_builder, $params) {
+                    list($field, $value) = explode(':', $params['ambiguous']['string']);
+                    if (isset($value)) {
+                        return $order_builder->where($field, $value);
+                    } else {
+                        return $order_builder->searchLike($params['ambiguous']['string']);
+                    }
+                });
+
+
             }
             //用户
             if ($params['ambiguous']['field'] == 'member') {
-                $order_builder->whereHas('belongsToMember', function ($query) use ($params) {
-                    $query->searchLike($params['ambiguous']['string']);
+                call_user_func(function () use (&$order_builder, $params) {
+                    list($field, $value) = explode(':', $params['ambiguous']['string']);
+                    if (isset($value)) {
+                        return $order_builder->where($field, $value);
+                    } else {
+                        return $order_builder->whereHas('belongsToMember', function ($query) use ($params) {
+                            return $query->searchLike($params['ambiguous']['string']);
+                        });
+                    }
                 });
+
             }
             //订单商品
             if ($params['ambiguous']['field'] == 'order_goods') {

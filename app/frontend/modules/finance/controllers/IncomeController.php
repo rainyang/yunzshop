@@ -12,6 +12,8 @@ namespace app\frontend\modules\finance\controllers;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\Income;
+use app\common\services\Pay;
+use app\common\services\PayFactory;
 use app\frontend\modules\finance\models\Withdraw;
 use Illuminate\Support\Facades\Log;
 use Yunshop\Commission\models\CommissionOrder;
@@ -57,7 +59,19 @@ class IncomeController extends ApiController
      */
     public function getIncomeList()
     {
-        $incomeModel = Income::getIncomeInMonth()->where('member_id', \YunShop::app()->getMemberId())->get();
+        $configs = \Config::get('income');
+        $type = \YunShop::request()->income_type;
+        $search = [];
+        foreach ($configs as $key => $config) {
+            if($config['type'] == $type){
+                $search['type'] = $config['class'];
+                break;
+            }
+        }
+
+        $incomeModel = Income::getIncomeInMonth($search)->where('member_id', \YunShop::app()->getMemberId());
+
+        $incomeModel = $incomeModel->get();
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
         }
@@ -84,8 +98,10 @@ class IncomeController extends ApiController
     {
         $configs = \Config::get('income');
         foreach ($configs as $key => $config) {
-            $searchType[$key]['title'] = $config['type_name'];
-            $searchType[$key]['type'] = $config['type'];
+            $searchType[] = [
+                'title' => $config['type_name'],
+                'type' => $config['type']
+            ];
         }
         if ($searchType) {
             return $this->successJson('获取数据成功!', $searchType);
@@ -106,7 +122,7 @@ class IncomeController extends ApiController
         }
 
         foreach ($config as $key => $item) {
-            $set[$key] = \Setting::get('withdraw.' . $key, ['roll_out_limit' => '100', 'poundage_rate' => '5']);
+            $set[$key] = \Setting::get('withdraw.' . $key);
             $incomeModel = $incomeModel->where('incometable_type', $item['class']);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
@@ -117,8 +133,8 @@ class IncomeController extends ApiController
                     $type_id .= $ids->id . ",";
                 }
                 $incomeData[$key] = [
-                    'type' => $item['type'],
-                    'key_name' => $item['title'],
+                    'type' => $item['class'],
+                    'key_name' => $item['type'],
                     'type_name' => $item['type_name'],
                     'type_id' => rtrim($type_id, ','),
                     'income' => $incomeModel->sum('amount'),
@@ -129,8 +145,8 @@ class IncomeController extends ApiController
                 ];
             } else {
                 $incomeData[$key] = [
-                    'type' => $item['type'],
-                    'key_name' => $item['title'],
+                    'type' => $item['class'],
+                    'key_name' => $item['type'],
                     'type_name' => $item['type_name'],
                     'type_id' => '',
                     'income' => $incomeModel->sum('amount'),
@@ -172,18 +188,14 @@ class IncomeController extends ApiController
 
         \Log::info("POST - Withdraw Data /r/n");
         \Log::info($withdrawData);
+
         /**
          * 验证数据
          */
         foreach ($withdrawData as $key => $item) {
 
-            $set[$key] = \Setting::get('withdraw.' . $key,
-                [
-                    'roll_out_limit' => '100',
-                    'poundage_rate' => '5'
-                ]
-            );
-            $incomeModel = $incomeModel->whereIn('id', [$item['type_id']]);
+            $set[$key] = \Setting::get('withdraw.' . $key);
+            $incomeModel = $incomeModel->whereIn('id', explode(',', $item['type_id']));
             $incomes = $incomeModel->get();
             \Log::info("INCOME:");
             \Log::info($incomes);
@@ -237,8 +249,11 @@ class IncomeController extends ApiController
      */
     public function setWithdraw($withdrawData, $withdrawTotal)
     {
+
+
         foreach ($withdrawData as $item) {
             $data[] = [
+                'withdraw_sn' => Pay::setUniacidNo(\YunShop::app()->uniacid),
                 'uniacid' => \YunShop::app()->uniacid,
                 'member_id' => \YunShop::app()->getMemberId(),
                 'type' => $item['type'],
@@ -247,6 +262,8 @@ class IncomeController extends ApiController
                 'amounts' => $item['amounts'],
                 'poundage' => $item['poundage'],
                 'poundage_rate' => $item['poundage_rate'],
+                'actual_amounts' => $item['amounts']-$item['poundage'],
+                'actual_poundage' => $item['poundage'],
                 'pay_way' => $withdrawTotal['pay_way'],
                 'status' => 0,
                 'created_at' => time(),

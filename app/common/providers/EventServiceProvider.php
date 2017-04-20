@@ -6,8 +6,10 @@ namespace app\common\providers;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
+use app\common\listeners\point\PointLisrener;
 use app\common\listeners\WechatProcessorListener;
-use app\frontend\modules\discount\listeners\MemberLevelGoodsDiscount;
+use app\frontend\modules\goods\listeners\GoodsStock;
+use app\frontend\modules\goods\listeners\Order;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -29,9 +31,17 @@ class EventServiceProvider extends ServiceProvider
         ],
         \app\common\events\dispatch\OrderDispatchWasCalculated::class => [ //订单邮费计算
             \app\frontend\modules\dispatch\listeners\prices\UnifyOrderDispatchPrice::class, //统一运费
+            \app\frontend\modules\dispatch\listeners\prices\TemplateOrderDispatchPrice::class, //模板运费
+
         ],
         PayLog::class => [ //支付日志请求
-            PayLogListener::class, //保存支付参数
+            PayLogListener::class //保存支付参数
+        ],
+        \app\common\events\member\BecomeAgent::class => [ //会员成为下线
+          \app\common\listeners\member\BecomeAgentListener::class
+        ],
+        \app\common\events\order\AfterOrderCreatedEvent::class => [ //下单成功后调用会员成为下线事件
+            \app\common\listeners\member\AfterOrderCreatedListener::class
         ],
         //微信接口回调触发事件进程
         WechatProcessor::class => [
@@ -46,7 +56,8 @@ class EventServiceProvider extends ServiceProvider
         \app\common\listeners\goods\GoodsTestListener::class,
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
         \app\frontend\modules\discount\listeners\MemberLevelGoodsDiscount::class,
-
+        PointLisrener::class,
+        GoodsStock::class,
 
     ];
     /**

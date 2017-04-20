@@ -3,12 +3,16 @@
 @section('content')
 
     <div class="main rightlist">
+        <div class="right-titpos">
+            <ul class="add-snav">
+                <li class="active"><a href="#"> 余额设置</a></li>
+            </ul>
+        </div>
+
         <form action="{{ yzWebUrl('finance.balance.index') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    余额设置
-                </div>
-                <div class="alert alert-warning">
+
+                <div class="alert alert-warning alert-important">
                     余额支付开关、及其他支付设置，请到交易设置查看<a href="{{ yzWebUrl('setting.shop.pay') }}" target="_blank">【点击跳转交易设置】</a>.
                 </div>
 
@@ -38,12 +42,14 @@
                                     </button>
                                 </h4>
 
+
                                 <div class='recharge-items'>
+                                    @foreach( $balance['sale'] as $list)
                                     <div class="input-group recharge-item" style="margin-top:5px; width: 60%">
                                         <span class="input-group-addon">满</span>
-                                        <input type="text" class="form-control" name='balance[enough][]' value=' '/>
+                                        <input type="text" class="form-control" name='balance[enough][]' value='{{ $list['enough'] or '' }}'/>
                                         <span class="input-group-addon">赠送</span>
-                                        <input type="text" class="form-control" name='balance[give][]' value=' '/>
+                                        <input type="text" class="form-control" name='balance[give][]' value='{{ $list['give'] or '' }}'/>
                                         <span class="input-group-addon">元</span>
                                         <div class='input-group-btn'>
                                             <button class='btn btn-danger' type='button'
@@ -52,7 +58,9 @@
                                         </div>
 
                                     </div>
+                                    @endforeach
                                 </div>
+
                                 <span class="help-block">两项都填写才能生效，赠送的余额可以固定数或比例(带%)号</span>
                                 <span class="help-block">例如：充值满100，赠送10</span>
                                 <span class="help-block">例如：充值满200，赠送15%，实际赠送30(200*15%)</span>
@@ -60,48 +68,6 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额提现</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <label class='radio-inline'>
-                                <input type='radio' name='balance[withdraw][status]' value='1' @if($balance['withdraw']['status'] == 1) checked @endif />
-                                开启
-                            </label>
-                            <label class='radio-inline'>
-                                <input type='radio' name='balance[withdraw][status]' value='0' @if($balance['withdraw']['status'] == 0) checked @endif />
-                                关闭
-                            </label>
-                            <span class='help-block'>是否允许用户将余额提出</span>
-                        </div>
-                    </div>
-                    <div id='withdraw' @if(empty($balance['withdraw']['status']))style="display:none"@endif>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                            <div class="col-sm-9 col-xs-12">
-                                <div style="float:left; width:15%; height:30px;">
-                                    <label class='radio-inline' style="padding-left:0px">提现手续费</label>
-                                </div>
-                                <div style="float:left; width:85%; height:30px;">
-                                    <label class='radio-inline' style="width:70%;">
-                                        <input class="col-sm-6" style="width:100%;" type="text" name="balance[withdraw][poundage]" value=" "/>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                            <div class="col-sm-9 col-xs-12">
-                                <div style="float:left; width:15%; height:30px;">
-                                    <label class='radio-inline' style="padding-left:0px">余额提现限制</label>
-                                </div>
-                                <div style="float:left; width:85%; height:30px;">
-                                    <label class='radio-inline' style="width:70%;">
-                                        <input class="col-sm-6" style="width:100%;" type="text" name="balance[withdraw][withdrawmoney]" value=" "/>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额转账</label>
@@ -115,7 +81,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"/>
+                            <input type="submit" name="submit" value="提交" class="btn btn-success"/>
                         </div>
                     </div>
 

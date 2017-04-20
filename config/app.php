@@ -17,7 +17,7 @@ return [
     /**
      * 微擎模块名
      */
-    'module_name'=>'sz_yi',
+    'module_name'=>'yun_shop',
 
     /*
     |--------------------------------------------------------------------------
@@ -182,7 +182,6 @@ return [
          */
         Laracasts\Flash\FlashServiceProvider::class, //提示消息
         Yajra\Datatables\DatatablesServiceProvider::class,
-        Orangehill\Iseed\IseedServiceProvider::class,//数据生成
         iscms\Alisms\AlidayuServiceProvider::class,//阿里大鱼
         Maatwebsite\Excel\ExcelServiceProvider::class,//Excel组合
         Overtrue\LaravelWechat\ServiceProvider::class,//微信接口
@@ -195,6 +194,14 @@ return [
 
         //二维码
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+
+        //短信发送
+        Toplan\PhpSms\PhpSmsServiceProvider::class,
+        Toplan\Sms\SmsManagerServiceProvider::class,
+        //计划任务
+        Liebig\Cron\Laravel5ServiceProvider::class,
+        //上传
+        zgldh\UploadManager\UploadManagerServiceProvider::class,
     ],
 
     /*
@@ -257,13 +264,17 @@ return [
         'Curl'          => Ixudra\Curl\Facades\Curl::class,
 
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        //php短信发送
+        'PhpSms' => Toplan\PhpSms\Facades\Sms::class,
+        'SmsManager' => Toplan\Sms\Facades\SmsManager::class,
+        //微信接口封装
+        'wechat' => Overtrue\LaravelWechat\Facade::class,
     ],
 
     'pay_type' => [
          1 => '微信',
          2 => '支付宝',
-         3 => '余额',
-         4 => '货到付款'
+         3 => '余额'
     ],
 
 ];

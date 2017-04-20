@@ -2,6 +2,7 @@ require.config({
     baseUrl: 'resource/js/app',
     paths: {
         'jquery': '//cdn.bootcss.com/jquery/2.2.3/jquery.min',
+        'jquery.ui': '../lib/jquery-ui-1.10.3.min',
         'jquery.caret': '../lib/jquery.caret',
         'jquery.jplayer': '../../components/jplayer/jquery.jplayer.min',
         'jquery.zclip': '../../components/zclip/jquery.zclip.min',
@@ -32,6 +33,7 @@ require.config({
         'jquery.qrcode': '../lib/jquery.qrcode.min',
         'raty': '../lib/raty.min',
         'district' : '../lib/district',
+        'contextMenu':window.sysinfo['static_url'] + 'js/app/contextMenu/jquery.contextMenu',
         'hammer': '../lib/hammer.min'
     },
     shim:{
@@ -123,6 +125,10 @@ require.config({
         },
         'hammer' : {
             exports : 'hammer'
+        },
+        'contextMenu': {
+            exports: "$",
+            deps: ['jquery','css!'+window.sysinfo['static_url'] + 'js/app/contextMenu/jquery.contextMenu']
         }
     }
 });

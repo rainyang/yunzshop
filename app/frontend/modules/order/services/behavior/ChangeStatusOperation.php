@@ -14,18 +14,18 @@ abstract class ChangeStatusOperation extends OrderOperation
     /**
      * @var改变后状态
      */
-    protected $status_after_changed;
+    protected $statusAfterChanged;
     /**
      * 更新订单表
      * @return bool
      */
-    protected function _updateTable(){
-        $this->_DbOrderModel->status = $this->status_after_changed;
+    protected function updateTable(){
+        $this->order->status = $this->statusAfterChanged;
         if(isset($this->time_field)){
             $time_fields = $this->time_field;
-            $this->_DbOrderModel->$time_fields = time();
+            $this->order->$time_fields = time();
         }
-        return $this->_DbOrderModel->save();
+        return $this->order->save();
     }
 
     /**
@@ -34,7 +34,7 @@ abstract class ChangeStatusOperation extends OrderOperation
      */
     public function execute()
     {
-        $result = $this->_updateTable();
+        $result = $this->updateTable();
         $this->_fireEvent();
         return $result;
     }

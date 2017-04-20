@@ -9,54 +9,40 @@
 namespace app\frontend\modules\dispatch\listeners\prices;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
+use app\common\models\goods\GoodsDispatch;
+use app\frontend\modules\order\services\OrderService;
 
 class UnifyOrderDispatchPrice
 {
     private $event;
-    public function handle(OrderDispatchWasCalculated $even)
+
+    public function handle(OrderDispatchWasCalculated $event)
     {
-        $this->event = $even;
+        $this->event = $event;
         if (!$this->needDispatch()) {
             return;
         }
-        //返回给事件
-        $even->addData($this->getDispatchDetails());
+        $price = $event->getOrderModel()->getOrderGoodsModels()->max(function ($orderGoods) {
+            if ($orderGoods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::UNIFY_TYPE) {
+                return $orderGoods->hasOneGoodsDispatch->dispatch_price;
+            }
+            return 0;
+        });
 
+        //返回给事件
+        $event->addData(['price'=>$price]);
         return;
     }
-    //订单满足本插件 todo 需要重写
-    public function needDispatch(){
+
+    private function needDispatch()
+    {
+        $allGoodsIsReal = OrderService::allGoodsIsReal($this->event->getOrderModel()->getOrderGoodsModels());
+
+        if($allGoodsIsReal){
+            return true;
+        }
+
         return false;
     }
-    private function getDispatchDetails(){
-        $details = [
-            'name'=>'统一运费',
-            'id'=>'1',
-            'value'=>'9',
-            'price'=>$this->getDispatchPrice(),
-            'plugin'=>'0',
-        ];
 
-        return $details;
-    }
-    //订单统一运费算法
-    private function getDispatchPrice(){
-        //取商品数组 统一运费的最大值
-        $result = 0;
-        //dd($this->even->getOrderModel()->getOrderGoodsModels());
-        foreach ($this->event->getOrderModel()->getOrderGoodsModels() as $order_goods){
-            //dd($order_goods);exit;
-
-            foreach ($order_goods->getDispatchDetails() as $dispatch_detail){
-
-                //将订单统一运费类型的价格  取最大值
-                if($dispatch_detail['id'] == 1){
-
-                    $result = max($result,$dispatch_detail['price']);
-
-                }
-            }
-        }
-        return $result;
-    }
 }

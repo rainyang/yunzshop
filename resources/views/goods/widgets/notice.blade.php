@@ -1,6 +1,8 @@
+<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
+
 <div class="form-group notice">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商家通知</label>
-    <div class="col-sm-4">
+    <div class="col-sm-9 col-md-10">
 
 
         <input type='hidden' id='uid' name='widgets[notice][uid]' value="{{ $uid }}"/>
@@ -17,13 +19,13 @@
                 </button>
             </div>
         </div>
-        <span id="saleravatar" class='help-block' @if (empty($saler)) style="display:none" @endif ><img
-                    style="width:100px;height:100px;border:1px solid #ccc;padding:1px"
+        <span id="saleravatar" class='help-block' @if (empty($saler)) style="display:none" @endif >
+            <img style=""
                     src="@if (!empty($saler)) {{ $saler->avatar }} @endif"/></span>
         <span class="help-block">单品下单通知，可制定某个用户，通知商品下单备货通知,如果商品为同一商家，建议使用系统统一设置</span>
 
         <div id="modal-module-menus-notice" class="modal fade" tabindex="-1">
-            <div class="modal-dialog" style='width: 920px;'>
+            <div class="modal-dialog" >
                 <div class="modal-content">
                     <div class="modal-header">
                         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
@@ -37,7 +39,7 @@
                                                                       onclick="search_members();">搜索</button></span>
                             </div>
                         </div>
-                        <div id="module-menus-notice" style="padding-top:5px;"></div>
+                        <div id="module-menus-notice" ></div>
                     </div>
                     <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal"
                                                  aria-hidden="true">关闭</a></div>
@@ -71,7 +73,7 @@
 
     </div>
 </div>
-@section('js')
+
 <script language='javascript'>
 
     function search_members() {
@@ -80,7 +82,7 @@
             return;
         }
         $("#module-menus-notice").html("正在搜索....");
-        $.get("{{ yzWebUrl('member.member.get-search-member') }}", {
+        $.get("{!! yzWebUrl('member.member.get-search-member') !!}", {
             keyword: $.trim($('#search-kwd-notice').val())
         }, function (dat) {
             $('#module-menus-notice').html(dat);
@@ -95,4 +97,3 @@
     }
 
 </script>
-@stop

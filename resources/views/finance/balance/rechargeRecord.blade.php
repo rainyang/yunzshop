@@ -1,36 +1,78 @@
 @extends('layouts.base')
 
 @section('content')
+<link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
+    <div id="recharge-blade" class="rightlist">
 
-    <div class="rightlist">
+        <div class="right-titpos">
+            <ul class="add-snav">
+                <li class="active"><a href="#">余额充值记录</a></li>
+            </ul>
+        </div>
+
         <div class="panel panel-info">
-            <div class="panel-heading">筛选</div>
             <div class="panel-body">
-                <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+                <form action=" " method="post" class="form-horizontal" role="form" id="form1">
                     <input type="hidden" name="c" value="site"/>
                     <input type="hidden" name="a" value="entry"/>
-                    <input type="hidden" name="m" value="sz_yi"/>
-                    <input type="hidden" name="do" value="finance"/>
-                    <input type="hidden" name="p" value="log"/>
-                    <input type="hidden" name="type" value="{$_GPC['type']}"/>
+                    <input type="hidden" name="m" value="yun_shop"/>
+
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
-                        <div class="col-sm-8 col-lg-9 col-xs-12">
-                            <input type="text" class="form-control" name="realname" value="{$_GPC['realname']}"
-                                   placeholder='可搜索会员昵称/姓名/手机号/绑定手机号'/>
+                        <div class="col-sm-12 col-lg-12 col-xs-12">
+                            <div class='input-group'>
+                                <input class="form-control" name="search[ordersn]" type="text" value="{{ $search['ordersn'] or ''}}" placeholder="充值单号">
+                                <input class="form-control" name="search[realname]" type="text" value="{{ $search['realname'] or ''}}" placeholder="会员姓名／昵称／手机号">
+
+                                <div class="form-input">
+                                    <select name="search[level_id]" class="form-control">
+                                        <option value="" selected>会员等级</option>
+                                        @foreach($memberLevel as $level)
+                                            <option value="{{ $level['id'] }}" @if($search['level_id'] == $level['id']) selected @endif>{{ $level['level_name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class='form-input'>
+                                    <select name="search[group_id]" class="form-control">
+                                        <option value="" selected >会员分组</option>
+                                        @foreach($memberGroup as $group)
+                                            <option value="{{ $group['id'] }}" @if($search['group_id'] == $group['id']) selected @endif>{{ $group['group_name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-xs-12 col-sm-6 col-lg-6 search-time">
+                        <div class="time-select" >
+                            <select name='search[searchtime]' class='form-control'>
+                                <option value='' @if(empty($search['searchtime'])) selected @endif>不搜索充值时间</option>
+                                <option value='1' @if($search['searchtime']==1) selected @endif >搜索充值时间</option>
+                            </select>
+                        </div>
+                        <div class="time-btn">
+                            {!! tpl_form_field_daterange(
+                                'search[time_range]',
+                                array(
+                                    'starttime'=>array_get($requestSearch,'time_range.start',0),
+                                    'endtime'=>array_get($requestSearch,'time_range.end',0),
+                                    'start'=>0,
+                                    'end'=>0
+                                ),
+                                true
+                            )!!}
                         </div>
                     </div>
 
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
-                        <div class="col-sm-7 col-lg-9 col-xs-12">
-                            <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
-                            <input type="hidden" name="token" value="{$_W['token']}"/>
-                            <button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button>
+
+
+                    <div class="form-group col-xs-12 col-sm-6 col-lg-6 search-btn">
+                        <!--<label class="col-xs-12 col-sm-12 col-md-1 col-lg-1 control-label"></label>-->
+                        <div class="btn-input">
+                            <input type="submit" class="btn btn-block btn-success" value="搜索">
+                            <!--<button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button>-->
                         </div>
-                    </div>
-                    <div class="form-group">
                     </div>
                 </form>
             </div>
@@ -41,18 +83,18 @@
                 <table class="table table-hover">
                     <thead class="navbar-inner">
                         <tr>
-                            <th style='width:15%;'>充值单号</th>
-                            <th style='width:10%;'>粉丝</th>
-                            <th style='width:14%;'>会员信息<br/>微信号</th>
-                            <th style='width:12%;' class='hidden-xs'>等级/分组</th>
-                            <th style='width:12%;'>充值时间</th>
-                            <th style='width:12%;'>充值方式</th>
-                            <th style='width:12%;'>充值金额<br/>状态</th>
-                            <th style='width:12%;'>操作</th>
+                            <th style='width:15%; text-align: center;'>充值单号</th>
+                            <th style='width:10%; text-align: center;'>粉丝</th>
+                            <th style='width:14%; text-align: center;'>会员信息<br/>微信号</th>
+                            <th style='width:12%; text-align: center;' class='hidden-xs'>等级/分组</th>
+                            <th style='width:12%; text-align: center;'>充值时间</th>
+                            <th style='width:12%; text-align: center;'>充值方式</th>
+                            <th style='width:12%; text-align: center;'>充值金额<br/>状态</th>
+                            <th style='width:12%; text-align: center;'>操作</th>
                         </tr>
                     </thead>
                 @foreach($recordList as $list)
-                    <tr>
+                    <tr style="text-align: center;">
                         <td>{{ $list->ordersn }}</td>
                         <td>
                             <img src='{{ $list->member->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc'/>
@@ -73,11 +115,11 @@
 
                         <td>{{ $list->created_at }}</td>
                         <td>
-                            @if($list->type == 1)
+                            @if($list->type == 0)
                                 <span class='label label-default'>后台充值</span>
-                            @elseif($list->type ==2)
+                            @elseif($list->type ==1)
                                 <span class='label label-success'>微信支付</span>
-                            @elseif($lsit->type == 3)
+                            @elseif($lsit->type == 2)
                                 <span class='label label-warning'>支付宝</span>
                             @else
                                 <span class='label label-primary'>其他支付</span>
@@ -98,7 +140,7 @@
                         </td>
 
                         <td>
-                            <a class='btn btn-default' href="{{ yzWebUrl('member.member.detail', array('uid' => $list->member_id)) }}" style="margin-bottom: 2px">用户信息</a>
+                            <a class='btn btn-default' href="{{ yzWebUrl('member.member.detail', array('id' => $list->member_id)) }}" style="margin-bottom: 2px">用户信息</a>
                         </td>
                     </tr>
                 @endforeach
@@ -107,6 +149,18 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function () {
+            $("#ambiguous-field").on('change',function(){
 
+                $(this).next('input').attr('placeholder',$(this).find(':selected').text().trim())
+            });
+        })
+        $('#export').click(function () {
+            $('#form_p').val("order.list.export");
+            $('#form1').submit();
+            $('#form_p').val("order.list");
+        });
+    </script>
 
 @endsection

@@ -8,8 +8,11 @@
 
 namespace app\common\models;
 
+use app\backend\modules\goods\models\Sale;
+use app\common\exceptions\AppException;
 use app\frontend\modules\discount\services\models\GoodsDiscount;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Goods extends BaseModel
 {
@@ -30,36 +33,45 @@ class Goods extends BaseModel
     public $widgets = [];
 
     protected $search_fields = ['title'];
-
-
+    /**
+     * 实物
+     */
+    const REAL_GOODS = 1;
+    /**
+     * 虚拟物品
+     */
+    const VIRTUAL_GOODS = 2;
     /**
      * 定义字段名
      *
-     * @return array */
-    public  function atributeNames() {
+     * @return array
+     */
+    public function atributeNames()
+    {
         return [
-            'title'    => '商品名称',
-            'price'  => '价格',
-            'cost_price'  => '成本价',
-            'sku'  => '商品单位',
-            'thumb'  => '图片',
-            'stock'  => '库存',
+            'title' => '商品名称',
+            'price' => '价格',
+            'cost_price' => '成本价',
+            'sku' => '商品单位',
+            'thumb' => '图片',
+            'stock' => '库存',
         ];
     }
 
     /**
      * 字段规则
      *
-     * @return array */
-    public  function rules()
+     * @return array
+     */
+    public function rules()
     {
         return [
-            'title'    => 'required',
-            'price'  => 'required|numeric|min:0',
-            'cost_price'  => 'required|numeric|min:0',
-            'sku'  => 'required',
-            'thumb'  => 'required',
-            'stock'  => 'required|numeric|min:0',
+            'title' => 'required',
+            'price' => 'required|numeric|min:0',
+            'cost_price' => 'required|numeric|min:0',
+            'sku' => 'required',
+            'thumb' => 'required',
+            'stock' => 'required|numeric|min:0',
         ];
     }
 
@@ -129,9 +141,19 @@ class Goods extends BaseModel
         return $this->hasMany('app\common\models\GoodsSpec');
     }
 
+    public function hasOneSale()
+    {
+        return $this->hasOne(Sale::class, 'goods_id', 'id');
+    }
+
+    public function scopeIsPlugin($query)
+    {
+        return $query->where('is_plugin', 0);
+    }
+
     public function scopeSearch($query, $filters)
     {
-        $query->uniacid();
+        $query->uniacid()->isPlugin();
 
         if (!$filters) {
             return;
@@ -149,9 +171,12 @@ class Goods extends BaseModel
                     $query->where('brand_id', $value);
                     break;
                 case 'product_attr':
-                    foreach($value as $attr){
+                    foreach ($value as $attr) {
                         $query->where($attr, 1);
                     }
+                    break;
+                case 'status':
+                    $query->where(status, $value);
                     break;
                 case 'min_price':
                     $query->where('price', '>', $value);
@@ -160,7 +185,8 @@ class Goods extends BaseModel
                     $query->where('price', '<', $value);
                     break;
                 case 'category':
-                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereIn('yz_goods_category.category_id', $value);
+                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_id)', [$value]);
+//                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereIn('yz_goods_category.category_id', $value);
                     break;
                 default:
                     break;
@@ -174,12 +200,54 @@ class Goods extends BaseModel
      */
     public static function getGoodsByName($keyword)
     {
-        return static::select('id','title','thumb')
-            ->where('title', 'like', '%'.$keyword.'%')
-            ->get()
-            ->toArray();
+        return static::uniacid()->select('id', 'title', 'thumb')
+            ->where('title', 'like', '%' . $keyword . '%')
+            ->get();
         //goods::update()
     }
 
-    
+    /**
+     * @param $goodsId
+     * @return mixed
+     */
+    public static function updatedComment($goodsId)
+    {
+
+        return self::where('id', $goodsId)
+            ->update(['comment_num' => DB::raw('`comment_num` + 1')]);
+    }
+
+    /**
+     * 减库存
+     * @param $num
+     * @return bool
+     * @throws AppException
+     */
+    public function reduceStock($num)
+    {
+        if ($this->reduce_stock_method != 2) {
+            if ($this->stock - $num < 0) {
+                throw new AppException('下单失败,商品:' . $this->title . ' 库存不足');
+            }
+            $this->stock -= $num;
+        }
+        return true;
+    }
+
+
+    public function addSales($num){
+        $this->real_sales += $num;
+        $this->show_sales += $num;
+        return true;
+    }
+    /**
+     * 判断实物
+     */
+    public function isRealGoods()
+    {
+        if(!isset($this->type)){
+            return false;
+        }
+        return $this->type == self::REAL_GOODS;
+    }
 }

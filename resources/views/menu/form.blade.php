@@ -9,6 +9,12 @@
 @section('content')
     {!! BootForm::open(['model'=>$model,'url'=>yzWebFullUrl(request()->get('route')),'method'=>'POST']) !!}
     {!! $model->id ? BootForm::hidden('id',$model->id) : '' !!}
+<div class="right-titpos">
+    <ul class="add-snav">
+        <li class="active"><a href="#">菜单管理 &nbsp;<i class="fa fa-angle-double-right"></i>&nbsp;编辑</a></li>
+    </ul>
+</div>
+
     <div class="panel panel-default">
         <div class="panel-body">
 
@@ -33,7 +39,7 @@
             <div class="form-group ">
                 <label for="menu[icon]" class="control-label col-xs-12 col-md-2">图标</label>
                 <div class="col-sm-9 col-xs-12">
-                    <button class="btn btn-default" name="menu[icon]" data-iconset="fontawesome" data-icon="{{ $model->icon?$model->icon:'fa-sliders' }}" role="iconpicker"></button>
+                    <button class="btn btn-default" name="menu[icon]" data-iconset="fontawesome" data-icon="{{ $model->icon?:'fa-circle-o' }}" role="iconpicker"></button>
                 </div>
             </div>
             @section('js')

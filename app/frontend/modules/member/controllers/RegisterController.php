@@ -8,45 +8,59 @@
 
 namespace app\frontend\modules\member\controllers;
 
+use app\common\components\ApiController;
 use app\common\helpers\Url;
-use Illuminate\Support\Facades\Cookie;
-use app\common\components\BaseController;
-use app\frontend\modules\member\models\MemberModel;
-use app\frontend\modules\member\services\MemberService;
 use app\common\models\MemberGroup;
+use app\common\models\MemberLevel;
+use app\common\models\MemberShopInfo;
+use app\common\services\Session;
+use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\SubMemberModel;
+use app\frontend\modules\member\services\MemberService;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 use iscms\Alisms\SendsmsPusher as Sms;
-use Setting;
+use app\common\exceptions\AppException;
 
-class RegisterController extends BaseController
+class RegisterController extends ApiController
 {
+    protected $publicController = ['Register'];
+    protected $publicAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
+    protected $ignoreAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
+
     public function index()
     {
-        if (MemberService::isLogged()) {
-            return $this->errorJson('会员已登录');
-        }
-
         $mobile = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid = \YunShop::app()->uniacid;
 
+        if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
+            $check_code = MemberService::checkCode();
 
-        if (($_SERVER['REQUEST_METHOD'] == 'POST')
-            && MemberService::validate($mobile, $password, $confirm_password)
-        ) {
+            if ($check_code['status'] != 1) {
+                return $this->errorJson($check_code['json']);
+            }
+
+            $msg = MemberService::validate($mobile, $password, $confirm_password);
+
+            if ($msg['status'] != 1) {
+                return $this->errorJson($msg['json']);
+            }
+
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             if (!empty($member_info)) {
                 return $this->errorJson('该手机号已被注册');
             }
 
+            //添加mc_members表
             $default_groupid = MemberGroup::getDefaultGroupId($uniacid)->first();
 
             $data = array(
                 'uniacid' => $uniacid,
                 'mobile' => $mobile,
-                'groupid' => $default_groupid->id,
+                'groupid' => $default_groupid->id ? $default_groupid->id : 0,
                 'createtime' => time(),
                 'nickname' => $mobile,
                 'avatar' => Url::shopUrl('static/images/photo-mr.jpg'),
@@ -55,16 +69,46 @@ class RegisterController extends BaseController
             );
             $data['salt'] = Str::random(8);
 
-            $data['password'] = md5($password . $data['salt'] . \YunShop::app()->config['setting']['authkey']);
+            $data['password'] = md5($password . $data['salt']);
 
             $memberModel = MemberModel::create($data);
             $member_id = $memberModel->uid;
 
-            $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
+            //添加yz_member表
+            $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
+            $default_sub_level_id = MemberLevel::getDefaultLevelId()->first();
+
+            if (!empty($default_sub_group_id)) {
+                $default_subgroup_id = $default_sub_group_id->id;
+            } else {
+                $default_subgroup_id = 0;
+            }
+
+            if (!empty($default_sub_level_id)) {
+                $default_sublevel_id = $default_sub_level_id->id;
+            } else {
+                $default_sublevel_id = 0;
+            }
+
+            $sub_data = array(
+                'member_id' => $member_id,
+                'uniacid' => $uniacid,
+                'group_id' => $default_subgroup_id,
+                'level_id' => $default_sublevel_id,
+            );
+            SubMemberModel::insertData($sub_data);
+
+            $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);
             session()->put('member_id', $member_id);
 
-            return $this->successJson(['member_id' => $member_id]);
+            $password = $data['password'];
+            $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
+            $yz_member = MemberShopInfo::getMemberShopInfo($member_id)->toArray();
+
+            $data = MemberModel::userData($member_info, $yz_member);
+
+            return $this->successJson('', $data);
         } else {
             return $this->errorJson('手机号或密码格式错误');
         }
@@ -85,14 +129,13 @@ class RegisterController extends BaseController
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
         if (!empty($info)) {
-            //return $this->errorJson('该手机号已被注册！不能获取验证码');
-            //exit;
+            return $this->errorJson('该手机号已被注册！不能获取验证码');
         }
         $code = rand(1000, 9999);
 
-        session()->put('codetime', time());
-        session()->put('code', $code);
-        session()->put('code_mobile', $mobile);
+        Session::set(codetime, time());
+        Session::set(code, $code);
+        Session::set(code_mobile, $mobile);
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
@@ -103,23 +146,6 @@ class RegisterController extends BaseController
         }
     }
 
-    /**
-     * 检查验证码
-     *
-     * @return array
-     */
-    public function checkCode()
-    {
-        $code = \YunShop::request()->code;
-
-        if ((session('codetime') + 60 * 5) < time()) {
-            return $this->errorJson('验证码已过期,请重新获取');
-        }
-        if (session('code') != $code) {
-            return $this->errorJson('验证码错误,请重新获取');
-        }
-        return $this->successJson();
-    }
 
     /**
      * 发送短信
@@ -131,7 +157,7 @@ class RegisterController extends BaseController
      */
     public function sendSms($mobile, $code, $templateType = 'reg')
     {
-        $sms = Setting::get('shop.sms');
+        $sms = \Setting::get('shop.sms');
 
         //互亿无线
         if ($sms['type'] == 1) {
@@ -162,9 +188,14 @@ class RegisterController extends BaseController
                 $content = json_encode(array('code' => (string)$code, 'product' => $explode_param[1]));
             }
 
-            $top_client = new \iscms\AlismsSdk\TopClient();
+            $top_client = new \iscms\AlismsSdk\TopClient($sms['appkey'], $sms['secret']);
             $name = $sms['signname'];
             $templateCode = $sms['templateCode'];
+
+            config([
+                'alisms.KEY' => $sms['appkey'],
+                'alisms.SECRETKEY' => $sms['secret']
+            ]);
 
             $sms = new Sms($top_client);
             $issendsms = $sms->send($mobile, $name, $content, $templateCode);

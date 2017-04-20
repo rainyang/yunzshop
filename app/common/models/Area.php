@@ -22,6 +22,12 @@ class Area   extends Model
         return self::get();
     }
 
+    public static function getProvincesList()
+    {
+        return self::where('parentid', 0)
+            ->get();
+    }
+
     public static function getProvinces($parentId)
     {
         return self::where('parentid', $parentId)
@@ -78,4 +84,6 @@ class Area   extends Model
 
         return $validator;
     }
+
+
 }

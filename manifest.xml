@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns="http://www.yunzshop.com" versionCode="0.6">
+<manifest xmlns="http://www.we7.cc" versionCode="0.6">
 	<application setting="true">
-		<name><![CDATA[商城]]></name>
-		<identifie><![CDATA[yzshop]]></identifie>
-		<version><![CDATA[1.0]]></version>
+		<name><![CDATA[芸商城]]></name>
+		<identifie><![CDATA[yun_shop]]></identifie>
+		<version><![CDATA[2.0.1]]></version>
 		<type><![CDATA[biz]]></type>
-		<ability><![CDATA[商城]]></ability>
-		<description><![CDATA[商城]]></description>
-		<author><![CDATA[YunZhong]]></author>
-		<url><![CDATA[http://bbs.yunzshop.com/]]></url>
+		<ability><![CDATA[芸商城]]></ability>
+		<description><![CDATA[芸商城]]></description>
+		<author><![CDATA[芸众]]></author>
+		<url><![CDATA[http://www.yunzshop.com/]]></url>
 	</application>
 	<platform>
 		<subscribes>
@@ -21,19 +21,10 @@
 	</platform>
 	<bindings>
 		<cover>
-			<entry title="商城入口" do="shop" />
-			<entry title="订单入口" do="order" />
-			<entry title="购物车入口" do="cart" />
-			<entry title="我的收藏入口" do="favorite" />
-			<entry title="会员中心入口" do="member" />
+			<entry title="芸商城管理" do="shop" />
 		</cover>
 		<menu>
-			<entry title="商城管理" do="shop" state="" direct="false" />
-			<entry title="会员管理" do="member" state="" direct="false" />
-			<entry title="订单管理" do="order" state="" direct="false" />
-			<entry title="数据统计" do="statistics" state="" direct="false" />
-			<entry title="插件中心" do="plugins" state="" direct="false" />
-			<entry title="系统设置" do="sysset" state="" direct="false" />
+		<entry title="芸商城入口" do="shop" state="" direct="true" />
 		</menu>
 	</bindings>
 	<permissions>

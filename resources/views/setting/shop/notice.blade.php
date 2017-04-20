@@ -11,6 +11,11 @@
 </div>
 <!-- 新增加右侧顶部三级菜单结束 -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
+
+            <div class='alert alert-info alert-important'>
+                请将公众平台模板消息所在行业选择为： IT科技/互联网|电子商务
+            </div>
+
         <div class="panel panel-default">
             <style type='text/css'>
                 .multi-item { height:110px;}
@@ -19,11 +24,7 @@
                                 color:#fff;text-align:center;width:90px;bottom:55px;background:rgba(0,0,0,0.8);left:5px;}
                 .multi-img-details { padding:5px;}
             </style>
-            <div class='panel-body'>
-                <div class='alert alert-info'>
-                    请将公众平台模板消息所在行业选择为： IT科技/互联网|电子商务
-                </div>
-            </div>
+
             <div class='panel-heading'>
                 卖家通知
             </div>
@@ -40,17 +41,20 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
                         <div class='input-group'>
-                            <input type="text" id='salers' name="salers" maxlength="30" value="@foreach ($salers as $saler) {{ $saler['nickname'] }} @endforeach" class="form-control" readonly />
+                            <input type="text" id='salers' name="salers" maxlength="30" value="@foreach ($set['salers'] as $saler) {{ $saler['nickname'] }} @endforeach" class="form-control" readonly />
                             <div class='input-group-btn'>
                                 <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus').modal();">选择通知人</button>
                             </div>
                         </div>
                         <div class="input-group multi-img-details" id='saler_container'>
-                            @foreach ($salers as $saler)
+                            @foreach ($set['salers'] as $saler)
                             <div class="multi-item saler-item" openid='{{ $saler['openid'] }}'>
                                  <img class="img-responsive img-thumbnail" src='{{ $saler['avatar'] }}' onerror="this.src='./resource/images/nopic.jpg'; this.title='图片未找到.'">
                                  <div class='img-nickname'>{{ $saler['nickname'] }}</div>
-                                <input type="hidden" value="{{ $saler['openid'] }}" name="notice[openids][]">
+                                <input type="hidden" value="{{ $saler['openid'] }}" name="notice[salers][{{ $saler['uid'] }}][openid]">
+                                <input type="hidden" value="{{ $saler['uid'] }}" name="notice[salers][{{ $saler['uid'] }}][uid]">
+                                <input type="hidden" value="{{ $saler['nickname'] }}" name="notice[salers][{{ $saler['uid'] }}][nickname]">
+                                <input type="hidden" value="{{ $saler['avatar'] }}" name="notice[salers][{{ $saler['uid'] }}][avatar]">
                                 <em onclick="remove_member(this)"  class="close">×</em>
                             </div>
                             @endforeach
@@ -80,13 +84,13 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知方式</label>
                     <div class="col-sm-9 col-xs-12">
                         <label class="checkbox-inline">
-                            <input type="checkbox" value="0" name='notice[new_type][]' @if (in_array(0,$new_type)) checked @endif /> 下单通知
+                            <input type="checkbox" value="0" name='notice[new_type][]' @if (in_array(0,$set['new_type'])) checked @endif /> 下单通知
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" value="1" name='notice[new_type][]' @if (in_array(1,$new_type)) checked @endif /> 付款通知
+                            <input type="checkbox" value="1" name='notice[new_type][]' @if (in_array(1,$set['new_type'])) checked @endif /> 付款通知
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" value="2" name='notice[new_type][]' @if (in_array(2,$new_type)) checked @endif /> 买家确认收货通知
+                            <input type="checkbox" value="2" name='notice[new_type][]' @if (in_array(2,$set['new_type'])) checked @endif /> 买家确认收货通知
                         </label>
                         <div class="help-block">通知商家方式</div>
                     </div>
@@ -209,34 +213,39 @@
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+                            <input type="submit" name="submit" value="提交" class="btn btn-success"  />
                      </div>
             </div>
                        
 
             </div>
             <script language='javascript'>
+
+
+
                 function search_members() {
                     if ($.trim($('#search-kwd').val()) == '') {
                         Tip.focus('#search-kwd', '请输入关键词');
                         return;
                     }
                     $("#module-menus").html("正在搜索....");
-                    $.get('{php echo $this->createWebUrl('member/query')}', { 
+                    $.get("{!! yzWebUrl('member.member.get-search-member') !!}", {
                         keyword: $.trim($('#search-kwd').val())
                     }, function (dat) {
                         $('#module-menus').html(dat);
                     });
                 }
                 function select_member(o) {
-
-                    if ($('.multi-item[openid="' + o.openid + '"]').length > 0) {
+                    if ($('.multi-item[openid="' + o.has_one_fans.openid + '"]').length > 0) {
                         return;
                     }
-                    var html = '<div class="multi-item" openid="' + o.openid + '">';
+                    var html = '<div class="multi-item" openid="' + o.has_one_fans.openid + '">';
                     html += '<img class="img-responsive img-thumbnail" src="' + o.avatar + '" onerror="this.src=\'./resource/images/nopic.jpg\'; this.title=\'图片未找到.\'">';
                     html += '<div class="img-nickname">' + o.nickname + '</div>';
-                    html += '<input type="hidden" value="' + o.openid + '" name="openids[]">';
+                    html += '<input type="hidden" value="' + o.has_one_fans.openid + '" name="notice[salers][' + o.uid + '][openid]">';
+                    html += '<input type="hidden" value="' + o.nickname + '" name="notice[salers][' + o.uid + '][nickname]">';
+                    html += '<input type="hidden" value="' + o.avatar + '" name="notice[salers][' + o.uid + '][avatar]">';
+                    html += '<input type="hidden" value="' + o.uid + '" name="notice[salers][' + o.uid + '][uid]">';
                     html += '<em onclick="remove_member(this)"  class="close">×</em>';
                     html += '</div>';
                     $("#saler_container").append(html);

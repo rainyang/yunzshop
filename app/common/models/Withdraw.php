@@ -10,7 +10,6 @@ namespace app\common\models;
 
 
 use app\backend\models\BackendModel;
-use app\backend\modules\finance\models\IncomeOrder;
 use app\frontend\modules\finance\services\WithdrawService;
 use Illuminate\Support\Facades\Config;
 
@@ -33,7 +32,7 @@ class Withdraw extends BackendModel
     protected $guarded = [];
 
 
-    protected $appends = ['status_name', 'pay_way_name', 'type_data'];
+    protected $appends = ['status_name', 'pay_way_name'];
 
     /**
      * @return string
@@ -81,29 +80,56 @@ class Withdraw extends BackendModel
      */
     public function getTypeDataAttribute()
     {
-        
+
         if (!isset($this->TypeData)) {
             $configs = Config::get('income');
+
             foreach ($configs as $key => $config) {
-                if ($key === $this->type) {
+                if ($config['class'] === $this->type) {
+
                     $orders = Income::getIncomeByIds($this->type_id)->get();
+//                    $is_pay = Income::getIncomeByIds($this->type_id)->where('pay_status','1')->get()->sum(amount);
                     if($orders){
-                        foreach ($orders as $order) {
-                            $this->TypeData[] = $order->incometable->ordertable->toArray();
+                        $this->TypeData['income_total'] = $orders->count();
+//                        $this->TypeData['is_pay'] = $is_pay;
+                        $this->TypeData['incomes'] = $orders->toArray();
+                        foreach ($this->TypeData['incomes'] as &$item) {
+                            $item['detail'] = json_decode($item['detail'],true);
                         }
+//                        foreach ($orders as $k => $order) {
+////                            $this->TypeData['orders'][$k] = $order->incometable->ordertable->toArray();
+//                            $this->TypeData['incomes'][$k] = $order->incometable->toArray();
+//                        }
+
                     }
                 }
 
+
             }
         }
-
         return $this->TypeData;
     }
 
+
+    public static function getBalanceWithdrawById($id)
+    {
+        return self::uniacid()->where('id', $id)
+            ->with(['hasOneMember' => function($query) {
+                return $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar')
+                    ->with(['yzMember' => function($member) {
+                        return $member->select('member_id', 'group_id')
+                            ->with(['group' => function($group) {
+                                return $group->select('id', 'group_name');
+                            }]);
+                    }]);
+            }])
+            ->first();
+
+    }
     public static function getWithdrawById($id)
     {
         $Model = self::where('id', $id);
-
+        $Model->orWhere('withdraw_sn',$id);
         $Model->with(['hasOneMember' => function ($query) {
             $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
         }]);
@@ -127,6 +153,13 @@ class Withdraw extends BackendModel
         return $this->hasOne('Yunshop\Commission\models\Agents', 'member_id', 'member_id');
     }
 
+    public static function updatedWithdrawStatus($id, $updatedData)
+    {
+        return self::where('id',$id)
+            ->orWhere('withdraw_sn',$id)
+            ->update($updatedData);
+    }
+    
     /**
      *  定义字段名
      * 可使
@@ -145,14 +178,16 @@ class Withdraw extends BackendModel
     /**
      * 字段规则
      * @return array
-     */
+     * @Author yitian */
     public function rules()
     {
-        return [
+        $rule =  [
             'member_id' => 'required',
             'type' => 'required',
             'amounts' => 'required',
             'pay_way' => 'required',
         ];
+
+        return $rule;
     }
 }

@@ -28,6 +28,11 @@
 <div class="w1200 m0a">
 <div class="rightlist">
 <!-- 新增加右侧顶部三级菜单 -->
+    <div class="right-titpos">
+        <ul class="add-snav">
+            <li class="active"><a href="#">商城设置</a></li>
+        </ul>
+    </div>
     @include('setting.shop.tabs')
 <!-- 新增加右侧顶部三级菜单结束 -->
 
@@ -89,9 +94,9 @@
                 <div class="form-group"  >
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级到期时间</label>
                     <div class="col-sm-8">
-                        <div class="input-group col-xs-2">
+                        <div class="input-group col-xs-12">
                             <input type="text" name="member[term_time]" class="form-control" value="{{ $set['term_time'] }}"  />
-                            <div class="input-group-addon ">
+                            <div class="input-group-addon " style="padding: 4px 12px;">
                                 <select name="member[term_unit]">
                                     <option value ="1" @if ($set['term_unit'] ==1) selected @endif>--天--</option>
                                     <option value ="2" @if ($set['term_unit'] ==2) selected @endif>--周--</option>
@@ -140,7 +145,7 @@
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
-                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  onclick="return formcheck();"/>
+                        <input type="submit" name="submit" value="提交" class="btn btn-success"  onclick="return formcheck();"/>
                      </div>
             </div>
                        

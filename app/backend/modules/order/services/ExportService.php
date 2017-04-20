@@ -12,21 +12,28 @@ use app\backend\modules\order\services\models\ExcelModel;
 
 class ExportService
 {
+    public $columns;
+
+    public function __construct()
+    {
+        $this->columns = $this->getColumns();
+    }
+
     public function export($orders)
     {
         foreach ($orders as &$order) {
             $order = $this->getOrder($order);
         }
         unset($order);
-        $excel = new ExcelModel();
+        $excel = new ExcelModel($this->columns);
         $excel->export($orders, [
             'title'     => '订单-' . date("Y-m-d-H-i", time()),
-            'columns'   => $this->getColumns()
+            'columns'   => $this->columns
         ]);
     }
 
     protected function getOrder($order){
-        $address = json_decode($order['has_one_address']['address']);
+        $address = json_decode($order['address']['address']);
         $order['pay_sn'] = $order['has_one_order_pay']['pay_sn'];
         $order['nickname'] = $order['belongs_to_member']['nickname'];
         $order['realname'] = $order['belongs_to_member']['realname'];
@@ -37,12 +44,19 @@ class ExportService
 
         $order += $this->getStatus($order);
 
+        $order += $this->setOrder($order);
+
         $order['pay_type'] = $order['has_one_pay_type']['name'];
 
         $order['remark'] = $order['has_one_order_remark']['remark'];
         $order['express_company_name'] = $order['has_one_order_express']['express_company_name'];
         $order['express_sn'] = $order['has_one_order_express']['express_sn'];
         return $order;
+    }
+
+    protected function setOrder($order)
+    {
+        return [];
     }
 
     protected function getStatus($order)

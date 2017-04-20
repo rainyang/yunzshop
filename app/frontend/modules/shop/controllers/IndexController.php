@@ -3,12 +3,9 @@ namespace app\frontend\modules\shop\controllers;
 
 use app\api\Base;
 use app\common\components\ApiController;
-use app\common\components\BaseController;
 use app\common\models\Category;
 use app\common\models\Goods;
-use app\common\models\GoodsCategory;
-use app\common\models\GoodsSpecItem;
-use app\frontend\modules\goods\services\GoodsService;
+use app\common\models\Slide;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -17,10 +14,13 @@ use Illuminate\Support\Facades\DB;
  * Date: 2017/3/3
  * Time: 22:16
  */
-class IndexController extends BaseController
+class IndexController extends ApiController
 {
+    protected $publicAction = ['getDefaultIndex'];
+
     public function getDefaultIndex()
     {
+
         $data = [
             'ads' => $this->getAds(),
             'category' => $this->getRecommentCategoryList(),
@@ -38,7 +38,6 @@ class IndexController extends BaseController
             ->where("status", 1)
             ->get();
 
-        //dd($goodsList);
         return $goodsList;
     }
 
@@ -47,6 +46,9 @@ class IndexController extends BaseController
         $request = Category::getRecommentCategoryList()
         ->where('is_home','1')
         ->get();
+        foreach ($request as &$item) {
+            $item['thumb'] = tomedia($item['thumb']);
+        }
         return $request;
     }
 
@@ -57,8 +59,16 @@ class IndexController extends BaseController
      */
     public function getAds()
     {
-
-        return [];
+        $slide = [];
+        $slide = Slide::getSlidesIsEnabled()->get();
+        if($slide){
+            $slide = $slide->toArray();
+            foreach ($slide as &$item)
+            {
+                $item['thumb'] = tomedia($item['thumb']);
+            }
+        }
+        return $slide;
     }
 
 }

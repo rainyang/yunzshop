@@ -10,7 +10,6 @@ namespace app\frontend\modules\coupon\listeners;
 
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
-use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\coupon\services\TestService;
 
 class CouponDiscount
@@ -26,22 +25,20 @@ class CouponDiscount
         $orderModel = $this->event->getOrderModel();
         $couponService = new TestService($orderModel);
         $coupons = $couponService->getOptionalCoupons();
-        $data = [];
-        foreach ($coupons as $coupon){
-            /**
-             * @var $coupon Coupon
-             */
-            $data[] = [
+
+        $data = $coupons->map(function ($coupon){
+            return [
                 'name' => $coupon->getMemberCoupon()->belongsToCoupon->name,
                 'id' => $coupon->getMemberCoupon()->belongsToCoupon->id,
             ];
-        }
+        });
+
         $event->addMap('coupon',$data);
     }
     //订单生成后销毁优惠券 todo 重复查询了,需要使用计算优惠券价格时获取的优惠券列表
     public function onOrderCreated(AfterOrderCreatedEvent $event){
         $this->event = $event;
-        $orderModel = $this->event->getOrder();
+        $orderModel = $this->event->getOrderModel();
         $couponService = new TestService($orderModel);
         $couponService->destroyUsedCoupons();
 

@@ -49,10 +49,9 @@ class YunShop
 
         if(self::isWeb()){
             //菜单生成
-            $item = Menu::getItemByRoute($controller->route);
             $menuList = array_merge(Menu::getMenuList(), (array)Config::get('menu'));
             Config::set('menu',$menuList);
-
+            $item = Menu::getCurrentItemByRoute($controller->route,$menuList);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
             //检测权限
             if (!PermissionService::can($item)) {
@@ -405,7 +404,7 @@ class YunApp extends YunComponent
     public function getMemberId()
     {
         if (config('app.debug')) {
-            if($_GET['test_uid']){
+            if(isset($_GET['test_uid'])){
                 return $_GET['test_uid'];
             }
            //return false;

@@ -38,9 +38,31 @@ abstract class CouponPrice
         $this->coupon = $coupon;
         $this->dbCoupon = $coupon->getMemberCoupon()->belongsToCoupon;
         $this->orderModel = $coupon->getPreGeneratedOrderModel();
-
+        //dd($this->orderModel);
     }
-    abstract public function valid();
+    public function valid()
+    {
+        //todo 商品价格中未使用优惠的金额 不小于 满减额度
+        if (!float_lesser($this->getOrderGoodsGroupUnusedEnoughMoney(), $this->dbCoupon->enough)) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * 累加所有商品未使用优惠的金额
+     * @return mixed
+     */
+    protected function getOrderGoodsGroupUnusedEnoughMoney()
+    {
+        //dd($this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup());
+        return $this->getOrderGoodsGroupPrice() - $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->sum(function($orderGoods){
+                if(!isset($orderGoods->coupons))
+                {
+                    return 0;
+                }
+                return $orderGoods->coupons->sum('enough');
+            });
+    }
     /**
      * 订单获取优惠券 金额
      * @return mixed

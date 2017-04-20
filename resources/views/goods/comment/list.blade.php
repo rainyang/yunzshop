@@ -1,11 +1,12 @@
 @extends('layouts.base')
 
 @section('content')
-    <div class="w1200 m0a">
+    <div id="goods-comment-list" class="w1200 m0a">
 
         <link href="../addons/sz_yi/template/mobile/default/static/js/star-rating.css" media="all" rel="stylesheet"
               type="text/css"/>
         <script src="../addons/sz_yi/template/mobile/default/static/js/star-rating.js" type="text/javascript"></script>
+        <link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
         <div class="right-titpos">
             <ul class="add-snav">
                 <li class="active"><a href="#">评价管理</a></li>
@@ -14,43 +15,43 @@
         <form action="" method="post" class="form-horizontal">
             <div class="panel panel-info">
                 <div class="panel-body">
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键词</label>
-                        <div class="col-xs-12 col-sm-8 col-lg-9">
+                    <div class="form-group col-xs-12 col-sm-12 col-lg-3">
+                       <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键词</label>-->
+                        <div class="">
                             <input class="form-control" name="search[keyword]" id="" type="text"
                                    value="{{$search['keyword']}}" placeholder="商品标题">
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">类型</label>
-                        <div class="col-xs-12 col-sm-8 col-lg-9">
+                    <div class="form-group col-xs-12 col-sm-12 col-lg-3">
+                        <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">类型</label>-->
+                        <div class="">
                             <select name='search[fade]' class='form-control'>
-                                <option value='' @if($search['fade']=='') selected @endif>全部</option>
+                                <option value='' @if($search['fade']=='') selected @endif>全部评价类型</option>
                                 <option value='2' @if($search['fade']=='2') selected @endif>模拟评价</option>
                                 <option value='1' @if($search['fade']=='1') selected @endif >真实评价</option>
                             </select>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">按时间</label>
-                        <div class="col-sm-2">
+                    <div class="form-group col-xs-12 col-sm-12 col-lg-5 search-time">
+                        <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">按时间</label>-->
+                        <div class="time-select" >
                             <select name='search[searchtime]' class='form-control'>
-                                <option value='' @if(empty($search['searchtime'])) selected @endif>不搜索</option>
-                                <option value='1' @if($search['searchtime']==1) selected @endif >搜索</option>
+                                <option value='' @if(empty($search['searchtime'])) selected @endif>不搜索时间区间</option>
+                                <option value='1' @if($search['searchtime']==1) selected @endif >搜索时间区间</option>
                             </select>
                         </div>
-                        <div class="col-sm-7 col-lg-7 col-xs-12">
-                            {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', ['starttime'=>date('Y-m-d H:i', $search['starttime']), 'endtime'=>date('Y-m-d H:i',$search['endtime'])], true);!!}
+                        <div class="time-btn" >
+                            {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', ['starttime'=>date('Y-m-d H:i', $search['starttime']), 'endtime'=>date('Y-m-d H:i',$search['endtime'])], true) !!}
                         </div>
 
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"> </label>
-                        <div class="col-xs-12 col-sm-2 col-lg-2">
-                            <input type="submit" class="btn " value="搜索">
+                    <div class="form-group col-xs-12 col-sm-1 col-lg-1 search-btn">
+                        <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"> </label>-->
+                        <div class="btn-input">
+                            <input type="submit" class="btn btn-block btn-success" value="搜索">
                         </div>
                     </div>
 
@@ -87,7 +88,7 @@
                                      style="width: 30px; height: 30px;border:1px solid #ccc;padding:1px;">
                                 {{$row['nick_name']}}
                             </td>
-                            <td style="color:#ff6600">
+                            <td style="color:#f39c12">
                                 @if($row['level'] >= 1) <i class='fa fa-star'></i> @else <i
                                         class='fa fa-star-o'></i> @endif
                                 @if($row['level'] >= 2) <i class='fa fa-star'></i> @else <i
@@ -131,7 +132,7 @@
 
             </div>
             <div class='panel-footer'>
-                <a class='btn btn-primary' href="{{yzWebUrl('goods.comment.add-comment')}}"><i
+                <a class='btn btn-info' href="{{yzWebUrl('goods.comment.add-comment')}}"><i
                             class='fa fa-plus'></i> 添加评价</a>
             </div>
         </div>

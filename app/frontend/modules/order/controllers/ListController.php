@@ -11,23 +11,20 @@ class ListController extends ApiController
     //获取指定状态的订单
     public function getOrders($status = '')
     {
-        $uid = 9;//\YunShop::app()->getMemberId();
+        $uid = \YunShop::app()->getMemberId();
         if (!$uid) {
             return $this->errorJson( $msg = '缺少访问参数', $data = []);
         }
 
         $pageSize = \YunShop::request()->pagesize;
-        $pageSize = $pageSize ? $pageSize : 5;
+        $pageSize = $pageSize ? $pageSize : 100;//todo 配合app测试
 
         //返回的订单不包括"已删除订单"
         $list = OrderListModel::getRequestOrderList($status, $uid)->where('status','<>','-1')->paginate($pageSize)->toArray();
 //dd($list);
+        
+        return $this->successJson($msg = 'ok', $data = $list);
 
-        if ($list['total'] == 0) {
-            return $this->errorJson($msg = '未找到数据', $data = []);
-        } else {
-            return $this->successJson($msg = 'ok', $data = $list);
-        }
     }
 
     //所有订单(不包括"已删除"订单)

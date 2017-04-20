@@ -1,14 +1,14 @@
 
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">购买强制关注</label>
-    <div class="col-sm-6 col-xs-6">
-        <label class="radio-inline"><input type="radio" name="widgets[share][need_follow]" value="0"
-                                           @if ( empty($share->need_follow) ) checked="true" @endif />
-            不需关注</label>
-        <label class="radio-inline"><input type="radio" name="widgets[share][need_follow]" value="1"
-                                           @if ( $share->need_follow == 1) checked="true" @endif /> 必须关注</label>
-    </div>
-</div>
+{{--<div class="form-group">--}}
+    {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">购买强制关注</label>--}}
+    {{--<div class="col-sm-6 col-xs-6">--}}
+        {{--<label class="radio-inline"><input type="radio" name="widgets[share][need_follow]" value="0"--}}
+                                           {{--@if ( empty($share->need_follow) ) checked="true" @endif />--}}
+            {{--不需关注</label>--}}
+        {{--<label class="radio-inline"><input type="radio" name="widgets[share][need_follow]" value="1"--}}
+                                           {{--@if ( $share->need_follow == 1) checked="true" @endif /> 必须关注</label>--}}
+    {{--</div>--}}
+{{--</div>--}}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">未关注提示</label>
     <div class="col-sm-6 col-xs-6">

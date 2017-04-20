@@ -154,55 +154,67 @@
                     <span class="help-block">如果您选择了常用快递，则客户可以订单中查询快递信息，如果缺少您想要的快递，您可以联系我们! </span>
                 </div>
             </div>-->
-
+<!--====================================================================================================-->
             <div class="form-group dispatch0" >
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">配送区域</label>
                 <div class="col-sm-9 col-xs-12">
 
-                    <table>
+                    <table class="show_h"  areas="0">
                         <thead>
+                            <tr>
+                                <th style="height:40px;width:400px;">运送到</th>
+                                <th style="width:120px;">首重(克)</th>
+                                <th style="width:120px;">首费(元)</th>
+                                <th style="width:120px;">续重(克)</th>
+                                <th style="width:120px;">续费(元)</th>
+                            </tr>
+                        </thead>
+                        <tbody class='tbody-areas'>
+                            <tr>
+                                <td  style="padding:10px;" >全国 [默认运费]</td>
+                                <input type="hidden"  value="{{ $dispatch->areas }}" class="form-control" name="dispatch[areas]">
+                                <td class=" text-center">
+                                    <input type="number" value="{{ $dispatch->first_weight }}" class="form-control" name="dispatch[first_weight]" style="width:100px;"></td>
+                                <td class=" text-center">
+                                    <input type="text" value="{{ $dispatch->first_weight_price }}" class="form-control" name="dispatch[first_weight_price]"  style="width:100px;"></td>
+                                <td class=" text-center">
+                                    <input type="number" value="{{ $dispatch->another_weight }}" class="form-control" name="dispatch[another_weight]"  style="width:100px;"></td>
+                                <td class=" text-center">
+                                    <input type="text" value="{{ $dispatch->another_weight_price }}" class="form-control" name="dispatch[another_weight_price]"  style="width:100px;"></td>
+                                <td class=""></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+            <!--=================================================-->
+                    <table class='show_n' areas="1">
+                    <thead>
                         <tr>
                             <th style="height:40px;width:400px;">运送到</th>
-                            <th class="show_h" style="width:120px;">首重(克)</th>
-                            <th class="show_h" style="width:120px;">首费(元)</th>
-                            <th class="show_h" style="width:120px;">续重(克)</th>
-                            <th class="show_h" style="width:120px;">续费(元)</th>
-
-
                             <th class="show_n" style="width:120px;">首件(个)</th>
                             <th class="show_n" style="width:120px;">运费(元)</th>
                             <th class="show_n" style="width:120px;">续件(个)</th>
                             <th class="show_n" style="width:120px;">续费(元)</th>
-                            {{--<th style="width:120px;">管理</th>--}}
                         </tr>
-                        </thead>
-                        <tbody id='tbody-areas'>
+                    </thead>
+                    <tbody class='tbody-areas'>
                         <tr>
-                            <input type="hidden" id="selectedareas" value="{{ $dispatch->areas }}" class="form-control" name="dispatch[areas]">
-                            <td style="padding:10px;" id="areas">{{ $dispatch->areas }}</td>
-                            <td class="show_h text-center">
-                                <input type="number" value="{{ $dispatch->first_weight }}" class="form-control" name="dispatch[first_weight]" style="width:100px;"></td>
-                            <td class="show_h text-center">
-                                <input type="text" value="{{ $dispatch->first_weight_price }}" class="form-control" name="dispatch[first_weight_price]"  style="width:100px;"></td>
-                            <td class="show_h text-center">
-                                <input type="number" value="{{ $dispatch->another_weight }}" class="form-control" name="dispatch[another_weight]"  style="width:100px;"></td>
-                            <td class="show_h text-center">
-                                <input type="text" value="{{ $dispatch->another_weight_price }}" class="form-control" name="dispatch[another_weight_price]"  style="width:100px;"></td>
-                            <td class="show_h"></td>
-
-                            <td class="show_n text-center">
+                            <td style="padding:10px;">全国 [默认运费]</td>
+                            <td class=" text-center">
                                 <input type="number" value="{{ $dispatch->first_piece }}" class="form-control" name="dispatch[first_piece]" style="width:100px;"></td>
-                            <td class="show_n text-center">
+                            <td class=" text-center">
                                 <input type="text" value="{{ $dispatch->first_piece_price }}" class="form-control" name="dispatch[first_piece_price]"  style="width:100px;"></td>
-                            <td class="show_n text-center">
+                            <td class=" text-center">
                                 <input type="number" value="{{ $dispatch->another_piece }}" class="form-control" name="dispatch[another_piece]"  style="width:100px;"></td>
-                            <td class="show_n text-center">
+                            <td class=" text-center">
                                 <input type="text" value="{{ $dispatch->another_piece_price }}" class="form-control" name="dispatch[another_piece_price]"  style="width:100px;"></td>
 
-                            <td class="show_n"></td>
+                            <td></td>
                         </tr>
-                        </tbody>
-                    </table>
+                    </tbody>
+                </table>
+
+<!--====================================================================================================-->
                     <a class='btn btn-default' href="javascript:;" onclick='selectAreas()'><span class="fa fa-plus"></span> 新增配送区域</a>
                     <span class='help-block show_h' @if ( $dispatch->dispatch_type == 1 ) style='display:block' @endif>根据重量来计算运费，当物品不足《首重重量》时，按照《首重费用》计算，超过部分按照《续重重量》和《续重费用》乘积来计算</span>
                     <span class='help-block show_n' @if ( $dispatch->dispatch_type == 0 ) style='display:block' @endif>根据件数来计算运费，当物品不足《首件数量》时，按照《首件费用》计算，超过部分按照《续件数量》和《续件费用》乘积来计算</span>
@@ -229,19 +241,21 @@
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
             <div class="col-sm-9 col-xs-12">
-                <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick="return formcheck()" />
-                <input type="button" name="back" onclick='history.back()' style='margin-left:10px;'value="返回列表" class="btn btn-default col-lg-1" />
+                <input type="submit" name="submit" value="提交" class="btn btn-success " onclick="return formcheck()" />
+                <input type="button" name="back" onclick='history.back()' value="返回列表" class="btn btn-default back" />
             </div>
         </div>
 
 
     </div>
-</div>
+
 
 </form>
 </div>
 <script>
+var calculateType = {{ $dispatch['calculate_type'] ?: 0 }};
     function show_type(flag){
+        calculateType = flag;
         if (flag == 1) {
             $('.weight').css("display", "none");
             $('.fnum').css("display", "");
@@ -255,19 +269,91 @@
         }
     }
     $(function(){
-        show_type({{ $dispatch['calculate_type'] }});
-
+        show_type(calculateType);
         $(':radio[name="dispatch[calculate_type]"]').click(function(){
             var val = $(this).val();
             show_type(val);
         })
-        $(':radio[name="dispatch[dispatch_type]"]').click(function(){
-            var val = $(this).val();
-            $(".dispatch0,.dispatch1").hide();
-            $(".dispatch" + val ).show();
-        })
-
     });
+
+
+   function clearSelects(){
+        $('.city').attr('checked',false).removeAttr('disabled');
+        $('.cityall').attr('checked',false).removeAttr('disabled');
+        $('.citycount').html('');
+   }
+
+   function selectAreas(){
+       clearSelects();
+       var old_citys = $("[areas="+calculateType+"]").html().split(';');
+
+       $('.city').each(function(){
+           var parentcheck = false;
+           for(var i in old_citys){
+               if(old_citys[i]==$(this).attr('city')){
+                   parentcheck = true;
+                   $(this).get(0).checked = true;
+                   break;
+               }
+           }
+           if(parentcheck){
+               $(this).parent().parent().parent().parent().find('.cityall').get(0).checked=  true;
+           }
+       });
+
+       $("#modal-areas").modal();
+       var citystrs = '';
+       $('#btnSubmitArea').unbind('click').click(function(){
+          $('.city:checked').each(function(){
+              citystrs += $(this).attr('city') +";";
+          });
+
+          if(calculateType==0){
+            var content=`
+                  <tr  class="show_h">
+                      <input type="hidden"  value="{{ $dispatch->areas }}" class="form-control" name="dispatch[areas]">
+                      <td style="padding:10px;" name="areas">${citystrs}</td>
+                      <td class=" text-center">
+                          <input type="number" value="{{ $dispatch->first_weight }}" class="form-control" name="dispatch[first_weight]" style="width:100px;"></td>
+                      <td class=" text-center">
+                          <input type="text" value="{{ $dispatch->first_weight_price }}" class="form-control" name="dispatch[first_weight_price]"  style="width:100px;"></td>
+                      <td class=" text-center">
+                          <input type="number" value="{{ $dispatch->another_weight }}" class="form-control" name="dispatch[another_weight]"  style="width:100px;"></td>
+                      <td class=" text-center">
+                          <input type="text" value="{{ $dispatch->another_weight_price }}" class="form-control" name="dispatch[another_weight_price]"  style="width:100px;"></td>
+                      <td></td>
+                  </tr>
+        `;
+
+            $("[areas="+calculateType+"]").children(".tbody-areas").append(content);
+          }else{
+            var content=`
+                      <tr class="show_n">
+                          <td style="padding:10px;">${citystrs}</td>
+                          <td class=" text-center">
+                              <input type="number" value="{{ $dispatch->first_piece }}" class="form-control" name="dispatch[first_piece]" style="width:100px;"></td>
+                          <td class=" text-center">
+                              <input type="text" value="{{ $dispatch->first_piece_price }}" class="form-control" name="dispatch[first_piece_price]"  style="width:100px;"></td>
+                          <td class=" text-center">
+                              <input type="number" value="{{ $dispatch->another_piece }}" class="form-control" name="dispatch[another_piece]"  style="width:100px;"></td>
+                          <td class=" text-center">
+                              <input type="text" value="{{ $dispatch->another_piece_price }}" class="form-control" name="dispatch[another_piece_price]"  style="width:100px;"></td>
+
+                          <td></td>
+                      </tr>
+            `;
+
+                $("[areas="+calculateType+"]").children(".tbody-areas").append(content);
+          }
+
+
+
+
+
+
+
+       })
+   }
 </script>
 @include('area.selectprovinces')
 @endsection

@@ -15,7 +15,7 @@ class Url
             return $uri;
         }
         $domain = request()->getSchemeAndHttpHost();
-        $module = request()->get('m','sz_yi');
+        $module = request()->get('m','yun_shop');
         return $domain . '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
     }
 
@@ -31,7 +31,7 @@ class Url
         if(empty($route) && self::isHttp($route)){
             return $route;
         }
-        $defaultParams = ['c'=>'site','a'=>'entry','m'=>'sz_yi','do'=>rand(1000,9999),'route'=>$route];
+        $defaultParams = ['c'=>'site','a'=>'entry','m'=>'yun_shop','do'=>rand(1000,9999),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
         return  '/web/index.php?'. http_build_query($params);
@@ -49,10 +49,14 @@ class Url
         if(empty($route) && self::isHttp($route)){
             return $route;
         }
-        $defaultParams = ['i'=>\YunShop::app()->uniacid,'c'=>'entry','m'=>'sz_yi','do'=>rand(1000,9999),'route'=>$route];
-        $params = array_merge($defaultParams, $params);
-
-        return   '/app/index.php?'. http_build_query($params);
+        if(strpos('/',$route) !== 0){
+            $route = '/' . $route;
+        }
+        if(!isset($params['i'])){
+            $params['i'] = \YunShop::app()->uniacid;
+        }
+        $module = request()->get('m','yun_shop');
+        return   '/addons/' . $module . '/#'.$route .  ($params ? '?'.http_build_query($params) : '');
     }
 
     /**
@@ -70,7 +74,7 @@ class Url
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
-        return   '/addons/sz_yi/api.php?'. http_build_query($params);
+        return   '/addons/yun_shop/api.php?'. http_build_query($params);
     }
 
     /**
@@ -93,7 +97,7 @@ class Url
 
     /**
      * 生成前台绝对地址
-     *      路由   api.v1.test.index  为  app/frontend/moduels/api/modules/v1/TestController   index
+     *      路由   /home
      * @param $route
      * @param array $params
      * @param string $domain

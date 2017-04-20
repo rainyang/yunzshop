@@ -1,12 +1,17 @@
 <?php
 namespace app\backend\modules\finance\services;
+
+use app\backend\modules\finance\services\BalanceService;
+use app\common\services\finance\Withdraw;
+use app\common\services\PayFactory;
+
 /**
  * Created by PhpStorm.
  * User: yanglei
  * Date: 2017/3/31
  * Time: 下午3:13
  */
-class WithdrawService
+class WithdrawService extends Withdraw
 {
     public static function createStatusService($withdraw)
     {
@@ -26,5 +31,33 @@ class WithdrawService
                 break;
 
         }
+    }
+
+    public static function balanceWithdrawPay($withdraw, $remark)
+    {
+        $data = array(
+            'member_id' => $withdraw->member_id,
+            'money' => $withdraw->actual_amounts,
+            'serial_number' => '',
+            'operator' => '-2',
+            'operator_id' => $withdraw->id,
+            'remark' => $remark,
+            'service_type' => \app\common\models\finance\Balance::BALANCE_INCOME,
+        );
+
+        return (new BalanceService())->changeBalance($data);
+    }
+
+    public static function wechtWithdrawPay($withdraw, $remark)
+    {
+        return PayFactory::create(1)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
+            $withdraw->actual_amounts, $remark);
+    }
+
+    public static function alipayWithdrawPay($withdraw, $remark)
+    {
+        $result = PayFactory::create(2)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
+            $withdraw->actual_amounts, $remark);
+        redirect($result)->send();
     }
 }

@@ -9,13 +9,18 @@
 namespace app\common\components;
 
 
+use app\backend\modules\member\models\MemberRelation;
+use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
+use app\common\models\UniAccount;
 use app\frontend\modules\member\services\MemberService;
 
 class ApiController extends BaseController
 {
+    protected $publicController = [];
     protected $publicAction = [];
+    protected $ignoreAction = [];
 
     public function __construct()
     {
@@ -26,60 +31,40 @@ class ApiController extends BaseController
     {
         parent::preAction();
 
-//        if (config('app.debug')) {
-//            return true;
-//        }
-        $this->setCookie();
-        if (!MemberService::isLogged() && !in_array($this->action,$this->publicAction)) {
-            $yz_redirect  = \YunShop::request()->yz_redirect;
+        if(!UniAccount::checkIsExistsAccount(\YunShop::app()->uniacid)){
+            return $this->errorJson('无此公众号', ['status' => -2]);
+        }
+
+        $relaton_set = MemberRelation::getSetInfo()->first();
+
+        if (!MemberService::isLogged()
+            && (($relaton_set->status == 1 && !in_array($this->action,$this->ignoreAction))
+                || ($relaton_set->status == 0 && !in_array($this->action,$this->publicAction))
+               )
+        ) {
             $type  = \YunShop::request()->type;
 
-            //redirect(Url::absoluteApi('member.login.index', ['type'=>$type,'yz_redirect'=>$yz_redirect]))->send();
+            if (empty($type) || $type == 'undefined') {
+                $type = Client::getType();
+            }
+
+            $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid];
+
+            if (5 == $type) {
+                return $this->errorJson('',['login_status'=> 1,'login_url'=>'', 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid]);
+            }
+
+            return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
         }
     }
 
-    private function setCookie()
+    public function validate(Request $request, array $rules, array $messages = [], array $customAttributes = [])
     {
-        $session_id = '';
-        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
-            $pieces = explode('-', \YunShop::request()->state);
-            $session_id = $pieces[1];
-            unset($pieces);
+        $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
+        //$validator->errors();
+        if ($validator->fails()) {
+            throw new AppException(current($this->formatValidationErrors($validator)));
         }
-
-        if (empty($session_id) && \YunShop::request()->session_id &&
-            \YunShop::request()->session_id != 'undefined') {
-            $session_id = \YunShop::request()->session_id;
-        }
-
-        if (empty($session_id)) {
-            $session_id = $_COOKIE[session_name()];
-        }
-
-        if (empty($session_id)) {
-            $session_id = \YunShop::app()->uniacid . '-' . Client::random(20) ;
-            $session_id = md5($session_id);
-            setcookie(session_name(), $session_id);
-        }
-
-        session_save_path('/tmp');
-
-        file_put_contents(storage_path('logs/ssid.log'), print_r(['ssid'=>$session_id, 'path'=>session_save_path('/tmp')],1), FILE_APPEND);
-
-        session_id($session_id);
-
-        session_start();
-
-        file_put_contents(storage_path('logs/ss.log'), print_r($_SESSION, 1), FILE_APPEND);
-
-
-        file_put_contents(storage_path('logs/ssid2.log'), print_r(['ssid'=>session_id(), 'path'=>session_save_path('/tmp')],1), FILE_APPEND);
-        file_put_contents(storage_path('logs/ss2.log'), print_r($_SESSION, 1), FILE_APPEND);
-       // echo '<pre>';print_r($_SESSION);exit;
     }
 
-    private function setAgent()
-    {
-
-    }
 }

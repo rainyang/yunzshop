@@ -17,13 +17,13 @@ class LogoutController extends BaseController
 {
     public function index()
     {
-        $cookieid = "__cookie_sz_yi_userid_" . \YunShop::app()->uniacid;
+        $cookieid = "__cookie_yun_shop_userid_" . \YunShop::app()->uniacid;
 
         Cookie::unqueue($cookieid);
         Cookie::unqueue('member_mobile');
 
-        Session::clear(member_id);
-        
-        $this->successJson();
+        Session::clear('member_id');
+
+        $this->successJson('退出成功');
     }
 }

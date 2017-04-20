@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services\status;
 
 use app\common\models\Order;
 
-class WaitSend implements StatusService
+class WaitSend extends Status
 {
     private $order;
     public function __construct(Order $order)
@@ -28,12 +28,10 @@ class WaitSend implements StatusService
     {
         $result =
             [
-                [
-                    'name' => '申请退款',
-                    'api' => 'order.operation.refund', //todo
-                    'value' => static::REFUND
-                ]
+
             ];
+        $result = array_merge($result,self::getRefundButtons($this->order));
+
         return $result;
     }
 }

@@ -34,8 +34,7 @@ class McMappingFans extends BackendModel
         return self::select('uid')
             ->where('uniacid', $uniacid)
             ->where('openid', $openid)
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     public static function getFansById($memberId)
@@ -43,4 +42,5 @@ class McMappingFans extends BackendModel
         return self::where('uid', $memberId)
             ->first();
     }
+
 }

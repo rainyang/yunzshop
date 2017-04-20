@@ -8,13 +8,15 @@
 
 namespace app\frontend\modules\goods\services\models;
 
+use Illuminate\Support\Collection;
+
 class PreGeneratedOrderGoodsModelGroup
 {
-    private $_OrderGoodsGroup;
+    private $orderGoodsGroup;
 
-    public function __construct(array $OrderGoodsGroup)
+    public function __construct(Collection $OrderGoodsGroup)
     {
-        $this->_OrderGoodsGroup = $OrderGoodsGroup;
+        $this->orderGoodsGroup = $OrderGoodsGroup;
     }
 
     /**
@@ -23,14 +25,9 @@ class PreGeneratedOrderGoodsModelGroup
      */
     public function getPrice()
     {
-        $result = 0;
-        foreach ($this->_OrderGoodsGroup as $OrderGoods) {
-            /**
-             * @var $OrderGoods PreGeneratedOrderGoodsModel
-             */
-            $result += $OrderGoods->getPrice();
-        }
-        return $result;
+        return $this->orderGoodsGroup->sum(function ($orderGoods) {
+            return $orderGoods->getPrice();
+        });
     }
 
     /**
@@ -40,7 +37,7 @@ class PreGeneratedOrderGoodsModelGroup
     public function getVipPrice()
     {
         $result = 0;
-        foreach ($this->_OrderGoodsGroup as $OrderGoods) {
+        foreach ($this->orderGoodsGroup as $OrderGoods) {
             /**
              * @var $OrderGoods PreGeneratedOrderGoodsModel
              */
@@ -56,7 +53,7 @@ class PreGeneratedOrderGoodsModelGroup
     public function getCouponDiscountPrice()
     {
         $result = 0;
-        foreach ($this->_OrderGoodsGroup as $OrderGoods) {
+        foreach ($this->orderGoodsGroup as $OrderGoods) {
             /**
              * @var $OrderGoods PreGeneratedOrderGoodsModel
              */
@@ -67,6 +64,6 @@ class PreGeneratedOrderGoodsModelGroup
 
     public function getOrderGoodsGroup()
     {
-        return $this->_OrderGoodsGroup;
+        return $this->orderGoodsGroup;
     }
 }

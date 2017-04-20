@@ -33,7 +33,9 @@ class MemberGroup extends \app\common\models\MemberGroup
     {
         //todo 获取分组内会员数量
         return self::uniacid()
-
+            ->with(['member' => function($query){
+                return $query->select(['member_id','group_id'])->where('uniacid', \YunShop::app()->uniacid);
+            }])
             ->paginate($pageSize);
     }
 
@@ -58,10 +60,27 @@ class MemberGroup extends \app\common\models\MemberGroup
         $memberGroup = MemberGroup::select('id', 'group_name', 'uniacid')
             ->uniacid()
             ->with(['member' => function($query){
-                return $query->select(['group_id'])->where('uniacid', \YunShop::app()->uniacid);
+                return $query->select(['member_id','group_id'])->where('uniacid', \YunShop::app()->uniacid);
             }])
             ->get()
             ->toArray();
+        return $memberGroup;
+    }
+
+    /**
+     * 获取指定"GroupId"下的关联用户数据
+     * @param $groupId
+     * @return mixed
+     */
+    public static function getMembersByGroupId($groupId)
+    {
+        $memberGroup = static::uniacid()
+                    ->select('id', 'group_name', 'uniacid')
+                    ->where('id', '=', $groupId)
+                    ->with(['member' => function($query){
+                        return $query->select(['member_id','group_id'])->where('uniacid', \YunShop::app()->uniacid);
+                    }])
+                    ->first();
         return $memberGroup;
     }
 

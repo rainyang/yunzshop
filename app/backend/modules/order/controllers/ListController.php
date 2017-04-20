@@ -26,7 +26,6 @@ class ListController extends BaseController
         //phpinfo();
         $params = \YunShop::request()->get();
         $this->_order_model = Order::getAllOrders($params['search'],self::PAGE_SIZE);
-        //dd($this->_order_model);
         return view('order.index', $this->getData())->render();
     }
     public function waitPay()
@@ -34,34 +33,56 @@ class ListController extends BaseController
         $params = \YunShop::request();
         
         $this->_order_model = Order::getWaitPayOrders($params['search'],self::PAGE_SIZE);
-        $this->render('order/list', $this->getData());
+        return view('order.index', $this->getData())->render();
     }
     public function waitSend()
     {
         $params = \YunShop::request();
         
         $this->_order_model = Order::getWaitSendOrders($params['search'],self::PAGE_SIZE);
-        $this->render('order/list', $this->getData());
+        return view('order.index', $this->getData())->render();
     }
     public function waitReceive()
     {
         $params = \YunShop::request();
         
         $this->_order_model = Order::getWaitReceiveOrders($params['search'],self::PAGE_SIZE);
-        $this->render('order/list', $this->getData());
+        return view('order.index', $this->getData())->render();
     }
     public function completed()
     {
         $params = \YunShop::request();
         
         $this->_order_model = Order::getCompletedOrders($params['search'],self::PAGE_SIZE);
-        $this->render('order/list', $this->getData());
+        return view('order.index', $this->getData())->render();
+    }
+    public function cancelled()
+    {
+        $params = \YunShop::request();
+
+        $this->_order_model = Order::getCancelledOrders($params['search'],self::PAGE_SIZE);
+        return view('order.index', $this->getData())->render();
     }
 
+    /**
+     * @return mixed
+     * 退换货订单
+     */
+    public function refund()
+    {
+        $params = \YunShop::request();
+        $this->_order_model = Order::getRefundOrders($params['search'],self::PAGE_SIZE);
+        return view('order.index', $this->getData())->render();
+    }
+    public function refunded()
+    {
+        $params = \YunShop::request();
+        $this->_order_model = Order::getRefundedOrders($params['search'],self::PAGE_SIZE);
+        return view('order.index', $this->getData())->render();
+    }
     public function test()
     {
         $data = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
-        dd($data);
     }
 
 
@@ -89,7 +110,8 @@ class ListController extends BaseController
         }
         $list = $this->_order_model;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
-        //dd($list);
+
+        $is_change_price = true; //todo
         $data = [
             'list' => $list,
             'total_price' => $list['total_price'],
@@ -98,7 +120,9 @@ class ListController extends BaseController
             'pager' => $pager,
             'requestSearch' => $requestSearch,
             'var' => \YunShop::app()->get(),
-            'url' => 'order.list'
+            'url' => \Request::query('route'),
+            'include_ops' => 'order.ops',
+            'is_change_price' => $is_change_price
         ];
         $data += $this->fakeData();
         return $data;

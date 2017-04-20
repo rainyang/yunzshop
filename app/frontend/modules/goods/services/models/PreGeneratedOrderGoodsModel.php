@@ -8,12 +8,10 @@
 
 namespace app\frontend\modules\goods\services\models;
 
-use app\common\models\Goods;
 use app\common\models\OrderGoods;
 
 use app\frontend\modules\discount\services\DiscountService;
 use app\frontend\modules\dispatch\services\DispatchService;
-use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class PreGeneratedOrderGoodsModel extends OrderGoodsModel
@@ -22,27 +20,23 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      * @var PreGeneratedOrderModel
      */
     protected $order;
-    /**
-     * app\common\models\Goods的实例
-     * @var Goods
-     */
-    protected $goods;
-    protected $goodsOption;
-    public $couponMoneyOffPrice;
-    public $couponDiscountPrice;
 
-    /**
-     * PreGeneratedOrderGoodsModel constructor.
-     * @param MemberCart $memberCart
-     */
-    public function __construct(MemberCart $memberCart)
+    public $coupons;
+
+    public function __construct(array $attributes = [])
     {
-        $this->goods = $memberCart->goods;
-        $this->total = $memberCart->total;
-        $this->goodsOption = $memberCart->goodsOption;
+        if (isset($attributes['option_id'])) {
+            $attributes['goods_option_id'] = $attributes['option_id'];
+            unset($attributes['option_id']);
+        }
+        if (isset($attributes['goods'])) {
+            unset($attributes['goods']);
 
-        parent::__construct();
+        }
 
+        parent::__construct($attributes);
+        $this->setGoodsDiscount();
+        $this->setGoodsDispatch();
     }
 
     protected function setGoodsDiscount()
@@ -88,10 +82,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'goods_price' => $this->getGoodsPrice(),
             'vip_price' => $this->getVipPrice(),
             'coupon_price' => $this->getCouponPrice(),
-            'coupon_discount_price' => $this->couponDiscountPrice,
-            'coupon_money_off_price' => $this->couponMoneyOffPrice,
+            'coupons'=>$this->coupons
         );
-        if(isset($this->goodsOption)){
+        if (isset($this->goodsOption)) {
             $data += [
                 'goods_option_id' => $this->goodsOption->id,
                 'goods_option_title' => $this->goodsOption->title,
@@ -102,7 +95,10 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     public function getCouponPrice()
     {
-        return $this->couponMoneyOffPrice + $this->couponDiscountPrice;
+        if(!isset($this->coupons)){
+            return 0;
+        }
+        return $this->coupons->sum('amount');
     }
 
     /**
@@ -111,13 +107,19 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      */
     public function getTotal()
     {
+
         return $this->total;
 
     }
 
     public function getGoodsPrice()
     {
-        return $this->total * $this->goods->price;
+        //dd($this);
+
+        if (isset($this->goodsOption)) {
+            return $this->goodsOption->product_price * $this->getTotal();
+        }
+        return $this->getTotal() * $this->goods->price;
 
     }
 
@@ -128,6 +130,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
      */
     public function generate(PreGeneratedOrderModel $orderModel = null)
     {
+
         if (isset($orderModel)) {
             $this->setOrder($orderModel);
         }
@@ -143,9 +146,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'thumb' => $this->goods->thumb,
             'uid' => $this->order->getMember()->uid,
             'order_id' => $this->order->id,
-            'uniacid' => $this->order->getShop()->uniacid,
+            'uniacid' => $this->order->uniacid,
         );
-        if(isset($this->goodsOption)){
+        if (isset($this->goodsOption)) {
             $data += [
                 'goods_option_id' => $this->goodsOption->id,
                 'goods_option_title' => $this->goodsOption->title,

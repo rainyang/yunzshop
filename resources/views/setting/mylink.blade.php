@@ -1,4 +1,3 @@
-<link href="../addons/sz_yi/plugin/article/template/imgsrc/article.css" rel="stylesheet">
 <!-- mylink start -->
     <div id="modal-mylink" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" style="width: 720px;">
@@ -191,10 +190,10 @@
                                      <textarea name="mylink_href" class="form-control" style="height: 90px; resize: none;" placeholder="请以http://开头"></textarea>   
                                  </div>
                              </div>
-                             <div class="form-group" style="overflow: hidden; margin-bottom: 0px;i">
+                             <div class="form-group" style="overflow: hidden; margin-bottom: 0px;">
                                  <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="line-height: 34px;"></label>
                                  <div class="col-sm-9 col-xs-12">
-                                     <div class="btn btn-primary col-lg-1 mylink-nav2" style="margin-left: 20px; width: auto; overflow: hidden; margin-left: 0px;"> 插入 </div>
+                                     <div class="btn btn-primary mylink-nav2" style="margin-left: 20px; width: auto; overflow: hidden; margin-left: 0px;"> 插入 </div>
                                  </div>
                              </div>
                          </div>
@@ -240,7 +239,7 @@
         $("#modal-mylink .close").click();
     });
     $(".mylink-nav2").click(function(){
-        var href = $("textarea[name=mylink_href").val();
+        var href = $("textarea[name=mylink_href]").val();
         if(href){
             var id = $("#modal-mylink").attr("data-id");
             if(id){
@@ -250,9 +249,9 @@
                 ue.execCommand('link', {href:href});
             }
             $("#modal-mylink .close").click();
-            $("textarea[name=mylink_href").val("");
+            $("textarea[name=mylink_href]").val("");
         }else{
-            $("textarea[name=mylink_href").focus();
+            $("textarea[name=mylink_href]").focus();
             alert("链接不能为空!");
         }
     });

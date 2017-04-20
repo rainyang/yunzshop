@@ -11,11 +11,10 @@
  */
 namespace app\frontend\modules\member\models;
 
-use app\backend\models\BackendModel;
+use app\common\models\McMappingFans;
 
-class McMappingFansModel extends BackendModel
+class McMappingFansModel extends McMappingFans
 {
-    public $table = 'mc_mapping_fans';
     public $timestamps = false;
 
     protected $guarded = [];
@@ -41,8 +40,7 @@ class McMappingFansModel extends BackendModel
         return self::select('uid')
             ->uniacid()
             ->where('openid', $openid)
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**
@@ -66,5 +64,10 @@ class McMappingFansModel extends BackendModel
         self::uniacid()
             ->where('uid', $uid)
             ->update($data);
+    }
+
+    public static function getMemberInfo($oppenid)
+    {
+
     }
 }

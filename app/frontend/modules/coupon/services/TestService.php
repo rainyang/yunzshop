@@ -2,21 +2,23 @@
 
 namespace app\frontend\modules\coupon\services;
 
+use app\common\models\Order;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\coupon\services\models\DiscountCoupon;
 use app\frontend\modules\coupon\services\models\MoneyOffCoupon;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+use Illuminate\Support\Collection;
 
 class TestService
 {
     private $order;
-    private $back_type = null;
+    private $coupon_method = null;
 
-    public function __construct(PreGeneratedOrderModel $order, $back_type = null)
+    public function __construct(PreGeneratedOrderModel $order, $coupon_method = null)
     {
-        $this->order = $order;
-        $this->back_type = $back_type;
 
+        $this->order = $order;
+        $this->coupon_method = $coupon_method;
     }
 
     /**
@@ -25,35 +27,38 @@ class TestService
      */
     public function getOrderDiscountPrice()
     {
-        $result = 0;
-        //统计所有优惠券的金额
-        foreach ($this->getAllValidCoupons() as $coupon) {
+        return $this->getAllValidCoupons()->sum(function($coupon){
             /**
              * @var $coupon Coupon
              */
-            $result += $coupon->getDiscountPrice();
-            //将优惠金额分配到订单商品中
             $coupon->activate();
-        }
-        return $result;
+            return $coupon->getDiscountPrice();
+        });
     }
 
     /**
      * 获取订单可算的优惠券
-     * @return array
+     * @return Collection
      */
     public function getOptionalCoupons()
     {
-        $result = [];
-        foreach ($this->getMemberCoupon() as $coupon) {
-            $Coupon = new Coupon($coupon, $this->order);
-            if ($Coupon->valid()) {
-                $result[] = $Coupon;
-            }
-        }
+        //dd(MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember));
+        //dd($this->getMemberCoupon());
+        $coupons = $this->getMemberCoupon()->map(function ($memberCoupon){
+            return new Coupon($memberCoupon, $this->order);
+        });
+        $result = $coupons->filter(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
+            return $coupon->valid();
+        });
         return $result;
     }
 
+    /**
+     * 记录使用过的优惠券
+     */
     public function destroyUsedCoupons()
     {
         foreach ($this->getAllValidCoupons() as $coupon){
@@ -66,46 +71,49 @@ class TestService
 
     /**
      * 获取所有选中并有效的优惠券
-     * @return array
+     * @return Collection
      */
     public function getAllValidCoupons()
     {
+        $coupon = $this->getSelectedMemberCoupon()->map(function ($memberCoupon){
+            return new Coupon($memberCoupon, $this->order);
+        });
+        $result = $coupon->filter(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
+            return $coupon->valid();
+        });
 
-        $result = [];
-        foreach ($this->getSelectedMemberCoupon() as $coupon) {
-            $Coupon = new Coupon($coupon, $this->order);
-            if ($Coupon->valid()) {
-                //$Coupon->activate();
-                $result[] = $Coupon;
-            }
-        }
         return $result;
     }
 
     /**
      * 用户拥有的优惠券
-     * @return mixed
+     * @return Collection
      */
     private function getMemberCoupon()
     {
-        //dd($this->order->getMemberModel()->hasManyMemberCoupon($this->back_type)->get());
-        return $this->order->getMember()->hasManyMemberCoupon($this->back_type)->get();
-    }
+        $coupon_method = $this->coupon_method;
+        $result = MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember);
+        if(isset($coupon_method)){// 折扣/立减
+            $result->filter(function ($memberCoupon) use($coupon_method){
+                return $memberCoupon->belongsToCoupon->coupon_method == $coupon_method;
+            });
+        }
+        //dd($result);
+        return $result;
 
+    }
     /**
      * 用户拥有并选中的优惠券
-     * @return array
+     * @return Collection
      */
     private function getSelectedMemberCoupon()
     {
-        $coupon_id = explode(',', array_get($_GET, 'coupon_ids', ''));
-        $result = [];
-        //dd(MemberCoupon::getMemberCoupon($this->order->getMemberModel())->get());exit;
-        foreach ($this->getMemberCoupon() as $memberCoupon) {
-            if (in_array($memberCoupon->coupon_id, $coupon_id)) {
-                $result[] = $memberCoupon;
-            }
-        }
-        return $result;
+        $member_coupon_ids = explode(',', array_get($_GET, 'member_coupon_ids', ''));
+        return $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids){
+            return in_array($memberCoupon->id, $member_coupon_ids);
+        });
     }
 }

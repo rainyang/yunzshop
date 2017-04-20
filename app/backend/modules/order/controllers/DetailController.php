@@ -13,21 +13,24 @@ use app\common\models\Order;
 
 class DetailController extends BaseController
 {
-    public function index()
+    public function index(\Request $request)
     {
-        $order_id = \YunShop::request()->id;
+        $orderId = $request->query('id');
         //$order_id = 1;
-        $db_order_models = Order::with(
+        $order = Order::with(
             [
                 'hasManyOrderGoods.belongsToGood',
                 'beLongsToMember',
                 'hasOneOrderRemark',
-                'hasOneAddress'
+                'address'
             ]
-        )->find($order_id)->toArray();
-
+        )->find($orderId);
+        $order->button_models = $order->button_models;
+        $order = $order->toArray();
+//        dd($order);
+        //exit;
         return view('order.detail', [
-            'order' => $db_order_models,
+            'order' => $order,
             'lang' => $this->_lang(),
             'totals'=> $this->_totals(),
             'dispatch' => ['id' => 1],

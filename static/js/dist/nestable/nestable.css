@@ -15,7 +15,7 @@
 .dd-list { display: block; position: relative; margin: 0; padding: 0; list-style: none; }
 .dd-list .dd-list { padding-left: 30px; }
 .dd-collapsed .dd-list { display: none; }
-
+.dd-handle{width: 100%;}
 .dd-item,
 .dd-empty,
 .dd-placeholder {
@@ -31,14 +31,18 @@
 .dd-handle {
     display: block; 
     margin: 5px 0; 
-    padding: 5px 10px; 
+    padding: 10px 10px;
     text-decoration: none; 
     border: 1px solid #ebebeb;
     background: #fff;
     -webkit-border-radius: 3px;
             border-radius: 3px;
+    overflow: hidden;
+    line-height: 28px;
 }
 .dd-handle:hover {background: #fff; }
+.dd-handle p {
+    margin:0; padding: 0;float: left;line-height: 28px;}
 
 .dd-item > button { display: block; position: relative; cursor: pointer; float: left; width: 25px; height: 20px; margin: 5px 0; padding: 0; text-indent: 100%; white-space: nowrap; overflow: hidden; border: 0; background: transparent; font-size: 12px; line-height: 1; text-align: center; font-weight: bold; }
 .dd-item > button:before { content: '+'; display: block; position: absolute; width: 100%; text-align: center; text-indent: 0; }
@@ -105,3 +109,10 @@
 }
 .dd3-handle:before { content: '≡'; display: block; position: absolute; left: 0; top: 5px; width: 100%; text-align: center; text-indent: 0; color: #ccc; font-size: 20px; font-weight: normal; }
 .dd3-handle:hover { background: #f7f7f7; }
+
+
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{border-top:0;}
+.add-snav{overflow: hidden}
+.add-snav .back{    float: right;  padding: 10px 0 0 0;}
+.add-snav .fa{margin-right: 5px;}
+.add-snav .back a{margin-right: 5px;}

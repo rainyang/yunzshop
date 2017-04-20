@@ -11,6 +11,7 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
+use app\common\models\AccountWechats;
 use app\common\services\MyLink;
 
 class ShopController extends BaseController
@@ -174,20 +175,19 @@ class ShopController extends BaseController
     public function notice()
     {
         $notice = Setting::get('shop.notice');
-        $salers = []; //订单通知的商家列表,数据如何取待定?
-        $new_type = []; //通知方式的数组,数据如何来的待定?
+//        $salers = []; //订单通知的商家列表,数据如何取待定?
+        //$new_type = []; //通知方式的数组,数据如何来的待定?
         $requestModel = \YunShop::request()->notice;
-        if ($requestModel) {
+        if (!empty($requestModel)) {
+
             if (Setting::set('shop.notice', $requestModel)) {
-                return $this->message(' 引导分享设置成功', Url::absoluteWeb('setting.shop.notice'));
+                return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.shop.notice'));
             } else {
-                $this->error('引导分享设置失败');
+                $this->error('消息提醒设置失败');
             }
         }
         return view('setting.shop.notice', [
             'set' => $notice,
-            'salers' => $salers,
-            'new_type' => $new_type
         ])->render();
     }
 
@@ -218,13 +218,21 @@ class ShopController extends BaseController
     public function pay()
     {
         $pay = Setting::get('shop.pay');
+
+        $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
+        if (empty($pay['weixin_appid']) && empty($pay['weixin_secret']) && !empty($account)) {
+            $pay['weixin_appid'] = $account->key;
+            $pay['weixin_secret'] = $account->secret;
+        }
+
         $data = [
             'weixin_jie_cert' => '',
             'weixin_jie_key' => '',
             'weixin_jie_root' => ''
         ];//借用微信支付证书,在哪里取得数据待定?
         $requestModel = \YunShop::request()->pay;
-        //echo '<pre>';print_r($requestModel);exit;
+
         if ($requestModel) {
 
             if ($_FILES['weixin_cert_file']['name']) {
@@ -286,7 +294,7 @@ class ShopController extends BaseController
 
                 // 获取文件相关信息
                 $originalName = $file->getClientOriginalName(); // 文件原名
-                $ext = $file->getClientOriginalExtension();     // 扩展名
+                //$ext = $file->getClientOriginalExtension();     // 扩展名
                 $realPath = $file->getRealPath();   //临时文件的绝对路径
 
                 $bool = \Storage::disk('cert')->put($originalName, file_get_contents($realPath));

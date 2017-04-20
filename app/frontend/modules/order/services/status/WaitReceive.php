@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services\status;
 
 use app\common\models\Order;
 
-class WaitReceive implements StatusService
+class WaitReceive extends Status
 {
     private $order;
     public function __construct(Order $order)
@@ -36,10 +36,11 @@ class WaitReceive implements StatusService
                 ],
                 [
                     'name' => '查看物流', //todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
-                    'api' => 'dispatch.express.detail/', //todo
-                    'value' => static::EXPRESS //todo
-                ],
+                    'api' => 'dispatch.express',
+                    'value' => static::EXPRESS
+                ]
             ];
+        $result = array_merge($result,self::getRefundButtons($this->order));
         return $result;
     }
 }

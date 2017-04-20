@@ -10,19 +10,19 @@ namespace app\common\listeners;
 
 use app\common\events\PayLog;
 use app\common\models\PayOrder;
+use app\common\services\Pay;
 
 class PayLogListener
 {
     public function handle(PayLog $event)
     {
-        $pay_type = config('app.pay_type');
-
         $params = $event->getPayRequestParams();
-        $pay = $event->getPayObject();
 
-        $pay_order_info = PayOrder::getPayOrderInfo($params['out_trade_no'])->first()->toArray();
+        $pay_order_info = PayOrder::getPayOrderInfo($params['out_trade_no'])->first();
 
-        $pay->payRequestDataLog($pay_order_info['id'], $pay_order_info['out_order_no'],
-            $pay_type[$pay_order_info['third_type']], json_encode($params));
+        if ($pay_order_info) {
+            Pay::payRequestDataLog($params['out_trade_no'], $pay_order_info->type,
+                $pay_order_info->third_type, json_encode($params));
+        }
     }
 }

@@ -18,7 +18,7 @@
 			<div class='panel-body'>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">自动关闭未付款订单天数</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <div class="input-group">
                             <input type="text" name="trade[close_order_days]" class="form-control" value="{{ $set['close_order_days'] }}" />
                             <div class="input-group-addon">天</div>
@@ -29,7 +29,7 @@
 
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-3 col-md-2 control-label">自动关闭未付款订单执行间隔时间</label>
-					<div class="col-sm-5">
+					<div class="col-sm-9">
 						<div class="input-group">
 							<input type="text" name="trade[close_order_time]" class="form-control" value="{{ $set['close_order_time'] }}" />
 							<div class="input-group-addon">分钟</div>
@@ -46,7 +46,7 @@
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">自动收货天数</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <div class="input-group">
                             <input type="text" name="trade[receive]" class="form-control" value="{{ $set['receive'] }}" />
                             <div class="input-group-addon">天</div>
@@ -57,7 +57,7 @@
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">自动收货执行间隔时间</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <div class="input-group">
                             <input type="text" name="trade[receive_time]" class="form-control" value="{{ $set['receive_time'] }}" />
                             <div class="input-group-addon">分钟</div>
@@ -75,7 +75,7 @@
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">完成订单多少天内可申请退款</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <div class="input-group">
                             <input type="text" name="trade[refund_days]" class="form-control" value="{{ $set['refund_days'] }}" />
                             <div class="input-group-addon">天</div>
@@ -85,89 +85,21 @@
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款说明</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <textarea  name="trade[refund_content]" class="form-control" value="{{ $set['refund_content'] }}" >{{ $set['refund_content'] }}</textarea>
                         <span class='help-block'>用户在申请退款页面的说明</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否显示用户下单飘窗</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
                         <label class='radio-inline'><input type='radio' name='trade[show_last_order]' value='1' @if ($set['show_last_order'] == 1) checked @endif/> 开启</label>
                         <label class='radio-inline'><input type='radio' name='trade[show_last_order]' value='0' @if (empty($set['show_last_order'])) checked @endif /> 关闭</label>
                         <span class='help-block'>是否显示商城用户下单飘窗提示</span>
                     </div>
                 </div>
 			</div>
-			<div class="panel-heading">
-				余额设置
-			</div>	
 
-            <div class='panel-body'>
-
-
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启账户充值</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='trade[close_recharge]' value='0' @if (empty($set['close_recharge'])) checked @endif/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='trade[close_recharge]' value='1' @if ($set['close_recharge'] == '1') checked @endif/> 关闭</label>
-                        <span class='help-block'>是否允许用户对账户余额进行充值</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额转账</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='trade[transfer]' value='0' @if (empty($set['transfer']))    checked @endif/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='trade[transfer]' value='1' @if ($set['transfer']=='1') checked @endif /> 关闭</label>
-                        <span class='help-block'>是否允许用户对账户余额进行转账</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额提现</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='trade[withdraw]' value='1' @if ($set['withdraw'] == 1) checked @endif/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='trade[withdraw]' value='0' @if ($set['withdraw'] == 0) checked @endif /> 关闭</label>
-                        <span class='help-block'>是否允许用户将余额提出</span>
-                    </div>
-                </div>
-
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现手续费</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <div class='input-group'>
-                                <input type="text" name="trade[poundage]" class="form-control" value="{{ $set['poundage'] }}" onkeyup="value=value.replace(/[^\d.]/g,'');if(value >= 100){value=''}" onafterpaste="value=value.replace(/[^\d.]/g,'');if(value >= 100){value=''"/>
-                                <span class='input-group-addon'>%</span>
-                            </div>
-                        </div>
-                    </div>
-
-
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现限制</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <input type="text" name="trade[withdraw_limit]" class="form-control" value="{{ $set['withdraw_limit'] }}" />
-                        <span class='help-block'>余额满多少才能提现,空或0不限制</span>
-                    </div>
-                </div>
-			</div>
-			<div class="panel-heading">
-				积分比例
-			</div>	
-
-            <div class='panel-body'>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">充值积分比例</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <div class='input-group'>
-                            <input type="text" name="trade[money]" class="form-control" value="{{ $set['money'] }}" />
-                            <span class='input-group-addon'>元 增加</span>
-                            <input type="text" name="trade[point]" class="form-control" value="{{ $set['point'] }}" />
-                            <span class='input-group-addon'>分</span>
-                        </div>
-                        <span class='help-block'>用户充值获得的积分</span>
-                    </div>
-                </div>
-			</div>
 			<div class="panel-heading">
 				收货地址
 			</div>	
@@ -202,12 +134,12 @@
           
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付回调日志</label>
-                    <div class="col-sm-5">
+                    <div class="col-sm-9">
 
                         <label class='radio-inline'><input type='radio' name='trade[pay_log]' value='0' @if ($set['pay_log'] == 0) checked @endif /> 关闭</label>
                         <label class='radio-inline'><input type='radio' name='trade[pay_log]' value='1' @if ($set['pay_log'] == 1) checked @endif/> 开启</label>
                         <span class='help-block'>支付回调日志，如果出现手机付款而后台显示待付款状态，请开启日志，查错误</span>
-                        <span class='help-block'>日志路径为 addon/sz_yi/data/paylog/[公众号ID]</span>
+                        <span class='help-block'>日志路径为 addon/yun_shop/data/paylog/[公众号ID]</span>
 
                     </div>
                 </div>
@@ -217,7 +149,7 @@
             <div class="form-group">
 				<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
 				<div class="col-sm-9 col-xs-12">
-					<input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+					<input type="submit" name="submit" value="提交" class="btn btn-success"  />
 				</div>
             </div>
 

@@ -19,6 +19,7 @@ use app\frontend\modules\coupon\services\models\Price\MoneyOffCouponPrice;
 use app\frontend\modules\coupon\services\models\TimeLimit\DateTimeRange;
 use app\frontend\modules\coupon\services\models\TimeLimit\SinceReceive;
 use app\frontend\modules\coupon\services\models\TimeLimit\TimeLimit;
+use app\frontend\modules\coupon\services\models\UseScope\CategoryScope;
 use app\frontend\modules\coupon\services\models\UseScope\CouponUseScope;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
@@ -72,7 +73,7 @@ class Coupon
      */
     private function getPriceInstance()
     {
-        switch ($this->memberCoupon->belongsToCoupon->back_type) {
+        switch ($this->memberCoupon->belongsToCoupon->coupon_method) {
             case DbCoupon::COUPON_MONEY_OFF:
                 return new MoneyOffCouponPrice($this);
                 break;
@@ -80,8 +81,12 @@ class Coupon
                 return new DiscountCouponPrice($this);
                 break;
             default:
-                dd($this->memberCoupon);
-                throw new AppException('优惠券优惠类型不存在');
+                if(config('app.debug')){
+                    dd($this->memberCoupon->belongsToCoupon->coupon_method);
+                    dd($this->memberCoupon);
+                    throw new AppException('优惠券优惠类型不存在');
+                }
+                return null;
                 break;
         }
     }
@@ -99,9 +104,13 @@ class Coupon
                 return new CategoryScope($this);
                 break;
             default:
-                dd($this->memberCoupon->belongsToCoupon);
+                if(config('app.debug')){
+                    dd($this->memberCoupon->belongsToCoupon->use_type);
+                    dd($this->memberCoupon->belongsToCoupon);
+                    throw new AppException('优惠券范围不存在');
+                }
+                return null;
 
-                throw new AppException('优惠券范围不存在');
                 break;
         }
     }
@@ -119,9 +128,12 @@ class Coupon
                 return new SinceReceive($this);
                 break;
             default:
-                dd($this->memberCoupon->belongsToCoupon);
+                if(config('app.debug')){
+                    dd($this->memberCoupon->belongsToCoupon);
+                    throw new AppException('时限类型不存在');
+                }
 
-                throw new AppException('时限类型不存在');
+                return null;
                 break;
         }
     }
@@ -136,6 +148,9 @@ class Coupon
 
     public function activate()
     {
+        $this->getMemberCoupon()->used = 1;
+        //dd($this->getMemberCoupon());
+        //exit;
         return $this->setOrderGoodsDiscountPrice();
     }
 
@@ -161,7 +176,26 @@ class Coupon
      */
     public function valid()
     {
-        return $this->useScope->valid() && $this->price->valid() && $this->timeLimit->valid();
+        if(!isset($this->useScope)){
+            return false;
+        }
+        if(!isset($this->price)){
+            return false;
+        }
+        if(!isset($this->timeLimit)){
+            return false;
+        }
+//        dd($this->useScope->valid());
+//        dd($this->price->valid());
+//        dd($this->timeLimit);
+//        exit;
+//        if(!empty($this->getMemberCoupon()->used)){
+//            return false;
+//        }
+        //dd($this->getMemberCoupon()->used);
+        //dd($this->useScope->valid() && $this->price->valid() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used));
+        //exit;
+        return $this->useScope->valid() && $this->price->valid() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used);
     }
 
     public function destroy()

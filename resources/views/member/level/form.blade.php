@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-
+<link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="rightlist">
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">
@@ -11,7 +11,7 @@
         </div>
         <!-- 新增加右侧顶部三级菜单结束 -->
 
-        <div class="main">
+        <div  id="member-level" class="main">
             @if(!$levelModel->id)
             <form action="{{ yzWebUrl('member.member-level.store') }}" method="post" class="form-horizontal form" enctype="multipart/form-data">
             @else
@@ -23,7 +23,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>等级权重</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="level[level]" class="form-control" value="{{ $levelModele->level }}"/>
+                                <input type="text" name="level[level]" class="form-control" value="{{ $levelModel->level }}"/>
                                 <span class='help-block'>等级权重，数字越大越高级</span>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                                             <div class='input-group-addon' style='border:none;background:#fff;'>
                                                 <label class="radio-inline" style='margin-top:-3px;'> 购买指定商品</label>
                                             </div>
-                                            <input type='text' class='form-control' id='goods' value="此处功能需要完善" readonly/>
+                                            <input type='text' class='form-control' id='goods' value="{{ $levelModel->goods->title }}" readonly/>
                                             <div class="input-group-btn">
                                                 <button type="button" onclick="$('#modal-goods').modal()"
                                                         class="btn btn-default">选择商品
@@ -75,7 +75,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="level[discount]" class="form-control" value="{{ $levelModel->discout }}"/>
+                                <input type="text" name="level[discount]" class="form-control" value="{{ $levelModel->discount }}"/>
                                 <span class='help-block'>请输入0.1~10之间的数字,值为空代表不设置折扣</span>
                             </div>
                         </div>
@@ -84,9 +84,9 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"/>
+                                <input type="submit" name="submit" value="提交" class="btn btn-success"/>
                                 <input type="hidden" name="token" value="token"/>
-                                <input type="button" name="back" onclick='history.back()' style='margin-left:10px;' value="返回列表" class="btn btn-default" />
+                                <input type="button" name="back" onclick='history.back()' value="返回列表" class="btn btn-default back" />
                             </div>
                         </div>
 
@@ -124,7 +124,7 @@
                     return;
                 }
                 $("#module-goods").html("正在搜索....")
-                $.get('{!! yzWebUrl('') !!}', {
+                $.get('{!! yzWebUrl('member.member-level.searchGoods') !!}', {
                     keyword: $.trim($('#search-kwd-goods').val())
                 }, function (dat) {
                     $('#module-menus-goods').html(dat);

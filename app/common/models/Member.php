@@ -2,6 +2,7 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
+use app\common\events\member\BecomeAgent;
 
 /**
  * Created by PhpStorm.
@@ -12,6 +13,13 @@ use app\backend\models\BackendModel;
 class Member extends BackendModel
 {
     public $table = 'mc_members';
+
+    protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4', 'credit5'];
+
+    protected $fillable = ['uniacid', 'mobile', 'groupid', 'createtime', 'nickname', 'avatar', 'gender'
+        , 'salt', 'password'];
+
+    protected $attributes = ['bio' => '', 'resideprovince' => '', 'residecity' => '', 'nationality' => '', 'interest' => '', 'mobile' => '', 'email' => '', 'credit1' => 0, 'credit2' => 0, 'credit3' => 0, 'credit4' => 0, 'credit5' => 0, 'credit6' => 0, 'realname' => '', 'qq' => '', 'vip' => 0, 'birthyear' => 0, 'birthmonth' => 0, 'birthday' => 0, 'constellation' => '', 'zodiac' => '', 'telephone' => '', 'idcard' => '', 'studentid' => '', 'grade' => '', 'address' => '', 'zipcode' => '', 'residedist' => '', 'graduateschool' => '', 'company' => '', 'education' => '', 'occupation' => '', 'position' => '', 'revenue' => '', 'affectivestatus' => '', 'lookingfor' => '', 'bloodtype' => '', 'height' => '', 'weight' => '', 'alipay' => '', 'msn' => '', 'taobao' => '', 'site' => ''];
 
     const INVALID_OPENID = 0;
 
@@ -82,7 +90,7 @@ class Member extends BackendModel
             ->where('uid', $member_id)
             ->with([
                 'yzMember' => function ($query) {
-                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])
+                    return $query->select(['*'])->where('is_black', 0)
                         ->with([
                             'group' => function ($query1) {
                                 return $query1->select(['id', 'group_name']);
@@ -97,8 +105,26 @@ class Member extends BackendModel
                 },
                 'hasOneFans' => function ($query4) {
                     return $query4->select(['uid', 'openid', 'follow as followed']);
+                },
+                'hasOneOrder' => function ($query5) {
+                    return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                        ->uniacid()
+                        ->where('status', 3)
+                        ->groupBy('uid');
                 }
             ]);
+    }
+
+    /**
+     * 获取该公众号下所有用户的 member ID
+     *
+     * @return mixed
+     */
+    public static function getMembersId()
+    {
+        return static::uniacid()
+                    ->select (['uid'])
+                    ->get();
     }
 
     /**
@@ -109,8 +135,7 @@ class Member extends BackendModel
      */
     public static function getMemberById($member_id)
     {
-        return self::where('uid', $member_id)
-            ->first();
+        return self::where('uid', $member_id)->first();
     }
 
     /**
@@ -137,27 +162,6 @@ class Member extends BackendModel
             ->first();
     }
 
-    /**
-     * 设置会员积分/余额
-     *
-     * @param string $member_id
-     * @param string $credittype
-     * @param int $credits
-     */
-    public static function setCredit($member_id = '', $credittype = 'credit1', $credits = 0)
-    {
-        $data = self::getMemberById($member_id)->toArray();
-
-        $newcredit = $credits + $data[$credittype];
-        if ($newcredit <= 0) {
-            $newcredit = 0;
-        }
-
-        self::uniacid()
-            ->where('uid', $member_id)
-            ->update([$credittype=>$newcredit]);
-    }
-
     public static function getOpenId($member_id){
         $data = self::getUserInfos($member_id)->first();
         if ($data) {
@@ -169,5 +173,46 @@ class Member extends BackendModel
                 return self::INVALID_OPENID;
             }
         }
+    }
+
+    /**
+     * 触发会员成为下线事件
+     *
+     * @param $member_id
+     */
+    public static function chkAgent($member_id)
+    {
+        $model = MemberShopInfo::getMemberShopInfo($member_id);
+        event(new BecomeAgent(\YunShop::request()->mid, $model));
+    }
+
+    /**
+     * 定义字段名
+     *
+     * @return array
+     */
+    public function atributeNames()
+    {
+        return [
+            'mobile' => '绑定手机号',
+            'realname' => '真实姓名',
+            //'avatar' => '头像',
+            'telephone' => '联系手机号',
+        ];
+    }
+
+    /**
+     * 字段规则
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'mobile' => 'regex:/^1[34578]\d{9}$/',
+            'realname' => 'required',
+            //'avatar' => 'required',
+            'telephone' => 'regex:/^1[34578]\d{9}$/',
+        ];
     }
 }

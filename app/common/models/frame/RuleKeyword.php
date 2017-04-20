@@ -20,14 +20,14 @@ class RuleKeyword extends BaseModel
     protected $guarded = [''];
 
     public $attributes = array(
-        'module'        => 'sz_yi',
+        'module'        => 'yun_shop',
         'type'          => 1,
         'displayorder'  => 0,
         'status'        => 1
     );
 
 
-    protected static $module = 'sz_yi';
+    protected static $module = 'yun_shop';
 
 
     /*
@@ -38,7 +38,7 @@ class RuleKeyword extends BaseModel
      * @return mixed   $id or false*/
     public static function hasKeyword($keyword)
     {
-        $id = self::select('id')->uniacid()->where('module', static::$module)->where('content', $keyword)->first();
+        $id = self::uniacid()->where('module', static::$module)->where('content', $keyword)->value('id');
 
         return empty($id) ? false : $id;
     }

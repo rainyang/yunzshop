@@ -76,7 +76,7 @@ class GoodsController extends BaseController
         $requestSearch = \YunShop::request()->search;
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
-                return !empty($item) && $item !== 0;
+                return $item !== '';// && $item !== 0;
             });
 
             $categorySearch = array_filter(\YunShop::request()->category, function ($item) {
@@ -94,13 +94,15 @@ class GoodsController extends BaseController
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
             ]
         );
-        //dd($requestSearch);
         $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20)->toArray();
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+
+
 
         $edit_url = 'goods.goods.edit';
         $delete_url = 'goods.goods.destroy';
         $delete_msg = '确认删除此商品？';
+        $sort_url = 'goods.goods.displayorder';
 
         return view('goods.index', [
             'list' => $list['data'],
@@ -115,7 +117,8 @@ class GoodsController extends BaseController
             'product_attr_list' => $product_attr_list,
             'edit_url' => $edit_url,
             'delete_url' => $delete_url,
-            'delete_msg' => $delete_msg
+            'delete_msg' => $delete_msg,
+            'sort_url'  => $sort_url
         ])->render();
     }
 
@@ -276,7 +279,7 @@ class GoodsController extends BaseController
         $this->goods_id = intval(\YunShop::request()->id);
 
         if (!$this->goods_id){
-            $this->error('请传入正确参数.');
+            $this->message('请传入正确参数.');
         }
 
         $requestGoods = \YunShop::request()->goods;
@@ -477,8 +480,7 @@ class GoodsController extends BaseController
     {
         $keyword = \YunShop::request()->keyword;
         $goods = Goods::getGoodsByName($keyword);
-        $goods = set_medias($goods, array('thumb', 'share_icon'));
-
+        //$goods = set_medias($goods, array('thumb', 'share_icon'));
         return view('goods.query', [
             'goods' => $goods
         ])->render();

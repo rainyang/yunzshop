@@ -2,7 +2,6 @@
 
 namespace app\frontend\modules\order\models;
 
-use app\common\models\Order;
 
 class OrderListModel extends Order
 {
@@ -16,8 +15,8 @@ class OrderListModel extends Order
     public static function getOrderList($uid)
     {
         $orders = self::with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title','goods_option_id','goods_option_title']);
-        }])->where('uid','=',$uid);
+            return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title','goods_option_id','goods_option_title','comment_status']);
+        }])->where('uid','=',$uid)->orderBy('id','desc');
         return $orders;
     }
 

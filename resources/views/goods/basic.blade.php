@@ -1,4 +1,6 @@
 <!-- 供货商end -->
+<link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
+
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
     <div class="col-sm-9 col-xs-12">
@@ -8,14 +10,14 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>{{$lang['shopname']}}</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>{{$lang['shopname']}}</label>
     <div class="col-sm-9 col-xs-12">
         <input type="text" name="goods[title]" id="goodsname" class="form-control" value="{{$goods['title']}}" />
     </div>
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品分类</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span>*</span>商品分类</label>
     <div class="col-sm-8 col-xs-12">
 
         {!!$catetory_menus!!}
@@ -25,8 +27,8 @@
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">品牌</label>
-    <div class="col-sm-8 col-xs-12">
-        <select name="goods[brand_id]" id="brand" style="width:250px">
+    <div class="col-sm-9 col-xs-12">
+        <select name="goods[brand_id]" id="brand" >
             <option value="0">请选择品牌</option>
             @if (!empty($brands))
             @foreach ($brands as $brand)
@@ -49,7 +51,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品单位</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>商品单位</label>
     <div class="col-sm-6 col-xs-6">
         <input type="text" name="goods[sku]" id="unit" class="form-control" value="{{$goods['sku']}}" />
         <span class="help-block">如: 个/件/包</span>
@@ -76,7 +78,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>{{$lang['mainimg']}}</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>{{$lang['mainimg']}}</label>
     <div class="col-sm-9 col-xs-12 detail-logo">
         {!! app\common\helpers\ImageHelper::tplFormFieldImage('goods[thumb]', $goods['thumb']) !!}
         <span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>
@@ -111,7 +113,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品价格</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>商品价格</label>
     <div class="col-sm-9 col-xs-12 form-inline">
         <div class="input-group form-group col-sm-3">
             <span class="input-group-addon">现价</span>
@@ -134,7 +136,18 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>库存</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">重量</label>
+    <div class="col-sm-6 col-xs-12">
+        <div class="input-group">
+            <input type="text" name="goods[weight]" id="weight" class="form-control" value="{{$goods['weight']?$goods['weight']:0}}" />
+            <span class="input-group-addon">克</span>
+        </div>
+        <div class='help-block'>商品重量设置空或0，取首重（设置配送模板相关）</div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>库存</label>
     <div class="col-sm-6 col-xs-12">
         <div class="input-group form-group col-sm-3">
             <input type="text" name="goods[stock]" id="total" class="form-control" value="{{$goods['stock']}}" />

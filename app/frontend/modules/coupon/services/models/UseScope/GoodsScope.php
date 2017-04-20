@@ -1,8 +1,10 @@
 <?php
 namespace app\frontend\modules\coupon\services\models\UseScope;
 
+use app\common\exceptions\AppException;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModelGroup;
+use Illuminate\Support\Collection;
 
 /**
  * Created by PhpStorm.
@@ -15,10 +17,16 @@ class GoodsScope extends CouponUseScope
     protected $orderGoods;
     public function valid()
     {
-        if(count($this->getOrderGoodsOfUsedCoupon())){
+        //dd($this->getOrderGoodsOfUsedCoupon());
+        //exit;
+        if($this->getOrderGoodsOfUsedCoupon()->isNotEmpty()){
+            //dd($this->getOrderGoodsOfUsedCoupon());
+            //exit;
+            //todo 此处有bug ,如果调用处提前结束了判断条件,会导致 orderGoodsGroup属性获取失败
             $this->setOrderGoodsGroup();
             return true;
         }
+
         return false;
     }
 
@@ -27,30 +35,38 @@ class GoodsScope extends CouponUseScope
      */
     private function setOrderGoodsGroup()
     {
+        //dd($this->getOrderGoodsOfUsedCoupon());
         $this->orderGoodsGroup = new PreGeneratedOrderGoodsModelGroup($this->getOrderGoodsOfUsedCoupon());
-        //dd($this->orderGoodsGroup);exit;
     }
+
+    /**
+     * (缓存)订单中使用了该优惠券的商品组
+     * @return Collection
+     */
     protected function getOrderGoodsOfUsedCoupon(){
         if(isset($this->orderGoods)){
             return $this->orderGoods;
         }
         return $this->orderGoods = $this->_getOrderGoodsOfUsedCoupon();
     }
+
+    /**
+     * 订单中使用了该优惠券的商品组
+     * @return Collection
+     * @throws AppException
+     */
     private function _getOrderGoodsOfUsedCoupon()
     {
-        $result = [];
-        foreach ($this->coupon->getPreGeneratedOrderModel()->getOrderGoodsModels() as $orderGoodsModel) {
-            /**
-             * @var $orderGoodsModel PreGeneratedOrderGoodsModel
-             */
-            /*dd($this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids);
-            dd($orderGoodsModel->getGoodsId());
-            exit;*/
-            if (in_array($orderGoodsModel->getGoodsId(), $this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids)) {
-                $result[] = $orderGoodsModel;
-            }
+        $orderGoods =  $this->coupon->getPreGeneratedOrderModel()->getOrderGoodsModels()->filter(
+            function ($orderGoods){
+                /**
+                 * @var $orderGoods PreGeneratedOrderGoodsModel
+                 */
+                return in_array($orderGoods->getGoodsId(), $this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids);
+        });
+        if($orderGoods->unique('is_plugin')->count() > 1) {
+            throw new AppException('自营商品与第三方商品不能共用一张优惠券');
         }
-        //dd($result);exit;
-        return $result;
+        return $orderGoods;
     }
 }

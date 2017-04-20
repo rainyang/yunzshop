@@ -9,92 +9,84 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\events\discount\OnDiscountInfoDisplayEvent;
-use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
-use app\common\exceptions\AppException;
-use app\frontend\modules\goods\services\GoodsService;
-use app\frontend\modules\member\models\MemberCart;
-use app\frontend\modules\member\services\MemberService;
+use app\common\events\order\ShowPreGenerateOrder;
+use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\order\services\OrderService;
-use app\frontend\modules\shop\services\ShopService;
 
-class PreGeneratedController extends ApiController
+abstract class PreGeneratedController extends ApiController
 {
-    private $param;
-    private $memberCarts;
-    public function index()
+
+    protected function index()
     {
 
-        $this->param['goods'] = [
-            'goods_id'=>\YunShop::request()->get('goods_id'),
-            'total'=>\YunShop::request()->get('total'),
-            'option_id'=>\YunShop::request()->get('option_id'),
-        ];
-        $this->memberCarts[] = (new MemberCart($this->param['goods']));
+        $order_data = $this->getOrderData();
+        $total_price = $order_data->sum('order.price');
+        $total_goods_price = $order_data->sum('order.goods_price');
+        $total_dispatch_price = $order_data->sum('order.dispatch_price');
 
-        $this->run();
+        $data['dispatch'] = $order_data[0]['dispatch'];
+        $order_data->map(function ($order_data) {
+            return $order_data->forget('dispatch');
+        });
+
+        $data += compact('total_price', 'total_dispatch_price', 'order_data', 'total_goods_price');
+        return $this->successJson('成功', $data);
+
     }
 
-    public function cart()
+    /**
+     * 获取订单数据组
+     * @return \Illuminate\Support\Collection|static
+     */
+    protected function getOrderData()
     {
-        if(!isset($_GET['cart_ids'])){
-            return $this->errorJson('请选择要结算的商品');
+        $order_data = collect();
+        $shop_order = $this->getShopOrder();
+
+        if(!empty($shop_order)){
+            $order_data->push(OrderService::getOrderData($shop_order));
         }
-        if(!is_array($_GET['cart_ids'])){
-            $cartIds = explode(',',$_GET['cart_ids']);
-        }
-        if(!count($cartIds)){
-            return $this->errorJson('参数格式有误');
-        }
-        $cart = MemberCart::getCartsByIds($cartIds);
-        //dd($cart);exit;
-        $this->memberCarts = $cart;
-        $this->run();
+
+        $order_data = $order_data->merge($this->getPluginOrderData()[0]);
+
+        return $order_data;
     }
 
-    private function run()
+    /**
+     * 获取全部购物车记录
+     * @return mixed
+     */
+    abstract protected function getMemberCarts();
+
+    /**
+     * 获取商城的订单
+     * @return \app\frontend\modules\order\services\models\PreGeneratedOrderModel
+     */
+    protected function getShopOrder()
     {
 
-        $member_model = MemberService::getCurrentMemberModel();
-        //dd($member_model);exit;
-        if(!isset($member_model)){
-            throw new AppException('用户登录状态过期');
-        }
-        $shop_model = ShopService::getCurrentShopModel();
-        $order_goods_models = OrderService::getOrderGoodsModels($this->memberCarts);
-        if(!count($order_goods_models)){
-            throw new AppException('未找到商品');
-        }
-        //dd($order_goods_models);exit;
-        list($result, $message) = GoodsService::GoodsListAvailable($order_goods_models);
-        if ($result === false) {
-            throw new AppException('$message');
-        }
-
-        $order_model = OrderService::getPreGeneratedOrder($order_goods_models, $member_model, $shop_model);
-
-        $order = $order_model->toArray();
-
-        $data = [
-            'order' => $order
-        ];
-        $data = array_merge($data, $this->getDiscountEventData($order_model), $this->getDispatchEventData($order_model));
-        //var_dump($data);
-        //dd($data);
-        return $this->successJson('成功',$data);
+        return OrderService::createOrderByMemberCarts($this->getShopMemberCarts());
     }
 
-    private function getDiscountEventData($order_model)
+    /**
+     * 获取商城的购物车组
+     * @return static
+     */
+    protected function getShopMemberCarts()
     {
-        $Event = new OnDiscountInfoDisplayEvent($order_model);
-        event($Event);
-        return $Event->getMap();
+        return MemberCartService::filterShopMemberCart($this->getMemberCarts());
     }
 
-    private function getDispatchEventData($order_model)
+    /**
+     * 获取插件的订单数据
+     * @return array
+     */
+    private function getPluginOrderData()
     {
-        $Event = new OnDispatchTypeInfoDisplayEvent($order_model);
-        event($Event);
-        return ['dispatch' => $Event->getMap()];
+        $event = new ShowPreGenerateOrder($this->getMemberCarts());
+        event($event);
+        return $event->getData();
     }
+
+
 }

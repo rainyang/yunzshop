@@ -6,8 +6,8 @@
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
                 <ul class="add-snav">
-                    <li class="active"><a href="#">会员管理</a></li>
-                    <li><a href="#">会员等级</a></li>
+                    <li class="active"><a href="#">会员等级</a></li>
+
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
@@ -29,7 +29,7 @@
                                 <td>{{ $list->level }}</td>
                                 <td>{{ $list->level_name }}</td>
                                 <td>
-                                    @if(empty($shopSet))
+                                    @if(empty($shopSet['level_type']))
                                         @if($list->order_money > 0)
                                             完成订单金额满{{ $list->order_money }}元
                                         @else
@@ -47,7 +47,9 @@
 
                                     @if($shopSet['level_type'] == 2)
                                         @if($list->goods_id)
-                                        购买商品ID：[{{ $list->goods_id }}]升级
+                                            购买商品[ID：{{ $list->goods_id }}]{{ $list->goods->title }}升级
+                                        @else
+                                            不自动升级
                                         @endif
                                     @endif
                                 </td>
@@ -60,8 +62,9 @@
                             </tbody>
                         </table>
                     </div>
+                    {!! $pager !!}
                     <div class='panel-footer'>
-                        <a class='btn btn-primary' href="{{ yzWebUrl('member.member-level.store') }}"><i class="fa fa-plus"></i> 添加新等级</a>
+                        <a class='btn btn-info' href="{{ yzWebUrl('member.member-level.store') }}"><i class="fa fa-plus"></i> 添加新等级</a>
                     </div>
                 </div>
             </form>

@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
+
+
     private static $_current_member;
     public static function getCurrentMemberModel(){
         if(isset(self::$_current_member)){
@@ -45,7 +47,7 @@ class MemberService
      */
     public static function isLogged()
     {
-        return Session::get('member_id') && Session::get('member_id') > 0;
+        return \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0;
     }
 
     /**
@@ -60,12 +62,18 @@ class MemberService
                 'mobile' => $mobile,
                 'password' => $password
             );
-            $check = array(
-                'mobile' => array('required',
-                    'digits:11',
-                    'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
-                ),
-                'password' => 'required'
+            $rules = array(
+                'mobile' => 'regex:/^1[34578]\d{9}$/',
+                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/'
+            );
+            $message = array(
+                'regex'    => ':attribute 格式错误',
+                'required' => ':attribute 不能为空',
+                'min' => ':attribute 最少6位'
+            );
+            $attributes = array(
+                "mobile" => '手机号',
+                'password' => '密码',
             );
         } else {
             $data = array(
@@ -73,22 +81,33 @@ class MemberService
                 'password' => $password,
                 'confirm_password' => $confirm_password
             );
-            $check = array(
-                'mobile' => array('required',
-                    'digits:11',
-                    'regex:/^(((13[0-9]{1})|(15[0-9]{1})|(17[0-9]{1}))+\d{8})$/'
-                ),
-                'password' => 'required',
+            $rules = array(
+                'mobile' => 'regex:/^1[34578]\d{9}$/',
+                'password' => 'required|min:6|regex:/^[A-Za-z0-9@!#\$%\^&\*]+$/',
                 'confirm_password' => 'same:password'
+            );
+            $message = array(
+                'regex'    => ':attribute 格式错误',
+                'required' => ':attribute 不能为空',
+                'min' => ':attribute 最少6位',
+                'same' => ':attribute 不匹配'
+            );
+            $attributes = array(
+                "mobile" => '手机号',
+                'password' => '密码',
+                'confirm_password' => '密码',
             );
         }
 
-        $validator = \Validator::make($data, $check);
+        $validate = \Validator::make($data,$rules,$message,$attributes);
 
-        if ($validator->fails()) {
-            return false;
+        if ($validate->fails()) {
+            $warnings = $validate->messages();
+            $show_warning = $warnings->first();
+
+            return show_json('0', $show_warning);
         } else {
-            return true;
+            return show_json('1');
         }
     }
 
@@ -247,13 +266,37 @@ class MemberService
         return $arr;
     }
 
+    /**
+     * pc端注册 保存信息
+     *
+     * @param $member_info
+     * @param $uniacid
+     */
     protected function save($member_info, $uniacid)
     {
         Session::set('member_id', $member_info['uid']);
 
-        $cookieid = "__cookie_sz_yi_userid_{$uniacid}";
+        $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
 
         Cookie::queue($cookieid, $member_info['uid']);
         Cookie::queue('member_id', $member_info['uid']);
+    }
+
+    /**
+     * 检查验证码
+     *
+     * @return array
+     */
+    public static function checkCode()
+    {
+        $code = \YunShop::request()->code;
+
+        if ((Session::get('codetime') + 60 * 5) < time()) {
+            return show_json('0', '验证码已过期,请重新获取');
+        }
+        if (Session::get('code') != $code) {
+            return show_json('0', '验证码错误,请重新获取');
+        }
+        return show_json('1');
     }
 }

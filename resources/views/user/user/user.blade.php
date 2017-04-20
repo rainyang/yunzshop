@@ -1,48 +1,54 @@
 @extends('layouts.base')
 
 @section('content')
+
+<div class="right-titpos">
+    <ul class="add-snav">
+        <li class="active"><a href="#">操作员</a></li>
+    </ul>
+</div>
 <form action="" method="get" class='form form-horizontal'>
     <div class="panel panel-info">
-        <div class="panel-heading">筛选</div>
+        <!--<div class="panel-heading">筛选</div>-->
         <div class="panel-body">
             <form action="./index.php" method="get" class="form-horizontal" role="form">
                 <input type="hidden" name="c" value="site"/>
                 <input type="hidden" name="a" value="entry"/>
-                <input type="hidden" name="m" value="sz_yi"/>
+                <input type="hidden" name="m" value="yun_shop"/>
                 <input type="hidden" name="do" value="QDaf"/>
                 <input type="hidden" name="route" value="user.user.index"/>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>
-                    <div class="col-xs-12 col-sm-8 col-lg-9">
-                        <input class="form-control" name="keyword[user]" id="" type="text" value="" placeholder="可搜索操作名帐号/姓名/手机号">
+                <div class="form-group col-xs-12 col-sm-8 col-lg-5">
+                   <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>-->
+                    <div class="">
+                        <input class="form-control" name="search[keyword]" id="" type="text" value="{{ $search['keyword'] }}" placeholder="可搜索操作名帐号/姓名/手机号">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">角色</label>
-                    <div class="col-xs-12 col-sm-8 col-lg-9">
-                        <select name="roleid" class='form-control'>
+                <div class="form-group col-xs-12 col-sm-8 col-lg-3">
+                    <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">角色</label>-->
+                    <div class="">
+                        <select name="search[role_id]" class='form-control'>
                             <option value="" selected >无角色</option>
                             @foreach($roleList as $list)
-                            <option value="{{ $list['id'] }}" {if $_GPC['roleid']== $role['id']} selected{/if}>{{ $list['name'] }}</option>
+                            <option value="{{ $list['id'] }}" @if($search['role_id'] == $list['id']) selected @endif>{{ $list['name'] }}</option>
                             @endforeach
                         </select>
                     </div>
 
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
-                    <div class="col-xs-12 col-sm-8 col-lg-9">
-                        <select name="status" class='form-control'>
-                            <option value="" {if $_GPC['status']==''} selected{/if}></option>
-                            <option value="1" {if $_GPC['status'] == '1'} selected{/if}>启用</option>
-                            <option value="0" {if $_GPC['status'] == '0'} selected{/if}>禁用</option>
+                <div class="form-group col-xs-12 col-sm-8 col-lg-3">
+                   <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>-->
+                    <div class="">
+                        <select name="search[status]" class='form-control'>
+                            <option value="" selected >无状态</option>
+                            <option value="2" @if($search['status'] == 2) selected @endif>启用</option>
+                            <option value="1" @if($search['status'] == 1) selected @endif>禁用</option>
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"> </label>
-                    <div class="col-xs-12 col-sm-8 col-lg-9">
-                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                <div class="form-group col-xs-12 col-sm-8 col-lg-1">
+                   <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"> </label>-->
+                    <div class="">
+                        <button class="btn btn-block btn-success"><i class="fa fa-search"></i> 搜索</button>
                     </div>
                 </div>
             </form>
@@ -58,7 +64,7 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>登录ID</th>
+                    <th>操作员账号</th>
                     <th>角色</th>
                     <th>姓名</th>
                     <th>手机</th>
@@ -99,7 +105,7 @@
 
         </div>
         <div class='panel-footer'>
-            <a class='btn btn-primary' href="{{ yzWebUrl('user.user.store') }}"><i class="fa fa-plus"></i> 添加新操作员</a>
+            <a class='btn btn-info' href="{{ yzWebUrl('user.user.store') }}"><i class="fa fa-plus"></i> 添加新操作员</a>
         </div>
     </div>
 </form>

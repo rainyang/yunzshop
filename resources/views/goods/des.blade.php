@@ -1,15 +1,14 @@
+<link rel="stylesheet" type="text/css" href="{{static_url('yunshop/goods/goods.css')}}"/>
+
+
 <div class="form-group">
-	<label class="col-xs-12 col-sm-3 col-md-2 control-label">{{$lang['shopinfo']}}</label>
-	<div class="col-sm-9 col-xs-12">
+	<label class="col-xs-12 col-sm-3 col-md-1 control-label">{{$lang['shopinfo']}}</label>
+	<div class="col-sm-9 col-xs-12 col-md-11">
 							{!! app\common\helpers\UeditorHelper::tpl_ueditor('goods[content]', $goods['content']) !!}
 
 	</div>
 </div>
-<style type="text/css">
-.top_menu{
-    top: 100px !important;
-}
-</style>
+
 <script type="text/javascript">
   require(['bootstrap'], function ($) {
     $(document).scroll(function () {

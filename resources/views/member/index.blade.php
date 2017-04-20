@@ -1,47 +1,47 @@
 @extends('layouts.base')
 
 @section('content')
+
+<link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="w1200 m0a">
         <div class="rightlist">
             <!-- 新增加右侧顶部三级菜单 -->
             <div class="right-titpos">
                 <ul class="add-snav">
                     <li class="active"><a href="{{yzWebUrl('member.member.index')}}">会员管理</a></li>
-                    <li><a href="javascript:void">全部会员</a></li>
+                    <li><a href="javascript:void"> &nbsp;  <i class="fa fa-angle-double-right"></i> &nbsp;全部会员</a></li>
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
-            <div class="panel panel-info">
-                <div class="panel-heading">筛选</div>
+            <div class="panel panel-info"><!--
+                <div class="panel-heading">筛选</div>-->
                 <div class="panel-body">
-                    <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
-                        <input type="hidden" name="c" value="site" />
-                        <input type="hidden" name="a" value="entry" />
-                        <input type="hidden" name="m" value="sz_yi" />
-                        <input type="hidden" name="do" value="1234" id="form_do" />
-                        <input type="hidden" name="route" value="member.member.search" id="route" />
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
-                                <input type="text" class="form-control"  name="mid" value="{{$request['mid']}}"/>
+                    <form action="" method="post" class="form-horizontal" role="form" id="form1">
+                        <input type="hidden" name="route" value="member.member.index" id="route" />
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">
+                            <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>-->
+                            <div class="">
+                                <input type="text" placeholder="会员ID" class="form-control"  name="mid" value="{{$request['mid']}}"/>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                           <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->
+                            <div class="">
                                 <input type="text" class="form-control"  name="realname" value="{{$request['realname']}}" placeholder="可搜索昵称/姓名/手机号"/>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">是否关注</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                      <!--      <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">是否关注</label>-->
+                            <div class="">
                                 <select name='followed' class='form-control'>
-                                    <option value=''></option>
-                                    <option value='0'
-                                            @if($request['followed']=='0')
+                                    <option value=''>不限关注</option>
+                                   <!--
+                                    <option value='2'
+                                            @if($request['followed']=='2')
                                             selected
                                             @endif
                                     >未关注
+                                    -->
                                     </option>
                                     <option value='1'
                                             @if($request['followed']=='1')
@@ -49,8 +49,8 @@
                                             @endif
                                     >已关注
                                     </option>
-                                    <option value='2'
-                                            @if($request['followed']=='2')
+                                    <option value='0'
+                                            @if($request['followed']=='0')
                                             selected
                                             @endif
                                     >取消关注
@@ -58,11 +58,11 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员等级</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                           <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员等级</label>-->
+                            <div class="">
                                 <select name='level' class='form-control'>
-                                    <option value=''></option>
+                                    <option value=''>会员等级不限</option>
                                     @foreach($levels as $level)
                                         <option value='{{$level['id']}}'
                                                 @if($request['level']==$level['id'])
@@ -73,11 +73,11 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员分组</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                          <!--  <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员分组</label>-->
+                            <div class="">
                                 <select name='groupid' class='form-control'>
-                                    <option value=''></option>
+                                    <option value=''>会员分组不限</option>
                                     @foreach($groups as $group)
                                         <option value='{{$group['id']}}'
                                                 @if($request['groupid']==$group['id'])
@@ -88,59 +88,82 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">注册时间</label>
-                            <div class="col-sm-2">
-                                <label class='radio-inline'>
-                                    <input type='radio' value='0' name='searchtime'
-                                           @if($request['searchtime']=='0')
-                                           checked
-                                            @endif>不搜索
-                                </label>
-                                <label class='radio-inline'>
-                                    <input type='radio' value='1' name='searchtime'
-                                           @if($request['searchtime']=='1')
-                                           checked{
-                                            @endif>搜索
-                                </label>
-                            </div>
-                            <div class="col-sm-7 col-lg-7 col-xs-12">
-                                时间
-                            </div>
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                <!--        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">黑名单</label>-->
+                        <div class="">
+                            <select name='isblack' class='form-control'>
+                                <option value=''>不限黑名单</option>
+                                <option value='0'
+                                        @if($request['isblack']=='0')
+                                selected
+                                @endif>否</option>
+                                <option value='1'
+                                        @if($request['isblack']=='1')
+                                selected
+                                @endif>是</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">黑名单</label>
-                            <div class="col-sm-8 col-lg-9 col-xs-12">
-                                <select name='isblack' class='form-control'>
-                                    <option value=''></option>
+                    </div>
+
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <div class="">
+                                <select name='isagent' class='form-control'>
+                                    <option value=''>推广员不限</option>
                                     <option value='0'
-                                            @if($request['isblack']=='0')
+                                            @if($request['isagent']=='0')
                                             selected
                                             @endif>否</option>
                                     <option value='1'
-                                            @if($request['isblack']=='1')
+                                            @if($request['isagent']=='1')
                                             selected
                                             @endif>是</option>
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
-                            <div class="col-sm-7 col-lg-9 col-xs-12">
-                                <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
-                                <input type="hidden" name="token" value="{{$var['token']}}" />
-                                <button type="button" name="export" value="1" id="export" class="btn btn-primary">导出 Excel</button>
+
+                        <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
+
+                            <div class="time">
+
+                                <select name='searchtime' class='form-control'>
+                                    <option value=''>注册时间不限</option>
+                                    <option value='0'
+                                            @if($request['searchtime']=='0')
+                                    selected
+                                    @endif>不搜索注册时间</option>
+                                    <option value='1'
+                                            @if($request['searchtime']=='1')
+                                    selected
+                                    @endif>搜索注册时间</option>
+                                </select>
+                            </div>
+                            <div class="search-select">
+                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('times', [
+                                'starttime'=>date('Y-m-d H:i', $starttime),
+                                'endtime'=>date('Y-m-d H:i',$endtime),
+                                'start'=>0,
+                                'end'=>0
+                                ], true) !!}
                             </div>
                         </div>
-                        <div class="form-group">
+
+                        <div class="form-group  col-xs-12 col-sm-7 col-lg-4">
+                            <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
+                            <div class="">
+                                <button type="button" name="export" value="1" id="export" class="btn btn-default excel back ">导出 Excel</button>
+                                <input type="hidden" name="token" value="{{$var['token']}}" />
+                                <button class="btn btn-success "><i class="fa fa-search"></i> 搜索</button>
+
+                            </div>
                         </div>
+
                     </form>
                 </div>
             </div><div class="clearfix">
                 <div class="panel panel-default">
                     <div class="panel-heading">总数：{{$total}}   </div>
-                    <div class="panel-body">
-                        <table class="table table-hover" style="overflow:visible;">
+                    <div class="panel-body" style="margin-bottom:200px">
+                        <table class="table table-hover" style="overflow:visible">
                             <thead class="navbar-inner">
                             <tr>
                                 <th style='width:8%;text-align: center;'>会员ID</th>
@@ -152,9 +175,9 @@
                                 <th style='width:8%;'>等级/分组</th>
                                 <th style='width:10%;'>注册时间</th>
                                 <th style='width:15%;'>积分/余额</th>
-                                <th style='width:15%;'>成交</th>
+                                <th style='width:10%;'>成交</th>
                                 <th style='width:8%'>关注</th>
-                                <th style='width:8%'>操作</th>
+                                <th style='width:13%'>操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -164,11 +187,11 @@
 
                                     @if($opencommission)
                                         <td style="text-align: center;"
-                                            @if(!empty($row['yz_member']['agent_id']))
-                                            title='ID: {{$row['yz_member']['agent_id']}}'
+                                            @if(!empty($row['yz_member']['parent_id']))
+                                            title='ID: {{$row['yz_member']['parent_id']}}'
                                                 @endif
                                         >
-                                            @if(empty($row['yz_member']['agent_id']))
+                                            @if(empty($row['yz_member']['parent_id']))
                                                 @if($row['yz_member']['is_agent']==1)
                                                     <label class='label label-primary'>总店</label>
                                                 @else
@@ -214,8 +237,8 @@
                                     <td>
                                         {{date('Y-m-d',$row['createtime'])}}<br/>
                                         {{date('H:i',$row['createtime'])}}</td>
-                                    <td><label class="label label-primary">积分：{{$row['credit1']}}</label><br/><label class="label label-danger">余额：{{$row['credit2']}}</label></td>
-                                    <td><label class="label label-primary">订单：
+                                    <td><label class="label label-info">积分：{{$row['credit1']}}</label><br/><label class="label label-danger">余额：{{$row['credit2']}}</label></td>
+                                    <td><label class="label label-info">订单：
                                         @if(!empty($row['has_one_order']['total']))
                                                 {{$row['has_one_order']['total']}}
                                         @else
@@ -231,7 +254,7 @@
                                             <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
                                         @else
                                             @if(empty($row['has_one_fans']['followed']))
-                                                @if(empty($row['uid']))
+                                                @if(empty($row['has_one_fans']['uid']))
                                                     <label class='label label-default'>未关注</label>
                                                 @else
                                                     <label class='label label-warning'>取消关注</label>
@@ -246,11 +269,12 @@
                                             <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
                                             <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 9999'>
                                                 <li><a href="{{yzWebUrl('member.member.detail', ['id' => $row['uid']])}}" title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>
-                                                <li><a  href="{{yzWebUrl('order', ['op' => 'display','openid'=>$row['uid']])}}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
-                                                <li><a href="{{yzWebUrl('finance/recharge',['op'=>'credit1','id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
-                                                <li><a href="{{yzWebUrl('finance/recharge', ['op'=>'credit2','id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
+                                                <li><a  href="{{yzWebUrl('order.list', ['search[ambiguous][field]' => 'order','search[ambiguous][string'=>'uid:'.$row['uid']])}}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>
+                                                <li><a href="{{yzWebUrl('finance.point-recharge',['id'=>$row['uid']])}}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>
+                                                <li><a href="{{yzWebUrl('finance.balance.recharge', ['member_id'=>$row['uid']])}}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>
+                                                <li><a href="{{yzWebUrl('member.member.agent', ['id'=>$row['uid']])}}" title='我的下线'><i class='fa fa-exchange'></i> 推广下线 </a></li>
                                                 @if($row['yz_member']['is_black']==1)
-                                                    <li><a href="yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
+                                                    <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>0])}}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                                                 @else
                                                     <li><a href="{{yzWebUrl('member.member.black', ['id' => $row['uid'],'black'=>1])}}" title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a></li>
                                                 @endif

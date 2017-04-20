@@ -8,30 +8,39 @@
 
 namespace app\frontend\modules\order\controllers;
 
-use app\common\components\BaseController;
+use app\common\components\ApiController;
+use app\common\exceptions\AppException;
+use app\common\requests\Request;
 use app\frontend\modules\order\models\OrderAddress;
 use app\frontend\modules\order\models\OrderDetailModel;
 
 
 class DetailController extends ApiController
 {
-    public function index(){
-        $orderId = \YunShop::request()->order_id;
-        if (!$orderId) {
-            return $this->errorJson($msg = '缺少访问参数', $data = []);
-        } else {
-            $orderDetail = OrderDetailModel::getOrderDetail($orderId);
-            $data= $orderDetail->toArray();
-            //todo 配送类型
-            //dd($orderDetail);
-            if($orderDetail['dispatch_type_id'] == 1){
-                $data['address_info'] = OrderAddress::select('address','mobile','realname')->where('order_id',$orderDetail['id'])->first();
-            }
-            if (!$orderDetail){
-                return $this->errorJson($msg = '未找到数据', []);
-            } else {
-                return $this->successJson($msg = 'ok', $data);
-            }
+    public function index(Request $request){
+        $this->validate($request, [
+            'order_id' => 'required|integer'
+        ]);
+        $orderId = $request->query('order_id');
+
+        $order = OrderDetailModel::getOrderDetail($orderId);
+
+        if ($order->uid != \YunShop::app()->getMemberId()) {
+            throw new AppException('(ID:'.$order->id.')该订单属于其他用户');
         }
+        $order->button_models = $order->button_models;
+
+        $data= $order->toArray();
+
+        //todo 配送类型
+        if($order['dispatch_type_id'] == 1){
+            $data['address_info'] = OrderAddress::select('address','mobile','realname')->where('order_id',$order['id'])->first();
+        }
+        if (!$order){
+            return $this->errorJson($msg = '未找到数据', []);
+        } else {
+            return $this->successJson($msg = 'ok', $data);
+        }
+
     }
 }

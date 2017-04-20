@@ -18,5 +18,7 @@ class MemberCart extends BaseModel
 
     protected $table = 'yz_member_cart';
 
-
+    public function isOption(){
+        return !empty($this->option_id);
+    }
 }

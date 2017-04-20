@@ -104,7 +104,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
-                            {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[images]',iunserializer($comment->images)) !!}
+                            {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[images]',unserialize($comment->images)) !!}
                         </div>
                     </div>
 
@@ -112,7 +112,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
-                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"/>
+                            <input type="submit" name="submit" value="提交" class="btn btn-success "/>
                             <input type="button" name="back" onclick='history.back()' style='margin-left:10px;'
                                    value="返回列表" class="btn
                             btn-default"/>

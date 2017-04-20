@@ -14,6 +14,7 @@ use app\frontend\modules\dispatch\services\models\GoodsDispatch;
 use app\frontend\modules\dispatch\services\models\OrderDispatch;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+use Illuminate\Support\Collection;
 
 
 class DispatchService
@@ -24,6 +25,7 @@ class DispatchService
         event($Event);
         //获取反馈
         $dispatch_detail = $Event->getData();
+
         return new OrderDispatch($dispatch_detail);
     }
     public static function getCreatedOrderDispatchModel(Order $order){
@@ -42,4 +44,6 @@ class DispatchService
         $OrderGoods->dispatch_details;
         return new GoodsDispatch($OrderGoods->dispatch_details);
     }
+
+
 }

@@ -8,10 +8,13 @@
 @else
 <form id="dataform" action="{{ yzWebUrl('user.user.store') }}" method="post" class="form-horizontal form" >
 @endif
+    <div class="right-titpos">
+        <ul class="add-snav">
+            <li class="active"><a href="#">操作员&nbsp;  <i class="fa fa-angle-double-right"></i> &nbsp;操作员设置</a></li>
+        </ul>
+    </div>
     <div class='panel panel-default'>
-        <div class='panel-heading'>
-            操作员设置
-        </div>
+
 
         <div class='panel-body'>
             <div class="form-group">
@@ -41,13 +44,13 @@
             </div>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label"> 姓名</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 姓名</label>
                 <div class="col-sm-9 col-xs-12">
                     <input type="text" name="widgets[profile][realname]" class="form-control" value="{{ $user->userProfile->realname or '' }}" />
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>电话</label>
                 <div class="col-sm-9 col-xs-12">
                     <input type="text" name="widgets[profile][mobile]" class="form-control" value="{{ $user->userProfile->mobile or '' }}" />
                 </div>
@@ -81,8 +84,8 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                 <div class="col-sm-9 col-xs-12">
-                    <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
-                    <input type="button" name="back" onclick='history.back()' style='margin-left:10px;' value="返回列表" class="btn btn-default" />
+                    <input type="submit" name="submit" value="提交" class="btn btn-success" />
+                    <input type="button" name="back" onclick='history.back()' value="返回列表" class="btn btn-default back" />
                 </div>
             </div>
 
