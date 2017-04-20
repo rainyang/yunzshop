@@ -171,4 +171,28 @@ EOF;
 
         return $s;
     }
+
+    /**
+     * 前端组件上传图片
+     *
+     * @param $fileinput
+     * @return null|string
+     */
+    public static function upload($fileinput, $dir = 'upload')
+    {
+        if (\Request::isMethod('post')) {
+            $file = \Request::file($fileinput);
+
+            if ($file->isValid()) {
+                // 获取文件相关信息
+                $originalName = $file->getClientOriginalName(); // 文件原名
+                //$ext = $file->getClientOriginalExtension();     // 扩展名
+                $realPath = $file->getRealPath();   //临时文件的绝对路径
+
+                $bool = \Storage::disk($dir)->put($originalName, file_get_contents($realPath));
+
+                return $bool ? $originalName : '';
+            }
+        }
+    }
 }
