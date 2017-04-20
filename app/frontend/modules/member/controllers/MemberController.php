@@ -496,11 +496,7 @@ class MemberController extends ApiController
      */
     public function uploadImg()
     {
-        echo '<pre>';print_r(\YunShop::request());exit;
-
-        $name = \YunShop::request()->name;
-
-        $img = ImageHelper::upload($name);
+        $img = ImageHelper::upload(\YunShop::request()->name);
 
         return $img;
     }
