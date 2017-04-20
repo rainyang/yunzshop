@@ -7,6 +7,13 @@ class Coupon extends \app\common\models\Coupon
 {
     public $table = 'yz_coupon';
 
+    protected $casts = [
+        'goods_ids' => 'json',
+        'category_ids' => 'json',
+        'goods_names' => 'json',
+        'categorynames' => 'json',
+    ];
+
     /**
      * @param $keyword
      * @return mixed
