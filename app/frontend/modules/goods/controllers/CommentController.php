@@ -51,7 +51,6 @@ class CommentController extends ApiController
             'order_id' => \YunShop::request()->order_id,
             'goods_id' => \YunShop::request()->goods_id,
             'content' => \YunShop::request()->content,
-            'level' => \YunShop::request()->level,
         ];
         if (!$comment['order_id']) {
             return $this->errorJson('评论失败!未检测到订单ID!');
@@ -66,11 +65,9 @@ class CommentController extends ApiController
             return $this->errorJson('评论失败!未检测到评论等级!');
         }
 
-        if (isset($comment['images']) && is_array($comment['images'])) {
-            $comment['images'] = serialize($comment['images']);
-        } else {
-            $comment['images'] = serialize([]);
-        }
+
+
+
         $commentModel->setRawAttributes($comment);
 
         $commentModel->uniacid = \YunShop::app()->uniacid;
@@ -88,28 +85,72 @@ class CommentController extends ApiController
         $commentModel = new \app\common\models\Comment();
         $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
         if (!$member) {
-            return $this->errorJson('评论失败!未检测到会员数据!');
+            return $this->errorJson('追加评论失败!未检测到会员数据!');
         }
         $commentStatus = '2';
+        $id = \YunShop::request()->id;
+        $append = $commentModel::find($id);
+        if (!$append) {
+            return $this->errorJson('追加评论失败!未检测到评论数据!');
+        }
 
         $comment = [
-            'order_id' => \YunShop::request()->order_id,
-            'goods_id' => \YunShop::request()->goods_id,
+            'order_id' => $append->order_id,
+            'goods_id' => $append->goods_id,
             'content' => \YunShop::request()->content,
-            'level' => \YunShop::request()->level,
-            'comment_id' => \YunShop::request()->comment_id,
+            'comment_id' => $append->id,
         ];
-        if (!$comment['order_id']) {
-            return $this->errorJson('评论失败!未检测到订单ID!');
-        }
-        if (!$comment['goods_id']) {
-            return $this->errorJson('评论失败!未检测到商品ID!');
-        }
+
         if (!$comment['content']) {
-            return $this->errorJson('评论失败!未检测到评论内容!');
+            return $this->errorJson('追加评论失败!未检测到评论内容!');
         }
         if (!$comment['level']) {
-            return $this->errorJson('评论失败!未检测到评论等级!');
+            return $this->errorJson('追加评论失败!未检测到评论等级!');
+        }
+
+
+
+        $commentModel->setRawAttributes($comment);
+
+        $commentModel->uniacid = \YunShop::app()->uniacid;
+        $commentModel->uid = $member->uid;
+        $commentModel->nick_name = $member->nickname;
+        $commentModel->head_img_url = $member->avatar;
+        $commentModel->reply_id = $append->uid;
+        $commentModel->reply_name = $append->nick_name;
+        $commentModel->type = '3';
+
+        $this->insertComment($commentModel, $commentStatus);
+
+    }
+
+    public function replyComment()
+    {
+        $commentModel = new \app\common\models\Comment();
+        $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+        if (!$member) {
+            return $this->errorJson('回复评论失败!未检测到会员数据!');
+        }
+
+        $id = \YunShop::request()->id;
+        $reoly = $commentModel::find($id);
+        if (!$reoly) {
+            return $this->errorJson('回复评论失败!未检测到评论数据!');
+        }
+
+
+        $comment = [
+            'order_id' => $reoly->order_id,
+            'goods_id' => $reoly->goods_id,
+            'content' => \YunShop::request()->content,
+            'level' => \YunShop::request()->level,
+            'comment_id' => $reoly->id,
+        ];
+        if (!$comment['content']) {
+            return $this->errorJson('回复评论失败!未检测到评论内容!');
+        }
+        if (!$comment['level']) {
+            return $this->errorJson('回复评论失败!未检测到评论等级!');
         }
 
         if (isset($comment['images']) && is_array($comment['images'])) {
@@ -124,11 +165,11 @@ class CommentController extends ApiController
         $commentModel->uid = $member->uid;
         $commentModel->nick_name = $member->nickname;
         $commentModel->head_img_url = $member->avatar;
-        $commentModel->reply_id = $member->uid;
-        $commentModel->reply_name = $member->nickname;
-        $commentModel->type = '3';
+        $commentModel->reply_id = $reoly->uid;
+        $commentModel->reply_name = $reoly->nick_name;
+        $commentModel->type = '2';
 
-        $this->insertComment($commentModel, $commentStatus);
+        $this->insertComment($commentModel);
 
     }
 

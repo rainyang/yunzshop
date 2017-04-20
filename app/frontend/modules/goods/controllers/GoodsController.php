@@ -94,10 +94,8 @@ class GoodsController extends ApiController
         if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
             $order_field = 'display_order';
         }
-
         $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
-
-
+        
         if ($requestSearch) {
             $requestSearch = array_filter($requestSearch, function ($item) {
                 return !empty($item) && $item !== 0;

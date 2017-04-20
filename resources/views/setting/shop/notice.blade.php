@@ -41,13 +41,13 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
                         <div class='input-group'>
-                            <input type="text" id='salers' name="salers" maxlength="30" value="@foreach ($salers as $saler) {{ $saler['nickname'] }} @endforeach" class="form-control" readonly />
+                            <input type="text" id='salers' name="notice[salers]" maxlength="30" value="@foreach ($notice['salers'] as $saler) {{ $saler['nickname'] }} @endforeach" class="form-control" readonly />
                             <div class='input-group-btn'>
                                 <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus').modal();">选择通知人</button>
                             </div>
                         </div>
                         <div class="input-group multi-img-details" id='saler_container'>
-                            @foreach ($salers as $saler)
+                            @foreach ($notice['salers'] as $saler)
                             <div class="multi-item saler-item" openid='{{ $saler['openid'] }}'>
                                  <img class="img-responsive img-thumbnail" src='{{ $saler['avatar'] }}' onerror="this.src='./resource/images/nopic.jpg'; this.title='图片未找到.'">
                                  <div class='img-nickname'>{{ $saler['nickname'] }}</div>
@@ -217,27 +217,29 @@
 
             </div>
             <script language='javascript'>
+
+
+
                 function search_members() {
                     if ($.trim($('#search-kwd').val()) == '') {
                         Tip.focus('#search-kwd', '请输入关键词');
                         return;
                     }
                     $("#module-menus").html("正在搜索....");
-                    $.get('{php echo $this->createWebUrl('member/query')}', { 
+                    $.get("{!! yzWebUrl('member.member.get-search-member') !!}", {
                         keyword: $.trim($('#search-kwd').val())
                     }, function (dat) {
                         $('#module-menus').html(dat);
                     });
                 }
                 function select_member(o) {
-
-                    if ($('.multi-item[openid="' + o.openid + '"]').length > 0) {
+                    if ($('.multi-item[openid="' + o.has_one_fans.openid + '"]').length > 0) {
                         return;
                     }
-                    var html = '<div class="multi-item" openid="' + o.openid + '">';
+                    var html = '<div class="multi-item" openid="' + o.has_one_fans.openid + '">';
                     html += '<img class="img-responsive img-thumbnail" src="' + o.avatar + '" onerror="this.src=\'./resource/images/nopic.jpg\'; this.title=\'图片未找到.\'">';
                     html += '<div class="img-nickname">' + o.nickname + '</div>';
-                    html += '<input type="hidden" value="' + o.openid + '" name="openids[]">';
+                    html += '<input type="hidden" value="' + o.has_one_fans.openid + '" name="notice[openids][]">';
                     html += '<em onclick="remove_member(this)"  class="close">×</em>';
                     html += '</div>';
                     $("#saler_container").append(html);

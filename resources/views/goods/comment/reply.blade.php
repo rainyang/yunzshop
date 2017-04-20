@@ -93,18 +93,18 @@
                     <div class="form-group"></div>
 
                     <div class="form-group" id="reply_seat">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">回复内容</label>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">回复 <span id="nick_name">{{$comment['nick_name']}}</span></label>
                         <div class="col-sm-9 col-xs-12">
                             <textarea name='reply[reply_content]' id="reply_content" class="form-control"></textarea>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                        <div class="col-sm-9 col-xs-12">
-                            {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('reply[reply_images]','') !!}
-                        </div>
-                    </div>
+                    {{--<div class="form-group">--}}
+                        {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>--}}
+                        {{--<div class="col-sm-9 col-xs-12">--}}
+                            {{--{!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('reply[reply_images]','') !!}--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
                     <input type="hidden" name="id" value="{{$comment['id']}}"/>
                     <input type="hidden" name="reply[order_id]" value="{{$comment['order_id']}}"/>
                     <input type="hidden" name="reply[goods_id]" value="{{$comment['goods_id']}}"/>
@@ -144,7 +144,7 @@
         $('.reply').click(function () {
             $('#reply_id').val($(this).data('uid'));
             $('#comment_id').val($(this).data('id'));
-//            $('#type').val($(this).data('type'));
+            $('#nick_name').text($(this).data('nick_name'));
             $('#reply_content').focus();
             $('html,body').animate({scrollTop: $(document).height()}, 100);
             return false;
