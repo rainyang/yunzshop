@@ -7,16 +7,20 @@ class Coupon extends \app\common\models\Coupon
 {
     public $table = 'yz_coupon';
 
-    /**
-     * @param $keyword
-     * @return mixed
-     */
-    public static function getCouponsByName($keyword)
-    {
-        return static::uniacid()->select('id', 'name')
-            ->where('name', 'like', '%' . $keyword . '%')
-            ->get();
-    }
+    //类型转换
+    protected $casts = [
+        'goods_ids' => 'json',
+        'category_ids' => 'json',
+        'goods_names' => 'json',
+        'categorynames' => 'json',
+    ];
+
+    //默认值
+    protected $attributes = [
+        'goods_ids' => '[]',
+        'category_ids' => '[]',
+        'display_order' => 0,
+    ];
 
     /**
      *  定义字段名
@@ -35,7 +39,8 @@ class Coupon extends \app\common\models\Coupon
             'money'=> '领取时消耗的余额',
             'total' => '发放总数',
             'resp_title' => '推送标题',
-            'resp_desc' => '推送链接',
+            'resp_desc' => '推送说明',
+            'resp_url' => '推送链接',
         ];
     }
 
@@ -43,7 +48,6 @@ class Coupon extends \app\common\models\Coupon
      * 字段规则
      * @return array */
     public function rules() {
-
         return [
             'display_order' => 'nullable|integer',
             'name' => 'required',
@@ -59,5 +63,43 @@ class Coupon extends \app\common\models\Coupon
             'resp_desc' => 'nullable|string',
             'resp_url' => 'nullable|url',
         ];
+    }
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getCouponsByName($keyword)
+    {
+        return static::uniacid()->select('id', 'name')
+            ->where('name', 'like', '%' . $keyword . '%')
+            ->get();
+    }
+
+
+    /**
+     * @param $title 优惠券名称
+     * @param $type 优惠券是否再领取中心显示
+     * @param $timeSwitch 是否开启"创建时间"的搜索选项
+     * @param $timeStart 起始时间
+     * @param $timeEnd 结束时间
+     * @return mixed
+     */
+    static public function getCouponsBySearch($title, $type=NULL, $timeSwitch=0, $timeStart=NULL, $timeEnd=NULL)
+    {
+        $CouponsModel = self::uniacid()
+            ->select(['id','display_order','name', 'enough',
+                    'coupon_method', 'deduct', 'discount', 'get_type', 'created_at']);
+
+        if(!empty($title)){
+            $CouponsModel = $CouponsModel->where('name', 'like', '%'.$title.'%');
+        }
+        if(!empty($type)){
+            $CouponsModel = $CouponsModel->where('get_type', '=', $type);
+        }
+        if($timeSwitch == 1 && !empty($timeStart) && !empty($timeEnd)){
+            $CouponsModel = $CouponsModel->whereBetween('created_at', [$timeStart, $timeEnd]);
+        }
+        return $CouponsModel;
     }
 }

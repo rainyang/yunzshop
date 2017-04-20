@@ -41,17 +41,20 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
                         <div class='input-group'>
-                            <input type="text" id='salers' name="notice[salers]" maxlength="30" value="@foreach ($notice['salers'] as $saler) {{ $saler['nickname'] }} @endforeach" class="form-control" readonly />
+                            <input type="text" id='salers' name="salers" maxlength="30" value="@foreach ($set['salers'] as $saler) {{ $saler['nickname'] }} @endforeach" class="form-control" readonly />
                             <div class='input-group-btn'>
                                 <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus').modal();">选择通知人</button>
                             </div>
                         </div>
                         <div class="input-group multi-img-details" id='saler_container'>
-                            @foreach ($notice['salers'] as $saler)
+                            @foreach ($set['salers'] as $saler)
                             <div class="multi-item saler-item" openid='{{ $saler['openid'] }}'>
                                  <img class="img-responsive img-thumbnail" src='{{ $saler['avatar'] }}' onerror="this.src='./resource/images/nopic.jpg'; this.title='图片未找到.'">
                                  <div class='img-nickname'>{{ $saler['nickname'] }}</div>
-                                <input type="hidden" value="{{ $saler['openid'] }}" name="notice[openids][]">
+                                <input type="hidden" value="{{ $saler['openid'] }}" name="notice[salers][{{ $saler['uid'] }}][openid]">
+                                <input type="hidden" value="{{ $saler['uid'] }}" name="notice[salers][{{ $saler['uid'] }}][uid]">
+                                <input type="hidden" value="{{ $saler['nickname'] }}" name="notice[salers][{{ $saler['uid'] }}][nickname]">
+                                <input type="hidden" value="{{ $saler['avatar'] }}" name="notice[salers][{{ $saler['uid'] }}][avatar]">
                                 <em onclick="remove_member(this)"  class="close">×</em>
                             </div>
                             @endforeach
@@ -81,13 +84,13 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知方式</label>
                     <div class="col-sm-9 col-xs-12">
                         <label class="checkbox-inline">
-                            <input type="checkbox" value="0" name='notice[new_type][]' @if (in_array(0,$new_type)) checked @endif /> 下单通知
+                            <input type="checkbox" value="0" name='notice[new_type][]' @if (in_array(0,$set['new_type'])) checked @endif /> 下单通知
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" value="1" name='notice[new_type][]' @if (in_array(1,$new_type)) checked @endif /> 付款通知
+                            <input type="checkbox" value="1" name='notice[new_type][]' @if (in_array(1,$set['new_type'])) checked @endif /> 付款通知
                         </label>
                         <label class="checkbox-inline">
-                            <input type="checkbox" value="2" name='notice[new_type][]' @if (in_array(2,$new_type)) checked @endif /> 买家确认收货通知
+                            <input type="checkbox" value="2" name='notice[new_type][]' @if (in_array(2,$set['new_type'])) checked @endif /> 买家确认收货通知
                         </label>
                         <div class="help-block">通知商家方式</div>
                     </div>
@@ -239,7 +242,10 @@
                     var html = '<div class="multi-item" openid="' + o.has_one_fans.openid + '">';
                     html += '<img class="img-responsive img-thumbnail" src="' + o.avatar + '" onerror="this.src=\'./resource/images/nopic.jpg\'; this.title=\'图片未找到.\'">';
                     html += '<div class="img-nickname">' + o.nickname + '</div>';
-                    html += '<input type="hidden" value="' + o.has_one_fans.openid + '" name="notice[openids][]">';
+                    html += '<input type="hidden" value="' + o.has_one_fans.openid + '" name="notice[salers][' + o.uid + '][openid]">';
+                    html += '<input type="hidden" value="' + o.nickname + '" name="notice[salers][' + o.uid + '][nickname]">';
+                    html += '<input type="hidden" value="' + o.avatar + '" name="notice[salers][' + o.uid + '][avatar]">';
+                    html += '<input type="hidden" value="' + o.uid + '" name="notice[salers][' + o.uid + '][uid]">';
                     html += '<em onclick="remove_member(this)"  class="close">×</em>';
                     html += '</div>';
                     $("#saler_container").append(html);

@@ -61,6 +61,7 @@ class Notice extends \app\common\models\Notice
 
     public static function relationSave($goodsId, $data, $operate = '')
     {
+
         if(!$goodsId){
             return false;
         }
