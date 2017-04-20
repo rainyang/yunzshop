@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
+
+
     private static $_current_member;
     public static function getCurrentMemberModel(){
         if(isset(self::$_current_member)){

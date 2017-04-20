@@ -33,19 +33,15 @@ class LoginController extends ApiController
                     $msg = $member->login();
 
                     if (!empty($msg)) {
-                        if ($msg['status'] == 1) {
-                            return $this->successJson('', $msg['json']);
-                        } else {
-                            return $this->errorJson('', $msg['json']);
-                        }
+                        return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
                     } else {
-                        echo $this->errorJson('', 500);
+                        echo $this->errorJson('登录失败', ['status' => 2]);
                     }
                 } else {
-                    return $this->errorJson('登录异常', ['status'=>-1]);
+                    return $this->errorJson('登录异常', ['status'=> 1]);
                 }
         } else {
-            return $this->errorJson('登录失败', ['status'=>0]);
+            return $this->errorJson('客户端类型错误', ['status'=> 0]);
         }
     }
 }
