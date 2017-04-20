@@ -491,4 +491,9 @@ $pay->doPay($data);
             return $this->errorJson('缺少访问参数');
         }
     }
+
+    public function uploadImg()
+    {
+        \Log::debug('上传图片', \YunShop::request());
+    }
 }

@@ -59,6 +59,7 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
+            return ['code', $code];
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
@@ -229,7 +230,7 @@ class MemberOfficeAccountService extends MemberService
             }
         } else {
             $this->_setClientRequestUrl();
-
+return ['jump'];
             redirect($authurl)->send();
             exit;
         }
@@ -237,6 +238,8 @@ class MemberOfficeAccountService extends MemberService
         if (empty($params) || !empty($params) && $params['scope'] != 'user_info') {
             \Log::debug('微信登陆成功跳转地址',$redirect_url);
             redirect($redirect_url)->send();
+        } else {
+            return ['ok'];
         }
     }
 
