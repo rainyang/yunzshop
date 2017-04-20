@@ -35,11 +35,11 @@ class MemberOfficeAccountService extends MemberService
     {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
-return $uniacid;
+
         $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
         $appId        = $account->key;
         $appSecret    = $account->secret;
-
+return [$appId, $appSecret];
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         \Log::debug('微信登陆回调地址', $callback);
