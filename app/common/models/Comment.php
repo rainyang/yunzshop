@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
 
 class Comment extends BaseModel
 {
+    public $attributes = ['type' => 1];
+    
     use SoftDeletes;
     public $table = 'yz_comment';
 
@@ -42,8 +44,9 @@ class Comment extends BaseModel
     public function getReplyAttribute()
     {
         if (!isset($this->Reply)) {
-
-            $this->Reply = static::getReplyById($this->id);
+            $reply['data'] = static::getReplyById($this->id);
+            $reply['count'] = $reply['data']->count('id');
+            $this->Reply = $reply;
         }
         return $this->Reply;
     }
@@ -60,8 +63,9 @@ class Comment extends BaseModel
     public function getAppendAttribute()
     {
         if (!isset($this->Append)) {
-
-            $this->Append = static::getAppendById($this->id);
+            $append['data'] = static::getAppendById($this->id);
+            $append['count'] = $append['data']->count('id');
+            $this->Append = $append;
         }
         return $this->Append;
     }

@@ -69,9 +69,9 @@ class CommentService
     {
         $comment->created_at = time();
         if (isset($comment->images) && is_array($comment->images)) {
-            $comment->images = iserializer($comment->images);
+            $comment->images = serialize($comment->images);
         } else {
-            $comment->images = iserializer([]);
+            $comment->images = serialize([]);
         }
         return $comment;
     }
@@ -92,9 +92,9 @@ class CommentService
             'type' => $reply['type'],
         ];
         if (isset($reply['reply_images']) && is_array($reply['reply_images'])) {
-            $data['images'] = iserializer($reply['reply_images']);
+            $data['images'] = serialize($reply['reply_images']);
         } else {
-            $data['images'] = iserializer([]);
+            $data['images'] = serialize([]);
         }
         return $data;
     }

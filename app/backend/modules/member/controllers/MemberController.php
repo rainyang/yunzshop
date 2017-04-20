@@ -198,7 +198,9 @@ class MemberController extends BaseController
         $keyword = \YunShop::request()->keyword;
         $member = Member::getMemberByName($keyword);
         $member = set_medias($member, array('avatar', 'share_icon'));
-        return $this->render('web/member/query', ['ds' => $member->toArray()]);
+        return view('member.query', [
+            'members' => $member->toArray(),
+        ])->render();
     }
 
     /**
