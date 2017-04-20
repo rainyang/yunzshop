@@ -230,7 +230,7 @@ class MemberOfficeAccountService extends MemberService
             }
         } else {
             $this->_setClientRequestUrl();
-return ['jump'];
+
             redirect($authurl)->send();
             exit;
         }
