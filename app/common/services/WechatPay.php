@@ -18,11 +18,17 @@ use EasyWeChat\Payment\Order as easyOrder;
 
 class WechatPay extends Pay
 {
+    private $pay_type;
+
+    public function __construct()
+    {
+        $this->pay_type = config('app.pay_type');
+    }
+
     public function doPay($data = [])
     {
-        $pay_type = config('app.pay_type');
         $op = '微信订单支付 订单号：' . $data['order_no'];
-        $pay_order_model = $this->log($data['extra']['type'], $pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log($data['extra']['type'], $this->pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
 
         if (empty(\YunShop::app()->getMemberId())) {
             throw new AppException('无法获取用户ID');
@@ -75,10 +81,10 @@ class WechatPay extends Pay
         $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
-        $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_WECHAT, $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_WECHAT], $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
 
         $pay = \Setting::get('shop.pay');
-echo '<pre>';print_r();exit;
+
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
             return error(1, '没有设定支付参数');
         }
@@ -116,7 +122,7 @@ echo '<pre>';print_r();exit;
         //$out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money;
-        $pay_order_model = $this->log(Pay::PAY_TYPE_WITHDRAW, Pay::PAY_MODE_WECHAT, $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log(Pay::PAY_TYPE_WITHDRAW, $this->pay_type[Pay::PAY_MODE_WECHAT], $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
 
         $pay = \Setting::get('shop.pay');
 
@@ -238,7 +244,7 @@ echo '<pre>';print_r();exit;
     {
         $attributes = [
             'trade_type'       => 'JSAPI', // JSAPI，NATIVE，APP...
-            'body'             => $data['body'],
+            'body'             => $data['subject'],
             'out_trade_no'     => $data['order_no'],
             'total_fee'        => $data['amount'] * 100, // 单位：分
             'nonce_str'        => Client::random(8) . "",
