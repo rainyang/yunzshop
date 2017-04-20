@@ -48,7 +48,7 @@ class MemberOfficeAccountService extends MemberService
 
         if (!Session::get('member_id')) {
             if (!empty($params) && $params['scope'] == 'user_info') {
-                $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+                $authurl = $this->_getAuthUrl($appId, $callback, $state);
             } else {
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
             }
@@ -59,7 +59,7 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            return ['code', $code];
+
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
@@ -230,7 +230,7 @@ class MemberOfficeAccountService extends MemberService
             }
         } else {
             $this->_setClientRequestUrl();
-return ['jump'];
+
             redirect($authurl)->send();
             exit;
         }

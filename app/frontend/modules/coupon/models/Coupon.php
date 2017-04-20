@@ -10,6 +10,15 @@ class Coupon extends \app\common\models\Coupon
     const RELATIVE_TIME_LIMIT = 0;
     const ABSOLUTE_TIME_LIMIT = 1;
 
+    protected $casts = [
+        'goods_ids' => 'json',
+        'category_ids' => 'json',
+        'goods_names' => 'json',
+        'categorynames' => 'json',
+        'time_start' => 'datetime',
+        'time_end' =>'datetime',
+    ];
+
     //前台需要整数的"立减值"
     public function getDeductAttribute($value)
     {
