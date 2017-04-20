@@ -107,7 +107,7 @@ class UserObserver extends BaseObserver
 
         $permissionData = array(
             'uid'       => $model->uid,
-            'type'      => 'sz_yi',
+            'type'      => 'yun_shop',
             'permission'=> 'all',
             'uniacid'   => \YunShop::app()->uniacid,
             'url'       => ''

@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\services;
 use app\common\events\member\RegisterByAgent;
 use app\common\facades\Setting;
 use app\common\helpers\Client;
+use app\common\models\AccountWechats;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
 use app\common\models\MemberGroup;
@@ -34,14 +35,14 @@ class MemberOfficeAccountService extends MemberService
     {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
-        $mid          = \YunShop::app()->mid ? \YunShop::app()->mid : 0;
 
-        $pay = Setting::get('shop.pay');
-
-        $appId        = $pay['weixin_appid'];
-        $appSecret    = $pay['weixin_secret'];
+        $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+        $appId        = $account->key;
+        $appSecret    = $account->secret;
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        \Log::debug('微信登陆回调地址', $callback);
 
         $state = 'yz-' . session_id();
 
@@ -219,8 +220,8 @@ class MemberOfficeAccountService extends MemberService
 
                 Session::set('member_id', $member_id);
             } else {
-                redirect($authurl)->send();
-                exit;
+                \Log::debug('微信登陆授权失败',$authurl);
+                return show_json('-3', '微信登陆授权失败');
             }
         } else {
             $this->_setClientRequestUrl();
@@ -229,6 +230,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
+        \Log::debug('微信登陆成功跳转地址',$redirect_url);
         redirect($redirect_url)->send();
     }
 

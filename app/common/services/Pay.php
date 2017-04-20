@@ -109,11 +109,6 @@ abstract class Pay
      */
     protected $ip;
 
-    public function __construct()
-    {
-        $this->init();
-    }
-
     /**
      * 订单支付/充值
      *
@@ -147,16 +142,6 @@ abstract class Pay
      * @return mixed
      */
     abstract function doWithdraw($member_id, $out_trade_no, $money, $desc, $type);
-
-    /**
-     * init
-     *
-     * @var void
-     */
-    protected function init()
-    {
-
-    }
 
     /**
      * 构造签名

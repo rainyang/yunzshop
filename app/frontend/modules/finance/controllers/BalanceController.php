@@ -23,6 +23,9 @@ use app\backend\modules\member\models\Member;
 
 class BalanceController extends ApiController
 {
+    protected $publicAction = ['recharge'];
+    protected $ignoreAction = ['recharge'];
+
     public function test()
     {
         $data = array('order_sn' => 'RV20170418180852899391');
@@ -94,7 +97,7 @@ class BalanceController extends ApiController
     private function getMemberInfo()
     {
         $member_id = \YunShop::app()->getMemberId();
-        $member_id = \YunShop::app()->getMemberId() ?: \YunShop::request()->member_id;
+        $member_id = \YunShop::app()->getMemberId() ?: \YunShop::request()->uid;
         return $this->memberInfo = Member::getMemberInfoById($member_id) ?: false;
     }
 
