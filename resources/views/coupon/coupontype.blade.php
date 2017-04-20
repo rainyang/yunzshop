@@ -9,7 +9,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用时间限制</label>
     <div class="col-sm-9 form-inline">
-        <div class='input-group form-group col-sm-5'>
+        <div class='input-group form-group col-sm-6'>
             <span class='input-group-addon'>
                  <label class="radio-inline" style='margin-top:-5px;' >
                      <input type="radio" name="coupon[time_limit]" value="0" checked>获得后
@@ -18,6 +18,7 @@
             <input type='text' class='form-control' name='coupon[time_days]' value="{{isset($coupon['time_days']) ? $coupon['time_days'] : 0}}" />
             <span class='input-group-addon'>天内有效(空为不限时间使用)</span>
         </div>
+        <br>
         <div class='input-group form-group col-sm-3'>
             <span class='input-group-addon'>
                  <label class="radio-inline" style='margin-top:-5px;' >
