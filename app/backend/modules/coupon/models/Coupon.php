@@ -7,6 +7,7 @@ class Coupon extends \app\common\models\Coupon
 {
     public $table = 'yz_coupon';
 
+    //类型转换
     protected $casts = [
         'goods_ids' => 'json',
         'category_ids' => 'json',
@@ -14,16 +15,12 @@ class Coupon extends \app\common\models\Coupon
         'categorynames' => 'json',
     ];
 
-    /**
-     * @param $keyword
-     * @return mixed
-     */
-    public static function getCouponsByName($keyword)
-    {
-        return static::uniacid()->select('id', 'name')
-            ->where('name', 'like', '%' . $keyword . '%')
-            ->get();
-    }
+    //默认值
+    protected $attributes = [
+        'goods_ids' => '[]',
+        'category_ids' => '[]',
+        'display_order' => 0,
+    ];
 
     /**
      *  定义字段名
@@ -51,7 +48,6 @@ class Coupon extends \app\common\models\Coupon
      * 字段规则
      * @return array */
     public function rules() {
-
         return [
             'display_order' => 'nullable|integer',
             'name' => 'required',
@@ -67,5 +63,16 @@ class Coupon extends \app\common\models\Coupon
             'resp_desc' => 'nullable|string',
             'resp_url' => 'nullable|url',
         ];
+    }
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getCouponsByName($keyword)
+    {
+        return static::uniacid()->select('id', 'name')
+            ->where('name', 'like', '%' . $keyword . '%')
+            ->get();
     }
 }

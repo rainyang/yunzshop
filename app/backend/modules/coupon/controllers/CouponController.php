@@ -56,7 +56,7 @@ class CouponController extends BaseController
         }
 
         return view('coupon.coupon', [
-            'coupon' => $coupon,
+            'coupon' => $couponRequest,
         ])->render();
     }
 
