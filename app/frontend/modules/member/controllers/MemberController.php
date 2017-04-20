@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\controllers;
 use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
+use app\common\helpers\ImageHelper;
 use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
@@ -473,6 +474,11 @@ class MemberController extends ApiController
         return $this->successJson('', $data);
     }
 
+    /**
+     * 申请协议
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function applyProtocol()
     {
        $protocol = Setting::get('apply_protocol');
@@ -481,5 +487,21 @@ class MemberController extends ApiController
             return $this->successJson('获取数据成功!', $protocol);
         }
         return $this->successJson('未检测到数据!', []);
+    }
+
+    /**
+     * 上传图片
+     *
+     * @return string
+     */
+    public function uploadImg()
+    {
+        echo '<pre>';print_r(\YunShop::request());exit;
+
+        $name = \YunShop::request()->name;
+
+        $img = ImageHelper::upload($name);
+
+        return $img;
     }
 }
