@@ -73,7 +73,7 @@
 
     </div>
 </div>
-@section('js')
+
 <script language='javascript'>
 
     function search_members() {
@@ -82,7 +82,7 @@
             return;
         }
         $("#module-menus-notice").html("正在搜索....");
-        $.get("{{ yzWebUrl('member.member.get-search-member') }}", {
+        $.get("{!! yzWebUrl('member.member.get-search-member') !!}", {
             keyword: $.trim($('#search-kwd-notice').val())
         }, function (dat) {
             $('#module-menus-notice').html(dat);
@@ -97,4 +97,3 @@
     }
 
 </script>
-@stop
