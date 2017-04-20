@@ -68,7 +68,7 @@ class MemberOfficeAccountService extends MemberService
                 ->get();
 
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
-                throw new AppException('请求错误');
+                return show_json(4, 'token请求错误');
             }
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
@@ -226,7 +226,7 @@ class MemberOfficeAccountService extends MemberService
                 Session::set('member_id', $member_id);
             } else {
                 \Log::debug('微信登陆授权失败', $userinfo);
-                return show_json('-3', '微信登陆授权失败');
+                return show_json('3', '微信登陆授权失败');
             }
         } else {
             $this->_setClientRequestUrl();
