@@ -39,7 +39,7 @@ class MemberOfficeAccountService extends MemberService
         $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
         $appId        = $account->key;
         $appSecret    = $account->secret;
-return [$appId, $appSecret];
+
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         \Log::debug('微信登陆回调地址', $callback);
@@ -57,7 +57,7 @@ return [$appId, $appSecret];
         }
 
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
-
+return [$code, $state, $authurl, $tokenurl];
         if (!empty($code)) {
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
