@@ -119,6 +119,7 @@ class MemberController extends BaseController
 
         $yz = array(
             'member_id' => $uid,
+            'uniacid' => \YunShop::app()->uniacid,
             'level_id' => $parame->data['level_id'],
             'group_id' => $parame->data['group_id'],
             'alipayname' => $parame->data['alipayname'],
