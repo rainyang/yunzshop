@@ -84,10 +84,10 @@
                     </div>
 
 
-                    {!! app\common\services\Comment::tplReplyAppend($comment['append']['data']) !!}
+                    @include('goods.comment.tpl-reply',['replyData'=>$comment['append']['data']])
                     <div class="form-group"></div>
                     {{--回复记录--}}
-                    {!! app\common\services\Comment::tplReplyAppend($comment['reply']['data']) !!}
+                    @include('goods.comment.tpl-reply',['replyData'=>$comment['reply']['data']])
 
 
                     <div class="form-group"></div>
