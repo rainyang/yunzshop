@@ -54,12 +54,43 @@ class Order extends \app\common\models\Order
 
     public function orderGoodsBuilder($status)
     {
-        return function ($query) use ($status) {
-            return $query->with('hasOneComment')->where('comment_status', $status);
+        $operator = [];
+        if ($status == 0) {
+            $operator['operator'] = '=';
+            $operator['status'] = 0;
+        } else {
+            $operator['operator'] = '>';
+            $operator['status'] = 0;
+        }
+        return function ($query) use ($operator) {
+            return $query->with('hasOneComment')->where('comment_status', $operator['operator'], $operator['status']);
+        };
+    }
+
+    public function hasOrderGoodsBuiler($status)
+    {
+        $operator = [];
+        if ($status == 0) {
+            $operator['operator'] = '=';
+            $operator['status'] = 0;
+        } else {
+            $operator['operator'] = '>';
+            $operator['status'] = 0;
+        }
+        return function ($query) use ($operator){
+            return $query->where('comment_status', $operator['operator'], $operator['status']);
         };
     }
 
     public static function getMyCommentList($uid, $status)
+    {
+        return self::with(['hasManyOrderGoods' => self::hasOrderGoodsBuiler($status)])
+            ->with([
+                'hasManyOrderGoods' => self::orderGoodsBuilder($status)
+            ])->where('uid', $uid)->get();
+    }
+
+    /*public static function getMyCommentList($uid, $status)
     {
         return self::whereHas('hasManyOrderGoods', function($query) use ($status){
             return $query->where('comment_status', $status);
@@ -67,5 +98,5 @@ class Order extends \app\common\models\Order
         ->with([
             'hasManyOrderGoods' => self::orderGoodsBuilder($status)
         ])->where('uid', $uid)->get();
-    }
+    }*/
 }
