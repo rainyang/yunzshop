@@ -88,7 +88,7 @@ class OrderService
     {
         $result = new Collection();
         if ($memberCarts->isEmpty()) {
-            throw new AppException("未找到订单商品");
+            throw new AppException("(".$memberCarts->goods_id.")未找到订单商品");
         }
         foreach ($memberCarts as $memberCart) {
             if (!($memberCart instanceof MemberCart)) {

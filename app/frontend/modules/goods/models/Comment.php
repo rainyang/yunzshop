@@ -31,5 +31,8 @@ class Comment extends \app\common\models\Comment
     }
 
 
-
+    public function hasOneOrderGoods()
+    {
+        return $this->hasOne('app\common\models\OrderGoods', 'comment_id', 'id');
+    }
 }

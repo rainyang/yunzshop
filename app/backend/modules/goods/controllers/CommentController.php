@@ -160,7 +160,6 @@ class CommentController extends BaseController
         $commentModel = $commentModel->toArray();
         $replys = Comment::getReplysByCommentId($id)->toArray();
         $goods = Goods::getGoodsById($commentModel['goods_id']);
-
         return view('goods.comment.reply', [
             'comment' => $commentModel,
             'replys' => $replys,
