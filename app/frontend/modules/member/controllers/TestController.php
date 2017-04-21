@@ -493,8 +493,9 @@ $pay->doPay($data);
     }
 
     public function uploadImg()
-    {echo 1;exit;
-        \Log::debug('上传图片', \YunShop::request());
+    {
+        $member = \Setting::get('shop.member');
+        echo '<pre>';print_r($member);exit;
     }
 
     public function wxLogin()

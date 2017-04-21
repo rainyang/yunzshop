@@ -15,6 +15,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\helpers\Url;
 use app\common\models\Member;
 use app\common\models\MemberShopInfo;
+use app\common\models\Setting;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\common\models\Order;
 
@@ -220,6 +221,8 @@ class MemberModel extends Member
     {
         $member_info = self::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
 
+        $set = \Setting::get('shop.member');
+
         $data = [];
 
         if (!empty($member_info)) {
@@ -233,7 +236,8 @@ class MemberModel extends Member
                     'uid' => $info['uid'],
                     'avatar' => $info['avatar'],
                     'nickname' => $info['nickname'],
-                    'level' => $info['yz_member']['level']['level_name']
+                    'level' => $info['yz_member']['level']['level_name'],
+                    'is_show' => $set['is_referrer']
                 ];
             }
         }
