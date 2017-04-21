@@ -54,10 +54,13 @@ class SendCouponController extends BaseController
 //            dd($sendType);
             switch ($sendType) {
                 case self::BY_MEMBERIDS:
-                    $membersScope = \YunShop::request()->send_memberid; // todo 前端 JS 也需要检测是否符合格式
-                    $patternMatch = preg_match('/(\d+,+)+(\d+,?)?/', $membersScope);
-                    if (!$patternMatch) {
-                        $this->error('Member ID 填写的不正确, 请重新设置');
+                    $membersScope = trim(\YunShop::request()->send_memberid);
+                    $patternMatchNumArray = preg_match('/(\d+,)+(\d+,?)/', $membersScope); //匹配比如 "2,3,78"或者"2,3,78,"
+                    $patternMatchSingleNum = preg_match('/(\d+)(,)?/',$membersScope); //匹配单个数字
+                    if (!$patternMatchNumArray || !$patternMatchSingleNum) {
+                        $patternNotMatch = true;
+                    } else{
+                        $patternNotMatch = false;
                     }
                     $memberIds = explode(',', $membersScope);
                     break;
@@ -91,6 +94,8 @@ class SendCouponController extends BaseController
                 $this->error('未指定发放对象, 或者该发放类型下还没有用户');
             } elseif(!is_int($sendTotal) || $sendTotal < 1){
                 $this->error('发放数量必须为整数, 而且不能小于 1');
+            } elseif ($patternNotMatch) {
+                $this->error('Member ID 填写不正确, 请重新设置');
             } else{
                 //发放优惠券
                 $res = $this->sendCoupon($memberIds, $sendTotal, $couponResponse);
