@@ -67,7 +67,7 @@ class MemberOfficeAccountService extends MemberService
                 ->get();
 
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
-                return show_json(4, 'token请求错误');
+                return show_json(5, 'token请求错误');
             }
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
@@ -230,7 +230,7 @@ class MemberOfficeAccountService extends MemberService
                 Session::set('member_id', $member_id);
             } else {
                 \Log::debug('微信开放平台未绑定此公众号', $userinfo);
-                return show_json('3', '微信开放平台未绑定此公众号');
+                return show_json('4', '微信开放平台未绑定此公众号');
             }
         } else {
             $this->_setClientRequestUrl();
