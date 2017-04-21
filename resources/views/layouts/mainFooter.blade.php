@@ -9,6 +9,9 @@
   </footer>
 
   <script type="text/javascript">
+      require(['bootstrap'],function(){
+
+      });
     var checkUrl = "{!! yzWebUrl('update.check') !!}";
     var todoUrl = "{!! yzWebUrl('update.start-download') !!}";
     function check_yun_shop_upgrade() {
