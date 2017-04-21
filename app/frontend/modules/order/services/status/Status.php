@@ -58,15 +58,10 @@ abstract class Status
      * @param $order
      * @return array
      */
-    public static function getCommentButtons($order)
+    public static function getCommentButtons($orderGoods)
     {
-        $result = [];
-        $can_comment = $order->hasManyOrderGoods->contains(function ($orderGoods){
 
-            return $orderGoods->comment_status == 0;
-        });
-
-        if($can_comment){
+        if($orderGoods->comment_status == 0){
             $result[] = [
                 'name' => '评价',
                 'api' => '',
