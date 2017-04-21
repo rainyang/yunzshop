@@ -95,11 +95,7 @@ class CommentController extends ApiController
         if (!$comment['content']) {
             return $this->errorJson('追加评论失败!未检测到评论内容!');
         }
-        if (!$comment['level']) {
-            return $this->errorJson('追加评论失败!未检测到评论等级!');
-        }
-
-
+        
         $commentModel->setRawAttributes($comment);
 
         $commentModel->uniacid = \YunShop::app()->uniacid;
