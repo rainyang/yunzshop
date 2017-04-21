@@ -87,18 +87,12 @@
                                 <td style="text-align: center;">{{ $list->uid }}</td>
                                 <td style="text-align: center;">
 
-                                    <img src='{{ isset($list->avatar) ? $list->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
-                                    @if($list->avatar)
-                                        <img src='{{ $list->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
-                                    @elseif($shopSet['headimg'])
-                                        <img src='{{ tomedia($shopSet['headimg']) }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                    @if($list->avatar || $shopSet['headimg'])
+                                    <img src='{{ $list->avatar ? tomedia($list->avatar) : tomedia($shopSet['headimg']) }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @endif
 
-                                    @if($list0->nickname)
-                                        {{ $list->nickname }}
-                                    @else
-                                        未更新
-                                    @endif
+                                    {{ $list->nickname ? '123' : '未更新'}}
+
                                 </td>
                                 <td>{{ $list->realname }}<br/>{{ $list->mobile }}</td>
                                 <td>
