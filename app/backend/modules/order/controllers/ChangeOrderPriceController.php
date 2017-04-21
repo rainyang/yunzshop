@@ -10,7 +10,10 @@ namespace app\backend\modules\order\controllers;
 
 use app\backend\modules\order\models\Order;
 use app\common\components\BaseController;
+use app\common\models\order\OrderChangePriceLog;
+use app\common\models\OrderGoods;
 use app\frontend\modules\order\services\OrderService;
+use Illuminate\Support\Facades\DB;
 
 class ChangeOrderPriceController extends BaseController
 {
@@ -27,22 +30,43 @@ class ChangeOrderPriceController extends BaseController
 
     public function store(\Request $request)
     {
-        $request['order_id'] = 233;
-        $request['order_goods'] = [
-            [
-                'id' => 1,
-                'change_price' => 10,
-            ], [
-                'id' => 2,
-                'change_price' => 20,
-            ],
-        ];
-        $request['dispatch_price'] = 10;
         //dd(\YunShop::app()->user->name);
         list($result, $message) = OrderService::changeOrderPrice($request);
         if ($result === false) {
             return $this->errorJson($message);
         }
         return $this->successJson($message);
+    }
+
+    public function back(\Request $request){
+        $orderId = $request->input('order_id');
+        $this->validate($request,[
+            'order_id'=>'required'
+        ]);
+        $order = Order::find($orderId);
+        $change_price = $order->orderChangePriceLogs->sum('change_price');
+
+        $order->price -= $change_price;
+        $order->order_goods_price -= $change_price;
+        $order->dispatch -= $order->orderChangePriceLogs->sum('change_dispatch_price');
+        DB::transaction(function ()use ($order){
+            $order->hasManyOrderGoods->sum(function ($orderGoods){
+                dd($orderGoods->hasManyChangeOrderGoodsPrcieLogs);
+                exit;
+                if(!isset($orderGoods->hasManyChangeOrderGoodsPrcieLogs)){
+                    return 0;
+                }
+                $result = $orderGoods->hasManyChangeOrderGoodsPrcieLogs->sum('change_price');
+                /**
+                 * @var $orderGoods OrderGoods
+                 */
+                $orderGoods->orderGoodsChangePriceLogs()->delete();
+                return $result;
+            });
+            $order->orderChangePriceLogs()->delete();
+            $order->push();
+        });
+
+        echo 'ok';
     }
 }

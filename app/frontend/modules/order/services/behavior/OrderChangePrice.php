@@ -9,59 +9,177 @@
 namespace app\frontend\modules\order\services\behavior;
 
 use app\common\models\Order;
+use app\common\models\order\OrderChangePriceLog;
+use app\common\models\order\OrderGoodsChangePriceLog;
+use app\common\models\OrderGoods;
 use app\frontend\modules\goods\services\models\CreatedOrderGoodsModel;
 use app\frontend\modules\order\services\models\CreatedOrderModel;
+use function foo\func;
 
 class OrderChangePrice extends OrderOperation
 {
-    protected $status_before_change = [ORDER::WAIT_PAY];
-    protected $status_after_changed = ORDER::WAIT_PAY;
+    protected $statusBeforeChange = [ORDER::WAIT_PAY];
     protected $name = '改价';
     protected $past_tense_class_name = 'OrderChangedPrice';
     protected $_orderGoodsModels = [];
 
     /**
-     * 更新订单表
+     * 更新数据库表
      * @return bool
      */
     protected function updateTable()
     {
-        return $this->order->save();
+        //echo($this->toJson());
+        //exit;
+        $this->push();
+
+        return true;
     }
 
+    /**
+     * 订单改价操作
+     */
     public function execute()
     {
-        $this->addChangeOrderGoodsPriceInfo();
 
-        $order = new CreatedOrderModel($this->order, $this->getOrderGoodsModels());
-        //改订单价格 todo 测试
-        //$order->addChangePriceInfo('380');
-        //改运费 todo 测试
-        $order->addChangeDispatchPriceInfo('21');
-
-        $order->update();
-
-        return false;
+        $this->changeOrderGoodsPrice();
+        $this->calculateOrderChangePriceLog();
+        $this->changePrice();
+        $this->updateTable();
     }
 
-    private function getOrderGoodsModels()
+    /**
+     * 设置订单改价记录
+     */
+    public function setOrderChangePriceLog()
     {
-        if (count($this->_orderGoodsModels)) {
-            return $this->_orderGoodsModels;
-        }
-        $order_goods_list = $this->order->hasManyOrderGoods;
-        foreach ($order_goods_list as $_DbOrderGoods) {
-            $_OrderGoods = new CreatedOrderGoodsModel($_DbOrderGoods);
-            $this->_orderGoodsModels[] = $_OrderGoods;
-        }
-        return $this->_orderGoodsModels;
+        $orderChangePriceLog = new OrderChangePriceLog();
+
+        $this->setRelation('orderChangePriceLog', $orderChangePriceLog);
     }
 
-    private function addChangeOrderGoodsPriceInfo()
+    /**
+     * 订单改价记录
+     * @return OrderChangePrice
+     */
+    private function calculateOrderChangePriceLog()
     {
-        foreach ($this->getOrderGoodsModels() as $orderGoodsModel) {
-            //该订单商品价格 todo 测试
-            $orderGoodsModel->addChangePriceInfo('190');
-        }
+        $orderChangePriceLog = $this->orderChangePriceLog;
+        $orderChangePriceLog->change_price = $this->hasManyOrderGoods->sum(function ($orderGoods) {
+            return $orderGoods->orderGoodsChangePriceLog->change_price;
+        });
+        $orderChangePriceLog->old_price = $this->price;
+        $orderChangePriceLog->new_price = $this->price + $orderChangePriceLog->change_price + $this->getChangeDispatchPrice();
+
+        $orderChangePriceLog->username = \Yunshop::app()->user['username'];
+        $orderChangePriceLog->order_id = $this->id;
+        //return $orderChangePriceLog;
+
     }
+
+    /**
+     * 设置运费改价金额
+     * @param $dispatch_price
+     * @return mixed
+     */
+    public function setDispatchChangePrice($dispatch_price)
+    {
+        return $this->orderChangePriceLog->change_dispatch_price = $dispatch_price - $this->dispatch_price;
+    }
+
+    /**
+     * 获取运费改价金额
+     * @return mixed
+     */
+    private function getDispatchChangePrice()
+    {
+
+        return $this->orderChangePriceLog->change_dispatch_price;
+    }
+
+    /**
+     * 获取运费价格
+     * @return mixed
+     */
+    private function getDispatchPrice()
+    {
+        return $this->dispatch_price + $this->getDispatchChangePrice();
+
+    }
+
+    /**
+     * 获取订单改价金额
+     * @return mixed
+     */
+    private function getChangePrice()
+    {
+
+        return $this->orderChangePriceLog->change_price;
+    }
+
+    /**
+     * 获取订单商品小计
+     * @return mixed
+     */
+    private function getOrderGoodsPrice()
+    {
+        return $this->order_goods_price + $this->getChangePrice();
+    }
+
+    /**
+     * 获取订单价格
+     * @return mixed
+     */
+    private function getPrice()
+    {
+
+        return $this->price + $this->getChangePrice() + $this->getDispatchChangePrice();
+    }
+    private function getChangeDispatchPrice()
+    {
+        return $this->orderChangePriceLog->change_dispatch_price;
+
+    }
+    /**
+     * 更新订单价格
+     */
+    public function changePrice()
+    {
+        $this->price = $this->getPrice();
+        $this->dispatch_price = $this->getDispatchPrice();
+        $this->order_goods_price = $this->getOrderGoodsPrice();
+        $this->change_price += $this->getChangePrice();
+        $this->change_dispatch_price += $this->getChangeDispatchPrice();
+    }
+
+    /**
+     * 设置订单商品改价记录
+     * @param $orderGoodsChangePriceLogs
+     */
+    public function setOrderGoodsChangePriceLogs($orderGoodsChangePriceLogs)
+    {
+        $this->hasManyOrderGoods->map(function ($orderGoods) use ($orderGoodsChangePriceLogs) {
+            $orderGoodsChangePriceLog = $orderGoodsChangePriceLogs->where('order_goods_id', $orderGoods->id)->first();
+            //实例化改价记录
+            $orderGoodsChangePriceLog->old_price = $orderGoods->price;
+            $orderGoodsChangePriceLog->new_price = $orderGoods->price + $orderGoodsChangePriceLog->change_price;
+            $orderGoods->setRelation('orderGoodsChangePriceLog', $orderGoodsChangePriceLog);
+
+        });
+
+    }
+
+    /**
+     * 更新订单商品model
+     */
+    private function changeOrderGoodsPrice()
+    {
+        $this->hasManyOrderGoods->map(function ($orderGoods) {
+
+            //更新商品信息
+            $orderGoods->price = $orderGoods->orderGoodsChangePriceLog->new_price;
+            $orderGoods->change_price += $orderGoods->orderGoodsChangePriceLog->change_price;
+        });
+    }
+
 }
