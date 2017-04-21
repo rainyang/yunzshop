@@ -10,22 +10,20 @@ namespace app\backend\modules\refund\models;
  */
 class RefundApply extends \app\common\models\refund\RefundApply
 {
-    public function reject($data)
-    {
-        $this->status = self::REJECT;
-        $this->reject_reason = $data['reject_reason'];
-        return $this->save();
-    }
 
-    public function pass($data)
-    {
-        $this->status = self::WAIT_REFUND;
-        return $this->save();
-    }
 
-    public function consensus($data)
+    protected function getTypeInstance()
     {
-        $this->status = self::CONSENSUS;
-        return $this->save();
+        switch ($this->refund_type) {
+            case self::REFUND_TYPE_MONEY:
+                return new RefundMoney();
+                break;
+            case self::REFUND_TYPE_RETURN:
+                return new ReturnGoods();
+                break;
+            case self::REFUND_TYPE_GOODS:
+                return new ReplaceGoods();
+                break;
+        }
     }
 }
