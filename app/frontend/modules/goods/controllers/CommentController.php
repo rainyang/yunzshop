@@ -74,7 +74,6 @@ class CommentController extends ApiController
         $commentModel->nick_name = $member->nickname;
         $commentModel->head_img_url = $member->avatar;
         $commentModel->type = '1';
-echo "<pre>"; print_r($commentModel);exit;
         $this->insertComment($commentModel, $commentStatus);
 
     }
@@ -106,7 +105,6 @@ echo "<pre>"; print_r($commentModel);exit;
         if (!$comment['level']) {
             return $this->errorJson('追加评论失败!未检测到评论等级!');
         }
-
 
 
         $commentModel->setRawAttributes($comment);
@@ -184,13 +182,11 @@ echo "<pre>"; print_r($commentModel);exit;
                 Goods::updatedComment($commentModel->goods_id);
 
                 if ($commentStatus) {
-
                     OrderGoods::where('order_id', $commentModel->order_id)
                         ->where('goods_id', $commentModel->goods_id)
-                        ->update(['comment_status' => $commentStatus,'comment_id'=>$commentModel->id]);
+                        ->update(['comment_status' => $commentStatus, 'comment_id' => $commentModel->id]);
                 }
 
-                //显示信息并跳转
                 return $this->successJson('评论成功!');
             } else {
                 return $this->errorJson('评论失败!');
