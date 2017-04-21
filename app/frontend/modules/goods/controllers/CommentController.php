@@ -95,7 +95,7 @@ class CommentController extends ApiController
         if (!$comment['content']) {
             return $this->errorJson('追加评论失败!未检测到评论内容!');
         }
-        
+
         $commentModel->setRawAttributes($comment);
 
         $commentModel->uniacid = \YunShop::app()->uniacid;
@@ -135,10 +135,7 @@ class CommentController extends ApiController
         if (!$comment['content']) {
             return $this->errorJson('回复评论失败!未检测到评论内容!');
         }
-        if (!$comment['level']) {
-            return $this->errorJson('回复评论失败!未检测到评论等级!');
-        }
-
+        
         if (isset($comment['images']) && is_array($comment['images'])) {
             $comment['images'] = serialize($comment['images']);
         } else {
