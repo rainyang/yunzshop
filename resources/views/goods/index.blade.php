@@ -399,6 +399,7 @@
                 });
             })
         })
+        @section('supplier_js')
         function setProperty(obj, id, type) {
             $(obj).html($(obj).html() + "...");
             $.post("{!! yzWebUrl('goods.goods.setProperty') !!}", {id: id, type: type, data: obj.getAttribute("data")}
@@ -419,6 +420,7 @@
                     , "json"
             );
         }
+        @show
         require(['select2'], function () {
             $('#brand').select2();
         })
