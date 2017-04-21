@@ -80,6 +80,8 @@ class MemberOfficeAccountService extends MemberService
                 return show_json('-3', '微信登陆授权失败');
             }
 
+            \Log::debug('userinfo', $userinfo);
+
             if (is_array($userinfo) && !empty($userinfo['openid'])) {
                 $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
                 $tmpStr = json_encode($userinfo['nickname']);
@@ -104,8 +106,13 @@ class MemberOfficeAccountService extends MemberService
                     $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
                 }
 
+                \Log::debug('粉丝', $fans_mode->uid);
+
                 if ((!empty($fans_mode) && !empty($member_shop_info_model))
                         || !empty($UnionidInfo['unionid'])) {
+
+                    \Log::debug('微信登陆更新');
+
                     if (!empty($UnionidInfo['unionid'])) {
                         $types = explode('|', $UnionidInfo['type']);
                         $member_id = $UnionidInfo['member_id'];
@@ -144,6 +151,8 @@ class MemberOfficeAccountService extends MemberService
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
+                    \Log::debug('添加新会员', $fans_mode->uid);
+
                     if ($fans_mode->uid) {
                         //更新mc_members
                         $mc_data = array(
