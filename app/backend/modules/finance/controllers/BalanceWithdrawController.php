@@ -9,7 +9,7 @@
 namespace app\backend\modules\finance\controllers;
 
 
-use app\backend\modules\finance\models\Withdraw;
+use app\common\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
 use app\common\facades\Setting;

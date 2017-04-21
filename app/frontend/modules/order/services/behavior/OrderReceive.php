@@ -15,7 +15,7 @@ use app\common\models\Order;
 
 class OrderReceive extends ChangeStatusOperation
 {
-    protected $status_before_change = [ORDER::WAIT_RECEIVE];
+    protected $statusBeforeChange = [ORDER::WAIT_RECEIVE];
     protected $statusAfterChanged = ORDER::COMPLETE;
     protected $name = '收货';
     protected $time_field = 'finish_time';

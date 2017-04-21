@@ -11,6 +11,7 @@ namespace app\common\models;
 
 use app\common\models\order\Address;
 use app\common\models\order\Express;
+use app\common\models\order\OrderChangePriceLog;
 use app\common\models\order\Pay;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
@@ -60,16 +61,19 @@ class Order extends BaseModel
     {
         return $query->where(['status' => 3]);
     }
+
     public function scopeRefund($query)
     {
-        return $query->where('refund_id','>','0');
+        return $query->where('refund_id', '>', '0');
     }
+
     public function scopeRefunded($query)
     {
-        return $query->where('refund_id','>','0')->whereHas('hasOneRefundApply',function ($query){
-            return $query->where('status',RefundApply::COMPLETE);
+        return $query->where('refund_id', '>', '0')->whereHas('hasOneRefundApply', function ($query) {
+            return $query->where('status', RefundApply::COMPLETE);
         });
     }
+
     public function scopeCancelled($query)
     {
         return $query->where(['status' => -1]);
@@ -80,16 +84,23 @@ class Order extends BaseModel
         return $this->hasMany(OrderGoods::class, 'order_id', 'id');
     }
 
+    public function orderChangePriceLogs()
+    {
+        return $this->hasMany(OrderChangePriceLog::class, 'order_id', 'id');
+    }
+
     public function belongsToMember()
     {
         return $this->belongsTo(Member::class, 'uid', 'uid');
     }
+
     //退款列表
     public function hasOneRefundApply()
     {
         return $this->hasOne(RefundApply::class, 'id', 'refund_id');
 
     }
+
     //订单配送方式
     public function hasOneDispatchType()
     {
@@ -139,11 +150,11 @@ class Order extends BaseModel
     public function getRefundDataAttribute()
     {
         if (!empty($this->refund_id)) {
-            $this->RefundData = RefundApply::getRefundById($this->refund_id);
+            return RefundApply::getRefundById($this->refund_id);
         }
-        return $this->RefundData;
+        return [];
     }
-    
+
     //收货地址
     public function address()
     {
@@ -163,7 +174,7 @@ class Order extends BaseModel
 
     public function getPayTypeNameAttribute()
     {
-        if($this->status == self::WAIT_PAY){
+        if ($this->status == self::WAIT_PAY) {
             return PayType::defaultTypeName();
         }
         return $this->hasOnePayType->name;
@@ -172,7 +183,7 @@ class Order extends BaseModel
     public function getButtonModelsAttribute()
     {
         $result = $this->getStatusService()->getButtonModels();
-        if(!empty($this->order->refund_id)){
+        if (!empty($this->order->refund_id)) {
             $result[] = [
                 'name' => '申请退款',
                 'api' => 'order.refund.apply', //todo
@@ -186,7 +197,7 @@ class Order extends BaseModel
     {
         //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
-            ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name','has_one_pay_type','button_models'])->toArray();
+            ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name', 'has_one_pay_type', 'button_models'])->toArray();
         foreach ($status as $state) {
             if (!in_array($state, array_column($status_counts, 'status'))) {
                 $status_counts[] = ['status' => $state, 'total' => 0];
@@ -206,9 +217,9 @@ class Order extends BaseModel
      *
      * @param $member_id
      */
-    public static function getOrderInfoByMemberId($member_id)
+    public static function getOrderInfoByMemberId($member_id, $status)
     {
         return self::uniacid()
-            ->where('uid', $member_id);
+            ->where('uid', $member_id)->isComment($status);
     }
 }
