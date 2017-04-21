@@ -43,12 +43,18 @@ class OrderGoods extends BaseModel
                 'api' => '',
                 'value' => ''
             ];
-        }else{
+        }else if ($this->comment_status == 1) {
             $result[] = [
                 'name' => '追评',
                 'api' => '',
                 'value' => '1'
             ];
+            $result[] = [
+                'name' => '查看评价',
+                'api' => '',
+                'value' => '2'
+            ];
+        } else {
             $result[] = [
                 'name' => '查看评价',
                 'api' => '',
