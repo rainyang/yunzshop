@@ -8,7 +8,6 @@
 
 namespace app\frontend\modules\order\models;
 
-
 class OrderGoods extends \app\common\models\OrderGoods
 {
     public function getButtonsAttribute()
@@ -28,18 +27,5 @@ class OrderGoods extends \app\common\models\OrderGoods
     {
         $list = self::select()->where('uid', $uid)->Where('comment_status', $status)->get();
         return $list;
-    }
-
-    public static function getMyComments($uid, $status)
-    {
-        $list = self::with([
-            'beLongsToOrder'
-        ])->where('uid', $uid)->Where('comment_status', $status)->get();
-        return $list;
-    }
-
-    public function beLongsToOrder()
-    {
-        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 }
