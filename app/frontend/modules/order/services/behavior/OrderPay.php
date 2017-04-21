@@ -13,7 +13,7 @@ use app\common\models\Order;
 
 class OrderPay extends ChangeStatusOperation
 {
-    protected $status_before_change = [ORDER::WAIT_PAY];
+    protected $statusBeforeChange = [ORDER::WAIT_PAY];
     protected $statusAfterChanged = ORDER::WAIT_SEND;
     protected $name = '支付';
     protected $time_field = 'pay_time';

@@ -12,7 +12,7 @@ namespace app\frontend\modules\order\services\behavior;
 use app\common\models\Order;
 
 
-abstract class OrderOperation
+abstract class OrderOperation extends Order
 {
     /**
      * @var Order
@@ -25,7 +25,7 @@ abstract class OrderOperation
     /**
      * @var array 合法前置状态
      */
-    protected $status_before_change = [];
+    protected $statusBeforeChange = [];
 
     /**
      * @var string 类名的过去式
@@ -42,15 +42,6 @@ abstract class OrderOperation
     public function getMessage()
     {
         return $this->message;
-    }
-
-    /**
-     * OrderOperation constructor.
-     * @param Order $order_model
-     */
-    public function __construct(Order $order_model)
-    {
-        $this->order = $order_model;
     }
 
     /**
@@ -74,10 +65,10 @@ abstract class OrderOperation
     /**
      * @return \app\common\events\order\CreatedOrderEvent
      */
-    protected function _getBeforeEvent()
+    protected function getBeforeEvent()
     {
         $event_name = '\app\common\events\order\Before' . $this->_getOperationName() . 'Event';
-        return new $event_name($this->order);
+        return new $event_name($this);
     }
 
     /**
@@ -87,15 +78,14 @@ abstract class OrderOperation
     public function enable()
     {
 
-        $Event = $this->_getBeforeEvent();
+        $Event = $this->getBeforeEvent();
         event($Event);
         if ($Event->hasOpinion()) {
             $this->message = $Event->getOpinion()->message;
             return $Event->getOpinion()->result;
         }
 
-
-        if (!in_array($this->order['status'], $this->status_before_change)) {
+        if (!in_array($this->status, $this->statusBeforeChange)) {
             $this->message = "订单状态不满足{$this->name}操作";
             return false;
         }
@@ -114,7 +104,7 @@ abstract class OrderOperation
     protected function _fireEvent()
     {
         $event_name = '\app\common\events\order\After' . $this->_getPastTense() . 'Event';
-        event(new $event_name($this->order));
+        event(new $event_name($this));
         return;
     }
 }
