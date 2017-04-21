@@ -84,7 +84,17 @@ class Order extends \app\common\models\Order
 
     public static function getMyCommentList($uid, $status)
     {
-        return self::with(['hasManyOrderGoods' => self::hasOrderGoodsBuiler($status)])
+        $operator = [];
+        if ($status == 0) {
+            $operator['operator'] = '=';
+            $operator['status'] = 0;
+        } else {
+            $operator['operator'] = '>';
+            $operator['status'] = 0;
+        }
+        return self::whereHas('hasManyOrderGoods', function($query) use ($operator){
+            return $query->where('comment_status', $operator['operator'], $operator['status']);
+        })
             ->with([
                 'hasManyOrderGoods' => self::orderGoodsBuilder($status)
             ])->where('uid', $uid)->get();
