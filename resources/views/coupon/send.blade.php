@@ -187,7 +187,7 @@
                 return false;
             }
             var c = $('input[name=sendtype]:checked').val();
-            var v = $('#value_1').val();
+            var v = $('#value_1').val().trim();
             if (c == 1 && v == '') {
                 Tip.show(($('#value_1')),'请输入要发放的用户 Member ID !');
                 return false;
