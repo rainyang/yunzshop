@@ -22,57 +22,67 @@ class OperationController extends BaseController
     {
         parent::__construct();
         $this->_params = \YunShop::request()->get();
-        if(!isset($this->_params['order_id'])){
+        if (!isset($this->_params['order_id'])) {
             $this->errorJson('order_id 不能为空!');
             exit;
         }
         $this->_Order = Order::find($this->_params['order_id']);
-        if(!isset($this->_Order)){
+        if (!isset($this->_Order)) {
             $this->errorJson('未找到该订单!');
             exit;
         }
     }
 
-    public function pay(){
-        list($result,$message) = OrderService::orderPay($this->_params);
-        if($result === false){
+    public function pay()
+    {
+        list($result, $message) = OrderService::orderPay($this->_params);
+        if ($result === false) {
             return $this->errorJson($message);
         }
         return $this->successJson($message);
 
     }
-    public function cancelPay(){
-        list($result,$message) = OrderService::orderCancelPay($this->_params);
-        if($result === false){
+
+    public function cancelPay()
+    {
+        list($result, $message) = OrderService::orderCancelPay($this->_params);
+        if ($result === false) {
             return $this->errorJson($message);
         }
         return $this->successJson($message);
     }
-    public function send(){
-        list($result,$data) = OrderService::orderSend($this->_params);
-        if($result === false){
-            return $this->message($data);
+
+    public function send()
+    {
+        list($result, $data) = OrderService::orderSend($this->_params);
+        if ($result === false) {
+            return $this->message($data, yzWebUrl('order.list'));
         }
         return $this->message($data, 'error');
     }
-    public function cancelSend(){
-        list($result,$data) = OrderService::orderCancelSend($this->_params);
-        if($result === false){
+
+    public function cancelSend()
+    {
+        list($result, $data) = OrderService::orderCancelSend($this->_params);
+        if ($result === false) {
             return $this->message($data, 'error');
         }
         return $this->message($data);
     }
-    public function Receive(){
-        list($result,$data) = OrderService::orderReceive($this->_params);
-        if($result === false){
+
+    public function Receive()
+    {
+        list($result, $data) = OrderService::orderReceive($this->_params);
+        if ($result === false) {
             return $this->message($data, 'error');
         }
         return $this->message($data);
     }
+
     public function Delete()
     {
-        list($result,$data) = OrderService::orderDelete($this->_params);
-        if($result === false){
+        list($result, $data) = OrderService::orderDelete($this->_params);
+        if ($result === false) {
             return $this->message($data, 'error');
         }
         return $this->message($data);
