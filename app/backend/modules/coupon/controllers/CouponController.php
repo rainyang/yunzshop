@@ -57,6 +57,7 @@ class CouponController extends BaseController
             $coupon->uniacid = \YunShop::app()->uniacid;
             $coupon->time_start = strtotime(\YunShop::request()->time['start']);
             $coupon->time_end = strtotime(\YunShop::request()->time['end']);
+            $coupon->use_type =\YunShop::request()->usetype;
 
             $coupon->fill($couponRequest);
             $validator = $coupon->validator();
@@ -146,6 +147,20 @@ class CouponController extends BaseController
         return view('coupon.query', [
             'coupons' => $coupons
         ])->render();
+    }
+
+    //用于"适用范围"添加商品或者分类
+    public function addParam()
+    {
+        $type = \YunShop::request()->type;
+        switch($type){
+            case 'goods':
+                return view('coupon.tpl.goods')->render();
+                break;
+            case 'category':
+                return view('coupon.tpl.category')->render();
+                break;
+        }
     }
 
 }
