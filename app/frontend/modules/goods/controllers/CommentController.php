@@ -53,7 +53,6 @@ class CommentController extends ApiController
             'content' => \YunShop::request()->content,
             'level' => \YunShop::request()->level,
         ];
-        echo "<pre>"; print_r($comment);exit;
         if (!$comment['order_id']) {
             return $this->errorJson('评论失败!未检测到订单ID!');
         }
@@ -68,8 +67,6 @@ class CommentController extends ApiController
         }
 
 
-
-
         $commentModel->setRawAttributes($comment);
 
         $commentModel->uniacid = \YunShop::app()->uniacid;
@@ -77,7 +74,7 @@ class CommentController extends ApiController
         $commentModel->nick_name = $member->nickname;
         $commentModel->head_img_url = $member->avatar;
         $commentModel->type = '1';
-
+echo "<pre>"; print_r($commentModel);exit;
         $this->insertComment($commentModel, $commentStatus);
 
     }
