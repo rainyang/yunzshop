@@ -45,7 +45,7 @@
                                 <label class='radio-inline'>
                                     <input type='radio' value='1' name='timesearchswtich' >搜索
                                 </label>
-                                {!! tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d', strtotime('-7 days')),'endtime'=>date('Y-m-d', strtotime('today')))) !!}
+                                {!! tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', strtotime('-7 days 00:00')),'endtime'=>date('Y-m-d H:i', strtotime('today'))), true) !!}
                             </div>
                         </div>
                     </div>
