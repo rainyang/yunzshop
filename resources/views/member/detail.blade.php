@@ -45,12 +45,9 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员分组</label>
                             <div class="col-sm-9 col-xs-12">
                                 <select name='data[group_id]' class='form-control'>
-                                    <option value=0>无分组</option>
+                                    <option value=>无分组</option>
                                     @foreach($groups as $group)
-                                    <option value='{{$group['id']}}'
-                                        @if($member['yz_member']['group_id']==$group['id'])
-                                            selected
-                                            @endif>{{$group['group_name']}}</option>
+                                    <option value='{{$group['id']}}' @if($member['yz_member']['group_id'] == $group['id']) selected @endif >{{ $group['group_name'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
