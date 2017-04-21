@@ -24,7 +24,7 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">发送张数</label>
                 <div class="col-sm-9 col-xs-12">
-                    <input type="text" id="send_total" name="send_total" class="form-control" placeholder="请输入数字,不小于 1"  />
+                    <input type="text" id="send_total" name="send_total" class="form-control" placeholder="请输入数字, 不小于 1"  />
                 </div>
             </div>
         </div>

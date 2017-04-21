@@ -91,14 +91,14 @@ class SendCouponController extends BaseController
             $sendTotal = \YunShop::request()->send_total;
             if($sendTotal < 1){
                 $this->error('发放的数量不能小于 1');
-            }
-
-            //发放优惠券
-            $res = $this->sendCoupon($memberIds, $sendTotal, $couponResponse);
-            if ($res){
-                return $this->message('手动发送优惠券成功');
-            } else{
-                return $this->message('有部分优惠券未能发送, 请检查数据库','','error');
+            } else {
+                //发放优惠券
+                $res = $this->sendCoupon($memberIds, $sendTotal, $couponResponse);
+                if ($res){
+                    return $this->message('手动发送优惠券成功');
+                } else{
+                    return $this->message('有部分优惠券未能发送, 请检查数据库','','error');
+                }
             }
         }
 
