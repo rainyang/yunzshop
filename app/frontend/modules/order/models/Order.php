@@ -31,4 +31,18 @@ class Order extends \app\common\models\Order
         $query->where('uid',\YunShop::app()->getMemberId());
         return parent::scopeGetOrderCountGroupByStatus($query, $status);
     }
+
+    public function orderGoodsBuilder($status)
+    {
+        return function ($query) use ($status) {
+            return $query->where('comment_status', $status);
+        };
+    }
+
+    public static function getMyCommentList($uid, $status)
+    {
+        return Order::with([
+            'hasManyOrderGoods' => self::orderGoodsBuilder($status)
+        ])->where('uid', $uid)->where('comment_status', $status)->get();
+    }
 }
