@@ -47,12 +47,12 @@ class OrderGoods extends BaseModel
             $result[] = [
                 'name' => '追评',
                 'api' => '',
-                'value' => ''
+                'value' => '1'
             ];
             $result[] = [
                 'name' => '查看评价',
                 'api' => '',
-                'value' => ''
+                'value' => '2'
             ];
         }
         return $result;
