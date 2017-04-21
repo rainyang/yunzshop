@@ -123,6 +123,55 @@ class BalanceController extends BaseController
     }
 
     /**
+     * 会员余额转让记录
+     *
+     * @return string
+     * @Author yitian */
+    public function transferRecord()
+    {
+        $pageSize = 20;
+        $tansferList = BalanceTransfer::getTransferPageList($pageSize);
+        if ($search = \YunShop::request()->search) {
+            $tansferList = BalanceTransfer::getSearchPageList($pageSize, $search);
+        }
+
+        $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());
+
+        return view('finance.balance.transferRecord', [
+            'tansferList'  => $tansferList,
+            'pager'    => $pager,
+            'search' => $search
+        ])->render();
+    }
+
+    /**
+     * 充值记录
+     *
+     * @return string
+     * @Author yitian */
+    public function rechargeRecord()
+    {
+        $pageSize = 10;
+        $recordList = BalanceRecharge::getPageList($pageSize);
+        if ($search = \YunShop::request()->search) {
+            $recordList = BalanceRecharge::getSearchPageList($pageSize, $search);
+
+        }
+        $pager = PaginationHelper::show($recordList->total(), $recordList->currentPage(), $recordList->perPage());
+
+        //支付类型：1后台支付，2 微信支付 3 支付宝， 4 其他支付
+        return view('finance.balance.rechargeRecord', [
+            'shopSet'       => Setting::get('shop.member'),
+            'recordList'    => $recordList,
+            'pager'         => $pager,
+            'memberGroup'   => MemberGroup::getMemberGroupList(),
+            'memberLevel'   => MemberLevel::getMemberLevelList(),
+            'search'        => $search
+        ])->render();
+    }
+
+
+    /**
      * 用户余额管理 【完成】
      *
      * @return string
@@ -251,54 +300,6 @@ class BalanceController extends BaseController
             'operator_id'   => \YunShop::app()->uid
         );
     }
-
-    /**
-     * 充值记录
-     *
-     * @return string
-     * @Author yitian */
-    public function rechargeRecord()
-    {
-        $pageSize = 10;
-        $recordList = BalanceRecharge::getPageList($pageSize);
-        if ($search = \YunShop::request()->search) {
-            $recordList = BalanceRecharge::getSearchPageList($pageSize, $search);
-
-        }
-        $pager = PaginationHelper::show($recordList->total(), $recordList->currentPage(), $recordList->perPage());
-
-        //支付类型：1后台支付，2 微信支付 3 支付宝， 4 其他支付
-        return view('finance.balance.rechargeRecord', [
-            'recordList'    => $recordList,
-            'pager'         => $pager,
-            'memberGroup'   => MemberGroup::getMemberGroupList(),
-            'memberLevel'   => MemberLevel::getMemberLevelList(),
-            'search'        => $search
-        ])->render();
-    }
-
-    /**
-     * 会员余额转让记录
-     *
-     * @return string
-     * @Author yitian */
-    public function transferRecord()
-    {
-        $pageSize = 20;
-        $tansferList = BalanceTransfer::getTransferPageList($pageSize);
-        if ($search = \YunShop::request()->search) {
-            $tansferList = BalanceTransfer::getSearchPageList($pageSize, $search);
-        }
-
-        $pager = PaginationHelper::show($tansferList->total(), $tansferList->currentPage(), $tansferList->perPage());
-
-        return view('finance.balance.transferRecord', [
-            'tansferList'  => $tansferList,
-            'pager'    => $pager,
-            'search' => $search
-        ])->render();
-    }
-
 
     /**
      * 余额充值菜单

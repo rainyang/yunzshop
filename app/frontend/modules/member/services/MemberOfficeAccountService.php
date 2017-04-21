@@ -249,7 +249,7 @@ class MemberOfficeAccountService extends MemberService
                     //触发会员成为下线事件
                     Member::chkAgent($member_id);
                 }
-
+                \Log::debug('uid', $member_id);
                 Session::set('member_id', $member_id);
             }
         } else {
