@@ -472,7 +472,7 @@ $pay->doPay($data);
     }
 
     public function prlog()
-    {
+    {echo 2;exit;
         $member_id = 274;
         if (!empty($member_id)) {
             $member_info = MemberModel::getUserInfos($member_id)->first();
@@ -493,12 +493,12 @@ $pay->doPay($data);
     }
 
     public function uploadImg()
-    {
+    {echo 1;exit;
         \Log::debug('上传图片', \YunShop::request());
     }
 
     public function wxLogin()
-    {
+    {echo 1;exit;
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
 
