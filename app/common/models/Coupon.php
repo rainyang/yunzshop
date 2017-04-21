@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class  Coupon extends BaseModel
 {
     use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at','time_start','time_end'];
 
     const COUPON_ALL_USE = 0;
     const COUPON_CATEGORY_USE = 1;
