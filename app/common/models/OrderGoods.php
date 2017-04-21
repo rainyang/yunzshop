@@ -10,6 +10,7 @@ namespace app\common\models;
 
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\order\OrderGoodsChangePriceLog;
+use app\frontend\modules\goods\models\Comment;
 
 class OrderGoods extends BaseModel
 {
@@ -72,6 +73,11 @@ class OrderGoods extends BaseModel
     {
         return $this->hasOne('\app\common\models\GoodsOption', 'id', 'goods_option_id');
 
+    }
+
+    public function hasOneComment()
+    {
+        return $this->hasOne(Comment::class, 'id', 'comment_id');
     }
 
     public function orderGoodsChangePriceLogs()

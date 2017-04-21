@@ -38,6 +38,7 @@ class RefundApply extends BaseModel
     const WAIT_CHECK = '0';//待审核
     const WAIT_REFUND = '3';//待打款
     const COMPLETE = '4';//已完成
+    const CONSENSUS = '5';//手动退款
 
     public function __construct(array $attributes = [])
     {
@@ -84,7 +85,12 @@ class RefundApply extends BaseModel
 
     public function getRefundTypeNameAttribute()
     {
-        return $this->refundTypeName;
+        $mapping = [
+            0 => '退款(仅退款不退货)',
+            1 => '退款退货',
+            2 => '换货',
+        ];
+        return $mapping[$this->refund_type];
     }
 
     protected function getStatusNameMapping()
@@ -95,6 +101,7 @@ class RefundApply extends BaseModel
             self::WAIT_CHECK => '待审核',
             self::WAIT_REFUND => '待退款',
             self::COMPLETE => '完成',
+            self::CONSENSUS => '手动退款',
         ];
 
     }
