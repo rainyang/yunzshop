@@ -1,9 +1,10 @@
 <?php
+
 namespace app\backend\modules\refund\controllers;
 
-use app\backend\modules\refund\services\RefundOperationService;
+use app\backend\modules\refund\models\RefundApply;
 use app\common\components\BaseController;
-use app\common\models\refund\RefundApply;
+use app\common\exceptions\AdminException;
 
 /**
  * 退款申请操作
@@ -14,48 +15,53 @@ use app\common\models\refund\RefundApply;
  */
 class OperationController extends BaseController
 {
-    public function entrance(\Request $request)
+    /**
+     * @var $refundApply RefundApply
+     */
+    private $refundApply;
+    public function preAction()
     {
+        $request = \Request::capture();
         $this->validate($request, [
-            'refund_id' => 'required|filled|integer'
+            'refund_id' => 'required',
+            //'reject_reason'=>''
         ]);
-
-        switch ($request->refundstatus) {
-            case '-1':
-                //驳回
-
-                break;
-            case '1':
-                //通过
-                $this-> pass();
-                break;
-            default:
-                //手动打款
-                $this-> manual();
-
+        $this->refundApply = RefundApply::find($request->query('refund_id'));
+        if (!isset($this->refundApply)) {
+            throw new AdminException('退款记录不存在');
         }
-        
-        
-
     }
 
-    public function pass()
+    /**
+     * 拒绝
+     * @param \Request $request
+     * @return mixed
+     */
+    public function reject(\Request $request)
     {
-        
-        
-        if(RefundOperationService::refundPass()){
-            return $this->message('操作成功');
-        }
-        return $this->message('操作失败','','error');
-
+        $this->refundApply->reject($request->only(['refund_id', 'reject_reason']));
+        return $this->message('操作成功', '');
     }
 
-    public function  manual()
+    /**
+     * 同意
+     * @param \Request $request
+     * @return mixed
+     */
+    public function pass(\Request $request)
     {
-        if(RefundOperationService::refundPass()){
-            return $this->message('操作成功');
-        }
-        return $this->message('操作失败','','error');
+        $this->refundApply->pass($request->only(['refund_id']));
+        return $this->message('操作成功', '');
+    }
 
+    /**
+     * 手动退款
+     * @param \Request $request
+     * @return mixed
+     */
+    public function consensus(\Request $request)
+    {
+        $this->refundApply->consensus($request->only(['refund_id']));
+        return $this->message('操作成功', '');
     }
 }
