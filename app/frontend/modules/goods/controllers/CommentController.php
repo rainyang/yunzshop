@@ -13,16 +13,9 @@ use app\common\components\ApiController;
 use app\common\models\Goods;
 use app\common\models\Member;
 use app\common\models\OrderGoods;
-use Illuminate\Support\Facades\Cookie;
-use app\common\components\BaseController;
-use app\common\helpers\PaginationHelper;
-use app\common\helpers\Url;
-use Setting;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Session\Store;
-
 use app\frontend\modules\goods\models\Comment;
-use app\frontend\modules\goods\services\CommentService;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends ApiController
 {
