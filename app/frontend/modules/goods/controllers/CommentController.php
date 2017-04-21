@@ -51,6 +51,7 @@ class CommentController extends ApiController
             'order_id' => \YunShop::request()->order_id,
             'goods_id' => \YunShop::request()->goods_id,
             'content' => \YunShop::request()->content,
+            'level' => \YunShop::request()->level,
         ];
         if (!$comment['order_id']) {
             return $this->errorJson('评论失败!未检测到订单ID!');
@@ -185,9 +186,10 @@ class CommentController extends ApiController
                 Goods::updatedComment($commentModel->goods_id);
 
                 if ($commentStatus) {
+
                     OrderGoods::where('order_id', $commentModel->order_id)
                         ->where('goods_id', $commentModel->goods_id)
-                        ->update(['comment_status' => $commentStatus]);
+                        ->update(['comment_status' => $commentStatus,'comment_id'=>$commentModel->id]);
                 }
 
                 //显示信息并跳转

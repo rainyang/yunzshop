@@ -10,6 +10,7 @@ namespace app\common\models;
 
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\order\OrderGoodsChangePriceLog;
+use app\frontend\modules\goods\models\Comment;
 
 class OrderGoods extends BaseModel
 {
@@ -47,12 +48,12 @@ class OrderGoods extends BaseModel
             $result[] = [
                 'name' => '追评',
                 'api' => '',
-                'value' => ''
+                'value' => '1'
             ];
             $result[] = [
                 'name' => '查看评价',
                 'api' => '',
-                'value' => ''
+                'value' => '2'
             ];
         }
         return $result;
@@ -74,6 +75,11 @@ class OrderGoods extends BaseModel
 
     }
 
+    public function hasOneComment()
+    {
+        return $this->hasOne(Comment::class, 'id', 'comment_id');
+    }
+
     public function orderGoodsChangePriceLogs()
     {
         return $this->hasMany(OrderGoodsChangePriceLog::class, 'order_id', 'id');
@@ -84,6 +90,4 @@ class OrderGoods extends BaseModel
     {
         return !empty($this->goods_option_id);
     }
-
-
 }
