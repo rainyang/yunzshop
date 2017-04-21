@@ -22,7 +22,7 @@ class MemberMobileService extends MemberService
 
         $uniacid  = \YunShop::app()->uniacid;
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST'
+        if (\Request::isMethod('post')
                                   && MemberService::validate($mobile, $password)) {
             $has_mobile = MemberModel::checkMobile($uniacid, $mobile);
 
@@ -32,7 +32,7 @@ class MemberMobileService extends MemberService
                 $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
 
             } else {
-                return show_json(0, "用户不存在");
+                return show_json(7, "用户不存在");
             }
 
             if(!empty($member_info)){
@@ -54,11 +54,9 @@ class MemberMobileService extends MemberService
                 }
 
                 return show_json(1, $data);
-            } else{
-                return show_json(0, "手机号或密码错误");
             }
         } else {
-            return show_json(-1, "手机号或密码错误");
+            return show_json(6, "手机号或密码错误");
         }
 
     }
