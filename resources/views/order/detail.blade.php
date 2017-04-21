@@ -201,7 +201,7 @@
                     </div>
 
                     @if (!empty($order['refund_data']))
-                        @include('order.refund')
+                        @include('refund.index')
                     @endif
                     <div class="panel panel-default">
                         <div class="panel-heading">

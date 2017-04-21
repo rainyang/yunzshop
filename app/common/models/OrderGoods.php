@@ -15,7 +15,7 @@ class OrderGoods extends BaseModel
 {
     public $table = 'yz_order_goods';
     protected $hidden = ['order_id'];
-
+    protected $appends = ['buttons'];
     protected $fillable = [];
     protected $guarded = ['id'];
     protected $attributes = [
@@ -33,6 +33,29 @@ class OrderGoods extends BaseModel
     public function goods()
     {
         return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');
+    }
+
+    public function getButtonsAttribute()
+    {
+        if($this->comment_status == 0){
+            $result[] = [
+                'name' => '评价',
+                'api' => '',
+                'value' => ''
+            ];
+        }else{
+            $result[] = [
+                'name' => '追评',
+                'api' => '',
+                'value' => ''
+            ];
+            $result[] = [
+                'name' => '查看评价',
+                'api' => '',
+                'value' => ''
+            ];
+        }
+        return $result;
     }
 
     public function hasOneGoodsDispatch()
@@ -61,6 +84,4 @@ class OrderGoods extends BaseModel
     {
         return !empty($this->goods_option_id);
     }
-
-
 }

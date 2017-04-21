@@ -21,7 +21,6 @@ class OrderChangePrice extends OrderOperation
     protected $statusBeforeChange = [ORDER::WAIT_PAY];
     protected $name = '改价';
     protected $past_tense_class_name = 'OrderChangedPrice';
-    protected $_orderGoodsModels = [];
 
     /**
      * 更新数据库表

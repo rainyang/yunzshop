@@ -217,9 +217,9 @@ class Order extends BaseModel
      *
      * @param $member_id
      */
-    public static function getOrderInfoByMemberId($member_id)
+    public static function getOrderInfoByMemberId($member_id, $status)
     {
         return self::uniacid()
-            ->where('uid', $member_id);
+            ->where('uid', $member_id)->isComment($status);
     }
 }

@@ -59,16 +59,14 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-
             $redirect_url = $this->_getClientRequestUrl();
-            //Session::clear('client_url');
 
             $token = \Curl::to($tokenurl)
                 ->asJsonResponse(true)
                 ->get();
 
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
-                return show_json(4, 'token请求错误');
+                return show_json(5, 'token请求错误');
             }
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
@@ -77,30 +75,57 @@ class MemberOfficeAccountService extends MemberService
                 ->asJsonResponse(true)
                 ->get();
 
-            $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
-            $tmpStr = json_encode($userinfo['nickname']);
-            $tmpStr = preg_replace($patten, "", $tmpStr);
-            $nickname = json_decode($tmpStr);
+            if (is_array($userinfo) && !empty($userinfo['errcode'])) {
+                \Log::debug('微信登陆授权失败', $userinfo);
+                return show_json('-3', '微信登陆授权失败');
+            }
 
-            if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+            \Log::debug('userinfo', $userinfo);
+
+            if (is_array($userinfo) && !empty($userinfo['openid'])) {
+                $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
+                $tmpStr = json_encode($userinfo['nickname']);
+                $tmpStr = preg_replace($patten, "", $tmpStr);
+                $nickname = json_decode($tmpStr);
+
                 \YunShop::app()->openid = $userinfo['openid'];
 
-                $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
+                if (!empty($userinfo['unionid'])) {
+                    $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
 
-                if (!empty($UnionidInfo)) {
-                    $UnionidInfo = $UnionidInfo->toArray();
+                    if (!empty($UnionidInfo)) {
+                        $UnionidInfo = $UnionidInfo->toArray();
+                    }
+                }  else {
+                    $UnionidInfo = [];
                 }
 
-                if (!empty($UnionidInfo['unionid'])) {
-                    $types = explode('|', $UnionidInfo['type']);
-                    $member_id = $UnionidInfo['member_id'];
+                $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
 
-                    if (!in_array(self::LOGIN_TYPE, $types)) {
-                        //更新ims_yz_member_unique表
-                        MemberUniqueModel::updateData(array(
-                            'unique_id'=>$UnionidInfo['unique_id'],
-                            'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
-                        ));
+                if ($fans_mode) {
+                    $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
+                }
+
+                \Log::debug('粉丝', $fans_mode->uid);
+
+                if ((!empty($fans_mode) && !empty($member_shop_info_model))
+                        || !empty($UnionidInfo['unionid'])) {
+
+                    \Log::debug('微信登陆更新');
+
+                    if (!empty($UnionidInfo['unionid'])) {
+                        $types = explode('|', $UnionidInfo['type']);
+                        $member_id = $UnionidInfo['member_id'];
+
+                        if (!in_array(self::LOGIN_TYPE, $types)) {
+                            //更新ims_yz_member_unique表
+                            MemberUniqueModel::updateData(array(
+                                'unique_id'=>$UnionidInfo['unique_id'],
+                                'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
+                            ));
+                        }
+                    } else {
+                        $member_id = $fans_mode->uid;
                     }
 
                     if (MemberShopInfo::isBlack($member_id)) {
@@ -126,9 +151,9 @@ class MemberOfficeAccountService extends MemberService
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                 } else {
-                    $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
+                    \Log::debug('添加新会员', $fans_mode->uid);
 
-                    if ($mc_mapping_fans_model->uid) {
+                    if ($fans_mode->uid) {
                         //更新mc_members
                         $mc_data = array(
                             'nickname' => stripslashes($nickname),
@@ -140,7 +165,7 @@ class MemberOfficeAccountService extends MemberService
                         );
                         MemberModel::updataData($UnionidInfo['member_id'], $mc_data);
 
-                        $member_id = $mc_mapping_fans_model->uid;
+                        $member_id = $fans_mode->uid;
 
                         //更新mapping_fans
                         $record = array(
@@ -211,22 +236,21 @@ class MemberOfficeAccountService extends MemberService
                     );
                     SubMemberModel::insertData($sub_data);
 
-                    //添加ims_yz_member_unique表
-                    MemberUniqueModel::insertData(array(
-                        'uniacid' => $uniacid,
-                        'unionid' => $userinfo['unionid'],
-                        'member_id' => $member_id,
-                        'type' => self::LOGIN_TYPE
-                    ));
+                    if (!empty($userinfo['unionid'])) {
+                        //添加ims_yz_member_unique表
+                        MemberUniqueModel::insertData(array(
+                            'uniacid' => $uniacid,
+                            'unionid' => $userinfo['unionid'],
+                            'member_id' => $member_id,
+                            'type' => self::LOGIN_TYPE
+                        ));
+                    }
 
                     //触发会员成为下线事件
                     Member::chkAgent($member_id);
                 }
 
                 Session::set('member_id', $member_id);
-            } else {
-                \Log::debug('微信登陆授权失败', $userinfo);
-                return show_json('3', '微信登陆授权失败');
             }
         } else {
             $this->_setClientRequestUrl();
@@ -238,8 +262,6 @@ class MemberOfficeAccountService extends MemberService
         if (empty($params) || !empty($params) && $params['scope'] != 'user_info') {
             \Log::debug('微信登陆成功跳转地址',$redirect_url);
             redirect($redirect_url)->send();
-        } else {
-            return ['ok'];
         }
     }
 
