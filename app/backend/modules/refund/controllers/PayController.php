@@ -26,6 +26,9 @@ class PayController extends BaseController
         ]);
         //dd($request->query('refund_id'));
         //exit;
+        /**
+         * @var $refundApply RefundApply
+         */
         $refundApply = RefundApply::find($request->query('refund_id'));
         if(!isset($refundApply)){
             throw new AppException('未找到退款记录');
@@ -39,7 +42,7 @@ class PayController extends BaseController
         if(!$result){
             $this->error('操作失败');
         }
-        //$refundApply->
+        $refundApply->refundMoney();
         $this->message('操作成功');
 
     }

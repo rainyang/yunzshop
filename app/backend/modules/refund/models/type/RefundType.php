@@ -6,8 +6,10 @@
  * Time: 下午4:54
  */
 
-namespace app\backend\modules\refund\models;
+namespace app\backend\modules\refund\models\type;
 
+
+use app\backend\modules\refund\models\RefundApply;
 
 abstract class RefundType
 {
