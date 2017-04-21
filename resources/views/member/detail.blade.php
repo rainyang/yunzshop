@@ -47,7 +47,7 @@
                                 <select name='data[group_id]' class='form-control'>
                                     <option value=>无1分组</option>
                                     @foreach($groups as $group)
-                                    <option value='{{$group['id']}}' @if($member['yz_member']['group_id'] == $group['id']) selected @endif >{{ $group['group_name'] }}1</option>
+                                    <option value='{{$group['id']}}' selected>{{ $group['group_name'] }}1</option>
                                     @endforeach
                                 </select>
                             </div>
