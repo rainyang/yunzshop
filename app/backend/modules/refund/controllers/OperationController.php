@@ -19,8 +19,9 @@ class OperationController extends BaseController
      * @var $refundApply RefundApply
      */
     private $refundApply;
-    public function preAction(\Request $request)
+    public function preAction()
     {
+        $request = \Request::capture();
         $this->validate($request, [
             'refund_id' => 'required',
             //'reject_reason'=>''

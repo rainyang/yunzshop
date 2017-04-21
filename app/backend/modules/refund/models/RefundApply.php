@@ -25,7 +25,7 @@ class RefundApply extends \app\common\models\refund\RefundApply
 
     public function consensus($data)
     {
-        $this->status = self::COMPLETE;
+        $this->status = self::CONSENSUS;
         return $this->save();
     }
 }
