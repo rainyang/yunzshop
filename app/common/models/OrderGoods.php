@@ -84,6 +84,4 @@ class OrderGoods extends BaseModel
     {
         return !empty($this->goods_option_id);
     }
-
-
 }
