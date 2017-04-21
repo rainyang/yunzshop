@@ -10,7 +10,7 @@
 
   <script type="text/javascript">
     var checkUrl = "{!! yzWebUrl('update.check') !!}";
-    var todoUrl = "{!! yzWebUrl('update.get') !!}";
+    var todoUrl = "{!! yzWebUrl('update.start-download') !!}";
     function check_yun_shop_upgrade() {
         $.post(checkUrl, function (result) {
           console.log(todoUrl);
