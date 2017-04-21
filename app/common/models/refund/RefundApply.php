@@ -38,6 +38,7 @@ class RefundApply extends BaseModel
     const WAIT_CHECK = '0';//待审核
     const WAIT_REFUND = '3';//待打款
     const COMPLETE = '4';//已完成
+    const CONSENSUS = '5';//手动退款
 
     public function __construct(array $attributes = [])
     {
@@ -100,6 +101,7 @@ class RefundApply extends BaseModel
             self::WAIT_CHECK => '待审核',
             self::WAIT_REFUND => '待退款',
             self::COMPLETE => '完成',
+            self::CONSENSUS => '手动退款',
         ];
 
     }
