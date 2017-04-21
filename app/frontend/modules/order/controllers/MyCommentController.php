@@ -17,7 +17,7 @@ class MyCommentController extends ApiController
     public function index()
     {
         $list = Order::getMyCommentList(\YunShop::app()->getMemberId(), \YunShop::request()->status);
-        return $this->successJson(
+        return $this->successJson('成功',
             [
                 'list' => $list->toArray()
             ]
