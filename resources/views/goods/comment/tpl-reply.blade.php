@@ -52,11 +52,7 @@
         {{--</div>--}}
 
     </div>
-    <div>
-        @if(!empty($reply['reply']))
-            @include('goods.comment.tpl-reply',['replyData'=>$reply['reply']['data']])
-        @endif
-    </div>
+
 
 
 @endforeach

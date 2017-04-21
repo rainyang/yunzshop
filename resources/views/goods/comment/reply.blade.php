@@ -84,10 +84,10 @@
                     </div>
 
 
-                    @include('goods.comment.tpl-reply',['replyData'=>$comment['append']['data']])
+                    @include('goods.comment.tpl-reply',['replyData'=>$comment['has_many_reply']])
                     <div class="form-group"></div>
                     {{--回复记录--}}
-                    @include('goods.comment.tpl-reply',['replyData'=>$comment['reply']['data']])
+                    @include('goods.comment.tpl-reply',['replyData'=>$comment['has_many_append']])
 
 
                     <div class="form-group"></div>
@@ -113,7 +113,7 @@
                     <input type="hidden" name="reply[reply_id]" id="reply_id" value="{{$comment['uid']}}"/>
                     <input type="hidden" name="reply[comment_id]" id="comment_id" value="{{$comment['id']}}"/>
 
-                    <input type="hidden" name="reply[type]" id="type" value="{{$comment['type']+1}}"/>
+                    <input type="hidden" name="reply[type]" id="type" value="2"/>
 
                     <div class="form-group"></div>
                     <div class="form-group">
@@ -143,7 +143,6 @@
 
         $('.reply').click(function () {
             $('#reply_id').val($(this).data('uid'));
-            $('#comment_id').val($(this).data('id'));
             $('#nick_name').text($(this).data('nick_name'));
             $('#reply_content').focus();
             $('html,body').animate({scrollTop: $(document).height()}, 100);
