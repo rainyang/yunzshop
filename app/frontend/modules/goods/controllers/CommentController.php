@@ -53,6 +53,7 @@ class CommentController extends ApiController
             'content' => \YunShop::request()->content,
             'level' => \YunShop::request()->level,
         ];
+        echo "<pre>"; print_r($comment);exit;
         if (!$comment['order_id']) {
             return $this->errorJson('评论失败!未检测到订单ID!');
         }
