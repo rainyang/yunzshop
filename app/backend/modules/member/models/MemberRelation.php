@@ -268,7 +268,6 @@ class MemberRelation extends BackendModel
             return;
         }
 
-
         $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         if (empty($member)) {
