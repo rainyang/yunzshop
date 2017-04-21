@@ -84,6 +84,7 @@ class MemberController extends BaseController
         }
 
         $member = Member::getMemberInfoById($uid);
+        //echo '<pre>'; print_r($member->toArray()); exit;
 
         if (!empty($member)) {
             $member = $member->toArray();
