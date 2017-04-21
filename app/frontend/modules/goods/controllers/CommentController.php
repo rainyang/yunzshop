@@ -198,7 +198,6 @@ class CommentController extends ApiController
             ->first();
 
         if ($comment) {
-            echo "<pre>"; print_r($comment->toArray());exit;
             return $this->successJson('获取评论数据成功!', $comment->toArray());
         }
         return $this->errorJson('未检测到评论数据!');
