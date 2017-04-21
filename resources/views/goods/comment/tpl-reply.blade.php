@@ -54,7 +54,7 @@
     </div>
     <div>
         @if(!empty($reply['reply']))
-            {!! app\common\services\Comment::tplReplyAppend($reply['reply']['data']) !!}
+            @include('goods.comment.tpl-reply',['replyData'=>$reply['reply']['data']])
         @endif
     </div>
 

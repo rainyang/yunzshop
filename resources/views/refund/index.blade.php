@@ -4,6 +4,12 @@
     </div>
     <div class="panel-body">
         <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款状态 :</label>
+            <div class="col-sm-9 col-xs-12">
+                <p class="form-control-static">{{$order['has_one_refund_apply']['status_name']}}</p>
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款类型 :</label>
             <div class="col-sm-9 col-xs-12">
                 <p class="form-control-static">{{$order['has_one_refund_apply']['refund_type_name']}}</p>
@@ -90,16 +96,16 @@
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
             <div class="col-sm-9 col-xs-12">
-                @if ($order['has_one_refund_apply']['status'] == 0 || $order['has_one_refund_apply']['status'] >= 3)
+                @if ($order['has_one_refund_apply']['status'] == 0)
                     <a class="btn btn-danger btn-sm" href="javascript:;"
                        onclick="$('#modal-refund').find(':input[name=id]').val('{{$order['id']}}')"
                        data-toggle="modal"
-                       data-target="#modal-refund">处理{{$r_type[$refund['rtype']]}}申请</a>
+                       data-target="#modal-refund">处理{{$order['has_one_refund_apply']['refund_type_name']}}申请</a>
                 @elseif ($order['has_one_refund_apply']['status'] == -1 )
                     <span class='label label-default'>已拒绝</span>
                 @elseif ($order['has_one_refund_apply']['status'] == -2)
                     <span class='label label-default'>客户取消</span>
-                @elseif($order['has_one_refund_apply']['status'] == 1)
+                @elseif(in_array($order['has_one_refund_apply']['status'],[4,5]))
                     <span class='label label-danger'>已完成</span>
                 @endif
             </div>

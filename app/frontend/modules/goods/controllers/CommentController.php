@@ -135,7 +135,7 @@ class CommentController extends ApiController
         if (!$comment['content']) {
             return $this->errorJson('回复评论失败!未检测到评论内容!');
         }
-        
+
         if (isset($comment['images']) && is_array($comment['images'])) {
             $comment['images'] = serialize($comment['images']);
         } else {
@@ -191,6 +191,7 @@ class CommentController extends ApiController
             return $this->errorJson('获取评论失败!未检测到商品ID!');
         }
         $comment = Comment::getOrderGoodsComment()
+            ->with('hasOneOrderGoods')
             ->where('order_id', $orderId)
             ->where('goods_id', $goodsId)
             ->where('uid', \YunShop::app()->getMemberId())
