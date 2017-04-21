@@ -33,8 +33,7 @@ class MemberModel extends Member
         return self::select('uid')
             ->where('uniacid', $uniacid)
             ->where('mobile', $mobile)
-            ->get()
-            ->toArray();
+            ->first();
     }
 
     /**
@@ -59,8 +58,7 @@ class MemberModel extends Member
     {
         return self::where('uniacid', $uniacid)
             ->where('mobile', $mobile)
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**
