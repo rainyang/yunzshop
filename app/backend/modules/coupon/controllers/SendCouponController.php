@@ -5,6 +5,7 @@ namespace app\backend\modules\coupon\controllers;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberGroup;
+use app\common\models\AccountWechats;
 use app\common\models\MemberCoupon;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
@@ -61,7 +62,7 @@ class SendCouponController extends BaseController
                     break;
                 case self::BY_MEMBER_LEVEL: //根据"会员等级"获取 Member IDs
                     $sendLevel = \YunShop::request()->send_level;
-                    $res = MemberLevel::getMembersbyLevel($sendLevel)->toArray();//todo 当没有值时, toArray()没有对象,报错
+                    $res = MemberLevel::getMembersByLevel($sendLevel)->toArray();//todo 当没有值时, toArray()没有对象,报错
                     $memberIds = array_column($res['member'], 'member_id'); //提取member_id组成新的数组
                     break;
                 case self::BY_MEMBER_GROUP: //根据"会员分组"获取 Member IDs
@@ -182,10 +183,11 @@ class SendCouponController extends BaseController
     //$resUrl 推送消息的链接
     public function sendTemplateMessage($openid, $templateid, $data)
     {
-        $pay = \Setting::get('shop.pay');
+        $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
         $options = [
-            'app_id' => $pay['weixin_appid'],
-            'secret' => $pay['weixin_secret'],
+            'app_id' => $account->key,
+            'secret' => $account->secret,
             'token' => \YunShop::app()->account['token'],
         ];
         $app = new Application($options);

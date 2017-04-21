@@ -104,7 +104,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
-                            {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[images]',iunserializer($comment->images)) !!}
+                            {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[images]',unserialize($comment->images)) !!}
                         </div>
                     </div>
 

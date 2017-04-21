@@ -82,7 +82,7 @@
                         <tbody>
                         @foreach($detailList as $list)
                             <tr style="text-align: center">
-                                <td style="text-align: center;">{{ date('Y-m-d H:i:s', $list->created_at) }}</td>
+                                <td style="text-align: center;">{{ $list->created_at }}</td>
                                 <td style="text-align: center;">{{ $list->member_id }}</td>
                                 <td style="text-align: center;">
                                     @if($list->member->avatar)

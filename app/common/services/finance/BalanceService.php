@@ -48,7 +48,6 @@ abstract class BalanceService
         if (in_array($this->service_type,
             [
                 Balance::BALANCE_RECHARGE,
-                Balance::BALANCE_TRANSFER,
                 Balance::BALANCE_AWARD,
                 Balance::BALANCE_INCOME,
                 Balance::BALANCE_CANCEL_DEDUCTION
@@ -128,7 +127,7 @@ abstract class BalanceService
             'uniacid'       => \YunShop::app()->uniacid,
             'member_id'     => $this->memberModel->uid,
             'old_money'     => $this->memberModel->credit2 ?: 0,
-            'change_money'  => $this->data['money'],
+            'change_money'  => $this->type == Balance::TYPE_INCOME ? $this->data['money'] : -$this->data['money'],
             'new_money'     => $this->result_money > 0 ? $this->result_money : 0,
             'type'          => $this->type,
             'service_type'  => $this->service_type,

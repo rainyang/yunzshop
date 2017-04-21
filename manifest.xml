@@ -3,7 +3,7 @@
 	<application setting="true">
 		<name><![CDATA[芸商城]]></name>
 		<identifie><![CDATA[yun_shop]]></identifie>
-		<version><![CDATA[2.0.0]]></version>
+		<version><![CDATA[2.0.1]]></version>
 		<type><![CDATA[biz]]></type>
 		<ability><![CDATA[芸商城]]></ability>
 		<description><![CDATA[芸商城]]></description>

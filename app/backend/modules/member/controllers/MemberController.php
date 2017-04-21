@@ -198,7 +198,9 @@ class MemberController extends BaseController
         $keyword = \YunShop::request()->keyword;
         $member = Member::getMemberByName($keyword);
         $member = set_medias($member, array('avatar', 'share_icon'));
-        return $this->render('web/member/query', ['ds' => $member->toArray()]);
+        return view('member.query', [
+            'members' => $member->toArray(),
+        ])->render();
     }
 
     /**
@@ -208,15 +210,15 @@ class MemberController extends BaseController
      */
     public function agent()
     {
-        $uid = \YunShop::request()->id;
+        $request = \YunShop::request();
 
-        $member_info = Member::getUserInfos($uid)->first();
+        $member_info = Member::getUserInfos($request->id)->first();
 
         if (empty($member_info)) {
             return $this->message('会员不存在','', 'error');
         }
 
-        $list = Member::getAgentInfoByMemberId($uid)
+        $list = Member::getAgentInfoByMemberId($request)
             ->paginate($this->pageSize)
             ->toArray();
 
@@ -227,7 +229,7 @@ class MemberController extends BaseController
             'list'  => $list,
             'pager' => $pager,
             'total' => $list['total'],
-            'request' => \YunShop::request()
+            'request' => $request
         ])->render();
     }
 

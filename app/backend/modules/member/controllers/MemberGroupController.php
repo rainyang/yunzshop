@@ -26,7 +26,7 @@ class MemberGroupController extends BaseController
         $pageSize = 20;
         $groupList = MemberGroup::getGroupPageList($pageSize);
         $pager = PaginationHelper::show($groupList->total(), $groupList->currentPage(), $groupList->perPage());
-
+        //echo '<pre>'; print_r($groupList->toArray()); exit;
         return view('member.group.list', [
             'groupList' => $groupList,
             'pager' => $pager

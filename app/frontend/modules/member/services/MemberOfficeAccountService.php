@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\services;
 use app\common\events\member\RegisterByAgent;
 use app\common\facades\Setting;
 use app\common\helpers\Client;
+use app\common\models\AccountWechats;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
 use app\common\models\MemberGroup;
@@ -30,23 +31,27 @@ class MemberOfficeAccountService extends MemberService
     public function __construct()
     {}
 
-    public function login()
+    public function login($params = [])
     {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
-        $mid          = \YunShop::app()->mid ? \YunShop::app()->mid : 0;
 
-        $pay = Setting::get('shop.pay');
-
-        $appId        = $pay['weixin_appid'];
-        $appSecret    = $pay['weixin_secret'];
+        $account      = AccountWechats::getAccountByUniacid($uniacid);
+        $appId        = $account->key;
+        $appSecret    = $account->secret;
 
         $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        \Log::debug('微信登陆回调地址', $callback);
 
         $state = 'yz-' . session_id();
 
         if (!Session::get('member_id')) {
-            $authurl = $this->_getAuthUrl($appId, $callback, $state);
+            if (!empty($params) && $params['scope'] == 'user_info') {
+                $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+            } else {
+                $authurl = $this->_getAuthUrl($appId, $callback, $state);
+            }
         } else {
             $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
         }
@@ -54,6 +59,7 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
+
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
@@ -62,7 +68,7 @@ class MemberOfficeAccountService extends MemberService
                 ->get();
 
             if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
-                throw new AppException('请求错误');
+                return show_json(4, 'token请求错误');
             }
 
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
@@ -219,8 +225,8 @@ class MemberOfficeAccountService extends MemberService
 
                 Session::set('member_id', $member_id);
             } else {
-                redirect($authurl)->send();
-                exit;
+                \Log::debug('微信登陆授权失败', $userinfo);
+                return show_json('3', '微信登陆授权失败');
             }
         } else {
             $this->_setClientRequestUrl();
@@ -229,7 +235,12 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        redirect($redirect_url)->send();
+        if (empty($params) || !empty($params) && $params['scope'] != 'user_info') {
+            \Log::debug('微信登陆成功跳转地址',$redirect_url);
+            redirect($redirect_url)->send();
+        } else {
+            return ['ok'];
+        }
     }
 
     /**

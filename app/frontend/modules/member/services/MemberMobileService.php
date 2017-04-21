@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\services;
 
 use app\common\models\MemberShopInfo;
+use app\frontend\models\Member;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\member\models\MemberModel;
 
@@ -36,6 +37,9 @@ class MemberMobileService extends MemberService
 
             if(!empty($member_info)){
                 $member_info = $member_info->toArray();
+
+                //触发会员成为下线事件
+                Member::chkAgent($member_info['uid']);
 
                 $this->save($member_info, $uniacid);
 

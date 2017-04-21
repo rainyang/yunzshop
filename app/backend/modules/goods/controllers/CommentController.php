@@ -157,35 +157,43 @@ class CommentController extends BaseController
         if (!$commentModel) {
             return $this->message('无此记录或已被删除', '', 'error');
         }
-
-        $goods = Goods::getGoodsById($commentModel->goods_id);
+        $commentModel = $commentModel->toArray();
         $replys = Comment::getReplysByCommentId($id)->toArray();
-        $requestReply = \YunShop::request()->reply;
-        if ($requestReply) {
-            $member = Member::getMemberById($requestReply['reply_id']);
-            $requestReply = CommentService::reply($requestReply, $commentModel, $member);
-            //将数据赋值到model
-            $commentModel->setRawAttributes($requestReply);
-            $validator = $commentModel->validator($commentModel->getAttributes());
-            //字段检测
-            if ($validator->fails()) {
-                $this->error($validator->messages());
-            } else {
-                //数据保存
-                if (Comment::saveComment($commentModel->getAttributes())) {
-                    //显示信息并跳转
-                    return $this->message('评论回复保存成功', Url::absoluteWeb('goods.comment.reply', ['id' => $id]));
-                } else {
-                    $this->error('评论回复保存失败');
-                }
-            }
-        }
+        $goods = Goods::getGoodsById($commentModel['goods_id']);
 
         return view('goods.comment.reply', [
             'comment' => $commentModel,
             'replys' => $replys,
             'goods' => $goods
         ])->render();
+    }
+    
+    public function createReply()
+    {
+        $id = intval(\YunShop::request()->id);
+        $commentModel = new Comment;
+
+        $requestReply = \YunShop::request()->reply;
+        if ($requestReply) {
+            $member = Member::getMemberById($requestReply['reply_id']);
+            $requestReply = CommentService::reply($requestReply, $member);
+            //将数据赋值到model
+            $commentModel->setRawAttributes($requestReply);
+            $validator = $commentModel->validator($commentModel->getAttributes());
+            //字段检测
+            if ($validator->fails()) {
+                return $this->message($validator->messages(), '', 'error');
+            } else {
+                //数据保存
+                if (Comment::saveComment($commentModel->getAttributes())) {
+                    //显示信息并跳转
+                    return $this->message('评论回复保存成功', Url::absoluteWeb('goods.comment.reply', ['id' => $id]));
+                } else {
+                    return $this->message('评论回复保存失败', '', 'error');
+
+                }
+            }
+        }
     }
 
 

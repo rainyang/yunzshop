@@ -86,16 +86,25 @@
                             <tr>
                                 <td style="text-align: center;">{{ $list->uid }}</td>
                                 <td style="text-align: center;">
+
+                                    <img src='{{ isset($list->avatar) ? $list->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @if($list->avatar)
-                                    <img src='{{ $list->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                        <img src='{{ $list->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                    @elseif($shopSet['headimg'])
+                                        <img src='{{ tomedia($shopSet['headimg']) }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @endif
-                                    {{ $list->nickname or '' }}
+
+                                    @if($list0->nickname)
+                                        {{ $list->nickname }}
+                                    @else
+                                        未更新
+                                    @endif
                                 </td>
                                 <td>{{ $list->realname }}<br/>{{ $list->mobile }}</td>
                                 <td>
-                                    {{ $list->yzMember->level->level_name or '默认会员等级' }}
+                                    {{ isset($list->yzMember->level) ? $list->yzMember->level->level_name : $shopSet['level_name'] }}
                                     <br/>
-                                    {{ $list->yzMember->group->group_name or '默认会员分组' }}
+                                    {{ $list->yzMember->group->group_name or '' }}
                                 </td>
                                 <td>
                                     <label class="label label-danger">余额：{{ $list->credit2 }}</label>

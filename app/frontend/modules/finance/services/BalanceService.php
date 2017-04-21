@@ -53,7 +53,7 @@ class BalanceService extends BaseBalanceService
     }
 
     //余额转让设置
-    protected function transferSet()
+    public function transferSet()
     {
         return $this->_recharge_set['transfer'] ? true : false;
     }
@@ -77,7 +77,7 @@ class BalanceService extends BaseBalanceService
     }
 
     //余额提现到微信
-    public function withdrawWechat()
+    public function withdrawWecht()
     {
         return $this->_withdraw_set['wechat'] ? true : false;
     }
@@ -120,6 +120,10 @@ class BalanceService extends BaseBalanceService
         $this->getMemberInfo();
         $this->service_type = $data['service_type'];
 
+        if ($this->service_type == Balance::BALANCE_TRANSFER) {
+           return $this->balanceTransfer();
+        }
+
         return  $this->detectionBalance() ? $this->judgeMethod() : '余额必须大于零';
     }
 
@@ -134,6 +138,9 @@ class BalanceService extends BaseBalanceService
     protected function getMemberInfo()
     {
         $this->memberModel = Member::getMemberInfoById(\YunShop::app()->getMemberId());
+        if ($this->data['member_id']) {
+            $this->memberModel = Member::getMemberInfoById($this->data['member_id']);
+        }
         if (!$this->memberModel) {
             throw new AppException('未获取到会员信息，请重试！');
         }
@@ -143,6 +150,24 @@ class BalanceService extends BaseBalanceService
     private function detectionBalance()
     {
         return $this->data['money'] > 0 ? true : false;
+    }
+
+    private function balanceTransfer()
+    {
+        $this->attachedMoney();
+        $this->type = Balance::TYPE_EXPENDITURE;
+        //echo '<pre>'; print_r($this->memberModel); exit;
+        //echo '<pre>'; print_r($this->data); exit;
+        $result = $this->subtraction();
+        if ($result === true) {
+            $this->type = Balance::TYPE_INCOME;
+            $this->data['member_id'] = $this->data['recipient'];
+            $this->getMemberInfo();
+            return $this->addition();
+        }
+
+        //echo '<pre>'; print_r($result); exit;
+        throw new AppException($result);
     }
 
 
