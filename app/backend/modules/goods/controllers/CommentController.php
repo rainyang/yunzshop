@@ -52,13 +52,13 @@ class CommentController extends BaseController
         $goods = [];
         if (!empty($goods_id)) {
             $goods = Goods::getGoodsById($goods_id);
-            if(!$goods){
+            if (!$goods) {
                 return $this->message('未找到此商品或该商品已被删除', Url::absoluteWeb('goods.comment.index'));
             }
             $goods = $goods->toArray();
         }
 
-        
+
         $commentModel = new Comment();
         $commentModel->goods_id = $goods_id;
 
@@ -153,20 +153,20 @@ class CommentController extends BaseController
     public function reply()
     {
         $id = intval(\YunShop::request()->id);
-        $commentModel = Comment::getComment($id);
+        $commentModel = Comment::getComment($id)->first();
         if (!$commentModel) {
             return $this->message('无此记录或已被删除', '', 'error');
         }
+
+
         $commentModel = $commentModel->toArray();
-        $replys = Comment::getReplysByCommentId($id)->toArray();
         $goods = Goods::getGoodsById($commentModel['goods_id']);
         return view('goods.comment.reply', [
             'comment' => $commentModel,
-            'replys' => $replys,
             'goods' => $goods
         ])->render();
     }
-    
+
     public function createReply()
     {
         $id = intval(\YunShop::request()->id);
