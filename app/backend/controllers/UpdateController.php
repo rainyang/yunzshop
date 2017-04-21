@@ -79,6 +79,7 @@ class UpdateController extends BaseController
             }
         } else {
             echo 'Current Version is up to date<br>';
+            return redirect(yzWebFullUrl('index.index'));
         }
         return;
     }
