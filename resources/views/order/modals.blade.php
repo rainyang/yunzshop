@@ -15,7 +15,7 @@
                         <label class="col-xs-10 col-sm-3 col-md-3 control-label">收件人信息</label>
                         <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
                             <div class="form-control-static">
-                                收 件 人: <span class="realname"></span> / <span class="mobile"></span><br>
+                                收 件 人: <span class="realname">{{$order['belongs_to_member']['realname']}}</span> / <span class="mobile">{{$order['belongs_to_member']['mobile']}}</span><br>
                                 收货地址: <span class="address"></span>
                             </div>
                         </div>
@@ -566,10 +566,21 @@
 
 <script language="javascript">
     function confirmSend() {
+        var numerictype = /^(0|[1-9]\d*)$/;
+
         if ($('#express_sn').val() == '' && $('#express_company').val() != '') {
             $('#send_form').val("order.list");
             return confirm('请填写快递单号！');
         }
+        if ($('#express_sn').val() != '') {
+
+            if (!numerictype.test($('#express_sn').val())) {
+                $('#send_form').val("order.list");
+                return confirm('快递单号格式不正确！');
+            }
+        }
+
+
         //todo 当未选择其他快递的时候,不允许提交
     }
 
