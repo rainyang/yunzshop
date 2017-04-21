@@ -8,7 +8,6 @@
 
 namespace app\frontend\modules\order\models;
 
-
 class OrderGoods extends \app\common\models\OrderGoods
 {
     public function getButtonsAttribute()

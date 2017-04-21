@@ -26,7 +26,7 @@ class Order extends BaseModel
     private $RefundData;
     protected $fillable = [];
     protected $guarded = ['id'];
-    protected $appends = ['status_name', 'pay_type_name', 'refund_data'];
+    protected $appends = ['status_name', 'pay_type_name'];
     protected $search_fields = ['id', 'order_sn'];
     //protected $attributes = ['discount_price'=>0];
     const CLOSE = -1;
@@ -141,18 +141,6 @@ class Order extends BaseModel
             $this->StatusService = StatusServiceFactory::createStatusService($this);
         }
         return $this->StatusService;
-    }
-
-    /**
-     * @return mixed
-     * 增加退换货订单 退换数据
-     */
-    public function getRefundDataAttribute()
-    {
-        if (!empty($this->refund_id)) {
-            return RefundApply::getRefundById($this->refund_id);
-        }
-        return [];
     }
 
     //收货地址

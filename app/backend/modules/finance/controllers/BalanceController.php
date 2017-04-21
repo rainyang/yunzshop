@@ -50,16 +50,10 @@ class BalanceController extends BaseController
 
             $validator = null;
             foreach ($requestModel['sale'] as $key => $item) {
-                //echo '<pre>'; print_r($item); exit;
                 $validator = (new BackendBalanceRecharge())->validator($item);
-                //echo '<pre>'; print_r($validator); exit;
                 if ($validator->fails()) {
-                    //echo '<pre>'; print_r(1); exit;
-                   // echo '<pre>'; print_r($validator->messages()); exit;
-
                     break;
                 }
-                //echo '<pre>'; print_r(2); exit;
             }
             if($validator->fails()){
                 $this->error($validator->messages());
@@ -107,6 +101,7 @@ class BalanceController extends BaseController
             'detailList'    => $detailList,
             'pager'         => $pager,
             'search'        => $search,
+            'shopSet'       => Setting::get('shop.member'),
             'serviceType'   => \app\common\models\finance\Balance::$balanceComment
         ])->render();
     }

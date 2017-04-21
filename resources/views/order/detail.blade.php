@@ -200,7 +200,7 @@
 
                     </div>
 
-                    @if (!empty($order['refund_data']))
+                    @if (!empty($order['has_one_refund_apply']))
                         @include('refund.index')
                     @endif
                     <div class="panel panel-default">
