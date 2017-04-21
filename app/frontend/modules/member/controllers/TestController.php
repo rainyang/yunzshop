@@ -472,7 +472,7 @@ $pay->doPay($data);
     }
 
     public function prlog()
-    {
+    {echo 2;exit;
         $member_id = 274;
         if (!empty($member_id)) {
             $member_info = MemberModel::getUserInfos($member_id)->first();
@@ -489,6 +489,35 @@ $pay->doPay($data);
 
         } else {
             return $this->errorJson('缺少访问参数');
+        }
+    }
+
+    public function uploadImg()
+    {echo 1;exit;
+        \Log::debug('上传图片', \YunShop::request());
+    }
+
+    public function wxLogin()
+    {echo 1;exit;
+        $uniacid      = \YunShop::app()->uniacid;
+        $code         = \YunShop::request()->code;
+
+        $account      = AccountWechats::getAccountByUniacid($uniacid);
+        $appId        = $account->key;
+        $appSecret    = $account->secret;
+
+
+        $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $state = '123';
+        if (!empty($code)) {
+            $token = \Curl::to("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appId . "&secret=" . $appSecret . "&code=" . $code . "&grant_type=authorization_code")
+                ->asJsonResponse(true)
+                ->get();
+
+            echo '<pre>';print_r($token);exit;
+
+        } else {
+            redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state={$state}#wechat_redirect")->send();
         }
     }
 }

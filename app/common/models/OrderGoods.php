@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 use app\common\models\goods\GoodsDispatch;
+use app\common\models\order\OrderGoodsChangePriceLog;
 
 class OrderGoods extends BaseModel
 {
@@ -70,6 +71,12 @@ class OrderGoods extends BaseModel
     public function goodsOption()
     {
         return $this->hasOne('\app\common\models\GoodsOption', 'id', 'goods_option_id');
+
+    }
+
+    public function orderGoodsChangePriceLogs()
+    {
+        return $this->hasMany(OrderGoodsChangePriceLog::class, 'order_id', 'id');
 
     }
 

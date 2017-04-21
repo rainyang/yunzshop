@@ -36,8 +36,6 @@ class RefundApply extends BaseModel
     const CANCEL = '-2';//用户取消
     const REJECT = '-1';//驳回
     const WAIT_CHECK = '0';//待审核
-    const WAIT_SEND = '1';//待发货
-    const WAIT_RECEIVE = '2';//待收货
     const WAIT_REFUND = '3';//待打款
     const COMPLETE = '4';//已完成
 
@@ -54,7 +52,7 @@ class RefundApply extends BaseModel
 
     public function getButtonModelsAttribute()
     {
-        if($this->status == self::WAIT_CHECK){
+        if ($this->status == self::WAIT_CHECK) {
             $result[] = [
                 'name' => '修改申请',
                 'api' => 'refund.edit',
@@ -66,13 +64,7 @@ class RefundApply extends BaseModel
                 'value' => 3
             ];
         }
-        if($this->status == self::WAIT_SEND){
-            $result[] = [
-                'name' => '填写快递',
-                'api' => 'refund.send',
-                'value' => 2
-            ];
-        }
+
         return $result;
     }
 
@@ -92,27 +84,25 @@ class RefundApply extends BaseModel
 
     public function getRefundTypeNameAttribute()
     {
-        $mapping = [
-            0 => '退款(仅退款不退货)',
-            1 => '退款退货',
-            2 => '换货',
-        ];
-        return $mapping[$this->refund_type];
+        return $this->refundTypeName;
     }
 
-    public function getStatusNameAttribute()
+    protected function getStatusNameMapping()
     {
-        $mapping = [
+        return [
             self::CANCEL => '用户取消',
             self::REJECT => '驳回',
             self::WAIT_CHECK => '待审核',
-            self::WAIT_SEND => '待退货',
-            self::WAIT_RECEIVE => '待收货',
             self::WAIT_REFUND => '待退款',
             self::COMPLETE => '完成',
         ];
 
-        return $mapping[$this->status];
+    }
+
+    public function getStatusNameAttribute()
+    {
+
+        return $this->getStatusNameMapping()[$this->status];
     }
 
     public function order()
@@ -135,5 +125,5 @@ class RefundApply extends BaseModel
     {
         return self::find($id);
     }
-    
+
 }
