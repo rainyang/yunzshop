@@ -59,7 +59,6 @@ class MemberOfficeAccountService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-
             $redirect_url = $this->_getClientRequestUrl();
             //Session::clear('client_url');
 
@@ -77,12 +76,17 @@ class MemberOfficeAccountService extends MemberService
                 ->asJsonResponse(true)
                 ->get();
 
-            $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
-            $tmpStr = json_encode($userinfo['nickname']);
-            $tmpStr = preg_replace($patten, "", $tmpStr);
-            $nickname = json_decode($tmpStr);
+            if (is_array($userinfo) && !empty($userinfo['errcode'])) {
+                \Log::debug('微信登陆授权失败', $userinfo);
+                return show_json('-3', '微信登陆授权失败');
+            }
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+                $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
+                $tmpStr = json_encode($userinfo['nickname']);
+                $tmpStr = preg_replace($patten, "", $tmpStr);
+                $nickname = json_decode($tmpStr);
+
                 \YunShop::app()->openid = $userinfo['openid'];
 
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
@@ -225,8 +229,8 @@ class MemberOfficeAccountService extends MemberService
 
                 Session::set('member_id', $member_id);
             } else {
-                \Log::debug('微信登陆授权失败', $userinfo);
-                return show_json('3', '微信登陆授权失败');
+                \Log::debug('微信开放平台未绑定此公众号', $userinfo);
+                return show_json('3', '微信开放平台未绑定此公众号');
             }
         } else {
             $this->_setClientRequestUrl();
@@ -238,8 +242,6 @@ class MemberOfficeAccountService extends MemberService
         if (empty($params) || !empty($params) && $params['scope'] != 'user_info') {
             \Log::debug('微信登陆成功跳转地址',$redirect_url);
             redirect($redirect_url)->send();
-        } else {
-            return ['ok'];
         }
     }
 
