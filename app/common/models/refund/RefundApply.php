@@ -84,7 +84,12 @@ class RefundApply extends BaseModel
 
     public function getRefundTypeNameAttribute()
     {
-        return $this->refundTypeName;
+        $mapping = [
+            0 => '退款(仅退款不退货)',
+            1 => '退款退货',
+            2 => '换货',
+        ];
+        return $mapping[$this->refund_type];
     }
 
     protected function getStatusNameMapping()

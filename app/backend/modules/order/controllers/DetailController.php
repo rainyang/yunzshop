@@ -16,18 +16,18 @@ class DetailController extends BaseController
     public function index(\Request $request)
     {
         $orderId = $request->query('id');
-        //$order_id = 1;
         $order = Order::with(
             [
                 'hasManyOrderGoods.belongsToGood',
                 'beLongsToMember',
                 'hasOneOrderRemark',
-                'address'
+                'address',
+                'hasOneRefundApply'
             ]
         )->find($orderId);
         $order->button_models = $order->button_models;
         $order = $order->toArray();
-//        dd($order);
+        //dd($order);
         //exit;
         return view('order.detail', [
             'order' => $order,
