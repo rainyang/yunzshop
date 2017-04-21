@@ -29,44 +29,5 @@ class CreatedOrderModel extends OrderModel
 
     }
 
-    protected function getDiscountPrice(){
-        return $this->discount_price;
-    }
-    protected function getDispatchPrice(){
-        return $this->dispatch_price;
 
-    }
-    protected function getChangePrice(){
-        //todo
-        return 0;
-    }
-    protected function getChangeVipPrice(){
-        //todo
-        return 0;
-    }
-    protected function getVipPrice(){
-        return parent::getVipPrice() - $this->getChangeVipPrice();
-
-    }
-    protected function getPrice(){
-        return parent::getPrice() - $this->getChangePrice();
-    }
-    public function changePrice()
-    {
-        $data = [
-            'discount_price' => $this->getDiscountPrice(),
-            'dispatch_price' => $this->getDispatchPrice(),
-            'deduction_price' => $this->getDeductionPrice(),
-            'price' => $this->getPrice(),
-            'goods_price' => $this->getVipPrice(),
-        ];
-        dump('订单改价信息:');
-        dump($data);
-        $this->updateOrderGoods();
-    }
-    private function updateOrderGoods(){
-        foreach ($this->orderGoodsModels as $orderGoodsModel){
-            //$orderGoodsModel->update();
-        }
-    }
 }

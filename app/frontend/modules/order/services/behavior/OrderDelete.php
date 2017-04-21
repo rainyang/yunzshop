@@ -13,7 +13,7 @@ use app\common\models\Order;
 
 class OrderDelete extends OrderOperation
 {
-    protected $status_before_change = [ORDER::CLOSE, ORDER::COMPLETE];
+    protected $statusBeforeChange = [ORDER::CLOSE, ORDER::COMPLETE];
     //protected $status_after_changed = -1;
     protected $name = '删除';
     protected $past_tense_class_name = 'OrderDeleted';
