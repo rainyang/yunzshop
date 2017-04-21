@@ -55,7 +55,7 @@ class Order extends \app\common\models\Order
     public function orderGoodsBuilder($status)
     {
         return function ($query) use ($status) {
-            return $query->where('comment_status', $status);
+            return $query->with('hasOneComment')->where('comment_status', $status);
         };
     }
 
