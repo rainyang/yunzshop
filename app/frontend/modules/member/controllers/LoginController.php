@@ -33,7 +33,11 @@ class LoginController extends ApiController
                     $msg = $member->login();
 
                     if (!empty($msg)) {
-                        return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
+                        if ($msg['status'] == 1) {
+                            return $this->successJson($msg['json'], ['status'=> $msg['status']]);
+                        } else {
+                            return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
+                        }
                     } else {
                         echo $this->errorJson('登录失败', ['status' => 2]);
                     }
