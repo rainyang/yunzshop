@@ -113,6 +113,14 @@
 <script language="javascript">
     require(['jquery'],function(){
 
+        var ue = UE.getEditor('container', {
+            toolbars: [
+                ['fullscreen', 'source', 'undo', 'redo', 'bold']
+            ],
+            autoHeightEnabled: true,
+            autoFloatEnabled: true
+        });
+
     $(function() {
         $("#chkoption").click(function() {
             var obj = $(this);
