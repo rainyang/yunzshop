@@ -88,7 +88,7 @@
                                 <td style="text-align: center;">
 
                                     @if($list->avatar || $shopSet['headimg'])
-                                    <img src='{{ isset($list->avatar) ? tomedia($list->avatar) : tomedia($shopSet['headimg']) }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                    <img src='{{ $list->avatar ? tomedia($list->avatar) : tomedia($shopSet['headimg']) }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @endif
 
                                     {{ $list->nickname ? '123' : '未更新'}}

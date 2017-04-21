@@ -97,9 +97,11 @@
                     <tr style="text-align: center;">
                         <td>{{ $list->ordersn }}</td>
                         <td>
-                            <img src='{{ $list->member->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc'/>
+                            @if($list->member->avatar || $shopSet['headimg'])
+                            <img src='{{ $list->member->avatar ? tomedia($list->member->avatar) : tomedia($shopSet['headimg'])}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc'/>
                             <br/>
-                            {{ $list->member->nickname }}
+                            @endif
+                            {{ $list->member->nickname ? $list->member->nickname : '未更新' }}
                         </td>
                         <td>
                             {{ $list->member->realname }}
@@ -108,9 +110,9 @@
                         </td>
 
                         <td class='hidden-xs'>
-                            {{ $list->member->yzMember->level->level_name or '普通会员'}}
+                            {{ $list->member->yzMember->level->level_name or $shopSet['level_name']}}
                             <br />
-                            {{ $list->member->yzMember->group->group_name or '无分组' }}
+                            {{ $list->member->yzMember->group->group_name or '' }}
                         </td>
 
                         <td>{{ $list->created_at }}</td>

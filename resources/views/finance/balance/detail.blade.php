@@ -86,9 +86,9 @@
                                 <td style="text-align: center;">{{ $list->member_id }}</td>
                                 <td style="text-align: center;">
                                     @if($list->member->avatar || $shopSet['headimg'])
-                                        <img src='{{ tomedia($list->member->avatar) or tomedia($shopSet['headimg']) }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                        <img src='{{ $list->member->avatar ? tomedia($list->member->avatar) : tomedia($shopSet['headimg']) }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @endif
-                                    {{ $list->member->nickname or '' }}
+                                    {{ $list->member->nickname ? $list->member->nickname : '未更新' }}
                                 </td>
                                 <td>{{ $list->member->realname }}<br/>{{ $list->member->mobile }}</td>
                                 <td><label class="label label-danger">余额：{{ $list->new_money }}</label></td>
