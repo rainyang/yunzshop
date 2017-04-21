@@ -13,11 +13,38 @@ use app\common\services\AutoUpdate;
 
 class UpdateController extends BaseController
 {
-    public function app()
+    /**
+     * 检测更新
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function check()
+    {
+        $result = ['msg'=>'','last_version'=>'','updated'=>0];
+
+        $update = new AutoUpdate(null, null, 300);
+        $update->setCurrentVersion(config('version'));
+        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+
+        //Check for a new update
+        if ($update->checkUpdate() === false){
+            $result['msg'] = 'Could not check for updates! See log file for details.';
+            return response()->json($result)->send();
+        }
+
+        if ($update->newVersionAvailable()) {
+            $result['last_version'] = $update->getLatestVersion()->getVersion();
+            $result['updated'] = 1;
+            $result['current_version'] = config('version');
+            return response()->json($result)->send();
+        }
+        return response()->json($result)->send();
+    }
+
+    public function get()
     {
         $update = new AutoUpdate(null, null, 300);
-        $update->setCurrentVersion('0.1.0');
-        $update->setUpdateUrl('http://market.cc/update'); //Replace with your server update directory
+        $update->setCurrentVersion(config('version'));
+        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         //Check for a new update
         if ($update->checkUpdate() === false){
             die('Could not check for updates! See log file for details.');
@@ -53,7 +80,6 @@ class UpdateController extends BaseController
         } else {
             echo 'Current Version is up to date<br>';
         }
-        echo 'Log:<br>';
-        echo nl2br(file_get_contents(__DIR__ . '/update.log'));
+        return;
     }
 }

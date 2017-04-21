@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class  Coupon extends BaseModel
 {
     use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at','time_start','time_end'];
 
     const COUPON_ALL_USE = 0;
     const COUPON_CATEGORY_USE = 1;
@@ -22,19 +22,11 @@ class  Coupon extends BaseModel
 
     protected $guarded = [];
 
-
     protected $casts = [
         'goods_ids' => 'json',
         'category_ids' => 'json',
         'goods_names' => 'json',
         'categorynames' => 'json',
-        'time_start' => 'datetime',
-        'time_end' =>'datetime',
-    ];
-
-    protected $attributes = [
-        'goods_ids' => [],
-        'categoryids' => [],
     ];
 
     public static function getMemberCoupon($used = 0) { //todo 这张表没有used这个字段, 应该放在member_coupon表?

@@ -14,7 +14,7 @@
             <div style='float:left;height:auto;overflow: hidden'>
                 <p>
                     <b>昵称:</b>
-                    {{$item['has_one_member']['nickname']}}
+                    {{$item['has_one_member']->nickname}}
                     <b>姓名:</b>
                     {{$item['has_one_member']['realname']}}
                     <b>手机号:</b>

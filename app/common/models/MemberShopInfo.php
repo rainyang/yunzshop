@@ -19,6 +19,7 @@ class MemberShopInfo extends BackendModel
 
     public $primaryKey = 'member_id';
 
+    protected $guarded = [''];
     /**
      * 获取用户信息
      *

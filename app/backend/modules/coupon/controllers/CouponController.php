@@ -18,7 +18,23 @@ class CouponController extends BaseController
     //优惠券列表
     public function index()
     {
-        $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate(20)->toArray();
+        $keyword = \YunShop::request()->keyword;
+        $getType = \YunShop::request()->gettype;
+        $searchSearchSwitch = \YunShop::request()->timesearchswtich;
+        $timeStart = strtotime(\YunShop::request()->time['start']);
+        $timeEnd = strtotime(\YunShop::request()->time['end']);
+
+        $pageSize = 10;
+        if (empty($keyword) && empty($getType) && ($searchSearchSwitch == 0)){
+            $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate($pageSize)->toArray();
+        } else {
+//            dd($timeStart);exit;
+//            dd($timeEnd);exit;
+            $list = Coupon::getCouponsBySearch($keyword, $getType, $searchSearchSwitch, $timeStart, $timeEnd)
+                        ->orderBy('display_order','desc')
+                        ->paginate($pageSize)
+                        ->toArray();
+        }
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         foreach($list['data'] as &$item){
@@ -27,23 +43,27 @@ class CouponController extends BaseController
             $item['lasttotal'] = $item['total'] - $item['gettotal'];
         }
 
-        //dd($list);
         return view('coupon.index', [
             'list' => $list['data'],
             'pager' => $pager,
-            'var' => \YunShop::app()->get(),
         ])->render();
     }
 
     //添加优惠券
     public function create()
     {
+
         //获取表单提交的值
         $couponRequest = \YunShop::request()->coupon;
 
         //表单验证
         if($couponRequest){
             $coupon = new Coupon();
+            $coupon->uniacid = \YunShop::app()->uniacid;
+            $coupon->time_start = strtotime(\YunShop::request()->time['start']);
+            $coupon->time_end = strtotime(\YunShop::request()->time['end']);
+            $coupon->use_type =\YunShop::request()->usetype;
+
             $coupon->fill($couponRequest);
             $validator = $coupon->validator();
             if($validator->fails()){
@@ -56,7 +76,7 @@ class CouponController extends BaseController
         }
 
         return view('coupon.coupon', [
-            'coupon' => $coupon,
+            'coupon' => $couponRequest,
         ])->render();
     }
 
@@ -68,16 +88,29 @@ class CouponController extends BaseController
             $this->error('请传入正确参数.');
         }
 
-        $coupon = Coupon::uniacid()->find($coupon_id);
+        $coupon = Coupon::getCouponById($coupon_id)->first();
         $couponRequest = \YunShop::request()->coupon;
         if ($couponRequest) {
-            $coupon->setRawAttributes($couponRequest);
-            $coupon->save();
+
+            $couponRequest['time_start'] =strtotime(\YunShop::request()->time['start']);
+            $couponRequest['time_end'] =strtotime(\YunShop::request()->time['end']);
+
+            //todo 表单验证
+            $coupon->fill($couponRequest);
+            $validator = $coupon->validator();
+            if($validator->fails()){
+                $this->error($validator->messages());
+            } else{
+                if($coupon->save()){
+                    return $this->message('优惠券修改成功', Url::absoluteWeb('coupon.coupon.index'));
+                } else{
+                    $this->error('优惠券修改失败');
+                }
+            }
         }
 
         return view('coupon.coupon', [
             'coupon' => $coupon,
-            'var' => \YunShop::app()->get(),
         ])->render();
     }
 
@@ -119,6 +152,20 @@ class CouponController extends BaseController
         return view('coupon.query', [
             'coupons' => $coupons
         ])->render();
+    }
+
+    //用于"适用范围"添加商品或者分类
+    public function addParam()
+    {
+        $type = \YunShop::request()->type;
+        switch($type){
+            case 'goods':
+                return view('coupon.tpl.goods')->render();
+                break;
+            case 'category':
+                return view('coupon.tpl.category')->render();
+                break;
+        }
     }
 
 }
