@@ -36,7 +36,7 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >发送类型</label>
                 <div class="col-sm-9 col-xs-12">
-                    <label class="radio-inline"><input type="radio" name="sendtype" value="1" checked /> 按 Member ID 发送</label>
+                    <label class="radio-inline"><input type="radio" name="sendtype" value="1" checked/> 按 Member ID 发送</label>
                     <label class="radio-inline"><input type="radio" name="sendtype" value="2" @if($sendtype == '2') checked @endif/> 按用户等级发送</label>
                     <label class="radio-inline"><input type="radio" name="sendtype" value="3" @if($sendtype == '3') checked @endif/> 按用户分组发送</label>
                     <label class="radio-inline"><input type="radio" name="sendtype" value="4" @if($sendtype == '4') checked @endif/> 发送给全部用户</label>
@@ -138,8 +138,16 @@
     </div>
 </div>
 
-
 <script>
+    //验证是否是整数
+    function validateInt(value){
+        if(value == parseInt(value)){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
     function search_coupons() {
         $("#module-menus-coupon").html("正在搜索....");
         $.get('{!! yzWebUrl('coupon.coupon.get-search-coupons') !!}', {
@@ -148,6 +156,7 @@
             $('#module-menus-coupon').html(dat);
         });
     }
+
     function select_coupon(o) {
         $("#couponid").val(o.id);
         $("#coupon").val('[' + o.id + "] " + o.name);
@@ -168,8 +177,8 @@
                 return false;
             }
             var send_total = $('#send_total').val();
-            if (!$.isInt(send_total)) {
-                Tip.select($('#send_total'), '请输入整数发放数量!');
+            if (!validateInt(send_total)) {
+                Tip.select($('#send_total'), '请输入整数!');
                 return false;
             }
             send_total = parseInt(send_total);
@@ -178,9 +187,9 @@
                 return false;
             }
             var c = $('input[name=sendtype]:checked').val();
-            var v = $('#value_' + c).val();
+            var v = $('#value_1').val();
             if (c == 1 && v == '') {
-                alert('请输入要发放的用户 Member ID !');
+                Tip.show(($('#value_1')),'请输入要发放的用户 Member ID !');
                 return false;
             }
             return true;

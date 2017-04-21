@@ -51,6 +51,7 @@ class SendCouponController extends BaseController
 
             //获取会员 Member ID
             $sendType = \YunShop::request()->sendtype;
+//            dd($sendType);
             switch ($sendType) {
                 case self::BY_MEMBERIDS:
                     $membersScope = \YunShop::request()->send_memberid; // todo 前端 JS 也需要检测是否符合格式
@@ -79,19 +80,18 @@ class SendCouponController extends BaseController
                     $memberIds = '';
             }
 
-            if (empty($memberIds)) {
-                $this->error('该类别下没有用户');
-            }
-
             //更新优惠券的推送设置
             $couponResponse = \YunShop::request()->couponresponse; //优惠券的推送设置
             $couponModel->update($couponResponse);
 
             //获取发放的数量
             $sendTotal = \YunShop::request()->send_total;
-            if($sendTotal < 1){
-                $this->error('发放的数量不能小于 1');
-            } else {
+
+            if (empty($memberIds)){
+                $this->error('未指定发放对象, 或者该发放类型下还没有用户');
+            } elseif(!is_int($sendTotal) || $sendTotal < 1){
+                $this->error('发放数量必须为整数, 而且不能小于 1');
+            } else{
                 //发放优惠券
                 $res = $this->sendCoupon($memberIds, $sendTotal, $couponResponse);
                 if ($res){
@@ -107,8 +107,8 @@ class SendCouponController extends BaseController
             'coupondec' => \YunShop::request()->coupondec,
             'send_total' => isset($sendTotal) ? $sendTotal : 0,
             'sendtype' => isset($sendType) ? $sendType : 1,
-            'memberLevels' => $memberLevels, //用户等级列表 //bingo
-            'memberGroups' => $memberGroups, //用户分组列表 //bingo
+            'memberLevels' => $memberLevels, //用户等级列表
+            'memberGroups' => $memberGroups, //用户分组列表
             'send_level' => isset($sendLevel) ? $sendLevel : 1,
             'memberGroupId' => isset($sendGroup) ? $sendGroup : 1,
             'agentLevelId' => isset($sendLevel) ? $sendLevel : 1,
