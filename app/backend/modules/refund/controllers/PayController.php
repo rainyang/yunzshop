@@ -10,6 +10,7 @@ namespace app\backend\modules\refund\controllers;
 
 use app\backend\modules\refund\models\RefundApply;
 use app\common\components\BaseController;
+use app\common\exceptions\AdminException;
 use app\common\exceptions\AppException;
 use app\common\services\PayFactory;
 use app\frontend\modules\order\services\OrderService;
@@ -33,6 +34,9 @@ class PayController extends BaseController
         $refundApply = RefundApply::find($request->query('refund_id'));
         if(!isset($refundApply)){
             throw new AppException('未找到退款记录');
+        }
+        if($refundApply->status != RefundApply::WAIT_REFUND){
+            throw new AdminException($refundApply->status_name.'的退款申请,无法执行'.'打款'.'操作');
         }
         //dd($refundApply->order);
         //exit;
