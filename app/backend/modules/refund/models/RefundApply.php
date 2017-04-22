@@ -32,6 +32,12 @@ class RefundApply extends \app\common\models\refund\RefundApply
     {
         return $this->getTypeInstance()->consensus();
     }
+
+    public function receiveReturnGoods()
+    {
+        //todo 补充当退款类型实例请求 收货请求时的提示
+        return $this->getTypeInstance()->receiveReturnGoods();
+    }
     protected function getTypeInstance()
     {
         if (!isset($this->typeInstance)) {
