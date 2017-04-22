@@ -12,6 +12,6 @@ use app\common\models\BaseModel;
 
 class ReturnExpress extends BaseModel
 {
-    public $table = 'yz_order_refund_return_express';
+    public $table = 'yz_order_return_express';
 
 }
