@@ -563,6 +563,7 @@ class SdkPayment
             'seller_email' => $this->seller_id,
             'refund_date' => date('Y-m-d H:i:s',time()),
             'batch_no' => $out_refund_no,
+            'batch_fee' => $this->total_fee,
             'batch_num' => 1,
             'detail_data' => $this->out_trade_no.'^'.$this->total_fee.'^退款订单',
             '_input_charset' => strtolower($this->_input_charset),
