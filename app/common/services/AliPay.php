@@ -21,8 +21,6 @@ class AliPay extends Pay
 
     public function __construct()
     {
-        parent::__construct();
-
         $this->_pay = $this->createFactory();
         $this->pay_type = config('app.pay_type');
     }
