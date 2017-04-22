@@ -1,5 +1,5 @@
 <?php
-namespace app\frontend\modules\setting\controllers;
+namespace app\frontend\controllers;
 
 use app\common\components\ApiController;
 use app\common\components\BaseController;
@@ -18,7 +18,7 @@ class SettingController extends BaseController
      * @param string $key  setting表key字段值
      * @return json
      */
-    public function getSetting()
+    public function get()
     {
         $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
         if (!empty($key)) {
@@ -26,11 +26,13 @@ class SettingController extends BaseController
         } else {
             $setting = Setting::get('shop');
         }
-//        echo "<pre>"; print_r($setting);exit;
+
         if (!$setting) {
-            $this->errorJson('未进行设置.');
+            return $this->errorJson('未进行设置.');
         }
+
         $setting['logo'] = tomedia($setting['logo']);
-        $this->successJson('获取商城设置成功', $setting);
+        return $this->successJson('获取商城设置成功', $setting);
+
     }
 }
