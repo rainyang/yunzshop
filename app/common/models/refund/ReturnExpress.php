@@ -14,6 +14,6 @@ class ReturnExpress extends BaseModel
 {
     protected $fillable = [];
     protected $guarded = ['id'];
-    public $table = 'yz_order_return_express';
+    public $table = 'yz_return_express';
 
 }
