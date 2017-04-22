@@ -6,6 +6,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
 use app\common\models\Order;
 use app\common\models\PayOrder;
+use app\common\models\PayRefundOrder;
 use app\frontend\modules\finance\services\BalanceService;
 use app\frontend\modules\order\services\OrderService;
 
@@ -41,7 +42,7 @@ class PaymentController extends BaseController
 
                     \Log::debug('支付宝订单批次号', $batch_no);
 
-                    \YunShop::app()->uniacid = substr($batch_no, 17, 5);
+                    \YunShop::app()->uniacid = (int)substr($batch_no, 17, 5);
 
                     \Log::debug('当前公众号', \YunShop::app()->uniacid);
                     break;
@@ -68,6 +69,11 @@ class PaymentController extends BaseController
         }
     }
 
+    /**
+     * 支付回调操作
+     *
+     * @param $data
+     */
     public function payResutl($data)
     {
         $type = $this->getPayType($data['out_trade_no']);
@@ -104,6 +110,34 @@ class PaymentController extends BaseController
                     'pay_sn'=> $data['trade_no']
                 ]);
                 break;
+        }
+    }
+
+    /**
+     * 支付宝退款回调操作
+     *
+     * @param $data
+     */
+    public function refundResutl($data)
+    {
+        $pay_refund_model = PayRefundOrder::uniacid()->where('out_order_no', $data['out_trade_no'])->first();
+
+        if ($pay_refund_model) {
+            $pay_refund_model->status = 2;
+            $pay_refund_model->trade_no = $data['trade_no'];
+            $pay_refund_model->third_type = $data['pay_type'];
+            $pay_refund_model->save();
+        }
+
+        \Log::debug('退款操作', 'refund.succeeded');
+
+        $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
+
+        $order_info->price = $order_info->price * 100;
+
+
+        if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
+            \Log::debug('订单事件触发');
         }
     }
 }
