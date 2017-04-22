@@ -64,6 +64,7 @@ class UpdateController extends BaseController
      */
     public function startDownload()
     {
+        set_time_limit(0);
         $update = new AutoUpdate(null, null, 300);
         $update->setCurrentVersion(config('version'));
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory

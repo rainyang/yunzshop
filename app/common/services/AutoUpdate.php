@@ -158,7 +158,7 @@ class AutoUpdate
      * @param string $installDir
      * @param int    $maxExecutionTime
      */
-    public function __construct($tempDir = null, $installDir = null, $maxExecutionTime = 300)
+    public function __construct($tempDir = null, $installDir = null, $maxExecutionTime = 0)
     {
         // Init logger
         $this->_log = app('log');
