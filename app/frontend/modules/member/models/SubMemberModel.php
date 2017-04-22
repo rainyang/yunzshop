@@ -37,6 +37,6 @@ class SubMemberModel extends MemberShopInfo
      */
     public static function insertData($data)
     {
-         self::insert($data);
+        self::create($data);
     }
 }

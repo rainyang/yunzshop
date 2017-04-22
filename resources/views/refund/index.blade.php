@@ -106,7 +106,7 @@
                 @elseif ($order['has_one_refund_apply']['status'] == -2)
                     <span class='label label-default'>客户取消</span>
                 @elseif(in_array($order['has_one_refund_apply']['status'],[4,5]))
-                    <span class='label label-danger'>已完成</span>
+                    <span class='label label-danger'>已退款</span>
                 @endif
             </div>
         </div>

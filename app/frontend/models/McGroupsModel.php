@@ -19,7 +19,6 @@ class McGroupsModel extends BackendModel
         return self::select('groupid')
             ->uniacid()
             ->where('isdefault', 1)
-            ->first()
-            ->toArray();
+            ->first();
     }
 }

@@ -39,7 +39,7 @@ class OperationController extends BaseController
      */
     public function reject(\Request $request)
     {
-        $this->refundApply->reject($request->only(['refund_id', 'reject_reason']));
+        $this->refundApply->reject($request->only(['reject_reason']));
         return $this->message('操作成功', '');
     }
 
@@ -50,10 +50,15 @@ class OperationController extends BaseController
      */
     public function pass(\Request $request)
     {
-        $this->refundApply->pass($request->only(['refund_id']));
+        $this->refundApply->pass();
         return $this->message('操作成功', '');
     }
 
+    public function receiveReturnGoods(\Request $request)
+    {
+        $this->refundApply->receiveReturnGoods();
+        return $this->message('操作成功', '');
+    }
     /**
      * 手动退款
      * @param \Request $request
@@ -61,7 +66,7 @@ class OperationController extends BaseController
      */
     public function consensus(\Request $request)
     {
-        $this->refundApply->consensus($request->only(['refund_id']));
+        $this->refundApply->consensus();
         return $this->message('操作成功', '');
     }
 }

@@ -17,9 +17,8 @@ class OperationController extends ApiController
     public function send(\Request $request){
         $this->validate($request,[
             'refund_id' => 'required|filled|integer',
-            'express_company' => 'required|json',
-            'express_company.code' => 'required|string',
-            'express_company.name' => 'required|string',
+            'express_company_code' => 'required|string',
+            'express_company_name' => 'required|string',
             'express_sn' => 'required|filled|string',
         ]);
         RefundOperationService::refundSend();
