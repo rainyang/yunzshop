@@ -37,7 +37,8 @@ class CreateController extends PreGeneratedController
 
             $orders->push($this->getShopOrder());
         }
-        $orders->merge($this->getPluginOrders());
+        $orders = $orders->merge($this->getPluginOrders()[0]);
+        //dd($this->getPluginOrders()[0]);
         if($orders->isEmpty()){
             throw new AppException('未找到订单商品');
         }

@@ -10,12 +10,7 @@ namespace app\common\services;
 
 class Comment
 {
-    public static function tplReplyAppend($replyData)
-    {
-        return view('goods.comment.tpl-reply', [
-            'replyData' => $replyData
-        ])->render();
-    }
+
 
 
 }

@@ -27,7 +27,7 @@ class MemberMobileService extends MemberService
             $has_mobile = MemberModel::checkMobile($uniacid, $mobile);
 
             if (!empty($has_mobile)) {
-                $password = md5($password. $has_mobile['salt']);
+                $password = md5($password. $has_mobile->salt);
 
                 $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
 

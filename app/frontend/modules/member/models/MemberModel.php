@@ -33,8 +33,7 @@ class MemberModel extends Member
         return self::select('uid')
             ->where('uniacid', $uniacid)
             ->where('mobile', $mobile)
-            ->get()
-            ->toArray();
+            ->first();
     }
 
     /**
@@ -43,9 +42,28 @@ class MemberModel extends Member
      * @param $data
      * @return mixed
      */
-    public static function insertData($data)
+    public static function insertData($userinfo, $data)
     {
-        return self::insertGetId($data);
+        $member_model = new MemberModel();
+
+        $member_model->uniacid = $data['uniacid'];
+        $member_model->email = '';
+        $member_model->groupid = $data['groupid'];
+        $member_model->createtime = time();
+        $member_model->nickname = stripslashes($userinfo['nickname']);
+        $member_model->avatar = $userinfo['headimgurl'];
+        $member_model->gender = $userinfo['sex'];
+        $member_model->nationality = $userinfo['country'];
+        $member_model->resideprovince = $userinfo['province'] . '省';
+        $member_model->residecity = $userinfo['city'] . '市';
+        $member_model->salt = '';
+        $member_model->password = '';
+
+        if ($member_model->save()) {
+            return $member_model->uid;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -59,8 +77,7 @@ class MemberModel extends Member
     {
         return self::where('uniacid', $uniacid)
             ->where('mobile', $mobile)
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**

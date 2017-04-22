@@ -106,7 +106,7 @@ class WechatPay extends Pay
 
             return true;
         } else {
-            throw new \AppException('退款失败');
+            throw new AppException('退款失败');
         }
     }
 

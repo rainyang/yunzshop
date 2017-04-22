@@ -20,19 +20,13 @@ class Comment extends BaseModel
     use SoftDeletes;
     public $table = 'yz_comment';
 
-    public $Reply;
-    public $Append;
+
     public $TypeName;
 
-    protected $appends = ['type_name', 'reply', 'append'];
+    protected $appends = ['type_name'];
 
     protected $guarded = [''];
     protected $fillable = [''];
-
-    public function hasManyReply()
-    {
-        return $this->hasMany('app\common\models\Comment', 'comment_id', 'id');
-    }
 
 
     public static function getOrderGoodsComment()
@@ -41,15 +35,6 @@ class Comment extends BaseModel
     }
 
 
-    public function getReplyAttribute()
-    {
-        if (!isset($this->Reply)) {
-            $reply['data'] = static::getReplyById($this->id);
-            $reply['count'] = $reply['data']->count('id');
-            $this->Reply = $reply;
-        }
-        return $this->Reply;
-    }
 
     public static function getReplyById($id)
     {
@@ -60,15 +45,26 @@ class Comment extends BaseModel
             ->get();
     }
 
-    public function getAppendAttribute()
-    {
-        if (!isset($this->Append)) {
-            $append['data'] = static::getAppendById($this->id);
-            $append['count'] = $append['data']->count('id');
-            $this->Append = $append;
-        }
-        return $this->Append;
-    }
+
+//    public function getReplyAttribute()
+//    {
+//        if (!isset($this->Reply)) {
+//            $reply['data'] = static::getReplyById($this->id);
+//            $reply['count'] = $reply['data']->count('id');
+//            $this->Reply = $reply;
+//        }
+//        return $this->Reply;
+//    }
+//
+//    public function getAppendAttribute()
+//    {
+//        if (!isset($this->Append)) {
+//            $append['data'] = static::getAppendById($this->id);
+//            $append['count'] = $append['data']->count('id');
+//            $this->Append = $append;
+//        }
+//        return $this->Append;
+//    }
 
     public static function getAppendById($id)
     {
@@ -86,6 +82,16 @@ class Comment extends BaseModel
             $this->TypeName = CommentService::getTypeName($this->type);
         }
         return $this->TypeName;
+    }
+
+    public function hasManyReply()
+    {
+        return $this->hasMany(self::class);
+    }
+
+    public function hasManyAppend()
+    {
+        return $this->hasMany(self::class);
     }
 
 }
