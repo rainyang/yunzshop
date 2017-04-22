@@ -118,6 +118,11 @@ class RefundApply extends BaseModel
 
     }
 
+    public function isCompleted()
+    {
+        return in_array($this->status, [self::COMPLETE, self::CONSENSUS]);
+    }
+
     public function getStatusNameAttribute()
     {
 

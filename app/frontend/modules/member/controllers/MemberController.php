@@ -50,7 +50,7 @@ class MemberController extends ApiController
 
                 return $this->successJson('', $data);
             } else {
-                return $this->errorJson('用户不存在');
+                return $this->errorJson('['. $member_id .']用户不存在');
             }
 
         } else {

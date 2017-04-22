@@ -16,6 +16,8 @@ class RefundMoney extends RefundType
 
     public function pass($data)
     {
+        $this->validate([RefundApply::WAIT_CHECK],'通过');
+
         $this->refundApply->status = RefundApply::WAIT_SEND;
         return $this->refundApply->save();
     }
