@@ -12,6 +12,7 @@ use app\backend\modules\refund\models\RefundApply;
 use app\common\components\BaseController;
 use app\common\exceptions\AppException;
 use app\common\services\PayFactory;
+use app\frontend\modules\order\services\OrderService;
 
 class PayController extends BaseController
 {
@@ -43,6 +44,7 @@ class PayController extends BaseController
             $this->error('操作失败');
         }
         $refundApply->refundMoney();
+        OrderService::orderClose(['order_id'=>$refundApply->order->id]);
         $this->message('操作成功');
 
     }

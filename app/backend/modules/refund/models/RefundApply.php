@@ -50,6 +50,7 @@ class RefundApply extends \app\common\models\refund\RefundApply
                     break;
             }
         }
+
         return $this->typeInstance;
 
     }
