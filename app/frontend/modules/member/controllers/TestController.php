@@ -9,34 +9,28 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\backend\modules\member\models\MemberRelation;
-use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\member\BecomeAgent;
-use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\MemberShopInfo;
 use app\common\models\Order;
-use app\common\models\PayOrder;
 use app\common\services\AliPay;
 use app\common\services\Pay;
 use app\common\services\PayFactory;
 use app\common\services\WechatPay;
-use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
-use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use EasyWeChat\Foundation\Application;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class TestController extends BaseController
 {
    public function index()
    {
 
-       $pay = new WechatPay();
+//       $pay = new WechatPay();
 //       $str  = $pay->setUniacidNo(122, 5);
 //       echo $str . '<BR>';
 //       echo substr($str, 17, 5);
@@ -44,21 +38,21 @@ class TestController extends BaseController
      //  $result = $pay->doRefund('1491193485',  0.1, 0.1);
 //       echo '<pre>';print_r($result);exit;
 //
-      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
+//      $data = $pay->doPay(['order_no'=>time(),'amount'=>0.1, 'subject'=>'微信支付', 'body'=>'测试:2', 'extra'=>['type'=>1]]);
   
 
-       return view('order.pay', [
-           'config' => $data['config'],
-           'js' => $data['js']
-       ])->render();
-exit;
+//       return view('order.pay', [
+//           'config' => $data['config'],
+//           'js' => $data['js']
+//       ])->render();
+
        $pay = new AliPay();
 
-      //\\ $p = $pay->doRefund('2017032421001004920213140182', '1', '0.1');
+       $p = $pay->doRefund('$totalmoney', '0.1', '0.1');
 
-       $p = $pay->doPay(['order_no'=>time(),'amount'=>0.01, 'subject'=>'支付宝支付', 'body'=>'测试:2', 'extra'=>['type'=>2]]);
+       //$p = $pay->doPay(['order_no'=>time(),'amount'=>0.01, 'subject'=>'支付宝支付', 'body'=>'测试:2', 'extra'=>['type'=>2]]);
        //$p = $pay->doWithdraw(4,time(),'0.1','提现');
-       echo $p;exit;
+       //echo $p;exit;
        redirect($p)->send();
    }
 
