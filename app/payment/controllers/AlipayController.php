@@ -10,6 +10,7 @@ namespace app\payment\controllers;
 
 
 use app\common\facades\Setting;
+use app\common\helpers\Url;
 use app\common\services\AliPay;
 use app\common\services\Pay;
 use app\payment\PaymentController;
@@ -21,6 +22,8 @@ class AlipayController extends PaymentController
         $this->log($_POST);
 
         $verify_result = $this->getSignResult();
+
+        \Log::debug('支付回调验证结果', intval($verify_result));
 
         if($verify_result) {
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
@@ -47,13 +50,26 @@ class AlipayController extends PaymentController
 
         if($verify_result) {
             if($_GET['trade_status'] == 'TRADE_SUCCESS') {
-                redirect(request()->getSchemeAndHttpHost() . '/#/member/payYes')->send();
+                redirect(Url::absoluteApp('member/payYes'))->send();
             } else {
-                redirect(request()->getSchemeAndHttpHost() . '/#/member/payErr')->send();
+                redirect(Url::absoluteApp('member/payErr'))->send();
             }
         } else {
-            redirect(request()->getSchemeAndHttpHost() . '/#/member/payErr')->send();
+            redirect(Url::absoluteApp('member/payErr'))->send();
         }
+    }
+
+    public function refundNotifyUrl()
+    {
+        \Log::debug('支付宝退款回调');
+
+        file_put_contents(storage_path('logs/alipay.log'), print_r($_POST, 1));
+
+    }
+
+    public function withdrawNotifyUrl()
+    {
+
     }
 
     /**

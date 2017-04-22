@@ -17,12 +17,12 @@ use app\common\models\Member;
 class AliPay extends Pay
 {
     private $_pay = null;
+    private $pay_type;
 
     public function __construct()
     {
-        parent::__construct();
-
         $this->_pay = $this->createFactory();
+        $this->pay_type = config('app.pay_type');
     }
 
     private function createFactory()
@@ -74,10 +74,9 @@ class AliPay extends Pay
      */
     public function doPay($data = [])
     {
-        $pay_type = config('app.pay_type');
         $op = "支付宝订单支付 订单号：" . $data['order_no'];
 
-        $this->log($data['extra']['type'], $pay_type[Pay::PAY_MODE_ALIPAY], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
+        $this->log($data['extra']['type'], $this->pay_type[Pay::PAY_MODE_ALIPAY], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
 
         return $this->_pay->doPay($data);
     }
@@ -87,7 +86,7 @@ class AliPay extends Pay
         $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '支付宝退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
-        $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_ALIPAY, $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+        $this->log(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_ALIPAY], $totalmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
 
         $alipay = app('alipay.web');
 
@@ -102,7 +101,7 @@ class AliPay extends Pay
         //$out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '支付宝提现 订单号：' . $out_trade_no . '提现金额：' . $money;
-        $this->log(Pay::PAY_TYPE_REFUND, Pay::PAY_MODE_ALIPAY, $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+        $this->log(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_ALIPAY], $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
 
         $alipay = app('alipay.web');
 
