@@ -24,7 +24,6 @@ class PayOrder extends BackendModel
     public static function getPayOrderInfo($orderno)
     {
         return self::uniacid()
-            ->where('out_order_no', $orderno)
-            ->orderBy('id', 'desc');
+            ->where('out_order_no', $orderno);
     }
 }
