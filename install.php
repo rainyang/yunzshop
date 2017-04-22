@@ -2396,7 +2396,6 @@ VALUES
   (38, '会员管理', 'user', '', '', 1, 1, 'fa-users', 0, 3, 1, 1490683165, 1491793920, NULL),
   (39, '全部会员', 'user_all', 'member.member.index', '', 1, 1, 'fa-user', 38, 0, 1, 1490683467, 1490683467, NULL),
   (40, '会员关系设置', 'user_relation', 'member.member-relation.index', '', 1, 1, 'fa-sliders', 100, 0, 1, 1490683533, 1492477734, NULL),
-  (41, '插件管理', 'plugin', '', '', 1, 1, 'fa-sliders', 0, 0, 1, 1490699993, 1490749380, 1490749380),
   (42, '文章营销', 'article', '', '', 1, 1, 'fa-sliders', 41, 0, 1, 1490700042, 1490749374, 1490749374),
   (43, '基础设置', 'article.set', 'plugin.article.admin.set', '', 1, 1, 'fa-sliders', 42, 0, 1, 1490700108, 1490749369, 1490749369),
   (44, '文章管理', 'article.list', 'plugin.article.admin.article', '', 1, 1, 'fa-sliders', 42, 0, 1, 1490700168, 1490749363, 1490749363),
