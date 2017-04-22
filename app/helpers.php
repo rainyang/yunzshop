@@ -5,6 +5,30 @@ use Illuminate\Support\Arr;
 use app\common\services\PermissionService;
 use app\common\helpers\Url;
 
+if (!function_exists("tpl_ueditor")) {
+    function tpl_ueditor($id, $value = '', $options = array())
+    {
+        $s = '';
+        $options['height'] = isset($options['height']) && $options['height'] : $options['height'] : 200;
+        $options['allow_upload_video'] = isset($options['allow_upload_video']) ? $options['allow_upload_video'] : true;
+        $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
+        $s .= "
+	<script type=\"text/javascript\">
+		require(['util'], function(util){
+			util.editor('" . ($id ? $id : "") . "', {
+			height : ". $options['height'] .", 
+			dest_dir : '" . (isset($options['dest_dir']) ? $options['dest_dir'] : "") . "',
+			image_limit : " . (intval(8 * 1024) . ",
+			allow_upload_video : " . ( $options['allow_upload_video'] ? 'true' : 'false') . ",
+			audio_limit : " . (intval(8 * 1024) . ",
+			callback : ''
+			});
+		});
+	</script>";
+        return $s;
+    }
+}
+
 if (!function_exists("html_images")) {
 
     function html_images($detail = '')
