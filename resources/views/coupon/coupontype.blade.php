@@ -130,7 +130,7 @@
 
 </div>
 
-<div id="modal-module-menus-categorys" class="modal fade" tabindex="-1">
+<div id="modal-module-menus-categorys" class="modal fade" tabindex="-1"> {{--搜索分类的弹窗--}}
     <div class="modal-dialog" style='width: 920px;'>
         <div class="modal-content">
             <div class="modal-header">
@@ -160,7 +160,7 @@
     </div>
 </div>
 
-<div id="modal-module-menus-goods" class="modal fade" tabindex="-1">
+<div id="modal-module-menus-goods" class="modal fade" tabindex="-1"> {{--搜索商品的弹窗--}}
     <div class="modal-dialog" style='width: 920px;'>
         <div class="modal-content">
             <div class="modal-header">
