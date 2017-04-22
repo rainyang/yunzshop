@@ -12,6 +12,8 @@ use app\common\models\BaseModel;
 
 class ReturnExpress extends BaseModel
 {
+    protected $fillable = [];
+    protected $guarded = ['id'];
     public $table = 'yz_order_return_express';
 
 }
