@@ -36,16 +36,16 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >发送类型</label>
                 <div class="col-sm-9 col-xs-12">
-                    <label class="radio-inline"><input type="radio" name="sendtype" value="1" checked/> 按 Member ID 发送</label>
+                    <label class="radio-inline"><input type="radio" name="sendtype" value="1" checked/> 按会员ID发送</label>
                     <label class="radio-inline"><input type="radio" name="sendtype" value="2" @if($sendtype == '2') checked @endif/> 按用户等级发送</label>
                     <label class="radio-inline"><input type="radio" name="sendtype" value="3" @if($sendtype == '3') checked @endif/> 按用户分组发送</label>
                     <label class="radio-inline"><input type="radio" name="sendtype" value="4" @if($sendtype == '4') checked @endif/> 发送给全部用户</label>
                 </div>
             </div>
             <div class="form-group choose choose_1">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label" >会员 Member ID</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label" >会员ID</label>
                 <div class="col-sm-9 col-xs-12">
-                    <textarea name="send_memberid" class="form-control" style="height:250px;" placeholder="请用&quot;半角逗号&quot;隔开 Member ID, 比如 1,2,3" id="value_1"></textarea>
+                    <textarea name="send_memberid" class="form-control" style="height:250px;" placeholder="请用&quot;半角逗号&quot;隔开会员ID, 比如 1,2,3" id="value_1"></textarea>
                 </div>
             </div>
             <div class="form-group choose choose_2" style='display: none' >
