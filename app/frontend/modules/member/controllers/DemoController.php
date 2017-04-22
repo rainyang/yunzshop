@@ -48,7 +48,7 @@ class DemoController extends BaseController
 
         $pay = new AliPay();
 
-        $p = $pay->doRefund('2017033021001004920223999554', '0.1');
+        $p = $pay->doRefund('1490878027', '0.1');
 
         //$p = $pay->doPay(['order_no'=>time(),'amount'=>0.01, 'subject'=>'支付宝支付', 'body'=>'测试:2', 'extra'=>['type'=>2]]);
         //$p = $pay->doWithdraw(4,time(),'0.1','提现');
