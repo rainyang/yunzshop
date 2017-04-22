@@ -615,7 +615,7 @@ class AutoUpdate
                 zip_close($zip);
                 return false;
             }
-            if (!fwrite($updateHandle, $contents)) {
+            if (!empty($contents) && !fwrite($updateHandle, $contents)) {
                 $this->_log->error(sprintf('Could not write to file "%s"!', $absoluteFilename));
                 zip_close($zip);
                 return false;
