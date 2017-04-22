@@ -9,7 +9,7 @@ if (!function_exists("tpl_ueditor")) {
     function tpl_ueditor($id, $value = '', $options = array())
     {
         $s = '';
-        $options['height'] = isset($options['height']) && $options['height'] : $options['height'] : 200;
+        $options['height'] = isset($options['height']) && $options['height'] ? $options['height'] : 200;
         $options['allow_upload_video'] = isset($options['allow_upload_video']) ? $options['allow_upload_video'] : true;
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
         $s .= "
