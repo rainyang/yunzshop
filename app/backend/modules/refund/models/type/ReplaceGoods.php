@@ -8,7 +8,6 @@
 
 namespace app\backend\modules\refund\models\type;
 
-
 class ReplaceGoods extends RefundType
 {
 

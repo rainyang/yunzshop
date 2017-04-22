@@ -10,7 +10,7 @@ namespace app\common\models\refund;
 
 use app\common\models\BaseModel;
 
-class RefundExpress extends BaseModel
+class ResendExpress extends BaseModel
 {
     protected $fillable = [];
     protected $guarded = ['id'];

@@ -24,13 +24,13 @@ class RefundApply extends \app\common\models\refund\RefundApply
     {
         return $this->getTypeInstance()->reject($data);
     }
-    public function pass($data)
+    public function pass()
     {
-        return $this->getTypeInstance()->pass($data);
+        return $this->getTypeInstance()->pass();
     }
-    public function consensus($data)
+    public function consensus()
     {
-        return $this->getTypeInstance()->consensus($data);
+        return $this->getTypeInstance()->consensus();
     }
     protected function getTypeInstance()
     {
