@@ -94,171 +94,6 @@ class MemberOfficeAccountService extends MemberService
 
             \YunShop::app()->openid = $userinfo['openid'];
             Session::set('member_id', $member_id);
-
-
-
-
-
-/*
-
-
-
-            if (is_array($userinfo) && !empty($userinfo['openid'])) {
-                $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
-                $tmpStr = json_encode($userinfo['nickname']);
-                $tmpStr = preg_replace($patten, "", $tmpStr);
-                $userinfo['nickname'] = json_decode($tmpStr);
-
-                \YunShop::app()->openid = $userinfo['openid'];
-
-                if (!empty($userinfo['unionid'])) {
-                    $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
-
-                    if (!empty($UnionidInfo)) {
-                        $UnionidInfo = $UnionidInfo->toArray();
-                    }
-                }  else {
-                    $UnionidInfo = [];
-                }
-
-                $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
-
-                if ($fans_mode) {
-                    $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
-                }
-
-                \Log::debug('粉丝', $fans_mode->uid);
-
-                if ((!empty($fans_mode) && !empty($member_shop_info_model))
-                        || !empty($UnionidInfo['unionid'])) {
-
-                    \Log::debug('微信登陆更新');
-
-                    if (!empty($UnionidInfo['unionid'])) {
-                        $types = explode('|', $UnionidInfo['type']);
-                        $member_id = $UnionidInfo['member_id'];
-
-                        if (!in_array(self::LOGIN_TYPE, $types)) {
-                            //更新ims_yz_member_unique表
-                            MemberUniqueModel::updateData(array(
-                                'unique_id'=>$UnionidInfo['unique_id'],
-                                'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
-                            ));
-                        }
-                    } else {
-                        $member_id = $fans_mode->uid;
-                    }
-
-                    if (MemberShopInfo::isBlack($member_id)) {
-                        return show_json(-1, '黑名单用户，请联系管理员');
-                    }
-
-                    //更新mc_members
-                    $mc_data = array(
-                        'nickname' => stripslashes($userinfo['nickname']),
-                        'avatar' => $userinfo['headimgurl'],
-                        'gender' => $userinfo['sex'],
-                        'nationality' => $userinfo['country'],
-                        'resideprovince' => $userinfo['province'] . '省',
-                        'residecity' => $userinfo['city'] . '市'
-                    );
-                    MemberModel::updataData($UnionidInfo['member_id'], $mc_data);
-
-                    //更新mapping_fans
-                    $record = array(
-                        'openid' => $userinfo['openid'],
-                        'nickname' => stripslashes($userinfo['nickname']),
-                        'tag' => base64_encode(serialize($userinfo))
-                    );
-                    McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
-                } else {
-                    \Log::debug('添加新会员', $fans_mode->uid);
-
-                    if ($fans_mode->uid) {
-                        //更新mc_members
-                        $mc_data = array(
-                            'nickname' => stripslashes($userinfo['nickname']),
-                            'avatar' => $userinfo['headimgurl'],
-                            'gender' => $userinfo['sex'],
-                            'nationality' => $userinfo['country'],
-                            'resideprovince' => $userinfo['province'] . '省',
-                            'residecity' => $userinfo['city'] . '市'
-                        );
-                        MemberModel::updataData($UnionidInfo['member_id'], $mc_data);
-
-                        $member_id = $fans_mode->uid;
-
-                        //更新mapping_fans
-                        $record = array(
-                            'openid' => $userinfo['openid'],
-                            'nickname' => stripslashes($userinfo['nickname']),
-                            'tag' => base64_encode(serialize($userinfo))
-                        );
-                        McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
-                    } else {
-                        //添加mc_members表
-                        $default_group = McGroupsModel::getDefaultGroupId();
-                        $uid = MemberModel::insertData($userinfo, array(
-                            'uniacid' => $uniacid,
-                            'groupid' => $default_group->groupid
-                        ));
-
-                        if ($uid !== false) {
-                            $member_id = $uid;
-                        } else {
-                            return show_json(8, '保存用户信息失败');
-                        }
-
-                        //添加mapping_fans表
-                        McMappingFansModel::insertData($userinfo, array(
-                            'uid' => $member_id,
-                            'acid' => $uniacid,
-                            'uniacid' => $uniacid,
-                            'salt' => Client::random(8),
-                        ));
-                    }
-
-                    //添加yz_member表
-                    $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
-                    $default_sub_level_id = MemberLevel::getDefaultLevelId()->first();
-
-                    if (!empty($default_sub_group_id)) {
-                        $default_subgroup_id = $default_sub_group_id->id;
-                    } else {
-                        $default_subgroup_id = 0;
-                    }
-
-                    if (!empty($default_sub_level_id)) {
-                        $default_sublevel_id = $default_sub_level_id->id;
-                    } else {
-                        $default_sublevel_id = 0;
-                    }
-
-                    SubMemberModel::insertData(array(
-                        'member_id' => $member_id,
-                        'uniacid' => $uniacid,
-                        'group_id' => $default_subgroup_id,
-                        'level_id' => $default_sublevel_id,
-                    ));
-
-                    if (!empty($userinfo['unionid'])) {
-                        //添加ims_yz_member_unique表
-                        MemberUniqueModel::insertData(array(
-                            'uniacid' => $uniacid,
-                            'unionid' => $userinfo['unionid'],
-                            'member_id' => $member_id,
-                            'type' => self::LOGIN_TYPE
-                        ));
-                    }
-
-                    //触发会员成为下线事件
-                    Member::chkAgent($member_id);
-                }
-                \Log::debug('uid', $member_id);
-                Session::set('member_id', $member_id);
-            }
-
-            */
         } else {
             $this->_setClientRequestUrl();
 
@@ -379,50 +214,6 @@ class MemberOfficeAccountService extends MemberService
         return $member_id;
     }
 
-    /**
-     * 更新微信用户信息
-     *
-     * @param $member_id
-     * @param $userinfo
-     */
-    public function updateMemberInfo($member_id, $userinfo)
-    {
-        //更新mc_members
-        $mc_data = array(
-            'nickname' => stripslashes($userinfo['nickname']),
-            'avatar' => $userinfo['headimgurl'],
-            'gender' => $userinfo['sex'],
-            'nationality' => $userinfo['country'],
-            'resideprovince' => $userinfo['province'] . '省',
-            'residecity' => $userinfo['city'] . '市'
-        );
-        MemberModel::updataData($member_id, $mc_data);
-
-        //更新mapping_fans
-        $record = array(
-            'openid' => $userinfo['openid'],
-            'nickname' => stripslashes($userinfo['nickname']),
-            'tag' => base64_encode(serialize($userinfo))
-        );
-        McMappingFansModel::updateData($member_id, $record);
-    }
-
-    /**
-     * 过滤微信用户名特殊符号
-     *
-     * @param $userinfo
-     * @return mixed
-     */
-    private function filteNickname($userinfo)
-    {
-        $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
-
-        $nickname = json_encode($userinfo['nickname']);
-        $nickname = preg_replace($patten, "", $nickname);
-
-        return json_decode($nickname);
-    }
-
     public function addMemberInfo($uniacid, $userinfo)
     {
         //添加mc_members表
@@ -467,6 +258,50 @@ class MemberOfficeAccountService extends MemberService
             'group_id' => $default_subgroup_id,
             'level_id' => $default_sublevel_id,
         ));
+    }
+
+    /**
+     * 更新微信用户信息
+     *
+     * @param $member_id
+     * @param $userinfo
+     */
+    public function updateMemberInfo($member_id, $userinfo)
+    {
+        //更新mc_members
+        $mc_data = array(
+            'nickname' => stripslashes($userinfo['nickname']),
+            'avatar' => $userinfo['headimgurl'],
+            'gender' => $userinfo['sex'],
+            'nationality' => $userinfo['country'],
+            'resideprovince' => $userinfo['province'] . '省',
+            'residecity' => $userinfo['city'] . '市'
+        );
+        MemberModel::updataData($member_id, $mc_data);
+
+        //更新mapping_fans
+        $record = array(
+            'openid' => $userinfo['openid'],
+            'nickname' => stripslashes($userinfo['nickname']),
+            'tag' => base64_encode(serialize($userinfo))
+        );
+        McMappingFansModel::updateData($member_id, $record);
+    }
+
+    /**
+     * 过滤微信用户名特殊符号
+     *
+     * @param $userinfo
+     * @return mixed
+     */
+    private function filteNickname($userinfo)
+    {
+        $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
+
+        $nickname = json_encode($userinfo['nickname']);
+        $nickname = preg_replace($patten, "", $nickname);
+
+        return json_decode($nickname);
     }
 
     /**
