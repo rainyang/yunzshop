@@ -9,6 +9,7 @@
 namespace app\common\services;
 
 use app\common\helpers\Client;
+use app\common\models\PayOrder;
 use app\common\services\alipay\MobileAlipay;
 use app\common\services\alipay\WebAlipay;
 use app\common\services\alipay\WapAlipay;
@@ -86,14 +87,23 @@ class AliPay extends Pay
         $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '支付宝退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
-        $this->log(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_ALIPAY], $totalmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+        $this->refundlog(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_ALIPAY], $totalmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
 
-        $alipay = app('alipay.web');
+        //支付宝交易单号
+        $pay_order_model = PayOrder::getPayOrderInfo($out_trade_no)->first();
 
-        $alipay->setOutTradeNo($out_trade_no);
-        $alipay->setTotalFee($totalmoney);
+        if ($pay_order_model) {
+            $alipay = app('alipay.web');
 
-        return $alipay->refund($out_refund_no);
+            $alipay->setOutTradeNo($pay_order_model->trade_no);
+            $alipay->setTotalFee($totalmoney);
+
+            return $alipay->refund($out_refund_no);
+        } else {
+            return false;
+        }
+
+
     }
 
     public function doWithdraw($member_id, $out_trade_no, $money, $desc = '', $type=1)

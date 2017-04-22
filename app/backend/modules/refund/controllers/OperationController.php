@@ -54,6 +54,11 @@ class OperationController extends BaseController
         return $this->message('操作成功', '');
     }
 
+    public function receiveReturnGoods(\Request $request)
+    {
+        $this->refundApply->receiveReturnGoods();
+        return $this->message('操作成功', '');
+    }
     /**
      * 手动退款
      * @param \Request $request

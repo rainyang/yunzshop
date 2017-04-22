@@ -9,6 +9,7 @@
 namespace app\frontend\modules\refund\services\operation;
 
 use app\common\models\refund\RefundExpress;
+use app\common\order\models\ReturnExpress;
 use \Request;
 
 class RefundSend extends ChangeStatusOperation
@@ -23,11 +24,11 @@ class RefundSend extends ChangeStatusOperation
     protected function updateTable()
     {
         $data = Request::only(['refund_id', 'express_sn']);
-        $refundExpress = new RefundExpress($data);
+        $returnExpress = new ReturnExpress($data);
         //$data = Request::only(['refund_id', 'express_code', 'express_sn', 'express_company_name']);
-        $refundExpress->express_company_name = Request::get('express_company.name');
-        $refundExpress->express_code = Request::get('express_company.code');
-        $refundExpress->save();
+        $returnExpress->express_company_name = Request::input('express_company_name');
+        $returnExpress->express_code = Request::input('express_company_code');
+        $returnExpress->save();
         parent::updateTable();
     }
 }

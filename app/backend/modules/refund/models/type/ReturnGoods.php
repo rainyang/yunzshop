@@ -19,18 +19,13 @@ class ReturnGoods extends RefundType
         $this->refundApply->status = RefundApply::WAIT_RETURN_GOODS;
         return $this->refundApply->save();
     }
-    public function returnGoods($data)
-    {
-        $this->validate([RefundApply::WAIT_RETURN_GOODS], '返货');
-        $this->refundApply->status = RefundApply::WAIT_RECEIVE_RETURN_GOODS;
-        //todo 保存退货快递信息,收货地址信息
-
-        //$this->refundApply->reject_reason = $data['reject_reason'];
-        return $this->refundApply->save();
-    }
 
     public function receiveReturnGoods()
     {
+        $this->validate([RefundApply::WAIT_RECEIVE_RETURN_GOODS],'收货');
+
+        $this->refundApply->status = RefundApply::WAIT_REFUND;
+        return $this->refundApply->save();
     }
     //public function
 }
