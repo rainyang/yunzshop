@@ -17,7 +17,7 @@ class RefundOperationService
     public static function refundSend()
     {
         //todo 需要与后台操作统一
-        $refundSend = RefundSend::find(\Request::query('refund_id'));
+        $refundSend = RefundSend::find(\Request::input('refund_id'));
         if (!$refundSend) {
             throw new AppException('售后申请记录不存在');
         }

@@ -26,8 +26,8 @@ class RefundSend extends ChangeStatusOperation
         $data = Request::only(['refund_id', 'express_sn']);
         $returnExpress = new ReturnExpress($data);
         //$data = Request::only(['refund_id', 'express_code', 'express_sn', 'express_company_name']);
-        $returnExpress->express_company_name = Request::get('express_company.name');
-        $returnExpress->express_code = Request::get('express_company.code');
+        $returnExpress->express_company_name = Request::input('express_company_name');
+        $returnExpress->express_code = Request::input('express_company_code');
         $returnExpress->save();
         parent::updateTable();
     }
