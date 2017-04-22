@@ -94,7 +94,7 @@ class AutoUpdate
      *
      * @var string
      */
-    public $updateScriptName = 'UpdateController.php';
+    public $updateScriptName = 'app/backend/controllers/UpdateController.php';
     /**
      * Username authentication
      *
@@ -586,7 +586,7 @@ class AutoUpdate
                 }
             }
             // Skip if entry is a directory
-            if (substr($filename, -1, 1) == DIRECTORY_SEPARATOR)
+            if (substr($filename, -1, 1) == DIRECTORY_SEPARATOR || substr($filename, -1, 1) == '.')
                 continue;
             // Read file contents from archive
             $contents = zip_entry_read($file, zip_entry_filesize($file));
