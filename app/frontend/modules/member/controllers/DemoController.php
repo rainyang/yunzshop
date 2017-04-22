@@ -519,15 +519,4 @@ class DemoController extends BaseController
         }
     }
 
-    public function saveData()
-    {
-        $res = MemberUniqueModel::create(array(
-            'uniacid' => 2,
-            'unionid' => '3222244532',
-            'member_id' => 13,
-            'type' => 4
-        ));
-
-        echo $res->unique_id;
-    }
 }
