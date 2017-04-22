@@ -18,7 +18,7 @@ if (!function_exists("tpl_ueditor")) {
 			util.editor('" . ($id ? $id : "") . "', {
 			height : ". $options['height'] .", 
 			dest_dir : '" . (isset($options['dest_dir']) ? $options['dest_dir'] : "") . "',
-			image_limit : " . (intval(8 * 1024) . ",
+			image_limit : " . intval(8 * 1024) . ",
 			allow_upload_video : " . ( $options['allow_upload_video'] ? 'true' : 'false') . ",
 			audio_limit : " . intval(8 * 1024) . ",
 			callback : ''
