@@ -96,7 +96,7 @@ class RefundApply extends BaseModel
             'order' => function ($query) {
                 $query->orders();
             }
-        ]);
+        ])->orderBy('id','desc');
     }
 
     public function getRefundTypeNameAttribute()
