@@ -19,6 +19,10 @@ class MemberUniqueModel extends BackendModel
 
     public $dateFormat  = 'U';
 
+    protected $guarded = [''];
+
+    protected $primaryKey = 'unique_id';
+
     /**
      * 检查是否存在unionid
      *
@@ -50,7 +54,7 @@ class MemberUniqueModel extends BackendModel
 
         $data = array_merge($default, $data);
 
-        self::insert($data);
+        self::create($data);
     }
 
     /**

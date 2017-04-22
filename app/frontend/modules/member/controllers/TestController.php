@@ -12,6 +12,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\events\member\BecomeAgent;
+use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\MemberShopInfo;
@@ -24,6 +25,8 @@ use app\common\services\WechatPay;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\MemberUniqueModel;
+use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
 use EasyWeChat\Foundation\Application;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -520,5 +523,17 @@ $pay->doPay($data);
         } else {
             redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state={$state}#wechat_redirect")->send();
         }
+    }
+
+    public function saveData()
+    {
+        $res = MemberUniqueModel::create(array(
+            'uniacid' => 2,
+            'unionid' => '3222244532',
+            'member_id' => 13,
+            'type' => 4
+        ));
+
+        echo $res->unique_id;
     }
 }

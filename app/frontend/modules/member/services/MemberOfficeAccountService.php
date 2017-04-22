@@ -86,7 +86,7 @@ class MemberOfficeAccountService extends MemberService
                 $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
                 $tmpStr = json_encode($userinfo['nickname']);
                 $tmpStr = preg_replace($patten, "", $tmpStr);
-                $nickname = json_decode($tmpStr);
+                $userinfo['nickname'] = json_decode($tmpStr);
 
                 \YunShop::app()->openid = $userinfo['openid'];
 
@@ -134,7 +134,7 @@ class MemberOfficeAccountService extends MemberService
 
                     //更新mc_members
                     $mc_data = array(
-                        'nickname' => stripslashes($nickname),
+                        'nickname' => stripslashes($userinfo['nickname']),
                         'avatar' => $userinfo['headimgurl'],
                         'gender' => $userinfo['sex'],
                         'nationality' => $userinfo['country'],
@@ -146,7 +146,7 @@ class MemberOfficeAccountService extends MemberService
                     //更新mapping_fans
                     $record = array(
                         'openid' => $userinfo['openid'],
-                        'nickname' => stripslashes($nickname),
+                        'nickname' => stripslashes($userinfo['nickname']),
                         'tag' => base64_encode(serialize($userinfo))
                     );
                     McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
@@ -156,7 +156,7 @@ class MemberOfficeAccountService extends MemberService
                     if ($fans_mode->uid) {
                         //更新mc_members
                         $mc_data = array(
-                            'nickname' => stripslashes($nickname),
+                            'nickname' => stripslashes($userinfo['nickname']),
                             'avatar' => $userinfo['headimgurl'],
                             'gender' => $userinfo['sex'],
                             'nationality' => $userinfo['country'],
@@ -170,46 +170,31 @@ class MemberOfficeAccountService extends MemberService
                         //更新mapping_fans
                         $record = array(
                             'openid' => $userinfo['openid'],
-                            'nickname' => stripslashes($nickname),
+                            'nickname' => stripslashes($userinfo['nickname']),
                             'tag' => base64_encode(serialize($userinfo))
                         );
                         McMappingFansModel::updateData($UnionidInfo['member_id'], $record);
                     } else {
                         //添加mc_members表
-                        $default_groupid = McGroupsModel::getDefaultGroupId();
-
-                        $mc_data = array(
+                        $default_group = McGroupsModel::getDefaultGroupId();
+                        $uid = MemberModel::insertData($userinfo, array(
                             'uniacid' => $uniacid,
-                            'email' => '',
-                            'groupid' => $default_groupid['groupid'],
-                            'createtime' => time(),
-                            'nickname' => stripslashes($nickname),
-                            'avatar' => $userinfo['headimgurl'],
-                            'gender' => $userinfo['sex'],
-                            'nationality' => $userinfo['country'],
-                            'resideprovince' => $userinfo['province'] . '省',
-                            'residecity' => $userinfo['city'] . '市',
-                            'salt' => '',
-                            'password' => ''
-                        );
-                        $memberModel = MemberModel::create($mc_data);
-                        $member_id = $memberModel->uid;
+                            'groupid' => $default_group->groupid
+                        ));
+
+                        if ($uid !== false) {
+                            $member_id = $uid;
+                        } else {
+                            return show_json(8, '保存用户信息失败');
+                        }
 
                         //添加mapping_fans表
-                        $record = array(
-                            'openid' => $userinfo['openid'],
+                        McMappingFansModel::insertData($userinfo, array(
                             'uid' => $member_id,
                             'acid' => $uniacid,
                             'uniacid' => $uniacid,
                             'salt' => Client::random(8),
-                            'updatetime' => time(),
-                            'nickname' => stripslashes($nickname),
-                            'follow' => 1,
-                            'followtime' => time(),
-                            'unfollowtime' => 0,
-                            'tag' => base64_encode(serialize($userinfo))
-                        );
-                        McMappingFansModel::create($record);
+                        ));
                     }
 
                     //添加yz_member表
@@ -228,13 +213,12 @@ class MemberOfficeAccountService extends MemberService
                         $default_sublevel_id = 0;
                     }
 
-                    $sub_data = array(
+                    SubMemberModel::insertData(array(
                         'member_id' => $member_id,
                         'uniacid' => $uniacid,
                         'group_id' => $default_subgroup_id,
                         'level_id' => $default_sublevel_id,
-                    );
-                    SubMemberModel::insertData($sub_data);
+                    ));
 
                     if (!empty($userinfo['unionid'])) {
                         //添加ims_yz_member_unique表
