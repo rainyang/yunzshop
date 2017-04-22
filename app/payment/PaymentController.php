@@ -9,6 +9,7 @@ use app\common\models\PayOrder;
 use app\common\models\PayRefundOrder;
 use app\frontend\modules\finance\services\BalanceService;
 use app\frontend\modules\order\services\OrderService;
+use app\backend\modules\refund\services\RefundOperationService;
 
 /**
  * Created by PhpStorm.
@@ -135,9 +136,9 @@ class PaymentController extends BaseController
 
         $order_info->price = $order_info->price * 100;
 
-
         if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
             \Log::debug('订单事件触发');
+            RefundOperationService::refundComplete(['order_id'=>$order_info->id]);
         }
     }
 }
