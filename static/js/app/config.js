@@ -28,7 +28,7 @@ require.config({
         'wapeditor' : './wapeditor',
         'jquery.wookmark': '../lib/jquery.wookmark.min',
         'validator': '../lib/bootstrapValidator.min',
-        'select2' : '../../components/select2/zh-CN',
+        'select2' : window.sysinfo['static_url'] +'js/dist/select2/zh-CN',
         'clockpicker': '../../components/clockpicker/clockpicker.min',
         'jquery.qrcode': '../lib/jquery.qrcode.min',
         'raty': '../lib/raty.min',
