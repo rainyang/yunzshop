@@ -48,8 +48,10 @@ class PayController extends BaseController
             $this->error('操作失败');
         }
         $refundApply->refundMoney();
-        OrderService::orderClose(['order_id'=>$refundApply->order->id]);
-        $this->message('操作成功');
+        $result = OrderService::orderClose(['order_id'=>$refundApply->order->id]);
+        dd($result);
+        exit;
+        return $this->message('操作成功');
 
     }
 }
