@@ -109,7 +109,7 @@ require.config({
             deps: ['bootstrap']
         },
         'select2': {
-            deps: ['css!../../components/select2/select2.min.css', './resource/components/select2/select2.min.js']
+            deps: ['css!'+ window.sysinfo['static_url'] +'js/dist/select2/select2.min.css', window.sysinfo['static_url'] +'js/dist/select2/select2.min.js']
         },
         'clockpicker': {
             exports: "$",
