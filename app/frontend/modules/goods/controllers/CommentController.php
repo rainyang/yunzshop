@@ -25,7 +25,11 @@ class CommentController extends ApiController
         $goodsId = \YunShop::request()->goods_id;
         $pageSize = 20;
         $list = Comment::getCommentsByGoods($goodsId)->paginate($pageSize);//
+
         if ($list) {
+            foreach ($list as &$item) {
+                $item->reply_count = $item->hasManyReply->count('id');
+            }
             return $this->successJson('获取评论数据成功!', $list);
         }
         return $this->errorJson('未检测到评论数据!', $list);
@@ -95,10 +99,6 @@ class CommentController extends ApiController
         if (!$comment['content']) {
             return $this->errorJson('追加评论失败!未检测到评论内容!');
         }
-        if (!$comment['level']) {
-            return $this->errorJson('追加评论失败!未检测到评论等级!');
-        }
-
 
         $commentModel->setRawAttributes($comment);
 
@@ -134,13 +134,10 @@ class CommentController extends ApiController
             'goods_id' => $reoly->goods_id,
             'content' => \YunShop::request()->content,
             'level' => \YunShop::request()->level,
-            'comment_id' => $reoly->id,
+            'comment_id' => $reoly->comment_id,
         ];
         if (!$comment['content']) {
             return $this->errorJson('回复评论失败!未检测到评论内容!');
-        }
-        if (!$comment['level']) {
-            return $this->errorJson('回复评论失败!未检测到评论等级!');
         }
 
         if (isset($comment['images']) && is_array($comment['images'])) {
@@ -187,6 +184,7 @@ class CommentController extends ApiController
         }
     }
 
+
     public function getOrderGoodsComment()
     {
         $orderId = \YunShop::request()->order_id;
@@ -198,11 +196,11 @@ class CommentController extends ApiController
             return $this->errorJson('获取评论失败!未检测到商品ID!');
         }
         $comment = Comment::getOrderGoodsComment()
+            ->with('hasOneOrderGoods')
             ->where('order_id', $orderId)
             ->where('goods_id', $goodsId)
             ->where('uid', \YunShop::app()->getMemberId())
             ->first();
-
         if ($comment) {
             return $this->successJson('获取评论数据成功!', $comment->toArray());
         }

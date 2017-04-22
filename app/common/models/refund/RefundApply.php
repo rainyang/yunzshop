@@ -32,10 +32,14 @@ class RefundApply extends BaseModel
         'images' => 'json',
         'refund_proof_imgs' => 'json'
     ];
-
+    const REFUND_TYPE_MONEY = 0;
+    const REFUND_TYPE_RETURN = 1;
+    const REFUND_TYPE_GOODS = 2;
     const CANCEL = '-2';//用户取消
     const REJECT = '-1';//驳回
     const WAIT_CHECK = '0';//待审核
+    const WAIT_SEND = '1';//待发货
+    const WAIT_RECEIVE = '2';//待收货
     const WAIT_REFUND = '3';//待打款
     const COMPLETE = '4';//已完成
     const CONSENSUS = '5';//手动退款
@@ -65,7 +69,13 @@ class RefundApply extends BaseModel
                 'value' => 3
             ];
         }
-
+        if ($this->status == self::WAIT_SEND) {
+            $result[] = [
+                'name' => '填写快递',
+                'api' => 'refund.send',
+                'value' => 2
+            ];
+        }
         return $result;
     }
 
@@ -86,9 +96,11 @@ class RefundApply extends BaseModel
     public function getRefundTypeNameAttribute()
     {
         $mapping = [
-            0 => '退款(仅退款不退货)',
-            1 => '退款退货',
-            2 => '换货',
+            self::REFUND_TYPE_MONEY => '退款',
+            self::REFUND_TYPE_RETURN => '退货',
+            self::REFUND_TYPE_GOODS => '换货',
+            self::WAIT_SEND => '待退货',
+            self::WAIT_RECEIVE => '待收货',
         ];
         return $mapping[$this->refund_type];
     }
@@ -104,6 +116,11 @@ class RefundApply extends BaseModel
             self::CONSENSUS => '手动退款',
         ];
 
+    }
+
+    public function isCompleted()
+    {
+        return in_array($this->status, [self::COMPLETE, self::CONSENSUS]);
     }
 
     public function getStatusNameAttribute()

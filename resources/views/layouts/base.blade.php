@@ -72,9 +72,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
 
     <script type="text/javascript" src="{{static_url('resource/js/app/util.js')}}"></script>
-
     <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('resource/js/app/util.js')}}"></script>
+
     <script type="text/javascript" src="{{static_url('js/app/config.js')}}"></script>
     <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
 
