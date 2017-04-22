@@ -19,7 +19,7 @@ class AlipayController extends PaymentController
 {
     public function notifyUrl()
     {
-        $this->log($_POST);
+        $this->log($_POST, '支付宝支付');
 
         $verify_result = $this->getSignResult();
 
@@ -63,7 +63,7 @@ class AlipayController extends PaymentController
     {
         \Log::debug('支付宝退款回调');
 
-        file_put_contents(storage_path('logs/alipay.log'), print_r($_POST, 1));
+        $this->log($_POST, '支付宝退款');
 
         $verify_result = $this->getSignResult();
 
@@ -76,8 +76,7 @@ class AlipayController extends PaymentController
                 if ($plits[2] == 'SUCCESS') {
                     $data = [
                         'total_fee'    => $plits[1],
-                        'out_trade_no' => $plits[0],
-                        'trade_no'     => $_POST['trade_no'],
+                        'trade_no'     => $plits[0],
                         'unit'         => 'yuan',
                         'pay_type'     => '支付宝'
                     ];
@@ -119,11 +118,11 @@ class AlipayController extends PaymentController
      *
      * @param $post
      */
-    public function log($post)
+    public function log($post, $desc)
     {
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($post['out_trade_no'], '支付宝支付', json_encode($post));
+        Pay::payResponseDataLog($post['out_trade_no'], $desc , json_encode($post));
     }
 }
