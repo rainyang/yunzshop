@@ -28,7 +28,7 @@ require.config({
         'wapeditor' : './wapeditor',
         'jquery.wookmark': '../lib/jquery.wookmark.min',
         'validator': '../lib/bootstrapValidator.min',
-        'select2' : window.sysinfo['static_url'] +'js/dist/select2/zh-CN',
+        'select2' : window.sysinfo['static_url'] +'js/app/dist/select2/zh-CN',
         'clockpicker': '../../components/clockpicker/clockpicker.min',
         'jquery.qrcode': '../lib/jquery.qrcode.min',
         'raty': '../lib/raty.min',
@@ -109,7 +109,7 @@ require.config({
             deps: ['bootstrap']
         },
         'select2': {
-            deps: ['css!'+ window.sysinfo['static_url'] +'js/dist/select2/select2.min.css', window.sysinfo['static_url'] +'js/dist/select2/select2.min.js']
+            deps: ['css!'+ window.sysinfo['static_url'] +'js/app/dist/select2/select2.min.css', window.sysinfo['static_url'] +'js/app/dist/select2/select2.min.js']
         },
         'clockpicker': {
             exports: "$",
