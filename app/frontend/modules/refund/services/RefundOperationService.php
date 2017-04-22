@@ -16,20 +16,24 @@ class RefundOperationService
 {
     public static function refundSend()
     {
+        //todo 需要与后台操作统一
         $refundSend = RefundSend::find(\Request::query('refund_id'));
         if (!$refundSend) {
             throw new AppException('售后申请记录不存在');
         }
+        $refundSend->enable();
         return $refundSend->execute();
 
     }
 
     public static function refundCancel()
     {
+        //todo 需要与后台操作统一
         $refundCancel = RefundCancel::find(\Request::query('refund_id'));
         if (!$refundCancel) {
             throw new AppException('售后申请记录不存在');
         }
+        $refundCancel->enable();
         return $refundCancel->execute();
 
     }
