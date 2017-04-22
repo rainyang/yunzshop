@@ -13,8 +13,8 @@ use \Request;
 
 class RefundSend extends ChangeStatusOperation
 {
-    protected $statusBeforeChange = [self::WAIT_SEND];
-    protected $statusAfterChanged = self::WAIT_RECEIVE;
+    protected $statusBeforeChange = [self::WAIT_RETURN_GOODS];
+    protected $statusAfterChanged = self::WAIT_RECEIVE_RETURN_GOODS;
     protected $name = '发货';
     protected $timeField = 'send_time';
 
