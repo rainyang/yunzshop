@@ -52,11 +52,7 @@
         {{--</div>--}}
 
     </div>
-    <div>
-        @if(!empty($reply['reply']))
-            {!! app\common\services\Comment::tplReplyAppend($reply['reply']['data']) !!}
-        @endif
-    </div>
+
 
 
 @endforeach

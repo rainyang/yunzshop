@@ -43,16 +43,22 @@ class OrderGoods extends BaseModel
                 'api' => '',
                 'value' => ''
             ];
-        }else{
+        }else if ($this->comment_status == 1) {
             $result[] = [
                 'name' => '追评',
                 'api' => '',
-                'value' => ''
+                'value' => '1'
             ];
             $result[] = [
                 'name' => '查看评价',
                 'api' => '',
-                'value' => ''
+                'value' => '2'
+            ];
+        } else {
+            $result[] = [
+                'name' => '查看评价',
+                'api' => '',
+                'value' => '2'
             ];
         }
         return $result;
@@ -72,6 +78,11 @@ class OrderGoods extends BaseModel
     {
         return $this->hasOne('\app\common\models\GoodsOption', 'id', 'goods_option_id');
 
+    }
+
+    public function hasOneComment()
+    {
+        return $this->hasOne(\app\frontend\modules\goods\models\Comment::class, 'id', 'comment_id');
     }
 
     public function orderGoodsChangePriceLogs()
