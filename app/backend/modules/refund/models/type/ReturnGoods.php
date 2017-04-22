@@ -8,7 +8,6 @@
 
 namespace app\backend\modules\refund\models\type;
 
-
 use app\backend\modules\refund\models\RefundApply;
 
 class ReturnGoods extends RefundType

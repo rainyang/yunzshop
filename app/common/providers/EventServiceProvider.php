@@ -41,7 +41,8 @@ class EventServiceProvider extends ServiceProvider
           \app\common\listeners\member\BecomeAgentListener::class
         ],
         \app\common\events\order\AfterOrderCreatedEvent::class => [ //下单成功后调用会员成为下线事件
-            \app\common\listeners\member\AfterOrderCreatedListener::class
+            \app\common\listeners\member\AfterOrderCreatedListener::class,
+
         ],
         //微信接口回调触发事件进程
         WechatProcessor::class => [
