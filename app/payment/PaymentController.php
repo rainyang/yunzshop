@@ -78,7 +78,7 @@ class PaymentController extends BaseController
     public function payResutl($data)
     {
         $type = $this->getPayType($data['out_trade_no']);
-        $pay_order_model = PayOrder::uniacid()->where('out_order_no', $data['out_trade_no'])->first();
+        $pay_order_model = PayOrder::getPayOrderInfo($data['out_trade_no'])->first();
 
         if ($pay_order_model) {
             $pay_order_model->status = 2;
@@ -121,13 +121,17 @@ class PaymentController extends BaseController
      */
     public function refundResutl($data)
     {
-        $pay_refund_model = PayRefundOrder::uniacid()->where('out_order_no', $data['out_trade_no'])->first();
+        $pay_order = PayOrder::getPayOrderInfoByTradeNo($data['trade_no'])->first();
 
-        if ($pay_refund_model) {
-            $pay_refund_model->status = 2;
-            $pay_refund_model->trade_no = $data['trade_no'];
-            $pay_refund_model->third_type = $data['pay_type'];
-            $pay_refund_model->save();
+        if ($pay_order) {
+            $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
+
+            if ($pay_refund_model) {
+                $pay_refund_model->status = 2;
+                $pay_refund_model->trade_no = $data['trade_no'];
+                $pay_refund_model->third_type = $data['pay_type'];
+                $pay_refund_model->save();
+            }
         }
 
         \Log::debug('退款操作', 'refund.succeeded');
