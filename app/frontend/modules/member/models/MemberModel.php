@@ -388,6 +388,11 @@ class MemberModel extends Member
         $member_info['qr'] = self::getAgentQR();
         $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
 
+        $shop = \Setting::get('shop.shop');
+        $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
+        $member_info['credit'] = $shop['credit'] ? $shop['copyright'] : '余额';
+        $member_info['credit1'] = $shop['credit1'] ? $shop['copyright'] : '积分';
+
         return $member_info;
     }
 

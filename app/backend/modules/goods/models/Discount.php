@@ -80,6 +80,8 @@ class Discount extends \app\common\models\goods\Discount
                     $flag = true;
                 }
             }
+        }else{
+            $flag = true;
         }
         return $flag;
     }

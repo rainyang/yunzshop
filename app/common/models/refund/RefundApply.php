@@ -35,11 +35,12 @@ class RefundApply extends BaseModel
     const REFUND_TYPE_MONEY = 0;
     const REFUND_TYPE_RETURN = 1;
     const REFUND_TYPE_GOODS = 2;
+    const CLOSE = '-3';//关闭
     const CANCEL = '-2';//用户取消
     const REJECT = '-1';//驳回
     const WAIT_CHECK = '0';//待审核
-    const WAIT_SEND = '1';//待发货
-    const WAIT_RECEIVE = '2';//待收货
+    const WAIT_RETURN_GOODS = '1';//待退货
+    const WAIT_RECEIVE_RETURN_GOODS = '2';//待收货
     const WAIT_REFUND = '3';//待打款
     const COMPLETE = '4';//已完成
     const CONSENSUS = '5';//手动退款
@@ -47,6 +48,7 @@ class RefundApply extends BaseModel
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
+        // todo 转移到前端
         if (!isset($this->uniacid)) {
             $this->uniacid = \YunShop::app()->uniacid;
         }
@@ -55,8 +57,13 @@ class RefundApply extends BaseModel
         }
     }
 
+    /**
+     * 前端获取退款按钮 todo 转移到前端的model
+     * @return array
+     */
     public function getButtonModelsAttribute()
     {
+        $result = [];
         if ($this->status == self::WAIT_CHECK) {
             $result[] = [
                 'name' => '修改申请',
@@ -69,7 +76,7 @@ class RefundApply extends BaseModel
                 'value' => 3
             ];
         }
-        if ($this->status == self::WAIT_SEND) {
+        if ($this->status == self::WAIT_RETURN_GOODS) {
             $result[] = [
                 'name' => '填写快递',
                 'api' => 'refund.send',
@@ -90,7 +97,7 @@ class RefundApply extends BaseModel
             'order' => function ($query) {
                 $query->orders();
             }
-        ]);
+        ])->orderBy('id','desc');
     }
 
     public function getRefundTypeNameAttribute()
@@ -99,8 +106,7 @@ class RefundApply extends BaseModel
             self::REFUND_TYPE_MONEY => '退款',
             self::REFUND_TYPE_RETURN => '退货',
             self::REFUND_TYPE_GOODS => '换货',
-            self::WAIT_SEND => '待退货',
-            self::WAIT_RECEIVE => '待收货',
+
         ];
         return $mapping[$this->refund_type];
     }
@@ -111,6 +117,8 @@ class RefundApply extends BaseModel
             self::CANCEL => '用户取消',
             self::REJECT => '驳回',
             self::WAIT_CHECK => '待审核',
+            self::WAIT_RETURN_GOODS => '待退货',
+            self::WAIT_RECEIVE_RETURN_GOODS => '商家待收货',
             self::WAIT_REFUND => '待退款',
             self::COMPLETE => '完成',
             self::CONSENSUS => '手动退款',
@@ -134,20 +142,12 @@ class RefundApply extends BaseModel
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
-    public static function boot()
-    {
-        parent::boot();
+//    public static function boot()
+//    {
+//        parent::boot();
+//
+//        static::observe(new RefundApplyObserver());
+//    }
 
-        static::observe(new RefundApplyObserver());
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public static function getRefundById($id)
-    {
-        return self::find($id);
-    }
 
 }

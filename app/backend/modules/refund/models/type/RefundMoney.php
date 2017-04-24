@@ -13,11 +13,11 @@ use app\backend\modules\refund\models\RefundApply;
 class RefundMoney extends RefundType
 {
 
-    public function pass($data)
+    public function pass()
     {
         $this->validate([RefundApply::WAIT_CHECK],'通过');
 
-        $this->refundApply->status = RefundApply::WAIT_SEND;
+        $this->refundApply->status = RefundApply::WAIT_REFUND;
         return $this->refundApply->save();
     }
 

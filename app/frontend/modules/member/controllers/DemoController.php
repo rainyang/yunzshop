@@ -48,7 +48,7 @@ class DemoController extends BaseController
 
         $pay = new AliPay();
 
-        $p = $pay->doRefund('2017033021001004920223999554', '0.1');
+        $p = $pay->doRefund('SN20170421163102466148', '0.1');
 
         //$p = $pay->doPay(['order_no'=>time(),'amount'=>0.01, 'subject'=>'支付宝支付', 'body'=>'测试:2', 'extra'=>['type'=>2]]);
         //$p = $pay->doWithdraw(4,time(),'0.1','提现');
@@ -496,7 +496,7 @@ class DemoController extends BaseController
     }
 
     public function wxLogin()
-    {echo 1;exit;
+    {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
 
@@ -512,22 +512,34 @@ class DemoController extends BaseController
                 ->asJsonResponse(true)
                 ->get();
 
-            echo '<pre>';print_r($token);exit;
+            $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
+
+            $userinfo = \Curl::to($userinfo_url)
+                ->asJsonResponse(true)
+                ->get();
+
+            echo '<pre>';print_r($userinfo);exit;
 
         } else {
             redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state={$state}#wechat_redirect")->send();
         }
     }
 
-    public function saveData()
+    private function _getUserInfoUrl($accesstoken, $openid)
     {
-        $res = MemberUniqueModel::create(array(
-            'uniacid' => 2,
-            'unionid' => '3222244532',
-            'member_id' => 13,
-            'type' => 4
-        ));
-
-        echo $res->unique_id;
+        return "https://api.weixin.qq.com/sns/userinfo?access_token={$accesstoken}&openid={$openid}&lang=zh_CN";
     }
+
+    public function checkAgent()
+    {
+        MemberRelation::checkAgent(146);
+    }
+
+    public function jump()
+    {
+        $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6be17f352e859277&redirect_uri=http%3A%2F%2Ftest.yunzshop.com%2Faddons%2Fyun_shop%2Fapi.php%3Fi%3D2%26route%3Dmember.login.index%26type%3D1%26scope%3Duser_info&response_type=code&scope=snsapi_base&state=yz-e60cb6a61055f101cd28ac4d6f45be61#wechat_redirect';
+
+        redirect($url)->send();
+    }
+
 }

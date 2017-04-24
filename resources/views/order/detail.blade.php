@@ -1,7 +1,6 @@
 @extends('layouts.base')
 
 @section('js')
-    <script type="text/javascript" src="{{static_url('js/dist/area/cascade.js')}}"></script>
     <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
 
     <script language="javascript">
@@ -29,7 +28,7 @@
             $(obj).attr('hide', hide == '1' ? '0' : '1');
         }
 
-        cascdeInit("{!! isset($user['province'])?$user['province']:'' !!}", "{!! isset($user['city'])?$user['city']:'' !!}", "{!! isset($user['area'])?$user['area']:'' !!}");
+        //cascdeInit("{!! isset($user['province'])?$user['province']:'' !!}", "{!! isset($user['city'])?$user['city']:'' !!}", "{!! isset($user['area'])?$user['area']:'' !!}");
 
         $('#editaddress').click(function () {
             show_address(1);

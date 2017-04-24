@@ -14,7 +14,7 @@ use \Request;
 class RefundPass extends ChangeStatusOperation
 {
     protected $statusBeforeChange = [self::WAIT_CHECK];
-    protected $statusAfterChanged = self::WAIT_SEND;
+    protected $statusAfterChanged = self::WAIT_RETURN_GOODS;
     protected $name = '通过';
     protected $timeField = 'refund_time';
 

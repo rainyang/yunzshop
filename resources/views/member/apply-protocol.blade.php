@@ -34,7 +34,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">协议内容</label>
                         <div class="col-sm-9 col-xs-12">
-                            {!! app\common\helpers\UeditorHelper::tpl_ueditor('protocol[content]', $info['content']) !!}
+                            {!! tpl_ueditor('protocol[content]', $info['content']) !!}
 
                         </div>
                     </div>

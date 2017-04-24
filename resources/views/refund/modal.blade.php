@@ -1,10 +1,7 @@
 <div id="modal-refund" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"
      style="width:620px;margin:0px auto;">
-    <form class="form-horizontal form" action="{{yzWebUrl('refund.operation.entrance')}}" method="post" enctype="multipart/form-data">
-        <input type='hidden' name='id' value=''/>
+    <form class="form-horizontal form" id="form-refund" action="" method="post" enctype="multipart/form-data">
         <input type='hidden' name='refund_id' value='{{$order['has_one_refund_apply']['id']}}'/>
-        <input type='hidden' name='op' value='deal'/>
-        <input type='hidden' name='to' value='refund'/>
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -28,14 +25,14 @@
 
                             @if($order['has_one_refund_apply']['status'] < 4)
                                 <label class='radio-inline'>
-                                    <input type='radio' value='-1' name='refundstatus'>驳回申请
+                                    <input type='radio' class="refund-action" data-action="{{yzWebUrl('refund.operation.reject')}}" value="-1" name='refund_status'>驳回申请
                                 </label>
                             @endif
 
                             @if($order['has_one_refund_apply']['refund_type'] == 1 || $order['has_one_refund_apply']['refund_type'] == 2)
                                 @if($order['has_one_refund_apply']['status'] < 3)
                                     <label class='radio-inline'>
-                                        <input type='radio' value='3' name='refundstatus' @if( $order['has_one_refund_apply']['status']==3 ||
+                                        <input type='radio' value='3' class="refund-action" data-action="{{yzWebUrl('refund.operation.pass')}} name='refund_status' @if( $order['has_one_refund_apply']['status']==3 ||
                                         $refund['status']==4) checked @endif>通过申请(需客户寄回商品)
                                     </label>
                                 @endif
@@ -43,7 +40,7 @@
 
                             @if($order['has_one_refund_apply']['refund_type'] == 0 || $order['has_one_refund_apply']['refund_type'] == 1)
                                 <label class='radio-inline'>
-                                    <input type='radio' value='1' name='refundstatus'>
+                                    <input type='radio' value='1' class='refund-action' data-action="{{yzWebUrl('refund.operation.receiveReturnGoods')}} name='refund_status'>
                                     同意退款
                                     @if($order['has_one_refund_apply']['refund_type'] == 1)
 
@@ -58,7 +55,7 @@
                                 </label>
 
                                 <label class='radio-inline'>
-                                    <input type='radio' value='2' name='refundstatus'>手动退款
+                                    <input type='radio' value='2' class="refund-action" data-action="{{yzWebUrl('refund.operation.consensus')}}" name='refund_status'>手动退款
                                 </label>
 
                                 <div class="help-group" style="display: none;">
@@ -76,14 +73,14 @@
 
                             @if($order['has_one_refund_apply']['refund_type'] == 2)
                                 <label class='radio-inline'>
-                                    <input type='radio' value='5' name='refundstatus'
+                                    <input type='radio' value='5' class="refund-action" name='refund_status'
                                            @if($order['has_one_refund_apply']['status'] < 5) checked @endif>
                                     确认发货 @if($order['has_one_refund_apply']['status'] < 3)(无需客户寄回商品，商家直接发换货商品)@endif
                                 </label>
 
                                 @if($order['has_one_refund_apply']['status'] < 5)
                                     <label class='radio-inline'>
-                                        <input type='radio' value='10' name='refundstatus'>关闭申请(换货完成)
+                                        <input type='radio' value='10' class="refund-action" data-action="{{yzWebUrl('refund.operation.close')}}" name='refund_status'>关闭申请(换货完成)
                                     </label>
                                 @endif
                             @endif
@@ -118,7 +115,7 @@
                     <div class="form-group refuse-group" style="display: none;">
                         <label class="col-xs-10 col-sm-3 col-md-3 control-label">驳回原因</label>
                         <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-                            <textarea class="form-control" name="refundcontent"></textarea>
+                            <textarea class="form-control" name="reject_reason"></textarea>
                         </div>
                     </div>
 
@@ -228,13 +225,66 @@
                         </div>
                     </div>
 
-
                     <div id="module-menus"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary span2" name="refund" value="yes">确认</button>
+                    <button type="submit" class="btn btn-primary span2 " id="refund_submit" name="refund" value="yes">确认</button>
                     <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">关闭</a></div>
             </div>
         </div>
     </form>
 </div>
+<script>
+    $('#form-refund').submit(function () {
+        var route = $('.refund-action').attr('data-action');
+        $(this).attr('action',route);
+        return true;
+    });
+    $(function () {
+        $(":radio[name=refund_status]").change(function () {
+            var refund_status = $(this).val();
+
+            if (refund_status == -1) {//显示驳回
+                $(".refuse-group").show();
+                $(".refund-group").hide();
+                $(".express-group").hide();
+                $(".help-group").hide();
+            } else if (refund_status == 1) {//显示帮助
+                $(".refuse-group").hide();
+                $(".refund-group").hide();
+                $(".express-group").hide();
+                $(".help-group").show();
+            } else if (refund_status == 3) {//显示退款
+                $(".refuse-group").hide();
+                $(".refund-group").show();
+                $(".express-group").hide();
+                $(".help-group").hide();
+            } else if (refund_status == 5) {//显示快递
+                $(".refuse-group").hide();
+                $(".refund-group").hide();
+                $(".express-group").show();
+                $(".help-group").hide();
+            } else {//全部隐藏
+                $(".refuse-group").hide();
+                $(".refund-group").hide();
+                $(".express-group").hide();
+                $(".help-group").hide();
+            }
+
+
+        });
+
+
+        $("#express_company").change(function () {
+            var obj = $(this);
+            var sel = obj.find("option:selected").attr("data-name");
+            $("#expresscom").val(sel);
+        });
+
+        $("#rexpress").change(function () {
+            var obj = $(this);
+            var sel = obj.find("option:selected").attr("data-name");
+            $("#rexpresscom").val(sel);
+        });
+    });
+</script>
