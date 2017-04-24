@@ -11,14 +11,11 @@ namespace app\frontend\modules\dispatch\listeners\types;
 
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
-use app\common\events\order\OrderCreatedEvent;
 
 use app\common\exceptions\AppException;
 use app\common\models\DispatchType;
-use app\common\models\Goods;
 use app\common\models\Order;
 use app\common\models\OrderAddress;
-use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\member\models\MemberAddress;
 use app\frontend\modules\order\services\OrderService;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -50,6 +47,7 @@ class Express
 
         $data = $event->getOrderModel()->getMember()->defaultAddress;
         if (!isset($data)) {
+            $event->addMap('default_member_address', new \ArrayObject());
             return;
         }
 

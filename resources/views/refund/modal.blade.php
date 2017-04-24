@@ -115,7 +115,7 @@
                     <div class="form-group refuse-group" style="display: none;">
                         <label class="col-xs-10 col-sm-3 col-md-3 control-label">驳回原因</label>
                         <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-                            <textarea class="form-control" name="refund_reason"></textarea>
+                            <textarea class="form-control" name="reject_reason"></textarea>
                         </div>
                     </div>
 
