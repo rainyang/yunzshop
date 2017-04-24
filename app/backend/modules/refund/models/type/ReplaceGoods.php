@@ -6,8 +6,7 @@
  * Time: 下午4:34
  */
 
-namespace app\backend\modules\refund\models;
-
+namespace app\backend\modules\refund\models\type;
 
 class ReplaceGoods extends RefundType
 {

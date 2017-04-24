@@ -42,9 +42,28 @@ class MemberModel extends Member
      * @param $data
      * @return mixed
      */
-    public static function insertData($data)
+    public static function insertData($userinfo, $data)
     {
-        return self::insertGetId($data);
+        $member_model = new MemberModel();
+
+        $member_model->uniacid = $data['uniacid'];
+        $member_model->email = '';
+        $member_model->groupid = $data['groupid'];
+        $member_model->createtime = time();
+        $member_model->nickname = stripslashes($userinfo['nickname']);
+        $member_model->avatar = $userinfo['headimgurl'];
+        $member_model->gender = $userinfo['sex'];
+        $member_model->nationality = $userinfo['country'];
+        $member_model->resideprovince = $userinfo['province'] . '省';
+        $member_model->residecity = $userinfo['city'] . '市';
+        $member_model->salt = '';
+        $member_model->password = '';
+
+        if ($member_model->save()) {
+            return $member_model->uid;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -368,6 +387,11 @@ class MemberModel extends Member
 
         $member_info['qr'] = self::getAgentQR();
         $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
+
+        $shop = \Setting::get('shop.shop');
+        $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
+        $member_info['credit'] = $shop['credit'] ? $shop['copyright'] : '余额';
+        $member_info['credit1'] = $shop['credit1'] ? $shop['copyright'] : '积分';
 
         return $member_info;
     }

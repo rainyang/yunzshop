@@ -6,15 +6,18 @@
  * Time: 下午4:34
  */
 
-namespace app\backend\modules\refund\models;
+namespace app\backend\modules\refund\models\type;
 
+use app\backend\modules\refund\models\RefundApply;
 
 class RefundMoney extends RefundType
 {
 
-    public function pass($data)
+    public function pass()
     {
-        $this->refundApply->status = RefundApply::WAIT_SEND;
+        $this->validate([RefundApply::WAIT_CHECK],'通过');
+
+        $this->refundApply->status = RefundApply::WAIT_REFUND;
         return $this->refundApply->save();
     }
 

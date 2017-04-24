@@ -16,6 +16,7 @@ use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberGroup;
 use app\common\helpers\PaginationHelper;
 use app\backend\modules\member\models\MemberShopInfo;
+use phpDocumentor\Reflection\Types\Null_;
 
 
 class MemberController extends BaseController
@@ -117,7 +118,7 @@ class MemberController extends BaseController
         $yz = array(
             'member_id' => $uid,
             'uniacid' => \YunShop::app()->uniacid,
-            'level_id' => $parame->data['level_id'],
+            'level_id' => $parame->data['level_id'] ?: 0,
             'group_id' => $parame->data['group_id'],
             'alipayname' => $parame->data['alipayname'],
             'alipay' => $parame->data['alipay'],

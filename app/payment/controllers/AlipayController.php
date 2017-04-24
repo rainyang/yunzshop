@@ -10,6 +10,7 @@ namespace app\payment\controllers;
 
 
 use app\common\facades\Setting;
+use app\common\helpers\Url;
 use app\common\services\AliPay;
 use app\common\services\Pay;
 use app\payment\PaymentController;
@@ -18,9 +19,11 @@ class AlipayController extends PaymentController
 {
     public function notifyUrl()
     {
-        $this->log($_POST);
+        $this->log($_POST, '支付宝支付');
 
         $verify_result = $this->getSignResult();
+
+        \Log::debug('支付回调验证结果', intval($verify_result));
 
         if($verify_result) {
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
@@ -47,13 +50,51 @@ class AlipayController extends PaymentController
 
         if($verify_result) {
             if($_GET['trade_status'] == 'TRADE_SUCCESS') {
-                redirect(request()->getSchemeAndHttpHost() . '/#/member/payYes')->send();
+                redirect(Url::absoluteApp('member/payYes'))->send();
             } else {
-                redirect(request()->getSchemeAndHttpHost() . '/#/member/payErr')->send();
+                redirect(Url::absoluteApp('member/payErr'))->send();
             }
         } else {
-            redirect(request()->getSchemeAndHttpHost() . '/#/member/payErr')->send();
+            redirect(Url::absoluteApp('member/payErr'))->send();
         }
+    }
+
+    public function refundNotifyUrl()
+    {
+        \Log::debug('支付宝退款回调');
+
+        $this->log($_POST, '支付宝退款');
+
+        $verify_result = $this->getSignResult();
+
+        \Log::debug('支付回调验证结果', intval($verify_result));
+
+        if($verify_result) {
+            if ($_POST['success_num'] >= 1) {
+                $plits = explode('^', $_POST['result_details']);
+
+                if ($plits[2] == 'SUCCESS') {
+                    $data = [
+                        'total_fee'    => $plits[1],
+                        'trade_no'     => $plits[0],
+                        'unit'         => 'yuan',
+                        'pay_type'     => '支付宝'
+                    ];
+
+                    $this->refundResutl($data);
+                }
+            }
+
+            echo "success";
+        } else {
+            echo "fail";
+        }
+
+    }
+
+    public function withdrawNotifyUrl()
+    {
+
     }
 
     /**
@@ -77,11 +118,11 @@ class AlipayController extends PaymentController
      *
      * @param $post
      */
-    public function log($post)
+    public function log($post, $desc)
     {
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($post['out_trade_no'], '支付宝支付', json_encode($post));
+        Pay::payResponseDataLog($post['out_trade_no'], $desc , json_encode($post));
     }
 }
