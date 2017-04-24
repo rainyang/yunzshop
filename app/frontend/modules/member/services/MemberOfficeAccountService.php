@@ -47,6 +47,7 @@ class MemberOfficeAccountService extends MemberService
             $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1&scope=user_info';
 
         } else {
+            \Log::debug('default');
             $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         }
