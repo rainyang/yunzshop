@@ -96,7 +96,8 @@ class PayController extends ApiController
         ];
 
         $pay = PayFactory::create($payType);
-        $order->pay_type_id = PayType::ONLINE;
+        //如果支付模块常量改变 数据会受影响
+        $order->pay_type_id = $payType;
 
         $result = $pay->doPay($query_str);
         if (!isset($result)) {

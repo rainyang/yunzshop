@@ -59,11 +59,11 @@
                                             </option>
                                             <option value="1"
                                                     @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
-                                                在线支付
+                                                微信支付
                                             </option>
                                             <option value="2"
                                                     @if( array_get($requestSearch,'pay_type','') == '2')  selected="selected"@endif>
-                                                货到付款
+                                                支付宝支付
                                             </option>
                                             <option value="3"
                                                     @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
