@@ -32,10 +32,10 @@ class Discount extends BaseModel
     public  function atributeNames()
     {
         return [
-            'level_discount_type' => '等级方式',
-            'discount_method' => '折扣方式',
-            'level_id' => '会员等级id',
-            'discount_value' => '折扣或金额数值'
+//            'level_discount_type' => '等级方式',
+//            'discount_method' => '折扣方式',
+//            'level_id' => '会员等级id',
+//            'discount_value' => '折扣或金额数值'
         ];
     }
 
@@ -43,10 +43,10 @@ class Discount extends BaseModel
     public  function rules()
     {
         return [
-            'level_discount_type' => 'numeric',
-            'discount_method' => 'numeric',
-            'level_id' => 'integer',
-            'discount_value' => 'numeric'
+//            'level_discount_type' => 'numeric',
+//            'discount_method' => 'numeric',
+//            'level_id' => 'integer',
+//            'discount_value' => 'numeric'
         ];
     }
 }
