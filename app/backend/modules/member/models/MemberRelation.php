@@ -382,10 +382,12 @@ class MemberRelation extends BackendModel
                     if ($set->become == '2') {
                         $ordercount = OrderListModel::getCostTotalNum($member->member_id);
 
+                        \Log::debug('ordercount', $ordercount);
                         $can = $ordercount >= intval($set->become_ordercount);
                     } else if ($set->become == '3') {
                         $moneycount = OrderListModel::getCostTotalPrice($member->member_id);
 
+                        \Log::debug('moneycount', $moneycount);
                         $can = $moneycount >= floatval($set->become_moneycount);
                     }
 
