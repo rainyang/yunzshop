@@ -197,8 +197,6 @@ class CommentController extends ApiController
         echo "<pre>"; print_r("goodsId:".$goodsId);
         echo "--";
         echo "<pre>"; print_r(\YunShop::app()->getMemberId());
-        $aa = $comment = Comment::getOrderGoodsComment()->first();
-        echo "<pre>"; print_r($aa);exit;
         $comment = Comment::getOrderGoodsComment()
             ->with(['hasOneOrderGoods'=>function($query) use($goodsId) {
                 $query->where('goods_id', $goodsId);
