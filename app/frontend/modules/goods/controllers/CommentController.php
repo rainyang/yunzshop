@@ -206,7 +206,7 @@ class CommentController extends ApiController
             ->where('type', 1)
             ->where('uid', \YunShop::app()->getMemberId())
             ->first();
-echo "<pre>"; print_r($comment);exit;
+echo "<pre>"; print_r($comment->toArray());exit;
         if ($comment) {
             return $this->successJson('获取评论数据成功!', $comment->toArray());
         }
