@@ -50,7 +50,8 @@ abstract class BalanceService
                 Balance::BALANCE_RECHARGE,
                 Balance::BALANCE_AWARD,
                 Balance::BALANCE_INCOME,
-                Balance::BALANCE_CANCEL_DEDUCTION
+                Balance::BALANCE_CANCEL_DEDUCTION,
+                Balance::BALANCE_CANCEL_CONSUME
             ])
         ) {
             $this->type = Balance::TYPE_INCOME;
