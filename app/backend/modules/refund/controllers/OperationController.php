@@ -26,7 +26,7 @@ class OperationController extends BaseController
             'refund_id' => 'required',
             //'reject_reason'=>''
         ]);
-        $this->refundApply = RefundApply::find($request->query('refund_id'));
+        $this->refundApply = RefundApply::find($request->input('refund_id'));
         if (!isset($this->refundApply)) {
             throw new AdminException('退款记录不存在');
         }

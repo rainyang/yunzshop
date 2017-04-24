@@ -35,6 +35,7 @@ class RefundApply extends BaseModel
     const REFUND_TYPE_MONEY = 0;
     const REFUND_TYPE_RETURN = 1;
     const REFUND_TYPE_GOODS = 2;
+    const CLOSE = '-3';//关闭
     const CANCEL = '-2';//用户取消
     const REJECT = '-1';//驳回
     const WAIT_CHECK = '0';//待审核
