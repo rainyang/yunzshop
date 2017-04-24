@@ -116,7 +116,7 @@ class BrandController extends BaseController
             return $this->message('无此品牌或已经删除','','error');
         }
 
-        $result = Brand::daletedBrand(\YunShop::request()->id);
+        $result = Brand::deletedBrand(\YunShop::request()->id);
         if($result) {
            return $this->message('删除品牌成功',Url::absoluteWeb('goods.brand.index'));
         }else{
