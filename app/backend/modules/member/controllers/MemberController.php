@@ -9,14 +9,15 @@
 namespace app\backend\modules\member\controllers;
 
 
+use app\backend\modules\member\models\McMappingFans;
 use app\backend\modules\member\models\Member;
+use app\backend\modules\member\models\MemberGroup;
+use app\backend\modules\member\models\MemberLevel;
+use app\backend\modules\member\models\MemberShopInfo;
+use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
-use app\backend\modules\member\models\MemberLevel;
-use app\backend\modules\member\models\MemberGroup;
 use app\common\helpers\PaginationHelper;
-use app\backend\modules\member\models\MemberShopInfo;
-use phpDocumentor\Reflection\Types\Null_;
 
 
 class MemberController extends BaseController
@@ -161,6 +162,8 @@ class MemberController extends BaseController
         }
 
         if (Member::deleteMemberInfoById($uid)) {
+            McMappingFans::deleteMemberInfoById($uid);
+            MemberUnique::deleteMemberInfoById($uid);
             MemberShopInfo::deleteMemberInfoById($uid);
 
             return $this->message('用户删除成功', yzWebUrl('member.member.index'));
