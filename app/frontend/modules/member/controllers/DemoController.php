@@ -496,7 +496,7 @@ class DemoController extends BaseController
     }
 
     public function wxLogin()
-    {echo 1;exit;
+    {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
 
