@@ -539,7 +539,10 @@ class DemoController extends BaseController
     public function jump()
     {
         $num = OrderListModel::getCostTotalNum(229);
-        echo $num;
+
+        $can = $num >= 1;
+
+        echo intval($can);
     }
 
 }
