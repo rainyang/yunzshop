@@ -52,8 +52,10 @@ class Comment extends \app\common\models\Comment
 
     public static function getOrderGoodsComment()
     {
-        echo '---d';
-        return self::uniacid();
+        return self::with(['hasManyReply'=>function ($query) {
+                return $query->where('type', 2)
+                    ->orderBy('created_at', 'asc');
+            }]);
     }
 
 
