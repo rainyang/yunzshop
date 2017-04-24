@@ -38,8 +38,11 @@ class MemberMobileService extends MemberService
             if(!empty($member_info)){
                 $member_info = $member_info->toArray();
 
-                //触发会员成为下线事件
+                //检查下线
                 Member::chkAgent($member_info['uid']);
+
+                //生成分销关系链
+                Member::createRealtion($member_info['uid']);
 
                 $this->save($member_info, $uniacid);
 

@@ -23,6 +23,7 @@ use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 
 class DemoController extends BaseController
@@ -537,9 +538,11 @@ class DemoController extends BaseController
 
     public function jump()
     {
-        $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx6be17f352e859277&redirect_uri=http%3A%2F%2Ftest.yunzshop.com%2Faddons%2Fyun_shop%2Fapi.php%3Fi%3D2%26route%3Dmember.login.index%26type%3D1%26scope%3Duser_info&response_type=code&scope=snsapi_base&state=yz-e60cb6a61055f101cd28ac4d6f45be61#wechat_redirect';
+        $num = OrderListModel::getCostTotalNum(229);
 
-        redirect($url)->send();
+        $can = $num >= 1;
+
+        echo intval($can);
     }
 
 }
