@@ -375,6 +375,7 @@ class MemberRelation extends BackendModel
                 }
 
                 \Log::debug('上线情况', intval($parentisagent));
+                \Log::debug('会员 ID', intval($member->member_id));
 
                 if ($parentisagent) {
                     $can = false;
