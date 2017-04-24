@@ -57,7 +57,7 @@ class MemberOfficeAccountService extends MemberService
         $state = 'yz-' . session_id();
 
         if (!Session::get('member_id')) {
-            \Log::debug('scope', \YunShop::request()->scope);
+            \Log::debug('scope', $params['scope']);
 
             if ($params['scope']  == 'user_info' || \YunShop::request()->scope == 'user_info') {
                 $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
