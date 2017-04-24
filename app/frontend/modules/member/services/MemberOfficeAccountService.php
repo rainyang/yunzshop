@@ -42,10 +42,12 @@ class MemberOfficeAccountService extends MemberService
         $appId        = $account->key;
         $appSecret    = $account->secret;
 
-        if (!empty($params) && $params['scope'] == 'user_info') {
-            $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1';
+        if ($params['scope'] == 'user_info') {
+            \Log::debug('user info callback');
+            $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1&scope=user_info';
 
         } else {
+            \Log::debug('default');
             $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         }
@@ -57,7 +59,7 @@ class MemberOfficeAccountService extends MemberService
         if (!Session::get('member_id')) {
             \Log::debug('scope', $params['scope']);
 
-            if (!empty($params) && $params['scope'] == 'user_info') {
+            if ($params['scope']  == 'user_info' || \YunShop::request()->scope == 'user_info') {
                 $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
             } else {
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
@@ -110,11 +112,11 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        if (empty($params) || !empty($params) && $params['scope'] != 'user_info') {
+        if (\YunShop::request()->scope == 'user_info') {
+            return show_json(1, 'user_info_api');
+        } else {
             \Log::debug('微信登陆成功跳转地址',$redirect_url);
             redirect($redirect_url)->send();
-        } else {
-            return show_json(1, 'user_info_api');
         }
     }
 
