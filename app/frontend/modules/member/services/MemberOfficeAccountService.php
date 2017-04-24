@@ -42,7 +42,13 @@ class MemberOfficeAccountService extends MemberService
         $appId        = $account->key;
         $appSecret    = $account->secret;
 
-        $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        if (!empty($params) && $params['scope'] == 'user_info') {
+            $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1';
+
+        } else {
+            $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        }
 
         \Log::debug('微信登陆回调地址', $callback);
 
