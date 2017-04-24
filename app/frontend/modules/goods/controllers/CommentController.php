@@ -134,7 +134,7 @@ class CommentController extends ApiController
             'goods_id' => $reoly->goods_id,
             'content' => \YunShop::request()->content,
             'level' => \YunShop::request()->level,
-            'comment_id' => $reoly->comment_id,
+            'comment_id' => $reoly->comment_id ? $reoly->comment_id : $reoly->id,
         ];
         if (!$comment['content']) {
             return $this->errorJson('回复评论失败!未检测到评论内容!');
@@ -177,7 +177,7 @@ class CommentController extends ApiController
                         ->update(['comment_status' => $commentStatus, 'comment_id' => $commentModel->id]);
                 }
 
-                return $this->successJson('评论成功!');
+                return $this->successJson('评论成功!',$commentModel);
             } else {
                 return $this->errorJson('评论失败!');
             }
