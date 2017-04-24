@@ -43,7 +43,7 @@ class MemberOfficeAccountService extends MemberService
         $appSecret    = $account->secret;
 
         if (!empty($params) && $params['scope'] == 'user_info') {
-            $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1';
+            $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1&scope=user_info';
 
         } else {
             $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -110,11 +110,11 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        if (empty($params) || !empty($params) && $params['scope'] != 'user_info') {
+        if (!empty(\YunShop::request()->scope) && \YunShop::request()->scope == 'user_info') {
+            return show_json(1, 'user_info_api');
+        } else {
             \Log::debug('微信登陆成功跳转地址',$redirect_url);
             redirect($redirect_url)->send();
-        } else {
-            return show_json(1, 'user_info_api');
         }
     }
 
