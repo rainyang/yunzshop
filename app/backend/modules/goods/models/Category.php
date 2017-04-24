@@ -1,5 +1,6 @@
 <?php
 namespace app\backend\modules\goods\models;
+
 /**
  * Created by PhpStorm.
  * User: yanglei
@@ -30,9 +31,8 @@ class Category extends \app\common\models\Category
         $categorys = self::getAllCategory();
 
         $categoryMenus['parent'] = $categoryMenus['children'] = [];
-        
-        foreach ($categorys as $category)
-        {
+
+        foreach ($categorys as $category) {
             !empty($category['parent_id']) ?
                 $categoryMenus['children'][$category['parent_id']][] = $category :
                 $categoryMenus['parent'][$category['id']] = $category;
@@ -40,7 +40,7 @@ class Category extends \app\common\models\Category
 
         return $categoryMenus;
     }
-    
+
 
     /**
      * @param $id
@@ -67,7 +67,7 @@ class Category extends \app\common\models\Category
      * 可使
      * @return array
      */
-    public  function atributeNames()
+    public function atributeNames()
     {
         return [
             'name' => '分类名称',
@@ -78,13 +78,13 @@ class Category extends \app\common\models\Category
      * 字段规则
      * @return array
      */
-    public  function rules()
+    public function rules()
     {
         $rule = Rule::unique($this->table);
         return [
             'name' => ['required', $this->id ? $rule->ignore($this->id)
-                    ->where('uniacid',\YunShop::app()->uniacid)
-                :$rule->where('uniacid', \YunShop::app()->uniacid)->where('parent_id',$this->parent_id)],
+                ->where('uniacid', \YunShop::app()->uniacid)
+                : $rule->where('uniacid', \YunShop::app()->uniacid)->where('parent_id', $this->parent_id)->where('deleted_at', null)],
         ];
     }
 
