@@ -65,7 +65,7 @@ class GoodsStock
         );
         $events->listen(
             AfterOrderPaidEvent::class,
-            self::class . '@onOrderCreated'
+            self::class . '@AfterOrderPaidEvent'
         );
     }
 }
