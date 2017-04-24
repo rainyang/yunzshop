@@ -59,7 +59,7 @@ class MemberOfficeAccountService extends MemberService
         if (!Session::get('member_id')) {
             \Log::debug('scope', \YunShop::request()->scope);
 
-            if (!empty(\YunShop::request()->scope) && \YunShop::request()->scope == 'user_info') {
+            if (\YunShop::request()->scope == 'user_info') {
                 $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
             } else {
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
@@ -112,7 +112,7 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        if (!empty(\YunShop::request()->scope) && \YunShop::request()->scope == 'user_info') {
+        if (\YunShop::request()->scope == 'user_info') {
             return show_json(1, 'user_info_api');
         } else {
             \Log::debug('微信登陆成功跳转地址',$redirect_url);
