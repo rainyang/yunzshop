@@ -194,9 +194,9 @@ class CommentController extends ApiController
         }
         echo "<pre>"; print_r("orderId:".$orderId);
         echo "--";
-        echo "<pre>"; print_r("goodsId".$goodsId);
+        echo "<pre>"; print_r("goodsId:".$goodsId);
         echo "--";
-        echo "<pre>"; print_r(\YunShop::app()->getMemberId());exit;
+        echo "<pre>"; print_r(\YunShop::app()->getMemberId());
         $comment = Comment::getOrderGoodsComment()
             ->with(['hasOneOrderGoods'=>function($query) use($goodsId) {
                 $query->where('goods_id', $goodsId);
@@ -205,7 +205,7 @@ class CommentController extends ApiController
             ->where('goods_id', $goodsId)
             ->where('uid', \YunShop::app()->getMemberId())
             ->first();
-
+echo "<pre>"; print_r($comment);exit;
         if ($comment) {
             return $this->successJson('获取评论数据成功!', $comment->toArray());
         }
