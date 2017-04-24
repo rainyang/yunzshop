@@ -203,6 +203,7 @@ class CommentController extends ApiController
 //            }])
             ->where('order_id', $orderId)
             ->where('goods_id', $goodsId)
+            ->where('type', 1)
             ->where('uid', \YunShop::app()->getMemberId())
             ->first();
 echo "<pre>"; print_r($comment);exit;
