@@ -8,6 +8,7 @@
 
 namespace app\common\services;
 
+use app\backend\modules\member\models\MemberRelation;
 use app\common\models\PayOrder;
 use app\frontend\modules\finance\services\BalanceService;
 
@@ -36,6 +37,8 @@ class CreditPay extends Pay
         $result = (new BalanceService())->balanceChange($data);
 
         if ($result === true) {
+            MemberRelation::checkOrderPay();
+
             $pay_order_model = PayOrder::uniacid()->where('out_order_no', $params['order_no'])->first();
 
             if ($pay_order_model) {

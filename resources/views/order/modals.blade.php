@@ -178,53 +178,7 @@
 @include('refund.modal')
 
 <script language='javascript'>
-    $(function () {
-        $(":radio[name=refundstatus]").change(function () {
-            var refundstatus = $(this).val();
 
-            if (refundstatus == -1) {
-                $(".refuse-group").show();
-                $(".refund-group").hide();
-                $(".express-group").hide();
-                $(".help-group").hide();
-            } else if (refundstatus == 1) {
-                $(".refuse-group").hide();
-                $(".refund-group").hide();
-                $(".express-group").hide();
-                $(".help-group").show();
-            } else if (refundstatus == 3) {
-                $(".refuse-group").hide();
-                $(".refund-group").show();
-                $(".express-group").hide();
-                $(".help-group").hide();
-            } else if (refundstatus == 5) {
-                $(".refuse-group").hide();
-                $(".refund-group").hide();
-                $(".express-group").show();
-                $(".help-group").hide();
-            } else {
-                $(".refuse-group").hide();
-                $(".refund-group").hide();
-                $(".express-group").hide();
-                $(".help-group").hide();
-            }
-
-
-        });
-
-
-        $("#express_company").change(function () {
-            var obj = $(this);
-            var sel = obj.find("option:selected").attr("data-name");
-            $("#expresscom").val(sel);
-        });
-
-        $("#rexpress").change(function () {
-            var obj = $(this);
-            var sel = obj.find("option:selected").attr("data-name");
-            $("#rexpresscom").val(sel);
-        });
-    });
     function changePrice(orderid) {
 
         $.ajax({

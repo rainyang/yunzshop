@@ -12,10 +12,14 @@ use app\backend\modules\refund\models\RefundApply;
 use app\backend\modules\refund\services\RefundOperationService;
 use app\common\components\BaseController;
 use app\common\exceptions\AdminException;
+use app\common\models\finance\Balance;
+use app\common\models\PayType;
 use app\common\services\PayFactory;
+use app\frontend\modules\finance\services\BalanceService;
 
 class PayController extends BaseController
 {
+    private $refundApply;
     /**
      * 退款
      * @param \Request $request
@@ -24,34 +28,78 @@ class PayController extends BaseController
      */
     public function index(\Request $request)
     {
-        $this->validate($request,[
-            'refund_id'=>'required'
+        $this->validate($request, [
+            'refund_id' => 'required'
         ]);
         //dd($request->query('refund_id'));
         //exit;
         /**
-         * @var $refundApply RefundApply
+         * @var $this->refundApply RefundApply
          */
-        $refundApply = RefundApply::find($request->query('refund_id'));
-        if(!isset($refundApply)){
+        $this->refundApply = RefundApply::find($request->query('refund_id'));
+        if (!isset($this->refundApply)) {
             throw new AdminException('未找到退款记录');
         }
-        if($refundApply->status != RefundApply::WAIT_REFUND){
-            throw new AdminException($refundApply->status_name.'的退款申请,无法执行'.'打款'.'操作');
+        if ($this->refundApply->status != RefundApply::WAIT_REFUND) {
+            throw new AdminException($this->refundApply->status_name . '的退款申请,无法执行' . '打款' . '操作');
         }
-        //dd($refundApply->order);
+        if(!is_numeric($this->refundApply->order->pay_type_id)){
+            throw new AdminException($this->refundApply->id . '获取支付方式失败');
+
+        }
+        //dd($this->refundApply->order);
         //exit;
-        $pay = PayFactory::create(PayFactory::PAY_WEACHAT);
+        $pay = PayFactory::create($this->refundApply->order->pay_type_id);
 
-        $result = $pay->doRefund($refundApply->order->order_sn,  $refundApply->order->price, $refundApply->order->price);
+        $result = $pay->doRefund($this->refundApply->order->order_sn, $this->refundApply->order->price, $this->refundApply->order->price);
 
-        if(!$result){
+        if (!$result) {
             $this->error('操作失败');
         }
-        $result = RefundOperationService::refundComplete(['order_id',$refundApply->order->id]);
-        dd($result);
-        exit;
+
+        switch ($this->refundApply->order->pay_type_id){
+            case PayType::WECHAT_PAY:
+                $this->wechat();
+                break;
+
+            case PayType::ALIPAY:
+                $this->alipay();
+                break;
+
+            case PayType::CREDIT:
+                $this->balance();
+                break;
+
+            default:
+                break;
+        }
         return $this->message('操作成功');
 
+    }
+
+    private function wechat()
+    {
+        if ($this->refundApply->order->pay_type_id == PayType::WECHAT_PAY) {
+            $result = RefundOperationService::refundComplete(['order_id', $this->refundApply->order->id]);
+
+        }
+    }
+
+    private function alipay()
+    {
+
+    }
+
+    private function balance()
+    {
+        $data = array(
+            'serial_number' => $this->refundApply->refund_sn,
+            'money' => $this->refundApply->price,
+            'remark' => '订单(ID'.$this->refundApply->order->id.')余额支付退款(ID'.$this->refundApply->id.')' . $this->refundApply->price,
+            'service_type' => Balance::BALANCE_CANCEL_CONSUME,
+            'operator' => Balance::OPERATOR_ORDER_,
+            'operator_id' => $this->refundApply->uid
+        );
+        (new BalanceService())->balanceChange($data);
     }
 }
