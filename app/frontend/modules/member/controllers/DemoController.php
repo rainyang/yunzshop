@@ -530,4 +530,9 @@ class DemoController extends BaseController
         return "https://api.weixin.qq.com/sns/userinfo?access_token={$accesstoken}&openid={$openid}&lang=zh_CN";
     }
 
+    public function checkAgent()
+    {
+        MemberRelation::checkAgent(146);
+    }
+
 }

@@ -123,18 +123,16 @@ class CommentController extends ApiController
         }
 
         $id = \YunShop::request()->id;
-        $reoly = $commentModel::find($id);
-        if (!$reoly) {
+        $reply = $commentModel::find($id);
+        if (!$reply) {
             return $this->errorJson('回复评论失败!未检测到评论数据!');
         }
-
-
+        
         $comment = [
-            'order_id' => $reoly->order_id,
-            'goods_id' => $reoly->goods_id,
+            'order_id' => $reply->order_id,
+            'goods_id' => $reply->goods_id,
             'content' => \YunShop::request()->content,
-            'level' => \YunShop::request()->level,
-            'comment_id' => $reoly->comment_id ? $reoly->comment_id : $reoly->id,
+            'comment_id' => $reply->comment_id ? $reply->comment_id : $reply->id,
         ];
         if (!$comment['content']) {
             return $this->errorJson('回复评论失败!未检测到评论内容!');
@@ -152,8 +150,8 @@ class CommentController extends ApiController
         $commentModel->uid = $member->uid;
         $commentModel->nick_name = $member->nickname;
         $commentModel->head_img_url = $member->avatar;
-        $commentModel->reply_id = $reoly->uid;
-        $commentModel->reply_name = $reoly->nick_name;
+        $commentModel->reply_id = $reply->uid;
+        $commentModel->reply_name = $reply->nick_name;
         $commentModel->type = '2';
 
         $this->insertComment($commentModel);

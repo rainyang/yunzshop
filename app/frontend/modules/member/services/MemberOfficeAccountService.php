@@ -42,14 +42,24 @@ class MemberOfficeAccountService extends MemberService
         $appId        = $account->key;
         $appSecret    = $account->secret;
 
-        $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        if ($params['scope'] == 'user_info') {
+            \Log::debug('user info callback');
+            $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1&scope=user_info';
+
+        } else {
+            \Log::debug('default');
+            $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        }
 
         \Log::debug('微信登陆回调地址', $callback);
 
         $state = 'yz-' . session_id();
 
         if (!Session::get('member_id')) {
-            if (!empty($params) && $params['scope'] == 'user_info') {
+            \Log::debug('scope', $params['scope']);
+
+            if ($params['scope']  == 'user_info' || \YunShop::request()->scope == 'user_info') {
                 $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
             } else {
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
@@ -95,13 +105,16 @@ class MemberOfficeAccountService extends MemberService
             \YunShop::app()->openid = $userinfo['openid'];
             Session::set('member_id', $member_id);
         } else {
+            \Log::debug('获取code', $authurl);
             $this->_setClientRequestUrl();
 
             redirect($authurl)->send();
             exit;
         }
 
-        if (empty($params) || !empty($params) && $params['scope'] != 'user_info') {
+        if (\YunShop::request()->scope == 'user_info') {
+            return show_json(1, 'user_info_api');
+        } else {
             \Log::debug('微信登陆成功跳转地址',$redirect_url);
             redirect($redirect_url)->send();
         }
