@@ -189,7 +189,7 @@ class MemberRelation extends BackendModel
      *
      * 首次点击分享连接 / 无条件发展下线权利
      *
-     * 触发 注册
+     * 触发 入口
      *
      * @param $mid
      * @param MemberShopInfo $user
