@@ -14,7 +14,7 @@ class Comment extends \app\common\models\Comment
 
     public $Append;
 
-    protected $appends = ['append'];
+    protected $appends = ['append','type_name'];
 
     public static function getCommentsByGoods($goods_id)
     {
