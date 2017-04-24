@@ -186,27 +186,23 @@ class CommentController extends ApiController
     {
         $orderId = \YunShop::request()->order_id;
         $goodsId = \YunShop::request()->goods_id;
+        $uid = intval(\YunShop::request()->uid) ? \YunShop::request()->uid : \YunShop::app()->getMemberId();
+
         if (!$orderId) {
             return $this->errorJson('获取评论失败!未检测到订单ID!');
         }
         if (!$goodsId) {
             return $this->errorJson('获取评论失败!未检测到商品ID!');
         }
-        echo "<pre>"; print_r("orderId:".$orderId);
-        echo "--";
-        echo "<pre>"; print_r("goodsId:".$goodsId);
-        echo "--";
-        echo "<pre>"; print_r(\YunShop::app()->getMemberId());
         $comment = Comment::getOrderGoodsComment()
-//            ->with(['hasOneOrderGoods'=>function($query) use($goodsId) {
-//                $query->where('goods_id', $goodsId);
-//            }])
+            ->with(['hasOneOrderGoods'=>function($query) use($goodsId) {
+                $query->where('goods_id', $goodsId);
+            }])
             ->where('order_id', $orderId)
             ->where('goods_id', $goodsId)
             ->where('type', 1)
-            ->where('uid', \YunShop::app()->getMemberId())
+            ->where('uid', $uid)
             ->first();
-echo "<pre>"; print_r($comment);exit;
         if ($comment) {
             return $this->successJson('获取评论数据成功!', $comment->toArray());
         }
