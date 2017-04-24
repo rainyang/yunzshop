@@ -42,7 +42,8 @@ class MemberOfficeAccountService extends MemberService
         $appId        = $account->key;
         $appSecret    = $account->secret;
 
-        if (!empty($params) && $params['scope'] == 'user_info') {
+        if (!empty(\YunShop::request()->scope) && \YunShop::request()->scope == 'user_info') {
+            \Log::debug('user info callback');
             $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1&scope=user_info';
 
         } else {
@@ -55,9 +56,9 @@ class MemberOfficeAccountService extends MemberService
         $state = 'yz-' . session_id();
 
         if (!Session::get('member_id')) {
-            \Log::debug('scope', $params['scope']);
+            \Log::debug('scope', \YunShop::request()->scope);
 
-            if (!empty($params) && $params['scope'] == 'user_info') {
+            if (!empty(\YunShop::request()->scope) && \YunShop::request()->scope == 'user_info') {
                 $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
             } else {
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
