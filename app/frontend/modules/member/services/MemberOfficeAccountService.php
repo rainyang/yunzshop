@@ -42,7 +42,7 @@ class MemberOfficeAccountService extends MemberService
         $appId        = $account->key;
         $appSecret    = $account->secret;
 
-        if (!empty(\YunShop::request()->scope) && \YunShop::request()->scope == 'user_info') {
+        if (\YunShop::request()->scope == 'user_info') {
             \Log::debug('user info callback');
             $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1&scope=user_info';
 
