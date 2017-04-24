@@ -73,9 +73,9 @@ class OrderService
      */
     public static function getDispatchEventData($order_model)
     {
-        $Event = new OnDispatchTypeInfoDisplayEvent($order_model);
-        event($Event);
-        return $Event->getMap();
+        $event = new OnDispatchTypeInfoDisplayEvent($order_model);
+        event($event);
+        return $event->getMap();
     }
 
     /**
