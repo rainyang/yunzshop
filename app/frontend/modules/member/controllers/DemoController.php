@@ -539,7 +539,6 @@ class DemoController extends BaseController
     public function jump()
     {
         $num = OrderListModel::getCostTotalNum(229);
-
         echo $num;
     }
 
