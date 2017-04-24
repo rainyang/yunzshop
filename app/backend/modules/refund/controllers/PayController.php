@@ -12,8 +12,10 @@ use app\backend\modules\refund\models\RefundApply;
 use app\backend\modules\refund\services\RefundOperationService;
 use app\common\components\BaseController;
 use app\common\exceptions\AdminException;
+use app\common\models\finance\Balance;
 use app\common\models\PayType;
 use app\common\services\PayFactory;
+use app\frontend\modules\finance\services\BalanceService;
 
 class PayController extends BaseController
 {
@@ -90,6 +92,14 @@ class PayController extends BaseController
 
     private function balance()
     {
-
+        $data = array(
+            'serial_number' => $this->refundApply->refund_sn,
+            'money' => $this->refundApply->price,
+            'remark' => '订单(ID'.$this->refundApply->order->id.')余额支付退款(ID'.$this->refundApply->id.')' . $this->refundApply->price,
+            'service_type' => Balance::BALANCE_CANCEL_CONSUME,
+            'operator' => Balance::OPERATOR_ORDER_,
+            'operator_id' => $this->refundApply->uid
+        );
+        (new BalanceService())->balanceChange($data);
     }
 }
