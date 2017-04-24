@@ -186,8 +186,8 @@ class CommentController extends ApiController
     {
         $orderId = \YunShop::request()->order_id;
         $goodsId = \YunShop::request()->goods_id;
-        $uid = \YunShop::request()->uid ? intval(\YunShop::request()->uid) : \YunShop::app()->getMemberId();
-        
+        $uid = intval(\YunShop::request()->uid) ? \YunShop::request()->uid : \YunShop::app()->getMemberId();
+
         if (!$orderId) {
             return $this->errorJson('获取评论失败!未检测到订单ID!');
         }
