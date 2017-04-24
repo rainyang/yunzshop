@@ -16,6 +16,7 @@ use app\common\models\OrderGoods;
 use app\frontend\modules\goods\models\Comment;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 
 class CommentController extends ApiController
 {
@@ -95,7 +96,6 @@ class CommentController extends ApiController
             'content' => \YunShop::request()->content,
             'comment_id' => $append->id,
         ];
-
         if (!$comment['content']) {
             return $this->errorJson('追加评论失败!未检测到评论内容!');
         }
@@ -127,7 +127,7 @@ class CommentController extends ApiController
         if (!$reply) {
             return $this->errorJson('回复评论失败!未检测到评论数据!');
         }
-        
+
         $comment = [
             'order_id' => $reply->order_id,
             'goods_id' => $reply->goods_id,
@@ -153,7 +153,6 @@ class CommentController extends ApiController
         $commentModel->reply_id = $reply->uid;
         $commentModel->reply_name = $reply->nick_name;
         $commentModel->type = '2';
-
         $this->insertComment($commentModel);
 
     }
@@ -194,7 +193,9 @@ class CommentController extends ApiController
             return $this->errorJson('获取评论失败!未检测到商品ID!');
         }
         $comment = Comment::getOrderGoodsComment()
-            ->with('hasOneOrderGoods')
+            ->with(['hasOneOrderGoods'=>function($query) use($goodsId) {
+                $query->where('goods_id', $goodsId);
+            }])
             ->where('order_id', $orderId)
             ->where('goods_id', $goodsId)
             ->where('uid', \YunShop::app()->getMemberId())
