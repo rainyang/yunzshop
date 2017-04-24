@@ -49,6 +49,8 @@ class MemberOfficeAccountService extends MemberService
         $state = 'yz-' . session_id();
 
         if (!Session::get('member_id')) {
+            \Log::debug('scope', $params['scope']);
+
             if (!empty($params) && $params['scope'] == 'user_info') {
                 $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
             } else {
@@ -95,6 +97,7 @@ class MemberOfficeAccountService extends MemberService
             \YunShop::app()->openid = $userinfo['openid'];
             Session::set('member_id', $member_id);
         } else {
+            \Log::debug('获取code', $authurl);
             $this->_setClientRequestUrl();
 
             redirect($authurl)->send();
