@@ -82,6 +82,6 @@ class Order extends \app\common\models\Order
         })
             ->with([
                 'hasManyOrderGoods' => self::orderGoodsBuilder($status)
-            ])->where('uid', $uid)->get();
+            ])->where('uid', $uid)->orderBy('id', 'desc')->get();
     }
 }
