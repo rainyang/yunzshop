@@ -104,6 +104,8 @@ class MemberOfficeAccountService extends MemberService
         if (empty($params) || !empty($params) && $params['scope'] != 'user_info') {
             \Log::debug('微信登陆成功跳转地址',$redirect_url);
             redirect($redirect_url)->send();
+        } else {
+            return show_json(1, 'user_info_api');
         }
     }
 
