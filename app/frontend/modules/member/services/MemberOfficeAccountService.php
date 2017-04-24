@@ -8,11 +8,8 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\common\events\member\RegisterByAgent;
-use app\common\facades\Setting;
 use app\common\helpers\Client;
 use app\common\models\AccountWechats;
-use app\common\models\McMappingFans;
 use app\common\models\Member;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
@@ -170,12 +167,7 @@ class MemberOfficeAccountService extends MemberService
                 $this->addSubMemberInfo($uniacid, $member_id);
 
                 //添加ims_yz_member_unique表
-                MemberUniqueModel::insertData(array(
-                    'uniacid' => $uniacid,
-                    'unionid' => $userinfo['unionid'],
-                    'member_id' => $member_id,
-                    'type' => self::LOGIN_TYPE
-                ));
+                $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
 
                 //生成分销关系链
                 Member::createRealtion($member_id);
@@ -273,6 +265,16 @@ class MemberOfficeAccountService extends MemberService
             'uniacid' => $uniacid,
             'group_id' => $default_subgroup_id,
             'level_id' => $default_sublevel_id,
+        ));
+    }
+
+    public function addMemberUnionid($uniacid, $member_id, $unionid)
+    {
+        MemberUniqueModel::insertData(array(
+            'uniacid' => $uniacid,
+            'unionid' => $unionid,
+            'member_id' => $member_id,
+            'type' => self::LOGIN_TYPE
         ));
     }
 
