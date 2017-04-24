@@ -56,9 +56,9 @@ class OperationController extends BaseController
     {
         list($result, $data) = OrderService::orderSend($this->_params);
         if ($result === false) {
-            return $this->message($data, Url::absoluteWeb('order.list'));
+            return $this->message($data, 'error');
         }
-        return $this->message($data, 'error');
+        return $this->message($data);
     }
 
     public function cancelSend()
