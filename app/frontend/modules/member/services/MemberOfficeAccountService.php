@@ -100,6 +100,9 @@ class MemberOfficeAccountService extends MemberService
                 $member_id = $this->openidLogin($uniacid, $userinfo);
             }
 
+            //检查下线
+            Member::chkAgent($member_id);
+
             \Log::debug('uid', $member_id);
 
             \YunShop::app()->openid = $userinfo['openid'];
@@ -174,8 +177,8 @@ class MemberOfficeAccountService extends MemberService
                     'type' => self::LOGIN_TYPE
                 ));
 
-                //触发会员成为下线事件
-                Member::chkAgent($member_id);
+                //生成分销关系链
+                Member::createRealtion($member_id);
             }
         }
 
@@ -219,8 +222,8 @@ class MemberOfficeAccountService extends MemberService
 
                 $this->addSubMemberInfo($uniacid, $member_id);
 
-                //触发会员成为下线事件
-                Member::chkAgent($member_id);
+                //生成分销关系链
+                Member::createRealtion($member_id);
             }
         }
 

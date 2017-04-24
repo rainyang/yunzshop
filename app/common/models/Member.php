@@ -2,6 +2,7 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
+use app\backend\modules\member\models\MemberRelation;
 use app\common\events\member\BecomeAgent;
 
 /**
@@ -182,8 +183,11 @@ class Member extends BackendModel
      */
     public static function chkAgent($member_id)
     {
+
         $model = MemberShopInfo::getMemberShopInfo($member_id);
-        event(new BecomeAgent(\YunShop::request()->mid, $model));
+
+        $relation = new MemberRelation();
+        $relation->becomeChildAgent(\YunShop::request()->mid, $model);
     }
 
     /**
@@ -214,5 +218,17 @@ class Member extends BackendModel
             //'avatar' => 'required',
             'telephone' => 'regex:/^1[34578]\d{9}$/',
         ];
+    }
+
+
+    /**
+     * 生成分销关系链
+     *
+     * @param $member_id
+     */
+    public function createRealtion($member_id)
+    {
+        $model = MemberShopInfo::getMemberShopInfo($member_id);
+        event(new BecomeAgent(\YunShop::request()->mid, $model));
     }
 }
