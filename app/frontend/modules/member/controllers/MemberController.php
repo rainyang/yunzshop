@@ -164,15 +164,7 @@ class MemberController extends ApiController
      */
     public function isAgent()
     {
-        $member_info = MemberModel::isAgent();
-
-        if (empty($member_info)) {
-            return $this->errorJson('会员不存在');
-        } else {
-            $data = $member_info;
-        }
-
-        if (1 == $data['is_agent'] && 2 == $data['status']) {
+        if (MemberModel::isAgent()) {
             $has_permission = 1;
         } else {
             $has_permission = 0;

@@ -4,6 +4,7 @@ namespace app\frontend\controllers;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
+use app\frontend\modules\member\models\MemberModel;
 
 /**
  * Created by PhpStorm.
@@ -32,6 +33,8 @@ class SettingController extends BaseController
         }
 
         $setting['logo'] = tomedia($setting['logo']);
+        $setting['is_agent'] = MemberModel::isAgent() ? 1 : 0;
+
         return $this->successJson('获取商城设置成功', $setting);
 
     }
