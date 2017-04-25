@@ -28,8 +28,6 @@ class CouponController extends BaseController
         if (empty($keyword) && empty($getType) && ($searchSearchSwitch == 0)){
             $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate($pageSize)->toArray();
         } else {
-//            dd($timeStart);exit;
-//            dd($timeEnd);exit;
             $list = Coupon::getCouponsBySearch($keyword, $getType, $searchSearchSwitch, $timeStart, $timeEnd)
                         ->orderBy('display_order','desc')
                         ->paginate($pageSize)
@@ -46,6 +44,7 @@ class CouponController extends BaseController
         return view('coupon.index', [
             'list' => $list['data'],
             'pager' => $pager,
+            'total' => $list['total'],
         ])->render();
     }
 
