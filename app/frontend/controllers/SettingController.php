@@ -34,7 +34,7 @@ class SettingController extends BaseController
         $setting['logo'] = tomedia($setting['logo']);
 
         $relation = MemberRelation::getSetInfo()->first();
-        
+
         if ($relation) {
             $setting['agent'] = $relation->status;
         } else {
