@@ -15,7 +15,7 @@ class Slide extends BaseModel
     use SoftDeletes;
 
     public $table = 'yz_slide';
-
+    public $attributes = ['display_order' => 0];
     protected $guarded = [''];
 
     protected $fillable = [''];
