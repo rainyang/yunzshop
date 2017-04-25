@@ -197,6 +197,7 @@ class MemberRelation extends BackendModel
     public function becomeChildAgent($mid, MemberShopInfo $model)
     {
         $set = self::getSetInfo()->first();
+        \Log::debug('set', $set);
 
         if (empty($set)) {
             return;
@@ -224,6 +225,8 @@ class MemberRelation extends BackendModel
         $become_check = intval($set->become_check);
 
         if ($parent_is_agent && empty($member->parent_id)) {
+            \Log::debug('parant is agent');
+
             if ($member->member_id != $parent->member_id) {
                 if (empty($become_child)) {
                     $this->changeChildAgent($mid, $model);
