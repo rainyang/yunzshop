@@ -24,12 +24,16 @@ abstract class PreGeneratedController extends ApiController
         $total_goods_price = $order_data->sum('order.goods_price');
         $total_dispatch_price = $order_data->sum('order.dispatch_price');
 
-        //todo 临时处理,需要改写
+        $data['discount']['coupon'] = $order_data->map(function ($order_data) {
+            return $order_data['discount']['coupon'];
+
+        })->flatten();
+
         $data['dispatch'] = $order_data[0]['dispatch'];
         $order_data->map(function ($order_data) {
+            $order_data['discount']->forget('coupon');
             return $order_data->forget('dispatch');
         });
-
         $data += compact('total_price', 'total_dispatch_price', 'order_data', 'total_goods_price');
         return $this->successJson('成功', $data);
 
