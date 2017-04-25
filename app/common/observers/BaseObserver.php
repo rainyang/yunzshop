@@ -44,7 +44,6 @@ class BaseObserver {
     {
         $observerConfigs = \Config::get($key);
         $result = [];
-        echo 1;
         if($observerConfigs){
             foreach ($observerConfigs as $pluginName=>$pluginOperators){
                 if(isset($pluginOperators) && $pluginOperators) {
