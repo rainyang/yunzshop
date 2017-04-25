@@ -15,7 +15,7 @@ class Slide extends BaseModel
     use SoftDeletes;
 
     public $table = 'yz_slide';
-
+    public $attributes = ['display_order' => 0];
     protected $guarded = [''];
 
     protected $fillable = [''];
@@ -33,6 +33,7 @@ class Slide extends BaseModel
     public  function atributeNames() {
         return [
             'slide_name'=> '幻灯片名称',
+            'display_order'=> '排序',
         ];
     }
 
@@ -42,6 +43,7 @@ class Slide extends BaseModel
     public  function rules() {
         return [
             'slide_name' => 'required',
+            'display_order' => 'required',
         ];
     }
 }
