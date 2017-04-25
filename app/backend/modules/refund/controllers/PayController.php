@@ -31,14 +31,18 @@ class PayController extends BaseController
         $this->validate($request, [
             'refund_id' => 'required'
         ]);
-        //dd($request->query('refund_id'));
-        //exit;
+
         /**
          * @var $this->refundApply RefundApply
          */
-        $this->refundApply = RefundApply::find($request->query('refund_id'));
+        $this->refundApply = RefundApply::find($request->input('refund_id'));
         if (!isset($this->refundApply)) {
             throw new AdminException('未找到退款记录');
+        }
+        if($this->refundApply->refund_type == RefundApply::REFUND_TYPE_MONEY){
+            if ($this->refundApply->status != RefundApply::WAIT_REFUND) {
+                throw new AdminException($this->refundApply->status_name . '的退款申请,无法执行' . '打款' . '操作');
+            }
         }
         if ($this->refundApply->status != RefundApply::WAIT_REFUND) {
             throw new AdminException($this->refundApply->status_name . '的退款申请,无法执行' . '打款' . '操作');

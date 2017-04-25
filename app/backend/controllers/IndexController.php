@@ -8,7 +8,6 @@
 
 namespace app\backend\controllers;
 
-
 use app\common\components\BaseController;
 
 class IndexController extends BaseController
