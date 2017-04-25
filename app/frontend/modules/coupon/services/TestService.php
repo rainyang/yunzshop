@@ -52,7 +52,8 @@ class TestService
              * @var $coupon Coupon
              */
             return $coupon->valid();
-        });
+        })->values();
+
         return $result;
     }
 
