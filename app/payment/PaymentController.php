@@ -145,4 +145,35 @@ class PaymentController extends BaseController
             RefundOperationService::refundComplete(['order_id'=>$order_info->id]);
         }
     }
+
+    /**
+     * 支付宝提现回调操作
+     *
+     * @param $data
+     */
+    public function withdrawResutl($data)
+    {
+        $pay_order = PayOrder::getPayOrderInfoByTradeNo($data['trade_no'])->first();
+
+        if ($pay_order) {
+            $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
+
+            if ($pay_refund_model) {
+                $pay_refund_model->status = 2;
+                $pay_refund_model->trade_no = $data['trade_no'];
+                $pay_refund_model->third_type = $data['pay_type'];
+                $pay_refund_model->save();
+            }
+        }
+
+        \Log::debug('提现操作', 'withdraw.succeeded');
+
+        $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
+
+        $order_info->price = $order_info->price * 100;
+
+        if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
+
+        }
+    }
 }

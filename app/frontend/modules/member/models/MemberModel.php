@@ -225,7 +225,7 @@ class MemberModel extends Member
             }
         }
 
-        return [];
+        return false;
 
     }
 

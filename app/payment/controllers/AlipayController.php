@@ -94,7 +94,34 @@ class AlipayController extends PaymentController
 
     public function withdrawNotifyUrl()
     {
+        \Log::debug('支付宝提现回调');
 
+        $this->log($_POST, '支付宝提现');
+
+        $verify_result = $this->getSignResult();
+
+        \Log::debug('支付回调验证结果', intval($verify_result));
+
+        if($verify_result) {
+            if ($_POST['success_num'] >= 1) {
+                $plits = explode('^', $_POST['result_details']);
+
+                if ($plits[2] == 'SUCCESS') {
+                    $data = [
+                        'total_fee'    => $plits[1],
+                        'trade_no'     => $plits[0],
+                        'unit'         => 'yuan',
+                        'pay_type'     => '支付宝'
+                    ];
+
+                    $this->withdrawResutl($data);
+                }
+            }
+
+            echo "success";
+        } else {
+            echo "fail";
+        }
     }
 
     /**
