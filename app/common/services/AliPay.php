@@ -117,7 +117,13 @@ class AliPay extends Pay
 
         $alipay->setTotalFee($money);
 
-        $member_info = Member::getUserInfos($member_id)->first()->toArray();
+        $member_info = Member::getUserInfos($member_id)->first();
+
+        if ($member_info) {
+            $member_info = $member_info->toArray();
+        } else {
+            return show_json('0', '会员不存在');
+        }
 
         if (!empty($member_info['yz-member']['alipay']) && !empty($member_info['yz-member']['alipayname'])) {
             $account = $member_info['yz-member']['alipay'];

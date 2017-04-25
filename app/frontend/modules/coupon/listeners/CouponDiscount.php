@@ -29,7 +29,7 @@ class CouponDiscount
         $data = $coupons->map(function ($coupon){
             return [
                 'name' => $coupon->getMemberCoupon()->belongsToCoupon->name,
-                'id' => $coupon->getMemberCoupon()->belongsToCoupon->id,
+                'id' => $coupon->getMemberCoupon()->id,
             ];
         });
 
