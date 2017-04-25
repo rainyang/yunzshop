@@ -97,6 +97,13 @@ class CouponController extends BaseController
 
             $couponRequest['time_start'] =strtotime(\YunShop::request()->time['start']);
             $couponRequest['time_end'] =strtotime(\YunShop::request()->time['end']);
+            $coupon->use_type =\YunShop::request()->usetype;
+            $coupon->category_ids = \YunShop::request()->category_ids;
+            $coupon->categorynames = \YunShop::request()->category_names;
+            $coupon->goods_ids = \YunShop::request()->goods_ids;
+            $coupon->goods_names = \YunShop::request()->goods_names;
+//            dd($coupon);exit;
+
 
             //todo 表单验证
             $coupon->fill($couponRequest);
