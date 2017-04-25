@@ -37,7 +37,7 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">适用范围</label>
     <div class="col-sm-9 col-xs-12">
-        <label class="radio-inline"><input type="radio" name="usetype" onclick='showusetype(0)' value="0">全类适用</label>
+        <label class="radio-inline"><input type="radio" name="usetype" onclick='showusetype(0)' value="0" checked>全类适用</label>
         <label class="radio-inline"><input type="radio" name="usetype" onclick='showusetype(1)' value="1" @if($coupon['use_type']==1)checked @endif>指定商品分类</label>
         <label class="radio-inline"><input type="radio" name="usetype" onclick='showusetype(2)' value="2" @if($coupon['use_type']==2)checked @endif>指定商品</label>
     </div>
@@ -130,7 +130,7 @@
 
 </div>
 
-<div id="modal-module-menus-categorys" class="modal fade" tabindex="-1">
+<div id="modal-module-menus-categorys" class="modal fade" tabindex="-1"> {{--搜索分类的弹窗--}}
     <div class="modal-dialog" style='width: 920px;'>
         <div class="modal-content">
             <div class="modal-header">
@@ -160,7 +160,7 @@
     </div>
 </div>
 
-<div id="modal-module-menus-goods" class="modal fade" tabindex="-1">
+<div id="modal-module-menus-goods" class="modal fade" tabindex="-1"> {{--搜索商品的弹窗--}}
     <div class="modal-dialog" style='width: 920px;'>
         <div class="modal-content">
             <div class="modal-header">
