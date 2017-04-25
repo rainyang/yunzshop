@@ -220,8 +220,8 @@ class MemberModel extends Member
 
             $member_info = SubMemberModel::getMemberShopInfo($uid);
 
-            if ($member_info) {
-                return $member_info->toArray();
+            if ($member_info && $member_info->is_agent == 1 && $member_info->status == 2) {
+                return true;
             }
         }
 
