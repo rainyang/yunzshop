@@ -40,6 +40,7 @@ class PayController extends BaseController
         if (!isset($this->refundApply)) {
             throw new AdminException('未找到退款记录');
         }
+        //根据退款类型判断 前置状态是否满足
         if($this->refundApply->refund_type == RefundApply::REFUND_TYPE_MONEY){
             if ($this->refundApply->status != RefundApply::WAIT_CHECK) {
                 throw new AdminException($this->refundApply->status_name . '的退款申请,无法执行' . '打款' . '操作');
@@ -77,15 +78,17 @@ class PayController extends BaseController
 
     private function wechat()
     {
-        $pay = PayFactory::create($this->refundApply->order->pay_type_id);
+        $refundApply = $this->refundApply;
 
-        $result = $pay->doRefund($this->refundApply->order->order_sn, $this->refundApply->order->price, $this->refundApply->order->price);
+        $result = DB::transaction(function () use($refundApply) {
+            //微信退款 同步改变退款和订单状态
+            RefundOperationService::refundComplete(['order_id' => $this->refundApply->order->id]);
+            $pay = PayFactory::create($this->refundApply->order->pay_type_id);
+
+            return $pay->doRefund($this->refundApply->order->order_sn, $this->refundApply->order->price, $this->refundApply->order->price);
+        });
         if(!$result){
             return $this->error('微信退款失败');
-        }
-        if ($this->refundApply->order->pay_type_id == PayType::WECHAT_PAY) {
-            RefundOperationService::refundComplete(['order_id', $this->refundApply->order->id]);
-
         }
     }
 
@@ -97,6 +100,7 @@ class PayController extends BaseController
         if(!$result){
             return $this->error('支付宝退款失败');
         }
+        //支付宝退款 等待异步通知后,改变退款和订单的状态
     }
 
 
@@ -104,9 +108,9 @@ class PayController extends BaseController
     {
         $refundApply = $this->refundApply;
         $result = DB::transaction(function () use($refundApply){
-
+            //退款状态设为完成
             RefundOperationService::refundComplete(['order_id'=> $refundApply->order->id]);
-
+            //改变余额
             $data = array(
                 'serial_number' => $refundApply->refund_sn,
                 'money' => $refundApply->price,

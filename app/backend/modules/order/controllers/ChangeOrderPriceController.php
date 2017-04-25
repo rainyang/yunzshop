@@ -1,5 +1,6 @@
 <?php
 /**
+ * 改价
  * Created by PhpStorm.
  * User: shenyang
  * Date: 2017/3/18
@@ -17,7 +18,10 @@ use Illuminate\Support\Facades\DB;
 
 class ChangeOrderPriceController extends BaseController
 {
-
+    /**
+     * 展示
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         $order_model = Order::find(\YunShop::request()->order_id);
@@ -28,6 +32,11 @@ class ChangeOrderPriceController extends BaseController
         ]);
     }
 
+    /**
+     * 修改
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(\Request $request)
     {
         //dd(\YunShop::app()->user->name);
@@ -38,6 +47,10 @@ class ChangeOrderPriceController extends BaseController
         return $this->successJson($message);
     }
 
+    /**
+     * 改价状态清空重置 todo 有bug
+     * @param \Request $request
+     */
     public function back(\Request $request){
         $orderId = $request->input('order_id');
         $this->validate($request,[
