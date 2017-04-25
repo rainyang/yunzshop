@@ -332,8 +332,18 @@ abstract class Pay
         ]);
     }
 
-    protected function payWithdrawOrder()
-    {}
+    protected function payWithdrawOrder($out_order_no, $status, $third_type, $price)
+    {
+        return PayWithdrawOrder::create([
+            'uniacid' => \YunShop::app()->uniacid,
+            'member_id' => \YunShop::app()->getMemberId(),
+            'int_order_no' => self::createPayOrderNo(),
+            'out_order_no' => $out_order_no,
+            'status' => $status,
+            'type' => $third_type,
+            'price' => $price
+        ]);
+    }
 
     protected function payRefundOrder($out_order_no, $status, $third_type, $price)
     {
@@ -483,6 +493,30 @@ abstract class Pay
         self::payLog($type, $third_type, $amount, $operation);
         //退款单记录
         $model = self::payRefundOrder($order_no, $status, $third_type, $amount);
+
+        return $model;
+    }
+
+    /**
+     * 提现日志
+     *
+     * @param $type
+     * @param $third_type
+     * @param $amount
+     * @param $operation
+     * @param $order_no
+     * @param $status
+     *
+     * @return mixed
+     */
+    protected function withdrawlog($type, $third_type, $amount, $operation, $order_no, $status)
+    {
+        //访问日志
+        self::payAccessLog();
+        //支付日志
+        self::payLog($type, $third_type, $amount, $operation);
+        //提现单记录
+        $model = self::payWithdrawOrder($order_no, $status, $third_type, $amount);
 
         return $model;
     }
