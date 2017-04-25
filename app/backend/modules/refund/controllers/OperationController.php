@@ -19,6 +19,7 @@ class OperationController extends BaseController
      * @var $refundApply RefundApply
      */
     private $refundApply;
+
     public function preAction()
     {
         $request = \Request::capture();
@@ -26,7 +27,7 @@ class OperationController extends BaseController
             'refund_id' => 'required',
             //'reject_reason'=>''
         ]);
-        $this->refundApply = RefundApply::find($request->query('refund_id'));
+        $this->refundApply = RefundApply::find($request->input('refund_id'));
         if (!isset($this->refundApply)) {
             throw new AdminException('退款记录不存在');
         }
@@ -59,6 +60,12 @@ class OperationController extends BaseController
         $this->refundApply->receiveReturnGoods();
         return $this->message('操作成功', '');
     }
+
+    public function resend()
+    {
+
+    }
+
     /**
      * 手动退款
      * @param \Request $request

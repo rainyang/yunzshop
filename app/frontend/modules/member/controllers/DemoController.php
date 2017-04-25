@@ -23,6 +23,7 @@ use app\frontend\modules\member\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\services\MemberService;
+use app\frontend\modules\order\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 
 class DemoController extends BaseController
@@ -496,7 +497,7 @@ class DemoController extends BaseController
     }
 
     public function wxLogin()
-    {echo 1;exit;
+    {
         $uniacid      = \YunShop::app()->uniacid;
         $code         = \YunShop::request()->code;
 
@@ -512,11 +513,36 @@ class DemoController extends BaseController
                 ->asJsonResponse(true)
                 ->get();
 
-            echo '<pre>';print_r($token);exit;
+            $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
+
+            $userinfo = \Curl::to($userinfo_url)
+                ->asJsonResponse(true)
+                ->get();
+
+            echo '<pre>';print_r($userinfo);exit;
 
         } else {
             redirect("https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_base&state={$state}#wechat_redirect")->send();
         }
+    }
+
+    private function _getUserInfoUrl($accesstoken, $openid)
+    {
+        return "https://api.weixin.qq.com/sns/userinfo?access_token={$accesstoken}&openid={$openid}&lang=zh_CN";
+    }
+
+    public function checkAgent()
+    {
+        MemberRelation::checkAgent(146);
+    }
+
+    public function jump()
+    {
+        $num = OrderListModel::getCostTotalNum(229);
+
+        $can = $num >= 1;
+
+        echo intval($can);
     }
 
 }

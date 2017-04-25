@@ -6,7 +6,7 @@
  * Time: 上午10:41
  */
 
-namespace app\common\frame;
+namespace app\common\models\frame;
 
 
 use app\common\models\BaseModel;

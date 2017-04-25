@@ -16,7 +16,7 @@ class Brand extends \app\common\models\Brand
      * @param $id
      * @return mixed
      */
-    public static function daletedBrand($id)
+    public static function deletedBrand($id)
     {
         return self::where('id', $id)
             ->delete();

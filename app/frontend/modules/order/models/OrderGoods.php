@@ -25,7 +25,7 @@ class OrderGoods extends \app\common\models\OrderGoods
 
     public static function getMyCommentList($uid, $status)
     {
-        $list = self::select()->where('uid', $uid)->Where('comment_status', $status)->get();
+        $list = self::select()->where('uid', $uid)->Where('comment_status', $status)->orderBy('id', 'desc')->get();
         return $list;
     }
 }

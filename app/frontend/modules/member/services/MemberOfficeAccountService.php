@@ -8,11 +8,8 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\common\events\member\RegisterByAgent;
-use app\common\facades\Setting;
 use app\common\helpers\Client;
 use app\common\models\AccountWechats;
-use app\common\models\McMappingFans;
 use app\common\models\Member;
 use app\common\models\MemberGroup;
 use app\common\models\MemberLevel;
@@ -42,14 +39,24 @@ class MemberOfficeAccountService extends MemberService
         $appId        = $account->key;
         $appSecret    = $account->secret;
 
-        $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        if ($params['scope'] == 'user_info') {
+            \Log::debug('user info callback');
+            $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1&scope=user_info';
+
+        } else {
+            \Log::debug('default');
+            $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        }
 
         \Log::debug('微信登陆回调地址', $callback);
 
         $state = 'yz-' . session_id();
 
         if (!Session::get('member_id')) {
-            if (!empty($params) && $params['scope'] == 'user_info') {
+            \Log::debug('scope', $params['scope']);
+
+            if ($params['scope']  == 'user_info' || \YunShop::request()->scope == 'user_info') {
                 $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
             } else {
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
@@ -90,18 +97,24 @@ class MemberOfficeAccountService extends MemberService
                 $member_id = $this->openidLogin($uniacid, $userinfo);
             }
 
+            //检查下线
+            Member::chkAgent($member_id);
+
             \Log::debug('uid', $member_id);
 
             \YunShop::app()->openid = $userinfo['openid'];
             Session::set('member_id', $member_id);
         } else {
+            \Log::debug('获取code', $authurl);
             $this->_setClientRequestUrl();
 
             redirect($authurl)->send();
             exit;
         }
 
-        if (empty($params) || !empty($params) && $params['scope'] != 'user_info') {
+        if (\YunShop::request()->scope == 'user_info') {
+            return show_json(1, 'user_info_api');
+        } else {
             \Log::debug('微信登陆成功跳转地址',$redirect_url);
             redirect($redirect_url)->send();
         }
@@ -154,15 +167,10 @@ class MemberOfficeAccountService extends MemberService
                 $this->addSubMemberInfo($uniacid, $member_id);
 
                 //添加ims_yz_member_unique表
-                MemberUniqueModel::insertData(array(
-                    'uniacid' => $uniacid,
-                    'unionid' => $userinfo['unionid'],
-                    'member_id' => $member_id,
-                    'type' => self::LOGIN_TYPE
-                ));
+                $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
 
-                //触发会员成为下线事件
-                Member::chkAgent($member_id);
+                //生成分销关系链
+                Member::createRealtion($member_id);
             }
         }
 
@@ -206,8 +214,8 @@ class MemberOfficeAccountService extends MemberService
 
                 $this->addSubMemberInfo($uniacid, $member_id);
 
-                //触发会员成为下线事件
-                Member::chkAgent($member_id);
+                //生成分销关系链
+                Member::createRealtion($member_id);
             }
         }
 
@@ -257,6 +265,16 @@ class MemberOfficeAccountService extends MemberService
             'uniacid' => $uniacid,
             'group_id' => $default_subgroup_id,
             'level_id' => $default_sublevel_id,
+        ));
+    }
+
+    public function addMemberUnionid($uniacid, $member_id, $unionid)
+    {
+        MemberUniqueModel::insertData(array(
+            'uniacid' => $uniacid,
+            'unionid' => $unionid,
+            'member_id' => $member_id,
+            'type' => self::LOGIN_TYPE
         ));
     }
 

@@ -14,7 +14,7 @@ class Comment extends \app\common\models\Comment
 
     public $Append;
 
-    protected $appends = ['append'];
+    protected $appends = ['append','type_name'];
 
     public static function getCommentsByGoods($goods_id)
     {
@@ -62,6 +62,6 @@ class Comment extends \app\common\models\Comment
 
     public function hasOneOrderGoods()
     {
-        return $this->hasOne('app\common\models\OrderGoods', 'comment_id', 'id');
+        return $this->hasOne('app\common\models\OrderGoods', 'order_id', 'order_id');
     }
 }

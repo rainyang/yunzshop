@@ -69,6 +69,6 @@ abstract class RefundType
         return $this->refundApply->save();
     }
 
-    abstract public function pass();
+    //abstract public function pass();
 
 }

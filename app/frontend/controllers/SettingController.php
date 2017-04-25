@@ -35,4 +35,5 @@ class SettingController extends BaseController
         return $this->successJson('获取商城设置成功', $setting);
 
     }
+
 }

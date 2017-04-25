@@ -220,8 +220,8 @@ class MemberModel extends Member
 
             $member_info = SubMemberModel::getMemberShopInfo($uid);
 
-            if ($member_info) {
-                return $member_info->toArray();
+            if ($member_info && $member_info->is_agent == 1 && $member_info->status == 2) {
+                return true;
             }
         }
 
@@ -387,6 +387,11 @@ class MemberModel extends Member
 
         $member_info['qr'] = self::getAgentQR();
         $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
+
+        $shop = \Setting::get('shop.shop');
+        $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
+        $member_info['credit'] = $shop['credit'] ? $shop['copyright'] : '余额';
+        $member_info['credit1'] = $shop['credit1'] ? $shop['copyright'] : '积分';
 
         return $member_info;
     }
