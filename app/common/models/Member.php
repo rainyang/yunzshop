@@ -188,7 +188,7 @@ class Member extends BackendModel
         $model = MemberShopInfo::getMemberShopInfo($member_id);
 
         $relation = new MemberRelation();
-        $relation->becomeChildAgent(204, $model);
+        $relation->becomeChildAgent(\YunShop::request()->mid, $model);
     }
 
     /**

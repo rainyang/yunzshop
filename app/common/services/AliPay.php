@@ -129,7 +129,7 @@ class AliPay extends Pay
             $account = $member_info['yz-member']['alipay'];
             $name = $member_info['yz-member']['alipayname'];
         } else {
-            return show_json(0);
+            return error(1, '没有设定支付宝账号');
         }
 
         return $alipay->withdraw($account, $name, $out_trade_no);
