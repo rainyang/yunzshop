@@ -390,8 +390,14 @@ class MemberModel extends Member
 
         $shop = \Setting::get('shop.shop');
         $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
-        $member_info['credit'] = $shop['credit'] ? $shop['copyright'] : '余额';
-        $member_info['credit1'] = $shop['credit1'] ? $shop['copyright'] : '积分';
+        $member_info['credit'] = [
+            'text' => $shop['credit'] ? $shop['copyright'] : '余额',
+            'data' => $member_info['credit2']
+            ];
+        $member_info['credit1'] = [
+            'text' => $shop['credit1'] ? $shop['copyright'] : '积分',
+            'data' => $member_info['credit1']
+            ];
 
         return $member_info;
     }
