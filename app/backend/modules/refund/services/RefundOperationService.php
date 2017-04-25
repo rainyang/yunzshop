@@ -29,7 +29,8 @@ class RefundOperationService
 
     public static function refundComplete($params)
     {
-        $refundApply = RefundApply::where('order_id', $params['order_id'])->find();
+        $refundApply = RefundApply::where('order_id', $params['order_id'])->first();
+
         if (!isset($refundApply)) {
             throw new AdminException('(ID:'.$params['order_id'].')退款申请不存在');
         }

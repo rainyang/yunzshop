@@ -66,18 +66,32 @@ class SendCouponController extends BaseController
                     break;
                 case self::BY_MEMBER_LEVEL: //根据"会员等级"获取 Member IDs
                     $sendLevel = \YunShop::request()->send_level;
-                    $res = MemberLevel::getMembersByLevel($sendLevel)->toArray();//todo 当没有值时, toArray()没有对象,报错
-                    $memberIds = array_column($res['member'], 'member_id'); //提取member_id组成新的数组
+                    $res = MemberLevel::getMembersByLevel($sendLevel);
+                    if(!$res['member']){
+                        $memberIds = '';
+                    } else{
+                        $res = $res->toArray();
+                        $memberIds = array_column($res['member'], 'member_id'); //提取member_id组成新的数组
+                    }
                     break;
                 case self::BY_MEMBER_GROUP: //根据"会员分组"获取 Member IDs
                     $sendGroup = \YunShop::request()->send_group;
-                    $res = MemberGroup::getMembersByGroupId($sendGroup)->toArray(); //todo 当没有值时, toArray()没有对象,报错
-                    $memberIds = array_column($res['member'], 'member_id'); //提取member_id组成新的数组
+                    $res = MemberGroup::getMembersByGroupId($sendGroup);
+                    if(!$res['member']){
+                        $memberIds = '';
+                    } else{
+                        $res = $res->toArray();
+                        $memberIds = array_column($res['member'], 'member_id'); //提取member_id组成新的数组
+                    }
                     break;
                 case self::TO_ALL_MEMBERS:
-                    $members = Member::getMembersId()->toArray();
+                    $res = Member::getMembersId();
+                    if(!$res){
+                        $members = '';
+                    } else{
+                        $members = $res->toArray();
+                    }
                     $memberIds = array_column($members, 'uid');
-                    //$memberOpenids = array_column(array_column($members, 'has_one_fans'), 'openid');
                     break;
                 default:
                     $memberIds = '';
@@ -91,8 +105,8 @@ class SendCouponController extends BaseController
             $sendTotal = \YunShop::request()->send_total;
 
             if (empty($memberIds)){
-                $this->error('未指定发放对象, 或者该发放类型下还没有用户');
-            } elseif(!is_int($sendTotal) || $sendTotal < 1){
+                $this->error('该发放类型下还没有用户');
+            } elseif($sendTotal < 1){
                 $this->error('发放数量必须为整数, 而且不能小于 1');
             } elseif ($patternNotMatch) {
                 $this->error('Member ID 填写不正确, 请重新设置');

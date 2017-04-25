@@ -32,7 +32,6 @@ class McMappingFans extends BackendModel
     public static function getUId($uniacid, $openid)
     {
         return self::select('uid')
-            ->unionid()
             ->where('uniacid', $uniacid)
             ->where('openid', $openid)
             ->first();
