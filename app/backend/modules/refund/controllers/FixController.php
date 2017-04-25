@@ -12,11 +12,11 @@ use app\common\components\BaseController;
  */
 class FixController extends BaseController
 {
-    public function backReject(\Request $request){
-        $refundApply = RefundApply::find($request->query('refund_id'));
-        $refundApply->status = 0;
-        $refundApply->reject_reason = '';
-        $refundApply->save();
-        echo 'ok';
-    }
+//    public function backReject(\Request $request){
+//        $refundApply = RefundApply::find($request->query('refund_id'));
+//        $refundApply->status = 0;
+//        $refundApply->reject_reason = '';
+//        $refundApply->save();
+//        echo 'ok';
+//    }
 }
