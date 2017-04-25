@@ -20,6 +20,6 @@ class OrderObserver extends BaseObserver
     }
     public function saved(Model $model)
     {
-        $this->pluginObserver('observer.order',$model,'saved', 1);
+        //$this->pluginObserver('observer.order',$model,'saved', 1);
     }
 }

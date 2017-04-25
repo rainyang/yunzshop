@@ -394,7 +394,7 @@ class MemberModel extends Member
             'text' => $shop['credit'] ? $shop['copyright'] : '余额',
             'data' => $member_info['credit2']
             ];
-        $member_info['credit1'] = [
+        $member_info['integral'] = [
             'text' => $shop['credit1'] ? $shop['copyright'] : '积分',
             'data' => $member_info['credit1']
             ];
