@@ -31,6 +31,14 @@ Route::any('/', function () {
         }
         return;
     }
+    //供应商
+    if (strpos(request()->getRequestUri(), '/addons/') !== false &&
+        strpos(request()->getRequestUri(), '/supplier.php') !== false
+    ) {
+        YunShop::parseRoute(request()->input('route'));
+        return;
+    }
+
     //api
     if (strpos(request()->getRequestUri(), '/addons/') !== false &&
         strpos(request()->getRequestUri(), '/api.php') !== false

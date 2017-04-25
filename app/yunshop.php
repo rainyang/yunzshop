@@ -49,7 +49,7 @@ class YunShop
 
         if(self::isWeb()){
             //菜单生成
-            $menuList = array_merge(Menu::getMenuList(), (array)Config::get('menu'));
+            $menuList = self::isSupplier() ? Config::get('supplier.menu') : array_merge(Menu::getMenuList(), (array)Config::get('menu'));
             Config::set('menu',$menuList);
             $item = Menu::getCurrentItemByRoute($controller->route,$menuList);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
@@ -122,6 +122,16 @@ class YunShop
     {
         return (strpos($_SERVER['PHP_SELF'], '/addons/') !== false &&
             strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+    }
+
+    /**
+     * 是否供应商
+     * @return bool
+     */
+    public static function isSupplier()
+    {
+        return (strpos($_SERVER['PHP_SELF'], '/addons/') !== false &&
+            strpos($_SERVER['PHP_SELF'], '/supplier.php') !== false) ? true : false;
     }
 
     public static function isPayment()
