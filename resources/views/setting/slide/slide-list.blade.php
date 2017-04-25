@@ -17,7 +17,7 @@
                         <table class="table table-hover">
                             <thead class="navbar-inner">
                             <tr>
-                                <th style="width:30px;">ID</th>
+                                <th style="width:80px;">ID</th>
                                 <th style='width:80px'>显示顺序</th>
                                 <th>标题</th>
                                 <th>连接</th>
