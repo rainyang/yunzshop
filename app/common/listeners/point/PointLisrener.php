@@ -9,6 +9,7 @@
 namespace app\common\listeners\point;
 
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\models\Order;
 use app\common\services\finance\CalculationPointService;
 use app\common\services\finance\PointService;
@@ -20,7 +21,7 @@ class PointLisrener
     private $point_set;
     private $order_model;
 
-    public function changePoint(AfterOrderCreatedEvent $event)
+    public function changePoint(AfterOrderReceivedEvent $event)
     {
         $this->point_set = Setting::get('point.set');
         $this->order_model = Order::find($event->getOrderModel()->id);
@@ -79,9 +80,9 @@ class PointLisrener
 
     public function subscribe($events)
     {
-        //下单之后 根据商品和订单赠送积分
+        //收货之后 根据商品和订单赠送积分
         $events->listen(
-            AfterOrderCreatedEvent::class,
+            AfterOrderReceivedEvent::class,
             PointLisrener::class . '@changePoint'
         );
 
