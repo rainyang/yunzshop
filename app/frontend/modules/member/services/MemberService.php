@@ -124,10 +124,9 @@ class MemberService
             $update_time = $mobile_info['created_at'];
             $total = $mobile_info['total'];
 
-            if ((date('Ymd', $curr_time) == date('Ymd', $update_time))
-                && $total < 5) {
+            if ((date('Ymd', $curr_time) != date('Ymd', $update_time))) {
 
-                return true;
+                $total = 0;
             }
         } else {
             $total = 0;
@@ -158,7 +157,7 @@ class MemberService
 
             if ($update_time <= $curr_time) {
                 if (date('Ymd', $curr_time) == date('Ymd', $update_time)) {
-                    if ($total <= 4) {
+                    if ($total <= 5) {
                         ++$total;
 
                         smsSendLimitModel::updateData(array(

@@ -28,8 +28,6 @@ class CouponController extends BaseController
         if (empty($keyword) && empty($getType) && ($searchSearchSwitch == 0)){
             $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate($pageSize)->toArray();
         } else {
-//            dd($timeStart);exit;
-//            dd($timeEnd);exit;
             $list = Coupon::getCouponsBySearch($keyword, $getType, $searchSearchSwitch, $timeStart, $timeEnd)
                         ->orderBy('display_order','desc')
                         ->paginate($pageSize)
@@ -46,6 +44,7 @@ class CouponController extends BaseController
         return view('coupon.index', [
             'list' => $list['data'],
             'pager' => $pager,
+            'total' => $list['total'],
         ])->render();
     }
 
@@ -63,6 +62,10 @@ class CouponController extends BaseController
             $coupon->time_start = strtotime(\YunShop::request()->time['start']);
             $coupon->time_end = strtotime(\YunShop::request()->time['end']);
             $coupon->use_type =\YunShop::request()->usetype;
+            $coupon->category_ids = \YunShop::request()->categoryids;
+            $coupon->categorynames = \YunShop::request()->categorynames;
+            $coupon->goods_ids = \YunShop::request()->goods_ids;
+            $coupon->goods_names = \YunShop::request()->goods_names;
 
             $coupon->fill($couponRequest);
             $validator = $coupon->validator();
@@ -94,6 +97,13 @@ class CouponController extends BaseController
 
             $couponRequest['time_start'] =strtotime(\YunShop::request()->time['start']);
             $couponRequest['time_end'] =strtotime(\YunShop::request()->time['end']);
+            $coupon->use_type =\YunShop::request()->usetype;
+            $coupon->category_ids = \YunShop::request()->category_ids;
+            $coupon->categorynames = \YunShop::request()->category_names;
+            $coupon->goods_ids = \YunShop::request()->goods_ids;
+            $coupon->goods_names = \YunShop::request()->goods_names;
+//            dd($coupon);exit;
+
 
             //todo 表单验证
             $coupon->fill($couponRequest);
@@ -111,6 +121,11 @@ class CouponController extends BaseController
 
         return view('coupon.coupon', [
             'coupon' => $coupon,
+            'usetype' => $coupon['use_type'],
+            'category_ids' => $coupon['category_ids'],
+            'categorynames' => $coupon['categorynames'],
+            'goods_ids' => $coupon['goods_ids'],
+            'goods_names' => $coupon['goods_names'],
         ])->render();
     }
 

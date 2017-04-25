@@ -63,7 +63,7 @@
     </form>
 
     <div class="panel panel-default">
-        <div class="panel-heading">总数:<small>排序数字越大越靠前</small></div>
+        <div class="panel-heading">总数: {{$total}}</div>
         <div class="panel-body">
             <table class="table table-hover table-responsive">
                 <thead class="navbar-inner" >
