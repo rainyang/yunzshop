@@ -45,6 +45,7 @@ class BaseObserver {
         $observerConfigs = \Config::get($key);
         $result = [];
         if($observerConfigs){
+            echo '<pre>';print_r($model->id);exit;
             foreach ($observerConfigs as $pluginName=>$pluginOperators){
                 if(isset($pluginOperators) && $pluginOperators) {
                     $class = array_get($pluginOperators,'class');
@@ -52,7 +53,6 @@ class BaseObserver {
                     $data = array_get($model->widgets,$pluginName,[]);
                     if(class_exists($class) && method_exists($class,$function) && is_callable([$class,$function])){
                         if (!$type) {
-                            echo '<pre>';print_r($model->id);exit;
                             $result[$pluginName] = $class::$function($model->id, $data, $operate);
                         } else {
                             $result[$pluginName] = $class::$function($model);
