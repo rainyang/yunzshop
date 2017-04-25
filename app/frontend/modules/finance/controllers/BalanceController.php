@@ -178,6 +178,10 @@ class BalanceController extends ApiController
         if (!(new BalanceService())->withdrawAlipay() && $this->getWithdrawType() == 'alipay') {
             return '未开启提现到支付宝';
         }
+        $withdrawAstrict = (new BalanceService())->withdrawAstrict();
+        if ($withdrawAstrict > trim(\YunShop::request()->withdraw_money)) {
+            return '提现金额不能小于' . $withdrawAstrict;
+        }
         return true;
     }
 
