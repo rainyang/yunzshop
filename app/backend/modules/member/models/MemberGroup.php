@@ -75,7 +75,7 @@ class MemberGroup extends \app\common\models\MemberGroup
     public static function getMembersByGroupId($groupId)
     {
         $memberGroup = static::uniacid()
-                    ->select('id', 'group_name', 'uniacid')
+                    ->select('id', 'group_name')
                     ->where('id', '=', $groupId)
                     ->with(['member' => function($query){
                         return $query->select(['member_id','group_id'])->where('uniacid', \YunShop::app()->uniacid);

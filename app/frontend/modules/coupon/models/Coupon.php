@@ -38,10 +38,11 @@ class Coupon extends \app\common\models\Coupon
                         ->select(['id', 'name', 'coupon_method', 'deduct', 'discount', 'enough', 'use_type',
                                 'categorynames', 'goods_names', 'time_limit', 'time_days', 'time_start', 'time_end', 'get_max', 'total',
                                 'money', 'credit'])
+                        ->where('get_type','=',1)
+                        ->where('status', '=', 1)
                         ->withCount(['hasManyMemberCoupon'])
                         ->withCount(['hasManyMemberCoupon as member_got' => function($query) use($memberId){
                             return $query->where('uid', '=', $memberId);
-                        }])
-                        ->where('status', '=', 1);
+                        }]);
     }
 }

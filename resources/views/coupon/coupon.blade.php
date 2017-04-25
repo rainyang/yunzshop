@@ -128,8 +128,8 @@
             );
         }
         function select_category(o) {
-            $(".focuscategory #categoryid").val(o.id);
-            $(".focuscategory #categoryname").val(o.name);
+            $(".focuscategory:last input[data-name=categoryids]").val(o.id);
+            $(".focuscategory:last input[data-name=categorynames]").val(o.name);
             $(".focuscategory").removeClass("focuscategory");
             $("#modal-module-menus-categorys .close").click();
         }
@@ -149,8 +149,9 @@
             );
         }
         function select_good(o) {
-            $(".focusgood #goodid").val(o.id);
-            $(".focusgood #goodname").val(o.title);
+            console.log(o);
+            $(".focusgood:last input[data-name=goodsids]").val(o.id);
+            $(".focusgood:last input[data-name=goodsnames]").val(o.title);
             $(".focusgood").removeClass("focusgood");
             $("#modal-module-menus-goods .close").click();
         }

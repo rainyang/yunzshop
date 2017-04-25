@@ -34,6 +34,7 @@ class Slide extends BaseModel
         return [
             'slide_name'=> '幻灯片名称',
             'display_order'=> '排序',
+            'thumb'=> '幻灯片图片',
         ];
     }
 
@@ -44,6 +45,7 @@ class Slide extends BaseModel
         return [
             'slide_name' => 'required',
             'display_order' => 'required',
+            'thumb' => 'required',
         ];
     }
 }
