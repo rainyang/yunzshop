@@ -49,7 +49,7 @@ class Url
         if(empty($route) && self::isHttp($route)){
             return $route;
         }
-        if(strpos('/',$route) !== 0){
+        if(strpos($route, '/') !== 0){
             $route = '/' . $route;
         }
         if(!isset($params['i'])){

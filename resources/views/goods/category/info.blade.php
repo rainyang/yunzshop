@@ -13,21 +13,13 @@
             <input type="hidden" name="id" class="form-control" value="{{$item->id}}"/>
             <div class="panel panel-default">
                 <div class="panel-body">
-                    @if(!empty($item))
+                    @if($item->id)
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类连接(点击复制)</label>
                             <div class="col-sm-9 col-xs-12">
                                 <p class='form-control-static'>
                                     <a href='javascript:;' title='点击复制连接' id='cp'>
-                                        @if(empty($parent))
-                                            {{yzAppUrl('goods.category.index', ['pcate'=>$item->id])}}
-                                        @else
-                                            @if(empty($parent1))
-                                                {{yzAppUrl('goods.category.index', ['ccate'=>$item->id])}}
-                                            @else
-                                                {{yzAppUrl('goods.category.index', ['tcate'=>$item->id])}}
-                                            @endif
-                                        @endif
+                                        {{yzAppFullUrl('/catelist/'.$item->id)}}{{$item->id}}
                                     </a>
                                 </p>
                             </div>
