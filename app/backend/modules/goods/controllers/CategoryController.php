@@ -61,11 +61,11 @@ class CategoryController extends BaseController
         $requestCategory = \YunShop::request()->category;
         if ($requestCategory) {
             //将数据赋值到model
-            $categoryModel->setRawAttributes($requestCategory);
+            $categoryModel->fill($requestCategory);
             //其他字段赋值
             $categoryModel->uniacid = \YunShop::app()->uniacid;
             //字段检测
-            $validator = $categoryModel->validator($categoryModel->getAttributes());
+            $validator = $categoryModel->validator();
             if ($validator->fails()) {
                 //检测失败
                 $this->error($validator->messages());

@@ -172,7 +172,13 @@ class MemberController extends ApiController
             $data = $member_info;
         }
 
-        return $this->successJson('', ['is_agent' => $data['is_agent']]);
+        if (1 == $data['is_agent'] && 2 == $data['status']) {
+            $has_permission = 1;
+        } else {
+            $has_permission = 0;
+        }
+
+        return $this->successJson('', ['is_agent' => $has_permission]);
     }
 
     /**
