@@ -31,4 +31,5 @@ class MemberLevel extends BaseModel
             ->uniacid()
             ->where('is_default', 1);
     }
+
 }
