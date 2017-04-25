@@ -115,6 +115,11 @@ class CouponController extends BaseController
 
         return view('coupon.coupon', [
             'coupon' => $coupon,
+            'usetype' => $coupon['use_type'],
+            'category_ids' => $coupon['category_ids'],
+            'categorynames' => $coupon['categorynames'],
+            'goods_ids' => $coupon['goods_ids'],
+            'goods_names' => $coupon['goods_names'],
         ])->render();
     }
 
