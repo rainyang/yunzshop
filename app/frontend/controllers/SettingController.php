@@ -34,11 +34,11 @@ class SettingController extends BaseController
         $setting['logo'] = tomedia($setting['logo']);
 
         $relation = MemberRelation::getSetInfo()->first();
-        
+
         if ($relation) {
-            $setting['agent'] = $relation->status;
+            $setting['agent'] = $relation->status ? true : false;
         } else {
-            $setting['agent'] = 0;
+            $setting['agent'] = false;
         }
 
         return $this->successJson('获取商城设置成功', $setting);

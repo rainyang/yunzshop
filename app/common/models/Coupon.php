@@ -15,8 +15,8 @@ class  Coupon extends BaseModel
     const COUPON_GOODS_USE = 2;
     const COUPON_MONEY_OFF = 1;
     const COUPON_DISCOUNT = 2;
-    const COUPON_DATE_TIME_RANGE = 0;
-    const COUPON_SINCE_RECEIVE = 1;
+    const COUPON_DATE_TIME_RANGE = 1;//事件范围
+    const COUPON_SINCE_RECEIVE = 0;//领取后n天
 
     public $table = 'yz_coupon';
 

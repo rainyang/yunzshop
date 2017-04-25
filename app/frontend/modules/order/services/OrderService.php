@@ -63,7 +63,7 @@ class OrderService
     {
         $Event = new OnDiscountInfoDisplayEvent($order_model);
         event($Event);
-        return $Event->getMap();
+        return collect($Event->getMap());
     }
 
     /**
@@ -73,9 +73,9 @@ class OrderService
      */
     public static function getDispatchEventData($order_model)
     {
-        $event = new OnDispatchTypeInfoDisplayEvent($order_model);
-        event($event);
-        return $event->getMap();
+        $Event = new OnDispatchTypeInfoDisplayEvent($order_model);
+        event($Event);
+        return $Event->getMap();
     }
 
     /**
