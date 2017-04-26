@@ -1,9 +1,21 @@
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用条件</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用条件 - 订单金额</label>
     <div class="col-sm-9 col-xs-12">
         <input type="text" name="coupon[enough]" class="form-control" value="{{isset($coupon['enough']) ? $coupon['enough'] : 0}}"  />
-        <span class='help-block' >消费满多少金额才可以使用该优惠券 (设置为空或 0 则不限制消费金额)</span>
+        <span class='help-block'>消费满多少金额才可以使用该优惠券 (设置为空或 0 则不限制消费金额)</span>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用条件 - 会员等级</label>
+    <div class="col-sm-9 col-xs-12">
+        <select name="coupon[level_limit]" class="form-control" id="value_2" >
+            <option value="-1">所有会员</option>
+            @foreach($memberlevels as $v)
+                <option value="{{$v['level']}}">{{$v['level_name']}}(及以上等级可以领取)</option>
+            @endforeach
+        </select>
+        <span class='help-block'>选择"所有会员"表示商城的所有会员,包括没有划分等级的; <br>例如: 选择等级3,表示包括3以及大于等级3的会员都可领取,即等级1,2,3都可以领取.</span>
     </div>
 </div>
 <div class="form-group">

@@ -5,8 +5,10 @@ namespace  app\payment;
 use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
 use app\common\models\Order;
+use app\common\models\OrderPay;
 use app\common\models\PayOrder;
 use app\common\models\PayRefundOrder;
+use app\common\models\PayType;
 use app\common\models\PayWithdrawOrder;
 use app\frontend\modules\finance\services\BalanceService;
 use app\frontend\modules\order\services\OrderService;
@@ -92,16 +94,15 @@ class PaymentController extends BaseController
             case "charge.succeeded":
                 \Log::debug('支付操作', 'charge.succeeded');
 
-                $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
+                $orderPay = OrderPay::where('Pay_sn', $data['out_trade_no'])->first();
 
                 if ($data['unit'] == 'fen') {
-                    $order_info->price = $order_info->price * 100;
+                    $orderPay->amount = $orderPay->amount * 100;
                 }
 
-                if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
+                if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
                     MemberRelation::checkOrderPay();
-
-                    OrderService::orderPay(['order_id' => $order_info->id]);
+                    OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
                 }
                 break;
             case "recharge.succeeded":

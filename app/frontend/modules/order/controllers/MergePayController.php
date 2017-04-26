@@ -85,7 +85,7 @@ class MergePayController extends ApiController
         ];
 
         $orderPay = new OrderPay();
-        $orderPay->order_ids = $request->input('order_ids');
+        $orderPay->order_ids = explode(',', $request->input('order_ids'));
         $orderPay->amount = $orders->sum('price');
         $orderPay->uid = $orders->first()->uid;
         $orderPay->pay_sn = OrderService::createPaySN();
