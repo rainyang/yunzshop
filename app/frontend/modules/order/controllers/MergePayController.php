@@ -35,7 +35,9 @@ class MergePayController extends ApiController
      */
     protected function orders($orderIds)
     {
-        //$orderIds = explode(',', $order_ids);
+        if(!is_array($orderIds)){
+            $orderIds = explode(',', $orderIds);
+        }
         array_walk($orderIds, function ($orderId) {
             if (!is_numeric($orderId)) {
                 throw new AppException('(ID:' . $orderId . ')订单号id必须为数字');

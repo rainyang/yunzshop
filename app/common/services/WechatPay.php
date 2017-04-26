@@ -56,7 +56,7 @@ class WechatPay extends Pay
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
 
-            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
+            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY,'');
         } else {
             throw new AppException($result->err_code_des);
         }
@@ -103,7 +103,7 @@ class WechatPay extends Pay
         $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);
 
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
-            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY, $result->transaction_id);
+            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->transaction_id);
 
             $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
 
@@ -173,7 +173,7 @@ class WechatPay extends Pay
 
             //请求数据日志
             $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
-                $pay_order_model->third_type, json_encode($merchantPayData));
+                $pay_order_model->type, json_encode($merchantPayData));
 
             $result = $merchantPay->send($merchantPayData);
         } else {//红包
@@ -199,13 +199,12 @@ class WechatPay extends Pay
         }
 
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
-            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY);
+            \Log::debug('提现返回结果', $result->toArray());
+            $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_COMPLETE, $result->payment_no);
 
             $this->payResponseDataLog($out_trade_no, '微信提现', json_encode($result));
 
-            if (bccomp($pay_order_model->price, $result->amount, 2) == 0) {
-                Withdraw::paySuccess($result->partner_trade_no);
-            }
+            Withdraw::paySuccess($result->partner_trade_no);
 
             return true;
 
@@ -285,7 +284,6 @@ class WechatPay extends Pay
     {
         $model->status = $status;
         $model->trade_no = $trade_no;
-        $model->third_type = '微信';
         $model->save();
     }
 }

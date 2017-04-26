@@ -125,9 +125,9 @@ class AliPay extends Pay
             return show_json('0', '会员不存在');
         }
 
-        if (!empty($member_info['yz-member']['alipay']) && !empty($member_info['yz-member']['alipayname'])) {
-            $account = $member_info['yz-member']['alipay'];
-            $name = $member_info['yz-member']['alipayname'];
+        if (!empty($member_info['yz_member']['alipay']) && !empty($member_info['yz_member']['alipayname'])) {
+            $account = $member_info['yz_member']['alipay'];
+            $name = $member_info['yz_member']['alipayname'];
         } else {
             return error(1, '没有设定支付宝账号');
         }
