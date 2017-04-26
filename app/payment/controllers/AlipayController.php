@@ -187,8 +187,6 @@ class AlipayController extends PaymentController
 
         $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
 
-        $order_info->price = $order_info->price * 100;
-
         if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
             \Log::debug('订单事件触发');
             RefundOperationService::refundComplete(['order_id'=>$order_info->id]);
@@ -213,9 +211,8 @@ class AlipayController extends PaymentController
 
         \Log::debug('提现操作', 'withdraw.succeeded');
 
-        $pay_refund_model->price = $pay_refund_model->price * 100;
         if (bccomp($pay_refund_model->price, $data['total_fee'], 2) == 0) {
-            Withdraw::paySuccess($data['total_fee']);
+            Withdraw::paySuccess($data['trade_no']);
         }
     }
 }
