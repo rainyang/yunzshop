@@ -88,7 +88,7 @@ class OrderService
     {
         $result = new Collection();
         if ($memberCarts->isEmpty()) {
-            throw new AppException("(".$memberCarts->goods_id.")未找到订单商品");
+            throw new AppException("(" . $memberCarts->goods_id . ")未找到订单商品");
         }
         foreach ($memberCarts as $memberCart) {
             if (!($memberCart instanceof MemberCart)) {
@@ -143,6 +143,7 @@ class OrderService
         }
         return $orderSN;
     }
+
     /**
      * 获取支付流水号
      * @return string
@@ -158,6 +159,7 @@ class OrderService
         }
         return $paySN;
     }
+
     private static function OrderOperate(OrderOperation $orderOperation)
     {
 
@@ -218,6 +220,30 @@ class OrderService
         $orderOperation = OrderDelete::find($param['order_id']);
 
         return self::OrderOperate($orderOperation);
+    }
+
+    public static function ordersPay(array $param)
+    {
+        $orderPay = \app\common\models\OrderPay::find($param['order_pay_id']);
+        if(!isset($orderPay)){
+            throw new AppException('支付流水记录不存在');
+        }
+        $orders = Order::whereIn('id',$orderPay->order_ids)->get();
+        if($orders->isEmpty()){
+            throw new AppException('(ID:'.$orderPay->id.')未找到订单流水号对应订单');
+        }
+        DB::transaction(function () use($orderPay,$orders){
+            $orderPay->status = 1;
+            $orderPay->save();
+            $orders->each(function($order){
+                if (!OrderService::orderPay(['order_id' => $order->id])) {
+                    throw new AppException('订单状态改变失败,请联系客服');
+                }
+            });
+        });
+
+
+        exit;
     }
 
     /**
