@@ -137,7 +137,9 @@ class Member extends BackendModel
      */
     public static function getMemberById($member_id)
     {
-        return self::where('uid', $member_id)->first();
+        return self::uniacid()
+                ->where('uid', $member_id)
+                ->first();
     }
 
     /**

@@ -132,9 +132,11 @@ class MemberRelation extends BackendModel
      */
     public static function checkOrderGoods($goods_id)
     {
-        $list = OrderListModel::getRequestOrderList(3,\YunShop::app()->getMemberId());
+        $list = OrderListModel::getOrderListByUid(\YunShop::app()->getMemberId());
 
         if (!empty($list)) {
+            $list = $list->toArray();
+
             foreach ($list as $rows) {
                 foreach ($rows['has_many_order_goods'] as $item) {
                     if ($item['goods_id'] == $goods_id) {
@@ -353,7 +355,7 @@ class MemberRelation extends BackendModel
 
         if (!$isagent) {
             if (intval($set->become) == 4 && !empty($set->become_goods_id)) {
-                $result = self::checkOrderGoods($set['become_goods_id']);
+                $result = self::checkOrderGoods($set->become_goods_id);
 
                 if ($result) {
                     $member->status = 2;

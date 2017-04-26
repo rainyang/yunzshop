@@ -281,7 +281,7 @@
                                     </td>
                                     <td rowspan="{{count($order['has_many_order_goods'])}}"><label
                                                 class='label label-info'>{{$order['status_name']}}</label><br/>
-                                        <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
+                                        <a href="{!! yzWebUrl($detail_url,['id'=>$order['id']])!!}">查看详情</a>
                                     </td>
                                     <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">
 

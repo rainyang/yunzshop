@@ -122,7 +122,8 @@ class ListController extends BaseController
             'var' => \YunShop::app()->get(),
             'url' => \Request::query('route'),
             'include_ops' => 'order.ops',
-            'is_change_price' => $is_change_price
+            'is_change_price' => $is_change_price,
+            'detail_url'    => 'order.detail'
         ];
         $data += $this->fakeData();
         return $data;
