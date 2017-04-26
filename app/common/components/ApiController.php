@@ -13,6 +13,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
+use app\common\models\Member;
 use app\common\models\UniAccount;
 use app\frontend\modules\member\services\MemberService;
 
