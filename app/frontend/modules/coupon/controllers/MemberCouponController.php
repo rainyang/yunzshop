@@ -79,7 +79,7 @@ class MemberCouponController extends ApiController
     public function couponsForMember()
     {
         $pageSize = \YunShop::request()->get('pagesize');
-        $pageSize = $pageSize ? $pageSize : 10;
+        $pageSize = $pageSize ? $pageSize : 100;
         $uid = \YunShop::app()->getMemberId();
         $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
 
