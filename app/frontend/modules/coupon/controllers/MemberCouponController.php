@@ -323,12 +323,16 @@ class MemberCouponController extends ApiController
                 return $this->errorJson('领取失败','');
             } else{
                 //推送模板消息通知用户
-                $openid = McMappingFans::getFansById($memberId)->openid;
+                $mappingFans = McMappingFans::getFansById($memberId);
+                $openid = $mappingFans->openid;
+                $nickname = $mappingFans->nickname;
+                $respTitle = self::dynamicName($nickname, $couponModel->resp_title);
+                $respDesc = self::dynamicName($nickname, $couponModel->resp_desc);
                 $messageData = [
-                    'resp_title' => '成功领取优惠券',
-                    'resp_thumb' => '',
-                    'resp_desc' => '您成功领取了"'.$couponModel->name.' "优惠券',
-                    'resp_url' => '',
+                    'resp_title' => $respTitle,
+                    'resp_thumb' => $couponModel->resp_thumb,
+                    'resp_desc' => $respDesc,
+                    'resp_url' => $couponModel->resp_url,
                 ];
                 self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData); //todo 检测
 
@@ -388,6 +392,15 @@ class MemberCouponController extends ApiController
         }
 
         return $resultArray;
+    }
+
+    //动态显示昵称
+    protected static function dynamicName($userName, $notice)
+    {
+        if (preg_match('/\[nickname\]/', $notice)){
+            $notice = str_replace('[nickname]', $userName, $notice);
+        }
+        return $notice;
     }
 
 }
