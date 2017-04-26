@@ -17,11 +17,11 @@ class CalculationPointService
         $point_set = Setting::get('point.set');
         $point_data = [];
         //todo 如果等于0  不赠送积分
+        echo '<pre>';print_r(1);exit;
         if ($order_goods_model->hasOneGoods->hasOneSale->point == 0) {
             return $point_data;
         }
         //todo 如果不等于空，按商品设置赠送积分，否则按统一设置赠送积分
-        echo '<pre>';print_r($order_goods_model->hasOneGoods->hasOneSale->point.'/');exit;
         if (!empty($order_goods_model->hasOneGoods->hasOneSale->point)) {
             if (strexists($order_goods_model->hasOneGoods->hasOneSale->point, '%')) {
                 $point_data['point'] = floatval(str_replace('%', '', $order_goods_model->hasOneGoods->hasOneSale->point) / 100 * $order_goods_model->goods_price * $order_goods_model->total);
