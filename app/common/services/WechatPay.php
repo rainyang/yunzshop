@@ -30,7 +30,8 @@ class WechatPay extends Pay
 
     public function doPay($data = [])
     {
-        $op = '微信订单支付 订单号：' . $data['order_no'];
+        $text = $data['extra']['type'] == 1 ? '支付' : '充值';
+        $op = '微信订单' . $text . ' 订单号：' . $data['order_no'];
         $pay_order_model = $this->log($data['extra']['type'], $this->pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
 
         if (empty(\YunShop::app()->getMemberId())) {
@@ -68,6 +69,9 @@ class WechatPay extends Pay
         $js = json_decode($js, 1);
         $js['timestamp'] = strval($js['timestamp']);
 
+        \Log::debug('微信  config', $config);
+        \Log::debug('微信  js', json_encode($js));
+        
         return ['config'=>$config, 'js'=>json_encode($js)];
     }
 
