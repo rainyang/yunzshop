@@ -137,7 +137,9 @@ class Member extends BackendModel
      */
     public static function getMemberById($member_id)
     {
-        return self::where('uid', $member_id)->first();
+        return self::uniacid()
+                ->where('uid', $member_id)
+                ->first();
     }
 
     /**
@@ -238,12 +240,12 @@ class Member extends BackendModel
     {
         if (\YunShop::request()->mid) {
             return \YunShop::request()->mid;
-        } elseif (Session::get('client_url')) {
+        } elseif (Session::get('client_url') && strpos(Session::get('client_url'), 'mid')) {
             preg_match('/.+mid=(\d+).+/', Session::get('client_url'), $matches);
 
             return $matches[1];
-        } else {
-            return 0;
         }
+
+        return 0;
     }
 }

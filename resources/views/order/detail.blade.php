@@ -260,7 +260,7 @@
                                 <tr>
                                     <td colspan="2">
                                         @include('order.modals')
-                                        @include('order.ops')
+                                        @include($ops)
                                     </td>
                                     <td colspan="8">
                                     </td>

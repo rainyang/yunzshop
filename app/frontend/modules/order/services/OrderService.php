@@ -143,7 +143,21 @@ class OrderService
         }
         return $orderSN;
     }
-
+    /**
+     * 获取支付流水号
+     * @return string
+     */
+    public static function createPaySN()
+    {
+        $paySN = createNo('PN', true);
+        while (1) {
+            if (!\app\common\models\OrderPay::where('pay_sn', $paySN)->first()) {
+                break;
+            }
+            $paySN = createNo('PN', true);
+        }
+        return $paySN;
+    }
     private static function OrderOperate(OrderOperation $orderOperation)
     {
 

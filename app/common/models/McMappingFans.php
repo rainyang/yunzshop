@@ -39,7 +39,7 @@ class McMappingFans extends BackendModel
 
     public static function getFansById($memberId)
     {
-        return self::unionid()
+        return self::uniacid()
             ->where('uid', $memberId)
             ->first();
     }
