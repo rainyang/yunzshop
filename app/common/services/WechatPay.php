@@ -28,7 +28,7 @@ class WechatPay extends Pay
     public function doPay($data = [])
     {
         $op = '微信订单支付 订单号：' . $data['order_no'];
-        $pay_order_model = $this->log($data['extra']['type'], $this->pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log($data['extra']['type'], $this->pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
 
         if (empty(\YunShop::app()->getMemberId())) {
             throw new AppException('无法获取用户ID');
@@ -81,7 +81,7 @@ class WechatPay extends Pay
         $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
-        $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_WECHAT], $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_WECHAT], $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
 
         $pay = \Setting::get('shop.pay');
 
@@ -122,7 +122,7 @@ class WechatPay extends Pay
         //$out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money;
-        $pay_order_model = $this->log(Pay::PAY_TYPE_WITHDRAW, $this->pay_type[Pay::PAY_MODE_WECHAT], $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log(Pay::PAY_TYPE_WITHDRAW, $this->pay_type[Pay::PAY_MODE_WECHAT], $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON, $member_id);
 
         $pay = \Setting::get('shop.pay');
 

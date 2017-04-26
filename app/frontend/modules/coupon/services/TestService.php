@@ -52,7 +52,8 @@ class TestService
              * @var $coupon Coupon
              */
             return $coupon->valid();
-        });
+        })->values();
+
         return $result;
     }
 
@@ -101,7 +102,7 @@ class TestService
                 return $memberCoupon->belongsToCoupon->coupon_method == $coupon_method;
             });
         }
-        //dd($result);
+        //dd($result->toArray());exit;
         return $result;
 
     }
