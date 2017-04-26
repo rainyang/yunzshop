@@ -184,7 +184,7 @@
                     return false;
                 }
             }
-            if ($(':input[name="widgets[sale][point]"]').val() == '') {
+            /*if ($(':input[name="widgets[sale][point]"]').val() == '') {
                 $('#myTab a[href="#tab_sale"]').tab('show');
                 Tip.focus(':input[name="widgets[sale][point]"]', "请输入赠送积分!");
                 return false;
@@ -194,7 +194,7 @@
                     Tip.focus(':input[name="widgets[sale][point]"]', '赠送积分格式错误,只能为非负整数.');
                     return false;
                 }
-            }
+            }*/
             if ($(':input[name="widgets[sale][bonus]"]').val() == '') {
                 $('#myTab a[href="#tab_sale"]').tab('show');
                 Tip.focus(':input[name="widgets[sale][bonus]"]', "请输入红包金额!");
