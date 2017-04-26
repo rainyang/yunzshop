@@ -61,6 +61,10 @@
             余额提现申请信息
         </div>
         <form action="{{yzWebUrl("finance.balance-withdraw.examine",['id'=>$item['id']])}}" method='post' class='form-horizontal'>
+            <input type="hidden" name="c" value="site"/>
+            <input type="hidden" name="a" value="entry"/>
+            <input type="hidden" name="m" value="yun_shop"/>
+            <input type="hidden" name="route" value="finance.balance-withdraw.examine"/>
             <div class='panel-body'>
                 <table class="table table-hover">
                     <thead class="navbar-inner">
