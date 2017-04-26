@@ -39,6 +39,7 @@ class BalanceWithdrawController extends BaseController
 
     public function examine()
     {
+        echo '<pre>'; print_r('test'); exit;
         $this->attachedMode();
         if (!$this->withdrawModel) {
             return $this->message('数据错误，请刷新重试！');
@@ -76,7 +77,7 @@ class BalanceWithdrawController extends BaseController
     //打款
     private function submitPay()
     {
-        //echo '<pre>'; print_r($this->withdrawModel->toArray()); exit;
+        echo '<pre>'; print_r($this->withdrawModel->toArray()); exit;
         $resultPay = '';
         $remark = '提现打款-' . $this->withdrawModel->type_name . '-金额:' . $this->withdrawModel->actual_amounts . '元,' .
             '手续费:' . $this->withdrawModel->actual_poundage;
