@@ -10,6 +10,7 @@ namespace app\payment\controllers;
 
 use app\common\facades\Setting;
 use app\common\helpers\Url;
+use app\common\models\PayWithdrawOrder;
 use app\common\services\finance\Withdraw;
 use app\common\services\Pay;
 use app\payment\PaymentController;
@@ -205,7 +206,6 @@ class AlipayController extends PaymentController
         if ($pay_refund_model) {
             $pay_refund_model->status = 2;
             $pay_refund_model->trade_no = $data['trade_no'];
-            $pay_refund_model->third_type = $data['pay_type'];
             $pay_refund_model->save();
         }
 
