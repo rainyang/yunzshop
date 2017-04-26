@@ -102,7 +102,7 @@ class MemberOfficeAccountService extends MemberService
              $mid = Member::getMid();
             \Log::debug('Regular mid', $mid);
 
-            //检查下线
+            //发展下线
             Member::chkAgent($member_id, $mid);
 
             \Log::debug('uid', $member_id);
