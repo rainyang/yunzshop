@@ -18,7 +18,7 @@ class CalculationPointService
         $point_data = [];
         //todo 如果等于0  不赠送积分
         if ($order_goods_model->hasOneGoods->hasOneSale->point == 0) {
-            dd($order_goods_model);
+            dd($order_goods_model->hasOneGoods->hasOneSale);
             exit;
             return $point_data;
         }
