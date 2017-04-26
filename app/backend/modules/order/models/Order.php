@@ -181,4 +181,17 @@ class Order extends \app\common\models\Order
         }
         return $order_builder;
     }
+
+    public static function getOrderDetailById($order_id)
+    {
+        return self::with(
+            [
+                'hasManyOrderGoods.belongsToGood',
+                'beLongsToMember',
+                'hasOneOrderRemark',
+                'address',
+                'hasOneRefundApply'
+            ]
+        )->find($order_id);
+    }
 }
