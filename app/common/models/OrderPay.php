@@ -13,4 +13,5 @@ class OrderPay extends BaseModel
 {
     public $table = 'yz_order_pay';
     protected $guarded = ['id'];
+    protected $casts = ['order_ids'=>'json'];
 }
