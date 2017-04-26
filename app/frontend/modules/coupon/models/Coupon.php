@@ -45,7 +45,6 @@ class Coupon extends \app\common\models\Coupon
                         }]);
         if(!is_null($couponId)){
             $res = $res->where('id', '=', $couponId);
-            dd(8878);exit;
         }
         return $res;
     }
