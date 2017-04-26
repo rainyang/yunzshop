@@ -17,7 +17,7 @@ class MemberCoupon extends \app\common\models\MemberCoupon
             return $query->select(['id', 'name', 'coupon_method','deduct', 'discount', 'enough', 'use_type', 'categorynames',
                                     'goods_names', 'time_limit', 'time_days', 'time_start', 'time_end', 'total',
                                     'money', 'credit']);
-        }])->where('uid', $memberId)->select(['id', 'coupon_id', 'used', 'get_time']);
+        }])->where('uid', $memberId)->select(['id', 'coupon_id', 'used', 'use_time', 'get_time']);
         return $coupons;
     }
 

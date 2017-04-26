@@ -38,6 +38,7 @@ class MemberMobileService extends MemberService
             if(!empty($member_info)){
                 $member_info = $member_info->toArray();
 
+                $mid = Member::getMid();
                 //检查下线
                 Member::chkAgent($member_info['uid'], $mid);
 
