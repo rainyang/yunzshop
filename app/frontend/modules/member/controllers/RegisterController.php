@@ -204,7 +204,7 @@ class RegisterController extends ApiController
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return $this->successJson();
             } else {
-                return $this->errorJson($issendsms->msg . '/' . $issendsms->sub_msg);
+                //return $this->errorJson($issendsms->msg . '/' . $issendsms->sub_msg);
             }
         }
     }

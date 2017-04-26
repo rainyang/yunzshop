@@ -60,7 +60,6 @@ class ApiController extends BaseController
 
             return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
         } else {
-
             $mid = Member::getMid();
             \Log::debug('Logined mid', $mid);
 
