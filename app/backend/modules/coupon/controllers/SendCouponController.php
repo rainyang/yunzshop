@@ -163,7 +163,7 @@ class SendCouponController extends BaseController
                 //写入log
                 if ($res){ //发放优惠券成功
                     $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )';
-                    //$this->sendTemplateMessage($memberOpenid, self::TEMPLATEID, $couponResponse); //成功时, 发送模板消息
+                    $this->sendTemplateMessage($memberOpenid, self::TEMPLATEID, $couponResponse); //成功时, 发送模板消息
                 } else{ //发放优惠券失败
                     $log = '手动发放优惠券失败: 管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )时失败!';
                     $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
@@ -202,7 +202,7 @@ class SendCouponController extends BaseController
     //$resUrl 推送消息的链接
     public function sendTemplateMessage($openid, $templateid, $data)
     {
-        $account      = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
         $options = [
             'app_id' => $account->key,
@@ -222,11 +222,11 @@ class SendCouponController extends BaseController
 
         $result = $notice->uses($templateid)->withUrl($url)->andData($templateData)->andReceiver($openid)->send();
         $resultArray = json_decode($result, true);
-        if($resultArray['errcode'] == 0){
-            return $resultArray;
-        } else {
+        if($resultArray['errcode'] != 0){
             return false;
         }
+
+        return $resultArray;
     }
 
 }
