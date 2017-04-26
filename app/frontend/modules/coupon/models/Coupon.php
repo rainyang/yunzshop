@@ -7,9 +7,6 @@ class Coupon extends \app\common\models\Coupon
 {
     public $table = 'yz_coupon';
 
-    const RELATIVE_TIME_LIMIT = 0;
-    const ABSOLUTE_TIME_LIMIT = 1;
-
     protected $casts = [
         'goods_ids' => 'json',
         'category_ids' => 'json',
