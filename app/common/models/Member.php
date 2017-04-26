@@ -183,6 +183,7 @@ class Member extends BackendModel
      */
     public static function chkAgent($member_id)
     {
+        \Log::debug('成为下线 上线uid', \YunShop::request()->mid);
 
         $model = MemberShopInfo::getMemberShopInfo($member_id);
 

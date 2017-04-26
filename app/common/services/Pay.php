@@ -296,11 +296,11 @@ abstract class Pay
      * @param $price
      * @param $operation
      */
-    public static function payLog($type, $third_type, $price, $operation)
+    public static function payLog($type, $third_type, $price, $operation, $member_id)
     {
         PayLog::create([
             'uniacid' => \YunShop::app()->uniacid,
-            'member_id' => \YunShop::app()->getMemberId(),
+            'member_id' => $member_id,
             'type' => $type,
             'third_type' => $third_type,
             'price' => $price,
@@ -461,12 +461,12 @@ abstract class Pay
      *
      * @return mixed
      */
-    protected function log($type, $third_type, $amount, $operation, $order_no, $status)
+    protected function log($type, $third_type, $amount, $operation, $order_no, $status, $member_id)
     {
         //访问日志
         self::payAccessLog();
         //支付日志
-        self::payLog($type, $third_type, $amount, $operation);
+        self::payLog($type, $third_type, $amount, $operation, $member_id);
         //支付单记录
         $model = self::payOrder($order_no, $status, $type, $third_type, $amount);
 

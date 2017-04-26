@@ -7,6 +7,7 @@ use app\common\components\BaseController;
 use app\common\models\Order;
 use app\common\models\PayOrder;
 use app\common\models\PayRefundOrder;
+use app\common\models\PayWithdrawOrder;
 use app\frontend\modules\finance\services\BalanceService;
 use app\frontend\modules\order\services\OrderService;
 use app\backend\modules\refund\services\RefundOperationService;
@@ -111,69 +112,6 @@ class PaymentController extends BaseController
                     'pay_sn'=> $data['trade_no']
                 ]);
                 break;
-        }
-    }
-
-    /**
-     * 支付宝退款回调操作
-     *
-     * @param $data
-     */
-    public function refundResutl($data)
-    {
-        $pay_order = PayOrder::getPayOrderInfoByTradeNo($data['trade_no'])->first();
-
-        if ($pay_order) {
-            $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
-
-            if ($pay_refund_model) {
-                $pay_refund_model->status = 2;
-                $pay_refund_model->trade_no = $data['trade_no'];
-                $pay_refund_model->third_type = $data['pay_type'];
-                $pay_refund_model->save();
-            }
-        }
-
-        \Log::debug('退款操作', 'refund.succeeded');
-
-        $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
-
-        $order_info->price = $order_info->price * 100;
-
-        if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
-            \Log::debug('订单事件触发');
-            RefundOperationService::refundComplete(['order_id'=>$order_info->id]);
-        }
-    }
-
-    /**
-     * 支付宝提现回调操作
-     *
-     * @param $data
-     */
-    public function withdrawResutl($data)
-    {
-        $pay_order = PayOrder::getPayOrderInfoByTradeNo($data['trade_no'])->first();
-
-        if ($pay_order) {
-            $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
-
-            if ($pay_refund_model) {
-                $pay_refund_model->status = 2;
-                $pay_refund_model->trade_no = $data['trade_no'];
-                $pay_refund_model->third_type = $data['pay_type'];
-                $pay_refund_model->save();
-            }
-        }
-
-        \Log::debug('提现操作', 'withdraw.succeeded');
-
-        $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
-
-        $order_info->price = $order_info->price * 100;
-
-        if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
-
         }
     }
 }

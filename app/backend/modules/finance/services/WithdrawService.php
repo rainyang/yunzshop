@@ -50,6 +50,7 @@ class WithdrawService extends Withdraw
 
     public static function wechtWithdrawPay($withdraw, $remark)
     {
+        //echo '<pre>'; print_r($withdraw); exit;
         return PayFactory::create(1)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
             $withdraw->actual_amounts, $remark);
     }
@@ -58,6 +59,7 @@ class WithdrawService extends Withdraw
     {
         $result = PayFactory::create(2)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
             $withdraw->actual_amounts, $remark);
+        //echo '<pre>'; print_r($result); exit;
         redirect($result)->send();
     }
 }
