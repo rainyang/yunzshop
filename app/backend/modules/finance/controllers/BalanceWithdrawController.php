@@ -89,7 +89,6 @@ class BalanceWithdrawController extends BaseController
             $resultPay = WithdrawService::wechtWithdrawPay($this->withdrawModel, $remark);
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
         }
-        echo '<pre>'; print_r($resultPay); exit;
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
             if ($this->withdrawModel->save()) {
