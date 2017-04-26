@@ -8,17 +8,20 @@ use app\common\models\MemberShopInfo;
 
 class MemberCouponController extends ApiController
 {
-    //优惠券对于该用户是否可用
-    const NOT_AVAILABLE = 1;
-    const IS_AVAILABLE = 2;
+    //"优惠券中心"的优惠券, 对于该用户是否可领取
+    const NOT_AVAILABLE = 1; //不可领取
+    const IS_AVAILABLE = 2; //可领取
 
-    //优惠券的状态
-    const NOT_USED = 1;
-    const OVERDUE = 2;
-    const IS_USED = 3;
-    const EXHAUST = 4;
-    const ALREADY_GOT = 5;
-    const ALREADY_GOT_AND_TOUCH_LIMIT = 6;
+    //"优惠券中心"的优惠券的状态
+    const OUTDATED = 2; //todo 和老高协商改为 3
+    const EXHAUST = 4; //已经被抢光
+    const ALREADY_GOT = 5; //用户已经领取过, 但没有达到该优惠券的领取上限
+    const ALREADY_GOT_AND_TOUCH_LIMIT = 6; //用户已经领取过, 且已经达到该优惠券的领取上限
+
+    //"个人拥有的优惠券"的状态
+    const NOT_USED = 1; //未使用
+    const OVERDUE = 2; //优惠券已经过期
+    const IS_USED = 3; //已经使用
 
     /**
      * 获取用户所拥有的优惠券的数据接口
@@ -89,7 +92,7 @@ class MemberCouponController extends ApiController
         foreach($coupons['data'] as $k=>$v){
             if($v['time_limit'] == Coupon::COUPON_DATE_TIME_RANGE && ($now > $v['time_end'])){ //优惠券已过期
                 $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
-                $coupons['data'][$k]['api_status'] = self::OVERDUE;
+                $coupons['data'][$k]['api_status'] = self::OUTDATED;
             } elseif(($v['has_many_member_coupon_count'] >= $v['total']) && ($v['total'] != -1)){ //优惠券已抢光(PS.total=-1是bu限制数量)
                 $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
                 $coupons['data'][$k]['api_status'] = self::EXHAUST;
@@ -260,7 +263,11 @@ class MemberCouponController extends ApiController
         }
 
         //是否有该优惠券
-        $couponModel = Coupon::getCouponById($couponId)->where('status','=',1)->first();
+        $couponModel = Coupon::getCouponById($couponId)
+                    ->where('status','=',1)
+                    ->where('get_type', '=', 1)
+                    ->where('total', '!=', 0)
+                    ->first();
         if(!$couponModel){
             return $this->errorJson('没有该优惠券或者优惠券不可用','');
         }
