@@ -7,9 +7,6 @@ class Coupon extends \app\common\models\Coupon
 {
     public $table = 'yz_coupon';
 
-    const RELATIVE_TIME_LIMIT = 0;
-    const ABSOLUTE_TIME_LIMIT = 1;
-
     protected $casts = [
         'goods_ids' => 'json',
         'category_ids' => 'json',
@@ -36,7 +33,7 @@ class Coupon extends \app\common\models\Coupon
     {
         return static::uniacid()
                         ->select(['id', 'name', 'coupon_method', 'deduct', 'discount', 'enough', 'use_type',
-                                'category_ids','categorynames', 'goods_ids', 'goods_names', 'time_limit', 'time_days', 'time_start', 'time_end', 'get_max', 'total',
+                                'categorynames', 'goods_ids', 'goods_names', 'time_limit', 'time_days', 'time_start', 'time_end', 'get_max', 'total',
                                 'money', 'credit'])
                         ->where('get_type','=',1)
                         ->where('status', '=', 1)
