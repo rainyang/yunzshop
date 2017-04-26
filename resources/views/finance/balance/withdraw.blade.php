@@ -65,6 +65,7 @@
             <input type="hidden" name="a" value="entry"/>
             <input type="hidden" name="m" value="yun_shop"/>
             <input type="hidden" name="route" value="finance.balance-withdraw.examine"/>
+            <input type="hidden" name="id" value="{{ $item['id'] }}"/>
             <div class='panel-body'>
                 <table class="table table-hover">
                     <thead class="navbar-inner">
