@@ -13,31 +13,59 @@ use app\common\exceptions\AppException;
 use app\common\models\Order;
 use app\common\services\PayFactory;
 use app\common\services\Session;
+use Illuminate\Support\Collection;
 
 class MergePayController extends ApiController
 {
-    protected $order;
+    /**
+     * @var Collection
+     */
+    protected $orders;
     protected $publicAction = ['alipay'];
     protected $ignoreAction = ['alipay'];
 
-    protected function order($order_ids)
+    /**
+     * @param $order_ids
+     * @return Collection
+     * @throws AppException
+     */
+    protected function orders($order_ids)
     {
-        if (isset($this->order)) {
-            return $this->order;
+        if (isset($this->orders)) {
+            return $this->orders;
         }
-        return $this->order = Order::select(['status', 'id', 'order_sn', 'price', 'uid'])->whereIn('id',$order_ids)->first();
+        $this->orders = Order::select(['status', 'id', 'order_sn', 'price', 'uid'])->whereIn('id', $order_ids)->get();
+        if ($this->orders->count() != count($order_ids)) {
+            throw new AppException('(ID:' . $order_ids . ')未找到订单');
+        }
+        $this->orders->each(function ($order) {
+            if ($order->status > Order::WAIT_PAY) {
+                throw new AppException('(ID:'.$order->id.')订单已付款,请勿重复付款');
+            }
+            if ($order->status == Order::CLOSE) {
+                throw new AppException('(ID:'.$order->id.')订单已关闭,无法付款');
+            }
+            if ($order->uid != \YunShop::app()->getMemberId()) {
+                throw new AppException('该订单属于其他用户');
+            }
+        });
+
+        return $this->orders;
     }
 
     public function index(\Request $request)
     {
-        $order = $this->order();
-        if (!isset($order)) {
-            throw new AppException('未找到订单');
+        $this->validate($request, [
+            'order_ids' => 'required|string'
+        ]);
+        $orders = $this->orders($request['order_ids']);
+
+        $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
+        $price = $orders->sum('price');
+        if ($price <= 0) {
+            throw new AppException('('.$price.')订单金额有误');
+
         }
-        if ($order->status != Order::WAIT_PAY) {
-            throw new AppException('订单已付款');
-        }
-        $member = $order->belongsToMember()->select(['credit2'])->first()->toArray();
         $buttons = [
             [
                 'name' => '余额支付',
@@ -51,7 +79,7 @@ class MergePayController extends ApiController
                 'value' => '2'
             ],
         ];
-        $data = ['order' => $order, 'member' => $member, 'buttons' => $buttons];
+        $data = ['price' => $price, 'member' => $member, 'buttons' => $buttons];
 
         return $this->successJson('成功', $data);
     }
@@ -61,32 +89,23 @@ class MergePayController extends ApiController
         $this->validate($request, [
             'order_ids' => 'required|string'
         ]);
-        $order_ids = explode($request->input('order_ids'));
-        $order = $this->order($order_ids);
-//        dd($request->query('order_id'));
-//        exit;
-        if (!isset($order)) {
-            throw new AppException('订单不存在');
-        }
-        if ($order->uid != \YunShop::app()->getMemberId()) {
-            throw new AppException('该订单属于其他用户');
-        }
-        if ($order->status > Order::WAIT_PAY) {
-            throw new AppException('订单已付款,请勿重复付款');
-        }
-        if ($order->status == Order::CLOSE) {
-            throw new AppException('订单已关闭,无法付款');
-        }
+
+
+
+
+
     }
 
     protected function pay($request, $payType)
     {
-        $this->_validate($request);
-        $order = $this->order();
-
+        $this->validate($request, [
+            'order_ids' => 'required|string'
+        ]);
+        $orders = $this->orders($request['order_ids']);
+        //为订单设置pay_sn
         $query_str = [
-            'order_no' => $order->order_sn,
-            'amount' => $order->price,
+            'order_no' => $pay_sn,
+            'amount' => $orders->sum('price'),
             'subject' => '微信支付',
             'body' => $order->hasManyOrderGoods[0]->title . ':' . \YunShop::app()->uniacid,
             'extra' => ['type' => 1]

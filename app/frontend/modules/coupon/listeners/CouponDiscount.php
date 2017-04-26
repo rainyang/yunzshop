@@ -27,7 +27,8 @@ class CouponDiscount
         $coupons = $couponService->getOptionalCoupons();
 
         $data = $coupons->map(function ($coupon){
-            return $coupon->getMemberCoupon()->belongsToCoupon->setDateFormat('Y-m-d');
+            $coupon->getMemberCoupon()->belongsToCoupon->setDateFormat('Y-m-d');
+            return $coupon->getMemberCoupon();
         });
         $event->addMap('coupon',$data);
     }
