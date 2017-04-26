@@ -8,8 +8,9 @@
 
 namespace app\common\models;
 
+use app\backend\models\BackendModel;
 
-class PayWithdrawOrder
+class PayWithdrawOrder extends BackendModel
 {
     public $table = 'yz_withdraw_order';
 
