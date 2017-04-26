@@ -485,12 +485,12 @@ abstract class Pay
      *
      * @return mixed
      */
-    protected function refundlog($type, $third_type, $amount, $operation, $order_no, $status)
+    protected function refundlog($type, $third_type, $amount, $operation, $order_no, $status, $member_id)
     {
         //访问日志
         self::payAccessLog();
         //支付日志
-        self::payLog($type, $third_type, $amount, $operation);
+        self::payLog($type, $third_type, $amount, $operation, $member_id);
         //退款单记录
         $model = self::payRefundOrder($order_no, $status, $third_type, $amount);
 
@@ -509,12 +509,12 @@ abstract class Pay
      *
      * @return mixed
      */
-    protected function withdrawlog($type, $third_type, $amount, $operation, $order_no, $status)
+    protected function withdrawlog($type, $third_type, $amount, $operation, $order_no, $status, $member_id)
     {
         //访问日志
         self::payAccessLog();
         //支付日志
-        self::payLog($type, $third_type, $amount, $operation);
+        self::payLog($type, $third_type, $amount, $operation, $member_id);
         //提现单记录
         $model = self::payWithdrawOrder($order_no, $status, $third_type, $amount);
 
