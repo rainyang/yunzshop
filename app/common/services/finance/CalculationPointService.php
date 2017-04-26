@@ -43,14 +43,14 @@ class CalculationPointService
     {
         $point_set = Setting::get('point.set');
         $point_data = [];
-        if ($point_set['enoughs']) {
+        if (isset($point_set['enoughs'])) {
             foreach (collect($point_set['enoughs'])->sortByDesc('enough') as $enough) {
                 if ($order_model->price >= $enough['enough'] && $enough['give'] > 0) {
                     $point_data['point'] = $enough['give'];
                     $point_data['remark'] = '订单[' . $order_model->order_sn . ']消费满[' . $enough['enough'] . ']元赠送[' . $enough['give'] . ']积分';
                 }
             }
-        } else if ($point_set['enough_money'] && $point_set['enough_point']) {
+        } else if (!empty($point_set['enough_money']) && !empty($point_set['enough_point'])) {
             if ($order_model->price >= $point_set['enough_money'] && $point_set['enough_point'] > 0) {
                 $point_data['point'] = $point_set['enough_point'];
                 $point_data['remark'] = '订单[' . $order_model->order_sn . ']消费满[' . $point_set['enough_money'] . ']元赠送[' . $point_data['point'] . ']积分';
