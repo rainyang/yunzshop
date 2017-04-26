@@ -54,9 +54,10 @@ class Coupon extends \app\common\models\Coupon
     public static function getAvailableCouponById($couponId)
     {
         return static::getCouponById($couponId)
+            ->where('total', '>', 0)
+            ->orwhere('total', '=', -1)
             ->where('status','=',1)
             ->where('get_type', '=', 1)
-            ->where('total', '>', 0)
             ->first();
     }
 }

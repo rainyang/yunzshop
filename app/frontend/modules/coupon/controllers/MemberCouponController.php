@@ -284,6 +284,8 @@ class MemberCouponController extends ApiController
             }
         }
 
+        //判断优惠券的有效期
+
         //是否达到个人领取上限
         $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
         $couponMaxLimit = Coupon::getter($couponId, 'get_max'); //优惠券限制每人的领取总数
@@ -311,7 +313,7 @@ class MemberCouponController extends ApiController
             } else{ //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
                 $coupon = Coupon::getCouponById($couponId)->get()->toArray();
                 $res = self::getCouponData(['data' => $coupon], strtotime('now'));
-                return $this->successJson('ok', $res);
+                return $this->successJson('ok', $res['data']);
             }
         }
     }
