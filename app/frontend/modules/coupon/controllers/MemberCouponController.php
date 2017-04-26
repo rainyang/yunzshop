@@ -5,6 +5,11 @@ use app\common\components\ApiController;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\models\MemberCoupon;
 use app\common\models\MemberShopInfo;
+use app\common\models\CouponLog;
+use app\common\models\McMappingFans;
+use app\common\models\AccountWechats;
+use EasyWeChat\Foundation\Application;
+
 
 class MemberCouponController extends ApiController
 {
@@ -22,6 +27,8 @@ class MemberCouponController extends ApiController
     const NOT_USED = 1; //未使用
     const OVERDUE = 2; //优惠券已经过期
     const IS_USED = 3; //已经使用
+
+    const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
 
     /**
      * 获取用户所拥有的优惠券的数据接口
@@ -79,7 +86,7 @@ class MemberCouponController extends ApiController
     public function couponsForMember()
     {
         $pageSize = \YunShop::request()->get('pagesize');
-        $pageSize = $pageSize ? $pageSize : 100;
+        $pageSize = $pageSize ? $pageSize : 100; //todo 临时调试
         $uid = \YunShop::app()->getMemberId();
         $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
 
@@ -284,7 +291,11 @@ class MemberCouponController extends ApiController
             }
         }
 
-        //判断优惠券的有效期
+        //判断优惠券是否过期
+        $timeLimit = $couponModel->time_limit;
+        if($timeLimit == 1 && strtotime('now') > $couponModel->time_end->timestamp){
+            return $this->errorJson('优惠券已经过期','');
+        }
 
         //是否达到个人领取上限
         $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
@@ -310,12 +321,86 @@ class MemberCouponController extends ApiController
             $res = $memberCoupon->save();
             if(!$res){
                 return $this->errorJson('领取失败','');
-            } else{ //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
+            } else{
+                //推送模板消息通知用户
+                $mappingFans = McMappingFans::getFansById($memberId);
+                $openid = $mappingFans->openid;
+                $nickname = $mappingFans->nickname;
+                $respTitle = self::dynamicName($nickname, $couponModel->resp_title);
+                $respDesc = self::dynamicName($nickname, $couponModel->resp_desc);
+                $messageData = [
+                    'resp_title' => $respTitle,
+                    'resp_thumb' => $couponModel->resp_thumb,
+                    'resp_desc' => $respDesc,
+                    'resp_url' => $couponModel->resp_url,
+                ];
+                self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData); //todo 检测
+
+
+                //扣除余额和积分
+//                if()
+
+
+                //写入log
+//                $logData = [
+//                    'uniacid' => \YunShop::app()->get('uniacid'),
+//                    'logno' => '领取优惠券成功: 用户( ID 为 '.$memberId.' )成功领取 1 张优惠券( ID 为 '.$couponId.' )',
+//                    'member_id' => $memberId,
+//                    'couponid' => $couponId,
+//                    'paystatus' => $payStatus, //0 无 1 购买券已扣除余额
+//                    'creditstatus' => $creditStatus,//0 无 1 购买券已扣除积分
+//                    'paytype' => $payType, //todo 支付类型 0 余额支付
+//                    'getfrom' => 1,
+//                    'status' => 0,
+//                    'createtime' => strtotime('now'),
+//                ];
+//                CouponLog::create($logData);
+
+                //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
                 $coupon = Coupon::getCouponsForMember($memberId, $member->level_id, $couponId)->get()->toArray();
                 $res = self::getCouponData(['data' => $coupon], strtotime('now'));
                 return $this->successJson('ok', $res['data'][0]);
             }
         }
+    }
+
+    //发送模板消息
+    public static function sendTemplateMessage($openid, $templateid, $data)
+    {
+        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
+        $options = [
+            'app_id' => $account->key,
+            'secret' => $account->secret,
+            'token' => \YunShop::app()->account['token'],
+        ];
+        $app = new Application($options);
+        $notice = $app->notice;
+        $url = $data['resp_url'];
+
+        $templateData = array(
+            "first" => $data['resp_title'],
+            "keyword1" => $data['resp_thumb'],
+            "keyword2" => $data['resp_url'], //todo 需要选用带url的模板消息
+            "remark" => $data['resp_desc'],
+        );
+
+        $result = $notice->uses($templateid)->withUrl($url)->andData($templateData)->andReceiver($openid)->send();
+        $resultArray = json_decode($result, true);
+        if($resultArray['errcode'] != 0){
+            return false;
+        }
+
+        return $resultArray;
+    }
+
+    //动态显示昵称
+    protected static function dynamicName($userName, $notice)
+    {
+        if (preg_match('/\[nickname\]/', $notice)){
+            $notice = str_replace('[nickname]', $userName, $notice);
+        }
+        return $notice;
     }
 
 }
