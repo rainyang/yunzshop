@@ -79,7 +79,7 @@ class MemberCouponController extends ApiController
     public function couponsForMember()
     {
         $pageSize = \YunShop::request()->get('pagesize');
-        $pageSize = $pageSize ? $pageSize : 100;
+        $pageSize = $pageSize ? $pageSize : 100; //todo 临时调试
         $uid = \YunShop::app()->getMemberId();
         $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
 
@@ -284,7 +284,11 @@ class MemberCouponController extends ApiController
             }
         }
 
-        //判断优惠券的有效期
+        //判断优惠券是否过期
+        $timeLimit = $couponModel->time_limit;
+        if($timeLimit == 1 && strtotime('now') > $couponModel->time_end->timestamp){
+            return $this->errorJson('优惠券已经过期','');
+        }
 
         //是否达到个人领取上限
         $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
