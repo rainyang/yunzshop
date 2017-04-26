@@ -173,7 +173,7 @@ class WechatPay extends Pay
 
             //请求数据日志
             $this->payRequestDataLog($pay_order_model->id, $pay_order_model->type,
-                $pay_order_model->third_type, json_encode($merchantPayData));
+                $pay_order_model->type, json_encode($merchantPayData));
 
             $result = $merchantPay->send($merchantPayData);
         } else {//红包
