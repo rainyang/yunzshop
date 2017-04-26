@@ -284,7 +284,6 @@ class WechatPay extends Pay
     {
         $model->status = $status;
         $model->trade_no = $trade_no;
-        $model->type = '微信';
         $model->save();
     }
 }
