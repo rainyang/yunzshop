@@ -79,7 +79,7 @@ class MemberCouponController extends ApiController
     public function couponsForMember()
     {
         $pageSize = \YunShop::request()->get('pagesize');
-        $pageSize = $pageSize ? $pageSize : 10;
+        $pageSize = $pageSize ? $pageSize : 100;
         $uid = \YunShop::app()->getMemberId();
         $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
 
@@ -263,7 +263,7 @@ class MemberCouponController extends ApiController
     public function getCoupon()
     {
         $couponId = \YunShop::request()->get('coupon_id');
-        $memberId = \YunShop::request()->get('member_id');
+        $memberId = \YunShop::app()->getMemberId();;
         if(!$couponId){
             return $this->errorJson('没有提供优惠券ID','');
         }
@@ -311,9 +311,9 @@ class MemberCouponController extends ApiController
             if(!$res){
                 return $this->errorJson('领取失败','');
             } else{ //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
-                $coupon = Coupon::getCouponById($couponId)->get()->toArray();
+                $coupon = Coupon::getCouponsForMember($memberId, $member->level_id, $couponId)->get()->toArray();
                 $res = self::getCouponData(['data' => $coupon], strtotime('now'));
-                return $this->successJson('ok', $res);
+                return $this->successJson('ok', $res['data'][0]);
             }
         }
     }

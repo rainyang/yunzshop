@@ -24,6 +24,7 @@ class MergePayController extends ApiController
      * @var Collection
      */
     protected $orders;
+    protected $orderPay;//todo 临时解决,后续需要重构
     protected $publicAction = ['alipay'];
     protected $ignoreAction = ['alipay'];
 
@@ -32,17 +33,21 @@ class MergePayController extends ApiController
      * @return Collection
      * @throws AppException
      */
-    protected function orders($order_ids)
+    protected function orders($orderIds)
     {
-        $orderIds = explode(',', $order_ids);
+        if(!is_array($orderIds)){
+            $orderIds = explode(',', $orderIds);
+        }
         array_walk($orderIds, function ($orderId) {
             if (!is_numeric($orderId)) {
                 throw new AppException('(ID:' . $orderId . ')订单号id必须为数字');
             }
         });
+
         $this->orders = Order::select(['status', 'id', 'order_sn', 'price', 'uid'])->whereIn('id', $orderIds)->get();
+
         if ($this->orders->count() != count($orderIds)) {
-            throw new AppException('(ID:' . $order_ids . ')未找到订单');
+            throw new AppException('(ID:' . implode(',',$orderIds) . ')未找到订单');
         }
         $this->orders->each(function ($order) {
             if ($order->status > Order::WAIT_PAY) {
@@ -104,12 +109,15 @@ class MergePayController extends ApiController
         $this->validate($request, [
             'order_pay_id' => 'required|integer'
         ]);
-        $orderPay = OrderPay::find($request->input('order_pay_id'));
+        $this->orderPay = $orderPay = OrderPay::find($request->input('order_pay_id'));
         if (!isset($orderPay)) {
             throw new AppException('(ID' . $request->input('order_pay_id') . ')支付流水记录不存在');
-
+        }
+        if ($orderPay->status > 0) {
+            throw new AppException('(ID' . $request->input('order_pay_id') . '),此流水号已支付');
         }
         $result = DB::transaction(function () use ($orderPay, $payType) {
+
             $orders = $this->orders($orderPay->order_ids);
             //支付流水号
             $orderPay->pay_type_id = $payType;
@@ -122,7 +130,7 @@ class MergePayController extends ApiController
                 }
             });
 
-            $query_str = $this->getPayParams($orderPay,$orders);
+            $query_str = $this->getPayParams($orderPay, $orders);
             $pay = PayFactory::create($payType);
             //如果支付模块常量改变 数据会受影响
 
@@ -137,7 +145,7 @@ class MergePayController extends ApiController
 
     }
 
-    protected function getPayParams($orderPay,Collection $orders)
+    protected function getPayParams($orderPay, Collection $orders)
     {
         return [
             'order_no' => $orderPay->pay_sn,
