@@ -124,7 +124,7 @@ class AliPay extends Pay
         } else {
             return show_json('0', '会员不存在');
         }
-
+echo '<pre>';print_r($member_info);exit;
         if (!empty($member_info['yz-member']['alipay']) && !empty($member_info['yz-member']['alipayname'])) {
             $account = $member_info['yz-member']['alipay'];
             $name = $member_info['yz-member']['alipayname'];
