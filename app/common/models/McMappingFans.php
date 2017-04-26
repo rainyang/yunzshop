@@ -14,20 +14,20 @@ class McMappingFans extends BackendModel
 {
     public $table = 'mc_mapping_fans';
 
-    public function getOauthUserInfo()
-    {
-        return mc_oauth_userinfo();
-    }
-
-    public function getMemberId($uniacid)
-    {
-        $user_info = $this->getOauthUserInfo();
-
-        return self::where('uniacid', $uniacid)
-            ->where('openid', $user_info['openid'])
-            ->first()
-            ->toArray();
-    }
+//    public function getOauthUserInfo()
+//    {
+//        return mc_oauth_userinfo();
+//    }
+//
+//    public function getMemberId($uniacid)
+//    {
+//        $user_info = $this->getOauthUserInfo();
+//
+//        return self::unionid()
+//            ->where('openid', $user_info['openid'])
+//            ->first()
+//            ->toArray();
+//    }
 
     public static function getUId($uniacid, $openid)
     {
@@ -39,7 +39,8 @@ class McMappingFans extends BackendModel
 
     public static function getFansById($memberId)
     {
-        return self::where('uid', $memberId)
+        return self::unionid()
+            ->where('uid', $memberId)
             ->first();
     }
 

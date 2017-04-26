@@ -3,7 +3,7 @@
     <div class="col-sm-9 col-xs-12">
         <input type="hidden" name="coupontype" value="0"/>
         <label class="radio-inline" ><input type="radio" name="coupon[coupon_method]" id="couponmethod" onclick='showbacktype(0)' value="1" checked>立减</label>
-        <label class="radio-inline"><input type="radio" name="coupon[coupon_method]" id="couponmethod" onclick='showbacktype(1)' value="2" @if($coupon['coupon_method']==1)checked @endif>打折</label>
+        <label class="radio-inline"><input type="radio" name="coupon[coupon_method]" id="couponmethod" onclick='showbacktype(1)' value="2" @if($coupon['coupon_method']==2)checked @endif>打折</label>
     </div>
 </div>
 <div class="form-group">

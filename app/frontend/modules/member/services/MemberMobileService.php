@@ -22,24 +22,28 @@ class MemberMobileService extends MemberService
 
         $uniacid  = \YunShop::app()->uniacid;
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST'
+        if (\Request::isMethod('post')
                                   && MemberService::validate($mobile, $password)) {
             $has_mobile = MemberModel::checkMobile($uniacid, $mobile);
 
             if (!empty($has_mobile)) {
-                $password = md5($password. $has_mobile['salt']);
+                $password = md5($password. $has_mobile->salt);
 
                 $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
 
             } else {
-                return show_json(0, "用户不存在");
+                return show_json(7, "用户不存在");
             }
 
             if(!empty($member_info)){
                 $member_info = $member_info->toArray();
 
-                //触发会员成为下线事件
-                Member::chkAgent($member_info['uid']);
+                $mid = Member::getMid();
+                //检查下线
+                Member::chkAgent($member_info['uid'], $mid);
+
+                //生成分销关系链
+                Member::createRealtion($member_info['uid']);
 
                 $this->save($member_info, $uniacid);
 
@@ -54,11 +58,11 @@ class MemberMobileService extends MemberService
                 }
 
                 return show_json(1, $data);
-            } else{
-                return show_json(0, "手机号或密码错误");
+            } {
+                return show_json(6, "手机号或密码错误");
             }
         } else {
-            return show_json(-1, "手机号或密码错误");
+            return show_json(6, "手机号或密码错误");
         }
 
     }

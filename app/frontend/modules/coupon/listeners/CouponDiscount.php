@@ -27,12 +27,9 @@ class CouponDiscount
         $coupons = $couponService->getOptionalCoupons();
 
         $data = $coupons->map(function ($coupon){
-            return [
-                'name' => $coupon->getMemberCoupon()->belongsToCoupon->name,
-                'id' => $coupon->getMemberCoupon()->belongsToCoupon->id,
-            ];
+            $coupon->getMemberCoupon()->belongsToCoupon->setDateFormat('Y-m-d');
+            return $coupon->getMemberCoupon();
         });
-
         $event->addMap('coupon',$data);
     }
     //订单生成后销毁优惠券 todo 重复查询了,需要使用计算优惠券价格时获取的优惠券列表
@@ -41,7 +38,6 @@ class CouponDiscount
         $orderModel = $this->event->getOrderModel();
         $couponService = new TestService($orderModel);
         $couponService->destroyUsedCoupons();
-
     }
     /**
      * @param $events

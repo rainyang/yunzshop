@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class  Coupon extends BaseModel
 {
     use SoftDeletes;
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at','time_start','time_end'];
 
-    const COUPON_ALL_USE = 0;
-    const COUPON_CATEGORY_USE = 1;
-    const COUPON_GOODS_USE = 2;
-    const COUPON_MONEY_OFF = 1;
-    const COUPON_DISCOUNT = 2;
-    const COUPON_DATE_TIME_RANGE = 0;
-    const COUPON_SINCE_RECEIVE = 1;
+    const COUPON_ALL_USE = 0; //适用范围 - 商城通用
+    const COUPON_CATEGORY_USE = 1; //适用范围 - 指定分类
+    const COUPON_GOODS_USE = 2; //适用范围 - 指定商品
+    const COUPON_MONEY_OFF = 1; //优惠方式- 立减
+    const COUPON_DISCOUNT = 2; //优惠方式- 折扣
+    const COUPON_DATE_TIME_RANGE = 1;//有效期 - 时间范围
+    const COUPON_SINCE_RECEIVE = 0;//有效期 - 领取后n天
 
     public $table = 'yz_coupon';
 

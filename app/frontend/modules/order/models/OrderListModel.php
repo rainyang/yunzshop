@@ -33,6 +33,20 @@ class OrderListModel extends Order
     }
 
     /**
+     * 关系链 指定商品
+     *
+     * @param $uid
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public static function getOrderListByUid($uid)
+    {
+        return self::getOrderList($uid)
+            ->where('status','>=',1)
+            ->where('status','<=',3)
+            ->get();
+    }
+
+    /**
      * 获取用户消费总额
      *
      * @param $uid
@@ -41,7 +55,8 @@ class OrderListModel extends Order
     public static function getCostTotalPrice($uid)
     {
         return self::uniacid()
-            ->where('status', 3)
+            ->where('status', '>=', 1)
+            ->where('status', '<=', 3)
             ->where('uid', $uid)
             ->sum('price');
     }
@@ -55,7 +70,8 @@ class OrderListModel extends Order
     public static function getCostTotalNum($uid)
     {
         return self::uniacid()
-            ->where('status', 3)
+            ->where('status','>=', 1)
+            ->Where('status','<=', 3)
             ->where('uid', $uid)
             ->count('id');
     }

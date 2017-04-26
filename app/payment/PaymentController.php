@@ -6,8 +6,11 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
 use app\common\models\Order;
 use app\common\models\PayOrder;
+use app\common\models\PayRefundOrder;
+use app\common\models\PayWithdrawOrder;
 use app\frontend\modules\finance\services\BalanceService;
 use app\frontend\modules\order\services\OrderService;
+use app\backend\modules\refund\services\RefundOperationService;
 
 /**
  * Created by PhpStorm.
@@ -21,7 +24,14 @@ class PaymentController extends BaseController
     {
         parent::__construct();
 
+        $this->init();
+    }
+
+    private function init()
+    {
         $script_info = pathinfo($_SERVER['SCRIPT_NAME']);
+
+        \Log::debug('执行脚本', $script_info['filename']);
 
         if (!empty($script_info)) {
             switch ($script_info['filename']) {
@@ -32,7 +42,11 @@ class PaymentController extends BaseController
                 case 'withdrawNotifyUrl':
                     $batch_no = !empty($_REQUEST['batch_no']) ? $_REQUEST['batch_no'] : '';
 
-                    \YunShop::app()->uniacid = substr($batch_no, 17, 5);
+                    \Log::debug('支付宝订单批次号', $batch_no);
+
+                    \YunShop::app()->uniacid = (int)substr($batch_no, 17, 5);
+
+                    \Log::debug('当前公众号', \YunShop::app()->uniacid);
                     break;
                 default:
                     \YunShop::app()->uniacid = $this->getUniacid();
@@ -40,7 +54,7 @@ class PaymentController extends BaseController
             }
         }
 
-       \Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+        \Setting::$uniqueAccountId = \YunShop::app()->uniacid;
     }
 
     private function getUniacid()
@@ -49,16 +63,23 @@ class PaymentController extends BaseController
         $splits = explode(':', $body);
 
         if (!empty($splits[1])) {
+            \Log::debug('当前公众号', intval($splits[1]));
+
             return intval($splits[1]);
         } else {
             return 0;
         }
     }
 
+    /**
+     * 支付回调操作
+     *
+     * @param $data
+     */
     public function payResutl($data)
     {
         $type = $this->getPayType($data['out_trade_no']);
-        $pay_order_model = PayOrder::uniacid()->where('out_order_no', $data['out_trade_no'])->first();
+        $pay_order_model = PayOrder::getPayOrderInfo($data['out_trade_no'])->first();
 
         if ($pay_order_model) {
             $pay_order_model->status = 2;
@@ -69,6 +90,8 @@ class PaymentController extends BaseController
 
         switch ($type) {
             case "charge.succeeded":
+                \Log::debug('支付操作', 'charge.succeeded');
+
                 $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
 
                 if ($data['unit'] == 'fen') {
@@ -82,6 +105,8 @@ class PaymentController extends BaseController
                 }
                 break;
             case "recharge.succeeded":
+                \Log::debug('支付操作', 'recharge.succeeded');
+
                 (new BalanceService())->payResult([
                     'order_sn'=> $data['out_trade_no'],
                     'pay_sn'=> $data['trade_no']

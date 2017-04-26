@@ -15,6 +15,8 @@ use app\common\exceptions\AppException;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\Order;
 
+use app\common\models\order\OrderChangeLog;
+use app\common\models\order\OrderGoodsChangePriceLog;
 use app\frontend\modules\goods\services\models\GoodsModel;
 use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
@@ -33,6 +35,7 @@ use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\shop\services\ShopService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
@@ -44,9 +47,9 @@ class OrderService
     public static function getOrderData(Order $order)
     {
         $result = collect();
-        $result->put('order',$order->toArray());
-        $result->put('discount',self::getDiscountEventData($order));
-        $result->put('dispatch',self::getDispatchEventData($order));
+        $result->put('order', $order->toArray());
+        $result->put('discount', self::getDiscountEventData($order));
+        $result->put('dispatch', self::getDispatchEventData($order));
 
         return $result;
     }
@@ -60,7 +63,7 @@ class OrderService
     {
         $Event = new OnDiscountInfoDisplayEvent($order_model);
         event($Event);
-        return $Event->getMap();
+        return collect($Event->getMap());
     }
 
     /**
@@ -84,8 +87,8 @@ class OrderService
     public static function getOrderGoodsModels(Collection $memberCarts)
     {
         $result = new Collection();
-        if($memberCarts->isEmpty()){
-            throw new AppException("未找到订单商品");
+        if ($memberCarts->isEmpty()) {
+            throw new AppException("(".$memberCarts->goods_id.")未找到订单商品");
         }
         foreach ($memberCarts as $memberCart) {
             if (!($memberCart instanceof MemberCart)) {
@@ -113,7 +116,7 @@ class OrderService
             throw new AppException('用户登录状态过期');
         }
 
-        if($memberCarts->isEmpty()){
+        if ($memberCarts->isEmpty()) {
             return false;
         }
 
@@ -140,15 +143,33 @@ class OrderService
         }
         return $orderSN;
     }
-    private static function OrderOperate(OrderOperation $OrderOperate)
+    /**
+     * 获取支付流水号
+     * @return string
+     */
+    public static function createPaySN()
     {
-        if (!$OrderOperate->enable()) {
-            return [false, $OrderOperate->getMessage()];
+        $paySN = createNo('PN', true);
+        while (1) {
+            if (!\app\common\models\OrderPay::where('pay_sn', $paySN)->first()) {
+                break;
+            }
+            $paySN = createNo('PN', true);
         }
-        if (!$OrderOperate->execute()) {
-            return [false, $OrderOperate->getMessage()];
+        return $paySN;
+    }
+    private static function OrderOperate(OrderOperation $orderOperation)
+    {
+
+        if (!$orderOperation->enable()) {
+            return [false, $orderOperation->getMessage()];
         }
-        return [true, $OrderOperate->getMessage()];
+        DB::transaction(function () use ($orderOperation) {
+            if (!$orderOperation->execute()) {
+                return [false, $orderOperation->getMessage()];
+            }
+        });
+        return [true, $orderOperation->getMessage()];
     }
 
     /**
@@ -158,10 +179,9 @@ class OrderService
      */
     public static function orderCancelPay($param)
     {
-        $order_model = Order::find($param['order_id']);
+        $orderOperation = OrderCancelPay::find($param['order_id']);
 
-        $OrderOperation = new OrderCancelPay($order_model);
-        return self::OrderOperate($OrderOperation);
+        return self::OrderOperate($orderOperation);
     }
 
     /**
@@ -171,10 +191,9 @@ class OrderService
      */
     public static function orderCancelSend($param)
     {
-        $order_model = Order::find($param['order_id']);
+        $orderOperation = OrderCancelSend::find($param['order_id']);
 
-        $OrderOperation = new OrderCancelSend($order_model);
-        return self::OrderOperate($OrderOperation);
+        return self::OrderOperate($orderOperation);
     }
 
     /**
@@ -184,10 +203,9 @@ class OrderService
      */
     public static function orderClose($param)
     {
-        $order_model = Order::find($param['order_id']);
+        $orderOperation = OrderClose::find($param['order_id']);
 
-        $OrderOperation = new OrderClose($order_model);
-        return self::OrderOperate($OrderOperation);
+        return self::OrderOperate($orderOperation);
     }
 
     /**
@@ -197,10 +215,9 @@ class OrderService
      */
     public static function orderDelete($param)
     {
-        $order_model = Order::find($param['order_id']);
+        $orderOperation = OrderDelete::find($param['order_id']);
 
-        $OrderOperation = new OrderDelete($order_model);
-        return self::OrderOperate($OrderOperation);
+        return self::OrderOperate($orderOperation);
     }
 
     /**
@@ -211,9 +228,8 @@ class OrderService
 
     public static function orderPay(array $param)
     {
-        $order_model = Order::find($param['order_id']);
-        $OrderOperation = new OrderPay($order_model);
-        return self::OrderOperate($OrderOperation);
+        $orderOperation = OrderPay::find($param['order_id']);
+        return self::OrderOperate($orderOperation);
     }
 
     /**
@@ -223,10 +239,9 @@ class OrderService
      */
     public static function orderReceive($param)
     {
-        $order_model = Order::find($param['order_id']);
+        $orderOperation = OrderReceive::find($param['order_id']);
 
-        $OrderOperation = new OrderReceive($order_model);
-        return self::OrderOperate($OrderOperation);
+        return self::OrderOperate($orderOperation);
     }
 
     /**
@@ -236,31 +251,61 @@ class OrderService
      */
     public static function orderSend($param)
     {
-        $order_model = Order::find($param['order_id']);
+        $orderOperation = OrderSend::find($param['order_id']);
 
-        $OrderOperation = new OrderSend($order_model);
-        return self::OrderOperate($OrderOperation);
+        return self::OrderOperate($orderOperation);
     }
 
     /**
      * 改变订单价格
      * @param $param
      * @return array
+     * @throws AppException
      */
     public static function changeOrderPrice($param)
     {
-        $order_model = Order::find($param['order_id']);
+        $order = OrderChangePrice::find($param['order_id']);
+        /**
+         * @var $order OrderChangePrice
+         */
+        if (!isset($order)) {
+            throw new AppException('(ID:' . $order->id . ')未找到订单');
+        }
+        $orderGoodsChangePriceLogs = self::getOrderGoodsChangePriceLogs($param);
 
-        $OrderOperation = new OrderChangePrice($order_model);
-        return self::OrderOperate($OrderOperation);
+        $order->setOrderGoodsChangePriceLogs($orderGoodsChangePriceLogs);//todo
+        $order->setOrderChangePriceLog();
+        $order->setDispatchChangePrice($param['dispatch_price']);
+
+        return self::OrderOperate($order);
     }
+
+    private static function getOrderGoodsChangePriceLogs($param)
+    {
+        return collect($param['order_goods'])->map(function ($orderGoodsParams) use ($param) {
+
+            $orderGoodsChangePriceLog = new OrderGoodsChangePriceLog($orderGoodsParams);
+            if (!isset($orderGoodsChangePriceLog->belongsToOrderGoods)) {
+                throw new AppException('(ID:' . $orderGoodsChangePriceLog->order_goods_id . ')未找到订单商品记录');
+
+            }
+            if ($orderGoodsChangePriceLog->belongsToOrderGoods->order_id != $param['order_id']) {
+                throw new AppException('(ID:' . $orderGoodsChangePriceLog->order_goods_id . ',' . $param['order_id'] . ')未找到与商品对应的订单');
+            }
+            //todo 如果不清空,可能会在push时 保存未被更新的订单商品数据,此处需要重新设计
+            $orderGoodsChangePriceLog->setRelations([]);
+            return $orderGoodsChangePriceLog;
+        });
+    }
+
     /**
-     * 所有订单商品都是实物
+     * 所有订单商品都是实物 todo 没想好放在哪个类
      * @param Collection $orderGoodsCollect
      * @return bool
      */
-    public static function allGoodsIsReal(Collection $orderGoodsCollect){
-        return $orderGoodsCollect->contains(function ($orderGoods){
+    public static function allGoodsIsReal(Collection $orderGoodsCollect)
+    {
+        return $orderGoodsCollect->contains(function ($orderGoods) {
 
             return $orderGoods->belongsToGood->isRealGoods();
         });

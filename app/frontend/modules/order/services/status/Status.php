@@ -9,6 +9,8 @@
 namespace app\frontend\modules\order\services\status;
 
 
+use app\common\models\Order;
+
 abstract class Status
 {
     const PAY = 1;
@@ -35,7 +37,7 @@ abstract class Status
      * @param $order
      * @return array
      */
-    public static function getRefundButtons($order)
+    public static function getRefundButtons(Order $order)
     {
         if (empty($order->refund_id)) {
             $result[] = [
@@ -44,11 +46,20 @@ abstract class Status
                 'value' => static::REFUND
             ];
         } else {
-            $result[] = [
-                'name' => '退款中',
-                'api' => 'refund.detail',
-                'value' => static::REFUND_INFO
-            ];
+            if($order->hasOneRefundApply->isCompleted()){
+                $result[] = [
+                    'name' => '已退款',
+                    'api' => 'refund.detail',
+                    'value' => static::REFUND_INFO
+                ];
+            }else{
+                $result[] = [
+                    'name' => '退款中',
+                    'api' => 'refund.detail',
+                    'value' => static::REFUND_INFO
+                ];
+            }
+
         }
         return $result;
     }
@@ -58,15 +69,10 @@ abstract class Status
      * @param $order
      * @return array
      */
-    public static function getCommentButtons($order)
+    public static function getCommentButtons($orderGoods)
     {
-        $result = [];
-        $can_comment = $order->hasManyOrderGoods->contains(function ($orderGoods){
 
-            return $orderGoods->comment_status == 0;
-        });
-
-        if($can_comment){
+        if($orderGoods->comment_status == 0){
             $result[] = [
                 'name' => '评价',
                 'api' => '',

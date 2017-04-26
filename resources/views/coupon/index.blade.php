@@ -38,15 +38,15 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">创建时间</label>
                         <div class="col-sm-7 col-lg-9 col-xs-12">
-                            <div class="col-sm-5 col-lg-12 col-xs-12">
+                            <div class="col-sm-7 col-lg-9 col-xs-12">
                                 <label class='radio-inline'>
                                     <input type='radio' value='0' name='timesearchswtich'>不搜索
                                 </label>
                                 <label class='radio-inline'>
                                     <input type='radio' value='1' name='timesearchswtich' >搜索
                                 </label>
+                                {!! tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', strtotime('-7 days 00:00')),'endtime'=>date('Y-m-d H:i', strtotime('today'))), true) !!}
                             </div>
-                            {!! tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d', strtotime('-7 days')),'endtime'=>date('Y-m-d', strtotime('today')))) !!}
                         </div>
                     </div>
 
@@ -63,7 +63,7 @@
     </form>
 
     <div class="panel panel-default">
-        <div class="panel-heading">总数:<small>排序数字越大越靠前</small></div>
+        <div class="panel-heading">总数: {{$total}}</div>
         <div class="panel-body">
             <table class="table table-hover table-responsive">
                 <thead class="navbar-inner" >
@@ -122,7 +122,7 @@
                         </td>
                         <td>{!! $row['created_at'] !!}</td>
                         <td style="position:relative">
-                            <a href="javascript:;" data-url="{{yzWebUrl('coupon.coupon.create')}}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
+                            {{--<a href="javascript:;" data-url="{{yzWebUrl('coupon.coupon.copy')}}" title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>--}}
                             <a class='btn btn-default btn-sm' href="{{yzWebUrl('coupon.coupon.edit', ['id' => $row["id"]])}}" title="编辑" ><i class='fa fa-edit'></i></a>
                             <a class='btn btn-default  btn-sm' href="{{yzWebUrl('coupon.coupon.destory', ['id' => $row["id"]])}}" title="删除" onclick="return confirm('确定要删除该优惠券吗？');"><i class='fa fa-remove'></i></a>
                             <a  class='btn btn-primary  btn-sm' href="{{yzWebUrl('coupon.send-coupon', ['id' => $row["id"]])}}" title="发放优惠券" ><i class='fa fa-send'></i></a>

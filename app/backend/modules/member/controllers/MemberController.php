@@ -9,23 +9,22 @@
 namespace app\backend\modules\member\controllers;
 
 
+use app\backend\modules\member\models\McMappingFans;
 use app\backend\modules\member\models\Member;
+use app\backend\modules\member\models\MemberGroup;
+use app\backend\modules\member\models\MemberLevel;
+use app\backend\modules\member\models\MemberShopInfo;
+use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
-use app\backend\modules\member\models\MemberLevel;
-use app\backend\modules\member\models\MemberGroup;
 use app\common\helpers\PaginationHelper;
-use app\backend\modules\member\models\MemberShopInfo;
-use function GuzzleHttp\debug_resource;
 
 
 class MemberController extends BaseController
 {
     private $pageSize = 20;
 
-    public function __construct()
-    {
-    }
+
 
     /**
      * 列表
@@ -118,7 +117,9 @@ class MemberController extends BaseController
         Member::updateMemberInfoById($mc, $uid);
 
         $yz = array(
-            'level_id' => $parame->data['level_id'],
+            'member_id' => $uid,
+            'uniacid' => \YunShop::app()->uniacid,
+            'level_id' => $parame->data['level_id'] ?: 0,
             'group_id' => $parame->data['group_id'],
             'alipayname' => $parame->data['alipayname'],
             'alipay' => $parame->data['alipay'],
@@ -126,13 +127,18 @@ class MemberController extends BaseController
             'content' => $parame->data['content']
         );
 
-        MemberShopInfo::updateMemberInfoById($yz, $uid);
+        $shopInfoModel = MemberShopInfo::getMemberShopInfo($uid) ?: new MemberShopInfo();
 
-        if ($uid == 0 || !is_int($uid)) {
-            return $this->message('参数错误', '', 'error');
+        $shopInfoModel->fill($yz);
+        $validator = $shopInfoModel->validator();
+        if ($validator->fails()) {
+            $this->error($validator->messages());
+        } else {
+            if ($shopInfoModel->save()) {
+                return $this->message("用户资料更新成功", yzWebUrl('member.member.detail', ['id' => $uid]));
+            }
         }
-
-        return $this->message("用户资料更新成功", yzWebUrl('member.member.detail', ['id' => $uid]));
+        return $this->message("用户资料更新失败", yzWebUrl('member.member.detail', ['id' => $uid]),'error');
     }
 
     /**
@@ -156,6 +162,8 @@ class MemberController extends BaseController
         }
 
         if (Member::deleteMemberInfoById($uid)) {
+            McMappingFans::deleteMemberInfoById($uid);
+            MemberUnique::deleteMemberInfoById($uid);
             MemberShopInfo::deleteMemberInfoById($uid);
 
             return $this->message('用户删除成功', yzWebUrl('member.member.index'));

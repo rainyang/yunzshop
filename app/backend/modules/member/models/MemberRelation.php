@@ -132,9 +132,11 @@ class MemberRelation extends BackendModel
      */
     public static function checkOrderGoods($goods_id)
     {
-        $list = OrderListModel::getRequestOrderList(3,\YunShop::app()->getMemberId());
+        $list = OrderListModel::getOrderListByUid(\YunShop::app()->getMemberId());
 
         if (!empty($list)) {
+            $list = $list->toArray();
+
             foreach ($list as $rows) {
                 foreach ($rows['has_many_order_goods'] as $item) {
                     if ($item['goods_id'] == $goods_id) {
@@ -189,7 +191,7 @@ class MemberRelation extends BackendModel
      *
      * 首次点击分享连接 / 无条件发展下线权利
      *
-     * 触发 注册
+     * 触发 入口
      *
      * @param $mid
      * @param MemberShopInfo $user
@@ -224,6 +226,8 @@ class MemberRelation extends BackendModel
         $become_check = intval($set->become_check);
 
         if ($parent_is_agent && empty($member->parent_id)) {
+            \Log::debug('parant is agent');
+
             if ($member->member_id != $parent->member_id) {
                 if (empty($become_child)) {
                     $this->changeChildAgent($mid, $model);
@@ -267,7 +271,6 @@ class MemberRelation extends BackendModel
         if (empty($set)) {
             return;
         }
-
 
         $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
@@ -344,11 +347,15 @@ class MemberRelation extends BackendModel
                 }
             }
         }
+
+        //发展下线资格
         $isagent = $member->is_agent == 1 && $member->status == 2;
+
+        \Log::debug('发展下线资格', intval($isagent));
 
         if (!$isagent) {
             if (intval($set->become) == 4 && !empty($set->become_goods_id)) {
-                $result = self::checkOrderGoods($set['become_goods_id']);
+                $result = self::checkOrderGoods($set->become_goods_id);
 
                 if ($result) {
                     $member->status = 2;
@@ -360,7 +367,6 @@ class MemberRelation extends BackendModel
             }
         }
 
-        //发展下线资格
         if (!$isagent && empty($set->become_order)) {
             if ($set->become == 2 || $set->become == 3) {
                 $parentisagent = true;
@@ -372,18 +378,25 @@ class MemberRelation extends BackendModel
                     }
                 }
 
+                \Log::debug('上线情况', intval($parentisagent));
+                \Log::debug('会员 ID', intval($member->member_id));
+
                 if ($parentisagent) {
                     $can = false;
 
                     if ($set->become == '2') {
                         $ordercount = OrderListModel::getCostTotalNum($member->member_id);
 
+                        \Log::debug('ordercount', $ordercount);
                         $can = $ordercount >= intval($set->become_ordercount);
                     } else if ($set->become == '3') {
                         $moneycount = OrderListModel::getCostTotalPrice($member->member_id);
 
+                        \Log::debug('moneycount', $moneycount);
                         $can = $moneycount >= floatval($set->become_moneycount);
                     }
+
+                    \Log::debug('can', intval($can));
 
                     if ($can) {
                         $become_check = intval($set->become_check);

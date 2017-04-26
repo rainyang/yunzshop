@@ -11,6 +11,7 @@ namespace app\common\services;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
+use app\common\models\McMappingFans;
 use app\common\models\Member;
 use app\common\models\Order;
 use EasyWeChat\Foundation\Application;
@@ -28,7 +29,7 @@ class WechatPay extends Pay
     public function doPay($data = [])
     {
         $op = '微信订单支付 订单号：' . $data['order_no'];
-        $pay_order_model = $this->log($data['extra']['type'], $this->pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log($data['extra']['type'], $this->pay_type[Pay::PAY_MODE_WECHAT], $data['amount'], $op, $data['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
 
         if (empty(\YunShop::app()->getMemberId())) {
             throw new AppException('无法获取用户ID');
@@ -81,7 +82,7 @@ class WechatPay extends Pay
         $out_refund_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '微信退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
-        $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_WECHAT], $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_WECHAT], $refundmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
 
         $pay = \Setting::get('shop.pay');
 
@@ -106,7 +107,7 @@ class WechatPay extends Pay
 
             return true;
         } else {
-            throw new \AppException('退款失败');
+            throw new AppException('退款失败');
         }
     }
 
@@ -122,7 +123,7 @@ class WechatPay extends Pay
         //$out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
         $op = '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money;
-        $pay_order_model = $this->log(Pay::PAY_TYPE_WITHDRAW, $this->pay_type[Pay::PAY_MODE_WECHAT], $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON);
+        $pay_order_model = $this->log(Pay::PAY_TYPE_WITHDRAW, $this->pay_type[Pay::PAY_MODE_WECHAT], $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON, $member_id);
 
         $pay = \Setting::get('shop.pay');
 
@@ -131,13 +132,15 @@ class WechatPay extends Pay
         }
 
         if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
-            message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+            return show_json('0', '\'未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!\'');
         }
 
-        $order_info = Order::getOrderInfoByMemberId($member_id)->first();
+        $mc_mapping_fans_model = McMappingFans::getFansById($member_id);
 
-        if (!empty($order_info) && $order_info['status'] == 3) {
-            $openid = Member::getOpenId($order_info['uid']);
+        if ($mc_mapping_fans_model) {
+            $openid = $mc_mapping_fans_model->openid;
+        } else {
+            return show_json('0', '提现用户不存在');
         }
 
         $notify_url = '';
@@ -190,7 +193,7 @@ class WechatPay extends Pay
             return true;
 
         } else {
-            throw new \AppException('退款失败');
+            return show_json('0', '退款失败');
         }
 
         return false;

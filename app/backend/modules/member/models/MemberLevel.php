@@ -84,16 +84,18 @@ class MemberLevel extends \app\common\models\MemberLevel
     }
 
     /**
-     * get members by definite memberlevel
+     * get members by definite member_level
      * @param $levelId
      * @return mixed
      */
     public static function getMembersByLevel($levelId)
     {
-        return static::where('id', $levelId)
-                    ->select(['id', 'level'])
+        return static::uniacid()
+                    ->select(['level'])
+                    ->where('level', $levelId)
                     ->with(['member' => function($query){
-                        return $query->select('member_id', 'level_id')->where('uniacid', \YunShop::app()->uniacid);
+                        return $query->select('member_id', 'level_id')
+                                    ->where('uniacid', \YunShop::app()->uniacid);
                     }])
                     ->first();
     }

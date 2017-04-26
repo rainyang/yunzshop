@@ -13,7 +13,6 @@ class WithdrawService
 {
     public static function createStatusService($withdraw)
     {
-
         switch ($withdraw->status) {
             case -1:
                 return '无效';

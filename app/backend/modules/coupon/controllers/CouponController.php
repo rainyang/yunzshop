@@ -26,9 +26,12 @@ class CouponController extends BaseController
 
         $pageSize = 10;
         if (empty($keyword) && empty($getType) && ($searchSearchSwitch == 0)){
-            $list = Coupon::uniacid()->orderBy('display_order','desc')->paginate($pageSize)->toArray();
+            $list = Coupon::uniacid()->orderBy('display_order','desc')->orderBy('updated_at', 'desc')->paginate($pageSize)->toArray();
         } else {
-            $list = Coupon::getCouponsBySearch($keyword, $getType, $searchSearchSwitch, $timeStart, $timeEnd)->orderBy('display_order','desc')->paginate($pageSize)->toArray();
+            $list = Coupon::getCouponsBySearch($keyword, $getType, $searchSearchSwitch, $timeStart, $timeEnd)
+                        ->orderBy('display_order','desc')
+                        ->paginate($pageSize)
+                        ->toArray();
         }
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
@@ -41,6 +44,7 @@ class CouponController extends BaseController
         return view('coupon.index', [
             'list' => $list['data'],
             'pager' => $pager,
+            'total' => $list['total'],
         ])->render();
     }
 
@@ -57,6 +61,11 @@ class CouponController extends BaseController
             $coupon->uniacid = \YunShop::app()->uniacid;
             $coupon->time_start = strtotime(\YunShop::request()->time['start']);
             $coupon->time_end = strtotime(\YunShop::request()->time['end']);
+            $coupon->use_type =\YunShop::request()->usetype;
+            $coupon->category_ids = \YunShop::request()->categoryids;
+            $coupon->categorynames = \YunShop::request()->categorynames;
+            $coupon->goods_ids = \YunShop::request()->goods_ids;
+            $coupon->goods_names = \YunShop::request()->goods_names;
 
             $coupon->fill($couponRequest);
             $validator = $coupon->validator();
@@ -88,6 +97,13 @@ class CouponController extends BaseController
 
             $couponRequest['time_start'] =strtotime(\YunShop::request()->time['start']);
             $couponRequest['time_end'] =strtotime(\YunShop::request()->time['end']);
+            $coupon->use_type =\YunShop::request()->usetype;
+            $coupon->category_ids = \YunShop::request()->category_ids;
+            $coupon->categorynames = \YunShop::request()->category_names;
+            $coupon->goods_ids = \YunShop::request()->goods_ids;
+            $coupon->goods_names = \YunShop::request()->goods_names;
+//            dd($coupon);exit;
+
 
             //todo 表单验证
             $coupon->fill($couponRequest);
@@ -105,6 +121,11 @@ class CouponController extends BaseController
 
         return view('coupon.coupon', [
             'coupon' => $coupon,
+            'usetype' => $coupon['use_type'],
+            'category_ids' => $coupon['category_ids'],
+            'categorynames' => $coupon['categorynames'],
+            'goods_ids' => $coupon['goods_ids'],
+            'goods_names' => $coupon['goods_names'],
         ])->render();
     }
 
@@ -146,6 +167,20 @@ class CouponController extends BaseController
         return view('coupon.query', [
             'coupons' => $coupons
         ])->render();
+    }
+
+    //用于"适用范围"添加商品或者分类
+    public function addParam()
+    {
+        $type = \YunShop::request()->type;
+        switch($type){
+            case 'goods':
+                return view('coupon.tpl.goods')->render();
+                break;
+            case 'category':
+                return view('coupon.tpl.category')->render();
+                break;
+        }
     }
 
 }

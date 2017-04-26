@@ -9,11 +9,13 @@
 namespace app\common\listeners\member;
 
 use app\backend\modules\member\models\MemberRelation;
+use app\common\events\order\AfterOrderReceivedEvent;
 
 class AfterOrderReceivedListener
 {
     public function handle(AfterOrderReceivedEvent $event)
     {
         MemberRelation::checkOrderFinish();
+
     }
 }

@@ -86,14 +86,17 @@
                             <tr>
                                 <td style="text-align: center;">{{ $list->uid }}</td>
                                 <td style="text-align: center;">
+
                                     @if($list->avatar || $shopSet['headimg'])
-                                    <img src='{{ $list->avatar or $shopSet['headimg']}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                    <img src='{{ $list->avatar ? tomedia($list->avatar) : tomedia($shopSet['headimg']) }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @endif
-                                    {{ $list->nickname or '未更新' }}
+
+                                    {{ $list->nickname ? '123' : '未更新'}}
+
                                 </td>
                                 <td>{{ $list->realname }}<br/>{{ $list->mobile }}</td>
                                 <td>
-                                    {{ $list->yzMember->level->level_name or $shopSet['level_name'] }}
+                                    {{ isset($list->yzMember->level) ? $list->yzMember->level->level_name : $shopSet['level_name'] }}
                                     <br/>
                                     {{ $list->yzMember->group->group_name or '' }}
                                 </td>

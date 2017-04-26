@@ -51,36 +51,50 @@ class SendCouponController extends BaseController
 
             //获取会员 Member ID
             $sendType = \YunShop::request()->sendtype;
+//            dd($sendType);
             switch ($sendType) {
                 case self::BY_MEMBERIDS:
-                    $membersScope = \YunShop::request()->send_memberid; // todo 前端 JS 也需要检测是否符合格式
-                    $patternMatch = preg_match('/(\d+,+)+(\d+,?)?/', $membersScope);
-                    if (!$patternMatch) {
-                        $this->error('Member ID 填写的不正确, 请重新设置');
+                    $membersScope = trim(\YunShop::request()->send_memberid);
+                    $patternMatchNumArray = preg_match('/(\d+,)+(\d+,?)/', $membersScope); //匹配比如 "2,3,78"或者"2,3,78,"
+                    $patternMatchSingleNum = preg_match('/(\d+)(,)?/',$membersScope); //匹配单个数字
+                    if (!$patternMatchNumArray || !$patternMatchSingleNum) {
+                        $patternNotMatch = true;
+                    } else{
+                        $patternNotMatch = false;
                     }
                     $memberIds = explode(',', $membersScope);
                     break;
                 case self::BY_MEMBER_LEVEL: //根据"会员等级"获取 Member IDs
                     $sendLevel = \YunShop::request()->send_level;
-                    $res = MemberLevel::getMembersByLevel($sendLevel)->toArray();//todo 当没有值时, toArray()没有对象,报错
-                    $memberIds = array_column($res['member'], 'member_id'); //提取member_id组成新的数组
+                    $res = MemberLevel::getMembersByLevel($sendLevel);
+                    if(!$res['member']){
+                        $memberIds = '';
+                    } else{
+                        $res = $res->toArray();
+                        $memberIds = array_column($res['member'], 'member_id'); //提取member_id组成新的数组
+                    }
                     break;
                 case self::BY_MEMBER_GROUP: //根据"会员分组"获取 Member IDs
                     $sendGroup = \YunShop::request()->send_group;
-                    $res = MemberGroup::getMembersByGroupId($sendGroup)->toArray(); //todo 当没有值时, toArray()没有对象,报错
-                    $memberIds = array_column($res['member'], 'member_id'); //提取member_id组成新的数组
+                    $res = MemberGroup::getMembersByGroupId($sendGroup);
+                    if(!$res['member']){
+                        $memberIds = '';
+                    } else{
+                        $res = $res->toArray();
+                        $memberIds = array_column($res['member'], 'member_id'); //提取member_id组成新的数组
+                    }
                     break;
                 case self::TO_ALL_MEMBERS:
-                    $members = Member::getMembersId()->toArray();
+                    $res = Member::getMembersId();
+                    if(!$res){
+                        $members = '';
+                    } else{
+                        $members = $res->toArray();
+                    }
                     $memberIds = array_column($members, 'uid');
-                    //$memberOpenids = array_column(array_column($members, 'has_one_fans'), 'openid');
                     break;
                 default:
                     $memberIds = '';
-            }
-
-            if (empty($memberIds)) {
-                $this->error('该类别下没有用户');
             }
 
             //更新优惠券的推送设置
@@ -89,16 +103,21 @@ class SendCouponController extends BaseController
 
             //获取发放的数量
             $sendTotal = \YunShop::request()->send_total;
-            if($sendTotal < 1){
-                $this->error('发放的数量不能小于 1');
-            }
 
-            //发放优惠券
-            $res = $this->sendCoupon($memberIds, $sendTotal, $couponResponse);
-            if ($res){
-                return $this->message('手动发送优惠券成功');
+            if (empty($memberIds)){
+                $this->error('该发放类型下还没有用户');
+            } elseif($sendTotal < 1){
+                $this->error('发放数量必须为整数, 而且不能小于 1');
+            } elseif ($patternNotMatch) {
+                $this->error('Member ID 填写不正确, 请重新设置');
             } else{
-                return $this->message('有部分优惠券未能发送, 请检查数据库','','error');
+                //发放优惠券
+                $res = $this->sendCoupon($memberIds, $sendTotal, $couponResponse);
+                if ($res){
+                    return $this->message('手动发送优惠券成功');
+                } else{
+                    return $this->message('有部分优惠券未能发送, 请检查数据库','','error');
+                }
             }
         }
 
@@ -107,8 +126,8 @@ class SendCouponController extends BaseController
             'coupondec' => \YunShop::request()->coupondec,
             'send_total' => isset($sendTotal) ? $sendTotal : 0,
             'sendtype' => isset($sendType) ? $sendType : 1,
-            'memberLevels' => $memberLevels, //用户等级列表 //bingo
-            'memberGroups' => $memberGroups, //用户分组列表 //bingo
+            'memberLevels' => $memberLevels, //用户等级列表
+            'memberGroups' => $memberGroups, //用户分组列表
             'send_level' => isset($sendLevel) ? $sendLevel : 1,
             'memberGroupId' => isset($sendGroup) ? $sendGroup : 1,
             'agentLevelId' => isset($sendLevel) ? $sendLevel : 1,

@@ -15,6 +15,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\helpers\Url;
 use app\common\models\Member;
 use app\common\models\MemberShopInfo;
+use app\common\models\Setting;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use app\common\models\Order;
 
@@ -32,8 +33,7 @@ class MemberModel extends Member
         return self::select('uid')
             ->where('uniacid', $uniacid)
             ->where('mobile', $mobile)
-            ->get()
-            ->toArray();
+            ->first();
     }
 
     /**
@@ -42,9 +42,28 @@ class MemberModel extends Member
      * @param $data
      * @return mixed
      */
-    public static function insertData($data)
+    public static function insertData($userinfo, $data)
     {
-        return self::insertGetId($data);
+        $member_model = new MemberModel();
+
+        $member_model->uniacid = $data['uniacid'];
+        $member_model->email = '';
+        $member_model->groupid = $data['groupid'];
+        $member_model->createtime = time();
+        $member_model->nickname = stripslashes($userinfo['nickname']);
+        $member_model->avatar = $userinfo['headimgurl'];
+        $member_model->gender = $userinfo['sex'];
+        $member_model->nationality = $userinfo['country'];
+        $member_model->resideprovince = $userinfo['province'] . '省';
+        $member_model->residecity = $userinfo['city'] . '市';
+        $member_model->salt = '';
+        $member_model->password = '';
+
+        if ($member_model->save()) {
+            return $member_model->uid;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -58,8 +77,7 @@ class MemberModel extends Member
     {
         return self::where('uniacid', $uniacid)
             ->where('mobile', $mobile)
-            ->first()
-            ->toArray();
+            ->first();
     }
 
     /**
@@ -202,12 +220,12 @@ class MemberModel extends Member
 
             $member_info = SubMemberModel::getMemberShopInfo($uid);
 
-            if ($member_info) {
-                return $member_info->toArray();
+            if ($member_info && $member_info->is_agent == 1 && $member_info->status == 2) {
+                return true;
             }
         }
 
-        return [];
+        return false;
 
     }
 
@@ -219,6 +237,8 @@ class MemberModel extends Member
     public static function getMyReferral()
     {
         $member_info = self::getMyReferrerInfo(\YunShop::app()->getMemberId())->first();
+
+        $set = \Setting::get('shop.member');
 
         $data = [];
 
@@ -233,7 +253,8 @@ class MemberModel extends Member
                     'uid' => $info['uid'],
                     'avatar' => $info['avatar'],
                     'nickname' => $info['nickname'],
-                    'level' => $info['yz_member']['level']['level_name']
+                    'level' => $info['yz_member']['level']['level_name'],
+                    'is_show' => $set['is_referrer']
                 ];
             }
         }
@@ -366,6 +387,17 @@ class MemberModel extends Member
 
         $member_info['qr'] = self::getAgentQR();
         $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
+
+        $shop = \Setting::get('shop.shop');
+        $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
+        $member_info['credit'] = [
+            'text' => $shop['credit'] ? $shop['credit'] : '余额',
+            'data' => $member_info['credit2']
+            ];
+        $member_info['integral'] = [
+            'text' => $shop['credit1'] ? $shop['credit1'] : '积分',
+            'data' => $member_info['credit1']
+            ];
 
         return $member_info;
     }

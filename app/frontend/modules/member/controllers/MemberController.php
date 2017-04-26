@@ -50,7 +50,7 @@ class MemberController extends ApiController
 
                 return $this->successJson('', $data);
             } else {
-                return $this->errorJson('用户不存在');
+                return $this->errorJson('['. $member_id .']用户不存在');
             }
 
         } else {
@@ -164,15 +164,13 @@ class MemberController extends ApiController
      */
     public function isAgent()
     {
-        $member_info = MemberModel::isAgent();
-
-        if (empty($member_info)) {
-            return $this->errorJson('会员不存在');
+        if (MemberModel::isAgent()) {
+            $has_permission = 1;
         } else {
-            $data = $member_info;
+            $has_permission = 0;
         }
 
-        return $this->successJson('', ['is_agent' => $data['is_agent']]);
+        return $this->successJson('', ['is_agent' => $has_permission]);
     }
 
     /**

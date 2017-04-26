@@ -21,7 +21,7 @@ class McMappingFansModel extends McMappingFans
 
     protected $fillable = ['openid','uid','acid','uniacid', 'salt', 'updatetime', 'nickname', 'follow', 'followtime', 'unfollowtime', 'tag'];
 
-    protected $attributes = ['unionid'=>'', 'groupid'=>0];
+    protected $attributes = ['unionid' => '', 'groupid' => 0];
 
 
     public function getOauthUserInfo()
@@ -48,9 +48,27 @@ class McMappingFansModel extends McMappingFans
      *
      * @param $data
      */
-    public static function insertData($data)
+    public static function insertData($userinfo, $data)
     {
-        self::insert($data);
+        $fans_model = new McMappingFansModel();
+
+        $fans_model->openid = $userinfo['openid'];
+        $fans_model->uid = $data['uid'];
+        $fans_model->acid = $data['uniacid'];
+        $fans_model->uniacid = $data['uniacid'];
+        $fans_model->salt = $data['salt'];
+        $fans_model->updatetime = time();
+        $fans_model->nickname = stripslashes($userinfo['nickname']);
+        $fans_model->follow = 1;
+        $fans_model->followtime = time();
+        $fans_model->unfollowtime = 0;
+        $fans_model->tag = base64_encode(serialize($userinfo));
+
+        if ($fans_model->save()) {
+            return $fans_model->uid;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -64,10 +82,5 @@ class McMappingFansModel extends McMappingFans
         self::uniacid()
             ->where('uid', $uid)
             ->update($data);
-    }
-
-    public static function getMemberInfo($oppenid)
-    {
-
     }
 }

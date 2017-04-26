@@ -16,8 +16,6 @@ use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
-
-
     private static $_current_member;
     public static function getCurrentMemberModel(){
         if(isset(self::$_current_member)){
@@ -35,7 +33,7 @@ class MemberService
     {
         $member = \app\frontend\models\Member::find($member_id);
         if(!isset($member)){
-            throw new AppException('用户不存在');
+            throw new AppException('(ID:'.$member_id.')用户不存在');
         }
         self::$_current_member = $member;
     }
@@ -126,10 +124,9 @@ class MemberService
             $update_time = $mobile_info['created_at'];
             $total = $mobile_info['total'];
 
-            if ((date('Ymd', $curr_time) == date('Ymd', $update_time))
-                && $total < 5) {
+            if ((date('Ymd', $curr_time) != date('Ymd', $update_time))) {
 
-                return true;
+                $total = 0;
             }
         } else {
             $total = 0;
@@ -160,7 +157,7 @@ class MemberService
 
             if ($update_time <= $curr_time) {
                 if (date('Ymd', $curr_time) == date('Ymd', $update_time)) {
-                    if ($total <= 4) {
+                    if ($total <= 5) {
                         ++$total;
 
                         smsSendLimitModel::updateData(array(

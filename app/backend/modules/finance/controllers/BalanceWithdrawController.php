@@ -9,7 +9,7 @@
 namespace app\backend\modules\finance\controllers;
 
 
-use app\backend\modules\finance\models\Withdraw;
+use app\common\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
@@ -53,8 +53,8 @@ class BalanceWithdrawController extends BaseController
             return $this->message($result, yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
         } elseif (isset($requestData['submit_pay'])) {
             //打款
-            if ($this->withdrawModel->status !== '1') {
-                return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
+            if ($this->withdrawModel->status !== 1) {
+                return $this->message('打款失败,数据不存在或不符合打款规则!', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
             }
             $result = $this->submitPay();
             if ($result === true) {
@@ -76,19 +76,31 @@ class BalanceWithdrawController extends BaseController
     //打款
     private function submitPay()
     {
+        //echo '<pre>'; print_r($this->withdrawModel->toArray()); exit;
         $resultPay = '';
         $remark = '提现打款-' . $this->withdrawModel->type_name . '-金额:' . $this->withdrawModel->actual_amounts . '元,' .
             '手续费:' . $this->withdrawModel->actual_poundage;
-        if ($this->withdrawModel->pay_way == '2') {
+        if ($this->withdrawModel->pay_way == 'alipay') {
             //支付宝打款
             $resultPay = WithdrawService::alipayWithdrawPay($this->withdrawModel, $remark);
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
-        } elseif ($this->withdrawModel->pay_way == '1') {
+        } elseif ($this->withdrawModel->pay_way == 'wecht') {
             //微信打款
             $resultPay = WithdrawService::wechtWithdrawPay($this->withdrawModel, $remark);
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
         }
-        return $resultPay ? $this->updatePayTime(): "打款失败";
+        if ($resultPay === true) {
+            $this->withdrawModel->pay_at = time();
+            if ($this->withdrawModel->save()) {
+                Log::info('打款完成!');
+                return true;
+            }
+        }
+        if ($resultPay['errno'] == 1) {
+            return $resultPay['message'];
+        }
+        return '提现打款失败!';
+        //return $resultPay ? $this->updatePayTime(): "打款失败";
     }
 
     //保存数据

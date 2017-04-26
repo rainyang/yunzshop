@@ -12,7 +12,7 @@ namespace app\frontend\modules\order\services\behavior;
 abstract class ChangeStatusOperation extends OrderOperation
 {
     /**
-     * @var改变后状态
+     * @var int 改变后状态
      */
     protected $statusAfterChanged;
     /**
@@ -20,12 +20,12 @@ abstract class ChangeStatusOperation extends OrderOperation
      * @return bool
      */
     protected function updateTable(){
-        $this->order->status = $this->statusAfterChanged;
+        $this->status = $this->statusAfterChanged;
         if(isset($this->time_field)){
             $time_fields = $this->time_field;
-            $this->order->$time_fields = time();
+            $this->$time_fields = time();
         }
-        return $this->order->save();
+        return $this->save();
     }
 
     /**

@@ -59,11 +59,11 @@
                                             </option>
                                             <option value="1"
                                                     @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
-                                                在线支付
+                                                微信支付
                                             </option>
                                             <option value="2"
                                                     @if( array_get($requestSearch,'pay_type','') == '2')  selected="selected"@endif>
-                                                货到付款
+                                                支付宝支付
                                             </option>
                                             <option value="3"
                                                     @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
@@ -211,14 +211,14 @@
 
 
                                 @if( $order_goods_index == 0)
-                                    <td rowspan="{!! count($order['has_many_order_goods']) !!}">
+                                    <td rowspan="{{count($order['has_many_order_goods'])}}">
                                         <a href="{!! yzWebUrl('member.member.detail',array('id'=>$order['belongs_to_member']['uid'])) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
                                         <br/>
                                         {{$order['belongs_to_member']['realname']}}
                                         <br/>{{$order['belongs_to_member']['mobile']}}
                                     </td>
 
-                                    <td rowspan="{!! count($order['has_many_order_goods']) !!}">
+                                    <td rowspan="{{count($order['has_many_order_goods'])}}">
                                         <label class='label label-info'>{{$order['pay_type_name']}}</label>
                                         <br/>
 
@@ -229,7 +229,7 @@
                                         </button>
                                         @endif
                                     </td>
-                                    <td rowspan="{php echo count($order['has_many_order_goods'])}" style='width:18%;'>
+                                    <td rowspan="{{count($order['has_many_order_goods'])}}" style='width:18%;'>
                                         <table class="goods-price" >
                                             <tr>
                                                 <td style=''>商品小计：</td>
@@ -237,15 +237,36 @@
                                                 $order['goods_price'] ,2) !!}
                                                 </td>
                                             </tr>
+
                                             <tr>
                                                 <td style=''>运费：</td>
                                                 <td style=''>￥{!! number_format(
                                                 $order['dispatch_price'],2) !!}
                                                 </td>
                                             </tr>
-
-
-                                            @if($order['status'] == 0)
+                                            @if($order['change_price'] != 0)
+                                            <tr>
+                                                <td style=''>卖家改价：</td>
+                                                <td style='color:green'>￥{!! number_format(
+                                                $order['change_price'] ,2) !!}
+                                                </td>
+                                            </tr>
+                                            @endif
+                                            @if($order['change_dispatch_price'] != 0)
+                                            <tr>
+                                                <td style=''>卖家改运费：</td>
+                                                <td style='color:green'>￥{{ number_format(
+                                                $order['change_dispatch_price'] ,2) }}
+                                                </td>
+                                            </tr>
+                                            @endif
+                                            <tr>
+                                                <td style=''>应收款：</td>
+                                                <td style='color:green'>￥{!! number_format(
+                                                $order['price'] ,2) !!}
+                                                </td>
+                                            </tr>
+                                        @if($order['status'] == 0)
                                                 <tr>
                                                     <td ></td>
                                                         @if($is_change_price)
@@ -260,7 +281,7 @@
                                     </td>
                                     <td rowspan="{{count($order['has_many_order_goods'])}}"><label
                                                 class='label label-info'>{{$order['status_name']}}</label><br/>
-                                        <a href="{!! yzWebUrl('order.detail',['id'=>$order['id']])!!}">查看详情</a>
+                                        <a href="{!! yzWebUrl($detail_url,['id'=>$order['id']])!!}">查看详情</a>
                                     </td>
                                     <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">
 

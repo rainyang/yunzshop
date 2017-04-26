@@ -34,120 +34,6 @@
 {{--
 {template 'web/sysset/selectgoods'}
 {template 'web/sysset/selectcategory'}--}}
-                <script>
-                    $(function() {
-                        $("#chkoption").click(function() {
-                            var obj = $(this);
-                            if (obj.get(0).checked) {
-                                $("#tboption").show();
-                                $(".trp").hide();
-                            }
-                            else {
-                                $("#tboption").hide();
-                                $(".trp").show();
-                            }
-                        });
-                    })
-
-//                    function addParam(type) {
-//                        var url = "{php echo $this->createWebUrl('shop/tpl')}&tpl="+type;
-//                        $.ajax({
-//                            "url": url,
-//                            success: function(data) {
-//                                $('#param-items'+type).append(data);
-//                            }
-//                        });
-//                        return;
-//                    }
-                    function deleteParam(o) {
-                        $(o).parent().parent().remove();
-                    }
-                    function saveadd(o) {
-                        $(o).parent().parent().remove();
-                    }
-
-                    function showbacktype(type){
-
-                        $('.backtype').hide();
-                        $('.backtype' + type).show();
-                    }
-
-                    function showusetype(type){
-                        $('.usetype').hide();
-                        $('.usetype' + type).show();
-                    }
-                    $(function(){
-                        require(['bootstrap'], function () {
-                            $('#myTab a').click(function (e) {
-                                e.preventDefault();
-                                $(this).tab('show');
-                            })
-                        });
-                        $('form').submit(function(){
-
-                            if($('#couponname').isEmpty()){
-                                Tip.focus($(':input[name=couponname]'),'请输入优惠券名称!');
-                                return false;
-                            }
-                            var coupon_method = $('#couponmethod:checked').val();
-                            if(coupon_method=='1'){
-                                if($(':input[name=deduct]').isEmpty()){
-                                    Tip.focus($(':input[name=deduct]'),'请输入立减多少!');
-                                    return false;
-                                }
-                            }else if(coupon_method=='2'){
-                                if($(':input[name=discount]').isEmpty()){
-                                    Tip.focus($(':input[name=discount]'),'请输入折扣多少!');
-                                    return false;
-                                }
-                            }
-                            return true;
-                        })
-                    })
-
-                    {{--下面是新增的js--}}
-                    {{--搜索分类--}}
-                    function search_categorys() {
-                        if ($.trim($('#search-kwd-categorys').val()) == '') {
-                            Tip.focus('#search-kwd-categorys', '请输入关键词');
-                            return;
-                        }
-                        $("#module-menus-categorys").html("正在搜索....");
-                        $.get('{!! yzWebUrl('goods.category.get-search-categorys') !!}', {
-                                keyword: $.trim($('#search-kwd-categorys').val())
-                            }, function (dat) {
-                                $('#module-menus-categorys').html(dat);
-                            }
-                        );
-                    }
-                    function select_category(o) {
-                        $(".focuscategory #categoryid").val(o.id);
-                        $(".focuscategory #categoryname").val(o.name);
-                        $(".focuscategory").removeClass("focuscategory");
-                        $("#modal-module-menus-categorys .close").click();
-                    }
-
-                    {{--搜索商品--}}
-                    function search_goods() {
-                        if ($.trim($('#search-kwd-goods').val()) == '') {
-                            Tip.focus('#search-kwd-goods', '请输入关键词');
-                            return;
-                        }
-                        $("#module-menus-goods").html("正在搜索....");
-                        $.get('{!! yzWebUrl('goods.goods.get-search-goods') !!}', {
-                                keyword: $.trim($('#search-kwd-goods').val())
-                            }, function (dat) {
-                                $('#module-menus-goods').html(dat);
-                            }
-                        );
-                    }
-                    function select_good(o) {
-                        $(".focusgood #goodid").val(o.id);
-                        $(".focusgood #goodname").val(o.title);
-                        $(".focusgood").removeClass("focusgood");
-                        $("#modal-module-menus-goods .close").click();
-                    }
-                </script>
 
                 </div>
             </div>
@@ -156,3 +42,118 @@
 </div>
 
 @endsection('content')
+@section('js')
+    <script>
+        $(function() {
+            $("#chkoption").click(function() {
+                var obj = $(this);
+                if (obj.get(0).checked) {
+                    $("#tboption").show();
+                    $(".trp").hide();
+                }
+                else {
+                    $("#tboption").hide();
+                    $(".trp").show();
+                }
+            })
+        });
+
+        function addParam(type) {
+            var url = "{!! yzWebUrl('coupon.coupon.add-param')!!}"+'&type='+type;
+            $.ajax({
+                "url": url,
+                success: function(data) {
+                    $('#param-items'+type).append(data);
+                }
+            });
+        }
+        function deleteParam(o) {
+            $(o).parent().parent().remove();
+        }
+        function saveadd(o) {
+            $(o).parent().parent().remove();
+        }
+
+        function showbacktype(type){
+
+            $('.backtype').hide();
+            $('.backtype' + type).show();
+        }
+
+        function showusetype(type){
+            $('.usetype').hide();
+            $('.usetype' + type).show();
+        }
+        $(function(){
+            require(['bootstrap'], function () {
+                $('#myTab a').click(function (e) {
+                    e.preventDefault();
+                    $(this).tab('show');
+                })
+            });
+            $('form').submit(function(){
+
+                if($('#couponname').isEmpty()){
+                    Tip.focus($(':input[name=couponname]'),'请输入优惠券名称!');
+                    return false;
+                }
+                var coupon_method = $('#couponmethod:checked').val();
+                if(coupon_method=='1'){
+                    if($(':input[name=deduct]').isEmpty()){
+                        Tip.focus($(':input[name=deduct]'),'请输入立减多少!');
+                        return false;
+                    }
+                }else if(coupon_method=='2'){
+                    if($(':input[name=discount]').isEmpty()){
+                        Tip.focus($(':input[name=discount]'),'请输入折扣多少!');
+                        return false;
+                    }
+                }
+                return true;
+            })
+        })
+
+        {{--搜索分类--}}
+        function search_categorys() {
+            if ($.trim($('#search-kwd-categorys').val()) == '') {
+                Tip.focus('#search-kwd-categorys', '请输入关键词');
+                return;
+            }
+            $("#module-menus-categorys").html("正在搜索....");
+            $.get('{!! yzWebUrl('goods.category.get-search-categorys') !!}', {
+                    keyword: $.trim($('#search-kwd-categorys').val())
+                }, function (dat) {
+                    $('#module-menus-categorys').html(dat);
+                }
+            );
+        }
+        function select_category(o) {
+            $(".focuscategory:last input[data-name=categoryids]").val(o.id);
+            $(".focuscategory:last input[data-name=categorynames]").val(o.name);
+            $(".focuscategory").removeClass("focuscategory");
+            $("#modal-module-menus-categorys .close").click();
+        }
+
+        {{--搜索商品--}}
+        function search_goods() {
+            if ($.trim($('#search-kwd-goods').val()) == '') {
+                Tip.focus('#search-kwd-goods', '请输入关键词');
+                return;
+            }
+            $("#module-menus-goods").html("正在搜索....");
+            $.get('{!! yzWebUrl('goods.goods.get-search-goods') !!}', {
+                    keyword: $.trim($('#search-kwd-goods').val())
+                }, function (dat) {
+                    $('#module-menus-goods').html(dat);
+                }
+            );
+        }
+        function select_good(o) {
+            console.log(o);
+            $(".focusgood:last input[data-name=goodsids]").val(o.id);
+            $(".focusgood:last input[data-name=goodsnames]").val(o.title);
+            $(".focusgood").removeClass("focusgood");
+            $("#modal-module-menus-goods .close").click();
+        }
+    </script>
+@endsection('js')
