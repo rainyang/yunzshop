@@ -45,7 +45,7 @@ class GoodsStock
              * @var $goods_option GoodsOption
              */
             $goods_option->reduceStock($orderGoods->total);
-            $goods_option->save();
+            return $goods_option->save();
         }
         /**
          * @var $goods Goods
@@ -55,7 +55,7 @@ class GoodsStock
         $goods->reduceStock($orderGoods->total);
         $goods->addSales($orderGoods->total);
 
-        $goods->save();
+        return $goods->save();
     }
     public function subscribe($events)
     {
