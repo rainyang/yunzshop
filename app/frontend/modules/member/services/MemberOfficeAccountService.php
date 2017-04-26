@@ -98,8 +98,12 @@ class MemberOfficeAccountService extends MemberService
             }
 
             \Log::debug('officaccount mid', \YunShop::request()->mid);
-            //检查下线
-            Member::chkAgent($member_id);
+
+             $mid = Member::getMid();
+            \Log::debug('Regular mid', $mid);
+
+            //发展下线
+            Member::chkAgent($member_id, $mid);
 
             \Log::debug('uid', $member_id);
 

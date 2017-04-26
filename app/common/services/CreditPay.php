@@ -21,7 +21,7 @@ class CreditPay extends Pay
     public function doPay($params = [])
     {
         $operation = '余额订单支付 订单号：' . $params['order_no'];
-        $this->log($params['extra']['type'], '余额', $params['amount'], $operation,$params['order_no'], Pay::ORDER_STATUS_NON);
+        $this->log($params['extra']['type'], '余额', $params['amount'], $operation,$params['order_no'], Pay::ORDER_STATUS_NON, \YunShop::app()->getMemberId());
 
         self::payRequestDataLog($params['order_no'],$params['extra']['type'], '余额', json_encode($params));
 
