@@ -11,6 +11,7 @@ namespace app\backend\controllers;
 
 use app\common\components\BaseController;
 use app\common\services\JsonRpc;
+use app\common\services\Session;
 
 class TestController extends BaseController
 {

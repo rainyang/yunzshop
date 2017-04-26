@@ -97,8 +97,13 @@ class MemberOfficeAccountService extends MemberService
                 $member_id = $this->openidLogin($uniacid, $userinfo);
             }
 
+            \Log::debug('officaccount mid', \YunShop::request()->mid);
+
+             $mid = Member::getMid();
+            \Log::debug('Regular mid', $mid);
+
             //检查下线
-            Member::chkAgent($member_id);
+            Member::chkAgent($member_id, $mid);
 
             \Log::debug('uid', $member_id);
 

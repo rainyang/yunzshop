@@ -11,11 +11,8 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
-use app\common\models\PayType;
 use app\common\services\PayFactory;
 use app\common\services\Session;
-use app\frontend\modules\order\services\OrderService;
-use Ixudra\Curl\Facades\Curl;
 
 class PayController extends ApiController
 {

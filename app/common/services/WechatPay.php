@@ -11,6 +11,7 @@ namespace app\common\services;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
+use app\common\models\McMappingFans;
 use app\common\models\Member;
 use app\common\models\Order;
 use EasyWeChat\Foundation\Application;
@@ -131,13 +132,15 @@ class WechatPay extends Pay
         }
 
         if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
-            message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+            return show_json('0', '\'未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!\'');
         }
 
-        $order_info = Order::getOrderInfoByMemberId($member_id)->first();
+        $mc_mapping_fans_model = McMappingFans::getFansById($member_id);
 
-        if (!empty($order_info) && $order_info['status'] == 3) {
-            $openid = Member::getOpenId($order_info['uid']);
+        if ($mc_mapping_fans_model) {
+            $openid = $mc_mapping_fans_model->openid;
+        } else {
+            return show_json('0', '提现用户不存在');
         }
 
         $notify_url = '';
@@ -190,7 +193,7 @@ class WechatPay extends Pay
             return true;
 
         } else {
-            throw new \AppException('退款失败');
+            return show_json('0', '退款失败');
         }
 
         return false;
