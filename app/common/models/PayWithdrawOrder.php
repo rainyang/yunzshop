@@ -12,7 +12,7 @@ use app\backend\models\BackendModel;
 
 class PayWithdrawOrder extends BackendModel
 {
-    public $table = 'yz_withdraw_order';
+    public $table = 'yz_pay_withdraw_order';
 
     /**
      * 可以被批量赋值的属性.
