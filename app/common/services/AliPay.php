@@ -110,7 +110,7 @@ class AliPay extends Pay
     {
         //$out_trade_no = $this->setUniacidNo(\YunShop::app()->uniacid);
 
-        $op = '支付宝提现 订单号：' . $out_trade_no . '提现金额：' . $money;
+        $op = '支付宝提现 批次号：' . $out_trade_no . '提现金额：' . $money;
         $this->withdrawlog(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_ALIPAY], $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON, $member_id);
 
         $alipay = app('alipay.web');
