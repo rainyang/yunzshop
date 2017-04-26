@@ -176,7 +176,7 @@ class MemberRelationController extends BaseController
         if($base){
             $request = Setting::set('relation_base',$base);
             if($request){
-                return $this->message('保存成功', Url::absoluteWeb('member.member-relation.relaltion-base'));
+                return $this->message('保存成功', Url::absoluteWeb('member.member-relation.base'));
             }
         }
 
