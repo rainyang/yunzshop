@@ -54,6 +54,8 @@ class WechatPay extends Pay
         $result = $payment->prepare($order);
         $prepayId = null;
 
+        \Log::debug('预下单', $result->toArray());
+
         if ($result->return_code == 'SUCCESS' && $result->result_code == 'SUCCESS'){
             $prepayId = $result->prepay_id;
 
@@ -71,7 +73,7 @@ class WechatPay extends Pay
 
         \Log::debug('微信  config', $config);
         \Log::debug('微信  js', json_encode($js));
-        
+
         return ['config'=>$config, 'js'=>json_encode($js)];
     }
 
