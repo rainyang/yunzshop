@@ -189,13 +189,17 @@ class MemberCouponController extends ApiController
         foreach($coupons as $k=>$v){
             $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']); //todo 待优化
             $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10; //todo 待优化
-            if(
-                ($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
-                && $time > ($v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)) //时间限制类型是"领取后几天有效", 且过期
-                ||
-                ($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_DATE_TIME_RANGE
-                    && ($time > strtotime($v['belongs_to_coupon']['time_end']))) //时间限制类型是"时间范围",且过期
-            ){
+
+            if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
+                && ($time > $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)){
+                $coupons[$k]['belongs_to_coupon']['start'] = date('Y-m-d', $v['get_time']); //前端需要统一的起止时间
+                $coupons[$k]['belongs_to_coupon']['end'] = date('Y-m-d', ($v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)); //前端需要统一的起止时间
+                $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
+                $overdueCoupons[] = array_merge($coupons[$k], $usageLimit);
+            } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_DATE_TIME_RANGE
+                && $time > strtotime($v['belongs_to_coupon']['time_end'])){
+                $coupons[$k]['belongs_to_coupon']['start'] = substr($v['belongs_to_coupon']['time_start'], 0, 10); //前端需要统一的起止时间
+                $coupons[$k]['belongs_to_coupon']['end'] = substr($v['belongs_to_coupon']['time_end'], 0, 10); //前端需要统一的起止时间
                 $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
                 $overdueCoupons[] = array_merge($coupons[$k], $usageLimit);
             }
