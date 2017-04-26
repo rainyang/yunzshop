@@ -111,6 +111,11 @@ class Withdraw extends BackendModel
     }
 
 
+    public static function getWithdrawByWithdrawSN($withdrawSN)
+    {
+        return self::uniacid()->where('withdraw_sn',$withdrawSN)->first();
+    }
+
     public static function getBalanceWithdrawById($id)
     {
         return self::uniacid()->where('id', $id)

@@ -15,7 +15,18 @@ use Yunshop\Commission\models\Agents;
 class Withdraw
 {
 
-    public static function paySuccess($withdrawId)
+    public static function paySuccess($withdrawSN)
+    {
+        $withdrawModel = WithdrawModel::getWithdrawByWithdrawSN($withdrawSN);
+        if ($withdrawModel && $withdrawModel->type == 'balance') {
+            $withdrawModel->status = 2;
+            $withdrawModel->arrival_at = time();
+
+            return $withdrawModel->save();
+        }
+        return static::otherWithdrawSuccess($withdrawSN);
+    }
+    public static function otherWithdrawSuccess($withdrawId)
     {
         
         $withdraw = WithdrawModel::getWithdrawById($withdrawId)->first();
@@ -29,6 +40,7 @@ class Withdraw
         if($withdraw['type'] == $commissionConfigs['class']){
             Agents::addPayCommission($withdraw['member_id'], $withdraw['actual_amounts']);
         }
+
         
         //修改收入状态
         foreach ($withdraw['type_data']['incomes'] as $item) {

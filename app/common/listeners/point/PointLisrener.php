@@ -59,7 +59,7 @@ class PointLisrener
             $point_service = new PointService($point_data);
             $point_model = $point_service->changePoint();
             if ($point_model) {
-                //通知成功
+                //通知赠送积分
             }
         }
     }
