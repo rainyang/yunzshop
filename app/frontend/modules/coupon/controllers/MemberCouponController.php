@@ -43,8 +43,11 @@ class MemberCouponController extends ApiController
                 $coupons['data'][$k]['api_status'] = self::IS_USED;
             } elseif ($v['used'] == MemberCoupon::NOT_USED){ //未使用
                 if($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT){ //时间限制类型是"领取后几天有效"
-                    if (($now - $v['get_time']) < ($v['belongs_to_coupon']['time_days']*3600)){ //优惠券在有效期内
+                    $end = $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600;
+                    if ($now < $end){ //优惠券在有效期内
                         $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE; //可用时, 就没有api_status描述
+                        $coupons['data'][$k]['start'] = $v['get_time']; //前端需要起止时间
+                        $coupons['data'][$k]['end'] = date('Y-m-d', $end); //前端需要起止时间
                     } else{ //优惠券在有效期外
                         $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
                         $coupons['data'][$k]['api_status'] = self::OVERDUE;
@@ -53,6 +56,8 @@ class MemberCouponController extends ApiController
                     if (($now > $v['belongs_to_coupon']['time_end'])){ //优惠券在有效期外
                         $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
                         $coupons['data'][$k]['api_status'] = self::OVERDUE;
+                        $coupons['data'][$k]['start'] = $coupons['data'][$k]['time_start']; //为了和前面保持一致
+                        $coupons['data'][$k]['end'] = $coupons['data'][$k]['time_end']; //为了和前面保持一致
                     } else{ //优惠券在有效期内
                         $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
                     }
@@ -156,17 +161,28 @@ class MemberCouponController extends ApiController
         foreach($coupons as $k=>$v){
             $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']); //todo 待优化
             $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10; //todo 待优化
+
+            if($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT){
+                $end = $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24;
+                $coupons[$k]['belongs_to_coupon']['start'] = date('Y-m-d', $v['get_time']); //前端需要统一的起止时间
+                $coupons[$k]['belongs_to_coupon']['end'] = date('Y-m-d', $end); //前端需要统一的起止时间
+            }else{
+                $coupons[$k]['belongs_to_coupon']['start'] = $v['belongs_to_coupon']['time_start']; //前端需要统一的起止时间
+                $coupons[$k]['belongs_to_coupon']['end'] = $v['belongs_to_coupon']['time_end']; //前端需要统一的起止时间
+            }
+
             if(
                 ($v['belongs_to_coupon']['time_limit'] == Coupon::RELATIVE_TIME_LIMIT
-                    && (($time - $v['get_time']) < $v['belongs_to_coupon']['time_days']*3600)) //时间限制类型是"领取后几天有效",且没过期
+                    && ($time < $end)) //时间限制类型是"领取后几天有效",且没过期
                 ||
                 ($v['belongs_to_coupon']['time_limit'] == Coupon::ABSOLUTE_TIME_LIMIT
-                    && ($time < $v['belongs_to_coupon']['time_end'])) //时间限制类型是"时间范围",且没过期
+                    && ($time < strtotime($v['belongs_to_coupon']['time_end']))) //时间限制类型是"时间范围",且没过期
             ){
                 $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
                 $availableCoupons[] = array_merge($coupons[$k], $usageLimit);
             }
         }
+        dd($availableCoupons);exit;
         return $availableCoupons;
     }
 
@@ -217,20 +233,17 @@ class MemberCouponController extends ApiController
     public static function usageLimitDescription($couponInArrayFormat)
     {
         switch($couponInArrayFormat['use_type']){
-            case 1:
-                return ('仅下订单时可用');
-                break;
-            case 2:
+            case 0:
                 return ('商城通用');
                 break;
-            case 3:
+            case 1:
                 $res = '适用于下列分类: ';
                 foreach($couponInArrayFormat['categorynames'] as $sub){
                     $res .= ' "'.$sub.'"';
                 }
                 return $res;
                 break;
-            case 4:
+            case 2:
                 $res = '适用于下列商品222: ';
                 foreach($couponInArrayFormat['goods_names'] as $sub){
                     $res .= ' "'.$sub.'"';
