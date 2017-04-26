@@ -235,16 +235,12 @@ class MemberCouponController extends ApiController
                 break;
             case 1:
                 $res = '适用于下列分类: ';
-                foreach($couponInArrayFormat['categorynames'] as $sub){
-                    $res .= ' "'.$sub.'"';
-                }
+                $res .= implode(',', $couponInArrayFormat['categorynames']);
                 return $res;
                 break;
             case 2:
-                $res = '适用于下列商品222: ';
-                foreach($couponInArrayFormat['goods_names'] as $sub){
-                    $res .= ' "'.$sub.'"';
-                }
+                $res = '适用于下列商品: ';
+                $res .= implode(',', $couponInArrayFormat['goods_names']);
                 return $res;
                 break;
             default:
