@@ -45,6 +45,8 @@ class ApiController extends BaseController
             $type  = \YunShop::request()->type;
             $mid   = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
 
+            \Log::debug('api mid', $mid);
+
             if (empty($type) || $type == 'undefined') {
                 $type = Client::getType();
             }
