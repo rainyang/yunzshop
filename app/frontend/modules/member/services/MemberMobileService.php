@@ -39,7 +39,7 @@ class MemberMobileService extends MemberService
                 $member_info = $member_info->toArray();
 
                 //检查下线
-                Member::chkAgent($member_info['uid']);
+                Member::chkAgent($member_info['uid'], $mid);
 
                 //生成分销关系链
                 Member::createRealtion($member_info['uid']);
