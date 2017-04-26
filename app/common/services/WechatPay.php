@@ -112,6 +112,8 @@ class WechatPay extends Pay
     }
 
     /**
+     * 微信提现
+     *
      * @param 提现者用户ID $member_id
      * @param 提现金额 $money
      * @param string $desc
@@ -193,7 +195,7 @@ class WechatPay extends Pay
             return true;
 
         } else {
-            return show_json('0', '退款失败');
+            return show_json('0', '提现失败');
         }
 
         return false;
