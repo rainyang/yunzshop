@@ -13,6 +13,7 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
+use app\common\models\Member;
 use app\common\models\UniAccount;
 use app\frontend\modules\member\services\MemberService;
 
@@ -45,6 +46,8 @@ class ApiController extends BaseController
             $type  = \YunShop::request()->type;
             $mid   = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
 
+            \Log::debug('api mid', $mid);
+
             if (empty($type) || $type == 'undefined') {
                 $type = Client::getType();
             }
@@ -56,6 +59,12 @@ class ApiController extends BaseController
             }
 
             return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
+        } else {
+            $mid = Member::getMid();
+            \Log::debug('Logined mid', $mid);
+
+            //发展下线
+            Member::chkAgent(\YunShop::app()->getMemberId(), $mid);
         }
     }
 

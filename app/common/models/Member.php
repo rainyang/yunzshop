@@ -4,6 +4,7 @@ namespace app\common\models;
 use app\backend\models\BackendModel;
 use app\backend\modules\member\models\MemberRelation;
 use app\common\events\member\BecomeAgent;
+use app\common\services\Session;
 
 /**
  * Created by PhpStorm.
@@ -136,7 +137,9 @@ class Member extends BackendModel
      */
     public static function getMemberById($member_id)
     {
-        return self::where('uid', $member_id)->first();
+        return self::uniacid()
+                ->where('uid', $member_id)
+                ->first();
     }
 
     /**
@@ -181,14 +184,14 @@ class Member extends BackendModel
      *
      * @param $member_id
      */
-    public static function chkAgent($member_id)
+    public static function chkAgent($member_id, $mid)
     {
-        \Log::debug('成为下线 上线uid', \YunShop::request()->mid);
+        \Log::debug('成为下线 上线uid', $mid);
 
         $model = MemberShopInfo::getMemberShopInfo($member_id);
 
         $relation = new MemberRelation();
-        $relation->becomeChildAgent(\YunShop::request()->mid, $model);
+        $relation->becomeChildAgent($mid, $model);
     }
 
     /**
@@ -231,5 +234,18 @@ class Member extends BackendModel
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
         event(new BecomeAgent(\YunShop::request()->mid, $model));
+    }
+
+    public static function getMid()
+    {
+        if (\YunShop::request()->mid) {
+            return \YunShop::request()->mid;
+        } elseif (Session::get('client_url') && strpos(Session::get('client_url'), 'mid')) {
+            preg_match('/.+mid=(\d+).+/', Session::get('client_url'), $matches);
+
+            return $matches[1];
+        }
+
+        return 0;
     }
 }

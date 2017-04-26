@@ -84,7 +84,8 @@ class BalanceController extends ApiController
     //记录【全部、收入、支出】
     public function record()
     {
-        if ($this->getMemberInfo()) {
+        $memberInfo = $this->getMemberInfo();
+        if ($memberInfo) {
             $type = \YunShop::request()->record_type;
             $recordList = BalanceCommon::getMemberDetailRecord($this->memberInfo->uid, $type);
 

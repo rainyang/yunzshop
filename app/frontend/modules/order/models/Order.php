@@ -78,10 +78,10 @@ class Order extends \app\common\models\Order
             $operator['status'] = 0;
         }
         return self::whereHas('hasManyOrderGoods', function($query) use ($operator){
-            return $query->where('comment_status', $operator['operator'], $operator['status']);
-        })
+                return $query->where('comment_status', $operator['operator'], $operator['status']);
+            })
             ->with([
                 'hasManyOrderGoods' => self::orderGoodsBuilder($status)
-            ])->where('uid', $uid)->orderBy('id', 'desc')->get();
+            ])->where('uid', $uid)->where('status', 3)->orderBy('id', 'desc')->get();
     }
 }
