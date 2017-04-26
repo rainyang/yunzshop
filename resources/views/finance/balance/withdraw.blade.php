@@ -60,7 +60,12 @@
         <div class='panel-heading'>
             余额提现申请信息
         </div>
-        <form action="{{yzWebUrl("finance.balance-withdraw.examine",['id'=>$item['id']])}}" method='post' class='form-horizontal'>
+        <form action="{{ yzWebUrl("finance.balance-withdraw.examine",['id'=>$item['id']]) }}" method='post' class='form-horizontal'>
+            <input type="hidden" name="c" value="site"/>
+            <input type="hidden" name="a" value="entry"/>
+            <input type="hidden" name="m" value="yun_shop"/>
+            <input type="hidden" name="route" value="finance.balance-withdraw.examine"/>
+            <input type="hidden" name="id" value="{{ $item['id'] }}"/>
             <div class='panel-body'>
                 <table class="table table-hover">
                     <thead class="navbar-inner">
@@ -127,7 +132,8 @@
                     @elseif($item['pay_way'] == 'alipay')
                         <input type="hidden" name="pay_way" value="2">
                         <input type="submit" name="submit_pay" value="打款到支付宝" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
-                    @endif
+                            <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
+                        @endif
                 @endif
 
                 @if($item['status'] == '-1')
