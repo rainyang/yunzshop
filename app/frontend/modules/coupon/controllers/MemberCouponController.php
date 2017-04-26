@@ -81,11 +81,13 @@ class MemberCouponController extends ApiController
         $pageSize = \YunShop::request()->get('pagesize');
         $pageSize = $pageSize ? $pageSize : 10;
         $uid = \YunShop::app()->getMemberId();
+        $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
 
-        $coupons = Coupon::getCouponsForMember($uid)->paginate($pageSize)->toArray();
-        if(empty($coupons)){
+        $coupons = Coupon::getCouponsForMember($uid, $memberLevel);
+        if($coupons->get()->isEmpty()){
             return $this->errorJson('没有找到记录', []);
         }
+        $coupons = $coupons->paginate($pageSize)->toArray();
 
         //添加"是否可领取" & "是否已抢光" & "是否已领取" & "领取数量是否达到个人上限"的标识
         $now = strtotime('now');
@@ -273,8 +275,8 @@ class MemberCouponController extends ApiController
         }
 
         //是否达到优惠券要求的会员等级
-        $memberLevel = MemberShopInfo::getMemberShopInfo($memberId);
-        if (($memberLevel->level_id > $couponModel->level_limit) && ($couponModel->level_limit !=-1)){ //todo 怎么对比, level_id越小越大还是反之? level_limit=-1是没有限制
+        $member = MemberShopInfo::getMemberShopInfo($memberId);
+        if (($couponModel->level_limit != -1) && ($member->level_id <= $couponModel->level_limit)){
             return $this->errorJson('用户没有达到优惠券的会员等级要求','');
         }
 
