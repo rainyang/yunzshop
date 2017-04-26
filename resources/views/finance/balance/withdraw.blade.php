@@ -132,8 +132,7 @@
                     @elseif($item['pay_way'] == 'alipay')
                         <input type="hidden" name="pay_way" value="2">
                         <input type="submit" name="submit_pay" value="打款到支付宝" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
-                            <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
-                        @endif
+                    @endif
                 @endif
 
                 @if($item['status'] == '-1')

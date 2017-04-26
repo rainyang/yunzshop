@@ -39,6 +39,7 @@ class BalanceWithdrawController extends BaseController
 
     public function examine()
     {
+        echo '<pre>'; print_r(123); exit;
         $this->attachedMode();
         if (!$this->withdrawModel) {
             return $this->message('数据错误，请刷新重试！');
