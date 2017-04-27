@@ -19,10 +19,7 @@ class GoodsOption extends \app\common\models\BaseModel
     public $guarded = [];
     public $timestamps = false;
 
-    public function getVipPriceAttribute()
-    {
-        return GoodsDiscount::getOptionVipPrice($this);
-    }
+
     public function reduceStock($num)
     {
         //拍下立减

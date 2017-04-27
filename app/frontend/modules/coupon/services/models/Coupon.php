@@ -226,7 +226,8 @@ class Coupon
      */
     public function destroy()
     {
-        $this->memberCoupon->used = 1;
-        return $this->memberCoupon->save();
+        $memberCoupon = $this->memberCoupon->fresh();
+        $memberCoupon->used = 1;
+        return $memberCoupon->save();
     }
 }
