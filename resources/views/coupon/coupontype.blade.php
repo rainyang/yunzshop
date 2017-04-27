@@ -204,43 +204,31 @@
 
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否可直接领取</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否可领取</label>
     <div class="col-sm-9 col-xs-12" >
         <label class="radio-inline">
-            <input type="radio" name="coupon[get_type]" value="0" checked  onclick="$('.gettype').hide()"/> 不可以
+            <input type="radio" name="coupon[get_type]" value="1" checked onclick="$('.gettype').show()" /> 可以
         </label>
         <label class="radio-inline">
-            <input type="radio" name="coupon[get_type]" value="1" @if($coupon['get_type'] == 1)checked="true" @endif onclick="$('.gettype').show()" /> 可以
+            <input type="radio" name="coupon[get_type]" value="0" @if($coupon['get_type'] === 0)checked="true" @endif onclick="$('.gettype').hide()"/> 不可以
         </label>
-        <span class='help-block'>会员是否可以在领券中心直接领取或购买</span>
+        <span class='help-block'>会员是否可以在领券中心领取 (或者只能手动发放)</span>
 
     </div>
 </div>
 
-<div class="form-group gettype" @if($coupon['get_type']!=1)style="display:none" @endif>
+<div class="form-group gettype">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
     <div class="col-sm-9 form-inline">
-
         <div class="input-group form-group col-sm-1">
-            <span class="input-group-addon">每个限领</span>
+            <span class="input-group-addon">每人限领张数:</span>
             <input type='text' class='form-control' value="{{isset($coupon['get_max']) ? $coupon['get_max'] : 1}}" name='coupon[get_max]' style="width: 80px" />
-            </div>
-        <div class="input-group form-group col-sm-1">
-            <span class="input-group-addon">张 消耗</span>
-            <input style="width: 80px"  type='text' class='form-control' value="{{isset($coupon['credit']) ? $coupon['credit'] : 0}}" name='coupon[credit]'/>
         </div>
-        <div class="input-group form-group col-sm-1">
-            <span class="input-group-addon">积分 + 花费</span>
-                <input style="width: 80px"  type='text' class='form-control' value="{{isset($coupon['money']) ? $coupon['money'] : 0}}" name='coupon[money]'/>
-            <span class="input-group-addon">元</span>
-        </div>
-        <div class="input-group form-group col-sm-3">
-            <label class="checkbox-inline" style='margin-top:-8px;'>
-                <input type="checkbox" name='coupon[usecredit2]' value="1" @if($coupon['usecredit2']==1)checked @endif /> 优先使用余额支付
-            </label>
-        </div>
-        <span class="help-block">每人限领数量 (-1为不限制数量); 领取方式可任意组合，可以单独积分兑换，单独现金兑换，或者积分+现金形式兑换, 如果都为空，则可以免费领取</span>
-
+        {{--<div class="input-group form-group col-sm-1">--}}
+            {{--<span class="input-group-addon">消耗积分:</span>--}}
+            {{--<input style="width: 80px"  type='text' class='form-control' value="{{isset($coupon['credit']) ? $coupon['credit'] : 0}}" name='coupon[credit]'/>--}}
+        {{--</div>--}}
+        <span class="help-block">每人限领数量 (-1为不限制数量).</span>
     </div>
 
 </div>
