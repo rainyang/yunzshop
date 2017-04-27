@@ -12,7 +12,7 @@ class Order extends \app\common\models\Order
 {
     private static function format($builder,$pageSize){
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->uniacid()->orderBy('id','desc')->paginate($pageSize)->appends(['button_models'])->toArray();
+        $list += $builder->uniacid()->isPlugin()->orderBy('id','desc')->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
     public static function getAllOrders($search, $pageSize)
@@ -133,7 +133,6 @@ class Order extends \app\common\models\Order
 
     public function scopeSearch($order_builder, $params)
     {
-        $order_builder->isPlugin();
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单
             if ($params['ambiguous']['field'] == 'order') {
