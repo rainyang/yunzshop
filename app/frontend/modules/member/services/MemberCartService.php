@@ -51,7 +51,7 @@ class MemberCartService
 
     /**
      * @param Collection $memberCarts
-     * @return static
+     * @return Collection
      */
     public static function filterShopMemberCart(Collection $memberCarts)
     {

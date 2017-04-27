@@ -27,7 +27,6 @@ class WithdrawController extends BaseController
         $set = Setting::get('withdraw.balance');
         $resultModel = \YunShop::request()->withdraw;
         if ($resultModel) {
-
             $validator = null;
             foreach ($resultModel as $key => $item) {
                 $validator = (new Withdraw())->validator($item);
