@@ -42,7 +42,6 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function index()
     {
-        //todo 数值验证
         $balance = Setting::get('finance.balance');
         $requestModel = \YunShop::request()->balance;
         if ($requestModel) {
@@ -87,7 +86,6 @@ class BalanceController extends BaseController
     public function balanceDetail()
     {
 
-        //todo 搜索
         $pageSize = 20;
         $search = \YunShop::request()->search;
         if ($search) {
