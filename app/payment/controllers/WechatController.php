@@ -134,25 +134,4 @@ class WechatController extends PaymentController
         //保存响应数据
         Pay::payResponseDataLog($post['out_trade_no'], '微信支付', json_encode($post));
     }
-
-    /**
-     * 支付方式
-     *
-     * @param $order_id
-     * @return string
-     */
-    public function getPayType($order_id)
-    {
-        if (!empty($order_id)) {
-            $tag = substr($order_id, 0, 2);
-
-            if ('SN' == strtoupper($tag)) {
-                return 'charge.succeeded';
-            } elseif ('RV' == strtoupper($tag)) {
-                return 'recharge.succeeded';
-            }
-        }
-
-        return '';
-    }
 }

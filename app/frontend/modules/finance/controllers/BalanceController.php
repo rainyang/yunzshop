@@ -337,6 +337,7 @@ class BalanceController extends ApiController
         if ($this->model->type == 1) {
             $result['js'] = json_decode($result['js'], 1);
         }
+        \Log::debug('余额充值 result', $result);
         return $result;
     }
 

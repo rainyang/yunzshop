@@ -50,7 +50,6 @@ class MoneyOffCouponPrice extends CouponPrice
      */
     public function setOrderGoodsDiscountPrice()
     {
-
         //dd($this->getOrderGoodsInScope());
         $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->map(function($orderGoods){
                 /**
@@ -65,6 +64,7 @@ class MoneyOffCouponPrice extends CouponPrice
                 $goodsMemberCoupon = new GoodsMemberCoupon();
                 $goodsMemberCoupon->amount = number_format(( $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsGroupPrice()) * $this->getPrice(), 2);
                 $goodsMemberCoupon->enough = number_format(( $this->getOrderGoodsPrice($orderGoods)/ $this->getOrderGoodsGroupPrice()) * $this->dbCoupon->enough, 2);
+                //todo 需要按照订单方式修改
                 if(!isset($orderGoods->coupons)){
                     $orderGoods->coupons = collect();
                 }

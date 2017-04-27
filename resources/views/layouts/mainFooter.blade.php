@@ -10,13 +10,14 @@
 
   <script type="text/javascript">
       require(['bootstrap'],function(){
-
       });
+  </script>
+  @if(YunShop::app()->role == 'founder')
+  <script type="text/javascript">
     var checkUrl = "{!! yzWebUrl('update.check') !!}";
     var todoUrl = "{!! yzWebUrl('update.start-download') !!}";
     function check_yun_shop_upgrade() {
         $.post(checkUrl, function (result) {
-          console.log(todoUrl);
           if (result && result.updated != '0') {
             var html = '<div class="container" id="check_yun_shop_upgrade" style=" position: fixed;margin: auto;bottom: 0px;z-index: 999;">\
               <div class="row">\
@@ -38,3 +39,4 @@
       check_yun_shop_upgrade();
     });
   </script>
+  @endif
