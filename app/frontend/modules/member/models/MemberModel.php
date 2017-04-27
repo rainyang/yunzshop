@@ -371,7 +371,7 @@ class MemberModel extends Member
         if (!empty($member_info['birthyear'] )) {
             $member_info['birthday'] = $member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday'];
         } else {
-            $member_info['birthday'] = '1970-01-01';
+            $member_info['birthday'] = date('Y-m-d', time());
         }
 
 
