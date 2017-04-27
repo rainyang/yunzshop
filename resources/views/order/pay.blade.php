@@ -10,7 +10,8 @@
 </script>
     <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" charset="utf-8">
-        wx.config({"debug":false,"beta":false,"appId":"wx6be17f352e859277","nonceStr":"f9BUapEznF","timestamp":"1493258184","url":"http://test.yunzshop.com/addons/yun_shop/api.php?i=2&mid=null&type=1&route=finance.balance.recharge&i=2&type=1&pay_type=1&recharge_money=50","signature":"cb54d953ee4fefb411497e78db1118c20ea99537","jsApiList":["chooseWXPay"]});
+        wx.config({"debug":false,"beta":false,"appId":"wx6be17f352e859277","nonceStr":"f9BUapEznF","timestamp":"1493258184","url":"http:\/\/test.yunzshop.com\/addons\/yun_shop\/api.php?i=2&mid=null&type=1&route=finance.balance.recharge&i=2&type=1&pay_type=1&recharge_money=50","signature":"cb54d953ee4fefb411497e78db1118c20ea99537","jsApiList":["chooseWXPay"]}
+        );
     </script>
     <script>
         $(function(){
