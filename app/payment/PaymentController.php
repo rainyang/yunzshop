@@ -99,9 +99,11 @@ class PaymentController extends BaseController
                 if ($data['unit'] == 'fen') {
                     $orderPay->amount = $orderPay->amount * 100;
                 }
-
+                \Log::debug('操作的订单', $data['out_trade_no'] . '/' . $orderPay->amount . '/' . $data['total_fee']);
                 if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
                     MemberRelation::checkOrderPay();
+
+                    \Log::debug('更新订单状态');
                     OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
                 }
                 break;

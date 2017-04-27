@@ -19,7 +19,7 @@ class MemberShopInfo extends \app\common\models\MemberShopInfo
 
     public function level()
     {
-        return $this->belongsTo('app\backend\modules\member\models\MemberLevel');
+        return $this->belongsTo('app\backend\modules\member\models\MemberLevel', 'level_id', 'id');
     }
 
     public function agent()
