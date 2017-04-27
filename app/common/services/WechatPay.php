@@ -73,7 +73,8 @@ class WechatPay extends Pay
 
         \Log::debug('微信  config', $config);
         \Log::debug('微信  js', json_encode($js));
-
+file_put_contents(storage_path('logs/config.log'), print_r($config, 1));
+        file_put_contents(storage_path('logs/js.log'), json_encode($js));
         return ['config'=>$config, 'js'=>json_encode($js)];
     }
 

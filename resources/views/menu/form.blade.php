@@ -21,6 +21,7 @@
             <div class="form-group ">
                 <label for="menu[parent_id]" class="control-label col-xs-12 col-sm-3 col-md-2">上级</label>
                 <div class="col-xs-12 col-sm-9 col-md-10"><select class="form-control" id="menu[parent_id]" name="menu[parent_id]">
+
                         @foreach($parentMenu as $key=>$value)
                         <option value="{{$key}}" @if($key == $model->parent_id) selected="selected" @endif>{!! $value !!}</option>
                         @endforeach
@@ -35,8 +36,8 @@
 
             {{--图标修改start--}}
             <div class="form-group ">
-                <label for="menu[icon]" class="control-label col-xs-12 col-md-2">图标</label>
-                <div class="col-sm-9 col-xs-12">
+                <label for="menu[icon]" class="control-label col-xs-12 col-sm-3 col-md-2">图标</label>
+                <div class="col-xs-12 col-sm-9 col-md-10 ">
                     <button class="btn btn-default" name="menu[icon]" data-iconset="fontawesome" data-icon="{{ $model->icon?:'fa-circle-o' }}" role="iconpicker"></button>
                 </div>
             </div>
