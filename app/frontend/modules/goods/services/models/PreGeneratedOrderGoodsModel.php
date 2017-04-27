@@ -73,15 +73,15 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         $data = array(
             'goods_id' => $this->goods->id,
             'goods_sn' => $this->goods->goods_sn,
-            'price' => $this->getPrice(),
+            'price' => number_format($this->getPrice(),2),
             'total' => $this->total,
             'title' => $this->goods->title,
             'thumb' => $this->goods->thumb,
             'goods_option_id' => $this->goodsOption->id,
             'goods_option_title' => $this->goodsOption->title,
-            'goods_price' => $this->getGoodsPrice(),
-            'vip_price' => $this->getVipPrice(),
-            'coupon_price' => $this->getCouponPrice(),
+            'goods_price' => number_format($this->getGoodsPrice(),2),
+            'vip_price' => number_format($this->getVipPrice(),2),
+            'coupon_price' => number_format($this->getCouponPrice(),2),
             'coupons'=>$this->coupons
         );
         if (isset($this->goodsOption)) {
