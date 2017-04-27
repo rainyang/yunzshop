@@ -20,7 +20,7 @@
 
             <div class="form-group ">
                 <label for="menu[parent_id]" class="control-label col-xs-12 col-sm-3 col-md-2">上级</label>
-                <div class="col-sm-9 col-xs-12"><select class="form-control" id="menu[parent_id]" name="menu[parent_id]">
+                <div class="col-xs-12 col-sm-9 col-md-10"><select class="form-control" id="menu[parent_id]" name="menu[parent_id]">
                         @foreach($parentMenu as $key=>$value)
                         <option value="{{$key}}" @if($key == $model->parent_id) selected="selected" @endif>{!! $value !!}</option>
                         @endforeach
