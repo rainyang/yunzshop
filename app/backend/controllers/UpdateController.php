@@ -89,6 +89,9 @@ class UpdateController extends BaseController
             // Set the first argument (simulate) to "false" to install the update
             // i.e. $update->update(false);
 
+            $update->onEachUpdateFinish(function($version){
+                \Artisan::call('update:version ' . $version);
+            });
             $result = $update->update();
             if ($result === true) {
                 echo 'Update simulation successful<br>';
