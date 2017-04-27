@@ -50,6 +50,7 @@ class Coupon
 
     public function __construct(MemberCoupon $memberCoupon, PreGeneratedOrderModel $preGeneratedOrderModel)
     {
+        //echo 3;
         //echo 1;exit;
         $this->memberCoupon = $memberCoupon;
         $this->preGeneratedOrderModel = $preGeneratedOrderModel;
@@ -148,7 +149,7 @@ class Coupon
 
     public function activate()
     {
-        $this->getMemberCoupon()->used = 1;
+        $this->getMemberCoupon()->selected = 1;
         //dd($this->getMemberCoupon());
         //exit;
         return $this->setOrderGoodsDiscountPrice();
@@ -176,10 +177,16 @@ class Coupon
      */
     public function valid()
     {
+        //echo 2;
         if (!$this->isOptional()){
             return false;
         }
         if(!$this->price->valid()){
+            return false;
+        }
+        // 已选择
+        if($this->getMemberCoupon()->selected == 1){
+            //echo 4;
             return false;
         }
         return true;
