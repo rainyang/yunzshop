@@ -52,7 +52,7 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >选择会员等级</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <select name="send_level" class="form-control" id="value_2" >
-                        <option value="0">全部</option>
+                        <option></option>
                         @foreach($memberLevels as $v)
                         <option value="{{$v['level']}}">{{$v['level_name']}}</option>
                         @endforeach
@@ -63,7 +63,7 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >选择会员分组</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <select name="send_group" class="form-control"  id="value_3">
-                        <option value="0">全部</option>
+                        <option></option>
                         @foreach($memberGroups as $v)
                         <option value="{{$v['id']}}">{{$v['group_name']}}</option>
                         @endforeach
