@@ -347,7 +347,7 @@ class MemberModel extends Member
     public static function userData($member_info, $yz_member)
     {
         if (!empty($yz_member)) {
-            $member_info['alipay_name'] = $yz_member['alipay_name'];
+            $member_info['alipay_name'] = $yz_member['alipayname'];
             $member_info['alipay'] =  $yz_member['alipay'];
             $member_info['province_name'] =  $yz_member['province_name'];
             $member_info['city_name'] =  $yz_member['city_name'];
@@ -371,7 +371,7 @@ class MemberModel extends Member
         if (!empty($member_info['birthyear'] )) {
             $member_info['birthday'] = $member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday'];
         } else {
-            $member_info['birthday'] = '1970-01-01';
+            $member_info['birthday'] = date('Y-m-d', time());
         }
 
 
@@ -391,11 +391,11 @@ class MemberModel extends Member
         $shop = \Setting::get('shop.shop');
         $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
         $member_info['credit'] = [
-            'text' => $shop['credit'] ? $shop['copyright'] : '余额',
+            'text' => $shop['credit'] ? $shop['credit'] : '余额',
             'data' => $member_info['credit2']
             ];
         $member_info['integral'] = [
-            'text' => $shop['credit1'] ? $shop['copyright'] : '积分',
+            'text' => $shop['credit1'] ? $shop['credit1'] : '积分',
             'data' => $member_info['credit1']
             ];
 

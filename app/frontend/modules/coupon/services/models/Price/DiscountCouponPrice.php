@@ -38,6 +38,7 @@ class DiscountCouponPrice extends CouponPrice
             //(优惠券金额/订单商品总金额)*订单商品价格
             //dd(number_format(-($this->getDiscountPrice() / $this->getOrderGoodsInScope()->getPrice()) * $OrderGoods->getPrice(), 2));exit;
             $goodsMemberCoupon = new GoodsMemberCoupon();
+            //todo 需要按照订单方式修改
 
             $goodsMemberCoupon->amount = number_format(($orderGoods->getVipPrice() / $this->coupon->getOrderGoodsInScope()->getVipPrice()) * $this->getPrice(), 2);
             $goodsMemberCoupon->enough = number_format(($orderGoods->getVipPrice() / $this->coupon->getOrderGoodsInScope()->getVipPrice()) * $this->dbCoupon->enough, 2);

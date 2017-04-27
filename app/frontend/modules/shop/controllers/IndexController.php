@@ -3,6 +3,7 @@ namespace app\frontend\modules\shop\controllers;
 
 use app\api\Base;
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\Goods;
 use app\common\models\Slide;
@@ -20,10 +21,13 @@ class IndexController extends ApiController
 
     public function getDefaultIndex()
     {
+        $set = Setting::get('shop.category');
+        $set['cat_adv_img'] = tomedia($set['cat_adv_img']);
 
         $data = [
             'ads' => $this->getAds(),
             'category' => $this->getRecommentCategoryList(),
+            'set' => $set,
             'goods' => $this->getRecommentGoods(),
         ];
         $this->successJson('成功', $data);
@@ -43,12 +47,14 @@ class IndexController extends ApiController
 
     public function getRecommentCategoryList()
     {
+
         $request = Category::getRecommentCategoryList()
         ->where('is_home','1')
         ->get();
         foreach ($request as &$item) {
             $item['thumb'] = tomedia($item['thumb']);
         }
+
         return $request;
     }
 

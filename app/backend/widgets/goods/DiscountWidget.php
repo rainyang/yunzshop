@@ -29,7 +29,6 @@ class DiscountWidget extends Widget
         }
         $levels = MemberLevel::getMemberLevelList();
         $groups = MemberGroup::getMemberGroupList();
-
         return view('goods.widgets.discount', [
             'discount' => $discounts->toArray(),
             'discountValue' => $discountValue,

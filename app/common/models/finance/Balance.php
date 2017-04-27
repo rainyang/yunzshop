@@ -158,7 +158,7 @@ class Balance extends BaseModel
     public static function getMemberDetailRecord($memberId, $type= '')
     {
         $query = self::uniacid()->where('member_id',$memberId);
-        if ($type == \app\common\services\finance\Balance::INCOME || $type == \app\common\services\finance\Balance::EXPENDITURE) {
+        if ($type == static::TYPE_INCOME || $type == static::TYPE_EXPENDITURE) {
             $query = $query->where('type', $type);
         }
         return $query->orderBy('created_at','desc')->get();

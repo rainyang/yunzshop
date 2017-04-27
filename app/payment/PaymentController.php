@@ -5,8 +5,11 @@ namespace  app\payment;
 use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
 use app\common\models\Order;
+use app\common\models\OrderPay;
 use app\common\models\PayOrder;
 use app\common\models\PayRefundOrder;
+use app\common\models\PayType;
+use app\common\models\PayWithdrawOrder;
 use app\frontend\modules\finance\services\BalanceService;
 use app\frontend\modules\order\services\OrderService;
 use app\backend\modules\refund\services\RefundOperationService;
@@ -91,16 +94,17 @@ class PaymentController extends BaseController
             case "charge.succeeded":
                 \Log::debug('支付操作', 'charge.succeeded');
 
-                $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
+                $orderPay = OrderPay::where('pay_sn', $data['out_trade_no'])->first();
 
                 if ($data['unit'] == 'fen') {
-                    $order_info->price = $order_info->price * 100;
+                    $orderPay->amount = $orderPay->amount * 100;
                 }
-
-                if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
+                \Log::debug('操作的订单', $data['out_trade_no'] . '/' . $orderPay->amount . '/' . $data['total_fee']);
+                if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
                     MemberRelation::checkOrderPay();
 
-                    OrderService::orderPay(['order_id' => $order_info->id]);
+                    \Log::debug('更新订单状态');
+                    OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
                 }
                 break;
             case "recharge.succeeded":
@@ -115,65 +119,23 @@ class PaymentController extends BaseController
     }
 
     /**
-     * 支付宝退款回调操作
+     * 支付方式
      *
-     * @param $data
+     * @param $order_id
+     * @return string
      */
-    public function refundResutl($data)
+    public function getPayType($order_id)
     {
-        $pay_order = PayOrder::getPayOrderInfoByTradeNo($data['trade_no'])->first();
+        if (!empty($order_id)) {
+            $tag = substr($order_id, 0, 2);
 
-        if ($pay_order) {
-            $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
-
-            if ($pay_refund_model) {
-                $pay_refund_model->status = 2;
-                $pay_refund_model->trade_no = $data['trade_no'];
-                $pay_refund_model->third_type = $data['pay_type'];
-                $pay_refund_model->save();
+            if ('PN' == strtoupper($tag)) {
+                return 'charge.succeeded';
+            } elseif ('RV' == strtoupper($tag)) {
+                return 'recharge.succeeded';
             }
         }
 
-        \Log::debug('退款操作', 'refund.succeeded');
-
-        $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
-
-        $order_info->price = $order_info->price * 100;
-
-        if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
-            \Log::debug('订单事件触发');
-            RefundOperationService::refundComplete(['order_id'=>$order_info->id]);
-        }
-    }
-
-    /**
-     * 支付宝提现回调操作
-     *
-     * @param $data
-     */
-    public function withdrawResutl($data)
-    {
-        $pay_order = PayOrder::getPayOrderInfoByTradeNo($data['trade_no'])->first();
-
-        if ($pay_order) {
-            $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
-
-            if ($pay_refund_model) {
-                $pay_refund_model->status = 2;
-                $pay_refund_model->trade_no = $data['trade_no'];
-                $pay_refund_model->third_type = $data['pay_type'];
-                $pay_refund_model->save();
-            }
-        }
-
-        \Log::debug('提现操作', 'withdraw.succeeded');
-
-        $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
-
-        $order_info->price = $order_info->price * 100;
-
-        if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
-
-        }
+        return '';
     }
 }

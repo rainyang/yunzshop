@@ -153,7 +153,7 @@ class MemberRelationController extends BaseController
     public function applyProtocol()
     {
         $info = Setting::get("apply_protocol");
-        
+
         $requestProtocol = \YunShop::request()->protocol;
         if($requestProtocol){
             $request = Setting::set('apply_protocol',$requestProtocol);
@@ -164,6 +164,25 @@ class MemberRelationController extends BaseController
         
         return view('member.apply-protocol', [
             'info' => $info,
+        ])->render();
+    }
+
+    public function base()
+    {
+        $info = \Setting::get('relation_base');
+
+        $base = \YunShop::request()->base;
+
+        if($base){
+            $request = Setting::set('relation_base',$base);
+            if($request){
+                return $this->message('保存成功', Url::absoluteWeb('member.member-relation.base'));
+            }
+        }
+
+        return view('member.relation-base', [
+            'banner'  => toimage($info['banner']),
+            'content' => $info['content']
         ])->render();
     }
 

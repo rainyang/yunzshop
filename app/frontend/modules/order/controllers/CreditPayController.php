@@ -1,5 +1,6 @@
 <?php
 /**
+ * 单订单余额支付
  * Created by PhpStorm.
  * User: shenyang
  * Date: 2017/4/17
@@ -33,7 +34,7 @@ class CreditPayController extends PayController
 
     protected function pay($request, $payType)
     {
-        $this->_validate($request);
+        $this->validate($request);
 
         $query_str = [
             'order_no' => $this->order()->order_sn,

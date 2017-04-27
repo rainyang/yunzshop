@@ -12,7 +12,7 @@ class Order extends \app\common\models\Order
 {
     private static function format($builder,$pageSize){
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->uniacid()->orderBy('id','desc')->paginate($pageSize)->appends(['button_models'])->toArray();
+        $list += $builder->uniacid()->isPlugin()->orderBy('id','desc')->paginate($pageSize)->appends(['button_models'])->toArray();
         return $list;
     }
     public static function getAllOrders($search, $pageSize)
@@ -61,16 +61,16 @@ class Order extends \app\common\models\Order
     {
         $builder = Order::orders($search, $pageSize)->refund();
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
-        return $list;
+        return self::format($builder,$pageSize);
+
     }
 
     public static function getRefundedOrders($search, $pageSize)
     {
         $builder = Order::orders($search, $pageSize)->refunded();
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
-        return $list;
+        return self::format($builder,$pageSize);
+
     }
     //订单导出订单数据
     public static function getExportOrders($search)
@@ -133,7 +133,6 @@ class Order extends \app\common\models\Order
 
     public function scopeSearch($order_builder, $params)
     {
-        $order_builder->isPlugin();
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
             //订单
             if ($params['ambiguous']['field'] == 'order') {
@@ -180,5 +179,18 @@ class Order extends \app\common\models\Order
             $order_builder->whereBetween($params['time_range']['field'], $range);
         }
         return $order_builder;
+    }
+
+    public static function getOrderDetailById($order_id)
+    {
+        return self::with(
+            [
+                'hasManyOrderGoods.belongsToGood',
+                'beLongsToMember',
+                'hasOneOrderRemark',
+                'address',
+                'hasOneRefundApply'
+            ]
+        )->find($order_id);
     }
 }

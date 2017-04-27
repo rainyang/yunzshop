@@ -14,16 +14,20 @@ use app\common\facades\Setting;
 
 class MemberLevel extends \app\common\models\MemberLevel
 {
-    /****************************       需要考虑。注意！！！      *******************
-     *
-     * 默认分组的完善，
-     * 每次添加新公众号需要自动创建一条对应公众号uniacid的默认分组
-     *
-     *
-     *****************************************************************************/
 
 
     public $guarded = [''];
+
+    public function getLevelNameAttribute()
+    {
+        return static::defaultLevelName($this->attributes['level_name']);
+    }
+    public static function defaultLevelName($levelName)
+    {
+        return $levelName ?: Setting::get('shop.member')['level_name'];
+
+    }
+
 
     /**
      * Get membership list
@@ -33,7 +37,6 @@ class MemberLevel extends \app\common\models\MemberLevel
     {
         return static::uniacid()->get()->toArray();
     }
-
 
     /**
      * 查询等级名称通过等级ID
