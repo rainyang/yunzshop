@@ -104,12 +104,12 @@ class MemberCouponController extends ApiController
     public static function getCouponData($coupons, $memberLevel)
     {
         foreach($coupons['data'] as $k=>$v){
-            if (empty($memberLevel) || ($v['level_limit'] != self::NOT_LIMIT && $v['level_limit'] < $memberLevel)){ //会员等级不达标,或者没有会员等级
+            if (($v['total'] != self::NOT_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
+                $coupons['data'][$k]['api_availability'] = self::EXHAUST;
+            } elseif (empty($memberLevel) || ($v['level_limit'] != self::NOT_LIMIT && $v['level_limit'] < $memberLevel)){ //会员等级不达标,或者没有会员等级
                 $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
             } elseif(($v['get_max'] != self::NOT_LIMIT) && ($v['member_got_count'] >= $v['get_max'])){
                 $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
-            } elseif (($v['total'] != self::NOT_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
-                $coupons['data'][$k]['api_availability'] = self::EXHAUST;
             } else{
                 $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
             }
