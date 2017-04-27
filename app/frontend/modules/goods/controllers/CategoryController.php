@@ -32,6 +32,7 @@ class CategoryController extends BaseController
         foreach ($list['data'] as &$item) {
             $item['thumb'] = tomedia($item['thumb']);
         }
+        $set['cat_adv_img'] = tomedia($set['cat_adv_img']);
         $list['set'] = $set;
         if($list['data']){
             return $this->successJson('获取分类数据成功!', $list);
