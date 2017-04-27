@@ -26,6 +26,7 @@ class MemberCouponController extends ApiController
     const NOT_LIMIT = -1; //没有限制 (比如对会员等级没有限制, 对领取总数没有限制)
 
     const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
+//    const TEMPLATEID = 'tqsXWjFgDGrlUmiOy0ci6VmVtjYxR7s-4BWtJX6jgeQ'; //临时调试用
 
     /**
      * 获取用户所拥有的优惠券的数据接口
@@ -314,19 +315,38 @@ class MemberCouponController extends ApiController
             if(!$res){
                 return $this->errorJson('领取失败','');
             } else{
-//                //推送模板消息通知用户
-//                $mappingFans = McMappingFans::getFansById($memberId);
-//                $openid = $mappingFans->openid;
-//                $nickname = $mappingFans->nickname;
-//                $respTitle = self::dynamicName($nickname, $couponModel->resp_title);
-//                $respDesc = self::dynamicName($nickname, $couponModel->resp_desc);
-//                $messageData = [
-//                    'resp_title' => $respTitle,
-//                    'resp_thumb' => $couponModel->resp_thumb,
-//                    'resp_desc' => $respDesc,
-//                    'resp_url' => $couponModel->resp_url,
-//                ];
-//                self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData); //todo 检测
+                //推送模板消息通知用户
+                $mappingFans = McMappingFans::getFansById($memberId);
+                $openid = $mappingFans->openid;
+                $nickname = $mappingFans->nickname;
+                if(!empty($openid) && !empty($couponModel->resp_title)){ //如果没有设置标题, 或者该用户没有openid,则不发送通知
+
+                    //可读的有效期
+                    if($couponModel->time_limit == 1){
+                        $validTime = $couponModel->time_start.' - '.$couponModel->time_end;
+                    } else{
+                        $validTime = date('Y/m/d', strtotime('now')).' - '.date('Y/m/d', strtotime('+'.$couponModel->time_days.' dyas'));
+                    }
+
+                    //动态显示通知内容
+                    $dynamicData = [
+                        'nickname' => $nickname,
+                        'couponname' => $couponModel->name,
+                        'validtime' => $validTime,
+                    ];
+                    $respTitle = self::dynamicMsg($couponModel->resp_title, $dynamicData);
+                    $respDesc = $couponModel->resp_desc ?
+                            self::dynamicMsg($couponModel->resp_desc, $dynamicData)
+                            : '亲爱的 '.$nickname.', 您已经获取 1 张优惠券 "'.$couponModel->name.'", 有效期是 '.$validTime.' ,请及时使用';
+
+                    $messageData = [
+                        'resp_title' => $respTitle,
+                        'resp_thumb' => $couponModel->resp_thumb,
+                        'resp_desc' => $respDesc,
+                        'resp_url' => $couponModel->resp_url,
+                    ];
+                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
+                }
 
                 //写入log
                 $logData = [
@@ -378,13 +398,19 @@ class MemberCouponController extends ApiController
         return $resultArray;
     }
 
-    //动态显示昵称
-    protected static function dynamicName($userName, $notice)
+    //动态显示内容
+    protected static function dynamicMsg($msg, $data)
     {
-        if (preg_match('/\[nickname\]/', $notice)){
-            $notice = str_replace('[nickname]', $userName, $notice);
+        if (preg_match('/\[nickname\]/', $msg)){
+            $msg = str_replace('[nickname]', $data['nickname'], $msg);
         }
-        return $notice;
+        if (preg_match('/\[couponname\]/', $msg)){
+            $msg = str_replace('[couponname]', $data['couponname'], $msg);
+        }
+        if (preg_match('/\[validtime\]/', $msg)){
+            $msg = str_replace('[validtime]', $data['validtime'], $msg);
+        }
+        return $msg;
     }
 
 }
