@@ -69,7 +69,7 @@ class WechatPay extends Pay
 
         $js = $app->js->config(array('chooseWXPay'));
         $js = json_decode($js, 1);
-        $js['timestamp'] = strval($js['timestamp']);
+        //$js['timestamp'] = strval($js['timestamp']);
 
         \Log::debug('微信  config', $config);
         \Log::debug('微信  js', json_encode($js));
