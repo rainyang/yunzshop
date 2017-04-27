@@ -8,10 +8,9 @@
         <ul class="sidebar-menu">
             <li class="header" style="color: white">栏目导航</li>
             <!-- Optionally, you can add icons to the links -->
-
+            @if(YunShop::app()->role)
             <li><a href="{{yzWebFullUrl('index.index')}}"><i class="fa fa-dashboard"></i> <span>控制面板</span></a></li>
-            <li><a href="{{yzWebFullUrl('plugins.get-plugin-data')}}"><i class="fa fa-circle-o"></i> <span>插件管理</span></a></li>
-
+            @endif
             @foreach(Config::get('menu') as $key=>$value)
                 @if(isset($value['menu']) && $value['menu'] == 1 && can($key))
                     @if(isset($value['child']) && array_child_kv_exists($value['child'],'menu',1))
