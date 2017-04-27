@@ -28,7 +28,7 @@ return [
     */
 
     'left_column_class'  => 'col-xs-12 col-sm-3 col-md-2',
-    'right_column_class' => '',
+    'right_column_class' => 'col-xs-12 col-sm-9 col-md-10',
 
     'left_column_offset_class' => 'col-sm-9 col-xs-12',
 
