@@ -347,7 +347,7 @@ class MemberModel extends Member
     public static function userData($member_info, $yz_member)
     {
         if (!empty($yz_member)) {
-            $member_info['alipay_name'] = $yz_member['alipay_name'];
+            $member_info['alipay_name'] = $yz_member['alipayname'];
             $member_info['alipay'] =  $yz_member['alipay'];
             $member_info['province_name'] =  $yz_member['province_name'];
             $member_info['city_name'] =  $yz_member['city_name'];
