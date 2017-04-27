@@ -13,22 +13,22 @@ use EasyWeChat\Foundation\Application;
 
 class MemberCouponController extends ApiController
 {
-    //"优惠券中心"的优惠券, 对于该用户是否可领取
+    //"优惠券中心"的优惠券
     const NOT_AVAILABLE = 1; //不可领取
     const IS_AVAILABLE = 2; //可领取
+    const EXHAUST = 3; //已经被抢光
 
-    //"优惠券中心"的优惠券的状态
-    const OUTDATED = 2; //todo 和老高协商改为 3
-    const EXHAUST = 4; //已经被抢光
-    const ALREADY_GOT = 5; //用户已经领取过, 但没有达到该优惠券的领取上限
-    const ALREADY_GOT_AND_TOUCH_LIMIT = 6; //用户已经领取过, 且已经达到该优惠券的领取上限
+    //对于可领取的优惠券
+    const ALREADY_GOT = 1; //已经领取
 
     //"个人拥有的优惠券"的状态
     const NOT_USED = 1; //未使用
     const OVERDUE = 2; //优惠券已经过期
     const IS_USED = 3; //已经使用
 
-    const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
+    const NOT_LIMIT = -1; //没有限制 (比如对会员等级没有限制, 对领取总数没有限制)
+
+//    const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
 
     /**
      * 获取用户所拥有的优惠券的数据接口
@@ -49,27 +49,24 @@ class MemberCouponController extends ApiController
         $now = strtotime('now');
         foreach($coupons['data'] as $k=>$v){
             if ($v['used'] == MemberCoupon::USED){ //已使用
-                $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
                 $coupons['data'][$k]['api_status'] = self::IS_USED;
             } elseif ($v['used'] == MemberCoupon::NOT_USED){ //未使用
                 if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE){ //时间限制类型是"领取后几天有效"
                     $end = $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600;
                     if ($now < $end){ //优惠券在有效期内
-                        $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE; //可用时, 就没有api_status描述
+                        $coupons['data'][$k]['api_status'] = self::NOT_USED;
                         $coupons['data'][$k]['start'] = $v['get_time']; //前端需要起止时间
                         $coupons['data'][$k]['end'] = date('Y-m-d', $end); //前端需要起止时间
                     } else{ //优惠券在有效期外
-                        $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
                         $coupons['data'][$k]['api_status'] = self::OVERDUE;
                     }
                 } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_DATE_TIME_RANGE){ //时间限制类型是"时间范围"
                     if (($now > $v['belongs_to_coupon']['time_end'])){ //优惠券在有效期外
-                        $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
                         $coupons['data'][$k]['api_status'] = self::OVERDUE;
                         $coupons['data'][$k]['start'] = $coupons['data'][$k]['time_start']; //为了和前面保持一致
                         $coupons['data'][$k]['end'] = $coupons['data'][$k]['time_end']; //为了和前面保持一致
                     } else{ //优惠券在有效期内
-                        $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
+                        $coupons['data'][$k]['api_status'] = self::NOT_USED;
                     }
                 }
             } else{
@@ -90,38 +87,35 @@ class MemberCouponController extends ApiController
         $uid = \YunShop::app()->getMemberId();
         $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
 
-        $coupons = Coupon::getCouponsForMember($uid, $memberLevel);
+        $now = strtotime('now');
+        $coupons = Coupon::getCouponsForMember($uid, null, $now);
         if($coupons->get()->isEmpty()){
             return $this->errorJson('没有找到记录', []);
         }
         $coupons = $coupons->paginate($pageSize)->toArray();
 
-        //添加"是否可领取" & "是否已抢光" & "是否已领取" & "领取数量是否达到个人上限"的标识
-        $now = strtotime('now');
-        $couponsData = self::getCouponData($coupons, $now);
+        //添加"是否可领取" & "是否已抢光" & "是否已领取"的标识
+        $couponsData = self::getCouponData($coupons, $memberLevel);
 
         return $this->successJson('ok', $couponsData);
     }
 
-    //添加"是否可领取" & "是否已抢光" & "是否已领取" & "领取数量是否达到个人上限"的标识
-    public static function getCouponData($coupons, $time)
+    //添加"是否可领取" & "是否已抢光" & "是否已领取"的标识
+    public static function getCouponData($coupons, $memberLevel)
     {
-        //添加"是否可领取" & "是否已抢光" & "是否已领取" & "领取数量是否达到个人上限"的标识
         foreach($coupons['data'] as $k=>$v){
-            if($v['time_limit'] == Coupon::COUPON_DATE_TIME_RANGE && ($time > $v['time_end'])){ //优惠券已过期
+            if (empty($memberLevel) || ($v['level_limit'] != self::NOT_LIMIT && $v['level_limit'] < $memberLevel)){ //会员等级不达标,或者没有会员等级
                 $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
-                $coupons['data'][$k]['api_status'] = self::OUTDATED;
-            } elseif(($v['has_many_member_coupon_count'] >= $v['total']) && ($v['total'] != -1)){ //优惠券已抢光(PS.total=-1是bu限制数量)
+            } elseif(($v['get_max'] != self::NOT_LIMIT) && ($v['member_got_count'] >= $v['get_max'])){
                 $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
-                $coupons['data'][$k]['api_status'] = self::EXHAUST;
-            } elseif(($v['member_got_count'] >= $v['get_max']) && ($v['get_max'] != -1)){ //达到个人可领取的上限
-                $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
-                $coupons['data'][$k]['api_status'] = self::ALREADY_GOT_AND_TOUCH_LIMIT;
-            } elseif($v['member_got_count'] > 0){ //已领取,但没有达到个人可领取的上限
-                $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
-                $coupons['data'][$k]['api_status'] = self::ALREADY_GOT;
+            } elseif (($v['total'] != self::NOT_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
+                $coupons['data'][$k]['api_availability'] = self::EXHAUST;
             } else{
                 $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
+            }
+
+            if($v['member_got_count'] > 0){
+                $coupons['data'][$k]['api_status'] = self::ALREADY_GOT;
             }
 
             //添加优惠券使用范围描述
@@ -357,8 +351,8 @@ class MemberCouponController extends ApiController
 //                CouponLog::create($logData);
 
                 //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
-                $coupon = Coupon::getCouponsForMember($memberId, $member->level_id, $couponId)->get()->toArray();
-                $res = self::getCouponData(['data' => $coupon], strtotime('now'));
+                $coupon = Coupon::getCouponsForMember($memberId, $couponId)->get()->toArray();
+                $res = self::getCouponData(['data' => $coupon], $member->level_id);
                 return $this->successJson('ok', $res['data'][0]);
             }
         }
