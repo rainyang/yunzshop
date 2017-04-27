@@ -9,7 +9,6 @@
 namespace app\frontend\modules\order\models;
 
 
-use app\common\models\OrderGoods;
 use app\frontend\models\Member;
 
 class Order extends \app\common\models\Order
@@ -38,7 +37,7 @@ class Order extends \app\common\models\Order
 
     public function belongsToOrderGoods()
     {
-        return $this->belongsTo(OrderGoods::class, 'id', 'order_id');
+        return $this->belongsTo(\app\common\models\OrderGoods::class, 'id', 'order_id');
     }
 
     public function scopeOrders($query)
