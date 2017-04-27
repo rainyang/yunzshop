@@ -28,7 +28,7 @@
                 </div>
             </div>
 
-            {!! BootForm::text('menu[item]','* 标识',$model->item,['help_text'=>'标识唯一也是做为权限判断标识']) !!}
+            {!! BootForm::text('menu[item]','* 标识',$model->item,['help_text'=>'标识唯一也是做为权限判断标识', 'right_column_class'=> 'col-xs-12 col-sm-9 col-md-10']) !!}
             {!! BootForm::text('menu[name]','* 菜单名称',$model->name) !!}
             {!! BootForm::text('menu[url]','URL路由或链接地址',$model->url,['help_text'=>'填写路由 menu.add 或 http(s)://xxxx']) !!}
             {!! BootForm::text('menu[url_params]','URL参数',$model->url_params) !!}

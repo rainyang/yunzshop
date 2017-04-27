@@ -146,7 +146,7 @@ class WechatController extends PaymentController
         if (!empty($order_id)) {
             $tag = substr($order_id, 0, 2);
 
-            if ('SN' == strtoupper($tag)) {
+            if ('PN' == strtoupper($tag)) {
                 return 'charge.succeeded';
             } elseif ('RV' == strtoupper($tag)) {
                 return 'recharge.succeeded';
