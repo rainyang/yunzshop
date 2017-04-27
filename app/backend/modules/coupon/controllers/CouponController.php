@@ -6,6 +6,7 @@ use app\backend\modules\coupon\models\Coupon;
 use app\common\helpers\PaginationHelper;
 use app\common\models\MemberCoupon;
 use app\common\helpers\Url;
+use app\backend\modules\member\models\MemberLevel;
 
 /**
  * Created by PhpStorm.
@@ -55,6 +56,9 @@ class CouponController extends BaseController
         //获取表单提交的值
         $couponRequest = \YunShop::request()->coupon;
 
+        //获取会员等级列表
+        $memberLevels = MemberLevel::getMemberLevelList();
+
         //表单验证
         if($couponRequest){
             $coupon = new Coupon();
@@ -80,6 +84,7 @@ class CouponController extends BaseController
 
         return view('coupon.coupon', [
             'coupon' => $couponRequest,
+            'memberlevels' => $memberLevels,
         ])->render();
     }
 
@@ -90,6 +95,9 @@ class CouponController extends BaseController
         if (!$coupon_id) {
             $this->error('请传入正确参数.');
         }
+
+        //获取会员等级列表
+        $memberLevels = MemberLevel::getMemberLevelList();
 
         $coupon = Coupon::getCouponById($coupon_id)->first();
         $couponRequest = \YunShop::request()->coupon;
@@ -126,6 +134,7 @@ class CouponController extends BaseController
             'categorynames' => $coupon['categorynames'],
             'goods_ids' => $coupon['goods_ids'],
             'goods_names' => $coupon['goods_names'],
+            'memberlevels' => $memberLevels,
         ])->render();
     }
 

@@ -38,6 +38,8 @@ abstract class PreGeneratedController extends ApiController
         });
 
         $data += compact('total_price', 'total_dispatch_price', 'order_data', 'total_goods_price');
+        //dd($data);
+        //exit;
         return $this->successJson('成功', $data);
 
     }

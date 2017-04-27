@@ -22,7 +22,7 @@ class TestController extends ApiController
 {
     public function index()
     {
-        OrderService::orderPay(['order_id'=>6]);
+        OrderService::ordersPay(['order_pay_id' => 40]);
 
         exit;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);

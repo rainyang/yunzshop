@@ -50,6 +50,7 @@ class Coupon
 
     public function __construct(MemberCoupon $memberCoupon, PreGeneratedOrderModel $preGeneratedOrderModel)
     {
+        //echo 3;
         //echo 1;exit;
         $this->memberCoupon = $memberCoupon;
         $this->preGeneratedOrderModel = $preGeneratedOrderModel;
@@ -81,7 +82,7 @@ class Coupon
                 return new DiscountCouponPrice($this);
                 break;
             default:
-                if(config('app.debug')){
+                if (config('app.debug')) {
                     dd($this->memberCoupon->belongsToCoupon->coupon_method);
                     dd($this->memberCoupon);
                     throw new AppException('优惠券优惠类型不存在');
@@ -104,7 +105,7 @@ class Coupon
                 return new CategoryScope($this);
                 break;
             default:
-                if(config('app.debug')){
+                if (config('app.debug')) {
                     dd($this->memberCoupon->belongsToCoupon->use_type);
                     dd($this->memberCoupon->belongsToCoupon);
                     throw new AppException('优惠券范围不存在');
@@ -128,7 +129,7 @@ class Coupon
                 return new SinceReceive($this);
                 break;
             default:
-                if(config('app.debug')){
+                if (config('app.debug')) {
                     dd($this->memberCoupon->belongsToCoupon);
                     throw new AppException('时限类型不存在');
                 }
@@ -148,7 +149,7 @@ class Coupon
 
     public function activate()
     {
-        $this->getMemberCoupon()->used = 1;
+        $this->getMemberCoupon()->selected = 1;
         //dd($this->getMemberCoupon());
         //exit;
         return $this->setOrderGoodsDiscountPrice();
@@ -176,26 +177,38 @@ class Coupon
      */
     public function valid()
     {
-        if(!isset($this->useScope)){
+        //echo 2;
+        if (!$this->isOptional()){
             return false;
         }
-        if(!isset($this->price)){
+        if(!$this->price->valid()){
             return false;
         }
-        if(!isset($this->timeLimit)){
+        // 已选择
+        if($this->getMemberCoupon()->selected == 1){
+            //echo 4;
             return false;
         }
-//        dd($this->useScope->valid());
-//        dd($this->price->valid());
-//        dd($this->timeLimit);
-//        exit;
-//        if(!empty($this->getMemberCoupon()->used)){
-//            return false;
-//        }
-        //dd($this->getMemberCoupon()->used);
-        //dd($this->useScope->valid() && $this->price->valid() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used));
-        //exit;
-        return $this->useScope->valid() && $this->price->valid() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used);
+        return true;
+    }
+
+    /**
+     * 优惠券可选
+     * @return mixed
+     */
+    public function isOptional()
+    {
+        if (!isset($this->useScope)) {
+            return false;
+        }
+        if (!isset($this->price)) {
+            return false;
+        }
+        if (!isset($this->timeLimit)) {
+            return false;
+        }
+
+        return $this->useScope->valid() && $this->price->isOptional() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used);
     }
 
     public function destroy()

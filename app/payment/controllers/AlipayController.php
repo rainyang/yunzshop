@@ -10,6 +10,7 @@ namespace app\payment\controllers;
 
 use app\common\facades\Setting;
 use app\common\helpers\Url;
+use app\common\models\PayWithdrawOrder;
 use app\common\services\finance\Withdraw;
 use app\common\services\Pay;
 use app\payment\PaymentController;
@@ -108,7 +109,7 @@ class AlipayController extends PaymentController
                 if ($plits[4] == 'S') {
                     $data = [
                         'total_fee'    => $plits[3],
-                        'trade_no'     => $_POST['trade_no'],
+                        'trade_no'     => $_POST['batch_no'],
                         'unit'         => 'yuan',
                         'pay_type'     => '支付宝'
                     ];
@@ -187,8 +188,6 @@ class AlipayController extends PaymentController
 
         $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
 
-        $order_info->price = $order_info->price * 100;
-
         if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
             \Log::debug('订单事件触发');
             RefundOperationService::refundComplete(['order_id'=>$order_info->id]);
@@ -207,15 +206,13 @@ class AlipayController extends PaymentController
         if ($pay_refund_model) {
             $pay_refund_model->status = 2;
             $pay_refund_model->trade_no = $data['trade_no'];
-            $pay_refund_model->third_type = $data['pay_type'];
             $pay_refund_model->save();
         }
 
         \Log::debug('提现操作', 'withdraw.succeeded');
 
-        $pay_refund_model->price = $pay_refund_model->price * 100;
         if (bccomp($pay_refund_model->price, $data['total_fee'], 2) == 0) {
-            Withdraw::paySuccess($data['total_fee']);
+            Withdraw::paySuccess($data['trade_no']);
         }
     }
 }

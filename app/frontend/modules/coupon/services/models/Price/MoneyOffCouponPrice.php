@@ -15,7 +15,6 @@ use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 class MoneyOffCouponPrice extends CouponPrice
 {
 
-
     /**
      * 累加所有商品会员价
      * @return int

@@ -10,8 +10,10 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
+use app\common\services\AliPay;
 use app\common\services\JsonRpc;
 use app\common\services\Session;
+use app\common\services\WechatPay;
 
 class TestController extends BaseController
 {
