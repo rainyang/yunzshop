@@ -8,8 +8,15 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\frontend\modules\goods\models\GoodsOption;
+
 class OrderGoods extends \app\common\models\OrderGoods
 {
+    public function goodsOption()
+    {
+        return $this->hasOne(GoodsOption::class, 'id', 'goods_option_id');
+
+    }
     public function getButtonsAttribute()
     {
         $result = [];
