@@ -72,11 +72,14 @@ class OrderDiscount extends Discount
 
     private function _getCouponPrice()
     {
-
-        $discountPrice = (new TestService($this->order, Coupon::COUPON_DISCOUNT))->getOrderDiscountPrice();
+        $discountCouponService = (new TestService($this->order, Coupon::COUPON_DISCOUNT));
+        $discountPrice = $discountCouponService->getOrderDiscountPrice();
+        $discountCouponService->activate();
         //dd($discountPrice);
-        $moneyOffPrice = (new TestService($this->order, Coupon::COUPON_MONEY_OFF))->getOrderDiscountPrice();
+        $moneyOffCouponService = (new TestService($this->order, Coupon::COUPON_MONEY_OFF));
+        $moneyOffPrice = $moneyOffCouponService->getOrderDiscountPrice();
         //dd($moneyOffPrice);
+        $moneyOffCouponService->activate();
 
         return $discountPrice + $moneyOffPrice;
     }

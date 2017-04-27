@@ -50,7 +50,6 @@ class MoneyOffCouponPrice extends CouponPrice
      */
     public function setOrderGoodsDiscountPrice()
     {
-
         //dd($this->getOrderGoodsInScope());
         $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->map(function($orderGoods){
                 /**
