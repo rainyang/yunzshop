@@ -18,7 +18,7 @@ class MemberCouponController extends ApiController
     const IS_AVAILABLE = 2; //可领取
     const EXHAUST = 3; //已经被抢光
 
-    //对于可领取的优惠券
+    //优惠券是否已经领取
     const ALREADY_GOT = 1; //已经领取
 
     //"个人拥有的优惠券"的状态
@@ -28,7 +28,7 @@ class MemberCouponController extends ApiController
 
     const NOT_LIMIT = -1; //没有限制 (比如对会员等级没有限制, 对领取总数没有限制)
 
-//    const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
+    const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
 
     /**
      * 获取用户所拥有的优惠券的数据接口
@@ -83,7 +83,7 @@ class MemberCouponController extends ApiController
     public function couponsForMember()
     {
         $pageSize = \YunShop::request()->get('pagesize');
-        $pageSize = $pageSize ? $pageSize : 100; //todo 临时调试
+        $pageSize = $pageSize ? $pageSize : 10;
         $uid = \YunShop::app()->getMemberId();
         $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
 
@@ -169,8 +169,8 @@ class MemberCouponController extends ApiController
 
         $availableCoupons = array();
         foreach($coupons as $k=>$v){
-            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']); //todo 待优化
-            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10; //todo 待优化
+            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']);
+            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10;
 
             if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
                 && ($time < $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)){
@@ -197,8 +197,8 @@ class MemberCouponController extends ApiController
         $overdueCoupons = array();
         //获取已经过期的优惠券
         foreach($coupons as $k=>$v){
-            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']); //todo 待优化
-            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10; //todo 待优化
+            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']);
+            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10;
 
             if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
                 && ($time > $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)){
@@ -225,8 +225,8 @@ class MemberCouponController extends ApiController
         $usedCoupons = array();
         //增加属性 - 优惠券的适用范围
         foreach($coupons as $k=>$v){
-            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']); //todo 待优化
-            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10; //todo 待优化
+            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']);
+            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10;
             $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon']));
             $usedCoupons[] = array_merge($coupons[$k], $usageLimit);
         }
