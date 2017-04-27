@@ -2,7 +2,6 @@
 
 namespace app\frontend\modules\coupon\services;
 
-use app\common\models\Order;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\coupon\services\models\DiscountCoupon;
 use app\frontend\modules\coupon\services\models\MoneyOffCoupon;
@@ -55,6 +54,7 @@ class TestService
             $result = $coupon->isOptional();
 
             $coupon->getMemberCoupon()->valid = $coupon->valid();
+            $coupon->getMemberCoupon()->checked = $coupon->isChecked();
 //            if($result){
 //                dd($coupon->getMemberCoupon()->id);
 //                dd($coupon->getMemberCoupon()->valid = $coupon->valid());

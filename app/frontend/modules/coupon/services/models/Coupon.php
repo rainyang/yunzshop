@@ -50,8 +50,6 @@ class Coupon
 
     public function __construct(MemberCoupon $memberCoupon, PreGeneratedOrderModel $preGeneratedOrderModel)
     {
-        //echo 3;
-        //echo 1;exit;
         $this->memberCoupon = $memberCoupon;
         $this->preGeneratedOrderModel = $preGeneratedOrderModel;
         $this->price = $this->getPriceInstance();
@@ -147,12 +145,15 @@ class Coupon
         return $this->price->getPrice();
     }
 
+    /**
+     * 激活优惠券
+     */
     public function activate()
     {
+        //记录优惠券被选中了
         $this->getMemberCoupon()->selected = 1;
-        //dd($this->getMemberCoupon());
-        //exit;
-        return $this->setOrderGoodsDiscountPrice();
+
+        $this->setOrderGoodsDiscountPrice();
     }
 
     /**
@@ -184,14 +185,22 @@ class Coupon
         if(!$this->price->valid()){
             return false;
         }
-        // 已选择
-        if($this->getMemberCoupon()->selected == 1){
-            //echo 4;
-            return false;
-        }
         return true;
     }
 
+    /**
+     * 优惠券已选中
+     * @return bool
+     */
+    public function isChecked(){
+        if (!$this->valid()){
+            return false;
+        }
+        if($this->getMemberCoupon()->selected == 1){
+            return true;
+        }
+        return false;
+    }
     /**
      * 优惠券可选
      * @return mixed
@@ -211,6 +220,10 @@ class Coupon
         return $this->useScope->valid() && $this->price->isOptional() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used);
     }
 
+    /**
+     * 记录优惠券已使用
+     * @return bool
+     */
     public function destroy()
     {
         $this->memberCoupon->used = 1;
