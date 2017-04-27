@@ -12,7 +12,7 @@
       require(['bootstrap'],function(){
       });
   </script>
-  @if(YunShop::app()->role == 'founder' && config('APP_ENV') == 'production')
+  @if(YunShop::app()->role == 'founder' && config('app.env') == 'production')
   <script type="text/javascript">
     var checkUrl = "{!! yzWebUrl('update.check') !!}";
     var todoUrl = "{!! yzWebUrl('update.index') !!}";
