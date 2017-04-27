@@ -17,10 +17,10 @@ use \vierbergenlars\SemVer\SemVerException;
  *
  * update.json
  * {
-    "0.1.0": "http://domain/server/0.1.0.zip",
-    "0.2.0": "http://domain/server/0.2.0.zip",
-    "0.2.1": "http://domain/server/0.2.1.zip"
-    }
+"0.1.0": "http://domain/server/0.1.0.zip",
+"0.2.0": "http://domain/server/0.2.0.zip",
+"0.2.1": "http://domain/server/0.2.1.zip"
+}
  */
 class AutoUpdate
 {
@@ -294,6 +294,12 @@ class AutoUpdate
     {
         return $this->_latestVersion;
     }
+
+    public function getUpdates()
+    {
+        return $this->_updates;
+    }
+
     /**
      * Get an array of versions which will be installed.
      *

@@ -9,7 +9,7 @@
 namespace app\frontend\modules\goods\services\models;
 
 
-use app\common\models\OrderGoods;
+use app\frontend\modules\order\models\OrderGoods;
 
 abstract class OrderGoodsModel extends OrderGoods
 {

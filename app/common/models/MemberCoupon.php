@@ -6,7 +6,7 @@ namespace app\common\models;
 class MemberCoupon extends BaseModel
 {
     public $table = 'yz_member_coupon';
-    protected $guarded = ['selected'];
+    protected $guarded = [];
     public $timestamps = false;
 
     /*
