@@ -174,7 +174,7 @@ class Coupon
 
     /**
      * 优惠券可使用
-     * @return mixed
+     * @return bool
      */
     public function valid()
     {
@@ -203,7 +203,7 @@ class Coupon
     }
     /**
      * 优惠券可选
-     * @return mixed
+     * @return bool
      */
     public function isOptional()
     {

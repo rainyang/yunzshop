@@ -30,11 +30,22 @@ class TestService
             /**
              * @var $coupon Coupon
              */
-            $coupon->activate();
+            //$coupon->activate();
             return $coupon->getDiscountPrice();
         });
     }
-
+    /**
+     * 激活订单优惠券
+     */
+    public function activate()
+    {
+        return $this->getAllValidCoupons()->each(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
+            $coupon->activate();
+        });
+    }
     /**
      * 获取订单可算的优惠券
      * @return Collection
@@ -107,7 +118,7 @@ class TestService
         $coupon_method = $this->coupon_method;
         $result = MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember);
         if(isset($coupon_method)){// 折扣/立减
-            $result->filter(function ($memberCoupon) use($coupon_method){
+            $result = $result->filter(function ($memberCoupon) use($coupon_method){
                 return $memberCoupon->belongsToCoupon->coupon_method == $coupon_method;
             });
         }
