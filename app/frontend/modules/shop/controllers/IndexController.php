@@ -3,6 +3,7 @@ namespace app\frontend\modules\shop\controllers;
 
 use app\api\Base;
 use app\common\components\ApiController;
+use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\Goods;
 use app\common\models\Slide;
