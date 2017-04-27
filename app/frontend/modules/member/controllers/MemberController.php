@@ -333,16 +333,22 @@ class MemberController extends ApiController
 
         $birthday = explode('-', $data['birthday']);
 
-        $meber_data = [
+        $member_data = [
             'realname' => $data['realname'],
-            'mobile' => $data['mobile'],
-            'telephone' => $data['telephone'],
             'avatar' => $data['avatar'],
-            'gender' => $data['gender'],
-            'birthyear' => $birthday[0],
-            'birthmonth' => $birthday[1],
-            'birthday' => $birthday[2]
+            'gender' => intval($data['gender']),
+            'birthyear' => intval($birthday[0]),
+            'birthmonth' => intval($birthday[1]),
+            'birthday' => intval($birthday[2])
         ];
+
+        if (!empty($data['mobile'])) {
+            $member_data['mobile'] = $data['mobile'];
+        }
+
+        if (!empty($data['telephone'])) {
+            $member_data['telephone'] = $data['telephone'];
+        }
 
         $member_shop_info_data = [
             'alipay' => $data['alipay'],
@@ -358,7 +364,7 @@ class MemberController extends ApiController
 
         if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
             $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
-            $member_model->setRawAttributes($meber_data);
+            $member_model->setRawAttributes($member_data);
 
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
             $member_shop_info_model->setRawAttributes($member_shop_info_data);

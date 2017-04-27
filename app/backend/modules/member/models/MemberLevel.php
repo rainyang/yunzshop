@@ -24,7 +24,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     }
     public static function defaultLevelName($levelName)
     {
-        return $levelName ?: 'test';
+        return $levelName ?: Setting::get('shop.member')['level_name'];
 
     }
 

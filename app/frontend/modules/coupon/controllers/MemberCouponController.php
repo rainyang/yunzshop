@@ -322,19 +322,19 @@ class MemberCouponController extends ApiController
             if(!$res){
                 return $this->errorJson('领取失败','');
             } else{
-                //推送模板消息通知用户
-                $mappingFans = McMappingFans::getFansById($memberId);
-                $openid = $mappingFans->openid;
-                $nickname = $mappingFans->nickname;
-                $respTitle = self::dynamicName($nickname, $couponModel->resp_title);
-                $respDesc = self::dynamicName($nickname, $couponModel->resp_desc);
-                $messageData = [
-                    'resp_title' => $respTitle,
-                    'resp_thumb' => $couponModel->resp_thumb,
-                    'resp_desc' => $respDesc,
-                    'resp_url' => $couponModel->resp_url,
-                ];
-                self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData); //todo 检测
+//                //推送模板消息通知用户
+//                $mappingFans = McMappingFans::getFansById($memberId);
+//                $openid = $mappingFans->openid;
+//                $nickname = $mappingFans->nickname;
+//                $respTitle = self::dynamicName($nickname, $couponModel->resp_title);
+//                $respDesc = self::dynamicName($nickname, $couponModel->resp_desc);
+//                $messageData = [
+//                    'resp_title' => $respTitle,
+//                    'resp_thumb' => $couponModel->resp_thumb,
+//                    'resp_desc' => $respDesc,
+//                    'resp_url' => $couponModel->resp_url,
+//                ];
+//                self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData); //todo 检测
 
 
                 //扣除余额和积分
