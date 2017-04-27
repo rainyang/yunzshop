@@ -28,4 +28,14 @@ class OrderSend extends ChangeStatusOperation
         $db_express_model->save();
         parent::updateTable();
     }
+    public function enable()
+    {
+        if(!empty($this->status->refund_id)){
+            if($this->hasOneRefundApply->status >=0){
+                $this->message = "退款中的订单,无法执行{$this->name}操作";
+                return false;
+            }
+        }
+        return parent::enable();
+    }
 }
