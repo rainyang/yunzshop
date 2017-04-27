@@ -15,7 +15,7 @@
   @if(YunShop::app()->role == 'founder' && config('env') == 'production')
   <script type="text/javascript">
     var checkUrl = "{!! yzWebUrl('update.check') !!}";
-    var todoUrl = "{!! yzWebUrl('update.start-download') !!}";
+    var todoUrl = "{!! yzWebUrl('update.index') !!}";
     function check_yun_shop_upgrade() {
         $.post(checkUrl, function (result) {
           if (result && result.updated != '0') {
