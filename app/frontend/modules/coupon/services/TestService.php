@@ -48,11 +48,12 @@ class TestService
             return new Coupon($memberCoupon, $this->order);
         });
         $result = $coupons->filter(function($coupon){
-            $result = $coupon->isOptional();
             //exit;
             /**
              * @var $coupon Coupon
              */
+            $result = $coupon->isOptional();
+
             $coupon->getMemberCoupon()->valid = $coupon->valid();
 //            if($result){
 //                dd($coupon->getMemberCoupon()->id);
@@ -60,7 +61,8 @@ class TestService
 //            }
             return $result;
         });
-
+//        dd($result);
+//        exit;
         return $result;
     }
 

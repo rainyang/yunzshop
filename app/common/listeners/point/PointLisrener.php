@@ -6,6 +6,7 @@
  * Date: 2017/4/11
  * Time: 下午3:57
  */
+
 namespace app\common\listeners\point;
 
 use app\common\events\order\AfterOrderCreatedEvent;
@@ -57,10 +58,7 @@ class PointLisrener
     {
         if (isset($point_data['point'])) {
             $point_service = new PointService($point_data);
-            $point_model = $point_service->changePoint();
-            if ($point_model) {
-                //通知赠送积分
-            }
+            $point_service->changePoint();
         }
     }
 

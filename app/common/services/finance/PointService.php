@@ -11,9 +11,12 @@ namespace app\common\services\finance;
 
 use app\backend\modules\member\models\Member;
 use app\common\models\finance\PointLog;
+use EasyWeChat\Foundation\Application;
 
 class PointService
 {
+    const TEMPLATE_ID = 'No_IuF0fTnk7dWZSnie-J4Q7ZI_ZPi_nZwvAUi234ks';
+
     const POINT_INCOME_GET = 1; //获得
 
     const POINT_INCOME_LOSE = -1; //失去
@@ -41,6 +44,8 @@ class PointService
     public $point_data;
 
     public $member_point;
+
+    protected $member;
     /*
      * $data = [
      *      'point_income_type' //失去还是获得 POINT_INCOME_GET OR POINT_INCOME_LOSE
@@ -60,6 +65,7 @@ class PointService
         }
         $this->point_data = $point_data;
         $member = Member::getMemberById($point_data['member_id']);
+        $this->member = $member;
         $this->member_point = $member['credit1'];
     }
 
@@ -84,21 +90,56 @@ class PointService
         return PointLog::create($this->point_data);
     }
 
+    public function messageNotice()
+    {
+        $this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
+        $msg = [
+            'first'     => '积分变动通知',
+            'keyword1'  => '尊敬的[' . $this->member['nickname'] ? $this->member['nickname'] : $this->member['realname'] . ']，您与[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']'
+        ];
+        self::notice(self::TEMPLATE_ID, $msg, $this->member['openid']);
+    }
+
     /**
      * @name 获取变化之后的积分
      */
     public function getAfterPoint()
     {
         $this->point_data['before_point'] = $this->member_point;
-        /*if ($this->point_data['point_income_type'] == PointService::POINT_INCOME_GET) {
-            $this->member_point += $this->point_data['point'];
-        } else if ($this->point_data['point_income_type'] == PointService::POINT_INCOME_LOSE) {
-            $this->member_point -= $this->point_data['point'];
-        }*/
         $this->member_point += $this->point_data['point'];
         if ($this->member_point < PointService::POINT) {
             $this->member_point = PointService::POINT;
         }
         $this->point_data['after_point'] = $this->member_point;
+    }
+
+    public function getModeAttribute($mode)
+    {
+        $mode_attribute = '';
+        switch ($mode) {
+            case (1):
+                $mode_attribute = self::POINT_MODE_GOODS_ATTACHED;
+                break;
+            case (2):
+                $mode_attribute = self::POINT_MODE_ORDER_ATTACHED;
+                break;
+            case (3):
+                $mode_attribute = self::POINT_MODE_POSTER_ATTACHED;
+                break;
+            case (4):
+                $mode_attribute = self::POINT_MODE_ARTICLE_ATTACHED;
+                break;
+            case (5):
+                $mode_attribute = self::POINT_MODE_ADMIN_ATTACHED;
+                break;
+        }
+        return $mode_attribute;
+    }
+
+    public static function notice($templateId, $data, $openId)
+    {
+        $app = app('wechat');
+        $notice = $app->notice;
+        $notice->uses($templateId)->andData($data)->andReceiver($openId)->send();
     }
 }

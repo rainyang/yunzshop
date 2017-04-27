@@ -337,6 +337,7 @@ class BalanceController extends ApiController
         if ($this->model->type == 1) {
             $result['js'] = json_decode($result['js'], 1);
         }
+        \Log::debug('余额充值 result', $result);
         return $result;
     }
 
@@ -350,10 +351,10 @@ class BalanceController extends ApiController
     {
         return array(
             'subject' => '会员充值',
-            'body' => '会员充值金额' . $this->model->money . '元',
+            'body' => '会员充值金额' . $this->model->money . '元:'. \YunShop::app()->uniacid,
             'amount' => $this->model->money,
             'order_no' => $this->model->ordersn,
-            'extra' => ['type' => 1]
+            'extra' => ['type' => 2]
         );
     }
 
