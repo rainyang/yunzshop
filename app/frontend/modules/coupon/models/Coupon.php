@@ -37,13 +37,16 @@ class Coupon extends \app\common\models\Coupon
                                 'money', 'credit'])
                         ->where('get_type','=',1)
                         ->where('status', '=', 1)
+                        ->where('get_max', '!=', 0)
                         ->withCount(['hasManyMemberCoupon'])
                         ->withCount(['hasManyMemberCoupon as member_got' => function($query) use($memberId){
                             return $query->where('uid', '=', $memberId);
                         }]);
+
         if(!is_null($couponId)){
             $res = $res->where('id', '=', $couponId);
         }
+
         if(!is_null($time)){
             $res = $res->where(function($query) use ($time){
                 $query->where('time_limit', '=', 1)->where('time_end', '>', $time)
@@ -52,6 +55,7 @@ class Coupon extends \app\common\models\Coupon
                     });
             });
         }
+
         return $res;
     }
 

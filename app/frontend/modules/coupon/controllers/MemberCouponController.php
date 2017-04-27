@@ -14,12 +14,9 @@ use EasyWeChat\Foundation\Application;
 class MemberCouponController extends ApiController
 {
     //"优惠券中心"的优惠券
-    const NOT_AVAILABLE = 1; //不可领取
-    const IS_AVAILABLE = 2; //可领取
+    const IS_AVAILABLE = 1; //可领取
+    const ALREADY_GOT = 2; //已经领取
     const EXHAUST = 3; //已经被抢光
-
-    //优惠券是否已经领取
-    const ALREADY_GOT = 1; //已经领取
 
     //"个人拥有的优惠券"的状态
     const NOT_USED = 1; //未使用
@@ -106,16 +103,17 @@ class MemberCouponController extends ApiController
         foreach($coupons['data'] as $k=>$v){
             if (($v['total'] != self::NOT_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
                 $coupons['data'][$k]['api_availability'] = self::EXHAUST;
-            } elseif (empty($memberLevel) || ($v['level_limit'] != self::NOT_LIMIT && $v['level_limit'] < $memberLevel)){ //会员等级不达标,或者没有会员等级
-                $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
-            } elseif(($v['get_max'] != self::NOT_LIMIT) && ($v['member_got_count'] >= $v['get_max'])){
-                $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
+            } elseif($v['member_got_count'] > 0){
+                $coupons['data'][$k]['api_availability'] = self::ALREADY_GOT;
             } else{
                 $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
             }
 
-            if($v['member_got_count'] > 0){
-                $coupons['data'][$k]['api_status'] = self::ALREADY_GOT;
+            //增加属性 - 对于该优惠券,用户可领取的数量
+            if($v['get_max'] != self::NOT_LIMIT){
+                $coupons['data'][$k]['api_remaining'] = $v['get_max'] - $v['member_got_count'];
+            } elseif($v['get_max'] == self::NOT_LIMIT){
+                $coupons['data'][$k]['api_remaining'] = -1;
             }
 
             //添加优惠券使用范围描述
@@ -295,7 +293,7 @@ class MemberCouponController extends ApiController
         $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
         $couponMaxLimit = Coupon::getter($couponId, 'get_max'); //优惠券限制每人的领取总数
         if($count >= $couponMaxLimit){
-            return $this->errorJson('该用户已经达到个人领取上限','');
+            return $this->errorJson('已经达到个人领取上限','');
         }
 
         //表单验证, 保存
@@ -330,25 +328,17 @@ class MemberCouponController extends ApiController
 //                ];
 //                self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData); //todo 检测
 
-
-                //扣除余额和积分
-//                if()
-
-
                 //写入log
-//                $logData = [
-//                    'uniacid' => \YunShop::app()->get('uniacid'),
-//                    'logno' => '领取优惠券成功: 用户( ID 为 '.$memberId.' )成功领取 1 张优惠券( ID 为 '.$couponId.' )',
-//                    'member_id' => $memberId,
-//                    'couponid' => $couponId,
-//                    'paystatus' => $payStatus, //0 无 1 购买券已扣除余额
-//                    'creditstatus' => $creditStatus,//0 无 1 购买券已扣除积分
-//                    'paytype' => $payType, //todo 支付类型 0 余额支付
-//                    'getfrom' => 1,
-//                    'status' => 0,
-//                    'createtime' => strtotime('now'),
-//                ];
-//                CouponLog::create($logData);
+                $logData = [
+                    'uniacid' => \YunShop::app()->get('uniacid'),
+                    'logno' => '领取优惠券成功: 用户( ID 为 '.$memberId.' )成功领取 1 张优惠券( ID 为 '.$couponId.' )',
+                    'member_id' => $memberId,
+                    'couponid' => $couponId,
+                    'getfrom' => 1,
+                    'status' => 0,
+                    'createtime' => strtotime('now'),
+                ];
+                CouponLog::create($logData);
 
                 //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
                 $coupon = Coupon::getCouponsForMember($memberId, $couponId)->get()->toArray();
