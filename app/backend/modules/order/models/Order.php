@@ -61,16 +61,16 @@ class Order extends \app\common\models\Order
     {
         $builder = Order::orders($search, $pageSize)->refund();
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
-        return $list;
+        return self::format($builder,$pageSize);
+
     }
 
     public static function getRefundedOrders($search, $pageSize)
     {
         $builder = Order::orders($search, $pageSize)->refunded();
         $list['total_price'] = $builder->sum('price');
-        $list += $builder->paginate($pageSize)->appends(['button_models'])->toArray();
-        return $list;
+        return self::format($builder,$pageSize);
+
     }
     //订单导出订单数据
     public static function getExportOrders($search)
@@ -180,5 +180,18 @@ class Order extends \app\common\models\Order
             $order_builder->whereBetween($params['time_range']['field'], $range);
         }
         return $order_builder;
+    }
+
+    public static function getOrderDetailById($order_id)
+    {
+        return self::with(
+            [
+                'hasManyOrderGoods.belongsToGood',
+                'beLongsToMember',
+                'hasOneOrderRemark',
+                'address',
+                'hasOneRefundApply'
+            ]
+        )->find($order_id);
     }
 }

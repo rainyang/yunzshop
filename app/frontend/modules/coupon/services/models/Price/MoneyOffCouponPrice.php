@@ -15,7 +15,6 @@ use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 class MoneyOffCouponPrice extends CouponPrice
 {
 
-
     /**
      * 累加所有商品会员价
      * @return int
@@ -51,7 +50,6 @@ class MoneyOffCouponPrice extends CouponPrice
      */
     public function setOrderGoodsDiscountPrice()
     {
-
         //dd($this->getOrderGoodsInScope());
         $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->map(function($orderGoods){
                 /**
