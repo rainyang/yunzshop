@@ -11,6 +11,7 @@ namespace app\common\models;
 use app\backend\modules\goods\models\Sale;
 use app\common\exceptions\AppException;
 use app\frontend\modules\discount\services\models\GoodsDiscount;
+use app\frontend\modules\member\services\MemberService;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
@@ -28,8 +29,6 @@ class Goods extends BaseModel
 
     protected $guarded = ['widgets'];
 
-    public $appends = ['vip_price'];
-
     public $widgets = [];
 
     protected $search_fields = ['title'];
@@ -41,6 +40,7 @@ class Goods extends BaseModel
      * 虚拟物品
      */
     const VIRTUAL_GOODS = 2;
+
     /**
      * 定义字段名
      *
@@ -81,11 +81,6 @@ class Goods extends BaseModel
         return static::uniacid();
     }
 
-    public function getVipPriceAttribute()
-    {
-        return GoodsDiscount::getVipPrice($this);
-    }
-
     public static function getGoodsById($id)
     {
         return static::find($id);
@@ -99,6 +94,11 @@ class Goods extends BaseModel
     public function belongsToCategorys()
     {
         return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
+    }
+
+    public function hasManyGoodsDiscount()
+    {
+        return $this->hasMany('app\common\models\GoodsDiscount');
     }
 
     public function hasManyOptions()
@@ -235,17 +235,19 @@ class Goods extends BaseModel
     }
 
 
-    public function addSales($num){
+    public function addSales($num)
+    {
         $this->real_sales += $num;
         $this->show_sales += $num;
         return true;
     }
+
     /**
      * 判断实物
      */
     public function isRealGoods()
     {
-        if(!isset($this->type)){
+        if (!isset($this->type)) {
             return false;
         }
         return $this->type == self::REAL_GOODS;
