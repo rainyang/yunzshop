@@ -4,6 +4,7 @@
             if (confirm('确认此订单已付款吗？')) {
                 $.get("{!! yzWebUrl('order.operation.pay') !!}",{order_id:order_id}, function(json){
                     if (json.result == 1) {
+                        alert('付款成功');
                         location.href = location.href;
                     } else {
                         alert(json.msg);
