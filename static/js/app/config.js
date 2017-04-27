@@ -34,7 +34,9 @@ require.config({
         'raty': '../lib/raty.min',
         'district' : '../lib/district',
         'contextMenu':window.sysinfo['static_url'] + 'js/app/contextMenu/jquery.contextMenu',
-        'hammer': '../lib/hammer.min'
+        'hammer': '../lib/hammer.min',
+        'iconset-fontawesome': window.sysinfo['static_url'] + 'yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.3.0.min',
+        'iconpicker': window.sysinfo['static_url'] + 'yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker'
     },
     shim:{
 
@@ -107,6 +109,14 @@ require.config({
         'validator': {
             exports: "$",
             deps: ['bootstrap']
+        },
+        'iconset-fontawesome':{
+          exports: "$",
+          deps: ['bootstrap','css!'+ window.sysinfo['static_url'] +'yunshop/plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css']
+        },
+      'iconpicker':{
+          exports: "$",
+          deps: ['bootstrap','iconset-fontawesome','css!'+ window.sysinfo['static_url'] +'yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css']
         },
         'select2': {
             deps: ['css!'+ window.sysinfo['static_url'] +'js/dist/select2/select2.css', window.sysinfo['static_url'] +'js/dist/select2/select2.min.js']

@@ -34,8 +34,6 @@
             {!! BootForm::text('menu[url_params]','URL参数',$model->url_params) !!}
 
             {{--图标修改start--}}
-            <link rel="stylesheet" href="{{static_url('yunshop/plugins/bootstrap-iconpicker/icon-fonts/font-awesome-4.2.0/css/font-awesome.min.css')}}"/>
-            <link rel="stylesheet" href="{{static_url('yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css')}}"/>
             <div class="form-group ">
                 <label for="menu[icon]" class="control-label col-xs-12 col-md-2">图标</label>
                 <div class="col-sm-9 col-xs-12">
@@ -43,8 +41,9 @@
                 </div>
             </div>
             @section('js')
-            <script type="text/javascript" src="{{static_url('yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/iconset/iconset-fontawesome-4.3.0.min.js')}}"></script>
-            <script type="text/javascript" src="{{static_url('yunshop/plugins/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.js')}}"></script>
+                <script>
+                    require(['iconpicker'],function(){});
+                </script>
             @stop
             {{--图标修改end--}}
 
