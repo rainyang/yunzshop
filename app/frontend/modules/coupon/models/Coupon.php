@@ -37,21 +37,25 @@ class Coupon extends \app\common\models\Coupon
                                 'money', 'credit'])
                         ->where('get_type','=',1)
                         ->where('status', '=', 1)
+                        ->where('get_max', '!=', 0)
                         ->withCount(['hasManyMemberCoupon'])
                         ->withCount(['hasManyMemberCoupon as member_got' => function($query) use($memberId){
                             return $query->where('uid', '=', $memberId);
                         }]);
+
         if(!is_null($couponId)){
             $res = $res->where('id', '=', $couponId);
         }
+
         if(!is_null($time)){
             $res = $res->where(function($query) use ($time){
-                $query->where('time_limit', '=', 1)->where('time_end', '>', $time)
-                    ->orWhere(function($query){
-                        $query->where('time_limit', '=', 0)->where('time_days', '>', 0);
+                        $query->where('time_limit', '=', 1)->where('time_end', '>', $time)
+                            ->orWhere(function($query){
+                                $query->where('time_limit', '=', 0)->where('time_days', '>', 0);
+                            });
                     });
-            });
         }
+
         return $res;
     }
 
@@ -59,8 +63,12 @@ class Coupon extends \app\common\models\Coupon
     public static function getAvailableCouponById($couponId)
     {
         return static::getCouponById($couponId)
-            ->where('total', '>', 0)
-            ->orwhere('total', '=', -1)
+            ->where(function($query){
+                $query->where('total', '>', 0)
+                        ->orWhere(function($query){
+                            $query->where('total', '=', -1);
+                        });
+            })
             ->where('status','=',1)
             ->where('get_type', '=', 1)
             ->first();

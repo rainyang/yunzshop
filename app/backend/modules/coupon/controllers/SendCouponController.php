@@ -13,6 +13,7 @@ use app\common\models\Coupon;
 use EasyWeChat\Foundation\Application;
 use app\common\models\CouponLog;
 use app\common\helpers\Url;
+use app\frontend\modules\coupon\controllers\MemberCouponController;
 
 
 class SendCouponController extends BaseController
@@ -31,12 +32,6 @@ class SendCouponController extends BaseController
     {
         $this->couponId = \YunShop::request()->id;
         $couponModel = Coupon::getCouponById($this->couponId);
-        $couponResponse = [
-            'resp_title' => Coupon::getter($this->couponId, 'resp_title'),
-            'resp_thumb' => Coupon::getter($this->couponId, 'resp_thumb'),
-            'resp_desc' => Coupon::getter($this->couponId, 'resp_desc'),
-            'resp_url' => Coupon::getter($this->couponId, 'resp_url'),
-        ];
 
         //获取会员等级列表
         $memberLevels = MemberLevel::getMemberLevelList();
@@ -51,7 +46,6 @@ class SendCouponController extends BaseController
 
             //获取会员 Member ID
             $sendType = \YunShop::request()->sendtype;
-//            dd($sendType);
             switch ($sendType) {
                 case self::BY_MEMBERIDS:
                     $membersScope = trim(\YunShop::request()->send_memberid);
@@ -97,10 +91,6 @@ class SendCouponController extends BaseController
                     $memberIds = '';
             }
 
-            //更新优惠券的推送设置
-            $couponResponse = \YunShop::request()->couponresponse; //优惠券的推送设置
-            $couponModel->update($couponResponse);
-
             //获取发放的数量
             $sendTotal = \YunShop::request()->send_total;
 
@@ -111,8 +101,15 @@ class SendCouponController extends BaseController
             } elseif ($patternNotMatch) {
                 $this->error('Member ID 填写不正确, 请重新设置');
             } else{
+
                 //发放优惠券
-                $res = $this->sendCoupon($memberIds, $sendTotal, $couponResponse);
+                $responseData = [
+                    'resp_title' => $couponModel->resp_title,
+                    'resp_thumb' => $couponModel->resp_thumb,
+                    'resp_desc' => $couponModel->resp_desc ? $couponModel->resp_desc : '你获得了 1 张优惠券 "'.$couponModel->name.' "',
+                    'resp_url' => $couponModel->resp_url,
+                ];
+                $res = $this->sendCoupon($memberIds, $sendTotal, $responseData);
                 if ($res){
                     return $this->message('手动发送优惠券成功');
                 } else{
@@ -131,14 +128,13 @@ class SendCouponController extends BaseController
             'send_level' => isset($sendLevel) ? $sendLevel : 1,
             'memberGroupId' => isset($sendGroup) ? $sendGroup : 1,
             'agentLevelId' => isset($sendLevel) ? $sendLevel : 1,
-            'couponresponse' => $couponResponse,
         ])->render();
     }
 
 
     //发放优惠券
     //array $members
-    public function sendCoupon($memberIds, $sendTotal, $couponResponse)
+    public function sendCoupon($memberIds, $sendTotal, $responseData)
     {
         //todo 后期任务: 在前台设置验证, 如果达到个人领取上限,ajax后提醒
 
@@ -163,7 +159,9 @@ class SendCouponController extends BaseController
                 //写入log
                 if ($res){ //发放优惠券成功
                     $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )';
-                    $this->sendTemplateMessage($memberOpenid, self::TEMPLATEID, $couponResponse); //成功时, 发送模板消息
+                    if(!empty($responseData['resp_title'])){
+                        MemberCouponController::sendTemplateMessage($memberOpenid, self::TEMPLATEID, $responseData); //成功时, 发送模板消息
+                    }
                 } else{ //发放优惠券失败
                     $log = '手动发放优惠券失败: 管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )时失败!';
                     $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
@@ -197,36 +195,4 @@ class SendCouponController extends BaseController
         $res = CouponLog::create($logData);
         return $res;
     }
-
-    //发送模板消息
-    //$resUrl 推送消息的链接
-    public function sendTemplateMessage($openid, $templateid, $data)
-    {
-        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-
-        $options = [
-            'app_id' => $account->key,
-            'secret' => $account->secret,
-            'token' => \YunShop::app()->account['token'],
-        ];
-        $app = new Application($options);
-        $notice = $app->notice;
-        $url = $data['resp_url'];
-
-        $templateData = array(
-            "first" => $data['resp_title'],
-            "keyword1" => $data['resp_thumb'],
-            "keyword2" => $data['resp_url'], //todo 需要选用带url的模板消息
-            "remark" => $data['resp_desc'],
-        );
-
-        $result = $notice->uses($templateid)->withUrl($url)->andData($templateData)->andReceiver($openid)->send();
-        $resultArray = json_decode($result, true);
-        if($resultArray['errcode'] != 0){
-            return false;
-        }
-
-        return $resultArray;
-    }
-
 }

@@ -38,7 +38,13 @@ abstract class PreGeneratedController extends ApiController
             return $order_data->forget('dispatch');
         });
 
-        $data += compact('total_price', 'total_dispatch_price', 'order_data', 'total_goods_price', 'total_discount_price');
+        $data += [
+            'total_price' => sprintf('%.2f',$total_price),
+            'total_dispatch_price' => sprintf('%.2f',$total_dispatch_price),
+            'order_data' => $order_data,
+            'total_goods_price' => sprintf('%.2f',$total_goods_price),
+            'total_discount_price' => sprintf('%.2f',$total_discount_price)
+        ];
         //dd($data);
         //exit;
         return $this->successJson('成功', $data);

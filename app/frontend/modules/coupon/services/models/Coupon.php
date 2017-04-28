@@ -80,11 +80,11 @@ class Coupon
                 return new DiscountCouponPrice($this);
                 break;
             default:
-                if (config('app.debug')) {
-                    dd($this->memberCoupon->belongsToCoupon->coupon_method);
-                    dd($this->memberCoupon);
-                    throw new AppException('优惠券优惠类型不存在');
-                }
+//                if (config('app.debug')) {
+//                    dd($this->memberCoupon->belongsToCoupon->coupon_method);
+//                    dd($this->memberCoupon);
+//                    throw new AppException('优惠券优惠类型不存在');
+//                }
                 return null;
                 break;
         }
@@ -103,11 +103,11 @@ class Coupon
                 return new CategoryScope($this);
                 break;
             default:
-                if (config('app.debug')) {
-                    dd($this->memberCoupon->belongsToCoupon->use_type);
-                    dd($this->memberCoupon->belongsToCoupon);
-                    throw new AppException('优惠券范围不存在');
-                }
+//                if (config('app.debug')) {
+//                    dd($this->memberCoupon->belongsToCoupon->use_type);
+//                    dd($this->memberCoupon->belongsToCoupon);
+//                    throw new AppException('优惠券范围不存在');
+//                }
                 return null;
 
                 break;
@@ -127,10 +127,10 @@ class Coupon
                 return new SinceReceive($this);
                 break;
             default:
-                if (config('app.debug')) {
-                    dd($this->memberCoupon->belongsToCoupon);
-                    throw new AppException('时限类型不存在');
-                }
+//                if (config('app.debug')) {
+//                    dd($this->memberCoupon->belongsToCoupon);
+//                    throw new AppException('时限类型不存在');
+//                }
 
                 return null;
                 break;
@@ -178,11 +178,12 @@ class Coupon
      */
     public function valid()
     {
-        //echo 2;
         if (!$this->isOptional()){
+
             return false;
         }
         if(!$this->price->valid()){
+
             return false;
         }
         return true;
@@ -193,9 +194,7 @@ class Coupon
      * @return bool
      */
     public function isChecked(){
-        if (!$this->valid()){
-            return false;
-        }
+
         if($this->getMemberCoupon()->selected == 1){
             return true;
         }

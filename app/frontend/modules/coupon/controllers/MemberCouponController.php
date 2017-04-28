@@ -14,21 +14,19 @@ use EasyWeChat\Foundation\Application;
 class MemberCouponController extends ApiController
 {
     //"优惠券中心"的优惠券
-    const NOT_AVAILABLE = 1; //不可领取
-    const IS_AVAILABLE = 2; //可领取
+    const IS_AVAILABLE = 1; //可领取
+    const ALREADY_GOT = 2; //已经领取
     const EXHAUST = 3; //已经被抢光
-
-    //优惠券是否已经领取
-    const ALREADY_GOT = 1; //已经领取
 
     //"个人拥有的优惠券"的状态
     const NOT_USED = 1; //未使用
     const OVERDUE = 2; //优惠券已经过期
     const IS_USED = 3; //已经使用
 
-    const NOT_LIMIT = -1; //没有限制 (比如对会员等级没有限制, 对领取总数没有限制)
+    const NO_LIMIT = -1; //没有限制 (比如对会员等级没有限制, 对领取总数没有限制)
 
     const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
+//    const TEMPLATEID = 'tqsXWjFgDGrlUmiOy0ci6VmVtjYxR7s-4BWtJX6jgeQ'; //临时调试用
 
     /**
      * 获取用户所拥有的优惠券的数据接口
@@ -104,18 +102,19 @@ class MemberCouponController extends ApiController
     public static function getCouponData($coupons, $memberLevel)
     {
         foreach($coupons['data'] as $k=>$v){
-            if (($v['total'] != self::NOT_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
+            if (($v['total'] != self::NO_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
                 $coupons['data'][$k]['api_availability'] = self::EXHAUST;
-            } elseif (empty($memberLevel) || ($v['level_limit'] != self::NOT_LIMIT && $v['level_limit'] < $memberLevel)){ //会员等级不达标,或者没有会员等级
-                $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
-            } elseif(($v['get_max'] != self::NOT_LIMIT) && ($v['member_got_count'] >= $v['get_max'])){
-                $coupons['data'][$k]['api_availability'] = self::NOT_AVAILABLE;
+            } elseif($v['member_got_count'] > 0){
+                $coupons['data'][$k]['api_availability'] = self::ALREADY_GOT;
             } else{
                 $coupons['data'][$k]['api_availability'] = self::IS_AVAILABLE;
             }
 
-            if($v['member_got_count'] > 0){
-                $coupons['data'][$k]['api_status'] = self::ALREADY_GOT;
+            //增加属性 - 对于该优惠券,用户可领取的数量
+            if($v['get_max'] != self::NO_LIMIT){
+                $coupons['data'][$k]['api_remaining'] = $v['get_max'] - $v['member_got_count'];
+            } elseif($v['get_max'] == self::NO_LIMIT){
+                $coupons['data'][$k]['api_remaining'] = -1;
             }
 
             //添加优惠券使用范围描述
@@ -280,22 +279,22 @@ class MemberCouponController extends ApiController
         if(!empty($couponModel->level_limit) && ($couponModel->level_limit != -1)){ //优惠券有会员等级要求
             if (empty($member->level_id)){
                 return $this->errorJson('该优惠券有会员等级要求,但该用户没有会员等级','');
-            } elseif($member->level_id <= $couponModel->level_limit){
-                return $this->errorJson('用户没有达到领取该优惠券的会员等级要求','');
+            } elseif($member->level_id > $couponModel->level_limit){
+                return $this->errorJson('没有达到领取该优惠券的会员等级要求','');
             }
         }
 
         //判断优惠券是否过期
         $timeLimit = $couponModel->time_limit;
         if($timeLimit == 1 && strtotime('now') > $couponModel->time_end->timestamp){
-            return $this->errorJson('优惠券已经过期','');
+            return $this->errorJson('优惠券已过期','');
         }
 
         //是否达到个人领取上限
         $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
         $couponMaxLimit = Coupon::getter($couponId, 'get_max'); //优惠券限制每人的领取总数
         if($count >= $couponMaxLimit){
-            return $this->errorJson('该用户已经达到个人领取上限','');
+            return $this->errorJson('已经达到个人领取上限','');
         }
 
         //表单验证, 保存
@@ -316,39 +315,50 @@ class MemberCouponController extends ApiController
             if(!$res){
                 return $this->errorJson('领取失败','');
             } else{
-//                //推送模板消息通知用户
-//                $mappingFans = McMappingFans::getFansById($memberId);
-//                $openid = $mappingFans->openid;
-//                $nickname = $mappingFans->nickname;
-//                $respTitle = self::dynamicName($nickname, $couponModel->resp_title);
-//                $respDesc = self::dynamicName($nickname, $couponModel->resp_desc);
-//                $messageData = [
-//                    'resp_title' => $respTitle,
-//                    'resp_thumb' => $couponModel->resp_thumb,
-//                    'resp_desc' => $respDesc,
-//                    'resp_url' => $couponModel->resp_url,
-//                ];
-//                self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData); //todo 检测
+                //推送模板消息通知用户
+                $mappingFans = McMappingFans::getFansById($memberId);
+                $openid = $mappingFans->openid;
+                $nickname = $mappingFans->nickname;
+                if(!empty($openid) && !empty($couponModel->resp_title)){ //如果没有设置标题, 或者该用户没有openid,则不发送通知
 
+                    //可读的有效期
+                    if($couponModel->time_limit == 1){
+                        $validTime = $couponModel->time_start.' - '.$couponModel->time_end;
+                    } else{
+                        $validTime = date('Y/m/d', strtotime('now')).' - '.date('Y/m/d', strtotime('+'.$couponModel->time_days.' dyas'));
+                    }
 
-                //扣除余额和积分
-//                if()
+                    //动态显示通知内容
+                    $dynamicData = [
+                        'nickname' => $nickname,
+                        'couponname' => $couponModel->name,
+                        'validtime' => $validTime,
+                    ];
+                    $respTitle = self::dynamicMsg($couponModel->resp_title, $dynamicData);
+                    $respDesc = $couponModel->resp_desc ?
+                            self::dynamicMsg($couponModel->resp_desc, $dynamicData)
+                            : '亲爱的 '.$nickname.', 您已经获取 1 张优惠券 "'.$couponModel->name.'", 有效期是 '.$validTime.' ,请及时使用';
 
+                    $messageData = [
+                        'resp_title' => $respTitle,
+                        'resp_thumb' => $couponModel->resp_thumb,
+                        'resp_desc' => $respDesc,
+                        'resp_url' => $couponModel->resp_url,
+                    ];
+                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
+                }
 
                 //写入log
-//                $logData = [
-//                    'uniacid' => \YunShop::app()->get('uniacid'),
-//                    'logno' => '领取优惠券成功: 用户( ID 为 '.$memberId.' )成功领取 1 张优惠券( ID 为 '.$couponId.' )',
-//                    'member_id' => $memberId,
-//                    'couponid' => $couponId,
-//                    'paystatus' => $payStatus, //0 无 1 购买券已扣除余额
-//                    'creditstatus' => $creditStatus,//0 无 1 购买券已扣除积分
-//                    'paytype' => $payType, //todo 支付类型 0 余额支付
-//                    'getfrom' => 1,
-//                    'status' => 0,
-//                    'createtime' => strtotime('now'),
-//                ];
-//                CouponLog::create($logData);
+                $logData = [
+                    'uniacid' => \YunShop::app()->get('uniacid'),
+                    'logno' => '领取优惠券成功: 用户( ID 为 '.$memberId.' )成功领取 1 张优惠券( ID 为 '.$couponId.' )',
+                    'member_id' => $memberId,
+                    'couponid' => $couponId,
+                    'getfrom' => 1,
+                    'status' => 0,
+                    'createtime' => strtotime('now'),
+                ];
+                CouponLog::create($logData);
 
                 //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
                 $coupon = Coupon::getCouponsForMember($memberId, $couponId)->get()->toArray();
@@ -388,13 +398,19 @@ class MemberCouponController extends ApiController
         return $resultArray;
     }
 
-    //动态显示昵称
-    protected static function dynamicName($userName, $notice)
+    //动态显示内容
+    protected static function dynamicMsg($msg, $data)
     {
-        if (preg_match('/\[nickname\]/', $notice)){
-            $notice = str_replace('[nickname]', $userName, $notice);
+        if (preg_match('/\[nickname\]/', $msg)){
+            $msg = str_replace('[nickname]', $data['nickname'], $msg);
         }
-        return $notice;
+        if (preg_match('/\[couponname\]/', $msg)){
+            $msg = str_replace('[couponname]', $data['couponname'], $msg);
+        }
+        if (preg_match('/\[validtime\]/', $msg)){
+            $msg = str_replace('[validtime]', $data['validtime'], $msg);
+        }
+        return $msg;
     }
 
 }
