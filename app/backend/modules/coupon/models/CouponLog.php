@@ -3,7 +3,7 @@
 namespace app\backend\modules\coupon\models;
 
 
-class CouponLog extends \app\common\models\couponLog
+class CouponLog extends \app\common\models\CouponLog
 {
     //获取该公众号下所有的领取发放记录
     public static function getCouponLogs()
@@ -16,7 +16,8 @@ class CouponLog extends \app\common\models\couponLog
                     ->with(['coupon' => function($query){
                         return $query->select(['id', 'name']);
                     }])
-                    ->orderBy('createtime', 'desc');
+                    ->orderBy('createtime', 'desc')
+                    ->paginate(15);
     }
 
     //获取搜索的领取发放记录
@@ -52,7 +53,8 @@ class CouponLog extends \app\common\models\couponLog
             $res = $res->whereBetween('createtime', [$searchData['time_start'], $searchData['time_end']]);
         }
 
-        return $res;
+        return $res->orderBy('createtime', 'desc')
+            ->paginate(15);
     }
 
 
