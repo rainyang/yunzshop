@@ -10,8 +10,6 @@ namespace app\common\models;
 
 use app\backend\modules\goods\models\Sale;
 use app\common\exceptions\AppException;
-use app\frontend\modules\discount\services\models\GoodsDiscount;
-use app\frontend\modules\member\services\MemberService;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
@@ -220,30 +218,49 @@ class Goods extends BaseModel
     /**
      * 减库存
      * @param $num
-     * @return bool
      * @throws AppException
      */
     public function reduceStock($num)
     {
         if ($this->reduce_stock_method != 2) {
-            if ($this->stock - $num < 0) {
+            if(!$this->stockEnough($num)){
                 throw new AppException('下单失败,商品:' . $this->title . ' 库存不足');
+
             }
             $this->stock -= $num;
+
+        }
+
+    }
+
+    /**
+     * 库存是否充足
+     * @param $num
+     * @return bool
+     */
+    public function stockEnough($num)
+    {
+        if ($this->reduce_stock_method != 2) {
+            if ($this->stock - $num < 0) {
+                return false;
+            }
         }
         return true;
     }
 
-
+    /**
+     * 增加销量
+     * @param $num
+     */
     public function addSales($num)
     {
         $this->real_sales += $num;
         $this->show_sales += $num;
-        return true;
     }
 
     /**
      * 判断实物
+     * @return bool
      */
     public function isRealGoods()
     {

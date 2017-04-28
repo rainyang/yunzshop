@@ -9,7 +9,6 @@
 namespace app\frontend\modules\coupon\services\models;
 
 
-use app\common\exceptions\AppException;
 use app\common\models\MemberCoupon;
 use app\common\models\Coupon as DbCoupon;
 
