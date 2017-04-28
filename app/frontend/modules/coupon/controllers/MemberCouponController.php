@@ -23,7 +23,7 @@ class MemberCouponController extends ApiController
     const OVERDUE = 2; //优惠券已经过期
     const IS_USED = 3; //已经使用
 
-    const NOT_LIMIT = -1; //没有限制 (比如对会员等级没有限制, 对领取总数没有限制)
+    const NO_LIMIT = -1; //没有限制 (比如对会员等级没有限制, 对领取总数没有限制)
 
     const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
 //    const TEMPLATEID = 'tqsXWjFgDGrlUmiOy0ci6VmVtjYxR7s-4BWtJX6jgeQ'; //临时调试用
@@ -102,7 +102,7 @@ class MemberCouponController extends ApiController
     public static function getCouponData($coupons, $memberLevel)
     {
         foreach($coupons['data'] as $k=>$v){
-            if (($v['total'] != self::NOT_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
+            if (($v['total'] != self::NO_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
                 $coupons['data'][$k]['api_availability'] = self::EXHAUST;
             } elseif($v['member_got_count'] > 0){
                 $coupons['data'][$k]['api_availability'] = self::ALREADY_GOT;
@@ -111,9 +111,9 @@ class MemberCouponController extends ApiController
             }
 
             //增加属性 - 对于该优惠券,用户可领取的数量
-            if($v['get_max'] != self::NOT_LIMIT){
+            if($v['get_max'] != self::NO_LIMIT){
                 $coupons['data'][$k]['api_remaining'] = $v['get_max'] - $v['member_got_count'];
-            } elseif($v['get_max'] == self::NOT_LIMIT){
+            } elseif($v['get_max'] == self::NO_LIMIT){
                 $coupons['data'][$k]['api_remaining'] = -1;
             }
 
@@ -279,15 +279,15 @@ class MemberCouponController extends ApiController
         if(!empty($couponModel->level_limit) && ($couponModel->level_limit != -1)){ //优惠券有会员等级要求
             if (empty($member->level_id)){
                 return $this->errorJson('该优惠券有会员等级要求,但该用户没有会员等级','');
-            } elseif($member->level_id <= $couponModel->level_limit){
-                return $this->errorJson('用户没有达到领取该优惠券的会员等级要求','');
+            } elseif($member->level_id >= $couponModel->level_limit){
+                return $this->errorJson('没有达到领取该优惠券的会员等级要求','');
             }
         }
 
         //判断优惠券是否过期
         $timeLimit = $couponModel->time_limit;
         if($timeLimit == 1 && strtotime('now') > $couponModel->time_end->timestamp){
-            return $this->errorJson('优惠券已经过期','');
+            return $this->errorJson('优惠券已过期','');
         }
 
         //是否达到个人领取上限

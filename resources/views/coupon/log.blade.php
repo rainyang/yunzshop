@@ -34,11 +34,6 @@
                             <label class='radio-inline'>
                                 <input type="radio" value="0" name="getfrom">商城发放
                             </label>
-                            {{--<select name='getfrom' class='form-control'>--}}
-                                {{--<option checked></option>--}}
-                                {{--<option value='1'>用户领取</option>--}}
-                                {{--<option value='0'>商城发放</option>--}}
-                            {{--</select>--}}
                         </div>
                     </div>
                     <div class="form-group">
