@@ -301,6 +301,10 @@ class GoodsController extends BaseController
 
         //$catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
+            if ($requestGoods['has_option'] && !\YunShop::request()['option_ids']) {
+                $requestGoods['has_option'] = 0;
+                //return $this->message('启用商品规格，必须添加规格项等信息', Url::absoluteWeb('goods.goods.index'));
+            }
             //将数据赋值到model
             $requestGoods['thumb'] = tomedia($requestGoods['thumb']);
 
