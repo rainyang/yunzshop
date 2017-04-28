@@ -48,10 +48,9 @@ class Discount extends \app\common\models\goods\Discount
                     'goods_id' => $goodsId
                 ];
             }
-            echo "<pre>"; print_r(1);exit;
             return self::addByGoodsId($discount_data);
         }
-
+        return;
     }
 
     public static function relationValidator($goodsId, $data, $operate)
