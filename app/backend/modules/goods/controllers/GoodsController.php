@@ -228,6 +228,10 @@ class GoodsController extends BaseController
 
         $requestGoods = \YunShop::request()->goods;
         if ($requestGoods) {
+            if ($requestGoods['has_option'] && !\YunShop::request()['option_ids']) {
+                $requestGoods['has_option'] = 0;
+                //return $this->message('启用商品规格，必须添加规格项等信息', Url::absoluteWeb('goods.goods.index'));
+            }
             if (isset($requestGoods['thumb_url'])) {
                 $requestGoods['thumb_url'] = serialize(
                     array_map(function ($item) {
