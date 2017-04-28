@@ -17,13 +17,13 @@ use app\common\helpers\PaginationHelper;
 
 class PointLogController extends BaseController
 {
-    public function index()
+    public function index(\Request $request)
     {
         $pageSize = 10;
-        $search = \YunShop::request()->search;
+        $search = $request->search;
         $builer = PoinLogModel::getPointLogList($search);
-        if (\YunShop::request()->member_id) {
-            $builer = $builer->where('member_id', \YunShop::request()->member_id);
+        if ($request->member_id) {
+            $builer = $builer->where('member_id', $request->member_id);
         }
         $list = $builer->paginate($pageSize);
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
