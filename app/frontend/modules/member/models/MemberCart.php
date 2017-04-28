@@ -166,24 +166,34 @@ class MemberCart extends \app\common\models\MemberCart
         if (!isset($this->goods)) {
             throw new AppException('(ID:' . $this->goods_id . ')未找到商品或已经删除');
         }
-        if (empty($this->goods->status)) {
-            throw new AppException('(ID:' . $this->goods_id . ')商品已下架');
-        }
-        if(!$this->goods->stockEnough()){
-            throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
-        }
+
+        //商品基本验证
+        $this->goods->generlValidate();
+
         if ($this->isOption() ) {
-            if(!$this->goods->hasOption){
-                throw new AppException('(ID:' . $this->option_id . ')商品未启用规格');
-            }
-            if(!isset($this->goodsOption)){
-                throw new AppException('(ID:' . $this->option_id . ')未找到商品规格或已经删除');
-            }
+            $this->goodsOptionValidate();
+        }else{
+            $this->goodsValidate();
         }
         //todo 商品单次限购
         //todo 单人限购
         //todo 限时购
-        //todo 库存
 
+    }
+    public function goodsValidate(){
+        if(!$this->goods->stockEnough($this->total)){
+            throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
+        }
+    }
+    public function goodsOptionValidate(){
+        if(!$this->goods->hasOption){
+            throw new AppException('(ID:' . $this->option_id . ')商品未启用规格');
+        }
+        if(!isset($this->goodsOption)){
+            throw new AppException('(ID:' . $this->option_id . ')未找到商品规格或已经删除');
+        }
+        if(!$this->goodsOption->stockEnough($this->total)){
+            throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
+        }
     }
 }

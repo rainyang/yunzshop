@@ -16,6 +16,7 @@ class BaseModel extends Model
 {
     use ValidatorTrait;
     protected $search_fields;
+
     /**
      * 模糊查找
      * @param $query
@@ -32,6 +33,7 @@ class BaseModel extends Model
         });
         return $query;
     }
+
     /**
      * 默认使用时间戳戳功能
      *
@@ -44,7 +46,8 @@ class BaseModel extends Model
      *
      * @return int
      */
-    public function freshTimestamp() {
+    public function freshTimestamp()
+    {
         return time();
     }
 
@@ -54,7 +57,8 @@ class BaseModel extends Model
      * @param DateTime|int $value
      * @return DateTime|int
      */
-    public function fromDateTime($value) {
+    public function fromDateTime($value)
+    {
         return $value;
     }
 
@@ -75,8 +79,8 @@ class BaseModel extends Model
      * @return string
      */
     //public function getDateFormat() {
-   //     return 'U';
-   // }
+    //     return 'U';
+    // }
 
     //后台全局筛选统一账号scope
     public function scopeUniacid($query)
@@ -84,4 +88,8 @@ class BaseModel extends Model
         return $query->where('uniacid', \YunShop::app()->uniacid);
     }
 
+    public static function getStaticNamespace()
+    {
+        return substr(static::class, 0, strrpos(static::class, "\\"));
+    }
 }
