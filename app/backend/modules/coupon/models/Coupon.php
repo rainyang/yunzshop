@@ -35,8 +35,6 @@ class Coupon extends \app\common\models\Coupon
             'deduct'=> '立减',
             'discount'=> '折扣',
             'get_max'=> '每个人的限领数量',
-            'credit'=> '领取时消耗的积分',
-            'money'=> '领取时消耗的余额',
             'total' => '发放总数',
             'resp_title' => '推送标题',
             'resp_desc' => '推送说明',
@@ -49,16 +47,14 @@ class Coupon extends \app\common\models\Coupon
      * @return array */
     public function rules() {
         return [
-            'display_order' => 'nullable|integer',
+            'display_order' => 'required|integer',
             'name' => 'required',
-            'enough' => 'nullable|integer',
-            'time_days' => 'nullable|integer',
-            'deduct' => 'nullable|numeric',
-            'discount' => 'nullable|numeric',
-            'get_max' => 'nullable|numeric',
-            'credit' => 'nullable|integer',
-            'money' => 'nullable|numeric',
-            'total' => 'nullable|integer',
+            'enough' => 'required|integer',
+            'time_days' => 'required|integer',
+            'deduct' => 'required|numeric',
+            'discount' => 'required|numeric',
+            'get_max' => 'required|integer',
+            'total' => 'required|integer',
             'resp_title' => 'nullable|string',
             'resp_desc' => 'nullable|string',
             'resp_url' => 'nullable|url',
@@ -79,7 +75,7 @@ class Coupon extends \app\common\models\Coupon
 
     /**
      * @param $title 优惠券名称
-     * @param $type 优惠券是否再领取中心显示
+     * @param $type 优惠券是否在领取中心显示
      * @param $timeSwitch 是否开启"创建时间"的搜索选项
      * @param $timeStart 起始时间
      * @param $timeEnd 结束时间
@@ -102,4 +98,12 @@ class Coupon extends \app\common\models\Coupon
         }
         return $CouponsModel;
     }
+
+    //删除优惠券
+    public static function deleteCouponById($couponId)
+    {
+        return static::where('id', '=', $couponId)
+                    ->delete();
+    }
+
 }
