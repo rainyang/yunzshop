@@ -13,7 +13,7 @@ use app\common\exceptions\AppException;
 
 class MemberCart extends \app\common\models\MemberCart
 {
-    protected $fillable=[];
+    protected $fillable = [];
     protected $guarded = ['id'];
 
     /**
@@ -39,30 +39,34 @@ class MemberCart extends \app\common\models\MemberCart
      */
     public static function getCartsByIds($cartIds)
     {
-        if(!is_array($cartIds)){
-            $cartIds = explode(',',$cartIds);
+        if (!is_array($cartIds)) {
+            $cartIds = explode(',', $cartIds);
         }
         $result = static::whereIn('id', $cartIds)
             ->get();
         return $result;
     }
-    public function scopeCarts($query){
+
+    public function scopeCarts($query)
+    {
         $query->select('id', 'goods_id', 'total', 'option_id')
             ->uniacid()
-            ->with(['goods' => function($query) {
+            ->with(['goods' => function ($query) {
                 return $query->select('id', 'thumb', 'price', 'market_price', 'title');
             }])
             ->with(['goodsOption' => function ($query) {
                 return $query->select('id', 'title', 'thumb', 'product_price', 'market_price');
             }]);
     }
-    public function goods(){
-        return $this->hasOne('app\common\models\Goods','id','goods_id');
+
+    public function goods()
+    {
+        return $this->hasOne('app\common\models\Goods', 'id', 'goods_id');
     }
 
     public function goodsOption()
     {
-        return $this->hasOne('app\common\models\GoodsOption','id','option_id');
+        return $this->hasOne('app\common\models\GoodsOption', 'id', 'option_id');
     }
 
     public static function getMemberCartById($cartId)
@@ -107,7 +111,7 @@ class MemberCart extends \app\common\models\MemberCart
         $hasGoods = self::uniacid()
             ->where([
                 'member_id' => $data['member_id'],
-                'goods_id'  => $data['goods_id'],
+                'goods_id' => $data['goods_id'],
                 'option_id' => $data['option_id']
             ])
             ->first();
@@ -129,31 +133,57 @@ class MemberCart extends \app\common\models\MemberCart
     /**
      * 定义字段名
      *
-     * @return array */
-    public  function atributeNames() {
+     * @return array
+     */
+    public function atributeNames()
+    {
         return [
-            'goods_id'  => '未获取到商品',
-            'total'     => '商品数量不能为空',
+            'goods_id' => '未获取到商品',
+            'total' => '商品数量不能为空',
         ];
     }
 
     /**
      * 字段规则
      *
-     * @return array */
-    public  function rules()
+     * @return array
+     */
+    public function rules()
     {
         return [
-            'goods_id'  => 'required',
-            'total'     => 'required',
+            'goods_id' => 'required',
+            'total' => 'required',
         ];
     }
-    public function validate(){
+
+    /**
+     * 购物车验证
+     * @author shenyang
+     * @throws AppException
+     */
+    public function validate()
+    {
         if (!isset($this->goods)) {
             throw new AppException('(ID:' . $this->goods_id . ')未找到商品或已经删除');
         }
-        if($this->isOption() && !isset($this->goodsOption)) {
-            throw new AppException('(ID:' . $this->option_id . ')未找到商品规格或已经删除');
+        if (empty($this->goods->status)) {
+            throw new AppException('(ID:' . $this->goods_id . ')商品已下架');
         }
+        if(!$this->goods->stockEnough()){
+            throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
+        }
+        if ($this->isOption() ) {
+            if(!$this->goods->hasOption){
+                throw new AppException('(ID:' . $this->option_id . ')商品未启用规格');
+            }
+            if(!isset($this->goodsOption)){
+                throw new AppException('(ID:' . $this->option_id . ')未找到商品规格或已经删除');
+            }
+        }
+        //todo 商品单次限购
+        //todo 单人限购
+        //todo 限时购
+        //todo 库存
+
     }
 }
