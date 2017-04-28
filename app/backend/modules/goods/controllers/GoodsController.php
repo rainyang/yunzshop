@@ -320,7 +320,10 @@ class GoodsController extends BaseController
                 );
             }
 
-            GoodsCategory::where("goods_id", $goodsModel->id)->first()->delete();
+            $category_model = GoodsCategory::where("goods_id", $goodsModel->id)->first();
+            if (!empty($category_model)) {
+                $category_model->delete();
+            }
             GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
 
             $goodsModel->setRawAttributes($requestGoods);
