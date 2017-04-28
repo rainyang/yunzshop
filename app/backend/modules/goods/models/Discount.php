@@ -49,6 +49,8 @@ class Discount extends \app\common\models\goods\Discount
                 ];
             }
             return self::addByGoodsId($discount_data);
+        }else{
+            return true;
         }
 
     }
