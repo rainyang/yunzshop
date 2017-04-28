@@ -58,7 +58,7 @@ class BalanceWithdrawController extends BaseController
             }
             $result = $this->submitPay();
             if ($result === true) {
-               return $this->message('提交审核成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
+               return $this->message('打款成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
             }
             return $this->message($result, yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
         }

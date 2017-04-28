@@ -228,6 +228,10 @@ class GoodsController extends BaseController
 
         $requestGoods = \YunShop::request()->goods;
         if ($requestGoods) {
+            if ($requestGoods['has_option'] && !\YunShop::request()['option_ids']) {
+                $requestGoods['has_option'] = 0;
+                //return $this->message('启用商品规格，必须添加规格项等信息', Url::absoluteWeb('goods.goods.index'));
+            }
             if (isset($requestGoods['thumb_url'])) {
                 $requestGoods['thumb_url'] = serialize(
                     array_map(function ($item) {
@@ -301,6 +305,10 @@ class GoodsController extends BaseController
 
         //$catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
+            if ($requestGoods['has_option'] && !\YunShop::request()['option_ids']) {
+                $requestGoods['has_option'] = 0;
+                //return $this->message('启用商品规格，必须添加规格项等信息', Url::absoluteWeb('goods.goods.index'));
+            }
             //将数据赋值到model
             $requestGoods['thumb'] = tomedia($requestGoods['thumb']);
 
@@ -312,7 +320,10 @@ class GoodsController extends BaseController
                 );
             }
 
-            GoodsCategory::where("goods_id", $goodsModel->id)->first()->delete();
+            $category_model = GoodsCategory::where("goods_id", $goodsModel->id)->first();
+            if (!empty($category_model)) {
+                $category_model->delete();
+            }
             GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
 
             $goodsModel->setRawAttributes($requestGoods);
