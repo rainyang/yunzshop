@@ -168,7 +168,8 @@
                             <div class="col-sm-9 col-xs-12">
                                 <input type="submit" name="submit" value="提交" class="btn btn-success" />
                                 <input type="hidden" name="token" value="{{$var['token']}}" />
-                                <input type="button" class="btn btn-default back" name="submit" onclick="location.href='{{yzWebUrl('member.member.index')}}'" value="返回列表"  />
+                                <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回" style='margin-left:10px;'/>
+                                {{--<input type="button" class="btn btn-default back" name="submit" onclick="location.href='{{yzWebUrl('member.member.index')}}'" value="返回列表"  />--}}
                             </div>
                         </div>
                     </div>
