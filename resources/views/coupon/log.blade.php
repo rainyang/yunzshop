@@ -17,11 +17,19 @@
             <div class="panel-body">
 
                 <div class="form-group">
-
+                    @if(empty($couponid))
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">优惠券名称</label>
                         <div class="col-sm-8 col-lg-9 col-xs-12">
-                            <input type="text" class="form-control" name="couponname" placeholder='可搜索优惠券名称'/>
+                            <input type="text" class="form-control" name="couponname" placeholder='可搜索指定优惠券名称'/>
+                        </div>
+                    </div>
+                    @endif
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">用户昵称</label>
+                        <div class="col-sm-8 col-lg-9 col-xs-12">
+                            <input type="text" class="form-control" name="nickname" placeholder='可搜索指定用户'/>
                         </div>
                     </div>
 
@@ -64,7 +72,7 @@
     </form>
 
     <div class="panel panel-default">
-        <div class="panel-heading"></div>
+        <div class="panel-heading">领取发放记录</div>
         <div class="panel-body">
             <table class="table table-hover table-responsive">
                 <thead class="navbar-inner" >

@@ -5,6 +5,7 @@ use app\common\components\ApiController;
 
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\ShowPreGenerateOrder;
+use app\frontend\modules\goods\models\Goods;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\Order;
@@ -22,9 +23,7 @@ class TestController extends ApiController
 {
     public function index()
     {
-        OrderService::ordersPay(['order_pay_id' => 40]);
 
-        exit;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
         /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));
