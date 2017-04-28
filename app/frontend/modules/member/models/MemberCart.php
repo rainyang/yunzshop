@@ -9,6 +9,8 @@
 namespace app\frontend\modules\member\models;
 
 
+use app\common\exceptions\AppException;
+
 class MemberCart extends \app\common\models\MemberCart
 {
     protected $fillable=[];
@@ -146,5 +148,12 @@ class MemberCart extends \app\common\models\MemberCart
             'total'     => 'required',
         ];
     }
-
+    public function validate(){
+        if (!isset($this->goods)) {
+            throw new AppException('(ID:' . $this->goods_id . ')未找到商品或已经删除');
+        }
+        if($this->isOption() && !isset($this->goodsOption)) {
+            throw new AppException('(ID:' . $this->option_id . ')未找到商品规格或已经删除');
+        }
+    }
 }
