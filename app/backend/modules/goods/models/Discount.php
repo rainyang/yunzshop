@@ -33,6 +33,7 @@ class Discount extends \app\common\models\goods\Discount
 
     public static function relationSave($goodsId, $data, $operate = '')
     {
+        echo "<pre>"; print_r(123);exit;
         if (!$goodsId) {
             return false;
         }
