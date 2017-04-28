@@ -211,7 +211,7 @@ CREATE TABLE ". tablename('yz_comment')." (
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `order_id` int(11) DEFAULT '0',
   `goods_id` int(11) NOT NULL DEFAULT '0',
-  `uid` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `uid` int(11) DEFAULT '0',
   `nick_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `head_img_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
   `content` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -344,11 +344,12 @@ CREATE TABLE ". tablename('yz_coupon')." (
   `cat_id` int(11) DEFAULT '0',
   `name` varchar(255) DEFAULT '',
   `get_type` tinyint(3) DEFAULT '0',
+  `level_limit` int(11) NOT NULL DEFAULT '0',
   `get_max` int(11) DEFAULT '0',
   `use_type` tinyint(3) unsigned DEFAULT '0',
   `return_type` tinyint(3) DEFAULT '0',
   `bgcolor` varchar(255) DEFAULT '',
-  `enough` int(11) unsigned NOT NULL DEFAULT '0',
+  `enough` decimal(10,2) NOT NULL DEFAULT '0.00',
   `coupon_type` tinyint(3) DEFAULT '0',
   `time_limit` tinyint(3) DEFAULT '0',
   `time_days` int(11) DEFAULT '0',
@@ -428,7 +429,7 @@ CREATE TABLE ". tablename('yz_coupon_log')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `logno` varchar(255) DEFAULT '',
-  `openid` varchar(255) DEFAULT '',
+  `member_id` varchar(255) DEFAULT '',
   `couponid` int(11) DEFAULT '0',
   `status` int(11) DEFAULT '0',
   `paystatus` tinyint(3) DEFAULT '0',
@@ -891,7 +892,7 @@ CREATE TABLE ". tablename('yz_goods_sale')." (
   `ed_num` int(11) DEFAULT '0',
   `ed_money` int(11) DEFAULT '0',
   `ed_areas` text COLLATE utf8mb4_unicode_ci,
-  `point` int(11) DEFAULT '0',
+  `point` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '0',
   `bonus` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `idx_good_id` (`goods_id`)
@@ -1263,6 +1264,7 @@ CREATE TABLE ". tablename('yz_member_unique')." (
   `member_id` int(11) NOT NULL,
   `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` int(10) unsigned NOT NULL DEFAULT '0',
+  `updated_at` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`unique_id`),
   KEY `idx_uniacid` (`uniacid`),
   KEY `idx_unionid` (`unionid`),
@@ -1369,6 +1371,10 @@ CREATE TABLE ". tablename('yz_order')." (
   `deduction_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `refund_id` int(11) NOT NULL DEFAULT '0',
   `is_plugin` int(11) NOT NULL DEFAULT '0',
+  `change_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `change_dispatch_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `comment_status` tinyint(2) NOT NULL DEFAULT '0',
+  `order_pay_id` varchar(23) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1399,13 +1405,15 @@ DROP TABLE IF EXISTS ". tablename('yz_order_change_log').";
 
 CREATE TABLE ". tablename('yz_order_change_log')." (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `order_id` int(11) NOT NULL,
+  `order_id` int(11) DEFAULT NULL,
   `username` varchar(50) NOT NULL DEFAULT '',
   `old_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `new_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `change_price` decimal(10,2) NOT NULL,
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
+  `change_dispatch_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1441,6 +1449,7 @@ CREATE TABLE ". tablename('yz_order_goods')." (
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `order_id` int(11) NOT NULL DEFAULT '0',
   `goods_id` int(11) NOT NULL DEFAULT '0',
+  `pay_sn` varchar(23) NOT NULL DEFAULT '',
   `total` int(11) NOT NULL DEFAULT '1',
   `create_at` int(11) NOT NULL DEFAULT '0',
   `price` decimal(10,2) NOT NULL DEFAULT '0.00',
@@ -1456,8 +1465,9 @@ CREATE TABLE ". tablename('yz_order_goods')." (
   `updated_at` int(11) NOT NULL,
   `discount_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `comment_status` tinyint(3) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `UK_ORDER_ID_GOODS_ID` (`order_id`,`goods_id`)
+  `change_price` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `comment_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -1518,6 +1528,29 @@ CREATE TABLE ". tablename('yz_order_operation_log')." (
 
 
 
+# Dump of table ims_yz_order_pay
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS ". tablename('yz_order_pay').";
+
+CREATE TABLE ". tablename('yz_order_pay')." (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `pay_sn` varchar(23) NOT NULL DEFAULT '',
+  `status` tinyint(3) NOT NULL DEFAULT '0',
+  `pay_type_id` tinyint(3) NOT NULL DEFAULT '0',
+  `pay_time` int(11) NOT NULL DEFAULT '0',
+  `refund_time` int(11) NOT NULL DEFAULT '0',
+  `order_ids` varchar(500) NOT NULL DEFAULT '',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `uid` int(11) NOT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `created_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
 # Dump of table ims_yz_order_refund
 # ------------------------------------------------------------
 
@@ -1528,18 +1561,19 @@ CREATE TABLE ". tablename('yz_order_refund')." (
   `uniacid` int(11) NOT NULL DEFAULT '0',
   `uid` int(11) NOT NULL,
   `order_id` int(11) NOT NULL DEFAULT '0',
-  `refund_sn` varchar(255) NOT NULL DEFAULT '',
+  `refund_sn` varchar(255) NOT NULL,
+  `refund_type` tinyint(1) DEFAULT '0',
+  `status` tinyint(3) DEFAULT '0',
   `price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `reason` varchar(255) NOT NULL DEFAULT '',
   `images` text NOT NULL,
   `content` text NOT NULL,
   `create_time` int(11) DEFAULT '0',
-  `status` tinyint(3) DEFAULT '0',
   `reply` text,
+  `reject_reason` text,
   `refund_way_type` tinyint(3) DEFAULT '0',
   `apply_price` decimal(10,2) DEFAULT '0.00',
   `order_price` decimal(10,2) DEFAULT '0.00',
-  `refund_type` tinyint(1) DEFAULT '0',
   `refund_proof_imgs` text,
   `refund_time` int(11) DEFAULT '0',
   `refund_address` text,
@@ -1547,10 +1581,6 @@ CREATE TABLE ". tablename('yz_order_refund')." (
   `operate_time` int(11) DEFAULT '0',
   `send_time` int(11) DEFAULT '0',
   `return_time` int(11) DEFAULT '0',
-  `refund_express_company_code` varchar(100) NOT NULL DEFAULT '',
-  `refund_express_company_name` varchar(100) NOT NULL DEFAULT '',
-  `refund_express_sn` varchar(100) NOT NULL DEFAULT '',
-  `refund_address_id` int(11) NOT NULL DEFAULT '0',
   `end_time` int(11) DEFAULT '0',
   `alipay_batch_sn` varchar(255) DEFAULT '',
   `updated_at` int(11) DEFAULT NULL,
@@ -1647,6 +1677,29 @@ CREATE TABLE ". tablename('yz_pay_order')." (
 
 
 
+# Dump of table ims_yz_pay_refund_order
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS ". tablename('yz_pay_refund_order').";
+
+CREATE TABLE ". tablename('yz_pay_refund_order')." (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `int_order_no` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `out_order_no` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `trade_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '0',
+  `price` decimal(14,2) NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `status` tinyint(1) NOT NULL,
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` int(11) NOT NULL DEFAULT '0',
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
 # Dump of table ims_yz_pay_request_data
 # ------------------------------------------------------------
 
@@ -1695,6 +1748,29 @@ CREATE TABLE ". tablename('yz_pay_type')." (
   `plugin_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table ims_yz_pay_withdraw_order
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS ". tablename('yz_pay_withdraw_order').";
+
+CREATE TABLE ". tablename('yz_pay_withdraw_order')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `int_order_no` varchar(32) DEFAULT NULL,
+  `out_order_no` varchar(32) NOT NULL DEFAULT '',
+  `trade_no` varchar(255) DEFAULT NULL,
+  `price` decimal(14,2) NOT NULL,
+  `type` varchar(255) NOT NULL DEFAULT '',
+  `status` int(11) NOT NULL,
+  `created_at` int(13) NOT NULL DEFAULT '0',
+  `updated_at` int(13) NOT NULL DEFAULT '0',
+  `deleted_at` int(13) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='支付提现单';
 
 
 
@@ -2031,12 +2107,12 @@ CREATE TABLE ". tablename('yz_qq_config')." (
 
 
 
-# Dump of table ims_yz_refund_express
+# Dump of table ims_yz_resend_express
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS ". tablename('yz_refund_express').";
+DROP TABLE IF EXISTS ". tablename('yz_resend_express').";
 
-CREATE TABLE ". tablename('yz_refund_express')." (
+CREATE TABLE ". tablename('yz_resend_express')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `refund_id` int(11) NOT NULL DEFAULT '0',
   `express_company_name` varchar(50) NOT NULL DEFAULT '0',
@@ -2045,6 +2121,26 @@ CREATE TABLE ". tablename('yz_refund_express')." (
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` int(11) NOT NULL DEFAULT '0',
   `deleted_at` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `idx_order_id` (`refund_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table ims_yz_return_express
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS ". tablename('yz_return_express').";
+
+CREATE TABLE ". tablename('yz_return_express')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `refund_id` int(11) NOT NULL DEFAULT '0',
+  `express_company_name` varchar(50) NOT NULL DEFAULT '0',
+  `express_sn` varchar(50) NOT NULL DEFAULT '0',
+  `express_code` varchar(20) NOT NULL DEFAULT '0',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` int(11) NOT NULL DEFAULT '0',
+  `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_order_id` (`refund_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2097,7 +2193,7 @@ CREATE TABLE ". tablename('yz_slide')." (
   `slide_name` varchar(100) DEFAULT NULL,
   `link` varchar(255) DEFAULT NULL,
   `thumb` varchar(255) DEFAULT NULL,
-  `display_order` int(11) DEFAULT NULL,
+  `display_order` int(11) DEFAULT '0',
   `enabled` tinyint(3) DEFAULT NULL,
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
@@ -2131,12 +2227,12 @@ CREATE TABLE ". tablename('yz_sms_send_limit')." (
 DROP TABLE IF EXISTS ". tablename('yz_street').";
 
 CREATE TABLE ". tablename('yz_street')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `areaname` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `parentid` int(11) DEFAULT NULL,
-  `level` int(11) DEFAULT NULL,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `areaname` varchar(255) DEFAULT NULL,
+  `parentid` int(10) DEFAULT NULL,
+  `level` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
