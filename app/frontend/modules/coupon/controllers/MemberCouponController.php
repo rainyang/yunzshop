@@ -220,7 +220,6 @@ class MemberCouponController extends ApiController
     public static function getUsedCoupons($uid)
     {
         $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 1)->get()->toArray();
-dd($coupons);exit;
         $usedCoupons = array();
         //增加属性 - 优惠券的适用范围
         foreach($coupons as $k=>$v){
