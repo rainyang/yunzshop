@@ -16,7 +16,6 @@ use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
 use app\common\models\MemberShopInfo;
-use app\common\models\Order;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
@@ -503,5 +502,24 @@ class MemberController extends ApiController
         $img = ImageHelper::upload(\YunShop::request()->name);
 
         return $img;
+    }
+
+    /**
+     * 推广基本设置
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function AgentBase()
+    {
+        $info = \Setting::get('relation_base');
+
+        if ($info) {
+            return $this->successJson('', [
+                'banner'  => tomedia($info['banner']),
+                'content' => $info['content']
+            ]);
+        }
+
+        return $this->errorJson('暂无数据', []);
     }
 }

@@ -181,7 +181,7 @@ class MemberRelationController extends BaseController
         }
 
         return view('member.relation-base', [
-            'banner'  => toimage($info['banner']),
+            'banner'  => tomedia($info['banner']),
             'content' => $info['content']
         ])->render();
     }
