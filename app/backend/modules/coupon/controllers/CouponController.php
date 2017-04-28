@@ -7,6 +7,7 @@ use app\common\helpers\PaginationHelper;
 use app\common\models\MemberCoupon;
 use app\common\helpers\Url;
 use app\backend\modules\member\models\MemberLevel;
+use app\backend\modules\coupon\models\CouponLog;
 
 /**
  * Created by PhpStorm.
@@ -21,15 +22,15 @@ class CouponController extends BaseController
     {
         $keyword = \YunShop::request()->keyword;
         $getType = \YunShop::request()->gettype;
-        $searchSearchSwitch = \YunShop::request()->timesearchswtich;
+        $timeSearchSwitch = \YunShop::request()->timesearchswtich;
         $timeStart = strtotime(\YunShop::request()->time['start']);
         $timeEnd = strtotime(\YunShop::request()->time['end']);
 
         $pageSize = 10;
-        if (empty($keyword) && empty($getType) && ($searchSearchSwitch == 0)){
+        if (empty($keyword) && empty($getType) && ($timeSearchSwitch == 0)){
             $list = Coupon::uniacid()->orderBy('display_order','desc')->orderBy('updated_at', 'desc')->paginate($pageSize)->toArray();
         } else {
-            $list = Coupon::getCouponsBySearch($keyword, $getType, $searchSearchSwitch, $timeStart, $timeEnd)
+            $list = Coupon::getCouponsBySearch($keyword, $getType, $timeSearchSwitch, $timeStart, $timeEnd)
                         ->orderBy('display_order','desc')
                         ->paginate($pageSize)
                         ->toArray();
@@ -85,6 +86,8 @@ class CouponController extends BaseController
         return view('coupon.coupon', [
             'coupon' => $couponRequest,
             'memberlevels' => $memberLevels,
+            'timestart' => strtotime(\YunShop::request()->time['start']),
+            'timeend' => strtotime(\YunShop::request()->time['end'])
         ])->render();
     }
 
@@ -99,7 +102,7 @@ class CouponController extends BaseController
         //获取会员等级列表
         $memberLevels = MemberLevel::getMemberLevelList();
 
-        $coupon = Coupon::getCouponById($coupon_id)->first();
+        $coupon = Coupon::getCouponById($coupon_id);
         $couponRequest = \YunShop::request()->coupon;
         if ($couponRequest) {
 
@@ -110,10 +113,8 @@ class CouponController extends BaseController
             $coupon->categorynames = \YunShop::request()->category_names;
             $coupon->goods_ids = \YunShop::request()->goods_ids;
             $coupon->goods_names = \YunShop::request()->goods_names;
-//            dd($coupon);exit;
 
-
-            //todo 表单验证
+            //表单验证
             $coupon->fill($couponRequest);
             $validator = $coupon->validator();
             if($validator->fails()){
@@ -128,13 +129,15 @@ class CouponController extends BaseController
         }
 
         return view('coupon.coupon', [
-            'coupon' => $coupon,
-            'usetype' => $coupon['use_type'],
-            'category_ids' => $coupon['category_ids'],
-            'categorynames' => $coupon['categorynames'],
-            'goods_ids' => $coupon['goods_ids'],
-            'goods_names' => $coupon['goods_names'],
+            'coupon' => $coupon->toArray(),
+            'usetype' => $coupon->use_type,
+            'category_ids' => $coupon->category_ids,
+            'categorynames' => $coupon->categorynames,
+            'goods_ids' => $coupon->goods_ids,
+            'goods_names' => $coupon->goods_names,
             'memberlevels' => $memberLevels,
+            'timestart' => $coupon->time_start->timestamp,
+            'timeend' => $coupon->time_end->timestamp,
         ])->render();
     }
 
@@ -147,7 +150,7 @@ class CouponController extends BaseController
         }
 
         $coupon = Coupon::getCouponById($coupon_id);
-        if (!($coupon->first())) {  //空collection
+        if (!$coupon) {
             return $this->message('无此记录或者已被删除.', '', 'error');
         }
 
@@ -156,7 +159,7 @@ class CouponController extends BaseController
             return $this->message('优惠券已被领取且尚未使用,因此无法删除', Url::absoluteWeb('coupon.coupon'), 'error');
         }
 
-        $res = $coupon->delete();
+        $res = Coupon::deleteCouponById($coupon_id);
         if ($res) {
             return $this->message('删除优惠券成功', Url::absoluteWeb('coupon.coupon'));
         } else {
@@ -190,6 +193,51 @@ class CouponController extends BaseController
                 return view('coupon.tpl.category')->render();
                 break;
         }
+    }
+
+    //优惠券领取和发放记录
+    public function log()
+    {
+        $couponId = \YunShop::request()->id;
+        $couponName = \YunShop::request()->couponname;
+        $nickname = \YunShop::request()->nickname;
+        $getFrom = \YunShop::request()->getfrom;
+        $searchSearchSwitch = \YunShop::request()->timesearchswtich;
+        $timeStart = strtotime(\YunShop::request()->time['start']);
+        $timeEnd = strtotime(\YunShop::request()->time['end']);
+
+        $pageSize = 15;
+        if (empty($couponId) && empty($couponName) && empty($getFrom) && empty($nickname) && ($searchSearchSwitch == 0)){
+            $list = CouponLog::getCouponLogs();
+        } else {
+            $searchData = [];
+            if(!empty($couponId)){
+                $searchData['coupon_id'] = $couponId;
+            }
+            if(!empty($couponName)){
+                $searchData['coupon_name'] = $couponName;
+            }
+            if(!empty($nickname)){
+                $searchData['nickname'] = $nickname;
+            }
+            if($getFrom != ''){
+                $searchData['get_from'] = $getFrom;
+            }
+            if($searchSearchSwitch == 1){
+                $searchData['time_search_swtich'] = $searchSearchSwitch;
+                $searchData['time_start'] = $timeStart;
+                $searchData['time_end'] = $timeEnd;
+            }
+            $list = CouponLog::searchCouponLog($searchData);
+        }
+
+        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
+
+        return view('coupon.log', [
+            'list' => $list,
+            'pager' => $pager,
+            'couponid' => $couponId,
+        ])->render();
     }
 
 }

@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\goods\models;
 
+use app\common\exceptions\AppException;
 use app\common\models\GoodsDiscount;
 use app\frontend\modules\member\services\MemberService;
 
@@ -22,6 +23,7 @@ class Goods extends \app\common\models\Goods
 
     /**
      * 获取商品的会员价格
+     * @author shenyang
      * @return float
      */
     public function getVipPriceAttribute()
@@ -39,4 +41,15 @@ class Goods extends \app\common\models\Goods
         }
         return $result;
     }
+
+    public function generalValidate()
+    {
+        if (empty($this->status)) {
+            throw new AppException('(ID:' . $this->id . ')商品已下架');
+        }
+        if(isset($this->hasOnePrivilege)){
+
+        }
+    }
+
 }

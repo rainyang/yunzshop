@@ -56,7 +56,8 @@ class  Coupon extends BaseModel
     public static function getCouponById($couponId)
     {
         return static::uniacid()
-                    ->where('id', '=', $couponId);
+                    ->where('id', '=', $couponId)
+                    ->first();
     }
 
     //getter
