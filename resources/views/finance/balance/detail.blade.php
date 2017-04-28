@@ -102,7 +102,7 @@
                         </tbody>
                     </table>
 
-                    {!! $pager !!}
+                    {!! $page !!}
 
                 </div>
             </div>

@@ -29,6 +29,7 @@ class WithdrawController extends BaseController
         if ($resultModel) {
             $validator = null;
             foreach ($resultModel as $key => $item) {
+                echo '<pre>'; print_r($resultModel); exit;
                 $validator = (new Withdraw())->validator($item);
                 if ($validator->fails()) {
                     $this->error($validator->messages());
