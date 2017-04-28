@@ -127,7 +127,7 @@ class CouponController extends BaseController
                 }
             }
         }
-
+        
         return view('coupon.coupon', [
             'coupon' => $coupon->toArray(),
             'usetype' => $coupon->use_type,
