@@ -36,7 +36,6 @@ class Discount extends \app\common\models\goods\Discount
         if (!$goodsId) {
             return false;
         }
-        echo "<pre>"; print_r($data);exit;
         self::deletedDiscount($goodsId);
         $discount_data = [];
         if (!empty($data['discount_value'])) {
