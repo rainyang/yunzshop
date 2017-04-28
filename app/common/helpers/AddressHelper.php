@@ -18,28 +18,28 @@ class AddressHelper extends BaseController
     public static function tplLinkedAddress($names, $data)
     {
         $html = "";
-        $provinceData = Address::getProvince();
-        
-        echo "<pre>"; print_r($provinceData);exit;
-        
-//        foreach ($names as $key=>$item) {
-//            if($key == '0'){
-//                $html .= '<select id="sel-provance" name="'.$item.'"  class="select">';
-//
-//                $html .= '<option value="" selected="true">请选择</option>';
-//
-//                $html .= '</select>';
-//            }else {
-//                $html .= '<select id="sel-provance" name="'.$item.'"  class="select">';
-//                $html .= '<option value="" selected="true">请选择</option>';
-//                $html .= '</select>';
-//            }
-//
-//        }
-
-
-
-
+        //省
+        $html .= '<select id="sel-provance" name="' . $names[0] . '" onchange="selectCity();" class="select">';
+        $html .= '<option value="">请选择省份</option>';
+        $html .= '</select>';
+        //市
+        $html .= '<select id="sel-city" name="' . $names[1] . '" onchange="selectcounty();" class="select">';
+        $html .= '<option value="" >请选择城市</option>';
+        $html .= '</select>';
+        //区
+        if(isset($names[3])){
+            $html .= '<select id="sel-area" name="' . $names[2] . '" onchange="selectstreet();" class="select">';
+        }else{
+            $html .= '<select id="sel-provance" name="' . $names[2] . '" class="select">';
+        }
+        $html .= '<option value="" >请选择区</option>';
+        $html .= '</select>';
+        //街道
+        if (isset($names[3])) {
+            $html .= '<select id="sel-street" name="' . $names[3] . '"  class="select">';
+            $html .= '<option value="">请选择街道</option>';
+            $html .= '</select>';
+        }
         return $html;
     }
 

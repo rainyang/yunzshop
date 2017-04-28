@@ -1,7 +1,6 @@
 <?php
 namespace app\common\models;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Created by PhpStorm.
@@ -11,7 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Address extends BaseModel
 {
-    use SoftDeletes;
 
     public $table = 'yz_address';
 
@@ -24,5 +22,20 @@ class Address extends BaseModel
     {
         return self::where('level', '1')->get();
     }
+
+    public static function getCityByParentId($parentId)
+    {
+        return self::where('parentid', $parentId)
+            ->where('level', '2')
+            ->get();
+    }
+
+    public static function getAreaByParentId($parentId)
+    {
+        return self::where('parentid', $parentId)
+            ->where('level', '3')
+            ->get();
+    }
+    
 
 }
