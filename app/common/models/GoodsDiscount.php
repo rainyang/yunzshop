@@ -34,11 +34,20 @@ class GoodsDiscount extends BaseModel
 
     private function getMoneyPrice($price)
     {
+        if($this->discount_value ==0){
+
+            return $price;
+        }
         return $price - $this->discount_value;
     }
 
     private function getDiscountPrice($price)
     {
+
+        if($this->discount_value ==0){
+
+            return $price;
+        }
         return $price * ($this->discount_value / 10);
     }
 

@@ -85,7 +85,7 @@
                         <tr>
                             <th style='width:15%; text-align: center;'>充值单号</th>
                             <th style='width:10%; text-align: center;'>粉丝</th>
-                            <th style='width:14%; text-align: center;'>会员信息<br/>微信号</th>
+                            <th style='width:14%; text-align: center;'>会员信息<br/>手机号</th>
                             <th style='width:12%; text-align: center;' class='hidden-xs'>等级/分组</th>
                             <th style='width:12%; text-align: center;'>充值时间</th>
                             <th style='width:12%; text-align: center;'>充值方式</th>
