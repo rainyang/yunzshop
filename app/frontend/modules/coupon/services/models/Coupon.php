@@ -178,11 +178,12 @@ class Coupon
      */
     public function valid()
     {
-        //echo 2;
         if (!$this->isOptional()){
+
             return false;
         }
         if(!$this->price->valid()){
+
             return false;
         }
         return true;
