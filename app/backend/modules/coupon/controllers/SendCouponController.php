@@ -51,10 +51,10 @@ class SendCouponController extends BaseController
                     $membersScope = trim(\YunShop::request()->send_memberid);
                     $patternMatchNumArray = preg_match('/(\d+,)+(\d+,?)/', $membersScope); //匹配比如 "2,3,78"或者"2,3,78,"
                     $patternMatchSingleNum = preg_match('/(\d+)(,)?/',$membersScope); //匹配单个数字
-                    if (!$patternMatchNumArray || !$patternMatchSingleNum) {
-                        $patternNotMatch = true;
+                    if ($patternMatchNumArray || $patternMatchSingleNum) {
+                        $patternMatch = true;
                     } else{
-                        $patternNotMatch = false;
+                        $patternMatch = false;
                     }
                     $memberIds = explode(',', $membersScope);
                     break;
@@ -98,7 +98,7 @@ class SendCouponController extends BaseController
                 $this->error('该发放类型下还没有用户');
             } elseif($sendTotal < 1){
                 $this->error('发放数量必须为整数, 而且不能小于 1');
-            } elseif ($patternNotMatch) {
+            } elseif (!$patternMatch) {
                 $this->error('Member ID 填写不正确, 请重新设置');
             } else{
 
