@@ -117,11 +117,11 @@ class PreGeneratedOrderModel extends OrderModel
     public function toArray()
     {
         $data = array(
-            'price' => $this->getPrice(),
-            'goods_price' => $this->getVipPrice(),
-            'dispatch_price' => $this->getDispatchPrice(),
-            'discount_price' => $this->getDiscountPrice(),
-            'deduction_price' => $this->getDeductionPrice(),
+            'price' => sprintf('%.2f',$this->getPrice()),
+            'goods_price' => sprintf('%.2f',$this->getVipPrice()),
+            'dispatch_price' => sprintf('%.2f',$this->getDispatchPrice()),
+            'discount_price' => sprintf('%.2f',$this->getDiscountPrice()),
+            'deduction_price' => sprintf('%.2f',$this->getDeductionPrice()),
 
         );
         foreach ($this->orderGoodsModels as $orderGoodsModel) {

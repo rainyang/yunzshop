@@ -30,11 +30,6 @@
                             <a href="{{yzWebUrl('coupon.coupon.index')}}"><input type="button" name="back" style='margin-left:10px;' value="返回列表" class="btn btn-default" /></a>
                         </div>
                     </div>
-
-{{--
-{template 'web/sysset/selectgoods'}
-{template 'web/sysset/selectcategory'}--}}
-
                 </div>
             </div>
         </form>

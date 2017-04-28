@@ -281,7 +281,7 @@ class MemberModel extends Member
         $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
         $path = storage_path('app/public/qr/');
 
-        echo QrCode::format($extend)->size(100)->generate($url,  $path . $filename);
+        echo QrCode::format($extend)->size(400)->generate($url,  $path . $filename);
 
         return request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'addons')) . $filename;
     }
@@ -373,7 +373,6 @@ class MemberModel extends Member
         } else {
             $member_info['birthday'] = date('Y-m-d', time());
         }
-
 
         $order_info = \app\frontend\modules\order\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
 
