@@ -108,7 +108,7 @@ class MemberAddressController extends ApiController
                 return $this->errorJson($validator->messages());
             }
             if ($addressModel->save()) {
-                 return $this->successJson('新增地址成功');
+                 return $this->successJson('新增地址成功', $addressModel->toArray());
             } else {
                 return $this->errorJson("数据写入出错，请重试！");
             }
