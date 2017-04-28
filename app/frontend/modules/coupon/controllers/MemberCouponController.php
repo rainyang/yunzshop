@@ -168,8 +168,8 @@ class MemberCouponController extends ApiController
 
         $availableCoupons = array();
         foreach($coupons as $k=>$v){
-            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']);
-            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10;
+            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
+            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['belongs_to_coupon']['discount'] * 10;
 
             if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
                 && ($time < $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)){
@@ -196,8 +196,8 @@ class MemberCouponController extends ApiController
         $overdueCoupons = array();
         //获取已经过期的优惠券
         foreach($coupons as $k=>$v){
-            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']);
-            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10;
+            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
+            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['belongs_to_coupon']['discount'] * 10;
 
             if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
                 && ($time > $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)){
@@ -220,12 +220,11 @@ class MemberCouponController extends ApiController
     public static function getUsedCoupons($uid)
     {
         $coupons = MemberCoupon::getCouponsOfMember($uid)->where('used', '=', 1)->get()->toArray();
-
         $usedCoupons = array();
         //增加属性 - 优惠券的适用范围
         foreach($coupons as $k=>$v){
-            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['deduct']);
-            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['deduct'] * 10;
+            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
+            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['belongs_to_coupon']['discount'] * 10;
             $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon']));
             $usedCoupons[] = array_merge($coupons[$k], $usageLimit);
         }

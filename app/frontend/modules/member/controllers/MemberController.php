@@ -515,8 +515,7 @@ class MemberController extends ApiController
 
         if ($info) {
             return $this->successJson('', [
-                'banner'  => tomedia($info['banner']),
-                'content' => $info['content']
+                'banner'  => tomedia($info['banner'])
             ]);
         }
 
