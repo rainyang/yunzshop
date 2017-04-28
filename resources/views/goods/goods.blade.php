@@ -260,14 +260,14 @@
                     return false;
                 }
             }
-//
-//            if ($('.discounts_value').val() != '') {
-//                if (!reg.test($('.discounts_value').val())) {
-//                    $('#myTab a[href="#tab_discount"]').tab('show');
-//                    Tip.focus('.discounts_value', '折扣或固定金额数值格式错误,最多两位小数.');
-//                    return false;
-//                }
-//            }
+
+            if ($('.discounts_value').val()) {
+                if (!reg.test($('.discounts_value').val())) {
+                    $('#myTab a[href="#tab_discount"]').tab('show');
+                    Tip.focus('.discounts_value', '折扣或固定金额数值格式错误,最多两位小数.');
+                    return false;
+                }
+            }
 
             if ($(':input[name="widgets[dispatch][dispatch_price]"]').val() == '') {
                 $('#myTab a[href="#tab_dispatch"]').tab('show');
