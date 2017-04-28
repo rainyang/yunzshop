@@ -256,6 +256,27 @@ class MemberCouponController extends ApiController
         }
     }
 
+    //用户删除其拥有的优惠券
+    public function delete()
+    {
+        $id = \YunShop::request()->id;
+        if(empty($id)){
+            return $this->errorJson('缺少 ID 参数','');
+        }
+
+        $model = MemberCoupon::getById($id);
+        if(!$model){
+            return $this->errorJson('找不到记录','');
+        }
+
+        $res = MemberCoupon::deleteById($id); //软删除
+        if($res){
+            return $this->successJson('ok', '');
+        } else{
+            return $this->errorJson('删除优惠券失败','');
+        }
+    }
+
     //在"优惠券中心"点击领取优惠券
     //需要提供$couponId
     //todo 需要扣除余额或者积分
@@ -411,6 +432,5 @@ class MemberCouponController extends ApiController
         }
         return $msg;
     }
-
 }
 
