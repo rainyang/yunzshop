@@ -279,7 +279,7 @@ class MemberCouponController extends ApiController
         if(!empty($couponModel->level_limit) && ($couponModel->level_limit != -1)){ //优惠券有会员等级要求
             if (empty($member->level_id)){
                 return $this->errorJson('该优惠券有会员等级要求,但该用户没有会员等级','');
-            } elseif($member->level_id >= $couponModel->level_limit){
+            } elseif($member->level_id > $couponModel->level_limit){
                 return $this->errorJson('没有达到领取该优惠券的会员等级要求','');
             }
         }
