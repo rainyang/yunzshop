@@ -33,14 +33,12 @@ class Discount extends \app\common\models\goods\Discount
 
     public static function relationSave($goodsId, $data, $operate = '')
     {
-        echo "<pre>"; print_r(123);exit;
         if (!$goodsId) {
             return false;
         }
         self::deletedDiscount($goodsId);
         $discount_data = [];
         if (!empty($data['discount_value'])) {
-            echo "<pre>"; print_r(111);exit;
             foreach ($data['discount_value'] as $key => $value) {
                 $discount_data[] = [
                     'level_discount_type' => !empty($data['level_discount_type']) ? $data['level_discount_type'] : '1',
@@ -51,9 +49,6 @@ class Discount extends \app\common\models\goods\Discount
                 ];
             }
             return self::addByGoodsId($discount_data);
-        }else{
-            echo "<pre>"; print_r(222);exit;
-            return true;
         }
 
     }
@@ -84,6 +79,8 @@ class Discount extends \app\common\models\goods\Discount
                 if (!in_array(false, $result)) {
                     $flag = true;
                 }
+            }else{
+                $flag = true;
             }
         }else{
             $flag = true;
