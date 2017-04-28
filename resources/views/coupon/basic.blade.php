@@ -28,9 +28,9 @@
 
 <input type="hidden" name="coupon[status]" value="1"/> <!--默认优惠券是开启状态-->
 
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">缩略图</label>
-    <div class="col-sm-9 col-xs-12">
-        {!! app\common\helpers\ImageHelper::tplFormFieldImage('coupon[thumb]', $coupon['thumb']) !!}
-    </div>
-</div>
+{{--<div class="form-group">--}}
+    {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">缩略图</label>--}}
+    {{--<div class="col-sm-9 col-xs-12">--}}
+        {{--{!! app\common\helpers\ImageHelper::tplFormFieldImage('coupon[thumb]', $coupon['thumb']) !!}--}}
+    {{--</div>--}}
+{{--</div>--}}
