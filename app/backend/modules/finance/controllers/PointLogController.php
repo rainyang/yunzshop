@@ -21,10 +21,11 @@ class PointLogController extends BaseController
     {
         $pageSize = 10;
         $search = \YunShop::request()->search;
+        $builer = PoinLogModel::getPointLogList($search);
         if (\YunShop::request()->member_id) {
-            $search['member_id'] = \YunShop::request()->member_id;
+            $builer = $builer->where('member_id', \YunShop::request()->member_id);
         }
-        $list = PoinLogModel::getPointLogList($search)->paginate($pageSize);
+        $list = $builer->paginate($pageSize);
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('finance.point.point_log', [
             'list'          => $list,

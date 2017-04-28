@@ -43,14 +43,13 @@ class PointLog extends BaseModel
     {
         $query->uniacid();
         $query->orderBy('id', 'desc');
-        if ($search['realname'] || $search['level_id'] || $search['group_id'] || $search['member_id']) {
+        if ($search['realname'] || $search['level_id'] || $search['group_id']) {
             $query = $query->whereHas('hasOneMember', function($member)use($search) {
                 if ($search['realname']) {
                     $member = $member->select('uid', 'nickname','realname','mobile','avatar')
                         ->where('realname', 'like', '%' . $search['realname'] . '%')
                         ->orWhere('mobile', 'like', '%' . $search['realname'] . '%')
-                        ->orWhere('nickname', 'like', '%' . $search['realname'] . '%')
-                        ->orWhere('uid', $search['member_id']);
+                        ->orWhere('nickname', 'like', '%' . $search['realname'] . '%');
                 }
                 if ($search['level_id']) {
                     $member = $member->whereHas('yzMember', function ($level)use($search) {
@@ -62,6 +61,7 @@ class PointLog extends BaseModel
                         $group->where('group_id', $search['group_id']);
                     });
                 }
+
             });
         }
         if ($search['searchtime']) {
