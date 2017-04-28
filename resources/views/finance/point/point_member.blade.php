@@ -42,7 +42,7 @@
                                         </select>
                                     </div>
                                     <div class='form-input'>
-                                        <p class="input-group-addon price">余额区间</p>
+                                        <p class="input-group-addon price">积分区间</p>
                                         <input class="form-control price" name="search[min_credit2]" type="text" value="{{ $search['min_credit2'] or ''}}" placeholder="最小">
                                         <p class="line">—</p>
                                         <input class="form-control price" name="search[max_credit2]" type="text" value="{{ $search['max_credit2'] or ''}}" placeholder="最大">
@@ -97,7 +97,8 @@
                                     <label class="label label-danger">积分：{{ $list->credit1 }}</label>
                                 </td>
                                 <td  style="overflow:visible;">
-                                    <a class='btn btn-default' href="{{ yzWebUrl('finance.point-recharge', array('id' => $list->uid)) }}" style="margin-bottom: 2px">充值积分</a>
+                                    <a class='btn btn-default' href="{{ yzWebUrl('finance.point-recharge', array('id' => $list->uid)) }}" style="margin-bottom: 2px">充值积分</a><br>
+                                    <a class='btn btn-default' href="{{ yzWebUrl('finance.point-log', array('member_id' => $list->uid)) }}" style="margin-bottom: 2px">积分明细</a>
                                 </td>
                             </tr>
                             @endforeach
