@@ -10,6 +10,7 @@ namespace app\frontend\modules\coupon\listeners;
 
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\coupon\services\TestService;
 
 class CouponDiscount
@@ -20,25 +21,33 @@ class CouponDiscount
      * @param OnDiscountInfoDisplayEvent $event
      * 监听订单显示优惠券选项事件
      */
-    public function onDisplay(OnDiscountInfoDisplayEvent $event){
+    public function onDisplay(OnDiscountInfoDisplayEvent $event)
+    {
         $this->event = $event;
         $orderModel = $this->event->getOrderModel();
+
         $couponService = new TestService($orderModel);
         $coupons = $couponService->getOptionalCoupons();
 
-        $data = $coupons->map(function ($coupon){
+        $data = $coupons->map(function ($coupon) {
+            /**
+             * @var $coupon Coupon
+             */
             $coupon->getMemberCoupon()->belongsToCoupon->setDateFormat('Y-m-d');
             return $coupon->getMemberCoupon();
         });
-        $event->addMap('coupon',$data);
+        $event->addMap('coupon', $data);
     }
+
     //订单生成后销毁优惠券 todo 重复查询了,需要使用计算优惠券价格时获取的优惠券列表
-    public function onOrderCreated(AfterOrderCreatedEvent $event){
+    public function onOrderCreated(AfterOrderCreatedEvent $event)
+    {
         $this->event = $event;
         $orderModel = $this->event->getOrderModel();
         $couponService = new TestService($orderModel);
         $couponService->destroyUsedCoupons();
     }
+
     /**
      * @param $events
      * 监听多个事件
@@ -47,11 +56,11 @@ class CouponDiscount
     {
         $events->listen(
             OnDiscountInfoDisplayEvent::class,
-            CouponDiscount::class.'@onDisplay'
+            CouponDiscount::class . '@onDisplay'
         );
         $events->listen(
             AfterOrderCreatedEvent::class,
-            CouponDiscount::class.'@onOrderCreated'
+            CouponDiscount::class . '@onOrderCreated'
         );
 
     }

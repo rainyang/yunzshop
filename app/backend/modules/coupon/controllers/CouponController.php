@@ -7,6 +7,7 @@ use app\common\helpers\PaginationHelper;
 use app\common\models\MemberCoupon;
 use app\common\helpers\Url;
 use app\backend\modules\member\models\MemberLevel;
+use app\backend\modules\coupon\models\CouponLog;
 
 /**
  * Created by PhpStorm.
@@ -21,15 +22,15 @@ class CouponController extends BaseController
     {
         $keyword = \YunShop::request()->keyword;
         $getType = \YunShop::request()->gettype;
-        $searchSearchSwitch = \YunShop::request()->timesearchswtich;
+        $timeSearchSwitch = \YunShop::request()->timesearchswtich;
         $timeStart = strtotime(\YunShop::request()->time['start']);
         $timeEnd = strtotime(\YunShop::request()->time['end']);
 
         $pageSize = 10;
-        if (empty($keyword) && empty($getType) && ($searchSearchSwitch == 0)){
+        if (empty($keyword) && empty($getType) && ($timeSearchSwitch == 0)){
             $list = Coupon::uniacid()->orderBy('display_order','desc')->orderBy('updated_at', 'desc')->paginate($pageSize)->toArray();
         } else {
-            $list = Coupon::getCouponsBySearch($keyword, $getType, $searchSearchSwitch, $timeStart, $timeEnd)
+            $list = Coupon::getCouponsBySearch($keyword, $getType, $timeSearchSwitch, $timeStart, $timeEnd)
                         ->orderBy('display_order','desc')
                         ->paginate($pageSize)
                         ->toArray();
@@ -190,6 +191,53 @@ class CouponController extends BaseController
                 return view('coupon.tpl.category')->render();
                 break;
         }
+    }
+
+    //优惠券领取和发放记录
+    public function log()
+    {
+        $couponId = \YunShop::request()->id;
+        $couponName = \YunShop::request()->couponname;
+        $getFrom = \YunShop::request()->getfrom;
+        $searchSearchSwitch = \YunShop::request()->timesearchswtich;
+        $timeStart = strtotime(\YunShop::request()->time['start']);
+        $timeEnd = strtotime(\YunShop::request()->time['end']);
+
+        $pageSize = 15;
+        if (empty($couponId) && empty($couponName) && empty($getFrom) && ($searchSearchSwitch == 0)){
+            $list = CouponLog::getCouponLogs();
+        } else {
+            $searchData = [];
+            if(!empty($couponId)){
+                $searchData['coupon_id'] = $couponId;
+            }
+            if(!empty($couponName)){
+                $searchData['coupon_name'] = $couponName;
+            }
+            if($getFrom != ''){
+                $searchData['get_from'] = $getFrom;
+            }
+            if($searchSearchSwitch == 1){
+                $searchData['time_search_swtich'] = $searchSearchSwitch;
+                $searchData['time_start'] = $timeStart;
+                $searchData['time_end'] = $timeEnd;
+            }
+            $list = CouponLog::searchCouponLog($searchData);
+            dd($list->get()->toArray());exit;
+        }
+        if($list->get()->isEmpty()){
+            $list = null;
+        } else{
+            $list = $list->orderBy('createtime', 'desc')
+                ->paginate($pageSize)
+                ->toArray();
+            $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
+        }
+
+        return view('coupon.log', [
+            'list' => $list['data'],
+            'pager' => $pager,
+        ])->render();
     }
 
 }
