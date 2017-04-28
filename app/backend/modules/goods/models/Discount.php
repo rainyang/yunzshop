@@ -50,7 +50,6 @@ class Discount extends \app\common\models\goods\Discount
             }
             return self::addByGoodsId($discount_data);
         }
-        echo "<pre>"; print_r(2323);exit;
 
     }
 
