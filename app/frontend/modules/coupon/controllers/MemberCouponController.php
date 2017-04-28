@@ -225,7 +225,7 @@ class MemberCouponController extends ApiController
         //增加属性 - 优惠券的适用范围
         foreach($coupons as $k=>$v){
             $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
-            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['belongs_to_coupon']['deduct'] * 10;
+            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['belongs_to_coupon']['discount'] * 10;
             $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon']));
             $usedCoupons[] = array_merge($coupons[$k], $usageLimit);
         }
