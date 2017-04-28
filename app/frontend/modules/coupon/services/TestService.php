@@ -58,13 +58,13 @@ class TestService
             return new Coupon($memberCoupon, $this->order);
         });
         $result = $coupons->filter(function($coupon){
-            //exit;
             /**
              * @var $coupon Coupon
              */
             $result = $coupon->isOptional();//界面上可选
 
             $coupon->getMemberCoupon()->valid = $coupon->isChecked() || $coupon->valid();//界面标蓝
+
             $coupon->getMemberCoupon()->checked = $coupon->isChecked();//界面选中
 
             return $result;

@@ -194,9 +194,7 @@ class Coupon
      * @return bool
      */
     public function isChecked(){
-        if (!$this->valid()){
-            return false;
-        }
+
         if($this->getMemberCoupon()->selected == 1){
             return true;
         }
