@@ -324,6 +324,9 @@ if (!function_exists('can')) {
      */
     function can($itemRoute, $isRoute = false)
     {
+        if(config('app.menu_key') != 'menu'){
+            return true;
+        }
         if ($isRoute == true) {
             $item = \app\common\models\Menu::getItemByRoute($itemRoute);
         } else {
