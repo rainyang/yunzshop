@@ -12,7 +12,10 @@ var _districtNetworkData =null;
 var _streetNetworkData =null;
 var _reg = new RegExp("(^|&)i=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
 var _r = window.location.search.substr(1).match(_reg);  //匹配目标参数
-var uniacid = _r ? _r['2'] : '0';
+var uniacid = '0';
+if(_r) {
+    uniacid = _r['2'];
+}
 
 function cascdeInit(v1,v2,v3,v4){
    getProvinceData(v1,v2,v3,v4);

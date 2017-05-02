@@ -8,9 +8,7 @@
 
 namespace app\common\models;
 
-
 use app\common\exceptions\AppException;
-use app\frontend\modules\discount\services\models\GoodsDiscount;
 
 class GoodsOption extends \app\common\models\BaseModel
 {
@@ -19,16 +17,36 @@ class GoodsOption extends \app\common\models\BaseModel
     public $guarded = [];
     public $timestamps = false;
 
-
+    /**
+     * 库存是否充足
+     * @author shenyang
+     * @param $num
+     * @throws AppException
+     */
     public function reduceStock($num)
     {
         //拍下立减
         if ($this->goods->reduce_stock_method != 2) {
-            if ($this->stock - $num < 0) {
-                throw new AppException('下单失败,商品:' . $this->title . ' 库存不足');
+            if(!$this->stockEnough($num)){
+                throw new AppException('(ID:'.$this->id.')下单失败,商品规格:' . $this->title . ' 库存不足');
             }
             $this->stock -= $num;
         }
+    }
+    /**
+     * 库存是否充足
+     * @author shenyang
+     * @param $num
+     * @return bool
+     */
+    public function stockEnough($num)
+    {
+        if ($this->goods->reduce_stock_method != 2) {
+            if ($this->stock - $num < 0) {
+                return false;
+            }
+        }
+        return true;
     }
     public function goods()
     {

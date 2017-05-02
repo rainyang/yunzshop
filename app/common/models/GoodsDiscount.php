@@ -8,9 +8,6 @@
 
 namespace app\common\models;
 
-
-use function GuzzleHttp\default_user_agent;
-
 class GoodsDiscount extends BaseModel
 {
     public $table = 'yz_goods_discount';
@@ -22,10 +19,10 @@ class GoodsDiscount extends BaseModel
     public function getPrice($price)
     {
         switch ($this->discount_method) {
-            case self::MONEY_OFF:
+            case self::DISCOUNT:
                 $result = $this->getMoneyPrice($price);
                 break;
-            case self::DISCOUNT:
+            case self::MONEY_OFF:
                 $result = $this->getDiscountPrice($price);
                 break;
             default:
@@ -37,11 +34,20 @@ class GoodsDiscount extends BaseModel
 
     private function getMoneyPrice($price)
     {
+        if($this->discount_value ==0){
+
+            return $price;
+        }
         return $price - $this->discount_value;
     }
 
     private function getDiscountPrice($price)
     {
+
+        if($this->discount_value ==0){
+
+            return $price;
+        }
         return $price * ($this->discount_value / 10);
     }
 

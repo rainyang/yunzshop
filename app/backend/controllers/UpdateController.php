@@ -68,35 +68,35 @@ class UpdateController extends BaseController
      */
     public function startDownload()
     {
-        $result = ['msg'=>'','status'=>0,'data'=>[]];
+        $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
         set_time_limit(0);
         $update = new AutoUpdate(null, null);
         $update->setCurrentVersion(config('version'));
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         //Check for a new update
         if ($update->checkUpdate() === false) {
-            $result['msg'] = 'Could not check for updates! See log file for details.';
-            return response()->json($result)->send();
+            $resultArr['msg'] = 'Could not check for updates! See log file for details.';
+            return response()->json($resultArr)->send();
         }
 
         if ($update->newVersionAvailable()) {
             $update->onEachUpdateFinish(function($version){
-                \Artisan::call('update:version ' . $version);
+                \Artisan::call('update:version' ,['version'=>$version]);
             });
             $result = $update->update();
             if ($result === true) {
-                $result['status'] = 1;
-                $result['msg'] = 'Update simulation successful';
+                $resultArr['status'] = 1;
+                $resultArr['msg'] = 'Update simulation successful';
             } else {
-                $result['msg'] = 'Update simulation failed: ' . $result;
+                $resultArr['msg'] = 'Update simulation failed: ' . $result;
                 if ($result = AutoUpdate::ERROR_SIMULATE) {
-                    $result['data'] = $update->getSimulationResults();
+                    $resultArr['data'] = $update->getSimulationResults();
                 }
             }
         } else {
-            $result['msg'] = 'Current Version is up to date';
+            $resultArr['msg'] = 'Current Version is up to date';
         }
-        return response()->json($result)->send();
+        return response()->json($resultArr)->send();
     }
 
 }

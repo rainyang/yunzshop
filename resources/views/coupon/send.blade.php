@@ -52,7 +52,7 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >选择会员等级</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <select name="send_level" class="form-control" id="value_2" >
-                        <option value="0">全部</option>
+                        <option></option>
                         @foreach($memberLevels as $v)
                         <option value="{{$v['level']}}">{{$v['level_name']}}</option>
                         @endforeach
@@ -63,7 +63,7 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >选择会员分组</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <select name="send_group" class="form-control"  id="value_3">
-                        <option value="0">全部</option>
+                        <option></option>
                         @foreach($memberGroups as $v)
                         <option value="{{$v['id']}}">{{$v['group_name']}}</option>
                         @endforeach
@@ -72,37 +72,7 @@
             </div>
 
         </div>
-        <div class='panel-heading'>
-            推送设置
-        </div>
-        <div class='panel-body'>
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送标题</label>
-                <div class="col-sm-9 col-xs-12">
-                    <input type="text" name="couponresponse[resp_title]" id="title" class="form-control" value="{{$couponresponse['resp_title']}}" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送图片</label>
-                <div class="col-sm-9 col-xs-12">
-                    {!! tpl_form_field_image($couponresponse['resp_thumb'], $couponresponse['resp_thumb']) !!}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送描述</label>
-                <div class="col-sm-9 col-xs-12">
-                    <textarea name="couponresponse[resp_desc]" class="form-control" >{{$couponresponse['resp_desc']}}</textarea>
-                </div>
-            </div>
 
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送链接</label>
-                <div class="col-sm-9 col-xs-12">
-                    <input type="text" name="couponresponse[resp_url]" class="form-control" value="{{$couponresponse['resp_url']}}" />
-                    <span class='help-block'>消息推送点击的链接，为空默认为优惠券详情</span>
-                </div>
-            </div>
-        </div>
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label" ></label>
             <div class="col-sm-9 col-xs-12">

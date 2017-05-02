@@ -8,8 +8,16 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\frontend\modules\goods\models\Goods;
+use app\frontend\modules\goods\models\GoodsOption;
+
 class OrderGoods extends \app\common\models\OrderGoods
 {
+    public function goodsOption()
+    {
+        return $this->hasOne(GoodsOption::class, 'id', 'goods_option_id');
+
+    }
     public function getButtonsAttribute()
     {
         $result = [];
@@ -22,7 +30,10 @@ class OrderGoods extends \app\common\models\OrderGoods
         }
         return $result;
     }
-
+    public function goods()
+    {
+        return $this->hasOne(Goods::class, 'id', 'goods_id');
+    }
     public static function getMyCommentList($uid, $status)
     {
         $list = self::select()->where('uid', $uid)->Where('comment_status', $status)->orderBy('id', 'desc')->get();

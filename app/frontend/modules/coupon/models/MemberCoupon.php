@@ -31,4 +31,19 @@ class MemberCoupon extends \app\common\models\MemberCoupon
         return $count;
     }
 
+    //删除指定ID的用户优惠券
+    public static function deleteById($id)
+    {
+        return static::uniacid()
+                ->find($id)
+                ->delete();
+    }
+
+    //查找指定ID的用户优惠券
+    public static function getById($id)
+    {
+        return static::uniacid()
+                ->find($id);
+    }
+
 }

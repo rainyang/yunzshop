@@ -20,21 +20,23 @@ class GoodsOption extends \app\common\models\GoodsOption
      */
     public function getVipPriceAttribute()
     {
-
+        $result = $this->product_price;
         if (!isset($member)) {
             $member = MemberService::getCurrentMemberModel();
         }
         /**
          * @var $goodsDiscount GoodsDiscount
          */
-        $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
+//        dd($this->goods);
+//        exit;
+        $goodsDiscount = $this->goods->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
         if (isset($goodsDiscount)) {
-            $result = $goodsDiscount->getPrice($this->price);
+            $result = $goodsDiscount->getPrice($this->product_price);
         }
-        return $result ? $result : $this->price;
+        return $result;
     }
     public function goods()
     {
-        $this->belongsTo(Goods::class,'goods_id','id');
+        return $this->belongsTo(Goods::class,'goods_id','id');
     }
 }

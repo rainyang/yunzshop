@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 
 class MemberCartService
 {
-    public function clearCartByIds($ids)
+    public static function clearCartByIds($ids)
     {
         if (!is_array($ids)) {
             $ids = explode(',', $ids);
@@ -36,16 +36,7 @@ class MemberCartService
     {
 
         $cart = new MemberCart($params);
-        if (!isset($cart->goods)) {
-            throw new AppException('(ID:' . $cart->goods_id . ')未找到商品或已经删除');
-        }
-        if($cart->isOption() && !isset($cart->goodsOption)) {
-            throw new AppException('(ID:' . $cart->option_id . ')未找到商品规格或已经删除');
-        }
-//        if ($cart->total > $cart->goods->stock) {
-//            throw new AppException($cart->goods->title . ':库存不足');
-//        }
-        //todo 验证option_id是否属于goods_id
+        $cart->validate();
         return $cart;
     }
 
