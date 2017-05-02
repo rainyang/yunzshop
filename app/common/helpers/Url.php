@@ -78,6 +78,24 @@ class Url
     }
 
     /**
+     *  前端api接口相对Url
+     *
+     * @param $route
+     * @param array $params
+     * @return string
+     */
+    public static function plugin($route, $params = [])
+    {
+        if(empty($route) && self::isHttp($route)){
+            return $route;
+        }
+        $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
+        $params = array_merge($defaultParams, $params);
+
+        return   '/addons/yun_shop/plugin.php?'. http_build_query($params);
+    }
+
+    /**
      * 生成后台绝对地址
      *  路由   api.v1.test.index  为  app/backend/moduels/api/modules/v1/TestController   index
      *
@@ -112,6 +130,13 @@ class Url
         return $domain . self::app($route,$params);
     }
 
+    /**
+     * 生成Api绝对URL地址
+     * @param $route
+     * @param array $params
+     * @param string $domain
+     * @return string
+     */
     public static function absoluteApi($route, $params = [], $domain = '')
     {
         if(empty($route) && self::isHttp($route)){
@@ -119,6 +144,22 @@ class Url
         }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
         return $domain . self::api($route,$params);
+    }
+
+    /**
+     * 生成插件绝对URL地址
+     * @param $route
+     * @param array $params
+     * @param string $domain
+     * @return string
+     */
+    public static function absolutePlugin($route, $params = [], $domain = '')
+    {
+        if(empty($route) && self::isHttp($route)){
+            return $route;
+        }
+        empty($domain) && $domain = request()->getSchemeAndHttpHost();
+        return $domain . self::plugin($route,$params);
     }
 
     public static function isHttp($url)
