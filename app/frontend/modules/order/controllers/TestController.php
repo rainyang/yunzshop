@@ -23,7 +23,9 @@ class TestController extends ApiController
 {
     public function index()
     {
-
+        $t = \app\common\models\Order::getOrderCountGroupByStatus();
+        dd($t);
+        exit;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
         /*Event::fire(new AfterOrderCancelPaidEvent(Order::find(1)));
