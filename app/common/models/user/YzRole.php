@@ -75,7 +75,7 @@ class YzRole extends BaseModel
 
     public static function getRolelistToUser()
     {
-        return static::select('id', 'name')->uniacid()->where('status', '=', "1")->get()->toArray();
+        return static::select('id', 'name')->uniacid()->where('status', '=', "2")->get()->toArray();
     }
 
     /**
