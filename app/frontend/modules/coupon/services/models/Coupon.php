@@ -218,7 +218,7 @@ class Coupon
         if (!isset($this->timeLimit)) {
             return false;
         }
-
+        
         return $this->useScope->valid() && $this->price->isOptional() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used);
     }
 
