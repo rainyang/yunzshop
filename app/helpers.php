@@ -367,6 +367,20 @@ if (!function_exists('yzApiUrl')) {
     }
 }
 
+if (!function_exists('yzPluginUrl')) {
+    function yzPluginUrl($route, $params = [])
+    {
+        return Url::plugin($route, $params);
+    }
+}
+
+if (!function_exists('yzPluginFullUrl')) {
+    function yzPluginFullUrl($route, $params = [])
+    {
+        return Url::absolutePlugin($route, $params);
+    }
+}
+
 if (!function_exists('yzWebFullUrl')) {
     function yzWebFullUrl($route, $params = [])
     {
