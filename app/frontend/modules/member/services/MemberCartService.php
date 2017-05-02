@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 
 class MemberCartService
 {
-    public function clearCartByIds($ids)
+    public static function clearCartByIds($ids)
     {
         if (!is_array($ids)) {
             $ids = explode(',', $ids);

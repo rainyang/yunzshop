@@ -3,6 +3,7 @@
 namespace app\common\providers;
 
 
+use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
@@ -32,6 +33,10 @@ class EventServiceProvider extends ServiceProvider
         \app\common\events\dispatch\OrderDispatchWasCalculated::class => [ //订单邮费计算
             \app\frontend\modules\dispatch\listeners\prices\UnifyOrderDispatchPrice::class, //统一运费
             \app\frontend\modules\dispatch\listeners\prices\TemplateOrderDispatchPrice::class, //模板运费
+
+        ],
+        AfterOrderCreatedEvent::class => [ //订单邮费计算
+            \app\frontend\modules\member\listeners\Order::class, //统一运费
 
         ],
         PayLog::class => [ //支付日志请求
