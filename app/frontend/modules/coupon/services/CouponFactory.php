@@ -15,7 +15,7 @@ class CouponFactory
     public function createCoupon($OrderModel, $memberCoupon)
     {
         switch ($memberCoupon->belongsToCoupon->use_type){
-            case Coupon::COUPON_ALL_USE:
+            case Coupon::COUPON_SHOP_USE:
                 return new OrderCouponService($OrderModel, $memberCoupon);
                 break;
             case Coupon::COUPON_GOODS_USE:

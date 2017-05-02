@@ -100,6 +100,12 @@ class MemberController extends BaseController
 
         if (!empty($member)) {
             $member = $member->toArray();
+
+            if (1 == $member['yz_member']['is_agent'] && 2 == $member['yz_member']['status']) {
+                $member['agent'] = 1;
+            } else {
+                $member['agent'] = 0;
+            }
         }
 
         return view('member.detail', [
@@ -140,6 +146,14 @@ class MemberController extends BaseController
             'is_black' => $parame->data['is_black'],
             'content' => $parame->data['content']
         );
+
+        if ($parame->data['agent']) {
+            $yz['is_agent'] = 1;
+            $yz['status'] = 2;
+        } else {
+            $yz['is_agent'] = 0;
+            $yz['status'] =  0;
+        }
 
         $shopInfoModel = MemberShopInfo::getMemberShopInfo($uid) ?: new MemberShopInfo();
 
