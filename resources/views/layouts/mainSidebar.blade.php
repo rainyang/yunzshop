@@ -11,7 +11,7 @@
             @if(YunShop::app()->role)
             <li><a href="{{yzWebFullUrl('index.index')}}"><i class="fa fa-dashboard"></i> <span>控制面板</span></a></li>
             @endif
-            @foreach(Config::get('menu') as $key=>$value)
+            @foreach(Config::get(config('app.menu_key','menu')) as $key=>$value)
                 @if(isset($value['menu']) && $value['menu'] == 1 && can($key))
                     @if(isset($value['child']) && array_child_kv_exists($value['child'],'menu',1))
 

@@ -9,6 +9,7 @@ use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointLisrener;
 use app\common\listeners\WechatProcessorListener;
+use app\frontend\modules\finance\listeners\Order;
 use app\frontend\modules\goods\listeners\GoodsStock;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -21,7 +22,6 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         \app\common\events\discount\OrderGoodsDiscountWasCalculated::class => [ //商品优惠计算
-            \app\frontend\modules\discount\listeners\MemberLevelGoodsDiscount::class, //用户等级优惠
         ],
         \app\common\events\discount\OrderDiscountWasCalculated::class => [ //订单优惠计算
             \app\frontend\modules\order\listeners\discount\TestOrderDiscount::class, //立减优惠
@@ -59,10 +59,10 @@ class EventServiceProvider extends ServiceProvider
         \app\common\listeners\order\OrderTestListener::class,
         \app\common\listeners\goods\GoodsTestListener::class,
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
-        \app\frontend\modules\discount\listeners\MemberLevelGoodsDiscount::class,
         PointLisrener::class,
         GoodsStock::class,
-
+        Order::class,
+        \app\frontend\modules\discount\listeners\Order::class
     ];
     /**
      * Register any events for your application.
