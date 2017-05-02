@@ -190,6 +190,7 @@ class Goods extends BaseModel
                     break;
             }
         }
+        dd($query);
     }
 
     /**
