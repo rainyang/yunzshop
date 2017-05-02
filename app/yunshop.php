@@ -338,7 +338,7 @@ class YunRequest extends YunComponent
     public function __construct()
     {
         global $_GPC;
-        $this->values = YunShop::isApi() ? request()->input() :(array)$_GPC;
+        $this->values = (YunShop::isApi() || YunShop::isPlugin()) ? request()->input() :(array)$_GPC;
     }
 
 
