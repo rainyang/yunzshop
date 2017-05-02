@@ -1,37 +1,58 @@
 <?php
-
-namespace app\frontend\modules\finance\listeners;
-
-use app\common\events\discount\OnDiscountInfoDisplayEvent;
-
 /**
  * Created by PhpStorm.
  * User: shenyang
  * Date: 2017/5/2
  * Time: 上午10:59
  */
+namespace app\frontend\modules\finance\listeners;
+
+use app\common\events\discount\OnDeductionInfoDisplayEvent;
+use app\common\events\discount\OnDeductionPriceCalculatedEvent;
+
 class Order
 {
-    public function onDisplay(OnDiscountInfoDisplayEvent $event)
+    private $event;
+    public function onDisplay(OnDeductionInfoDisplayEvent $event)
     {
         $this->event = $event;
         $orderModel = $this->event->getOrderModel();
 
-        $data = [];
+        $data = [
+            'id'=>'1',//抵扣表id
+            'name'=>'积分抵扣',//名称
+            'value'=>200,//数值
+            'price'=>'20.00',//金额
+        ];
 
-        $event->addMap('deduction', $data);
+        $event->addData($data);
 
+    }
+    public function onCalculated(OnDeductionPriceCalculatedEvent $event){
+        $this->event = $event;
+        $orderModel = $this->event->getOrderModel();
+
+        $data = [
+            'id'=>'1',//抵扣表id
+            'name'=>'积分抵扣',//名称
+            'value'=>200,//数值
+            'price'=>'20.00',//金额
+        ];
+
+        $event->addData($data);
     }
 
     public function subscribe($events)
     {
         $events->listen(
-            OnDiscountInfoDisplayEvent::class,
+            OnDeductionInfoDisplayEvent::class,
             self::class . '@onDisplay'
         );
-//        $events->listen(
-//            \app\common\events\order\AfterOrderCreatedEvent::class,
-//            Express::class . '@onSave'
-//        );
+        $events->listen(
+
+            OnDeductionPriceCalculatedEvent::class,
+            self::class . '@onCalculated'
+        );
+
     }
 }
