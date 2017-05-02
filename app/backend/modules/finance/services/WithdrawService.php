@@ -60,6 +60,9 @@ class WithdrawService extends Withdraw
         $result = PayFactory::create(2)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
             $withdraw->actual_amounts, $remark);
         //echo '<pre>'; print_r($result); exit;
+        if ($result['errno']) {
+            return $result['message'];
+        }
         redirect($result)->send();
     }
 }

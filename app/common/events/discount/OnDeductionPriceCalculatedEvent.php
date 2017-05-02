@@ -8,7 +8,6 @@
 
 namespace app\common\events\discount;
 
-
 use app\common\events\order\PreGenerateOrderEvent;
 
 class OnDeductionPriceCalculatedEvent extends PreGenerateOrderEvent
