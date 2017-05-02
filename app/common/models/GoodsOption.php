@@ -8,9 +8,7 @@
 
 namespace app\common\models;
 
-
 use app\common\exceptions\AppException;
-use app\frontend\modules\discount\services\models\GoodsDiscount;
 
 class GoodsOption extends \app\common\models\BaseModel
 {
