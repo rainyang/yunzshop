@@ -91,7 +91,6 @@ class MemberOfficeAccountService extends MemberService
 
             \Log::debug('userinfo', $userinfo);
 
-            file_put_contents(storage_path('logs/account3.log'), print_r($userinfo, 1));
             //Login
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 $member_id = $this->unionidLogin($uniacid, $userinfo);
@@ -137,7 +136,7 @@ class MemberOfficeAccountService extends MemberService
         if (!empty($UnionidInfo)) {
             $UnionidInfo = $UnionidInfo->toArray();
         }
-        file_put_contents(storage_path('logs/account2.log'), print_r($UnionidInfo,1));
+
         if (!empty($UnionidInfo['unionid'])) {
             $types = explode('|', $UnionidInfo['type']);
             $member_id = $UnionidInfo['member_id'];
@@ -157,7 +156,7 @@ class MemberOfficeAccountService extends MemberService
             $this->updateMemberInfo($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
-file_put_contents(storage_path('logs/account.log'), 1);
+
             $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
 
             if ($mc_mapping_fans_model->uid) {
