@@ -70,8 +70,7 @@ class Menu extends BaseModel
      */
     public function getTreeAllNodes()
     {
-        return self::where('status', 1)
-            ->orderBy('sort', 'asc')->get();
+        return self::orderBy('sort', 'asc')->get();
     }
 
     /**
