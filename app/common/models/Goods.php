@@ -166,6 +166,13 @@ class Goods extends BaseModel
                 case 'keyword':
                     $query->where('title', 'LIKE', "%{$value}%");
                     break;
+                case 'good_id':
+                    if(is_array($value)){
+                        $query->whereIn('id', $value);
+                    } else{
+                        $query->where('id', $value);
+                    }
+                    break;
                 case 'brand_id':
                     $query->where('brand_id', $value);
                     break;
