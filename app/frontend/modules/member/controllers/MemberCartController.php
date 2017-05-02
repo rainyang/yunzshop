@@ -68,7 +68,8 @@ class MemberCartController extends ApiController
             $hasGoodsModel = MemberCart::hasGoodsToMemberCart($data);
             if ($hasGoodsModel) {
                 $hasGoodsModel->total = $hasGoodsModel->total + 1;
-                $cartModel->validate();
+
+                $hasGoodsModel->validate();
 
                 if ($hasGoodsModel->update()){
                     return $this->successJson('添加购物车成功');
