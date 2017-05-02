@@ -1,6 +1,7 @@
 <?php
 
 namespace app\backend\modules\refund\models;
+use app\backend\modules\order\models\Order;
 use app\backend\modules\refund\models\type\RefundMoney;
 use app\backend\modules\refund\models\type\ReplaceGoods;
 use app\backend\modules\refund\models\type\ReturnGoods;
@@ -59,5 +60,9 @@ class RefundApply extends \app\common\models\refund\RefundApply
 
         return $this->typeInstance;
 
+    }
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 }

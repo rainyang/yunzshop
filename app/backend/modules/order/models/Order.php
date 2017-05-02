@@ -202,6 +202,6 @@ class Order extends \app\common\models\Order
 
     public function close()
     {
-        OrderService::close();
+        OrderService::close($this);
     }
 }

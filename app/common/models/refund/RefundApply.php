@@ -9,8 +9,7 @@
 namespace app\common\models\refund;
 
 use app\common\models\BaseModel;
-use app\common\observers\refund\RefundApplyObserver;
-use app\frontend\modules\order\models\Order;
+use app\common\models\Order;
 
 class RefundApply extends BaseModel
 {
