@@ -156,6 +156,7 @@ class Goods extends BaseModel
         if (!$filters) {
             return;
         }
+        echo "<pre>"; print_r($filters);exit;
         foreach ($filters as $key => $value) {
             switch ($key) {
                 /*case 'category':
@@ -190,7 +191,6 @@ class Goods extends BaseModel
                     break;
             }
         }
-        dd($query);
     }
 
     /**
