@@ -79,6 +79,8 @@ class Discount extends \app\common\models\goods\Discount
                 if (!in_array(false, $result)) {
                     $flag = true;
                 }
+            }else{
+                $flag = true;
             }
         }else{
             $flag = true;

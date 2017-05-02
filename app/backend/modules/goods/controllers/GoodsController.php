@@ -87,7 +87,6 @@ class GoodsController extends BaseController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-
         $catetory_menus = CategoryService::getCategoryMenu(
             [
                 'catlevel' => $this->shopset['cat_level'],
@@ -103,7 +102,6 @@ class GoodsController extends BaseController
         $delete_url = 'goods.goods.destroy';
         $delete_msg = '确认删除此商品？';
         $sort_url = 'goods.goods.displayorder';
-
         return view('goods.index', [
             'list' => $list['data'],
             'pager' => $pager,
@@ -118,7 +116,8 @@ class GoodsController extends BaseController
             'edit_url' => $edit_url,
             'delete_url' => $delete_url,
             'delete_msg' => $delete_msg,
-            'sort_url'  => $sort_url
+            'sort_url'  => $sort_url,
+            'product_attr'  => $requestSearch['product_attr'],
         ])->render();
     }
 

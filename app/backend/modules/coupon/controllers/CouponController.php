@@ -86,6 +86,8 @@ class CouponController extends BaseController
         return view('coupon.coupon', [
             'coupon' => $couponRequest,
             'memberlevels' => $memberLevels,
+            'timestart' => strtotime(\YunShop::request()->time['start']),
+            'timeend' => strtotime(\YunShop::request()->time['end'])
         ])->render();
     }
 
@@ -100,7 +102,7 @@ class CouponController extends BaseController
         //获取会员等级列表
         $memberLevels = MemberLevel::getMemberLevelList();
 
-        $coupon = Coupon::getCouponById($coupon_id)->first();
+        $coupon = Coupon::getCouponById($coupon_id);
         $couponRequest = \YunShop::request()->coupon;
         if ($couponRequest) {
 
@@ -111,10 +113,8 @@ class CouponController extends BaseController
             $coupon->categorynames = \YunShop::request()->category_names;
             $coupon->goods_ids = \YunShop::request()->goods_ids;
             $coupon->goods_names = \YunShop::request()->goods_names;
-//            dd($coupon);exit;
 
-
-            //todo 表单验证
+            //表单验证
             $coupon->fill($couponRequest);
             $validator = $coupon->validator();
             if($validator->fails()){
@@ -127,15 +127,17 @@ class CouponController extends BaseController
                 }
             }
         }
-
+        
         return view('coupon.coupon', [
-            'coupon' => $coupon,
-            'usetype' => $coupon['use_type'],
-            'category_ids' => $coupon['category_ids'],
-            'categorynames' => $coupon['categorynames'],
-            'goods_ids' => $coupon['goods_ids'],
-            'goods_names' => $coupon['goods_names'],
+            'coupon' => $coupon->toArray(),
+            'usetype' => $coupon->use_type,
+            'category_ids' => $coupon->category_ids,
+            'categorynames' => $coupon->categorynames,
+            'goods_ids' => $coupon->goods_ids,
+            'goods_names' => $coupon->goods_names,
             'memberlevels' => $memberLevels,
+            'timestart' => $coupon->time_start->timestamp,
+            'timeend' => $coupon->time_end->timestamp,
         ])->render();
     }
 
@@ -148,7 +150,7 @@ class CouponController extends BaseController
         }
 
         $coupon = Coupon::getCouponById($coupon_id);
-        if (!($coupon->first())) {  //空collection
+        if (!$coupon) {
             return $this->message('无此记录或者已被删除.', '', 'error');
         }
 
@@ -157,7 +159,7 @@ class CouponController extends BaseController
             return $this->message('优惠券已被领取且尚未使用,因此无法删除', Url::absoluteWeb('coupon.coupon'), 'error');
         }
 
-        $res = $coupon->delete();
+        $res = Coupon::deleteCouponById($coupon_id);
         if ($res) {
             return $this->message('删除优惠券成功', Url::absoluteWeb('coupon.coupon'));
         } else {
@@ -198,13 +200,14 @@ class CouponController extends BaseController
     {
         $couponId = \YunShop::request()->id;
         $couponName = \YunShop::request()->couponname;
+        $nickname = \YunShop::request()->nickname;
         $getFrom = \YunShop::request()->getfrom;
         $searchSearchSwitch = \YunShop::request()->timesearchswtich;
         $timeStart = strtotime(\YunShop::request()->time['start']);
         $timeEnd = strtotime(\YunShop::request()->time['end']);
 
         $pageSize = 15;
-        if (empty($couponId) && empty($couponName) && empty($getFrom) && ($searchSearchSwitch == 0)){
+        if (empty($couponId) && empty($couponName) && empty($getFrom) && empty($nickname) && ($searchSearchSwitch == 0)){
             $list = CouponLog::getCouponLogs();
         } else {
             $searchData = [];
@@ -213,6 +216,9 @@ class CouponController extends BaseController
             }
             if(!empty($couponName)){
                 $searchData['coupon_name'] = $couponName;
+            }
+            if(!empty($nickname)){
+                $searchData['nickname'] = $nickname;
             }
             if($getFrom != ''){
                 $searchData['get_from'] = $getFrom;
@@ -223,20 +229,14 @@ class CouponController extends BaseController
                 $searchData['time_end'] = $timeEnd;
             }
             $list = CouponLog::searchCouponLog($searchData);
-            dd($list->get()->toArray());exit;
-        }
-        if($list->get()->isEmpty()){
-            $list = null;
-        } else{
-            $list = $list->orderBy('createtime', 'desc')
-                ->paginate($pageSize)
-                ->toArray();
-            $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         }
 
+        $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
+
         return view('coupon.log', [
-            'list' => $list['data'],
+            'list' => $list,
             'pager' => $pager,
+            'couponid' => $couponId,
         ])->render();
     }
 
