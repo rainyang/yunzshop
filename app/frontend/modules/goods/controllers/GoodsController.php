@@ -109,12 +109,11 @@ class GoodsController extends ApiController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-echo "<pre>"; print_r($requestSearch);exit;
         $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
             ->where("status", 1)
             ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
-
+echo "<pre>"; print_r($list);exit;
         if (empty($list)) {
             $this->errorJson('没有找到商品.');
         }
