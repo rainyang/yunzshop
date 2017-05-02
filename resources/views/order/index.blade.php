@@ -95,7 +95,7 @@
                                                 完成
                                             </option>
                                         </select>
-                                        {!! tpl_form_field_daterange(
+                                        {!! \app\backend\modules\goods\services\GoodsPrivilegeService::tpl_form_field_date(
                                             'search[time_range]',
                                             array(
                                                 'starttime'=>array_get($requestSearch,'time_range.start',0),
