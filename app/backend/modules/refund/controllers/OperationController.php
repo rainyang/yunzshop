@@ -5,6 +5,7 @@ namespace app\backend\modules\refund\controllers;
 use app\backend\modules\refund\models\RefundApply;
 use app\common\components\BaseController;
 use app\common\exceptions\AdminException;
+use app\frontend\modules\order\services\OrderService;
 
 /**
  * 退款申请操作
@@ -74,6 +75,9 @@ class OperationController extends BaseController
     public function consensus(\Request $request)
     {
         $this->refundApply->consensus();
+        $result = OrderService::orderClose(['order_id' => $this->refundApply->order->id]);
+        dd($result);
+        exit;
         return $this->message('操作成功', '');
     }
 }

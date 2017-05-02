@@ -25,6 +25,7 @@ abstract class PreGeneratedController extends ApiController
         $total_goods_price = $order_data->sum('order.goods_price');
         $total_dispatch_price = $order_data->sum('order.dispatch_price');
         $total_discount_price = $order_data->sum('order.discount_price');
+        $total_deduction_price = $order_data->sum('order.deduction_price');
         // todo 下面的代码需要重构
         //将订单中的优惠券 合并摊平到数组外层
         $data['discount']['coupon'] = $order_data->map(function ($order_data) {
@@ -41,6 +42,7 @@ abstract class PreGeneratedController extends ApiController
         $data += [
             'total_price' => sprintf('%.2f',$total_price),
             'total_dispatch_price' => sprintf('%.2f',$total_dispatch_price),
+            'total_deduction_price' => sprintf('%.2f',$total_deduction_price),
             'order_data' => $order_data,
             'total_goods_price' => sprintf('%.2f',$total_goods_price),
             'total_discount_price' => sprintf('%.2f',$total_discount_price)
