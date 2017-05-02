@@ -10,6 +10,7 @@ namespace app\backend\modules\member\models;
 
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Validation\Rule;
 
 class MemberGroup extends \app\common\models\MemberGroup
 {
@@ -31,7 +32,6 @@ class MemberGroup extends \app\common\models\MemberGroup
      * @return object */
     public static function getGroupPageList($pageSize)
     {
-        //todo 获取分组内会员数量
         return self::uniacid()
             ->with(['member' => function($query){
                 return $query->select(['member_id','group_id'])->where('uniacid', \YunShop::app()->uniacid);
@@ -102,8 +102,8 @@ class MemberGroup extends \app\common\models\MemberGroup
      * @return array */
     public  function atributeNames() {
         return [
-            'group_name'    => '分组名不能为空',
-            'uniacid'  => '数据获取不完整，请刷新重试',
+            'group_name'    => '分组名',
+            'uniacid'  => '公众号ID',
         ];
     }
 
@@ -114,7 +114,12 @@ class MemberGroup extends \app\common\models\MemberGroup
     public  function rules()
     {
         return [
-            'group_name'    => 'required',
+            'group_name'    => [
+                'required',
+                Rule::unique($this->table)->where('uniacid', \YunShop::app()->uniacid)->ignore($this->id),
+                'max:45'
+                ],
+
             'uniacid'       => 'required'
         ];
     }
