@@ -21,8 +21,10 @@ class Order
         $this->event = $event;
 
         $data = $this->getPointData();
+        if(!$data){
+            return null;
+        }
         $event->addData($data);
-
     }
 
     private function getPointData()
@@ -31,7 +33,7 @@ class Order
         $point = new CalculationPointService($orderModel, $orderModel->uid);
 
         if ($point == false || empty($point->point)) {
-            return null;
+            return false;
         }
         $data = [
             'id' => '1',//抵扣表id
@@ -45,15 +47,10 @@ class Order
     public function onCalculated(OnDeductionPriceCalculatedEvent $event)
     {
         $this->event = $event;
-        $orderModel = $this->event->getOrderModel();
-
-        $data = [
-            'id' => '1',//抵扣表id
-            'name' => '积分抵扣',//名称
-            'value' => 200,//数值
-            'price' => '20.00',//金额
-        ];
-
+        $data = $this->getPointData();
+        if(!$data){
+            return null;
+        }
         $event->addData($data);
     }
 
