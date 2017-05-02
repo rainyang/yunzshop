@@ -144,6 +144,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">推广员</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio-inline"><input type="radio" name="data[agent]" value="1" @if($member['agent']==1)
+                                    checked
+                                            @endif>是</label>
+                                <label class="radio-inline" ><input type="radio" name="data[agent]" value="0" @if($member['agent']==0)
+                                    checked
+                                            @endif>否</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">黑名单</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline"><input type="radio" name="data[is_black]" value="1" @if($member['yz_member']['is_black']==1)
@@ -169,7 +180,6 @@
                                 <input type="submit" name="submit" value="提交" class="btn btn-success" />
                                 <input type="hidden" name="token" value="{{$var['token']}}" />
                                 <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回" style='margin-left:10px;'/>
-                                {{--<input type="button" class="btn btn-default back" name="submit" onclick="location.href='{{yzWebUrl('member.member.index')}}'" value="返回列表"  />--}}
                             </div>
                         </div>
                     </div>

@@ -63,7 +63,7 @@ class Member extends \app\common\models\Member
             ->uniacid()
             ->where('uid', $id)
             ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content'])->where('is_black', 0)
+                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status'])->where('is_black', 0)
                     ->with(['group'=>function($query1){
                         return $query1->select(['id','group_name']);
                     },'level'=>function($query2){
