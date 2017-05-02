@@ -21,13 +21,9 @@ class MemberCartService
             $ids = explode(',', $ids);
         }
         if (!is_array($ids)) {
-            throw new AppException('未找到商品或已经删除');
+            throw new AppException('购物车ID格式不正确');
         }
-        $cart = MemberCart::getMemberCartByIds($ids);
 
-        if (!$cart) {
-            throw new AppException('未找到商品或已经删除');
-        }
 
         return MemberCart::destroyMemberCart($ids);
     }
