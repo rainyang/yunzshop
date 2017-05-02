@@ -26,7 +26,7 @@ class Order
         $event->addData($data);
     }
 
-    private function isChecked($id)
+    private function isChecked($id = 1)
     {
         $deduction_ids = \Request::input('deduction_ids');
         if (!is_array($deduction_ids)) {
@@ -52,13 +52,16 @@ class Order
             'name' => '积分抵扣',//名称
             'value' => $point->point,//数值
             'price' => $point->point_money,//金额
-            'checked' => $this->isChecked(1),//是否选中
+            'checked' => $this->isChecked(),//是否选中
         ];
         return $data;
     }
 
     public function onCalculated(OnDeductionPriceCalculatedEvent $event)
     {
+        if($this->isChecked() == false){
+            return null;
+        }
         $this->event = $event;
         $data = $this->getPointData();
         if (!$data) {
