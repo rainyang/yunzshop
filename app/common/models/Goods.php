@@ -193,7 +193,6 @@ class Goods extends BaseModel
                         $id = $value;
                     }
 
-echo "<pre>"; print_r($id);exit;
                     $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_ids)', [$id]);
 //                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereIn('yz_goods_category.category_id', $value);
                     break;
