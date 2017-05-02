@@ -9,15 +9,14 @@
 namespace app\frontend\modules\member\listeners;
 
 
-use app\common\requests\Request;
 use app\frontend\modules\member\services\MemberCartService;
 
 class Order
 {
     public function handle($event){
-        return ;
-        dd(Request::input('cart_ids'));
-        exit;
+        $cart_ids =\Request::input('cart_ids');
+        @$cart_ids = json_decode($cart_ids);
+
         MemberCartService::clearCartByIds($cart_ids);
     }
 }
