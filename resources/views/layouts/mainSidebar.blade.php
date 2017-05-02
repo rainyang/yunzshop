@@ -18,18 +18,16 @@
                         <li class="treeview {{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
                             <a href="javascript:void(0);" >
                                 <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>
-
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                                <span>{{$value['name']}}</span>
+                                </span><span>{{$value['name']}}</span>
                             </a>
                              @include('layouts.childMenu',['childs'=>$value['child'],'item'=>$key])
                         </li>
                     @else
                         <li class="{{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
                             <a href="{{isset($value['url']) ? yzWebFullUrl($value['url']):''}}{{$value['url_params'] or ''}}">
-                                <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i> {{$value['name'] or ''}}
+                                <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>{{$value['name'] or ''}}
                             </a>
                         </li>
                     @endif
