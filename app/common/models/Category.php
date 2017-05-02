@@ -58,7 +58,7 @@ class Category extends BaseModel
 
         if ($set['cat_level'] == 3) {
             $model->with(['hasManyChildren'=>function($qurey){
-                $qurey->select('id','parent_id','name','thumb');
+                $qurey->select('id','parent_id','name','thumb')->where('enabled', 1);;
             }]);
         }
 
