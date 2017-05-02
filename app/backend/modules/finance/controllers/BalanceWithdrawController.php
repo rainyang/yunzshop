@@ -99,7 +99,7 @@ class BalanceWithdrawController extends BaseController
         if ($resultPay['errno'] == 1) {
             return $resultPay['message'];
         }
-        return '提现打款失败!';
+        return $resultPay;
         //return $resultPay ? $this->updatePayTime(): "打款失败";
     }
 

@@ -156,6 +156,7 @@ class Goods extends BaseModel
         if (!$filters) {
             return;
         }
+
         foreach ($filters as $key => $value) {
             switch ($key) {
                 /*case 'category':
@@ -183,7 +184,16 @@ class Goods extends BaseModel
                     $query->where('price', '<', $value);
                     break;
                 case 'category':
-                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_id)', [$value]);
+                    if(is_array($value))
+                    {
+                        $id = $value['parentid'] ? $value['parentid'] : '';
+                        $id = $value['childid'] ? $value['childid'] : $id;
+                        $id = $value['thirdid'] ? $value['thirdid'] : $id;
+                    }else{
+                        $id = $value;
+                    }
+
+                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_ids)', [$id]);
 //                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereIn('yz_goods_category.category_id', $value);
                     break;
                 default:

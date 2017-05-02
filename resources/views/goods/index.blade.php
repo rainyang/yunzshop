@@ -235,10 +235,10 @@
                                         <td style="position:relative; overflow:visible;" width="20%">
                                             <!-- yitian_add::商品链接二维码 2017-02-07 qq:751818588 -->
                                             <a class="btn btn-sm btn-default umphp" title="商品二维码"
-                                               data-url="<?php echo yzAppUrl('shop/detail', array('id' => $item['id']));?>"
+                                               data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
                                                data-goodsid="{{$item['id']}}">
                                                 <div class="img">
-                                                    {!! QrCode::size(120)->generate(Request::url()) !!}
+                                                    {!! QrCode::size(120)->generate(yzAppFullUrl('goods/'.$item['id'])) !!}
                                                 </div>
                                                 <i class="fa fa-qrcode"></i>
                                             </a>
@@ -256,7 +256,7 @@
                                                         class="fa fa-trash"></i></a>
 
                                             <a href="javascript:;"
-                                               data-url="{{yzAppUrl('shop/detail', array('id' => $item['id']))}}"
+                                               data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
                                                title="复制连接" class="btn btn-default btn-sm js-clip"><i
                                                         class="fa fa-link"></i></a>
                                         </td>
