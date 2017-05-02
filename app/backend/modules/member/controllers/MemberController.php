@@ -45,7 +45,7 @@ class MemberController extends BaseController
 
                 $start_time = explode('=', $search_time[1]);
                 $end_time = explode('=', $search_time[2]);
-                
+
                 $parames->times = [
                     'start' => $start_time[1],
                     'end' => $end_time[1]
