@@ -8,10 +8,12 @@
 
 namespace app\backend\modules\member\models;
 
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberShopInfo extends \app\common\models\MemberShopInfo
 {
+    use SoftDeletes;
+
     public function group()
     {
         return $this->belongsTo('app\backend\modules\member\models\MemberGroup');

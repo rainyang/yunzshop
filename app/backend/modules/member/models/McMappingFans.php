@@ -11,15 +11,4 @@ namespace app\backend\modules\member\models;
 
 class McMappingFans extends \app\common\models\McMappingFans
 {
-    /**
-     * 删除会员信息
-     *
-     * @param $id
-     */
-    public static function  deleteMemberInfoById($id)
-    {
-        return self::uniacid()
-            ->where('uid', $id)
-            ->delete();
-    }
 }
