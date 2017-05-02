@@ -115,6 +115,7 @@ class GoodsController extends BaseController
             'shopset' => $this->shopset,
             'lang' => $this->lang,
             'product_attr_list' => $product_attr_list,
+            'yz_url' => 'yzWebUrl',
             'edit_url' => $edit_url,
             'delete_url' => $delete_url,
             'delete_msg' => $delete_msg,
