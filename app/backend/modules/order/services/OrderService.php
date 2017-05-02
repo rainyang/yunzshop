@@ -16,7 +16,9 @@ class OrderService
 {
     public static function close($order)
     {
+
         $order->status = Order::CLOSE;
+
         $order->save();
     }
 }
