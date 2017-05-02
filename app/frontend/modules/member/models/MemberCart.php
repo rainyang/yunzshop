@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\models;
 
 
 use app\common\exceptions\AppException;
+use app\frontend\modules\goods\models\Goods;
 
 class MemberCart extends \app\common\models\MemberCart
 {
@@ -44,6 +45,7 @@ class MemberCart extends \app\common\models\MemberCart
         }
         $result = static::whereIn('id', $cartIds)
             ->get();
+
         return $result;
     }
 
@@ -61,7 +63,7 @@ class MemberCart extends \app\common\models\MemberCart
 
     public function goods()
     {
-        return $this->hasOne('app\common\models\Goods', 'id', 'goods_id');
+        return $this->hasOne(Goods::class, 'id', 'goods_id');
     }
 
     public function goodsOption()
@@ -166,24 +168,43 @@ class MemberCart extends \app\common\models\MemberCart
         if (!isset($this->goods)) {
             throw new AppException('(ID:' . $this->goods_id . ')未找到商品或已经删除');
         }
-        if (empty($this->goods->status)) {
-            throw new AppException('(ID:' . $this->goods_id . ')商品已下架');
+
+        //商品基本验证
+        $this->goods->generalValidate($this->total);
+
+        if ($this->isOption()) {
+            $this->goodsOptionValidate();
+        } else {
+            $this->goodsValidate();
         }
-        if(!$this->goods->stockEnough()){
+
+    }
+
+    /**
+     * 商品购买验证
+     * @throws AppException
+     */
+    public function goodsValidate()
+    {
+        if (!$this->goods->stockEnough($this->total)) {
             throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
         }
-        if ($this->isOption() ) {
-            if(!$this->goods->hasOption){
-                throw new AppException('(ID:' . $this->option_id . ')商品未启用规格');
-            }
-            if(!isset($this->goodsOption)){
-                throw new AppException('(ID:' . $this->option_id . ')未找到商品规格或已经删除');
-            }
-        }
-        //todo 商品单次限购
-        //todo 单人限购
-        //todo 限时购
-        //todo 库存
+    }
 
+    /**
+     * 规格验证
+     * @throws AppException
+     */
+    public function goodsOptionValidate()
+    {
+        if (!$this->goods->has_option) {
+            throw new AppException('(ID:' . $this->option_id . ')商品未启用规格');
+        }
+        if (!isset($this->goodsOption)) {
+            throw new AppException('(ID:' . $this->option_id . ')未找到商品规格或已经删除');
+        }
+        if (!$this->goodsOption->stockEnough($this->total)) {
+            throw new AppException('(ID:' . $this->goods_id . ')商品库存不足');
+        }
     }
 }

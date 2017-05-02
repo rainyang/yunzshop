@@ -1,8 +1,8 @@
 /**
  * @name        jQuery Cascdejs plugin
  * @author      rayyang
- * @version     1.0 
- * @level       3级 
+ * @version     1.0
+ * @level       3级
  */
 
 //首先需要初始化
@@ -11,7 +11,12 @@ var _cityNetworkData =null;
 var _districtNetworkData =null;
 var _reg = new RegExp("(^|&)i=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
 var _r = window.location.search.substr(1).match(_reg);  //匹配目标参数
-var uniacid = _r['2'] ? _r['2'] : '0';
+
+var uniacid = '0';
+if(_r) {
+    uniacid = _r['2'];
+}
+
 
 function cascdeInit(v1,v2,v3){
    getProvinceData(v1,v2,v3);
@@ -31,7 +36,7 @@ function getProvinceData(v1,v2,v3){
             _provinceNetworkData = data;
             getCityData(v1,v2,v3);
         }
-    }) 
+    })
 }
 
 // 获取城市数据
@@ -54,7 +59,7 @@ function getCityData(v1,v2,v3){
             _cityNetworkData = data;
             getDistrictData(v1,v2,v3);
         }
-    })  
+    })
 }
 
 // 获取区数据
@@ -77,7 +82,7 @@ function getDistrictData(v1,v2,v3){
             _districtNetworkData = data;
             setProvinceData(v1,v2,v3);
         }
-    }) 
+    })
 }
 
 // 设置省

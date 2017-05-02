@@ -81,7 +81,7 @@ class UpdateController extends BaseController
 
         if ($update->newVersionAvailable()) {
             $update->onEachUpdateFinish(function($version){
-                \Artisan::call('update:version ' . $version);
+                \Artisan::call('update:version' ,['version'=>$version]);
             });
             $result = $update->update();
             if ($result === true) {

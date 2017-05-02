@@ -116,7 +116,7 @@ class Goods extends BaseModel
 
     public function hasOnePrivilege()
     {
-        return $this->hasOne('app\common\models\goods\Privilege');
+        return $this->hasOne(self::getStaticNamespace().'\goods\Privilege');
     }
 
     public function hasOneGoodsDispatch()
@@ -183,8 +183,9 @@ class Goods extends BaseModel
                     $query->where('price', '<', $value);
                     break;
                 case 'category':
-                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_id)', [$value]);
-//                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereIn('yz_goods_category.category_id', $value);
+                    echo "<pre>"; print_r($value);exit;
+//                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_id)', [$value]);
+                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereIn('yz_goods_category.category_id', $value);
                     break;
                 default:
                     break;
@@ -216,6 +217,7 @@ class Goods extends BaseModel
     }
 
     /**
+     * @author shenyang
      * 减库存
      * @param $num
      * @throws AppException
@@ -235,6 +237,7 @@ class Goods extends BaseModel
 
     /**
      * 库存是否充足
+     * @author shenyang
      * @param $num
      * @return bool
      */
@@ -250,6 +253,7 @@ class Goods extends BaseModel
 
     /**
      * 增加销量
+     * @author shenyang
      * @param $num
      */
     public function addSales($num)
@@ -260,6 +264,7 @@ class Goods extends BaseModel
 
     /**
      * 判断实物
+     * @author shenyang
      * @return bool
      */
     public function isRealGoods()
