@@ -155,7 +155,7 @@ class MemberOfficeAccountService extends MemberService
             $this->updateMemberInfo($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
-
+file_put_contents(storage_path('logs/account.log'), 1);
             $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
 
             if ($mc_mapping_fans_model->uid) {
