@@ -303,4 +303,16 @@ class ShopController extends BaseController
             }
         }
     }
+
+    /**
+     * 前端入口二维码
+     *
+     * @return string
+     */
+    public function Entry()
+    {
+        return view('setting.shop.entry', [
+
+        ])->render();
+    }
 }
