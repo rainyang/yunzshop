@@ -15,11 +15,11 @@
                 <div class="panel-body">
                     @if($item->id)
                         <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类连接(点击复制)</label>
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类链接(点击复制)</label>
                             <div class="col-sm-9 col-xs-12">
                                 <p class='form-control-static'>
                                     <a href='javascript:;' title='点击复制连接' id='cp'>
-                                        {{yzAppFullUrl('/catelist/'.$item->id)}}{{$item->id}}
+                                        {{yzAppFullUrl('/catelist/'.$item->id, ['type'=>5])}}{{$item->id}}
                                     </a>
                                 </p>
                             </div>
