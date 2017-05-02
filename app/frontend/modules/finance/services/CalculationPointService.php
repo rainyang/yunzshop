@@ -13,17 +13,17 @@ use Setting;
 
 class CalculationPointService
 {
-    private $order_goods_model;
+    private $orderGoodsModels;
     private $point_set;
     public $point;
     private $member;
     public $point_money;
 
-    public function __construct($order_goods_model, $member_id)
+    public function __construct($orderGoodsModels, $member_id)
     {
         $this->verifyPointSet();
         $this->vetifyMemberPoint($member_id);
-        $this->order_goods_model = $order_goods_model;
+        $this->orderGoodsModels = $orderGoodsModels;
         $this->calculationPoint();
         $this->point_money = $this->point * $this->point_set['money'];
     }
@@ -61,8 +61,8 @@ class CalculationPointService
      */
     private function calculationPoint()
     {
-        foreach ($this->order_goods_model as $goods_model) {
-            $this->calculationMemberPoint($this->getGoodsPoint($goods_model));
+        foreach ($this->orderGoodsModels as $goodsModel) {
+            $this->calculationMemberPoint($this->getGoodsPoint($goodsModel));
         }
     }
 
@@ -74,11 +74,12 @@ class CalculationPointService
      */
     private function getGoodsPoint($goods_model)
     {
+
         if ($goods_model->hasOneSale->max_point_deduct > 0) {
             $goods_point = $goods_model->hasOneSale->max_point_deduct / $this->point_set['money'];
             return $goods_point;
         } else if ($this->point_set['money_max'] > 0) {
-            $goods_point = $this->point_set['money_max'] / 100 * $goods_model->goods_price / $this->point_set['money'];
+            $goods_point = $this->point_set['money_max'] / 100 * $goods_model->getPrice() / $this->point_set['money'];
             return $goods_point;
         }
     }

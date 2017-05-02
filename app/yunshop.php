@@ -49,7 +49,7 @@ class YunShop
 
         if(self::isWeb()){
             //菜单生成
-            $menuList = self::isPlugin() ? Config::get('plugins_menu') : array_merge(Menu::getMenuList(), (array)Config::get('menu'));
+            $menuList =  array_merge(Menu::getMenuList(), (array)Config::get('menu'));
             Config::set('menu',$menuList);
             $item = Menu::getCurrentItemByRoute($controller->route,$menuList);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
@@ -201,7 +201,7 @@ class YunShop
                     $path = base_path() . '/plugins/' . $pluginName . '/src';
                     $length = $countRoute;
 
-                    self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length, $requestRoute,true);
+                    self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length,$currentRoutes, $requestRoute,true);
 
 
                 } else {
@@ -209,7 +209,7 @@ class YunShop
                 }
             } else {
 
-                self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length, $requestRoute,false);
+                self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length,$currentRoutes, $requestRoute,false);
 
             }
         }
@@ -229,7 +229,7 @@ class YunShop
      * @param $requestRoute
      * @param $isPlugin
      */
-    public static function findRouteFile(&$controllerName,&$action,$routes, &$namespace, &$path, $length, $requestRoute,$isPlugin)
+    public static function findRouteFile(&$controllerName,&$action,$routes, &$namespace, &$path, $length, &$currentRoutes,$requestRoute,$isPlugin)
     {
 
         foreach ($routes as $k => $r) {
