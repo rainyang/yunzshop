@@ -11,6 +11,7 @@ namespace app\backend\controllers;
 use app\backend\models\Menu;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
+use app\common\models\MenuSelect;
 use Ixudra\Curl\Facades\Curl;
 
 class MenuController extends BaseController
@@ -30,7 +31,7 @@ class MenuController extends BaseController
 
     public function add()
     {
-        $model = new Menu();
+        $model = new MenuSelect();
 
         $parentId = intval(\YunShop::request()->parent_id);
         $data = \YunShop::request()->menu;
@@ -64,7 +65,7 @@ class MenuController extends BaseController
         $id = \YunShop::request()->id;
         $data = \YunShop::request()->menu;
 
-        $model = Menu::getMenuInfoById($id);
+        $model = MenuSelect::getMenuInfoById($id);
         if(!$model){
             return $this->message('无此记录','','error');
         }

@@ -22,7 +22,7 @@ use app\common\helpers\PaginationHelper;
 
 class MemberController extends BaseController
 {
-    private $pageSize = 20;
+    private $pageSize = 5;
 
 
 
@@ -36,6 +36,22 @@ class MemberController extends BaseController
         $levels = MemberLevel::getMemberLevelList();
 
         $parames = \YunShop::request();
+
+        if (strpos($parames['searchtime'], '×') !== FALSE) {
+            $search_time = explode('×', $parames['searchtime']);
+
+            if (!empty($search_time)) {
+                $parames['searchtime'] = $search_time[0];
+
+                $start_time = explode('=', $search_time[1]);
+                $end_time = explode('=', $search_time[2]);
+
+                $parames->times = [
+                    'start' => $start_time[1],
+                    'end' => $end_time[1]
+                ];
+            }
+        }
 
         $list = Member::searchMembers($parames)
             ->paginate($this->pageSize)

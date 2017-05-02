@@ -89,7 +89,6 @@ class GoodsController extends BaseController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-
         $catetory_menus = CategoryService::getCategoryMenu(
             [
                 'catlevel' => $this->shopset['cat_level'],
@@ -105,7 +104,6 @@ class GoodsController extends BaseController
         $delete_url = 'goods.goods.destroy';
         $delete_msg = '确认删除此商品？';
         $sort_url = 'goods.goods.displayorder';
-
         return view('goods.index', [
             'list' => $list['data'],
             'pager' => $pager,
@@ -120,7 +118,8 @@ class GoodsController extends BaseController
             'edit_url' => $edit_url,
             'delete_url' => $delete_url,
             'delete_msg' => $delete_msg,
-            'sort_url'  => $sort_url
+            'sort_url'  => $sort_url,
+            'product_attr'  => $requestSearch['product_attr'],
         ])->render();
     }
 
@@ -277,6 +276,8 @@ class GoodsController extends BaseController
 
         //$catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
+
+            $requestGoods['has_option'] = $requestGoods['has_option'] ? $requestGoods['has_option'] : 0;
             if ($requestGoods['has_option'] && !\YunShop::request()['option_ids']) {
                 $requestGoods['has_option'] = 0;
                 //return $this->message('启用商品规格，必须添加规格项等信息', Url::absoluteWeb('goods.goods.index'));
@@ -303,12 +304,10 @@ class GoodsController extends BaseController
             //其他字段赋值
             $goodsModel->uniacid = \YunShop::app()->uniacid;
             $goodsModel->id = $this->goods_id;
-
             $validator = $goodsModel->validator($goodsModel->getAttributes());
             if ($validator->fails()) {
                 $this->error($validator->messages());
-            }
-            else {
+            } else {
                 //数据保存
                 if ($goodsModel->save()) {
                     GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
