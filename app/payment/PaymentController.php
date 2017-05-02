@@ -89,7 +89,7 @@ class PaymentController extends BaseController
             $pay_order_model->third_type = $data['pay_type'];
             $pay_order_model->save();
         }
-        file_put_contents(storage_path('logs/recharge_type.log', $type));
+        
         switch ($type) {
             case "charge.succeeded":
                 \Log::debug('支付操作', 'charge.succeeded');
@@ -109,7 +109,7 @@ class PaymentController extends BaseController
                 break;
             case "recharge.succeeded":
                 \Log::debug('支付操作', 'recharge.succeeded');
-file_put_contents(storage_path('logs/recharge.log', print_r($data, 1)));
+
                 (new BalanceService())->payResult([
                     'order_sn'=> $data['out_trade_no'],
                     'pay_sn'=> $data['trade_no']
