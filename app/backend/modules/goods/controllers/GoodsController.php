@@ -330,12 +330,10 @@ class GoodsController extends BaseController
             //其他字段赋值
             $goodsModel->uniacid = \YunShop::app()->uniacid;
             $goodsModel->id = $this->goods_id;
-
             $validator = $goodsModel->validator($goodsModel->getAttributes());
             if ($validator->fails()) {
                 $this->error($validator->messages());
-            }
-            else {
+            } else {
                 //数据保存
                 if ($goodsModel->save()) {
                     GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);

@@ -43,6 +43,9 @@ class CartBuyController extends PreGeneratedController
         if(!isset($memberCarts)){
             $memberCarts = MemberCart::getCartsByIds($cartIds);
         }
+        $memberCarts->each(function ($memberCart){
+            $memberCart->validate();
+        });
         if ($memberCarts->isEmpty()) {
             throw new AppException('未找到购物车信息');
         }

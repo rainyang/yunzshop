@@ -12,7 +12,6 @@ namespace app\frontend\modules\order\services;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\exceptions\AppException;
-use app\common\models\finance\BalanceRecharge;
 use app\common\models\Order;
 
 use app\common\models\order\OrderChangeLog;
