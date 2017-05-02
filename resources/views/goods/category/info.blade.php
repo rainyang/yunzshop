@@ -18,7 +18,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类链接(点击复制)</label>
                             <div class="col-sm-9 col-xs-12">
                                 <p class='form-control-static'>
-                                    <a href='javascript:;' title='点击复制连接' id='cp'>
+                                    <a href='javascript:;' data-url="{{yzAppFullUrl('/catelist/'.$item->id, ['type'=>5])}}" title='点击复制链接' id='cp'>
                                         {{yzAppFullUrl('/catelist/'.$item->id, ['type'=>5])}}
                                     </a>
                                 </p>
@@ -149,5 +149,12 @@
         </form>
     </div>
     @include('public.admin.mylink');
+
+    {{--点击复制链接--}}
+    <script>
+        $('.js-clip').each(function () {
+            util.clip(this, $(this).attr('data-url'));
+        });
+    </script>
 @endsection
 
