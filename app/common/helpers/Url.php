@@ -11,7 +11,7 @@ class Url
 {
     public static function shopUrl($uri)
     {
-        if(empty($uri) && self::isHttp($uri)){
+        if(empty($uri) || self::isHttp($uri)){
             return $uri;
         }
         $domain = request()->getSchemeAndHttpHost();
@@ -28,7 +28,7 @@ class Url
      */
     public static function web($route, $params = [])
     {
-        if(empty($route) && self::isHttp($route)){
+        if(empty($route) || self::isHttp($route)){
             return $route;
         }
         $defaultParams = ['c'=>'site','a'=>'entry','m'=>'yun_shop','do'=>rand(1000,9999),'route'=>$route];
@@ -46,7 +46,7 @@ class Url
      */
     public static function app($route, $params = [])
     {
-        if(empty($route) && self::isHttp($route)){
+        if(empty($route) || self::isHttp($route)){
             return $route;
         }
         if(strpos($route, '/') !== 0){
@@ -68,7 +68,7 @@ class Url
      */
     public static function api($route, $params = [])
     {
-        if(empty($route) && self::isHttp($route)){
+        if(empty($route) || self::isHttp($route)){
             return $route;
         }
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
@@ -86,7 +86,7 @@ class Url
      */
     public static function plugin($route, $params = [])
     {
-        if(empty($route) && self::isHttp($route)){
+        if(empty($route) || self::isHttp($route)){
             return $route;
         }
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
@@ -106,7 +106,7 @@ class Url
      */
     public static function absoluteWeb($route, $params = [], $domain = '')
     {
-        if(empty($route) && self::isHttp($route)){
+        if(empty($route) || self::isHttp($route)){
             return $route;
         }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
@@ -123,7 +123,7 @@ class Url
      */
     public static function absoluteApp($route, $params = [], $domain = '')
     {
-        if(empty($route) && self::isHttp($route)){
+        if(empty($route) || self::isHttp($route)){
             return $route;
         }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
@@ -139,7 +139,7 @@ class Url
      */
     public static function absoluteApi($route, $params = [], $domain = '')
     {
-        if(empty($route) && self::isHttp($route)){
+        if(empty($route) || self::isHttp($route)){
             return $route;
         }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
@@ -155,7 +155,7 @@ class Url
      */
     public static function absolutePlugin($route, $params = [], $domain = '')
     {
-        if(empty($route) && self::isHttp($route)){
+        if(empty($route) || self::isHttp($route)){
             return $route;
         }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
@@ -164,6 +164,6 @@ class Url
 
     public static function isHttp($url)
     {
-        return (strpos($url,'http://') == 0 || strpos($url,'https://') == 0);
+        return (strpos($url,'http://') === 0 || strpos($url,'https://') === 0);
     }
 }
