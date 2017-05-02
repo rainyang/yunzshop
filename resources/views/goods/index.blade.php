@@ -238,7 +238,7 @@
                                                data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
                                                data-goodsid="{{$item['id']}}">
                                                 <div class="img">
-                                                    {!! QrCode::size(120)->generate(Request::url()) !!}
+                                                    {!! QrCode::size(120)->generate(yzAppFullUrl('goods/'.$item['id'])) !!}
                                                 </div>
                                                 <i class="fa fa-qrcode"></i>
                                             </a>
