@@ -12,6 +12,7 @@ use app\backend\modules\goods\models\Sale;
 use app\common\exceptions\AppException;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use app\common\models\Coupon;
 
 class Goods extends BaseModel
 {
@@ -166,13 +167,6 @@ class Goods extends BaseModel
                 case 'keyword':
                     $query->where('title', 'LIKE', "%{$value}%");
                     break;
-                case 'good_id':
-                    if(is_array($value)){
-                        $query->whereIn('id', $value);
-                    } else{
-                        $query->where('id', $value);
-                    }
-                    break;
                 case 'brand_id':
                     $query->where('brand_id', $value);
                     break;
@@ -202,6 +196,33 @@ class Goods extends BaseModel
 
                     $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_ids)', [$id]);
 //                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereIn('yz_goods_category.category_id', $value);
+                    break;
+                case 'couponid': //搜索指定优惠券适用的商品
+                    $res = Coupon::getApplicableScope($value);
+                    switch ($res['type']){
+                        case Coupon::COUPON_GOODS_USE: //优惠券适用于指定商品
+                            if(is_array($res['scope'])){
+                                $query->whereIn('id', $res['scope']);
+                            } else{
+                                $query->where('id', $res['scope']);
+                            }
+                            break;
+                        case Coupon::COUPON_CATEGORY_USE: //优惠券适用于指定商品分类
+                            if(is_array($res['scope'])){
+                                $query->join('yz_goods_category', function($join) use ($res){
+                                    $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
+                                            ->whereIn('yz_goods_category.category_id', $res['scope']);
+                                });
+                            } else{
+                                $query->join('yz_goods_category', function($join) use ($res){
+                                    $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
+                                        ->where('yz_goods_category.category_id', $res['scope']);
+                                });
+                            }
+                            break;
+                        default: //优惠券适用于整个商城
+                            break;
+                    }
                     break;
                 default:
                     break;

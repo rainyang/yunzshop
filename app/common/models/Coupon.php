@@ -67,4 +67,46 @@ class  Coupon extends BaseModel
             ->where('id', '=', $couponId)
             ->value($attribute);
     }
+
+    //获取优惠券的适用范围
+    public static function getApplicableScope($couponId){
+        $useType = static::uniacid()
+            ->where('id', '=', $couponId)
+            ->value('use_type');
+        switch ($useType){
+            case self::COUPON_GOODS_USE:
+                $goodIds = self::getApplicalbeGoodIds($couponId);
+                return [
+                    'type' =>  self::COUPON_GOODS_USE,
+                    'scope' => $goodIds,
+                ];
+                break;
+            case self::COUPON_CATEGORY_USE:
+                $categoryIds = self::getApplicalbeCategoryIds($couponId);
+                return [
+                    'type' => self::COUPON_CATEGORY_USE,
+                    'scope' => $categoryIds,
+                ];
+                break;
+            default:
+                return [
+                    'type' => self::COUPON_ALL_USE,
+                ];
+                break;
+        }
+    }
+
+    //获取优惠券的适用商品ID
+    public static function getApplicalbeGoodIds($couponId){
+        return static::uniacid()
+            ->where('id', '=', $couponId)
+            ->value('goods_ids');
+    }
+
+    //获取优惠券的适用商品分类ID
+    public static function getApplicalbeCategoryIds($couponId){
+        return static::uniacid()
+            ->where('id', '=', $couponId)
+            ->value('category_ids');
+    }
 }
