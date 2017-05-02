@@ -152,7 +152,7 @@
 
     {{--点击复制链接--}}
     <script>
-        $('.js-clip').each(function () {
+        $('#cp').click(function () {
             util.clip(this, $(this).attr('data-url'));
         });
     </script>
