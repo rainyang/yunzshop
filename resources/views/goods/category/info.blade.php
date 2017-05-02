@@ -19,7 +19,7 @@
                             <div class="col-sm-9 col-xs-12">
                                 <p class='form-control-static'>
                                     <a href='javascript:;' title='点击复制连接' id='cp'>
-                                        {{yzAppFullUrl('/catelist/'.$item->id, ['type'=>5])}}{{$item->id}}
+                                        {{yzAppFullUrl('/catelist/'.$item->id, ['type'=>5])}}
                                     </a>
                                 </p>
                             </div>
