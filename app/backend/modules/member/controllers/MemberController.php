@@ -23,7 +23,7 @@ use app\common\helpers\PaginationHelper;
 class MemberController extends BaseController
 {
     private $pageSize = 20;
-    
+
     /**
      * 列表
      *
