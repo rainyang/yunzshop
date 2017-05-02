@@ -15,9 +15,9 @@ class CalculationPointService
 {
     private $order_goods_model;
     private $point_set;
-    private $point;
+    public $point;
     private $member;
-    private $point_money;
+    public $point_money;
 
     public function __construct($order_goods_model, $member_id)
     {
@@ -49,10 +49,10 @@ class CalculationPointService
      */
     private function vetifyMemberPoint($member_id)
     {
-        if (Member::deleteMemberInfoById($member_id)['credit1'] <= 0) {
+        if (Member::getMemberInfoById($member_id)['credit1'] <= 0) {
             return false;
         }
-        $this->member = Member::deleteMemberInfoById($member_id);
+        $this->member = Member::getMemberInfoById($member_id);
     }
 
     /**
