@@ -119,7 +119,7 @@ class MemberCouponController extends ApiController
 
             //添加优惠券使用范围描述
             switch($v['use_type']){
-                case Coupon::COUPON_ALL_USE:
+                case Coupon::COUPON_SHOP_USE:
                     $coupons['data'][$k]['api_limit'] = '商城通用';
                     break;
                 case Coupon::COUPON_CATEGORY_USE:
