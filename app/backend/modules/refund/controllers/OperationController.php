@@ -5,6 +5,9 @@ namespace app\backend\modules\refund\controllers;
 use app\backend\modules\refund\models\RefundApply;
 use app\common\components\BaseController;
 use app\common\exceptions\AdminException;
+use app\frontend\modules\order\services\OrderService;
+use function foo\func;
+use Illuminate\Support\Facades\DB;
 
 /**
  * 退款申请操作
@@ -73,7 +76,11 @@ class OperationController extends BaseController
      */
     public function consensus(\Request $request)
     {
-        $this->refundApply->consensus();
+        $refundApply = $this->refundApply;
+        DB::transaction(function () use ($refundApply) {
+            $refundApply->consensus();
+            $refundApply->order->close();
+        });
         return $this->message('操作成功', '');
     }
 }

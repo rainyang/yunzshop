@@ -15,7 +15,7 @@ class MemberShopInfo extends BackendModel
 {
     protected $table = 'yz_member';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     public $primaryKey = 'member_id';
 

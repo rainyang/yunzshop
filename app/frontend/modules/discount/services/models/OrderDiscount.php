@@ -43,8 +43,10 @@ class OrderDiscount extends Discount
 
     private function _getDeductionPrice()
     {
-        $Event = new OnDeductionPriceCalculatedEvent($this->order);
-        $data = $Event->getData();
+        $event = new OnDeductionPriceCalculatedEvent($this->order);
+        event($event);
+        $data = $event->getData();
+
         return max(array_sum(array_column($data, 'price')), 0);
     }
 

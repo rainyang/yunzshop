@@ -21,6 +21,7 @@ use app\frontend\modules\coupon\services\models\TimeLimit\TimeLimit;
 use app\frontend\modules\coupon\services\models\UseScope\CategoryScope;
 use app\frontend\modules\coupon\services\models\UseScope\CouponUseScope;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
+use app\frontend\modules\coupon\services\models\UseScope\ShopScope;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class Coupon
@@ -100,6 +101,9 @@ class Coupon
                 break;
             case DbCoupon::COUPON_CATEGORY_USE:
                 return new CategoryScope($this);
+                break;
+            case DbCoupon::COUPON_SHOP_USE:
+                return new ShopScope($this);
                 break;
             default:
 //                if (config('app.debug')) {
@@ -214,7 +218,7 @@ class Coupon
         if (!isset($this->timeLimit)) {
             return false;
         }
-
+        
         return $this->useScope->valid() && $this->price->isOptional() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used);
     }
 

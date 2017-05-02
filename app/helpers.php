@@ -324,6 +324,9 @@ if (!function_exists('can')) {
      */
     function can($itemRoute, $isRoute = false)
     {
+        if(config('app.menu_key') != 'menu'){
+            return true;
+        }
         if ($isRoute == true) {
             $item = \app\common\models\Menu::getItemByRoute($itemRoute);
         } else {
@@ -364,6 +367,20 @@ if (!function_exists('yzApiUrl')) {
     function yzApiUrl($route, $params = [])
     {
         return Url::api($route, $params);
+    }
+}
+
+if (!function_exists('yzPluginUrl')) {
+    function yzPluginUrl($route, $params = [])
+    {
+        return Url::plugin($route, $params);
+    }
+}
+
+if (!function_exists('yzPluginFullUrl')) {
+    function yzPluginFullUrl($route, $params = [])
+    {
+        return Url::absolutePlugin($route, $params);
     }
 }
 

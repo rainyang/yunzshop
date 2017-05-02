@@ -1,4 +1,5 @@
 <?php
+
 namespace app\frontend\modules\coupon\services\models\UseScope;
 
 use app\common\exceptions\AppException;
@@ -14,59 +15,26 @@ use Illuminate\Support\Collection;
  */
 class GoodsScope extends CouponUseScope
 {
-    protected $orderGoods;
-    public function valid()
-    {
-        //dd($this->getOrderGoodsOfUsedCoupon());
-        //exit;
-        if($this->getOrderGoodsOfUsedCoupon()->isNotEmpty()){
-            //dd($this->getOrderGoodsOfUsedCoupon());
-            //exit;
-            //todo 此处有bug ,如果调用处提前结束了判断条件,会导致 orderGoodsGroup属性获取失败
-            $this->setOrderGoodsGroup();
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * 将订单商品装入 订单商品组对象
-     */
-    private function setOrderGoodsGroup()
-    {
-        //dd($this->getOrderGoodsOfUsedCoupon());
-        $this->orderGoodsGroup = new PreGeneratedOrderGoodsModelGroup($this->getOrderGoodsOfUsedCoupon());
-    }
-
-    /**
-     * (缓存)订单中使用了该优惠券的商品组
-     * @return Collection
-     */
-    protected function getOrderGoodsOfUsedCoupon(){
-        if(isset($this->orderGoods)){
-            return $this->orderGoods;
-        }
-        return $this->orderGoods = $this->_getOrderGoodsOfUsedCoupon();
-    }
 
     /**
      * 订单中使用了该优惠券的商品组
      * @return Collection
      * @throws AppException
      */
-    private function _getOrderGoodsOfUsedCoupon()
+    protected function _getOrderGoodsOfUsedCoupon()
     {
-        $orderGoods =  $this->coupon->getPreGeneratedOrderModel()->getOrderGoodsModels()->filter(
-            function ($orderGoods){
+        $orderGoods = $this->coupon->getPreGeneratedOrderModel()->getOrderGoodsModels()->filter(
+            function ($orderGoods) {
                 /**
                  * @var $orderGoods PreGeneratedOrderGoodsModel
                  */
                 return in_array($orderGoods->getGoodsId(), $this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids);
-        });
-        if($orderGoods->unique('is_plugin')->count() > 1) {
+            });
+        if ($orderGoods->unique('is_plugin')->count() > 1) {
             throw new AppException('自营商品与第三方商品不能共用一张优惠券');
         }
+
         return $orderGoods;
     }
+
 }
