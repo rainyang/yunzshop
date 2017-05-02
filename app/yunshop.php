@@ -201,7 +201,7 @@ class YunShop
                     $path = base_path() . '/plugins/' . $pluginName . '/src';
                     $length = $countRoute;
 
-                    self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length, $requestRoute,true);
+                    self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length,$currentRoutes, $requestRoute,true);
 
 
                 } else {
@@ -209,7 +209,7 @@ class YunShop
                 }
             } else {
 
-                self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length, $requestRoute,false);
+                self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length,$currentRoutes, $requestRoute,false);
 
             }
         }
@@ -229,7 +229,7 @@ class YunShop
      * @param $requestRoute
      * @param $isPlugin
      */
-    public static function findRouteFile(&$controllerName,&$action,$routes, &$namespace, &$path, $length, $requestRoute,$isPlugin)
+    public static function findRouteFile(&$controllerName,&$action,$routes, &$namespace, &$path, $length, &$currentRoutes,$requestRoute,$isPlugin)
     {
 
         foreach ($routes as $k => $r) {
