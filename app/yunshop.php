@@ -353,7 +353,7 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
-        $this->values = YunShop::isApi() ? $this->getW() : (array)$_W;
+        $this->values = (YunShop::isApi() || YunShop::isPlugin()) ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
     }
     
