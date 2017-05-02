@@ -22,15 +22,11 @@
                     <ul class="row dimension">
                         <li>
                             <p>商城首页</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('home')) !!}
                         </li>
                         <li>
                             <p>分类导航</p>
-                            <img src="" alt="">
-                        </li>
-                        <li>
-                            <p>全部商品</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('category')) !!}
                         </li>
                     </ul>
                 </div>
@@ -38,71 +34,59 @@
                     <ul class="dimension">
                         <li>
                             <p>会员中心</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member')) !!}
                         </li>
                         <li>
                             <p>我的订单</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/orderList/0')) !!}
                         </li>
                         <li>
                             <p>购物车</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('cart')) !!}
                         </li>
                         <li>
                             <p>我的收藏</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/collection')) !!}
                         </li>
                         <li>
                             <p>我的足迹</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/footprint')) !!}
                         </li>
                         <li>
                             <p>评价</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/myEvaluation')) !!}
                         </li>
                         <li>
                             <p>关系</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/myrelationship')) !!}
                         </li>
                         <li>
                             <p>收货地址</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/address')) !!}
                         </li>
                         <li>
                             <p>我的优惠券</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('coupon/coupon_index')) !!}
                         </li>
                         <li>
                             <p>领券中心</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('coupon/coupon_store')) !!}
                         </li>
                         <li>
                             <p>积分页面</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/integral')) !!}
                         </li>
                         <li>
                             <p>积分明细</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/integrallist')) !!}
                         </li>
                         <li>
                             <p>余额页面</p>
-                            <img src="" alt="">
-                        </li>
-                        <li>
-                            <p>余额充值</p>
-                            <img src="" alt="">
-                        </li>
-                        <li>
-                            <p>余额转账</p>
-                            <img src="" alt="">
-                        </li>
-                        <li>
-                            <p>余额提现</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/balance')) !!}
                         </li>
                         <li>
                             <p>余额明细</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/detailed')) !!}
                         </li>
                     </ul>
                 </div>
@@ -110,23 +94,19 @@
                     <ul class="dimension">
                         <li>
                             <p>推广中心</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/extension')) !!}
                         </li>
                         <li>
                             <p>收入明细</p>
-                            <img src="" alt="">
-                        </li>
-                        <li>
-                            <p>提现中心</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/incomedetails')) !!}
                         </li>
                         <li>
                             <p>收入提现</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/income')) !!}
                         </li>
                         <li>
                             <p>提现明细</p>
-                            <img src="" alt="">
+                            {!! QrCode::size(200)->generate(yzAppFullUrl('member/presentationRecord')) !!}
                         </li>
                     </ul>
                 </div>

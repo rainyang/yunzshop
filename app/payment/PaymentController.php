@@ -89,7 +89,7 @@ class PaymentController extends BaseController
             $pay_order_model->third_type = $data['pay_type'];
             $pay_order_model->save();
         }
-        
+
         switch ($type) {
             case "charge.succeeded":
                 \Log::debug('支付操作', 'charge.succeeded');
