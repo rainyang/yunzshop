@@ -55,14 +55,15 @@ class OrderService
 
     /**
      * 获取优惠信息
-     * @param $order_model
+     * @param $orderModel
      * @return array
      */
-    private static function getDiscountEventData($order_model)
+    private static function getDiscountEventData($orderModel)
     {
-        $Event = new OnDiscountInfoDisplayEvent($order_model);
-        event($Event);
-        return collect($Event->getMap());
+        $event = new OnDiscountInfoDisplayEvent($orderModel);
+        event($event);
+
+        return collect($event->getMap());
     }
 
     /**
