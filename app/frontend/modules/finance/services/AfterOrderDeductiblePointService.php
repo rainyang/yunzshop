@@ -19,6 +19,18 @@ class AfterOrderDeductiblePointService
     private $order_model;
     private $point_set;
 
+    private function isChecked($id = 1)
+    {
+        $deduction_ids = \Request::input('deduction_ids');
+        if (!is_array($deduction_ids)) {
+            $deduction_ids = json_decode($deduction_ids,true);
+            if (!is_array($deduction_ids)) {
+                $deduction_ids = explode(',',$deduction_ids);
+            }
+        }
+        return in_array($id,$deduction_ids);
+    }
+
     public function deductiblePoint(AfterOrderCreatedEvent $event)
     {
         $this->order_model = Order::find($event->getOrderModel()->id);
@@ -34,8 +46,7 @@ class AfterOrderDeductiblePointService
 
     private function isDeductible()
     {
-        //假如 deductible = 1为使用抵扣，抵扣积分 point_money
-        if (isset($this->order_model->deductible) && $this->order_model->deductible != 1) {
+        if (!$this->isChecked()) {
             return;
         }
     }
