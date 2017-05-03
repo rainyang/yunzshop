@@ -9,6 +9,8 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\facades\Option;
+use app\common\facades\Setting;
 use app\common\services\AutoUpdate;
 
 class UpdateController extends BaseController
@@ -41,10 +43,17 @@ class UpdateController extends BaseController
     public function check()
     {
         $result = ['msg' => '', 'last_version' => '', 'updated' => 0];
+        $key = Setting::get('shop.key')['key'];
+        $secret = Setting::get('shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
+        //$update->setUpdateFile('check_app.json');
         $update->setCurrentVersion(config('version'));
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+        Setting::get('auth.key');
+
+       // $update->setBasicAuth($key, $secret);
+        $update->setBasicAuth();
 
         //Check for a new update
         if ($update->checkUpdate() === false) {
