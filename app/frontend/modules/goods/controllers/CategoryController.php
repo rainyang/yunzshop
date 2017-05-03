@@ -47,7 +47,6 @@ class CategoryController extends BaseController
         $set = Setting::get('shop.category');
         $parent_id = intval(\YunShop::request()->parent_id);
         $list = Category::getChildrenCategorys($parent_id,$set)->paginate($pageSize)->toArray();
-        echo "<pre>"; print_r($list);exit;
         foreach ($list['data'] as &$item) {
             $item['thumb'] = tomedia($item['thumb']);
             $item['adv_img'] = tomedia($item['adv_img']);
