@@ -13,10 +13,18 @@ class AddDateYzMemberTable extends Migration
      */
     public function up()
     {
-        Schema::table('ims_yz_member', function (Blueprint $table) {
-            $table->integer('created_at')->nullable()->comment('删除时间');
-            $table->integer('updated_at')->nullable()->comment('删除时间');
-            $table->integer('deleted_at')->nullable()->comment('删除时间');
+        Schema::table('yz_member', function (Blueprint $table) {
+            if (!Schema::hasColumn('yz_member', 'created_at')) {
+                $table->integer('created_at')->default(0)->comment('创建时间');
+            }
+
+            if (!Schema::hasColumn('yz_member', 'updated_at')) {
+                $table->integer('updated_at')->default(0)->comment('更新时间');
+            }
+
+            if (!Schema::hasColumn('yz_member', 'deleted_at')) {
+                $table->integer('deleted_at')->nullable()->comment('删除时间');
+            }
         });
     }
 
@@ -27,7 +35,7 @@ class AddDateYzMemberTable extends Migration
      */
     public function down()
     {
-        Schema::table('ims_yz_member', function (Blueprint $table) {
+        Schema::table('yz_member', function (Blueprint $table) {
             $table->dropColumn('created_at');
             $table->dropColumn('updated_at');
             $table->dropColumn('deleted_at');

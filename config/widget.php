@@ -2,10 +2,6 @@
 
 return [
     'goods' => [
-        'tab_dispatch' => [
-            'title' => '配送',
-            'class' => 'app\backend\widgets\goods\DispatchWidget'
-        ],
         'tab_sale' => [
             'title' => '营销',
             'class' => 'app\backend\widgets\goods\SaleWidget',
@@ -26,6 +22,9 @@ return [
             'title' => '折扣',
             'class' => 'app\backend\widgets\goods\DiscountWidget',
         ],
-
+        'tab_dispatch' => [
+            'title' => '配送',
+            'class' => 'app\backend\widgets\goods\DispatchWidget'
+        ],
     ]
 ];
