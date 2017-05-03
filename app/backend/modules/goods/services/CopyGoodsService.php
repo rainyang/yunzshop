@@ -103,6 +103,6 @@ class CopyGoodsService
             $goodsOption->specs = implode("_", $newSpecs);
             $goodsOption->save();
         }
-        return true;
+        return $newGoods;
     }
 }
