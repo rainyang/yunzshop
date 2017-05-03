@@ -269,7 +269,7 @@ class GoodsController extends BaseController
             'allspecs' => $goods_service->goods_model->hasManySpecs->toArray(),
             'html' => $goods_service->optionsHtml,
             'var' => \YunShop::app()->get(),
-            'brands' => $goods_service->brands->toArray(),
+            'brands' => $goods_service->brands,
             'catetory_menus' => $goods_service->catetory_menus,
             'virtual_types' => [],
             'shopset' => $this->shopset

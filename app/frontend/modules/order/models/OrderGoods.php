@@ -41,10 +41,6 @@ class OrderGoods extends \app\common\models\OrderGoods
     }
     public function isFreeShipping()
     {
-//        //todo 区域
-//        if(ed_areaids){
-//
-//        }
 
         if ($this->goods->hasOneSale->isFree($this)) {
             return true;

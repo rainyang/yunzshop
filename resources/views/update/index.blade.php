@@ -25,11 +25,11 @@
                     <h3 class="timeline-header">版本：{{$item['version']}}</h3>
 
                     <div class="timeline-body">
-                        {{$item['url']}}
+                        <div class="form-group">{!! $item['description'] !!}</div>
                     </div>
 
                     <div class="timeline-footer">
-                        <a class="btn btn-primary btn-xs"  id="updateVersion"  >更新版本</a>
+                        <a class="btn btn-primary btn-xs updateVersion" >更新版本</a>
                     </div>
                 </div>
             </li>
@@ -40,8 +40,9 @@
 
     <script>
 
-      $("#updateVersion").click(function() {
+      $(".updateVersion").click(function() {
         var $btn = $(this);
+        console.log($btn);
         $btn.button('loading');
         $.ajax({
           url: '{!! yzWebUrl('update.start-download') !!}',
