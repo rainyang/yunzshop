@@ -26,8 +26,12 @@ class TemplateOrderDispatchPrice
             }
             return 0;
         });
+        $data = [
+            'price' => $price,
+            'name' => '运费模板',
+        ];
         //返回给事件
-        $event->addData(['price'=>$price]);
+        $event->addData($data);
         return;
     }
 

@@ -6,15 +6,14 @@
  * Time: 下午4:29
  */
 
-namespace app\frontend\modules\discount\services\models;
+namespace app\frontend\modules\discount\models;
 
-use app\common\events\discount\OnCouponPriceCalculatedEvent;
 use app\common\events\discount\OnDeductionPriceCalculatedEvent;
 use app\common\models\Coupon;
 use app\frontend\modules\coupon\services\TestService;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
-class OrderDiscount extends Discount
+class OrderDiscount
 {
     protected $order;
     private $couponPrice;
@@ -87,4 +86,5 @@ class OrderDiscount extends Discount
 
         return $discountPrice + $moneyOffPrice;
     }
+
 }

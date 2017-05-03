@@ -23,14 +23,18 @@ class UnifyOrderDispatchPrice
             return;
         }
         $price = $event->getOrderModel()->getOrderGoodsModels()->max(function ($orderGoods) {
+
             if ($orderGoods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::UNIFY_TYPE) {
                 return $orderGoods->hasOneGoodsDispatch->dispatch_price;
             }
             return 0;
         });
-
+        $data = [
+            'price' => $price,
+            'name' => '统一运费',
+        ];
         //返回给事件
-        $event->addData(['price'=>$price]);
+        $event->addData($data);
         return;
     }
 
@@ -38,7 +42,7 @@ class UnifyOrderDispatchPrice
     {
         $allGoodsIsReal = OrderService::allGoodsIsReal($this->event->getOrderModel()->getOrderGoodsModels());
 
-        if($allGoodsIsReal){
+        if ($allGoodsIsReal) {
             return true;
         }
 
