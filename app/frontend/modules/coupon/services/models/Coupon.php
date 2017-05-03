@@ -9,7 +9,6 @@
 namespace app\frontend\modules\coupon\services\models;
 
 
-use app\common\exceptions\AppException;
 use app\common\models\MemberCoupon;
 use app\common\models\Coupon as DbCoupon;
 
@@ -22,6 +21,7 @@ use app\frontend\modules\coupon\services\models\TimeLimit\TimeLimit;
 use app\frontend\modules\coupon\services\models\UseScope\CategoryScope;
 use app\frontend\modules\coupon\services\models\UseScope\CouponUseScope;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
+use app\frontend\modules\coupon\services\models\UseScope\ShopScope;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class Coupon
@@ -80,11 +80,11 @@ class Coupon
                 return new DiscountCouponPrice($this);
                 break;
             default:
-                if (config('app.debug')) {
-                    dd($this->memberCoupon->belongsToCoupon->coupon_method);
-                    dd($this->memberCoupon);
-                    throw new AppException('优惠券优惠类型不存在');
-                }
+//                if (config('app.debug')) {
+//                    dd($this->memberCoupon->belongsToCoupon->coupon_method);
+//                    dd($this->memberCoupon);
+//                    throw new AppException('优惠券优惠类型不存在');
+//                }
                 return null;
                 break;
         }
@@ -102,12 +102,15 @@ class Coupon
             case DbCoupon::COUPON_CATEGORY_USE:
                 return new CategoryScope($this);
                 break;
+            case DbCoupon::COUPON_SHOP_USE:
+                return new ShopScope($this);
+                break;
             default:
-                if (config('app.debug')) {
-                    dd($this->memberCoupon->belongsToCoupon->use_type);
-                    dd($this->memberCoupon->belongsToCoupon);
-                    throw new AppException('优惠券范围不存在');
-                }
+//                if (config('app.debug')) {
+//                    dd($this->memberCoupon->belongsToCoupon->use_type);
+//                    dd($this->memberCoupon->belongsToCoupon);
+//                    throw new AppException('优惠券范围不存在');
+//                }
                 return null;
 
                 break;
@@ -127,10 +130,10 @@ class Coupon
                 return new SinceReceive($this);
                 break;
             default:
-                if (config('app.debug')) {
-                    dd($this->memberCoupon->belongsToCoupon);
-                    throw new AppException('时限类型不存在');
-                }
+//                if (config('app.debug')) {
+//                    dd($this->memberCoupon->belongsToCoupon);
+//                    throw new AppException('时限类型不存在');
+//                }
 
                 return null;
                 break;
@@ -174,15 +177,16 @@ class Coupon
 
     /**
      * 优惠券可使用
-     * @return mixed
+     * @return bool
      */
     public function valid()
     {
-        //echo 2;
         if (!$this->isOptional()){
+
             return false;
         }
         if(!$this->price->valid()){
+
             return false;
         }
         return true;
@@ -193,9 +197,7 @@ class Coupon
      * @return bool
      */
     public function isChecked(){
-        if (!$this->valid()){
-            return false;
-        }
+
         if($this->getMemberCoupon()->selected == 1){
             return true;
         }
@@ -203,7 +205,7 @@ class Coupon
     }
     /**
      * 优惠券可选
-     * @return mixed
+     * @return bool
      */
     public function isOptional()
     {
@@ -216,7 +218,7 @@ class Coupon
         if (!isset($this->timeLimit)) {
             return false;
         }
-
+        
         return $this->useScope->valid() && $this->price->isOptional() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used);
     }
 
@@ -226,7 +228,8 @@ class Coupon
      */
     public function destroy()
     {
-        $this->memberCoupon->used = 1;
-        return $this->memberCoupon->save();
+        $memberCoupon = $this->memberCoupon->fresh();
+        $memberCoupon->used = 1;
+        return $memberCoupon->save();
     }
 }

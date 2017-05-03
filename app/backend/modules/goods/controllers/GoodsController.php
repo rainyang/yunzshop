@@ -14,6 +14,9 @@ use app\backend\modules\goods\models\Category;
 use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\models\GoodsOption;
 use app\backend\modules\goods\models\GoodsSpecItem;
+use app\backend\modules\goods\services\CopyGoodsService;
+use app\backend\modules\goods\services\CreateGoodsService;
+use app\backend\modules\goods\services\EditGoodsService;
 use app\backend\modules\goods\services\GoodsOptionService;
 use app\backend\modules\goods\services\GoodsService;
 use app\common\components\BaseController;
@@ -87,7 +90,6 @@ class GoodsController extends BaseController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-
         $catetory_menus = CategoryService::getCategoryMenu(
             [
                 'catlevel' => $this->shopset['cat_level'],
@@ -103,7 +105,6 @@ class GoodsController extends BaseController
         $delete_url = 'goods.goods.destroy';
         $delete_msg = '确认删除此商品？';
         $sort_url = 'goods.goods.displayorder';
-
         return view('goods.index', [
             'list' => $list['data'],
             'pager' => $pager,
@@ -115,10 +116,13 @@ class GoodsController extends BaseController
             'shopset' => $this->shopset,
             'lang' => $this->lang,
             'product_attr_list' => $product_attr_list,
+            'yz_url' => 'yzWebUrl',
             'edit_url' => $edit_url,
             'delete_url' => $delete_url,
             'delete_msg' => $delete_msg,
-            'sort_url'  => $sort_url
+            'sort_url'  => $sort_url,
+            'product_attr'  => $requestSearch['product_attr'],
+            'copy_url' => 'goods.goods.copy'
         ])->render();
     }
 
@@ -129,154 +133,44 @@ class GoodsController extends BaseController
             $this->error('请传入正确参数.');
         }
 
-        $goodsModel = \app\common\models\Goods::uniacid()->find($id);
-        if (!$goodsModel) {
+        $result = CopyGoodsService::copyGoods($id);
+        if (!$result) {
             $this->error('商品不存在.');
         }
-
-        $newGoods = $goodsModel->replicate();
-        $newGoods->save();
-
-        $goodsModel->load('hasOneShare', 'hasOneDiscount', 'hasOneGoodsDispatch', 'hasOnePrivilege');
-        foreach($goodsModel->getRelations() as $relation => $item){
-            if ($item) {
-                unset($item->id);
-                //dd($item);
-                $newGoods->{$relation}()->create($item->toArray());
-            }
-        }
-
-        $goodsModel->setRelations([]);
-        $goodsModel->load('hasManyParams', 'hasManyOptions');
-        foreach($goodsModel->getRelations() as $relation => $items){
-            foreach($items as $item){
-                if ($item) {
-                    unset($item->id);
-                    $newGoods->{$relation}()->create($item->toArray());
-                }
-            }
-        }
-
-        $goodsModel->setRelations([]);
-        $goodsModel->load('hasManyGoodsCategory');
-        foreach($goodsModel->getRelations() as $relation => $items){
-            foreach($items as $item){
-                if ($item) {
-                    unset($item->id);
-                    $item->goods_id = $newGoods->id;
-                    $newGoods->{$relation}()->create($item->toArray());
-                }
-            }
-        }
-
-
-        //todo, 先复制老的规格,再复制规格项,再更新规格content字段,最后复制option,更新option specs字段
-        $goodsSpecs = GoodsSpec::uniacid()->where('goods_id', $goodsModel->id)->get();
-
-        $specItemIds = [];
-        $item_ids = [];
-        foreach($goodsSpecs as $goodsSpec){
-            $newGoodsSpecModel = $goodsSpec->replicate();
-            $newGoodsSpecModel->goods_id = $newGoods->id;
-            //dd($newGoodsSpecModel);
-            $newGoodsSpecModel->save();
-
-            //获取旧的规格项
-            $goodsSpecItems = GoodsSpecItem::uniacid()->where("specid", $goodsSpec->id)->get();
-
-            foreach($goodsSpecItems as $goodsSpecItem){
-                $newGoodsSpecItem = $goodsSpecItem->replicate();
-                $newGoodsSpecItem->specid = $newGoodsSpecModel->id;
-                $newGoodsSpecItem->save();
-
-                $items = [
-                    'old_item' => $goodsSpecItem->id,
-                    'new_item' => $newGoodsSpecItem->id,
-                ];
-
-                array_push($item_ids, $items);
-                array_push($specItemIds, $newGoodsSpecItem->id);
-            }
-
-            $newGoodsSpecModel->content = serialize($specItemIds);
-            $newGoodsSpecModel->save();
-        }
-
-        $goodsOptions = GoodsOption::uniacid()->where('goods_id', $newGoods->id)->get();
-        foreach($goodsOptions as $goodsOption){
-            $specs = explode("_", $goodsOption->specs);
-            $newSpecs = [];
-            foreach($specs as $spec){
-                foreach($item_ids as $item){
-                    if ($item['old_item'] == $spec){
-                        $newSpecs[] = $item['new_item'];
-                    }
-                }
-            }
-            $goodsOption->specs = implode("_", $newSpecs);
-            $goodsOption->save();
-        }
-
         return $this->message('商品复制成功', Url::absoluteWeb('goods.goods.index'));
     }
 
-    public function create()
+    public function create(\Request $request)
     {
-        $params = new GoodsParam();
-        $goodsModel = new Goods();
-        $brands = Brand::getBrands()->get();
+        $goods_service = new CreateGoodsService($request);
+        $result = $goods_service->create();
 
-        $requestGoods = \YunShop::request()->goods;
-        if ($requestGoods) {
-            if (isset($requestGoods['thumb_url'])) {
-                $requestGoods['thumb_url'] = serialize(
-                    array_map(function ($item) {
-                        return tomedia($item);
-                    }, $requestGoods['thumb_url'])
-                );
-            }
-
-            $goodsModel->setRawAttributes($requestGoods);
-            $goodsModel->widgets = \YunShop::request()->widgets;
-            $goodsModel->uniacid = \YunShop::app()->uniacid;
-
-            $validator = $goodsModel->validator($goodsModel->getAttributes());
-            if ($validator->fails()) {
-                $this->error($validator->messages());
-            } else {
-                if ($goodsModel->save()) {
-                    //dd($goodsModel);
-                    GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
-                    GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
-                    GoodsSpec::saveSpec(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
-                    GoodsOption::saveOption(\YunShop::request(), $goodsModel->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
-                    return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
-                } else {
-                    !session()->has('flash_notification.message') && $this->error('商品创建失败');
-                }
-            }
+        if (isset($goods_service->error)) {
+            $this->error($goods_service->error);
+        }
+        if ($result['status'] == 1) {
+            return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
+        } else if ($result['status'] == -1) {
+            $this->error('商品创建失败');
         }
 
-        $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['cat_level']]);
-        //dd($brands->toArray());
-        $allspecs = [];
         return view('goods.goods', [
-            'goods' => $goodsModel,
+            'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
-            'params' => $params->toArray(),
-            'brands' => $brands->toArray(),
-            'allspecs' => $allspecs,
+            'params' => $goods_service->params->toArray(),
+            'brands' => $goods_service->brands->toArray(),
+            'allspecs' => [],
             'html' => '',
             'var' => \YunShop::app()->get(),
-            'catetory_menus' => $catetory_menus,
+            'catetory_menus' => $goods_service->catetory_menus,
             'virtual_types' => [],
             'shopset' => $this->shopset
         ])->render();
     }
 
-    public function edit()
+    public function edit(\Request $request)
     {
-        $this->goods_id = intval(\YunShop::request()->id);
+        /*$this->goods_id = intval(\YunShop::request()->id);
 
         if (!$this->goods_id){
             $this->message('请传入正确参数.');
@@ -301,6 +195,12 @@ class GoodsController extends BaseController
 
         //$catetorys = Category::getAllCategoryGroup();
         if ($requestGoods) {
+
+            $requestGoods['has_option'] = $requestGoods['has_option'] ? $requestGoods['has_option'] : 0;
+            if ($requestGoods['has_option'] && !\YunShop::request()['option_ids']) {
+                $requestGoods['has_option'] = 0;
+                //return $this->message('启用商品规格，必须添加规格项等信息', Url::absoluteWeb('goods.goods.index'));
+            }
             //将数据赋值到model
             $requestGoods['thumb'] = tomedia($requestGoods['thumb']);
 
@@ -312,7 +212,10 @@ class GoodsController extends BaseController
                 );
             }
 
-            GoodsCategory::where("goods_id", $goodsModel->id)->first()->delete();
+            $category_model = GoodsCategory::where("goods_id", $goodsModel->id)->first();
+            if (!empty($category_model)) {
+                $category_model->delete();
+            }
             GoodsService::saveGoodsCategory($goodsModel, \YunShop::request()->category, $this->shopset);
 
             $goodsModel->setRawAttributes($requestGoods);
@@ -320,12 +223,10 @@ class GoodsController extends BaseController
             //其他字段赋值
             $goodsModel->uniacid = \YunShop::app()->uniacid;
             $goodsModel->id = $this->goods_id;
-
             $validator = $goodsModel->validator($goodsModel->getAttributes());
             if ($validator->fails()) {
                 $this->error($validator->messages());
-            }
-            else {
+            } else {
                 //数据保存
                 if ($goodsModel->save()) {
                     GoodsParam::saveParam(\YunShop::request(), $goodsModel->id, \YunShop::app()->uniacid);
@@ -349,18 +250,27 @@ class GoodsController extends BaseController
             foreach($goods_categorys = $goodsModel->hasManyGoodsCategory->toArray() as $goods_category){
                 $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['cat_level'], 'ids' => explode(",", $goods_category['category_ids'])]);
             }
+        }*/
+
+        //todo 所有操作去service里进行，供应商共用此方法。
+        $goods_service = new EditGoodsService($request->id, $request);
+        $result = $goods_service->edit();
+        if ($result['status'] == 1) {
+            return $this->message('商品修改成功');
+        } else if ($result['status'] == -1){
+            $this->error('商品修改失败');
         }
 
         //dd($this->lang);
         return view('goods.goods', [
-            'goods' => $goodsModel,
+            'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
-            'params' => $goodsModel->hasManyParams->toArray(),
-            'allspecs' => $goodsModel->hasManySpecs->toArray(),
-            'html' => $optionsHtml,
+            'params' => $goods_service->goods_model->hasManyParams->toArray(),
+            'allspecs' => $goods_service->goods_model->hasManySpecs->toArray(),
+            'html' => $goods_service->optionsHtml,
             'var' => \YunShop::app()->get(),
-            'brands' => $brands->toArray(),
-            'catetory_menus' => $catetory_menus,
+            'brands' => $goods_service->brands->toArray(),
+            'catetory_menus' => $goods_service->catetory_menus,
             'virtual_types' => [],
             'shopset' => $this->shopset
         ])->render();

@@ -50,6 +50,15 @@ class McMappingFansModel extends McMappingFans
      */
     public static function insertData($userinfo, $data)
     {
+        if (1 == $userinfo['subscribe']) {
+            $followtime = explode(',', rtrim($userinfo['subscribe_time'],','));
+            $count      = count($followtime);
+            $follow_time = $followtime[$count-1];
+        } else {
+            $follow_time = time();
+        }
+
+
         $fans_model = new McMappingFansModel();
 
         $fans_model->openid = $userinfo['openid'];
@@ -59,8 +68,8 @@ class McMappingFansModel extends McMappingFans
         $fans_model->salt = $data['salt'];
         $fans_model->updatetime = time();
         $fans_model->nickname = stripslashes($userinfo['nickname']);
-        $fans_model->follow = 1;
-        $fans_model->followtime = time();
+        $fans_model->follow = $userinfo['subscribe'];
+        $fans_model->followtime = $follow_time;
         $fans_model->unfollowtime = 0;
         $fans_model->tag = base64_encode(serialize($userinfo));
 

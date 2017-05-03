@@ -58,7 +58,7 @@ class BalanceWithdrawController extends BaseController
             }
             $result = $this->submitPay();
             if ($result === true) {
-               return $this->message('提交审核成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
+               return $this->message('打款成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
             }
             return $this->message($result, yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
         }
@@ -99,7 +99,7 @@ class BalanceWithdrawController extends BaseController
         if ($resultPay['errno'] == 1) {
             return $resultPay['message'];
         }
-        return '提现打款失败!';
+        return $resultPay;
         //return $resultPay ? $this->updatePayTime(): "打款失败";
     }
 

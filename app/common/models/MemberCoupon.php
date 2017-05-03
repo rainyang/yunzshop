@@ -2,12 +2,16 @@
 
 namespace app\common\models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberCoupon extends BaseModel
 {
+    use SoftDeletes;
+
     public $table = 'yz_member_coupon';
-    protected $guarded = [''];
+    protected $guarded = [];
     public $timestamps = false;
+    public $dates = ['deleted_at'];
 
     /*
      *  定义字段名

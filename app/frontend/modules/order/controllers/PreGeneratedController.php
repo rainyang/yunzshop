@@ -12,6 +12,7 @@ use app\common\components\ApiController;
 use app\common\events\order\ShowPreGenerateOrder;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\order\services\OrderService;
+use Illuminate\Support\Collection;
 
 abstract class PreGeneratedController extends ApiController
 {
@@ -24,11 +25,11 @@ abstract class PreGeneratedController extends ApiController
         $total_goods_price = $order_data->sum('order.goods_price');
         $total_dispatch_price = $order_data->sum('order.dispatch_price');
         $total_discount_price = $order_data->sum('order.discount_price');
+        $total_deduction_price = $order_data->sum('order.deduction_price');
         // todo 下面的代码需要重构
         //将订单中的优惠券 合并摊平到数组外层
         $data['discount']['coupon'] = $order_data->map(function ($order_data) {
             return $order_data['discount']['coupon'];
-
         })->collapse();
         //将订单中的收获地址 拿到外层
         $data['dispatch'] = $order_data[0]['dispatch'];
@@ -38,7 +39,14 @@ abstract class PreGeneratedController extends ApiController
             return $order_data->forget('dispatch');
         });
 
-        $data += compact('total_price', 'total_dispatch_price', 'order_data', 'total_goods_price','total_discount_price');
+        $data += [
+            'total_price' => sprintf('%.2f',$total_price),
+            'total_dispatch_price' => sprintf('%.2f',$total_dispatch_price),
+            'total_deduction_price' => sprintf('%.2f',$total_deduction_price),
+            'order_data' => $order_data,
+            'total_goods_price' => sprintf('%.2f',$total_goods_price),
+            'total_discount_price' => sprintf('%.2f',$total_discount_price)
+        ];
         //dd($data);
         //exit;
         return $this->successJson('成功', $data);
@@ -54,7 +62,7 @@ abstract class PreGeneratedController extends ApiController
         $order_data = collect();
         $shop_order = $this->getShopOrder();
 
-        if(!empty($shop_order)){
+        if (!empty($shop_order)) {
             $order_data->push(OrderService::getOrderData($shop_order));
         }
 
@@ -81,7 +89,7 @@ abstract class PreGeneratedController extends ApiController
 
     /**
      * 获取商城的购物车组
-     * @return static
+     * @return Collection
      */
     protected function getShopMemberCarts()
     {

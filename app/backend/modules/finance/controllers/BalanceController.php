@@ -42,35 +42,36 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function index()
     {
-        //todo 数值验证
         $balance = Setting::get('finance.balance');
         $requestModel = \YunShop::request()->balance;
         if ($requestModel) {
             $requestModel['sale'] = $this->rechargeSale($requestModel);
 
-            $validator = null;
-            foreach ($requestModel['sale'] as $key => $item) {
-                $validator = (new BackendBalanceRecharge())->validator($item);
-                if ($validator->fails()) {
-                    break;
+
+            if (!empty($requestModel['sale'])) {
+                $validator = null;
+                foreach ($requestModel['sale'] as $key => $item) {
+                    $validator = (new BackendBalanceRecharge())->validator($item);
+                    if ($validator->fails()) {
+                        $this->error($validator->messages());
+                        break;
+                    }
                 }
-            }
-            if($validator->fails()){
-                $this->error($validator->messages());
-            }else{
                 if ($validator && !$validator->fails()) {
                     //echo '<pre>'; print_r(12); exit;
                     unset($requestModel['enough']);
                     unset($requestModel['give']);
                     if (Setting::set('finance.balance', $requestModel)) {
                         return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'),'success');
-                    } else {
-                        $this->error('余额基础设置保存失败！！');
                     }
+                    $this->error('余额基础设置保存失败！！');
                 }
+            } else {
+                if (Setting::set('finance.balance', $requestModel)) {
+                    return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance.index'),'success');
+                }
+                $this->error('余额基础设置保存失败！！');
             }
-
-
         }
         return view('finance.balance.index', [
             'balance' => $balance,
@@ -85,7 +86,6 @@ class BalanceController extends BaseController
     public function balanceDetail()
     {
 
-        //todo 搜索
         $pageSize = 20;
         $search = \YunShop::request()->search;
         if ($search) {
@@ -95,11 +95,11 @@ class BalanceController extends BaseController
         }
         //echo '<pre>'; print_r($detailList); exit;
 
-        $pager = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
+        $page = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
         return view('finance.balance.detail', [
             'detailList'    => $detailList,
-            'pager'         => $pager,
+            'pager'         => $page,
             'search'        => $search,
             'shopSet'       => Setting::get('shop.member'),
             'serviceType'   => \app\common\models\finance\Balance::$balanceComment

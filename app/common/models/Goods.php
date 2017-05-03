@@ -10,9 +10,9 @@ namespace app\common\models;
 
 use app\backend\modules\goods\models\Sale;
 use app\common\exceptions\AppException;
-use app\frontend\modules\discount\services\models\GoodsDiscount;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use app\common\models\Coupon;
 
 class Goods extends BaseModel
 {
@@ -28,8 +28,6 @@ class Goods extends BaseModel
 
     protected $guarded = ['widgets'];
 
-    public $appends = ['vip_price'];
-
     public $widgets = [];
 
     protected $search_fields = ['title'];
@@ -41,6 +39,7 @@ class Goods extends BaseModel
      * 虚拟物品
      */
     const VIRTUAL_GOODS = 2;
+
     /**
      * 定义字段名
      *
@@ -81,11 +80,6 @@ class Goods extends BaseModel
         return static::uniacid();
     }
 
-    public function getVipPriceAttribute()
-    {
-        return GoodsDiscount::getVipPrice($this);
-    }
-
     public static function getGoodsById($id)
     {
         return static::find($id);
@@ -99,6 +93,11 @@ class Goods extends BaseModel
     public function belongsToCategorys()
     {
         return $this->hasMany('app\common\models\GoodsCategory', 'goods_id', 'id');
+    }
+
+    public function hasManyGoodsDiscount()
+    {
+        return $this->hasMany('app\common\models\GoodsDiscount');
     }
 
     public function hasManyOptions()
@@ -118,7 +117,7 @@ class Goods extends BaseModel
 
     public function hasOnePrivilege()
     {
-        return $this->hasOne('app\common\models\goods\Privilege');
+        return $this->hasOne(self::getStaticNamespace().'\goods\Privilege');
     }
 
     public function hasOneGoodsDispatch()
@@ -158,6 +157,7 @@ class Goods extends BaseModel
         if (!$filters) {
             return;
         }
+
         foreach ($filters as $key => $value) {
             switch ($key) {
                 /*case 'category':
@@ -185,8 +185,50 @@ class Goods extends BaseModel
                     $query->where('price', '<', $value);
                     break;
                 case 'category':
-                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_id)', [$value]);
-//                    $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereIn('yz_goods_category.category_id', $value);
+                    if(array_key_exists('parentid', $value) || array_key_exists('childid', $value) || array_key_exists('thirdid', $value)){
+                        $id = $value['parentid'] ? $value['parentid'] : '';
+                        $id = $value['childid'] ? $value['childid'] : $id;
+                        $id = $value['thirdid'] ? $value['thirdid'] : $id;
+                        $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_ids)', [$id]);
+                    } elseif(strpos($value, ',')){
+                        $scope = explode(',', $value);
+                        $query->join('yz_goods_category', function($join) use ($scope){
+                            $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
+                                ->whereIn('yz_goods_category.category_id', $scope);
+                        });
+                    } else{
+                        $query->join('yz_goods_category', function($join) use ($value){
+                            $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
+                                ->where('yz_goods_category.category_id', $value);
+                        });
+                    }
+                    break;
+                case 'couponid': //搜索指定优惠券适用的商品
+                    $res = Coupon::getApplicableScope($value);
+                    switch ($res['type']){
+                        case Coupon::COUPON_GOODS_USE: //优惠券适用于指定商品
+                            if(is_array($res['scope'])){
+                                $query->whereIn('id', $res['scope']);
+                            } else{
+                                $query->where('id', $res['scope']);
+                            }
+                            break;
+                        case Coupon::COUPON_CATEGORY_USE: //优惠券适用于指定商品分类
+                            if(is_array($res['scope'])){
+                                $query->join('yz_goods_category', function($join) use ($res){
+                                    $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
+                                            ->whereIn('yz_goods_category.category_id', $res['scope']);
+                                });
+                            } else{
+                                $query->join('yz_goods_category', function($join) use ($res){
+                                    $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
+                                        ->where('yz_goods_category.category_id', $res['scope']);
+                                });
+                            }
+                            break;
+                        default: //优惠券适用于整个商城
+                            break;
+                    }
                     break;
                 default:
                     break;
@@ -218,34 +260,59 @@ class Goods extends BaseModel
     }
 
     /**
+     * @author shenyang
      * 减库存
      * @param $num
-     * @return bool
      * @throws AppException
      */
     public function reduceStock($num)
     {
         if ($this->reduce_stock_method != 2) {
-            if ($this->stock - $num < 0) {
+            if(!$this->stockEnough($num)){
                 throw new AppException('下单失败,商品:' . $this->title . ' 库存不足');
+
             }
             $this->stock -= $num;
+
+        }
+
+    }
+
+    /**
+     * 库存是否充足
+     * @author shenyang
+     * @param $num
+     * @return bool
+     */
+    public function stockEnough($num)
+    {
+        if ($this->reduce_stock_method != 2) {
+            if ($this->stock - $num < 0) {
+                return false;
+            }
         }
         return true;
     }
 
-
-    public function addSales($num){
+    /**
+     * 增加销量
+     * @author shenyang
+     * @param $num
+     */
+    public function addSales($num)
+    {
         $this->real_sales += $num;
         $this->show_sales += $num;
-        return true;
     }
+
     /**
      * 判断实物
+     * @author shenyang
+     * @return bool
      */
     public function isRealGoods()
     {
-        if(!isset($this->type)){
+        if (!isset($this->type)) {
             return false;
         }
         return $this->type == self::REAL_GOODS;

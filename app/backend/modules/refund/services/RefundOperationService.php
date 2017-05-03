@@ -35,7 +35,7 @@ class RefundOperationService
             throw new AdminException('(ID:'.$params['order_id'].')退款申请不存在');
         }
         $refundApply->refundMoney();
-        OrderService::orderClose(['order_id' => $refundApply->order->id]);
+        $refundApply->order->close();
         return true;
     }
 }

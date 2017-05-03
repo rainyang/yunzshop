@@ -10,13 +10,19 @@ namespace app\frontend\modules\member\listeners;
 
 
 use app\backend\modules\member\models\MemberLevel;
+use app\frontend\modules\member\services\MemberLevelService;
 
 class Level
 {
     public function onReceived($event){
         $order_model = $event->getOrderModel();
-        //MemberLevel::upgradeMemberLevel(0,0,0);
 
+//dd(4312);
+        $result = (new MemberLevelService())->test($order_model);
+        if ($result === true) {
+            return true;
+        }
+        // todo 增加失败日志 $result
     }
     public function subscribe($events)
     {

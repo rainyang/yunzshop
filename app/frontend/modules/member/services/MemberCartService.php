@@ -15,19 +15,15 @@ use Illuminate\Support\Collection;
 
 class MemberCartService
 {
-    public function clearCartByIds($ids)
+    public static function clearCartByIds($ids)
     {
         if (!is_array($ids)) {
             $ids = explode(',', $ids);
         }
         if (!is_array($ids)) {
-            throw new AppException('未找到商品或已经删除');
+            throw new AppException('购物车ID格式不正确');
         }
-        $cart = MemberCart::getMemberCartByIds($ids);
 
-        if (!$cart) {
-            throw new AppException('未找到商品或已经删除');
-        }
 
         return MemberCart::destroyMemberCart($ids);
     }
@@ -36,22 +32,13 @@ class MemberCartService
     {
 
         $cart = new MemberCart($params);
-        if (!isset($cart->goods)) {
-            throw new AppException('(ID:' . $cart->goods_id . ')未找到商品或已经删除');
-        }
-        if($cart->isOption() && !isset($cart->goodsOption)) {
-            throw new AppException('(ID:' . $cart->option_id . ')未找到商品规格或已经删除');
-        }
-//        if ($cart->total > $cart->goods->stock) {
-//            throw new AppException($cart->goods->title . ':库存不足');
-//        }
-        //todo 验证option_id是否属于goods_id
+        $cart->validate();
         return $cart;
     }
 
     /**
      * @param Collection $memberCarts
-     * @return static
+     * @return Collection
      */
     public static function filterShopMemberCart(Collection $memberCarts)
     {

@@ -1,0 +1,114 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: shenyang
+ * Date: 2017/4/27
+ * Time: 上午10:54
+ */
+
+namespace app\frontend\modules\goods\models\goods;
+
+use app\common\exceptions\AppException;
+use app\frontend\modules\member\services\MemberService;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+
+class Privilege extends \app\common\models\goods\Privilege
+{
+    protected $casts = [
+        'time_begin_limit' => 'datetime',
+        'time_end_limit' => 'datetime',
+    ];
+
+    public function validate($num)
+    {
+        $this->validateTimeLimit();
+        $this->validateOneBuyLimit($num);
+        $this->validateTotalBuyLimit($num);
+        $this->validateMemberLevelLimit();
+        $this->validateMemberGroupLimit();
+    }
+
+    /**
+     * 限时购
+     * @throws AppException
+     */
+    public function validateTimeLimit()
+    {
+        if ($this->enable_time_limit) {
+            if (Carbon::now()->lessThan($this->time_begin_limit)) {
+                throw new AppException('(ID:' . $this->goods_id . ')该商品将于' . $this->time_begin_limit->toDateTimeString() . '开启限时购买');
+            }
+            if (Carbon::now()->greaterThanOrEqualTo($this->time_end_limit)) {
+                throw new AppException('(ID:' . $this->goods_id . ')该商品已于' . $this->time_end_limit->toDateTimeString() . '结束限时购买');
+            }
+        }
+    }
+
+    /**
+     * 用户单次购买限制
+     * @param $num
+     * @throws AppException
+     */
+    public function validateOneBuyLimit($num = 1)
+    {
+        if ($this->once_buy_limit > 0) {
+            if ($num > $this->once_buy_limit)
+                throw new AppException('商品(' . $this->title . ')单次最多可购买' . $this->once_buy_limit . '件');
+        }
+    }
+
+    /**
+     * 用户购买总数限制
+     * @param $num
+     * @throws AppException
+     */
+    public function validateTotalBuyLimit($num = 1)
+    {
+        $history_num = MemberService::getCurrentMemberModel()->orderGoods()->sum('total');
+        if ($this->once_buy_limit > 0) {
+            if ($history_num + $num > $this->once_buy_limit)
+                throw new AppException('商品(' . $this->title . ')您已购买' . $history_num . '件,最多可购买' . $this->once_buy_limit . '件');
+        }
+    }
+
+    /**
+     * 用户等级限制
+     * @author shenyang
+     * @throws AppException
+     */
+    public function validateMemberLevelLimit()
+    {
+        if (empty($this->buy_levels)) {
+            return;
+        }
+        $buy_levels = explode(',', $this->buy_levels);
+        $level_names = MemberLevel::select(DB::raw('group_concat(level_name)'))->whereIn('id', $buy_levels)->find();
+        if (empty($level_names)) {
+            return;
+        }
+        if (!in_array(MemberService::getCurrentMemberModel()->level_id, $buy_levels)) {
+            throw new AppException('(ID:' . $this->goods_id . ')该商品仅限' .$level_names. '购买');
+        }
+    }
+
+    /**
+     * 用户组限制
+     * @author shenyang
+     * @throws AppException
+     */
+    public function validateMemberGroupLimit()
+    {
+        if (empty($this->buy_groups)) {
+            return;
+        }
+        $buy_groups = explode(',', $this->buy_groups);
+        $group_names = MemberGroup::select(DB::raw('group_concat(group_name)'))->whereIn('id', $buy_groups)->find();
+        if (empty($group_names)) {
+            return;
+        }
+        if (!in_array(MemberService::getCurrentMemberModel()->group_id, $buy_groups)) {
+            throw new AppException('(ID:' . $this->goods_id . ')该商品仅限' . $group_names . '购买');
+        }
+    }
+}

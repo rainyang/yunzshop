@@ -37,10 +37,10 @@ class OperationController extends BaseController
     {
         list($result, $message) = OrderService::orderPay($this->param);
         if ($result === false) {
-            return $this->message($message,'', 'error');
+            return $this->errorJson($message);
 
         }
-        return $this->message($message);
+        return $this->successJson($result, $message);
 
     }
 

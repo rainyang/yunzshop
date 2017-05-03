@@ -74,7 +74,7 @@
                         <th width="16%">使用条件/优惠</th>
                         <th width="10%">已使用/已发出/剩余数量</th>
                         <th width="10%">领取中心</th>
-                        <th width="10%">创建时间</th>
+                        <th width="15%">创建时间</th>
                         <th width="18%">操作</th>
                     </tr>
                 </thead>
@@ -124,8 +124,9 @@
                         <td style="position:relative">
                             {{--<a href="javascript:;" data-url="{{yzWebUrl('coupon.coupon.copy')}}" title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>--}}
                             <a class='btn btn-default btn-sm' href="{{yzWebUrl('coupon.coupon.edit', ['id' => $row["id"]])}}" title="编辑" ><i class='fa fa-edit'></i></a>
-                            <a class='btn btn-default  btn-sm' href="{{yzWebUrl('coupon.coupon.destory', ['id' => $row["id"]])}}" title="删除" onclick="return confirm('确定要删除该优惠券吗？');"><i class='fa fa-remove'></i></a>
-                            <a  class='btn btn-primary  btn-sm' href="{{yzWebUrl('coupon.send-coupon', ['id' => $row["id"]])}}" title="发放优惠券" ><i class='fa fa-send'></i></a>
+                            <a class='btn btn-default btn-sm' href="{{yzWebUrl('coupon.coupon.destory', ['id' => $row["id"]])}}" title="删除" onclick="return confirm('确定要删除该优惠券吗？');"><i class='fa fa-remove'></i></a>
+                            <a class='btn btn-default btn-sm' href="{{yzWebUrl('coupon.coupon.log', ['id' => $row["id"]])}}" title="领取发放记录" ><i class='fa fa-info'></i></a>
+                            <a class='btn btn-primary btn-sm' href="{{yzWebUrl('coupon.send-coupon', ['id' => $row["id"]])}}" title="发放优惠券" ><i class='fa fa-send'></i></a>
                         </td>
                     </tr>
                 @endforeach

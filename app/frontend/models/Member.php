@@ -12,6 +12,7 @@ namespace app\frontend\models;
 use app\common\models\Coupon;
 use app\common\models\MemberCoupon;
 use app\frontend\modules\member\models\MemberAddress;
+use app\frontend\modules\order\models\OrderGoods;
 
 class Member extends \app\common\models\Member
 {
@@ -23,15 +24,20 @@ class Member extends \app\common\models\Member
     public function hasManyMemberCoupon($backType = null)
     {
         return $this->hasMany(MemberCoupon::class, 'uid', 'uid')
-            ->where('used',0)->with('belongsToCoupon',function($query) use($backType){
-            if(isset($backType)){
-                $query->where('coupon_method',$backType);
-            }
-        });
+            ->where('used', 0)->with('belongsToCoupon', function ($query) use ($backType) {
+                if (isset($backType)) {
+                    $query->where('coupon_method', $backType);
+                }
+            });
     }
 
     public function defaultAddress()
     {
-        return $this->hasOne(MemberAddress::class,'uid','uid')->where('isdefault',1);
+        return $this->hasOne(MemberAddress::class, 'uid', 'uid')->where('isdefault', 1);
+    }
+
+    public function orderGoods()
+    {
+        return $this->hasMany(OrderGoods::class,'uid','uid');
     }
 }

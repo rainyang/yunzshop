@@ -27,7 +27,6 @@ class WithdrawController extends BaseController
         $set = Setting::get('withdraw.balance');
         $resultModel = \YunShop::request()->withdraw;
         if ($resultModel) {
-
             $validator = null;
             foreach ($resultModel as $key => $item) {
                 $validator = (new Withdraw())->validator($item);
@@ -236,7 +235,7 @@ class WithdrawController extends BaseController
                 return ['msg' => '提现打款成功!'];
             }
         }
-        return ['msg' => '提现打款失败!'];
+        return ['msg' => $resultPay];
     }
 
 

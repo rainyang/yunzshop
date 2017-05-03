@@ -33,20 +33,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             unset($attributes['goods']);
 
         }
-
         parent::__construct($attributes);
-        $this->setGoodsDiscount();
-        $this->setGoodsDispatch();
-    }
-
-    protected function setGoodsDiscount()
-    {
-        $this->goodsDiscount = DiscountService::getPreOrderGoodsDiscountModel($this);
-    }
-
-    protected function setGoodsDispatch()
-    {
-        $this->goodsDispatch = DispatchService::getPreOrderGoodsDispatchModel($this);
     }
 
     public function getGoodsId()
@@ -63,6 +50,10 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         $this->order = $order;
 
     }
+    public function getPriceAttribute()
+    {
+        return $this->getPrice();
+    }
 
     /**
      * 显示商品数据
@@ -73,15 +64,15 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         $data = array(
             'goods_id' => $this->goods->id,
             'goods_sn' => $this->goods->goods_sn,
-            'price' => $this->getPrice(),
+            'price' => sprintf('%.2f',$this->getPrice()),
             'total' => $this->total,
             'title' => $this->goods->title,
             'thumb' => $this->goods->thumb,
             'goods_option_id' => $this->goodsOption->id,
             'goods_option_title' => $this->goodsOption->title,
-            'goods_price' => $this->getGoodsPrice(),
-            'vip_price' => $this->getVipPrice(),
-            'coupon_price' => $this->getCouponPrice(),
+            'goods_price' => sprintf('%.2f',$this->getGoodsPrice()),
+            'vip_price' => sprintf('%.2f',$this->getVipPrice()),
+            'coupon_price' => sprintf('%.2f',$this->getCouponPrice()),
             'coupons'=>$this->coupons
         );
         if (isset($this->goodsOption)) {
@@ -166,9 +157,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
     public function getVipPrice()
     {
         if (isset($this->goodsOption)) {
-
-            return $this->goodsOption->product_price * $this->getTotal();
+            return $this->goodsOption->vip_price * $this->getTotal();
         }
+
         return $this->goods->vip_price * $this->getTotal();
     }
 

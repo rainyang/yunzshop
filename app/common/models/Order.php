@@ -23,7 +23,6 @@ class Order extends BaseModel
 {
     public $table = 'yz_order';
     private $StatusService;
-    private $RefundData;
     protected $fillable = [];
     protected $guarded = ['id'];
     protected $appends = ['status_name', 'pay_type_name'];
@@ -34,6 +33,7 @@ class Order extends BaseModel
     const WAIT_SEND = 1;
     const WAIT_RECEIVE = 2;
     const COMPLETE = 3;
+    const REFUND = 11;
 
     public function getDates()
     {
@@ -64,7 +64,10 @@ class Order extends BaseModel
 
     public function scopeRefund($query)
     {
-        return $query->where('refund_id', '>', '0');
+        return $query->where('refund_id', '>', '0')->whereHas('hasOneRefundApply', function ($query) {
+            return $query->where('status', '<', RefundApply::COMPLETE);
+        });
+
     }
 
     public function scopeRefunded($query)
@@ -171,21 +174,19 @@ class Order extends BaseModel
     public function getButtonModelsAttribute()
     {
         $result = $this->getStatusService()->getButtonModels();
-        if (!empty($this->order->refund_id)) {
-            $result[] = [
-                'name' => '申请退款',
-                'api' => 'order.refund.apply', //todo
-                'value' => static::REFUND
-            ];
-        }
+
         return $result;
     }
 
     public function scopeGetOrderCountGroupByStatus($query, $status = [])
     {
-        //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE];
+        //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE, Order::REFUND];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
             ->whereIn('status', $status)->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name', 'has_one_pay_type', 'button_models'])->toArray();
+        if (in_array(Order::REFUND, $status)) {
+            $refund_count = $query->refund()->count();
+            $status_counts[] = ['status' => Order::REFUND, 'total' => $refund_count];
+        }
         foreach ($status as $state) {
             if (!in_array($state, array_column($status_counts, 'status'))) {
                 $status_counts[] = ['status' => $state, 'total' => 0];

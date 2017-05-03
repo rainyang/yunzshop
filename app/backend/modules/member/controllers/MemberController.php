@@ -24,8 +24,6 @@ class MemberController extends BaseController
 {
     private $pageSize = 20;
 
-
-
     /**
      * 列表
      *
@@ -36,6 +34,22 @@ class MemberController extends BaseController
         $levels = MemberLevel::getMemberLevelList();
 
         $parames = \YunShop::request();
+
+        if (strpos($parames['searchtime'], '×') !== FALSE) {
+            $search_time = explode('×', $parames['searchtime']);
+
+            if (!empty($search_time)) {
+                $parames['searchtime'] = $search_time[0];
+
+                $start_time = explode('=', $search_time[1]);
+                $end_time = explode('=', $search_time[2]);
+
+                $parames->times = [
+                    'start' => $start_time[1],
+                    'end' => $end_time[1]
+                ];
+            }
+        }
 
         $list = Member::searchMembers($parames)
             ->paginate($this->pageSize)
@@ -86,6 +100,12 @@ class MemberController extends BaseController
 
         if (!empty($member)) {
             $member = $member->toArray();
+
+            if (1 == $member['yz_member']['is_agent'] && 2 == $member['yz_member']['status']) {
+                $member['agent'] = 1;
+            } else {
+                $member['agent'] = 0;
+            }
         }
 
         return view('member.detail', [
@@ -127,6 +147,14 @@ class MemberController extends BaseController
             'content' => $parame->data['content']
         );
 
+        if ($parame->data['agent']) {
+            $yz['is_agent'] = 1;
+            $yz['status'] = 2;
+        } else {
+            $yz['is_agent'] = 0;
+            $yz['status'] =  0;
+        }
+
         $shopInfoModel = MemberShopInfo::getMemberShopInfo($uid) ?: new MemberShopInfo();
 
         $shopInfoModel->fill($yz);
@@ -157,18 +185,14 @@ class MemberController extends BaseController
 
         if (empty($member)) {
             return $this->message('用户不存在', '', 'error');
-        } else {
-            $member = $member->toArray();
         }
 
-        if (Member::deleteMemberInfoById($uid)) {
-            McMappingFans::deleteMemberInfoById($uid);
+        if (MemberShopInfo::deleteMemberInfoById($uid)) {
             MemberUnique::deleteMemberInfoById($uid);
-            MemberShopInfo::deleteMemberInfoById($uid);
 
             return $this->message('用户删除成功', yzWebUrl('member.member.index'));
         } else {
-            return $this->message('用户删除失败', yzWebUrl('member.member.index'));
+            return $this->message('用户删除失败', yzWebUrl('member.member.index'), 'error');
         }
     }
 

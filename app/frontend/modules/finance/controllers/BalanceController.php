@@ -28,7 +28,7 @@ class BalanceController extends ApiController
 
     public function test()
     {
-        $data = array('order_sn' => 'RV20170418180852899391');
+        $data = array('order_sn' => 'RV20170503102112814288');
         $test = (new BalanceService())->payResult($data);
         echo '<pre>'; print_r($test); exit;
     }

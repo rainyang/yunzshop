@@ -63,7 +63,7 @@ class Member extends \app\common\models\Member
             ->uniacid()
             ->where('uid', $id)
             ->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content'])->where('is_black', 0)
+                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status'])->where('is_black', 0)
                     ->with(['group'=>function($query1){
                         return $query1->select(['id','group_name']);
                     },'level'=>function($query2){
@@ -98,18 +98,6 @@ class Member extends \app\common\models\Member
     }
 
     /**
-     * 删除会员信息
-     *
-     * @param $id
-     */
-    public static function  deleteMemberInfoById($id)
-    {
-        return self::uniacid()
-               ->where('uid', $id)
-               ->delete();
-    }
-
-    /**
      * 检索会员信息
      *
      * @param $parame
@@ -141,6 +129,10 @@ class Member extends \app\common\models\Member
                     ->orWhere('mobile', 'like', $parame['realname'] . '%');
             });
         }
+
+        $result = $result->whereHas('yzMember', function($query) {
+             $query->whereNull('deleted_at');
+        });
 
         if (!empty($parame['groupid']) || !empty($parame['level']) || $parame['isblack'] != ''
             || $parame['isagent'] != '') {
@@ -195,7 +187,8 @@ class Member extends \app\common\models\Member
                     ->uniacid()
                     ->where('status', 3)
                     ->groupBy('uid');
-            }]);
+            }])
+        ->orderBy('uid', 'desc');
 
         return $result;
     }

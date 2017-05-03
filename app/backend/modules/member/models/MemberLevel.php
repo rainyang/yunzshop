@@ -125,20 +125,28 @@ class MemberLevel extends \app\common\models\MemberLevel
     public  function rules()
     {
         $rule =  [
-            'level'      => ['required',\Illuminate\Validation\Rule::unique($this->table)->ignore($this->id),'numeric','between:1,9999'],
+            'level'      => [
+                'required',
+                \Illuminate\Validation\Rule::unique($this->table)->where('uniacid',\YunShop::app()->uniacid)->ignore($this->id),
+                'numeric',
+                'between:1,9999'
+            ],
             'level_name' => 'required',
             'discount'   => 'numeric|between:0.1,10'
         ];
 
         $levelSet = Setting::get('shop.member');
-        if ($levelSet['level_type'] == 0) {
-            $rule = array_merge(['order_money' => 'numeric'], $rule);
-        }
-        if ($levelSet['level_type'] == 1) {
-            $rule = array_merge(['order_count' => 'integer|numeric'], $rule);
-        }
-        if ($levelSet['level_type'] == 2) {
-            $rule = array_merge(['goods_id' => 'numeric'], $rule);
+        switch ($levelSet['level_type'])
+        {
+            case 0:
+                $rule = array_merge(['order_money' => 'numeric|between:1,9999999999'], $rule);
+                break;
+            case 1:
+                $rule = array_merge(['order_count' => 'integer|numeric|between:0,9999999999'], $rule);
+                break;
+            case 2:
+                $rule = array_merge(['goods_id' => 'integer|numeric'], $rule);
+                break;
         }
 
         return $rule;

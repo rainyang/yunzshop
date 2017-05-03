@@ -1,5 +1,5 @@
 @extends('layouts.base')
-@section('title', trans('基础设置'))
+@section('title', '会员关系基础设置')
 @section('content')
     <section class="content">
 
@@ -17,7 +17,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">内容</label>
                         <div class="col-sm-9 col-xs-12">
                             {!! tpl_ueditor('base[content]', $content) !!}

@@ -33,10 +33,10 @@ class MemberCartController extends ApiController
                         $cartList[$key]['goods']['thumb'] = $cart['goods_option']['thumb'];
                     }
                     if ($cart['goods_option']['market_price']) {
-                        $cartList[$key]['goods']['price'] = $cart['goods_option']['market_price'];
+                        $cartList[$key]['goods']['price'] = $cart['goods_option']['product_price'];
                     }
                     if ($cart['goods_option']['market_price']) {
-                        $cartList[$key]['goods']['market_price'] = $cart['goods_option']['product_price'];
+                        $cartList[$key]['goods']['market_price'] = $cart['goods_option']['market_price'];
                     }
                 }
                 //unset ($cartList[$key]['goods_option']);
@@ -68,6 +68,9 @@ class MemberCartController extends ApiController
             $hasGoodsModel = MemberCart::hasGoodsToMemberCart($data);
             if ($hasGoodsModel) {
                 $hasGoodsModel->total = $hasGoodsModel->total + 1;
+
+                $hasGoodsModel->validate();
+
                 if ($hasGoodsModel->update()){
                     return $this->successJson('添加购物车成功');
                 }
@@ -101,6 +104,7 @@ class MemberCartController extends ApiController
             $cartModel = MemberCart::getMemberCartById($cartId);
             if ($cartModel) {
                 $cartModel->total = $cartModel->total + $num;
+                $cartModel->validate();
                 if ($cartModel->update()) {
                     return $this->successJson('修改数量成功');
                 }

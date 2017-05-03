@@ -22,7 +22,7 @@ class Sale extends \app\common\models\Sale
 
     public static function relationSave($goodsId, $data, $operate)
     {
-        if(!$goodsId){
+        if (!$goodsId) {
             return false;
         }
         $saleModel = self::getModel($goodsId, $operate);
@@ -36,13 +36,13 @@ class Sale extends \app\common\models\Sale
         return $saleModel->save();
     }
 
-    public static function getModel($goodsId,$operate)
+    public static function getModel($goodsId, $operate)
     {
         $model = false;
-        if($operate != 'created') {
+        if ($operate != 'created') {
             $model = static::where(['goods_id' => $goodsId])->first();
         }
-        !$model && $model =  new static;
+        !$model && $model = new static;
 
         return $model;
     }

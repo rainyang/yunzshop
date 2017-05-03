@@ -18,12 +18,13 @@
             <div class="panel panel-info" >
                 <div class="panel-body">
                     <form action="" method="get" class="form-horizontal" role="form" id="form1">
-                        <input type="hidden" name="c" value="site"/>
-                        <input type="hidden" name="a" value="entry"/>
-                        <input type="hidden" name="m" value="yun_shop"/>
-                        <input type="hidden" name="do" value="order" id="form_do"/>
-                        <input type="hidden" name="route" value="{{$url}}" id="form_p"/>
-
+                        @section('form')
+                            <input type="hidden" name="c" value="site"/>
+                            <input type="hidden" name="a" value="entry"/>
+                            <input type="hidden" name="m" value="yun_shop"/>
+                            <input type="hidden" name="do" value="order" id="form_do"/>
+                            <input type="hidden" name="route" value="{{$url}}" id="form_p"/>
+                        @show
                             <div class="">
                                 @section('search_bar')
                                     <div class='form-group col-sm-8 col-lg-5 col-xs-12'>
@@ -95,7 +96,7 @@
                                                 完成
                                             </option>
                                         </select>
-                                        {!! tpl_form_field_daterange(
+                                        {!! \app\backend\modules\goods\services\GoodsPrivilegeService::tpl_form_field_date(
                                             'search[time_range]',
                                             array(
                                                 'starttime'=>array_get($requestSearch,'time_range.start',0),

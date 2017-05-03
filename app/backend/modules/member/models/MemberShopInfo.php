@@ -8,10 +8,12 @@
 
 namespace app\backend\modules\member\models;
 
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberShopInfo extends \app\common\models\MemberShopInfo
 {
+    use SoftDeletes;
+
     public function group()
     {
         return $this->belongsTo('app\backend\modules\member\models\MemberGroup');
@@ -65,5 +67,19 @@ class MemberShopInfo extends \app\common\models\MemberShopInfo
         return self::uniacid()
             ->where('member_id', $id)
             ->update($data);
+    }
+
+    public static function getMemberLevel($memberId)
+    {
+        return self::uniacid()->select(['member_id','level_id'])->where('member_id', $memberId)
+            ->with(['level' => function($query) {
+                return $query->select('id','level','level_name')->uniacid();
+            }])->first();
+    }
+
+    public static function test()
+    {
+        dd(self::uniacid()->where('member_id', 204)->first());
+        return self::uniacid()->where('member_id', 204)->update(['level_id' => 20]);
     }
 }

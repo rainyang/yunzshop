@@ -14,8 +14,9 @@ use app\frontend\modules\member\services\MemberCartService;
 class Order
 {
     public function handle($event){
-        $cart_ids = \YunShop::request()->get('cart_ids');
+        $cart_ids =\Request::input('cart_ids');
         @$cart_ids = json_decode($cart_ids);
+
         MemberCartService::clearCartByIds($cart_ids);
     }
 }

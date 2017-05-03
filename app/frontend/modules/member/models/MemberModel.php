@@ -281,7 +281,7 @@ class MemberModel extends Member
         $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
         $path = storage_path('app/public/qr/');
 
-        echo QrCode::format($extend)->size(100)->generate($url,  $path . $filename);
+        echo QrCode::format($extend)->size(400)->generate($url,  $path . $filename);
 
         return request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'addons')) . $filename;
     }
@@ -347,7 +347,7 @@ class MemberModel extends Member
     public static function userData($member_info, $yz_member)
     {
         if (!empty($yz_member)) {
-            $member_info['alipay_name'] = $yz_member['alipay_name'];
+            $member_info['alipay_name'] = $yz_member['alipayname'];
             $member_info['alipay'] =  $yz_member['alipay'];
             $member_info['province_name'] =  $yz_member['province_name'];
             $member_info['city_name'] =  $yz_member['city_name'];
@@ -371,11 +371,10 @@ class MemberModel extends Member
         if (!empty($member_info['birthyear'] )) {
             $member_info['birthday'] = $member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday'];
         } else {
-            $member_info['birthday'] = '1970-01-01';
+            $member_info['birthday'] = date('Y-m-d', time());
         }
 
-
-        $order_info = \app\frontend\modules\order\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
+        $order_info = \app\frontend\modules\order\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
 
         $member_info['order'] = $order_info;
 

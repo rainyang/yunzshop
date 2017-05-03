@@ -8,8 +8,6 @@
 
 namespace app\common\models;
 
-
-
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberCart extends BaseModel

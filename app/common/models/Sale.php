@@ -8,12 +8,10 @@
 
 namespace app\common\models;
 
-use app\backend\models\BackendModel;
-
-class Sale extends BackendModel
+class Sale extends BaseModel
 {
     public $table = 'yz_goods_sale';
-    
+
     public $attributes = [
         'max_point_deduct' => 0,
         'max_balance_deduct' => 0,

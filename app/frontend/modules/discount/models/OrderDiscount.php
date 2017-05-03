@@ -6,15 +6,14 @@
  * Time: 下午4:29
  */
 
-namespace app\frontend\modules\discount\services\models;
+namespace app\frontend\modules\discount\models;
 
-use app\common\events\discount\OnCouponPriceCalculatedEvent;
 use app\common\events\discount\OnDeductionPriceCalculatedEvent;
 use app\common\models\Coupon;
-use app\frontend\modules\coupon\services\TestService;
+use app\frontend\modules\coupon\services\CouponService;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
-class OrderDiscount extends Discount
+class OrderDiscount
 {
     protected $order;
     private $couponPrice;
@@ -43,8 +42,10 @@ class OrderDiscount extends Discount
 
     private function _getDeductionPrice()
     {
-        $Event = new OnDeductionPriceCalculatedEvent($this->order);
-        $data = $Event->getData();
+        $event = new OnDeductionPriceCalculatedEvent($this->order);
+        event($event);
+        $data = $event->getData();
+
         return max(array_sum(array_column($data, 'price')), 0);
     }
 
@@ -73,11 +74,17 @@ class OrderDiscount extends Discount
     private function _getCouponPrice()
     {
 
-        $discountPrice = (new TestService($this->order, Coupon::COUPON_DISCOUNT))->getOrderDiscountPrice();
+        $discountCouponService = (new CouponService($this->order, Coupon::COUPON_DISCOUNT));
+        $discountPrice = $discountCouponService->getOrderDiscountPrice();
+        $discountCouponService->activate();
         //dd($discountPrice);
-        $moneyOffPrice = (new TestService($this->order, Coupon::COUPON_MONEY_OFF))->getOrderDiscountPrice();
+
+        $moneyOffCouponService = (new CouponService($this->order, Coupon::COUPON_MONEY_OFF));
+        $moneyOffPrice = $moneyOffCouponService->getOrderDiscountPrice();
         //dd($moneyOffPrice);
+        $moneyOffCouponService->activate();
 
         return $discountPrice + $moneyOffPrice;
     }
+
 }

@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '会员列表')
 @section('content')
 
 <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
@@ -166,17 +166,17 @@
                         <table class="table table-hover" style="overflow:visible">
                             <thead class="navbar-inner">
                             <tr>
-                                <th style='width:8%;text-align: center;'>会员ID</th>
+                                <th style='width:7%;text-align: center;'>会员ID</th>
                                 @if($opencommission)
                                     <th style='width:8%;text-align: center;'>推荐人</th>
                                 @endif
                                 <th style='width:8%;text-align: center;'>粉丝</th>
-                                <th style='width:12%;'>姓名<br/>手机号码</th>
+                                <th style='width:10%;'>姓名<br/>手机号码</th>
                                 <th style='width:8%;'>等级/分组</th>
                                 <th style='width:10%;'>注册时间</th>
                                 <th style='width:15%;'>积分/余额</th>
-                                <th style='width:10%;'>成交</th>
-                                <th style='width:8%'>关注</th>
+                                <th style='width:15%;'>成交</th>
+                                <th style='width:6%'>关注</th>
                                 <th style='width:13%'>操作</th>
                             </tr>
                             </thead>
