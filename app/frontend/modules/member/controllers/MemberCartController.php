@@ -22,6 +22,7 @@ class MemberCartController extends ApiController
         $memberId = \YunShop::app()->getMemberId();
         if ($memberId) {
             $cartList = MemberCart::getMemberCartList($memberId);
+            echo '<pre>'; print_r($cartList); exit;
             foreach ($cartList as $key => $cart) {
                 $cartList[$key]['option_str'] = '';
                 if (!empty($cart['goods_option'])) {
