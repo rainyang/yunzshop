@@ -1,5 +1,4 @@
 <?php
-
 namespace app\frontend\modules\coupon\services;
 
 use app\frontend\modules\coupon\services\models\Coupon;

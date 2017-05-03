@@ -73,7 +73,7 @@ class OrderDiscount
 
     private function _getCouponPrice()
     {
-        //todo 需要检查两次使用的优惠券组是否满足类型
+
         $discountCouponService = (new CouponService($this->order, Coupon::COUPON_DISCOUNT));
         $discountPrice = $discountCouponService->getOrderDiscountPrice();
         $discountCouponService->activate();
