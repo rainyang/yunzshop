@@ -1,6 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
+@section('title', trans('商品详情'))
     <script type="text/javascript">
         window.type = "{{$goods['type']}}";
         window.virtual = "{{$goods['virtual']}}";

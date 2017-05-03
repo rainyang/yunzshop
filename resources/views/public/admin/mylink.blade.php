@@ -34,9 +34,6 @@
                         <div id="fe-tab-link-li-27" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 27)" data-href="{{ yzAppFullUrl('member/detailed') }}">余额明细</div>
                         <div id="fe-tab-link-li-28" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 28)" data-href="{{ yzAppFullUrl('member/balance') }}">余额提现</div>
                         <div id="fe-tab-link-li-29" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 29)" data-href="{{ yzAppFullUrl('member/address') }}">我的收货地址</div>
-
-
-
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane link_goods" id="link_goods">

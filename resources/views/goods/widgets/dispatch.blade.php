@@ -19,7 +19,6 @@
                 <input type="radio" name="widgets[dispatch][dispatch_type]" value="0"
                        @if ( empty($dispatch['dispatch_type'])) checked="true" @endif /> 运费模板
             </label>
-
             <div style="width: auto; float: left; margin-left: 10px;" id="type_dispatch">
                 <select class="form-control tpl-category-parent" id="dispatchid" name="widgets[dispatch][dispatch_id]">
                     <option value="0">默认模板</option>

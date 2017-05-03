@@ -27,6 +27,7 @@ class UnifyOrderDispatchPrice
             /**
              * @var $orderGoods OrderGoods
              */
+
             if($orderGoods->isFreeShipping())
             {
                 return 0;

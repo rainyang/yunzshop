@@ -1,8 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-
-
+@section('title', trans('配送模板列表'))
 <div class="w1200 m0a">
 
 <div class="rightlist">
