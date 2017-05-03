@@ -543,7 +543,7 @@ class MemberController extends ApiController
                 $logo = tomedia($setting['logo']);
                 $text = $account->name;
             }
-            
+
             return $this->successJson('', [
                 'logo' => $logo,
                 'text' => $text,
