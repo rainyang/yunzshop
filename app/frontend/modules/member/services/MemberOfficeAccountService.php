@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\services;
 
 use app\common\helpers\Client;
+use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\Member;
 use app\common\models\MemberGroup;
@@ -41,7 +42,8 @@ class MemberOfficeAccountService extends MemberService
 
         if ($params['scope'] == 'user_info') {
             \Log::debug('user info callback');
-            $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1&scope=user_info';
+            $callback     = Url::absoluteApi('member.login.index', ['type'=>1,'scope'=>'user_info']);
+
 
         } else {
             \Log::debug('default');
@@ -78,9 +80,15 @@ class MemberOfficeAccountService extends MemberService
                 return show_json(5, 'token请求错误');
             }
 
-            $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
+            $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
-            $userinfo = \Curl::to($userinfo_url)
+            $global_token = \Curl::to($global_access_token_url)
+                ->asJsonResponse(true)
+                ->get();
+
+            $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
+
+            $userinfo = \Curl::to($global_userinfo_url)
                 ->asJsonResponse(true)
                 ->get();
 
@@ -308,6 +316,7 @@ class MemberOfficeAccountService extends MemberService
         $record = array(
             'openid' => $userinfo['openid'],
             'nickname' => stripslashes($userinfo['nickname']),
+            'follow' => $userinfo['subscribe'],
             'tag' => base64_encode(serialize($userinfo))
         );
         McMappingFansModel::updateData($member_id, $record);
@@ -382,6 +391,29 @@ class MemberOfficeAccountService extends MemberService
     private function _getUserInfoUrl($accesstoken, $openid)
     {
         return "https://api.weixin.qq.com/sns/userinfo?access_token={$accesstoken}&openid={$openid}&lang=zh_CN";
+    }
+
+    /**
+     * 获取全局ACCESS TOKEN
+     * @return string
+     */
+    private function _getAccessToken($appId, $appSecret)
+    {
+        return 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $appId . '&secret=' . $appSecret;
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * 是否关注公众号
+     *
+     * @param $accesstoken
+     * @param $openid
+     * @return string
+     */
+    private function _getInfo($accesstoken, $openid)
+    {
+        return 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $accesstoken . '&openid=' . $openid;
     }
 
     /**
