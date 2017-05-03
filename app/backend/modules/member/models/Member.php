@@ -187,7 +187,8 @@ class Member extends \app\common\models\Member
                     ->uniacid()
                     ->where('status', 3)
                     ->groupBy('uid');
-            }]);
+            }])
+        ->orderBy('uid', 'desc');
 
         return $result;
     }
