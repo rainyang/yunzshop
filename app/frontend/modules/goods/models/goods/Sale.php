@@ -31,7 +31,8 @@ class Sale extends \app\common\models\Sale
             //收货地址不在包邮区域
             return false;
         }
-        return $this->enoughQuantity($this->orderGoods->goods_total) || $this->enoughAmount($this->orderGoods->price);
+
+        return $this->enoughQuantity($this->orderGoods->total) || $this->enoughAmount($this->orderGoods->price);
     }
 
     /**
@@ -74,6 +75,7 @@ class Sale extends \app\common\models\Sale
         if ($this->ed_money == false) {
             return false;
         }
+
         return $price >= $this->ed_money;
     }
 }
