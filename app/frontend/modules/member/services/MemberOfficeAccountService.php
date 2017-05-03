@@ -338,7 +338,7 @@ class MemberOfficeAccountService extends MemberService
 
     /**
      * 会员关联表操作
-     * 
+     *
      * @param $uniacid
      * @param $member_id
      * @param $unionid
