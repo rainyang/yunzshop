@@ -17,7 +17,7 @@ class Check
     public static function app()
     {
         if(app()->environment() !== 'production'){
-
+            return true;
         }
         if(Cache::has('app_auth')){
            if(Cache::get('app_auth')){
