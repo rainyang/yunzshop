@@ -19,8 +19,10 @@ class Level
 
 //dd(4312);
         $result = (new MemberLevelService())->test($order_model);
-        dd($result);
-
+        if ($result === true) {
+            return true;
+        }
+        // todo 增加失败日志 $result
     }
     public function subscribe($events)
     {

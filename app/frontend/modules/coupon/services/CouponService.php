@@ -1,127 +1,134 @@
 <?php
 
-
 namespace app\frontend\modules\coupon\services;
 
-use app\backend\modules\api\services\Member;
-use app\common\models\Coupon;
-use app\common\models\MemberCoupon;
+use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 
 class CouponService
 {
-    protected $OrderModel;
-    protected $memberCoupon;
+    private $order;
+    private $coupon_method = null;
 
-    public function __construct($OrderModel, $memberCoupon){
-        $this->OrderModel = $OrderModel;
-        $this->memberCoupon = $memberCoupon;
-    }
-
-    public function getValidCoupon()
-    {
-        return $this->validUseType() && $this->validEnoughMoney() && $this->validEnoughTime();
-    }
-
-    public static function calCoupon($memberValidCoupons, PreGeneratedOrderModel $OrderModel)
+    public function __construct(PreGeneratedOrderModel $order, $coupon_method = null)
     {
 
-        $couponDatas = [];
-        $memberValidCoupons->each(function ($coupon) use ($OrderModel, &$couponDatas){
-            //折扣
-            if($coupon->belongsToCoupon->discount > 0) {
-                $couponData = [
-                    'name' => $coupon->belongsToCoupon->name,
-                    'value' => $coupon->belongsToCoupon->discount,
-                    'price' => '0',
-                    'plugin' => '0',
-                    'member_coupon_id' => $coupon->id
-                ];
-            }
+        $this->order = $order;
+        $this->coupon_method = $coupon_method;
+    }
 
-            //立减
-            if($coupon->belongsToCoupon->deduct > 0) {
-                $couponData = [
-                    'name' => $coupon->belongsToCoupon->name,
-                    'value' => '0',
-                    'price' => $coupon->belongsToCoupon->deduct * -1,
-                    'plugin' => '0',
-                    'member_coupon_id' => $coupon->id
-                ];
-            }
-            array_push($couponDatas, $couponData);
+    /**
+     * 获取订单优惠金额
+     * @return int
+     */
+    public function getOrderDiscountPrice()
+    {
+        return $this->getAllValidCoupons()->sum(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
+            //$coupon->activate();
+            return $coupon->getDiscountPrice();
+        });
+    }
+    /**
+     * 激活订单优惠券
+     */
+    public function activate()
+    {
+        return $this->getAllValidCoupons()->each(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
+            $coupon->activate();
+        });
+    }
+    /**
+     * 获取订单可算的优惠券
+     * @return Collection
+     */
+    public function getOptionalCoupons()
+    {
+        //dd(MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember));
+        //dd($this->getMemberCoupon());
+        $coupons = $this->getMemberCoupon()->map(function ($memberCoupon){
+            return new Coupon($memberCoupon, $this->order);
+        });
+        $result = $coupons->filter(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
+            $result = $coupon->isOptional();//界面上可选
+
+            $coupon->getMemberCoupon()->valid = $coupon->isChecked() || $coupon->valid();//界面标蓝
+
+            $coupon->getMemberCoupon()->checked = $coupon->isChecked();//界面选中
+
+            return $result;
         });
 
-        return $couponDatas;
-    }
-
-
-    /**
-     * 是否满足适用范围,如订单/通用/指定分类/指定商品
-     * @param $memberValidCoupon
-     * @param $OrderModel
-     * @return bool
-     */
-    protected function validUseType()
-    {
-        //dd($this->memberCoupon);
-        if ($this->memberCoupon->belongsToCoupon->use_type == Coupon::COUPON_GOODS_USE) {
-            Log::info("Coupon_id:{$this->memberCoupon->coupon_id} ,指定商品不满足.");
-            return false;
-        }
-
-        if ($this->memberCoupon->belongsToCoupon->use_type == Coupon::COUPON_CATEGORY_USE) {
-            Log::info("Coupon_id:{$this->memberCoupon->coupon_id} ,指定分类不满足.");
-            return false;
-        }
-
-        return true;
+        return $result;
     }
 
     /**
-     * 是否满足消费金额
-     * @param $memberValidCoupon
-     * @param $OrderModel
-     * @return bool
+     * 记录使用过的优惠券
      */
-    protected function validEnoughMoney()
+    public function destroyUsedCoupons()
     {
-        if ($this->memberCoupon->belongsToCoupon->enough > 0 && $this->OrderModel->toArray()['price'] < $this->memberCoupon->belongsToCoupon->enough) {
-            Log::info("Coupon_id:{$this->memberCoupon->coupon_id} ,消费金额不满足.");
-            return false;
+        foreach ($this->getAllValidCoupons() as $coupon){
+            /**
+             * @var $coupon Coupon
+             */
+            $coupon->destroy();
         }
-
-        return true;
     }
 
     /**
-     * 优惠券是否在有效期内
-     * @param $memberValidCoupon
-     * @param $OrderModel
-     * @return bool
+     * 获取所有选中并有效的优惠券
+     * @return Collection
      */
-    protected function validEnoughTime()
+    public function getAllValidCoupons()
     {
-        //dd($memberValidCoupon->belongsToCoupon->time_limit);
-        //领取后多少天可用
-        if ($this->memberCoupon->belongsToCoupon->time_limit == 0
-            && ceil((time() - $this->memberCoupon->get_time) / 86400) > $this->memberCoupon->belongsToCoupon->time_days) {
-            //$diffDay = ceil((time() - $memberValidCoupon->get_time) / 86400);
-            Log::info("Coupon_id:{$this->memberCoupon->coupon_id} ,天数条件不满足.");
+        $coupon = $this->getSelectedMemberCoupon()->map(function ($memberCoupon){
+            return new Coupon($memberCoupon, $this->order);
+        });
+        $result = $coupon->filter(function($coupon){
+            /**
+             * @var $coupon Coupon
+             */
+            return $coupon->valid();
+        });
 
-            return false;
-        }
-
-        //什么时间段可用
-        if ($this->memberCoupon->belongsToCoupon->time_limit == 1
-            && ($this->memberCoupon->belongsToCoupon->time_start > time())
-            && (time() < $this->memberCoupon->belongsToCoupon->time_end)) {
-            Log::info("Coupon_id:{$this->memberCoupon->coupon_id} ,时间段条件不满足.");
-            return false;
-        }
-        return true;
+        return $result;
     }
 
-    
+    /**
+     * 用户拥有的优惠券
+     * @return Collection
+     */
+    private function getMemberCoupon()
+    {
+        $coupon_method = $this->coupon_method;
+        $result = MemberCouponService::getCurrentMemberCouponCache($this->order->belongsToMember);
+        if(isset($coupon_method)){// 折扣/立减
+            $result = $result->filter(function ($memberCoupon) use($coupon_method){
+                return $memberCoupon->belongsToCoupon->coupon_method == $coupon_method;
+            });
+        }
+        //dd($result->toArray());exit;
+        return $result;
+
+    }
+    /**
+     * 用户拥有并选中的优惠券
+     * @return Collection
+     */
+    private function getSelectedMemberCoupon()
+    {
+        $member_coupon_ids = explode(',', array_get($_GET, 'member_coupon_ids', ''));
+        return $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids){
+            return in_array($memberCoupon->id, $member_coupon_ids);
+        });
+    }
 }

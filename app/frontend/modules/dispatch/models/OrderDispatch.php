@@ -6,23 +6,15 @@
  * Time: 上午9:25
  */
 
-namespace app\frontend\modules\dispatch\services\models;
+namespace app\frontend\modules\dispatch\models;
 
-class OrderDispatch extends Dispatch
+class OrderDispatch
 {
 
-    //todo 获取商品可选配送方式
-    public function getDispatchTypes()
-    {
-        $data[] = [
-            'id' => 1,
-            'name' => '快递',
-            'plugin' => 0
-        ];
-        return $data;
-    }
-
-    //提供给订单 累加所有监听者提供的运费
+    /**
+     * 订单运费
+     * @return float|int
+     */
     public function getDispatchPrice()
     {
 
@@ -33,7 +25,10 @@ class OrderDispatch extends Dispatch
     }
 
 
-    //todo 获取配送类型
+    /**
+     * 获取配送类型
+     * @return mixed
+     */
     public function getDispatchTypeId()
     {
         $dispatchTypeId = array_get(\YunShop::request()->get('address'),'dispatch_type_id',0);

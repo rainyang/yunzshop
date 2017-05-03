@@ -39,22 +39,18 @@ class MemberLevelService
                 //dd('up');
             }
         }
-        dd('no');
         return;
     }
 
     private function updateMemberLevel($levelId)
     {
-        //dd($levelId);
-        //dd($this->memberModel);
 
-        //dd($this->memberModel);
         $this->memberModel->level_id = $levelId;
         //dd($this->memberModel);
         if ($this->memberModel->save()) {
-            dd(true);
+            return true;
         }
-dd(false);
+        return '会员等级升级失败';
     }
 
     private function isUpgrade()

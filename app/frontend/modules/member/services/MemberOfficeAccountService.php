@@ -91,6 +91,7 @@ class MemberOfficeAccountService extends MemberService
 
             \Log::debug('userinfo', $userinfo);
 
+            //Login
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 $member_id = $this->unionidLogin($uniacid, $userinfo);
             } elseif  (is_array($userinfo) && !empty($userinfo['openid'])) {
@@ -155,7 +156,7 @@ class MemberOfficeAccountService extends MemberService
             $this->updateMemberInfo($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
-file_put_contents(storage_path('logs/account.log'), 1);
+
             $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
 
             if ($mc_mapping_fans_model->uid) {
@@ -168,15 +169,15 @@ file_put_contents(storage_path('logs/account.log'), 1);
                 if ($member_id === false) {
                     return show_json(8, '保存用户信息失败');
                 }
-
-                $this->addSubMemberInfo($uniacid, $member_id);
-
-                //添加ims_yz_member_unique表
-                $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
-
-                //生成分销关系链
-                Member::createRealtion($member_id);
             }
+
+            $this->addSubMemberInfo($uniacid, $member_id);
+
+            //添加ims_yz_member_unique表
+            $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
+
+            //生成分销关系链
+            Member::createRealtion($member_id);
         }
 
         return $member_id;
@@ -209,6 +210,7 @@ file_put_contents(storage_path('logs/account.log'), 1);
             \Log::debug('添加新会员');
 
             if ($fans_mode->uid) {
+                $member_id = $fans_mode->uid;
                 $this->updateMemberInfo($member_id, $userinfo);
             } else {
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
@@ -216,12 +218,12 @@ file_put_contents(storage_path('logs/account.log'), 1);
                 if ($member_id === false) {
                     return show_json(8, '保存用户信息失败');
                 }
-
-                $this->addSubMemberInfo($uniacid, $member_id);
-
-                //生成分销关系链
-                Member::createRealtion($member_id);
             }
+
+            $this->addSubMemberInfo($uniacid, $member_id);
+
+            //生成分销关系链
+            Member::createRealtion($member_id);
         }
 
         return $member_id;
