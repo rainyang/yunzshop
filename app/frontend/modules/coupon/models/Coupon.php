@@ -32,7 +32,7 @@ class Coupon extends \app\common\models\Coupon
     public static function getCouponsForMember($memberId, $couponId = null, $time = null)
     {
         $res = static::uniacid()
-                        ->select(['id', 'name', 'coupon_method', 'deduct', 'discount', 'enough', 'use_type',
+                        ->select(['id', 'name', 'coupon_method', 'deduct', 'discount', 'enough', 'use_type', 'category_ids',
                                 'categorynames', 'goods_ids', 'goods_names', 'time_limit', 'time_days', 'time_start', 'time_end', 'get_max', 'total',
                                 'money', 'credit'])
                         ->where('get_type','=',1)

@@ -44,6 +44,7 @@ class MenuController extends BaseController
                 $this->error($validator->messages());
             } else {
                 if ($model->save()) {
+                    \Cache::forget('db_menu');
                     return $this->message('添加菜单成功', Url::absoluteWeb('menu.index'));
                 } else {
                     $this->error('添加菜单失败');
@@ -78,6 +79,7 @@ class MenuController extends BaseController
                 $this->error($validator->messages());
             } else {
                 if ($model->save()) {
+                    \Cache::forget('db_menu');
                     return $this->message('菜单修改成功', Url::absoluteWeb('menu.index'));
                 } else {
                     $this->error('菜单修改失败');
@@ -106,6 +108,7 @@ class MenuController extends BaseController
         }
 
         if ($model->delete()) {
+            \Cache::forget('db_menu');
             return $this->message('菜单删除成功', Url::absoluteWeb('menu.index'));
         } else {
             $this->error('菜单删除失败');
@@ -126,7 +129,7 @@ class MenuController extends BaseController
                         Menu::create($v);
                     }
                     //菜单生成
-                    \Config::set('menu',Menu::getMenuList());
+                    \Cache::forget('db_menu');
 
                 }catch (\Exception $e){
                      throw new \Exception($e);

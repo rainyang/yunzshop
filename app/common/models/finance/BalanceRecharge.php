@@ -71,7 +71,7 @@ class BalanceRecharge extends BaseModel
     *
     * @return object
     * @Author yitian */
-    public static function getRechargeRecordBy0rdersn($ordersn)
+    public static function getRechargeRecordByOrdersn($ordersn)
     {
         return self::uniacid()->where('ordersn', $ordersn)->first();
     }
