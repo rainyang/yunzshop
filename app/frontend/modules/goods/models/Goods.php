@@ -15,7 +15,6 @@ use app\frontend\modules\member\services\MemberService;
 class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
-
     public function hasOneOptions()
     {
         return $this->hasOne('app\common\models\GoodsOption');

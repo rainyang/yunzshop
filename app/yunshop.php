@@ -338,7 +338,7 @@ class YunRequest extends YunComponent
     public function __construct()
     {
         global $_GPC;
-        $this->values = YunShop::isApi() ? request()->input() :(array)$_GPC;
+        $this->values = !YunShop::isWeb() ? request()->input() :(array)$_GPC;
     }
 
 
@@ -353,7 +353,7 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
-        $this->values = (YunShop::isApi() || YunShop::isPlugin()) ? $this->getW() : (array)$_W;
+        $this->values = !YunShop::isWeb() ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
     }
     

@@ -18,6 +18,7 @@ class  Coupon extends BaseModel
     const COUPON_DATE_TIME_RANGE = 1;//有效期 - 时间范围
     const COUPON_SINCE_RECEIVE = 0;//有效期 - 领取后n天
 
+
     public $table = 'yz_coupon';
 
     protected $guarded = [];
@@ -90,7 +91,7 @@ class  Coupon extends BaseModel
                 break;
             default:
                 return [
-                    'type' => self::COUPON_ALL_USE,
+                    'type' => self::COUPON_SHOP_USE,
                 ];
                 break;
         }

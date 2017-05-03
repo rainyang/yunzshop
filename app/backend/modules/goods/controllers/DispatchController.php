@@ -9,6 +9,7 @@
 namespace app\backend\modules\goods\controllers;
 
 
+use app\backend\modules\goods\services\DispatchService;
 use app\common\components\BaseController;
 use app\backend\modules\goods\models\Dispatch;
 use app\backend\modules\goods\models\Area;
@@ -43,11 +44,12 @@ class DispatchController extends BaseController
     {
         $dispatchModel = new Dispatch();
         $areas = Area::getProvinces(0);
-        foreach ($areas as &$province) {
-            $province['city'] = Area::getCitysByProvince($province['id']);
-        }
+
         $requestDispatch = \YunShop::request()->dispatch;
+        $random = 1;
         if ($requestDispatch) {
+
+            $requestDispatch = DispatchService::getDispatch($requestDispatch);
             //将数据赋值到model
             $dispatchModel->setRawAttributes($requestDispatch);
             //其他字段赋值
@@ -76,7 +78,8 @@ class DispatchController extends BaseController
         }
         return view('goods.dispatch.info', [
             'dispatch' => $dispatchModel,
-            'parents' => $areas->toArray()
+            'parents' => $areas->toArray(),
+            'random' => $random,
         ])->render();
     }
 
@@ -86,16 +89,24 @@ class DispatchController extends BaseController
      */
     public function edit()
     {
-        $dispatchModel = Dispatch::getOne(\YunShop::request()->id);
+        $dispatchModel = Dispatch::find(\YunShop::request()->id);
         if (!$dispatchModel) {
             return $this->message('无此记录或已被删除', '', 'error');
         }
-        $areas = Area::getProvinces(0);
-        foreach ($areas as &$province) {
-            $province['city'] = Area::getCitysByProvince($province['id']);
+        $dispatchModel->weight_data = unserialize($dispatchModel->weight_data);
+        $dispatchModel->piece_data = unserialize($dispatchModel->piece_data);
+        if(!$dispatchModel->calculate_type){
+            $random = $dispatchModel->weight_data ? count($dispatchModel->weight_data) + 1 : 1;
+        }else{
+            $random = $dispatchModel->piece_data ? count($dispatchModel->piece_data) + 1 : 1;
         }
+
+        $areas = Area::getProvinces(0);
+
         $requestDispatch = \YunShop::request()->dispatch;
         if ($requestDispatch) {
+
+            $requestDispatch = DispatchService::getDispatch($requestDispatch);
             //将数据赋值到model
             $dispatchModel->setRawAttributes($requestDispatch);
             //其他字段赋值
@@ -122,10 +133,10 @@ class DispatchController extends BaseController
                 }
             }
         }
-
         return view('goods.dispatch.info', [
             'dispatch' => $dispatchModel,
-            'parents' => $areas->toArray()
+            'parents' => $areas->toArray(),
+            'random' => $random,
         ])->render();
     }
 
