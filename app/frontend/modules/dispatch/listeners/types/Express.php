@@ -61,7 +61,7 @@ class Express
         $request = \Request::capture();
         $address = json_decode($request->input('address','[]'), true);
         
-        if(!empty(\Request::input('address','{}'))){
+        if(!empty($address)){
             //$request->input('address');
             $this->validate(['address' => $address], [
                     //'address' => 'required|array',
