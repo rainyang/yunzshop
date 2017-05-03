@@ -59,10 +59,10 @@ class Express
     private function getOrderAddress()
     {
         $request = \Request::capture();
-
-        if(!empty(\Request::input('address'))){
+        $address = json_decode($request->input('address','[]'), true);
+        
+        if(!empty(\Request::input('address','{}'))){
             //$request->input('address');
-            $address = json_decode($request->input('address'), true);
             $this->validate(['address' => $address], [
                     //'address' => 'required|array',
                     'address.address' => 'required|string',
