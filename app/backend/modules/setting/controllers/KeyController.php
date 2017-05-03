@@ -66,13 +66,14 @@ class KeyController extends BaseController
             'domain' => $domain
         ];
         if($type == 'create') {
-            $content = Curl::to('http://www.market.com/app-account/create')
+            $content = Curl::to(config('auto-update.checkUrl').'app-account/create')
                 ->withData($data)
                 ->get();
             $writeRes = Setting::set('shop.key', $requestModel);
+            Cache::put('app_auth',true,360);
             return $writeRes && $content;
         } else if($type == 'cancel') {
-            $content = Curl::to('http://www.market.com/app-account/cancel')
+            $content = Curl::to(config('auto-update.checkUrl').'/app-account/cancel')
                 ->withData($data)
                 ->get();
            // print_r($content);exit();
@@ -88,7 +89,7 @@ class KeyController extends BaseController
 
         $type = \YunShop::request()->type;
         $domain = request()->getHttpHost();
-        $content = Curl::to('http://www.market.com/update/check_isKey.json')
+        $content = Curl::to(config('auto-update.checkUrl').'/update/check_isKey.json')
             ->withHeader(
                "Authorization: Basic " . base64_encode("{$data['key']}:{$data['secret']}")
             )
@@ -112,44 +113,7 @@ class KeyController extends BaseController
         return $res;
     }
 
-    //    /*
-//     * write data into env
-//     * @param $data : 代写入的数据
-//     * @return bool
-//     */
-//    private function writeIntoENV($data, $type='create') {
-//        $file = fopen(base_path('.env'), 'aw+');
-//
-//        foreach ($data as $key => $value)
-//        {
-//            try{
-//                $keyType = strtoupper($key);
-//                $originalValue = env($keyType);
-//                if($type == 'create') {
-//
-//                    if(!$originalValue) {
-//                        fwrite($file, "\r\n$keyType=$value\r\n");
-//                    } else {
-//                        $str = str_replace($originalValue, $value, file_get_contents(base_path('.env')));
-//                        file_put_contents(base_path('.env'), $str);
-//                    }
-//
-//                } else if($type == 'cancel') {
-//                    if($originalValue){
-//                        $str = str_replace("\r\n$keyType=$value\r\n", '', file_get_contents(base_path('.env')));
-//                        file_put_contents(base_path('.env'), $str);
-//                    }
-//                }
-//
-//            }catch (\Exception $e) {
-//                dd($e);
-//                return false;
-//            }
-//
-//        }
-//        fclose($file);
-//        return true;
-//    }
+
 
 
 

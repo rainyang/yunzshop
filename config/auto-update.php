@@ -7,6 +7,5 @@
  */
 
 return [
-    //'checkUrl'=>env('UPDATE_CHECK_URL','http://yun.yunzshop.com/update')
-    'checkUrl'=>env('UPDATE_CHECK_URL','http://www.market.com/update')
+    'checkUrl'=>env('UPDATE_CHECK_URL','http://yun.yunzshop.com/update')
 ];
