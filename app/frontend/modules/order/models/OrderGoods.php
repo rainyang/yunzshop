@@ -39,4 +39,17 @@ class OrderGoods extends \app\common\models\OrderGoods
         $list = self::select()->where('uid', $uid)->Where('comment_status', $status)->orderBy('id', 'desc')->get();
         return $list;
     }
+    public function isFreeShipping()
+    {
+//        //todo 区域
+//        if(exceptArea){
+//
+//        }
+
+        if ($this->goods->hasOneSale->isFree($this)) {
+            return true;
+        }
+
+        return false;
+    }
 }

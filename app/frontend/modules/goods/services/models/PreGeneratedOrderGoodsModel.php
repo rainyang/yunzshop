@@ -50,6 +50,10 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         $this->order = $order;
 
     }
+    public function getPriceAttribute()
+    {
+        return $this->getPrice();
+    }
 
     /**
      * 显示商品数据

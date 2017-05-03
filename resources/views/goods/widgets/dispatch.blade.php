@@ -17,16 +17,15 @@
 
             <label class="radio-inline" >
                 <input type="radio" name="widgets[dispatch][dispatch_type]" value="0"
-                       @if ( empty($dispatch['dispatch_type'])) checked="true" @endif /> 运费模板
+                       @if ( empty($dispatch['dispatch_type'])) checked="true" @endif /> 运费1模板
             </label>
 
             <div style="width: auto; float: left; margin-left: 10px;" id="type_dispatch">
                 <select class="form-control tpl-category-parent" id="dispatchid" name="widgets[dispatch][dispatch_id]">
                     <option value="0">默认模板</option>
                     @foreach ($dispatch_templates as $dispatch_item)
-
                         <option value="{{  $dispatch_item['id'] }} "
-                                @if ( $dispatch['dispatch_id'] == $dispatch_item['id']) selected="true" @endif>{{ $dispatch_item['dispatch_name'] }}</option>
+                                @if ( $dispatch['dispatch_id'] == $dispatch_item['id']) selected="true" @endif>1{{ $dispatch_item['dispatch_name'] }}</option>
                     @endforeach
                 </select>
             </div>
