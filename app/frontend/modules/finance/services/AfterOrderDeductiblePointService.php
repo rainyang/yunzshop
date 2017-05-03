@@ -41,7 +41,6 @@ class AfterOrderDeductiblePointService
     private function calculationPoint()
     {
         $this->isDeductible();
-        $this->addPointLog();
     }
 
     private function isDeductible()
@@ -49,6 +48,7 @@ class AfterOrderDeductiblePointService
         if (!$this->isChecked()) {
             return;
         }
+        $this->addPointLog();
     }
 
     private function getPointData()
