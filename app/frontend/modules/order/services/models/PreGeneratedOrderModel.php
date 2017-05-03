@@ -1,15 +1,12 @@
 <?php
-
 namespace app\frontend\modules\order\services\models;
 
 use app\common\models\Order;
 
-use app\frontend\modules\discount\services\DiscountService;
-use app\frontend\modules\discount\services\models\OrderDiscount;
-use app\frontend\modules\dispatch\services\DispatchService;
+use app\frontend\modules\discount\models\OrderDiscount;
+use app\frontend\modules\dispatch\models\OrderDispatch;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\OrderService;
-use Illuminate\Support\Facades\DB;
 
 /**
  * 订单生成类
@@ -30,23 +27,13 @@ use Illuminate\Support\Facades\DB;
  */
 class PreGeneratedOrderModel extends OrderModel
 {
+
     /**
-     * @var ShopModel 商城model实例
-     */
-    /**
-     * @var \app\frontend\models\Member
-     */
-    /**
-     * 记录添加的商品
-     * PreGeneratedOrderModel constructor.
-     * @param array|null $orderGoodsModels
-     */
-    /**
-     * @var \app\frontend\modules\dispatch\services\models\OrderDispatch 运费类实例
+     * @var OrderDispatch 运费类
      */
     protected $orderDispatch;
     /**
-     * @var OrderDiscount 优惠类实例
+     * @var OrderDiscount 优惠类
      */
     protected $orderDiscount;
     public function setOrderGoodsModels(array $orderGoodsModels)
@@ -58,12 +45,12 @@ class PreGeneratedOrderModel extends OrderModel
 
     protected function setDiscount()
     {
-        $this->orderDiscount = DiscountService::getPreOrderDiscountModel($this);
+        $this->orderDiscount = new OrderDiscount($this);
     }
 
     protected function setDispatch()
     {
-        $this->orderDispatch = DispatchService::getPreOrderDispatchModel($this);
+        $this->orderDispatch = new OrderDispatch($this);
     }
 
     /**
