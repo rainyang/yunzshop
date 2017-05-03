@@ -20,9 +20,14 @@ class UpdateController extends BaseController
     {
         $list = [];
 
+        $key = Setting::get('shop.key')['key'];
+        $secret = Setting::get('shop.key')['secret'];
         $update = new AutoUpdate(null, null, 300);
+        $update->setUpdateFile('check_app.json');
         $update->setCurrentVersion(config('version'));
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+        Setting::get('auth.key');
+        $update->setBasicAuth($key, $secret);
 
         if ($update->checkUpdate() === false) {
             $this->error('检测更新列表失败');
@@ -45,15 +50,18 @@ class UpdateController extends BaseController
         $result = ['msg' => '', 'last_version' => '', 'updated' => 0];
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
+        if(!$key || !$secret) {
+            $result['msg'] = 'key or secret is null';
+            return response()->json($result)->send();
+        }
 
         $update = new AutoUpdate(null, null, 300);
-        //$update->setUpdateFile('check_app.json');
+        $update->setUpdateFile('check_app.json');
         $update->setCurrentVersion(config('version'));
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         Setting::get('auth.key');
-
-       // $update->setBasicAuth($key, $secret);
-        $update->setBasicAuth();
+        $update->setBasicAuth($key, $secret);
+        //$update->setBasicAuth();
 
         //Check for a new update
         if ($update->checkUpdate() === false) {
@@ -79,9 +87,15 @@ class UpdateController extends BaseController
     {
         $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
         set_time_limit(0);
-        $update = new AutoUpdate(null, null);
+
+        $key = Setting::get('shop.key')['key'];
+        $secret = Setting::get('shop.key')['secret'];
+        $update = new AutoUpdate(null, null, 300);
+        $update->setUpdateFile('check_app.json');
         $update->setCurrentVersion(config('version'));
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+        Setting::get('auth.key');
+        $update->setBasicAuth($key, $secret);
         //Check for a new update
         if ($update->checkUpdate() === false) {
             $resultArr['msg'] = 'Could not check for updates! See log file for details.';
@@ -93,6 +107,7 @@ class UpdateController extends BaseController
                 \Artisan::call('update:version' ,['version'=>$version]);
             });
             $result = $update->update();
+
             if ($result === true) {
                 $resultArr['status'] = 1;
                 $resultArr['msg'] = 'Update simulation successful';
