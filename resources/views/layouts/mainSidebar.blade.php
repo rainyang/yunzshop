@@ -40,6 +40,10 @@
     <!-- /.sidebar -->
 </aside>
 
+<style type="text/css">
+    .sidebar-menu{min-height:800px;}
+</style>
+
 
 
 
