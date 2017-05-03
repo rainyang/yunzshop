@@ -370,7 +370,7 @@
         }
         function selectAreas() {
             clearSelects();
-         
+
             $("#modal-areas").modal();
             var citystrs = '';
             var citystrIds = '';
