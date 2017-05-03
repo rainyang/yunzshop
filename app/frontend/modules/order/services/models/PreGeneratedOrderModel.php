@@ -7,6 +7,7 @@ use app\frontend\modules\discount\models\OrderDiscount;
 use app\frontend\modules\dispatch\models\OrderDispatch;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\OrderService;
+use Illuminate\Support\Collection;
 
 /**
  * 订单生成类
@@ -55,7 +56,7 @@ class PreGeneratedOrderModel extends OrderModel
 
     /**
      * 对外提供的获取订单商品方法
-     * @return array
+     * @return Collection
      */
     public function getOrderGoodsModels()
     {

@@ -14,16 +14,6 @@ use app\frontend\modules\order\models\OrderGoods;
 abstract class OrderGoodsModel extends OrderGoods
 {
     /**
-     * @var \app\frontend\modules\dispatch\services\models\GoodsDispatch 的实例
-     */
-    protected $goodsDispatch;
-    /**
-     * @var \app\frontend\modules\discount\services\models\GoodsDiscount 的实例
-     */
-    protected $goodsDiscount;
-
-
-    /**
      * 计算成交价格
      * @return int
      */
