@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-
+@section('title', trans('收入记录'))
         <div class="right-titpos">
             <ul class="add-snav">
                 <li class="active"><a href="#">收入记录</a></li>

@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-
+@section('title', trans('商品列表'))
     <div class="w1200 ">
 
 
