@@ -13,7 +13,7 @@ use app\common\components\BaseController;
 class AreaController extends BaseController
 {
     /**
-     * 商品品牌列表
+     * 
      */
     public function selectCity()
     {
