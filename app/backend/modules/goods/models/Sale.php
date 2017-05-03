@@ -32,7 +32,6 @@ class Sale extends \app\common\models\Sale
         }
         $data['goods_id'] = $goodsId;
         $data['point'] = trim($data['point']);
-        $data['ed_areaids'] = explode(',', $data['ed_areaids']);
         $saleModel->setRawAttributes($data);
         return $saleModel->save();
     }
