@@ -17,7 +17,7 @@
 
             <label class="radio-inline" >
                 <input type="radio" name="widgets[dispatch][dispatch_type]" value="0"
-                       @if ( empty($dispatch['dispatch_type'])) checked="true" @endif /> 运费模板
+                       @if ( empty($dispatch['dispatch_type'])) checked="true" @endif /> 运费1模板
             </label>
 
             <div style="width: auto; float: left; margin-left: 10px;" id="type_dispatch">
