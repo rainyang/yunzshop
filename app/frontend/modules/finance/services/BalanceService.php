@@ -90,7 +90,6 @@ class BalanceService extends BaseBalanceService
 
     public function payResult($data = [])
     {
-        //echo '<pre>'; print_r(123); exit;
         $rechargeMode = BalanceRecharge::getRechargeRecordByOrdersn($data['order_sn']);
         $rechargeMode->status = BalanceRecharge::PAY_STATUS_SUCCESS;
         if ($rechargeMode->save()) {
@@ -103,13 +102,9 @@ class BalanceService extends BaseBalanceService
                 'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
                 'service_type'      => Balance::BALANCE_RECHARGE
             );
-            //echo '<pre>'; print_r($this->data); exit;
-            //file_put_contents(storage_path('logs/regchar.log'),print_r($this->data,1));
             $result = $this->balanceChange($this->data);
             if ($result === true) {
                 return $this->rechargeSaleMath();
-                //todo 充值赠送
-                return true;
             }
             throw new AppException($result);
         }
