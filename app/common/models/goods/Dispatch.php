@@ -73,7 +73,7 @@ class Dispatch extends BaseModel
             'display_order' => '',
             'is_default' => 'digits_between:0,1',
             'enabled' => 'integer',
-            'calculate_type' => 'digits_between:0,1'
+            'calculate_type' => 'digits_between:1,2'
         ];
     }
 
