@@ -1,5 +1,5 @@
 @extends('layouts.base')
-@section('title', trans('基础设置'))
+@section('title', '会员关系基础设置')
 @section('content')
     <section class="content">
 
