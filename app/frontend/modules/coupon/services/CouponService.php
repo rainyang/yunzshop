@@ -3,12 +3,10 @@
 namespace app\frontend\modules\coupon\services;
 
 use app\frontend\modules\coupon\services\models\Coupon;
-use app\frontend\modules\coupon\services\models\DiscountCoupon;
-use app\frontend\modules\coupon\services\models\MoneyOffCoupon;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use Illuminate\Support\Collection;
 
-class TestService
+class CouponService
 {
     private $order;
     private $coupon_method = null;
