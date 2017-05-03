@@ -51,6 +51,7 @@ class CategoryController extends BaseController
             $item['thumb'] = tomedia($item['thumb']);
             $item['adv_img'] = tomedia($item['adv_img']);
             foreach ($item['has_many_children'] as &$has_many_child) {
+                $has_many_child['thumb'] = tomedia($has_many_child['thumb']);
                 $has_many_child['adv_img'] = tomedia($has_many_child['adv_img']);
             }
         }
