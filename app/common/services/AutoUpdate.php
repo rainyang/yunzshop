@@ -427,7 +427,8 @@ class AutoUpdate
                 $this->_updates[] = [
                     'version' => $version,
                     'url'     => $updateUrl->url,
-                    'description'     => $updateUrl->description,
+                    'description' => $updateUrl->description,
+                    'created_at' => strtotime($updateUrl->created_at->date)
                 ];
             }
         }

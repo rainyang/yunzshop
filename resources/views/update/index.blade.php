@@ -20,7 +20,7 @@
                 <!-- timeline icon -->
                 <i class="fa fa-clock-o bg-gray"></i>
                 <div class="timeline-item">
-                    <span class="time"><i class="fa fa-clock-o"></i> {{--{{date('H:i',$item['create_at'])}}--}}</span>
+                    <span class="time"><i class="fa fa-clock-o"></i> {{date('H:i',$item['created_at'])}}</span>
 
                     <h3 class="timeline-header">版本：{{$item['version']}}</h3>
 
