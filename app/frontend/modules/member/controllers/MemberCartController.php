@@ -34,10 +34,10 @@ class MemberCartController extends ApiController
                         $cartList[$key]['goods']['thumb'] = $cart['goods_option']['thumb'];
                     }
                     if ($cart['goods_option']['market_price']) {
-                        $cartList[$key]['goods']['price'] = $cart['goods_option']['market_price'];
+                        $cartList[$key]['goods']['price'] = $cart['goods_option']['product_price'];
                     }
                     if ($cart['goods_option']['market_price']) {
-                        $cartList[$key]['goods']['market_price'] = $cart['goods_option']['product_price'];
+                        $cartList[$key]['goods']['market_price'] = $cart['goods_option']['market_price'];
                     }
                 }
                 //unset ($cartList[$key]['goods_option']);
