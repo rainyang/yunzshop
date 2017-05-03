@@ -103,6 +103,7 @@ class BalanceService extends BaseBalanceService
                 'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
                 'service_type'      => Balance::BALANCE_RECHARGE
             );
+            file_put_contents("test.txt",$this->data);
             $result = $this->balanceChange($data);
             if ($result === true) {
 
