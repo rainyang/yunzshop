@@ -10,7 +10,7 @@
         <!-- timeline time label -->
             <li class="time-label">
         <span class="bg-red">
-            {{--{{date('Y-m-d',$item['create_at'])}}--}}
+            {{date('Y-m-d',$item['created_at'])}}
         </span>
             </li>
             <!-- /.timeline-label -->

@@ -355,7 +355,6 @@ class AutoUpdate
      */
     public function checkUpdate()
     {
-
         $this->_log->notice('Checking for a new update...');
         // Reset previous updates
         $this->_latestVersion = new version('0.0.0');
@@ -423,7 +422,6 @@ class AutoUpdate
             if (version::gt($version, $this->_currentVersion)) {
                 if (version::gt($version, $this->_latestVersion))
                     $this->_latestVersion = $version;
-
                 $this->_updates[] = [
                     'version' => $version,
                     'url'     => $updateUrl->url,
