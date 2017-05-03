@@ -247,10 +247,10 @@
                                                title="{{$lang['copyshop']}}" class="btn btn-default btn-smjs-clip"
                                                style="font-size: 13px;"><i class="fa fa-article"></i></a>
 
-                                            <a href="{{yzWebUrl($edit_url, array('id' => $item['id']))}}"
+                                            <a href="{{$yz_url($edit_url, array('id' => $item['id']))}}"
                                                class="btn btn-sm btn-default" title="编辑"><i class="fa fa-edit"></i></a>
 
-                                            <a href="{{yzWebUrl($delete_url, array('id' => $item['id']))}}"
+                                            <a href="{{$yz_url($delete_url, array('id' => $item['id']))}}"
                                                onclick="return confirm('{{$delete_msg}}');
                                                        return false;" class="btn btn-default  btn-sm" title="删除"><i
                                                         class="fa fa-trash"></i></a>

@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\services;
 
 use app\common\helpers\Client;
+use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\Member;
 use app\common\models\MemberGroup;
@@ -23,29 +24,31 @@ use app\frontend\modules\member\models\SubMemberModel;
 
 class MemberOfficeAccountService extends MemberService
 {
-    const LOGIN_TYPE    = '1';
+    const LOGIN_TYPE = '1';
 
     public function __construct()
-    {}
+    {
+    }
 
     public function login($params = [])
     {
         $member_id = 0;
 
-        $uniacid      = \YunShop::app()->uniacid;
-        $code         = \YunShop::request()->code;
+        $uniacid = \YunShop::app()->uniacid;
+        $code = \YunShop::request()->code;
 
-        $account      = AccountWechats::getAccountByUniacid($uniacid);
-        $appId        = $account->key;
-        $appSecret    = $account->secret;
+        $account = AccountWechats::getAccountByUniacid($uniacid);
+        $appId = $account->key;
+        $appSecret = $account->secret;
 
         if ($params['scope'] == 'user_info') {
             \Log::debug('user info callback');
-            $callback     = 'http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=member.login.index&type=1&scope=user_info';
+            $callback = Url::absoluteApi('member.login.index', ['type' => 1, 'scope' => 'user_info']);
+
 
         } else {
             \Log::debug('default');
-            $callback     = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+            $callback = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         }
 
@@ -56,7 +59,7 @@ class MemberOfficeAccountService extends MemberService
         if (!Session::get('member_id')) {
             \Log::debug('scope', $params['scope']);
 
-            if ($params['scope']  == 'user_info' || \YunShop::request()->scope == 'user_info') {
+            if ($params['scope'] == 'user_info' || \YunShop::request()->scope == 'user_info') {
                 $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
             } else {
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
@@ -78,11 +81,7 @@ class MemberOfficeAccountService extends MemberService
                 return show_json(5, 'token请求错误');
             }
 
-            $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
-
-            $userinfo = \Curl::to($userinfo_url)
-                ->asJsonResponse(true)
-                ->get();
+            $userinfo = $this->getUserInfo($appId, $appSecret, $token);
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
                 \Log::debug('微信登陆授权失败', $userinfo);
@@ -94,13 +93,13 @@ class MemberOfficeAccountService extends MemberService
             //Login
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 $member_id = $this->unionidLogin($uniacid, $userinfo);
-            } elseif  (is_array($userinfo) && !empty($userinfo['openid'])) {
+            } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
                 $member_id = $this->openidLogin($uniacid, $userinfo);
             }
 
             \Log::debug('officaccount mid', \YunShop::request()->mid);
 
-             $mid = Member::getMid();
+            $mid = Member::getMid();
             \Log::debug('Regular mid', $mid);
 
             //发展下线
@@ -121,11 +120,18 @@ class MemberOfficeAccountService extends MemberService
         if (\YunShop::request()->scope == 'user_info') {
             return show_json(1, 'user_info_api');
         } else {
-            \Log::debug('微信登陆成功跳转地址',$redirect_url);
+            \Log::debug('微信登陆成功跳转地址', $redirect_url);
             redirect($redirect_url)->send();
         }
     }
 
+    /**
+     * 公众号加入开放平台
+     *
+     * @param $uniacid
+     * @param $userinfo
+     * @return array|int|mixed
+     */
     public function unionidLogin($uniacid, $userinfo)
     {
         $member_id = 0;
@@ -144,7 +150,7 @@ class MemberOfficeAccountService extends MemberService
             if (!in_array(self::LOGIN_TYPE, $types)) {
                 //更新ims_yz_member_unique表
                 MemberUniqueModel::updateData(array(
-                    'unique_id'=>$UnionidInfo['unique_id'],
+                    'unique_id' => $UnionidInfo['unique_id'],
                     'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
                 ));
             }
@@ -183,6 +189,13 @@ class MemberOfficeAccountService extends MemberService
         return $member_id;
     }
 
+    /**
+     * 公众号为加入开放平台
+     *
+     * @param $uniacid
+     * @param $userinfo
+     * @return array|int|mixed
+     */
     public function openidLogin($uniacid, $userinfo)
     {
         $member_id = 0;
@@ -229,6 +242,48 @@ class MemberOfficeAccountService extends MemberService
         return $member_id;
     }
 
+    /**
+     * 获取用户信息
+     *
+     * @param $appId
+     * @param $appSecret
+     * @param $token
+     * @return mixed
+     */
+    public function getUserInfo($appId, $appSecret, $token)
+    {
+        $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
+
+        $global_token = \Curl::to($global_access_token_url)
+            ->asJsonResponse(true)
+            ->get();
+
+        $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
+
+        $user_info = \Curl::to($global_userinfo_url)
+            ->asJsonResponse(true)
+            ->get();
+
+        if (0 == $user_info['subscribe']) {
+            $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
+
+            $user_info = \Curl::to($userinfo_url)
+                ->asJsonResponse(true)
+                ->get();
+
+            $user_info['subscribe'] = 0;
+        }
+
+        return $user_info;
+    }
+
+    /**
+     * 会员基础表操作
+     *
+     * @param $uniacid
+     * @param $userinfo
+     * @return mixed
+     */
     public function addMemberInfo($uniacid, $userinfo)
     {
         //添加mc_members表
@@ -249,6 +304,12 @@ class MemberOfficeAccountService extends MemberService
         return $uid;
     }
 
+    /**
+     * 会员辅助表操作
+     *
+     * @param $uniacid
+     * @param $member_id
+     */
     public function addSubMemberInfo($uniacid, $member_id)
     {
         //添加yz_member表
@@ -275,6 +336,13 @@ class MemberOfficeAccountService extends MemberService
         ));
     }
 
+    /**
+     * 会员关联表操作
+     * 
+     * @param $uniacid
+     * @param $member_id
+     * @param $unionid
+     */
     public function addMemberUnionid($uniacid, $member_id, $unionid)
     {
         MemberUniqueModel::insertData(array(
@@ -308,6 +376,7 @@ class MemberOfficeAccountService extends MemberService
         $record = array(
             'openid' => $userinfo['openid'],
             'nickname' => stripslashes($userinfo['nickname']),
+            'follow' => $userinfo['subscribe'],
             'tag' => base64_encode(serialize($userinfo))
         );
         McMappingFansModel::updateData($member_id, $record);
@@ -382,6 +451,29 @@ class MemberOfficeAccountService extends MemberService
     private function _getUserInfoUrl($accesstoken, $openid)
     {
         return "https://api.weixin.qq.com/sns/userinfo?access_token={$accesstoken}&openid={$openid}&lang=zh_CN";
+    }
+
+    /**
+     * 获取全局ACCESS TOKEN
+     * @return string
+     */
+    private function _getAccessToken($appId, $appSecret)
+    {
+        return 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $appId . '&secret=' . $appSecret;
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * 是否关注公众号
+     *
+     * @param $accesstoken
+     * @param $openid
+     * @return string
+     */
+    private function _getInfo($accesstoken, $openid)
+    {
+        return 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $accesstoken . '&openid=' . $openid;
     }
 
     /**
