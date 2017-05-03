@@ -99,12 +99,15 @@
         });
         $("#modal-areas").modal();
         var citystrs = '';
+        var cityids = '';
         $('#btnSubmitArea').unbind('click').click(function(){
             $('.city:checked').each(function(){
                 citystrs+= $(this).attr('city') +";";
+                cityids+= $(this).attr('city_id') +",";
             });
             $('#areas').html(citystrs);
             $("#selectedareas").val(citystrs);
+            $("#selectedareaids").val(cityids);
         })
     }
 </script>
