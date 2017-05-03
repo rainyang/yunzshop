@@ -80,14 +80,6 @@ class MemberOfficeAccountService extends MemberService
                 return show_json(5, 'token请求错误');
             }
 
-            $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
-
-            $userinfo = \Curl::to($userinfo_url)
-                ->asJsonResponse(true)
-                ->get();
-
-            \Log::debug('user info', $userinfo);
-
             $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
             $global_token = \Curl::to($global_access_token_url)
@@ -96,11 +88,9 @@ class MemberOfficeAccountService extends MemberService
 
             $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
 
-            $global_userinfo = \Curl::to($global_userinfo_url)
+            $userinfo = \Curl::to($global_userinfo_url)
                 ->asJsonResponse(true)
                 ->get();
-
-            \Log::debug('global user info', $global_userinfo);
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
                 \Log::debug('微信登陆授权失败', $userinfo);
@@ -326,6 +316,7 @@ class MemberOfficeAccountService extends MemberService
         $record = array(
             'openid' => $userinfo['openid'],
             'nickname' => stripslashes($userinfo['nickname']),
+            'follow' => $userinfo['subscribe'],
             'tag' => base64_encode(serialize($userinfo))
         );
         McMappingFansModel::updateData($member_id, $record);
