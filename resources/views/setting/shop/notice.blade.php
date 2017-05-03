@@ -49,7 +49,7 @@
                         <div class="input-group multi-img-details" id='saler_container'>
                             @foreach ($set['salers'] as $saler)
                             <div class="multi-item saler-item" openid='{{ $saler['openid'] }}'>
-                                 <img class="img-responsive img-thumbnail" src='{{ $saler['avatar'] }}' onerror="this.src='./resource/images/nopic.jpg'; this.title='图片未找到.'">
+                                 <img class="img-responsive img-thumbnail" src='{{ $saler['avatar'] }}' onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
                                  <div class='img-nickname'>{{ $saler['nickname'] }}</div>
                                 <input type="hidden" value="{{ $saler['openid'] }}" name="notice[salers][{{ $saler['uid'] }}][openid]">
                                 <input type="hidden" value="{{ $saler['uid'] }}" name="notice[salers][{{ $saler['uid'] }}][uid]">
@@ -240,7 +240,7 @@
                         return;
                     }
                     var html = '<div class="multi-item" openid="' + o.has_one_fans.openid + '">';
-                    html += '<img class="img-responsive img-thumbnail" src="' + o.avatar + '" onerror="this.src=\'./resource/images/nopic.jpg\'; this.title=\'图片未找到.\'">';
+                    html += '<img class="img-responsive img-thumbnail" src="' + o.avatar + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
                     html += '<div class="img-nickname">' + o.nickname + '</div>';
                     html += '<input type="hidden" value="' + o.has_one_fans.openid + '" name="notice[salers][' + o.uid + '][openid]">';
                     html += '<input type="hidden" value="' + o.nickname + '" name="notice[salers][' + o.uid + '][nickname]">';

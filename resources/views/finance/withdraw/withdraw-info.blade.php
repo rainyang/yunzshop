@@ -1,7 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
-
+@section('title', trans('提现详情'))
     <div class="panel panel-default">
         <div class='panel-heading'>
             提现者信息
