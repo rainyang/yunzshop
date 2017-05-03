@@ -1,7 +1,7 @@
 <link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
 
     <div class="form-group" id="dispatch_info">
-        <label class="col-xs-12 col-sm-3 col-md-2 control-label">运费设置</label>
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">运费设置1</label>
         <div class="col-sm-6 col-xs-6">
             <label class="radio-inline" >
                 <input type="radio" name="widgets[dispatch][dispatch_type]" value="1"
