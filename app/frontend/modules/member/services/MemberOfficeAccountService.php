@@ -86,7 +86,7 @@ class MemberOfficeAccountService extends MemberService
                 ->asJsonResponse(true)
                 ->get();
 
-
+            \Log::debug('user info', $userinfo);
 
             $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
