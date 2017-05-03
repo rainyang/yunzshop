@@ -19,7 +19,7 @@ class Goods extends \app\common\models\Goods
     public $appends = ['vip_price'];
     public function hasOneOptions()
     {
-        return $this->hasOne('app\common\models\GoodsOption');
+        return $this->hasOne(GoodsOption::class);
     }
 
     /**
