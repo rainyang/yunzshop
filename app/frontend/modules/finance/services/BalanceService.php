@@ -49,7 +49,7 @@ class BalanceService extends BaseBalanceService
     //余额充值优惠
     public function rechargeSale()
     {
-        return $this->_recharge_set['sale'];
+        return $this->rechargeSet() ? $this->_recharge_set['sale'] : '';
     }
 
     //余额转让设置
@@ -90,10 +90,9 @@ class BalanceService extends BaseBalanceService
 
     public function payResult($data = [])
     {
-        $rechargeMode = BalanceRecharge::getRechargeRecordBy0rdersn($data['order_sn']);
-
+        $rechargeMode = BalanceRecharge::getRechargeRecordByOrdersn($data['order_sn']);
         $rechargeMode->status = BalanceRecharge::PAY_STATUS_SUCCESS;
-        if ($rechargeMode->save) {
+        if ($rechargeMode->save()) {
             $this->data = array(
                 'member_id'         => $rechargeMode->member_id,
                 'money'             => $rechargeMode->money,
@@ -103,12 +102,9 @@ class BalanceService extends BaseBalanceService
                 'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
                 'service_type'      => Balance::BALANCE_RECHARGE
             );
-            file_put_contents(storage_path('logs/regchar.log'),prit_r($this->data,1));
-            $result = $this->balanceChange($data);
+            $result = $this->balanceChange($this->data);
             if ($result === true) {
-
-                //todo 充值赠送
-                return true;
+                return $this->rechargeSaleMath();
             }
             throw new AppException($result);
         }
@@ -159,8 +155,6 @@ class BalanceService extends BaseBalanceService
     {
         $this->attachedMoney();
         $this->type = Balance::TYPE_EXPENDITURE;
-        //echo '<pre>'; print_r($this->memberModel); exit;
-        //echo '<pre>'; print_r($this->data); exit;
         $result = $this->subtraction();
         if ($result === true) {
             $this->type = Balance::TYPE_INCOME;
@@ -168,15 +162,44 @@ class BalanceService extends BaseBalanceService
             $this->getMemberInfo();
             return $this->addition();
         }
-
-        //echo '<pre>'; print_r($result); exit;
         throw new AppException($result);
     }
 
 
+    private function rechargeSaleMath()
+    {
+        $sale = $this->rechargeSale();
+        $sale = array_values(array_sort($sale, function ($value) {
 
-
-
-
+            return $value['enough'];
+        }));
+        rsort($sale);
+        foreach ($sale as $key) {
+            if (empty($key['enough']) || empty($key['give'])) {
+                continue;
+            }
+            if ($this->data['money'] >= floatval($key['enough'])) {
+                if (strexists($key['give'], '%')) {
+                    $result = round(floatval(str_replace('%', '', $key['give'])) / 100 * $this->data['change_money'], 2);
+                } else {
+                    $result = round(floatval($key['give']), 2);
+                }
+                $enough = floatval($key['enough']);
+                $give = $key['give'];
+                break;
+            }
+        }
+        $result = array(
+            'member_id' => $this->data['member_id'],
+            //todo 验证余额值
+            'money' => $result,
+            'serial_number' => $this->data['serial_number'],
+            'operator' => Balance::OPERRTOR_MEMBER,
+            'operator_id' => $this->data['member_id'],
+            'remark' => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['money'] . '元)',
+            'service_type' => Balance::BALANCE_AWARD,
+        );
+        return $this->balanceChange($result);
+    }
 
 }
