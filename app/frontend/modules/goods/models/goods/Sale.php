@@ -15,9 +15,17 @@ class Sale extends \app\common\models\Sale
 {
     public function isFree(OrderGoods $orderGoods)
     {
-        $this->setRelation('orderGoods',$orderGoods);
+        $this->setRelation('orderGoods', $orderGoods);
 
+        if ($this->goods->hasOneSale->ed_areaids) {
+        }
+        $this->orderGoods->order->orderAddress->city_id;
         return $this->enoughQuantity($this->orderGoods->goods_total) || $this->enoughAmount($this->orderGoods->price);
+    }
+
+    public function getEdAreaidsAttribute()
+    {
+        return explode(',', $this->ed_areaids);
     }
 
     private function enoughQuantity($total)

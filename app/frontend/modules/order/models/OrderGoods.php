@@ -42,7 +42,7 @@ class OrderGoods extends \app\common\models\OrderGoods
     public function isFreeShipping()
     {
 //        //todo 区域
-//        if(exceptArea){
+//        if(ed_areaids){
 //
 //        }
 
