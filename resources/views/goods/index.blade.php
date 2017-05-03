@@ -243,7 +243,7 @@
                                                 <i class="fa fa-qrcode"></i>
                                             </a>
 
-                                            <a href="{{yzWebUrl('goods.goods.copy', array('id' => $item['id']))}}"
+                                            <a href="{{$yz_url($copy_url, array('id' => $item['id']))}}"
                                                title="{{$lang['copyshop']}}" class="btn btn-default btn-smjs-clip"
                                                style="font-size: 13px;"><i class="fa fa-article"></i></a>
 

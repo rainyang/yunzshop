@@ -122,6 +122,7 @@ class GoodsController extends BaseController
             'delete_msg' => $delete_msg,
             'sort_url'  => $sort_url,
             'product_attr'  => $requestSearch['product_attr'],
+            'copy_url' => 'goods.goods.copy'
         ])->render();
     }
 

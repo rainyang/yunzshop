@@ -1,7 +1,7 @@
 <link href="{{static_url('yunshop/goods/goods.css')}}" media="all" rel="stylesheet" type="text/css"/>
 
     <div class="form-group" id="dispatch_info">
-        <label class="col-xs-12 col-sm-3 col-md-2 control-label">运费设置</label>
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">运费设置1</label>
         <div class="col-sm-6 col-xs-6">
             <label class="radio-inline" >
                 <input type="radio" name="widgets[dispatch][dispatch_type]" value="1"
@@ -24,7 +24,6 @@
                 <select class="form-control tpl-category-parent" id="dispatchid" name="widgets[dispatch][dispatch_id]">
                     <option value="0">默认模板</option>
                     @foreach ($dispatch_templates as $dispatch_item)
-
                         <option value="{{  $dispatch_item['id'] }} "
                                 @if ( $dispatch['dispatch_id'] == $dispatch_item['id']) selected="true" @endif>{{ $dispatch_item['dispatch_name'] }}</option>
                     @endforeach
