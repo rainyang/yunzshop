@@ -12,6 +12,7 @@ namespace app\frontend\modules\dispatch\listeners\types;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 
+use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Address;
 use app\common\models\DispatchType;
@@ -26,9 +27,17 @@ class Express
     use ValidatesRequests;
     private $event;
 
-    public function onSave(AfterOrderCreatedEvent $even)
+    public function onCreating(OnPreGenerateOrderCreatingEvent $event)
     {
-        $this->event = $even;
+        $this->event = $event;
+
+        $event->getOrderModel()->setRelation('orderAddress', $this->getOrderAddress());
+
+    }
+
+    public function onSave(AfterOrderCreatedEvent $event)
+    {
+        $this->event = $event;
         if (!$this->needDispatch()) {
             return;
         }
@@ -46,7 +55,7 @@ class Express
         }
         //获取用户当前默认地址
 
-        $data = $this->getOrderAddress();
+        $data = $this->getMemberAddress();
         if (!isset($data)) {
             $event->addMap('default_member_address', new \ArrayObject());
             return;
@@ -56,15 +65,14 @@ class Express
         return;
     }
 
-    private function getOrderAddress()
+    private function getMemberAddress()
     {
         $request = \Request::capture();
-        $address = json_decode($request->input('address','[]'), true);
-        
-        if(!empty($address)){
+        $address = json_decode($request->input('address', '[]'), true);
+
+        if (count($address)) {
             //$request->input('address');
             $this->validate(['address' => $address], [
-                    //'address' => 'required|array',
                     'address.address' => 'required|string',
                     'address.mobile' => 'required|string',
                     'address.username' => 'required|string',
@@ -73,8 +81,9 @@ class Express
                     'address.district' => 'required|string',
                 ]
             );
-            return $address;
+            return new MemberAddress($address);
         }
+
         return $this->event->getOrderModel()->getMember()->defaultAddress;
     }
 
@@ -89,10 +98,9 @@ class Express
         return false;
     }
 
-    private function saveExpressInfo()
+    private function getOrderAddress()
     {
-
-        $member_address = new MemberAddress($this->getOrderAddress());
+        $member_address = $this->getMemberAddress();
 
         $order_address = new OrderAddress();
 
@@ -103,6 +111,13 @@ class Express
         $order_address->city_id = Address::where('areaname', $member_address->city)->value('id');
         $order_address->district_id = Address::where('areaname', $member_address->district)->value('id');
         $order_address->realname = $member_address->username;
+
+        return $order_address;
+    }
+
+    private function saveExpressInfo()
+    {
+        $order_address = $this->getOrderAddress();
         if (!$order_address->save()) {
             throw new AppException('订单地址保存失败');
         }
@@ -121,9 +136,14 @@ class Express
             Express::class . '@onDisplay'
         );
         $events->listen(
-            \app\common\events\order\AfterOrderCreatedEvent::class,
+            AfterOrderCreatedEvent::class,
             Express::class . '@onSave'
         );
+        $events->listen(
+            OnPreGenerateOrderCreatingEvent::class,
+            Express::class . '@onCreating'
+        );
+
     }
 
     private function validate($request, array $rules, array $messages = [], array $customAttributes = [])

@@ -13,21 +13,38 @@ use app\frontend\modules\order\models\OrderGoods;
 
 class Sale extends \app\common\models\Sale
 {
+    /**
+     * 是否包邮
+     * @param OrderGoods $orderGoods
+     * @return bool
+     */
     public function isFree(OrderGoods $orderGoods)
     {
         $this->setRelation('orderGoods', $orderGoods);
+        $ed_areaids = (explode(',',$this->ed_areaids));
 
-        if ($this->goods->hasOneSale->ed_areaids) {
+        if(!isset($this->orderGoods->order->orderAddress)){
+            //未选择地址时
+            return false;
         }
-        $this->orderGoods->order->orderAddress->city_id;
+
+        if (!empty($ed_areaids)) {
+//            //不参加满减区域
+//            dd(in_array($this->orderGoods->order->orderAddress->city_id,$ed_areaids));
+//            dd($this->orderGoods->order->orderAddress->city_id);
+//            dd($ed_areaids);
+//            exit;
+//            exit;
+        }
         return $this->enoughQuantity($this->orderGoods->goods_total) || $this->enoughAmount($this->orderGoods->price);
     }
 
-    public function getEdAreaidsAttribute()
-    {
-        return explode(',', $this->ed_areaids);
-    }
 
+    /**
+     * 单商品购买数量
+     * @param $total
+     * @return bool
+     */
     private function enoughQuantity($total)
     {
         if ($this->ed_num == false) {
@@ -36,6 +53,11 @@ class Sale extends \app\common\models\Sale
         return $total >= $this->ed_num;
     }
 
+    /**
+     * 单商品价格
+     * @param $price
+     * @return bool
+     */
     private function enoughAmount($price)
     {
         if ($this->ed_money == false) {
