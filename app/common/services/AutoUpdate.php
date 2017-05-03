@@ -367,6 +367,7 @@ class AutoUpdate
             $this->_log->debug(sprintf('Get new updates from %s', $updateFile));
             // Read update file from update server
             $update = @file_get_contents($updateFile, $this->_useBasicAuth());
+            //var_dump($update);exit();
             if ($update === false) {
                 $this->_log->info(sprintf('Could not download update file "%s"!', $updateFile));
                 return false;

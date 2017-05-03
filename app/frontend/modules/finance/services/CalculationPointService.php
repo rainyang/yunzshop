@@ -79,7 +79,7 @@ class CalculationPointService
             $goods_point = $goods_model->hasOneSale->max_point_deduct / $this->point_set['money'];
             return $goods_point;
         } else if ($this->point_set['money_max'] > 0) {
-            $goods_point = $this->point_set['money_max'] / 100 * $goods_model->getPrice() / $this->point_set['money'];
+            $goods_point = $this->point_set['money_max'] / 100 * $goods_model->price / $this->point_set['money'];
             return $goods_point;
         }
     }

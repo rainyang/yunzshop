@@ -24,7 +24,7 @@
                 <select class="form-control tpl-category-parent" id="dispatchid" name="widgets[dispatch][dispatch_id]">
                     <option value="0">默认模板</option>
                     @foreach ($dispatch_templates as $dispatch_item)
-                        <option value="{{  $dispatch_item['id'] }} "
+                        <option value="{{ $dispatch_item['id'] }}"
                                 @if ( $dispatch['dispatch_id'] == $dispatch_item['id']) selected="true" @endif>{{ $dispatch_item['dispatch_name'] }}</option>
                     @endforeach
                 </select>
