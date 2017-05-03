@@ -185,18 +185,14 @@ class MemberController extends BaseController
 
         if (empty($member)) {
             return $this->message('用户不存在', '', 'error');
-        } else {
-            $member = $member->toArray();
         }
 
-        if (Member::deleteMemberInfoById($uid)) {
-            McMappingFans::deleteMemberInfoById($uid);
+        if (MemberShopInfo::deleteMemberInfoById($uid)) {
             MemberUnique::deleteMemberInfoById($uid);
-            MemberShopInfo::deleteMemberInfoById($uid);
 
             return $this->message('用户删除成功', yzWebUrl('member.member.index'));
         } else {
-            return $this->message('用户删除失败', yzWebUrl('member.member.index'));
+            return $this->message('用户删除失败', yzWebUrl('member.member.index'), 'error');
         }
     }
 

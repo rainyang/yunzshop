@@ -74,7 +74,7 @@
                         <th width="16%">使用条件/优惠</th>
                         <th width="10%">已使用/已发出/剩余数量</th>
                         <th width="10%">领取中心</th>
-                        <th width="10%">创建时间</th>
+                        <th width="15%">创建时间</th>
                         <th width="18%">操作</th>
                     </tr>
                 </thead>
