@@ -62,7 +62,7 @@ class CalculationPointService
     private function calculationPoint()
     {
         foreach ($this->orderGoodsModels as $goodsModel) {
-            $this->calculationMemberPoint($this->getGoodsPoint($goodsModel));
+            $this->calculationMemberPoint($this->getGoodsPoint($goodsModel->goods));
         }
     }
 
@@ -74,7 +74,6 @@ class CalculationPointService
      */
     private function getGoodsPoint($goods_model)
     {
-
         if ($goods_model->hasOneSale->max_point_deduct > 0) {
             $goods_point = $goods_model->hasOneSale->max_point_deduct / $this->point_set['money'];
             return $goods_point;

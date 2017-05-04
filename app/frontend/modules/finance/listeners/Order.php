@@ -28,7 +28,7 @@ class Order
 
     private function isChecked($id = 1)
     {
-        $deduction_ids = \Request::input('deduction_ids');
+        $deduction_ids = $this->event->getOrderModel()->getParams('deduction_ids');
         if (!is_array($deduction_ids)) {
             $deduction_ids = json_decode($deduction_ids,true);
             if (!is_array($deduction_ids)) {
@@ -59,10 +59,11 @@ class Order
 
     public function onCalculated(OnDeductionPriceCalculatedEvent $event)
     {
+        $this->event = $event;
+
         if($this->isChecked() == false){
             return null;
         }
-        $this->event = $event;
         $data = $this->getPointData();
         if (!$data) {
             return null;

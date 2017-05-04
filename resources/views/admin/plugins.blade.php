@@ -45,9 +45,9 @@
                                    href="{{yzWebUrl('plugins.manage', ['name'=>$plugin['name'],'action'=>($plugin->isEnabled() ? 'disable' : 'enable')])}}"
                                    title='{{($plugin->isEnabled() ? '禁用' : '启用')}}'>
                                     @if($plugin->isEnabled())
-                                        <i class="fa fa-remove"></i>
+                                        <i class="fa fa-power-off"></i>
                                     @else
-                                        <i class="fa fa-check"></i>
+                                        <i class="fa fa-check-circle-o"></i>
                                     @endif
 
                                 </a>
