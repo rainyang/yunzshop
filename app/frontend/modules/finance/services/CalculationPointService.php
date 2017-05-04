@@ -74,7 +74,9 @@ class CalculationPointService
      */
     private function getGoodsPoint($goods_model)
     {
-
+        if (!isset($goods_model->hasOneSale)) {
+            return 0;
+        }
         if ($goods_model->hasOneSale->max_point_deduct > 0) {
             $goods_point = $goods_model->hasOneSale->max_point_deduct / $this->point_set['money'];
             return $goods_point;
