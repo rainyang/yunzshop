@@ -1,6 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
+@section('title', trans('商品评论列表'))
     <div id="goods-comment-list" class="w1200 m0a">
 
         <link href="../addons/sz_yi/template/mobile/default/static/js/star-rating.css" media="all" rel="stylesheet"

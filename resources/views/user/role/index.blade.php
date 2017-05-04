@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '角色管理')
 @section('content')
 <div class="right-titpos">
     <ul class="add-snav">

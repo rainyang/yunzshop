@@ -26,7 +26,7 @@
 		}
 		require(['jquery.zclip'], function(){
 			$(elm).zclip({
-				path: './resource/components/zclip/ZeroClipboard.swf',
+				path: '/web/resource/components/zclip/ZeroClipboard.swf',
 				copy: str,
 				afterCopy: function(){
 					var obj = $('<em> &nbsp; <span class="label label-success"><i class="fa fa-check-circle"></i> 复制成功</span></em>');
@@ -417,7 +417,7 @@
 	
 	util.iconBrowser = function(callback){
 		var footer = '<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>';
-		var modalobj = util.dialog('请选择图标',['./index.php?c=utility&a=icon&callback=selectIconComplete'],footer,{containerName:'icon-container'});
+		var modalobj = util.dialog('请选择图标',['/web/index.php?c=utility&a=icon&callback=selectIconComplete'],footer,{containerName:'icon-container'});
 		modalobj.modal({'keyboard': false});
 		modalobj.find('.modal-dialog').css({'width':'70%'});
 		modalobj.find('.modal-body').css({'height':'70%','overflow-y':'scroll'});
@@ -433,7 +433,7 @@
 	
 	util.emojiBrowser = function(callback){
 		var footer = '<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>';
-		var modalobj = util.dialog('请选择表情',['./index.php?c=utility&a=emoji&callback=selectEmojiComplete'],footer,{containerName:'icon-container'});
+		var modalobj = util.dialog('请选择表情',['/web/index.php?c=utility&a=emoji&callback=selectEmojiComplete'],footer,{containerName:'icon-container'});
 		modalobj.modal({'keyboard': false});
 		modalobj.find('.modal-dialog').css({'width':'70%'});
 		modalobj.find('.modal-body').css({'height':'70%','overflow-y':'scroll'});
@@ -449,7 +449,7 @@
 	
 	util.linkBrowser = function(callback){
 		var footer = '<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>';
-		var modalobj = util.dialog('请选择链接',['./index.php?c=utility&a=link&callback=selectLinkComplete'],footer,{containerName:'link-container'});
+		var modalobj = util.dialog('请选择链接',['/web/index.php?c=utility&a=link&callback=selectLinkComplete'],footer,{containerName:'link-container'});
 		modalobj.modal({'keyboard': false});
 		modalobj.find('.modal-body').css({'height':'300px','overflow-y':'auto' });
 		modalobj.modal('show');
@@ -463,7 +463,7 @@
 	}; // end of icon dialo
 	util.pageBrowser = function(callback, page){
 		var footer = '';
-		var modalobj = util.dialog('',['./index.php?c=utility&a=link&do=page&callback=pageLinkComplete&page='+ page],footer,{containerName:'link-container'});
+		var modalobj = util.dialog('',['/web/index.php?c=utility&a=link&do=page&callback=pageLinkComplete&page='+ page],footer,{containerName:'link-container'});
 		modalobj.modal({'keyboard': false});
 		modalobj.find('.modal-body').css({'height':'700px','overflow-y':'auto' });
 		modalobj.modal('show');
@@ -479,7 +479,7 @@
 	};
 	util.newsBrowser = function(callback, page){
 		var footer = '';
-		var modalobj = util.dialog('',['./index.php?c=utility&a=link&do=news&callback=newsLinkComplete&page='+ page],footer,{containerName:'link-container'});
+		var modalobj = util.dialog('',['/web/index.php?c=utility&a=link&do=news&callback=newsLinkComplete&page='+ page],footer,{containerName:'link-container'});
 		modalobj.modal({'keyboard': false});
 		modalobj.find('.modal-body').css({'height':'700px','overflow-y':'auto' });
 		modalobj.modal('show');
@@ -495,7 +495,7 @@
 	};
 	util.articleBrowser = function(callback, page){
 		var footer = '';
-		var modalobj = util.dialog('',['./index.php?c=utility&a=link&do=article&callback=articleLinkComplete&page='+ page],footer,{containerName:'link-container'});
+		var modalobj = util.dialog('',['/web/index.php?c=utility&a=link&do=article&callback=articleLinkComplete&page='+ page],footer,{containerName:'link-container'});
 		modalobj.modal({'keyboard': false});
 		modalobj.find('.modal-body').css({'height':'700px','overflow-y':'auto' });
 		modalobj.modal('show');

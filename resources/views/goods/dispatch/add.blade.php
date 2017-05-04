@@ -1,6 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
+@section('title', trans('添加配送模板'))
 <div class="w1200 m0a">
 <div class="main rightlist">
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" onsubmit='return formcheck()'>
