@@ -85,5 +85,12 @@
     </form>
 </div>
 </div>
-@include('public.admin.mylink')
+<!-- @include('public.admin.mylink')
+
+{{--点击复制链接--}}
+    <script>
+        $('#cp').click(function () {
+            util.clip(this, $(this).attr('data-url'));
+        });
+    </script> -->
 @endsection
