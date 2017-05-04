@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: 'resource/js/app',
+    baseUrl: '/web/resource/js/app',
     paths: {
         'jquery': '//cdn.bootcss.com/jquery/2.2.3/jquery.min',
         'jquery.ui': '../lib/jquery-ui-1.10.3.min',

@@ -53,6 +53,7 @@ class IndexController extends ApiController
         ->get();
         foreach ($request as &$item) {
             $item['thumb'] = tomedia($item['thumb']);
+            $item['adv_img'] = tomedia($item['adv_img']);
         }
 
         return $request;

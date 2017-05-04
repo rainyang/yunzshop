@@ -11,7 +11,7 @@ namespace app\frontend\modules\coupon\listeners;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\frontend\modules\coupon\services\models\Coupon;
-use app\frontend\modules\coupon\services\TestService;
+use app\frontend\modules\coupon\services\CouponService;
 
 class CouponDiscount
 {
@@ -26,7 +26,7 @@ class CouponDiscount
         $this->event = $event;
         $orderModel = $this->event->getOrderModel();
 
-        $couponService = new TestService($orderModel);
+        $couponService = new CouponService($orderModel);
         $coupons = $couponService->getOptionalCoupons();
 
         $data = $coupons->map(function ($coupon) {
@@ -44,7 +44,7 @@ class CouponDiscount
     {
         $this->event = $event;
         $orderModel = $this->event->getOrderModel();
-        $couponService = new TestService($orderModel);
+        $couponService = new CouponService($orderModel);
         $couponService->destroyUsedCoupons();
     }
 

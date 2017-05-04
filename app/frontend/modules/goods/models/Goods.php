@@ -10,6 +10,8 @@ namespace app\frontend\modules\goods\models;
 
 use app\common\exceptions\AppException;
 use app\common\models\GoodsDiscount;
+use app\frontend\modules\goods\models\goods\GoodsDispatch;
+use app\frontend\modules\goods\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 
 class Goods extends \app\common\models\Goods
@@ -17,7 +19,7 @@ class Goods extends \app\common\models\Goods
     public $appends = ['vip_price'];
     public function hasOneOptions()
     {
-        return $this->hasOne('app\common\models\GoodsOption');
+        return $this->hasOne(GoodsOption::class);
     }
 
     /**
@@ -51,5 +53,8 @@ class Goods extends \app\common\models\Goods
             $this->hasOnePrivilege->validate($num);
         }
     }
-
+    public function hasOneSale()
+    {
+        return $this->hasOne(Sale::class);
+    }
 }

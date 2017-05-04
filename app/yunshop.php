@@ -49,7 +49,13 @@ class YunShop
 
         if(self::isWeb()){
             //菜单生成
-            $menuList =  array_merge(Menu::getMenuList(), (array)Config::get('menu'));
+            if(!\Cache::has('db_menu')){
+                $dbMenu = Menu::getMenuList();
+                \Cache::put('db_menu',$dbMenu,3600);
+            }else{
+                $dbMenu = \Cache::get('db_menu');
+            }
+            $menuList =  array_merge($dbMenu, (array)Config::get('menu'));
             Config::set('menu',$menuList);
             $item = Menu::getCurrentItemByRoute($controller->route,$menuList);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);

@@ -41,7 +41,6 @@ class AfterOrderDeductiblePointService
     private function calculationPoint()
     {
         $this->isDeductible();
-        $this->addPointLog();
     }
 
     private function isDeductible()
@@ -49,19 +48,18 @@ class AfterOrderDeductiblePointService
         if (!$this->isChecked()) {
             return;
         }
+        $this->addPointLog();
     }
 
     private function getPointData()
     {
-        if (!$this->point_set['money']) {
-            return [];
-        }
+        $point_service = new CalculationPointService($this->order_model->hasManyOrderGoods, $this->order_model->uid);
         return [
             'point_income_type' => -1,
             'point_mode'        => 6,
             'member_id'         => $this->order_model->uid,
-            'point'             => $this->order_model->point_money / $this->point_set['money'],
-            'remark'            => '订单[' . $this->order_model->order_sn . ']抵扣[' . $this->order_model->point_money .  ']元'
+            'point'             => $point_service->point,
+            'remark'            => '订单[' . $this->order_model->order_sn . ']抵扣[' . $point_service->point_money .  ']元'
         ];
     }
 

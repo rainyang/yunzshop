@@ -24,7 +24,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           apply the skin class to the body tag so the changes take effect.
     -->
     <link rel="stylesheet" href="{{static_url('yunshop/dist/css/skins/skin-red.min.css')}}">
-    <link href="./resource/css/common.css?v=20161011" rel="stylesheet">
+    <link href="{{static_url('resource/css/common.css')}}" rel="stylesheet">
 
 
     {{--loding--}}

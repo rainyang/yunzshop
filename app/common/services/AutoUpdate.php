@@ -9,6 +9,8 @@
 namespace app\common\services;
 
 
+use app\common\models\Setting;
+use Ixudra\Curl\Facades\Curl;
 use \vierbergenlars\SemVer\version;
 use \vierbergenlars\SemVer\expression;
 use \vierbergenlars\SemVer\SemVerException;
@@ -366,7 +368,13 @@ class AutoUpdate
         if ($versions === null || $versions === false) {
             $this->_log->debug(sprintf('Get new updates from %s', $updateFile));
             // Read update file from update server
-            $update = @file_get_contents($updateFile, $this->_useBasicAuth());
+            //$update = @file_get_contents($updateFile, $this->_useBasicAuth());
+
+            $update = Curl::to($updateFile)
+                ->withHeader(
+                    "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+                )
+                ->get();
             if ($update === false) {
                 $this->_log->info(sprintf('Could not download update file "%s"!', $updateFile));
                 return false;
@@ -406,6 +414,7 @@ class AutoUpdate
         // Check for latest version
         foreach ($versions as $versionRaw => $updateUrl) {
             $version = new version($versionRaw);
+
             if ($version->valid() === null) {
                 $this->_log->info(sprintf('Could not parse version "%s" from update server "%s"', $versionRaw, $updateFile));
                 continue;
@@ -415,7 +424,9 @@ class AutoUpdate
                     $this->_latestVersion = $version;
                 $this->_updates[] = [
                     'version' => $version,
-                    'url'     => $updateUrl,
+                    'url'     => $updateUrl->url,
+                    'description' => $updateUrl->description,
+                    'created_at' => strtotime($updateUrl->created_at->date)
                 ];
             }
         }
@@ -451,6 +462,7 @@ class AutoUpdate
     protected function _downloadUpdate($updateUrl, $updateFile)
     {
         $this->_log->info(sprintf('Downloading update "%s" to "%s"', $updateUrl, $updateFile));
+
         $update = @file_get_contents($updateUrl, $this->_useBasicAuth());
         if ($update === false) {
             $this->_log->error(sprintf('Could not download update "%s"!', $updateUrl));
@@ -660,11 +672,13 @@ class AutoUpdate
             $this->_log->error('Could not get latest version from server!');
             return self::ERROR_VERSION_CHECK;
         }
+
         // Check if current version is up to date
         if (!$this->newVersionAvailable()) {
             $this->_log->warning('No update available!');
             return self::NO_UPDATE_AVAILABLE;
         }
+
         foreach ($this->_updates as $update) {
             $this->_log->debug(sprintf('Update to version "%s"', $update['version']));
             // Check for temp directory
@@ -677,6 +691,7 @@ class AutoUpdate
                 $this->_log->critical(sprintf('Install directory "%s" does not exist or is not writeable!', $this->_installDir));
                 return self::ERROR_INSTALL_DIR;
             }
+
             $updateFile = $this->_tempDir . $update['version'] . '.zip';
             // Download update
             if (!is_file($updateFile)) {

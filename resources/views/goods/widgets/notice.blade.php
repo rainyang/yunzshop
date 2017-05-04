@@ -8,7 +8,7 @@
         <input type='hidden' id='uid' name='widgets[notice][uid]' value="{{ $uid }}"/>
         <div class='input-group'>
             <input type="text" name="saler" maxlength="30"
-                   value="@if (!empty($saler)) {{ $saler['nick_name'] }} / {{ $saler['real_name'] }} / {{ $saler['mobile'] }} @endif"
+                   value="@if (!empty($saler)) {{ $saler['nickname'] }} / {{ $saler['realname'] }} / {{ $saler['mobile'] }} @endif"
                    id="saler" class="form-control" readonly/>
             <div class='input-group-btn'>
                 <button class="btn btn-default" type="button"

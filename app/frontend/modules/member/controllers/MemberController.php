@@ -15,6 +15,7 @@ use app\common\helpers\ImageHelper;
 use app\common\models\AccountWechats;
 use app\common\models\Area;
 use app\common\models\Goods;
+use app\common\models\McMappingFans;
 use app\common\models\MemberShopInfo;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
@@ -516,6 +517,37 @@ class MemberController extends ApiController
         if ($info) {
             return $this->successJson('', [
                 'banner'  => tomedia($info['banner'])
+            ]);
+        }
+
+        return $this->errorJson('暂无数据', []);
+    }
+
+    public function guideFollow()
+    {
+        $set = \Setting::get('shop.share');
+        $fans_model = McMappingFans::getFansById(\YunShop::app()->getMemberId());
+        $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+
+        if (!empty($set['follow_url']) && 0 == $fans_model->follow) {
+
+            if ($mid != null && $mid != 'undefined' && $mid > 0) {
+                $member_model = Member::getMemberById($mid);
+
+                $logo = $member_model->avatar;
+                $text = $member_model->nickname;
+            } else {
+                $setting = Setting::get('shop');
+                $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
+                $logo = tomedia($setting['logo']);
+                $text = $account->name;
+            }
+
+            return $this->successJson('', [
+                'logo' => $logo,
+                'text' => $text,
+                'url' => $set['follow_url']
             ]);
         }
 

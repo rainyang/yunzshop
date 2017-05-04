@@ -1,6 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
+@section('title', trans('品牌列表'))
     <div class="w1200 m0a">
         <script language="javascript" src="{{static_url('js/dist/nestable/jquery.nestable.js')}}"></script>
         <link rel="stylesheet" type="text/css" href="{{static_url('js/dist/nestable/nestable.css')}}"/>
