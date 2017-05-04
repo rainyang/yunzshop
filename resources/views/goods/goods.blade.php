@@ -140,6 +140,7 @@
                 }
             }
 
+            @section('widget_js')
             if ($(':input[name="widgets[sale][max_point_deduct]"]').val() == '') {
                 $('#myTab a[href="#tab_sale"]').tab('show');
                 Tip.focus(':input[name="widgets[sale][max_point_deduct]"]', "请输入积分抵扣!");
@@ -269,6 +270,7 @@
                     return false;
                 }
             }
+            @show
 
             if ($(':input[name="widgets[dispatch][dispatch_price]"]').val() == '') {
                 $('#myTab a[href="#tab_dispatch"]').tab('show');
