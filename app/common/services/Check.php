@@ -19,8 +19,9 @@ class Check
         if(app()->environment() !== 'production'){
             return true;
         }
-        if(Cache::has('app_auth')){
-           if(Cache::get('app_auth')){
+        $key = 'app_auth' . \YunShop::app()->uniacid;
+        if(Cache::has($key)){
+           if(Cache::get($key)){
                exit(redirect(Url::absoluteWeb('setting.key.index'))->send());
            } else{
                return true;
@@ -36,10 +37,10 @@ class Check
         $update->setBasicAuth($key, $secret);
 
         if ($update->checkUpdate() === false) {
-            Cache::put('app_auth',false,360);
+            Cache::put($key,false,360);
             exit(redirect(Url::absoluteWeb('setting.key.index'))->send());
         }
-        Cache::put('app_auth',true,360);
+        Cache::put($key,true,360);
         return true;
     }
 
