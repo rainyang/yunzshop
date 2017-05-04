@@ -10,8 +10,6 @@ namespace app\frontend\modules\goods\services\models;
 
 use app\common\models\OrderGoods;
 
-use app\frontend\modules\discount\services\DiscountService;
-use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class PreGeneratedOrderGoodsModel extends OrderGoodsModel
