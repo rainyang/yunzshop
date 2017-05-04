@@ -21,6 +21,8 @@ class TemplateOrderDispatchPrice
     {
         $this->event = $event;
         $price = $event->getOrderModel()->getOrderGoodsModels()->sum(function ($orderGoods) {
+            dd($orderGoods);
+            exit;
             if ($orderGoods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::TEMPLATE_TYPE) {
                 return $this->getPrice($orderGoods);
             }
