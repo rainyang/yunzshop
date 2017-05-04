@@ -18,6 +18,10 @@
     var todoUrl = "{!! yzWebUrl('update.index') !!}";
     function check_yun_shop_upgrade() {
         $.post(checkUrl, function (result) {
+            if(result && result.msg == 'key or secret is null') {
+                <?php redirect('setting.key.index');?>
+                return;
+            }
           if (result && result.updated != '0') {
             var html = '<div class="container" id="check_yun_shop_upgrade" style=" position: fixed;margin: auto;bottom: 0px;z-index: 999;">\
               <div class="row">\

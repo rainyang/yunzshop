@@ -1,6 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
+@section('title', trans('商品分类详情'))
     <div class="w1200 m0a">
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">

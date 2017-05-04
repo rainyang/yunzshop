@@ -1,6 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
+@section('title', trans('商品详情'))
     <script type="text/javascript">
         window.type = "{{$goods['type']}}";
         window.virtual = "{{$goods['virtual']}}";
@@ -558,11 +559,9 @@
 					<li><a href="#tab_param">属性</a></li>
 					<li><a href="#tab_option">{{$lang['shopoption']}}</a></li>
 
-                    @section('supplier_widget')
 					@foreach(Config::get('widget.goods') as $key=>$value)
 					<li><a href="#{{$key}}">{{$value['title']}}</a></li>
 					@endforeach
-                    @show
 
 				</ul>
 			</div>

@@ -22,6 +22,7 @@ class DispatchWidget extends Widget
         if ($this->goods_id && GoodsDispatch::getInfo($this->goods_id)) {
             $dispatch = GoodsDispatch::getInfo($this->goods_id);
         }
+
         $dispatch_templates = Dispatch::getAll();
         return view('goods.widgets.dispatch', [
             'dispatch' => $dispatch,

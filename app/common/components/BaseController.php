@@ -2,6 +2,7 @@
 
 namespace app\common\components;
 
+use app\common\services\Check;
 use app\common\traits\JsonTrait;
 use app\common\traits\MessageTrait;
 use app\common\traits\PermissionTrait;
@@ -33,7 +34,7 @@ class BaseController extends Controller
      */
     public function preAction()
     {
-
+        strpos(request()->get('route'),'setting.key')!== 0 && Check::app();
     }
 
     protected function formatValidationErrors(Validator $validator)

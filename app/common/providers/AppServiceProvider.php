@@ -3,6 +3,7 @@
 namespace app\common\providers;
 
 use app\common\models\AccountWechats;
+use app\common\services\Check;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Setting;
 use Illuminate\Support\ServiceProvider;
@@ -23,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         //微信接口不输出错误
         if (strpos(request()->getRequestUri(), '/api.php') >= 0) {
             error_reporting(0);
+            strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
         }
 
         //设置uniacid

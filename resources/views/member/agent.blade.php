@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '推广下线')
 @section('content')
     <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="w1200 m0a">

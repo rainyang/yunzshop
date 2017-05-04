@@ -11,6 +11,7 @@ namespace app\frontend\modules\order\services;
 
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
+use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 
@@ -124,6 +125,8 @@ class OrderService
 
         $orderGoodsArr = OrderService::getOrderGoodsModels($memberCarts);
         $order = new PreGeneratedOrderModel(['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
+
+        event(new OnPreGenerateOrderCreatingEvent($order));
         $order->setOrderGoodsModels($orderGoodsArr);
         return $order;
     }

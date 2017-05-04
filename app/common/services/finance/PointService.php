@@ -60,7 +60,7 @@ class PointService
 
     public function __construct(array $point_data)
     {
-        if (!$point_data) {
+        if (!isset($point_data['point'])) {
             return;
         }
         $this->point_data = $point_data;

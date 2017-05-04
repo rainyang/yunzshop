@@ -1,4 +1,5 @@
 <?php
+
 namespace app\frontend\modules\order\services\models;
 
 use app\common\models\Order;
@@ -6,7 +7,9 @@ use app\common\models\Order;
 use app\frontend\modules\discount\models\OrderDiscount;
 use app\frontend\modules\dispatch\models\OrderDispatch;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\order\models\OrderGoods;
 use app\frontend\modules\order\services\OrderService;
+use Illuminate\Support\Collection;
 
 /**
  * 订单生成类
@@ -36,9 +39,18 @@ class PreGeneratedOrderModel extends OrderModel
      * @var OrderDiscount 优惠类
      */
     protected $orderDiscount;
-    public function setOrderGoodsModels(array $orderGoodsModels)
+
+    public function setOrderGoodsModels(Collection $orderGoodsModels)
     {
         $this->orderGoodsModels = $orderGoodsModels;
+        $orderGoodsModels->each(function ($orderGoodsModel) {
+            /**
+             * @var OrderGoods $orderGoodsModel
+             */
+
+            $orderGoodsModel->setRelation('order', $this);
+        });
+
         $this->setDispatch();
         $this->setDiscount();
     }
@@ -55,7 +67,7 @@ class PreGeneratedOrderModel extends OrderModel
 
     /**
      * 对外提供的获取订单商品方法
-     * @return array
+     * @return Collection
      */
     public function getOrderGoodsModels()
     {
@@ -71,6 +83,7 @@ class PreGeneratedOrderModel extends OrderModel
     {
         return $this->belongsToMember;
     }
+
     /**
      * 计算订单优惠金额
      * @return number
@@ -97,6 +110,7 @@ class PreGeneratedOrderModel extends OrderModel
     {
         return $this->orderDispatch->getDispatchPrice();
     }
+
     /**
      * 输出订单信息
      * @return array
@@ -104,11 +118,11 @@ class PreGeneratedOrderModel extends OrderModel
     public function toArray()
     {
         $data = array(
-            'price' => sprintf('%.2f',$this->getPrice()),
-            'goods_price' => sprintf('%.2f',$this->getVipPrice()),
-            'dispatch_price' => sprintf('%.2f',$this->getDispatchPrice()),
-            'discount_price' => sprintf('%.2f',$this->getDiscountPrice()),
-            'deduction_price' => sprintf('%.2f',$this->getDeductionPrice()),
+            'price' => sprintf('%.2f', $this->getPrice()),
+            'goods_price' => sprintf('%.2f', $this->getVipPrice()),
+            'dispatch_price' => sprintf('%.2f', $this->getDispatchPrice()),
+            'discount_price' => sprintf('%.2f', $this->getDiscountPrice()),
+            'deduction_price' => sprintf('%.2f', $this->getDeductionPrice()),
 
         );
         foreach ($this->orderGoodsModels as $orderGoodsModel) {
@@ -173,7 +187,6 @@ class PreGeneratedOrderModel extends OrderModel
             'uid' => $this->uid,
             'uniacid' => $this->uniacid,
         );
-        //todo 测试
 
         return $data;
     }
