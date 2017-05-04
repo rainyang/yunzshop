@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '角色设置')
 @section('content')
 
 @if($role['id'])

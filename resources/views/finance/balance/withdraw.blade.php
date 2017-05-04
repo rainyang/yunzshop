@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '余额提现')
 @section('content')
 
     <div class="panel panel-default">

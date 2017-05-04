@@ -1,5 +1,7 @@
 @extends('layouts.base')
 
+@section('title','注册芸商城')
+
 @section('content')
 
     <script type="text/javascript">
@@ -13,37 +15,6 @@
                 return false;
             }
             return true
-//            var data = {};
-//             data['key'] = $(':input[name="upgrade[key]"]').val();
-//             data['secret'] = $(':input[name="upgrade[secret]"]').val();
-            {{--$.ajax({--}}
-                {{--url : '{!! yzWebUrl('setting.key.is-exist') !!}',--}}
-                {{--type : 'post',--}}
-                {{--data : {data:data},--}}
-                {{--dataType : 'json',--}}
-                {{--success : function (msg) {--}}
-                    {{--console.log("success", msg['msg'])--}}
-                    {{--switch (msg['msg']) {--}}
-                        {{--case 'no such data exists' :--}}
-                            {{--$('.message-box').attr('style', 'display:block;')--}}
-                            {{--$('#message').html('key和密钥不存在！')--}}
-                            {{--event.preventDefault();--}}
-                           {{--break;--}}
-                        {{--case 'expired of time' :--}}
-                            {{--$('.message-box').attr('style', 'display:block;')--}}
-                            {{--$('#message').html('您的账号已到期，请续费！')--}}
-                            {{--event.preventDefault();--}}
-                            {{--break;--}}
-                        {{--case 'is ok' :--}}
-                            {{--return true--}}
-                    {{--}--}}
-                {{--},--}}
-                {{--error : function (error) {--}}
-                    {{--console.log('error is ' , error)--}}
-                    {{--event.preventDefault();--}}
-                    {{--return false;--}}
-                {{--}--}}
-            {{--})--}}
 
         }
     </script>
@@ -52,7 +23,7 @@
 <!-- 新增加右侧顶部三级菜单 -->
     <div class="right-titpos">
         <ul class="add-snav">
-            <li class="active"><a href="#">密钥填写</a></li>
+            <li class="active"><a href="#">注册芸商城</a></li>
         </ul>
     </div>
     <div class="form-group message-box" style="display: none">
@@ -87,10 +58,10 @@
                     <div class="col-sm-9 col-xs-12">
                         @if(!$set['secret'] || !$set['key'])
                         <input type="hidden" name="type" value="create" />
-                        <input type="submit" name="submit" value="注册站点" class="btn btn-success " onclick="return formcheck(this)" />
+                        <input type="submit" name="submit" value="注册商城" class="btn btn-success " onclick="return formcheck(this)" />
                         @else
                             <input type="hidden" name="type" value="cancel" />
-                            <input type="submit" name="submit" value="取消站点" class="btn btn-success " onclick="return formcheck(this)" />
+                            <input type="submit" name="submit" value="取消商城" class="btn btn-success " onclick="return formcheck(this)" />
                         @endif
                     </div>
             </div>

@@ -36,7 +36,7 @@ class UpdateController extends BaseController
         if ($update->newVersionAvailable()) {
             $list = $update->getUpdates();
         }
-
+        krsort($list);
         return view('update.index', ['list' => $list])->render();
     }
 

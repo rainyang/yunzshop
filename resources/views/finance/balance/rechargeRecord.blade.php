@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '充值记录')
 @section('content')
 <link href="{{static_url('yunshop/balance/balance.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div id="recharge-blade" class="rightlist">
