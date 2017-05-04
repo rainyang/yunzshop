@@ -3,9 +3,9 @@
     <!-- Logo -->
     <a href="/" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>芸</b></span>
+      <span class="logo-mini"><b>{{YunShop::app()->account['name']}}</b></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>芸</b>商城</span>
+      <span class="logo-lg"><b>{{YunShop::app()->account['name']}}</b></span>
     </a>
 
     <!-- Header Navbar -->
