@@ -58,13 +58,13 @@ class CouponService
             /**
              * @var $coupon Coupon
              */
-            $result = $coupon->isOptional();//界面上可选
-
+            if(!$coupon->isOptional()){
+                return false;
+            }
             $coupon->getMemberCoupon()->valid = $coupon->isChecked() || $coupon->valid();//界面标蓝
-
             $coupon->getMemberCoupon()->checked = $coupon->isChecked();//界面选中
 
-            return $result;
+            return true;
         });
 
         return $result;
