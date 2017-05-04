@@ -84,9 +84,11 @@ abstract class OrderOperation extends Order
             $this->message = $Event->getOpinion()->message;
             return $Event->getOpinion()->result;
         }
-        if(!empty($this->status->refund_id)){
-            if($this->hasOneRefundApply->status >=0){
+
+        if ($this->refund_id > 0) {
+            if ($this->hasOneRefundApply->isRefunding()) {
                 $this->message = "退款中的订单,无法执行{$this->name}操作";
+
             }
         }
         if (!in_array($this->status, $this->statusBeforeChange)) {

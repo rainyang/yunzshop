@@ -111,6 +111,21 @@ class PreGeneratedOrderModel extends OrderModel
         return $this->orderDispatch->getDispatchPrice();
     }
 
+    private function getPreId()
+    {
+        return $this->getOrderGoodsModels()->implode('goods_id', 'a');
+    }
+
+    public function getParams($key = null)
+    {
+        $result = collect(json_decode(\Request::input('orders'), true))->where('pre_id', $this->getPreId())->first();
+        if (isset($key)) {
+            return $result[$key];
+        }
+
+        return $result;
+    }
+
     /**
      * 输出订单信息
      * @return array
@@ -118,6 +133,7 @@ class PreGeneratedOrderModel extends OrderModel
     public function toArray()
     {
         $data = array(
+            'pre_id' => $this->getPreId(),
             'price' => sprintf('%.2f', $this->getPrice()),
             'goods_price' => sprintf('%.2f', $this->getVipPrice()),
             'dispatch_price' => sprintf('%.2f', $this->getDispatchPrice()),
@@ -167,7 +183,7 @@ class PreGeneratedOrderModel extends OrderModel
 
     /**
      * 订单插入数据库
-     * @return static 新生成的order model
+     * @return array 新生成的order model
      */
     private function createOrder()
     {
@@ -175,7 +191,6 @@ class PreGeneratedOrderModel extends OrderModel
             'price' => $this->getPrice(),//订单最终支付价格
             'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品商城价
             'goods_price' => $this->getVipPrice(),//订单会员价
-
             'discount_price' => $this->getDiscountPrice(),//订单优惠金额
             'deduction_price' => $this->getDeductionPrice(),//订单抵扣金额
             'dispatch_price' => $this->getDispatchPrice(),//订单运费

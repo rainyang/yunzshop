@@ -19,7 +19,6 @@ abstract class PreGeneratedController extends ApiController
 
     protected function index()
     {
-
         $order_data = $this->getOrderData();
         $total_price = $order_data->sum('order.price');
         $total_goods_price = $order_data->sum('order.goods_price');
@@ -63,6 +62,8 @@ abstract class PreGeneratedController extends ApiController
         $shop_order = $this->getShopOrder();
 
         if (!empty($shop_order)) {
+
+
             $order_data->push(OrderService::getOrderData($shop_order));
         }
 

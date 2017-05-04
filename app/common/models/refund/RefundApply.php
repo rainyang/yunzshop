@@ -140,7 +140,32 @@ class RefundApply extends BaseModel
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
+    /**
+     * 已退款
+     * @return bool
+     */
+    public function isRefunded()
+    {
+        if ($this->status >= self::COMPLETE) {
+            return true;
+        }
+        return false;
+    }
 
+    /**
+     * 退款中
+     * @return bool
+     */
+    public function isRefunding()
+    {
+        if ($this->status < self::WAIT_CHECK) {
+            return false;
+        }
+        if ($this->status >= self::COMPLETE) {
+            return false;
+        }
+        return true;
+    }
 //    public static function boot()
 //    {
 //        parent::boot();
