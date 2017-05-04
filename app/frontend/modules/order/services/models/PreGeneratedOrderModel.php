@@ -111,11 +111,20 @@ class PreGeneratedOrderModel extends OrderModel
         return $this->orderDispatch->getDispatchPrice();
     }
 
+    /**
+     * 订单生成前 分组订单的标识(规则: 将goods_id 排序之后用a连接)
+     * @return string
+     */
     private function getPreId()
     {
-        return $this->getOrderGoodsModels()->implode('goods_id', 'a');
+        return $this->getOrderGoodsModels()->pluck('goods_id')->sort()->implode('a');
     }
 
+    /**
+     * 获取url中关于本订单的参数
+     * @param null $key
+     * @return mixed
+     */
     public function getParams($key = null)
     {
         $result = collect(json_decode(\Request::input('orders'), true))->where('pre_id', $this->getPreId())->first();
