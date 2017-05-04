@@ -53,6 +53,10 @@ class MemberCartService
         });
     }
 
+    /**
+     * @param Collection $memberCarts
+     * @return Collection
+     */
     public static function filterPluginMemberCart(Collection $memberCarts)
     {
         return $memberCarts->filter(function ($memberCart) {

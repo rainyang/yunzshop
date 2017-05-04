@@ -17,7 +17,7 @@ use Illuminate\Support\Collection;
 abstract class OrderModel extends Order
 {
     /**
-     * @var array 未插入数据库的订单商品数组
+     * @var Collection 未插入数据库的订单商品数组
      */
     protected $orderGoodsModels = [];
 

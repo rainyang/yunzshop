@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title','订单详情')
 @section('js')
     <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
 
