@@ -43,7 +43,13 @@
                             <td>
                                 <a class='btn btn-default btn-sm'
                                    href="{{yzWebUrl('plugins.manage', ['name'=>$plugin['name'],'action'=>($plugin->isEnabled() ? 'disable' : 'enable')])}}"
-                                   title='{{($plugin->isEnabled() ? '禁用' : '启用')}}'><i class="fa fa-edit"></i>
+                                   title='{{($plugin->isEnabled() ? '禁用' : '启用')}}'>
+                                    @if($plugin->isEnabled())
+                                        <i class="fa fa-power-off"></i>
+                                    @else
+                                        <i class="fa fa-check-circle-o"></i>
+                                    @endif
+
                                 </a>
                                 <a class='btn btn-default btn-sm'
                                    href="{{yzWebUrl('plugins.manage', ['name'=>$plugin['name'],'action'=>'delete'])}}"

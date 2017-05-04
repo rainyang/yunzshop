@@ -4,12 +4,12 @@ namespace app\frontend\modules\order\services\models;
 
 use app\common\models\Order;
 
-use app\frontend\modules\discount\services\DiscountService;
-use app\frontend\modules\discount\services\models\OrderDiscount;
-use app\frontend\modules\dispatch\services\DispatchService;
+use app\frontend\modules\discount\models\OrderDiscount;
+use app\frontend\modules\dispatch\models\OrderDispatch;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\order\models\OrderGoods;
 use app\frontend\modules\order\services\OrderService;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 /**
  * 订单生成类
@@ -30,45 +30,44 @@ use Illuminate\Support\Facades\DB;
  */
 class PreGeneratedOrderModel extends OrderModel
 {
+
     /**
-     * @var ShopModel 商城model实例
-     */
-    /**
-     * @var \app\frontend\models\Member
-     */
-    /**
-     * 记录添加的商品
-     * PreGeneratedOrderModel constructor.
-     * @param array|null $orderGoodsModels
-     */
-    /**
-     * @var \app\frontend\modules\dispatch\services\models\OrderDispatch 运费类实例
+     * @var OrderDispatch 运费类
      */
     protected $orderDispatch;
     /**
-     * @var OrderDiscount 优惠类实例
+     * @var OrderDiscount 优惠类
      */
     protected $orderDiscount;
-    public function setOrderGoodsModels(array $orderGoodsModels)
+
+    public function setOrderGoodsModels(Collection $orderGoodsModels)
     {
         $this->orderGoodsModels = $orderGoodsModels;
+        $orderGoodsModels->each(function ($orderGoodsModel) {
+            /**
+             * @var OrderGoods $orderGoodsModel
+             */
+
+            $orderGoodsModel->setRelation('order', $this);
+        });
+
         $this->setDispatch();
         $this->setDiscount();
     }
 
     protected function setDiscount()
     {
-        $this->orderDiscount = DiscountService::getPreOrderDiscountModel($this);
+        $this->orderDiscount = new OrderDiscount($this);
     }
 
     protected function setDispatch()
     {
-        $this->orderDispatch = DispatchService::getPreOrderDispatchModel($this);
+        $this->orderDispatch = new OrderDispatch($this);
     }
 
     /**
      * 对外提供的获取订单商品方法
-     * @return array
+     * @return Collection
      */
     public function getOrderGoodsModels()
     {
@@ -84,6 +83,7 @@ class PreGeneratedOrderModel extends OrderModel
     {
         return $this->belongsToMember;
     }
+
     /**
      * 计算订单优惠金额
      * @return number
@@ -110,6 +110,31 @@ class PreGeneratedOrderModel extends OrderModel
     {
         return $this->orderDispatch->getDispatchPrice();
     }
+
+    /**
+     * 订单生成前 分组订单的标识(规则: 将goods_id 排序之后用a连接)
+     * @return string
+     */
+    private function getPreId()
+    {
+        return $this->getOrderGoodsModels()->pluck('goods_id')->sort()->implode('a');
+    }
+
+    /**
+     * 获取url中关于本订单的参数
+     * @param null $key
+     * @return mixed
+     */
+    public function getParams($key = null)
+    {
+        $result = collect(json_decode(\Request::input('orders'), true))->where('pre_id', $this->getPreId())->first();
+        if (isset($key)) {
+            return $result[$key];
+        }
+
+        return $result;
+    }
+
     /**
      * 输出订单信息
      * @return array
@@ -117,11 +142,12 @@ class PreGeneratedOrderModel extends OrderModel
     public function toArray()
     {
         $data = array(
-            'price' => sprintf('%.2f',$this->getPrice()),
-            'goods_price' => sprintf('%.2f',$this->getVipPrice()),
-            'dispatch_price' => sprintf('%.2f',$this->getDispatchPrice()),
-            'discount_price' => sprintf('%.2f',$this->getDiscountPrice()),
-            'deduction_price' => sprintf('%.2f',$this->getDeductionPrice()),
+            'pre_id' => $this->getPreId(),
+            'price' => sprintf('%.2f', $this->getPrice()),
+            'goods_price' => sprintf('%.2f', $this->getVipPrice()),
+            'dispatch_price' => sprintf('%.2f', $this->getDispatchPrice()),
+            'discount_price' => sprintf('%.2f', $this->getDiscountPrice()),
+            'deduction_price' => sprintf('%.2f', $this->getDeductionPrice()),
 
         );
         foreach ($this->orderGoodsModels as $orderGoodsModel) {
@@ -166,7 +192,7 @@ class PreGeneratedOrderModel extends OrderModel
 
     /**
      * 订单插入数据库
-     * @return static 新生成的order model
+     * @return array 新生成的order model
      */
     private function createOrder()
     {
@@ -174,7 +200,6 @@ class PreGeneratedOrderModel extends OrderModel
             'price' => $this->getPrice(),//订单最终支付价格
             'order_goods_price' => $this->getOrderGoodsPrice(),//订单商品商城价
             'goods_price' => $this->getVipPrice(),//订单会员价
-
             'discount_price' => $this->getDiscountPrice(),//订单优惠金额
             'deduction_price' => $this->getDeductionPrice(),//订单抵扣金额
             'dispatch_price' => $this->getDispatchPrice(),//订单运费
@@ -186,7 +211,6 @@ class PreGeneratedOrderModel extends OrderModel
             'uid' => $this->uid,
             'uniacid' => $this->uniacid,
         );
-        //todo 测试
 
         return $data;
     }

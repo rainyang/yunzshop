@@ -10,21 +10,18 @@ namespace app\frontend\modules\order\services\models;
 
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\discount\services\models\OrderDiscount;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\models\Order;
+use Illuminate\Support\Collection;
 
 abstract class OrderModel extends Order
 {
     /**
-     * @var array 未插入数据库的订单商品数组
+     * @var Collection 未插入数据库的订单商品数组
      */
     protected $orderGoodsModels = [];
 
-
-
-
-    abstract public function setOrderGoodsModels(array $orderGoodsModels);
+    abstract public function setOrderGoodsModels(Collection $orderGoodsModels);
 
     /**
      * 统计商品总数
@@ -41,10 +38,10 @@ abstract class OrderModel extends Order
     }
 
 
-
     /**
      * 计算订单成交价格
      * @return int
+     * @throws AppException
      */
     protected function getPrice()
     {

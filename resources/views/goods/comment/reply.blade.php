@@ -1,6 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
+@section('title', trans('商品评论回复'))
     <div class="w1200 m0a">
 
         <!-- 新增加右侧顶部三级菜单 -->
@@ -74,7 +75,7 @@
                                         <div class="multi-item">
                                             <a href='{!! tomedia($img) !!}' target='_blank'>
                                                 <img class="img-responsive img-thumbnail" src='{!! tomedia($img) !!}'
-                                                     onerror="this.src='./resource/images/nopic.jpg'; this.title='图片未找到.'">
+                                                     onerror="this.src='{{static_url('./resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
                                             </a>
                                         </div>
                                     @endforeach

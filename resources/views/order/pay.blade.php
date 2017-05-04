@@ -1,4 +1,5 @@
 @extends('layouts.base')
+@section('title','订单支付')
 
 @section('content')
 <div>

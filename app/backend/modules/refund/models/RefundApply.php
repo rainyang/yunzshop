@@ -1,6 +1,7 @@
 <?php
 
 namespace app\backend\modules\refund\models;
+
 use app\backend\modules\order\models\Order;
 use app\backend\modules\refund\models\type\RefundMoney;
 use app\backend\modules\refund\models\type\ReplaceGoods;
@@ -21,14 +22,17 @@ class RefundApply extends \app\common\models\refund\RefundApply
     {
         return $this->getTypeInstance()->refundMoney();
     }
+
     public function reject($data)
     {
         return $this->getTypeInstance()->reject($data);
     }
+
     public function pass()
     {
         return $this->getTypeInstance()->pass();
     }
+
     public function consensus()
     {
         return $this->getTypeInstance()->consensus();
@@ -39,6 +43,7 @@ class RefundApply extends \app\common\models\refund\RefundApply
         //todo 补充当退款类型实例请求 收货请求时的提示
         return $this->getTypeInstance()->receiveReturnGoods();
     }
+
     protected function getTypeInstance()
     {
         if (!isset($this->typeInstance)) {
@@ -61,6 +66,9 @@ class RefundApply extends \app\common\models\refund\RefundApply
         return $this->typeInstance;
 
     }
+
+
+
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');

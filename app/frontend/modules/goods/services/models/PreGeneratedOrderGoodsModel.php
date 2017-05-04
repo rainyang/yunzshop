@@ -10,8 +10,6 @@ namespace app\frontend\modules\goods\services\models;
 
 use app\common\models\OrderGoods;
 
-use app\frontend\modules\discount\services\DiscountService;
-use app\frontend\modules\dispatch\services\DispatchService;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class PreGeneratedOrderGoodsModel extends OrderGoodsModel
@@ -33,20 +31,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             unset($attributes['goods']);
 
         }
-
         parent::__construct($attributes);
-        $this->setGoodsDiscount();
-        $this->setGoodsDispatch();
-    }
-
-    protected function setGoodsDiscount()
-    {
-        $this->goodsDiscount = DiscountService::getPreOrderGoodsDiscountModel($this);
-    }
-
-    protected function setGoodsDispatch()
-    {
-        $this->goodsDispatch = DispatchService::getPreOrderGoodsDispatchModel($this);
     }
 
     public function getGoodsId()
@@ -62,6 +47,10 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
     {
         $this->order = $order;
 
+    }
+    public function getPriceAttribute()
+    {
+        return $this->getPrice();
     }
 
     /**

@@ -67,7 +67,7 @@
 
         </div>
     </div>
-    @include('public.admin.mylink')
+  <!--   @include('public.admin.mylink') -->
 @endsection()
 
 

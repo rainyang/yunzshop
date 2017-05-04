@@ -12,11 +12,11 @@
 <!-- 新增加右侧顶部三级菜单结束 -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <div class="panel panel-default">
-            
+
               <div class='panel-heading'>
                 关注设置
             </div>
-            
+
             <div class='panel-body'>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">关注引导页</label>
@@ -29,7 +29,7 @@
             <div class='panel-heading'>
                 分享设置
             </div>
-            <div class='panel-body'> 
+            <div class='panel-body'>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享标题</label>
                     <div class="col-sm-9 col-xs-12">
@@ -48,8 +48,8 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享描述</label>
                     <div class="col-sm-9 col-xs-12">
                         <textarea style="height:100px;" name="share[desc]" class="form-control" cols="60">{{ $set['desc'] }}</textarea>
-                    </div> 
-                </div> 
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享连接</label>
                     <div class="col-sm-9 col-xs-12">
@@ -63,7 +63,7 @@
 
                     </div>
                 </div>
-                
+
                        <div class="form-group"></div>
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -71,11 +71,20 @@
                             <input type="submit" name="submit" value="提交" class="btn btn-success"  />
                      </div>
             </div>
-                       
+
             </div>
-        </div>     
+        </div>
     </form>
 </div>
 </div>
 {{--@include('setting.mylink')--}}
+
+@include('public.admin.mylink')
+
+{{--点击复制链接--}}
+    <script>
+        $('#cp').click(function () {
+            util.clip(this, $(this).attr('data-url'));
+        });
+    </script>
 @endsection

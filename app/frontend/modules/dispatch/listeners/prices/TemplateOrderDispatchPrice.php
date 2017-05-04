@@ -21,13 +21,20 @@ class TemplateOrderDispatchPrice
     {
         $this->event = $event;
         $price = $event->getOrderModel()->getOrderGoodsModels()->sum(function ($orderGoods) {
+            if (!isset($orderGoods->hasOneGoodsDispatch)) {
+                return 0;
+            }
             if ($orderGoods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::TEMPLATE_TYPE) {
                 return $this->getPrice($orderGoods);
             }
             return 0;
         });
+        $data = [
+            'price' => $price,
+            'name' => '运费模板',
+        ];
         //返回给事件
-        $event->addData(['price'=>$price]);
+        $event->addData($data);
         return;
     }
 

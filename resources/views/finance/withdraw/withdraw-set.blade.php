@@ -1,6 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
+@section('title', trans('提现设置'))
     <script>
         $(function(){
             $("#myTab li.active>a").css("background","#ccc");

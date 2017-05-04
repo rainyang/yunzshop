@@ -29,7 +29,6 @@ class SaleWidget extends Widget
         if ($sale) {
             $saleModel->setRawAttributes($sale->toArray());
         }
-
         return view('goods.widgets.sale', [
             'item' => $saleModel,
             'parents' => $parents->toArray(),

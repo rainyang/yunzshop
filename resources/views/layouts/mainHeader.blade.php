@@ -3,9 +3,9 @@
     <!-- Logo -->
     <a href="/" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>芸</b></span>
+      <span class="logo-mini"><b>{{YunShop::app()->account['name']}}</b></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>芸</b>商城</span>
+      <span class="logo-lg"><b>{{YunShop::app()->account['name']}}</b></span>
     </a>
 
     <!-- Header Navbar -->
@@ -45,6 +45,7 @@
             <ul class="dropdown-menu">
               <li class="about"> <i></i> <a href="?c=user&a=profile&do=profile&"> <span class="fa fa-wechat fa-fw"></span>我的账号</a> </li>
               @if(YunShop::app()->role == 'founder')
+              <li class="system one"> <a href="{{yzWebFullUrl('setting.key.index')}}"><span class="fa fa-key fa-fw"></span>商城授权</a> </li>
               <li class="system one"> <a href="?c=system&a=welcome&"><span class="fa fa-sitemap fa-fw"></span>系统选项</a> </li>
               <li class="system"> <a href="?c=system&a=welcome" target="_blank"><span class="fa fa-cloud-download fa-fw"></span>自动更新</a> </li>
               <li class="system three"> <a href="?c=system&a=updatecache&" target="_blank"><span class="fa fa-refresh fa-fw"></span>更新缓存</a> </li>

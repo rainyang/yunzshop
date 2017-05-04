@@ -7,7 +7,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@yield('title') | 芸商城-Yun Shop</title>
+    <title>@yield('title') | {{YunShop::app()->account['name']}} - 后台管理系统</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <meta name="_token" content="{{ csrf_token() }}"/>
@@ -24,7 +24,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           apply the skin class to the body tag so the changes take effect.
     -->
     <link rel="stylesheet" href="{{static_url('yunshop/dist/css/skins/skin-red.min.css')}}">
-    <link href="./resource/css/common.css?v=20161011" rel="stylesheet">
+    <link href="{{static_url('resource/css/common.css')}}" rel="stylesheet">
 
 
     {{--loding--}}

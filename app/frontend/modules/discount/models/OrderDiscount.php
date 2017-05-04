@@ -6,15 +6,14 @@
  * Time: 下午4:29
  */
 
-namespace app\frontend\modules\discount\services\models;
+namespace app\frontend\modules\discount\models;
 
-use app\common\events\discount\OnCouponPriceCalculatedEvent;
 use app\common\events\discount\OnDeductionPriceCalculatedEvent;
 use app\common\models\Coupon;
-use app\frontend\modules\coupon\services\TestService;
+use app\frontend\modules\coupon\services\CouponService;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
-class OrderDiscount extends Discount
+class OrderDiscount
 {
     protected $order;
     private $couponPrice;
@@ -74,17 +73,17 @@ class OrderDiscount extends Discount
 
     private function _getCouponPrice()
     {
-        //todo 需要检查两次使用的优惠券组是否满足类型
-        $discountCouponService = (new TestService($this->order, Coupon::COUPON_DISCOUNT));
+        $discountCouponService = (new CouponService($this->order, Coupon::COUPON_DISCOUNT));
         $discountPrice = $discountCouponService->getOrderDiscountPrice();
         $discountCouponService->activate();
         //dd($discountPrice);
 
-        $moneyOffCouponService = (new TestService($this->order, Coupon::COUPON_MONEY_OFF));
+        $moneyOffCouponService = (new CouponService($this->order, Coupon::COUPON_MONEY_OFF));
         $moneyOffPrice = $moneyOffCouponService->getOrderDiscountPrice();
         //dd($moneyOffPrice);
         $moneyOffCouponService->activate();
 
         return $discountPrice + $moneyOffPrice;
     }
+
 }

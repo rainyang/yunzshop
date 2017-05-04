@@ -1,5 +1,6 @@
 @extends('layouts.base')
 @section('content')
+@section('title', trans('配送模板详情'))
     <div class="rightlist">
         <!-- 新增加右侧顶部三级菜单 -->
         <div class="right-titpos">
@@ -194,12 +195,13 @@
                                 </tr>
                                 @foreach($dispatch->weight_data as $key=>$weight)
                                     <tr>
-                                        <td style="padding:10px;">
-                                            {{$weight['areas']}}
-                                            <input type="hidden" value="{{$weight['areas']}}" class="form-control"
+                                        <td style="padding:10px;" class="{{$key}}">
+                                            <span class="areas">{{$weight['areas']}}</span>
+                                            <input type="hidden" value="{{$weight['areas']}}" class="form-control areas-name"
                                                    name="dispatch[weight][{{$key}}][areas]">
-                                            <input type="hidden" value="{{$weight['area_ids']}}" class="form-control"
+                                            <input type="hidden" value="{{$weight['area_ids']}}" class="form-control areas-ids"
                                                    name="dispatch[weight][{{$key}}][area_ids]">
+                                            <a href='javascript:;' onclick='editArea(this)' random="{{$key}}">编辑</a>
                                         </td>
                                         <td class=" text-center">
                                             <input type="number" value="{{ $weight['first_weight'] }}"
@@ -220,8 +222,9 @@
                                             <input type="text" value="{{ $weight['another_weight_price'] }}"
                                                    class="form-control"
                                                    name="dispatch[weight][{{$key}}][another_weight_price]"
-                                                   style="width:100px;"></td>
-                                        <td class=""></td>
+                                                   style="width:100px;">
+                                        </td>
+                                        <td><a href="javascript:;" onclick="$(this).parent().parent().remove()"><i class='fa fa-remove'></i></td>
                                     </tr>
                                 @endforeach
 
@@ -264,12 +267,14 @@
                                 </tr>
                                 @foreach($dispatch->piece_data as $key=>$piece)
                                     <tr>
-                                        <td style="padding:10px;">
-                                            {{$piece['areas']}}
-                                            <input type="hidden" value="{{$piece['area_id']}}" class="form-control"
+                                        <td style="padding:10px;" class="{{$key}}">
+                                            <span class="areas">{{$piece['areas']}}</span>
+
+                                            <input type="hidden" value="{{$piece['area_id']}}" class="form-control areas-name"
                                                    name="dispatch[piece][{{$key}}][areas]">
-                                            <input type="hidden" value="{{$piece['area_ids']}}" class="form-control"
+                                            <input type="hidden" value="{{$piece['area_ids']}}" class="form-control areas-ids"
                                                    name="dispatch[piece][{{$key}}][area_ids]">
+                                            <a href='javascript:;' onclick='editArea(this)' random="{{$key}}">编辑</a>
                                         </td>
                                         <td class=" text-center">
                                             <input type="number" value="{{ $piece['first_weight'] }}"
@@ -289,8 +294,12 @@
                                             <input type="text" value="{{ $piece['another_weight_price'] }}"
                                                    class="form-control"
                                                    name="dispatch[piece][{{$key}}][another_weight_price]"
-                                                   style="width:100px;"></td>
-                                        <td class=""></td>
+                                                   style="width:100px;">
+                                        </td>
+                                        <td>
+                                            <a href='javascript:;' onclick='$(this).parent().parent().remove()'>
+                                                <i class='fa fa-remove'></i>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -362,74 +371,89 @@
         }
         function selectAreas() {
             clearSelects();
-            var old_citys = $("[areas=" + calculateType + "]").html().split(';');
-            $('.city').each(function () {
-                var parentcheck = false;
-                for (var i in old_citys) {
-                    if (old_citys[i] == $(this).attr('city')) {
-                        parentcheck = true;
-                        $(this).get(0).checked = true;
-                        break;
-                    }
-                }
-                if (parentcheck) {
-                    $(this).parent().parent().parent().parent().find('.cityall').get(0).checked = true;
-                }
-            });
+
             $("#modal-areas").modal();
             var citystrs = '';
             var citystrIds = '';
             $('#btnSubmitArea').unbind('click').click(function () {
+                random++;
                 $('.city:checked').each(function () {
                     citystrs += $(this).attr('city') + ";";
                     citystrIds += $(this).attr('city_id') + ";";
                 });
                 if (calculateType == 0) {
                     var content = `
-                  <tr  class="show_h">
+                        <tr  class="show_h">
+                        <td style="padding:10px;" name="areas" class="${random}">
+                            <span class="areas">${citystrs}</span>
+                            <input type="hidden"  value="${citystrs}" class="form-control areas-name" name="dispatch[weight][${random}][areas]">
+                            <input type="hidden"  value="${citystrIds}" class="form-control areas-ids" name="dispatch[weight][${random}][area_ids]">
+                            <a href='javascript:;' onclick='editArea(this)' random="${random}">编辑</a>
 
-                      <td style="padding:10px;" name="areas">
-                      ${citystrs}
-                      <input type="hidden"  value="${citystrs}" class="form-control" name="dispatch[weight][${random}][areas]">
-                      <input type="hidden"  value="${citystrIds}" class="form-control" name="dispatch[weight][${random}][area_ids]">
-                      </td>
-                      <td class=" text-center">
-                          <input type="number" value="{{ $dispatch->first_weight }}" class="form-control" name="dispatch[weight][${random}][first_weight]" style="width:100px;"></td>
-                      <td class=" text-center">
-                          <input type="text" value="{{ $dispatch->first_weight_price }}" class="form-control" name="dispatch[weight][${random}][first_weight_price]"  style="width:100px;"></td>
-                      <td class=" text-center">
-                          <input type="number" value="{{ $dispatch->another_weight }}" class="form-control" name="dispatch[weight][${random}][another_weight]"  style="width:100px;"></td>
-                      <td class=" text-center">
-                          <input type="text" value="{{ $dispatch->another_weight_price }}" class="form-control" name="dispatch[weight][${random}][another_weight_price]"  style="width:100px;"></td>
-                      <td></td>
-                  </tr>
-        `;
+                            </td>
+
+                            <td class=" text-center">
+                              <input type="number" value="{{ $dispatch->first_weight }}" class="form-control" name="dispatch[weight][${random}][first_weight]" style="width:100px;"></td>
+                            <td class=" text-center">
+                              <input type="text" value="{{ $dispatch->first_weight_price }}" class="form-control" name="dispatch[weight][${random}][first_weight_price]"  style="width:100px;"></td>
+                            <td class=" text-center">
+                              <input type="number" value="{{ $dispatch->another_weight }}" class="form-control" name="dispatch[weight][${random}][another_weight]"  style="width:100px;"></td>
+                            <td class=" text-center">
+                              <input type="text" value="{{ $dispatch->another_weight_price }}" class="form-control" name="dispatch[weight][${random}][another_weight_price]"  style="width:100px;"></td>
+                            <td><a href='javascript:;' onclick='$(this).parent().parent().remove()'><i class='fa fa-remove'></i></td>
+                        </tr>
+                    `;
                     $("[areas=" + calculateType + "]").children(".tbody-areas").append(content);
                 } else {
                     var content = `
-                      <tr class="show_n">
-                          <td style="padding:10px;">
-                          ${citystrs}
-                          <input type="hidden"  value="${citystrs}" class="form-control" name="dispatch[piece][${random}][areas]">
-                          <input type="hidden"  value="${citystrIds}" class="form-control" name="dispatch[piece][${random}][area_ids]">
-                          </td>
-                          <td class=" text-center">
+                        <tr class="show_n" class="${random}">
+                            <td style="padding:10px;">
+                            <span class="areas">${citystrs}</span>
+                            <input type="hidden"  value="${citystrs}" class="form-control areas-name" name="dispatch[piece][${random}][areas]">
+                            <input type="hidden"  value="${citystrIds}" class="form-control areas-ids" name="dispatch[piece][${random}][area_ids]">
+                            <a href='javascript:;' onclick='editArea(this)' random="${random}">编辑</a>
+                            </td>
+                            <td class=" text-center">
                               <input type="number" value="{{ $dispatch->first_piece }}" class="form-control" name="dispatch[piece][${random}][first_piece]" style="width:100px;"></td>
-                          <td class=" text-center">
+                            <td class=" text-center">
                               <input type="text" value="{{ $dispatch->first_piece_price }}" class="form-control" name="dispatch[piece][${random}][first_piece_price]"  style="width:100px;"></td>
-                          <td class=" text-center">
+                            <td class=" text-center">
                               <input type="number" value="{{ $dispatch->another_piece }}" class="form-control" name="dispatch[piece][${random}][another_piece]"  style="width:100px;"></td>
-                          <td class=" text-center">
+                            <td class=" text-center">
                               <input type="text" value="{{ $dispatch->another_piece_price }}" class="form-control" name="dispatch[piece][${random}][another_piece_price]"  style="width:100px;"></td>
-                          <td></td>
-                      </tr>
-            `;
+                            <td><a href='javascript:;' onclick='$(this).parent().parent().remove()'><i class='fa fa-remove'></i></td>
+                        </tr>
+                    `;
                     $("[areas=" + calculateType + "]").children(".tbody-areas").append(content);
                 }
 
-                random++;
+
             })
         }
+
+        function editArea(btn){
+            current = $(btn).attr('random');
+            clearSelects();
+            var old_citys = $(btn).prev().val().split(';');
+
+
+            $("#modal-areas").modal();
+            var citystrs = '';
+            var citystrIds = '';
+            $('#btnSubmitArea').unbind('click').click(function(){
+                $('.city:checked').each(function(){
+                    citystrs += $(this).attr('city') + ";";
+                    citystrIds += $(this).attr('city_id') + ";";
+                });
+                $('.' + current + ' .areas').html(citystrs);
+                $('.' + current + ' .areas-name').val(citystrs);
+                $('.' + current + ' .areas-ids').val(citystrIds);
+
+
+            })
+
+        }
+
     </script>
     @include('area.dispatchselectprovinces')
 @endsection

@@ -1,6 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
+@section('title', trans('商品详情'))
     <script type="text/javascript">
         window.type = "{{$goods['type']}}";
         window.virtual = "{{$goods['virtual']}}";
@@ -139,6 +140,7 @@
                 }
             }
 
+            @section('widget_js')
             if ($(':input[name="widgets[sale][max_point_deduct]"]').val() == '') {
                 $('#myTab a[href="#tab_sale"]').tab('show');
                 Tip.focus(':input[name="widgets[sale][max_point_deduct]"]', "请输入积分抵扣!");
@@ -268,6 +270,7 @@
                     return false;
                 }
             }
+            @show
 
             if ($(':input[name="widgets[dispatch][dispatch_price]"]').val() == '') {
                 $('#myTab a[href="#tab_dispatch"]').tab('show');
@@ -558,11 +561,9 @@
 					<li><a href="#tab_param">属性</a></li>
 					<li><a href="#tab_option">{{$lang['shopoption']}}</a></li>
 
-                    @section('supplier_widget')
 					@foreach(Config::get('widget.goods') as $key=>$value)
 					<li><a href="#{{$key}}">{{$value['title']}}</a></li>
 					@endforeach
-                    @show
 
 				</ul>
 			</div>

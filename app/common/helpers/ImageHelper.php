@@ -31,7 +31,7 @@ class ImageHelper
      */
     public static function tplFormFieldImage($name, $value = '', $default = '', $options = array()) {
         if (empty($default)) {
-            $default = './resource/images/nopic.jpg';
+            $default = static_url('./resource/images/nopic.jpg');
         }
         $val = $default;
         if (!empty($value)) {
@@ -87,7 +87,7 @@ class ImageHelper
 			}
 			function deleteImage(elm){
 				require(["jquery"], function($){
-					$(elm).prev().attr("src", "./resource/images/nopic.jpg");
+					$(elm).prev().attr("src", static_url("./resource/images/nopic.jpg"));
 					$(elm).parent().prev().find("input").val("");
 				});
 			}
@@ -108,7 +108,7 @@ class ImageHelper
 		</div>';
         return $s;
     }
-    
+
     /**
      * 批量上传图片
      * @param string $name 表单input名称
@@ -134,7 +134,7 @@ class ImageHelper
 		var name = $(elm).next().val();
 		util.image( "", function(urls){
 			$.each(urls, function(idx, url){
-				$(elm).parent().parent().next().append(\'<div class="multi-item"><img onerror="this.src=\\\'./resource/images/nopic.jpg\\\'; this.title=\\\'图片未找到.\\\'" src="\'+url.url+\'" class="img-responsive img-thumbnail"><input type="hidden" name="\'+name+\'[]" value="\'+url.attachment+\'"><em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em></div>\');
+				$(elm).parent().parent().next().append(\'<div class="multi-item"><img onerror="this.src=\\\''.static_url('./resource/images/nopic.jpg').'\\\'; this.title=\\\'图片未找到.\\\'" src="\'+url.url+\'" class="img-responsive img-thumbnail"><input type="hidden" name="\'+name+\'[]" value="\'+url.attachment+\'"><em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em></div>\');
 			});
 		}, ' . json_encode($options) . ');
 	}
@@ -161,7 +161,7 @@ EOF;
             foreach ($value as $row) {
                 $s .= '
 <div class="multi-item">
-	<img src="' . tomedia($row) . '" onerror="this.src=\'./resource/images/nopic.jpg\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail">
+	<img src="' . tomedia($row) . '" onerror="this.src=\''.static_url('resource/images/nopic.jpg').'\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail">
 	<input type="hidden" name="' . $name . '[]" value="' . $row . '" >
 	<em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em>
 </div>';

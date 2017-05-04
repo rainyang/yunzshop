@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '操作员设置')
 @section('content')
 
 @if( $user->uid )

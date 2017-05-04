@@ -10,6 +10,7 @@ namespace app\frontend\modules\dispatch\listeners\prices;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\common\models\goods\GoodsDispatch;
+use app\frontend\modules\order\models\OrderGoods;
 use app\frontend\modules\order\services\OrderService;
 
 class UnifyOrderDispatchPrice
@@ -23,14 +24,28 @@ class UnifyOrderDispatchPrice
             return;
         }
         $price = $event->getOrderModel()->getOrderGoodsModels()->max(function ($orderGoods) {
+            /**
+             * @var $orderGoods OrderGoods
+             */
+
+            if($orderGoods->isFreeShipping())
+            {
+                return 0;
+            }
+            if(!isset($orderGoods->hasOneGoodsDispatch)){
+                return 0;
+            }
             if ($orderGoods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::UNIFY_TYPE) {
                 return $orderGoods->hasOneGoodsDispatch->dispatch_price;
             }
             return 0;
         });
-
+        $data = [
+            'price' => $price,
+            'name' => '统一运费',
+        ];
         //返回给事件
-        $event->addData(['price'=>$price]);
+        $event->addData($data);
         return;
     }
 
@@ -38,7 +53,7 @@ class UnifyOrderDispatchPrice
     {
         $allGoodsIsReal = OrderService::allGoodsIsReal($this->event->getOrderModel()->getOrderGoodsModels());
 
-        if($allGoodsIsReal){
+        if ($allGoodsIsReal) {
             return true;
         }
 

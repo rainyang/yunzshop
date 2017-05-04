@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '查看详情')
 @section('content')
 
     <div class="panel panel-default">
