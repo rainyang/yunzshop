@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '转让记录')
 @section('content')
 
     <div class="rightlist">

@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '余额设置')
 @section('content')
 
     <div class="main rightlist">
