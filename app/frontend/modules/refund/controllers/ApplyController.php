@@ -32,18 +32,25 @@ class ApplyController extends ApiController
             '拍错了/订单信息错误',
             '其他',
         ];
-        $refundTypes = [
-            [
+        $refundTypes = [];
+        if ($order->status >= \app\common\models\Order::WAIT_SEND) {
+            $refundTypes[] = [
                 'name' => '退款(仅退款不退货)',
                 'value' => 0
-            ], [
+            ];
+        }
+        if ($order->status >= \app\common\models\Order::WAIT_RECEIVE) {
+            $refundTypes[] = [
                 'name' => '退款退货',
                 'value' => 1
-            ], [
+            ];
+        }
+        if ($order->status >= \app\common\models\Order::COMPLETE) {
+            $refundTypes[] = [
                 'name' => '换货',
                 'value' => 2
-            ]
-        ];
+            ];
+        }
         $data = compact('order', 'refundTypes', 'reasons');
         return $this->successJson('成功', $data);
     }
@@ -75,8 +82,8 @@ class ApplyController extends ApiController
             throw new AppException('申请已提交,处理中');
         }
         $refundApply = new RefundApply($request->only(['reason', 'content', 'refund_type', 'order_id']));
-        $refundApply->images = $request->input('images',[]);
-        $refundApply->content = $request->input('content','');
+        $refundApply->images = $request->input('images', []);
+        $refundApply->content = $request->input('content', '');
         $refundApply->price = $order->price;
         $refundApply->refund_sn = RefundService::createOrderRN();
         $refundApply->create_time = time();
@@ -84,7 +91,7 @@ class ApplyController extends ApiController
             throw new AppException('请求信息保存失败');
         }
         $order->refund_id = $refundApply->id;
-        if(!$order->save()){
+        if (!$order->save()) {
             throw new AppException('订单退款状态改变失败');
         }
         return $this->successJson('成功', $refundApply->toArray());

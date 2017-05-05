@@ -11,7 +11,7 @@
 @section('operation_consensus')
     <label class='radio-inline'>
         <input type='radio' value='1' class='refund-action' class="refund-action"
-               data-action='{{yzWebUrl("refund.operation.receiveReturnGoods")}}' name='refund_status'>
+               data-action='{{yzWebUrl("refund.pay")}}' name='refund_status'>
         同意退款
 
             @if($order['has_one_refund_apply']['status'] < 3)

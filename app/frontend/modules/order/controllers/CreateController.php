@@ -30,18 +30,18 @@ class CreateController extends PreGeneratedController
 
     public function index(Request $request)
     {
-        //dd(Request::all());
-        //exit;
+        //订单组
         $orders = collect();
         if($this->getShopOrder()){
 
             $orders->push($this->getShopOrder());
         }
         $orders = $orders->merge($this->getPluginOrders()[0]);
-        //dd($this->getPluginOrders()[0]);
+
         if($orders->isEmpty()){
             throw new AppException('未找到订单商品');
         }
+        //生成订单,触发事件
         $order_ids = DB::transaction(function () use ($orders) {
             return $orders->map(function ($order) {
                 /**

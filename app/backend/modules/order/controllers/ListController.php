@@ -72,6 +72,7 @@ class ListController extends BaseController
     {
         $params = \YunShop::request();
         $this->_order_model = Order::getRefundOrders($params['search'],self::PAGE_SIZE);
+
         return view('order.index', $this->getData())->render();
     }
     public function refunded()
@@ -112,6 +113,8 @@ class ListController extends BaseController
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
         $is_change_price = true; //todo
+        //dd($list);
+        //exit;
         $data = [
             'list' => $list,
             'total_price' => $list['total_price'],
