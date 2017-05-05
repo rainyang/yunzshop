@@ -20,7 +20,8 @@ class Rule extends BaseModel
     public $attributes = [
         'module'        => 'yun_shop',
         'displayorder'  => 0,
-        'status'        => 1
+        'status'        => 1,
+        'containtype'   => '',
     ];
 
     protected $guarded = [''];
