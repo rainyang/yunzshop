@@ -1,5 +1,5 @@
 @extends('layouts.base')
-
+@section('title', '编辑优惠券')
 @section('content')
 
 <div class="w1200 m0a">

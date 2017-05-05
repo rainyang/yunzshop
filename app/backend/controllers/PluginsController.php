@@ -38,7 +38,7 @@ class PluginsController extends BaseController
 
     public function manage()
     {
-        $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+        $plugins = app('app\common\services\PluginManager');
         $plugin = plugin($name = \YunShop::request()->name);
         if ($plugin) {
             // pass the plugin title through the translator
