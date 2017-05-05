@@ -21,7 +21,7 @@ class OperationController extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->param = \YunShop::request()->get();
+        $this->param = \Request::input();
         if (!isset($this->param['order_id'])) {
             return $this->message('order_id不能为空!','', 'error');
 
@@ -81,6 +81,14 @@ class OperationController extends BaseController
         return $this->message($data);
     }
 
+    public function Close()
+    {
+        list($result, $data) = OrderService::orderClose($this->param);
+        if ($result === false) {
+            return $this->message($data,'', 'error');
+        }
+        return $this->message($data);
+    }
     public function Delete()
     {
         list($result, $data) = OrderService::orderDelete($this->param);

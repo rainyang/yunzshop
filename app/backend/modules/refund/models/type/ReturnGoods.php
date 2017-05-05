@@ -22,7 +22,7 @@ class ReturnGoods extends RefundType
 
     public function receiveReturnGoods()
     {
-        $this->validate([RefundApply::WAIT_RECEIVE_RETURN_GOODS],'收货');
+        //$this->validate([RefundApply::WAIT_RECEIVE_RETURN_GOODS,],'收货');
 
         $this->refundApply->status = RefundApply::WAIT_REFUND;
         return $this->refundApply->save();

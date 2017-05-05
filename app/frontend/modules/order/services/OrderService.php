@@ -171,7 +171,9 @@ class OrderService
 
     private static function OrderOperate(OrderOperation $orderOperation)
     {
-
+        if (!isset($orderOperation)) {
+            return [false, '未找到该订单'];
+        }
         if (!$orderOperation->enable()) {
             return [false, $orderOperation->getMessage()];
         }

@@ -4,7 +4,7 @@ namespace app\backend\modules\refund\models;
 
 use app\backend\modules\order\models\Order;
 use app\backend\modules\refund\models\type\RefundMoney;
-use app\backend\modules\refund\models\type\ReplaceGoods;
+use app\backend\modules\refund\models\type\ExchangeGoods;
 use app\backend\modules\refund\models\type\ReturnGoods;
 use app\common\exceptions\AdminException;
 
@@ -55,7 +55,7 @@ class RefundApply extends \app\common\models\refund\RefundApply
                     $this->typeInstance = new ReturnGoods($this);
                     break;
                 case self::REFUND_TYPE_GOODS:
-                    $this->typeInstance = new ReplaceGoods($this);
+                    $this->typeInstance = new ExchangeGoods($this);
                     break;
                 default:
                     throw new AdminException('退款类型不存在');

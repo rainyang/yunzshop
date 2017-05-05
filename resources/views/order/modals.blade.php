@@ -1,3 +1,27 @@
+<!-- 关闭订单 -->
+<div id="modal-close" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
+    <form class="form-horizontal form" action="" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="route" value="order.operation.close">
+        <input type='hidden' name='order_id' value=''/>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                    <h3>关闭订单</h3>
+                </div>
+                <div class="modal-body">
+                    <label>关闭订单原因</label>
+                    <textarea style="height:150px;" class="form-control" name="reson" autocomplete="off"></textarea>
+                    <div id="module-menus"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" name="close" value="yes">关闭订单</button>
+                    <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
 <!-- 确认发货 -->
 <div id="modal-confirmsend" class="modal fade" tabindex="-1" role="dialog" style="width:600px;margin:0px auto;">
     <form class="form-horizontal form" action="" method="post"
