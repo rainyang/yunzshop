@@ -3,7 +3,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用条件 - 订单金额</label>
     <div class="col-sm-9 col-xs-12">
         <input type="text" name="coupon[enough]" class="form-control" value="{{isset($coupon['enough']) ? $coupon['enough'] : 0}}"  />
-        <span class='help-block'>消费满多少金额才可以使用该优惠券 (设置为空或 0 则不限制消费金额)</span>
+        <span class='help-block'>消费满多少金额才可以使用该优惠券 (设置为 0 则不限制消费金额)</span>
     </div>
 </div>
 <div class="form-group">

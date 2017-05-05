@@ -405,7 +405,7 @@ class MemberCouponController extends ApiController
         $templateData = array(
             "first" => $data['resp_title'],
             "keyword1" => $data['resp_thumb'],
-            "keyword2" => $data['resp_url'], //todo 需要选用带url的模板消息
+            "keyword2" => $data['resp_url'],
             "remark" => $data['resp_desc'],
         );
 
