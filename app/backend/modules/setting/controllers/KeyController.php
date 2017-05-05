@@ -70,7 +70,7 @@ class KeyController extends BaseController
                 ->withData($data)
                 ->get();
             $writeRes = Setting::set('shop.key', $requestModel);
-            Cache::put('app_auth',true,360);
+            Cache::forget('app_auth' . $this->uniacid);
             return $writeRes && $content;
         } else if($type == 'cancel') {
             $content = Curl::to(config('auto-update.checkUrl').'/app-account/cancel')
@@ -78,6 +78,7 @@ class KeyController extends BaseController
                 ->get();
            // print_r($content);exit();
             $writeRes = Setting::set('shop.key', '');
+            Cache::forget('app_auth' . $this->uniacid);
             return $writeRes && $content ;
         }
     }

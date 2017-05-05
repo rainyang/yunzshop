@@ -50,6 +50,12 @@ class OrderService
         $result->put('order', $order->toArray());
         $result->put('discount', self::getDiscountEventData($order));
         $result->put('dispatch', self::getDispatchEventData($order));
+        //todo 此处没想到好的办法, 为了配合前端,将自营硬编码
+
+        if (!$result->has('supplier')) {
+            $result->put('supplier', ['username' => '自营', 'id' => 0]);
+        }
+
 
         return $result;
     }
@@ -165,7 +171,9 @@ class OrderService
 
     private static function OrderOperate(OrderOperation $orderOperation)
     {
-
+        if (!isset($orderOperation)) {
+            return [false, '未找到该订单'];
+        }
         if (!$orderOperation->enable()) {
             return [false, $orderOperation->getMessage()];
         }
@@ -228,17 +236,17 @@ class OrderService
     public static function ordersPay(array $param)
     {
         $orderPay = \app\common\models\OrderPay::find($param['order_pay_id']);
-        if(!isset($orderPay)){
+        if (!isset($orderPay)) {
             throw new AppException('支付流水记录不存在');
         }
-        $orders = Order::whereIn('id',$orderPay->order_ids)->get();
-        if($orders->isEmpty()){
-            throw new AppException('(ID:'.$orderPay->id.')未找到订单流水号对应订单');
+        $orders = Order::whereIn('id', $orderPay->order_ids)->get();
+        if ($orders->isEmpty()) {
+            throw new AppException('(ID:' . $orderPay->id . ')未找到订单流水号对应订单');
         }
-        DB::transaction(function () use($orderPay,$orders){
+        DB::transaction(function () use ($orderPay, $orders) {
             $orderPay->status = 1;
             $orderPay->save();
-            $orders->each(function($order){
+            $orders->each(function ($order) {
                 if (!OrderService::orderPay(['order_id' => $order->id])) {
                     throw new AppException('订单状态改变失败,请联系客服');
                 }
