@@ -260,12 +260,10 @@
                                         @if($order['status'] == 0)
                                                 <tr>
                                                     <td ></td>
-                                                        @if($is_change_price)
-                                                            <td style='color:green;'>
-                                                                <a href="javascript:;" class="btn btn-link "
-                                                                   onclick="changePrice('{{$order['id']}}')">修改价格</a>
-                                                            </td>
-                                                        @endif
+                                                        <td style='color:green;'>
+                                                            <a href="javascript:;" class="btn btn-link "
+                                                               onclick="changePrice('{{$order['id']}}')">修改价格</a>
+                                                        </td>
                                                 </tr>
                                             @endif
                                         </table>

@@ -92,11 +92,12 @@ class RefundApply extends BaseModel
 
     public function scopeDefaults($query)
     {
-        return $query->where('uid', \YunShop::app()->getMemberId())->with([
-            'order' => function ($query) {
-                $query->orders();
-            }
-        ])->orderBy('id','desc');
+        return $query->where('uid', \YunShop::app()->getMemberId())
+            ->with([
+                'order' => function ($query) {
+                    $query->orders();
+                }
+            ])->orderBy('id', 'desc');
     }
 
     public function getRefundTypeNameAttribute()
@@ -125,9 +126,29 @@ class RefundApply extends BaseModel
 
     }
 
-    public function isCompleted()
+    public function scopeRefunding($query)
     {
-        return in_array($this->status, [self::COMPLETE, self::CONSENSUS]);
+        return $query->where('status', '<', self::COMPLETE);
+    }
+
+    public function scopeRefunded($query)
+    {
+        return $query->where('status', '>=', self::COMPLETE);
+    }
+
+    public function scopeRefundMoney($query)
+    {
+        return $query->where('refund_type', self::REFUND_TYPE_MONEY);
+    }
+
+    public function scopeReturnGoods($query)
+    {
+        return $query->where('refund_type', self::REFUND_TYPE_RETURN);
+    }
+
+    public function scopeExchangeGoods($query)
+    {
+        return $query->where('refund_type', self::REFUND_TYPE_GOODS);
     }
 
     public function getStatusNameAttribute()
@@ -140,6 +161,7 @@ class RefundApply extends BaseModel
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
+
     /**
      * 已退款
      * @return bool
@@ -166,12 +188,6 @@ class RefundApply extends BaseModel
         }
         return true;
     }
-//    public static function boot()
-//    {
-//        parent::boot();
-//
-//        static::observe(new RefundApplyObserver());
-//    }
 
 
 }

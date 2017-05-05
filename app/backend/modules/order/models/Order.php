@@ -12,71 +12,6 @@ use app\backend\modules\order\services\OrderService;
 
 class Order extends \app\common\models\Order
 {
-    private static function format($builder, $pageSize)
-    {
-        $list['total_price'] = $builder->sum('price');
-        $list += $builder->uniacid()->isPlugin()->orderBy('id', 'desc')->paginate($pageSize)->appends(['button_models'])->toArray();
-        return $list;
-    }
-
-    public static function getAllOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search);
-        return self::format($builder, $pageSize);
-    }
-
-    public static function getWaitPayOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->waitPay();
-        return self::format($builder, $pageSize);
-    }
-
-    public static function getWaitSendOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->waitSend();
-        return self::format($builder, $pageSize);
-    }
-
-    public static function getWaitReceiveOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->waitReceive();
-        return self::format($builder, $pageSize);
-
-    }
-
-    public static function getCompletedOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->completed();
-        return self::format($builder, $pageSize);
-    }
-
-    public static function getCancelledOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->cancelled();
-        return self::format($builder, $pageSize);
-    }
-
-    /**
-     * @param $search
-     * @param $pageSize
-     * @return mixed
-     * 获取退换货订单
-     */
-    public static function getRefundOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->refund();
-        $list['total_price'] = $builder->sum('price');
-        return self::format($builder, $pageSize);
-
-    }
-
-    public static function getRefundedOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->refunded();
-        $list['total_price'] = $builder->sum('price');
-        return self::format($builder, $pageSize);
-
-    }
 
     //订单导出订单数据
     public static function getExportOrders($search)
@@ -132,11 +67,6 @@ class Order extends \app\common\models\Order
         return function ($query) {
             $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_sn']);
         };
-    }
-
-    public function scopeIsPlugin($query)
-    {
-        return $query->where('is_plugin', 0);
     }
 
     public function scopeSearch($order_builder, $params)

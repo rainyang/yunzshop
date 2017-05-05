@@ -46,7 +46,7 @@ abstract class Status
                 'value' => static::REFUND
             ];
         } else {
-            if($order->hasOneRefundApply->isCompleted()){
+            if($order->hasOneRefundApply->isRefunded()){
                 $result[] = [
                     'name' => '已退款',
                     'api' => 'refund.detail',

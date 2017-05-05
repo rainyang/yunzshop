@@ -46,6 +46,7 @@ abstract class PreGeneratedController extends ApiController
             'total_goods_price' => sprintf('%.2f',$total_goods_price),
             'total_discount_price' => sprintf('%.2f',$total_discount_price)
         ];
+
         //dd($data);
         //exit;
         return $this->successJson('成功', $data);

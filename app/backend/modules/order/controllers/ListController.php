@@ -21,74 +21,54 @@ class ListController extends BaseController
      * 页码
      */
     const PAGE_SIZE = 10;
-    private $_order_model;
-    public function index(){
-        //phpinfo();
+    protected $orderModel;
+    public function __construct()
+    {
+        parent::__construct();
         $params = \YunShop::request()->get();
-        $this->_order_model = Order::getAllOrders($params['search'],self::PAGE_SIZE);
+        $this->orderModel = Order::orders($params['search']);
+    }
+
+    public function index()
+    {
         return view('order.index', $this->getData())->render();
     }
+
     public function waitPay()
     {
-        $params = \YunShop::request();
-        
-        $this->_order_model = Order::getWaitPayOrders($params['search'],self::PAGE_SIZE);
+        $this->orderModel->waitPay();
         return view('order.index', $this->getData())->render();
     }
+
     public function waitSend()
     {
-        $params = \YunShop::request();
-        
-        $this->_order_model = Order::getWaitSendOrders($params['search'],self::PAGE_SIZE);
+
+        $this->orderModel->waitSend();
         return view('order.index', $this->getData())->render();
     }
+
     public function waitReceive()
     {
-        $params = \YunShop::request();
-        
-        $this->_order_model = Order::getWaitReceiveOrders($params['search'],self::PAGE_SIZE);
+        $this->orderModel->waitReceive();
         return view('order.index', $this->getData())->render();
     }
+
     public function completed()
     {
-        $params = \YunShop::request();
-        
-        $this->_order_model = Order::getCompletedOrders($params['search'],self::PAGE_SIZE);
+
+        $this->orderModel->completed();
         return view('order.index', $this->getData())->render();
     }
+
     public function cancelled()
     {
-        $params = \YunShop::request();
 
-        $this->_order_model = Order::getCancelledOrders($params['search'],self::PAGE_SIZE);
+        $this->orderModel->cancelled();
         return view('order.index', $this->getData())->render();
     }
 
-    /**
-     * @return mixed
-     * 退换货订单
-     */
-    public function refund()
+    protected function getData()
     {
-        $params = \YunShop::request();
-        $this->_order_model = Order::getRefundOrders($params['search'],self::PAGE_SIZE);
-
-        return view('order.index', $this->getData())->render();
-    }
-    public function refunded()
-    {
-        $params = \YunShop::request();
-        $this->_order_model = Order::getRefundedOrders($params['search'],self::PAGE_SIZE);
-        return view('order.index', $this->getData())->render();
-    }
-    public function test()
-    {
-        $data = Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE]);
-    }
-
-
-
-    private function getData(){
         /*$params = [
             'search' => [
                 'ambiguous' => [
@@ -109,91 +89,25 @@ class ListController extends BaseController
                 return !empty($item);
             });
         }
-        $list = $this->_order_model;
+
+        $list['total_price'] = $this->orderModel->sum('price');
+        $list += $this->orderModel->orderBy('id', 'desc')->paginate(self::PAGE_SIZE)->appends(['button_models'])->toArray();
+
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
-        $is_change_price = true; //todo
         //dd($list);
         //exit;
         $data = [
             'list' => $list,
             'total_price' => $list['total_price'],
-            'lang' => $this->_lang(),
-            'totals' => $this->_totals(),
             'pager' => $pager,
             'requestSearch' => $requestSearch,
             'var' => \YunShop::app()->get(),
             'url' => \Request::query('route'),
             'include_ops' => 'order.ops',
-            'is_change_price' => $is_change_price,
-            'detail_url'    => 'order.detail'
+            'detail_url' => 'order.detail'
         ];
-        $data += $this->fakeData();
         return $data;
-    }
-    //假数据,配合模板修改
-    private function fakeData()
-    {
-        return array(
-            'supplierapply' => '',
-            'stores' => '',
-            'list' => '',
-            'yunbiset' => '',
-            'card_plugin' => '',
-            'perm_role' => '',
-            'sstarttime' => 0,
-            'r_type' => '',
-            'costmoney' => '',
-            'card_set' => '',
-            'liveRooms' => '',
-            'paytype' => '',
-            'sendtime' => 0,
-            'cashier_stores' => '',
-            'supplier' => '',
-            'type' => '',
-            'store' => '',
-            'status' => '',
-            'pendtime' => 0,
-            'p_cashier' => '',
-            'liveRoom' => '',
-            'cashier_store' => '',
-            'key' => '',
-            'endtime' => 0,
-            'fendtime' => 0,
-            'shopset' => '',
-            'pstarttime' => 0,
-            'level' => '',
-            'suppliers' => '',
-            'request' => '',
-            'fstarttime' => 0,
-            'starttime' => 0,
-            'agentid' => '',
-        );
-    }
-    //假数据,配合模板修改
-    private function _lang()
-    {
-        return array(
-            'goods' => '商品',
-            'good' => '商品',
-            'orderlist' => '订单列表'
-        );
-    }
-    //假数据,配合模板修改
-
-    private function _totals()
-    {
-        return array(
-            'index' => '30',
-            'waitPay' => '3',
-            'waitSend' => '2',
-            'waitReceive' => '5',
-            'complete' => '6',
-            'close' => '7',
-            'waitRefund' => '2',
-            'refund' => '1',
-            'applyWithdraw' => '4',
-        );
     }
 
     public function export()

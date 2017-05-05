@@ -16,6 +16,7 @@ use app\common\models\order\Pay;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
 use app\frontend\modules\order\services\status\StatusServiceFactory;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
 
@@ -65,7 +66,7 @@ class Order extends BaseModel
     public function scopeRefund($query)
     {
         return $query->where('refund_id', '>', '0')->whereHas('hasOneRefundApply', function ($query) {
-            return $query->where('status', '<', RefundApply::COMPLETE);
+            return $query->refunding();
         });
 
     }
@@ -73,7 +74,7 @@ class Order extends BaseModel
     public function scopeRefunded($query)
     {
         return $query->where('refund_id', '>', '0')->whereHas('hasOneRefundApply', function ($query) {
-            return $query->where('status', RefundApply::COMPLETE);
+            return $query->refunded();
         });
     }
 
@@ -194,11 +195,18 @@ class Order extends BaseModel
         }
         return $status_counts;
     }
-
+    public function scopeIsPlugin($query)
+    {
+        return $query->where('is_plugin', 0);
+    }
     public static function boot()
     {
         parent::boot();
         static::observe(new OrderObserver());
+
+        static::addGlobalScope(function(Builder $builder) {
+            $builder->uniacid()->isPlugin();
+        });
     }
 
     /**
