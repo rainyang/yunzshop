@@ -32,7 +32,7 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 操作员用户名</label>
                 <div class="col-sm-9 col-xs-12">
-                    <input type="text" name="user[username]" class="form-control" value="" @if($user->username)placeholder="{{ $user->username or '' }}" readonly @endif/>
+                    <input type="text" name="user[username]" class="form-control" value="" @if($user->username)placeholder="{{ $user->username or '' }}" readonly AUTOCOMPLETE="off" @endif/>
                     <span class='help-block'>操作员用户名具有唯一性，且不支持修改</span>
                 </div>
             </div>
