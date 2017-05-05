@@ -28,7 +28,7 @@
                  </label>
             </span>
             <input type='text' class='form-control' name='coupon[time_days]' value="{{isset($coupon['time_days']) ? $coupon['time_days'] : 0}}" />
-            <span class='input-group-addon'>天内有效(空为不限时间使用)</span>
+            <span class='input-group-addon'>天内有效(0 为不限时间使用)</span>
         </div>
         <br>
         <div class='input-group form-group col-sm-3'>
