@@ -32,6 +32,9 @@ class UnifyOrderDispatchPrice
             {
                 return 0;
             }
+            if(!isset($orderGoods->hasOneGoodsDispatch)){
+                return 0;
+            }
             if ($orderGoods->hasOneGoodsDispatch->dispatch_type == GoodsDispatch::UNIFY_TYPE) {
                 return $orderGoods->hasOneGoodsDispatch->dispatch_price;
             }

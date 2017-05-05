@@ -73,7 +73,6 @@ class OrderDiscount
 
     private function _getCouponPrice()
     {
-
         $discountCouponService = (new CouponService($this->order, Coupon::COUPON_DISCOUNT));
         $discountPrice = $discountCouponService->getOrderDiscountPrice();
         $discountCouponService->activate();
