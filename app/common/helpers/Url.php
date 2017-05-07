@@ -92,7 +92,7 @@ class Url
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
-        return   '/addons/yun_shop/plugin.php?'. http_build_query($params);
+        return   '/web/plugin.php?'. http_build_query($params);
     }
 
     /**
@@ -159,6 +159,7 @@ class Url
             return $route;
         }
         empty($domain) && $domain = request()->getSchemeAndHttpHost();
+
         return $domain . self::plugin($route,$params);
     }
 
