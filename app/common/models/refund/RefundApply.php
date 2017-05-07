@@ -31,9 +31,9 @@ class RefundApply extends BaseModel
         'images' => 'json',
         'refund_proof_imgs' => 'json'
     ];
-    const REFUND_TYPE_MONEY = 0;
-    const REFUND_TYPE_RETURN = 1;
-    const REFUND_TYPE_GOODS = 2;
+    const REFUND_TYPE_REFUND_MONEY = 0;
+    const REFUND_TYPE_RETURN_GOODS = 1;
+    const REFUND_TYPE_EXCHANGE_GOODS = 2;
     const CLOSE = '-3';//关闭
     const CANCEL = '-2';//用户取消
     const REJECT = '-1';//驳回
@@ -103,9 +103,9 @@ class RefundApply extends BaseModel
     public function getRefundTypeNameAttribute()
     {
         $mapping = [
-            self::REFUND_TYPE_MONEY => '退款',
-            self::REFUND_TYPE_RETURN => '退货',
-            self::REFUND_TYPE_GOODS => '换货',
+            self::REFUND_TYPE_REFUND_MONEY => '退款',
+            self::REFUND_TYPE_RETURN_GOODS => '退货',
+            self::REFUND_TYPE_EXCHANGE_GOODS => '换货',
 
         ];
         return $mapping[$this->refund_type];
@@ -115,7 +115,7 @@ class RefundApply extends BaseModel
     {
         return [
             self::CANCEL => '用户取消',
-            self::REJECT => '驳回',
+            self::REJECT => '已驳回',
             self::WAIT_CHECK => '待审核',
             self::WAIT_RETURN_GOODS => '待退货',
             self::WAIT_RECEIVE_RETURN_GOODS => '商家待收货',
@@ -138,17 +138,17 @@ class RefundApply extends BaseModel
 
     public function scopeRefundMoney($query)
     {
-        return $query->where('refund_type', self::REFUND_TYPE_MONEY);
+        return $query->where('refund_type', self::REFUND_TYPE_REFUND_MONEY);
     }
 
     public function scopeReturnGoods($query)
     {
-        return $query->where('refund_type', self::REFUND_TYPE_RETURN);
+        return $query->where('refund_type', self::REFUND_TYPE_RETURN_GOODS);
     }
 
     public function scopeExchangeGoods($query)
     {
-        return $query->where('refund_type', self::REFUND_TYPE_GOODS);
+        return $query->where('refund_type', self::REFUND_TYPE_EXCHANGE_GOODS);
     }
 
     public function getStatusNameAttribute()
