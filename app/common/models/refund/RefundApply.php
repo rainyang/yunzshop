@@ -91,14 +91,7 @@ class RefundApply extends BaseModel
         return ['create_time', 'refund_time', 'operate_time', 'send_time', 'return_time', 'end_time', 'cancel_pay_time', 'cancel_send_time'] + parent::getDates();
     }
 
-    public function scopeDefaults($query)
-    {
-        return $query->with([
-                'order'=>function($query){
-                    return $query->orders();
-                }
-            ])->orderBy('id', 'desc');
-    }
+
 
     public function getRefundTypeNameAttribute()
     {
@@ -157,10 +150,7 @@ class RefundApply extends BaseModel
         return $this->getStatusNameMapping()[$this->status];
     }
 
-    public function order()
-    {
-        return $this->belongsTo(Order::class, 'order_id', 'id');
-    }
+
 
     /**
      * 已退款
