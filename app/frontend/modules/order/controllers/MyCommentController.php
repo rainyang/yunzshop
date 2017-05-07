@@ -17,7 +17,7 @@ class MyCommentController extends ApiController
 {
     public function index()
     {
-        $list = Order::getMyCommentList(\YunShop::app()->getMemberId(), \YunShop::request()->status);
+        $list = Order::getMyCommentList( \YunShop::request()->status);
         return $this->successJson('成功', [
             'list' => $list->toArray()
         ]);
@@ -25,7 +25,7 @@ class MyCommentController extends ApiController
 
     public function goods()
     {
-        $list = OrderGoods::getMyCommentList(\YunShop::app()->getMemberId(), 1);
+        $list = OrderGoods::getMyCommentList(1);
         return $this->successJson('成功', [
             'list' => $list->toArray()
         ]);

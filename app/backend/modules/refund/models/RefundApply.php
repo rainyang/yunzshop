@@ -48,13 +48,13 @@ class RefundApply extends \app\common\models\refund\RefundApply
     {
         if (!isset($this->typeInstance)) {
             switch ($this->refund_type) {
-                case self::REFUND_TYPE_MONEY:
+                case self::REFUND_TYPE_REFUND_MONEY:
                     $this->typeInstance = new RefundMoney($this);
                     break;
-                case self::REFUND_TYPE_RETURN:
+                case self::REFUND_TYPE_RETURN_GOODS:
                     $this->typeInstance = new ReturnGoods($this);
                     break;
-                case self::REFUND_TYPE_GOODS:
+                case self::REFUND_TYPE_EXCHANGE_GOODS:
                     $this->typeInstance = new ExchangeGoods($this);
                     break;
                 default:

@@ -9,6 +9,7 @@
 namespace app\backend\modules\order\models;
 
 use app\backend\modules\order\services\OrderService;
+use Illuminate\Database\Eloquent\Builder;
 
 class Order extends \app\common\models\Order
 {
@@ -135,5 +136,13 @@ class Order extends \app\common\models\Order
     public function close()
     {
         OrderService::close($this);
+    }
+    public static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(function(Builder $builder) {
+            $builder->isPlugin();
+        });
     }
 }

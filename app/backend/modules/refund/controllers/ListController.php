@@ -1,8 +1,6 @@
 <?php
 namespace app\backend\modules\refund\controllers;
 
-use app\backend\modules\order\models\Order;
-
 /**
  * 退款申请列表
  * Created by PhpStorm.
