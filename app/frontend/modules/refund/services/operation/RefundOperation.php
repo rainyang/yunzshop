@@ -69,6 +69,7 @@ abstract class RefundOperation extends RefundApply
     /**
      * 是否满足操作条件
      * @return bool
+     * @throws AppException
      */
     public function enable()
     {
@@ -82,7 +83,7 @@ abstract class RefundOperation extends RefundApply
 
 
         if (!in_array($this->order['status'], $this->statusBeforeChange)) {
-            throw new AppException("订单状态不满足{$this->name}操作");
+            throw new AppException("的售后申请,无法执行{$this->name}操作");
             return false;
         }
         return true;
