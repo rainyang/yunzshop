@@ -92,11 +92,8 @@ class RefundApply extends BaseModel
 
     public function scopeDefaults($query)
     {
-        return $query->where('uid', \YunShop::app()->getMemberId())
-            ->with([
-                'order' => function ($query) {
-                    $query->orders();
-                }
+        return $query->with([
+                'order' 
             ])->orderBy('id', 'desc');
     }
 
@@ -188,6 +185,12 @@ class RefundApply extends BaseModel
         }
         return true;
     }
-
+    protected static function boot()
+    {
+        parent::boot();
+        self::addGlobalScope(function($query){
+            return $query->where('uid', \YunShop::app()->getMemberId());
+        });
+    }
 
 }
