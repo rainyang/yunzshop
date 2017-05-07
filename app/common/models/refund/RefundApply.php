@@ -94,7 +94,9 @@ class RefundApply extends BaseModel
     public function scopeDefaults($query)
     {
         return $query->with([
-                'order'
+                'order'=>function($query){
+                    return $query->orders();
+                }
             ])->orderBy('id', 'desc');
     }
 
