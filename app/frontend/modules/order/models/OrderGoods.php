@@ -10,6 +10,7 @@ namespace app\frontend\modules\order\models;
 
 use app\frontend\modules\goods\models\Goods;
 use app\frontend\modules\goods\models\GoodsOption;
+use Illuminate\Database\Eloquent\Builder;
 
 class OrderGoods extends \app\common\models\OrderGoods
 {
@@ -34,9 +35,9 @@ class OrderGoods extends \app\common\models\OrderGoods
     {
         return $this->hasOne(Goods::class, 'id', 'goods_id');
     }
-    public static function getMyCommentList($uid, $status)
+    public static function getMyCommentList( $status)
     {
-        $list = self::select()->where('uid', $uid)->Where('comment_status', $status)->orderBy('id', 'desc')->get();
+        $list = self::select()->Where('comment_status', $status)->orderBy('id', 'desc')->get();
         return $list;
     }
     public function isFreeShipping()
@@ -47,5 +48,13 @@ class OrderGoods extends \app\common\models\OrderGoods
         }
 
         return false;
+    }
+    public static function boot()
+    {
+        parent::boot();
+
+        self::addGlobalScope(function(Builder $query){
+            return $query->where('uid', \YunShop::app()->getMemberId());
+        });
     }
 }

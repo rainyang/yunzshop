@@ -4,56 +4,78 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 use app\common\components\BaseController;
+use app\frontend\modules\order\models\Order;
 use app\frontend\modules\order\models\OrderListModel;
 
 class ListController extends ApiController
 {
-    //获取指定状态的订单
-    public function getOrders($status = '')
-    {
-        $uid = \YunShop::app()->getMemberId();
-        if (!$uid) {
-            return $this->errorJson( $msg = '缺少访问参数', $data = []);
-        }
+    private $order;
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->order = Order::orders()->where('status', '<>', '-1');
+    }
+
+    private function getData()
+    {
         $pageSize = \YunShop::request()->pagesize;
         $pageSize = $pageSize ? $pageSize : 100;//todo 配合app测试
-
-        //返回的订单不包括"已删除订单"
-        $list = OrderListModel::getRequestOrderList($status, $uid)->where('status','<>','-1')->paginate($pageSize)->toArray();
-//dd($list);
-        
-        return $this->successJson($msg = 'ok', $data = $list);
-
+        return $this->order->paginate($pageSize)->toArray();
     }
 
-    //所有订单(不包括"已删除"订单)
+    /**
+     * 所有订单(不包括"已删除"订单)
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
-        return $this->getOrders();
+        $this->order;
+        return $this->successJson($msg = 'ok', $data = $this->getData());
+
     }
 
-    //待付款订单
+    /**
+     * 待付款订单
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function waitPay()
     {
-        return $this->getOrders(0); //待付款订单在数据表中的 status 是 0
+        $this->order->waitPay();
+        return $this->successJson($msg = 'ok', $data = $this->getData());
+
     }
 
-    //待发货订单
+    /**
+     * 待发货订单
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function waitSend()
     {
-        return $this->getOrders(1); //待发货订单在数据表中的 status 是 1
+        $this->order->waitSend();
+        return $this->successJson($msg = 'ok', $data = $this->getData());
+
     }
 
-    //待收货订单
+    /**
+     * 待收货订单
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function waitReceive()
     {
-        return $this->getOrders(2); //待收货订单在数据表中的 status 是 2
+        $this->order->waitReceive();
+
+        return $this->successJson($msg = 'ok', $data = $this->getData());
     }
 
-    //已完成订单
-    public function Completed()
+    /**
+     * 已完成订单
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function completed()
     {
-        return $this->getOrders(3); //已完成订单在数据表中的 status 是 3
+        $this->order->completed();
+
+        return $this->successJson($msg = 'ok', $data = $this->getData());
     }
 }

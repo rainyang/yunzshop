@@ -8,5 +8,11 @@ namespace app\frontend\modules\refund\models;
  */
 class RefundApply extends \app\common\models\refund\RefundApply
 {
-
+    protected static function boot()
+    {
+        parent::boot();
+        self::addGlobalScope(function($query){
+            return $query->where('uid', \YunShop::app()->getMemberId());
+        });
+    }
 }

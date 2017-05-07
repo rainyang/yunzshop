@@ -10,6 +10,7 @@ namespace app\common\models\refund;
 
 use app\common\models\BaseModel;
 use app\common\models\Order;
+use Illuminate\Database\Eloquent\Builder;
 
 class RefundApply extends BaseModel
 {
@@ -93,7 +94,7 @@ class RefundApply extends BaseModel
     public function scopeDefaults($query)
     {
         return $query->with([
-                'order' 
+                'order'
             ])->orderBy('id', 'desc');
     }
 
@@ -188,8 +189,9 @@ class RefundApply extends BaseModel
     protected static function boot()
     {
         parent::boot();
-        self::addGlobalScope(function($query){
-            return $query->where('uid', \YunShop::app()->getMemberId());
+
+        static::addGlobalScope(function(Builder $builder) {
+            $builder->uniacid();
         });
     }
 

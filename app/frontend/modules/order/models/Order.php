@@ -5,14 +5,14 @@
  * Date: 2017/4/6
  * Time: 下午4:35
  */
-
 namespace app\frontend\modules\order\models;
 
-
 use app\frontend\models\Member;
+use Illuminate\Database\Eloquent\Builder;
 
 class Order extends \app\common\models\Order
 {
+    protected $appends = ['status_name', 'pay_type_name', 'button_models'];
     protected $hidden = [
         'uniacid',
         'create_time',
@@ -20,16 +20,27 @@ class Order extends \app\common\models\Order
         'is_member_deleted',
         'finish_time',
         'pay_time',
-        ',send_time',
+        'send_time',
         'send_time',
         'uid',
         'cancel_time',
         'created_at',
         'updated_at',
         'deleted_at'
-    ]; //在 Json 中隐藏的字段
-    protected $appends = ['status_name', 'pay_type_name', 'button_models'];
+    ];
 
+    /**
+     * 订单列表
+     * @param $uid
+     * @return $this
+     */
+    public static function orders()
+    {
+        $orders = self::with(['hasManyOrderGoods'=>function($query){
+            return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title','goods_option_id','goods_option_title','comment_status']);
+        }])->orderBy('id','desc');
+        return $orders;
+    }
     public function belongsToMember()
     {
         return $this->belongsTo(Member::class, 'uid', 'uid');
@@ -43,12 +54,6 @@ class Order extends \app\common\models\Order
     public function scopeOrders($query)
     {
         return $query->with('hasManyOrderGoods');
-    }
-
-    public function scopeGetOrderCountGroupByStatus($query, $status = [])
-    {
-        $query->where('uid', \YunShop::app()->getMemberId());
-        return parent::scopeGetOrderCountGroupByStatus($query, $status);
     }
 
     public function orderGoodsBuilder($status)
@@ -66,7 +71,7 @@ class Order extends \app\common\models\Order
         };
     }
 
-    public static function getMyCommentList($uid, $status)
+    public static function getMyCommentList($status)
     {
         $operator = [];
         if ($status == 0) {
@@ -81,6 +86,56 @@ class Order extends \app\common\models\Order
             })
             ->with([
                 'hasManyOrderGoods' => self::orderGoodsBuilder($status)
-            ])->where('uid', $uid)->where('status', 3)->orderBy('id', 'desc')->get();
+            ])->where('status', 3)->orderBy('id', 'desc')->get();
+    }
+
+    /**
+     * 关系链 指定商品
+     *
+     * @param $uid
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public static function getOrderListByUid($uid)
+    {
+        return self::getOrderList($uid)
+            ->where('status','>=',1)
+            ->where('status','<=',3)
+            ->get();
+    }
+
+    /**
+     * 获取用户消费总额
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalPrice($uid)
+    {
+        return self::where('status', '>=', 1)
+            ->where('status', '<=', 3)
+            ->where('uid', $uid)
+            ->sum('price');
+    }
+
+    /**
+     * 获取用户消费次数
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalNum($uid)
+    {
+        return self::where('status','>=', 1)
+            ->Where('status','<=', 3)
+            ->where('uid', $uid)
+            ->count('id');
+    }
+    public static function boot()
+    {
+        parent::boot();
+
+        self::addGlobalScope(function(Builder $query){
+            return $query->where('uid', \YunShop::app()->getMemberId());
+        });
     }
 }
