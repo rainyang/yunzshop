@@ -21,10 +21,14 @@ class Order extends \app\common\models\Order
         $orders = $builder->get()->toArray();
         return $orders;
     }
+    public function hasManyOrderGoods()
+    {
+        return $this->hasMany(OrderGoods::class);
+    }
 
     public function scopeExportOrders($search)
     {
-        $order_builder = Order::search($search);
+        $order_builder = self::search($search);
 
         $orders = $order_builder->with([
             'belongsToMember' => self::memberBuilder(),
@@ -56,7 +60,33 @@ class Order extends \app\common\models\Order
         ]);
         return $orders;
     }
+    /**
+     * 获取用户消费总额
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalPrice($uid)
+    {
+        return self::where('status', '>=', 1)
+            ->where('status', '<=', 3)
+            ->where('uid', $uid)
+            ->sum('price');
+    }
 
+    /**
+     * 获取用户消费次数
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalNum($uid)
+    {
+        return self::where('status','>=', 1)
+            ->Where('status','<=', 3)
+            ->where('uid', $uid)
+            ->count('id');
+    }
     private static function refundBuilder()
     {
         return function ($query) {
@@ -74,7 +104,7 @@ class Order extends \app\common\models\Order
     private static function orderGoodsBuilder()
     {
         return function ($query) {
-            $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_sn']);
+            $query->orderGoods();
         };
     }
 

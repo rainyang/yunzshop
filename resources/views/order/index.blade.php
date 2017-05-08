@@ -188,9 +188,9 @@
                                     <img src="{{tomedia($order_goods['thumb'])}}">
                                 </td>
                                 <td class="top" valign='top' >
-                                    {{$order_goods['title']}}
-                                    @if( !empty($order_goods['optiontitle']))<br/><span
-                                            class="label label-primary sizebg">{{$order_goods['optiontitle']}}</span>
+                                    <a href="{{yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
+                                    @if( !empty($order_goods['goods_option_title']))<br/><span
+                                            class="label label-primary sizebg">{{$order_goods['goods_option_title']}}</span>
                                     @endif
                                     <br/>{{$order_goods['goods_sn']}}
                                 </td>

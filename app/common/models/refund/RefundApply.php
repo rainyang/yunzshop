@@ -58,7 +58,7 @@ class RefundApply extends BaseModel
     }
     public function returnExpress()
     {
-        return $this->hasOne(returnExpress::class, 'refund_id', 'id');
+        return $this->hasOne(ReturnExpress::class, 'refund_id', 'id');
     }
     /**
      * 前端获取退款按钮 todo 转移到前端的model
@@ -116,8 +116,8 @@ class RefundApply extends BaseModel
             self::WAIT_RETURN_GOODS => '待退货',
             self::WAIT_RECEIVE_RETURN_GOODS => '商家待收货',
             self::WAIT_REFUND => '待退款',
-            self::COMPLETE => '完成',
-            self::CONSENSUS => '手动退款',
+            self::COMPLETE => '已退款',
+            self::CONSENSUS => '已手动退款',
         ];
 
     }

@@ -9,7 +9,7 @@
 namespace app\backend\modules\member\models;
 
 use app\backend\models\BackendModel;
-use app\frontend\modules\member\models\MemberModel;
+use app\backend\modules\order\models\Order;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\order\models\OrderListModel;
 
@@ -69,14 +69,14 @@ class MemberRelation extends BackendModel
                     $isAgent = true;
                     break;
                 case 2:
-                    $cost_num = OrderListModel::getCostTotalNum($uid);
+                    $cost_num = Order::getCostTotalNum($uid);
 
                     if ($cost_num >= $info['become_ordercount']) {
                         $isAgent = true;
                     }
                     break;
                 case 3:
-                    $cost_price = OrderListModel::getCostTotalPrice($uid);
+                    $cost_price = Order::getCostTotalPrice($uid);
 
                     if ($cost_price >= $info['become_moneycount']) {
                         $isAgent = true;
@@ -385,12 +385,12 @@ class MemberRelation extends BackendModel
                     $can = false;
 
                     if ($set->become == '2') {
-                        $ordercount = OrderListModel::getCostTotalNum($member->member_id);
+                        $ordercount = Order::getCostTotalNum($member->member_id);
 
                         \Log::debug('ordercount', $ordercount);
                         $can = $ordercount >= intval($set->become_ordercount);
                     } else if ($set->become == '3') {
-                        $moneycount = OrderListModel::getCostTotalPrice($member->member_id);
+                        $moneycount = Order::getCostTotalPrice($member->member_id);
 
                         \Log::debug('moneycount', $moneycount);
                         $can = $moneycount >= floatval($set->become_moneycount);
@@ -457,11 +457,11 @@ class MemberRelation extends BackendModel
                     $can = false;
 
                     if ($set->become == '2') {
-                        $ordercount = OrderListModel::getCostTotalNum($member->member_id);
+                        $ordercount = Order::getCostTotalNum($member->member_id);
 
                         $can = $ordercount >= intval($set->become_ordercount);
                     } else if ($set->become == '3') {
-                        $moneycount = OrderListModel::getCostTotalPrice($member->member_id);
+                        $moneycount = Order::getCostTotalPrice($member->member_id);
 
                         $can = $moneycount >= floatval($set->become_moneycount);
                     }
