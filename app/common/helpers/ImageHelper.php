@@ -31,7 +31,7 @@ class ImageHelper
      */
     public static function tplFormFieldImage($name, $value = '', $default = '', $options = array()) {
         if (empty($default)) {
-            $default = static_url('./resource/images/nopic.jpg');
+            $default = static_url('resource/images/nopic.jpg');
         }
         $val = $default;
         if (!empty($value)) {
@@ -87,7 +87,7 @@ class ImageHelper
 			}
 			function deleteImage(elm){
 				require(["jquery"], function($){
-					$(elm).prev().attr("src", static_url("./resource/images/nopic.jpg"));
+					$(elm).prev().attr("src", \'{{static_url("resource/images/nopic.jpg")}}\');
 					$(elm).parent().prev().find("input").val("");
 				});
 			}
@@ -117,13 +117,12 @@ class ImageHelper
      * @return string
      */
     public static function tplFormFieldMultiImage($name, $value = array(), $options = array()) {
-        global $_W;
         $options['multiple'] = true;
         $options['direct'] = false;
-        $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['image']['limit']) * 1024;
+        $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
         if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
             if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
-                exit('图片上传目录错误,只能指定最多两级目录,如: "we7_store","we7_store/d1"');
+                exit('图片上传目录错误,只能指定最多两级目录,如: "yz_store","yz_store/d1"');
             }
         }
         $s = '';
