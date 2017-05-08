@@ -103,8 +103,7 @@ class BalanceWithdrawController extends BaseController
             return $resultPay['message'];
         } else {
 
-            echo $resultPay; exit;
-            //echo '<pre>'; print_r($resultPay); exit;
+            echo '<pre>'; print_r($resultPay); exit;
             $resultPay = json_decode($resultPay);
             echo '<pre>'; print_r($resultPay); exit;
             return $resultPay['result'];
