@@ -256,6 +256,14 @@ class MemberModel extends Member
                     'level' => $info['yz_member']['level']['level_name'],
                     'is_show' => $set['is_referrer']
                 ];
+            } else {
+                $data = [
+                    'uid' => '',
+                    'avatar' => tomedia($set['heading']),
+                    'nickname' => (1 == $member_info['is_agent'] && 2 == $member_info['status']) ? '总店' : '暂无',
+                    'level' => '',
+                    'is_show' => $set['is_referrer']
+                ];
             }
         }
 
