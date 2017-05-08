@@ -257,9 +257,15 @@ class MemberModel extends Member
                     'is_show' => $set['is_referrer']
                 ];
             } else {
+                if (isset($set) && $set['headimg']) {
+                    $avatar = tomedia($set['headimg']);
+                } else {
+                    $avatar = Url::shopUrl('static/images/photo-mr.jpg');
+                }
+
                 $data = [
                     'uid' => '',
-                    'avatar' => tomedia($set['heading']),
+                    'avatar' => $avatar,
                     'nickname' => (1 == $member_info['is_agent'] && 2 == $member_info['status']) ? '总店' : '暂无',
                     'level' => '',
                     'is_show' => $set['is_referrer']
