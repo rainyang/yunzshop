@@ -6,6 +6,12 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\events\member\BecomeAgent;
 use app\common\services\Session;
 
+use app\common\repositories\OptionRepository;
+use app\common\services\PluginManager;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
+use Yunshop\Supplier\common\services\VerifyButton;
+
 /**
  * Created by PhpStorm.
  * User: jan
@@ -247,5 +253,18 @@ class Member extends BackendModel
         }
 
         return 0;
+    }
+
+    public static function addPlugins(&$data = [])
+    {
+        $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+
+        if ($plugin_class->isEnabled('supplier')) {
+            $data['supplier'] = VerifyButton::button();
+        } else {
+            $data['supplier'] = [];
+        }
+
+        return $data;
     }
 }

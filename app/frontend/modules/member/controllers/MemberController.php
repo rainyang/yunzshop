@@ -49,6 +49,8 @@ class MemberController extends ApiController
 
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
 
+                $data = MemberModel::addPlugins($data);
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('['. $member_id .']用户不存在');
