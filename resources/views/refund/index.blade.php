@@ -6,7 +6,18 @@
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款状态 :</label>
             <div class="col-sm-9 col-xs-12">
-                <p class="form-control-static">{{$order['has_one_refund_apply']['status_name']}}</p>
+                <p class="form-control-static">@if (in_array($order['has_one_refund_apply']['status'],[0,1,2]))
+                        <a class="btn btn-danger btn-sm" href="javascript:;"
+                           onclick="$('#modal-refund').find(':input[name=id]').val('{{$order['id']}}')"
+                           data-toggle="modal"
+                           data-target="#modal-refund">处理{{$order['has_one_refund_apply']['refund_type_name']}}申请</a>
+                    @elseif ($order['has_one_refund_apply']['status'] == -1 )
+                        <span class='label label-danger'>{{$order['has_one_refund_apply']['status_name']}}</span>
+                    @elseif ($order['has_one_refund_apply']['status'] == -2)
+                        <span class='label label-danger'>{{$order['has_one_refund_apply']['status_name']}}</span>
+                    @elseif(in_array($order['has_one_refund_apply']['status'],[4,5]))
+                        <span class='label label-success'>{{$order['has_one_refund_apply']['status_name']}}</span>
+                    @endif</p>
             </div>
         </div>
         <div class="form-group">
@@ -85,32 +96,17 @@
             </div>
         @endif
 
-
-        <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-            <div class="col-sm-9 col-xs-12">
-                @if (in_array($order['has_one_refund_apply']['status'],[0,1,2]))
-                    <a class="btn btn-danger btn-sm" href="javascript:;"
-                       onclick="$('#modal-refund').find(':input[name=id]').val('{{$order['id']}}')"
-                       data-toggle="modal"
-                       data-target="#modal-refund">处理{{$order['has_one_refund_apply']['refund_type_name']}}申请</a>
-                @elseif ($order['has_one_refund_apply']['status'] == -1 )
-                    <span class='label label-default'>{{$order['has_one_refund_apply']['status_name']}}</span>
-                @elseif ($order['has_one_refund_apply']['status'] == -2)
-                    <span class='label label-default'>{{$order['has_one_refund_apply']['status_name']}}</span>
-                @elseif(in_array($order['has_one_refund_apply']['status'],[4,5]))
-                    <span class='label label-danger'>{{$order['has_one_refund_apply']['status_name']}}</span>
-                @endif
-            </div>
-        </div>
-
         @if (isset($order['has_one_refund_apply']['return_express']))
             <div class="form-group">
-                <div class="panel-heading" style="padding-left: 200px;">
-                    <br>客户寄出快递信息
+
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">客户寄出快递信息 </label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+                        </br>
+                    </div>
+
                 </div>
             </div>
-
             @if (!empty($order['has_one_refund_apply']['return_express']['express_company_name']))
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">快递名称 :</label>
@@ -139,6 +135,8 @@
                     </div>
                 </div>
             @endif
+
+
 
         @endif
 

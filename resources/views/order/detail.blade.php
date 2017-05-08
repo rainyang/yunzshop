@@ -94,7 +94,8 @@
                             <div class="col-sm-9 col-xs-12">
                                 <img src='{{$order['belongs_to_member']['avatar']}}'
                                      style='width:100px;height:100px;padding:1px;border:1px solid #ccc'/>
-                                {{$order['belongs_to_member']['nickname']}}
+                                <a href="{!! yzWebUrl('member.member.detail',array('id'=>$order['belongs_to_member']['uid'])) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
+
                             </div>
                         </div>
                         <div class="form-group">
