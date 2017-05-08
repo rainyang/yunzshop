@@ -427,7 +427,6 @@
                     $("[areas=" + calculateType + "]").children(".tbody-areas").append(content);
                 }
 
-
             })
         }
 
@@ -490,28 +489,7 @@
             });
             return citys;
         }
-//        function editArea(btn){
-//            console.log(btn);
-//            current = $(btn).attr('random');
-//            clearSelects();
-//            var old_citys = $(btn).prev().val().split(';');
-//
-//            $("#modal-areas").modal();
-//            var citystrs = '';
-//            var citystrIds = '';
-//            $('#btnSubmitArea').unbind('click').click(function(){
-//                $('.city:checked').each(function(){
-//                    citystrs += $(this).attr('city') + ";";
-//                    citystrIds += $(this).attr('city_id') + ";";
-//                });
-//                $('.' + current + ' .areas').html(citystrs);
-//                $('.' + current + ' .areas-name').val(citystrs);
-//                $('.' + current + ' .areas-ids').val(citystrIds);
-//
-//
-//            })
-//
-//        }
+
 
     </script>
     @include('area.dispatchselectprovinces')
