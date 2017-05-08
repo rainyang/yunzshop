@@ -51,6 +51,7 @@ class Order extends \app\common\models\Order
             'address',
             'hasOnePayType',
             'hasOneRefundApply' => self::refundBuilder(),
+            'hasOneOrderRemark'
 
         ]);
         return $orders;
