@@ -124,7 +124,8 @@
                                 @show
                                 @if( $requestSearch['plugin'] != "fund")
                                     <a class="btn btn-warning"
-                                       href="{php echo $this->createWebUrl('order/export')}">自定义导出</a>
+                                       href="{!! yzWebUrl('order.export') !!}">自定义导出</a>
+
                                 @endif
                             </div>
 
@@ -155,39 +156,27 @@
                         <tr>
                             <td class="left" colspan='8' >
                                 <b>订单编号:</b> {{$order['order_sn']}}
-                                @if( 0&&$order['pay_ordersn']=0)
-                                    <b>支付单号:</b>  {{$order['pay_ordersn']=0}}
-                                @endif
+
                                 <b>下单时间: </b>{{$order['create_time']}}
-                                @if( 0&&!empty($order['refundstate']))<label
-                                        class='label label-danger'>{{$r_type[$order['rtype']]}}申请</label>@endif
-                                @if( 0&&$order['rstatus'] == 4)<label class='label label-primary'>客户已经寄出快递</label>@endif
+                                @if( $order['has_one_refund_apply'] == \app\common\models\refund\RefundApply::WAIT_RECEIVE_RETURN_GOODS)<label class='label label-primary'>客户已经寄出快递</label>@endif
 
                                 @yield('shop_name')
                                 @section('shop_name','<label class="label label-info">总店</label>')
 
-                                @if(!empty($order['refund_data']))
-                                    <label class="label label-info" style="background-color: #ef5555 !important;">{{$order['refund_data']['refund_type_name']}}</label>
+                                @if(!empty($order['has_one_refund_apply']))
+                                    <label class="label label-info" style="background-color: #ef5555 !important;">{{$order['has_one_refund_apply']['refund_type_name']}}</label>
                                 @endif
-                                @if( 0&&!empty($order['storename']))
-                                    <label class="label label-primary">所属门店：{{$order['storename']}}</label>
-                            @endif
+
+
                             <td class="right" >
-                                @if( 0&&empty($order['statusvalue']))
+                                @if(empty($order['status']))
                                     <a class="btn btn-default btn-sm" href="javascript:;"
-                                       onclick="$('#modal-close').find(':input[name=id]').val('{{$order['id']}}')"
+                                       onclick="$('#modal-close').find(':input[name=order_id]').val('{{$order['id']}}')"
                                        data-toggle="modal" data-target="#modal-close">关闭订单</a>
                                 @endif
 
                             </td>
 
-                            @if( 0&&empty($var['isagent']) && $order['isempty'] == 1 && $order['ismaster'] == 1)
-                                <td >
-                                    <input class='itemid' type='hidden' value="{{$order['id']}}"/>
-                                    <a class="btn btn-success btn-sm" href="javascript:;" onclick="sendagent(this)"
-                                       data-toggle="modal" data-target="#modal-changeagent">选择门店</a>
-                                </td>
-                            @endif
 
 
                         </tr>
@@ -271,12 +260,10 @@
                                         @if($order['status'] == 0)
                                                 <tr>
                                                     <td ></td>
-                                                        @if($is_change_price)
-                                                            <td style='color:green;'>
-                                                                <a href="javascript:;" class="btn btn-link "
-                                                                   onclick="changePrice('{{$order['id']}}')">修改价格</a>
-                                                            </td>
-                                                        @endif
+                                                        <td style='color:green;'>
+                                                            <a href="javascript:;" class="btn btn-link "
+                                                               onclick="changePrice('{{$order['id']}}')">修改价格</a>
+                                                        </td>
                                                 </tr>
                                             @endif
                                         </table>

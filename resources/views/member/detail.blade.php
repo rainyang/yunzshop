@@ -32,6 +32,12 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级</label>
                             <div class="col-sm-9 col-xs-12">
                                 <select name='data[level_id]' class='form-control'>
+                                    <option value="0" @if($member['yz_member']['level_id']==$level['id'])
+                                    selected
+                                    @endif;
+                                    >
+                                        {{$set['level_name']}}
+                                    </option>
                                     @foreach ($levels as $level)
                                     <option value='{{$level['id']}}'
                                             @if($member['yz_member']['level_id']==$level['id'])

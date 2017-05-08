@@ -17,7 +17,7 @@ use Illuminate\Support\Collection;
 abstract class PreGeneratedController extends ApiController
 {
 
-    protected function index()
+    public function index()
     {
         $order_data = $this->getOrderData();
         $total_price = $order_data->sum('order.price');
@@ -46,6 +46,7 @@ abstract class PreGeneratedController extends ApiController
             'total_goods_price' => sprintf('%.2f',$total_goods_price),
             'total_discount_price' => sprintf('%.2f',$total_discount_price)
         ];
+
         //dd($data);
         //exit;
         return $this->successJson('成功', $data);

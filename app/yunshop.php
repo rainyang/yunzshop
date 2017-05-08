@@ -136,7 +136,7 @@ class YunShop
      */
     public static function isPlugin()
     {
-        return (strpos($_SERVER['PHP_SELF'], '/addons/') !== false &&
+        return (strpos($_SERVER['PHP_SELF'], '/web/') !== false &&
             strpos($_SERVER['PHP_SELF'], '/plugin.php') !== false) ? true : false;
     }
 
@@ -182,6 +182,7 @@ class YunShop
         $routes = explode('.', $requestRoute);
 
         $path = self::getAppPath();
+
         $namespace = self::getAppNamespace();
         $action = '';
         $controllerName = '';
@@ -369,6 +370,7 @@ class YunApp extends YunComponent
             'uniacid'=>request()->get('i'),
             'weid'=>request()->get('i'),
             'acid'=>request()->get('i'),
+            'account' => \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'))?\app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'))->toArray():''
         ];
     }
 

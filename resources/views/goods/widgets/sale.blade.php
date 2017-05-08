@@ -59,7 +59,6 @@
         <a href="javascript:;" class="btn btn-default selectareas" onclick="selectAreas()" >添加不参加满包邮的地区</a>
         <input type="hidden" id='selectedareas' name="widgets[sale][ed_areas]" value="{{ $item->ed_areas }}" />
         <input type="hidden" id='selectedareaids' name="widgets[sale][ed_areaids]" value="{{ $item->ed_areaids }}" />
-        <span class="help-block">如果设置0或空，则不支持满件包邮</span>
 
     </div>
 </div>

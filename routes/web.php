@@ -39,6 +39,13 @@ Route::any('/', function () {
         return;
     }
 
+    if (strpos(request()->getRequestUri(), '/web/') !== false &&
+        strpos(request()->getRequestUri(), '/plugin.php') !== false
+    ) {
+        YunShop::parseRoute(request()->input('route'));
+        return;
+    }
+
     //api
     if (strpos(request()->getRequestUri(), '/addons/') !== false &&
         strpos(request()->getRequestUri(), '/api.php') !== false

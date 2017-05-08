@@ -9,74 +9,10 @@
 namespace app\backend\modules\order\models;
 
 use app\backend\modules\order\services\OrderService;
+use Illuminate\Database\Eloquent\Builder;
 
 class Order extends \app\common\models\Order
 {
-    private static function format($builder, $pageSize)
-    {
-        $list['total_price'] = $builder->sum('price');
-        $list += $builder->uniacid()->isPlugin()->orderBy('id', 'desc')->paginate($pageSize)->appends(['button_models'])->toArray();
-        return $list;
-    }
-
-    public static function getAllOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search);
-        return self::format($builder, $pageSize);
-    }
-
-    public static function getWaitPayOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->waitPay();
-        return self::format($builder, $pageSize);
-    }
-
-    public static function getWaitSendOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->waitSend();
-        return self::format($builder, $pageSize);
-    }
-
-    public static function getWaitReceiveOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->waitReceive();
-        return self::format($builder, $pageSize);
-
-    }
-
-    public static function getCompletedOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->completed();
-        return self::format($builder, $pageSize);
-    }
-
-    public static function getCancelledOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->cancelled();
-        return self::format($builder, $pageSize);
-    }
-
-    /**
-     * @param $search
-     * @param $pageSize
-     * @return mixed
-     * 获取退换货订单
-     */
-    public static function getRefundOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->refund();
-        $list['total_price'] = $builder->sum('price');
-        return self::format($builder, $pageSize);
-
-    }
-
-    public static function getRefundedOrders($search, $pageSize)
-    {
-        $builder = Order::orders($search, $pageSize)->refunded();
-        $list['total_price'] = $builder->sum('price');
-        return self::format($builder, $pageSize);
-
-    }
 
     //订单导出订单数据
     public static function getExportOrders($search)
@@ -91,14 +27,14 @@ class Order extends \app\common\models\Order
         $order_builder = Order::search($search);
 
         $orders = $order_builder->with([
-            'belongsToMember' => self::member_builder(),
-            'hasManyOrderGoods' => self::order_goods_builder(),
+            'belongsToMember' => self::memberBuilder(),
+            'hasManyOrderGoods' => self::orderGoodsBuilder(),
             'hasOneDispatchType',
             'hasOnePayType',
             'address',
             'hasOneOrderRemark',
             'express',
-            'hasOnePayType'
+            'hasOnePayType',
         ]);
         return $orders;
     }
@@ -108,33 +44,63 @@ class Order extends \app\common\models\Order
         $order_builder->search($search);
 
         $orders = $order_builder->with([
-            'belongsToMember' => self::member_builder(),
-            'hasManyOrderGoods' => self::order_goods_builder(),
+            'belongsToMember' => self::memberBuilder(),
+            'hasManyOrderGoods' => self::orderGoodsBuilder(),
             'hasOneDispatchType',
             'hasOnePayType',
             'address',
-            'hasOnePayType'
+            'hasOnePayType',
+            'hasOneRefundApply' => self::refundBuilder(),
+
         ]);
         return $orders;
     }
+    /**
+     * 获取用户消费总额
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalPrice($uid)
+    {
+        return self::where('status', '>=', 1)
+            ->where('status', '<=', 3)
+            ->where('uid', $uid)
+            ->sum('price');
+    }
 
-    private static function member_builder()
+    /**
+     * 获取用户消费次数
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalNum($uid)
+    {
+        return self::where('status','>=', 1)
+            ->Where('status','<=', 3)
+            ->where('uid', $uid)
+            ->count('id');
+    }
+    private static function refundBuilder()
     {
         return function ($query) {
-            return $query->select(['uid', 'mobile', 'nickname', 'realname']);
+            return $query->with('returnExpress');
         };
     }
 
-    private static function order_goods_builder()
+    private static function memberBuilder()
+    {
+        return function ($query) {
+            return $query->select(['uid', 'mobile', 'nickname', 'realname','avatar']);
+        };
+    }
+
+    private static function orderGoodsBuilder()
     {
         return function ($query) {
             $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_sn']);
         };
-    }
-
-    public function scopeIsPlugin($query)
-    {
-        return $query->where('is_plugin', 0);
     }
 
     public function scopeSearch($order_builder, $params)
@@ -189,19 +155,20 @@ class Order extends \app\common\models\Order
 
     public static function getOrderDetailById($order_id)
     {
-        return self::with(
-            [
-                'hasManyOrderGoods.belongsToGood',
-                'beLongsToMember',
-                'hasOneOrderRemark',
-                'address',
-                'hasOneRefundApply'
-            ]
-        )->find($order_id);
+        return self::orders()->find($order_id);
     }
 
     public function close()
     {
         OrderService::close($this);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope(function (Builder $builder) {
+            $builder->isPlugin();
+        });
     }
 }

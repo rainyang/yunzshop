@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\backend\modules\member\models\MemberRelation;
+use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\helpers\ImageHelper;
@@ -24,6 +25,7 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
+use Yunshop\Supplier\common\services;
 
 
 class MemberController extends ApiController
@@ -47,6 +49,9 @@ class MemberController extends ApiController
                 $member_info = $member_info->toArray();
 
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
+                
+                //插件
+                $data['supplier'] = VerifyButton::button();
 
                 return $this->successJson('', $data);
             } else {
@@ -109,7 +114,7 @@ class MemberController extends ApiController
                 break;
            case 2:
                $apply_qualification = 2;
-               $cost_num  = OrderListModel::getCostTotalNum(\YunShop::app()->getMemberId());
+               $cost_num  = Order::getCostTotalNum(\YunShop::app()->getMemberId());
 
                if ($info['become_check'] && $cost_num >= $info['become_ordercount']) {
                    $apply_qualification = 5;
@@ -117,7 +122,7 @@ class MemberController extends ApiController
                break;
            case 3:
                $apply_qualification = 3;
-               $cost_price  = OrderListModel::getCostTotalPrice(\YunShop::app()->getMemberId());
+               $cost_price  = Order::getCostTotalPrice(\YunShop::app()->getMemberId());
 
                if ($info['become_check'] && $cost_price >= $info['become_moneycount']) {
                    $apply_qualification = 6;
@@ -466,13 +471,24 @@ class MemberController extends ApiController
             $info = [];
         }
 
+        $share = \Setting::get('shop.share');
+
+        if ($share) {
+            if ($share['icon']) {
+                $share['icon'] = tomedia($share['icon']);
+            }
+        } else {
+            $share = [];
+        }
+
         $shop = \Setting::get('shop');
         $shop['logo'] = tomedia($shop['logo']);
 
         $data = [
             'config' => $config,
-            'info' => $info,
-            'shop' => $shop
+            'info'  => $info,   //商城设置
+            'shop'  => $shop,
+            'share' => $share   //分享设置
         ];
 
         return $this->successJson('', $data);
