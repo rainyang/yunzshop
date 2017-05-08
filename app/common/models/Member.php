@@ -264,5 +264,7 @@ class Member extends BackendModel
         } else {
             $data['supplier'] = [];
         }
+
+        return $data;
     }
 }

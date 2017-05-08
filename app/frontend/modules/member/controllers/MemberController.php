@@ -49,7 +49,7 @@ class MemberController extends ApiController
 
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
 
-                MemberModel::addPlugins($data);
+                $data = MemberModel::addPlugins($data);
 
                 return $this->successJson('', $data);
             } else {
