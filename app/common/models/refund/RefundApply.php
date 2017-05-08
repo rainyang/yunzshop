@@ -10,6 +10,7 @@ namespace app\common\models\refund;
 
 use app\common\models\BaseModel;
 use app\common\models\Order;
+use Illuminate\Database\Eloquent\Builder;
 
 class RefundApply extends BaseModel
 {
@@ -31,9 +32,9 @@ class RefundApply extends BaseModel
         'images' => 'json',
         'refund_proof_imgs' => 'json'
     ];
-    const REFUND_TYPE_MONEY = 0;
-    const REFUND_TYPE_RETURN = 1;
-    const REFUND_TYPE_GOODS = 2;
+    const REFUND_TYPE_REFUND_MONEY = 0;
+    const REFUND_TYPE_RETURN_GOODS = 1;
+    const REFUND_TYPE_EXCHANGE_GOODS = 2;
     const CLOSE = '-3';//关闭
     const CANCEL = '-2';//用户取消
     const REJECT = '-1';//驳回
@@ -55,7 +56,10 @@ class RefundApply extends BaseModel
             $this->uid = \YunShop::app()->getMemberId();
         }
     }
-
+    public function returnExpress()
+    {
+        return $this->hasOne(returnExpress::class, 'refund_id', 'id');
+    }
     /**
      * 前端获取退款按钮 todo 转移到前端的model
      * @return array
@@ -90,22 +94,14 @@ class RefundApply extends BaseModel
         return ['create_time', 'refund_time', 'operate_time', 'send_time', 'return_time', 'end_time', 'cancel_pay_time', 'cancel_send_time'] + parent::getDates();
     }
 
-    public function scopeDefaults($query)
-    {
-        return $query->where('uid', \YunShop::app()->getMemberId())
-            ->with([
-                'order' => function ($query) {
-                    $query->orders();
-                }
-            ])->orderBy('id', 'desc');
-    }
+
 
     public function getRefundTypeNameAttribute()
     {
         $mapping = [
-            self::REFUND_TYPE_MONEY => '退款',
-            self::REFUND_TYPE_RETURN => '退货',
-            self::REFUND_TYPE_GOODS => '换货',
+            self::REFUND_TYPE_REFUND_MONEY => '退款',
+            self::REFUND_TYPE_RETURN_GOODS => '退货',
+            self::REFUND_TYPE_EXCHANGE_GOODS => '换货',
 
         ];
         return $mapping[$this->refund_type];
@@ -115,7 +111,7 @@ class RefundApply extends BaseModel
     {
         return [
             self::CANCEL => '用户取消',
-            self::REJECT => '驳回',
+            self::REJECT => '已驳回',
             self::WAIT_CHECK => '待审核',
             self::WAIT_RETURN_GOODS => '待退货',
             self::WAIT_RECEIVE_RETURN_GOODS => '商家待收货',
@@ -138,17 +134,17 @@ class RefundApply extends BaseModel
 
     public function scopeRefundMoney($query)
     {
-        return $query->where('refund_type', self::REFUND_TYPE_MONEY);
+        return $query->where('refund_type', self::REFUND_TYPE_REFUND_MONEY);
     }
 
     public function scopeReturnGoods($query)
     {
-        return $query->where('refund_type', self::REFUND_TYPE_RETURN);
+        return $query->where('refund_type', self::REFUND_TYPE_RETURN_GOODS);
     }
 
     public function scopeExchangeGoods($query)
     {
-        return $query->where('refund_type', self::REFUND_TYPE_GOODS);
+        return $query->where('refund_type', self::REFUND_TYPE_EXCHANGE_GOODS);
     }
 
     public function getStatusNameAttribute()
@@ -157,10 +153,7 @@ class RefundApply extends BaseModel
         return $this->getStatusNameMapping()[$this->status];
     }
 
-    public function order()
-    {
-        return $this->belongsTo(Order::class, 'order_id', 'id');
-    }
+
 
     /**
      * 已退款
@@ -188,6 +181,13 @@ class RefundApply extends BaseModel
         }
         return true;
     }
+    protected static function boot()
+    {
+        parent::boot();
 
+        static::addGlobalScope(function(Builder $builder) {
+            $builder->uniacid();
+        });
+    }
 
 }

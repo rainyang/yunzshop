@@ -261,6 +261,7 @@
 <!-- mylink end -->
 <script language="javascript">
     require(['jquery'],function(){
+
     $(function() {
         $("#chkoption").click(function() {
             var obj = $(this);
@@ -285,6 +286,7 @@
     $(document).on("click",".mylink-nav",function(){
         var href = $(this).data("href");
         var id = $("#modal-mylink").attr("data-id");
+
         if(id){
             $("input[data-id="+id+"]").val(href);
             $("#modal-mylink").attr("data-id","");

@@ -6,7 +6,7 @@
  * Time: 上午10:49
  */
 
-namespace app\common\order\models;
+namespace app\common\models\refund;
 
 use app\common\models\BaseModel;
 

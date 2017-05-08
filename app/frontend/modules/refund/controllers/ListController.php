@@ -10,7 +10,7 @@ namespace app\frontend\modules\refund\controllers;
 
 
 use app\common\components\ApiController;
-use app\common\models\refund\RefundApply;
+use app\frontend\modules\refund\models\RefundApply;
 
 class ListController extends ApiController
 {

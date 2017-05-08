@@ -16,9 +16,9 @@ class DetailController extends BaseController
 {
     public function index(\Request $request)
     {
+
         $orderId = $request->query('id');
         $order = Order::getOrderDetailById($orderId);
-
         return view('order.detail', [
             'order'         => $order ? $order->toArray() : [],
             'var'           => \YunShop::app()->get(),

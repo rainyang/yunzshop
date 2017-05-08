@@ -17,7 +17,7 @@ use Illuminate\Support\Collection;
 abstract class PreGeneratedController extends ApiController
 {
 
-    protected function index()
+    public function index()
     {
         $order_data = $this->getOrderData();
         $total_price = $order_data->sum('order.price');

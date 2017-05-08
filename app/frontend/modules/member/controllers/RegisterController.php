@@ -57,13 +57,21 @@ class RegisterController extends ApiController
             //添加mc_members表
             $default_groupid = MemberGroup::getDefaultGroupId($uniacid)->first();
 
+            $member_set = \Setting::get('shop.member');
+
+            if (isset($member_set) && $member_set['headimg']) {
+                $avatar = tomedia($member_set['headimg']);
+            } else {
+                $avatar = Url::shopUrl('static/images/photo-mr.jpg');
+            }
+
             $data = array(
                 'uniacid' => $uniacid,
                 'mobile' => $mobile,
                 'groupid' => $default_groupid->id ? $default_groupid->id : 0,
                 'createtime' => time(),
                 'nickname' => $mobile,
-                'avatar' => Url::shopUrl('static/images/photo-mr.jpg'),
+                'avatar' => $avatar,
                 'gender' => 0,
                 'residecity' => '',
             );

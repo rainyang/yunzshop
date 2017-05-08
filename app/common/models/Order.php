@@ -199,16 +199,6 @@ class Order extends BaseModel
     {
         return $query->where('is_plugin', 0);
     }
-    public static function boot()
-    {
-        parent::boot();
-        static::observe(new OrderObserver());
-
-        static::addGlobalScope(function(Builder $builder) {
-            $builder->uniacid()->isPlugin();
-        });
-    }
-
     /**
      * 通过会员ID获取订单信息
      *
@@ -218,5 +208,15 @@ class Order extends BaseModel
     {
         return self::uniacid()
             ->where('uid', $member_id)->isComment($status);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::observe(new OrderObserver());
+
+        static::addGlobalScope(function(Builder $builder) {
+            $builder->uniacid();
+        });
     }
 }
