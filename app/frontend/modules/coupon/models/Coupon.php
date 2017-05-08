@@ -51,7 +51,7 @@ class Coupon extends \app\common\models\Coupon
             $res = $res->where(function($query) use ($time){
                         $query->where('time_limit', '=', 1)->where('time_end', '>', $time)
                             ->orWhere(function($query){
-                                $query->where('time_limit', '=', 0)->where('time_days', '>', 0);
+                                $query->where('time_limit', '=', 0)->where('time_days', '>=', 0);
                             });
                     });
         }

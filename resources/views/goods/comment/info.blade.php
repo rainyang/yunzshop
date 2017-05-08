@@ -165,7 +165,7 @@
         function select_good(o) {
             $("#goodsid").val(o.id);
             $("#goodsthumb").show();
-            $("#goodsthumb").find('img').attr('src', '{{tomedia('/')}}'+o.thumb);
+            $("#goodsthumb").find('img').attr('src', o.thumb);
             $("#goods").val("[" + o.id + "]" + o.title);
             $("#modal-module-menus-goods .close").click();
         }
