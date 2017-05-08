@@ -466,13 +466,16 @@ class MemberController extends ApiController
             $info = [];
         }
 
+        $share = \Setting::get('shop.share');
+
         $shop = \Setting::get('shop');
         $shop['logo'] = tomedia($shop['logo']);
 
         $data = [
             'config' => $config,
-            'info' => $info,
-            'shop' => $shop
+            'info'  => $info,   //商城设置
+            'shop'  => $shop,
+            'share' => $share   //分享设置
         ];
 
         return $this->successJson('', $data);
