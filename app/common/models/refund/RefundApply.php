@@ -56,7 +56,10 @@ class RefundApply extends BaseModel
             $this->uid = \YunShop::app()->getMemberId();
         }
     }
-
+    public function returnExpress()
+    {
+        return $this->hasOne(returnExpress::class, 'refund_id', 'id');
+    }
     /**
      * 前端获取退款按钮 todo 转移到前端的model
      * @return array

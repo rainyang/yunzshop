@@ -223,7 +223,7 @@
                                     <td>{{$row['realname']}}<br/>{{$row['mobile']}}</td>
                                     <td>
                                         @if(empty($row['yz_member']['level']['level_name']))
-                                            普通会员
+                                            {{$set['level_name']}}
                                         @else
                                             {{$row['yz_member']['level']['level_name']}}
                                         @endif

@@ -8,8 +8,7 @@
 
 namespace app\frontend\modules\refund\services\operation;
 
-use app\common\models\refund\RefundExpress;
-use app\common\order\models\ReturnExpress;
+use app\common\models\refund\ReturnExpress;
 use \Request;
 
 class RefundSend extends ChangeStatusOperation

@@ -197,8 +197,6 @@
 
 </div>
 
-
-<!-- 驳回退款 -->
 @include('refund.modal')
 
 <script language='javascript'>

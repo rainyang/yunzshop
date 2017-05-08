@@ -82,9 +82,8 @@ abstract class RefundOperation extends RefundApply
 //        }
 
 
-        if (!in_array($this->order['status'], $this->statusBeforeChange)) {
-            throw new AppException("的售后申请,无法执行{$this->name}操作");
-            return false;
+        if (!in_array($this->status, $this->statusBeforeChange)) {
+            throw new AppException($this->status_name."的售后申请,无法执行{$this->name}操作");
         }
         return true;
     }
