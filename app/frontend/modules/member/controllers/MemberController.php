@@ -49,9 +49,8 @@ class MemberController extends ApiController
                 $member_info = $member_info->toArray();
 
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
-                
-                //插件
-                $data['supplier'] = VerifyButton::button();
+
+                MemberModel::addPlugins($data);
 
                 return $this->successJson('', $data);
             } else {
