@@ -88,11 +88,8 @@ class BalanceWithdrawController extends BaseController
             //微信打款
             //echo '<pre>'; print_r('test'); exit;
             $resultPay = WithdrawService::wechtWithdrawPay($this->withdrawModel, $remark);
-            echo '<pre>'; print_r(4444); exit;
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
         }
-        echo '<pre>'; print_r('123'); exit;
-        echo '<pre>'; print_r(json_decode($resultPay,1)); exit;
 
 
 
@@ -106,7 +103,7 @@ class BalanceWithdrawController extends BaseController
             return $resultPay['message'];
         } else {
             $resultPay = json_decode($resultPay);
-            echo '<pre>'; print_r(213); exit;
+            return $resultPay['result'];
         }
 
         //return $resultPay;
