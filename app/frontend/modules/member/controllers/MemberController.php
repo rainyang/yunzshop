@@ -25,7 +25,7 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
-use Yunshop\Supplier\common\services;
+use Yunshop\Supplier\common\services\VerifyButton;
 
 
 class MemberController extends ApiController
