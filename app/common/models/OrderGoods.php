@@ -10,6 +10,7 @@ namespace app\common\models;
 
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\order\OrderGoodsChangePriceLog;
+use Illuminate\Database\Eloquent\Builder;
 
 class OrderGoods extends BaseModel
 {
@@ -32,7 +33,13 @@ class OrderGoods extends BaseModel
 
     public function goods()
     {
-        return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');
+        return $this->belongsTo('\app\common\models\Goods');
+    }
+    public function scopeOrderGoods(Builder $query)
+    {
+        return $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_sn'])->with('goods',function ($query){
+            return $query->goods();
+        });
     }
 
     public function getButtonsAttribute()
