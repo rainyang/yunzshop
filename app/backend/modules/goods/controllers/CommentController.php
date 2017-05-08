@@ -104,7 +104,7 @@ class CommentController extends BaseController
     public function updated()
     {
         $id = \YunShop::request()->id;
-        $commentModel = Comment::getComment($id);
+        $commentModel = Comment::getComment($id)->first();
         if (!$commentModel) {
             return $this->message('无此记录或已被删除', '', 'error');
         }
