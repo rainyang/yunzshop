@@ -116,8 +116,8 @@ class RefundApply extends BaseModel
             self::WAIT_RETURN_GOODS => '待退货',
             self::WAIT_RECEIVE_RETURN_GOODS => '商家待收货',
             self::WAIT_REFUND => '待退款',
-            self::COMPLETE => '已完成',
-            self::CONSENSUS => '手动退款',
+            self::COMPLETE => '已退款',
+            self::CONSENSUS => '已手动退款',
         ];
 
     }
