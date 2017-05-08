@@ -95,14 +95,14 @@ class BalanceWithdrawController extends BaseController
                 Log::info('打款完成!');
                 return true;
             }
-        }
-        if ($resultPay['status'] == 0) {
-            return $resultPay['result'];
-        }
-        if ($resultPay['errno'] == 1) {
+        } elseif ($resultPay['errno'] == 1) {
             return $resultPay['message'];
+        } else {
+            $resultPay = json_encode($resultPay);
+            echo '<pre>'; print_r(213); exit;
         }
-        return $resultPay;
+
+        //return $resultPay;
         //return $resultPay ? $this->updatePayTime(): "打款失败";
     }
 
