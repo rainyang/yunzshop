@@ -456,7 +456,6 @@
                     citystrs += $(this).attr('city') + ";";
                     citystrIds += $(this).attr('city_id') + ";";
                 });
-                console.log(citystrs);
                 $('.' + current + ' .areas').html(citystrs);
                 $('.' + current + ' .areas-name').val(citystrs);
                 $('.' + current + ' .areas-ids').val(citystrIds);
