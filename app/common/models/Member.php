@@ -255,7 +255,7 @@ class Member extends BackendModel
         return 0;
     }
 
-    public static function addPlugins($data = [])
+    public static function addPlugins(&$data = [])
     {
         $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
 
