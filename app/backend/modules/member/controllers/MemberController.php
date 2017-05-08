@@ -60,7 +60,7 @@ class MemberController extends BaseController
         if (empty($set['level_name'])) {
             $set['level_name'] = '普通会员';
         }
-echo '<pre>';print_r($set);exit;
+
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
         $starttime = strtotime('-1 month');
@@ -115,10 +115,17 @@ echo '<pre>';print_r($set);exit;
             }
         }
 
+        $set = \Setting::get('shop.member');
+
+        if (empty($set['level_name'])) {
+            $set['level_name'] = '普通会员';
+        }
+
         return view('member.detail', [
             'member' => $member,
             'levels' => $levels,
             'groups' => $groups,
+            'set'    => $set
         ])->render();
     }
 
