@@ -82,18 +82,7 @@ class Member extends BackendModel
      */
     public static function getUserInfos($member_id)
     {
-        return self::select([
-            'uid',
-            'avatar',
-            'nickname',
-            'realname',
-            'avatar',
-            'mobile',
-            'gender',
-            'createtime',
-            'credit1',
-            'credit2'
-        ])
+        return self::select(['*'])
             ->uniacid()
             ->where('uid', $member_id)
             ->with([
