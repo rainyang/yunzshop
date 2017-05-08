@@ -131,6 +131,16 @@ class YunShop
     }
 
     /**
+     *
+     * @return bool
+     */
+    public static function isWechatApi()
+    {
+        return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
+            strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+    }
+
+    /**
      * 是否插件
      * @return bool
      */
@@ -345,7 +355,7 @@ class YunRequest extends YunComponent
     public function __construct()
     {
         global $_GPC;
-        $this->values = !YunShop::isWeb() ? request()->input() :(array)$_GPC;
+        $this->values = !YunShop::isWeb() || YunShop::isWechatApi() ? request()->input() :(array)$_GPC;
     }
 
 
@@ -360,7 +370,7 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
-        $this->values = !YunShop::isWeb() ? $this->getW() : (array)$_W;
+        $this->values = !YunShop::isWeb() || YunShop::isWechatApi() ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
     }
     
