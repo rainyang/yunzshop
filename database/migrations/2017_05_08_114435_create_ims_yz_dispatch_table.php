@@ -12,6 +12,8 @@ class CreateImsYzDispatchTable extends Migration {
 	 */
 	public function up()
 	{
+		$this->down();
+		
 		Schema::create('yz_dispatch', function(Blueprint $table)
 		{
 			$table->increments('id');
