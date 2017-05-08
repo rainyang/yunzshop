@@ -51,10 +51,8 @@ class WithdrawService extends Withdraw
     public static function wechtWithdrawPay($withdraw, $remark)
     {
         //echo '<pre>'; print_r($withdraw); exit;
-        $result = PayFactory::create(1)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
+        return PayFactory::create(1)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
             $withdraw->actual_amounts, $remark);
-        echo '<pre>'; print_r($result); exit;
-        return $result;
     }
 
     public static function alipayWithdrawPay($withdraw, $remark)
