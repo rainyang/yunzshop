@@ -24,6 +24,7 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
+use Yunshop\Supplier\common\services;
 
 
 class MemberController extends ApiController
@@ -47,6 +48,9 @@ class MemberController extends ApiController
                 $member_info = $member_info->toArray();
 
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
+                
+                //插件
+                $data['supplier'] = VerifyButton::button();
 
                 return $this->successJson('', $data);
             } else {
