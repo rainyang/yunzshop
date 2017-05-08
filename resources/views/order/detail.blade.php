@@ -92,17 +92,17 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <img src='{{$order['be_longs_to_member']['avatar']}}'
+                                <img src='{{$order['belongs_to_member']['avatar']}}'
                                      style='width:100px;height:100px;padding:1px;border:1px solid #ccc'/>
-                                {{$order['be_longs_to_member']['nickname']}}
+                                {{$order['belongs_to_member']['nickname']}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员信息 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <div class='form-control-static'>ID: {{$order['be_longs_to_member']['uid']}}
-                                    姓名: {{$order['be_longs_to_member']['realname']}} /
-                                    手机号: {{$order['be_longs_to_member']['mobile']}}</div>
+                                <div class='form-control-static'>ID: {{$order['belongs_to_member']['uid']}}
+                                    姓名: {{$order['belongs_to_member']['realname']}} /
+                                    手机号: {{$order['belongs_to_member']['mobile']}}</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -134,23 +134,26 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单状态 :</label>
                             <div class="col-sm-9 col-xs-12">
                                 <p class="form-control-static">
-                                    @if ($order['status'] == 0)<span class="label label-info">待付款</span>@endif
-                                    @if ($order['status'] == 1)<span class="label label-info">待发货</span>@endif
-                                    @if ($order['status'] == 2)<span class="label label-info">待收货</span>@endif
-                                    @if ($order['status'] == 3)<span class="label label-success">已完成</span>@endif
-                                    @if ($order['status'] == -1)
-                                        @if (!empty($refund) && $refund['status'] == 1)
-                                            <span class="label label-default">已{{$r_type[$refund['rtype']]}}</span>
-                                            @if (!empty($refund['refundtime']))
-                                                退款时间: {{$refund['refundtime']}}
-                                            @endif
-                                        @else
-                                            <span class="label label-default">已关闭</span>
-                                        @endif
-                                    @endif
+                                    <span class="label
+                                    @if ($order['status'] == 3) label-success
+                                    @elseif ($order['status'] == -1) label-default
+                                    @else label-info
+                                    @endif">{{$order['status_name']}}</span>
                                 </p>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付方式 :</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <p class="form-control-static">
+
+                                    <span class="label label-info">{{$order['pay_type_name']}}</span>
+                                </p>
+
+                            </div>
+
+                        </div>
+
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注 :</label>
                             <div class="col-sm-9 col-xs-12"><textarea style="height:150px;" class="form-control"
@@ -221,10 +224,10 @@
                                 </thead>
                                 @foreach ($order['has_many_order_goods'] as $goods)
                                     <tr>
-                                        <td>{{$goods['belongs_to_good']['id']}}</td>
-                                        <td>{{$goods['belongs_to_good']['title']}}</td>
-                                        <td>{{$goods['belongs_to_good']['goods_sn']}}</td>
-                                        <td>{{$goods['belongs_to_good']['price']}}
+                                        <td>{{$goods['goods_id']}}</td>
+                                        <td>{{$goods['title']}}</td>
+                                        <td>{{$goods['goods_sn']}}</td>
+                                        <td>{{$goods['goods_price']}}
                                             /{{$goods['belongs_to_good']['market_price']}}
                                             /{{$goods['belongs_to_good']['cost_price']}}元
                                         </td>
