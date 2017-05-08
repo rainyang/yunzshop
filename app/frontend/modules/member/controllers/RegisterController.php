@@ -212,7 +212,7 @@ class RegisterController extends ApiController
 
     /**
      * 短信验证
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function checkCode()
