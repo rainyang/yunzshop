@@ -7,7 +7,7 @@
  */
 
 namespace app\common\models\frame;
-
+use Illuminate\Support\Facades\Schema;
 
 use app\common\models\BaseModel;
 
@@ -21,10 +21,18 @@ class Rule extends BaseModel
         'module'        => 'yun_shop',
         'displayorder'  => 0,
         'status'        => 1,
-        'containtype'   => '',
     ];
 
     protected $guarded = [''];
+
+    public function __construct()
+    {
+        if(Schema::hasColumn($this->table, 'containtype')){ //用于兼容新版微擎新增的字段
+            $this->attributes = array_merge($this->attributes,['containtype'=> 'basic', 'reply_type'=>2]); //todo 默认值暂定
+        }
+
+        parent::__construct();
+    }
 
     /*
      * 通过rid 关键字主键id获取关键字规则详情
