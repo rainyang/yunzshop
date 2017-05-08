@@ -25,10 +25,11 @@ class Rule extends BaseModel
 
     protected $guarded = [''];
 
-    public function __construct()
+    public function __construct($param=[])
     {
         if(Schema::hasColumn($this->table, 'containtype')){ //用于兼容新版微擎新增的字段
-            $this->attributes = array_merge($this->attributes,['containtype'=> 'basic', 'reply_type'=>2]); //todo 默认值暂定
+            $param = $param ?: array('containtype'=> 'basic', 'reply_type'=> '1');
+            $this->attributes = array_merge($this->attributes, $param);
         }
 
         parent::__construct();
