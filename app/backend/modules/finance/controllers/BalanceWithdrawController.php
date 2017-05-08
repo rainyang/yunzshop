@@ -76,7 +76,6 @@ class BalanceWithdrawController extends BaseController
     //打款
     private function submitPay()
     {
-        echo '<pre>'; print_r(123); exit;
         //echo '<pre>'; print_r($this->withdrawModel->toArray()); exit;
         $resultPay = '';
         $remark = '提现打款-' . $this->withdrawModel->type_name . '-金额:' . $this->withdrawModel->actual_amounts . '元,' .
@@ -88,6 +87,7 @@ class BalanceWithdrawController extends BaseController
         } elseif ($this->withdrawModel->pay_way == 'wecht') {
             //微信打款
             $resultPay = WithdrawService::wechtWithdrawPay($this->withdrawModel, $remark);
+            echo '<pre>'; print_r(4444); exit;
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
         }
         echo '<pre>'; print_r('123'); exit;
