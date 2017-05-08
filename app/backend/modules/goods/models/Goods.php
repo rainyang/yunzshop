@@ -37,4 +37,7 @@ class Goods extends \app\common\models\Goods
         //注册观察者
         static::observe(new GoodsObserver);
     }
+    public function scopeGoods($query){
+        return $query->select(['id','status','display_order','title','thumb','thumb_url','product_sn','market_price','price','cost_price']);
+    }
 }

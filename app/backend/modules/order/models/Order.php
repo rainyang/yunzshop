@@ -21,10 +21,14 @@ class Order extends \app\common\models\Order
         $orders = $builder->get()->toArray();
         return $orders;
     }
+    public function hasManyOrderGoods()
+    {
+        return $this->hasMany(OrderGoods::class);
+    }
 
     public function scopeExportOrders($search)
     {
-        $order_builder = Order::search($search);
+        $order_builder = self::search($search);
 
         $orders = $order_builder->with([
             'belongsToMember' => self::memberBuilder(),
@@ -99,7 +103,7 @@ class Order extends \app\common\models\Order
     private static function orderGoodsBuilder()
     {
         return function ($query) {
-            $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_sn']);
+            $query->orderGoods();
         };
     }
 

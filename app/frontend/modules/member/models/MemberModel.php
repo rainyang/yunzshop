@@ -379,11 +379,15 @@ class MemberModel extends Member
             if (!empty( $yz_member['level'])) {
                 $member_info['level_id'] =  $yz_member['level']['id'];
                 $member_info['level_name'] =  $yz_member['level']['level_name'];
+            } else {
+                $set = \Setting::get('shop.member');
+                $member_info['level_id'] =  0;
+                $member_info['level_name'] =  $set['level_name'] ? $set['level_name'] : '普通会员';
             }
         }
 
         if (!empty($member_info['birthyear'] )) {
-            $member_info['birthday'] = $member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday'];
+            $member_info['birthday'] = date('Y-m-d', strtotime($member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday']));
         } else {
             $member_info['birthday'] = date('Y-m-d', time());
         }
