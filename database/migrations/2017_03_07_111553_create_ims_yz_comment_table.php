@@ -18,7 +18,7 @@ class CreateImsYzCommentTable extends Migration {
 			$table->integer('uniacid')->default(0)->index('idx_uniacid');
 			$table->integer('order_id')->nullable()->default(0)->index('idx_orderid');
 			$table->integer('goods_id')->default(0)->index('idx_goodsid');
-			$table->string('uid', 50)->nullable()->default('')->index('idx_openid');
+			$table->integer('uid')->nullable()->default(0)->index('idx_openid');
 			$table->string('nick_name', 50)->nullable()->default('');
 			$table->string('head_img_url')->nullable()->default('');
 			$table->string('content')->default('');

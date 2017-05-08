@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\backend\modules\member\models\MemberRelation;
+use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\helpers\ImageHelper;
@@ -109,7 +110,7 @@ class MemberController extends ApiController
                 break;
            case 2:
                $apply_qualification = 2;
-               $cost_num  = OrderListModel::getCostTotalNum(\YunShop::app()->getMemberId());
+               $cost_num  = Order::getCostTotalNum(\YunShop::app()->getMemberId());
 
                if ($info['become_check'] && $cost_num >= $info['become_ordercount']) {
                    $apply_qualification = 5;
@@ -117,7 +118,7 @@ class MemberController extends ApiController
                break;
            case 3:
                $apply_qualification = 3;
-               $cost_price  = OrderListModel::getCostTotalPrice(\YunShop::app()->getMemberId());
+               $cost_price  = Order::getCostTotalPrice(\YunShop::app()->getMemberId());
 
                if ($info['become_check'] && $cost_price >= $info['become_moneycount']) {
                    $apply_qualification = 6;
