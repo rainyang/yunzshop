@@ -55,6 +55,12 @@ class MemberController extends BaseController
             ->paginate($this->pageSize)
             ->toArray();
 
+        $set = \Setting::get('shop.member');
+
+        if (empty($set['level_name'])) {
+            $set['level_name'] = '普通会员';
+        }
+echo '<pre>';print_r($set);exit;
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $this->pageSize);
 
         $starttime = strtotime('-1 month');
@@ -76,6 +82,7 @@ class MemberController extends BaseController
             'total' => $list['total'],
             'pager' => $pager,
             'request' => \YunShop::request(),
+            'set' => $set,
             'opencommission' => 1
         ])->render();
     }

@@ -84,7 +84,6 @@ class RegisterController extends ApiController
 
             //添加yz_member表
             $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
-            $default_sub_level_id = MemberLevel::getDefaultLevelId()->first();
 
             if (!empty($default_sub_group_id)) {
                 $default_subgroup_id = $default_sub_group_id->id;
@@ -92,17 +91,11 @@ class RegisterController extends ApiController
                 $default_subgroup_id = 0;
             }
 
-            if (!empty($default_sub_level_id)) {
-                $default_sublevel_id = $default_sub_level_id->id;
-            } else {
-                $default_sublevel_id = 0;
-            }
-
             $sub_data = array(
                 'member_id' => $member_id,
                 'uniacid' => $uniacid,
                 'group_id' => $default_subgroup_id,
-                'level_id' => $default_sublevel_id,
+                'level_id' => 0,
             );
             SubMemberModel::insertData($sub_data);
 
