@@ -468,6 +468,14 @@ class MemberController extends ApiController
 
         $share = \Setting::get('shop.share');
 
+        if ($share) {
+            if ($share['icon']) {
+                $share['icon'] = tomedia($share['icon']);
+            }
+        } else {
+            $share = [];
+        }
+
         $shop = \Setting::get('shop');
         $shop['logo'] = tomedia($shop['logo']);
 
