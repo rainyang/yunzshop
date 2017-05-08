@@ -435,7 +435,19 @@
             current = $(btn).attr('random');
             clearSelects();
             var old_citys = $(btn).prev().val().split(';');
-
+            $('.city').each(function(){
+                var parentcheck = false;
+                for(var i in old_citys){
+                    if(old_citys[i]==$(this).attr('city_id')){
+                        parentcheck = true;
+                        $(this).get(0).checked = true;
+                        break;
+                    }
+                }
+                if(parentcheck){
+                    $(this).parent().parent().parent().parent().find('.cityall').get(0).checked=  true;
+                }
+            });
 
             $("#modal-areas").modal();
             var citystrs = '';
@@ -445,14 +457,61 @@
                     citystrs += $(this).attr('city') + ";";
                     citystrIds += $(this).attr('city_id') + ";";
                 });
+                console.log(citystrs);
                 $('.' + current + ' .areas').html(citystrs);
                 $('.' + current + ' .areas-name').val(citystrs);
                 $('.' + current + ' .areas-ids').val(citystrIds);
 
 
-            })
+            });
+            var currents = getCurrents(current);
+            currents = currents.split(';');
+            var citys = "";
+            $('.city').each(function(){
+                var parentdisabled =false;
+                for(var i in currents){
+                    if(currents[i]!='' && currents[i]==$(this).attr('city_id')){
+                        $(this).attr('disabled',true);
+                        $(this).parent().parent().parent().parent().find('.cityall').attr('disabled',true);
+                    }
+                }
 
+            });
         }
+
+        function getCurrents(withOutRandom){
+            var citys = "";
+            $('.citys').each(function(){
+                var crandom = $(this).prev().val();
+                if(withOutRandom && crandom==withOutRandom){
+                    return true;
+                }
+                citys+=$(this).val();
+            });
+            return citys;
+        }
+//        function editArea(btn){
+//            console.log(btn);
+//            current = $(btn).attr('random');
+//            clearSelects();
+//            var old_citys = $(btn).prev().val().split(';');
+//
+//            $("#modal-areas").modal();
+//            var citystrs = '';
+//            var citystrIds = '';
+//            $('#btnSubmitArea').unbind('click').click(function(){
+//                $('.city:checked').each(function(){
+//                    citystrs += $(this).attr('city') + ";";
+//                    citystrIds += $(this).attr('city_id') + ";";
+//                });
+//                $('.' + current + ' .areas').html(citystrs);
+//                $('.' + current + ' .areas-name').val(citystrs);
+//                $('.' + current + ' .areas-ids').val(citystrIds);
+//
+//
+//            })
+//
+//        }
 
     </script>
     @include('area.dispatchselectprovinces')
