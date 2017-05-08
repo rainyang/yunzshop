@@ -10,6 +10,7 @@ use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
+use Yunshop\Supplier\common\services\VerifyButton;
 
 /**
  * Created by PhpStorm.
