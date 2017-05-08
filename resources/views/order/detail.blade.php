@@ -92,17 +92,17 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <img src='{{$order['be_longs_to_member']['avatar']}}'
+                                <img src='{{$order['belongs_to_member']['avatar']}}'
                                      style='width:100px;height:100px;padding:1px;border:1px solid #ccc'/>
-                                {{$order['be_longs_to_member']['nickname']}}
+                                {{$order['belongs_to_member']['nickname']}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员信息 :</label>
                             <div class="col-sm-9 col-xs-12">
-                                <div class='form-control-static'>ID: {{$order['be_longs_to_member']['uid']}}
-                                    姓名: {{$order['be_longs_to_member']['realname']}} /
-                                    手机号: {{$order['be_longs_to_member']['mobile']}}</div>
+                                <div class='form-control-static'>ID: {{$order['belongs_to_member']['uid']}}
+                                    姓名: {{$order['belongs_to_member']['realname']}} /
+                                    手机号: {{$order['belongs_to_member']['mobile']}}</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -221,10 +221,10 @@
                                 </thead>
                                 @foreach ($order['has_many_order_goods'] as $goods)
                                     <tr>
-                                        <td>{{$goods['belongs_to_good']['id']}}</td>
-                                        <td>{{$goods['belongs_to_good']['title']}}</td>
-                                        <td>{{$goods['belongs_to_good']['goods_sn']}}</td>
-                                        <td>{{$goods['belongs_to_good']['price']}}
+                                        <td>{{$goods['goods_id']}}</td>
+                                        <td>{{$goods['title']}}</td>
+                                        <td>{{$goods['goods_sn']}}</td>
+                                        <td>{{$goods['goods_price']}}
                                             /{{$goods['belongs_to_good']['market_price']}}
                                             /{{$goods['belongs_to_good']['cost_price']}}元
                                         </td>

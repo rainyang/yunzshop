@@ -27,8 +27,8 @@ class Order extends \app\common\models\Order
         $order_builder = Order::search($search);
 
         $orders = $order_builder->with([
-            'belongsToMember' => self::member_builder(),
-            'hasManyOrderGoods' => self::order_goods_builder(),
+            'belongsToMember' => self::memberBuilder(),
+            'hasManyOrderGoods' => self::orderGoodsBuilder(),
             'hasOneDispatchType',
             'hasOnePayType',
             'address',
@@ -44,26 +44,33 @@ class Order extends \app\common\models\Order
         $order_builder->search($search);
 
         $orders = $order_builder->with([
-            'belongsToMember' => self::member_builder(),
-            'hasManyOrderGoods' => self::order_goods_builder(),
+            'belongsToMember' => self::memberBuilder(),
+            'hasManyOrderGoods' => self::orderGoodsBuilder(),
             'hasOneDispatchType',
             'hasOnePayType',
             'address',
             'hasOnePayType',
-            'hasOneRefundApply'
+            'hasOneRefundApply' => self::refundBuilder(),
 
         ]);
         return $orders;
     }
 
-    private static function member_builder()
+    private static function refundBuilder()
+    {
+        return function ($query) {
+            return $query->with('returnExpress');
+        };
+    }
+
+    private static function memberBuilder()
     {
         return function ($query) {
             return $query->select(['uid', 'mobile', 'nickname', 'realname']);
         };
     }
 
-    private static function order_goods_builder()
+    private static function orderGoodsBuilder()
     {
         return function ($query) {
             $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_sn']);
@@ -122,26 +129,19 @@ class Order extends \app\common\models\Order
 
     public static function getOrderDetailById($order_id)
     {
-        return self::with(
-            [
-                'hasManyOrderGoods.belongsToGood',
-                'beLongsToMember',
-                'hasOneOrderRemark',
-                'address',
-                'hasOneRefundApply'
-            ]
-        )->find($order_id);
+        return self::orders()->find($order_id);
     }
 
     public function close()
     {
         OrderService::close($this);
     }
+
     public static function boot()
     {
         parent::boot();
 
-        static::addGlobalScope(function(Builder $builder) {
+        static::addGlobalScope(function (Builder $builder) {
             $builder->isPlugin();
         });
     }
