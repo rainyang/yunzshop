@@ -66,7 +66,7 @@ class Order extends \app\common\models\Order
     private static function memberBuilder()
     {
         return function ($query) {
-            return $query->select(['uid', 'mobile', 'nickname', 'realname']);
+            return $query->select(['uid', 'mobile', 'nickname', 'realname','avatar']);
         };
     }
 
