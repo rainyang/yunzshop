@@ -48,7 +48,7 @@ class MemberOfficeAccountService extends MemberService
 
         } else {
             \Log::debug('default');
-            $callback = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+            $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         }
 
