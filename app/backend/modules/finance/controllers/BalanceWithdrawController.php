@@ -86,9 +86,16 @@ class BalanceWithdrawController extends BaseController
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
         } elseif ($this->withdrawModel->pay_way == 'wecht') {
             //微信打款
+            //echo '<pre>'; print_r('test'); exit;
             $resultPay = WithdrawService::wechtWithdrawPay($this->withdrawModel, $remark);
+            echo '<pre>'; print_r(4444); exit;
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
         }
+        echo '<pre>'; print_r('123'); exit;
+        echo '<pre>'; print_r(json_decode($resultPay,1)); exit;
+
+
+
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
             if ($this->withdrawModel->save()) {
@@ -98,7 +105,7 @@ class BalanceWithdrawController extends BaseController
         } elseif ($resultPay['errno'] == 1) {
             return $resultPay['message'];
         } else {
-            $resultPay = json_encode($resultPay);
+            $resultPay = json_decode($resultPay);
             echo '<pre>'; print_r(213); exit;
         }
 
