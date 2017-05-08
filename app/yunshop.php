@@ -355,7 +355,7 @@ class YunRequest extends YunComponent
     public function __construct()
     {
         global $_GPC;
-        $this->values = !YunShop::isWeb() || !YunShop::isWechatApi() ? request()->input() :(array)$_GPC;
+        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? request()->input() :(array)$_GPC;
     }
 
 
@@ -370,7 +370,7 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
-        $this->values = !YunShop::isWeb() || !YunShop::isWechatApi() ? $this->getW() : (array)$_W;
+        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
     }
     
