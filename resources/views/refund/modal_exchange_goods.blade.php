@@ -1,7 +1,7 @@
 @extends('refund.modal_base')
 @section('operation_pass')
 
-    @if($order['has_one_refund_apply']['status'] < 3)
+    @if($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_CHECK)
         <label class='radio-inline'>
             <input type='radio' value='3' class="refund-action" data-action="{{yzWebUrl('refund.operation.pass')}}"
                    name='refund_status' @if( $order['has_one_refund_apply']['status']==3 ||
