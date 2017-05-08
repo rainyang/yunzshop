@@ -383,7 +383,7 @@ class MemberModel extends Member
         }
 
         if (!empty($member_info['birthyear'] )) {
-            $member_info['birthday'] = $member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday'];
+            $member_info['birthday'] = date('Y-m-d', strtotime($member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday']));
         } else {
             $member_info['birthday'] = date('Y-m-d', time());
         }
