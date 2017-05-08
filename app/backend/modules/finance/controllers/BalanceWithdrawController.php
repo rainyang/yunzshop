@@ -76,6 +76,7 @@ class BalanceWithdrawController extends BaseController
     //打款
     private function submitPay()
     {
+        echo '<pre>'; print_r(123); exit;
         //echo '<pre>'; print_r($this->withdrawModel->toArray()); exit;
         $resultPay = '';
         $remark = '提现打款-' . $this->withdrawModel->type_name . '-金额:' . $this->withdrawModel->actual_amounts . '元,' .
