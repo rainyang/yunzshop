@@ -223,27 +223,29 @@
                                     <th class="col-md-5 col-lg-1">操作</th>
                                 </tr>
                                 </thead>
-                                @foreach ($order['has_many_order_goods'] as $goods)
+                                @foreach ($order['has_many_order_goods'] as $order_goods)
                                     <tr>
-                                        <td>{{$goods['goods_id']}}</td>
-                                        <td>{{$goods['title']}}</td>
-                                        <td>{{$goods['goods_sn']}}</td>
-                                        <td>{{$goods['goods_price']}}
-                                            /{{$goods['belongs_to_good']['market_price']}}
-                                            /{{$goods['belongs_to_good']['cost_price']}}元
+                                        <td>{{$order_goods['goods_id']}}</td>
+                                        <td>
+                                            <a href="{{yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
                                         </td>
-                                        <td>{{$goods['total']}}</td>
+                                        <td>{{$order_goods['goods_sn']}}</td>
+                                        <td>{{$order_goods['goods_price']}}
+                                            /{{$order_goods['goods']['market_price']}}
+                                            /{{$order_goods['goods']['cost_price']}}元
+                                        </td>
+                                        <td>{{$order_goods['total']}}</td>
                                         <td style='color:red;font-weight:bold;'>{{$order['goods_price']}}
                                             <br/>{{$order['price']}}
                                         </td>
                                         <td>
-                                            <a href="{!! yzWebUrl('goods.goods.edit', array('id' => $goods['belongs_to_good']['id'])) !!}"
+                                            <a href="{!! yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods']['id'])) !!}"
                                                class="btn btn-default btn-sm" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;
                                         </td>
                                     </tr>
                                     <tr style="text-align: right;padding: 6px 0;border-top:none;">
                                         <td colspan="8">
-                                            @if ($goods['belongs_to_good']['status'] == 1)
+                                            @if ($order_goods['goods']['status'] == 1)
                                                 <label data="1"
                                                        class="label label-default text-default label-info text-pinfo">上架</label>
                                             @else
@@ -252,7 +254,7 @@
                                             @endif
                                             <label data="1"
                                                    class="label label-default text-default label-info text-pinfo">
-                                                @if ($goods['belongs_to_good']['type'] == 1)
+                                                @if ($order_goods['goods']['type'] == 1)
                                                     实体商品
                                                 @else
                                                     虚拟商品
