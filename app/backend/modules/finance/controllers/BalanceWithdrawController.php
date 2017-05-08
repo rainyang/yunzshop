@@ -96,6 +96,9 @@ class BalanceWithdrawController extends BaseController
                 return true;
             }
         }
+        if ($resultPay['status'] == 0) {
+            return $resultPay['result'];
+        }
         if ($resultPay['errno'] == 1) {
             return $resultPay['message'];
         }

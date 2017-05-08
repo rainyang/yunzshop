@@ -23,7 +23,7 @@ require.config({
         'kindeditor.main':'../../components/kindeditor/kindeditor-min',
         'css': '../lib/css.min',
         'webuploader' : '../../components/webuploader/webuploader.min',
-        'fileUploader' : '../../components/fileuploader/fileuploader.min',
+        'fileUploader' : window.sysinfo['static_url'] + 'resource/js/app/fileUploader',
         'json2' : '../lib/json2',
         'wapeditor' : './wapeditor',
         'jquery.wookmark': '../lib/jquery.wookmark.min',

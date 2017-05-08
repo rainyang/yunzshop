@@ -14,6 +14,7 @@ class AddDateYzMemberTable extends Migration
     public function up()
     {
         Schema::table('yz_member', function (Blueprint $table) {
+
             if (!Schema::hasColumn('yz_member', 'created_at')) {
                 $table->integer('created_at')->default(0)->comment('创建时间');
             }
