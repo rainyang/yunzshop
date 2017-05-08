@@ -22,10 +22,9 @@ class Withdraw extends \app\common\models\Withdraw
         $withdrawModel->uniacid();
 
         $withdrawModel->where('member_id', \YunShop::app()->getMemberId());
-        if ($status >= '0') {
+        if ($status != '') {
             $withdrawModel->where('status', $status);
         }
-//        $withdrawModel->where('status', $status);
         return $withdrawModel;
     }
 
