@@ -199,7 +199,8 @@ class Goods extends BaseModel
                     } else{
                         $query->join('yz_goods_category', function($join) use ($value){
                             $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
-                                ->where('yz_goods_category.category_id', $value);
+                                ->whereRaw('FIND_IN_SET(?,category_ids)', [$value]);
+//                                ->where('yz_goods_category.category_id', $value);
                         });
                     }
                     break;
