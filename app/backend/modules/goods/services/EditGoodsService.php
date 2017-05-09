@@ -45,24 +45,20 @@ class EditGoodsService
         //商品其它图片反序列化
         $this->goods_model->thumb_url = !empty($this->goods_model->thumb_url) ? unserialize($this->goods_model->thumb_url) : [];
 
-        if ($this->request) {
-            $this->request['has_option'] = $this->request['has_option'] ? $this->request['has_option'] : 0;
-            if ($this->request['has_option'] && !$this->request['option_ids']) {
-                $this->request['has_option'] = 0;
-                //return $this->message('启用商品规格，必须添加规格项等信息', Url::absoluteWeb('goods.goods.index'));
-            }
+        if ($this->request->goods) {
+            $this->request->goods['has_option'] = $this->request->goods['has_option'] ? $this->request->goods['has_option'] : 0;
             //将数据赋值到model
-            $this->request['thumb'] = tomedia($this->request['thumb']);
+            $this->request->goods['thumb'] = tomedia($this->request->goods['thumb']);
 
-            if(isset($this->request['thumb_url'])){
-                $this->request['thumb_url'] = serialize(
+            if(isset($this->request->goods['thumb_url'])){
+                $this->request->goods['thumb_url'] = serialize(
                     array_map(function($item){
                         return tomedia($item);
-                    }, $this->request['thumb_url'])
+                    }, $this->request->goods['thumb_url'])
                 );
             }
 
-            $this->goods_model->setRawAttributes($this->request);
+            $this->goods_model->setRawAttributes($this->request->goods);
             $this->goods_model->widgets = $this->request->widgets;
             //其他字段赋值
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
