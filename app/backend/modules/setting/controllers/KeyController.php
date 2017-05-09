@@ -68,7 +68,7 @@ class KeyController extends BaseController
             'domain' => $domain
         ];
         if($type == 'create') {
-            $content = Curl::to(config('auto-update.checkUrl').'app-account/create')
+            $content = Curl::to(config('auto-update.checkUrl').'/app-account/create')
                 ->withData($data)
                 ->get();
             $this->_log->error('app-account create === '. $data['uniacid'] . " :: " . $data['key'] . " :: " . $data['secret'] . " :: " . $data['domain'] .$content);
@@ -95,7 +95,7 @@ class KeyController extends BaseController
 
         $type = \YunShop::request()->type;
         $domain = request()->getHttpHost();
-        $content = Curl::to(config('auto-update.checkUrl').'/update/check_isKey.json')
+        $content = Curl::to(config('auto-update.checkUrl').'/check_isKey.json')
             ->withHeader(
                "Authorization: Basic " . base64_encode("{$data['key']}:{$data['secret']}")
             )
