@@ -46,6 +46,7 @@ class EditGoodsService
         $this->goods_model->thumb_url = !empty($this->goods_model->thumb_url) ? unserialize($this->goods_model->thumb_url) : [];
 
         if ($this->request->goods) {
+            $this->request->goods['has_option'] = $this->request->goods['has_option'] ? $this->request->goods['has_option'] : 0;
             //将数据赋值到model
             $this->request->goods['thumb'] = tomedia($this->request->goods['thumb']);
 
@@ -64,9 +65,9 @@ class EditGoodsService
             $this->goods_model->id = $this->goods_id;
             //数据保存
             if ($this->goods_model->save()) {
-                GoodsParam::saveParam(\YunShop::request(), $this->goods_model->id, \YunShop::app()->uniacid);
-                GoodsSpec::saveSpec(\YunShop::request(), $this->goods_model->id, \YunShop::app()->uniacid);
-                GoodsOption::saveOption(\YunShop::request(), $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                GoodsParam::saveParam($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
+                GoodsSpec::saveSpec($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
+                GoodsOption::saveOption($this->request, $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
                 //显示信息并跳转
                 return ['status' => 1];
             } else {

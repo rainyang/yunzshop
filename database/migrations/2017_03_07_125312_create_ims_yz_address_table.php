@@ -12,13 +12,14 @@ class CreateImsYzAddressTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_address', function(Blueprint $table)
-		{
-			$table->integer('id', true);
-			$table->string('areaname')->nullable();
-			$table->integer('parentid')->nullable();
-			$table->integer('level')->nullable();
-		});
+        if (!Schema::hasTable('yz_address')) {
+            Schema::create('yz_address', function (Blueprint $table) {
+                $table->integer('id', true);
+                $table->string('areaname')->nullable();
+                $table->integer('parentid')->nullable();
+                $table->integer('level')->nullable();
+            });
+        }
 	}
 
 
@@ -29,7 +30,7 @@ class CreateImsYzAddressTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_address');
+		Schema::drop('yz_address');
 	}
 
 }
