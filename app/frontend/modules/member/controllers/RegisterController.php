@@ -25,8 +25,8 @@ use app\common\exceptions\AppException;
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
-    protected $publicAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
-    protected $ignoreAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
+    protected $publicAction = ['index', 'sendCode', 'checkCode', 'sendSms', 'changePassword'];
+    protected $ignoreAction = ['index', 'sendCode', 'checkCode', 'sendSms', 'changePassword'];
 
     public function index()
     {
