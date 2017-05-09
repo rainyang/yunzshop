@@ -14,7 +14,9 @@ class AddDeletedAtToImsYzMemberCoupon extends Migration
     public function up()
     {
         Schema::table('yz_member_coupon', function (Blueprint $table) {
-            $table->integer('deleted_at')->nullable()->comment('删除时间');
+            if (!Schema::hasColumn('yz_member_coupon', 'deleted_at')) {
+                $table->integer('deleted_at')->nullable()->comment('删除时间');
+            }
         });
     }
 
