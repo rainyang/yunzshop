@@ -123,13 +123,15 @@ class RegisterController extends ApiController
     public function sendCode()
     {
         $mobile = \YunShop::request()->mobile;
+        $reset_pwd = \YunShop::request()->reset;
+
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
 
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
-        if (!empty($info)) {
+        if (!empty($info) && empty($reset_pwd)) {
             return $this->errorJson('该手机号已被注册！不能获取验证码');
         }
         $code = rand(1000, 9999);
