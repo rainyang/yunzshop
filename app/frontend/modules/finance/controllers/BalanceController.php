@@ -59,6 +59,10 @@ class BalanceController extends ApiController
             $result = (new BalanceService())->getBalanceSet();
             $result['member_credit2'] = $memberInfo->credit2;
 
+            $pay = \Setting::get('shop.pay');
+            $result['weixin'] = $pay['weixin'];
+            $result['alipay'] = $pay['alipay'];
+
             return $this->successJson('获取数据成功', $result);
         }
         return $this->errorJson('未获取到会员数据');

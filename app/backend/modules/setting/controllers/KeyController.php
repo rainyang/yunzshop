@@ -11,9 +11,7 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
-use app\common\models\AccountWechats;
 use app\common\services\MyLink;
-use Illuminate\Support\Facades\Request;
 use Ixudra\Curl\Facades\Curl;
 
 class KeyController extends BaseController
@@ -22,6 +20,7 @@ class KeyController extends BaseController
     public function __construct()
     {
         $this->uniacid = \YunShop::app()->uniacid;
+        $this->_log = app('log');
     }
 
     /**
@@ -35,9 +34,10 @@ class KeyController extends BaseController
         $type = \YunShop::request()->type;
         $message = $type == 'create' ? '添加' : '取消';
         if ($requestModel) {
-
             //检测数据是否存在
+            $this->_log->error($this->uniacid . " : " . $requestModel['key'] . ' => ' . $requestModel['secret']);
             $res = $this ->isExist($requestModel);
+            $this->_log->error('1 isExists result ===> ' . $res);
             if($res !== 'is ok') {
                 $this ->error($res);
             } else {
@@ -66,19 +66,22 @@ class KeyController extends BaseController
             'domain' => $domain
         ];
         if($type == 'create') {
-            $content = Curl::to(config('auto-update.checkUrl').'app-account/create')
+            $content = Curl::to(config('auto-update.checkUrl').'/app-account/create')
                 ->withData($data)
                 ->get();
+            $this->_log->error('app-account create === '. $data['uniacid'] . " :: " . $data['key'] . " :: " . $data['secret'] . " :: " . $data['domain'] .$content);
             $writeRes = Setting::set('shop.key', $requestModel);
-            Cache::forget('app_auth' . $this->uniacid);
+            \Cache::forget('app_auth' . $this->uniacid);
+            $this->_log->error('shop,key set ' . $writeRes . ': ' . $requestModel['key'] . '=> ' . $requestModel['secret']);
             return $writeRes && $content;
         } else if($type == 'cancel') {
             $content = Curl::to(config('auto-update.checkUrl').'/app-account/cancel')
                 ->withData($data)
                 ->get();
-           // print_r($content);exit();
+            $this->_log->error('app-account cancel' . $content);
             $writeRes = Setting::set('shop.key', '');
-            Cache::forget('app_auth' . $this->uniacid);
+            \Cache::forget('app_auth' . $this->uniacid);
+            $this->_log->error('shop,key cancel ' . $writeRes . ': ' . $requestModel['key'] . '=> ' . $requestModel['secret']);
             return $writeRes && $content ;
         }
     }
@@ -90,7 +93,7 @@ class KeyController extends BaseController
 
         $type = \YunShop::request()->type;
         $domain = request()->getHttpHost();
-        $content = Curl::to(config('auto-update.checkUrl').'/update/check_isKey.json')
+        $content = Curl::to(config('auto-update.checkUrl').'/check_isKey.json')
             ->withHeader(
                "Authorization: Basic " . base64_encode("{$data['key']}:{$data['secret']}")
             )
@@ -100,14 +103,15 @@ class KeyController extends BaseController
             ])
             ->get();
 
+        $res = '密钥或者Key 有错误！';
         if(strpos($content,'no such data exists') !== false) {
-            $res = '密钥不存在';
+            $this->_log->error('uniacid ==' .$this->uniacid. ' no such data exists');
         } else if(strpos($content,'expired of time') !== false){
-            $res = '账号已经到期';
+            $this->_log->error('uniacid ==' .$this->uniacid. 'expired of time');
         } else if(strpos($content,'is ok') !== false) {
             $res = 'is ok';
         } else if(strpos($content, 'domain error') !== false) {
-            $res = '域名不存在';
+            $this->_log->error('uniacid ==' .$this->uniacid. "domain doesn't exists!");
         }   else if(strpos($content, 'amount exceeded') !== false) {
             $res = '您的站点数量已经没有了，不能再建新站！若要建站请取消之前的站点，或者联系我们的客服人员！';
         }
