@@ -25,8 +25,8 @@ use app\common\exceptions\AppException;
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
-    protected $publicAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
-    protected $ignoreAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
+    protected $publicAction = ['index', 'sendCode', 'checkCode', 'sendSms', 'changePassword'];
+    protected $ignoreAction = ['index', 'sendCode', 'checkCode', 'sendSms', 'changePassword'];
 
     public function index()
     {
@@ -123,13 +123,15 @@ class RegisterController extends ApiController
     public function sendCode()
     {
         $mobile = \YunShop::request()->mobile;
+        $reset_pwd = \YunShop::request()->reset;
+
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
 
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
-        if (!empty($info)) {
+        if (!empty($info) && empty($reset_pwd)) {
             return $this->errorJson('该手机号已被注册！不能获取验证码');
         }
         $code = rand(1000, 9999);
