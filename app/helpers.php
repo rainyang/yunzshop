@@ -4,6 +4,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use app\common\services\PermissionService;
 use app\common\helpers\Url;
+use Ixudra\Curl\Facades\Curl;
 
 if (!function_exists("tpl_ueditor")) {
     function tpl_ueditor($id, $value = '', $options = array())
@@ -662,5 +663,40 @@ if (!function_exists('createNo')) {
     function createNo($prefix, $numeric = FALSE)
     {
         return $prefix . date('YmdHis') . \app\common\helpers\Client::random(6, $numeric);
+    }
+}
+
+    /*
+     * 检测指定的 key 和 密钥是否存在
+     *
+     *
+     * @params string $fileName 检查路径
+     * @params array $keyAndSecret ['key' => string, 'secret' => string]
+     * @params array $postData post 传参
+     *
+     * @return mixed
+     */
+
+if(!function_exists('isKeySecretExists')) {
+    function isKeySecretExists($fileName, $keyAndSecret, $postData, $message='') {
+        $content = Curl::to($fileName)
+            ->withHeader(
+                "Authorization: Basic " . base64_encode("{$keyAndSecret['key']}:{$keyAndSecret['secret']}")
+            )
+            ->withData($postData)
+            ->get();
+        $res = '密钥或者Key 有错误！';
+        if(strpos($content,'no such data exists') !== false) {
+            app('log')->error( $message . 'no such data exists');
+        } else if(strpos($content,'expired of time') !== false){
+            app('log')->error( $message . 'expired of time');
+        } else if(strpos($content,'is ok') !== false) {
+            $res = 'is ok';
+        } else if(strpos($content, 'domain error') !== false) {
+            app('log')->error( $message . "domain doesn't exists!");
+        }   else if(strpos($content, 'amount exceeded') !== false) {
+            $res = '您的数量已经没有了，若要建站请取消之前的站点，或者联系我们的客服人员！';
+        }
+        return $res;
     }
 }

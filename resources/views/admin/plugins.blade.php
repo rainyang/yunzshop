@@ -7,9 +7,10 @@
 
         <!-- 新增加右侧顶部三级菜单 -->
         <section class="content-header">
-            <h1>
+            <h1 style="display: inline-block;">
                 {{ trans('插件管理') }}
             </h1>
+            <a href="{{yzWebUrl('plugin.plugins-market.controllers.market.show')}}" class="btn btn-success" style="font-size: 13px;float: right">进入插件市场</a>
         </section>
 
         <div class='panel panel-default'>
