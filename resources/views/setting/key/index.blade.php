@@ -13,38 +13,6 @@
                 return false;
             }
             return true
-//            var data = {};
-//             data['key'] = $(':input[name="upgrade[key]"]').val();
-//             data['secret'] = $(':input[name="upgrade[secret]"]').val();
-            {{--$.ajax({--}}
-                {{--url : '{!! yzWebUrl('setting.key.is-exist') !!}',--}}
-                {{--type : 'post',--}}
-                {{--data : {data:data},--}}
-                {{--dataType : 'json',--}}
-                {{--success : function (msg) {--}}
-                    {{--console.log("success", msg['msg'])--}}
-                    {{--switch (msg['msg']) {--}}
-                        {{--case 'no such data exists' :--}}
-                            {{--$('.message-box').attr('style', 'display:block;')--}}
-                            {{--$('#message').html('key和密钥不存在！')--}}
-                            {{--event.preventDefault();--}}
-                           {{--break;--}}
-                        {{--case 'expired of time' :--}}
-                            {{--$('.message-box').attr('style', 'display:block;')--}}
-                            {{--$('#message').html('您的账号已到期，请续费！')--}}
-                            {{--event.preventDefault();--}}
-                            {{--break;--}}
-                        {{--case 'is ok' :--}}
-                            {{--return true--}}
-                    {{--}--}}
-                {{--},--}}
-                {{--error : function (error) {--}}
-                    {{--console.log('error is ' , error)--}}
-                    {{--event.preventDefault();--}}
-                    {{--return false;--}}
-                {{--}--}}
-            {{--})--}}
-
         }
     </script>
 <div class="w1200 m0a">
@@ -81,7 +49,7 @@
                     </div>
                 </div>
                 
-                       <div class="form-group"></div>
+            <div class="form-group"></div>
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
