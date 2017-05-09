@@ -39,7 +39,7 @@ class KeyController extends BaseController
             //检测数据是否存在
             $this->_log->error($this->uniacid . " : " . $requestModel['key'] . ' => ' . $requestModel['secret']);
             $res = $this ->isExist($requestModel);
-
+            $this->_log->error('1 isExists result ===> ' . $res);
             if($res !== 'is ok') {
                 $this ->error($res);
             } else {
@@ -71,16 +71,19 @@ class KeyController extends BaseController
             $content = Curl::to(config('auto-update.checkUrl').'app-account/create')
                 ->withData($data)
                 ->get();
+            $this->_log->error('app-account create === '. $data['uniacid'] . " :: " . $data['key'] . " :: " . $data['secret'] . " :: " . $data['domain'] .$content);
             $writeRes = Setting::set('shop.key', $requestModel);
             Cache::forget('app_auth' . $this->uniacid);
+            $this->_log->error('shop,key set ' . $writeRes . ': ' . $requestModel['key'] . '=> ' . $requestModel['secret']);
             return $writeRes && $content;
         } else if($type == 'cancel') {
             $content = Curl::to(config('auto-update.checkUrl').'/app-account/cancel')
                 ->withData($data)
                 ->get();
-           // print_r($content);exit();
+            $this->_log->error('app-account cancel' . $content);
             $writeRes = Setting::set('shop.key', '');
             Cache::forget('app_auth' . $this->uniacid);
+            $this->_log->error('shop,key cancel ' . $writeRes . ': ' . $requestModel['key'] . '=> ' . $requestModel['secret']);
             return $writeRes && $content ;
         }
     }
