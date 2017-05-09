@@ -253,7 +253,7 @@ class GoodsController extends BaseController
         }*/
 
         //todo 所有操作去service里进行，供应商共用此方法。
-        $goods_service = new EditGoodsService($request->id, $request);
+        $goods_service = new EditGoodsService($request->id, \YunShop::request()->goods);
         $result = $goods_service->edit();
         if ($result['status'] == 1) {
             return $this->message('商品修改成功');

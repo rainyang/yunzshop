@@ -45,33 +45,33 @@ class EditGoodsService
         //商品其它图片反序列化
         $this->goods_model->thumb_url = !empty($this->goods_model->thumb_url) ? unserialize($this->goods_model->thumb_url) : [];
 
-        if ($this->request->goods) {
-            $this->request->goods['has_option'] = $this->request->goods['has_option'] ? $this->request->goods['has_option'] : 0;
-            if ($this->request->goods['has_option'] && !$this->request['option_ids']) {
-                $this->request->goods['has_option'] = 0;
+        if ($this->request) {
+            $this->request['has_option'] = $this->request['has_option'] ? $this->request['has_option'] : 0;
+            if ($this->request['has_option'] && !$this->request['option_ids']) {
+                $this->request['has_option'] = 0;
                 //return $this->message('启用商品规格，必须添加规格项等信息', Url::absoluteWeb('goods.goods.index'));
             }
             //将数据赋值到model
-            $this->request->goods['thumb'] = tomedia($this->request->goods['thumb']);
+            $this->request['thumb'] = tomedia($this->request['thumb']);
 
-            if(isset($this->request->goods['thumb_url'])){
-                $this->request->goods['thumb_url'] = serialize(
+            if(isset($this->request['thumb_url'])){
+                $this->request['thumb_url'] = serialize(
                     array_map(function($item){
                         return tomedia($item);
-                    }, $this->request->goods['thumb_url'])
+                    }, $this->request['thumb_url'])
                 );
             }
 
-            $this->goods_model->setRawAttributes($this->request->goods);
+            $this->goods_model->setRawAttributes($this->request);
             $this->goods_model->widgets = $this->request->widgets;
             //其他字段赋值
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
             $this->goods_model->id = $this->goods_id;
             //数据保存
             if ($this->goods_model->save()) {
-                GoodsParam::saveParam(\YunShop::request(), $this->goods_model->id, \YunShop::app()->uniacid);
-                GoodsSpec::saveSpec(\YunShop::request(), $this->goods_model->id, \YunShop::app()->uniacid);
-                GoodsOption::saveOption(\YunShop::request(), $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                GoodsParam::saveParam($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
+                GoodsSpec::saveSpec($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
+                GoodsOption::saveOption($this->request, $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
                 //显示信息并跳转
                 return ['status' => 1];
             } else {
