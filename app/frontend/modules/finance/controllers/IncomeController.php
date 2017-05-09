@@ -199,6 +199,7 @@ class IncomeController extends ApiController
             $incomes = $incomeModel->get();
             \Log::info("INCOME:");
             \Log::info($incomes);
+            $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
             if (isset($set[$key]['roll_out_limit']) &&
                 bccomp($incomes->sum('amount'), $set[$key]['roll_out_limit'], 2) == -1
             ) {
