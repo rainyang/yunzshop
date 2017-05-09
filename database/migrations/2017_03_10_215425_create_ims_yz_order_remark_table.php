@@ -12,15 +12,16 @@ class CreateImsYzOrderRemarkTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_order_remark', function(Blueprint $table)
-		{
-			$table->integer('id', true);
-			$table->integer('order_id')->index('idx_order_id');
-			$table->char('remark')->comment('买家备注');
-			$table->integer('updated_at')->default(0);
-			$table->integer('created_at')->default(0);
-			$table->integer('deleted_at')->default(0);
-		});
+        if (!Schema::hasTable('yz_order_remark')) {
+            Schema::create('yz_order_remark', function (Blueprint $table) {
+                $table->integer('id', true);
+                $table->integer('order_id')->index('idx_order_id');
+                $table->char('remark');
+                $table->integer('updated_at')->default(0);
+                $table->integer('created_at')->default(0);
+                $table->integer('deleted_at')->default(0);
+            });
+        }
 	}
 
 

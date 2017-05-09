@@ -13,16 +13,18 @@ class CreateUploadsTableZgldh extends Migration
      */
     public function up()
     {
-        Schema::create('uploads', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name')->nullable();
-            $table->string('description')->nullable();
-            $table->string('disk');
-            $table->string('path');
-            $table->integer('size');
-            $table->integer('user_id')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('uploads')) {
+            Schema::create('uploads', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name')->nullable();
+                $table->string('description')->nullable();
+                $table->string('disk');
+                $table->string('path');
+                $table->integer('size');
+                $table->integer('user_id')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

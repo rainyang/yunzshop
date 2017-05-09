@@ -12,12 +12,13 @@ class CreateImsYzOrderAddressTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_order_address', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->integer('order_id')->default('0');
-			$table->string('address')->default('0')->comment('收货地址');
-		});
+        if (!Schema::hasTable('yz_order_address')) {
+            Schema::create('yz_order_address', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('order_id')->default('0');
+                $table->string('address')->default('0');
+            });
+        }
 	}
 
 
