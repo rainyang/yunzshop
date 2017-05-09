@@ -199,13 +199,19 @@ class IncomeController extends ApiController
             $incomes = $incomeModel->get();
             \Log::info("INCOME:");
             \Log::info($incomes);
+
             $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
-            if (isset($set[$key]['roll_out_limit']) &&
-                bccomp($incomes->sum('amount'), $set[$key]['roll_out_limit'], 2) == -1
-            ) {
+
+            \Log::info("roll_out_limit:");
+            \Log::info($set[$key]['roll_out_limit']);
+
+            if ( bccomp($incomes->sum('amount'), $set[$key]['roll_out_limit'], 2) == -1 ) {
                 return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
             }
+
         }
+        \Log::info("提现成功:");
+        \Log::info('提现成功');
         $request = static::setWithdraw($withdrawData, $withdrawTotal);
         if ($request) {
             return $this->successJson('提现成功!');
