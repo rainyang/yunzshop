@@ -212,7 +212,7 @@ class WechatPay extends Pay
             return true;
 
         } else {
-            return show_json('0', $result->err_code_des);
+            return error('0', $result->err_code_des);
         }
 
         return false;

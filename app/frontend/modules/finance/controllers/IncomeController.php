@@ -39,7 +39,7 @@ class IncomeController extends ApiController
         ];
 
         foreach ($config as $key => $item) {
-            $typeModel = $incomeModel->where('type', $key);
+            $typeModel = $incomeModel->where('incometable_type', $item['class']);
             $incomeData[$key] = [
                 'title' => $item['title'],
                 'ico' => $item['ico'],
