@@ -115,14 +115,14 @@ class IncomeController extends ApiController
     public function getWithdraw()
     {
         $config = \Config::get('income');
-        $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
-        $incomeModel = $incomeModel->where('status', '0');
-        if (!$incomeModel->get()) {
-            return $this->errorJson('未检测到可提现数据!');
-        }
+
 
         foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('withdraw.' . $key);
+            
+            $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
+            $incomeModel = $incomeModel->where('status', '0');
+            
             $incomeModel = $incomeModel->where('incometable_type', $item['class']);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
