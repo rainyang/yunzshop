@@ -46,6 +46,11 @@ class EditGoodsService
         $this->goods_model->thumb_url = !empty($this->goods_model->thumb_url) ? unserialize($this->goods_model->thumb_url) : [];
 
         if ($this->request->goods) {
+            $this->request->goods['has_option'] = $this->request->goods['has_option'] ? $this->request->goods['has_option'] : 0;
+            if ($this->request->goods['has_option'] && !$this->request['option_ids']) {
+                $this->request->goods['has_option'] = 0;
+                //return $this->message('启用商品规格，必须添加规格项等信息', Url::absoluteWeb('goods.goods.index'));
+            }
             //将数据赋值到model
             $this->request->goods['thumb'] = tomedia($this->request->goods['thumb']);
 
