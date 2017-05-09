@@ -8,7 +8,7 @@
 
 namespace app\backend\modules\refund\models\type;
 
-class ExchangeGoods extends RefundType
+class ExchangeGoods extends ReturnGoods
 {
 
 }

@@ -23,8 +23,9 @@ class OperationController extends BaseController
      */
     private $refundApply;
 
-    public function preAction()
+    public function __construct()
     {
+        parent::__construct();
         $request = \Request::capture();
         $this->validate($request, [
             'refund_id' => 'required',

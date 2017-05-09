@@ -169,14 +169,6 @@
                                 <button name='saveremark' onclick="sub()" class='btn btn-default'>保存备注</button>
                             </div>
                         </div>
-                        @if (!empty($refund) && $refund['status'] == 1)
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款时间 :</label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <div class="form-control-static">{{$order['refundtime']}}</div>
-                                </div>
-                            </div>
-                        @endif
 
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单日期 :</label>
