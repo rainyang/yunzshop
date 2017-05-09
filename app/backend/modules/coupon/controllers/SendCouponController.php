@@ -159,7 +159,7 @@ class SendCouponController extends BaseController
                 //写入log
                 if ($res){ //发放优惠券成功
                     $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )';
-                    if(!empty($responseData['resp_title'])){
+                    if(!empty($responseData['resp_title']) && $memberOpenid){
                         MemberCouponController::sendTemplateMessage($memberOpenid, self::TEMPLATEID, $responseData); //成功时, 发送模板消息
                     }
                 } else{ //发放优惠券失败
