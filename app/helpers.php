@@ -685,18 +685,11 @@ if(!function_exists('isKeySecretExists')) {
             )
             ->withData($postData)
             ->get();
-        $res = '密钥或者Key 有错误！';
-        if(strpos($content,'no such data exists') !== false) {
-            app('log')->error( $message . 'no such data exists');
-        } else if(strpos($content,'expired of time') !== false){
-            app('log')->error( $message . 'expired of time');
-        } else if(strpos($content,'is ok') !== false) {
-            $res = 'is ok';
-        } else if(strpos($content, 'domain error') !== false) {
-            app('log')->error( $message . "domain doesn't exists!");
-        }   else if(strpos($content, 'amount exceeded') !== false) {
-            $res = '您的数量已经没有了，若要建站请取消之前的站点，或者联系我们的客服人员！';
+        dd($content);exit();
+        $result = json_decode($content, true);
+        if(!$result['isExists']) {
+            app('log')->error($message . $result['message']);
         }
-        return $res;
+        return $result['isExists'];
     }
 }
