@@ -37,7 +37,7 @@ class CreateImsYzOrderPayTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_order_pay');
+		Schema::drop('yz_order_pay');
 	}
 
 }
