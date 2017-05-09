@@ -67,7 +67,7 @@ function trans(key, parameters = {}) {
   let segments = key.split('.');
   let temp = $.currentLocale || {};
 
-  for (i in segments) {
+  for (let  i in segments) {
     if (isEmpty(temp[segments[i]])) {
       return key;
     } else {
@@ -75,7 +75,7 @@ function trans(key, parameters = {}) {
     }
   }
 
-  for (i in parameters) {
+  for (let i in parameters) {
     if (!isEmpty(parameters[i])) {
       temp = temp.replace(':'+i, parameters[i]);
     }
