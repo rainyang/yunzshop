@@ -12,16 +12,17 @@ class CreateImsYzSmsSendLimitTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_sms_send_limit', function(Blueprint $table)
-		{
-			$table->integer('sms_id', true)->comment('编号');
-			$table->integer('uniacid')->comment('统一公众号');
-			$table->string('mobile', 11)->comment('手机号');
-			$table->boolean('total')->comment('发送数量');
-			$table->integer('created_at')->default(0)->comment('短信发送时间');
-			$table->integer('updated_at')->default(0)->comment('更新时间');
-			$table->integer('deleted_at')->nullable()->comment('删除时间');
-		});
+        if (!Schema::hasTable('yz_sms_send_limit')) {
+            Schema::create('yz_sms_send_limit', function (Blueprint $table) {
+                $table->integer('sms_id', true);
+                $table->integer('uniacid');
+                $table->string('mobile', 11);
+                $table->boolean('total');
+                $table->integer('created_at')->default(0);
+                $table->integer('updated_at')->default(0);
+                $table->integer('deleted_at')->nullable();
+            });
+        }
 	}
 
 
@@ -32,7 +33,7 @@ class CreateImsYzSmsSendLimitTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_sms_send_limit');
+		Schema::drop('yz_sms_send_limit');
 	}
 
 }

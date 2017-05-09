@@ -12,16 +12,17 @@ class CreateImsYzGoodsCategoryTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_goods_category', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->integer('goods_id')->nullable();
-			$table->integer('category_id')->nullable();
-			$table->string('category_ids')->nullable();
-			$table->integer('updated_at')->nullable();
-			$table->integer('created_at')->nullable();
-			$table->integer('deleted_at')->nullable();
-		});
+        if (!Schema::hasTable('yz_goods_category')) {
+            Schema::create('yz_goods_category', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('goods_id')->nullable();
+                $table->integer('category_id')->nullable();
+                $table->string('category_ids')->nullable();
+                $table->integer('updated_at')->nullable();
+                $table->integer('created_at')->nullable();
+                $table->integer('deleted_at')->nullable();
+            });
+        }
 	}
 
 
@@ -32,7 +33,7 @@ class CreateImsYzGoodsCategoryTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_goods_category');
+		Schema::drop('yz_goods_category');
 	}
 
 }

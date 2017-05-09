@@ -12,12 +12,13 @@ class CreateImsYzOptionsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_options', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->string('option_name', 45)->nullable();
-			$table->string('option_value', 45)->nullable();
-		});
+        if (!Schema::hasTable('yz_options')) {
+            Schema::create('yz_options', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('option_name', 45)->nullable();
+                $table->text('option_value')->nullable();
+            });
+        }
 	}
 
 
@@ -28,7 +29,7 @@ class CreateImsYzOptionsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_options');
+		Schema::drop('yz_options');
 	}
 
 }
