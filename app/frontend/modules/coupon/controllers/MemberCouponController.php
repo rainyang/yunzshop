@@ -25,7 +25,7 @@ class MemberCouponController extends ApiController
 
     const NO_LIMIT = -1; //没有限制 (比如对会员等级没有限制, 对领取总数没有限制)
 
-    const TEMPLATEID = 'OPENTM202243318'; //成功发放优惠券时, 发送的模板消息的 ID
+//    const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
 //    const TEMPLATEID = 'tqsXWjFgDGrlUmiOy0ci6VmVtjYxR7s-4BWtJX6jgeQ'; //临时调试用
 
     /**
