@@ -6,7 +6,7 @@
 
         <!-- Sidebar Menu -->
         <ul class="sidebar-menu">
-            <li class="header" style="color: white">栏目导航{{config('supplier_menu')}}</li>
+            <li class="header" style="color: white">栏目导航</li>
             <!-- Optionally, you can add icons to the links -->
             @if(YunShop::app()->role)
             <li><a href="{{yzWebFullUrl('index.index')}}"><i class="fa fa-dashboard"></i> <span>控制面板</span></a></li>
