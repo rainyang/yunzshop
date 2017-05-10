@@ -129,7 +129,7 @@ class BalanceWithdrawController extends BaseController
         $this->withdrawModel->audit_at        = time();
     }
 
-    //获取去提现手续费设置
+    //获取提现手续费设置
     private function withdrawSet()
     {
         $withdrawSet = Setting::get('withdraw.balance');
@@ -140,7 +140,7 @@ class BalanceWithdrawController extends BaseController
     private function withdrawPoundageMath()
     {
         $this->withdrawSet();
-        return round(floatval($this->withdrawModel->amounts * $this->withdrawPoundage), 2);
+        return round(floatval($this->withdrawModel->amounts * $this->withdrawPoundage / 100), 2);
     }
 
     //审核金额运算数据、结果
