@@ -170,23 +170,20 @@ class IncomeController extends ApiController
     {
         $config = \Config::get('income');
         $withdrawData = \YunShop::request()->data;
-        Log::info("POST - data /r/n");
-        Log::info(print_r($withdrawData));
+        Log::info("POST - data ",$withdrawData);
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
 
         $withdrawTotal = $withdrawData['total'];
-        Log::info("POST - Withdraw Total/r/n");
-        Log::info(print_r($withdrawTotal));
+        Log::info("POST - Withdraw Total ",$withdrawTotal);
         unset($withdrawData['total']);
 
         $incomeModel = Income::getIncomes();
         $incomeModel = $incomeModel->where('member_id', \YunShop::app()->getMemberId());
         $incomeModel = $incomeModel->where('status', '0');
 
-        Log::info("POST - Withdraw Data /r/n");
-        Log::info(print_r($withdrawData));
+        Log::info("POST - Withdraw Data ",$withdrawData);
         /**
          * 验证数据
          */
@@ -195,13 +192,12 @@ class IncomeController extends ApiController
             $set[$key] = \Setting::get('withdraw.' . $key);
             $incomeModel = $incomeModel->whereIn('id', explode(',', $item['type_id']));
             $incomes = $incomeModel->get();
-            Log::info("INCOME:");
-            Log::info(print_r($incomes));
+            Log::info("INCOME:",$incomes);
 
             $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
 
             Log::info("roll_out_limit:");
-            Log::info(print_r($set[$key]['roll_out_limit']));
+            Log::info($set[$key]['roll_out_limit']);
 
             if ( bccomp($incomes->sum('amount'), $set[$key]['roll_out_limit'], 2) == -1 ) {
                 return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
@@ -263,7 +259,7 @@ class IncomeController extends ApiController
                 'type' => $item['type'],
                 'type_name' => $item['type_name'],
                 'type_id' => $item['type_id'],
-                'amounts' => $item['amounts'],
+                'amounts' => $item['income'],
                 'poundage' => $item['poundage'],
                 'poundage_rate' => $item['poundage_rate'],
                 'actual_amounts' => $item['amounts']-$item['poundage'],
@@ -275,8 +271,7 @@ class IncomeController extends ApiController
             ];
             static::setIncomeAndOrder($item['type'], $item['type_id']);
         }
-        Log::info("Withdraw - data");
-        Log::info(print_r($data));
+        Log::info("Withdraw - data",$data);
         return Withdraw::insert($data);
     }
 
