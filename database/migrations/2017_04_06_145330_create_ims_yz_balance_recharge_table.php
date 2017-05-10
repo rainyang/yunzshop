@@ -37,7 +37,7 @@ class CreateImsYzBalanceRechargeTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_balance_recharge');
+		Schema::dropIfExists('yz_balance_recharge');
 	}
 
 }

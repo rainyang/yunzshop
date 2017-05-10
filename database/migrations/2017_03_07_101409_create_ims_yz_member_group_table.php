@@ -32,7 +32,7 @@ class CreateImsYzMemberGroupTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_member_group');
+		Schema::dropIfExists('yz_member_group');
 	}
 
 }

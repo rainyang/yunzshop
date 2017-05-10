@@ -34,7 +34,7 @@ class CreateImsYzAccountOpenConfigTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_account_open_config');
+		Schema::dropIfExists('yz_account_open_config');
 	}
 
 }

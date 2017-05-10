@@ -33,7 +33,7 @@ class CreateImsYzRoleTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_role');
+		Schema::dropIfExists('yz_role');
 	}
 
 }

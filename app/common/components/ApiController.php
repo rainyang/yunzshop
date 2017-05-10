@@ -14,6 +14,7 @@ use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\Member;
+use app\common\models\MemberShopInfo;
 use app\common\models\UniAccount;
 use app\frontend\modules\member\services\MemberService;
 
@@ -33,7 +34,7 @@ class ApiController extends BaseController
         parent::preAction();
 
         if(!UniAccount::checkIsExistsAccount(\YunShop::app()->uniacid)){
-            return $this->errorJson('无此公众号', ['status' => -2]);
+            return $this->errorJson('无此公众号', ['login_status' => -2]);
         }
 
         $relaton_set = MemberRelation::getSetInfo()->first();
@@ -60,6 +61,10 @@ class ApiController extends BaseController
 
             return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
         } else {
+            if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
+                return $this->errorJson('黑名单用户，请联系管理员', ['login_status' => -1]);
+            }
+
             $mid = Member::getMid();
             \Log::debug('Logined mid', $mid);
 

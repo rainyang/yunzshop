@@ -43,7 +43,7 @@ class CreateImsYzTemplateMessageRecordTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_template_message_record');
+		Schema::dropIfExists('yz_template_message_record');
 	}
 
 }

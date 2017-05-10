@@ -34,7 +34,7 @@ class CreateImsYzPayResponseDataTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_pay_response_data');
+		Schema::dropIfExists('yz_pay_response_data');
 	}
 
 }
