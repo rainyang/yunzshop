@@ -190,6 +190,7 @@ class IncomeController extends ApiController
         /**
          * 验证数据
          */
+        echo "<pre>"; print_r($withdrawData);exit;
         foreach ($withdrawData as $key => $item) {
 
             $set[$key] = \Setting::get('withdraw.' . $key);
