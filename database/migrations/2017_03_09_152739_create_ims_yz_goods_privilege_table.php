@@ -37,7 +37,7 @@ class CreateImsYzGoodsPrivilegeTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_goods_privilege');
+		Schema::dropIfExists('yz_goods_privilege');
 	}
 
 }

@@ -39,7 +39,7 @@ class CreateImsYzMemberIncomeTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_member_income');
+		Schema::dropIfExists('yz_member_income');
 	}
 
 }

@@ -30,7 +30,7 @@ class CreateImsYzStreetTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_street');
+		Schema::dropIfExists('yz_street');
 	}
 
 }

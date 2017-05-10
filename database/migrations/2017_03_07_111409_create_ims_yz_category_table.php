@@ -43,7 +43,7 @@ class CreateImsYzCategoryTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_category');
+		Schema::dropIfExists('yz_category');
 	}
 
 }

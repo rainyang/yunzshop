@@ -29,7 +29,7 @@ class CreateImsYzPayTypeTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_pay_type');
+		Schema::dropIfExists('yz_pay_type');
 	}
 
 }

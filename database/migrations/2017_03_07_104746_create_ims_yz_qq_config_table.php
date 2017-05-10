@@ -34,7 +34,7 @@ class CreateImsYzQqConfigTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_qq_config');
+		Schema::dropIfExists('yz_qq_config');
 	}
 
 }

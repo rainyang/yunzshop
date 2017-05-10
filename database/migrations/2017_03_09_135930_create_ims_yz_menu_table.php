@@ -40,7 +40,7 @@ class CreateImsYzMenuTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_menu');
+		Schema::dropIfExists('yz_menu');
 	}
 
 }

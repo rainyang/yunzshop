@@ -34,7 +34,7 @@ class CreateImsYzPayAccessLogTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_pay_access_log');
+		Schema::dropIfExists('yz_pay_access_log');
 	}
 
 }

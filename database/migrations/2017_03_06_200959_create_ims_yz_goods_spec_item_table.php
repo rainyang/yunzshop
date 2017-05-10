@@ -38,7 +38,7 @@ class CreateImsYzGoodsSpecItemTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_goods_spec_item');
+		Schema::dropIfExists('yz_goods_spec_item');
 	}
 
 }

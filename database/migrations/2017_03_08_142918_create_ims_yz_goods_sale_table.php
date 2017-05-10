@@ -36,7 +36,7 @@ class CreateImsYzGoodsSaleTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_goods_sale');
+		Schema::dropIfExists('yz_goods_sale');
 	}
 
 }
