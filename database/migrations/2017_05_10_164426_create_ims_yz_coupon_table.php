@@ -68,7 +68,7 @@ class CreateImsYzCouponTable extends Migration {
      */
     public function down()
     {
-        Schema::drop('ims_yz_coupon');
+        Schema::dropIfExists('yz_coupon');
     }
 
 }
