@@ -34,7 +34,7 @@ class CreateImsYzOrderExpressTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_order_express');
+		Schema::dropIfExists('yz_order_express');
 	}
 
 }

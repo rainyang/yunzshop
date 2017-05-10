@@ -32,7 +32,7 @@ class CreateImsYzMemberUniqueTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_member_unique');
+		Schema::dropIfExists('yz_member_unique');
 	}
 
 }

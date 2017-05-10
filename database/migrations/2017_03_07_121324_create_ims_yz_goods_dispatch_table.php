@@ -32,7 +32,7 @@ class CreateImsYzGoodsDispatchTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_goods_dispatch');
+		Schema::dropIfExists('yz_goods_dispatch');
 	}
 
 }

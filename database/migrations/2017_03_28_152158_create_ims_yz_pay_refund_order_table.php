@@ -38,7 +38,7 @@ class CreateImsYzPayRefundOrderTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_pay_refund_order');
+		Schema::dropIfExists('yz_pay_refund_order');
 	}
 
 }

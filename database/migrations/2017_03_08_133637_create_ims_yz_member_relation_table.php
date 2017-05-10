@@ -37,7 +37,7 @@ class CreateImsYzMemberRelationTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_member_relation');
+		Schema::dropIfExists('yz_member_relation');
 	}
 
 }

@@ -34,7 +34,7 @@ class CreateImsYzGoodsParamTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_goods_param');
+		Schema::dropIfExists('yz_goods_param');
 	}
 
 }

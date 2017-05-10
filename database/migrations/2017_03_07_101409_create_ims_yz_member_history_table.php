@@ -33,7 +33,7 @@ class CreateImsYzMemberHistoryTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_member_history');
+		Schema::dropIfExists('yz_member_history');
 	}
 
 }

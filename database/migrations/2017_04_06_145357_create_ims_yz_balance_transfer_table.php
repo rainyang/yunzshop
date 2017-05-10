@@ -34,7 +34,7 @@ class CreateImsYzBalanceTransferTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_balance_transfer');
+		Schema::dropIfExists('yz_balance_transfer');
 	}
 
 }
