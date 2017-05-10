@@ -28,8 +28,7 @@ class CouponDiscount
 
         $couponService = new CouponService($orderModel);
         $coupons = $couponService->getOptionalCoupons();
-        dd($coupons);exit;
-        exit;
+        
         $data = $coupons->map(function ($coupon) {
             /**
              * @var $coupon Coupon
