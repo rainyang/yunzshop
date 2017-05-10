@@ -197,7 +197,7 @@ class Order extends BaseModel
     }
     public function scopeIsPlugin($query)
     {
-        return $query->where('is_plugin', 0);
+        return $query::where('is_plugin', 0);
     }
     /**
      * 通过会员ID获取订单信息
@@ -206,8 +206,7 @@ class Order extends BaseModel
      */
     public static function getOrderInfoByMemberId($member_id, $status)
     {
-        return self::uniacid()
-            ->where('uid', $member_id)->isComment($status);
+        return self::where('uid', $member_id)->isComment($status);
     }
 
     public static function boot()
