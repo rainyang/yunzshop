@@ -34,7 +34,7 @@ class CreateUploadsTableZgldh extends Migration
      */
     public function down()
     {
-        Schema::drop('uploads');
+        Schema::dropIfExists('uploads');
     }
 
 }

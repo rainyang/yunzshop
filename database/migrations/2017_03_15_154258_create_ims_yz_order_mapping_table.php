@@ -31,7 +31,7 @@ class CreateImsYzOrderMappingTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_order_mapping');
+		Schema::dropIfExists('yz_order_mapping');
 	}
 
 }

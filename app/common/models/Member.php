@@ -244,6 +244,12 @@ class Member extends BackendModel
         return 0;
     }
 
+    /**
+     * 申请插件
+     *
+     * @param array $data
+     * @return array
+     */
     public static function addPlugins(&$data = [])
     {
         $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
@@ -255,5 +261,20 @@ class Member extends BackendModel
         }
 
         return $data;
+    }
+
+    /**
+     * 推广提现
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function getIncomeCount()
+    {
+        $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
+
+        if ($incomeModel) {
+            return $incomeModel->sum('amount');
+        }
+
+        return 0;
     }
 }

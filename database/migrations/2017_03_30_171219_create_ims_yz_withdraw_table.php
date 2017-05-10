@@ -39,7 +39,7 @@ class CreateImsYzWithdrawTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_withdraw');
+		Schema::dropIfExists('yz_withdraw');
 	}
 
 }

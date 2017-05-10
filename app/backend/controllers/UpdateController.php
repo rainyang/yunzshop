@@ -26,7 +26,7 @@ class UpdateController extends BaseController
         $update->setUpdateFile('check_app.json');
         $update->setCurrentVersion(config('version'));
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
-        Setting::get('auth.key');
+
         $update->setBasicAuth($key, $secret);
 
         if ($update->checkUpdate() === false) {
@@ -59,7 +59,6 @@ class UpdateController extends BaseController
         $update->setUpdateFile('check_app.json');
         $update->setCurrentVersion(config('version'));
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
-        Setting::get('auth.key');
         $update->setBasicAuth($key, $secret);
         //$update->setBasicAuth();
 

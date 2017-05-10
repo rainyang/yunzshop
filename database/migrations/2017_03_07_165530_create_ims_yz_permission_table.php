@@ -30,7 +30,7 @@ class CreateImsYzPermissionTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_permission');
+		Schema::dropIfExists('yz_permission');
 	}
 
 }

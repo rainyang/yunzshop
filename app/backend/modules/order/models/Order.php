@@ -36,7 +36,6 @@ class Order extends \app\common\models\Order
             'belongsToMember' => self::memberBuilder(),
             'hasManyOrderGoods' => self::orderGoodsBuilder(),
             'hasOneDispatchType',
-            'hasOnePayType',
             'address',
             'hasOneOrderRemark',
             'express',
@@ -92,7 +91,7 @@ class Order extends \app\common\models\Order
     private static function refundBuilder()
     {
         return function ($query) {
-            return $query->with('returnExpress');
+            return $query->with('returnExpress')->with('resendExpress');
         };
     }
 

@@ -17,6 +17,7 @@ class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
     use MessageTrait;
     //public $timestamps = false;
     public $attributes = [
+        'dispatch_id' => 0,
         'dispatch_price' => 0,
         'dispatch_type' => 1,
         'is_cod' => 1,

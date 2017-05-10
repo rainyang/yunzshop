@@ -5,6 +5,7 @@ namespace app\backend\modules\refund\controllers;
 use app\backend\modules\refund\models\RefundApply;
 use app\common\components\BaseController;
 use app\common\exceptions\AdminException;
+use app\common\models\refund\ResendExpress;
 use app\frontend\modules\order\services\OrderService;
 use function foo\func;
 use Illuminate\Support\Facades\DB;
@@ -44,7 +45,15 @@ class OperationController extends BaseController
      */
     public function reject(\Request $request)
     {
-        $this->refundApply->reject($request->only(['reject_reason']));
+        $refundApply = $this->refundApply;
+
+        DB::transaction(function () use ($refundApply) {
+            $refundApply->reject(\Request::only(['reject_reason']));
+            $refundApply->order->refund_id = 0;
+            $refundApply->order->save();
+        });
+
+
         return $this->message('操作成功', '');
     }
 
@@ -65,8 +74,14 @@ class OperationController extends BaseController
         return $this->message('操作成功', '');
     }
 
-    public function resend()
+    public function resend(\Request $request)
     {
+
+        $resendExpress = new ResendExpress($request->only('express_code', 'express_company_name', 'express_sn'));
+
+        $this->refundApply->resendExpress()->save($resendExpress);
+        $this->refundApply->resend();
+        return $this->message('操作成功', '');
 
     }
 

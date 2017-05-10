@@ -36,7 +36,7 @@ class CreateImsYzPayLogTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_pay_log');
+		Schema::dropIfExists('yz_pay_log');
 	}
 
 }

@@ -35,7 +35,7 @@ class CreateImsYzBrandTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_brand');
+		Schema::dropIfExists('yz_brand');
 	}
 
 }

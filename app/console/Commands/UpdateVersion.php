@@ -38,10 +38,33 @@ class UpdateVersion extends Command
      */
     public function handle()
     {
+        $this->createPluginFile();
+        $this->runMigrate();
+    }
+
+    public function runMigrate()
+    {
+        \Artisan::call('migrate',['--force' => true]);
         //更新数据表
         $versionMigration = 'database/migrations/' . $username = $this->argument('version');
         if(is_dir(base_path($versionMigration) )){
             \Artisan::call('migrate',['--force' => true,'--path' => $versionMigration]);
+        }
+    }
+
+    public function createPluginFile()
+    {
+        $pluginFile = base_path('../../web') . '/plugin.php';
+        if(!file_exists($pluginFile)){
+            file_put_contents($pluginFile,"<?php
+ 
+define('IN_IA', true);
+
+
+include_once __DIR__ . '/../addons/yun_shop/app/laravel.php';
+
+include_once __DIR__ . '/../addons/yun_shop/app/yunshop.php';
+");
         }
     }
 }

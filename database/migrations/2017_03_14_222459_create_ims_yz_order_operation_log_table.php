@@ -35,7 +35,7 @@ class CreateImsYzOrderOperationLogTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_order_operation_log');
+		Schema::dropIfExists('yz_order_operation_log');
 	}
 
 }

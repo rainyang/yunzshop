@@ -37,7 +37,7 @@ class CreateImsYzMemberLevelTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_member_level');
+		Schema::dropIfExists('yz_member_level');
 	}
 
 }

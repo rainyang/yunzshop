@@ -30,7 +30,7 @@ class CreateImsYzAddressTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_address');
+		Schema::dropIfExists('yz_address');
 	}
 
 }
