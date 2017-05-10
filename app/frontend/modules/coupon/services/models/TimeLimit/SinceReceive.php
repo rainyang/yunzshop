@@ -12,7 +12,8 @@ class SinceReceive extends TimeLimit
 {
     public function valid()
     {
-        if ($this->dbCoupon->time_days) {
+
+        if ($this->dbCoupon->time_days == false) {
             return true;
         }
         if ($this->receiveDays() > $this->dbCoupon->time_days) {
