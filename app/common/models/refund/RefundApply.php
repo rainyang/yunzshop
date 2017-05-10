@@ -95,6 +95,13 @@ class RefundApply extends BaseModel
                 'value' => 2
             ];
         }
+        if ($this->status == self::WAIT_RECEIVE_RESEND_GOODS) {
+            $result[] = [
+                'name' => '确认收货',
+                'api' => 'refund.receive_resend_goods',
+                'value' => 2
+            ];
+        }
         return $result;
     }
 
@@ -134,7 +141,7 @@ class RefundApply extends BaseModel
 
     public function scopeRefunding($query)
     {
-        return $query->where('status','>', self::WAIT_CHECK)->where('status','<', self::COMPLETE);
+        return $query->where('status', '>=', self::WAIT_CHECK)->where('status', '<', self::COMPLETE);
     }
 
     public function scopeRefunded($query)

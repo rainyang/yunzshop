@@ -73,15 +73,6 @@ abstract class RefundOperation extends RefundApply
      */
     public function enable()
     {
-
-//        $Event = $this->getBeforeEvent();
-//        event($Event);
-//        if ($Event->hasOpinion()) {
-//            $this->message = $Event->getOpinion()->message;
-//            return $Event->getOpinion()->result;
-//        }
-
-
         if (!in_array($this->status, $this->statusBeforeChange)) {
             throw new AppException($this->status_name."的售后申请,无法执行{$this->name}操作");
         }
