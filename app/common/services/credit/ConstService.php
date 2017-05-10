@@ -31,25 +31,25 @@ class ConstService
     const STATUS_FAILURE = -1;
 
 
-    const BALANCE_RECHARGE          = 1; //充值
+        const BALANCE_RECHARGE          = 1; //充值
 
-    const BALANCE_CONSUME           = 2; //消费
+        const BALANCE_CONSUME           = 2; //消费
 
-    const BALANCE_TRANSFER          = 3; //转让
+        const BALANCE_TRANSFER          = 3; //转让
 
-    const BALANCE_DEDUCTION         = 4; //抵扣
+        const BALANCE_DEDUCTION         = 4; //抵扣
 
-    const BALANCE_AWARD             = 5; //奖励
+        const BALANCE_AWARD             = 5; //奖励
 
-    const BALANCE_WITHDRAWAL        = 6; //提现
+        const BALANCE_WITHDRAWAL        = 6; //提现
 
-    const BALANCE_INCOME            = 7; //提现至～～
+        const BALANCE_INCOME            = 7; //提现至～～
 
-    const BALANCE_CANCEL_DEDUCTION  = 8; //抵扣取消回滚
+        const BALANCE_CANCEL_DEDUCTION  = 8; //抵扣取消回滚
 
-    const BALANCE_CANCEL_AWARD      = 9; //奖励取消回滚
+        const BALANCE_CANCEL_AWARD      = 9; //奖励取消回滚
 
-    const BALANCE_CANCEL_CONSUME    = 10; //消费取消回滚
+        const BALANCE_CANCEL_CONSUME    = 10; //消费取消回滚
 
 
     private static $title = '余额';
