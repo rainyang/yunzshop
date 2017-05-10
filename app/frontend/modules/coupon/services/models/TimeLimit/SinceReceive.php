@@ -1,4 +1,5 @@
 <?php
+
 namespace app\frontend\modules\coupon\services\models\TimeLimit;
 
 /**
@@ -11,6 +12,9 @@ class SinceReceive extends TimeLimit
 {
     public function valid()
     {
+        if ($this->dbCoupon->time_days) {
+            return true;
+        }
         if ($this->receiveDays() > $this->dbCoupon->time_days) {
             return false;
         }

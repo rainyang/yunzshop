@@ -45,7 +45,15 @@ class OperationController extends BaseController
      */
     public function reject(\Request $request)
     {
-        $this->refundApply->reject($request->only(['reject_reason']));
+        $refundApply = $this->refundApply;
+
+        DB::transaction(function () use ($refundApply) {
+            $refundApply->reject(\Request::only(['reject_reason']));
+            $refundApply->order->refund_id = 0;
+            $refundApply->order->save();
+        });
+
+
         return $this->message('操作成功', '');
     }
 
@@ -69,7 +77,7 @@ class OperationController extends BaseController
     public function resend(\Request $request)
     {
 
-        $resendExpress = new ResendExpress($request->only('express_code','express_company_name','express_sn'));
+        $resendExpress = new ResendExpress($request->only('express_code', 'express_company_name', 'express_sn'));
 
         $this->refundApply->resendExpress()->save($resendExpress);
         $this->refundApply->resend();
