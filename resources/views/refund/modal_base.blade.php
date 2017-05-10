@@ -75,7 +75,7 @@
                          @if($order['has_one_refund_apply']['status'] != 5)style="display: none;" @endif>
                         <label class="col-xs-10 col-sm-3 col-md-3 control-label">快递公司</label>
                         <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-                            <select class="form-control" name="rexpress" id="rexpress">
+                            <select class="form-control" name="express_code" id="resend_express_code">
                                 <option value="" data-name="">其他快递</option>
                                 <option value="shunfeng" data-name="顺丰">顺丰</option>
                                 <option value="shentong" data-name="申通">申通</option>
@@ -168,15 +168,15 @@
                                 <option value="zhongxinda" data-name="忠信达">忠信达</option>
                                 <option value="zhimakaimen" data-name="芝麻开门">芝麻开门</option>
                             </select>
-                            <input type='hidden' name='rexpresscom' id='rexpresscom' value="{$refund['rexpresscom']}"/>
+                            <input type='hidden' name='express_company_name' id='resend_express_company_name' value="{{$order['has_one_refund_apply']['resend_express']['express_code']}}"/>
                         </div>
                     </div>
                     <div class="form-group express-group"
                          @if($order['has_one_refund_apply']['status'] < 5)style="display: none;" @endif>
                         <label class="col-xs-10 col-sm-3 col-md-3 control-label">快递单号</label>
                         <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-                            <input type="text" name="rexpresssn" class="form-control"
-                                   value="{$order['has_one_refund_apply']['rexpresssn']}"/>
+                            <input type="text" name="express_sn" class="form-control"
+                                   value="{{$order['has_one_refund_apply']['resend_express']['express_sn']}}"/>
                         </div>
                     </div>
 
@@ -236,13 +236,13 @@
         $("#express_company").change(function () {
             var obj = $(this);
             var sel = obj.find("option:selected").attr("data-name");
-            $("#expresscom").val(sel);
+            $("#express_company_name").val(sel);
         });
 
-        $("#rexpress").change(function () {
+        $("#resend_express_code").change(function () {
             var obj = $(this);
             var sel = obj.find("option:selected").attr("data-name");
-            $("#rexpresscom").val(sel);
+            $("#resend_express_company_name").val(sel);
         });
     });
 </script>

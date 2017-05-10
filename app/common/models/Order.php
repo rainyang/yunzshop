@@ -16,7 +16,7 @@ use app\common\models\order\Pay;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
 use app\frontend\modules\order\services\status\StatusServiceFactory;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
 
@@ -206,8 +206,7 @@ class Order extends BaseModel
      */
     public static function getOrderInfoByMemberId($member_id, $status)
     {
-        return self::uniacid()
-            ->where('uid', $member_id)->isComment($status);
+        return self::where('uid', $member_id)->isComment($status);
     }
 
     public static function boot()
