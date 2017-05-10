@@ -35,7 +35,7 @@
                     <li>
                         <p>会员中心</p>
                         {!! QrCode::size(200)->generate(yzAppFullUrl('member')) !!}
-                        <h5><a href="#">复制链接</a></h5>
+                        <h5><a href="javascript:;" data-url="{!! yzAppFullUrl('member') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
                     </li>
                     <li>
                         <p>我的订单</p>

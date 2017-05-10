@@ -62,7 +62,7 @@ class BalanceController extends ApiController
             $pay = \Setting::get('shop.pay');
             $result['weixin'] = $pay['weixin'];
             $result['alipay'] = $pay['alipay'];
-            
+
             return $this->successJson('获取数据成功', $result);
         }
         return $this->errorJson('未获取到会员数据');

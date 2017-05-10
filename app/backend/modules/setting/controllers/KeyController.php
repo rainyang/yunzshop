@@ -11,9 +11,7 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
-use app\common\models\AccountWechats;
 use app\common\services\MyLink;
-use Illuminate\Support\Facades\Request;
 use Ixudra\Curl\Facades\Curl;
 
 class KeyController extends BaseController
@@ -68,12 +66,12 @@ class KeyController extends BaseController
             'domain' => $domain
         ];
         if($type == 'create') {
-            $content = Curl::to(config('auto-update.checkUrl').'app-account/create')
+            $content = Curl::to(config('auto-update.checkUrl').'/app-account/create')
                 ->withData($data)
                 ->get();
             $this->_log->error('app-account create === '. $data['uniacid'] . " :: " . $data['key'] . " :: " . $data['secret'] . " :: " . $data['domain'] .$content);
             $writeRes = Setting::set('shop.key', $requestModel);
-            Cache::forget('app_auth' . $this->uniacid);
+            \Cache::forget('app_auth' . $this->uniacid);
             $this->_log->error('shop,key set ' . $writeRes . ': ' . $requestModel['key'] . '=> ' . $requestModel['secret']);
             return $writeRes && $content;
         } else if($type == 'cancel') {
@@ -82,7 +80,7 @@ class KeyController extends BaseController
                 ->get();
             $this->_log->error('app-account cancel' . $content);
             $writeRes = Setting::set('shop.key', '');
-            Cache::forget('app_auth' . $this->uniacid);
+            \Cache::forget('app_auth' . $this->uniacid);
             $this->_log->error('shop,key cancel ' . $writeRes . ': ' . $requestModel['key'] . '=> ' . $requestModel['secret']);
             return $writeRes && $content ;
         }
@@ -95,7 +93,7 @@ class KeyController extends BaseController
 
         $type = \YunShop::request()->type;
         $domain = request()->getHttpHost();
-        $content = Curl::to(config('auto-update.checkUrl').'/update/check_isKey.json')
+        $content = Curl::to(config('auto-update.checkUrl').'/check_isKey.json')
             ->withHeader(
                "Authorization: Basic " . base64_encode("{$data['key']}:{$data['secret']}")
             )
