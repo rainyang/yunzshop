@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\common\exceptions\AppException;
 use app\frontend\modules\goods\models\Goods;
 use app\frontend\modules\goods\models\GoodsOption;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,7 +43,6 @@ class OrderGoods extends \app\common\models\OrderGoods
     }
     public function isFreeShipping()
     {
-
         if ($this->goods->hasOneSale->isFree($this)) {
             return true;
         }
