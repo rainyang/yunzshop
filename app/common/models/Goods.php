@@ -152,7 +152,13 @@ class Goods extends BaseModel
 
     public function scopeSearch($query, $filters)
     {
-        $query->uniacid()->isPlugin();
+        $query->select([
+            'yz_goods.*',
+            'yz_goods_category.id as goods_category_id',
+            'yz_goods_category.goods_id as goods_id',
+            'yz_goods_category.category_id as category_id',
+            'yz_goods_category.category_ids as category_ids',
+        ])->uniacid()->isPlugin();
 
         if (!$filters) {
             return;
@@ -189,6 +195,7 @@ class Goods extends BaseModel
                         $id = $value['parentid'] ? $value['parentid'] : '';
                         $id = $value['childid'] ? $value['childid'] : $id;
                         $id = $value['thirdid'] ? $value['thirdid'] : $id;
+
                         $query->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_ids)', [$id]);
                     } elseif(strpos($value, ',')){
                         $scope = explode(',', $value);
