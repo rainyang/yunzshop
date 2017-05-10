@@ -16,7 +16,7 @@ use app\common\models\order\Pay;
 use app\common\models\order\Remark;
 use app\common\models\refund\RefundApply;
 use app\frontend\modules\order\services\status\StatusServiceFactory;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\order\observers\OrderObserver;
 
