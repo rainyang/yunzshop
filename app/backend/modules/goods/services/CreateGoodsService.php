@@ -31,23 +31,21 @@ class CreateGoodsService
 
     public function create()
     {
+        $goods_data = $this->request->goods;
         $this->params = new GoodsParam();
         $this->goods_model = new Goods();
         $this->brands = Brand::getBrands()->get();
 
-        if ($this->request->goods) {
-            if ($this->request->goods['has_option'] && !\YunShop::request()['option_ids']) {
-                $this->request->goods['has_option'] = 0;
-            }
-            if (isset($this->request->goods['thumb_url'])) {
-                $this->request->goods['thumb_url'] = serialize(
+        if ($goods_data) {
+            if (isset($goods_data['thumb_url'])) {
+                $goods_data['thumb_url'] = serialize(
                     array_map(function ($item) {
                         return tomedia($item);
-                    }, $this->request->goods['thumb_url'])
+                    }, $goods_data['thumb_url'])
                 );
             }
 
-            $this->goods_model->setRawAttributes($this->request->goods);
+            $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = \YunShop::request()->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
 
@@ -56,10 +54,10 @@ class CreateGoodsService
                 $this->error = $validator->messages();
             } else {
                 if ($this->goods_model->save()) {
-                    GoodsService::saveGoodsCategory($this->goods_model, \YunShop::request()->category, Setting::get('shop.category'));
-                    GoodsParam::saveParam(\YunShop::request(), $this->goods_model->id, \YunShop::app()->uniacid);
-                    GoodsSpec::saveSpec(\YunShop::request(), $this->goods_model->id, \YunShop::app()->uniacid);
-                    GoodsOption::saveOption(\YunShop::request(), $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                    GoodsService::saveGoodsCategory($this->goods_model, $this->request->category, Setting::get('shop.category'));
+                    GoodsParam::saveParam($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
+                    GoodsSpec::saveSpec($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
+                    GoodsOption::saveOption($this->request, $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
                     return ['status' => 1];
                 } else {
                     return ['status' => -1];
