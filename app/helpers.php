@@ -679,17 +679,18 @@ if (!function_exists('createNo')) {
 
 if(!function_exists('isKeySecretExists')) {
     function isKeySecretExists($fileName, $keyAndSecret, $postData, $message='') {
+        //dd($fileName . "<br/>" . $keyAndSecret['key'] . '==> ' . $keyAndSecret['secret'] . '<br/>' . $postData . "<br/>" . $message);
         $content = Curl::to($fileName)
             ->withHeader(
                 "Authorization: Basic " . base64_encode("{$keyAndSecret['key']}:{$keyAndSecret['secret']}")
             )
             ->withData($postData)
             ->get();
-        dd($content);exit();
+        //var_dump($content);exit();
         $result = json_decode($content, true);
         if(!$result['isExists']) {
             app('log')->error($message . $result['message']);
         }
-        return $result['isExists'];
+        return $result;
     }
 }
