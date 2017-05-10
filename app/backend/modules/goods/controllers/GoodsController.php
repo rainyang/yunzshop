@@ -264,11 +264,17 @@ class GoodsController extends BaseController
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
 
+        if ($goods_service->goods_model->hasManyParams) {
+            $hasManyParams = $goods_service->goods_model->hasManyParams->toArray();
+        } else {
+            $hasManyParams = [];
+        }
+
         //dd($this->lang);
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
-            'params' => $goods_service->goods_model->hasManyParams->toArray(),
+            'params' => $hasManyParams,
             'allspecs' => $goods_service->goods_model->hasManySpecs->toArray(),
             'html' => $goods_service->optionsHtml,
             'var' => \YunShop::app()->get(),
