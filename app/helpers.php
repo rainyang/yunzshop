@@ -665,32 +665,3 @@ if (!function_exists('createNo')) {
         return $prefix . date('YmdHis') . \app\common\helpers\Client::random(6, $numeric);
     }
 }
-
-    /*
-     * 检测指定的 key 和 密钥是否存在
-     *
-     *
-     * @params string $fileName 检查路径
-     * @params array $keyAndSecret ['key' => string, 'secret' => string]
-     * @params array $postData post 传参
-     *
-     * @return mixed
-     */
-
-if(!function_exists('isKeySecretExists')) {
-    function isKeySecretExists($fileName, $keyAndSecret, $postData, $message='') {
-        //dd($fileName . "<br/>" . $keyAndSecret['key'] . '==> ' . $keyAndSecret['secret'] . '<br/>' . $postData . "<br/>" . $message);
-        $content = Curl::to($fileName)
-            ->withHeader(
-                "Authorization: Basic " . base64_encode("{$keyAndSecret['key']}:{$keyAndSecret['secret']}")
-            )
-            ->withData($postData)
-            ->get();
-        //var_dump($content);exit();
-        $result = json_decode($content, true);
-        if(!$result['isExists']) {
-            app('log')->error($message . $result['message']);
-        }
-        return $result;
-    }
-}

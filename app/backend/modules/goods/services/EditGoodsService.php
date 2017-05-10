@@ -65,15 +65,22 @@ class EditGoodsService
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
             $this->goods_model->id = $this->goods_id;
             //数据保存
-            if ($this->goods_model->save()) {
-                GoodsParam::saveParam($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
-                GoodsSpec::saveSpec($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
-                GoodsOption::saveOption($this->request, $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
-                //显示信息并跳转
-                return ['status' => 1];
+            $validator = $this->goods_model->validator($this->goods_model->getAttributes());
+            if ($validator->fails()) {
+                return ['status' => -1, 'msg' => $validator->messages()];
+                //$this->error($validator->messages());
             } else {
-                return ['status' => -1];
+                if ($this->goods_model->save()) {
+                    GoodsParam::saveParam($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
+                    GoodsSpec::saveSpec($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
+                    GoodsOption::saveOption($this->request, $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                    //显示信息并跳转
+                    return ['status' => 1];
+                } else {
+                    return ['status' => -1];
+                }
             }
+
         }
 
         $this->brands = Brand::getBrands()->get();
