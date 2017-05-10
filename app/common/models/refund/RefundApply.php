@@ -19,7 +19,7 @@ class RefundApply extends BaseModel
     protected $fillable = [];
     protected $guarded = ['id'];
 
-    protected $appends = ['refund_type_name', 'status_name', 'button_models', 'is_refunded', 'is_refunding','is_refund_fail'];
+    protected $appends = ['refund_type_name', 'status_name', 'button_models', 'is_refunded', 'is_refunding', 'is_refund_fail'];
     protected $attributes = [
         'images' => '[]',
         'refund_proof_imgs' => '[]',
@@ -134,7 +134,7 @@ class RefundApply extends BaseModel
 
     public function scopeRefunding($query)
     {
-        return $query->where('status', '<', self::COMPLETE);
+        return $query->where('status','>', self::WAIT_CHECK)->where('status','<', self::COMPLETE);
     }
 
     public function scopeRefunded($query)
@@ -173,10 +173,12 @@ class RefundApply extends BaseModel
     {
         return $this->isRefunding();
     }
+
     public function getIsRefundFailAttribute()
     {
         return $this->isRefundFail();
     }
+
     /**
      * 退款失败
      * @return bool
@@ -188,6 +190,7 @@ class RefundApply extends BaseModel
         }
         return false;
     }
+
     /**
      * 已退款
      * @return bool
