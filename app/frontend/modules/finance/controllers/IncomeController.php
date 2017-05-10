@@ -190,7 +190,6 @@ class IncomeController extends ApiController
         /**
          * 验证数据
          */
-        echo "<pre>"; print_r($withdrawData);exit;
         foreach ($withdrawData as $key => $item) {
 
             $set[$key] = \Setting::get('withdraw.' . $key);
@@ -264,7 +263,7 @@ class IncomeController extends ApiController
                 'type' => $item['type'],
                 'type_name' => $item['type_name'],
                 'type_id' => $item['type_id'],
-                'amounts' => $item['amounts'],
+                'amounts' => $item['income'],
                 'poundage' => $item['poundage'],
                 'poundage_rate' => $item['poundage_rate'],
                 'actual_amounts' => $item['amounts']-$item['poundage'],
