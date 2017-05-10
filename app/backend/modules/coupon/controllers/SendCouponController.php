@@ -102,7 +102,7 @@ class SendCouponController extends BaseController
                 $responseData = [
                     'title' => $couponModel->resp_title,
                     'image' => $couponModel->resp_thumb,
-                    'description' => $couponModel->resp_desc ? $couponModel->resp_desc : '你获得了 1 张优惠券 "'.$couponModel->name.' "',
+                    'description' => $couponModel->resp_desc ? $couponModel->resp_desc : '你获得了 1 张优惠券 -- "'.$couponModel->name.' "',
                     'url' => $couponModel->resp_url,
                 ];
                 $res = $this->sendCoupon($memberIds, $sendTotal, $responseData);
@@ -155,7 +155,7 @@ class SendCouponController extends BaseController
                 //写入log
                 if ($res){ //发放优惠券成功
                     $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )';
-                    if(!empty($responseData['resp_title']) && $memberOpenid){
+                    if(!empty($responseData['title']) && $memberOpenid){
                         $news = new News($responseData);
                         Message::sendNotice($memberOpenid, $news);
                     }
