@@ -5,16 +5,13 @@ namespace app\backend\modules\coupon\controllers;
 use app\common\components\BaseController;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\member\models\MemberGroup;
-use app\common\models\AccountWechats;
 use app\common\models\MemberCoupon;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
 use app\common\models\Coupon;
-use EasyWeChat\Foundation\Application;
 use app\common\models\CouponLog;
-use app\common\helpers\Url;
-use app\frontend\modules\coupon\controllers\MemberCouponController;
-
+use app\backend\modules\coupon\services\Message;
+use EasyWeChat\Message\News;
 
 class SendCouponController extends BaseController
 {
@@ -22,7 +19,6 @@ class SendCouponController extends BaseController
     const BY_MEMBER_LEVEL = 2;
     const BY_MEMBER_GROUP = 3;
     const TO_ALL_MEMBERS = 4;
-    const TEMPLATEID = 'OPENTM200605630'; //成功发放优惠券时, 发送的模板消息的 ID
 
     public $couponId;
     public $failedSend = []; //发送失败时的记录
@@ -61,7 +57,7 @@ class SendCouponController extends BaseController
                 case self::BY_MEMBER_LEVEL: //根据"会员等级"获取 Member IDs
                     $sendLevel = \YunShop::request()->send_level;
                     $res = MemberLevel::getMembersByLevel($sendLevel);
-                    if(!$res['member']){
+                    if($res['member']->isEmpty()){
                         $memberIds = '';
                     } else{
                         $res = $res->toArray();
@@ -71,7 +67,7 @@ class SendCouponController extends BaseController
                 case self::BY_MEMBER_GROUP: //根据"会员分组"获取 Member IDs
                     $sendGroup = \YunShop::request()->send_group;
                     $res = MemberGroup::getMembersByGroupId($sendGroup);
-                    if(!$res['member']){
+                    if($res['member']->isEmpty()){
                         $memberIds = '';
                     } else{
                         $res = $res->toArray();
@@ -104,10 +100,10 @@ class SendCouponController extends BaseController
 
                 //发放优惠券
                 $responseData = [
-                    'resp_title' => $couponModel->resp_title,
-                    'resp_thumb' => $couponModel->resp_thumb,
-                    'resp_desc' => $couponModel->resp_desc ? $couponModel->resp_desc : '你获得了 1 张优惠券 "'.$couponModel->name.' "',
-                    'resp_url' => $couponModel->resp_url,
+                    'title' => $couponModel->resp_title,
+                    'image' => $couponModel->resp_thumb,
+                    'description' => $couponModel->resp_desc ? $couponModel->resp_desc : '你获得了 1 张优惠券 -- "'.$couponModel->name.' "',
+                    'url' => $couponModel->resp_url,
                 ];
                 $res = $this->sendCoupon($memberIds, $sendTotal, $responseData);
                 if ($res){
@@ -159,9 +155,10 @@ class SendCouponController extends BaseController
                 //写入log
                 if ($res){ //发放优惠券成功
                     $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )';
-//                    if(!empty($responseData['resp_title']) && $memberOpenid){
-//                        MemberCouponController::sendTemplateMessage($memberOpenid, self::TEMPLATEID, $responseData); //成功时, 发送模板消息
-//                    }
+                    if(!empty($responseData['title']) && $memberOpenid){
+                        $news = new News($responseData);
+                        Message::sendNotice($memberOpenid, $news);
+                    }
                 } else{ //发放优惠券失败
                     $log = '手动发放优惠券失败: 管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )时失败!';
                     $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
