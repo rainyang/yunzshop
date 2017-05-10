@@ -71,7 +71,7 @@ class KeyController extends BaseController
         ];
         if($type == 'create') {
 
-            $content = Curl::to(config('auto-update.accountUrl').'/app-account/create')
+            $content = Curl::to(config('auto-update.checkUrl').'/app-account/create')
                 ->withData($data)
                 ->get();
            // dd($content);exit();
@@ -83,7 +83,7 @@ class KeyController extends BaseController
 
         } else if($type == 'cancel') {
 
-            $content = Curl::to(config('auto-update.accountUrl').'/app-account/cancel')
+            $content = Curl::to(config('auto-update.checkUrl').'/app-account/cancel')
                 ->withData($data)
                 ->get();
             //var_dump($content);exit();
