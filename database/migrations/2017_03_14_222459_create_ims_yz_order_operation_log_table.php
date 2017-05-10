@@ -12,18 +12,19 @@ class CreateImsYzOrderOperationLogTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_order_operation_log', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->integer('order_id')->nullable()->default(0)->comment('订单id');
-			$table->boolean('before_operation_status')->nullable()->default(0)->comment('操作前订单状态');
-			$table->boolean('after_operation_status')->nullable()->default(0)->comment('操作后订单状态');
-			$table->string('operator', 50)->nullable()->default('')->comment('操作人');
-			$table->integer('operation_time')->nullable()->default(0)->comment('操作时间');
-			$table->integer('created_at')->nullable()->default(0);
-			$table->integer('updated_at')->nullable();
-			$table->string('type', 10)->nullable()->default('0');
-		});
+        if (!Schema::hasTable('yz_order_operation_log')) {
+            Schema::create('yz_order_operation_log', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('order_id')->nullable()->default(0);
+                $table->boolean('before_operation_status')->nullable()->default(0);
+                $table->boolean('after_operation_status')->nullable()->default(0);
+                $table->string('operator', 50)->nullable()->default('');
+                $table->integer('operation_time')->nullable()->default(0);
+                $table->integer('created_at')->nullable()->default(0);
+                $table->integer('updated_at')->nullable();
+                $table->string('type', 10)->nullable()->default('0');
+            });
+        }
 	}
 
 
@@ -34,7 +35,7 @@ class CreateImsYzOrderOperationLogTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_order_operation_log');
+		Schema::drop('yz_order_operation_log');
 	}
 
 }

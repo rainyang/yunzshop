@@ -25,8 +25,8 @@ use app\common\exceptions\AppException;
 class RegisterController extends ApiController
 {
     protected $publicController = ['Register'];
-    protected $publicAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
-    protected $ignoreAction = ['index', 'sendCode', 'checkCode', 'sendSms'];
+    protected $publicAction = ['index', 'sendCode', 'checkCode', 'sendSms', 'changePassword'];
+    protected $ignoreAction = ['index', 'sendCode', 'checkCode', 'sendSms', 'changePassword'];
 
     public function index()
     {
@@ -35,7 +35,7 @@ class RegisterController extends ApiController
         $confirm_password = \YunShop::request()->confirm_password;
         $uniacid = \YunShop::app()->uniacid;
 
-        if (($_SERVER['REQUEST_METHOD'] == 'POST')) {
+        if ((\Request::getMethod() == 'POST')) {
             $check_code = MemberService::checkCode();
 
             if ($check_code['status'] != 1) {
@@ -101,7 +101,7 @@ class RegisterController extends ApiController
 
             $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
             Cookie::queue($cookieid, $member_id);
-            session()->put('member_id', $member_id);
+            Session::set('member_id', $member_id);
 
             $password = $data['password'];
             $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
@@ -123,13 +123,15 @@ class RegisterController extends ApiController
     public function sendCode()
     {
         $mobile = \YunShop::request()->mobile;
+        $reset_pwd = \YunShop::request()->reset;
+
         if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
 
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
-        if (!empty($info)) {
+        if (!empty($info) && empty($reset_pwd)) {
             return $this->errorJson('该手机号已被注册！不能获取验证码');
         }
         $code = rand(1000, 9999);
@@ -207,6 +209,80 @@ class RegisterController extends ApiController
             } else {
                 //return $this->errorJson($issendsms->msg . '/' . $issendsms->sub_msg);
             }
+        }
+    }
+
+    /**
+     * 短信验证
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkCode()
+    {
+        $mobile = \YunShop::request()->mobile;
+        $uniacid = \YunShop::app()->uniacid;
+
+        $check_code = MemberService::checkCode();
+        $member_info = MemberModel::getId($uniacid, $mobile);
+
+        if (empty($member_info)) {
+            return $this->errorJson('手机号不存在');
+        }
+
+        if ($check_code['status'] != 1) {
+            return $this->errorJson($check_code['json']);
+        }
+
+        return $this->successJson('ok');
+    }
+
+    /**
+     * 修改密码
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function changePassword()
+    {
+        $mobile = \YunShop::request()->mobile;
+        $password = \YunShop::request()->password;
+        $confirm_password = \YunShop::request()->confirm_password;
+        $uniacid = \YunShop::app()->uniacid;
+
+        if ((\Request::getMethod() == 'POST')) {
+            $check_code = MemberService::checkCode();
+
+            if ($check_code['status'] != 1) {
+                return $this->errorJson($check_code['json']);
+            }
+
+            $msg = MemberService::validate($mobile, $password, $confirm_password);
+
+            if ($msg['status'] != 1) {
+                return $this->errorJson($msg['json']);
+            }
+
+            $member_info = MemberModel::getId($uniacid, $mobile);
+
+            if (empty($member_info)) {
+                return $this->errorJson('该手机号不存在');
+            }
+
+            //更新密码
+            $data['salt'] = Str::random(8);
+            $data['password'] = md5($password . $data['salt']);
+
+            MemberModel::updataData($member_info->uid, $data);
+            $member_id = $member_info->uid;
+
+            $password = $data['password'];
+            $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
+            $yz_member = MemberShopInfo::getMemberShopInfo($member_id)->toArray();
+
+            $data = MemberModel::userData($member_info, $yz_member);
+
+            return $this->successJson('', $data);
+        } else {
+            return $this->errorJson('手机号或密码格式错误');
         }
     }
 }

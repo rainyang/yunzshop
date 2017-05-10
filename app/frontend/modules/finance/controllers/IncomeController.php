@@ -39,7 +39,7 @@ class IncomeController extends ApiController
         ];
 
         foreach ($config as $key => $item) {
-            $typeModel = $incomeModel->where('type', $key);
+            $typeModel = $incomeModel->where('incometable_type', $item['class']);
             $incomeData[$key] = [
                 'title' => $item['title'],
                 'ico' => $item['ico'],
@@ -115,14 +115,14 @@ class IncomeController extends ApiController
     public function getWithdraw()
     {
         $config = \Config::get('income');
-        $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
-        $incomeModel = $incomeModel->where('status', '0');
-        if (!$incomeModel->get()) {
-            return $this->errorJson('未检测到可提现数据!');
-        }
+
 
         foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('withdraw.' . $key);
+            
+            $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
+            $incomeModel = $incomeModel->where('status', '0');
+            
             $incomeModel = $incomeModel->where('incometable_type', $item['class']);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
@@ -199,12 +199,19 @@ class IncomeController extends ApiController
             $incomes = $incomeModel->get();
             \Log::info("INCOME:");
             \Log::info($incomes);
-            if (isset($set[$key]['roll_out_limit']) &&
-                bccomp($incomes->sum('amount'), $set[$key]['roll_out_limit'], 2) == -1
-            ) {
+
+            $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
+
+            \Log::info("roll_out_limit:");
+            \Log::info($set[$key]['roll_out_limit']);
+
+            if ( bccomp($incomes->sum('amount'), $set[$key]['roll_out_limit'], 2) == -1 ) {
                 return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
             }
+
         }
+        \Log::info("提现成功:");
+        \Log::info('提现成功');
         $request = static::setWithdraw($withdrawData, $withdrawTotal);
         if ($request) {
             return $this->successJson('提现成功!');

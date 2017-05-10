@@ -21,9 +21,11 @@ class Order extends \app\common\models\Order
         $orders = $builder->get()->toArray();
         return $orders;
     }
+
+    // todo 父类里面已经存在该方法，没有加关联字段，供应商那报错，看看对订单是否有影响
     public function hasManyOrderGoods()
     {
-        return $this->hasMany(OrderGoods::class);
+        return $this->hasMany(OrderGoods::class, 'order_id', 'id');
     }
 
     public function scopeExportOrders($search)
@@ -55,6 +57,7 @@ class Order extends \app\common\models\Order
             'address',
             'hasOnePayType',
             'hasOneRefundApply' => self::refundBuilder(),
+            'hasOneOrderRemark'
 
         ]);
         return $orders;

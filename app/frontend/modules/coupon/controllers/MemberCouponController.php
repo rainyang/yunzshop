@@ -365,7 +365,7 @@ class MemberCouponController extends ApiController
                         'resp_desc' => $respDesc,
                         'resp_url' => $couponModel->resp_url,
                     ];
-                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
+//                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
                 }
 
                 //写入log
@@ -391,31 +391,34 @@ class MemberCouponController extends ApiController
     //发送模板消息
     public static function sendTemplateMessage($openid, $templateid, $data)
     {
-        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-
-        $options = [
-            'app_id' => $account->key,
-            'secret' => $account->secret,
-            'token' => \YunShop::app()->account['token'],
-        ];
-        $app = new Application($options);
+        $app = app('wechat');
         $notice = $app->notice;
-        $url = $data['resp_url'];
-
-        $templateData = array(
-            "first" => $data['resp_title'],
-            "keyword1" => $data['resp_thumb'],
-            "keyword2" => $data['resp_url'],
-            "remark" => $data['resp_desc'],
-        );
-
-        $result = $notice->uses($templateid)->withUrl($url)->andData($templateData)->andReceiver($openid)->send();
-        $resultArray = json_decode($result, true);
-        if($resultArray['errcode'] != 0){
-            return false;
-        }
-
-        return $resultArray;
+        $notice->uses($templateid)->andData($data)->andReceiver($openid)->send();
+//        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+//
+//        $options = [
+//            'app_id' => $account->key,
+//            'secret' => $account->secret,
+//            'token' => \YunShop::app()->account['token'],
+//        ];
+//        $app = new Application($options);
+//        $notice = $app->notice;
+//        $url = $data['resp_url'];
+//
+//        $templateData = array(
+//            "first" => $data['resp_title'],
+//            "keyword1" => $data['resp_thumb'],
+//            "keyword2" => $data['resp_url'],
+//            "remark" => $data['resp_desc'],
+//        );
+//
+//        $result = $notice->uses($templateid)->withUrl($url)->andData($templateData)->andReceiver($openid)->send();
+//        $resultArray = json_decode($result, true);
+//        if($resultArray['errcode'] != 0){
+//            return false;
+//        }
+//
+//        return $resultArray;
     }
 
     //动态显示内容
