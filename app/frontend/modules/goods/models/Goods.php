@@ -17,6 +17,7 @@ use app\frontend\modules\member\services\MemberService;
 class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
+
     public function hasOneOptions()
     {
         return $this->hasOne(GoodsOption::class);
@@ -48,11 +49,17 @@ class Goods extends \app\common\models\Goods
         if (empty($this->status)) {
             throw new AppException('(ID:' . $this->id . ')商品已下架');
         }
-
-        if(isset($this->hasOnePrivilege)){
+        if (!isset($this->hasOneSale)) {
+            throw new AppException('(ID:' . $this->id . ')商品优惠信息数据已损坏');
+        }
+        if (!isset($this->hasOneGoodsDispatch)) {
+            throw new AppException('(ID:' . $this->id . ')商品配送信息数据已损坏');
+        }
+        if (isset($this->hasOnePrivilege)) {
             $this->hasOnePrivilege->validate($num);
         }
     }
+
     public function hasOneSale()
     {
         return $this->hasOne(Sale::class);
