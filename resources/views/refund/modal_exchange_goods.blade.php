@@ -1,6 +1,5 @@
 @extends('refund.modal_base')
 @section('operation_pass')
-
     @if($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_CHECK)
         <label class='radio-inline'>
             <input type='radio' value='3' class="refund-action" data-action="{{yzWebUrl('refund.operation.pass')}}"
@@ -18,7 +17,7 @@
     确认发货 @if($order['has_one_refund_apply']['status'] < 3)(无需客户寄回商品，商家直接发换货商品)@endif
 </label>
 
-@if($order['has_one_refund_apply']['status'] < 5)
+@if($order['has_one_refund_apply']['is_refunding'])
     <label class='radio-inline'>
         <input type='radio' value='10' class="refund-action"
                data-action="{{yzWebUrl('refund.operation.close')}}"

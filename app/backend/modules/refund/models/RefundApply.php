@@ -44,6 +44,11 @@ class RefundApply extends \app\common\models\refund\RefundApply
         return $this->getTypeInstance()->receiveReturnGoods();
     }
 
+    public function resend()
+    {
+        return $this->getTypeInstance()->resend();
+    }
+
     protected function getTypeInstance()
     {
         if (!isset($this->typeInstance)) {
@@ -66,7 +71,6 @@ class RefundApply extends \app\common\models\refund\RefundApply
         return $this->typeInstance;
 
     }
-
 
 
     public function order()

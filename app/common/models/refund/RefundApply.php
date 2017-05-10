@@ -19,7 +19,7 @@ class RefundApply extends BaseModel
     protected $fillable = [];
     protected $guarded = ['id'];
 
-    protected $appends = ['refund_type_name', 'status_name', 'button_models'];
+    protected $appends = ['refund_type_name', 'status_name', 'button_models', 'is_refunded', 'is_refunding','is_refund_fail'];
     protected $attributes = [
         'images' => '[]',
         'refund_proof_imgs' => '[]',
@@ -41,9 +41,11 @@ class RefundApply extends BaseModel
     const WAIT_CHECK = '0';//待审核
     const WAIT_RETURN_GOODS = '1';//待退货
     const WAIT_RECEIVE_RETURN_GOODS = '2';//待收货
-    const WAIT_REFUND = '3';//待打款
-    const COMPLETE = '4';//已完成
-    const CONSENSUS = '5';//手动退款
+    const WAIT_RESEND_GOODS = '3';//重新发货
+    const WAIT_RECEIVE_RESEND_GOODS = '4';//重新收货
+    const WAIT_REFUND = '5';//待打款
+    const COMPLETE = '6';//已完成
+    const CONSENSUS = '7';//手动退款
 
     public function __construct(array $attributes = [])
     {
@@ -56,10 +58,17 @@ class RefundApply extends BaseModel
             $this->uid = \YunShop::app()->getMemberId();
         }
     }
+
     public function returnExpress()
     {
         return $this->hasOne(ReturnExpress::class, 'refund_id', 'id');
     }
+
+    public function resendExpress()
+    {
+        return $this->hasOne(ResendExpress::class, 'refund_id', 'id');
+    }
+
     /**
      * 前端获取退款按钮 todo 转移到前端的model
      * @return array
@@ -95,7 +104,6 @@ class RefundApply extends BaseModel
     }
 
 
-
     public function getRefundTypeNameAttribute()
     {
         $mapping = [
@@ -115,6 +123,8 @@ class RefundApply extends BaseModel
             self::WAIT_CHECK => '待审核',
             self::WAIT_RETURN_GOODS => '待退货',
             self::WAIT_RECEIVE_RETURN_GOODS => '商家待收货',
+            self::WAIT_RESEND_GOODS => '待商家重新发货',
+            self::WAIT_RECEIVE_RESEND_GOODS => '待买家收货',
             self::WAIT_REFUND => '待退款',
             self::COMPLETE => '已退款',
             self::CONSENSUS => '已手动退款',
@@ -154,7 +164,30 @@ class RefundApply extends BaseModel
     }
 
 
+    public function getIsRefundedAttribute()
+    {
+        return $this->isRefunded();
+    }
 
+    public function getIsRefundingAttribute()
+    {
+        return $this->isRefunding();
+    }
+    public function getIsRefundFailAttribute()
+    {
+        return $this->isRefundFail();
+    }
+    /**
+     * 退款失败
+     * @return bool
+     */
+    public function isRefundFail()
+    {
+        if ($this->status < self::WAIT_CHECK) {
+            return true;
+        }
+        return false;
+    }
     /**
      * 已退款
      * @return bool
@@ -181,11 +214,12 @@ class RefundApply extends BaseModel
         }
         return true;
     }
+
     protected static function boot()
     {
         parent::boot();
 
-        static::addGlobalScope(function(Builder $builder) {
+        static::addGlobalScope(function (Builder $builder) {
             $builder->uniacid();
         });
     }
