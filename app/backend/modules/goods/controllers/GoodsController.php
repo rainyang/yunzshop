@@ -270,12 +270,18 @@ class GoodsController extends BaseController
             $hasManyParams = [];
         }
 
+        if ($goods_service->goods_model->hasManySpecs) {
+            $hasManySpecs = $goods_service->goods_model->hasManySpecs->toArray();
+        } else {
+            $hasManySpecs = [];
+        }
+
         //dd($this->lang);
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
             'params' => $hasManyParams,
-            'allspecs' => $goods_service->goods_model->hasManySpecs->toArray(),
+            'allspecs' => $hasManySpecs,
             'html' => $goods_service->optionsHtml,
             'var' => \YunShop::app()->get(),
             'brands' => $goods_service->brands,
