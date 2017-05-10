@@ -51,6 +51,8 @@ class MemberController extends ApiController
 
                 $data = MemberModel::addPlugins($data);
 
+                $data['income'] = MemberModel::getIncomeCount();
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('['. $member_id .']用户不存在');
