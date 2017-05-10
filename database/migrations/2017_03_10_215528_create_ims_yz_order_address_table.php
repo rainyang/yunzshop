@@ -29,7 +29,7 @@ class CreateImsYzOrderAddressTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_order_address');
+		Schema::dropIfExists('yz_order_address');
 	}
 
 }

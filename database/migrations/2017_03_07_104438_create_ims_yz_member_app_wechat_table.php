@@ -36,7 +36,7 @@ class CreateImsYzMemberAppWechatTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_member_app_wechat');
+		Schema::dropIfExists('yz_member_app_wechat');
 	}
 
 }

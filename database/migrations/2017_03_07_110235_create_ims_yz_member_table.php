@@ -40,7 +40,7 @@ class CreateImsYzMemberTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_member');
+		Schema::dropIfExists('yz_member');
 	}
 
 }

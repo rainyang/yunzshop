@@ -38,6 +38,7 @@ class UpdateVersion extends Command
      */
     public function handle()
     {
+        \Artisan::call('migrate',['--force' => true]);
         //更新数据表
         $versionMigration = 'database/migrations/' . $username = $this->argument('version');
         if(is_dir(base_path($versionMigration) )){

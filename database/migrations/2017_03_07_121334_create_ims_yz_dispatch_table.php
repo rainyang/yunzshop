@@ -48,7 +48,7 @@ class CreateImsYzDispatchTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_dispatch');
+		Schema::dropIfExists('yz_dispatch');
 	}
 
 }

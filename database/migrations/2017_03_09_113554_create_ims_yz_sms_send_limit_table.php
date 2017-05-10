@@ -33,7 +33,7 @@ class CreateImsYzSmsSendLimitTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_sms_send_limit');
+		Schema::dropIfExists('yz_sms_send_limit');
 	}
 
 }

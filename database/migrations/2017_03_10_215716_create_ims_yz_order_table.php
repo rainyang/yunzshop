@@ -49,7 +49,7 @@ class CreateImsYzOrderTable extends Migration {
      */
     public function down()
     {
-        Schema::drop('yz_order');
+        Schema::dropIfExists('yz_order');
     }
 
 }

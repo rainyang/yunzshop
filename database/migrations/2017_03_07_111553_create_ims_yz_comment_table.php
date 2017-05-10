@@ -43,7 +43,7 @@ class CreateImsYzCommentTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_comment');
+		Schema::dropIfExists('yz_comment');
 	}
 
 }

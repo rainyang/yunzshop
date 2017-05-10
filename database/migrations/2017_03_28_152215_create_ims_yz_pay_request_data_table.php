@@ -34,7 +34,7 @@ class CreateImsYzPayRequestDataTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_pay_request_data');
+		Schema::dropIfExists('yz_pay_request_data');
 	}
 
 }

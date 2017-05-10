@@ -29,7 +29,7 @@ class CreateImsYzDispatchTypeTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_dispatch_type');
+		Schema::dropIfExists('yz_dispatch_type');
 	}
 
 }

@@ -36,7 +36,7 @@ class CreateImsYzMemberMiniAppTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_member_mini_app');
+		Schema::dropIfExists('yz_member_mini_app');
 	}
 
 }
