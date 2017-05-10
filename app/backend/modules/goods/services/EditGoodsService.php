@@ -35,6 +35,7 @@ class EditGoodsService
     public function edit()
     {
         //获取规格名及规格项
+        $goods_data = $this->request->goods;
         foreach ($this->goods_model->hasManySpecs as &$spec) {
             $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->get()->toArray();
         }
@@ -45,20 +46,20 @@ class EditGoodsService
         //商品其它图片反序列化
         $this->goods_model->thumb_url = !empty($this->goods_model->thumb_url) ? unserialize($this->goods_model->thumb_url) : [];
 
-        if ($this->request->goods) {
-            $this->request->goods['has_option'] = $this->request->goods['has_option'] ? $this->request->goods['has_option'] : 0;
+        if ($goods_data) {
+            $goods_data['has_option'] = $goods_data['has_option'] ? $goods_data['has_option'] : 0;
             //将数据赋值到model
-            $this->request->goods['thumb'] = tomedia($this->request->goods['thumb']);
+            $goods_data['thumb'] = tomedia($goods_data['thumb']);
 
-            if(isset($this->request->goods['thumb_url'])){
-                $this->request->goods['thumb_url'] = serialize(
+            if(isset($goods_data['thumb_url'])){
+                $goods_data['thumb_url'] = serialize(
                     array_map(function($item){
                         return tomedia($item);
-                    }, $this->request->goods['thumb_url'])
+                    }, $goods_data['thumb_url'])
                 );
             }
 
-            $this->goods_model->setRawAttributes($this->request->goods);
+            $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             //其他字段赋值
             $this->goods_model->uniacid = \YunShop::app()->uniacid;

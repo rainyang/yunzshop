@@ -31,23 +31,24 @@ class CreateGoodsService
 
     public function create()
     {
+        $goods_data = $this->request->goods;
         $this->params = new GoodsParam();
         $this->goods_model = new Goods();
         $this->brands = Brand::getBrands()->get();
 
-        if ($this->request->goods) {
-            if ($this->request->goods['has_option'] && !\YunShop::request()['option_ids']) {
-                $this->request->goods['has_option'] = 0;
+        if ($goods_data) {
+            if ($goods_data['has_option'] && !\YunShop::request()['option_ids']) {
+                $goods_data['has_option'] = 0;
             }
-            if (isset($this->request->goods['thumb_url'])) {
-                $this->request->goods['thumb_url'] = serialize(
+            if (isset($goods_data['thumb_url'])) {
+                $goods_data['thumb_url'] = serialize(
                     array_map(function ($item) {
                         return tomedia($item);
-                    }, $this->request->goods['thumb_url'])
+                    }, $goods_data['thumb_url'])
                 );
             }
 
-            $this->goods_model->setRawAttributes($this->request->goods);
+            $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = \YunShop::request()->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
 
