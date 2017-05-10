@@ -12,9 +12,8 @@ class CreateImsYzMemberCouponTable extends Migration {
      */
     public function up()
     {
-        Schema::create('yz_member_coupon', function(Blueprint $table)
-        {
-            if (!Schema::hasTable('yz_member_coupon')) {
+        if (!Schema::hasTable('yz_member_coupon')) {
+            Schema::create('yz_member_coupon', function (Blueprint $table) {
                 $table->integer('id', true);
                 $table->integer('uniacid')->nullable()->default(0)->index('idx_uniacid');
                 $table->string('uid')->nullable()->default('');
@@ -26,8 +25,8 @@ class CreateImsYzMemberCouponTable extends Migration {
                 $table->integer('send_uid')->nullable()->default(0);
                 $table->string('order_sn')->nullable()->default('');
                 $table->integer('deleted_at')->nullable();
-            }
-        });
+            });
+        }
     }
 
 
