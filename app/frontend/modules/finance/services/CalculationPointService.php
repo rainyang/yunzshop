@@ -22,7 +22,7 @@ class CalculationPointService
     public function __construct($orderGoodsModels, $member_id)
     {
         $this->verifyPointSet();
-        $this->vetifyMemberPoint($member_id);
+        $this->verifyMemberPoint($member_id);
         $this->orderGoodsModels = $orderGoodsModels;
         $this->calculationPoint();
         $this->point_money = $this->point * $this->point_set['money'];
@@ -47,7 +47,7 @@ class CalculationPointService
      * @param $member_id
      * @return false
      */
-    private function vetifyMemberPoint($member_id)
+    private function verifyMemberPoint($member_id)
     {
         if (Member::getMemberInfoById($member_id)['credit1'] <= 0) {
             return false;

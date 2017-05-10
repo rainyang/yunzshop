@@ -8,7 +8,14 @@
 
 namespace app\backend\modules\refund\models\type;
 
+use app\common\models\refund\RefundApply;
+
 class ExchangeGoods extends ReturnGoods
 {
+    public function resend()
+    {
 
+        $this->refundApply->status = RefundApply::WAIT_RECEIVE_RESEND_GOODS;
+        return $this->refundApply->save();
+    }
 }
