@@ -85,7 +85,7 @@ class RefundApply extends BaseModel
             $result[] = [
                 'name' => '取消申请',
                 'api' => 'refund.cancel',
-                'value' => 3
+                'value' => 4
             ];
         }
         if ($this->status == self::WAIT_RETURN_GOODS) {
@@ -99,7 +99,7 @@ class RefundApply extends BaseModel
             $result[] = [
                 'name' => '确认收货',
                 'api' => 'refund.receive_resend_goods',
-                'value' => 2
+                'value' => 3
             ];
         }
         return $result;

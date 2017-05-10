@@ -20,7 +20,7 @@ class ListController extends ApiController
             'pagesize' => 'sometimes|filled|integer',
             'page' => 'sometimes|filled|integer',
         ]);
-        $refunds = RefundApply::defaults()->paginate($request->query('pagesize', '100'));
+        $refunds = RefundApply::defaults()->paginate($request->query('pagesize', '20'));
         $refunds = $refunds->filter(function ($refund){
             if(!isset($refund->order)){
                 $refund->delete();
