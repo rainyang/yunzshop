@@ -15,8 +15,7 @@ use app\common\models\Income;
 use app\common\services\Pay;
 use app\common\services\PayFactory;
 use app\frontend\modules\finance\models\Withdraw;
-use EasyWeChat\Support\Log;
-use Illuminate\Support\FacadesLog;
+use Illuminate\Support\Facades\Log;
 use Yunshop\Commission\models\CommissionOrder;
 
 class IncomeController extends ApiController
@@ -188,7 +187,6 @@ class IncomeController extends ApiController
 
         Log::info("POST - Withdraw Data /r/n");
         Log::info($withdrawData);
-
         /**
          * 验证数据
          */
