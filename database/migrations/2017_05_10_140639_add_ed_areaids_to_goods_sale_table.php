@@ -13,13 +13,11 @@ class AddEdAreaidsToGoodsSaleTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasTable('yz_goods_sale')) {
-            Schema::table('yz_goods_sale', function (Blueprint $table) {
-                if (!Schema::hasColumn('yz_goods_sale', 'ed_areaids')) {
-                    $table->text('ed_areaids')->nullable()->after('ed_areas');
-                }
-            });
-        }
+        Schema::table('yz_goods_sale', function (Blueprint $table) {
+            if (!Schema::hasColumn('yz_goods_sale', 'ed_areaids')) {
+                $table->text('ed_areaids')->nullable()->after('ed_areas');
+            }
+        });
     }
 
     /**
@@ -29,10 +27,8 @@ class AddEdAreaidsToGoodsSaleTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasTable('yz_goods_sale')) {
-            Schema::table('yz_goods_sale', function (Blueprint $table) {
-                $table->dropColumn('ed_areaids');
-            });
-        }
+        Schema::table('yz_goods_sale', function (Blueprint $table) {
+            $table->dropColumn('ed_areaids');
+        });
     }
 }
