@@ -48,9 +48,10 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof AppException) {
-            return $this->errorJson($exception->getMessage());
+            $this->renderShopException($exception);
         }
         if($exception instanceof AdminException){
+            $this->renderShopException($exception);
 
         }
         if ($this->isHttpException($exception)) {
@@ -80,6 +81,11 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->guest('login');
+    }
+    protected function renderShopException(Exception $exception){
+        if(\Yunshop::isApi()){
+            return $this->errorJson($exception->getMessage());
+        }
     }
 
     /**
