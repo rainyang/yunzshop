@@ -24,6 +24,12 @@ class ConstService
     //类型：支出
     const TYPE_EXPENDITURE = 2;
 
+    //充值状态 ：成功
+    const STATUS_SUCCESS = 1;
+
+    //充值状态 ：失败
+    const STATUS_FAILURE = -1;
+
 
     const BALANCE_RECHARGE          = 1; //充值
 

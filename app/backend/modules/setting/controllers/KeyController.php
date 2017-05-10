@@ -11,6 +11,7 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
+use app\common\services\AutoUpdate;
 use app\common\services\MyLink;
 use Ixudra\Curl\Facades\Curl;
 
@@ -109,7 +110,8 @@ class KeyController extends BaseController
             'type' => $type,
             'domain' => $domain
         ];
-        $res = isKeySecretExists($filename, $data, $postData, 'auto_update ' . $this->uniacid . ' ');
+        $update = new AutoUpdate();
+        $res = $update -> isKeySecretExists($filename, $data, $postData, 'auto_update ' . $this->uniacid . ' ');
         return $res;
     }
 

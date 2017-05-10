@@ -258,7 +258,10 @@ class GoodsController extends BaseController
         if ($result['status'] == 1) {
             return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
         } else if ($result['status'] == -1){
-            $this->error('商品修改失败');
+            if (isset($result['msg'])) {
+                $this->error($result['msg']);
+            }
+            !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
 
         //dd($this->lang);
