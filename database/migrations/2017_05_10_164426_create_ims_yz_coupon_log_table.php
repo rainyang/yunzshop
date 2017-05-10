@@ -12,9 +12,8 @@ class CreateImsYzCouponLogTable extends Migration {
      */
     public function up()
     {
-        Schema::create('yz_coupon_log', function(Blueprint $table)
-        {
-            if (!Schema::hasTable('yz_coupon_log')) {
+        if (!Schema::hasTable('yz_coupon_log')) {
+            Schema::create('yz_coupon_log', function (Blueprint $table) {
                 $table->integer('id', true);
                 $table->integer('uniacid')->nullable()->default(0)->index('idx_uniacid');
                 $table->string('logno')->nullable()->default('');
@@ -26,8 +25,8 @@ class CreateImsYzCouponLogTable extends Migration {
                 $table->boolean('getfrom')->nullable()->default(0)->index('idx_getfrom');
                 $table->integer('status')->nullable()->default(0)->index('idx_status');
                 $table->integer('createtime')->nullable()->default(0)->index('idx_createtime');
-            }
-        });
+            });
+        }
     }
 
 
@@ -38,7 +37,7 @@ class CreateImsYzCouponLogTable extends Migration {
      */
     public function down()
     {
-        Schema::drop('ims_yz_coupon_log');
+        Schema::dropIfExists('yz_coupon_log');
     }
 
 }

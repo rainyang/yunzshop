@@ -12,9 +12,8 @@ class CreateImsYzCouponTable extends Migration {
      */
     public function up()
     {
-        Schema::create('yz_coupon', function(Blueprint $table)
-        {
-            if (!Schema::hasTable('yz_coupon')) {
+        if (!Schema::hasTable('yz_coupon')) {
+            Schema::create('yz_coupon', function (Blueprint $table) {
                 $table->integer('id', true);
                 $table->integer('uniacid')->nullable()->default(0)->index('idx_uniacid');
                 $table->integer('cat_id')->nullable()->default(0);
@@ -56,8 +55,8 @@ class CreateImsYzCouponTable extends Migration {
                 $table->integer('created_at')->unsigned()->nullable();
                 $table->integer('updated_at')->unsigned()->nullable();
                 $table->integer('deleted_at')->unsigned()->nullable();
-            }
-        });
+            });
+        }
     }
 
 
@@ -68,7 +67,7 @@ class CreateImsYzCouponTable extends Migration {
      */
     public function down()
     {
-        Schema::drop('ims_yz_coupon');
+        Schema::dropIfExists('yz_coupon');
     }
 
 }

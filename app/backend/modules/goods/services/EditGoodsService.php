@@ -14,6 +14,7 @@ use app\backend\modules\goods\models\GoodsParam;
 use app\backend\modules\goods\models\GoodsSpec;
 use app\backend\modules\goods\models\GoodsOption;
 use app\backend\modules\goods\models\Brand;
+use app\common\models\GoodsCategory;
 use Setting;
 
 class EditGoodsService
@@ -58,6 +59,12 @@ class EditGoodsService
                     }, $goods_data['thumb_url'])
                 );
             }
+
+            $category_model = GoodsCategory::where("goods_id", $this->goods_model->id)->first();
+            if (!empty($category_model)) {
+                $category_model->delete();
+            }
+            GoodsService::saveGoodsCategory($this->goods_model, \YunShop::request()->category, Setting::get('shop.category'));
 
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
