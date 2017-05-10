@@ -172,7 +172,11 @@ class MemberCouponController extends ApiController
             $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['belongs_to_coupon']['discount'] * 10;
 
             if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
-                && ($time < $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)){
+                &&
+                ( ($v['belongs_to_coupon']['time_days']==0)
+                    || ($time < $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)
+                )
+            ){
                 $coupons[$k]['belongs_to_coupon']['start'] = date('Y-m-d', $v['get_time']); //前端需要统一的起止时间
                 $coupons[$k]['belongs_to_coupon']['end'] = date('Y-m-d', ($v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)); //前端需要统一的起止时间
                 $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
@@ -200,6 +204,7 @@ class MemberCouponController extends ApiController
             $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['belongs_to_coupon']['discount'] * 10;
 
             if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
+                && ($v['belongs_to_coupon']['time_days']!==0)
                 && ($time > $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)){
                 $coupons[$k]['belongs_to_coupon']['start'] = date('Y-m-d', $v['get_time']); //前端需要统一的起止时间
                 $coupons[$k]['belongs_to_coupon']['end'] = date('Y-m-d', ($v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)); //前端需要统一的起止时间
@@ -365,7 +370,7 @@ class MemberCouponController extends ApiController
                         'resp_desc' => $respDesc,
                         'resp_url' => $couponModel->resp_url,
                     ];
-                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
+//                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
                 }
 
                 //写入log
@@ -391,31 +396,34 @@ class MemberCouponController extends ApiController
     //发送模板消息
     public static function sendTemplateMessage($openid, $templateid, $data)
     {
-        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-
-        $options = [
-            'app_id' => $account->key,
-            'secret' => $account->secret,
-            'token' => \YunShop::app()->account['token'],
-        ];
-        $app = new Application($options);
+        $app = app('wechat');
         $notice = $app->notice;
-        $url = $data['resp_url'];
-
-        $templateData = array(
-            "first" => $data['resp_title'],
-            "keyword1" => $data['resp_thumb'],
-            "keyword2" => $data['resp_url'],
-            "remark" => $data['resp_desc'],
-        );
-
-        $result = $notice->uses($templateid)->withUrl($url)->andData($templateData)->andReceiver($openid)->send();
-        $resultArray = json_decode($result, true);
-        if($resultArray['errcode'] != 0){
-            return false;
-        }
-
-        return $resultArray;
+        $notice->uses($templateid)->andData($data)->andReceiver($openid)->send();
+//        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+//
+//        $options = [
+//            'app_id' => $account->key,
+//            'secret' => $account->secret,
+//            'token' => \YunShop::app()->account['token'],
+//        ];
+//        $app = new Application($options);
+//        $notice = $app->notice;
+//        $url = $data['resp_url'];
+//
+//        $templateData = array(
+//            "first" => $data['resp_title'],
+//            "keyword1" => $data['resp_thumb'],
+//            "keyword2" => $data['resp_url'],
+//            "remark" => $data['resp_desc'],
+//        );
+//
+//        $result = $notice->uses($templateid)->withUrl($url)->andData($templateData)->andReceiver($openid)->send();
+//        $resultArray = json_decode($result, true);
+//        if($resultArray['errcode'] != 0){
+//            return false;
+//        }
+//
+//        return $resultArray;
     }
 
     //动态显示内容

@@ -11,9 +11,8 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
-use app\common\models\AccountWechats;
+use app\common\services\AutoUpdate;
 use app\common\services\MyLink;
-use Illuminate\Support\Facades\Request;
 use Ixudra\Curl\Facades\Curl;
 
 class KeyController extends BaseController
@@ -37,11 +36,15 @@ class KeyController extends BaseController
         $message = $type == 'create' ? '添加' : '取消';
         if ($requestModel) {
             //检测数据是否存在
-            $this->_log->error($this->uniacid . " : " . $requestModel['key'] . ' => ' . $requestModel['secret']);
             $res = $this ->isExist($requestModel);
-            $this->_log->error('1 isExists result ===> ' . $res);
-            if($res !== 'is ok') {
-                $this ->error($res);
+            //var_dump($res);exit();
+            if(!$res['isExists']) {
+
+                if($res['message'] == 'amount exceeded')
+                    $this->error('您已经没有剩余站点数量了，如添加新站点，请取消之前的站点或者联系我们的客服人员！');
+                else
+                    $this->error('Key或者密钥出错了！');
+
             } else {
                 if ($this->processingKey($requestModel, $type)) {
                     return $this->message("站点{$message}成功", Url::absoluteWeb('setting.key.index'));
@@ -68,22 +71,28 @@ class KeyController extends BaseController
             'domain' => $domain
         ];
         if($type == 'create') {
-            $content = Curl::to(config('auto-update.checkUrl').'app-account/create')
+
+            $content = Curl::to(config('auto-update.checkUrl').'/app-account/create')
                 ->withData($data)
                 ->get();
-            $this->_log->error('app-account create === '. $data['uniacid'] . " :: " . $data['key'] . " :: " . $data['secret'] . " :: " . $data['domain'] .$content);
+           // dd($content);exit();
             $writeRes = Setting::set('shop.key', $requestModel);
-            Cache::forget('app_auth' . $this->uniacid);
-            $this->_log->error('shop,key set ' . $writeRes . ': ' . $requestModel['key'] . '=> ' . $requestModel['secret']);
+
+            \Cache::forget('app_auth' . $this->uniacid);
+
             return $writeRes && $content;
+
         } else if($type == 'cancel') {
+
             $content = Curl::to(config('auto-update.checkUrl').'/app-account/cancel')
                 ->withData($data)
                 ->get();
-            $this->_log->error('app-account cancel' . $content);
+            //var_dump($content);exit();
+
             $writeRes = Setting::set('shop.key', '');
-            Cache::forget('app_auth' . $this->uniacid);
-            $this->_log->error('shop,key cancel ' . $writeRes . ': ' . $requestModel['key'] . '=> ' . $requestModel['secret']);
+
+            \Cache::forget('app_auth' . $this->uniacid);
+
             return $writeRes && $content ;
         }
     }
@@ -95,28 +104,14 @@ class KeyController extends BaseController
 
         $type = \YunShop::request()->type;
         $domain = request()->getHttpHost();
-        $content = Curl::to(config('auto-update.checkUrl').'/update/check_isKey.json')
-            ->withHeader(
-               "Authorization: Basic " . base64_encode("{$data['key']}:{$data['secret']}")
-            )
-            ->withData([
-                'type' => $type,
-                'domain' => $domain
-            ])
-            ->get();
 
-        $res = '密钥或者Key 有错误！';
-        if(strpos($content,'no such data exists') !== false) {
-            $this->_log->error('uniacid ==' .$this->uniacid. ' no such data exists');
-        } else if(strpos($content,'expired of time') !== false){
-            $this->_log->error('uniacid ==' .$this->uniacid. 'expired of time');
-        } else if(strpos($content,'is ok') !== false) {
-            $res = 'is ok';
-        } else if(strpos($content, 'domain error') !== false) {
-            $this->_log->error('uniacid ==' .$this->uniacid. "domain doesn't exists!");
-        }   else if(strpos($content, 'amount exceeded') !== false) {
-            $res = '您的站点数量已经没有了，不能再建新站！若要建站请取消之前的站点，或者联系我们的客服人员！';
-        }
+        $filename = config('auto-update.checkUrl').'/check_isKey.json';
+        $postData = [
+            'type' => $type,
+            'domain' => $domain
+        ];
+        $update = new AutoUpdate();
+        $res = $update -> isKeySecretExists($filename, $data, $postData, 'auto_update ' . $this->uniacid . ' ');
         return $res;
     }
 
