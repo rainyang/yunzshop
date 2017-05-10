@@ -13,11 +13,11 @@ class CreateCronjobTable extends Migration {
         if (!Schema::hasTable('cron_job')) {
             Schema::create('cron_job', function ($table) {
                 $table->increments('id');
-                $table->string('name');
+                $table->string('name',255);
                 $table->text('return');
                 $table->float('runtime');
                 $table->integer('cron_manager_id')->unsigned();
-                $table->index(array('name', 'cron_manager_id'));
+               // $table->index(array('name', 'cron_manager_id'));
             });
         }
     }
