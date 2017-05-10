@@ -37,4 +37,16 @@ class RefundOperationService
         return $refundCancel->execute();
 
     }
+
+    public static function refundComplete()
+    {
+        //todo 需要与后台操作统一
+        $refundComplete = RefundComplete::find(\Request::query('refund_id'));
+        if (!$refundComplete) {
+            throw new AppException('售后申请记录不存在');
+        }
+        $refundComplete->enable();
+        return $refundComplete->execute();
+
+    }
 }

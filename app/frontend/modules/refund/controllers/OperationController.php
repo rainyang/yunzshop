@@ -24,6 +24,13 @@ class OperationController extends ApiController
         RefundOperationService::refundSend();
         return $this->successJson();
     }
+    public function complete(\Request $request){
+        $this->validate($request,[
+            'refund_id' => 'required|filled|integer',
+        ]);
+        RefundOperationService::refundComplete();
+        return $this->successJson();
+    }
     public function cancel(\Request $request){
         $this->validate($request,[
             'refund_id' => 'required|filled|integer',
