@@ -46,10 +46,8 @@ class AfterOrderDeductiblePointService
     private function isDeductible()
     {
         if (!$this->isChecked()) {
-            echo '<pre>';print_r(1);exit;
             return;
         }
-        echo '<pre>';print_r(2);exit;
         $this->addPointLog();
     }
 
