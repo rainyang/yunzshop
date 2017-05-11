@@ -54,7 +54,7 @@ class SendCouponController extends BaseController
                     $memberIds = explode(',', $membersScope);
                     break;
                 case self::BY_MEMBER_LEVEL: //根据"会员等级"获取 Member IDs
-                    $sendLevel = \YunShop::request()->send_level;
+                    $sendLevel = \YunShop::request()->send_level; //实际不是等级的值, 而是等级表(member_level表)的主键ID
                     $res = MemberLevel::getMembersByLevel($sendLevel);
                     if($res['member']->isEmpty()){
                         $memberIds = '';
@@ -150,21 +150,22 @@ class SendCouponController extends BaseController
                 //写入log
                 if ($res){ //发放优惠券成功
                     $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$couponModel->id.' )给用户( Member ID 为 '.$memberId.' )';
-                    if(!empty($responseData['title']) && $memberOpenid){
-                        $nickname = Member::getMemberById($memberId)->nickname;
-                        $dynamicData = [
-                            'nickname' => $nickname,
-                            'couponname' => $couponModel->name,
-                        ];
-                        $responseData = self::dynamicMsg($responseData, $dynamicData);
-                        $news = new News($responseData);
-                        Message::sendNotice($memberOpenid, $news);
-                    }
                 } else{ //发放优惠券失败
                     $log = '手动发放优惠券失败: 管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$couponModel->id.' )给用户( Member ID 为 '.$memberId.' )时失败!';
                     $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
                 }
                 $this->log($log, $couponModel, $memberId);
+            }
+
+            if(!empty($responseData['title']) && $memberOpenid){
+                $nickname = Member::getMemberById($memberId)->nickname;
+                $dynamicData = [
+                    'nickname' => $nickname,
+                    'couponname' => $couponModel->name,
+                ];
+                $responseData['title'] = self::dynamicMsg($responseData['title'], $dynamicData);
+                $news = new News($responseData);
+                Message::sendNotice($memberOpenid, $news);
             }
         }
 

@@ -59,7 +59,7 @@ class AfterOrderDeductiblePointService
             'point_income_type' => -1,
             'point_mode'        => 6,
             'member_id'         => $this->order_model->uid,
-            'point'             => $point_service->point,
+            'point'             => -$point_service->point,
             'remark'            => '订单[' . $this->order_model->order_sn . ']抵扣[' . $point_service->point_money .  ']元'
         ];
     }
@@ -67,7 +67,8 @@ class AfterOrderDeductiblePointService
     private function addPointLog()
     {
         $point_service = new PointService($this->getPointData());
-        if ($point_service) {
+        $point_model = $point_service->changePoint();
+        if ($point_model) {
             //积分抵扣通知
         }
     }
