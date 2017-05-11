@@ -32,6 +32,7 @@ class CouponController extends BaseController
         } else {
             $list = Coupon::getCouponsBySearch($keyword, $getType, $timeSearchSwitch, $timeStart, $timeEnd)
                         ->orderBy('display_order','desc')
+                        ->orderBy('updated_at', 'desc')
                         ->paginate($pageSize)
                         ->toArray();
         }
