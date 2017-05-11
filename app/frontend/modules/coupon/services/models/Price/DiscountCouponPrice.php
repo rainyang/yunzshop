@@ -17,7 +17,7 @@ class DiscountCouponPrice extends CouponPrice
 {
     public function getPrice()
     {
-        return (1 - $this->dbCoupon->discount) * $this->coupon->getOrderGoodsInScope()->getVipPrice();
+        return (1 - $this->dbCoupon->discount/10) * $this->coupon->getOrderGoodsInScope()->getVipPrice();
     }
     protected function getOrderGoodsGroupPrice()
     {

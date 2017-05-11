@@ -96,7 +96,9 @@ class GoodsController extends BaseController
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
             ]
         );
+
         $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20)->toArray();
+
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
 

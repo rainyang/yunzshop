@@ -102,7 +102,10 @@
                                         </div>
                                         <div class="cost" >
                                             <label class='radio-inline'>
-                                                <input class="col-sm-6 form-control" type="text" name="withdraw[balance][poundage]" value="{{ $set['poundage'] or '' }}" placeholder="大于0小于1的两位小数"/>
+                                                <div class="input-group">
+                                                    <input type="text" name="withdraw[balance][poundage]" class="form-control" value="{{ $set['poundage'] or '' }}" placeholder="请输入赠送比例"/>
+                                                    <div class="input-group-addon">%</div>
+                                                </div>
                                             </label>
                                         </div>
                                     </div>
@@ -115,7 +118,10 @@
                                         </div>
                                         <div class="cost" >
                                             <label class='radio-inline'>
-                                                <input class="col-sm-6 form-control"  type="text" name="withdraw[balance][withdrawmoney]" value="{{ $set['withdrawmoney'] or '' }}" placeholder="余额提现最小金额值"/>
+                                                <div class="input-group">
+                                                    <input type="text" name="withdraw[balance][withdrawmoney]" class="form-control" value="{{ $set['withdrawmoney'] or '' }}" placeholder="余额提现最小金额值"/>
+                                                    <div class="input-group-addon">元</div>
+                                                </div>
                                             </label>
                                         </div>
                                     </div>

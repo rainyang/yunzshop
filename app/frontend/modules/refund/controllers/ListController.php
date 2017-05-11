@@ -21,12 +21,8 @@ class ListController extends ApiController
             'page' => 'sometimes|filled|integer',
         ]);
         $refunds = RefundApply::defaults()->paginate($request->query('pagesize', '20'));
-        $refunds = $refunds->filter(function ($refund){
-            if(!isset($refund->order)){
-                $refund->delete();
-            }
-            return isset($refund->order);
-        });
+        
+
         $this->successJson('成功', $refunds->toArray());
     }
 }
