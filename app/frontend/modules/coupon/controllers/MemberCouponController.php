@@ -115,7 +115,7 @@ class MemberCouponController extends ApiController
             //增加属性 - 对于该优惠券,用户可领取的数量
             if($v['get_max'] != self::NO_LIMIT){
                 $coupons['data'][$k]['api_remaining'] = $v['get_max'] - $v['member_got_count'];
-                if ($coupons['data'][$k]['api_remaining'] < 0){ //考虑到优惠券设置会变更,比如原来允许领取6张,之后修改3张,那么可领取张数可能会变成负数
+                if ($coupons['data'][$k]['api_remaining'] < 0){ //考虑到优惠券设置会变更,比如原来允许领取6张,之后修改为3张,那么可领取张数可能会变成负数
                     $coupons['data'][$k]['api_remaining'] = 0;
                 }
             } elseif($v['get_max'] == self::NO_LIMIT){
