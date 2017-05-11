@@ -44,9 +44,9 @@ class CreateGoodsService
                     }, $goods_data['thumb_url'])
                 );
             }
-
+            echo '<pre>';print_r($goods_data);exit;
             $this->goods_model->setRawAttributes($goods_data);
-            $this->goods_model->widgets = \YunShop::request()->widgets;
+            $this->goods_model->widgets = $this->request->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
 
             $validator = $this->goods_model->validator($this->goods_model->getAttributes());
