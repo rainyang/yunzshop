@@ -18,7 +18,7 @@ class AfterOrderDeductiblePointService
 {
     private $order_model;
     private $point_set;
-
+    private $preGenerateOrder;
     public static function isChecked($deduction_ids,$id = 1)
     {
         if (!is_array($deduction_ids)) {
@@ -33,6 +33,7 @@ class AfterOrderDeductiblePointService
     public function deductiblePoint(AfterOrderCreatedEvent $event)
     {
         $this->order_model = Order::find($event->getOrderModel()->id);
+        $this->preGenerateOrder = $event->getOrderModel();
         $this->point_set = Setting::get('point.set');
         $this->calculationPoint();
     }
@@ -44,9 +45,7 @@ class AfterOrderDeductiblePointService
 
     private function isDeductible()
     {
-        $deduction_ids = $this->order_model->getParams('deduction_ids');
-        dd($deduction_ids);
-        exit;
+        $deduction_ids = $this->preGenerateOrder->getParams('deduction_ids');
         if (!self::isChecked($deduction_ids)) {
             return;
         }
