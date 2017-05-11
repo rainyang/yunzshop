@@ -118,7 +118,7 @@ class WechatPay extends Pay
 
             if ($order_info->amount >= $result->refund_fee) {
                 \Log::debug('订单事件触发');
-                RefundOperationService::refundComplete(['order_id'=>$order_info->id]);
+                throw new AppException('退款金额大于支付金额');
             }
 
             return true;
