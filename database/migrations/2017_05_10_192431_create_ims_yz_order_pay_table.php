@@ -38,7 +38,7 @@ class CreateImsYzOrderPayTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ims_yz_order_pay');
+        Schema::dropIfExists('yz_order_pay');
     }
 
 }
