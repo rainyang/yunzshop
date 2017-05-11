@@ -12,6 +12,7 @@ namespace app\frontend\modules\coupon\services\models;
 use app\common\models\MemberCoupon;
 use app\common\models\Coupon as DbCoupon;
 
+use app\frontend\modules\coupon\services\MemberCouponService;
 use app\frontend\modules\coupon\services\models\Price\CouponPrice;
 use app\frontend\modules\coupon\services\models\Price\DiscountCouponPrice;
 use app\frontend\modules\coupon\services\models\Price\MoneyOffCouponPrice;
@@ -181,28 +182,41 @@ class Coupon
      */
     public function valid()
     {
-        if (!$this->isOptional()){
+        if (!$this->isOptional()) {
 
             return false;
         }
-        if(!$this->price->valid()){
+//        if (!$this->unique()) {
+//            return false;
+//        }
+        if (!$this->price->valid()) {
 
             return false;
         }
         return true;
     }
 
+    public function unique()
+    {
+        $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreGeneratedOrderModel()->belongsToMember);
+        $memberCoupons->contains(function (){});
+
+        exit;
+    }
+
     /**
      * 优惠券已选中
      * @return bool
      */
-    public function isChecked(){
+    public function isChecked()
+    {
 
-        if($this->getMemberCoupon()->selected == 1){
+        if ($this->getMemberCoupon()->selected == 1) {
             return true;
         }
         return false;
     }
+
     /**
      * 优惠券可选
      * @return bool
@@ -218,8 +232,24 @@ class Coupon
         if (!isset($this->timeLimit)) {
             return false;
         }
-        
-        return $this->useScope->valid() && $this->price->isOptional() && $this->timeLimit->valid() && empty($this->getMemberCoupon()->used);
+        //满足范围
+        if (!$this->useScope->valid()) {
+            return false;
+        }
+        //满足额度
+        if (!$this->price->isOptional()) {
+            return false;
+        }
+        //满足时限
+        if (!$this->timeLimit->valid()) {
+            return false;
+        }
+        //未使用
+        if ($this->getMemberCoupon()->used) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

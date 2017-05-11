@@ -19,9 +19,8 @@ class AfterOrderDeductiblePointService
     private $order_model;
     private $point_set;
 
-    private function isChecked($id = 1)
+    public static function isChecked($deduction_ids,$id = 1)
     {
-        $deduction_ids = \Request::input('deduction_ids');
         if (!is_array($deduction_ids)) {
             $deduction_ids = json_decode($deduction_ids,true);
             if (!is_array($deduction_ids)) {
@@ -45,7 +44,10 @@ class AfterOrderDeductiblePointService
 
     private function isDeductible()
     {
-        if (!$this->isChecked()) {
+        $deduction_ids = $this->order_model->getParams('deduction_ids');
+        dd($deduction_ids);
+        exit;
+        if (!self::isChecked($deduction_ids)) {
             return;
         }
         $this->addPointLog();
