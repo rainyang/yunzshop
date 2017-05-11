@@ -111,16 +111,6 @@ class WechatPay extends Pay
 
             $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
 
-
-            /*$order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $result->out_trade_no)->first();*/
-            $order_info = OrderPay::where('pay_sn', $result->out_trade_no)->first();
-            $order_info->amount = $order_info->amount * 100;
-
-            if ($order_info->amount >= $result->refund_fee) {
-                \Log::debug('订单事件触发');
-                throw new AppException('退款金额大于支付金额');
-            }
-
             return true;
         } else {
             throw new AppException($result->err_code_des);
