@@ -13,14 +13,15 @@ class ArrayHelper
 {
     public static function unreliableDataToArray($data)
     {
-        if(is_array($data)){
+        if (is_array($data)) {
             return $data;
         }
-
-        if(!\isJson($data)){
-            return json_decode($data,true);
+        json_decode($data, true);
+        if ((json_last_error() == JSON_ERROR_NONE)) {
+            return json_decode($data, true);
         }
-        return explode(',',$data);
+
+        return explode(',', $data);
     }
 
     //stdClass Object 转 数组
