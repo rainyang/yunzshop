@@ -156,7 +156,7 @@ class Coupon
     {
         //记录优惠券被选中了
         $this->getMemberCoupon()->selected = 1;
-
+        //dd($this->getMemberCoupon());
         $this->setOrderGoodsDiscountPrice();
     }
 
@@ -186,9 +186,9 @@ class Coupon
 
             return false;
         }
-//        if (!$this->unique()) {
-//            return false;
-//        }
+        if (!$this->unique()) {
+            return false;
+        }
         if (!$this->price->valid()) {
 
             return false;
@@ -196,13 +196,18 @@ class Coupon
         return true;
     }
 
+    /**
+     * 用户优惠券所属的优惠券未被选中过
+     * @return bool
+     */
     public function unique()
     {
         $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreGeneratedOrderModel()->belongsToMember);
-        return $memberCoupons->contains(function ($memberCoupon) {
-
-            if ($memberCoupon->selected) {
-
+        //本优惠券与某个选中的优惠券是一张 就返回false
+        return !$memberCoupons->contains(function ($memberCoupon) {
+            
+            if ($memberCoupon->selected == true) {
+                //本优惠券与选中的优惠券是一张
                 return $memberCoupon->coupon_id == $this->getMemberCoupon()->coupon_id;
             }
             return false;
