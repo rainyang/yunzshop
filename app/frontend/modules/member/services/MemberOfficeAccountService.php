@@ -156,7 +156,7 @@ class MemberOfficeAccountService extends MemberService
             }
 
             if (MemberShopInfo::isBlack($member_id)) {
-                return show_json(-1, '黑名单用户，请联系管理员');
+               // return show_json(-1, '黑名单用户，请联系管理员');
             }
 
             $this->updateMemberInfo($member_id, $userinfo);
