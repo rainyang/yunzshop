@@ -17,7 +17,7 @@ class ArrayHelper
             return $data;
         }
 
-        if(!isJson($data)){
+        if(!\isJson($data)){
             return json_decode($data,true);
         }
         return explode(',',$data);
