@@ -16,8 +16,7 @@ class ArrayHelper
         if (is_array($data)) {
             return $data;
         }
-        json_decode($data, true);
-        if ((json_last_error() == JSON_ERROR_NONE)) {
+        if (is_array(json_decode($data, true))) {
             return json_decode($data, true);
         }
 
