@@ -15,7 +15,7 @@
                 <option value="{{$v['level']}}" @if($coupon['level_limit']==$v['level']) selected @endif>{{$v['level_name']}}(及以上等级可以领取)</option>
             @endforeach
         </select>
-        <span class='help-block'>选择"所有会员"表示商城的所有会员,包括没有划分等级的; <br>例如: 选择等级3,表示包括3以及大于等级3的会员都可领取,即等级1,2,3都可以领取.</span>
+        <span class='help-block'>选择"所有会员"表示商城的所有会员,包括没有划分等级的; <br>例如: 选择等级 3,表示包括 3 以及大于等级 3 的会员都可领取,即等级 3, 4, 5...都可以领取.</span>
     </div>
 </div>
 <div class="form-group">
