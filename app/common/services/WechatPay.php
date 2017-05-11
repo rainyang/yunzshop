@@ -113,7 +113,7 @@ class WechatPay extends Pay
 
 
             /*$order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $result->out_trade_no)->first();*/
-            $order_info = OrderPay::where('uniacid',\YunShop::app()->uniacid)->where('pay_sn', $result->out_trade_no)->first();
+            $order_info = OrderPay::where('pay_sn', $result->out_trade_no)->first();
             $order_info->amount = $order_info->amount * 100;
 
             if ($order_info->amount >= $result->refund_fee) {
