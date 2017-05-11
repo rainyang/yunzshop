@@ -125,7 +125,7 @@ class Order extends BaseModel
     //订单支付信息
     public function hasOneOrderPay()
     {
-        return $this->hasOne(Pay::class, 'order_id', 'id');
+        return $this->belongsTo(Pay::class, 'order_pay_id', 'id');
     }
 
     //订单快递
