@@ -37,7 +37,6 @@ class CreateGoodsService
         $this->brands = Brand::getBrands()->get();
 
         if ($goods_data) {
-            echo '<pre>';print_r($goods_data);exit;
             if (isset($goods_data['thumb_url'])) {
                 $goods_data['thumb_url'] = serialize(
                     array_map(function ($item) {
@@ -48,7 +47,8 @@ class CreateGoodsService
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
-
+            dd($this->goods_model);
+            exit;
             $validator = $this->goods_model->validator($this->goods_model->getAttributes());
             if ($validator->fails()) {
                 $this->error = $validator->messages();
