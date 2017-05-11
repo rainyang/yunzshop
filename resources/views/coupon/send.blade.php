@@ -54,7 +54,7 @@
                     <select name="send_level" class="form-control" id="value_2" >
                         <option></option>
                         @foreach($memberLevels as $v)
-                        <option value="{{$v['level']}}">{{$v['level_name']}}</option>
+                        <option value="{{$v['id']}}">{{$v['level_name']}}</option>
                         @endforeach
                     </select>
                 </div>

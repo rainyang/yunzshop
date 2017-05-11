@@ -20,14 +20,13 @@ class SendCouponController extends BaseController
     const BY_MEMBER_GROUP = 3;
     const TO_ALL_MEMBERS = 4;
 
-    public $couponId;
     public $failedSend = []; //发送失败时的记录
     public $adminId; //后台操作者的ID
 
     public function index()
     {
-        $this->couponId = \YunShop::request()->id;
-        $couponModel = Coupon::getCouponById($this->couponId);
+        $couponId = \YunShop::request()->id;
+        $couponModel = Coupon::getCouponById($couponId);
 
         //获取会员等级列表
         $memberLevels = MemberLevel::getMemberLevelList();
@@ -55,7 +54,7 @@ class SendCouponController extends BaseController
                     $memberIds = explode(',', $membersScope);
                     break;
                 case self::BY_MEMBER_LEVEL: //根据"会员等级"获取 Member IDs
-                    $sendLevel = \YunShop::request()->send_level;
+                    $sendLevel = \YunShop::request()->send_level; //实际不是等级的值, 而是等级表(member_level表)的主键ID
                     $res = MemberLevel::getMembersByLevel($sendLevel);
                     if($res['member']->isEmpty()){
                         $memberIds = '';
@@ -105,7 +104,7 @@ class SendCouponController extends BaseController
                     'description' => $couponModel->resp_desc ? $couponModel->resp_desc : '你获得了 1 张优惠券 -- "'.$couponModel->name.' "',
                     'url' => $couponModel->resp_url,
                 ];
-                $res = $this->sendCoupon($memberIds, $sendTotal, $responseData);
+                $res = $this->sendCoupon($couponModel, $memberIds, $sendTotal, $responseData);
                 if ($res){
                     return $this->message('手动发送优惠券成功');
                 } else{
@@ -115,8 +114,6 @@ class SendCouponController extends BaseController
         }
 
         return view('coupon.send', [
-            'couponid' => \YunShop::app()->uniacid,
-            'coupondec' => \YunShop::request()->coupondec,
             'send_total' => isset($sendTotal) ? $sendTotal : 0,
             'sendtype' => isset($sendType) ? $sendType : 1,
             'memberLevels' => $memberLevels, //用户等级列表
@@ -130,13 +127,11 @@ class SendCouponController extends BaseController
 
     //发放优惠券
     //array $members
-    public function sendCoupon($memberIds, $sendTotal, $responseData)
+    public function sendCoupon($couponModel, $memberIds, $sendTotal, $responseData)
     {
-        //todo 后期任务: 在前台设置验证, 如果达到个人领取上限,ajax后提醒
-
         $data = [
             'uniacid' => \YunShop::app()->uniacid,
-            'coupon_id' => $this->couponId,
+            'coupon_id' => $couponModel->id,
             'get_type' => 0,
             'used' => 0,
             'get_time' => strtotime('now'),
@@ -154,16 +149,23 @@ class SendCouponController extends BaseController
 
                 //写入log
                 if ($res){ //发放优惠券成功
-                    $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )';
-                    if(!empty($responseData['title']) && $memberOpenid){
-                        $news = new News($responseData);
-                        Message::sendNotice($memberOpenid, $news);
-                    }
+                    $log = '手动发放优惠券成功: 管理员( ID 为 '.$this->adminId.' )成功发放 '.$sendTotal.' 张优惠券( ID为 '.$couponModel->id.' )给用户( Member ID 为 '.$memberId.' )';
                 } else{ //发放优惠券失败
-                    $log = '手动发放优惠券失败: 管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$this->couponId.' )给用户( Member ID 为 '.$memberId.' )时失败!';
+                    $log = '手动发放优惠券失败: 管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$couponModel->id.' )给用户( Member ID 为 '.$memberId.' )时失败!';
                     $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
                 }
-                $this->log($log, $memberId);
+                $this->log($log, $couponModel, $memberId);
+            }
+
+            if(!empty($responseData['title']) && $memberOpenid){
+                $nickname = Member::getMemberById($memberId)->nickname;
+                $dynamicData = [
+                    'nickname' => $nickname,
+                    'couponname' => $couponModel->name,
+                ];
+                $responseData['title'] = self::dynamicMsg($responseData['title'], $dynamicData);
+                $news = new News($responseData);
+                Message::sendNotice($memberOpenid, $news);
             }
         }
 
@@ -175,13 +177,13 @@ class SendCouponController extends BaseController
     }
 
     //写入日志
-    public function log($log, $memberId)
+    public function log($log, $couponModel, $memberId)
     {
         $logData = [
             'uniacid' => \YunShop::app()->uniacid,
             'logno' => $log,
             'member_id' => $memberId,
-            'couponid' => $this->couponId,
+            'couponid' => $couponModel->id,
             'paystatus' => 0, //todo 手动发放的不需要支付?
             'creditstatus' => 0, //todo 手动发放的不需要支付?
             'paytype' => 0, //todo 这个字段什么含义?
@@ -191,5 +193,20 @@ class SendCouponController extends BaseController
         ];
         $res = CouponLog::create($logData);
         return $res;
+    }
+
+    //动态显示内容
+    protected static function dynamicMsg($msg, $data)
+    {
+        if (preg_match('/\[nickname\]/', $msg)){
+            $msg = str_replace('[nickname]', $data['nickname'], $msg);
+        }
+        if (preg_match('/\[couponname\]/', $msg)){
+            $msg = str_replace('[couponname]', $data['couponname'], $msg);
+        }
+        if (preg_match('/\[validtime\]/', $msg)){
+            $msg = str_replace('[validtime]', $data['validtime'], $msg);
+        }
+        return $msg;
     }
 }
