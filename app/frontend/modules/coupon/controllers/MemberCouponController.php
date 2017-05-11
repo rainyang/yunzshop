@@ -318,7 +318,7 @@ class MemberCouponController extends ApiController
         //是否达到个人领取上限
         $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
         $couponMaxLimit = Coupon::getter($couponId, 'get_max'); //优惠券限制每人的领取总数
-        if($count >= $couponMaxLimit){
+        if($count >= $couponMaxLimit && ($couponMaxLimit != -1)){
             return $this->errorJson('已经达到个人领取上限','');
         }
 
