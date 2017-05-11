@@ -26,7 +26,6 @@ class TestOrderDiscount
     }
     public function handle(OrderDiscountWasCalculated $even)
     {
-
         if (!$this->needDiscount()) {
             return;
         }
