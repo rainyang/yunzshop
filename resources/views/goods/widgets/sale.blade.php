@@ -9,7 +9,7 @@
             <input type="text" name="widgets[sale][max_point_deduct]"  value="{{ $item->max_point_deduct }}" class="form-control" />
             <span class="input-group-addon">元</span>
         </div>
-        <span class="help-block">如果设置0，则不支持积分抵扣</span>
+        <span class="help-block">如果设置空，则采用积分统一设置<br>如果设置0，则不支持积分抵扣</span>
 
     </div>
 </div>
