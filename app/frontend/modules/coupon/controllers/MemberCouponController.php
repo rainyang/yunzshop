@@ -86,7 +86,7 @@ class MemberCouponController extends ApiController
         $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
 
         $now = strtotime('now');
-        $coupons = Coupon::getCouponsForMember($uid, null, $now);
+        $coupons = Coupon::getCouponsForMember($uid, $memberLevel, null, $now);
         if($coupons->get()->isEmpty()){
             return $this->errorJson('没有找到记录', []);
         }
@@ -304,7 +304,7 @@ class MemberCouponController extends ApiController
         if(!empty($couponModel->level_limit) && ($couponModel->level_limit != -1)){ //优惠券有会员等级要求
             if (empty($member->level_id)){
                 return $this->errorJson('该优惠券有会员等级要求,但该用户没有会员等级','');
-            } elseif($member->level_id > $couponModel->level_limit){
+            } elseif($member->level_id < $couponModel->level_limit){
                 return $this->errorJson('没有达到领取该优惠券的会员等级要求','');
             }
         }
@@ -386,7 +386,7 @@ class MemberCouponController extends ApiController
                 CouponLog::create($logData);
 
                 //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
-                $coupon = Coupon::getCouponsForMember($memberId, $couponId)->get()->toArray();
+                $coupon = Coupon::getCouponsForMember($memberId, null, $couponId)->get()->toArray();
                 $res = self::getCouponData(['data' => $coupon], $member->level_id);
                 return $this->successJson('ok', $res['data'][0]);
             }
