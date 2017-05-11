@@ -212,7 +212,7 @@
         <label class="radio-inline">
             <input type="radio" name="coupon[get_type]" value="0" @if($coupon['get_type'] === 0)checked="true" @endif onclick="$('.gettype').hide()"/> 不可以
         </label>
-        <span class='help-block'>会员是否可以在领券中心领取 (或者只能手动发放)</span>
+        <span class='help-block'>是否可以在领券中心领取 (或者只能手动发放)</span>
 
     </div>
 </div>
