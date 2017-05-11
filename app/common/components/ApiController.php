@@ -61,9 +61,7 @@ class ApiController extends BaseController
 
             return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
         } else {
-            \Log::debug('黑名单测试', \YunShop::app()->getMemberId());
             if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
-                \Log::debug('黑名单返回');
                 return $this->errorJson('黑名单用户，请联系管理员', ['login_status' => -1]);
             }
 
