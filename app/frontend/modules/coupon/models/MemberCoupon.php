@@ -31,6 +31,14 @@ class MemberCoupon extends \app\common\models\MemberCoupon
         return $count;
     }
 
+    //获取指定优惠券的领取总数
+    public static function getTotalGetCount($couponId)
+    {
+        return static::uniacid()
+                    ->where('coupon_id', '=', $couponId)
+                    ->count();
+    }
+
     //删除指定ID的用户优惠券
     public static function deleteById($id)
     {

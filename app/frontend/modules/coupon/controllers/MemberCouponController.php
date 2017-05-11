@@ -323,6 +323,13 @@ class MemberCouponController extends ApiController
             return $this->errorJson('已经达到个人领取上限','');
         }
 
+        //验证是否达到优惠券总数上限
+        $totalGetCount = MemberCoupon::getTotalGetCount($couponId);
+        $couponSumLimit = Coupon::getter($couponId, 'total');
+        if($totalGetCount >= $couponSumLimit && ($couponSumLimit != -1)){
+            return $this->errorJson('该优惠券已经被抢光','');
+        }
+
         //表单验证, 保存
         $data = [
             'uniacid' => \YunShop::app()->get('uniacid'),
