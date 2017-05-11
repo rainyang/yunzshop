@@ -15,6 +15,7 @@ use app\common\helpers\Url;
 use app\common\models\McMappingFans;
 use app\common\models\Member;
 use app\common\models\Order;
+use app\common\models\OrderPay;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Payment\Order as easyOrder;
 use app\common\services\finance\Withdraw;
@@ -111,17 +112,18 @@ class WechatPay extends Pay
             $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
 
 
-            $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $result->out_trade_no)->first();
-            $order_info->price = $order_info->price * 100;
+            /*$order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $result->out_trade_no)->first();*/
+            $order_info = OrderPay::where('uniacid',\YunShop::app()->uniacid)->where('pay_sn', $result->out_trade_no)->first();
+            $order_info->amount = $order_info->amount * 100;
 
-            if (bccomp($order_info->price, $result->refund_fee, 2) == 0) {
+            if ($order_info->amount >= $result->refund_fee) {
                 \Log::debug('订单事件触发');
                 RefundOperationService::refundComplete(['order_id'=>$order_info->id]);
             }
 
             return true;
         } else {
-            throw new AppException('退款失败');
+            throw new AppException($result->err_code_des);
         }
     }
 
