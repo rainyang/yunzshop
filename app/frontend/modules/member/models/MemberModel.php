@@ -121,7 +121,7 @@ class MemberModel extends Member
             ->where('uid', $uid)
             ->with([
                 'yzMember' => function ($query) {
-                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])
+                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'status'])
                         ->where('is_black', 0)
                         ->with(['level'=>function($query2){
                             return $query2->select(['id','level_name'])->uniacid();
@@ -266,7 +266,7 @@ class MemberModel extends Member
                 $data = [
                     'uid' => '',
                     'avatar' => $avatar,
-                    'nickname' => (1 == $member_info['is_agent'] && 2 == $member_info['status']) ? '总店' : '暂无',
+                    'nickname' => (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status']) ? '总店' : '暂无',
                     'level' => '',
                     'is_show' => $set['is_referrer']
                 ];

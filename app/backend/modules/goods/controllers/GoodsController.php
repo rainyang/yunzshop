@@ -96,7 +96,9 @@ class GoodsController extends BaseController
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
             ]
         );
+
         $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20)->toArray();
+
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
 
@@ -264,24 +266,12 @@ class GoodsController extends BaseController
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
 
-        if ($goods_service->goods_model->hasManyParams) {
-            $hasManyParams = $goods_service->goods_model->hasManyParams->toArray();
-        } else {
-            $hasManyParams = [];
-        }
-
-        if ($goods_service->goods_model->hasManySpecs) {
-            $hasManySpecs = $goods_service->goods_model->hasManySpecs->toArray();
-        } else {
-            $hasManySpecs = [];
-        }
-
         //dd($this->lang);
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
-            'params' => $hasManyParams,
-            'allspecs' => $hasManySpecs,
+            'params' => $goods_service->goods_model->hasManyParams->toArray(),
+            'allspecs' => $goods_service->goods_model->hasManySpecs->toArray(),
             'html' => $goods_service->optionsHtml,
             'var' => \YunShop::app()->get(),
             'brands' => $goods_service->brands,
