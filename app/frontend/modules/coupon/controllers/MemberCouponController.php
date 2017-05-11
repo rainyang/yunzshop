@@ -275,7 +275,7 @@ class MemberCouponController extends ApiController
             return $this->errorJson('找不到记录','');
         }
 
-        $res = MemberCoupon::deleteById($id); //软删除
+        $res = $model->delete();
         if($res){
             return $this->successJson('ok', '');
         } else{
