@@ -186,9 +186,9 @@ class Coupon
 
             return false;
         }
-        if (!$this->unique()) {
-            return false;
-        }
+//        if (!$this->unique()) {
+//            return false;
+//        }
         if (!$this->price->valid()) {
 
             return false;
@@ -199,10 +199,10 @@ class Coupon
     public function unique()
     {
         $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreGeneratedOrderModel()->belongsToMember);
-        $memberCoupons->contains(function ($memberCoupon) {
+        return $memberCoupons->contains(function ($memberCoupon) {
 
             if ($memberCoupon->selected) {
-                
+
                 return $memberCoupon->coupon_id == $this->getMemberCoupon()->coupon_id;
             }
             return false;
