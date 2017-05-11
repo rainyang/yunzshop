@@ -94,7 +94,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     public static function getMembersByLevel($levelId)
     {
         return static::uniacid()
-                    ->select(['level'])
+                    ->select(['id','level'])
                     ->where('level', $levelId)
                     ->with(['member' => function($query){
                         return $query->select('member_id', 'level_id')
@@ -161,7 +161,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     //关联会员
     public function member()
     {
-        return $this->hasMany('app\common\models\MemberShopInfo', 'level_id', 'level');
+        return $this->hasMany('app\common\models\MemberShopInfo', 'level_id', 'id'); //注意yz_member数据表记录和关联的是member_level表的主键id, 而不是level值
     }
 
 
