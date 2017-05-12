@@ -178,7 +178,6 @@ class IncomeController extends ApiController
 
         $withdrawTotal = $withdrawData['total'];
         Log::info("POST - Withdraw Total ",$withdrawTotal);
-        unset($withdrawData['total']);
 
         $incomeModel = Income::getIncomes();
         $incomeModel = $incomeModel->where('member_id', \YunShop::app()->getMemberId());
@@ -188,25 +187,25 @@ class IncomeController extends ApiController
         /**
          * 验证数据
          */
-        foreach ($withdrawData as $key => $item) {
+        foreach ($withdrawData['withdrawal'] as $item) {
 
-            $set[$key] = \Setting::get('withdraw.' . $key);
+            $set[$item['key_name']] = \Setting::get('withdraw.' . $item['key_name']);
             $incomeModel = $incomeModel->whereIn('id', explode(',', $item['type_id']));
             $incomes = $incomeModel->get();
             Log::info("INCOME:",$incomes);
 
-            $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
+            $set[$item['key_name']]['roll_out_limit'] = $set[$item['key_name']]['roll_out_limit'] ? $set[$item['key_name']]['roll_out_limit'] : 0;
 
             Log::info("roll_out_limit:");
-            Log::info($set[$key]['roll_out_limit']);
+            Log::info($set[$item['key_name']]['roll_out_limit']);
 
-            if ( bccomp($incomes->sum('amount'), $set[$key]['roll_out_limit'], 2) == -1 ) {
+            if ( bccomp($incomes->sum('amount'), $set[$item['key_name']]['roll_out_limit'], 2) == -1 ) {
                 return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
             }
 
         }
         Log::info("提现成功:提现成功");
-        $request = static::setWithdraw($withdrawData, $withdrawTotal);
+        $request = static::setWithdraw($withdrawData['withdrawal'], $withdrawTotal);
         if ($request) {
             return $this->successJson('提现成功!');
         }
