@@ -34,7 +34,8 @@ class BalanceService extends BaseBalanceService
     //实现抽象方法，附值会员信息
     protected function getMemberInfo()
     {
-        return $this->memberModel = Member::getMemberInfoById(\YunShop::request()->member_id) ?: '未获取到会员数据';
+        $member_id = $this->data['member_id'] ?: \YunShop::request()->member_id;
+        return $this->memberModel = Member::getMemberInfoById($member_id) ?: '未获取到会员数据';
     }
 
 
