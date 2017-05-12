@@ -101,8 +101,6 @@ trait MessageTrait
      */
     public function message($message, $redirect = '', $status = 'success')
     {
-        dd(IMS_VERSION);
-        exit;
         return view('message', [
             'redirect' => $redirect,
             'message' => $message,
