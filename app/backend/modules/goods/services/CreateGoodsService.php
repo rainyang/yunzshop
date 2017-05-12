@@ -37,6 +37,7 @@ class CreateGoodsService
         $this->brands = Brand::getBrands()->get();
 
         if ($goods_data) {
+            $goods_data['thumb'] = tomedia($goods_data['thumb']);
             if (isset($goods_data['thumb_url'])) {
                 $goods_data['thumb_url'] = serialize(
                     array_map(function ($item) {

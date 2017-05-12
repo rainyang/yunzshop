@@ -14,7 +14,7 @@ class AddMaxPointDeductToImsYzGoodsSale extends Migration
     public function up()
     {
         Schema::table('yz_goods_sale', function (Blueprint $table) {
-            if (!Schema::hasColumn('yz_goods_sale', 'max_point_deduct')) {
+            if (Schema::hasColumn('yz_goods_sale', 'max_point_deduct')) {
                 $table->string('max_point_deduct', 255)->nullable();
             }
         });
