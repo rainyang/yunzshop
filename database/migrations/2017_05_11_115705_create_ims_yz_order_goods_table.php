@@ -12,10 +12,16 @@ class CreateImsYzOrderGoodsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_order_goods', function(Blueprint $table)
+		Schema::table('yz_order_goods', function(Blueprint $table)
 		{
-			$table->decimal('goods_market_price', 10)->default(0.00);
-			$table->decimal('goods_cost_price', 10)->default(0.00);
+            if (!Schema::hasColumn('yz_order_goods', 'goods_market_price')) {
+
+                $table->decimal('goods_market_price', 10)->default(0.00);
+            }
+            if (!Schema::hasColumn('yz_order_goods', 'goods_cost_price')) {
+
+                $table->decimal('goods_cost_price', 10)->default(0.00);
+            }
 
 		});
 	}
