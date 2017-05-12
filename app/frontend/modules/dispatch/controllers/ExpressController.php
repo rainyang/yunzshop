@@ -30,6 +30,7 @@ class ExpressController extends ApiController
             throw new AppException('未找到配送信息');
         }
         //$data
+
         $express = $order->express->getExpress($order->express->express_code, $order->express->express_sn);
         $data['express_sn'] = $order->express->express_sn;
         $data['company_name'] = $order->express->express_company_name;

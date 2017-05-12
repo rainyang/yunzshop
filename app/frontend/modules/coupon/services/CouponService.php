@@ -132,7 +132,7 @@ class CouponService
     private function getSelectedMemberCoupon()
     {
         $member_coupon_ids = ArrayHelper::unreliableDataToArray(\Request::input('member_coupon_ids'));
-        
+
         return $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids) {
             return in_array($memberCoupon->id, $member_coupon_ids);
         });
