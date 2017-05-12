@@ -23,6 +23,7 @@ class MemberCoupon extends \app\common\models\MemberCoupon
         return $coupons;
     }
 
+
     //获取用户名下指定优惠券的总数
     public static function getMemberCouponCount($memberId, $couponId)
     {

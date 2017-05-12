@@ -12,8 +12,8 @@ class Coupon extends \app\common\models\Coupon
         'category_ids' => 'json',
         'goods_names' => 'json',
         'categorynames' => 'json',
-        'time_start' => 'datetime',
-        'time_end' =>'datetime',
+        'time_start' => 'date',
+        'time_end' =>'date',
     ];
 
     //前台需要整数的"立减值"
