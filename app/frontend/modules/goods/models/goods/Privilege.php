@@ -46,7 +46,7 @@ class Privilege extends \app\common\models\goods\Privilege
                 throw new AppException('商品(' . $this->goods->title . ')将于' . $this->time_begin_limit->toDateTimeString() . '开启限时购买');
             }
             if (Carbon::now()->greaterThanOrEqualTo($this->time_end_limit)) {
-                throw new AppException('(ID:' . $this->goods->title . ')该商品已于' . $this->time_end_limit->toDateTimeString() . '结束限时购买');
+                throw new AppException('商品(' . $this->goods->title . ')该商品已于' . $this->time_end_limit->toDateTimeString() . '结束限时购买');
             }
         }
     }
@@ -94,7 +94,7 @@ class Privilege extends \app\common\models\goods\Privilege
             return;
         }
         if (!in_array(MemberService::getCurrentMemberModel()->level_id, $buy_levels)) {
-            throw new AppException('(' . $this->goods->title . ')该商品仅限' . $level_names . '购买');
+            throw new AppException('商品(' . $this->goods->title . ')仅限' . $level_names . '购买');
         }
     }
 
