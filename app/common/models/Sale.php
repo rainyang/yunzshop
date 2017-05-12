@@ -13,7 +13,7 @@ class Sale extends BaseModel
     public $table = 'yz_goods_sale';
 
     public $attributes = [
-        'max_point_deduct' => 0,
+        'max_point_deduct' => '',
         'max_balance_deduct' => 0,
         'is_sendfree' => 0,
         'ed_num' => 0,
