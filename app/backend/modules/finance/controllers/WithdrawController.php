@@ -136,8 +136,7 @@ class WithdrawController extends BaseController
     {
 
         $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
-        echo "<pre>"; print_r($withdraw);exit;
-        if ($withdraw->status !== '0') {
+        if ($withdraw->status != '0') {
             return ['msg' => '审核失败,数据不符合提现规则!'];
         }
         $withdrawStatus = "-1";
