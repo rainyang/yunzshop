@@ -99,9 +99,10 @@ trait MessageTrait
      * @param string $status success  error danger warning  info
      * @return mixed
      */
-    public function message($message, $redirect = '', $status = 'success')
+    public function message11($message, $redirect = '', $status = 'success')
     {
-
+        echo $redirect;
+        exit;
         return view('message', [
             'redirect' => $redirect,
             'message' => $message,
