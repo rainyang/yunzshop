@@ -128,6 +128,9 @@ class IncomeController extends ApiController
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
             $poundage = sprintf("%.2f",substr(sprintf("%.3f", $poundage), 0, -2));
             $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
+            echo "<pre>"; print_r($amount);
+            echo "--";
+            echo "<pre>"; print_r($set[$key]['roll_out_limit']);exit;
             if ( bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1) {
                 $type_id = '';
                 foreach ($incomeModel->get() as $ids) {
