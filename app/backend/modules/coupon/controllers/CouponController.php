@@ -43,7 +43,8 @@ class CouponController extends BaseController
         foreach($list['data'] as &$item){
             $item['gettotal'] = MemberCoupon::uniacid()->where("coupon_id", $item['id'])->count();
             $item['usetotal'] =  MemberCoupon::uniacid()->where("coupon_id", $item['id'])->where("used", 1)->count();
-            $item['lasttotal'] = $item['total'] - $item['gettotal'];
+            $lasttotal = $item['total'] - $item['gettotal'];
+            $item['lasttotal'] = ($lasttotal > 0) ? $lasttotal : 0; //考虑到可领取总数修改成比之前的设置小, 则会变成负数
         }
 
         return view('coupon.index', [
