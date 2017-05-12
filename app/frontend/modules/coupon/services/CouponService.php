@@ -2,6 +2,7 @@
 
 namespace app\frontend\modules\coupon\services;
 
+use app\common\helpers\ArrayHelper;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use Illuminate\Support\Collection;
@@ -130,7 +131,8 @@ class CouponService
      */
     private function getSelectedMemberCoupon()
     {
-        $member_coupon_ids = explode(',', array_get($_GET, 'member_coupon_ids', ''));
+        $member_coupon_ids = ArrayHelper::unreliableDataToArray(\Request::input('member_coupon_ids'));
+
         return $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids) {
             return in_array($memberCoupon->id, $member_coupon_ids);
         });
