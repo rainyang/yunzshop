@@ -28,9 +28,8 @@ class Withdraw
     }
     public static function otherWithdrawSuccess($withdrawId)
     {
-     echo "<pre>"; print_r($withdrawId);exit;
         $withdraw = WithdrawModel::getWithdrawById($withdrawId)->first();
-        if ($withdraw->status !== '1') {
+        if ($withdraw->status != '1') {
             return false;
         }
         $withdraw = $withdraw->toArray();
@@ -44,7 +43,7 @@ class Withdraw
         
         //修改收入状态
         foreach ($withdraw['type_data']['incomes'] as $item) {
-            if($item['pay_status'] === '1'){
+            if($item['pay_status'] == '1'){
                 Income::updatedIncomePayStatus($item['id'], ['pay_status'=>'2']);
             }
         }
