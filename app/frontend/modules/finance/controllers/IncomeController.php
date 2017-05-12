@@ -129,9 +129,9 @@ class IncomeController extends ApiController
             $poundage = sprintf("%.2f",substr(sprintf("%.3f", $poundage), 0, -2));
             $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
             echo bccomp(0, 0, 2);
-            echo '--';
+            echo '==';
             echo bccomp(1, 0, 2);
-            echo '--';
+            echo '++';
             echo bccomp(1, 2, 2);
             exit;
             if ( bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1) {
