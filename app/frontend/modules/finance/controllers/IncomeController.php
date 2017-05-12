@@ -133,7 +133,7 @@ class IncomeController extends ApiController
                 foreach ($incomeModel->get() as $ids) {
                     $type_id .= $ids->id . ",";
                 }
-                $incomeData[$key] = [
+                $incomeData[] = [
                     'type' => $item['class'],
                     'key_name' => $item['type'],
                     'type_name' => $item['type_name'],
@@ -145,7 +145,7 @@ class IncomeController extends ApiController
                     'selected' => true,
                 ];
             } else {
-                $incomeData[$key] = [
+                $incomeData[] = [
                     'type' => $item['class'],
                     'key_name' => $item['type'],
                     'type_name' => $item['type_name'],
