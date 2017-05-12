@@ -76,7 +76,7 @@
                             </td>
                             <td  colspan="2">
                                 <input id="categoryid" type="hidden" class="form-control" name="category_ids[]" data-id="{{$v}}" data-name="categoryids"  value="{{$v}}" style="width:200px;float:left"  />
-                                <input id="categoryname" class="form-control" type="text" name="category_names[]" data-id="{{$v}}" data-name="categorynames" value="{{$coupon['categorynames'][$k]}}" style="width:200px;float:left">
+                                <input id="categoryname" class="form-control" type="text" name="category_names[]" data-id="{{$v}}" data-name="categorynames" value="{{$coupon['categorynames'][$k]}}" style="width:200px;float:left" readonly="true">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default nav-link" type="button" data-id="{{$v}}" onclick="$('#modal-module-menus-categorys').modal();$(this).parent().parent().addClass('focuscategory')" >选择分类</button>
                                 </span>
@@ -110,8 +110,8 @@
                                 <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
                             </td>
                             <td  colspan="2">
-                                <input id="goodid" type="hidden" class="form-control" name="goods_ids[]" data-id="{{$v}}" data-name="goods_ids"  value="{{$v}}" style="width:200px;float:left"  />
-                                <input id="goodname" class="form-control" type="text" name="goods_names[]" data-id="{{$v}}" data-name="goodsnames" value="{{$coupon['goods_names'][$k]}}" style="width:200px;float:left">
+                                <input id="goodid" type="hidden" class="form-control" name="goods_ids[]" data-id="{{$v}}" data-name="goodsids"  value="{{$v}}" style="width:200px;float:left"  />
+                                <input id="goodname" class="form-control" type="text" name="goods_names[]" data-id="{{$v}}" data-name="goodsnames" value="{{$coupon['goods_names'][$k]}}" style="width:200px;float:left" readonly="true">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default nav-link-goods" type="button" data-id="{{$v}}" onclick="$('#modal-module-menus-goods').modal();$(this).parent().parent().addClass('focusgood')">选择商品</button>
                                 </span>
@@ -212,7 +212,7 @@
         <label class="radio-inline">
             <input type="radio" name="coupon[get_type]" value="0" @if($coupon['get_type'] === 0)checked="true" @endif onclick="$('.gettype').hide()"/> 不可以
         </label>
-        <span class='help-block'>会员是否可以在领券中心领取 (或者只能手动发放)</span>
+        <span class='help-block'>是否可以在领券中心领取 (或者只能手动发放)</span>
 
     </div>
 </div>

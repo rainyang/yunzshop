@@ -8,6 +8,8 @@ use app\common\models\MemberCoupon;
 use app\common\helpers\Url;
 use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\coupon\models\CouponLog;
+use app\backend\modules\goods\models\Goods;
+use app\backend\modules\goods\models\Category;
 
 /**
  * Created by PhpStorm.
@@ -104,15 +106,23 @@ class CouponController extends BaseController
         $memberLevels = MemberLevel::getMemberLevelList();
 
         $coupon = Coupon::getCouponById($coupon_id);
+        if(!empty($coupon->goods_ids)){
+            $coupon->goods_ids = array_filter(array_unique($coupon->goods_ids)); //去重,去空值
+            $coupon->goods_names = Goods::getGoodNameByGoodIds($coupon->goods_ids); //因为商品名称可能修改,所以必须以商品表为准 //todo category_names和goods_names是不可靠的, 考虑删除这2个字段
+        }
+        if(!empty($coupon->category_ids)){
+            $coupon->category_ids = array_filter(array_unique($coupon->category_ids)); //去重,去空值
+            $coupon->categorynames = Category::getCategoryNameByIds($coupon->category_ids); //因为商品分类名称可能修改,所以必须以商品表为准
+        }
         $couponRequest = \YunShop::request()->coupon;
         if ($couponRequest) {
 
             $couponRequest['time_start'] =strtotime(\YunShop::request()->time['start']);
             $couponRequest['time_end'] =strtotime(\YunShop::request()->time['end']);
             $coupon->use_type =\YunShop::request()->usetype;
-            $coupon->category_ids = \YunShop::request()->category_ids;
+            $coupon->category_ids = array_filter(array_unique(\YunShop::request()->category_ids)); //去重,去空值
             $coupon->categorynames = \YunShop::request()->category_names;
-            $coupon->goods_ids = \YunShop::request()->goods_ids;
+            $coupon->goods_ids = array_filter(array_unique(\YunShop::request()->goods_ids)); //去重,去空值
             $coupon->goods_names = \YunShop::request()->goods_names;
 
             //表单验证
@@ -133,7 +143,7 @@ class CouponController extends BaseController
             'coupon' => $coupon->toArray(),
             'usetype' => $coupon->use_type,
             'category_ids' => $coupon->category_ids,
-            'categorynames' => $coupon->categorynames,
+            'category_names' => $coupon->categorynames,
             'goods_ids' => $coupon->goods_ids,
             'goods_names' => $coupon->goods_names,
             'memberlevels' => $memberLevels,
