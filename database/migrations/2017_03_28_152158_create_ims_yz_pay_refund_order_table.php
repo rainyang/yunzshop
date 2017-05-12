@@ -15,14 +15,14 @@ class CreateImsYzPayRefundOrderTable extends Migration {
         if (!Schema::hasTable('yz_pay_refund_order')) {
             Schema::create('yz_pay_refund_order', function (Blueprint $table) {
                 $table->integer('id')->primary();
-                $table->integer('pay_order_id');
                 $table->integer('uniacid');
                 $table->integer('member_id');
-                $table->string('int_order_no', 20);
-                $table->string('out_order_no', 20);
-                $table->integer('price');
-                $table->boolean('type');
-                $table->boolean('status');
+                $table->string('int_order_no', 32);
+                $table->string('out_order_no', 32);
+                $table->string('trade_no', 255);
+                $table->decimal('price', 14,2);
+                $table->string('type', 255);
+                $table->tinyInteger('status');
                 $table->integer('created_at')->default(0);
                 $table->integer('updated_at')->default(0);
                 $table->integer('deleted_at')->nullable();
