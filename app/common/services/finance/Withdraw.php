@@ -28,7 +28,7 @@ class Withdraw
     }
     public static function otherWithdrawSuccess($withdrawId)
     {
-        
+     echo "<pre>"; print_r($withdrawId);exit;
         $withdraw = WithdrawModel::getWithdrawById($withdrawId)->first();
         if ($withdraw->status !== '1') {
             return false;
