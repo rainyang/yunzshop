@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddMaxPointDeductToImsYzGoodsSale extends Migration
+class ChangeMaxPointDeductToYzGoodsSaleTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class AddMaxPointDeductToImsYzGoodsSale extends Migration
     {
         Schema::table('yz_goods_sale', function (Blueprint $table) {
             if (Schema::hasColumn('yz_goods_sale', 'max_point_deduct')) {
-                $table->string('max_point_deduct', 255)->nullable();
+                $table->string('max_point_deduct', 255)->nullable()->change();
             }
         });
     }

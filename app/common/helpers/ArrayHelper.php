@@ -11,6 +11,17 @@ namespace app\common\helpers;
 
 class ArrayHelper
 {
+    public static function unreliableDataToArray($data)
+    {
+        if (is_array($data)) {
+            return $data;
+        }
+        if (is_array(json_decode($data, true))) {
+            return json_decode($data, true);
+        }
+
+        return explode(',', $data);
+    }
 
     //stdClass Object 转 数组
     public static function objectArray($array)

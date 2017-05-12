@@ -205,7 +205,7 @@ class Coupon
         $memberCoupons = MemberCouponService::getCurrentMemberCouponCache($this->getPreGeneratedOrderModel()->belongsToMember);
         //本优惠券与某个选中的优惠券是一张 就返回false
         return !$memberCoupons->contains(function ($memberCoupon) {
-            
+
             if ($memberCoupon->selected == true) {
                 //本优惠券与选中的优惠券是一张
                 return $memberCoupon->coupon_id == $this->getMemberCoupon()->coupon_id;
