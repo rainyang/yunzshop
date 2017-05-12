@@ -44,7 +44,7 @@ class WithdrawService extends Withdraw
             'remark' => $remark,
             'service_type' => \app\common\models\finance\Balance::BALANCE_INCOME,
         );
-
+echo '<pre>'; print_r($data); exit;
         return (new BalanceService())->changeBalance($data);
     }
 
