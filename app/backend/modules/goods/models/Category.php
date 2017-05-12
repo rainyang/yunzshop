@@ -9,6 +9,7 @@ namespace app\backend\modules\goods\models;
  */
 
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 
 class Category extends \app\common\models\Category
 {
@@ -98,5 +99,26 @@ class Category extends \app\common\models\Category
         return static::uniacid()->select('id', 'name', 'thumb')
             ->where('name', 'like', '%' . $keyword . '%')
             ->get();
+    }
+
+    //根据商品分类ID获取分类名称
+    public static function getCategoryNameByIds($categoryIds){
+        if(is_array($categoryIds)){
+            $res = static::uniacid()
+                ->select('name')
+                ->whereIn('id', $categoryIds)
+                ->orderByRaw(DB::raw("FIELD(id, ".implode(',', $categoryIds).')')) //必须按照categoryIds的顺序输出分类名称
+                ->get()
+                ->map(function($goodname){ //遍历
+                    return $goodname['name'];
+                })
+                ->toArray();
+        } else{
+            $res = static::uniacid()
+                ->select('name')
+                ->where('id', '=', $categoryIds)
+                ->first();
+        }
+        return $res;
     }
 }
