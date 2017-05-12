@@ -16,18 +16,30 @@ class CreateImsYzMemberTable extends Migration {
             Schema::create('yz_member', function (Blueprint $table) {
                 $table->integer('member_id')->index('idx_member_id');
                 $table->integer('uniacid')->index('idx_uniacid');
-                $table->integer('agent_id')->nullable();
+                $table->integer('parent_id')->nullable();
                 $table->integer('group_id')->default(0);
                 $table->integer('level_id')->default(0);
+                $table->integer('inviter')->nullable()->default(0);
                 $table->boolean('is_black')->default(0);
-                $table->string('province', 3)->nullable();
-                $table->string('city', 15)->nullable();
-                $table->string('country', 10)->nullable();
-                $table->string('referralsn')->nullable();
+                $table->string('province_name', 3)->nullable();
+                $table->string('city_name', 15)->nullable();
+                $table->string('area_name', 15)->nullable();
+                $table->integer('province')->nullable();
+                $table->integer('city')->nullable();
+                $table->integer('area')->nullable();
+                $table->text('address', 65535)->nullable();
+                $table->string('referralsn', 255)->nullable();
                 $table->boolean('is_agent')->nullable();
                 $table->string('alipayname')->nullable();
                 $table->string('alipay')->nullable();
                 $table->text('content', 65535)->nullable();
+                $table->integer('status')->nullable()->default(0);
+                $table->integer('child_time')->nullable()->default(0);
+                $table->integer('agent_time')->nullable()->default(0);
+                $table->integer('apply_time')->nullable()->default(0);
+                $table->integer('created_at')->default(0);
+                $table->integer('updated_at')->default(0);
+                $table->integer('deleted_at')->nullable();
             });
         }
 	}

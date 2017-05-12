@@ -9,6 +9,7 @@
 namespace app\frontend\modules\goods\models\goods;
 
 use app\common\exceptions\AppException;
+use app\frontend\modules\goods\models\Goods;
 use app\frontend\modules\member\services\MemberService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,11 @@ class Privilege extends \app\common\models\goods\Privilege
         $this->validateMemberGroupLimit();
     }
 
+    public function goods()
+    {
+        return $this->belongsTo(Goods::class);
+    }
+
     /**
      * 限时购
      * @throws AppException
@@ -37,10 +43,10 @@ class Privilege extends \app\common\models\goods\Privilege
     {
         if ($this->enable_time_limit) {
             if (Carbon::now()->lessThan($this->time_begin_limit)) {
-                throw new AppException('(ID:' . $this->goods_id . ')该商品将于' . $this->time_begin_limit->toDateTimeString() . '开启限时购买');
+                throw new AppException('商品(' . $this->goods->title . ')将于' . $this->time_begin_limit->toDateTimeString() . '开启限时购买');
             }
             if (Carbon::now()->greaterThanOrEqualTo($this->time_end_limit)) {
-                throw new AppException('(ID:' . $this->goods_id . ')该商品已于' . $this->time_end_limit->toDateTimeString() . '结束限时购买');
+                throw new AppException('(ID:' . $this->goods->title . ')该商品已于' . $this->time_end_limit->toDateTimeString() . '结束限时购买');
             }
         }
     }
@@ -54,7 +60,7 @@ class Privilege extends \app\common\models\goods\Privilege
     {
         if ($this->once_buy_limit > 0) {
             if ($num > $this->once_buy_limit)
-                throw new AppException('商品(' . $this->title . ')单次最多可购买' . $this->once_buy_limit . '件');
+                throw new AppException('商品(' . $this->goods->title . ')单次最多可购买' . $this->once_buy_limit . '件');
         }
     }
 
@@ -65,10 +71,10 @@ class Privilege extends \app\common\models\goods\Privilege
      */
     public function validateTotalBuyLimit($num = 1)
     {
-        $history_num = MemberService::getCurrentMemberModel()->orderGoods()->sum('total');
+        $history_num = MemberService::getCurrentMemberModel()->orderGoods()->where('goods_id', $this->goods_id)->sum('total');
         if ($this->once_buy_limit > 0) {
             if ($history_num + $num > $this->once_buy_limit)
-                throw new AppException('商品(' . $this->title . ')您已购买' . $history_num . '件,最多可购买' . $this->once_buy_limit . '件');
+                throw new AppException('商品(' . $this->goods->title . ')您已购买' . $history_num . '件,最多可购买' . $this->once_buy_limit . '件');
         }
     }
 
@@ -88,7 +94,7 @@ class Privilege extends \app\common\models\goods\Privilege
             return;
         }
         if (!in_array(MemberService::getCurrentMemberModel()->level_id, $buy_levels)) {
-            throw new AppException('(ID:' . $this->goods_id . ')该商品仅限' .$level_names. '购买');
+            throw new AppException('(' . $this->goods->title . ')该商品仅限' . $level_names . '购买');
         }
     }
 
@@ -108,7 +114,7 @@ class Privilege extends \app\common\models\goods\Privilege
             return;
         }
         if (!in_array(MemberService::getCurrentMemberModel()->group_id, $buy_groups)) {
-            throw new AppException('(ID:' . $this->goods_id . ')该商品仅限' . $group_names . '购买');
+            throw new AppException('(' . $this->goods->title . ')该商品仅限' . $group_names . '购买');
         }
     }
 }
