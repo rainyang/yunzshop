@@ -16,13 +16,13 @@ class CreateImsYzGoodsSaleTable extends Migration {
             Schema::create('yz_goods_sale', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('goods_id')->index('idx_good_id');
-                $table->integer('max_point_deduct')->nullable()->default(0);
+                $table->string('max_point_deduct', 255)->nullable();
                 $table->integer('max_balance_deduct')->nullable()->default(0);
                 $table->integer('is_sendfree')->nullable()->default(0);
                 $table->integer('ed_num')->nullable()->default(0);
                 $table->integer('ed_money')->nullable()->default(0);
                 $table->text('ed_areas', 65535)->nullable();
-                $table->integer('point')->nullable()->default(0);
+                $table->string('point', 255)->nullable();
                 $table->integer('bonus')->nullable()->default(0);
             });
         }
