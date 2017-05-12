@@ -110,7 +110,7 @@
                                 <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
                             </td>
                             <td  colspan="2">
-                                <input id="goodid" type="hidden" class="form-control" name="goods_ids[]" data-id="{{$v}}" data-name="goods_ids"  value="{{$v}}" style="width:200px;float:left"  />
+                                <input id="goodid" type="hidden" class="form-control" name="goods_ids[]" data-id="{{$v}}" data-name="goodsids"  value="{{$v}}" style="width:200px;float:left"  />
                                 <input id="goodname" class="form-control" type="text" name="goods_names[]" data-id="{{$v}}" data-name="goodsnames" value="{{$coupon['goods_names'][$k]}}" style="width:200px;float:left" readonly="true">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default nav-link-goods" type="button" data-id="{{$v}}" onclick="$('#modal-module-menus-goods').modal();$(this).parent().parent().addClass('focusgood')">选择商品</button>
