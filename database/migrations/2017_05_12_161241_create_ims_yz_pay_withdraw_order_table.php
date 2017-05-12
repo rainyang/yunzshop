@@ -15,7 +15,7 @@ class CreateImsYzPayWithdrawOrderTable extends Migration
     {
         if (!Schema::hasTable('yz_pay_withdraw_order')) {
             Schema::create('yz_pay_withdraw_order', function (Blueprint $table) {
-                $table->integer('id')->primary();
+                $table->integer('id', true)->primary();
                 $table->integer('uniacid');
                 $table->integer('member_id');
                 $table->string('int_order_no', 32);
