@@ -262,7 +262,7 @@ class IncomeController extends ApiController
                 'amounts' => $item['income'],
                 'poundage' => $item['poundage'],
                 'poundage_rate' => $item['poundage_rate'],
-                'actual_amounts' => $item['amounts']-$item['poundage'],
+                'actual_amounts' => $item['income']-$item['poundage'],
                 'actual_poundage' => $item['poundage'],
                 'pay_way' => $withdrawTotal['pay_way'],
                 'status' => 0,
