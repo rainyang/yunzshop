@@ -136,7 +136,7 @@ class WithdrawController extends BaseController
     {
 
         $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
-        if ($withdraw->status !== '0') {
+        if ($withdraw->status != '0') {
             return ['msg' => '审核失败,数据不符合提现规则!'];
         }
         $withdrawStatus = "-1";
@@ -168,7 +168,7 @@ class WithdrawController extends BaseController
     public function submitCancel($withdrawId, $incomeData)
     {
         $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
-        if ($withdraw->status !== '-1') {
+        if ($withdraw->status != '-1') {
             return ['msg' => '审核失败,数据不符合提现规则!'];
         }
         $withdrawStatus = "-1";
@@ -201,7 +201,7 @@ class WithdrawController extends BaseController
     public function submitPay($withdrawId, $payWay)
     {
         $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
-        if ($withdraw->status !== '1') {
+        if ($withdraw->status != '1') {
             return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
         }
         $remark = '提现打款-' . $withdraw->type_name . '-金额:' . $withdraw->actual_amounts . '元,' .
