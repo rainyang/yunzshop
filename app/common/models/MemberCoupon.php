@@ -2,6 +2,7 @@
 
 namespace app\common\models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberCoupon extends BaseModel
@@ -10,13 +11,16 @@ class MemberCoupon extends BaseModel
 
     public $table = 'yz_member_coupon';
     protected $guarded = [];
+    protected $appends = ['time_start','time_end'];
     public $timestamps = false;
     public $dates = ['deleted_at'];
+    protected $casts = ['get_time'=>'date'];
 
     /*
      *  定义字段名
      * @return array */
-    public function atributeNames() { //todo typo
+    public function atributeNames()
+    { //todo typo
         return [
             'uniacid' => '公众号 ID',
             'uid' => '用户 ID',
@@ -27,15 +31,48 @@ class MemberCoupon extends BaseModel
             'get_time' => '获取优惠券的时间',
             'send_uid' => '手动发放优惠券的操作人员的 uid',
             'order_sn' => '使用优惠券的订单号',
-            'back'  => '返现',
+            'back' => '返现',
             'back_time' => '返现时间',
         ];
+    }
+
+    public function getTimeStartAttribute()
+    {
+
+        if ($this->belongsToCoupon->time_limit == false) {
+            $result =  $this->get_time;
+        } else {
+            $result =  $this->belongsToCoupon->time_start;
+        }
+
+        return $result->toDateString();
+    }
+
+    public function getTimeEndAttribute()
+    {
+        if ($this->belongsToCoupon->time_limit == false) {
+            if($this->belongsToCoupon->time_days == false){
+                $result = '不限时间';
+            }else{
+
+                $result = $this->get_time->addDays($this->belongsToCoupon->time_days);
+            }
+        } else {
+            $result = $this->belongsToCoupon->time_end;
+        }
+        if($result instanceof Carbon){
+            $result = $result->toDateString();
+        }
+        return $result;
+
+
     }
 
     /*
      * 字段规则
      * @return array */
-    public function rules() {
+    public function rules()
+    {
         return [
             'uniacid' => 'required|integer',
             'uid' => 'required|integer',
@@ -57,19 +94,20 @@ class MemberCoupon extends BaseModel
         return $this->belongsTo('app\common\models\Coupon', 'coupon_id', 'id');
     }
 
-    public function scopeCoupons($order_builder, $params){
+    public function scopeCoupons($order_builder, $params)
+    {
         $order_builder->with([
-                'belongsToCoupon'=>function($query){
-                    $query->where('status',0);
+                'belongsToCoupon' => function ($query) {
+                    $query->where('status', 0);
                 }
             ]
         )->where('used', 0);
     }
 
-    public static function getMemberCoupon($MemberModel,$param = [])
+    public static function getMemberCoupon($MemberModel, $param = [])
     {
         return static::with(['belongsToCoupon' => function ($query) use ($param) {
-            if(isset($param['coupon']['coupon_method'])){
+            if (isset($param['coupon']['coupon_method'])) {
                 //$query->where('coupon_method', $param['coupon']['coupon_method']);
             }
             return $query->where('status', 0);
