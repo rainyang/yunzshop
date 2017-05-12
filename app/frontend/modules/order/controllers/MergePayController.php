@@ -35,7 +35,7 @@ class MergePayController extends ApiController
      */
     protected function orders($orderIds)
     {
-        if(!is_array($orderIds)){
+        if (!is_array($orderIds)) {
             $orderIds = explode(',', $orderIds);
         }
         array_walk($orderIds, function ($orderId) {
@@ -47,7 +47,7 @@ class MergePayController extends ApiController
         $this->orders = Order::select(['status', 'id', 'order_sn', 'price', 'uid'])->whereIn('id', $orderIds)->get();
 
         if ($this->orders->count() != count($orderIds)) {
-            throw new AppException('(ID:' . implode(',',$orderIds) . ')未找到订单');
+            throw new AppException('(ID:' . implode(',', $orderIds) . ')未找到订单');
         }
         $this->orders->each(function ($order) {
             if ($order->status > Order::WAIT_PAY) {
@@ -94,10 +94,11 @@ class MergePayController extends ApiController
         $orderPay->amount = $orders->sum('price');
         $orderPay->uid = $orders->first()->uid;
         $orderPay->pay_sn = OrderService::createPaySN();
-        $orderPay->save();
-        if (!$orderPay) {
+        $orderPayId = $orderPay->save();
+        if (!$orderPayId) {
             throw new AppException('支付流水记录保存失败');
         }
+
         $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons];
 
         return $this->successJson('成功', $data);
@@ -122,9 +123,10 @@ class MergePayController extends ApiController
             //支付流水号
             $orderPay->pay_type_id = $payType;
             $orderPay->save();
-            //订单支付方式
-            $orders->each(function ($order) use ($payType) {
-                $order->pay_type_id = $payType;
+            //订单支付方式,流水号保存
+            $orders->each(function ($order) use ($orderPay) {
+                $order->pay_type_id = $orderPay->pay_type_id;
+                $order->order_pay_id = $orderPay->id;
                 if (!$order->save()) {
                     throw new AppException('支付方式选择失败');
                 }

@@ -104,6 +104,8 @@
                                 <span class='label label-primary'>文章营销</span>
                             @elseif($log->point_mode == 5)
                                 <span class='label label-default'>后台充值</span>
+                            @elseif ($log->point_mode == 6)
+                                <span class='label label-success'>购物抵扣</span>
                             @endif
                         </td>
                         <td>

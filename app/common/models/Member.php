@@ -213,7 +213,7 @@ class Member extends BackendModel
     {
         return [
             'mobile' => 'regex:/^1[34578]\d{9}$/',
-            'realname' => 'required',
+            'realname' => 'required|between:2,10',
             //'avatar' => 'required',
             'telephone' => 'regex:/^1[34578]\d{9}$/',
         ];

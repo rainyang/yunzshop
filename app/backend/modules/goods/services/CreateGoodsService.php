@@ -37,6 +37,7 @@ class CreateGoodsService
         $this->brands = Brand::getBrands()->get();
 
         if ($goods_data) {
+            $goods_data['thumb'] = tomedia($goods_data['thumb']);
             if (isset($goods_data['thumb_url'])) {
                 $goods_data['thumb_url'] = serialize(
                     array_map(function ($item) {
@@ -44,11 +45,9 @@ class CreateGoodsService
                     }, $goods_data['thumb_url'])
                 );
             }
-
             $this->goods_model->setRawAttributes($goods_data);
-            $this->goods_model->widgets = \YunShop::request()->widgets;
+            $this->goods_model->widgets = $this->request->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
-
             $validator = $this->goods_model->validator($this->goods_model->getAttributes());
             if ($validator->fails()) {
                 $this->error = $validator->messages();

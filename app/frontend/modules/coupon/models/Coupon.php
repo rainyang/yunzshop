@@ -29,7 +29,7 @@ class Coupon extends \app\common\models\Coupon
     }
 
     //获取该用户可领取的优惠券的状态
-    public static function getCouponsForMember($memberId, $couponId = null, $time = null)
+    public static function getCouponsForMember($memberId, $memberLevel, $couponId = null, $time = null)
     {
         $res = static::uniacid()
                         ->select(['id', 'name', 'coupon_method', 'deduct', 'discount', 'enough', 'use_type', 'category_ids',
@@ -38,6 +38,12 @@ class Coupon extends \app\common\models\Coupon
                         ->where('get_type','=',1)
                         ->where('status', '=', 1)
                         ->where('get_max', '!=', 0)
+                        ->where(function($query) use ($memberLevel){
+                            $query->where('level_limit', '<=', $memberLevel)
+                                ->orWhere(function($query){
+                                    $query->whereNull('level_limit');
+                                });
+                        })
                         ->withCount(['hasManyMemberCoupon'])
                         ->withCount(['hasManyMemberCoupon as member_got' => function($query) use($memberId){
                             return $query->where('uid', '=', $memberId);

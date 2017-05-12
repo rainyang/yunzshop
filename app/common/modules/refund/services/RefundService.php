@@ -49,8 +49,8 @@ class RefundService
             //微信退款 同步改变退款和订单状态
             RefundOperationService::refundComplete(['order_id' => $this->refundApply->order->id]);
             $pay = PayFactory::create($this->refundApply->order->pay_type_id);
-
-            return $pay->doRefund($this->refundApply->order->order_sn, $this->refundApply->order->price, $this->refundApply->order->price);
+            
+            return $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
         });
         if (!$result) {
             throw new AdminException('微信退款失败');

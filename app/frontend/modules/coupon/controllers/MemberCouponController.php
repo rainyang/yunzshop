@@ -86,7 +86,9 @@ class MemberCouponController extends ApiController
         $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
 
         $now = strtotime('now');
-        $coupons = Coupon::getCouponsForMember($uid, null, $now);
+        $coupons = Coupon::getCouponsForMember($uid, $memberLevel, null, $now)
+            ->orderBy('display_order','desc')
+            ->orderBy('updated_at','desc');
         if($coupons->get()->isEmpty()){
             return $this->errorJson('没有找到记录', []);
         }
@@ -113,6 +115,9 @@ class MemberCouponController extends ApiController
             //增加属性 - 对于该优惠券,用户可领取的数量
             if($v['get_max'] != self::NO_LIMIT){
                 $coupons['data'][$k]['api_remaining'] = $v['get_max'] - $v['member_got_count'];
+                if ($coupons['data'][$k]['api_remaining'] < 0){ //考虑到优惠券设置会变更,比如原来允许领取6张,之后修改为3张,那么可领取张数可能会变成负数
+                    $coupons['data'][$k]['api_remaining'] = 0;
+                }
             } elseif($v['get_max'] == self::NO_LIMIT){
                 $coupons['data'][$k]['api_remaining'] = -1;
             }
@@ -172,13 +177,14 @@ class MemberCouponController extends ApiController
             $coupons[$k]['belongs_to_coupon']['discount'] = intval($coupons[$k]['belongs_to_coupon']['discount']);
 
             if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
-                &&
-                ( ($v['belongs_to_coupon']['time_days']==0)
-                    || ($time < $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)
-                )
-            ){
+                && ($time < $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)){
                 $coupons[$k]['belongs_to_coupon']['start'] = date('Y-m-d', $v['get_time']); //前端需要统一的起止时间
                 $coupons[$k]['belongs_to_coupon']['end'] = date('Y-m-d', ($v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)); //前端需要统一的起止时间
+                $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
+                $availableCoupons[] = array_merge($coupons[$k], $usageLimit);
+            } if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE && ($v['belongs_to_coupon']['time_days']==0)){ //不限时
+                $coupons[$k]['belongs_to_coupon']['start'] = date('Y-m-d', $v['get_time']);
+                $coupons[$k]['belongs_to_coupon']['end'] = '不限时间';
                 $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
                 $availableCoupons[] = array_merge($coupons[$k], $usageLimit);
             } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_DATE_TIME_RANGE
@@ -274,7 +280,7 @@ class MemberCouponController extends ApiController
             return $this->errorJson('找不到记录','');
         }
 
-        $res = MemberCoupon::deleteById($id); //软删除
+        $res = $model->delete();
         if($res){
             return $this->successJson('ok', '');
         } else{
@@ -284,7 +290,6 @@ class MemberCouponController extends ApiController
 
     //在"优惠券中心"点击领取优惠券
     //需要提供$couponId
-    //todo 需要扣除余额或者积分
     public function getCoupon()
     {
         $couponId = \YunShop::request()->get('coupon_id');
@@ -304,7 +309,7 @@ class MemberCouponController extends ApiController
         if(!empty($couponModel->level_limit) && ($couponModel->level_limit != -1)){ //优惠券有会员等级要求
             if (empty($member->level_id)){
                 return $this->errorJson('该优惠券有会员等级要求,但该用户没有会员等级','');
-            } elseif($member->level_id > $couponModel->level_limit){
+            } elseif($member->level_id < $couponModel->level_limit){
                 return $this->errorJson('没有达到领取该优惠券的会员等级要求','');
             }
         }
@@ -318,8 +323,15 @@ class MemberCouponController extends ApiController
         //是否达到个人领取上限
         $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
         $couponMaxLimit = Coupon::getter($couponId, 'get_max'); //优惠券限制每人的领取总数
-        if($count >= $couponMaxLimit){
+        if($count >= $couponMaxLimit && ($couponMaxLimit != -1)){
             return $this->errorJson('已经达到个人领取上限','');
+        }
+
+        //验证是否达到优惠券总数上限
+        $totalGetCount = MemberCoupon::getTotalGetCount($couponId);
+        $couponSumLimit = Coupon::getter($couponId, 'total');
+        if($totalGetCount >= $couponSumLimit && ($couponSumLimit != -1)){
+            return $this->errorJson('该优惠券已经被抢光','');
         }
 
         //表单验证, 保存
@@ -386,7 +398,7 @@ class MemberCouponController extends ApiController
                 CouponLog::create($logData);
 
                 //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
-                $coupon = Coupon::getCouponsForMember($memberId, $couponId)->get()->toArray();
+                $coupon = Coupon::getCouponsForMember($memberId, $member->level_id, $couponId)->get()->toArray();
                 $res = self::getCouponData(['data' => $coupon], $member->level_id);
                 return $this->successJson('ok', $res['data'][0]);
             }

@@ -9,6 +9,7 @@ namespace app\frontend\modules\finance\listeners;
 
 use app\common\events\discount\OnDeductionInfoDisplayEvent;
 use app\common\events\discount\OnDeductionPriceCalculatedEvent;
+use app\frontend\modules\finance\services\AfterOrderDeductiblePointService;
 use app\frontend\modules\finance\services\CalculationPointService;
 
 class Order
@@ -29,13 +30,8 @@ class Order
     private function isChecked($id = 1)
     {
         $deduction_ids = $this->event->getOrderModel()->getParams('deduction_ids');
-        if (!is_array($deduction_ids)) {
-            $deduction_ids = json_decode($deduction_ids,true);
-            if (!is_array($deduction_ids)) {
-                $deduction_ids = explode(',',$deduction_ids);
-            }
-        }
-        return in_array($id,$deduction_ids);
+
+        return AfterOrderDeductiblePointService::isChecked($deduction_ids);
     }
 
     private function getPointData()

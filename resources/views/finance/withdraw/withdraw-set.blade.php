@@ -103,7 +103,7 @@
                                         <div class="cost" >
                                             <label class='radio-inline'>
                                                 <div class="input-group">
-                                                    <input type="text" name="withdraw[balance][poundage]" class="form-control" value="{{ $set['poundage'] or '' }}" placeholder="请输入赠送比例"/>
+                                                    <input type="text" name="withdraw[balance][poundage]" class="form-control" value="{{ $set['poundage'] or '' }}" placeholder="请输入提现手续费比例"/>
                                                     <div class="input-group-addon">%</div>
                                                 </div>
                                             </label>
