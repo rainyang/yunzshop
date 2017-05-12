@@ -217,9 +217,10 @@ class CouponController extends BaseController
         $searchSearchSwitch = \YunShop::request()->timesearchswtich;
         $timeStart = strtotime(\YunShop::request()->time['start']);
         $timeEnd = strtotime(\YunShop::request()->time['end']);
+//        var_dump(\YunShop::request()->getfrom);
+//        exit;
 
-        $pageSize = 15;
-        if (empty($couponId) && empty($couponName) && empty($getFrom) && empty($nickname) && ($searchSearchSwitch == 0)){
+        if (empty($couponId) && empty($couponName) && ($getFrom == null) && empty($nickname) && ($searchSearchSwitch == 0)){
             $list = CouponLog::getCouponLogs();
         } else {
             $searchData = [];
