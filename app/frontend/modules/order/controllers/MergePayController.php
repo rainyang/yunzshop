@@ -75,19 +75,7 @@ class MergePayController extends ApiController
         if ($orders->sum('price') <= 0) {
             throw new AppException('(' . $orders->sum('price') . ')订单金额有误');
         }
-        $buttons = [
-            [
-                'name' => '余额支付',
-                'value' => '3'
-            ],
-            [
-                'name' => '微信支付',
-                'value' => '1'
-            ], [
-                'name' => '支付宝支付',
-                'value' => '2'
-            ],
-        ];
+        $buttons = $this->getPayTypeButtons();
 
         $orderPay = new OrderPay();
         $orderPay->order_ids = explode(',', $request->input('order_ids'));
@@ -104,6 +92,29 @@ class MergePayController extends ApiController
         return $this->successJson('成功', $data);
     }
 
+    private function getPayTypeButtons()
+    {
+        $result = [];
+        if (\Setting::get('shop.pay.credit')) {
+            $result[] = [
+                'name' => '余额支付',
+                'value' => '3'
+            ];
+        }
+        if (\Setting::get('shop.pay.weixin')) {
+            $result[] = [
+                'name' => '微信支付',
+                'value' => '1'
+            ];
+        }
+        if (\Setting::get('shop.pay.alipay')) {
+            $result[] = [
+                'name' => '支付宝支付',
+                'value' => '2'
+            ];
+        }
+        return $result;
+    }
 
     protected function pay($request, $payType)
     {
@@ -161,6 +172,9 @@ class MergePayController extends ApiController
 
     public function wechatPay(\Request $request)
     {
+        if(\Setting::get('shop.pay.weixin') == false){
+            throw new AppException('商城未开启微信支付');
+        }
         $data = $this->pay($request, PayFactory::PAY_WEACHAT);
         $data['js'] = json_decode($data['js'], 1);
         return $this->successJson('成功', $data);
@@ -168,6 +182,9 @@ class MergePayController extends ApiController
 
     public function alipay(\Request $request)
     {
+        if(!\Setting::get('shop.pay.alipay') == false){
+            throw new AppException('商城未开启支付宝支付');
+        }
         if ($request->has('uid')) {
             Session::set('member_id', $request->query('uid'));
         }
