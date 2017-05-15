@@ -50,6 +50,8 @@ class ConstService
 
         const SOURCE_CANCEL_CONSUME    = 10; //消费取消回滚
 
+        const SOURCE_RECHARGE_MINUS    = 11; //后台扣除
+
 
     private static $title = '余额';
 
@@ -72,9 +74,10 @@ class ConstService
             self::SOURCE_AWARD                 => static::$title . '奖励',
             self::SOURCE_WITHDRAWAL            => static::$title . '提现',
             self::SOURCE_INCOME                => '提现至' . static::$title,
-            self::SOURCE_CANCEL_DEDUCTION      => '抵扣取消回滚',
-            self::SOURCE_CANCEL_AWARD          => '奖励取消回滚',
-            self::SOURCE_CANCEL_CONSUME        => '消费取消回滚'
+            self::SOURCE_CANCEL_DEDUCTION      => '抵扣取消',
+            self::SOURCE_CANCEL_AWARD          => '奖励取消',
+            self::SOURCE_CANCEL_CONSUME        => '消费取消',
+            self::SOURCE_RECHARGE_MINUS        => '后台扣除'
         ];
     }
 
