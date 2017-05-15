@@ -39,12 +39,9 @@ class ChangeOrderPriceController extends BaseController
      */
     public function store(\Request $request)
     {
-        //dd(\YunShop::app()->user->name);
-        list($result, $message) = OrderService::changeOrderPrice($request);
-        if ($result === false) {
-            return $this->errorJson($message);
-        }
-        return $this->successJson($message);
+        OrderService::changeOrderPrice($request);
+
+        return $this->successJson();
     }
 
     /**
