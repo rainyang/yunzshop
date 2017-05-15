@@ -71,12 +71,14 @@ class MemberController extends ApiController
      */
     public function getMemberRelationInfo()
     {
-        $info = MemberRelation::getSetInfo()->first()->toArray();
+        $info = MemberRelation::getSetInfo()->first();
 
         $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         if (empty($info)) {
             return $this->errorJson('缺少参数');
+        } else {
+            $info = $info->toArray();
         }
 
         if (empty($member_info))
