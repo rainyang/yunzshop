@@ -10,11 +10,11 @@
             <h1 style="display: inline-block;">
                 {{ trans('插件管理') }}
             </h1>
-            <a href="{{yzWebUrl('plugin.plugins-market.controllers.market.show')}}" class="btn btn-success" style="font-size: 13px;float: right">进入插件市场</a>
+            <a href="{{yzWebUrl('plugin.plugins-market.Controllers.market.show')}}" class="btn btn-success" style="font-size: 13px;float: right">进入插件市场</a>
         </section>
 
         <div class='panel panel-default'>
-            <div class='panel-body'>
+            <div class='panel-body'>C
                 <table class="table">
                     <thead>
                     <tr>
