@@ -21,6 +21,10 @@ class CreditMergePayController extends MergePayController
 {
     public function credit2(\Request $request)
     {
+        if(\Setting::get('shop.pay.credit') == false){
+            throw new AppException('商城未开启余额支付');
+
+        }
         $result = $this->pay($request, PayFactory::PAY_CREDIT);
 
         if (!$result) {

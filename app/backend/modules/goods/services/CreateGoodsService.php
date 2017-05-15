@@ -23,9 +23,11 @@ class CreateGoodsService
     public $error = null;
     public $catetory_menus;
     public $goods_model;
+    public $type;
 
-    public function __construct($request)
+    public function __construct($request, $type = 0)
     {
+        $this->type = $type;
         $this->request = $request;
     }
 
@@ -37,6 +39,9 @@ class CreateGoodsService
         $this->brands = Brand::getBrands()->get();
 
         if ($goods_data) {
+            if ($this->type == 1) {
+                $goods_data['status'] = 0;
+            }
             $goods_data['thumb'] = tomedia($goods_data['thumb']);
             if (isset($goods_data['thumb_url'])) {
                 $goods_data['thumb_url'] = serialize(

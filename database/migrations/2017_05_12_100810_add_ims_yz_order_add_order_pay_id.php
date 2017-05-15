@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateImsYzOrderTable extends Migration {
+class AddImsYzOrderAddOrderPayId extends Migration {
 
 	/**
 	 * Run the migrations.

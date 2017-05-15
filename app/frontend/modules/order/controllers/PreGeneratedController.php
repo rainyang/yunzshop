@@ -64,7 +64,6 @@ abstract class PreGeneratedController extends ApiController
 
         if (!empty($shop_order)) {
 
-
             $order_data->push(OrderService::getOrderData($shop_order));
         }
 

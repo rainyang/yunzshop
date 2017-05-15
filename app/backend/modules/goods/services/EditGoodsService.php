@@ -25,9 +25,11 @@ class EditGoodsService
     public $catetory_menus;
     public $brands;
     public $optionsHtml;
+    public $type;
 
-    public function __construct($goods_id, $request)
+    public function __construct($goods_id, $request, $type = 0)
     {
+        $this->type = $type;
         $this->goods_id = $goods_id;
         $this->request = $request;
         $this->goods_model = Goods::with('hasManyParams')->with('hasManySpecs')->with('hasManyGoodsCategory')->find($goods_id);
@@ -48,6 +50,9 @@ class EditGoodsService
         $this->goods_model->thumb_url = !empty($this->goods_model->thumb_url) ? unserialize($this->goods_model->thumb_url) : [];
 
         if ($goods_data) {
+            if ($this->type == 1) {
+                $goods_data['status'] = 0;
+            }
             $goods_data['has_option'] = $goods_data['has_option'] ? $goods_data['has_option'] : 0;
             //将数据赋值到model
             $goods_data['thumb'] = tomedia($goods_data['thumb']);

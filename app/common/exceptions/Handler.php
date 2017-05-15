@@ -3,6 +3,7 @@
 namespace app\common\exceptions;
 
 use app\common\traits\JsonTrait;
+use app\common\traits\MessageTrait;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -10,6 +11,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 class Handler extends ExceptionHandler
 {
     use JsonTrait;
+    use MessageTrait;
     /**
      * A list of the exception types that should not be reported.
      *
@@ -86,6 +88,7 @@ class Handler extends ExceptionHandler
         if(\Yunshop::isApi()){
             return $this->errorJson($exception->getMessage());
         }
+        exit( $this->message('未找到该订单!','', 'error'));
     }
 
     /**

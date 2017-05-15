@@ -21,7 +21,7 @@ class CreateImsYzMemberRelationTable extends Migration {
                 $table->boolean('become_order')->default(0);
                 $table->boolean('become_child')->default(0);
                 $table->integer('become_ordercount')->nullable()->default(0);
-                $table->decimal('become_moneycount', 5)->nullable()->default(0.00);
+                $table->decimal('become_moneycount', 14,2)->nullable()->default(0.00);
                 $table->integer('become_goods_id')->nullable()->default(0);
                 $table->boolean('become_info')->default(1);
                 $table->boolean('become_check')->default(1);

@@ -172,23 +172,21 @@ class OrderService
     private static function OrderOperate(OrderOperation $orderOperation)
     {
         if (!isset($orderOperation)) {
-            return [false, '未找到该订单'];
+            throw new AppException('未找到该订单');
         }
-        if (!$orderOperation->enable()) {
-            return [false, $orderOperation->getMessage()];
-        }
+        
         DB::transaction(function () use ($orderOperation) {
-            if (!$orderOperation->execute()) {
-                return [false, $orderOperation->getMessage()];
-            }
+            $orderOperation->check();
+            $orderOperation->execute();
+
         });
-        return [true, $orderOperation->getMessage()];
+        return $orderOperation->getMessage();
     }
 
     /**
      * 取消付款
      * @param $param
-     * @return array
+     * @return string
      */
     public static function orderCancelPay($param)
     {
@@ -200,7 +198,7 @@ class OrderService
     /**
      * 取消发货
      * @param $param
-     * @return array
+     * @return string
      */
     public static function orderCancelSend($param)
     {
@@ -212,7 +210,7 @@ class OrderService
     /**
      * 关闭订单
      * @param $param
-     * @return array
+     * @return string
      */
     public static function orderClose($param)
     {
@@ -224,7 +222,7 @@ class OrderService
     /**
      * 用户删除(隐藏)订单
      * @param $param
-     * @return array
+     * @return string
      */
     public static function orderDelete($param)
     {
@@ -260,7 +258,7 @@ class OrderService
     /**
      * 支付订单
      * @param array $param
-     * @return array
+     * @return string
      */
 
     public static function orderPay(array $param)
@@ -272,7 +270,7 @@ class OrderService
     /**
      * 收货
      * @param $param
-     * @return array
+     * @return string
      */
     public static function orderReceive($param)
     {
@@ -284,7 +282,7 @@ class OrderService
     /**
      * 发货
      * @param $param
-     * @return array
+     * @return string
      */
     public static function orderSend($param)
     {
@@ -296,7 +294,7 @@ class OrderService
     /**
      * 改变订单价格
      * @param $param
-     * @return array
+     * @return string
      * @throws AppException
      */
     public static function changeOrderPrice($param)

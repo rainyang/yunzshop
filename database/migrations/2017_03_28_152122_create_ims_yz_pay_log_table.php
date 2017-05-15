@@ -17,9 +17,9 @@ class CreateImsYzPayLogTable extends Migration {
                 $table->integer('id', true);
                 $table->integer('uniacid');
                 $table->integer('member_id');
-                $table->boolean('type');
-                $table->boolean('third_type');
-                $table->integer('price');
+                $table->tinyInteger('type');
+                $table->string('third_type', 255);
+                $table->decimal('price', 14, 2);
                 $table->text('operation', 65535);
                 $table->string('ip', 135);
                 $table->integer('created_at')->default(0);
