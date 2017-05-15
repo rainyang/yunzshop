@@ -10,7 +10,7 @@ namespace app\common\models\user;
 
 
 use app\common\models\BaseModel;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Schema;
 
 class UserProfile extends BaseModel
 {
@@ -66,6 +66,13 @@ class UserProfile extends BaseModel
         'workerid'      => ''
     ];
 
+    public function __construct()
+    {
+        parent::__construct();
+        if(Schema::hasColumn($this->table, 'edittime')){ //用于兼容新版微擎新增的字段
+            $this->attributes = array_merge($this->attributes, ['edittime' =>time()]);
+        }
+    }
 
     /*
      * 通过uid获取单条数据
