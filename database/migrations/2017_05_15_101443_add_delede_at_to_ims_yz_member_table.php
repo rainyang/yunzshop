@@ -18,6 +18,14 @@ class AddDeledeAtToImsYzMemberTable extends Migration
                 $table->string('relation', 255)->nullable();
             }
 
+            if (!Schema::hasColumn('yz_member', 'created_at')) {
+                $table->integer('created_at')->default(0);
+            }
+
+            if (!Schema::hasColumn('yz_member', 'updated_at')) {
+                $table->integer('updated_at')->default(0);
+            }
+
             if (!Schema::hasColumn('yz_member', 'deleted_at')) {
                 $table->integer('deleted_at')->nullable();
             }
@@ -33,6 +41,8 @@ class AddDeledeAtToImsYzMemberTable extends Migration
     {
         Schema::table('yz_member', function (Blueprint $table) {
             $table->dropColumn('relation');
+            $table->dropColumn('created_at');
+            $table->dropColumn('updated_at');
             $table->dropColumn('deleted_at');
         });
     }
