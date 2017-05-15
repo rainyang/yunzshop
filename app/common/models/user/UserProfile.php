@@ -23,7 +23,6 @@ class UserProfile extends BaseModel
     protected $guarded = [''];
 
     public $attributes =[
-        'edittime'      => 0,
         'nickname'      => '',
         'avatar'        => '',
         'qq'            => '',
