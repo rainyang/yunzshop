@@ -15,12 +15,12 @@ class CreateImsYzPayWithdrawOrderTable extends Migration
     {
         if (!Schema::hasTable('yz_pay_withdraw_order')) {
             Schema::create('yz_pay_withdraw_order', function (Blueprint $table) {
-                $table->integer('id', true)->primary();
+                $table->integer('id', true);
                 $table->integer('uniacid');
                 $table->integer('member_id');
                 $table->string('int_order_no', 32);
                 $table->string('out_order_no', 32);
-                $table->string('trade_no', 255);
+                $table->string('trade_no', 255)->nullable();
                 $table->decimal('price', 14, 2);
                 $table->string('type', 255);
                 $table->integer('status');
