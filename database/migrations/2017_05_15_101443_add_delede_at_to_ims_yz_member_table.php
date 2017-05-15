@@ -14,7 +14,9 @@ class AddDeledeAtToImsYzMemberTable extends Migration
     public function up()
     {
         Schema::create('yz_member', function (Blueprint $table) {
-            $table->string('relation', 255)->nullable();
+            if (!Schema::hasColumn('yz_member', 'relation')) {
+                $table->string('relation', 255)->nullable();
+            }
 
             if (!Schema::hasColumn('yz_member', 'deleted_at')) {
                 $table->integer('deleted_at')->nullable();
