@@ -35,66 +35,51 @@ class OperationController extends BaseController
 
     public function pay()
     {
-        list($result, $message) = OrderService::orderPay($this->param);
-        if ($result === false) {
-            return $this->errorJson($message);
+        $message = OrderService::orderPay($this->param);
 
-        }
-        return $this->successJson($result, $message);
+        return $this->successJson($message);
 
     }
 
     public function cancelPay()
     {
-        list($result, $message) = OrderService::orderCancelPay($this->param);
-        if ($result === false) {
-            return $this->message($message,'', 'error');
+        $message = OrderService::orderCancelPay($this->param);
+            //return $this->message($message,'', 'error');
 
-        }
         return $this->message($message);
     }
 
     public function send()
     {
-        list($result, $data) = OrderService::orderSend($this->param);
-        if ($result === false) {
-            return $this->message($data,'', 'error');
-        }
-        return $this->message($data);
+        $message = OrderService::orderSend($this->param);
+
+        return $this->message($message);
     }
 
     public function cancelSend()
     {
-        list($result, $data) = OrderService::orderCancelSend($this->param);
-        if ($result === false) {
-            return $this->message($data,'', 'error');
-        }
-        return $this->message($data);
+        $message = OrderService::orderCancelSend($this->param);
+
+        return $this->message($message);
     }
 
     public function Receive()
     {
-        list($result, $data) = OrderService::orderReceive($this->param);
-        if ($result === false) {
-            return $this->message($data,'', 'error');
-        }
-        return $this->message($data);
+        $message = OrderService::orderReceive($this->param);
+
+        return $this->message($message);
     }
 
     public function Close()
     {
-        list($result, $data) = OrderService::orderClose($this->param);
-        if ($result === false) {
-            return $this->message($data,'', 'error');
-        }
-        return $this->message($data);
+        $message = OrderService::orderClose($this->param);
+
+        return $this->message($message);
     }
     public function Delete()
     {
-        list($result, $data) = OrderService::orderDelete($this->param);
-        if ($result === false) {
-            return $this->message($data,'', 'error');
-        }
-        return $this->message($data);
+        $message = OrderService::orderDelete($this->param);
+
+        return $this->message($message);
     }
 }

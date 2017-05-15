@@ -1,4 +1,5 @@
 <?php
+
 namespace app\backend\modules\order\controllers;
 
 use app\common\components\BaseController;
@@ -17,11 +18,21 @@ class TestController extends BaseController
 
     public function index()
     {
-        dd(Schema::table('yz_member'));
-        exit;
+        //dd(Schema::table('yz_member'));
+        //exit;
+        $table = 'yz_member';
+
         collect(Schema::getColumnListing('yz_member'))->each(
-            function ($column){
-                dd(Schema::getColumnType('yz_member',$column));
+            function ($column) use ($table) {
+                dd($column);
+                return ;
+                $type = Schema::getColumnType('yz_member', $column);
+
+                $table->$type($column);
+
+                if (Schema::hasColumn('yz_member', $column)) {
+                    $table->change();
+                }
             }
         );
 
