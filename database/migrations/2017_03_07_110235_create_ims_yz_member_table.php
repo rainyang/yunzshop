@@ -21,7 +21,7 @@ class CreateImsYzMemberTable extends Migration {
                 $table->integer('level_id')->default(0);
                 $table->integer('inviter')->nullable()->default(0);
                 $table->boolean('is_black')->default(0);
-                $table->string('province_name', 3)->nullable();
+                $table->string('province_name', 15)->nullable();
                 $table->string('city_name', 15)->nullable();
                 $table->string('area_name', 15)->nullable();
                 $table->integer('province')->nullable();
@@ -37,6 +37,7 @@ class CreateImsYzMemberTable extends Migration {
                 $table->integer('child_time')->nullable()->default(0);
                 $table->integer('agent_time')->nullable()->default(0);
                 $table->integer('apply_time')->nullable()->default(0);
+                $table->string('relation', 255)->nullable();
                 $table->integer('created_at')->default(0);
                 $table->integer('updated_at')->default(0);
                 $table->integer('deleted_at')->nullable();
