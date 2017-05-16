@@ -262,6 +262,7 @@ class Goods extends BaseModel
      */
     public static function getGoodsByName($keyword)
     {
+        
         return static::uniacid()->select('id', 'title', 'thumb','market_price','price','real_sales','sku')
             ->where('title', 'like', '%' . $keyword . '%')
             ->get();
