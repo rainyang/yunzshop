@@ -5,7 +5,6 @@ namespace app\backend\modules\goods\controllers;
 use app\common\helpers\Url;
 use app\common\models\Goods;
 use app\common\models\Member;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use app\backend\modules\goods\models\Comment;
 use app\backend\modules\goods\services\CommentService;
