@@ -14,6 +14,7 @@ use app\backend\modules\goods\models\GoodsParam;
 use app\backend\modules\goods\models\GoodsSpec;
 use app\backend\modules\goods\models\GoodsOption;
 use app\backend\modules\goods\models\Brand;
+use app\common\models\GoodsCategory;
 use Setting;
 
 class EditGoodsService
@@ -24,9 +25,11 @@ class EditGoodsService
     public $catetory_menus;
     public $brands;
     public $optionsHtml;
+    public $type;
 
-    public function __construct($goods_id, $request)
+    public function __construct($goods_id, $request, $type = 0)
     {
+        $this->type = $type;
         $this->goods_id = $goods_id;
         $this->request = $request;
         $this->goods_model = Goods::with('hasManyParams')->with('hasManySpecs')->with('hasManyGoodsCategory')->find($goods_id);
@@ -35,6 +38,7 @@ class EditGoodsService
     public function edit()
     {
         //获取规格名及规格项
+        $goods_data = $this->request->goods;
         foreach ($this->goods_model->hasManySpecs as &$spec) {
             $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->get()->toArray();
         }
@@ -45,33 +49,50 @@ class EditGoodsService
         //商品其它图片反序列化
         $this->goods_model->thumb_url = !empty($this->goods_model->thumb_url) ? unserialize($this->goods_model->thumb_url) : [];
 
-        if ($this->request->goods) {
+        if ($goods_data) {
+            if ($this->type == 1) {
+                $goods_data['status'] = 0;
+            }
+            $goods_data['has_option'] = $goods_data['has_option'] ? $goods_data['has_option'] : 0;
             //将数据赋值到model
-            $this->request->goods['thumb'] = tomedia($this->request->goods['thumb']);
+            $goods_data['thumb'] = tomedia($goods_data['thumb']);
 
-            if(isset($this->request->goods['thumb_url'])){
-                $this->request->goods['thumb_url'] = serialize(
+            if(isset($goods_data['thumb_url'])){
+                $goods_data['thumb_url'] = serialize(
                     array_map(function($item){
                         return tomedia($item);
-                    }, $this->request->goods['thumb_url'])
+                    }, $goods_data['thumb_url'])
                 );
             }
 
-            $this->goods_model->setRawAttributes($this->request->goods);
+            $category_model = GoodsCategory::where("goods_id", $this->goods_model->id)->first();
+            if (!empty($category_model)) {
+                $category_model->delete();
+            }
+            GoodsService::saveGoodsCategory($this->goods_model, \YunShop::request()->category, Setting::get('shop.category'));
+
+            $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             //其他字段赋值
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
             $this->goods_model->id = $this->goods_id;
             //数据保存
-            if ($this->goods_model->save()) {
-                GoodsParam::saveParam(\YunShop::request(), $this->goods_model->id, \YunShop::app()->uniacid);
-                GoodsSpec::saveSpec(\YunShop::request(), $this->goods_model->id, \YunShop::app()->uniacid);
-                GoodsOption::saveOption(\YunShop::request(), $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
-                //显示信息并跳转
-                return ['status' => 1];
+            $validator = $this->goods_model->validator($this->goods_model->getAttributes());
+            if ($validator->fails()) {
+                return ['status' => -1, 'msg' => $validator->messages()];
+                //$this->error($validator->messages());
             } else {
-                return ['status' => -1];
+                if ($this->goods_model->save()) {
+                    GoodsParam::saveParam($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
+                    GoodsSpec::saveSpec($this->request, $this->goods_model->id, \YunShop::app()->uniacid);
+                    GoodsOption::saveOption($this->request, $this->goods_model->id, GoodsSpec::$spec_items, \YunShop::app()->uniacid);
+                    //显示信息并跳转
+                    return ['status' => 1];
+                } else {
+                    return ['status' => -1];
+                }
             }
+
         }
 
         $this->brands = Brand::getBrands()->get();

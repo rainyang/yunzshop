@@ -17,20 +17,20 @@ class WithdrawController extends ApiController
     public function withdrawLog()
     {
         $status = \YunShop::request()->status;
-        $request = Withdraw::getWithdrawLog($status)->get();
+        $request = Withdraw::getWithdrawLog($status)->orderBy('created_at', 'desc')->get();
         if ($request) {
             return $this->successJson('获取数据成功!', $request->toArray());
         }
         return $this->errorJson('未检测到数据!');
     }
-    
+
     public function withdrawInfo()
     {
         $id = \YunShop::request()->id;
         $request = Withdraw::getWithdrawInfoById($id)->first();
 
         if ($request) {
-            
+
             return $this->successJson('获取数据成功!', $request->toArray());
         }
         return $this->errorJson('未检测到数据!');

@@ -96,7 +96,9 @@ class GoodsController extends BaseController
                 'ids'   => isset($categorySearch) ? array_values($categorySearch) : [],
             ]
         );
+
         $list = Goods::Search($requestSearch)->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20)->toArray();
+
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
 
@@ -151,7 +153,7 @@ class GoodsController extends BaseController
         if ($result['status'] == 1) {
             return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
         } else if ($result['status'] == -1) {
-            $this->error('商品创建失败');
+            !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
 
         return view('goods.goods', [
@@ -253,12 +255,15 @@ class GoodsController extends BaseController
         }*/
 
         //todo 所有操作去service里进行，供应商共用此方法。
-        $goods_service = new EditGoodsService($request->id, $request);
+        $goods_service = new EditGoodsService($request->id, \YunShop::request());
         $result = $goods_service->edit();
         if ($result['status'] == 1) {
-            return $this->message('商品修改成功');
+            return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
         } else if ($result['status'] == -1){
-            $this->error('商品修改失败');
+            if (isset($result['msg'])) {
+                $this->error($result['msg']);
+            }
+            !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
 
         //dd($this->lang);

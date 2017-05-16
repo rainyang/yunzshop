@@ -102,12 +102,12 @@
                                       class="form-control">{{$comment->content}}</textarea>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                        <div class="col-sm-9 col-xs-12">
-                            {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[images]',unserialize($comment->images)) !!}
-                        </div>
-                    </div>
+                    {{--<div class="form-group">--}}
+                        {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>--}}
+                        {{--<div class="col-sm-9 col-xs-12">--}}
+                            {{--{!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('comment[images]',unserialize($comment->images)) !!}--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
 
                     <div class="form-group"></div>
                     <div class="form-group">
@@ -165,7 +165,7 @@
         function select_good(o) {
             $("#goodsid").val(o.id);
             $("#goodsthumb").show();
-            $("#goodsthumb").find('img').attr('src', '{{tomedia('/')}}'+o.thumb);
+            $("#goodsthumb").find('img').attr('src', o.thumb);
             $("#goods").val("[" + o.id + "]" + o.title);
             $("#modal-module-menus-goods .close").click();
         }

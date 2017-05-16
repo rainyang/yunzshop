@@ -35,7 +35,7 @@
                     <li>
                         <p>会员中心</p>
                         {!! QrCode::size(200)->generate(yzAppFullUrl('member')) !!}
-                        <h5><a href="#">复制链接</a></h5>
+                        <h5><a href="javascript:;" data-url="{!! yzAppFullUrl('member') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
                     </li>
                     <li>
                         <p>我的订单</p>
@@ -75,12 +75,12 @@
                     <li>
                         <p>我的优惠券</p>
                         {!! QrCode::size(200)->generate(yzAppFullUrl('coupon/coupon_index')) !!}
-                        <h5><a href="javascript:;" data-url="{!! yzAppFullUrl('member/coupon_index') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
+                        <h5><a href="javascript:;" data-url="{!! yzAppFullUrl('coupon/coupon_index') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
                     </li>
                     <li>
                         <p>领券中心</p>
                         {!! QrCode::size(200)->generate(yzAppFullUrl('coupon/coupon_store')) !!}
-                        <h5><a href="javascript:;" data-url="{!! yzAppFullUrl('member/coupon_store') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
+                        <h5><a href="javascript:;" data-url="{!! yzAppFullUrl('coupon/coupon_store') !!}" class="js-clip" title="复制链接">复制链接</a></h5>
                     </li>
                     <li>
                         <p>积分页面</p>

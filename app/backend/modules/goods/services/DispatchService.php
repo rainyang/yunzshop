@@ -10,8 +10,8 @@ class DispatchService
 {
     public static function getDispatch($dispatchData)
     {
-        $dispatchData['weight_data'] = iserializer($dispatchData['weight']);
-        $dispatchData['piece_data'] = iserializer($dispatchData['piece']);
+        $dispatchData['weight_data'] = serialize($dispatchData['weight']);
+        $dispatchData['piece_data'] = serialize($dispatchData['piece']);
         unset($dispatchData['weight']);
         unset($dispatchData['piece']);
         return $dispatchData;

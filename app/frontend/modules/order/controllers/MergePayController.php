@@ -35,7 +35,7 @@ class MergePayController extends ApiController
      */
     protected function orders($orderIds)
     {
-        if(!is_array($orderIds)){
+        if (!is_array($orderIds)) {
             $orderIds = explode(',', $orderIds);
         }
         array_walk($orderIds, function ($orderId) {
@@ -47,7 +47,7 @@ class MergePayController extends ApiController
         $this->orders = Order::select(['status', 'id', 'order_sn', 'price', 'uid'])->whereIn('id', $orderIds)->get();
 
         if ($this->orders->count() != count($orderIds)) {
-            throw new AppException('(ID:' . implode(',',$orderIds) . ')未找到订单');
+            throw new AppException('(ID:' . implode(',', $orderIds) . ')未找到订单');
         }
         $this->orders->each(function ($order) {
             if ($order->status > Order::WAIT_PAY) {
@@ -75,34 +75,46 @@ class MergePayController extends ApiController
         if ($orders->sum('price') <= 0) {
             throw new AppException('(' . $orders->sum('price') . ')订单金额有误');
         }
-        $buttons = [
-            [
-                'name' => '余额支付',
-                'value' => '3'
-            ],
-            [
-                'name' => '微信支付',
-                'value' => '1'
-            ], [
-                'name' => '支付宝支付',
-                'value' => '2'
-            ],
-        ];
+        $buttons = $this->getPayTypeButtons();
 
         $orderPay = new OrderPay();
         $orderPay->order_ids = explode(',', $request->input('order_ids'));
         $orderPay->amount = $orders->sum('price');
         $orderPay->uid = $orders->first()->uid;
         $orderPay->pay_sn = OrderService::createPaySN();
-        $orderPay->save();
-        if (!$orderPay) {
+        $orderPayId = $orderPay->save();
+        if (!$orderPayId) {
             throw new AppException('支付流水记录保存失败');
         }
+
         $data = ['order_pay' => $orderPay, 'member' => $member, 'buttons' => $buttons];
 
         return $this->successJson('成功', $data);
     }
 
+    private function getPayTypeButtons()
+    {
+        $result = [];
+        if (\Setting::get('shop.pay.credit')) {
+            $result[] = [
+                'name' => '余额支付',
+                'value' => '3'
+            ];
+        }
+        if (\Setting::get('shop.pay.weixin')) {
+            $result[] = [
+                'name' => '微信支付',
+                'value' => '1'
+            ];
+        }
+        if (\Setting::get('shop.pay.alipay')) {
+            $result[] = [
+                'name' => '支付宝支付',
+                'value' => '2'
+            ];
+        }
+        return $result;
+    }
 
     protected function pay($request, $payType)
     {
@@ -122,9 +134,10 @@ class MergePayController extends ApiController
             //支付流水号
             $orderPay->pay_type_id = $payType;
             $orderPay->save();
-            //订单支付方式
-            $orders->each(function ($order) use ($payType) {
-                $order->pay_type_id = $payType;
+            //订单支付方式,流水号保存
+            $orders->each(function ($order) use ($orderPay) {
+                $order->pay_type_id = $orderPay->pay_type_id;
+                $order->order_pay_id = $orderPay->id;
                 if (!$order->save()) {
                     throw new AppException('支付方式选择失败');
                 }
@@ -159,6 +172,9 @@ class MergePayController extends ApiController
 
     public function wechatPay(\Request $request)
     {
+        if(\Setting::get('shop.pay.weixin') == false){
+            throw new AppException('商城未开启微信支付');
+        }
         $data = $this->pay($request, PayFactory::PAY_WEACHAT);
         $data['js'] = json_decode($data['js'], 1);
         return $this->successJson('成功', $data);
@@ -166,6 +182,9 @@ class MergePayController extends ApiController
 
     public function alipay(\Request $request)
     {
+        if(!\Setting::get('shop.pay.alipay') == false){
+            throw new AppException('商城未开启支付宝支付');
+        }
         if ($request->has('uid')) {
             Session::set('member_id', $request->query('uid'));
         }

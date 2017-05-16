@@ -12,13 +12,14 @@ class CreateImsYzGoodsNoticesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_goods_notices', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->integer('goods_id')->index('idx_good_id');
-			$table->integer('uid')->nullable()->comment('商家通知 uid');
-			$table->boolean('type')->nullable()->comment('通知方式 0:下单通知1：付款通知2:买家收货通知');
-		});
+        if (!Schema::hasTable('yz_goods_notices')) {
+            Schema::create('yz_goods_notices', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('goods_id')->index('idx_good_id');
+                $table->integer('uid')->nullable();
+                $table->boolean('type')->nullable();
+            });
+        }
 	}
 
 
@@ -29,7 +30,7 @@ class CreateImsYzGoodsNoticesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_goods_notices');
+		Schema::dropIfExists('yz_goods_notices');
 	}
 
 }

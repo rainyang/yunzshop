@@ -197,8 +197,6 @@
 
 </div>
 
-
-<!-- 驳回退款 -->
 @include('refund.modal')
 
 <script language='javascript'>
@@ -311,6 +309,9 @@
             $('#send_form').val("order.list");
             return confirm('请填写快递单号！');
         }
+
+        $('#expresscom').val($('#express_company option:selected').attr('data-name'));
+
         if ($('#express_sn').val() != '') {
 
             if (!numerictype.test($('#express_sn').val())) {

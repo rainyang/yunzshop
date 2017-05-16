@@ -49,7 +49,7 @@ class CouponLog extends \app\common\models\CouponLog
         if(isset($searchData['get_from'])){
             $res = $res->where('getfrom', '=', $searchData['get_from']);
         }
-        if($searchData['search_search_switch'] == 1){
+        if($searchData['time_search_swtich'] == 1){
             $res = $res->whereBetween('createtime', [$searchData['time_start'], $searchData['time_end']]);
         }
 

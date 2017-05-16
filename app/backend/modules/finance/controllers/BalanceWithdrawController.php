@@ -86,9 +86,13 @@ class BalanceWithdrawController extends BaseController
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
         } elseif ($this->withdrawModel->pay_way == 'wecht') {
             //微信打款
+            //echo '<pre>'; print_r('test'); exit;
             $resultPay = WithdrawService::wechtWithdrawPay($this->withdrawModel, $remark);
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
         }
+
+
+
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
             if ($this->withdrawModel->save()) {
@@ -96,10 +100,10 @@ class BalanceWithdrawController extends BaseController
                 return true;
             }
         }
-        if ($resultPay['errno'] == 1) {
+        if ($resultPay['errno'] == 0){
             return $resultPay['message'];
         }
-        return $resultPay;
+        //return $resultPay;
         //return $resultPay ? $this->updatePayTime(): "打款失败";
     }
 
@@ -125,7 +129,7 @@ class BalanceWithdrawController extends BaseController
         $this->withdrawModel->audit_at        = time();
     }
 
-    //获取去提现手续费设置
+    //获取提现手续费设置
     private function withdrawSet()
     {
         $withdrawSet = Setting::get('withdraw.balance');
@@ -136,7 +140,7 @@ class BalanceWithdrawController extends BaseController
     private function withdrawPoundageMath()
     {
         $this->withdrawSet();
-        return round(floatval($this->withdrawModel->amounts * $this->withdrawPoundage), 2);
+        return round(floatval($this->withdrawModel->amounts * $this->withdrawPoundage / 100), 2);
     }
 
     //审核金额运算数据、结果

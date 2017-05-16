@@ -442,6 +442,33 @@ class AutoUpdate
             return self::NO_UPDATE_AVAILABLE;
         }
     }
+
+    /*
+     * 检测指定的 key 和 密钥是否存在
+     *
+     *
+     * @params string $fileName 检查路径
+     * @params array $keyAndSecret ['key' => string, 'secret' => string]
+     * @params array $postData post 传参
+     *
+     * @return mixed
+     */
+    public function isKeySecretExists($fileName, $keyAndSecret, $postData, $message='') {
+        //dd($fileName . "<br/>" . $keyAndSecret['key'] . '==> ' . $keyAndSecret['secret'] . '<br/>' . $postData . "<br/>" . $message);
+        $content = Curl::to($fileName)
+            ->withHeader(
+                "Authorization: Basic " . base64_encode("{$keyAndSecret['key']}:{$keyAndSecret['secret']}")
+            )
+            ->withData($postData)
+            ->get();
+        //var_dump($content);exit();
+        $result = json_decode($content, true);
+        if(!$result['isExists']) {
+            $this->_log->error($message . $result['message']);
+        }
+        return $result;
+    }
+
     /**
      * Check if a new version is available.
      *

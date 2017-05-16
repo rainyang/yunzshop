@@ -13,7 +13,6 @@ use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\Member;
 use app\common\models\MemberGroup;
-use app\common\models\MemberLevel;
 use app\common\models\MemberShopInfo;
 use app\common\services\Session;
 use app\frontend\models\McGroupsModel;
@@ -155,10 +154,6 @@ class MemberOfficeAccountService extends MemberService
                 ));
             }
 
-            if (MemberShopInfo::isBlack($member_id)) {
-                return show_json(-1, '黑名单用户，请联系管理员');
-            }
-
             $this->updateMemberInfo($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
@@ -213,10 +208,6 @@ class MemberOfficeAccountService extends MemberService
 
         if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
             \Log::debug('微信登陆更新');
-
-            if (MemberShopInfo::isBlack($member_id)) {
-                return show_json(-1, '黑名单用户，请联系管理员');
-            }
 
             $this->updateMemberInfo($member_id, $userinfo);
         } else {
@@ -314,7 +305,6 @@ class MemberOfficeAccountService extends MemberService
     {
         //添加yz_member表
         $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
-        $default_sub_level_id = MemberLevel::getDefaultLevelId()->first();
 
         if (!empty($default_sub_group_id)) {
             $default_subgroup_id = $default_sub_group_id->id;
@@ -322,17 +312,11 @@ class MemberOfficeAccountService extends MemberService
             $default_subgroup_id = 0;
         }
 
-        if (!empty($default_sub_level_id)) {
-            $default_sublevel_id = $default_sub_level_id->id;
-        } else {
-            $default_sublevel_id = 0;
-        }
-
         SubMemberModel::insertData(array(
             'member_id' => $member_id,
             'uniacid' => $uniacid,
             'group_id' => $default_subgroup_id,
-            'level_id' => $default_sublevel_id,
+            'level_id' => 0,
         ));
     }
 

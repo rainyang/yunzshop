@@ -1,6 +1,7 @@
 @extends('refund.modal_base')
+
 @section('operation_pass')
-    @if($order['has_one_refund_apply']['status'] < 3)
+    @if($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_CHECK)
         <label class='radio-inline'>
             <input type='radio' value='3' class="refund-action" data-action="{{yzWebUrl('refund.operation.pass')}}"
                    name='refund_status' @if( $order['has_one_refund_apply']['status']==3 ||
@@ -13,10 +14,9 @@
         <input type='radio' value='1' class='refund-action' class="refund-action"
                data-action='{{yzWebUrl("refund.pay")}}' name='refund_status'>
         同意退款
-
-            @if($order['has_one_refund_apply']['status'] < 3)
+            @if($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_CHECK)
                 (无需客户发货直接退款)
-            @else
+            @elseif($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_RECEIVE_RETURN_GOODS)
                 (您已经收到客户寄出的快递)
             @endif
 

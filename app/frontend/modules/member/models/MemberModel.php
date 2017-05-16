@@ -121,7 +121,7 @@ class MemberModel extends Member
             ->where('uid', $uid)
             ->with([
                 'yzMember' => function ($query) {
-                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay'])
+                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'status'])
                         ->where('is_black', 0)
                         ->with(['level'=>function($query2){
                             return $query2->select(['id','level_name'])->uniacid();
@@ -256,6 +256,20 @@ class MemberModel extends Member
                     'level' => $info['yz_member']['level']['level_name'],
                     'is_show' => $set['is_referrer']
                 ];
+            } else {
+                if (isset($set) && $set['headimg']) {
+                    $avatar = tomedia($set['headimg']);
+                } else {
+                    $avatar = Url::shopUrl('static/images/photo-mr.jpg');
+                }
+
+                $data = [
+                    'uid' => '',
+                    'avatar' => $avatar,
+                    'nickname' => (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status']) ? '总店' : '暂无',
+                    'level' => '',
+                    'is_show' => $set['is_referrer']
+                ];
             }
         }
 
@@ -365,11 +379,15 @@ class MemberModel extends Member
             if (!empty( $yz_member['level'])) {
                 $member_info['level_id'] =  $yz_member['level']['id'];
                 $member_info['level_name'] =  $yz_member['level']['level_name'];
+            } else {
+                $set = \Setting::get('shop.member');
+                $member_info['level_id'] =  0;
+                $member_info['level_name'] =  $set['level_name'] ? $set['level_name'] : '普通会员';
             }
         }
 
         if (!empty($member_info['birthyear'] )) {
-            $member_info['birthday'] = $member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday'];
+            $member_info['birthday'] = date('Y-m-d', strtotime($member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday']));
         } else {
             $member_info['birthday'] = date('Y-m-d', time());
         }

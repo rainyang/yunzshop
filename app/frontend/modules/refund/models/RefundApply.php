@@ -1,5 +1,7 @@
 <?php
+
 namespace app\frontend\modules\refund\models;
+
 use app\frontend\modules\order\models\Order;
 
 /**
@@ -13,18 +15,20 @@ class RefundApply extends \app\common\models\refund\RefundApply
     protected static function boot()
     {
         parent::boot();
-        self::addGlobalScope(function($query){
+        self::addGlobalScope(function ($query) {
             return $query->where('uid', \YunShop::app()->getMemberId());
         });
     }
+
     public function scopeDefaults($query)
     {
         return $query->with([
-            'order'=>function($query){
+            'order' => function ($query) {
                 return $query->orders();
             }
         ])->orderBy('id', 'desc');
     }
+
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');

@@ -20,7 +20,7 @@ class ListController extends ApiController
     private function getData()
     {
         $pageSize = \YunShop::request()->pagesize;
-        $pageSize = $pageSize ? $pageSize : 100;//todo 配合app测试
+        $pageSize = $pageSize ? $pageSize : 20;
         return $this->order->paginate($pageSize)->toArray();
     }
 

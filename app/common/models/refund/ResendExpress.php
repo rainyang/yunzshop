@@ -14,6 +14,6 @@ class ResendExpress extends BaseModel
 {
     protected $fillable = [];
     protected $guarded = ['id'];
-    public $table = 'yz_refund_express';
+    public $table = 'yz_resend_express';
 
 }

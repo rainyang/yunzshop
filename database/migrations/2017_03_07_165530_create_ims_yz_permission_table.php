@@ -12,13 +12,14 @@ class CreateImsYzPermissionTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_permission', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->boolean('type')->comment('1:user 2:role 3:account');
-			$table->integer('item_id')->comment('目标ID:user_id role_id uniacid');
-			$table->string('permission')->comment('权限值');
-		});
+        if (!Schema::hasTable('yz_permission')) {
+            Schema::create('yz_permission', function (Blueprint $table) {
+                $table->increments('id');
+                $table->boolean('type');
+                $table->integer('item_id');
+                $table->string('permission');
+            });
+        }
 	}
 
 
@@ -29,7 +30,7 @@ class CreateImsYzPermissionTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_permission');
+		Schema::dropIfExists('yz_permission');
 	}
 
 }

@@ -9,7 +9,7 @@
             <input type="text" name="widgets[sale][max_point_deduct]"  value="{{ $item->max_point_deduct }}" class="form-control" />
             <span class="input-group-addon">元</span>
         </div>
-        <span class="help-block">如果设置0，则不支持积分抵扣</span>
+        <span class="help-block">如果设置空，则采用积分统一设置<br>如果设置0，则不支持积分抵扣</span>
 
     </div>
 </div>
@@ -59,7 +59,6 @@
         <a href="javascript:;" class="btn btn-default selectareas" onclick="selectAreas()" >添加不参加满包邮的地区</a>
         <input type="hidden" id='selectedareas' name="widgets[sale][ed_areas]" value="{{ $item->ed_areas }}" />
         <input type="hidden" id='selectedareaids' name="widgets[sale][ed_areaids]" value="{{ $item->ed_areaids }}" />
-        <span class="help-block">如果设置0或空，则不支持满件包邮</span>
 
     </div>
 </div>

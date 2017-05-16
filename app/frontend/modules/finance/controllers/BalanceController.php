@@ -10,6 +10,7 @@ namespace app\frontend\modules\finance\controllers;
 
 
 
+use app\common\facades\Setting;
 use app\common\services\PayFactory;
 use app\common\components\ApiController;
 use app\common\models\finance\Balance as BalanceCommon;
@@ -59,13 +60,17 @@ class BalanceController extends ApiController
             $result = (new BalanceService())->getBalanceSet();
             $result['member_credit2'] = $memberInfo->credit2;
 
+            $pay = \Setting::get('shop.pay');
+            $result['weixin'] = $pay['weixin'];
+            $result['alipay'] = $pay['alipay'];
+
             return $this->successJson('获取数据成功', $result);
         }
         return $this->errorJson('未获取到会员数据');
 
     }
 
-    //余额充值+充值优惠 todo 充值支付回调 完成余额赠送事件 消息通知
+    //余额充值+充值优惠 todo 消息通知
     public function recharge()
     {
         $result = (new BalanceService())->rechargeSet() ? $this->rechargeStart() : '未开启余额充值';
@@ -182,6 +187,30 @@ class BalanceController extends ApiController
         $withdrawAstrict = (new BalanceService())->withdrawAstrict();
         if ($withdrawAstrict > trim(\YunShop::request()->withdraw_money)) {
             return '提现金额不能小于' . $withdrawAstrict;
+        }
+        if (!$this->withdrawPoundageMath()) {
+            return '扣除手续费后的金额不能小于1元';
+        }
+        return true;
+    }
+    //获取提现手续费设置
+    private function withdrawSet()
+    {
+        $withdrawSet = Setting::get('withdraw.balance');
+        $this->withdrawPoundage = $withdrawSet['poundage'];
+    }
+
+    //余额提现手续费N元
+    private function withdrawPoundageMath()
+    {
+        $withdrawMoney = trim(\YunShop::request()->withdraw_money);
+        $withdrawProportion = (new BalanceService())->withdrawPoundage();
+        if ($withdrawProportion) {
+            $withdrawPoundage = round(floatval($withdrawMoney * $withdrawProportion / 100), 2);
+            $result_money = $withdrawMoney - $withdrawPoundage;
+            if ($result_money < 1) {
+                return false;
+            }
         }
         return true;
     }

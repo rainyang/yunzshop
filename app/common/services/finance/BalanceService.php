@@ -111,7 +111,7 @@ abstract class BalanceService
     //修改会员余额
     protected function updateMemberBalance()
     {
-        //echo '<pre>'; print_r($this->result_money); exit;
+        //echo '<pre>'; print_r($this->memberModel); exit;
         $this->memberModel->credit2 = $this->result_money;
         if ($this->memberModel->save()) {
             return true;

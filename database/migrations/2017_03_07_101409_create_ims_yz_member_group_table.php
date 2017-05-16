@@ -12,15 +12,16 @@ class CreateImsYzMemberGroupTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_member_group', function(Blueprint $table)
-		{
-			$table->integer('id', true)->comment('主键');
-			$table->integer('uniacid')->comment('所属公众号');
-			$table->string('group_name', 45)->comment('分组名称');
-			$table->integer('created_at');
-			$table->integer('updated_at');
-			$table->integer('deleted_at')->nullable();
-		});
+        if (!Schema::hasTable('yz_member_group')) {
+            Schema::create('yz_member_group', function (Blueprint $table) {
+                $table->integer('id', true);
+                $table->integer('uniacid');
+                $table->string('group_name', 45);
+                $table->integer('created_at');
+                $table->integer('updated_at');
+                $table->integer('deleted_at')->nullable();
+            });
+        }
 	}
 
 
@@ -31,7 +32,7 @@ class CreateImsYzMemberGroupTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_member_group');
+		Schema::dropIfExists('yz_member_group');
 	}
 
 }

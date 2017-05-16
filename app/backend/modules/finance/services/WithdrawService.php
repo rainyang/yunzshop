@@ -44,14 +44,12 @@ class WithdrawService extends Withdraw
             'remark' => $remark,
             'service_type' => \app\common\models\finance\Balance::BALANCE_INCOME,
         );
-
         return (new BalanceService())->changeBalance($data);
     }
 
     public static function wechtWithdrawPay($withdraw, $remark)
     {
-        //echo '<pre>'; print_r($withdraw); exit;
-        return PayFactory::create(1)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
+        return  PayFactory::create(1)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
             $withdraw->actual_amounts, $remark);
     }
 
@@ -60,7 +58,7 @@ class WithdrawService extends Withdraw
         $result = PayFactory::create(2)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
             $withdraw->actual_amounts, $remark);
         //echo '<pre>'; print_r($result); exit;
-        if ($result['errno']) {
+        if ($result['errno'] == 1) {
             return $result['message'];
         }
         redirect($result)->send();
