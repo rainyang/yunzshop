@@ -12,17 +12,18 @@ class CreateImsYzGoodsParamTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_goods_param', function(Blueprint $table)
-		{
-			$table->integer('id', true);
-			$table->integer('uniacid')->nullable()->default(0)->index('idx_uniacid');
-			$table->integer('goods_id')->nullable()->default(0)->index('idx_goodsid');
-			$table->string('title', 50)->nullable()->comment('标题');
-			$table->text('value', 65535)->nullable()->comment('值');
-			$table->integer('displayorder')->nullable()->default(0)->index('idx_displayorder')->comment('排序');
-			$table->integer('updated_at')->nullable();
-			$table->integer('created_at')->nullable();
-		});
+        if (!Schema::hasTable('yz_goods_param')) {
+            Schema::create('yz_goods_param', function (Blueprint $table) {
+                $table->integer('id', true);
+                $table->integer('uniacid')->nullable()->default(0)->index('idx_uniacid');
+                $table->integer('goods_id')->nullable()->default(0)->index('idx_goodsid');
+                $table->string('title', 50)->nullable();
+                $table->text('value', 65535)->nullable();
+                $table->integer('displayorder')->nullable()->default(0)->index('idx_displayorder');
+                $table->integer('updated_at')->nullable();
+                $table->integer('created_at')->nullable();
+            });
+        }
 	}
 
 
@@ -33,7 +34,7 @@ class CreateImsYzGoodsParamTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_goods_param');
+		Schema::dropIfExists('yz_goods_param');
 	}
 
 }

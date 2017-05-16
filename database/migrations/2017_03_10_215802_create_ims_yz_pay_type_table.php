@@ -12,12 +12,13 @@ class CreateImsYzPayTypeTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_pay_type', function(Blueprint $table)
-		{
-			$table->increments('id')->comment('支付方式');
-			$table->string('name', 50)->default('')->comment('名称');
-			$table->integer('plugin_id')->comment('所属插件');
-		});
+        if (!Schema::hasTable('yz_pay_type')) {
+            Schema::create('yz_pay_type', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name', 50)->default('');
+                $table->integer('plugin_id');
+            });
+        }
 	}
 
 
@@ -28,7 +29,7 @@ class CreateImsYzPayTypeTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_pay_type');
+		Schema::dropIfExists('yz_pay_type');
 	}
 
 }

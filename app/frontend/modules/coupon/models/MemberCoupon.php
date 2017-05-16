@@ -17,9 +17,12 @@ class MemberCoupon extends \app\common\models\MemberCoupon
             return $query->select(['id', 'name', 'coupon_method','deduct', 'discount', 'enough', 'use_type', 'category_ids', 'categorynames',
                                     'goods_ids', 'goods_names', 'time_limit', 'time_days', 'time_start', 'time_end', 'total',
                                     'money', 'credit']);
-        }])->where('uid', $memberId)->select(['id', 'coupon_id', 'used', 'use_time', 'get_time']);
+        }])->where('uid', $memberId)
+            ->select(['id', 'coupon_id', 'used', 'use_time', 'get_time'])
+            ->orderBy('get_time','desc');
         return $coupons;
     }
+
 
     //获取用户名下指定优惠券的总数
     public static function getMemberCouponCount($memberId, $couponId)
@@ -31,12 +34,12 @@ class MemberCoupon extends \app\common\models\MemberCoupon
         return $count;
     }
 
-    //删除指定ID的用户优惠券
-    public static function deleteById($id)
+    //获取指定优惠券的领取总数
+    public static function getTotalGetCount($couponId)
     {
         return static::uniacid()
-                ->find($id)
-                ->delete();
+                    ->where('coupon_id', '=', $couponId)
+                    ->count();
     }
 
     //查找指定ID的用户优惠券

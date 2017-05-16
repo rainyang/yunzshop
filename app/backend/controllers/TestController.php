@@ -10,10 +10,8 @@ namespace app\backend\controllers;
 
 
 use app\common\components\BaseController;
-use app\common\services\AliPay;
 use app\common\services\JsonRpc;
-use app\common\services\Session;
-use app\common\services\WechatPay;
+use app\frontend\modules\member\models\SubMemberModel;
 
 class TestController extends BaseController
 {
@@ -22,5 +20,23 @@ class TestController extends BaseController
 
         $result = (new JsonRpc())->client('plus',['user'=>'1','pass'=>2]);
         dd($result);
+    }
+
+    public function op_database()
+    {$sub_data = array(
+        'member_id' => 999,
+        'uniacid' => 5,
+        'group_id' => 0,
+        'level_id' => 0,
+    );
+
+    SubMemberModel::insertData($sub_data);
+
+    if (SubMemberModel::insertData($sub_data)) {
+        echo 'ok';
+    } else {
+        echo 'ko';
+    }
+
     }
 }

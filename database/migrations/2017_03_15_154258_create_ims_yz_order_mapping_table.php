@@ -12,14 +12,15 @@ class CreateImsYzOrderMappingTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_order_mapping', function(Blueprint $table)
-		{
-			$table->integer('id', true);
-			$table->integer('old_order_id')->comment('旧商城的订单ID');
-			$table->integer('new_order_id')->comment('重构商城对应的订单ID');
-			$table->char('old_openid', 50)->comment('旧商城的用户openid');
-			$table->integer('new_member_id')->comment('重构商城对应的member_id');
-		});
+        if (!Schema::hasTable('yz_order_mapping')) {
+            Schema::create('yz_order_mapping', function (Blueprint $table) {
+                $table->integer('id', true);
+                $table->integer('old_order_id');
+                $table->integer('new_order_id');
+                $table->char('old_openid', 50);
+                $table->integer('new_member_id');
+            });
+        }
 	}
 
 
@@ -30,7 +31,7 @@ class CreateImsYzOrderMappingTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('yz_order_mapping');
+		Schema::dropIfExists('yz_order_mapping');
 	}
 
 }

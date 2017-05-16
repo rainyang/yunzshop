@@ -9,6 +9,7 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\backend\modules\member\models\MemberRelation;
+use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\helpers\ImageHelper;
@@ -48,6 +49,10 @@ class MemberController extends ApiController
 
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
 
+                $data = MemberModel::addPlugins($data);
+
+                $data['income'] = MemberModel::getIncomeCount();
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('['. $member_id .']用户不存在');
@@ -66,12 +71,14 @@ class MemberController extends ApiController
      */
     public function getMemberRelationInfo()
     {
-        $info = MemberRelation::getSetInfo()->first()->toArray();
+        $info = MemberRelation::getSetInfo()->first();
 
         $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         if (empty($info)) {
             return $this->errorJson('缺少参数');
+        } else {
+            $info = $info->toArray();
         }
 
         if (empty($member_info))
@@ -109,7 +116,7 @@ class MemberController extends ApiController
                 break;
            case 2:
                $apply_qualification = 2;
-               $cost_num  = OrderListModel::getCostTotalNum(\YunShop::app()->getMemberId());
+               $cost_num  = Order::getCostTotalNum(\YunShop::app()->getMemberId());
 
                if ($info['become_check'] && $cost_num >= $info['become_ordercount']) {
                    $apply_qualification = 5;
@@ -117,7 +124,7 @@ class MemberController extends ApiController
                break;
            case 3:
                $apply_qualification = 3;
-               $cost_price  = OrderListModel::getCostTotalPrice(\YunShop::app()->getMemberId());
+               $cost_price  = Order::getCostTotalPrice(\YunShop::app()->getMemberId());
 
                if ($info['become_check'] && $cost_price >= $info['become_moneycount']) {
                    $apply_qualification = 6;
@@ -466,13 +473,24 @@ class MemberController extends ApiController
             $info = [];
         }
 
+        $share = \Setting::get('shop.share');
+
+        if ($share) {
+            if ($share['icon']) {
+                $share['icon'] = tomedia($share['icon']);
+            }
+        } else {
+            $share = [];
+        }
+
         $shop = \Setting::get('shop');
         $shop['logo'] = tomedia($shop['logo']);
 
         $data = [
             'config' => $config,
-            'info' => $info,
-            'shop' => $shop
+            'info'  => $info,   //商城设置
+            'shop'  => $shop,
+            'share' => $share   //分享设置
         ];
 
         return $this->successJson('', $data);

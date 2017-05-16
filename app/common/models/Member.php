@@ -6,6 +6,12 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\events\member\BecomeAgent;
 use app\common\services\Session;
 
+use app\common\repositories\OptionRepository;
+use app\common\services\PluginManager;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
+use Yunshop\Supplier\common\services\VerifyButton;
+
 /**
  * Created by PhpStorm.
  * User: jan
@@ -76,18 +82,7 @@ class Member extends BackendModel
      */
     public static function getUserInfos($member_id)
     {
-        return self::select([
-            'uid',
-            'avatar',
-            'nickname',
-            'realname',
-            'avatar',
-            'mobile',
-            'gender',
-            'createtime',
-            'credit1',
-            'credit2'
-        ])
+        return self::select(['*'])
             ->uniacid()
             ->where('uid', $member_id)
             ->with([
@@ -218,7 +213,7 @@ class Member extends BackendModel
     {
         return [
             'mobile' => 'regex:/^1[34578]\d{9}$/',
-            'realname' => 'required',
+            'realname' => 'required|between:2,10',
             //'avatar' => 'required',
             'telephone' => 'regex:/^1[34578]\d{9}$/',
         ];
@@ -244,6 +239,40 @@ class Member extends BackendModel
             preg_match('/.+mid=(\d+).+/', Session::get('client_url'), $matches);
 
             return $matches[1];
+        }
+
+        return 0;
+    }
+
+    /**
+     * 申请插件
+     *
+     * @param array $data
+     * @return array
+     */
+    public static function addPlugins(&$data = [])
+    {
+        $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+
+        if ($plugin_class->isEnabled('supplier')) {
+            $data['supplier'] = VerifyButton::button();
+        } else {
+            $data['supplier'] = [];
+        }
+
+        return $data;
+    }
+
+    /**
+     * 推广提现
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public static function getIncomeCount()
+    {
+        $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
+
+        if ($incomeModel) {
+            return $incomeModel->sum('amount');
         }
 
         return 0;

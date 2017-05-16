@@ -12,13 +12,14 @@ class CreateImsYzStreetTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_street', function(Blueprint $table)
-		{
-			$table->integer('id', true);
-			$table->string('areaname')->nullable();
-			$table->integer('parentid')->nullable();
-			$table->integer('level')->nullable();
-		});
+        if (!Schema::hasTable('yz_street')) {
+            Schema::create('yz_street', function (Blueprint $table) {
+                $table->integer('id', true);
+                $table->string('areaname')->nullable();
+                $table->integer('parentid')->nullable();
+                $table->integer('level')->nullable();
+            });
+        }
 	}
 
 
@@ -29,7 +30,7 @@ class CreateImsYzStreetTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_street');
+		Schema::dropIfExists('yz_street');
 	}
 
 }

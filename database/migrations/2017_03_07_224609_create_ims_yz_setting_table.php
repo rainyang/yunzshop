@@ -12,15 +12,16 @@ class CreateImsYzSettingTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_setting', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->integer('uniacid')->comment('统一账号');
-			$table->string('group')->default('shop')->comment('分组');
-			$table->string('key')->comment('配置key名');
-			$table->string('type')->comment('值类型');
-			$table->text('value', 65535)->comment('值');
-		});
+        if (!Schema::hasTable('yz_setting')) {
+            Schema::create('yz_setting', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('uniacid');
+                $table->string('group')->default('shop');
+                $table->string('key');
+                $table->string('type');
+                $table->text('value', 65535);
+            });
+        }
 	}
 
 
@@ -31,7 +32,7 @@ class CreateImsYzSettingTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_setting');
+		Schema::dropIfExists('yz_setting');
 	}
 
 }

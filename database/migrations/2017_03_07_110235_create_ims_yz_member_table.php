@@ -12,23 +12,37 @@ class CreateImsYzMemberTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_member', function(Blueprint $table)
-		{
-			$table->integer('member_id')->index('idx_member_id');
-			$table->integer('uniacid')->index('idx_uniacid')->comment('统一公众号');
-			$table->integer('agent_id')->nullable()->comment('分销商ID');
-			$table->integer('group_id')->default(0)->comment('用户组ID');
-			$table->integer('level_id')->default(0)->comment('会员等级ID');
-			$table->boolean('is_black')->default(0)->comment('0-普通会员;1-黑名单会员');
-			$table->string('province', 3)->nullable()->comment('省');
-			$table->string('city', 15)->nullable()->comment('市');
-			$table->string('country', 10)->nullable()->comment('国家');
-			$table->string('referralsn')->nullable()->comment('推荐码');
-			$table->boolean('is_agent')->nullable();
-			$table->string('alipayname')->nullable()->comment('支付宝姓名');
-			$table->string('alipay')->nullable()->comment('支付宝账号');
-			$table->text('content', 65535)->nullable()->comment('备注');
-		});
+        if (!Schema::hasTable('yz_member')) {
+            Schema::create('yz_member', function (Blueprint $table) {
+                $table->integer('member_id')->index('idx_member_id');
+                $table->integer('uniacid')->index('idx_uniacid');
+                $table->integer('parent_id')->nullable();
+                $table->integer('group_id')->default(0);
+                $table->integer('level_id')->default(0);
+                $table->integer('inviter')->nullable()->default(0);
+                $table->boolean('is_black')->default(0);
+                $table->string('province_name', 15)->nullable();
+                $table->string('city_name', 15)->nullable();
+                $table->string('area_name', 15)->nullable();
+                $table->integer('province')->nullable();
+                $table->integer('city')->nullable();
+                $table->integer('area')->nullable();
+                $table->text('address', 65535)->nullable();
+                $table->string('referralsn', 255)->nullable();
+                $table->boolean('is_agent')->nullable();
+                $table->string('alipayname')->nullable();
+                $table->string('alipay')->nullable();
+                $table->text('content', 65535)->nullable();
+                $table->integer('status')->nullable()->default(0);
+                $table->integer('child_time')->nullable()->default(0);
+                $table->integer('agent_time')->nullable()->default(0);
+                $table->integer('apply_time')->nullable()->default(0);
+                $table->string('relation', 255)->nullable();
+                $table->integer('created_at')->default(0);
+                $table->integer('updated_at')->default(0);
+                $table->integer('deleted_at')->nullable();
+            });
+        }
 	}
 
 
@@ -39,7 +53,7 @@ class CreateImsYzMemberTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_member');
+		Schema::dropIfExists('yz_member');
 	}
 
 }

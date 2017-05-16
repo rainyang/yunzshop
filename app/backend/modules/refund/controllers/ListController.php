@@ -14,7 +14,7 @@ class ListController extends \app\backend\modules\order\controllers\ListControll
     public function returnGoods()
     {
         $this->orderModel->whereHas('hasOneRefundApply',function ($query){
-            return $query->ReturnGoods();
+            return $query->refunding()->ReturnGoods();
         });
         return view('order.index', $this->getData())->render();
     }
@@ -22,7 +22,7 @@ class ListController extends \app\backend\modules\order\controllers\ListControll
     public function exchangeGoods()
     {
         $this->orderModel->whereHas('hasOneRefundApply',function ($query){
-            return $query->ExchangeGoods();
+            return $query->refunding()->ExchangeGoods();
         });
         return view('order.index', $this->getData())->render();
     }
@@ -34,7 +34,7 @@ class ListController extends \app\backend\modules\order\controllers\ListControll
     public function refundMoney()
     {
         $this->orderModel->whereHas('hasOneRefundApply',function ($query){
-            return $query->RefundMoney();
+            return $query->refunding()->RefundMoney();
         });
         return view('order.index', $this->getData())->render();
     }
@@ -46,7 +46,9 @@ class ListController extends \app\backend\modules\order\controllers\ListControll
     }
     public function refund()
     {
-        $this->orderModel->refund();
+        $this->orderModel->whereHas('hasOneRefundApply',function ($query){
+            return $query->refunding();
+        });
         return view('order.index', $this->getData())->render();
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Support\Str;
 use app\common\services\PermissionService;
 use app\common\models\Menu;
 use app\common\services\Session;
+use app\common\exceptions\NotFoundException;
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
@@ -23,12 +24,12 @@ class YunShop
     {
         //检测命名空间
         if (!class_exists($namespace)) {
-            abort(404, " 不存在命名空间: " . $namespace);
+            throw new NotFoundException(" 不存在命名空间: " . $namespace);
         }
         //检测controller继承
         $controller = new $namespace;
         if (!$controller instanceof \app\common\components\BaseController) {
-            abort(404, '不存在控制器:' . $namespace);
+            throw new NotFoundException(" 不存在控制器: " . $namespace);
         }
 
         //设置默认方法
@@ -40,28 +41,29 @@ class YunShop
 
         //检测方法是否存在并可执行
         if (!method_exists($namespace, $action) || !is_callable([$namespace, $action])) {
-            abort(404, '操作方法不存在: ' . $action);
+            throw new NotFoundException('操作方法不存在: ' . $action);
         }
         $controller->modules = $modules;
         $controller->controller = $controllerName;
         $controller->action = $action;
         $controller->route = implode('.', $currentRoutes);
 
-        if(self::isWeb()){
+        if (self::isWeb()) {
             //菜单生成
-            if(!\Cache::has('db_menu')){
+            if (!\Cache::has('db_menu')) {
                 $dbMenu = Menu::getMenuList();
-                \Cache::put('db_menu',$dbMenu,3600);
-            }else{
+                \Cache::put('db_menu', $dbMenu, 3600);
+            } else {
                 $dbMenu = \Cache::get('db_menu');
             }
-            $menuList =  array_merge($dbMenu, (array)Config::get('menu'));
-            Config::set('menu',$menuList);
-            $item = Menu::getCurrentItemByRoute($controller->route,$menuList);
+            $menuList = array_merge($dbMenu, (array)Config::get('menu'));
+            Config::set('menu', $menuList);
+            $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
             //检测权限
             if (!PermissionService::can($item)) {
-                abort(403, '无权限');
+                throw new NotFoundException('无权限');
+
             }
         }
 
@@ -114,6 +116,12 @@ class YunShop
         return $path;
     }
 
+    public static function isPHPUnit()
+    {
+        return strpos($_SERVER['PHP_SELF'], 'phpunit') !== false ? true : false;
+
+    }
+
     public static function isWeb()
     {
         return strpos($_SERVER['PHP_SELF'], '/web/index.php') !== false ? true : false;
@@ -121,12 +129,25 @@ class YunShop
 
     public static function isApp()
     {
+        if(self::isPHPUnit()){
+            return true;
+        }
         return strpos($_SERVER['PHP_SELF'], '/app/index.php') !== false ? true : false;
     }
 
     public static function isApi()
     {
         return (strpos($_SERVER['PHP_SELF'], '/addons/') !== false &&
+            strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public static function isWechatApi()
+    {
+        return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
             strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
     }
 
@@ -193,10 +214,10 @@ class YunShop
             $routeFirst = array_first($routes);
             $countRoute = count($routes);
             if ($routeFirst === 'plugin' || self::isPlugin()) {
-                if(self::isPlugin()){
+                if (self::isPlugin()) {
                     $currentRoutes[] = 'plugin';
                     $countRoute += 1;
-                }else{
+                } else {
                     $currentRoutes[] = $routeFirst;
                     array_shift($routes);
                 }
@@ -208,15 +229,16 @@ class YunShop
                     $path = base_path() . '/plugins/' . $pluginName . '/src';
                     $length = $countRoute;
 
-                    self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length,$currentRoutes, $requestRoute,true);
+                    self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true);
 
 
                 } else {
-                    abort(404, '无此插件');
+                    throw new NotFoundException('无此插件');
+
                 }
             } else {
 
-                self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length,$currentRoutes, $requestRoute,false);
+                self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, false);
 
             }
         }
@@ -236,24 +258,25 @@ class YunShop
      * @param $requestRoute
      * @param $isPlugin
      */
-    public static function findRouteFile(&$controllerName,&$action,$routes, &$namespace, &$path, $length, &$currentRoutes,$requestRoute,$isPlugin)
+    public static function findRouteFile(&$controllerName, &$action, $routes, &$namespace, &$path, $length, &$currentRoutes, $requestRoute, $isPlugin)
     {
 
         foreach ($routes as $k => $r) {
             $ucFirstRoute = ucfirst(Str::camel($r));
-            $controllerFile = $path . ($isPlugin ? '/' : '/controllers/' ). $ucFirstRoute . 'Controller.php';
+            $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . $ucFirstRoute . 'Controller.php';
             if (is_file($controllerFile)) {
-                $namespace .= ($isPlugin?'':'\\controllers').'\\' . $ucFirstRoute . 'Controller';
+                $namespace .= ($isPlugin ? '' : '\\controllers') . '\\' . $ucFirstRoute . 'Controller';
                 $controllerName = $ucFirstRoute;
                 $path = $controllerFile;
                 $currentRoutes[] = $r;
-            } elseif (is_dir($path .= ($isPlugin?'':'/modules').'/' . $r)) {
-                $namespace .= ($isPlugin?'':'\\modules').'\\' . $r;
+            } elseif (is_dir($path .= ($isPlugin ? '' : '/modules') . '/' . $r)) {
+                $namespace .= ($isPlugin ? '' : '\\modules') . '\\' . $r;
                 $modules[] = $r;
                 $currentRoutes[] = $r;
             } else {
-                if ($length !== ($isPlugin ? $k + 3 : $k+1)) {
-                    abort(404,'no found route:' . $requestRoute);
+                if ($length !== ($isPlugin ? $k + 3 : $k + 1)) {
+                    throw new NotFoundException('no found route:' . $requestRoute);
+
                 }
                 $action = strpos($r, '-') === false ? $r : Str::camel($r);
                 $currentRoutes[] = $r;
@@ -303,8 +326,8 @@ class YunComponent implements ArrayAccess
     public function get($key = null)
     {
         if (isset($key)) {
-            $result = json_decode(array_get($this->values, $key, null),true);
-            if(@is_array($result)){
+            $result = json_decode(array_get($this->values, $key, null), true);
+            if (@is_array($result)) {
                 return $result;
             }
             return array_get($this->values, $key, null);
@@ -345,7 +368,7 @@ class YunRequest extends YunComponent
     public function __construct()
     {
         global $_GPC;
-        $this->values = !YunShop::isWeb() ? request()->input() :(array)$_GPC;
+        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? request()->input() : (array)$_GPC;
     }
 
 
@@ -360,16 +383,17 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
-        $this->values = !YunShop::isWeb() ? $this->getW() : (array)$_W;
+        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
     }
-    
+
     public function getW()
     {
         return [
-            'uniacid'=>request()->get('i'),
-            'weid'=>request()->get('i'),
-            'acid'=>request()->get('i'),
+            'uniacid' => request()->get('i'),
+            'weid' => request()->get('i'),
+            'acid' => request()->get('i'),
+            'account' => \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i')) ? \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'))->toArray() : ''
         ];
     }
 
@@ -429,10 +453,10 @@ class YunApp extends YunComponent
     public function getMemberId()
     {
         if (config('app.debug')) {
-            if(isset($_GET['test_uid'])){
+            if (isset($_GET['test_uid'])) {
                 return $_GET['test_uid'];
             }
-           //return false;
+            //return false;
         }
 
         if (Session::get('member_id')) {
@@ -444,3 +468,4 @@ class YunApp extends YunComponent
 
 
 }
+

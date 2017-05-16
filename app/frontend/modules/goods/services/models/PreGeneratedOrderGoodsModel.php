@@ -48,6 +48,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         $this->order = $order;
 
     }
+
     public function getPriceAttribute()
     {
         return $this->getPrice();
@@ -62,16 +63,16 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         $data = array(
             'goods_id' => $this->goods->id,
             'goods_sn' => $this->goods->goods_sn,
-            'price' => sprintf('%.2f',$this->getPrice()),
+            'price' => sprintf('%.2f', $this->getPrice()),
             'total' => $this->total,
             'title' => $this->goods->title,
             'thumb' => $this->goods->thumb,
             'goods_option_id' => $this->goodsOption->id,
             'goods_option_title' => $this->goodsOption->title,
-            'goods_price' => sprintf('%.2f',$this->getGoodsPrice()),
-            'vip_price' => sprintf('%.2f',$this->getVipPrice()),
-            'coupon_price' => sprintf('%.2f',$this->getCouponPrice()),
-            'coupons'=>$this->coupons
+            'goods_price' => sprintf('%.2f', $this->getGoodsPrice()),
+            'vip_price' => sprintf('%.2f', $this->getVipPrice()),
+            'coupon_price' => sprintf('%.2f', $this->getCouponPrice()),
+            'coupons' => $this->coupons
         );
         if (isset($this->goodsOption)) {
             $data += [
@@ -84,7 +85,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     public function getCouponPrice()
     {
-        if(!isset($this->coupons)){
+        if (!isset($this->coupons)) {
             return 0;
         }
         return $this->coupons->sum('amount');
@@ -112,6 +113,14 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     }
 
+    public function getGoodsCostPrice()
+    {
+        if (isset($this->goodsOption)) {
+            return $this->goodsOption->cost_price * $this->getTotal();
+        }
+        return $this->getTotal() * $this->goods->cost_price;
+    }
+
     /**
      * 订单商品插入数据库
      * @param PreGeneratedOrderModel|null $orderModel
@@ -126,6 +135,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
         $data = array(
             'goods_price' => $this->getGoodsPrice(),
+            'goods_cost_price' => $this->getGoodsCostPrice(),
             'discount_price' => $this->getDiscountPrice(),
             'price' => $this->getPrice(),
             'goods_id' => $this->goods->id,

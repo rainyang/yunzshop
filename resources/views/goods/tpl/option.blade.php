@@ -45,30 +45,30 @@
 </div>
       
        <div id="modal-module-chooestemp" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-                                    <h3>选择虚拟物品模板</h3>
-                                </div>
-                                <div class="modal-body">
-                                      <div class="form-group">
-                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label" style='width: 150px'>选择模板:</label>
-                                        <div class="col-sm-9 col-xs-12" style='width: 380px'>
-                                               <select class="form-control tpl-category-parent">
-                                                    @foreach ($virtual_types as $virtual_type)
-                                                        <option value="{{$virtual_type['id']}}">{{$virtual_type['usedata']}}/{{$virtual_type['alldata']}} | {{$virtual_type['title']}}</option>
-                                                    @endforeach
-                                                </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <span class="btn btn-primary span2" onclick="addtemp()">确认选择</span>
-                                    <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
-                                </div>
-                            </div>
-                        </div>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+						<h3>选择虚拟物品模板</h3>
+					</div>
+					<div class="modal-body">
+						  <div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label" style='width: 150px'>选择模板:</label>
+							<div class="col-sm-9 col-xs-12" style='width: 380px'>
+								   <select class="form-control tpl-category-parent">
+										@foreach ($virtual_types as $virtual_type)
+											<option value="{{$virtual_type['id']}}">{{$virtual_type['usedata']}}/{{$virtual_type['alldata']}} | {{$virtual_type['title']}}</option>
+										@endforeach
+									</select>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<span class="btn btn-primary span2" onclick="addtemp()">确认选择</span>
+						<a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
+					</div>
+				</div>
+			</div>
         </div>
       
       

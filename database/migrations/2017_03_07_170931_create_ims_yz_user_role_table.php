@@ -12,12 +12,13 @@ class CreateImsYzUserRoleTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_user_role', function(Blueprint $table)
-		{
-			$table->integer('user_id')->comment('用户');
-			$table->integer('role_id')->comment('角色');
-			$table->primary(['user_id','role_id']);
-		});
+        if (!Schema::hasTable('yz_user_role')) {
+            Schema::create('yz_user_role', function (Blueprint $table) {
+                $table->integer('user_id');
+                $table->integer('role_id');
+                $table->primary(['user_id', 'role_id']);
+            });
+        }
 	}
 
 
@@ -28,7 +29,7 @@ class CreateImsYzUserRoleTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_user_role');
+		Schema::dropIfExists('yz_user_role');
 	}
 
 }

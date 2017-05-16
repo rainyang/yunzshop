@@ -22,67 +22,59 @@ class OperationController extends ApiController
     {
         parent::__construct();
         $this->_params = \YunShop::request()->get();
-        if(!isset($this->_params['order_id'])){
+        if (!isset($this->_params['order_id'])) {
             $this->errorJson('order_id 不能为空!');
             exit;
         }
         $this->_Order = Order::find($this->_params['order_id']);
-        if(!isset($this->_Order)){
+        if (!isset($this->_Order)) {
             $this->errorJson('未找到该订单!');
             exit;
         }
     }
 
-    public function pay(){
-        list($result,$message) = OrderService::orderPay($this->_params);
-        if($result === false){
-            return $this->errorJson($message);
-        }
+    public function pay()
+    {
+        $message = OrderService::orderPay($this->_params);
+
         return $this->successJson($message);
 
     }
-    public function cancelPay(){
-        list($result,$message) = OrderService::orderCancelPay($this->_params);
-        if($result === false){
-            return $this->errorJson($message);
-        }
+
+    public function cancelPay()
+    {
+        $message = OrderService::orderCancelPay($this->_params);
         return $this->successJson($message);
     }
-    public function send(){
-        list($result,$data) = OrderService::orderSend($this->_params);
-        if($result === false){
-            return $this->errorJson($data);
-        }
-        return $this->successJson($data);
+
+    public function send()
+    {
+        $message = OrderService::orderSend($this->_params);
+
+        return $this->successJson($message);
     }
-    public function cancelSend(){
-        list($result,$data) = OrderService::orderCancelSend($this->_params);
-        if($result === false){
-            return $this->errorJson($data);
-        }
-        return $this->successJson($data);
+
+    public function cancelSend()
+    {
+        $message = OrderService::orderCancelSend($this->_params);
+        return $this->successJson($message);
     }
-    public function Receive(){
-        list($result,$data) = OrderService::orderReceive($this->_params);
-        if($result === false){
-            return $this->errorJson($data);
-        }
-        return $this->successJson($data);
+
+    public function Receive()
+    {
+        $message = OrderService::orderReceive($this->_params);
+        return $this->successJson($message);
     }
+
     public function Delete()
     {
-        list($result,$data) = OrderService::orderDelete($this->_params);
-        if($result === false){
-            return $this->errorJson($data);
-        }
-        return $this->successJson($data);
+        $message = OrderService::orderDelete($this->_params);
+        return $this->successJson($message);
     }
+
     public function Close()
     {
-        list($result,$data) = OrderService::orderClose($this->_params);
-        if($result === false){
-            return $this->errorJson($data);
-        }
-        return $this->successJson($data);
+        $message = OrderService::orderClose($this->_params);
+        return $this->successJson($message);
     }
 }

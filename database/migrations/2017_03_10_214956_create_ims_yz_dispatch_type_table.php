@@ -12,12 +12,13 @@ class CreateImsYzDispatchTypeTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('yz_dispatch_type', function(Blueprint $table)
-		{
-			$table->increments('id')->comment('配送方式');
-			$table->string('name', 50)->default('')->comment('名称');
-			$table->integer('plugin')->comment('所属插件');
-		});
+        if (!Schema::hasTable('yz_dispatch_type')) {
+            Schema::create('yz_dispatch_type', function (Blueprint $table) {
+                $table->increments('id');
+                $table->string('name', 50)->default('');
+                $table->integer('plugin');
+            });
+        }
 	}
 
 
@@ -28,7 +29,7 @@ class CreateImsYzDispatchTypeTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('ims_yz_dispatch_type');
+		Schema::dropIfExists('yz_dispatch_type');
 	}
 
 }

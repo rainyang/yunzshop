@@ -49,20 +49,20 @@ class Withdraw extends \app\common\models\Withdraw
     public function rules()
     {
         return [
-            'poundage' => 'regex:/^[\d]?(\.[\d]{0,2})?$/',
-            'withdrawmoney' => 'regex:/^[0-9]+(.[0-9]{1,2})?$/',
-            'roll_out_limit' => 'regex:/^[0-9]+(.[0-9]{1,2})?$/',
-            'poundage_rate' => 'regex:/^[\d]{1,2}+(\.[0-9]{1,2})?$/',
+            'poundage'          => 'numeric|min:1|max:100',
+            'withdrawmoney'     => 'numeric|min:0|max:999999999',
+            'roll_out_limit'    => 'regex:/^[0-9]+(.[0-9]{1,2})?$/',
+            'poundage_rate'     => 'regex:/^[\d]{1,2}+(\.[0-9]{1,2})?$/',
         ];
     }
 
     public function atributeNames()
     {
         return [
-            'poundage' => "提现手续费",
-            'withdrawmoney' => "提现限制金额",
-            'roll_out_limit' => "佣金提现额度",
-            'poundage_rate' => "佣金提现手续费"
+            'poundage'          => "提现手续费",
+            'withdrawmoney'     => "提现限制金额",
+            'roll_out_limit'    => "佣金提现额度",
+            'poundage_rate'     => "佣金提现手续费"
         ];
     }
 

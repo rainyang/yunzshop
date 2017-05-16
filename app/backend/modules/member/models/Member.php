@@ -16,7 +16,8 @@ class Member extends \app\common\models\Member
      */
     public static function getMemberByName($keyWord)
     {
-        return self::searchLike($keyWord)
+        return self::uniacid()
+            ->searchLike($keyWord)
             ->with('hasOneFans')
             ->get();
     }
@@ -185,7 +186,6 @@ class Member extends \app\common\models\Member
             }, 'hasOneOrder' => function ($query5) {
                 return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
                     ->uniacid()
-                    ->where('status', 3)
                     ->groupBy('uid');
             }])
         ->orderBy('uid', 'desc');

@@ -1,3 +1,7 @@
+<style >
+    .form-group{overflow:hidden;margin-bottom: 0 !important;}
+    .line{margin: 10px;border-bottom:1px solid #ddd}
+</style>
 <div class="panel panel-default">
     <div class="panel-heading">
         退款申请
@@ -6,7 +10,14 @@
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款状态 :</label>
             <div class="col-sm-9 col-xs-12">
-                <p class="form-control-static">{{$order['has_one_refund_apply']['status_name']}}</p>
+                <p class="form-control-static">@if ($order['has_one_refund_apply']['is_refunding'])
+                        <span class='label label-info'>{{$order['has_one_refund_apply']['status_name']}}</span>
+                    @elseif ($order['has_one_refund_apply']['is_refund_fail'])
+                        <span class='label label-danger'>{{$order['has_one_refund_apply']['status_name']}}</span>
+
+                    @elseif($order['has_one_refund_apply']['is_refunded'])
+                        <span class='label label-success'>{{$order['has_one_refund_apply']['status_name']}}</span>
+                    @endif</p>
             </div>
         </div>
         <div class="form-group">
@@ -27,11 +38,7 @@
 
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">
-                @if ($order['has_one_refund_apply']['refund_way_type'] == 2)
-                    换货
-                @else
-                    退款
-                @endif
+                {{$order['has_one_refund_apply']['refund_way_type_name']}}
                 原因 :
             </label>
             <div class="col-sm-9 col-xs-12">
@@ -40,11 +47,7 @@
         </div>
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">
-                @if ($order['has_one_refund_apply']['refund_way_type'] == 2)
-                    换货
-                @else
-                    退款
-                @endif
+                {{$order['has_one_refund_apply']['refund_way_type_name']}}
                 说明 :
             </label>
             <div class="col-sm-9 col-xs-12">
@@ -66,7 +69,19 @@
                 </div>
             </div>
         @endif
-
+        @if ($order['has_one_refund_apply']['is_refunding'])
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"> </label>
+            <div class="col-sm-9 col-xs-12">
+                <p class="form-control-static">
+                    <a class="btn btn-danger btn-sm" href="javascript:;"
+                       onclick="$('#modal-refund').find(':input[name=id]').val('{{$order['id']}}')"
+                       data-toggle="modal"
+                       data-target="#modal-refund">处理{{$order['has_one_refund_apply']['refund_type_name']}}申请</a>
+                </p>
+            </div>
+        </div>
+        @endif
         @if ($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_REFUND)
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款时间 :</label>
@@ -84,117 +99,91 @@
                 </div>
             </div>
         @endif
+        @if (isset($order['has_one_refund_apply']['return_express']))
+            <div class="line"></div>
+                <div class="form-group">
 
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">客户寄出快递信息 </label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="form-control-static">
+                            </br>
+                        </div>
 
-
-        @if (in_array($order['has_one_refund_apply']['status'],[\app\common\models\refund\RefundApply::WAIT_RETURN_GOODS,\app\common\models\refund\RefundApply::WAIT_RECEIVE_RETURN_GOODS]))
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否寄出快递 :</label>
-                <div class="col-sm-9 col-xs-12">
-                    <div class="form-control-static" style="color: #ef4f4f;">
-                        @if ($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_RETURN_GOODS)
-                            等待客户寄出快递
-                        @elseif ($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_RECEIVE_RETURN_GOODS)
-                            客户已经寄出快递
-                        @endif
                     </div>
                 </div>
-            </div>
-        @else
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                <div class="col-sm-9 col-xs-12">
-                    @if ($order['has_one_refund_apply']['status'] == 0)
-                        <a class="btn btn-danger btn-sm" href="javascript:;"
-                           onclick="$('#modal-refund').find(':input[name=id]').val('{{$order['id']}}')"
-                           data-toggle="modal"
-                           data-target="#modal-refund">处理{{$order['has_one_refund_apply']['refund_type_name']}}申请</a>
-                    @elseif ($order['has_one_refund_apply']['status'] == -1 )
-                        <span class='label label-default'>{{$order['has_one_refund_apply']['status_name']}}</span>
-                    @elseif ($order['has_one_refund_apply']['status'] == -2)
-                        <span class='label label-default'>{{$order['has_one_refund_apply']['status_name']}}</span>
-                    @elseif(in_array($order['has_one_refund_apply']['status'],[4,5]))
-                        <span class='label label-danger'>{{$order['has_one_refund_apply']['status_name']}}</span>
-                    @endif
-                </div>
-            </div>
-        @endif
-        @if (isset($order['has_one_refund_apply']['return_express']))
-            <div class="form-group">
-                <div class="panel-heading" style="padding-left: 200px;">
-                    <br>客户寄出快递信息
-                </div>
-            </div>
 
-            @if (!empty($order['has_one_refund_apply']['return_express']['express_company_name']))
+                @if (!empty($order['has_one_refund_apply']['return_express']['express_company_name']))
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">快递名称 :</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div class="form-control-static">{{$order['has_one_refund_apply']['return_express']['express_company_name']}}</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">快递单号 :</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div class="form-control-static">{{$order['has_one_refund_apply']['return_express']['express_sn']}}
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type='button' class='btn btn-default'
+                                        onclick='refundexpress_find(this,"{{$order['id']}}",1)'>查看物流
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">填写快递单号时间 :</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div class="form-control-static">{{$order['has_one_refund_apply']['return_express']['created_at']}}</div>
+                        </div>
+                    </div>
+                @endif
+
+
+        @endif
+
+        @if (!empty($order['has_one_refund_apply']['resend_express']))
+            <div class="line"></div>
+            <div class="form-group">
+
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">店家寄出快递信息 </label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="form-control-static">
+                            </br>
+                        </div>
+
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">快递名称 :</label>
                     <div class="col-sm-9 col-xs-12">
-                        <div class="form-control-static">{{$order['has_one_refund_apply']['return_express']['express_company_name']}}</div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">快递单号 :</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <div class="form-control-static">{{$order['has_one_refund_apply']['return_express']['express_sn']}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <button type='button' class='btn btn-default'
-                                    onclick='refundexpress_find(this,"{{$order['id']}}",1)'>查看物流
-                            </button>
+                        <div class="form-control-static">
+                            {{$order['has_one_refund_apply']['resend_express']['express_company_name']}}
                         </div>
                     </div>
                 </div>
 
 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">填写快递单号时间 :</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">快递单号 :</label>
                     <div class="col-sm-9 col-xs-12">
-                        <div class="form-control-static">{{$order['has_one_refund_apply']['return_express']['created_at']}}</div>
+                        <div class="form-control-static">{{$order['has_one_refund_apply']['resend_express']['express_sn']}}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button type='button' class='btn btn-default'
+                                    onclick='refundexpress_find(this,"{{$order['id']}}",2)'>查看物流
+                            </button>
+                        </div>
                     </div>
                 </div>
-            @endif
 
-        @endif
-
-        @if (!empty($order['has_one_refund_apply']['rexpresssn']))
-            <div class="form-group">
-                <div class="panel-heading" style="padding-left: 200px;">
-                    <br>店家寄出快递信息
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">快递名称 :</label>
-                <div class="col-sm-9 col-xs-12">
-                    <div class="form-control-static">
-                        @if (empty($order['has_one_refund_apply']['rexpresscom']))
-                            其他快递
-                        @else
-                            {{$order['has_one_refund_apply']['rexpresscom']}}
-                        @endif
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">确认发货时间 :</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="form-control-static">{{$order['has_one_refund_apply']['resend_express']['created_at']}}</div>
                     </div>
                 </div>
-            </div>
-
-
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">快递单号 :</label>
-                <div class="col-sm-9 col-xs-12">
-                    <div class="form-control-static">{{$order['has_one_refund_apply']['rexpresssn']}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <button type='button' class='btn btn-default'
-                                onclick='refundexpress_find(this,"{{$order['id']}}",2)'>查看物流
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">确认发货时间 :</label>
-                <div class="col-sm-9 col-xs-12">
-                    <div class="form-control-static">{{$order['has_one_refund_apply']['returntime']}}</div>
-                </div>
-            </div>
-            <div style="width:100%; height:60px;"></div>
         @endif
 
     </div>

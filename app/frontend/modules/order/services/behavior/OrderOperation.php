@@ -9,6 +9,7 @@
 
 namespace app\frontend\modules\order\services\behavior;
 
+use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 
@@ -74,26 +75,31 @@ abstract class OrderOperation extends Order
     /**
      * 是否满足操作条件
      * @return bool
+     * @throws AppException
      */
-    public function enable()
+    public function check()
     {
 
         $Event = $this->getBeforeEvent();
         event($Event);
         if ($Event->hasOpinion()) {
-            $this->message = $Event->getOpinion()->message;
-            return $Event->getOpinion()->result;
+            //如果插件终止操作
+            if ($Event->getOpinion()->result == false) {
+                //抛出终止原因
+                throw new AppException($Event->getOpinion()->message);
+            }
+
         }
 
         if ($this->refund_id > 0) {
             if ($this->hasOneRefundApply->isRefunding()) {
-                $this->message = "退款中的订单,无法执行{$this->name}操作";
+                throw new AppException("退款中的订单,无法执行{$this->name}操作");
 
             }
         }
         if (!in_array($this->status, $this->statusBeforeChange)) {
-            $this->message = "订单状态不满足{$this->name}操作";
-            return false;
+            throw new AppException("订单状态不满足{$this->name}操作");
+
         }
         return true;
     }

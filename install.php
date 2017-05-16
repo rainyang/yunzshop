@@ -31,55 +31,7 @@ CREATE TABLE ". tablename('yz_address')." (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-
-# Dump of table ims_yz_agent_level
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_agent_level').";
-
-CREATE TABLE ". tablename('yz_agent_level')." (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uniacid` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `level` int(11) NOT NULL DEFAULT '0',
-  `first_level` int(11) DEFAULT '0',
-  `second_level` int(11) DEFAULT '0',
-  `third_level` int(11) DEFAULT '0',
-  `upgraded` text COLLATE utf8mb4_unicode_ci,
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-# Dump of table ims_yz_agents
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_agents').";
-
-CREATE TABLE ". tablename('yz_agents')." (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uniacid` int(11) DEFAULT NULL,
-  `member_id` int(11) DEFAULT NULL,
-  `parent_id` int(11) DEFAULT '0',
-  `agent_level_id` int(11) DEFAULT '0',
-  `is_black` tinyint(1) DEFAULT '0',
-  `commission_total` decimal(14,2) DEFAULT '0.00',
-  `commission_pay` decimal(14,2) DEFAULT NULL,
-  `agent_not_upgrade` tinyint(1) DEFAULT '0',
-  `content` text COLLATE utf8mb4_unicode_ci,
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  `parent` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_uniacid_parent` (`uniacid`,`parent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
+ 
 
 # Dump of table ims_yz_balance
 # ------------------------------------------------------------
@@ -231,107 +183,7 @@ CREATE TABLE ". tablename('yz_comment')." (
   KEY `idx_openid` (`uid`),
   KEY `idx_createtime` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-# Dump of table ims_yz_comment_bak2
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_comment_bak2').";
-
-CREATE TABLE ". tablename('yz_comment_bak2')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uniacid` int(11) NOT NULL DEFAULT '0',
-  `order_id` int(11) DEFAULT '0',
-  `goods_id` int(11) NOT NULL DEFAULT '0',
-  `uid` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `nick_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `head_img_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `content` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `level` tinyint(1) DEFAULT '0',
-  `images` text COLLATE utf8mb4_unicode_ci,
-  `deleted` tinyint(1) DEFAULT '0',
-  `comment_id` int(11) DEFAULT '0',
-  `reply_id` int(11) DEFAULT '0',
-  `reply_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` int(11) DEFAULT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_uniacid` (`uniacid`),
-  KEY `idx_orderid` (`order_id`),
-  KEY `idx_goodsid` (`goods_id`),
-  KEY `idx_openid` (`uid`),
-  KEY `idx_createtime` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-# Dump of table ims_yz_commission_edit_log
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_commission_edit_log').";
-
-CREATE TABLE ". tablename('yz_commission_edit_log')." (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `role` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `content` text COLLATE utf8mb4_unicode_ci,
-  `type` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-# Dump of table ims_yz_commission_order
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_commission_order').";
-
-CREATE TABLE ". tablename('yz_commission_order')." (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uniacid` int(11) DEFAULT NULL,
-  `ordertable_type` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ordertable_id` int(11) DEFAULT NULL,
-  `buy_id` int(11) DEFAULT NULL,
-  `member_id` int(11) NOT NULL DEFAULT '0',
-  `commission_amount` decimal(14,2) DEFAULT '0.00',
-  `formula` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `hierarchy` int(11) DEFAULT '1',
-  `commission_rate` int(11) DEFAULT '0',
-  `commission` decimal(14,2) DEFAULT '0.00',
-  `status` tinyint(1) DEFAULT '0',
-  `withdraw` tinyint(3) NOT NULL DEFAULT '0',
-  `recrive_at` int(11) DEFAULT NULL,
-  `settle_days` int(11) DEFAULT '0',
-  `statement_at` int(11) DEFAULT NULL,
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-# Dump of table ims_yz_commission_order_goods
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_commission_order_goods').";
-
-CREATE TABLE ". tablename('yz_commission_order_goods')." (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `commission_order_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `thumb` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `has_commission` tinyint(1) DEFAULT NULL,
-  `commission_rate` int(11) DEFAULT NULL,
-  `commission_pay` decimal(14,2) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
+ 
 
 # Dump of table ims_yz_coupon
 # ------------------------------------------------------------
@@ -447,53 +299,7 @@ CREATE TABLE ". tablename('yz_coupon_log')." (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-
-# Dump of table ims_yz_designer
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_designer').";
-
-CREATE TABLE ". tablename('yz_designer')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uniacid` int(11) NOT NULL DEFAULT '0',
-  `page_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `page_type` tinyint(1) NOT NULL DEFAULT '0',
-  `page_info` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `keyword` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
-  `is_default` tinyint(1) NOT NULL DEFAULT '0',
-  `datas` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` int(11) NOT NULL,
-  `updated_at` int(11) NOT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_uniacid` (`uniacid`),
-  KEY `idx_pagetype` (`page_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-# Dump of table ims_yz_designer_menu
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_designer_menu').";
-
-CREATE TABLE ". tablename('yz_designer_menu')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uniacid` int(11) DEFAULT '0',
-  `menu_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `is_default` tinyint(1) DEFAULT '0',
-  `created_at` int(11) DEFAULT '0',
-  `menus` text COLLATE utf8mb4_unicode_ci,
-  `params` text COLLATE utf8mb4_unicode_ci,
-  `updated_at` int(11) DEFAULT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_uniacid` (`uniacid`),
-  KEY `idx_isdefault` (`is_default`),
-  KEY `idx_createtime` (`created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
+ 
 
 # Dump of table ims_yz_dispatch
 # ------------------------------------------------------------
@@ -639,33 +445,7 @@ CREATE TABLE ". tablename('yz_goods_category')." (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
-
-# Dump of table ims_yz_goods_commission
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_goods_commission').";
-
-CREATE TABLE ". tablename('yz_goods_commission')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `goods_id` int(11) NOT NULL,
-  `is_commission` int(11) DEFAULT NULL,
-  `show_commission_button` tinyint(1) NOT NULL DEFAULT '0',
-  `poster_picture` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `has_commission` tinyint(1) DEFAULT '0',
-  `first_level_rate` int(11) DEFAULT NULL,
-  `first_level_pay` decimal(14,2) DEFAULT NULL,
-  `second_level_rate` int(11) DEFAULT NULL,
-  `second_level_pay` decimal(14,2) DEFAULT NULL,
-  `third_level_rate` int(11) DEFAULT NULL,
-  `third_level_pay` decimal(14,2) DEFAULT NULL,
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_good_id` (`goods_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+ 
 
 
 # Dump of table ims_yz_goods_discount
@@ -1942,151 +1722,7 @@ CREATE TABLE ". tablename('yz_point_log')." (
   `updated_at` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table ims_yz_poster
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_poster').";
-
-CREATE TABLE ". tablename('yz_poster')." (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uniacid` int(10) unsigned NOT NULL,
-  `title` varchar(50) NOT NULL,
-  `type` tinyint(4) NOT NULL,
-  `keyword` varchar(30) NOT NULL,
-  `time_start` int(10) unsigned DEFAULT '0',
-  `time_end` int(10) unsigned DEFAULT '0',
-  `background` varchar(255) DEFAULT '',
-  `style_data` text NOT NULL,
-  `response_title` varchar(50) DEFAULT '',
-  `response_thumb` varchar(255) DEFAULT '',
-  `response_desc` varchar(255) DEFAULT '',
-  `response_url` varchar(255) DEFAULT '',
-  `is_open` tinyint(4) DEFAULT '0',
-  `auto_sub` tinyint(4) DEFAULT '1',
-  `status` tinyint(4) DEFAULT '1',
-  `created_at` int(10) unsigned DEFAULT NULL,
-  `updated_at` int(10) unsigned DEFAULT NULL,
-  `deleted_at` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_uniacid` (`uniacid`),
-  KEY `idx_title` (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table ims_yz_poster_award
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_poster_award').";
-
-CREATE TABLE ". tablename('yz_poster_award')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uniacid` int(10) unsigned NOT NULL,
-  `poster_id` int(10) unsigned NOT NULL,
-  `subscriber_memberid` int(10) unsigned NOT NULL,
-  `recommender_memberid` int(10) unsigned NOT NULL,
-  `recommender_credit` int(10) unsigned DEFAULT '0',
-  `recommender_bonus` int(10) unsigned DEFAULT '0',
-  `recommender_coupon_id` int(10) unsigned DEFAULT '0',
-  `recommender_coupon_num` int(10) unsigned DEFAULT '0',
-  `subscriber_credit` int(10) unsigned DEFAULT '0',
-  `subscriber_bonus` int(10) unsigned DEFAULT '0',
-  `subscriber_coupon_id` int(10) unsigned DEFAULT '0',
-  `subscriber_coupon_num` int(10) unsigned DEFAULT '0',
-  `created_at` int(10) unsigned DEFAULT NULL,
-  `updated_at` int(10) unsigned DEFAULT NULL,
-  `deleted_at` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_subscriber_memberid` (`subscriber_memberid`),
-  KEY `idx_recommender_memberid` (`recommender_memberid`),
-  KEY `poster_id` (`poster_id`),
-  CONSTRAINT ". tablename('yz_poster_award_ibfk_1')." FOREIGN KEY (`poster_id`) REFERENCES ". tablename('yz_poster')." (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table ims_yz_poster_qrcode
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_poster_qrcode').";
-
-CREATE TABLE ". tablename('yz_poster_qrcode')." (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uniacid` int(10) unsigned NOT NULL,
-  `poster_id` int(10) unsigned NOT NULL,
-  `qrcode_id` int(10) unsigned NOT NULL,
-  `memberid` int(11) unsigned NOT NULL,
-  `created_at` int(10) unsigned DEFAULT NULL,
-  `updated_at` int(10) unsigned DEFAULT NULL,
-  `deleted_at` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_posterid` (`poster_id`),
-  KEY `idx_qrcodeid` (`qrcode_id`),
-  CONSTRAINT ". tablename('yz_poster_qrcode_ibfk_1')." FOREIGN KEY (`poster_id`) REFERENCES ". tablename('yz_poster')." (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table ims_yz_poster_scan
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_poster_scan').";
-
-CREATE TABLE ". tablename('yz_poster_scan')." (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `uniacid` int(10) unsigned NOT NULL,
-  `poster_id` int(10) unsigned NOT NULL,
-  `subscriber_memberid` int(10) unsigned NOT NULL,
-  `recommender_memberid` int(10) unsigned NOT NULL,
-  `event_type` tinyint(4) NOT NULL,
-  `sign_up_this_time` tinyint(4) NOT NULL,
-  `created_at` int(10) unsigned DEFAULT NULL,
-  `updated_at` int(10) unsigned DEFAULT NULL,
-  `deleted_at` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idx_posterid` (`poster_id`),
-  KEY `idx_subscriber_memberid` (`subscriber_memberid`),
-  KEY `idx_recommender_memberid` (`recommender_memberid`),
-  CONSTRAINT ". tablename('yz_poster_scan_ibfk_1')." FOREIGN KEY (`poster_id`) REFERENCES ". tablename('yz_poster')." (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table ims_yz_poster_supplement
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_poster_supplement').";
-
-CREATE TABLE ". tablename('yz_poster_supplement')." (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `poster_id` int(10) unsigned NOT NULL,
-  `not_start_reminder` varchar(140) DEFAULT '',
-  `finish_reminder` varchar(140) DEFAULT '',
-  `wait_reminder` varchar(140) DEFAULT '',
-  `not_open_reminder` varchar(140) DEFAULT '',
-  `not_open_reminder_url` varchar(255) DEFAULT '',
-  `recommender_credit` int(10) unsigned DEFAULT '0',
-  `recommender_bonus` decimal(14,2) unsigned DEFAULT '0.00',
-  `recommender_coupon_id` int(10) unsigned DEFAULT '0',
-  `recommender_coupon_name` varchar(15) DEFAULT '',
-  `recommender_coupon_num` int(10) unsigned DEFAULT '0',
-  `subscriber_credit` int(10) unsigned DEFAULT '0',
-  `subscriber_bonus` decimal(14,2) unsigned DEFAULT '0.00',
-  `subscriber_coupon_id` int(10) unsigned DEFAULT '0',
-  `subscriber_coupon_name` varchar(15) DEFAULT '',
-  `subscriber_coupon_num` int(10) unsigned DEFAULT '0',
-  `bonus_method` tinyint(4) DEFAULT '1',
-  `recommender_award_notice` varchar(140) DEFAULT '',
-  `subscriber_award_notice` varchar(140) DEFAULT '',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_poster_id` (`poster_id`),
-  CONSTRAINT ". tablename('yz_poster_supplement_ibfk_1')." FOREIGN KEY (`poster_id`) REFERENCES ". tablename('yz_poster')." (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
+ 
 
 # Dump of table ims_yz_qq_config
 # ------------------------------------------------------------
@@ -2234,115 +1870,7 @@ CREATE TABLE ". tablename('yz_street')." (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
-# Dump of table ims_yz_supplier
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_supplier').";
-
-CREATE TABLE ". tablename('yz_supplier')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `member_id` int(11) NOT NULL DEFAULT '0',
-  `username` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `password` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `realname` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `mobile` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  `apply_time` int(11) NOT NULL DEFAULT '0',
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` int(11) NOT NULL DEFAULT '0',
-  `deleted_at` int(11) NOT NULL DEFAULT '0',
-  `uniacid` int(11) NOT NULL DEFAULT '0',
-  `salt` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-# Dump of table ims_yz_supplier_dispatch
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_supplier_dispatch').";
-
-CREATE TABLE ". tablename('yz_supplier_dispatch')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dispatch_id` int(11) NOT NULL DEFAULT '0',
-  `supplier_id` int(11) NOT NULL DEFAULT '0',
-  `member_id` int(11) NOT NULL DEFAULT '0',
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='供应商运费模板表';
-
-
-
-# Dump of table ims_yz_supplier_goods
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_supplier_goods').";
-
-CREATE TABLE ". tablename('yz_supplier_goods')." (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `goods_id` int(11) NOT NULL DEFAULT '0',
-  `supplier_id` int(11) NOT NULL DEFAULT '0',
-  `member_id` int(11) NOT NULL DEFAULT '0',
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` int(11) NOT NULL DEFAULT '0',
-  `deleted_at` int(11) NOT NULL DEFAULT '0',
-  `uniacid` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-# Dump of table ims_yz_supplier_order
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_supplier_order').";
-
-CREATE TABLE ". tablename('yz_supplier_order')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_id` int(11) NOT NULL DEFAULT '0',
-  `supplier_id` int(11) NOT NULL DEFAULT '0',
-  `member_id` int(11) NOT NULL DEFAULT '0',
-  `apply_status` tinyint(1) NOT NULL DEFAULT '0',
-  `supplier_profit` decimal(14,2) NOT NULL DEFAULT '0.00',
-  `order_goods_information` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` int(11) NOT NULL DEFAULT '0',
-  `deleted_at` int(11) NOT NULL DEFAULT '0',
-  `uniacid` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-# Dump of table ims_yz_supplier_withdraw
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_supplier_withdraw').";
-
-CREATE TABLE ". tablename('yz_supplier_withdraw')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `member_id` int(11) NOT NULL DEFAULT '0',
-  `supplier_id` int(11) NOT NULL DEFAULT '0',
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  `money` decimal(14,2) NOT NULL DEFAULT '0.00',
-  `order_ids` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` int(11) NOT NULL DEFAULT '0',
-  `deleted_at` int(11) NOT NULL DEFAULT '0',
-  `uniacid` int(11) DEFAULT '0',
-  `apply_sn` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '0',
-  `type` tinyint(1) DEFAULT '0',
-  `pay_time` int(11) DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
+ 
 # Dump of table ims_yz_template_message
 # ------------------------------------------------------------
 
@@ -2434,22 +1962,7 @@ CREATE TABLE ". tablename('yz_withdraw')." (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-
-# Dump of table ims_yz_withdraw_relation_order
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS ". tablename('yz_withdraw_relation_order').";
-
-CREATE TABLE ". tablename('yz_withdraw_relation_order')." (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `withdraw_id` int(11) DEFAULT '0',
-  `order_id` int(11) DEFAULT '0',
-  `created_at` int(11) DEFAULT '0',
-  `updated_at` int(11) DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+ 
 INSERT INTO ". tablename('yz_menu')." (`id`, `name`, `item`, `url`, `url_params`, `permit`, `menu`, `icon`, `parent_id`, `sort`, `status`, `created_at`, `updated_at`, `deleted_at`)
 VALUES
   (15, '评论管理', 'comment', 'goods.comment.index', '', 1, 1, 'fa-columns', 6, 5, 1, 0, 1491794656, NULL),

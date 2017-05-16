@@ -138,7 +138,6 @@
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> webapp链接</h4>
                         </div>
-                        <div id="fe-tab-link-li-31" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 31)" data-href="{{ yzAppFullUrl('member') }}">会员中心</div>
 
                         <div id="fe-tab-link-li-32" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 32)" data-href="{{ yzAppFullUrl('member/tabs') }}">tabs</div>
 

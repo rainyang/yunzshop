@@ -5,7 +5,6 @@ namespace app\backend\modules\goods\controllers;
 use app\common\helpers\Url;
 use app\common\models\Goods;
 use app\common\models\Member;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use app\backend\modules\goods\models\Comment;
 use app\backend\modules\goods\services\CommentService;
@@ -104,7 +103,7 @@ class CommentController extends BaseController
     public function updated()
     {
         $id = \YunShop::request()->id;
-        $commentModel = Comment::getComment($id);
+        $commentModel = Comment::getComment($id)->first();
         if (!$commentModel) {
             return $this->message('无此记录或已被删除', '', 'error');
         }

@@ -86,7 +86,9 @@ class MemberCouponController extends ApiController
         $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
 
         $now = strtotime('now');
-        $coupons = Coupon::getCouponsForMember($uid, null, $now);
+        $coupons = Coupon::getCouponsForMember($uid, $memberLevel, null, $now)
+            ->orderBy('display_order','desc')
+            ->orderBy('updated_at','desc');
         if($coupons->get()->isEmpty()){
             return $this->errorJson('没有找到记录', []);
         }
@@ -113,6 +115,9 @@ class MemberCouponController extends ApiController
             //增加属性 - 对于该优惠券,用户可领取的数量
             if($v['get_max'] != self::NO_LIMIT){
                 $coupons['data'][$k]['api_remaining'] = $v['get_max'] - $v['member_got_count'];
+                if ($coupons['data'][$k]['api_remaining'] < 0){ //考虑到优惠券设置会变更,比如原来允许领取6张,之后修改为3张,那么可领取张数可能会变成负数
+                    $coupons['data'][$k]['api_remaining'] = 0;
+                }
             } elseif($v['get_max'] == self::NO_LIMIT){
                 $coupons['data'][$k]['api_remaining'] = -1;
             }
@@ -169,12 +174,17 @@ class MemberCouponController extends ApiController
         $availableCoupons = array();
         foreach($coupons as $k=>$v){
             $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
-            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['belongs_to_coupon']['discount'] * 10;
+            $coupons[$k]['belongs_to_coupon']['discount'] = intval($coupons[$k]['belongs_to_coupon']['discount']);
 
             if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
                 && ($time < $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)){
                 $coupons[$k]['belongs_to_coupon']['start'] = date('Y-m-d', $v['get_time']); //前端需要统一的起止时间
                 $coupons[$k]['belongs_to_coupon']['end'] = date('Y-m-d', ($v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)); //前端需要统一的起止时间
+                $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
+                $availableCoupons[] = array_merge($coupons[$k], $usageLimit);
+            } if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE && ($v['belongs_to_coupon']['time_days']==0)){ //不限时
+                $coupons[$k]['belongs_to_coupon']['start'] = date('Y-m-d', $v['get_time']);
+                $coupons[$k]['belongs_to_coupon']['end'] = '不限时间';
                 $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon'])); //增加属性 - 优惠券的适用范围
                 $availableCoupons[] = array_merge($coupons[$k], $usageLimit);
             } elseif($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_DATE_TIME_RANGE
@@ -197,9 +207,10 @@ class MemberCouponController extends ApiController
         //获取已经过期的优惠券
         foreach($coupons as $k=>$v){
             $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
-            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['belongs_to_coupon']['discount'] * 10;
+            $coupons[$k]['belongs_to_coupon']['discount'] = intval($coupons[$k]['belongs_to_coupon']['discount']);
 
             if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
+                && ($v['belongs_to_coupon']['time_days']!==0)
                 && ($time > $v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)){
                 $coupons[$k]['belongs_to_coupon']['start'] = date('Y-m-d', $v['get_time']); //前端需要统一的起止时间
                 $coupons[$k]['belongs_to_coupon']['end'] = date('Y-m-d', ($v['get_time'] + $v['belongs_to_coupon']['time_days']*3600*24)); //前端需要统一的起止时间
@@ -224,7 +235,7 @@ class MemberCouponController extends ApiController
         //增加属性 - 优惠券的适用范围
         foreach($coupons as $k=>$v){
             $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
-            $coupons[$k]['belongs_to_coupon']['discount'] = $coupons[$k]['belongs_to_coupon']['discount'] * 10;
+            $coupons[$k]['belongs_to_coupon']['discount'] = intval($coupons[$k]['belongs_to_coupon']['discount']);
             $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon']));
             $usedCoupons[] = array_merge($coupons[$k], $usageLimit);
         }
@@ -269,7 +280,7 @@ class MemberCouponController extends ApiController
             return $this->errorJson('找不到记录','');
         }
 
-        $res = MemberCoupon::deleteById($id); //软删除
+        $res = $model->delete();
         if($res){
             return $this->successJson('ok', '');
         } else{
@@ -279,7 +290,6 @@ class MemberCouponController extends ApiController
 
     //在"优惠券中心"点击领取优惠券
     //需要提供$couponId
-    //todo 需要扣除余额或者积分
     public function getCoupon()
     {
         $couponId = \YunShop::request()->get('coupon_id');
@@ -299,7 +309,7 @@ class MemberCouponController extends ApiController
         if(!empty($couponModel->level_limit) && ($couponModel->level_limit != -1)){ //优惠券有会员等级要求
             if (empty($member->level_id)){
                 return $this->errorJson('该优惠券有会员等级要求,但该用户没有会员等级','');
-            } elseif($member->level_id > $couponModel->level_limit){
+            } elseif($member->level_id < $couponModel->level_limit){
                 return $this->errorJson('没有达到领取该优惠券的会员等级要求','');
             }
         }
@@ -313,8 +323,15 @@ class MemberCouponController extends ApiController
         //是否达到个人领取上限
         $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
         $couponMaxLimit = Coupon::getter($couponId, 'get_max'); //优惠券限制每人的领取总数
-        if($count >= $couponMaxLimit){
+        if($count >= $couponMaxLimit && ($couponMaxLimit != -1)){
             return $this->errorJson('已经达到个人领取上限','');
+        }
+
+        //验证是否达到优惠券总数上限
+        $totalGetCount = MemberCoupon::getTotalGetCount($couponId);
+        $couponSumLimit = Coupon::getter($couponId, 'total');
+        if($totalGetCount >= $couponSumLimit && ($couponSumLimit != -1)){
+            return $this->errorJson('该优惠券已经被抢光','');
         }
 
         //表单验证, 保存
@@ -365,7 +382,7 @@ class MemberCouponController extends ApiController
                         'resp_desc' => $respDesc,
                         'resp_url' => $couponModel->resp_url,
                     ];
-                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
+//                    self::sendTemplateMessage($openid, self::TEMPLATEID, $messageData);
                 }
 
                 //写入log
@@ -381,7 +398,7 @@ class MemberCouponController extends ApiController
                 CouponLog::create($logData);
 
                 //按前端要求, 需要返回和 couponsForMember() 方法完全一致的数据
-                $coupon = Coupon::getCouponsForMember($memberId, $couponId)->get()->toArray();
+                $coupon = Coupon::getCouponsForMember($memberId, $member->level_id, $couponId)->get()->toArray();
                 $res = self::getCouponData(['data' => $coupon], $member->level_id);
                 return $this->successJson('ok', $res['data'][0]);
             }
@@ -391,31 +408,34 @@ class MemberCouponController extends ApiController
     //发送模板消息
     public static function sendTemplateMessage($openid, $templateid, $data)
     {
-        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-
-        $options = [
-            'app_id' => $account->key,
-            'secret' => $account->secret,
-            'token' => \YunShop::app()->account['token'],
-        ];
-        $app = new Application($options);
+        $app = app('wechat');
         $notice = $app->notice;
-        $url = $data['resp_url'];
-
-        $templateData = array(
-            "first" => $data['resp_title'],
-            "keyword1" => $data['resp_thumb'],
-            "keyword2" => $data['resp_url'],
-            "remark" => $data['resp_desc'],
-        );
-
-        $result = $notice->uses($templateid)->withUrl($url)->andData($templateData)->andReceiver($openid)->send();
-        $resultArray = json_decode($result, true);
-        if($resultArray['errcode'] != 0){
-            return false;
-        }
-
-        return $resultArray;
+        $notice->uses($templateid)->andData($data)->andReceiver($openid)->send();
+//        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+//
+//        $options = [
+//            'app_id' => $account->key,
+//            'secret' => $account->secret,
+//            'token' => \YunShop::app()->account['token'],
+//        ];
+//        $app = new Application($options);
+//        $notice = $app->notice;
+//        $url = $data['resp_url'];
+//
+//        $templateData = array(
+//            "first" => $data['resp_title'],
+//            "keyword1" => $data['resp_thumb'],
+//            "keyword2" => $data['resp_url'],
+//            "remark" => $data['resp_desc'],
+//        );
+//
+//        $result = $notice->uses($templateid)->withUrl($url)->andData($templateData)->andReceiver($openid)->send();
+//        $resultArray = json_decode($result, true);
+//        if($resultArray['errcode'] != 0){
+//            return false;
+//        }
+//
+//        return $resultArray;
     }
 
     //动态显示内容

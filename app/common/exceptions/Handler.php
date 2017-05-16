@@ -3,6 +3,7 @@
 namespace app\common\exceptions;
 
 use app\common\traits\JsonTrait;
+use app\common\traits\MessageTrait;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -10,6 +11,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 class Handler extends ExceptionHandler
 {
     use JsonTrait;
+    use MessageTrait;
     /**
      * A list of the exception types that should not be reported.
      *
@@ -48,9 +50,13 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof AppException) {
-            return $this->errorJson($exception->getMessage());
+            $this->renderShopException($exception);
         }
-        if($exception instanceof AdminException){
+        if ($exception instanceof AdminException) {
+            $this->renderShopException($exception);
+        }
+        if ($exception instanceof NotFoundException) {
+            $this->renderNotFoundException($exception);
 
         }
         if ($this->isHttpException($exception)) {
@@ -82,6 +88,14 @@ class Handler extends ExceptionHandler
         return redirect()->guest('login');
     }
 
+    protected function renderShopException(Exception $exception)
+    {
+        if (\Yunshop::isApi()) {
+            return $this->errorJson($exception->getMessage());
+        }
+        exit($this->message('未找到该订单!', '', 'error'));
+    }
+
     /**
      * Render an exception using Whoops.
      *
@@ -98,5 +112,18 @@ class Handler extends ExceptionHandler
             $e->getStatusCode(),
             $e->getHeaders()
         );
+    }
+
+    protected function renderNotFoundException(NotFoundException $exception)
+    {
+        if(\Yunshop::isPHPUnit()){
+            exit( $exception->getMessage());
+        }
+        if (\Yunshop::isApi()) {
+            return $this->errorJson($exception->getMessage());
+        }
+
+        abort(404, $exception->getMessage());
+
     }
 }

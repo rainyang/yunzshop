@@ -94,7 +94,8 @@
                             <div class="col-sm-9 col-xs-12">
                                 <img src='{{$order['belongs_to_member']['avatar']}}'
                                      style='width:100px;height:100px;padding:1px;border:1px solid #ccc'/>
-                                {{$order['belongs_to_member']['nickname']}}
+                                <a href="{!! yzWebUrl('member.member.detail',array('id'=>$order['belongs_to_member']['uid'])) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
+
                             </div>
                         </div>
                         <div class="form-group">
@@ -134,23 +135,26 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单状态 :</label>
                             <div class="col-sm-9 col-xs-12">
                                 <p class="form-control-static">
-                                    @if ($order['status'] == 0)<span class="label label-info">待付款</span>@endif
-                                    @if ($order['status'] == 1)<span class="label label-info">待发货</span>@endif
-                                    @if ($order['status'] == 2)<span class="label label-info">待收货</span>@endif
-                                    @if ($order['status'] == 3)<span class="label label-success">已完成</span>@endif
-                                    @if ($order['status'] == -1)
-                                        @if (!empty($refund) && $refund['status'] == 1)
-                                            <span class="label label-default">已{{$r_type[$refund['rtype']]}}</span>
-                                            @if (!empty($refund['refundtime']))
-                                                退款时间: {{$refund['refundtime']}}
-                                            @endif
-                                        @else
-                                            <span class="label label-default">已关闭</span>
-                                        @endif
-                                    @endif
+                                    <span class="label
+                                    @if ($order['status'] == 3) label-success
+                                    @elseif ($order['status'] == -1) label-default
+                                    @else label-info
+                                    @endif">{{$order['status_name']}}</span>
                                 </p>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付方式 :</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <p class="form-control-static">
+
+                                    <span class="label label-info">{{$order['pay_type_name']}}</span>
+                                </p>
+
+                            </div>
+
+                        </div>
+
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注 :</label>
                             <div class="col-sm-9 col-xs-12"><textarea style="height:150px;" class="form-control"
@@ -165,14 +169,6 @@
                                 <button name='saveremark' onclick="sub()" class='btn btn-default'>保存备注</button>
                             </div>
                         </div>
-                        @if (!empty($refund) && $refund['status'] == 1)
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款时间 :</label>
-                                <div class="col-sm-9 col-xs-12">
-                                    <div class="form-control-static">{{$order['refundtime']}}</div>
-                                </div>
-                            </div>
-                        @endif
 
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单日期 :</label>
@@ -219,27 +215,29 @@
                                     <th class="col-md-5 col-lg-1">操作</th>
                                 </tr>
                                 </thead>
-                                @foreach ($order['has_many_order_goods'] as $goods)
+                                @foreach ($order['has_many_order_goods'] as $order_goods)
                                     <tr>
-                                        <td>{{$goods['goods_id']}}</td>
-                                        <td>{{$goods['title']}}</td>
-                                        <td>{{$goods['goods_sn']}}</td>
-                                        <td>{{$goods['goods_price']}}
-                                            /{{$goods['belongs_to_good']['market_price']}}
-                                            /{{$goods['belongs_to_good']['cost_price']}}元
+                                        <td>{{$order_goods['goods_id']}}</td>
+                                        <td>
+                                            <a href="{{yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
                                         </td>
-                                        <td>{{$goods['total']}}</td>
+                                        <td>{{$order_goods['goods_sn']}}</td>
+                                        <td>{{$order_goods['goods_price']}}
+                                            /{{$order_goods['goods']['market_price']}}
+                                            /{{$order_goods['goods']['cost_price']}}元
+                                        </td>
+                                        <td>{{$order_goods['total']}}</td>
                                         <td style='color:red;font-weight:bold;'>{{$order['goods_price']}}
                                             <br/>{{$order['price']}}
                                         </td>
                                         <td>
-                                            <a href="{!! yzWebUrl('goods.goods.edit', array('id' => $goods['belongs_to_good']['id'])) !!}"
+                                            <a href="{!! yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods']['id'])) !!}"
                                                class="btn btn-default btn-sm" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;
                                         </td>
                                     </tr>
                                     <tr style="text-align: right;padding: 6px 0;border-top:none;">
                                         <td colspan="8">
-                                            @if ($goods['belongs_to_good']['status'] == 1)
+                                            @if ($order_goods['goods']['status'] == 1)
                                                 <label data="1"
                                                        class="label label-default text-default label-info text-pinfo">上架</label>
                                             @else
@@ -248,7 +246,7 @@
                                             @endif
                                             <label data="1"
                                                    class="label label-default text-default label-info text-pinfo">
-                                                @if ($goods['belongs_to_good']['type'] == 1)
+                                                @if ($order_goods['goods']['type'] == 1)
                                                     实体商品
                                                 @else
                                                     虚拟商品

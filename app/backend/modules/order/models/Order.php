@@ -22,15 +22,20 @@ class Order extends \app\common\models\Order
         return $orders;
     }
 
+    // todo 父类里面已经存在该方法，没有加关联字段，供应商那报错，看看对订单是否有影响
+    public function hasManyOrderGoods()
+    {
+        return $this->hasMany(OrderGoods::class, 'order_id', 'id');
+    }
+
     public function scopeExportOrders($search)
     {
-        $order_builder = Order::search($search);
+        $order_builder = self::search($search);
 
         $orders = $order_builder->with([
             'belongsToMember' => self::memberBuilder(),
             'hasManyOrderGoods' => self::orderGoodsBuilder(),
             'hasOneDispatchType',
-            'hasOnePayType',
             'address',
             'hasOneOrderRemark',
             'express',
@@ -51,15 +56,42 @@ class Order extends \app\common\models\Order
             'address',
             'hasOnePayType',
             'hasOneRefundApply' => self::refundBuilder(),
+            'hasOneOrderRemark'
 
         ]);
         return $orders;
     }
+    /**
+     * 获取用户消费总额
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalPrice($uid)
+    {
+        return self::where('status', '>=', 1)
+            ->where('status', '<=', 3)
+            ->where('uid', $uid)
+            ->sum('price');
+    }
 
+    /**
+     * 获取用户消费次数
+     *
+     * @param $uid
+     * @return mixed
+     */
+    public static function getCostTotalNum($uid)
+    {
+        return self::where('status','>=', 1)
+            ->Where('status','<=', 3)
+            ->where('uid', $uid)
+            ->count('id');
+    }
     private static function refundBuilder()
     {
         return function ($query) {
-            return $query->with('returnExpress');
+            return $query->with('returnExpress')->with('resendExpress');
         };
     }
 
@@ -73,7 +105,7 @@ class Order extends \app\common\models\Order
     private static function orderGoodsBuilder()
     {
         return function ($query) {
-            $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_sn']);
+            $query->orderGoods();
         };
     }
 

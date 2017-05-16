@@ -28,7 +28,7 @@ class OrderSend extends ChangeStatusOperation
         $db_express_model->save();
         parent::updateTable();
     }
-    public function enable()
+    public function check()
     {
         if(!empty($this->status->refund_id)){
             if($this->hasOneRefundApply->status >=0){
@@ -36,6 +36,6 @@ class OrderSend extends ChangeStatusOperation
                 return false;
             }
         }
-        return parent::enable();
+        return parent::check();
     }
 }

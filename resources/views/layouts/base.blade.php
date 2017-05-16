@@ -19,6 +19,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{static_url('yunshop/libs/ionicons/2.0.1/css/ionicons.min.css')}}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{static_url('yunshop/dist/css/AdminLTE.css')}}">
+
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
           page. However, you can choose any other skin. Make sure you
           apply the skin class to the body tag so the changes take effect.
@@ -53,6 +54,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       }
 
       window.sysinfo = {
+        'is_new': '{{IMS_VERSION > 1 ? 1:0}}',
         'uniacid': '{{YunShop::app()->uniacid}}',
         'acid': '{{YunShop::app()->acid}}',
         'openid': '{{YunShop::app()->openid}}',
@@ -72,12 +74,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- jQuery 2.2.0 -->
     <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script type="text/javascript" src="{{static_url('js/general.js')}}"></script>
 
     <script type="text/javascript" src="{{static_url('resource/js/app/util.js')}}"></script>
     <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
 
     <script type="text/javascript" src="{{static_url('js/app/config.js')}}"></script>
     <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
+
 
 </head>
 <style type="text/css">

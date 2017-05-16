@@ -15,12 +15,14 @@
                 }
             }
 
+        /*
             if ($(':input[name="member[term_time]"]').val() != '') {
                 if (!numerictype.test($(':input[name="member[term_time]"]').val())) {
                     Tip.focus(':input[name="member[term_time]"]', '会员等级到期时间,只能为非负整数.');
                     return false;
                 }
             }
+            */
             return true;
 
         }
@@ -82,7 +84,7 @@
                         <span class="help-block">默认为完成订单金额</span>
                     </div>
                 </div>
-
+<!--
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级时间限制</label>
                     <div class="col-sm-9 col-xs-12">
@@ -108,7 +110,7 @@
                         <span class='help-block'>会员等级到期时间</span>
                     </div>
                 </div>
-
+-->
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">强制绑定手机</label>
                     <div class="col-sm-9 col-xs-12">
