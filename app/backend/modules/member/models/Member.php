@@ -16,7 +16,8 @@ class Member extends \app\common\models\Member
      */
     public static function getMemberByName($keyWord)
     {
-        return self::searchLike($keyWord)
+        return self::uniacid()
+            ->searchLike($keyWord)
             ->with('hasOneFans')
             ->get();
     }

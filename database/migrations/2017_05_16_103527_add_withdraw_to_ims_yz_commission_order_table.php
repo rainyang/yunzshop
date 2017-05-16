@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddOrderPayIdToYzOrderTable extends Migration
+class AddWithdrawToImsYzCommissionOrderTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class AddOrderPayIdToYzOrderTable extends Migration
      */
     public function up()
     {
-        Schema::table('yz_order', function(Blueprint $table)
+        Schema::table('yz_commission_order', function(Blueprint $table)
         {
-            if (!Schema::hasColumn('yz_order', 'order_pay_id')) {
+            if (!Schema::hasColumn('yz_commission_order', 'withdraw')) {
 
-                $table->integer('order_pay_id')->default(0);
+                $table->tinyInteger('withdraw')->default(0);
             }
 
         });    }
@@ -29,8 +29,8 @@ class AddOrderPayIdToYzOrderTable extends Migration
      */
     public function down()
     {
-        Schema::table('yz_order', function (Blueprint $table) {
-            $table->dropColumn('order_pay_id');
+        Schema::table('yz_commission_order', function (Blueprint $table) {
+            $table->dropColumn('withdraw');
         });
     }
 }

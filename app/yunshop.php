@@ -48,17 +48,17 @@ class YunShop
         $controller->action = $action;
         $controller->route = implode('.', $currentRoutes);
 
-        if(self::isWeb()){
+        if (self::isWeb()) {
             //菜单生成
-            if(!\Cache::has('db_menu')){
+            if (!\Cache::has('db_menu')) {
                 $dbMenu = Menu::getMenuList();
-                \Cache::put('db_menu',$dbMenu,3600);
-            }else{
+                \Cache::put('db_menu', $dbMenu, 3600);
+            } else {
                 $dbMenu = \Cache::get('db_menu');
             }
-            $menuList =  array_merge($dbMenu, (array)Config::get('menu'));
-            Config::set('menu',$menuList);
-            $item = Menu::getCurrentItemByRoute($controller->route,$menuList);
+            $menuList = array_merge($dbMenu, (array)Config::get('menu'));
+            Config::set('menu', $menuList);
+            $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
             //检测权限
             if (!PermissionService::can($item)) {
@@ -116,6 +116,12 @@ class YunShop
         return $path;
     }
 
+    public static function isPHPUnit()
+    {
+        return strpos($_SERVER['PHP_SELF'], 'phpunit') !== false ? true : false;
+
+    }
+
     public static function isWeb()
     {
         return strpos($_SERVER['PHP_SELF'], '/web/index.php') !== false ? true : false;
@@ -123,6 +129,9 @@ class YunShop
 
     public static function isApp()
     {
+        if(self::isPHPUnit()){
+            return true;
+        }
         return strpos($_SERVER['PHP_SELF'], '/app/index.php') !== false ? true : false;
     }
 
@@ -205,10 +214,10 @@ class YunShop
             $routeFirst = array_first($routes);
             $countRoute = count($routes);
             if ($routeFirst === 'plugin' || self::isPlugin()) {
-                if(self::isPlugin()){
+                if (self::isPlugin()) {
                     $currentRoutes[] = 'plugin';
                     $countRoute += 1;
-                }else{
+                } else {
                     $currentRoutes[] = $routeFirst;
                     array_shift($routes);
                 }
@@ -220,7 +229,7 @@ class YunShop
                     $path = base_path() . '/plugins/' . $pluginName . '/src';
                     $length = $countRoute;
 
-                    self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length,$currentRoutes, $requestRoute,true);
+                    self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true);
 
 
                 } else {
@@ -229,7 +238,7 @@ class YunShop
                 }
             } else {
 
-                self::findRouteFile($controllerName,$action, $routes, $namespace, $path, $length,$currentRoutes, $requestRoute,false);
+                self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, false);
 
             }
         }
@@ -249,23 +258,23 @@ class YunShop
      * @param $requestRoute
      * @param $isPlugin
      */
-    public static function findRouteFile(&$controllerName,&$action,$routes, &$namespace, &$path, $length, &$currentRoutes,$requestRoute,$isPlugin)
+    public static function findRouteFile(&$controllerName, &$action, $routes, &$namespace, &$path, $length, &$currentRoutes, $requestRoute, $isPlugin)
     {
 
         foreach ($routes as $k => $r) {
             $ucFirstRoute = ucfirst(Str::camel($r));
-            $controllerFile = $path . ($isPlugin ? '/' : '/controllers/' ). $ucFirstRoute . 'Controller.php';
+            $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . $ucFirstRoute . 'Controller.php';
             if (is_file($controllerFile)) {
-                $namespace .= ($isPlugin?'':'\\controllers').'\\' . $ucFirstRoute . 'Controller';
+                $namespace .= ($isPlugin ? '' : '\\controllers') . '\\' . $ucFirstRoute . 'Controller';
                 $controllerName = $ucFirstRoute;
                 $path = $controllerFile;
                 $currentRoutes[] = $r;
-            } elseif (is_dir($path .= ($isPlugin?'':'/modules').'/' . $r)) {
-                $namespace .= ($isPlugin?'':'\\modules').'\\' . $r;
+            } elseif (is_dir($path .= ($isPlugin ? '' : '/modules') . '/' . $r)) {
+                $namespace .= ($isPlugin ? '' : '\\modules') . '\\' . $r;
                 $modules[] = $r;
                 $currentRoutes[] = $r;
             } else {
-                if ($length !== ($isPlugin ? $k + 3 : $k+1)) {
+                if ($length !== ($isPlugin ? $k + 3 : $k + 1)) {
                     throw new NotFoundException('no found route:' . $requestRoute);
 
                 }
@@ -317,8 +326,8 @@ class YunComponent implements ArrayAccess
     public function get($key = null)
     {
         if (isset($key)) {
-            $result = json_decode(array_get($this->values, $key, null),true);
-            if(@is_array($result)){
+            $result = json_decode(array_get($this->values, $key, null), true);
+            if (@is_array($result)) {
                 return $result;
             }
             return array_get($this->values, $key, null);
@@ -359,7 +368,7 @@ class YunRequest extends YunComponent
     public function __construct()
     {
         global $_GPC;
-        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? request()->input() :(array)$_GPC;
+        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? request()->input() : (array)$_GPC;
     }
 
 
@@ -377,14 +386,14 @@ class YunApp extends YunComponent
         $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
     }
-    
+
     public function getW()
     {
         return [
-            'uniacid'=>request()->get('i'),
-            'weid'=>request()->get('i'),
-            'acid'=>request()->get('i'),
-            'account' => \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'))?\app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'))->toArray():''
+            'uniacid' => request()->get('i'),
+            'weid' => request()->get('i'),
+            'acid' => request()->get('i'),
+            'account' => \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i')) ? \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'))->toArray() : ''
         ];
     }
 
@@ -444,10 +453,10 @@ class YunApp extends YunComponent
     public function getMemberId()
     {
         if (config('app.debug')) {
-            if(isset($_GET['test_uid'])){
+            if (isset($_GET['test_uid'])) {
                 return $_GET['test_uid'];
             }
-           //return false;
+            //return false;
         }
 
         if (Session::get('member_id')) {

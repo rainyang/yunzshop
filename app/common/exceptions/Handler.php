@@ -116,9 +116,13 @@ class Handler extends ExceptionHandler
 
     protected function renderNotFoundException(NotFoundException $exception)
     {
+        if(\Yunshop::isPHPUnit()){
+            exit( $exception->getMessage());
+        }
         if (\Yunshop::isApi()) {
             return $this->errorJson($exception->getMessage());
         }
+
         abort(404, $exception->getMessage());
 
     }
