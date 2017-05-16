@@ -14,7 +14,7 @@ class ConstService
 
     const OPERATOR_SHOP     = 0;  //操作者 商城
 
-    const OPERATOR_ORDER_   = -1; //操作者 订单
+    const OPERATOR_ORDER    = -1; //操作者 订单
 
     const OPERRTOR_MEMBER   = -2; //操作者 会员
 
