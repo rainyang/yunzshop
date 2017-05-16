@@ -4,6 +4,7 @@ use Illuminate\Support\Str;
 use app\common\services\PermissionService;
 use app\common\models\Menu;
 use app\common\services\Session;
+use app\common\exceptions\NotFoundException;
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
@@ -23,12 +24,12 @@ class YunShop
     {
         //检测命名空间
         if (!class_exists($namespace)) {
-            abort(404, " 不存在命名空间: " . $namespace);
+            throw new NotFoundException(" 不存在命名空间: " . $namespace);
         }
         //检测controller继承
         $controller = new $namespace;
         if (!$controller instanceof \app\common\components\BaseController) {
-            abort(404, '不存在控制器:' . $namespace);
+            throw new NotFoundException(" 不存在控制器: " . $namespace);
         }
 
         //设置默认方法
@@ -40,7 +41,7 @@ class YunShop
 
         //检测方法是否存在并可执行
         if (!method_exists($namespace, $action) || !is_callable([$namespace, $action])) {
-            abort(404, '操作方法不存在: ' . $action);
+            throw new NotFoundException('操作方法不存在: ' . $action);
         }
         $controller->modules = $modules;
         $controller->controller = $controllerName;
@@ -61,7 +62,8 @@ class YunShop
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
             //检测权限
             if (!PermissionService::can($item)) {
-                abort(403, '无权限');
+                throw new NotFoundException('无权限');
+
             }
         }
 
@@ -222,7 +224,8 @@ class YunShop
 
 
                 } else {
-                    abort(404, '无此插件');
+                    throw new NotFoundException('无此插件');
+
                 }
             } else {
 
@@ -263,7 +266,8 @@ class YunShop
                 $currentRoutes[] = $r;
             } else {
                 if ($length !== ($isPlugin ? $k + 3 : $k+1)) {
-                    abort(404,'no found route:' . $requestRoute);
+                    throw new NotFoundException('no found route:' . $requestRoute);
+
                 }
                 $action = strpos($r, '-') === false ? $r : Str::camel($r);
                 $currentRoutes[] = $r;
@@ -455,3 +459,4 @@ class YunApp extends YunComponent
 
 
 }
+
