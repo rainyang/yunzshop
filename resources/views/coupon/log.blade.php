@@ -79,8 +79,8 @@
                     <tr>
                         <th width="8%">优惠券名称</th>
                         <th width="8%">用户名称</th>
-                        <th width="5%">获取途径</th>
-                        <th width="30%">日志详情</th>
+                        <th width="6%">获取途径</th>
+                        <th width="50%">日志详情</th>
                         <th width="10%">创建时间</th>
                     </tr>
                 </thead>
