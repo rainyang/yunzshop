@@ -67,7 +67,7 @@ class HomePageController extends ApiController
                 $setting['is_bind_mobile'] = 0;
             }
 
-            $result['mailInfo'] = $setting; //todo 和老钟协商,属性名改成setting
+            $result['mailInfo'] = $setting; //todo 和前端协商,属性名改成setting
         }
 
         //用户信息, 原来接口在 member.member.getUserInfo
@@ -104,7 +104,7 @@ class HomePageController extends ApiController
                 $text = $account->name;
             }
 
-            $result['subscribe'] = [ //todo 和老钟协商, 属性名改为guidefollow
+            $result['subscribe'] = [ //todo 和前端协商, 属性名改为guidefollow
                 'logo' => $logo,
                 'text' => $text,
                 'url' => $set['follow_url'],
@@ -132,8 +132,15 @@ class HomePageController extends ApiController
             $page = Designer::getDefaultDesigner();
             if ($page) {
                 $designer = (new DesignerService())->getPage($page->toArray());
-                $result['item'] = $designer; //todo 和老钟协商, 属性名改为designer
-            } elseif($i){ //如果提供了公众号 ID , 则提供菜单的默认数据
+                $result['item'] = $designer; //todo 和前端协商, 属性名改为designer
+            }
+
+            //菜单背景色, 原来接口在  plugin.designer.home.index.menu
+            $menustyle = DesignerMenu::getDefaultMenu();
+            if ($menustyle) {
+                $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
+                $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
+            } else{ //提供默认值
                 $result['item']['menus'] = Array(
                     Array(
                         "id"=>1,
@@ -197,14 +204,6 @@ class HomePageController extends ApiController
                         "bordercolor"=>"#bfbfbf"
                     ),
                 );
-            }
-
-            //菜单背景色, 原来接口在  plugin.designer.home.index.menu
-            $menustyle = DesignerMenu::getDefaultMenu();
-            if ($menustyle) {
-                $result = $this->getMenu($menustyle->toArray());
-                $result['item']['menustyle'] = $menustyle;
-            } else{ //提供默认值
                 $result['item']['menustyle'] = Array(
                     "previewbg" => "#ef372e",
                     "height" => "49px",
