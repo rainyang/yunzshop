@@ -20,7 +20,7 @@ class Slide extends \app\common\models\Slide
         return self::find($id);
     }
 
-    public function daletedSlide($id)
+    public static function deletedSlide($id)
     {
         return self::where('id', $id)
             ->delete();
