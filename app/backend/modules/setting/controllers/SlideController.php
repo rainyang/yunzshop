@@ -100,7 +100,7 @@ class SlideController extends BaseController
             return $this->message('无此记录或已经删除','','error');
         }
 
-        $result = Slide::daletedSlide($id);
+        $result = Slide::deletedSlide($id);
         if($result) {
             return $this->message('删除成功',Url::absoluteWeb('setting.slide'));
         }else{
