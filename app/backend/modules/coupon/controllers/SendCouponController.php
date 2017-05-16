@@ -101,8 +101,8 @@ class SendCouponController extends BaseController
                 $responseData = [
                     'title' => $couponModel->resp_title,
                     'image' => $couponModel->resp_thumb,
-                    'description' => $couponModel->resp_desc ? $couponModel->resp_desc : '你获得了 1 张优惠券 -- "'.$couponModel->name.' "',
-                    'url' => $couponModel->resp_url,
+                    'description' => $couponModel->resp_desc ?: '你获得了 1 张优惠券 -- "'.$couponModel->name.' "',
+                    'url' => $couponModel->resp_url ?: yzAppFullUrl('home'),
                 ];
                 $res = $this->sendCoupon($couponModel, $memberIds, $sendTotal, $responseData);
                 if ($res){
