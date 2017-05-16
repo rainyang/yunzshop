@@ -204,9 +204,6 @@ class SendCouponController extends BaseController
         if (preg_match('/\[couponname\]/', $msg)){
             $msg = str_replace('[couponname]', $data['couponname'], $msg);
         }
-        if (preg_match('/\[validtime\]/', $msg)){
-            $msg = str_replace('[validtime]', $data['validtime'], $msg);
-        }
         return $msg;
     }
 }

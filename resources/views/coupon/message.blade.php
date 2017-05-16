@@ -6,7 +6,7 @@
             <input type="text" name="coupon[resp_title]" class="form-control" value="{{$coupon['resp_title']}}"  />
             <span class="help-block">
                 例如: 恭喜您获取了优惠券
-                <br>变量: [nickname] 为"会员昵称", [couponname] 为"优惠券名称", [validtime] 为"有效期",样式类似这样"2018/11/11 - 2018/11/18"
+                <br>变量: [nickname] 为"会员昵称", [couponname] 为"优惠券名称"
                 <br><span style="font-weight:bold">注意:</span> 如果标题为空则不推送消息
             </span>
         </div>
