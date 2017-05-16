@@ -28,4 +28,4 @@ class Address extends BaseModel
         return static::all()->toArray();
     }
 
-}\
+}
