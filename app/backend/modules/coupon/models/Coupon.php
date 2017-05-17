@@ -46,13 +46,23 @@ class Coupon extends \app\common\models\Coupon
      * 字段规则
      * @return array */
     public function rules() {
+
+        //因为 deduct 和 discount 的默认值都为 0, 为了让 0 通过验证, 所以需要如下判断
+        if($this->coupon_method == 1){
+            $deduct = '|min:1';
+        }elseif($this->coupon_method == 2){
+            $discount = '|between:1,9';
+        }else{
+            $deduct = null;
+            $discount = null;
+        }
         return [
             'display_order' => 'required|integer',
             'name' => 'required',
             'enough' => 'required|integer',
             'time_days' => 'required|integer',
-            'deduct' => 'required|numeric',
-            'discount' => 'required|numeric',
+            'deduct' => 'required|integer'.$deduct,
+            'discount' => 'required|integer'.$discount,
             'get_max' => 'required|integer',
             'total' => 'required|integer',
             'resp_title' => 'nullable|string',
