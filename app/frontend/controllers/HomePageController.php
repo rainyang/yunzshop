@@ -16,6 +16,7 @@ use Illuminate\Filesystem\Filesystem;
 use app\common\repositories\OptionRepository;
 use app\common\models\AccountWechats;
 use app\common\models\McMappingFans;
+use app\frontend\modules\shop\controllers\IndexController;
 
 
 class HomePageController extends ApiController
@@ -29,10 +30,10 @@ class HomePageController extends ApiController
 //        $menu = (new IndexController())->menu();
 
         $i = \YunShop::request()->i;
-        $mid = \YunShop::request()->mid ?: 0;
-        $type = \YunShop::request()->type ?: 5; //todo
+        $mid = \YunShop::request()->mid;
+        $type = \YunShop::request()->type;
 
-        
+
         //商城设置, 原来接口在 setting.get
         $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
         if (!empty($key)) {
@@ -125,7 +126,7 @@ class HomePageController extends ApiController
         }
 
 
-        //如果安装了装修插件
+        //如果安装了装修插件并开启插件
         if(array_key_exists('designer', $enableds)){
 
             //装修, 原来接口在 plugin.designer.home.index.page
@@ -133,6 +134,8 @@ class HomePageController extends ApiController
             if ($page) {
                 $designer = (new DesignerService())->getPage($page->toArray());
                 $result['item'] = $designer; //todo 和前端协商, 属性名改为designer
+            } else{
+                $result['default'] = self::defaultDesign();
             }
 
             //菜单背景色, 原来接口在  plugin.designer.home.index.menu
@@ -141,93 +144,123 @@ class HomePageController extends ApiController
                 $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
                 $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
             } else{ //提供默认值
-                $result['item']['menus'] = Array(
-                    Array(
-                        "id"=>1,
-                        "title"=>"首页",
-                        "icon"=>"fa fa-home",
-                        "url"=>"/addons_shop/#/home?i=".$i."&mid=".$mid."&type=".$type,
-                        "name"=>"home",
-                        "subMenus"=>[],
-                        "textcolor"=>"#70c10b",
-                        "bgcolor"=>"#24d7e6",
-                        "bordercolor"=>"#bfbfbf",
-                        "iconcolor"=>"#666666"
-                    ),
-                    Array(
-                        "id"=>"menu_1489731310493",
-                        "title"=>"分类",
-                        "icon"=>"fa fa-th-large",
-                        "url"=>"/addons_shop/#/category?i=".$i."&mid=".$mid."&type=".$type,
-                        "name"=>"category",
-                        "subMenus"=>[],
-                        "textcolor"=>"#70c10b",
-                        "bgcolor"=>"#24d7e6",
-                        "iconcolor"=>"#666666",
-                        "bordercolor"=>"#bfbfbf"
-                    ),
-                    Array(
-                        "id"=>"menu_1489731319695",
-                        "classt"=>"no",
-                        "title"=>"推广",
-                        "icon"=>"fa fa-send",
-                        "url"=>"/addons_shop/#/member/extension?i=".$i."&mid=".$mid."&type=".$type,
-                        "name"=>"extension",
-                        "subMenus"=>[],
-                        "textcolor"=>"#666666",
-                        "bgcolor"=>"#837aef",
-                        "iconcolor"=>"#666666",
-                        "bordercolor"=>"#bfbfbf"
-                    ),
-                    Array(
-                        "id"=>"menu_1489735163419",
-                        "title"=>"购物车",
-                        "icon"=>"fa fa-cart-plus",
-                        "url"=>"/addons_shop/#/cart?i=".$i."&mid=".$mid."&type=".$type,
-                        "name"=>"cart",
-                        "subMenus"=>[],
-                        "textcolor"=>"#70c10b",
-                        "bgcolor"=>"#24d7e6",
-                        "iconcolor"=>"#666666",
-                        "bordercolor"=>"#bfbfbf"
-                    ),
-                    Array(
-                        "id"=>"menu_1491619644306",
-                        "title"=>"会员中心",
-                        "icon"=>"fa fa-user",
-                        "url"=>"/addons_shop/#/member?i=".$i."&mid=".$mid."&type=".$type,
-                        "name"=>"member",
-                        "subMenus"=>[],
-                        "textcolor"=>"#70c10b",
-                        "bgcolor"=>"#24d7e6",
-                        "iconcolor"=>"#666666",
-                        "bordercolor"=>"#bfbfbf"
-                    ),
-                );
-                $result['item']['menustyle'] = Array(
-                    "previewbg" => "#ef372e",
-                    "height" => "49px",
-                    "textcolor" => "#70c10b",
-                    "textcolorhigh" => "#ff4949",
-                    "iconcolor" => "#666666",
-                    "iconcolorhigh" => "#ff4949",
-                    "bgcolor" => "#FFF",
-                    "bgcolorhigh" => "#FFF",
-                    "bordercolor" => "#010101",
-                    "bordercolorhigh" => "#bfbfbf",
-                    "showtext" => 1,
-                    "showborder" => "0",
-                    "showicon" => 2,
-                    "textcolor2" => "#666666",
-                    "bgcolor2" => "#fafafa",
-                    "bordercolor2" => "#1856f8",
-                    "showborder2" => 1,
-                    "bgalpha" => ".5",
-                );
+                $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
+                $result['item']['menustyle'] = self::defaultMenuStyle();
             }
+        } else{ //没有安装装修插件或者没有开启
+            $result['default'] = self::defaultDesign();
+            $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
+            $result['item']['menustyle'] = self::defaultMenuStyle();
         }
 
         return $this->successJson('ok', $result);
+    }
+
+    //默认首页样式
+    public static function defaultDesign()
+    {
+        $set = Setting::get('shop.category');
+        $set['cat_adv_img'] = tomedia($set['cat_adv_img']);
+
+        return  Array(
+            'ads' => (new IndexController())->getAds(),
+            'category' => (new IndexController())->getRecommentCategoryList(),
+            'set' => $set,
+            'goods' => (new IndexController())->getRecommentGoods(),
+        );
+    }
+
+    //默认菜单
+    public static function defaultMenu($i, $mid, $type)
+    {
+        return Array(
+            Array(
+                "id"=>1,
+                "title"=>"首页",
+                "icon"=>"fa fa-home",
+                "url"=>"/addons_shop/#/home?i=".$i."&mid=".$mid."&type=".$type,
+                "name"=>"home",
+                "subMenus"=>[],
+                "textcolor"=>"#70c10b",
+                "bgcolor"=>"#24d7e6",
+                "bordercolor"=>"#bfbfbf",
+                "iconcolor"=>"#666666"
+            ),
+            Array(
+                "id"=>"menu_1489731310493",
+                "title"=>"分类",
+                "icon"=>"fa fa-th-large",
+                "url"=>"/addons_shop/#/category?i=".$i."&mid=".$mid."&type=".$type,
+                "name"=>"category",
+                "subMenus"=>[],
+                "textcolor"=>"#70c10b",
+                "bgcolor"=>"#24d7e6",
+                "iconcolor"=>"#666666",
+                "bordercolor"=>"#bfbfbf"
+            ),
+            Array(
+                "id"=>"menu_1489731319695",
+                "classt"=>"no",
+                "title"=>"推广",
+                "icon"=>"fa fa-send",
+                "url"=>"/addons_shop/#/member/extension?i=".$i."&mid=".$mid."&type=".$type,
+                "name"=>"extension",
+                "subMenus"=>[],
+                "textcolor"=>"#666666",
+                "bgcolor"=>"#837aef",
+                "iconcolor"=>"#666666",
+                "bordercolor"=>"#bfbfbf"
+            ),
+            Array(
+                "id"=>"menu_1489735163419",
+                "title"=>"购物车",
+                "icon"=>"fa fa-cart-plus",
+                "url"=>"/addons_shop/#/cart?i=".$i."&mid=".$mid."&type=".$type,
+                "name"=>"cart",
+                "subMenus"=>[],
+                "textcolor"=>"#70c10b",
+                "bgcolor"=>"#24d7e6",
+                "iconcolor"=>"#666666",
+                "bordercolor"=>"#bfbfbf"
+            ),
+            Array(
+                "id"=>"menu_1491619644306",
+                "title"=>"会员中心",
+                "icon"=>"fa fa-user",
+                "url"=>"/addons_shop/#/member?i=".$i."&mid=".$mid."&type=".$type,
+                "name"=>"member",
+                "subMenus"=>[],
+                "textcolor"=>"#70c10b",
+                "bgcolor"=>"#24d7e6",
+                "iconcolor"=>"#666666",
+                "bordercolor"=>"#bfbfbf"
+            ),
+        );
+
+    }
+
+    public static function defaultMenuStyle()
+    {
+        return Array(
+            "previewbg" => "#ef372e",
+            "height" => "49px",
+            "textcolor" => "#70c10b",
+            "textcolorhigh" => "#ff4949",
+            "iconcolor" => "#666666",
+            "iconcolorhigh" => "#ff4949",
+            "bgcolor" => "#FFF",
+            "bgcolorhigh" => "#FFF",
+            "bordercolor" => "#010101",
+            "bordercolorhigh" => "#bfbfbf",
+            "showtext" => 1,
+            "showborder" => "0",
+            "showicon" => 2,
+            "textcolor2" => "#666666",
+            "bgcolor2" => "#fafafa",
+            "bordercolor2" => "#1856f8",
+            "showborder2" => 1,
+            "bgalpha" => ".5",
+        );
     }
 
 }
