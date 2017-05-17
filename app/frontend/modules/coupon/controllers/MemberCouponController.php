@@ -173,8 +173,8 @@ class MemberCouponController extends ApiController
 
         $availableCoupons = array();
         foreach($coupons as $k=>$v){
-//            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
-//            $coupons[$k]['belongs_to_coupon']['discount'] = intval($coupons[$k]['belongs_to_coupon']['discount']);
+            $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
+            $coupons[$k]['belongs_to_coupon']['discount'] = intval($coupons[$k]['belongs_to_coupon']['discount']);
 
             if($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE && ($v['belongs_to_coupon']['time_days']==0)){ //不限时
                 $coupons[$k]['belongs_to_coupon']['start'] = date('Y-m-d', $v['get_time']);
