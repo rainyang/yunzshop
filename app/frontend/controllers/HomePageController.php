@@ -138,10 +138,12 @@ class HomePageController extends ApiController
                 $set02 = Setting::get('shop.category');
                 $set02['cat_adv_img'] = tomedia($set02['cat_adv_img']);
 
-                $result['item']['ads'] = (new IndexController())->getAds();
-                $result['item']['category'] = (new IndexController())->getRecommentCategoryList();
-                $result['item']['set'] = $set02;
-                $result['item']['goods'] = (new IndexController())->getRecommentGoods();
+                $result['item']['data'] = [
+                    'ads' => (new IndexController())->getAds(),
+                    'category' => (new IndexController())->getRecommentCategoryList(),
+                    'set' => $set02,
+                    'goods' => (new IndexController())->getRecommentGoods(),
+                ];
             }
 
             //菜单背景色, 原来接口在  plugin.designer.home.index.menu
