@@ -30,27 +30,27 @@ class ConstService
     //充值状态 ：失败
     const STATUS_FAILURE = -1;
 
-        const SOURCE_RECHARGE          = 1; //充值
+    const SOURCE_RECHARGE          = 1; //充值
 
-        const SOURCE_CONSUME           = 2; //消费
+    const SOURCE_CONSUME           = 2; //消费
 
-        const SOURCE_TRANSFER          = 3; //转让
+    const SOURCE_TRANSFER          = 3; //转让
 
-        const SOURCE_DEDUCTION         = 4; //抵扣
+    const SOURCE_DEDUCTION         = 4; //抵扣
 
-        const SOURCE_AWARD             = 5; //奖励
+    const SOURCE_AWARD             = 5; //奖励
 
-        const SOURCE_WITHDRAWAL        = 6; //提现
+    const SOURCE_WITHDRAWAL        = 6; //提现
 
-        const SOURCE_INCOME            = 7; //提现至～～
+    const SOURCE_INCOME            = 7; //提现至～～
 
-        const SOURCE_CANCEL_DEDUCTION  = 8; //抵扣取消回滚
+    const SOURCE_CANCEL_DEDUCTION  = 8; //抵扣取消回滚
 
-        const SOURCE_CANCEL_AWARD      = 9; //奖励取消回滚
+    const SOURCE_CANCEL_AWARD      = 9; //奖励取消回滚
 
-        const SOURCE_CANCEL_CONSUME    = 10; //消费取消回滚
+    const SOURCE_CANCEL_CONSUME    = 10; //消费取消回滚
 
-        const SOURCE_RECHARGE_MINUS    = 11; //后台扣除
+    const SOURCE_RECHARGE_MINUS    = 11; //后台扣除
 
 
     private static $title = '余额';
