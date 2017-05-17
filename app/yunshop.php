@@ -69,10 +69,11 @@ class YunShop
 
         //执行方法
         $controller->preAction();
+
+
         $content = $controller->$action(
             Illuminate\Http\Request::capture()
         );
-
         exit($content);
     }
 

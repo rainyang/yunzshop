@@ -15,12 +15,12 @@
 //header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT');
 //header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With');
 //header('Access-Control-Allow-Credentials: true');
-
-Route::any('', function () {
-    if(strpos($_SERVER['PHP_SELF'],'phpunit')){
-        YunShop::parseRoute('order.list');
-        return ;
-    }
+//Route::any('/addons/yun_shop/api.php', function () {
+//    if(strpos($_SERVER['PHP_SELF'],'phpunit')){
+//        YunShop::parseRoute('order.list');
+//    }
+//});
+Route::any('/', function () {
     //支付回调
     if (strpos(request()->getRequestUri(), '/payment/') !== false) {
         preg_match('#(.*)/payment/(\w+)/(\w+).php(.*?)#', request()->getRequestUri(), $match);
