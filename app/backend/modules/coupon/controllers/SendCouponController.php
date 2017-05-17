@@ -100,9 +100,9 @@ class SendCouponController extends BaseController
                 //发放优惠券
                 $responseData = [
                     'title' => $couponModel->resp_title,
-                    'image' => $couponModel->resp_thumb,
-                    'description' => $couponModel->resp_desc ? $couponModel->resp_desc : '你获得了 1 张优惠券 -- "'.$couponModel->name.' "',
-                    'url' => $couponModel->resp_url,
+                    'image' => tomedia($couponModel->resp_thumb),
+                    'description' => $couponModel->resp_desc ?: '亲爱的 [nickname], 你获得了 1 张 "'.$couponModel->name.'" 优惠券',
+                    'url' => $couponModel->resp_url ?: yzAppFullUrl('home'),
                 ];
                 $res = $this->sendCoupon($couponModel, $memberIds, $sendTotal, $responseData);
                 if ($res){
@@ -164,6 +164,7 @@ class SendCouponController extends BaseController
                     'couponname' => $couponModel->name,
                 ];
                 $responseData['title'] = self::dynamicMsg($responseData['title'], $dynamicData);
+                $responseData['description'] = self::dynamicMsg($responseData['description'], $dynamicData);
                 $news = new News($responseData);
                 Message::sendNotice($memberOpenid, $news);
             }
@@ -203,9 +204,6 @@ class SendCouponController extends BaseController
         }
         if (preg_match('/\[couponname\]/', $msg)){
             $msg = str_replace('[couponname]', $data['couponname'], $msg);
-        }
-        if (preg_match('/\[validtime\]/', $msg)){
-            $msg = str_replace('[validtime]', $data['validtime'], $msg);
         }
         return $msg;
     }
