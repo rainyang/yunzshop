@@ -30,8 +30,8 @@ class HomePageController extends ApiController
 //        $menu = (new IndexController())->menu();
 
         $i = \YunShop::request()->i;
-        $mid = \YunShop::request()->mid ?: 0;
-        $type = \YunShop::request()->type ?: 5; //todo
+        $mid = \YunShop::request()->mid;
+        $type = \YunShop::request()->type;
 
 
         //商城设置, 原来接口在 setting.get
