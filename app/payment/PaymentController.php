@@ -114,6 +114,10 @@ class PaymentController extends BaseController
                     'pay_sn'=> $data['trade_no']
                 ]);
                 break;
+            case "gold_recharge.succeeded":
+                \Log::debug('支付操作', 'gold_recharge.succeeded');
+                // TODO
+                break;
         }
     }
 
@@ -132,6 +136,8 @@ class PaymentController extends BaseController
                 return 'charge.succeeded';
             } elseif ('RV' == strtoupper($tag)) {
                 return 'recharge.succeeded';
+            } elseif ('RG' == strtoupper($tag)) {
+                return 'gold_recharge.succeeded';
             }
         }
 
