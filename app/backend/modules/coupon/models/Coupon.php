@@ -49,7 +49,11 @@ class Coupon extends \app\common\models\Coupon
 
         //因为 deduct 和 discount 的默认值都为 0, 为了让 0 通过验证, 所以需要如下判断
         if($this->coupon_method == 1){
-            $deduct = '|min:1';
+            if($this->enough){
+                $deduct = '|between:1,'.$this->enough; //不能超过"订单金额"(如果 enough 为 0, 表示不限制消费金额, 则不限制"立减"金额)
+            } else{
+                $deduct = '|min:1';
+            }
         }elseif($this->coupon_method == 2){
             $discount = '|between:1,9';
         }else{
