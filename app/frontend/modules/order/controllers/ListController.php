@@ -30,7 +30,6 @@ class ListController extends ApiController
      */
     public function index()
     {
-        $this->order;
         return $this->successJson($msg = 'ok', $data = $this->getData());
 
     }

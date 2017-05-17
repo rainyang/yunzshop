@@ -31,5 +31,6 @@ class AddOrderPayIdToYzOrderTable extends Migration
     {
         Schema::table('yz_order', function (Blueprint $table) {
             $table->dropColumn('order_pay_id');
-        });    }
+        });
+    }
 }

@@ -7,10 +7,19 @@
  */
 
 namespace app\common\exceptions;
+
 use Exception;
 
 
 class NotFoundException extends Exception
 {
+    public function getStatusCode()
+    {
+        return 404;
+    }
 
+    public function getHeaders()
+    {
+        return [];
+    }
 }
