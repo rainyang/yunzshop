@@ -19,16 +19,13 @@ trait JsonTrait
      */
     public  function successJson($message = '成功', $data = [])
     {
-        return json_encode([
-        'result' => 1,
-            'msg' => $message,
-            'data' => $data
-        ]);
-        return response()->json([
+        response()->json([
             'result' => 1,
             'msg' => $message,
             'data' => $data
-        ]);
+        ],200,['charset'=>'utf-8'])
+            ->send();
+        exit;
     }
 
     /**
@@ -39,10 +36,12 @@ trait JsonTrait
      */
     public  function errorJson($message = '失败', $data = [])
     {
-          return response()->json([
+          response()->json([
             'result' => 0,
             'msg' => $message,
             'data' => $data
-        ],200,['charset'=>'utf-8']);
+        ],200,['charset'=>'utf-8'])
+            ->send();
+          exit;
     }
 }
