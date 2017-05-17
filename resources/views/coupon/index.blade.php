@@ -108,16 +108,11 @@
                                 {{$row['usetotal']}} / {{$row['gettotal']}} / @if($row['total'] == -1) 无限数量 @else {{$row['lasttotal']}} @endif
                             </a>
 
-                        <td>@if($row['get_type']==0)
-                            <label class="label label-default">不显示</label>
+                        <td>
+                            @if($row['get_type']==0)
+                                <label class="label label-default">不显示</label>
                             @else
-
-                            @if($row['credit']>0 || $row['money']>0)
-                                @if($row['credit']>0)<label class='label label-primary'>{{$row['credit']}} 积分</label><br/>@endif
-                                @if($row['money']>0)<label class='label label-danger'>{{$row['money']}} 现金</label><br/>@endif
-                            @else
-                                <label class='label label-warning'>免费</label>
-                            @endif
+                                <label class='label label-warning'>显示</label>
                             @endif
                         </td>
                         <td>{!! $row['created_at'] !!}</td>

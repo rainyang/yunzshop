@@ -25,7 +25,7 @@ class Coupon extends \app\common\models\Coupon
     //前台需要整数的"折扣值", 即"打几折"
     public function getDiscountAttribute($value)
     {
-        return $value * 10;
+        return intval($value);
     }
 
     //获取该用户可领取的优惠券的状态

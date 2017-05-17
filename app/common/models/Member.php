@@ -136,7 +136,11 @@ class Member extends BackendModel
                 ->where('uid', $member_id)
                 ->first();
     }
-
+    public static function getMemberByUid($member_id)
+    {
+        return self::uniacid()
+            ->where('uid', $member_id);
+    }
     /**
      * 添加评论默认名称
      * @return mixed
