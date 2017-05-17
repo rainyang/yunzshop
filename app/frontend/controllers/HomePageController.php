@@ -16,6 +16,7 @@ use Illuminate\Filesystem\Filesystem;
 use app\common\repositories\OptionRepository;
 use app\common\models\AccountWechats;
 use app\common\models\McMappingFans;
+use app\frontend\modules\shop\controllers\IndexController;
 
 
 class HomePageController extends ApiController
@@ -133,6 +134,14 @@ class HomePageController extends ApiController
             if ($page) {
                 $designer = (new DesignerService())->getPage($page->toArray());
                 $result['item'] = $designer; //todo 和前端协商, 属性名改为designer
+            } else{
+                $set02 = Setting::get('shop.category');
+                $set02['cat_adv_img'] = tomedia($set02['cat_adv_img']);
+
+                $result['item']['ads'] = (new IndexController())->getAds();
+                $result['item']['category'] = (new IndexController())->getRecommentCategoryList();
+                $result['item']['set'] = $set02;
+                $result['item']['goods'] = (new IndexController())->getRecommentGoods();
             }
 
             //菜单背景色, 原来接口在  plugin.designer.home.index.menu
