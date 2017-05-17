@@ -407,8 +407,8 @@ class MemberModel extends Member
 
         $shop = \Setting::get('shop.shop');
         $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
-        $member_info['credit'] = [
-            'text' => $shop['credit'] ? $shop['credit'] : '余额',
+        $member_info['Credit'] = [
+            'text' => $shop['Credit'] ? $shop['Credit'] : '余额',
             'data' => $member_info['credit2']
             ];
         $member_info['integral'] = [

@@ -11,8 +11,8 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\common\requests\Request;
+use app\frontend\modules\order\models\Order;
 use app\frontend\modules\order\models\OrderAddress;
-use app\frontend\modules\order\models\OrderDetailModel;
 
 
 class DetailController extends ApiController
@@ -23,7 +23,7 @@ class DetailController extends ApiController
         ]);
         $orderId = $request->query('order_id');
 
-        $order = OrderDetailModel::getOrderDetail($orderId);
+        $order = Order::detail()->find($orderId);
 
         if ($order->uid != \YunShop::app()->getMemberId()) {
             throw new AppException('(ID:'.$order->id.')该订单属于其他用户');
