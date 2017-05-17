@@ -33,7 +33,7 @@ class HomePageController extends ApiController
         $mid = \YunShop::request()->mid ?: 0;
         $type = \YunShop::request()->type ?: 5; //todo
 
-        
+
         //商城设置, 原来接口在 setting.get
         $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
         if (!empty($key)) {
@@ -144,11 +144,13 @@ class HomePageController extends ApiController
                 $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
                 $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
             } else{ //提供默认值
-                $result['item'] = self::defaultMenu($i, $mid, $type);
+                $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
+                $result['item']['menustyle'] = self::defaultMenuStyle();
             }
         } else{ //没有安装装修插件或者没有开启
             $result['default'] = self::defaultDesign();
-            $result['item'] = self::defaultMenu($i, $mid, $type);
+            $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
+            $result['item']['menustyle'] = self::defaultMenuStyle();
         }
 
         return $this->successJson('ok', $result);
@@ -171,7 +173,7 @@ class HomePageController extends ApiController
     //默认菜单
     public static function defaultMenu($i, $mid, $type)
     {
-        $result['menus'] = Array(
+        return Array(
             Array(
                 "id"=>1,
                 "title"=>"首页",
@@ -234,7 +236,12 @@ class HomePageController extends ApiController
                 "bordercolor"=>"#bfbfbf"
             ),
         );
-        $result['menustyle'] = Array(
+
+    }
+
+    public static function defaultMenuStyle()
+    {
+        return Array(
             "previewbg" => "#ef372e",
             "height" => "49px",
             "textcolor" => "#70c10b",
@@ -254,8 +261,6 @@ class HomePageController extends ApiController
             "showborder2" => 1,
             "bgalpha" => ".5",
         );
-        return $result;
-
     }
 
 }
