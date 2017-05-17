@@ -28,7 +28,7 @@ class Message
         try{
             $app = new Application($options);
             $app->staff->message($notice)->to($openid)->send();
-        }catch(Exception $e){
+        }catch(\Exception $e){
 
         }
     }
