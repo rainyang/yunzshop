@@ -138,7 +138,7 @@ class HomePageController extends ApiController
                 $set02 = Setting::get('shop.category');
                 $set02['cat_adv_img'] = tomedia($set02['cat_adv_img']);
 
-                $result['item']['data'] = [
+                $result['default'] = [
                     'ads' => (new IndexController())->getAds(),
                     'category' => (new IndexController())->getRecommentCategoryList(),
                     'set' => $set02,
