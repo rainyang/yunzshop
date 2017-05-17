@@ -27,7 +27,7 @@
                      <input type="radio" name="coupon[time_limit]" value="0" checked>获得后
                  </label>
             </span>
-            <input type='text' class='form-control' name='coupon[time_days]' value="{{isset($coupon['time_days']) ? $coupon['time_days'] : 0}}" />
+            <input type='text' class='form-control' name='coupon[time_days]' value="{{isset($coupon['time_days']) ? $coupon['time_days'] : 1}}" />
             <span class='input-group-addon'>天内有效(0 为不限时间使用)</span>
         </div>
         <br>
