@@ -144,11 +144,11 @@ class HomePageController extends ApiController
                 $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
                 $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
             } else{ //提供默认值
-                $result['item'][] = self::defaultMenu($i, $mid, $type);
+                $result['item'] = self::defaultMenu($i, $mid, $type);
             }
         } else{ //没有安装装修插件或者没有开启
             $result['default'] = self::defaultDesign();
-            $result['item'][] = self::defaultMenu($i, $mid, $type);
+            $result['item'] = self::defaultMenu($i, $mid, $type);
         }
 
         return $this->successJson('ok', $result);
