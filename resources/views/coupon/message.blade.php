@@ -23,8 +23,8 @@
         <div class="col-sm-9 col-xs-12">
             <textarea name="coupon[resp_desc]" class='form-control'>{{$coupon['resp_desc']}}</textarea>
             <span class="help-block">
-                默认: 亲爱的 [nickname], 您已经获取 1 张优惠券 "[couponname]", 有效期是 [validtime], 请及时使用".
-                <br>变量: [nickname] 为"会员昵称", [couponname] 为"优惠券名称", [validtime] 为"有效期",样式类似这样"2018/11/11 - 2018/11/18"
+                默认: 亲爱的 [nickname], 您获得了 1 张 "[couponname]" 优惠券.
+                <br>变量: [nickname] 为"会员昵称", [couponname] 为"优惠券名称"
             </span>
         </div>
     </div>

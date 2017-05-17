@@ -25,7 +25,11 @@ class Message
             'app_id'  => $pay['weixin_appid'],
             'secret'  => $pay['weixin_secret'],
         ];
-        $app = new Application($options);
-        $app->staff->message($notice)->to($openid)->send();
+        try{
+            $app = new Application($options);
+            $app->staff->message($notice)->to($openid)->send();
+        }catch(Exception $e){
+
+        }
     }
 }
