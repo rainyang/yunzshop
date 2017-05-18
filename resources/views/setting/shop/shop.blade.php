@@ -97,7 +97,7 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额字样</label>
                     <div class="col-sm-9 col-xs-12">
-                        <input type="text" name="shop[credit]" class="form-control" value="{{ $set['Credit']}}" />
+                        <input type="text" name="shop[credit]" class="form-control" value="{{ $set['credit']}}" />
                         <span class='help-block'>商城内余额字样的自定义功能</span>
                     </div>
                 </div>
