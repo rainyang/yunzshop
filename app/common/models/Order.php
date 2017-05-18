@@ -44,23 +44,23 @@ class Order extends BaseModel
     public function scopeWaitPay($query)
     {
         //AND o.status = 0 and o.paytype<>3
-        return $query->where(['status' => 0]);
+        return $query->where(['status' => self::WAIT_PAY]);
     }
 
     public function scopeWaitSend($query)
     {
         //AND ( o.status = 1 or (o.status=0 and o.paytype=3) )
-        return $query->where(['status' => 1]);
+        return $query->where(['status' => self::WAIT_SEND]);
     }
 
     public function scopeWaitReceive($query)
     {
-        return $query->where(['status' => 2]);
+        return $query->where(['status' => self::WAIT_RECEIVE]);
     }
 
     public function scopeCompleted($query)
     {
-        return $query->where(['status' => 3]);
+        return $query->where(['status' => self::COMPLETE]);
     }
 
     public function scopeRefund($query)
@@ -80,7 +80,7 @@ class Order extends BaseModel
 
     public function scopeCancelled($query)
     {
-        return $query->where(['status' => -1]);
+        return $query->where(['status' => self::CLOSE]);
     }
 
     public function hasManyOrderGoods()
@@ -132,11 +132,6 @@ class Order extends BaseModel
     public function express()
     {
         return $this->hasOne(Express::class, 'order_id', 'id');
-    }
-
-    public function scopeUn($query)
-    {
-        return $query->where(['uniacid' => 1]);
     }
 
     public function getStatusService()
@@ -195,10 +190,12 @@ class Order extends BaseModel
         }
         return $status_counts;
     }
+
     public function scopeIsPlugin($query)
     {
         return $query->where('is_plugin', 0);
     }
+
     /**
      * 通过会员ID获取订单信息
      *
@@ -214,7 +211,7 @@ class Order extends BaseModel
         parent::boot();
         static::observe(new OrderObserver());
 
-        static::addGlobalScope(function(Builder $builder) {
+        static::addGlobalScope(function (Builder $builder) {
             $builder->uniacid();
         });
     }

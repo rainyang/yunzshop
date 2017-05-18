@@ -55,8 +55,8 @@
                         <span class="help-block">会员默认等级名称，不填写默认“普通会员”</span>
                     </div>
                 </div>
-	
-				
+
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级说明连接</label>
                     <div class="col-sm-9 col-xs-12">
@@ -150,9 +150,9 @@
                         <input type="submit" name="submit" value="提交" class="btn btn-success"  onclick="return formcheck();"/>
                      </div>
             </div>
-                       
+
             </div>
-        </div>     
+        </div>
     </form>
 </div>
 </div>

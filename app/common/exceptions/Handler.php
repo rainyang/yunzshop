@@ -49,14 +49,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof AppException) {
-            $this->renderShopException($exception);
-        }
-        if ($exception instanceof AdminException) {
-            $this->renderShopException($exception);
+        if ($exception instanceof ShopException) {
+            return $this->renderShopException($exception);
         }
         if ($exception instanceof NotFoundException) {
-            $this->renderNotFoundException($exception);
+            return $this->renderNotFoundException($exception);
 
         }
         if ($this->isHttpException($exception)) {
@@ -93,7 +90,7 @@ class Handler extends ExceptionHandler
         if (\Yunshop::isApi()) {
             return $this->errorJson($exception->getMessage());
         }
-        exit($this->message('未找到该订单!', '', 'error'));
+        exit($this->message($exception->getMessage(), '', 'error'));
     }
 
     /**
@@ -116,9 +113,14 @@ class Handler extends ExceptionHandler
 
     protected function renderNotFoundException(NotFoundException $exception)
     {
+        if(\Yunshop::isPHPUnit()){
+
+            exit( $exception->getMessage());
+        }
         if (\Yunshop::isApi()) {
             return $this->errorJson($exception->getMessage());
         }
+
         abort(404, $exception->getMessage());
 
     }
