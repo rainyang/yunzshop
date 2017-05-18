@@ -125,7 +125,7 @@
                             <th style='width:10%;text-align: center;'>粉丝</th>
                             <th style='width:12%;'>姓名</th>
                             <th style='width:12%;'>手机号码</th>
-                            <th style='width:12%;text-align: center;'>状态</th>
+                            <th style='width:12%;'>状态</th>
                             <th style='width:14%;'>注册时间</th>
                             <th style='width:10%;text-align: center;'>关注</th>
                             <th style='width:13%'>操作</th>
