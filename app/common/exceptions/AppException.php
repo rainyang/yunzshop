@@ -10,7 +10,7 @@ namespace app\common\exceptions;
 use Exception;
 
 
-class AppException extends Exception
+class AppException extends ShopException
 {
 
 }

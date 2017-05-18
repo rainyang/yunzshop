@@ -17,30 +17,36 @@ use app\frontend\modules\order\models\OrderAddress;
 
 class DetailController extends ApiController
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $this->validate($request, [
             'order_id' => 'required|integer'
         ]);
         $orderId = $request->query('order_id');
 
-        $order = Order::detail()->find($orderId);
+        $order = $this->getOrder()->find($orderId);
 
         if ($order->uid != \YunShop::app()->getMemberId()) {
-            throw new AppException('(ID:'.$order->id.')该订单属于其他用户');
+            throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
         }
         $order->button_models = $order->button_models;
 
-        $data= $order->toArray();
+        $data = $order->toArray();
 
         //todo 配送类型
-        if($order['dispatch_type_id'] == 1){
-            $data['address_info'] = OrderAddress::select('address','mobile','realname')->where('order_id',$order['id'])->first();
+        if ($order['dispatch_type_id'] == 1) {
+            $data['address_info'] = OrderAddress::select('address', 'mobile', 'realname')->where('order_id', $order['id'])->first();
         }
-        if (!$order){
+        if (!$order) {
             return $this->errorJson($msg = '未找到数据', []);
         } else {
             return $this->successJson($msg = 'ok', $data);
         }
 
+    }
+
+    protected function getOrder()
+    {
+        return Order::detail();
     }
 }

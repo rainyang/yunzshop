@@ -49,10 +49,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof AppException) {
-            return $this->renderShopException($exception);
-        }
-        if ($exception instanceof AdminException) {
+        if ($exception instanceof ShopException) {
             return $this->renderShopException($exception);
         }
         if ($exception instanceof NotFoundException) {

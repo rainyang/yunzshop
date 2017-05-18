@@ -19,7 +19,7 @@ class SaleWidget extends Widget
     public function run()
     {
         $set = Setting::get('shop');
-        $set['Credit'] = $set['Credit']?$set['Credit']:'余额';
+        $set['credit'] = $set['credit']?$set['credit']:'余额';
         $set['credit1'] = $set['credit1']?$set['credit1']:'积分';
         $saleModel = new Sale();
         $parents = Area::getProvinces(0);

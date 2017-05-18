@@ -30,7 +30,7 @@ class YzSaleSeeder extends Seeder
                     'ed_num'=> $v['ednum'],
                     'ed_money'=> $v['edmoney'],
                     'ed_areas'=> $v['edareas'],
-                    'point'=> $v['Credit'] * 100,
+                    'point'=> $v['credit'] * 100,
                     'bonus'=> $v['redprice'] * 100
                 ]);
 

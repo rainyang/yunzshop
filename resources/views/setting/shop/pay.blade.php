@@ -330,8 +330,8 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额支付</label>
                     <div class="col-sm-9 col-xs-12">
-                        <label class='radio-inline'><input type='radio' name='pay[credit]' value='1' @if ( $set['Credit'] == 1) checked @endif/> 开启</label>
-                        <label class='radio-inline'><input type='radio' name='pay[credit]' value='0' @if ( $set['Credit'] == 0) checked @endif /> 关闭</label>
+                        <label class='radio-inline'><input type='radio' name='pay[credit]' value='1' @if ( $set['credit'] == 1) checked @endif/> 开启</label>
+                        <label class='radio-inline'><input type='radio' name='pay[credit]' value='0' @if ( $set['credit'] == 0) checked @endif /> 关闭</label>
                     </div>
                 </div>
 <!--
