@@ -490,23 +490,15 @@ class AutoUpdate
     {
         $this->_log->info(sprintf('Downloading update "%s" to "%s"', $updateUrl, $updateFile));
 
-        $update = @file_get_contents($updateUrl, $this->_useBasicAuth());
-        if ($update === false) {
-            $this->_log->error(sprintf('Could not download update "%s"!', $updateUrl));
-            return false;
-        }
-        $handle = fopen($updateFile, 'w');
-        if (!$handle) {
-            $this->_log->error(sprintf('Could not open file handle to save update to "%s"!', $updateFile));
-            return false;
-        }
-        if (!fwrite($handle, $update)) {
-            $this->_log->error(sprintf('Could not write update to file "%s"!', $updateFile));
-            fclose($handle);
-            return false;
-        }
-        fclose($handle);
-        return true;
+        return Curl::to($updateUrl)
+            ->withHeader(
+                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+            )
+            ->withContentType('application/zip, application/octet-stream')
+            ->withOption('FOLLOWLOCATION',true)
+            ->withOption('TIMEOUT',100)
+            ->download($updateFile);
+
     }
     /**
      * Simulate update process.
