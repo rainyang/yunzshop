@@ -9,6 +9,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
+use app\common\events\payment\GetOrderPaymentTypeEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 use app\common\models\OrderPay;
@@ -94,26 +95,10 @@ class MergePayController extends ApiController
 
     private function getPayTypeButtons()
     {
-        $result = [];
-        if (\Setting::get('shop.pay.credit')) {
-            $result[] = [
-                'name' => '余额支付',
-                'value' => '3'
-            ];
-        }
-        if (\Setting::get('shop.pay.weixin')) {
-            $result[] = [
-                'name' => '微信支付',
-                'value' => '1'
-            ];
-        }
-        if (\Setting::get('shop.pay.alipay')) {
-            $result[] = [
-                'name' => '支付宝支付',
-                'value' => '2'
-            ];
-        }
-        return $result;
+        $event = new GetOrderPaymentTypeEvent($this->orders);
+        event($event);
+        $result = $event->getData();
+        return $result ? $result : [];
     }
 
     protected function pay($request, $payType)
@@ -172,7 +157,7 @@ class MergePayController extends ApiController
 
     public function wechatPay(\Request $request)
     {
-        if(\Setting::get('shop.pay.weixin') == false){
+        if (\Setting::get('shop.pay.weixin') == false) {
             throw new AppException('商城未开启微信支付');
         }
         $data = $this->pay($request, PayFactory::PAY_WEACHAT);
@@ -182,7 +167,7 @@ class MergePayController extends ApiController
 
     public function alipay(\Request $request)
     {
-        if(!\Setting::get('shop.pay.alipay') == false){
+        if (!\Setting::get('shop.pay.alipay') == false) {
             throw new AppException('商城未开启支付宝支付');
         }
         if ($request->has('uid')) {

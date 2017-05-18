@@ -117,7 +117,7 @@ class Goods extends BaseModel
 
     public function hasOnePrivilege()
     {
-        return $this->hasOne(self::getStaticNamespace().'\goods\Privilege');
+        return $this->hasOne(self::getStaticNamespace().'goods\Privilege');
     }
 
     public function hasOneGoodsDispatch()
