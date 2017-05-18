@@ -11,7 +11,7 @@ use app\common\models\Member;
 use app\common\models\Coupon;
 use app\common\models\CouponLog;
 use app\backend\modules\coupon\services\Message;
-use EasyWeChat\Message\News;
+
 
 class SendCouponController extends BaseController
 {
@@ -153,11 +153,13 @@ class SendCouponController extends BaseController
                 } else{ //发放优惠券失败
                     $log = '手动发放优惠券失败: 管理员( ID 为 '.$this->adminId.' )发放优惠券( ID为 '.$couponModel->id.' )给用户( Member ID 为 '.$memberId.' )时失败!';
                     $this->failedSend[] = $log; //失败时, 记录 todo 最后需要展示出来
+                    \Log::info($log);
                 }
                 $this->log($log, $couponModel, $memberId);
             }
 
             if(!empty($responseData['title']) && $memberOpenid){
+                $templateId = \Setting::get('coupon_template_id'); //模板消息ID
                 $nickname = Member::getMemberById($memberId)->nickname;
                 $dynamicData = [
                     'nickname' => $nickname,
@@ -165,8 +167,7 @@ class SendCouponController extends BaseController
                 ];
                 $responseData['title'] = self::dynamicMsg($responseData['title'], $dynamicData);
                 $responseData['description'] = self::dynamicMsg($responseData['description'], $dynamicData);
-                $news = new News($responseData);
-                Message::sendNotice($memberOpenid, $news);
+                Message::message($memberOpenid, $responseData, $templateId); //默认使用微信"客服消息"通知, 对于超过 48 小时未和平台互动的用户, 使用"模板消息"通知
             }
         }
 
