@@ -1,6 +1,14 @@
 <div class='panel-body'>
 
     <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">模板消息ID<br>(任务处理通知)</label>
+        <div class="col-sm-9 col-xs-12">
+            <input type="text" name="template_id" class="form-control" value="{{$template_id}}" />
+            <div class="help-block">发放优惠券时默认使用"客服消息"通知(需 48 小时内与平台账号交互的用户才会接收到消息)<br>超过 48 小时的用户使用"模板消息"通知，请登录微信公众平台设置"模板消息"编号</div>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">推送标题</label>
         <div class="col-sm-9 col-xs-12">
             <input type="text" name="coupon[resp_title]" class="form-control" value="{{$coupon['resp_title']}}"  />

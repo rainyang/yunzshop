@@ -85,7 +85,7 @@ class Order extends BaseModel
 
     public function hasManyOrderGoods()
     {
-        return $this->hasMany(OrderGoods::class, 'order_id', 'id');
+        return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
     }
 
     public function orderChangePriceLogs()

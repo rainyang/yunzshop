@@ -29,7 +29,6 @@ class DetailController extends ApiController
         if ($order->uid != \YunShop::app()->getMemberId()) {
             throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
         }
-        $order->button_models = $order->button_models;
 
         $data = $order->toArray();
 

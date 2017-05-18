@@ -498,7 +498,6 @@ class AutoUpdate
             ->withOption('FOLLOWLOCATION',true)
             ->withOption('TIMEOUT',100)
             ->download($updateFile);
-
     }
     /**
      * Simulate update process.
