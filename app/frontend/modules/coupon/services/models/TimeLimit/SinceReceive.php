@@ -24,6 +24,6 @@ class SinceReceive extends TimeLimit
 
     private function receiveDays()
     {
-        return ceil((time() - $this->coupon->getMemberCoupon()->get_time) / 86400);
+        return $this->coupon->getMemberCoupon()->get_time->diffInDays();
     }
 }

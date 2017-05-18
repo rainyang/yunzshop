@@ -101,6 +101,10 @@ class BaseModel extends Model
         if (class_exists($result)) {
             return $result;
         }
+        $result = __NAMESPACE__ . '\\' . $model;
+        if (class_exists($result)) {
+            return $result;
+        }
         throw new ShopException('获取关联模型失败');
     }
 }
