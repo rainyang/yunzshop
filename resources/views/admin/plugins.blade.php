@@ -14,7 +14,7 @@
         </section>
 
         <div class='panel panel-default'>
-            <div class='panel-body'>C
+            <div class='panel-body'>
                 <table class="table">
                     <thead>
                     <tr>

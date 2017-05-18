@@ -62,7 +62,10 @@ class EventServiceProvider extends ServiceProvider
         PointLisrener::class,
         GoodsStock::class,
         Order::class,
-        \app\frontend\modules\discount\listeners\Order::class
+        \app\frontend\modules\discount\listeners\Order::class,
+        \app\frontend\modules\payment\listeners\Alipay::class,
+        \app\frontend\modules\payment\listeners\Credit::class,
+        \app\frontend\modules\payment\listeners\Wechat::class,
     ];
     /**
      * Register any events for your application.
