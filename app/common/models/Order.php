@@ -117,6 +117,7 @@ class Order extends BaseModel
         return $this->hasOne(Remark::class, 'order_id', 'id');
     }
 
+    //支付方式
     public function hasOnePayType()
     {
         return $this->hasOne(PayType::class, 'id', 'pay_type_id');

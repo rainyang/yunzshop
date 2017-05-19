@@ -259,12 +259,14 @@ class Member extends BackendModel
     {
         $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
 
+        // todo 后期需要重构
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();
         } else {
             $data['supplier'] = [];
         }
 
+        // todo 后期需要重构
         if ($plugin_class->isEnabled('micro')) {
             $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
         } else {
