@@ -58,9 +58,15 @@ class CouponController extends BaseController
     //添加优惠券
     public function create()
     {
-
         //获取表单提交的值
         $couponRequest = \YunShop::request()->coupon;
+        $couponRequest['uniacid'] = \YunShop::app()->uniacid;
+        $couponRequest['time_start'] = strtotime(\YunShop::request()->time['start']);
+        $couponRequest['time_end'] = strtotime(\YunShop::request()->time['end']);
+        $couponRequest['category_ids'] = \YunShop::request()->category_ids;
+        $couponRequest['categorynames'] = \YunShop::request()->category_names;
+        $couponRequest['goods_ids'] = \YunShop::request()->goods_ids;
+        $couponRequest['goods_names'] = \YunShop::request()->goods_names;
 
         //获取会员等级列表
         $memberLevels = MemberLevel::getMemberLevelList();
@@ -69,17 +75,8 @@ class CouponController extends BaseController
         $template_id = Setting::get('coupon_template_id');
 
         //表单验证
-        if($couponRequest){
+        if($_POST){
             $coupon = new Coupon();
-            $coupon->uniacid = \YunShop::app()->uniacid;
-            $coupon->time_start = strtotime(\YunShop::request()->time['start']);
-            $coupon->time_end = strtotime(\YunShop::request()->time['end']);
-            $coupon->use_type =\YunShop::request()->usetype;
-            $coupon->category_ids = \YunShop::request()->categoryids;
-            $coupon->categorynames = \YunShop::request()->categorynames;
-            $coupon->goods_ids = \YunShop::request()->goods_ids;
-            $coupon->goods_names = \YunShop::request()->goods_names;
-
             $coupon->fill($couponRequest);
             $validator = $coupon->validator();
             if($validator->fails()){
