@@ -60,7 +60,7 @@ abstract class PreGeneratedController extends ApiController
     protected function getOrderData()
     {
         $order_data = collect();
-        $shop_order = OrderService::createOrderByMemberCarts(MemberCartService::filterShopMemberCart($this->getMemberCarts()));;
+        $shop_order = $this->getShopOrder($this->getMemberCarts());
 
         if (!empty($shop_order)) {
 
@@ -71,7 +71,10 @@ abstract class PreGeneratedController extends ApiController
 
         return $order_data;
     }
+    protected function getShopOrder($memberCarts){
+        return OrderService::createOrderByMemberCarts(MemberCartService::filterShopMemberCart($memberCarts));
 
+    }
     /**
      * 获取全部购物车记录
      * @return mixed
