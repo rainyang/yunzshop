@@ -29,7 +29,7 @@
                         history.go(-1);
                       }, 3000);
                     </script>
-                    <p>[<a href="javascript:history.go(-1);" style="text-decoration: none">点击这里返回上一页</a>] &nbsp; [<a href="{{yzWebUrl('index.index')}}">首页</a>]</p>
+                    <p>[<a style="text-decoration: none" href="javascript:history.go(-1);">点击这里返回上一页</a>] &nbsp; [<a href="{{yzWebUrl('index.index')}}">首页</a>]</p>
                 @endif
             </div>
         </div>

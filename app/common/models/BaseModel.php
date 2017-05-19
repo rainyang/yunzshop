@@ -9,6 +9,8 @@
 namespace app\common\models;
 
 
+use app\common\exceptions\AdminException;
+use app\common\exceptions\ShopException;
 use app\common\traits\ValidatorTrait;
 use Illuminate\Database\Eloquent\Model;
 
@@ -90,6 +92,19 @@ class BaseModel extends Model
 
     public static function getStaticNamespace()
     {
-        return substr(static::class, 0, strrpos(static::class, "\\"));
+        return substr(static::class, 0, strrpos(static::class, "\\")) . '\\';
+    }
+
+    public static function getNearestModel($model)
+    {
+        $result = self::getStaticNamespace() . $model;
+        if (class_exists($result)) {
+            return $result;
+        }
+        $result = __NAMESPACE__ . '\\' . $model;
+        if (class_exists($result)) {
+            return $result;
+        }
+        throw new ShopException('获取关联模型失败');
     }
 }
