@@ -10,7 +10,7 @@ namespace app\frontend\modules\member\models;
 
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\goods\models\Goods;
+use app\frontend\models\goods;
 
 class MemberCart extends \app\common\models\MemberCart
 {

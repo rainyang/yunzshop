@@ -95,14 +95,32 @@ class BaseModel extends Model
         return substr(static::class, 0, strrpos(static::class, "\\")) . '\\';
     }
 
-    public static function getNearestModel($model)
+    public static function getNamespaceOfClass($class)
     {
-        $result = self::getStaticNamespace() . $model;
+        return substr(static::class, 0, strrpos($class, "\\")) . '\\';
+
+    }
+
+    public static function recursiveFindClass($class, $findClass)
+    {
+        $result = substr($class, 0, strrpos($class, "\\")) . '\\' . $findClass;
+
         if (class_exists($result)) {
             return $result;
         }
-        $result = __NAMESPACE__ . '\\' . $model;
-        if (class_exists($result)) {
+
+        if(class_exists(get_parent_class($class))){
+            return self::recursiveFindClass(get_parent_class($class),$findClass);
+        }
+        return null;
+
+    }
+
+    public function getNearestModel($model)
+    {
+        $result = self::recursiveFindClass(static::class,$model);
+
+        if(isset($result)){
             return $result;
         }
         throw new ShopException('获取关联模型失败');

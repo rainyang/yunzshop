@@ -5,7 +5,7 @@
  * Date: 2017/4/6
  * Time: 下午4:35
  */
-namespace app\frontend\modules\order\models;
+namespace app\frontend\models;
 
 use app\frontend\models\Member;
 use Illuminate\Database\Eloquent\Builder;
