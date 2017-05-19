@@ -10,6 +10,7 @@ use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
+use Yunshop\Micro\common\services\MicroShop\GetButtonService;
 use Yunshop\Supplier\common\services\VerifyButton;
 
 /**
@@ -262,6 +263,12 @@ class Member extends BackendModel
             $data['supplier'] = VerifyButton::button();
         } else {
             $data['supplier'] = [];
+        }
+
+        if ($plugin_class->isEnabled('micro')) {
+            $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
+        } else {
+            $data['micro'] = [];
         }
 
         return $data;

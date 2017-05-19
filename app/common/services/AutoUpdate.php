@@ -535,6 +535,13 @@ class AutoUpdate
                 $this->_log->debug(sprintf('[SIMULATE] Create directory "%s"', $foldername));
                 $files[$i]['parent_folder_exists'] = false;
                 $parent = dirname($foldername);
+                if(!is_dir($parent)){
+                    if (!mkdir($parent, $this->dirPermissions, true)) {
+                        $files[$i]['parent_folder_writable'] = false;
+                        $simulateSuccess = false;
+                        $this->_log->error(sprintf('Directory "%s" has to be writeable!', $parent));
+                    }
+                }
                 if (!is_writable($parent)) {
                     $files[$i]['parent_folder_writable'] = false;
                     $simulateSuccess = false;
