@@ -90,17 +90,12 @@ class BaseModel extends Model
         return $query->where('uniacid', \YunShop::app()->uniacid);
     }
 
-    public static function getStaticNamespace()
-    {
-        return substr(static::class, 0, strrpos(static::class, "\\")) . '\\';
-    }
-
-    public static function getNamespaceOfClass($class)
-    {
-        return substr(static::class, 0, strrpos($class, "\\")) . '\\';
-
-    }
-
+    /**
+     * 递归获取$class 相对路径的 $findClass
+     * @param $class
+     * @param $findClass
+     * @return null|string
+     */
     public static function recursiveFindClass($class, $findClass)
     {
         $result = substr($class, 0, strrpos($class, "\\")) . '\\' . $findClass;
@@ -116,6 +111,12 @@ class BaseModel extends Model
 
     }
 
+    /**
+     * 获取与子类 继承关系最近的 $model类
+     * @param $model
+     * @return null|string
+     * @throws ShopException
+     */
     public function getNearestModel($model)
     {
         $result = self::recursiveFindClass(static::class,$model);
