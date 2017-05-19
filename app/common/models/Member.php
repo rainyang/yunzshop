@@ -281,4 +281,16 @@ class Member extends BackendModel
 
         return 0;
     }
+
+    public static function getMemberInfoByNickName($keyword)
+    {
+        return static::uniacid()->select('uid', 'realname', 'mobile', 'avatar', 'nickname')
+            ->where('nickname', 'like', '%' . $keyword . '%')
+            ->with([
+                'yzMember' => function ($query) {
+                    return $query->where('is_black', 0);
+                }
+            ])
+            ->get();
+    }
 }
