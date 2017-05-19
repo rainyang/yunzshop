@@ -6,7 +6,7 @@
  * Time: 下午8:34
  */
 
-namespace app\frontend\modules\order\models;
+namespace app\frontend\models;
 
 class OrderAddress extends \app\common\models\OrderAddress
 {

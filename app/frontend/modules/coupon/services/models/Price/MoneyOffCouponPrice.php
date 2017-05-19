@@ -22,7 +22,7 @@ class MoneyOffCouponPrice extends CouponPrice
     protected function getOrderGoodsGroupPrice()
     {
         //会员价-折扣券优惠金额
-        return $this->coupon->getOrderGoodsInScope()->getVipPrice() - $this->coupon->getOrderGoodsInScope()->getCouponDiscountPrice();
+        return $this->coupon->getOrderGoodsInScope()->getFinalPrice() - $this->coupon->getOrderGoodsInScope()->getCouponDiscountPrice();
     }
 
     /**
@@ -33,7 +33,7 @@ class MoneyOffCouponPrice extends CouponPrice
     private function getOrderGoodsPrice($orderGoods)
     {
         //之前的
-        return $orderGoods->getVipPrice() - $orderGoods->couponDiscountPrice;
+        return $orderGoods->getFinalPrice() - $orderGoods->couponDiscountPrice;
     }
 
     /**

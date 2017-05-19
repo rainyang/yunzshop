@@ -6,10 +6,10 @@
  * Time: 上午10:54
  */
 
-namespace app\frontend\modules\goods\models\goods;
+namespace app\frontend\models\goods;
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\goods\models\Goods;
+use app\frontend\models\goods;
 use app\frontend\modules\member\services\MemberService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -74,7 +74,7 @@ class Privilege extends \app\common\models\goods\Privilege
         $history_num = MemberService::getCurrentMemberModel()->orderGoods()->where('goods_id', $this->goods_id)->sum('total');
         if ($this->once_buy_limit > 0) {
             if ($history_num + $num > $this->once_buy_limit)
-                throw new AppException('商品(' . $this->goods->title . ')您已购买' . $history_num . '件,最多可购买' . $this->once_buy_limit . '件');
+                throw new AppException('您已购买' . $history_num . '件商品(' . $this->goods->title . '),最多可购买' . $this->once_buy_limit . '件');
         }
     }
 

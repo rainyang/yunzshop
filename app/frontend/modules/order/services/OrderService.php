@@ -15,9 +15,7 @@ use app\common\events\order\OnPreGenerateOrderCreatingEvent;
 use app\common\exceptions\AppException;
 use app\common\models\Order;
 
-use app\common\models\order\OrderChangeLog;
 use app\common\models\order\OrderGoodsChangePriceLog;
-use app\frontend\modules\goods\services\models\GoodsModel;
 use app\frontend\modules\member\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
@@ -29,8 +27,6 @@ use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
-use app\frontend\modules\order\services\behavior\Send;
-use app\frontend\modules\goods\services\models\Goods;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\shop\services\ShopService;
@@ -93,27 +89,42 @@ class OrderService
      */
     public static function getOrderGoodsModels(Collection $memberCarts)
     {
-        $result = new Collection();
         if ($memberCarts->isEmpty()) {
             throw new AppException("(" . $memberCarts->goods_id . ")未找到订单商品");
         }
-        foreach ($memberCarts as $memberCart) {
+        $result = $memberCarts->map(function ($memberCart) {
             if (!($memberCart instanceof MemberCart)) {
                 throw new \Exception("请传入" . MemberCart::class . "的实例");
             }
             /**
              * @var $memberCart MemberCart
              */
-            $orderGoodsModel = new PreGeneratedOrderGoodsModel($memberCart->toArray());
-            $result->push($orderGoodsModel);
-        }
+
+            $data = [
+                'goods_id' => $memberCart->goods_id,
+                'goods_option_id' => $memberCart->option_id,
+                'total' => $memberCart->total,
+            ];
+            return static::createOrderGoodsModel($data);
+        });
+
         return $result;
+    }
+
+    protected static function createOrderGoodsModel($memberCart)
+    {
+        return new PreGeneratedOrderGoodsModel($memberCart);
+    }
+
+    protected static function createOrderModel($attributes)
+    {
+        return new PreGeneratedOrderModel($attributes);
     }
 
     /**
      * 根据购物车记录 获取订单信息
      * @param Collection $memberCarts
-     * @return PreGeneratedOrderModel
+     * @return PreGeneratedOrderModel|bool
      * @throws AppException
      */
     public static function createOrderByMemberCarts(Collection $memberCarts)
@@ -130,7 +141,7 @@ class OrderService
         $shop = ShopService::getCurrentShopModel();
 
         $orderGoodsArr = OrderService::getOrderGoodsModels($memberCarts);
-        $order = new PreGeneratedOrderModel(['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
+        $order = static::createOrderModel(['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
 
         event(new OnPreGenerateOrderCreatingEvent($order));
         $order->setOrderGoodsModels($orderGoodsArr);
@@ -174,7 +185,7 @@ class OrderService
         if (!isset($orderOperation)) {
             throw new AppException('未找到该订单');
         }
-        
+
         DB::transaction(function () use ($orderOperation) {
             $orderOperation->check();
             $orderOperation->execute();

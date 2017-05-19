@@ -22,11 +22,11 @@ class CategoryScope extends CouponUseScope
                  * @var $orderGoods PreGeneratedOrderGoodsModel
                  */
                 //订单商品所属的所有分类id
-                $orderGoodsCategoryIds = explode(',',data_get($orderGoods->goods->belongsToCategorys->first(),'category_ids',''));
+                $orderGoodsCategoryIds = explode(',',data_get($orderGoods->belongsToGood->belongsToCategorys->first(),'category_ids',''));
 
                 //优惠券的分类id数组 与 订单商品的所属分类 的分类数组 有交集
-                return !collect($this->coupon->getMemberCoupon()->belongsToCoupon->category_ids)
-                    ->intersect($orderGoodsCategoryIds)->isEmpty();
+                return collect($this->coupon->getMemberCoupon()->belongsToCoupon->category_ids)
+                    ->intersect($orderGoodsCategoryIds)->isNotEmpty();
             });
 
         if ($orderGoods->unique('is_plugin')->count() > 1) {

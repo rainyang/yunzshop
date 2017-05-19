@@ -53,6 +53,10 @@ class EventServiceProvider extends ServiceProvider
         ]
 
     ];
+    /**
+     * 注册监听着类
+     * @var array
+     */
     protected $subscribe = [
         \app\frontend\modules\dispatch\listeners\types\Express::class,
         \app\frontend\modules\member\listeners\Level::class,
@@ -62,7 +66,10 @@ class EventServiceProvider extends ServiceProvider
         PointLisrener::class,
         GoodsStock::class,
         Order::class,
-        \app\frontend\modules\discount\listeners\Order::class
+        \app\frontend\modules\discount\listeners\Order::class,
+        \app\frontend\modules\payment\listeners\Alipay::class,
+        \app\frontend\modules\payment\listeners\Credit::class,
+        \app\frontend\modules\payment\listeners\Wechat::class,
     ];
     /**
      * Register any events for your application.

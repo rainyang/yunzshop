@@ -32,9 +32,10 @@ class CreateController extends PreGeneratedController
     {
         //订单组
         $orders = collect();
-        if($this->getShopOrder()){
+        $shopOrder = $this->getShopOrder($this->getMemberCarts());
+        if($shopOrder){
 
-            $orders->push($this->getShopOrder());
+            $orders->push($shopOrder);
         }
         $orders = $orders->merge($this->getPluginOrders()[0]);
 

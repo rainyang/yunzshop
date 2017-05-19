@@ -6,7 +6,7 @@
  * Time: 上午10:31
  */
 
-namespace app\frontend\modules\order\models;
+namespace app\frontend\models;
 
 
 use app\common\models\CorePayLog;

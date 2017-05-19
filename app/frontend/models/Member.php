@@ -12,7 +12,7 @@ namespace app\frontend\models;
 use app\common\models\Coupon;
 use app\common\models\MemberCoupon;
 use app\frontend\modules\member\models\MemberAddress;
-use app\frontend\modules\order\models\OrderGoods;
+use app\frontend\models\OrderGoods;
 
 class Member extends \app\common\models\Member
 {

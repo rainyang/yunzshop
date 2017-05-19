@@ -47,6 +47,22 @@ class IncomeController extends ApiController
                 'type_name' => $item['type_name'],
                 'income' => $typeModel->sum('amount')
             ];
+
+            $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
+            if($item['agent_status']){
+                $agentModel = $agentModel->where('status',1);
+            }
+            $agent = $agentModel->first();
+            $incomeData[$key]['can'] = false;
+            if($agent){
+                if($agent->status == 1){
+                    $incomeData[$key]['can'] = true;
+                }
+                if( !$item['agent_status'] ){
+                    $incomeData[$key]['can'] = true;
+                }
+            }
+            
         }
         if ($incomeData) {
             return $this->successJson('获取数据成功!', $incomeData);

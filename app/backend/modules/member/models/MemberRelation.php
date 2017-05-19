@@ -11,7 +11,6 @@ namespace app\backend\modules\member\models;
 use app\backend\models\BackendModel;
 use app\backend\modules\order\models\Order;
 use app\frontend\modules\member\models\SubMemberModel;
-use app\frontend\modules\order\models\OrderListModel;
 
 class MemberRelation extends BackendModel
 {

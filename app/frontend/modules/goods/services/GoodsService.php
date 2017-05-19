@@ -2,7 +2,7 @@
 namespace app\frontend\modules\goods\services;
 
 use app\common\events\order\BeforeOrderGoodsAddInOrder;
-use app\frontend\modules\goods\models\Goods;
+use app\frontend\models\goods;
 use app\frontend\modules\goods\services\models\factory\GoodsModelFactory;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 

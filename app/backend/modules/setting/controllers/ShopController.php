@@ -30,6 +30,7 @@ class ShopController extends BaseController
     {
         $shop = Setting::get('shop.shop');
         $requestModel = \YunShop::request()->shop;
+        \Log::debug('data', $requestModel);
         if ($requestModel) {
             if (Setting::set('shop.shop', $requestModel)) {
                 return $this->message('商城设置成功', Url::absoluteWeb('setting.shop.index'));

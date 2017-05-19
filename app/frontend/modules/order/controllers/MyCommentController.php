@@ -10,8 +10,8 @@ namespace app\frontend\modules\order\controllers;
 
 
 use app\common\components\ApiController;
-use app\frontend\modules\order\models\Order;
-use app\frontend\modules\order\models\OrderGoods;
+use app\frontend\models\Order;
+use app\frontend\models\OrderGoods;
 
 class MyCommentController extends ApiController
 {

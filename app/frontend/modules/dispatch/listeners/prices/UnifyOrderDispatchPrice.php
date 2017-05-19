@@ -10,7 +10,7 @@ namespace app\frontend\modules\dispatch\listeners\prices;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\common\models\goods\GoodsDispatch;
-use app\frontend\modules\order\models\OrderGoods;
+use app\frontend\models\OrderGoods;
 use app\frontend\modules\order\services\OrderService;
 
 class UnifyOrderDispatchPrice
