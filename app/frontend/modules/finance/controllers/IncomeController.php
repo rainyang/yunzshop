@@ -53,10 +53,14 @@ class IncomeController extends ApiController
                 $agentModel = $agentModel->where('status',1);
             }
             $agent = $agentModel->first();
+            $incomeData[$key]['can'] = false;
             if($agent){
-                $incomeData[$key]['can'] = true;
-            }else{
-                $incomeData[$key]['can'] = false;
+                if($agent->status == 1){
+                    $incomeData[$key]['can'] = true;
+                }
+                if( !$item['agent_status'] ){
+                    $incomeData[$key]['can'] = true;
+                }
             }
             
         }

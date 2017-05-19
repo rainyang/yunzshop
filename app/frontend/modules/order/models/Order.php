@@ -30,7 +30,7 @@ class Order extends \app\common\models\Order
     ];
     public function scopeDetail($query){
         return $query->with(['hasManyOrderGoods'=>function($query){
-            return $query->select(['order_id','goods_option_title','goods_id','goods_price','total','price','title','thumb','comment_status']);
+            return $query->detail();
         }])->select(['id','uid','order_sn','price','goods_price','create_time','finish_time','pay_time','send_time','cancel_time','dispatch_type_id','pay_type_id','status','refund_id','dispatch_price','deduction_price']);
     }
     /**
