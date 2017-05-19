@@ -11,8 +11,8 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\common\requests\Request;
-use app\frontend\modules\order\models\Order;
-use app\frontend\modules\order\models\OrderAddress;
+use app\frontend\models\Order;
+use app\frontend\models\OrderAddress;
 
 
 class DetailController extends ApiController

@@ -4,8 +4,8 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 use app\common\components\BaseController;
-use app\frontend\modules\order\models\Order;
-use app\frontend\modules\order\models\OrderListModel;
+use app\frontend\models\Order;
+use app\frontend\models\OrderListModel;
 
 class ListController extends ApiController
 {

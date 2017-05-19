@@ -2,7 +2,7 @@
 
 namespace app\frontend\modules\refund\models;
 
-use app\frontend\modules\order\models\Order;
+use app\frontend\models\Order;
 
 /**
  * Created by PhpStorm.
