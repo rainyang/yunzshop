@@ -37,8 +37,18 @@ class EditGoodsService
 
     public function edit()
     {
+        //商品属性默认值
+        $arrt_default = [
+            'is_recommand' => 0,
+            'is_new' => 0,
+            'is_hot' => 0,
+            'is_discount' => 0
+        ];
+
         //获取规格名及规格项
         $goods_data = $this->request->goods;
+        $goods_data = array_merge($arrt_default, $goods_data);
+
         foreach ($this->goods_model->hasManySpecs as &$spec) {
             $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->get()->toArray();
         }

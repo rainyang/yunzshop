@@ -20,10 +20,16 @@ class OrderGoods extends \app\common\models\OrderGoods
         return $this->hasOne(GoodsOption::class, 'id', 'goods_option_id');
 
     }
+
+    public function scopeDetail($query)
+    {
+        return $query->select(['id','order_id','goods_option_title','goods_id','goods_price','total','price','title','thumb','comment_status']);
+    }
+
     public function getButtonsAttribute()
     {
         $result = [];
-        if($this->comment_status == 1){
+        if ($this->comment_status == 1) {
             $result[] = [
                 'name' => '查看评价',
                 'api' => '',
@@ -32,15 +38,18 @@ class OrderGoods extends \app\common\models\OrderGoods
         }
         return $result;
     }
+
     public function goods()
     {
         return $this->hasOne(Goods::class, 'id', 'goods_id');
     }
-    public static function getMyCommentList( $status)
+
+    public static function getMyCommentList($status)
     {
         $list = self::select()->Where('comment_status', $status)->orderBy('id', 'desc')->get();
         return $list;
     }
+
     public function isFreeShipping()
     {
         if ($this->goods->hasOneSale->isFree($this)) {
@@ -49,11 +58,12 @@ class OrderGoods extends \app\common\models\OrderGoods
 
         return false;
     }
+
     public static function boot()
     {
         parent::boot();
 
-        self::addGlobalScope(function(Builder $query){
+        self::addGlobalScope(function (Builder $query) {
             return $query->where('uid', \YunShop::app()->getMemberId());
         });
     }

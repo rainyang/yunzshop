@@ -117,7 +117,7 @@ class Goods extends BaseModel
 
     public function hasOnePrivilege()
     {
-        return $this->hasOne(self::getStaticNamespace().'\goods\Privilege');
+        return $this->hasOne(self::getStaticNamespace().'goods\Privilege');
     }
 
     public function hasOneGoodsDispatch()
@@ -265,6 +265,8 @@ class Goods extends BaseModel
 
         return static::uniacid()->select('id', 'title', 'thumb','market_price','price','real_sales','sku')
             ->where('title', 'like', '%' . $keyword . '%')
+            ->where('status', 1)
+            ->where('is_plugin', 0)
             ->get();
     }
 
