@@ -11,7 +11,7 @@ namespace app\frontend\modules\goods\services\models;
 
 use app\frontend\modules\discount\services\DiscountService;
 use app\frontend\modules\dispatch\services\DispatchService;
-use app\frontend\modules\order\models\OrderGoods;
+use app\frontend\models\OrderGoods;
 
 class CreatedOrderGoodsModel extends OrderGoodsModel
 {

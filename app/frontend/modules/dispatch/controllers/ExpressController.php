@@ -4,7 +4,7 @@ namespace app\frontend\modules\dispatch\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
-use app\frontend\modules\order\models\Order;
+use app\frontend\models\Order;
 use Ixudra\Curl\Facades\Curl;
 use \Request;
 

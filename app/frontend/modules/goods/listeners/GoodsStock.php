@@ -1,10 +1,11 @@
 <?php
 namespace app\frontend\modules\goods\listeners;
+
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\models\OrderGoods;
-use app\frontend\modules\goods\models\Goods;
-use app\frontend\modules\goods\models\GoodsOption;
+use app\frontend\models\goods;
+use app\frontend\models\GoodsOption;
 
 /**
  * Created by PhpStorm.

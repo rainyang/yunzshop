@@ -12,12 +12,12 @@ use app\common\components\ApiController;
 use app\common\events\order\ShowPreGenerateOrder;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\order\services\OrderService;
-use Illuminate\Support\Collection;
+use Request;
 
 abstract class PreGeneratedController extends ApiController
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $order_data = $this->getOrderData();
         $total_price = $order_data->sum('order.price');
@@ -60,7 +60,7 @@ abstract class PreGeneratedController extends ApiController
     protected function getOrderData()
     {
         $order_data = collect();
-        $shop_order = $this->getShopOrder();
+        $shop_order = $this->getShopOrder($this->getMemberCarts());
 
         if (!empty($shop_order)) {
 
@@ -71,31 +71,18 @@ abstract class PreGeneratedController extends ApiController
 
         return $order_data;
     }
+    protected function getShopOrder($memberCarts){
+        return OrderService::createOrderByMemberCarts(MemberCartService::filterShopMemberCart($memberCarts));
 
+    }
     /**
      * 获取全部购物车记录
      * @return mixed
      */
     abstract protected function getMemberCarts();
 
-    /**
-     * 获取商城的订单
-     * @return \app\frontend\modules\order\services\models\PreGeneratedOrderModel
-     */
-    protected function getShopOrder()
-    {
 
-        return OrderService::createOrderByMemberCarts($this->getShopMemberCarts());
-    }
 
-    /**
-     * 获取商城的购物车组
-     * @return Collection
-     */
-    protected function getShopMemberCarts()
-    {
-        return MemberCartService::filterShopMemberCart($this->getMemberCarts());
-    }
 
     /**
      * 获取插件的订单数据

@@ -12,5 +12,13 @@ use app\common\events\Event;
  */
 class GetOrderPaymentTypeEvent extends Event
 {
+    private $orders;
 
+    function __construct($orders)
+    {
+        $this->orders = $orders;
+    }
+    public function getOrders(){
+        return $this->orders;
+    }
 }
