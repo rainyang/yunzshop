@@ -109,7 +109,7 @@ class GoodsController extends ApiController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-        $list = \app\frontend\modules\goods\models\Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
+        $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
             ->where("status", 1)
             ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
