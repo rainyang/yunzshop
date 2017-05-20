@@ -12,7 +12,6 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
-use app\common\models\PayType;
 use app\common\services\PayFactory;
 use app\frontend\modules\order\services\OrderService;
 use Illuminate\Support\Collection;

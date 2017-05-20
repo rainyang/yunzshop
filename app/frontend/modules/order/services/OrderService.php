@@ -16,7 +16,7 @@ use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
-use app\frontend\modules\member\models\MemberCart;
+use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;

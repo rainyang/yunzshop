@@ -30,7 +30,7 @@ class MergePayController extends ApiController
     protected $ignoreAction = ['alipay'];
 
     /**
-     * @param $order_ids
+     * @param $orderIds
      * @return Collection
      * @throws AppException
      */
