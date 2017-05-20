@@ -30,7 +30,7 @@ class IncomeController extends ApiController
         if ($status >= '0') {
             $incomeModel = $incomeModel->where('status', $status);
         }
-        $config = \Config::get('income');
+        $config = \Config::get('plugin');
         $incomeData['total'] = [
             'title' => '推广收入',
             'type' => 'total',
@@ -44,10 +44,9 @@ class IncomeController extends ApiController
                 'title' => $item['title'],
                 'ico' => $item['ico'],
                 'type' => $item['type'],
-                'type_name' => $item['type_name'],
+                'type_name' => $item['title'],
                 'income' => $typeModel->sum('amount')
             ];
-
             $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
 
             if($item['agent_status']){
@@ -84,7 +83,6 @@ class IncomeController extends ApiController
         }
 
         $incomeModel = Income::getIncomeInMonth($search)->where('member_id', \YunShop::app()->getMemberId());
-
         $incomeModel = $incomeModel->get();
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
@@ -113,7 +111,7 @@ class IncomeController extends ApiController
         $configs = \Config::get('income');
         foreach ($configs as $key => $config) {
             $searchType[] = [
-                'title' => $config['type_name'],
+                'title' => $config['title'],
                 'type' => $config['type']
             ];
         }
@@ -150,7 +148,7 @@ class IncomeController extends ApiController
                 $incomeData[] = [
                     'type' => $item['class'],
                     'key_name' => $item['type'],
-                    'type_name' => $item['type_name'],
+                    'type_name' => $item['title'],
                     'type_id' => rtrim($type_id, ','),
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
@@ -162,7 +160,7 @@ class IncomeController extends ApiController
                 $incomeData[] = [
                     'type' => $item['class'],
                     'key_name' => $item['type'],
-                    'type_name' => $item['type_name'],
+                    'type_name' => $item['title'],
                     'type_id' => '',
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
