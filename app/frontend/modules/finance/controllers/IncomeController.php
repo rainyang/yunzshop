@@ -49,6 +49,7 @@ class IncomeController extends ApiController
             ];
 
             $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
+            
             if($item['agent_status']){
                 $agentModel = $agentModel->where('status',1);
             }
