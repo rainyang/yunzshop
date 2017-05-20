@@ -53,6 +53,7 @@ class IncomeController extends ApiController
             if($item['agent_status']){
                 $agentModel = $agentModel->where('status',1);
             }
+
             //推广中心显示
             $agent = $agentModel->first();
             if($agent){
@@ -60,7 +61,6 @@ class IncomeController extends ApiController
             }else{
                 $incomeData[$key]['can'] = false;
             }
-            
         }
         if ($incomeData) {
             return $this->successJson('获取数据成功!', $incomeData);
