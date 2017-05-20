@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services;
 
 use app\common\models\CorePayLog;
 use app\common\models\Order;
-use app\frontend\modules\order\models\OrderLogModel;
+use app\frontend\models\OrderLogModel;
 
 class VerifyPayService
 {

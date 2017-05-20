@@ -34,14 +34,14 @@ class PreGeneratedOrderGoodsModelGroup
      * 获取销售价
      * @return int
      */
-    public function getVipPrice()
+    public function getFinalPrice()
     {
         $result = 0;
         foreach ($this->orderGoodsGroup as $OrderGoods) {
             /**
              * @var $OrderGoods PreGeneratedOrderGoodsModel
              */
-            $result += $OrderGoods->getVipPrice();
+            $result += $OrderGoods->getFinalPrice();
         }
         return $result;
     }

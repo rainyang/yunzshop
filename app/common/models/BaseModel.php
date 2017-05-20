@@ -90,15 +90,38 @@ class BaseModel extends Model
         return $query->where('uniacid', \YunShop::app()->uniacid);
     }
 
-    public static function getStaticNamespace()
+    /**
+     * 递归获取$class 相对路径的 $findClass
+     * @param $class
+     * @param $findClass
+     * @return null|string
+     */
+    public static function recursiveFindClass($class, $findClass)
     {
-        return substr(static::class, 0, strrpos(static::class, "\\")) . '\\';
+        $result = substr($class, 0, strrpos($class, "\\")) . '\\' . $findClass;
+
+        if (class_exists($result)) {
+            return $result;
+        }
+
+        if(class_exists(get_parent_class($class))){
+            return self::recursiveFindClass(get_parent_class($class),$findClass);
+        }
+        return null;
+
     }
 
-    public static function getNearestModel($model)
+    /**
+     * 获取与子类 继承关系最近的 $model类
+     * @param $model
+     * @return null|string
+     * @throws ShopException
+     */
+    public function getNearestModel($model)
     {
-        $result = self::getStaticNamespace() . $model;
-        if (class_exists($result)) {
+        $result = self::recursiveFindClass(static::class,$model);
+
+        if(isset($result)){
             return $result;
         }
         throw new ShopException('获取关联模型失败');

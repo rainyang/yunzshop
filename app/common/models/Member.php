@@ -10,6 +10,8 @@ use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
+use Yunshop\Gold\frontend\services\MemberCenterService;
+use Yunshop\Micro\common\services\MicroShop\GetButtonService;
 use Yunshop\Supplier\common\services\VerifyButton;
 
 /**
@@ -258,10 +260,25 @@ class Member extends BackendModel
     {
         $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
 
+        // todo 后期需要重构
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();
         } else {
             $data['supplier'] = [];
+        }
+
+        // todo 后期需要重构
+        /*if ($plugin_class->isEnabled('micro')) {
+            $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
+        } else {
+            $data['micro'] = [];
+        }*/
+
+        // todo 后期需要重构
+        if ($plugin_class->isEnabled('glod')) {
+            $data['glod'] = MemberCenterService::button(\YunShop::app()->getMemberId());
+        } else {
+            $data['glod'] = [];
         }
 
         return $data;

@@ -53,6 +53,10 @@ class EventServiceProvider extends ServiceProvider
         ]
 
     ];
+    /**
+     * 注册监听着类
+     * @var array
+     */
     protected $subscribe = [
         \app\frontend\modules\dispatch\listeners\types\Express::class,
         \app\frontend\modules\member\listeners\Level::class,

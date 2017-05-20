@@ -6,10 +6,10 @@
  * Time: 上午11:46
  */
 
-namespace app\frontend\modules\goods\models\goods;
+namespace app\frontend\models\goods;
 
 
-use app\frontend\modules\order\models\OrderGoods;
+use app\frontend\models\OrderGoods;
 
 class Sale extends \app\common\models\Sale
 {

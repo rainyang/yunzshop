@@ -18,6 +18,7 @@ class Member extends \app\common\models\Member
     {
         return self::uniacid()
             ->searchLike($keyWord)
+            ->with('yzMember')
             ->with('hasOneFans')
             ->get();
     }

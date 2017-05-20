@@ -150,6 +150,7 @@
                     </tr>
                 </table>
 
+                @section('is_plugin')
                 @foreach ($list['data'] as $order_index => $order)
                 <div class="order-info">
                     <table class='table order-title' >
@@ -160,8 +161,9 @@
                                 <b>下单时间: </b>{{$order['create_time']}}
                                 @if( $order['has_one_refund_apply'] == \app\common\models\refund\RefundApply::WAIT_RECEIVE_RETURN_GOODS)<label class='label label-primary'>客户已经寄出快递</label>@endif
 
-                                @yield('shop_name')
-                                @section('shop_name','<label class="label label-info">总店</label>')
+                                {{--@yield('shop_name')
+                                @section('shop_name','')--}}
+                                <label class="label label-info">总店</label>
 
                                 @if(!empty($order['has_one_refund_apply']))
                                     <label class="label label-danger">{{$order['has_one_refund_apply']['refund_type_name']}}:{{$order['has_one_refund_apply']['status_name']}}</label>
@@ -283,6 +285,7 @@
                     </table>
                 </div>
                 @endforeach
+                @show
                 @include('order.modals')
                 <div id="pager">{!! $pager !!}</div>
 

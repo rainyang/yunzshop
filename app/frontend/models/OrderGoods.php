@@ -6,11 +6,8 @@
  * Time: 下午1:58
  */
 
-namespace app\frontend\modules\order\models;
+namespace app\frontend\models;
 
-use app\common\exceptions\AppException;
-use app\frontend\modules\goods\models\Goods;
-use app\frontend\modules\goods\models\GoodsOption;
 use Illuminate\Database\Eloquent\Builder;
 
 class OrderGoods extends \app\common\models\OrderGoods
@@ -23,7 +20,7 @@ class OrderGoods extends \app\common\models\OrderGoods
 
     public function scopeDetail($query)
     {
-        $query = select(['order_id','goods_option_title','goods_id','goods_price','total','price','title','thumb','comment_status']);
+        return $query->select(['id','order_id','goods_option_title','goods_id','goods_price','total','price','title','thumb','comment_status']);
     }
 
     public function getButtonsAttribute()
@@ -39,11 +36,6 @@ class OrderGoods extends \app\common\models\OrderGoods
         return $result;
     }
 
-    public function goods()
-    {
-        return $this->hasOne(Goods::class, 'id', 'goods_id');
-    }
-
     public static function getMyCommentList($status)
     {
         $list = self::select()->Where('comment_status', $status)->orderBy('id', 'desc')->get();
@@ -52,7 +44,8 @@ class OrderGoods extends \app\common\models\OrderGoods
 
     public function isFreeShipping()
     {
-        if ($this->goods->hasOneSale->isFree($this)) {
+
+        if ($this->belongsToGood->hasOneSale->isFree($this)) {
             return true;
         }
 
