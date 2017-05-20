@@ -19,4 +19,8 @@ class MemberCart extends BaseModel
     public function isOption(){
         return !empty($this->option_id);
     }
+    public function goods()
+    {
+        return $this->belongsTo(self::getNearestModel('Goods'));
+    }
 }
