@@ -4,15 +4,11 @@ namespace  app\payment;
 
 use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
-use app\common\models\Order;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
-use app\common\models\PayRefundOrder;
-use app\common\models\PayType;
-use app\common\models\PayWithdrawOrder;
 use app\frontend\modules\finance\services\BalanceService;
 use app\frontend\modules\order\services\OrderService;
-use app\backend\modules\refund\services\RefundOperationService;
+use Yunshop\Gold\frontend\services\RechargeService;
 
 /**
  * Created by PhpStorm.
@@ -114,6 +110,13 @@ class PaymentController extends BaseController
                     'pay_sn'=> $data['trade_no']
                 ]);
                 break;
+            case "gold_recharge.succeeded":
+                \Log::debug('金币支付操作', 'gold_recharge.succeeded');
+                RechargeService::payResult([
+                    'order_sn'=> $data['out_trade_no'],
+                    'pay_sn'=> $data['trade_no']
+                ]);
+                break;
         }
     }
 
@@ -132,6 +135,8 @@ class PaymentController extends BaseController
                 return 'charge.succeeded';
             } elseif ('RV' == strtoupper($tag)) {
                 return 'recharge.succeeded';
+            } elseif ('RG' == strtoupper($tag)) {
+                return 'gold_recharge.succeeded';
             }
         }
 

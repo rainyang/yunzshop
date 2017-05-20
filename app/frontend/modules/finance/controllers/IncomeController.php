@@ -131,7 +131,7 @@ class IncomeController extends ApiController
 
         foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('withdraw.' . $key);
-            
+
             $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
             $incomeModel = $incomeModel->where('status', '0');
             
