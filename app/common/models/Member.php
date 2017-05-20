@@ -267,11 +267,11 @@ class Member extends BackendModel
         }
 
         // todo 后期需要重构
-        if ($plugin_class->isEnabled('micro')) {
+        /*if ($plugin_class->isEnabled('micro')) {
             $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
         } else {
             $data['micro'] = [];
-        }
+        }*/
 
         return $data;
     }
