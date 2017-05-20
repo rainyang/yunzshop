@@ -23,7 +23,7 @@ class HomePageController extends ApiController
 {
     protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
     protected $ignoreAction = [];
-    
+
     public function index()
     {
 //        $pluginData = (new PluginsController())->getPluginData();
