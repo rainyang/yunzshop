@@ -13,6 +13,7 @@ use Illuminate\Filesystem\Filesystem;
 use Yunshop\Gold\frontend\services\MemberCenterService;
 use Yunshop\Micro\common\services\MicroShop\GetButtonService;
 use Yunshop\Supplier\common\services\VerifyButton;
+use Setting;
 
 /**
  * Created by PhpStorm.
@@ -268,11 +269,16 @@ class Member extends BackendModel
         }
 
         // todo 后期需要重构
-        /*if ($plugin_class->isEnabled('micro')) {
-            $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
+        if ($plugin_class->isEnabled('micro')) {
+            $micro_set = Setting::get('plugin.micro');
+            if ($micro_set['is_open_miceo'] == 0) {
+                $data['micro'] = [];
+            } else {
+                $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
+            }
         } else {
             $data['micro'] = [];
-        }*/
+        }
 
         // todo 后期需要重构
         if ($plugin_class->isEnabled('glod')) {
