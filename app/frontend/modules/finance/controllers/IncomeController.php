@@ -49,20 +49,18 @@ class IncomeController extends ApiController
             ];
 
             $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
+
             if($item['agent_status']){
                 $agentModel = $agentModel->where('status',1);
             }
+
+            //推广中心显示
             $agent = $agentModel->first();
-            $incomeData[$key]['can'] = false;
             if($agent){
-                if($agent->status == 1){
-                    $incomeData[$key]['can'] = true;
-                }
-                if( !$item['agent_status'] ){
-                    $incomeData[$key]['can'] = true;
-                }
+                $incomeData[$key]['can'] = true;
+            }else{
+                $incomeData[$key]['can'] = false;
             }
-            
         }
         if ($incomeData) {
             return $this->successJson('获取数据成功!', $incomeData);
