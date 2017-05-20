@@ -6,7 +6,7 @@
  * Time: 下午5:09
  */
 
-namespace app\frontend\modules\member\models;
+namespace app\frontend\models;
 
 
 use app\common\exceptions\AppException;

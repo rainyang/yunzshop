@@ -5,7 +5,7 @@ use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 
 
-use app\frontend\modules\member\models\MemberCart;
+use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
 
 /**
