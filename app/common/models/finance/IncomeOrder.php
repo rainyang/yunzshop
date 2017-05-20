@@ -17,6 +17,4 @@ class IncomeOrder extends Order
     {
         return $this->morphMany('Yunshop\Commission\models\CommissionOrder', 'ordertable');
     }
-
-
 }

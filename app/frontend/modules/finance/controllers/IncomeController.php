@@ -47,7 +47,6 @@ class IncomeController extends ApiController
                 'type_name' => $item['type_name'],
                 'income' => $typeModel->sum('amount')
             ];
-
             $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
 
             if($item['agent_status']){
@@ -133,7 +132,7 @@ class IncomeController extends ApiController
 
         foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('withdraw.' . $key);
-            
+
             $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
             $incomeModel = $incomeModel->where('status', '0');
             
