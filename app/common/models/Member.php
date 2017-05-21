@@ -13,7 +13,6 @@ use Illuminate\Filesystem\Filesystem;
 use Yunshop\Gold\frontend\services\MemberCenterService;
 use Yunshop\Micro\common\services\MicroShop\GetButtonService;
 use Yunshop\Supplier\common\services\VerifyButton;
-use Setting;
 
 /**
  * Created by PhpStorm.
