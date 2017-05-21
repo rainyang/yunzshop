@@ -56,7 +56,7 @@ class BaseController extends Controller
         $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            echo $this->message($validator->errors()->first());exit;
+            echo $this->message($validator->errors()->first(), '', 'error');exit;
         }
     }
 
