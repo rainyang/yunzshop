@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: libaojia
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/2
  * Time: 下午1:55
  */
@@ -18,6 +18,7 @@ class Member extends \app\common\models\Member
     {
         return self::uniacid()
             ->searchLike($keyWord)
+            ->with('yzMember')
             ->with('hasOneFans')
             ->get();
     }

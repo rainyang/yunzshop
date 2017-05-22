@@ -4,24 +4,42 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 use app\common\components\BaseController;
-use app\frontend\modules\order\models\Order;
-use app\frontend\modules\order\models\OrderListModel;
+use app\frontend\models\Order;
+use app\frontend\models\OrderListModel;
 
 class ListController extends ApiController
 {
-    private $order;
+    protected $order;
 
     public function __construct()
     {
         parent::__construct();
-        $this->order = Order::orders()->where('status', '<>', '-1');
     }
 
-    private function getData()
+    /**
+     * @return mixed
+     */
+    protected function getOrder()
+    {
+        if(!isset($this->order)){
+            return $this->_getOrder();
+        }
+        return $this->order;
+    }
+
+    /**
+     * @return Order
+     */
+    protected function _getOrder()
+    {
+        return $this->order = Order::orders()->where('status', '<>', '-1');
+    }
+
+    protected function getData()
     {
         $pageSize = \YunShop::request()->pagesize;
         $pageSize = $pageSize ? $pageSize : 20;
-        return $this->order->paginate($pageSize)->toArray();
+        return $this->getOrder()->paginate($pageSize)->toArray();
     }
 
     /**
@@ -30,7 +48,6 @@ class ListController extends ApiController
      */
     public function index()
     {
-        $this->order;
         return $this->successJson($msg = 'ok', $data = $this->getData());
 
     }
@@ -41,7 +58,7 @@ class ListController extends ApiController
      */
     public function waitPay()
     {
-        $this->order->waitPay();
+        $this->getOrder()->waitPay();
         return $this->successJson($msg = 'ok', $data = $this->getData());
 
     }
@@ -52,7 +69,7 @@ class ListController extends ApiController
      */
     public function waitSend()
     {
-        $this->order->waitSend();
+        $this->getOrder()->waitSend();
         return $this->successJson($msg = 'ok', $data = $this->getData());
 
     }
@@ -63,7 +80,7 @@ class ListController extends ApiController
      */
     public function waitReceive()
     {
-        $this->order->waitReceive();
+        $this->getOrder()->waitReceive();
 
         return $this->successJson($msg = 'ok', $data = $this->getData());
     }
@@ -74,7 +91,7 @@ class ListController extends ApiController
      */
     public function completed()
     {
-        $this->order->completed();
+        $this->getOrder()->completed();
 
         return $this->successJson($msg = 'ok', $data = $this->getData());
     }

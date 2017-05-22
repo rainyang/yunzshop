@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: jan
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 18/04/2017
  * Time: 11:13
  */
@@ -52,7 +52,8 @@ class UpdateController extends BaseController
         $secret = Setting::get('shop.key')['secret'];
         if(!$key || !$secret) {
             $result['msg'] = 'key or secret is null';
-            return response()->json($result)->send();
+             response()->json($result)->send();
+            return;
         }
 
         $update = new AutoUpdate(null, null, 300);
@@ -65,16 +66,17 @@ class UpdateController extends BaseController
         //Check for a new update
         if ($update->checkUpdate() === false) {
             $result['msg'] = 'Could not check for updates! See log file for details.';
-            return response()->json($result)->send();
+              response()->json($result)->send();
+            return;
         }
 
         if ($update->newVersionAvailable()) {
             $result['last_version'] = $update->getLatestVersion()->getVersion();
             $result['updated'] = 1;
             $result['current_version'] = config('version');
-            return response()->json($result)->send();
         }
-        return response()->json($result)->send();
+         response()->json($result)->send();
+        return;
     }
 
 
@@ -98,7 +100,8 @@ class UpdateController extends BaseController
         //Check for a new update
         if ($update->checkUpdate() === false) {
             $resultArr['msg'] = 'Could not check for updates! See log file for details.';
-            return response()->json($resultArr)->send();
+             response()->json($resultArr)->send();
+            return;
         }
 
         if ($update->newVersionAvailable()) {
@@ -119,7 +122,8 @@ class UpdateController extends BaseController
         } else {
             $resultArr['msg'] = 'Current Version is up to date';
         }
-        return response()->json($resultArr)->send();
+         response()->json($resultArr)->send();
+        return;
     }
 
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: libaojia
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/2
  * Time: 下午4:47
  */
@@ -18,5 +18,9 @@ class MemberCart extends BaseModel
 
     public function isOption(){
         return !empty($this->option_id);
+    }
+    public function goods()
+    {
+        return $this->belongsTo(self::getNearestModel('Goods'));
     }
 }

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Created by PhpStorm.
- * User: jan
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 21/02/2017
  * Time: 11:34
  */

@@ -2,7 +2,7 @@
 namespace app\backend\modules\setting\models;
 /**
  * Created by PhpStorm.
- * User: yanglei
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/14
  * Time: 下午9:01
  */
@@ -20,7 +20,7 @@ class Slide extends \app\common\models\Slide
         return self::find($id);
     }
 
-    public function daletedSlide($id)
+    public static function deletedSlide($id)
     {
         return self::where('id', $id)
             ->delete();

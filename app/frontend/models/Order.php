@@ -1,11 +1,11 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/6
  * Time: 下午4:35
  */
-namespace app\frontend\modules\order\models;
+namespace app\frontend\models;
 
 use app\frontend\models\Member;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,18 +28,20 @@ class Order extends \app\common\models\Order
         'updated_at',
         'deleted_at'
     ];
-
+    public function scopeDetail($query){
+        return $query->with(['hasManyOrderGoods'=>function($query){
+            return $query->detail();
+        }])->select(['id','uid','order_sn','price','goods_price','create_time','finish_time','pay_time','send_time','cancel_time','dispatch_type_id','pay_type_id','status','refund_id','dispatch_price','deduction_price']);
+    }
     /**
      * 订单列表
-     * @param $uid
      * @return $this
      */
-    public static function orders()
+    public function scopeOrders($query)
     {
-        $orders = self::with(['hasManyOrderGoods'=>function($query){
+        return $query->with(['hasManyOrderGoods'=>function($query){
             return $query->select(['order_id','goods_id','goods_price','total','price','thumb','title','goods_option_id','goods_option_title','comment_status']);
         }])->orderBy('id','desc');
-        return $orders;
     }
     public function belongsToMember()
     {
@@ -48,12 +50,7 @@ class Order extends \app\common\models\Order
 
     public function belongsToOrderGoods()
     {
-        return $this->belongsTo(\app\common\models\OrderGoods::class, 'id', 'order_id');
-    }
-
-    public function scopeOrders($query)
-    {
-        return $query->with('hasManyOrderGoods');
+        return $this->belongsTo(self::getNearestModel('OrderGoods'), 'id', 'order_id');
     }
 
     public function orderGoodsBuilder($status)

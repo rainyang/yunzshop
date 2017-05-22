@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Created by PhpStorm.
- * User: luckystar_D
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/28
  * Time: 上午11:24
  */

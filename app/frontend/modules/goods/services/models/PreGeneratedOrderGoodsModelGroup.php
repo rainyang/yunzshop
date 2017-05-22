@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/28
  * Time: 下午1:44
  */
@@ -34,14 +34,14 @@ class PreGeneratedOrderGoodsModelGroup
      * 获取销售价
      * @return int
      */
-    public function getVipPrice()
+    public function getFinalPrice()
     {
         $result = 0;
         foreach ($this->orderGoodsGroup as $OrderGoods) {
             /**
              * @var $OrderGoods PreGeneratedOrderGoodsModel
              */
-            $result += $OrderGoods->getVipPrice();
+            $result += $OrderGoods->getFinalPrice();
         }
         return $result;
     }

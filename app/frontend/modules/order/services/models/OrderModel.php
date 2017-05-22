@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/21
  * Time: 上午9:48
  */
@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services\models;
 
 use app\common\exceptions\AppException;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
-use app\frontend\modules\order\models\Order;
+use app\frontend\models\Order;
 use Illuminate\Support\Collection;
 
 abstract class OrderModel extends Order
@@ -46,7 +46,7 @@ abstract class OrderModel extends Order
     protected function getPrice()
     {
         //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
-        $result = $this->getVipPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice();
+        $result = $this->getFinalPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice();
         if($result < 0 ){
             throw new AppException('('.$result.')订单金额不能为负');
         }
@@ -57,14 +57,14 @@ abstract class OrderModel extends Order
      * 统计订单商品小计金额
      * @return int
      */
-    protected function getVipPrice()
+    protected function getFinalPrice()
     {
         $result = 0;
         foreach ($this->orderGoodsModels as $OrderGoodsModel) {
             /**
              * @var $OrderGoodsModel PreGeneratedOrderGoodsModel
              */
-            $result += $OrderGoodsModel->getVipPrice();
+            $result += $OrderGoodsModel->getFinalPrice();
         }
         return $result;
     }

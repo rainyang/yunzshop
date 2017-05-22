@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yangyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/28
  * Time: 上午10:35
  * comment:订单支付类

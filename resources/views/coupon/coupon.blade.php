@@ -10,7 +10,7 @@
                 <ul class="add-shopnav" id="myTab">
                     <li class="active" ><a href="#tab_basic">基本信息</a></li>
                     <li><a href="#tab_coupon_type">优惠方式</a></li>
-                    <li><a href="#tab_desc">使用说明</a></li>
+                    {{--<li><a href="#tab_desc">使用说明</a></li>--}}
                     <li><a href="#tab_message">推送消息</a></li>
                 </ul>
 
@@ -18,7 +18,7 @@
                     <div class="tab-content">
                         <div class="tab-pane  active" id="tab_basic">@include('coupon.basic')</div>
                         <div class="tab-pane" id="tab_coupon_type">@include('coupon.coupontype')</div>
-                        <div class="tab-pane" id="tab_desc">@include('coupon.desc')</div>
+                        {{--<div class="tab-pane" id="tab_desc">@include('coupon.desc')</div>--}}
                         <div class="tab-pane" id="tab_message">@include('coupon.message')</div>
                     </div>
 

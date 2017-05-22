@@ -4,7 +4,7 @@ namespace app\frontend\modules\coupon\services\models\TimeLimit;
 
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/29
  * Time: 下午5:17
  */
@@ -24,6 +24,6 @@ class SinceReceive extends TimeLimit
 
     private function receiveDays()
     {
-        return ceil((time() - $this->coupon->getMemberCoupon()->get_time) / 86400);
+        return $this->coupon->getMemberCoupon()->get_time->diffInDays();
     }
 }

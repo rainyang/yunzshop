@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: dingran
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 17/3/8
  * Time: 上午9:32
  */
@@ -11,7 +11,6 @@ namespace app\backend\modules\member\models;
 use app\backend\models\BackendModel;
 use app\backend\modules\order\models\Order;
 use app\frontend\modules\member\models\SubMemberModel;
-use app\frontend\modules\order\models\OrderListModel;
 
 class MemberRelation extends BackendModel
 {

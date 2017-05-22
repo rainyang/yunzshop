@@ -15,7 +15,7 @@ use Validator;
 /**
  * controller基类
  *
- * User: jan
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 21/02/2017
  * Time: 21:20
  */
@@ -56,7 +56,7 @@ class BaseController extends Controller
         $validator = $this->getValidationFactory()->make($request->all(), $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            echo $this->message($validator->errors()->first());exit;
+            echo $this->message($validator->errors()->first(), '', 'error');exit;
         }
     }
 

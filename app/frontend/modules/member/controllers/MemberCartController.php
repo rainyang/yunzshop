@@ -5,12 +5,12 @@ use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 
 
-use app\frontend\modules\member\models\MemberCart;
+use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberCartService;
 
 /**
  * Created by PhpStorm.
- * User: libaojia
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/23
  * Time: 上午10:17
  */
@@ -22,6 +22,7 @@ class MemberCartController extends ApiController
         $memberId = \YunShop::app()->getMemberId();
         if ($memberId) {
             $cartList = MemberCart::getMemberCartList($memberId);
+            //dd($cartList);
             foreach ($cartList as $key => $cart) {
                 $cartList[$key]['option_str'] = '';
                 if (!empty($cart['goods_option'])) {

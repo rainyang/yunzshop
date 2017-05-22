@@ -1,12 +1,12 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/14
  * Time: 下午10:57
  */
 
-namespace app\frontend\modules\goods\models;
+namespace app\frontend\models;
 
 
 use app\common\models\GoodsDiscount;
@@ -14,6 +14,14 @@ use app\frontend\modules\member\services\MemberService;
 
 class GoodsOption extends \app\common\models\GoodsOption
 {
+    /**
+     * 获取商品规格最终价格
+     * @return mixed
+     */
+    public function getFinalPriceAttribute()
+    {
+        return $this->vip_price;
+    }
     /**
      * 获取商品规格的会员价格
      * @return float

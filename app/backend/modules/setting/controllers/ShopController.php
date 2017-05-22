@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: luckystar_D
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/9
  * Time: 下午5:26
  */
@@ -30,6 +30,7 @@ class ShopController extends BaseController
     {
         $shop = Setting::get('shop.shop');
         $requestModel = \YunShop::request()->shop;
+        \Log::debug('data', $requestModel);
         if ($requestModel) {
             if (Setting::set('shop.shop', $requestModel)) {
                 return $this->message('商城设置成功', Url::absoluteWeb('setting.shop.index'));

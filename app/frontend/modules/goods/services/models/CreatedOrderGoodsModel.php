@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/20
  * Time: 下午3:35
  */
@@ -11,7 +11,7 @@ namespace app\frontend\modules\goods\services\models;
 
 use app\frontend\modules\discount\services\DiscountService;
 use app\frontend\modules\dispatch\services\DispatchService;
-use app\frontend\modules\order\models\OrderGoods;
+use app\frontend\models\OrderGoods;
 
 class CreatedOrderGoodsModel extends OrderGoodsModel
 {

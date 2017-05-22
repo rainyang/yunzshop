@@ -2,13 +2,13 @@
 namespace app\frontend\modules\goods\services;
 
 use app\common\events\order\BeforeOrderGoodsAddInOrder;
-use app\frontend\modules\goods\models\Goods;
+use app\frontend\models\goods;
 use app\frontend\modules\goods\services\models\factory\GoodsModelFactory;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
 
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/21
  * Time: 下午4:01
  */

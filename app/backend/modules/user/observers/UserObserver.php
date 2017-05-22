@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Created by PhpStorm.
- * User: libaojia
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/17
  * Time: 上午10:56
  */
@@ -92,7 +92,7 @@ class UserObserver extends BaseObserver
         $accountData = array(
             'uid'       => $model->uid,
             'role'      => 'operator',
-            'rank'      => NULL,
+            'rank'      => '0',
             'uniacid'   => \YunShop::app()->uniacid
         );
         $uniAccountUserModel->fill($accountData);

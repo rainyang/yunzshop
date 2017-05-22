@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: jan
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 18/04/2017
  * Time: 09:12
  */
@@ -490,23 +490,14 @@ class AutoUpdate
     {
         $this->_log->info(sprintf('Downloading update "%s" to "%s"', $updateUrl, $updateFile));
 
-        $update = @file_get_contents($updateUrl, $this->_useBasicAuth());
-        if ($update === false) {
-            $this->_log->error(sprintf('Could not download update "%s"!', $updateUrl));
-            return false;
-        }
-        $handle = fopen($updateFile, 'w');
-        if (!$handle) {
-            $this->_log->error(sprintf('Could not open file handle to save update to "%s"!', $updateFile));
-            return false;
-        }
-        if (!fwrite($handle, $update)) {
-            $this->_log->error(sprintf('Could not write update to file "%s"!', $updateFile));
-            fclose($handle);
-            return false;
-        }
-        fclose($handle);
-        return true;
+        return Curl::to($updateUrl)
+            ->withHeader(
+                "Authorization: Basic " . base64_encode("{$this->_username}:{$this->_password}")
+            )
+            ->withContentType('application/zip, application/octet-stream')
+            ->withOption('FOLLOWLOCATION',true)
+            ->withOption('TIMEOUT',100)
+            ->download($updateFile);
     }
     /**
      * Simulate update process.
@@ -544,6 +535,13 @@ class AutoUpdate
                 $this->_log->debug(sprintf('[SIMULATE] Create directory "%s"', $foldername));
                 $files[$i]['parent_folder_exists'] = false;
                 $parent = dirname($foldername);
+                if(!is_dir($parent)){
+                    if (!mkdir($parent, $this->dirPermissions, true)) {
+                        $files[$i]['parent_folder_writable'] = false;
+                        $simulateSuccess = false;
+                        $this->_log->error(sprintf('Directory "%s" has to be writeable!', $parent));
+                    }
+                }
                 if (!is_writable($parent)) {
                     $files[$i]['parent_folder_writable'] = false;
                     $simulateSuccess = false;

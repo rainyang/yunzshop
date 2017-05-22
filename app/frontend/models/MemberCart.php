@@ -1,21 +1,22 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: libaojia
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/2
  * Time: 下午5:09
  */
 
-namespace app\frontend\modules\member\models;
+namespace app\frontend\models;
 
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\goods\models\Goods;
 
 class MemberCart extends \app\common\models\MemberCart
 {
     protected $fillable = [];
+
     protected $guarded = ['id'];
+
 
     /**
      * Get a list of members shopping cart through member ID
@@ -54,17 +55,13 @@ class MemberCart extends \app\common\models\MemberCart
         $query->select('id', 'goods_id', 'total', 'option_id')
             ->uniacid()
             ->with(['goods' => function ($query) {
-                return $query->select('id', 'thumb', 'price', 'market_price', 'title');
+                return $query->withTrashed()->select('id', 'thumb', 'price', 'market_price', 'title','deleted_at');
             }])
             ->with(['goodsOption' => function ($query) {
                 return $query->select('id', 'title', 'thumb', 'product_price', 'market_price');
             }]);
     }
 
-    public function goods()
-    {
-        return $this->hasOne(Goods::class, 'id', 'goods_id');
-    }
 
     public function goodsOption()
     {

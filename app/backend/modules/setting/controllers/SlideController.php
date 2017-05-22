@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yanglei
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/14
  * Time: 下午8:52
  */
@@ -100,7 +100,7 @@ class SlideController extends BaseController
             return $this->message('无此记录或已经删除','','error');
         }
 
-        $result = Slide::daletedSlide($id);
+        $result = Slide::deletedSlide($id);
         if($result) {
             return $this->message('删除成功',Url::absoluteWeb('setting.slide'));
         }else{

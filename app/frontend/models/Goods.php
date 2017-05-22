@@ -1,17 +1,16 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/31
  * Time: 下午5:55
  */
 
-namespace app\frontend\modules\goods\models;
+namespace app\frontend\models;
 
 use app\common\exceptions\AppException;
 use app\common\models\GoodsDiscount;
-use app\frontend\modules\goods\models\goods\GoodsDispatch;
-use app\frontend\modules\goods\models\goods\Sale;
+use app\frontend\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
 
@@ -23,7 +22,15 @@ class Goods extends \app\common\models\Goods
     {
         return $this->hasOne(GoodsOption::class);
     }
+    /**
+     * 获取商品规格最终价格
+     * @return mixed
+     */
+    public function getFinalPriceAttribute()
+    {
 
+        return $this->vip_price;
+    }
     /**
      * 获取商品的会员价格
      * @author shenyang

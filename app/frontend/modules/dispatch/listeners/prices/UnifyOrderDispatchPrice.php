@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/11
  * Time: 上午10:00
  */
@@ -10,7 +10,7 @@ namespace app\frontend\modules\dispatch\listeners\prices;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\common\models\goods\GoodsDispatch;
-use app\frontend\modules\order\models\OrderGoods;
+use app\frontend\models\OrderGoods;
 use app\frontend\modules\order\services\OrderService;
 
 class UnifyOrderDispatchPrice
