@@ -135,7 +135,7 @@ class HomePageController extends ApiController
             //装修, 原来接口在 plugin.designer.home.index.page
             $page = Designer::getDefaultDesigner();
             if ($page) {
-                $designer = (new DesignerService())->getPage($page->toArray());
+                $designer = (new DesignerService())->getPageForHomePage($page->toArray());
                 $result['item'] = $designer; //todo 和前端协商, 属性名改为designer
             } else{
                 $result['default'] = self::defaultDesign();
