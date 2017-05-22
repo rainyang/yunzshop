@@ -32,7 +32,7 @@ class Withdraw
         if ($withdraw->status != '1') {
             return false;
         }
-        $withdraw = $withdraw->toArray();
+//        $withdraw = $withdraw->toArray();
         
         $commissionConfigs = \Config::get('income.commission');
         //分销佣金 - 分销商增加已打佣金
