@@ -14,7 +14,7 @@ use Illuminate\Contracts\Support\MessageBag;
  * $this->overlay('Modal Message', 'Modal Title');
  * $this->error('Message')->important();
  * ```
- * User: jan
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 26/02/2017
  * Time: 08:03
  */

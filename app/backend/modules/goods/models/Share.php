@@ -2,7 +2,7 @@
 /**
  * 商品分享权限关联表数据操作
  * Created by PhpStorm.
- * User: luckystar_D
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/24
  * Time: 下午2:31
  */

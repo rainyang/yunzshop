@@ -14,7 +14,7 @@ use app\common\helpers\PaginationHelper;
 
 /**
  * Created by PhpStorm.
- * User: yanglei
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/27
  * Time: 下午5:09
  */
