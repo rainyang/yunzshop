@@ -133,6 +133,7 @@ class HomePageController extends ApiController
                 $result['item'] = $designer;
             } else{
                 $result['default'] = self::defaultDesign();
+                $result['item']['data'] = ''; //前端需要该字段
             }
 
             //菜单背景色, 原来接口在  plugin.designer.home.index.menu
@@ -148,8 +149,7 @@ class HomePageController extends ApiController
             $result['default'] = self::defaultDesign();
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
             $result['item']['menustyle'] = self::defaultMenuStyle();
-            $result['item']['data'] = '';
-
+            $result['item']['data'] = ''; //前端需要该字段
         }
 
         return $this->successJson('ok', $result);
