@@ -21,7 +21,8 @@ use app\frontend\modules\shop\controllers\IndexController;
 
 class HomePageController extends ApiController
 {
-    protected $publicAction = ['index'];
+    protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
+    protected $ignoreAction = [];
 
     public function index()
     {
