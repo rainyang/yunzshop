@@ -264,7 +264,7 @@ class Member extends BackendModel
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();
         } else {
-            $data['supplier'] = [];
+            $data['supplier'] = '';
         }
 
         // todo 后期需要重构
@@ -276,14 +276,14 @@ class Member extends BackendModel
                 $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
             }
         } else {
-            $data['micro'] = [];
+            $data['micro'] = '';
         }
 
         // todo 后期需要重构
         if ($plugin_class->isEnabled('glod')) {
             $data['glod'] = MemberCenterService::button(\YunShop::app()->getMemberId());
         } else {
-            $data['glod'] = [];
+            $data['glod'] = '';
         }
 
         return $data;
