@@ -23,7 +23,7 @@ class HomePageController extends ApiController
 {
     protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
     protected $ignoreAction = [];
-    
+
     public function index()
     {
         $i = \YunShop::request()->i;
@@ -148,6 +148,8 @@ class HomePageController extends ApiController
             $result['default'] = self::defaultDesign();
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
             $result['item']['menustyle'] = self::defaultMenuStyle();
+            $result['item']['data'] = '';
+
         }
 
         return $this->successJson('ok', $result);
