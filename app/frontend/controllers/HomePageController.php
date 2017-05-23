@@ -148,6 +148,8 @@ class HomePageController extends ApiController
             $result['default'] = self::defaultDesign();
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
             $result['item']['menustyle'] = self::defaultMenuStyle();
+            $result['item']['data'] = '';
+
         }
 
         return $this->successJson('ok', $result);
