@@ -21,14 +21,10 @@ use app\frontend\modules\shop\controllers\IndexController;
 
 class HomePageController extends ApiController
 {
+    protected $publicAction = ['index'];
+
     public function index()
     {
-//        $pluginData = (new PluginsController())->getPluginData();
-//        $guideFollow = (new MemberController())->guideFollow();
-//        $userInfo = (new MemberController())->getUserInfo();
-//        $designer = (new IndexController())->page();
-//        $menu = (new IndexController())->menu();
-
         $i = \YunShop::request()->i;
         $mid = \YunShop::request()->mid;
         $type = \YunShop::request()->type;
@@ -68,7 +64,7 @@ class HomePageController extends ApiController
                 $setting['is_bind_mobile'] = 0;
             }
 
-            $result['mailInfo'] = $setting; //todo 和前端协商,属性名改成setting
+            $result['mailInfo'] = $setting;
         }
 
         //用户信息, 原来接口在 member.member.getUserInfo
@@ -105,7 +101,7 @@ class HomePageController extends ApiController
                 $text = $account->name;
             }
 
-            $result['subscribe'] = [ //todo 和前端协商, 属性名改为guidefollow
+            $result['subscribe'] = [
                 'logo' => $logo,
                 'text' => $text,
                 'url' => $set['follow_url'],
@@ -133,7 +129,7 @@ class HomePageController extends ApiController
             $page = Designer::getDefaultDesigner();
             if ($page) {
                 $designer = (new DesignerService())->getPageForHomePage($page->toArray());
-                $result['item'] = $designer; //todo 和前端协商, 属性名改为designer
+                $result['item'] = $designer;
             } else{
                 $result['default'] = self::defaultDesign();
             }
