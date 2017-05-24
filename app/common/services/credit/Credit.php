@@ -8,6 +8,7 @@
 
 namespace app\common\services\credit;
 
+
 abstract class Credit
 {
     protected $data =[];

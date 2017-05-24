@@ -32,12 +32,14 @@ class BalanceChange extends Credit
     public function updateMemberCredit()
     {}
 
+
     public function validatorData()
     {
         if (!$this->relation()) {
             return '该订单已经提交过，不能重复使用';
         }
 
+        //todo 增加其他验证
 
     }
 
