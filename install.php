@@ -2055,7 +2055,26 @@ VALUES
   (100, '会员关系', 'relation', '', '', 1, 1, 'fa-circle-o', 38, 0, 1, 1492477575, 1492477575, NULL),
   (101, '优惠券管理', 'coupon', 'coupon.coupon.index', '', 1, 1, 'fa-circle-o', 6, 6, 1, 1492504682, 1492504850, NULL),
   (102, '优惠券列表', 'coupon.coupon.index', 'coupon.coupon.index', '', 1, 1, 'fa-circle-o', 101, 1, 1, 1492504792, 1492504918, NULL),
-  (103, '创建优惠券', 'coupon.coupon.create', 'coupon.coupon.create', '', 1, 1, 'fa-circle-o', 101, 2, 1, 1492504909, 1492504909, NULL);
+  (103, '创建优惠券', 'coupon.coupon.create', 'coupon.coupon.create', '', 1, 1, 'fa-circle-o', 101, 2, 1, 1492504909, 1492504909, NULL),
+  
+  
+  (104,'基础设置','relation_base','member.member-relation.base','',1,1,'fa-circle-o',100,0,1,1493215708,1493216284,NULL),
+  
+  (105,'领取发放记录','coupon.coupon.log','coupon.coupon.log','',1,1,'fa-users',101,3,1,1493358531,1493358531,NULL),
+  (106,'商城入口','shop_entry','setting.shop.entry','',1,1,'fa-hand-o-right',1,0,1,1493696556,1493704237,NULL),
+  
+  (107,'仅退款','refund.list.refundMoney','refund.list.refundMoney','',1,1,'fa-circle-o',97,2,1,1493967747,1493985887,NULL),
+  (108,'退货退款','refund.list.returnGoods','refund.list.returnGoods','',1,1,'fa-circle-o',97,3,1,1493967852,1493985904,NULL),
+  (109,'换货','refund.list.exchangeGoods','refund.list.exchangeGoods','',1,1,'fa-circle-o',97,4,1,1493967934,1493985857,NULL),
+  (110,'全部','refund.list.refund','refund.list.refund','',1,1,'fa-circle-o',97,1,1,1493967747,1493985887,NULL),
+  
+  (111,'编辑商品','goods.goods.edit','goods.goods.edit','',1,0,'fa-circle-o',27,0,1,1495521115,1495523929,NULL),
+  (112,'添加商品','goods.goods.create','goods.goods.create','',1,0,'fa-circle-o',27,0,1,1495522464,1495523974,NULL),
+  (113,'删除商品','goods.goods.destroy','goods.goods.destroy','',1,0,'fa-circle-o',27,0,1,1495522603,1495522603,NULL),
+  (114,'复制商品','goods.goods.copy','goods.goods.copy','',1,0,'fa-circle-o',27,0,1,1495523880,1495523902,NULL)
+  
+  (115,'编辑优惠券','coupon.coupon.edit','coupon.coupon.edit','id',1,0,'fa-circle-o',102,0,1,1495530444,1495530444,NULL),
+  (116,'删除优惠券','coupon.coupon.destory','coupon.coupon.destory','id',1,0,'fa-circle-o',102,0,1,1495530493,1495530493,NULL);
   
   
 INSERT INTO ". tablename('yz_address')." (`id`, `areaname`, `parentid`, `level`) VALUES
