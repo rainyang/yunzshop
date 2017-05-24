@@ -10,7 +10,6 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
-use app\common\services\finance\BalanceService;
 
 /*
  * 余额变动记录表
@@ -176,6 +175,39 @@ class Balance extends BaseModel
                 return $member->select('uid', 'nickname', 'realname', 'avatar', 'mobile', 'credit2');
             }])
             ->first();
+    }
+
+    /**
+     * 检索条件 服务类型
+     * @param $query
+     * @param $source
+     * @return mixed
+     */
+    public function scopeOfSource($query, $source)
+    {
+        return $query-where('service_type', $source);
+    }
+
+    /**
+     * 检索条件 会员ID
+     * @param $query
+     * @param $memberId
+     * @return mixed
+     */
+    public function scopeOfMemberId($query, $memberId)
+    {
+        return $query->where('member_id', $memberId);
+    }
+
+    /**
+     * 检索条件 单号／流水号
+     * @param $query
+     * @param $orderSn
+     * @return mixed
+     */
+    public function scopeOfOrderSn($query, $orderSn)
+    {
+        return $query->where('serial_number', $orderSn);
     }
 
 }

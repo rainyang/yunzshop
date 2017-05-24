@@ -8,12 +8,6 @@
 
 namespace app\common\services\credit;
 
-
-
-
-
-use Yunshop\Gold\common\models\Member;
-
 abstract class Credit
 {
     protected $data =[];
