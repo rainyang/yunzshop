@@ -3,6 +3,7 @@ namespace app\common\modules\refund\services;
 
 use app\backend\modules\refund\models\RefundApply;
 use app\backend\modules\refund\services\RefundOperationService;
+use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\exceptions\AdminException;
 use app\common\models\finance\Balance;
 use app\common\models\PayType;
@@ -40,6 +41,7 @@ class RefundService
             default:
                 break;
         }
+        event(new AfterOrderRefundedEvent($this->refundApply->order));
     }
     private function wechat()
     {

@@ -136,6 +136,8 @@ class HomePageController extends ApiController
                 $result['item']['data'] = ''; //前端需要该字段
             }
 
+            $result['system'] = (new DesignerService())->getSystemInfo();
+
             //菜单背景色, 原来接口在  plugin.designer.home.index.menu
             $menustyle = DesignerMenu::getDefaultMenu();
             if ($menustyle) {

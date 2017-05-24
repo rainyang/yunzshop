@@ -42,6 +42,7 @@ class Goods extends \app\common\models\Goods
         if (!isset($member)) {
             $member = MemberService::getCurrentMemberModel();
         }
+        //todo 会员等级折扣
         /**
          * @var $goodsDiscount GoodsDiscount
          */

@@ -21,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
 
+        \Cron::setDisablePreventOverlapping();
+
         //微信接口不输出错误
         if (strpos(request()->getRequestUri(), '/api.php') >= 0) {
             error_reporting(0);

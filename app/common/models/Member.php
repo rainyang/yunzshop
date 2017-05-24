@@ -271,7 +271,7 @@ class Member extends BackendModel
         if ($plugin_class->isEnabled('micro')) {
             $micro_set = \Setting::get('plugin.micro');
             if ($micro_set['is_open_miceo'] == 0) {
-                $data['micro'] = [];
+                $data['micro'] = '';
             } else {
                 $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
             }
