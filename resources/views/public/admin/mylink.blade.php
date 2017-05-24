@@ -289,6 +289,11 @@
                     </div>
                     <div class="mylink-con" id="select-goods" style="height:266px;"></div>
                 </div>
+
+
+
+
+
                 <div role="tabpanel" class="tab-pane link_cate" id="link_cate">
                     <div class="mylink-con">
                         @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_parent)
