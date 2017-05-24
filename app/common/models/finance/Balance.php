@@ -10,7 +10,6 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
-use app\common\services\finance\BalanceService;
 
 /*
  * 余额变动记录表

@@ -115,7 +115,7 @@
                             <h4><i class="fa fa-folder-open-o"></i> 商城页面链接</h4>
                         </div>
 
-                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ ('home') }}">商城首页</div>
+                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzAppFullUrl('home') }}">商城首页</div>
                         <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" data-href="{{ yzAppFullUrl('category') }}">分类导航</div>
                         {{--<div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>--}}
                         {{--<div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>--}}
