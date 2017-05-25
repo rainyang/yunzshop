@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yanglei
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/7
  * Time: 下午3:08
  */
@@ -32,7 +32,7 @@ class Withdraw
         if ($withdraw->status != '1') {
             return false;
         }
-        $withdraw = $withdraw->toArray();
+//        $withdraw = $withdraw->toArray();
         
         $commissionConfigs = \Config::get('income.commission');
         //分销佣金 - 分销商增加已打佣金

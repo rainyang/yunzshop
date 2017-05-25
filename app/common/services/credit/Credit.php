@@ -1,18 +1,13 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: libaojia
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/5/15
  * Time: 上午8:56
  */
 
 namespace app\common\services\credit;
 
-
-
-
-
-use Yunshop\Gold\common\models\Member;
 
 abstract class Credit
 {

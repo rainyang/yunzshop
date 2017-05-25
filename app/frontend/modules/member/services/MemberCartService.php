@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/1
  * Time: 下午4:37
  */
@@ -10,7 +10,7 @@ namespace app\frontend\modules\member\services;
 
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\member\models\MemberCart;
+use \app\frontend\models\MemberCart;
 use Illuminate\Support\Collection;
 
 class MemberCartService

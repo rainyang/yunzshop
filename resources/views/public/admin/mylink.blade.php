@@ -115,8 +115,10 @@
                             <h4><i class="fa fa-folder-open-o"></i> 商城页面链接</h4>
                         </div>
 
-                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav chooseclick" ng-click="chooseLink(1, 11)" data-href="{{ ('home') }}">商城首页</div>
-                        <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav chooseclick" ng-click="chooseLink(1, 12)" data-href="{{ yzAppFullUrl('category') }}">分类导航</div>
+
+                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzWebFullUrl('home') }}">商城首页</div>
+                        <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" data-href="{{ yzAppFullUrl('category') }}">分类导航</div>
+
                         {{--<div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>--}}
                         {{--<div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>--}}
 
@@ -289,6 +291,11 @@
                     </div>
                     <div class="mylink-con" id="select-goods" style="height:266px;"></div>
                 </div>
+
+
+
+
+
                 <div role="tabpanel" class="tab-pane link_cate" id="link_cate">
                     <div class="mylink-con">
                         @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_parent)
@@ -296,7 +303,7 @@
                                 <div class="mylink-line">
                                     {{ $goodcate_parent['name'] }}
                                     <div class="mylink-sub">
-                                        <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id']))}">选择</a>
+                                        <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/:id') }}">选择</a>
                                     </div>
                                 </div>
 
@@ -306,7 +313,7 @@
                                             <span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
                                             {{ $goodcate_chlid['name'] }}
                                             <div class="mylink-sub">
-                                                <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id'],'ccate'=>$goodcate2['id']))}">选择</a>
+                                                <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/:id') }}">选择</a>
                                             </div>
                                         </div>
                                         @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_third)
@@ -315,7 +322,7 @@
                                                     <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
                                                     {{ $goodcate_third['name'] }}
                                                     <div class="mylink-sub">
-                                                        <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id'],'ccate'=>$goodcate2['id'],'tcate'=>$goodcate3['id']))}">选择</a>
+                                                        <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/:id') }}">选择</a>
                                                     </div>
                                                 </div>
                                             @endif
@@ -424,10 +431,10 @@
                         var html = '<div class="good">';
                         html+='<div class="img"><img src="'+value.thumb+'"/></div>'
                         html+='<div class="choosebtn">';
-                        html+='<a href="javascript:;" class="mylink-nav" data-href="'+"{php echo $this->createMobileUrl('shop/detail')}&id="+value.id+'">详情链接</a><br>';
-                        if(value.hasoption==0){
-                            html+='<a href="javascript:;" class="mylink-nav" data-href="'+"{php echo $this->createMobileUrl('order/confirm')}&id="+value.id+'">下单链接</a>';
-                        }
+                        html+='<a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('goods/:id') }}">详情链接</a><br>';
+                        /*if(value.hasoption==0){
+                            html+='<a href="javascript:;" class="mylink-nav" data-href="">下单链接</a>';
+                        }*/
                         html+='</div>';
                         html+='<div class="info">';
                         html+='<div class="info-title">'+value.title+'</div>';

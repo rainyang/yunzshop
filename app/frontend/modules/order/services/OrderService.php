@@ -2,7 +2,7 @@
 
 /**
  * Created by PhpStorm.
- * User: yangyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/24
  * Time: 下午4:35
  */
@@ -16,7 +16,7 @@ use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
-use app\frontend\modules\member\models\MemberCart;
+use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;

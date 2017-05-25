@@ -3,6 +3,7 @@ namespace app\common\modules\refund\services;
 
 use app\backend\modules\refund\models\RefundApply;
 use app\backend\modules\refund\services\RefundOperationService;
+use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\exceptions\AdminException;
 use app\common\models\finance\Balance;
 use app\common\models\PayType;
@@ -11,7 +12,7 @@ use app\frontend\modules\finance\services\BalanceService;
 use Illuminate\Support\Facades\DB;
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/5/10
  * Time: 下午4:29
  */
@@ -40,6 +41,7 @@ class RefundService
             default:
                 break;
         }
+        event(new AfterOrderRefundedEvent($this->refundApply->order));
     }
     private function wechat()
     {

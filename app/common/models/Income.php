@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yanglei
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/27
  * Time: 下午1:52
  */
@@ -147,7 +147,7 @@ class Income extends BackendModel
             ->update(['status' => $status]);
     }
 
-    public static function updatedIncomeStatus($type, $Id, $status)
+    public static function updatedIncomeStatus($type, $typeId, $status)
     {
         return self::where('member_id', \YunShop::app()->getMemberId())
             ->whereIn('id', explode(',', $typeId))

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Created by PhpStorm.
- * User: Rui
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/3
  * Time: 22:16
  */

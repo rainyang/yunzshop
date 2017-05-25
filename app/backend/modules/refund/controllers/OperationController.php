@@ -4,6 +4,7 @@ namespace app\backend\modules\refund\controllers;
 
 use app\backend\modules\refund\models\RefundApply;
 use app\common\components\BaseController;
+use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\exceptions\AdminException;
 use app\common\models\refund\ResendExpress;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * 退款申请操作
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/13
  * Time: 下午3:05
  */
@@ -94,6 +95,8 @@ class OperationController extends BaseController
         DB::transaction(function () use ($refundApply) {
             $refundApply->consensus();
             $refundApply->order->close();
+            event(new AfterOrderRefundedEvent($this->refundApply->order));
+
         });
         return $this->message('操作成功', '');
     }

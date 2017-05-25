@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/11
  * Time: 上午10:52
  */
@@ -9,7 +9,7 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\member\models\MemberCart;
+use \app\frontend\models\MemberCart;
 use Illuminate\Support\Collection;
 
 class CartBuyController extends PreGeneratedController

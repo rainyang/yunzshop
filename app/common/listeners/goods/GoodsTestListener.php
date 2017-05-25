@@ -5,7 +5,7 @@ use app\common\events\order\BeforeOrderGoodsAddInOrder;
 use app\common\listeners\EventListener;
 /**
  * Created by PhpStorm.s
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/17
  * Time: 上午11:38
  */
