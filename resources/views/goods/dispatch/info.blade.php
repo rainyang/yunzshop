@@ -32,11 +32,11 @@
                         <div class="col-sm-9 col-xs-12">
                             <label class='radio-inline'>
                                 <input type='radio' name='dispatch[is_default]' id="isdefault1" value='1'
-                                       @if ( $dispatch->isdefault == 1 )checked @endif /> 是
+                                       @if ( $dispatch->is_default == 1 )checked @endif /> 是
                             </label>
                             <label class='radio-inline'>
                                 <input type='radio' name='dispatch[is_default]' id="isdefault0" value='0'
-                                       @if ( $dispatch->isdefault == 0 )checked @endif /> 否
+                                       @if ( $dispatch->is_default == 0 )checked @endif /> 否
                             </label>
                         </div>
                     </div>

@@ -120,7 +120,8 @@ class DispatchController extends BaseController
                 //取消其他默认模板
                 if($dispatchModel->is_default){
                     $defaultModel = Dispatch::getOneByDefault();
-                    if ($defaultModel) {
+
+                    if ($defaultModel && ($defaultModel->id != \YunShop::request()->id) ) {
                         $defaultModel->is_default = 0;
                         $defaultModel->save();
                     }
