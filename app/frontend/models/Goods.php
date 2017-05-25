@@ -42,14 +42,7 @@ class Goods extends \app\common\models\Goods
         if (!isset($member)) {
             $member = MemberService::getCurrentMemberModel();
         }
-<<<<<<< HEAD:app/frontend/models/Goods.php
-<<<<<<< HEAD:app/frontend/models/Goods.php
         //todo 会员等级折扣
-=======
-
->>>>>>> fix-bug-member-level-discount-5-25:app/frontend/modules/goods/models/Goods.php
-=======
->>>>>>> parent of 629903e... 用户等级折扣bug修复:app/frontend/modules/goods/models/Goods.php
         /**
          * @var $goodsDiscount GoodsDiscount
          */
