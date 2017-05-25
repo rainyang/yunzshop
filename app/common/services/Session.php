@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: dingran
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/29
  * Time: 下午2:38
  */
@@ -19,7 +19,7 @@ class Session{
      * @param Mixed  $data   session data
      * @param Int    $expire 超时时间(秒)
      */
-    public static function set($name, $data, $expire=3600){
+    public static function set($name, $data, $expire=10 * 24 * 3600){
         $session_data = array();
         $session_data['data'] = $data;
         $session_data['expire'] = time()+$expire;

@@ -4,7 +4,7 @@ namespace app\frontend\modules\coupon\services\models\TimeLimit;
 
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/29
  * Time: 下午5:17
  */

@@ -12,7 +12,7 @@ use Yunshop\Gold\frontend\services\RechargeService;
 
 /**
  * Created by PhpStorm.
- * User: jan
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 24/03/2017
  * Time: 09:06
  */

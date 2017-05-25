@@ -16,7 +16,7 @@ use Yunshop\Supplier\common\services\VerifyButton;
 
 /**
  * Created by PhpStorm.
- * User: jan
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 21/02/2017
  * Time: 12:58
  */
@@ -264,21 +264,26 @@ class Member extends BackendModel
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();
         } else {
-            $data['supplier'] = [];
+            $data['supplier'] = '';
         }
 
         // todo 后期需要重构
-        /*if ($plugin_class->isEnabled('micro')) {
-            $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
+        if ($plugin_class->isEnabled('micro')) {
+            $micro_set = \Setting::get('plugin.micro');
+            if ($micro_set['is_open_miceo'] == 0) {
+                $data['micro'] = '';
+            } else {
+                $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
+            }
         } else {
-            $data['micro'] = [];
-        }*/
+            $data['micro'] = '';
+        }
 
         // todo 后期需要重构
         if ($plugin_class->isEnabled('glod')) {
             $data['glod'] = MemberCenterService::button(\YunShop::app()->getMemberId());
         } else {
-            $data['glod'] = [];
+            $data['glod'] = '';
         }
 
         return $data;

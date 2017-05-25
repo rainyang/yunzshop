@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: libaojia
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/1
  * Time: 下午4:39
  */
@@ -29,8 +29,8 @@ use Illuminate\Support\Str;
 
 class MemberController extends ApiController
 {
-    protected $publicAction = ['wxJsSdkConfig'];
-    protected $ignoreAction = ['wxJsSdkConfig'];
+    protected $publicAction = [''];
+    protected $ignoreAction = [''];
 
     /**
      * 获取用户信息

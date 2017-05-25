@@ -6,11 +6,12 @@
  * Time: 下午5:55
  */
 
-namespace app\frontend\models;
+namespace app\frontend\modules\goods\models;
 
 use app\common\exceptions\AppException;
 use app\common\models\GoodsDiscount;
-use app\frontend\models\goods\Sale;
+use app\frontend\modules\goods\models\goods\GoodsDispatch;
+use app\frontend\modules\goods\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
 
@@ -22,15 +23,7 @@ class Goods extends \app\common\models\Goods
     {
         return $this->hasOne(GoodsOption::class);
     }
-    /**
-     * 获取商品规格最终价格
-     * @return mixed
-     */
-    public function getFinalPriceAttribute()
-    {
 
-        return $this->vip_price;
-    }
     /**
      * 获取商品的会员价格
      * @author shenyang
@@ -38,17 +31,30 @@ class Goods extends \app\common\models\Goods
      */
     public function getVipPriceAttribute()
     {
-        $result = $this->price;
         if (!isset($member)) {
             $member = MemberService::getCurrentMemberModel();
         }
+<<<<<<< HEAD
+<<<<<<< HEAD:app/frontend/models/Goods.php
+        //todo 会员等级折扣
+=======
+
+>>>>>>> fix-bug-member-level-discount-5-25:app/frontend/modules/goods/models/Goods.php
+=======
+
+>>>>>>> 5e943147c71a46262628002f9783b3125c7348e9
         /**
          * @var $goodsDiscount GoodsDiscount
          */
         $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
         if (isset($goodsDiscount)) {
+            //优先使用商品设置
             $result = $goodsDiscount->getPrice($this->price);
+        }else{
+            //其次等级商品全局设置
+            $result = $member->yzMember->level->getMemberLevelGoodsDiscountPrice($this->price);
         }
+
         return $result;
     }
 
@@ -108,7 +114,7 @@ class Goods extends \app\common\models\Goods
                     $query->where('price', '<', $value);
                     break;
                 case 'category':
-                    if(array_key_exists('parentid', $value) || array_key_exists('childid', $value) || array_key_exists('thirdid', $value)){
+                    if (array_key_exists('parentid', $value) || array_key_exists('childid', $value) || array_key_exists('thirdid', $value)) {
                         $id = $value['parentid'] ? $value['parentid'] : '';
                         $id = $value['childid'] ? $value['childid'] : $id;
                         $id = $value['thirdid'] ? $value['thirdid'] : $id;
@@ -120,7 +126,7 @@ class Goods extends \app\common\models\Goods
                             'yz_goods_category.category_id as category_id',
                             'yz_goods_category.category_ids as category_ids'
                         ])->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')->whereRaw('FIND_IN_SET(?,category_ids)', [$id]);
-                    } elseif(strpos($value, ',')){
+                    } elseif (strpos($value, ',')) {
                         $scope = explode(',', $value);
                         $query->select([
                             'yz_goods.*',
@@ -128,18 +134,18 @@ class Goods extends \app\common\models\Goods
                             'yz_goods_category.goods_id as goods_id',
                             'yz_goods_category.category_id as category_id',
                             'yz_goods_category.category_ids as category_ids'
-                        ])->join('yz_goods_category', function($join) use ($scope){
+                        ])->join('yz_goods_category', function ($join) use ($scope) {
                             $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                 ->whereIn('yz_goods_category.category_id', $scope);
                         });
-                    } else{
+                    } else {
                         $query->select([
                             'yz_goods.*',
                             'yz_goods_category.id as goods_category_id',
                             'yz_goods_category.goods_id as goods_id',
                             'yz_goods_category.category_id as category_id',
                             'yz_goods_category.category_ids as category_ids'
-                        ])->join('yz_goods_category', function($join) use ($value){
+                        ])->join('yz_goods_category', function ($join) use ($value) {
                             $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                 ->whereRaw('FIND_IN_SET(?,category_ids)', [$value]);
 //                                ->where('yz_goods_category.category_id', $value);
@@ -148,22 +154,22 @@ class Goods extends \app\common\models\Goods
                     break;
                 case 'couponid': //搜索指定优惠券适用的商品
                     $res = Coupon::getApplicableScope($value);
-                    switch ($res['type']){
+                    switch ($res['type']) {
                         case Coupon::COUPON_GOODS_USE: //优惠券适用于指定商品
-                            if(is_array($res['scope'])){
+                            if (is_array($res['scope'])) {
                                 $query->whereIn('id', $res['scope']);
-                            } else{
+                            } else {
                                 $query->where('id', $res['scope']);
                             }
                             break;
                         case Coupon::COUPON_CATEGORY_USE: //优惠券适用于指定商品分类
-                            if(is_array($res['scope'])){
-                                $query->join('yz_goods_category', function($join) use ($res){
+                            if (is_array($res['scope'])) {
+                                $query->join('yz_goods_category', function ($join) use ($res) {
                                     $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                         ->whereIn('yz_goods_category.category_id', $res['scope']);
                                 });
-                            } else{
-                                $query->join('yz_goods_category', function($join) use ($res){
+                            } else {
+                                $query->join('yz_goods_category', function ($join) use ($res) {
                                     $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                                         ->where('yz_goods_category.category_id', $res['scope']);
                                 });

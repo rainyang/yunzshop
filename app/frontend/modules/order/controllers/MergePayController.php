@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/25
  * Time: 上午11:00
  */
@@ -167,7 +167,7 @@ class MergePayController extends ApiController
 
     public function alipay(\Request $request)
     {
-        if (!\Setting::get('shop.pay.alipay') == false) {
+        if (\Setting::get('shop.pay.alipay') == false) {
             throw new AppException('商城未开启支付宝支付');
         }
         if ($request->has('uid')) {
