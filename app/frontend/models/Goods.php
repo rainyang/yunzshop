@@ -6,12 +6,11 @@
  * Time: 下午5:55
  */
 
-namespace app\frontend\modules\goods\models;
+namespace app\frontend\models;
 
 use app\common\exceptions\AppException;
 use app\common\models\GoodsDiscount;
-use app\frontend\modules\goods\models\goods\GoodsDispatch;
-use app\frontend\modules\goods\models\goods\Sale;
+use app\frontend\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
 
