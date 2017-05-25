@@ -147,7 +147,7 @@ class Income extends BackendModel
             ->update(['status' => $status]);
     }
 
-    public static function updatedIncomeStatus($type, $typeId, $status)
+    public static function updatedIncomeStatus($type, $Id, $status)
     {
         return self::where('member_id', \YunShop::app()->getMemberId())
             ->whereIn('id', explode(',', $typeId))
