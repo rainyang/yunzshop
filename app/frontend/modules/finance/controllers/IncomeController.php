@@ -186,6 +186,7 @@ class IncomeController extends ApiController
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
+
         $withdrawTotal = $withdrawData['total'];
         Log::info("POST - Withdraw Total ", $withdrawTotal);
 
@@ -229,11 +230,10 @@ class IncomeController extends ApiController
     {
         static::setIncome($type, $typeId);
         static::setCommissionOrder($type, $typeId);
+
         $configs = Config::get('income');
-        echo "<pre>"; print_r($configs);
         foreach ($configs as $config) {
             if($config['name']){
-                echo "<pre>"; print_r($config['name']);exit;
                 $income = \Yunshop\Commission\models\Income::whereIn('id',explode(',',$typeId))->get();
                 foreach ($income as $item) {
                     $type::$config['name'](['status'=>1],['id'=>$item->incometable_id]);
