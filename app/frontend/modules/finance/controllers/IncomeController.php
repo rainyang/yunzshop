@@ -250,7 +250,7 @@ class IncomeController extends ApiController
     public function setIncome($type, $typeId)
     {
         Log::info('setIncome');
-        $request = Income::updatedWithdraw($type, $typeId, '1');
+        //$request = Income::updatedWithdraw($type, $typeId, '1');
     }
 
     /**
