@@ -1,16 +1,15 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: libaojia
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/2
  * Time: 下午5:09
  */
 
-namespace app\frontend\modules\member\models;
+namespace app\frontend\models;
 
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\goods\models\Goods;
 
 class MemberCart extends \app\common\models\MemberCart
 {
@@ -63,10 +62,6 @@ class MemberCart extends \app\common\models\MemberCart
             }]);
     }
 
-    public function goods()
-    {
-        return $this->hasOne(Goods::class, 'id', 'goods_id');
-    }
 
     public function goodsOption()
     {

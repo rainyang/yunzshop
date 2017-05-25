@@ -2,7 +2,7 @@
 /**
  * 单订单余额支付
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/17
  * Time: 上午10:57
  */
@@ -12,7 +12,6 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
-use app\common\models\PayType;
 use app\common\services\PayFactory;
 use app\frontend\modules\order\services\OrderService;
 use Illuminate\Support\Collection;

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/28
  * Time: 上午10:39
  */
@@ -32,9 +32,10 @@ class CreateController extends PreGeneratedController
     {
         //订单组
         $orders = collect();
-        if($this->getShopOrder()){
+        $shopOrder = $this->getShopOrder($this->getMemberCarts());
+        if($shopOrder){
 
-            $orders->push($this->getShopOrder());
+            $orders->push($shopOrder);
         }
         $orders = $orders->merge($this->getPluginOrders()[0]);
 

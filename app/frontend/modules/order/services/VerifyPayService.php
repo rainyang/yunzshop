@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yangyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/9
  * Time: 上午9:48
  */
@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\services;
 
 use app\common\models\CorePayLog;
 use app\common\models\Order;
-use app\frontend\modules\order\models\OrderLogModel;
+use app\frontend\models\OrderLogModel;
 
 class VerifyPayService
 {

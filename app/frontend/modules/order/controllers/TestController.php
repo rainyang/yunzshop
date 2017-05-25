@@ -5,17 +5,17 @@ use app\common\components\ApiController;
 
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\ShowPreGenerateOrder;
-use app\frontend\modules\goods\models\Goods;
+use app\frontend\models\goods;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\order\models\Order;
+use app\frontend\models\Order;
 use app\frontend\modules\order\services\OrderService;
 
 use app\common\events\order\AfterOrderCancelPaidEvent;
 
 /**
  * Created by PhpStorm.
- * User: jan
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 21/02/2017
  * Time: 11:34
  */

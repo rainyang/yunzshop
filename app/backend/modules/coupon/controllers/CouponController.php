@@ -10,10 +10,11 @@ use app\backend\modules\member\models\MemberLevel;
 use app\backend\modules\coupon\models\CouponLog;
 use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\models\Category;
+use app\common\facades\Setting;
 
 /**
  * Created by PhpStorm.
- * User: Rui
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/20
  * Time: 16:20
  */
@@ -57,30 +58,31 @@ class CouponController extends BaseController
     //添加优惠券
     public function create()
     {
-
         //获取表单提交的值
         $couponRequest = \YunShop::request()->coupon;
+        $couponRequest['uniacid'] = \YunShop::app()->uniacid;
+        $couponRequest['time_start'] = strtotime(\YunShop::request()->time['start']);
+        $couponRequest['time_end'] = strtotime(\YunShop::request()->time['end']);
+        $couponRequest['category_ids'] = \YunShop::request()->category_ids;
+        $couponRequest['categorynames'] = \YunShop::request()->category_names;
+        $couponRequest['goods_ids'] = \YunShop::request()->goods_ids;
+        $couponRequest['goods_names'] = \YunShop::request()->goods_names;
 
         //获取会员等级列表
         $memberLevels = MemberLevel::getMemberLevelList();
 
-        //表单验证
-        if($couponRequest){
-            $coupon = new Coupon();
-            $coupon->uniacid = \YunShop::app()->uniacid;
-            $coupon->time_start = strtotime(\YunShop::request()->time['start']);
-            $coupon->time_end = strtotime(\YunShop::request()->time['end']);
-            $coupon->use_type =\YunShop::request()->usetype;
-            $coupon->category_ids = \YunShop::request()->categoryids;
-            $coupon->categorynames = \YunShop::request()->categorynames;
-            $coupon->goods_ids = \YunShop::request()->goods_ids;
-            $coupon->goods_names = \YunShop::request()->goods_names;
+        //获取优惠券统一的模板消息 ID (因为是统一的,所以写在 setting)
+        $template_id = Setting::get('coupon_template_id');
 
+        //表单验证
+        if($_POST){
+            $coupon = new Coupon();
             $coupon->fill($couponRequest);
             $validator = $coupon->validator();
             if($validator->fails()){
                 $this->error($validator->messages());
             } elseif($coupon->save()) {
+                Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
                 return $this->message('优惠券创建成功', Url::absoluteWeb('coupon.coupon.index'));
             } else{
                 $this->error('优惠券创建失败');
@@ -91,7 +93,8 @@ class CouponController extends BaseController
             'coupon' => $couponRequest,
             'memberlevels' => $memberLevels,
             'timestart' => strtotime(\YunShop::request()->time['start']),
-            'timeend' => strtotime(\YunShop::request()->time['end'])
+            'timeend' => strtotime(\YunShop::request()->time['end']),
+            'template_id' => $template_id,
         ])->render();
     }
 
@@ -105,6 +108,9 @@ class CouponController extends BaseController
 
         //获取会员等级列表
         $memberLevels = MemberLevel::getMemberLevelList();
+
+        //获取优惠券统一的模板消息 ID (因为是统一的,所以写在 setting)
+        $template_id = Setting::get('coupon_template_id');
 
         $coupon = Coupon::getCouponById($coupon_id);
         if(!empty($coupon->goods_ids)){
@@ -133,6 +139,7 @@ class CouponController extends BaseController
                 $this->error($validator->messages());
             } else{
                 if($coupon->save()){
+                    Setting::set('coupon_template_id', \YunShop::request()->template_id); //设置优惠券统一的模板消息ID
                     return $this->message('优惠券修改成功', Url::absoluteWeb('coupon.coupon.index'));
                 } else{
                     $this->error('优惠券修改失败');
@@ -150,6 +157,7 @@ class CouponController extends BaseController
             'memberlevels' => $memberLevels,
             'timestart' => $coupon->time_start->timestamp,
             'timeend' => $coupon->time_end->timestamp,
+            'template_id' => $template_id,
         ])->render();
     }
 

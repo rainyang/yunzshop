@@ -1,14 +1,15 @@
 <?php
 namespace app\frontend\modules\goods\listeners;
+
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\models\OrderGoods;
-use app\frontend\modules\goods\models\Goods;
-use app\frontend\modules\goods\models\GoodsOption;
+use app\frontend\models\goods;
+use app\frontend\models\GoodsOption;
 
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/14
  * Time: 下午10:34
  */

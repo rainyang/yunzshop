@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: RainYang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/22
  * Time: 19:35
  */
@@ -117,7 +117,7 @@ class Goods extends BaseModel
 
     public function hasOnePrivilege()
     {
-        return $this->hasOne(self::getStaticNamespace().'goods\Privilege');
+        return $this->hasOne($this->getNearestModel('goods\Privilege'));
     }
 
     public function hasOneGoodsDispatch()

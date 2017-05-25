@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/2
  * Time: 上午11:24
  */
@@ -33,8 +33,10 @@ class OrderGoods extends BaseModel
 
     public function goods()
     {
-        return $this->belongsTo('\app\common\models\Goods');
+        //todo ??需调查为什么 $this->goods 调取不到这个函数
+        return $this->belongsTo(self::getNearestModel('Goods'));
     }
+
     public function scopeOrderGoods(Builder $query)
     {
         return $query->select(['id', 'order_id', 'goods_id', 'goods_price', 'total', 'price', 'thumb', 'title', 'goods_sn'])->with('goods',function ($query){
@@ -78,7 +80,7 @@ class OrderGoods extends BaseModel
 
     public function belongsToGood()
     {
-        return $this->belongsTo('\app\common\models\Goods', 'goods_id', 'id');
+        return $this->belongsTo(self::getNearestModel('Goods'), 'goods_id', 'id');
     }
 
     public function goodsOption()

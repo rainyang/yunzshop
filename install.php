@@ -201,7 +201,7 @@ CREATE TABLE ". tablename('yz_coupon')." (
   `use_type` tinyint(3) unsigned DEFAULT '0',
   `return_type` tinyint(3) DEFAULT '0',
   `bgcolor` varchar(255) DEFAULT '',
-  `enough` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `enough` int(11) NOT NULL DEFAULT '0',
   `coupon_type` tinyint(3) DEFAULT '0',
   `time_limit` tinyint(3) DEFAULT '0',
   `time_days` int(11) DEFAULT '0',

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/28
  * Time: 下午1:44
  */
@@ -21,18 +21,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     public $coupons;
 
-    public function __construct(array $attributes = [])
-    {
-        if (isset($attributes['option_id'])) {
-            $attributes['goods_option_id'] = $attributes['option_id'];
-            unset($attributes['option_id']);
-        }
-        if (isset($attributes['goods'])) {
-            unset($attributes['goods']);
 
-        }
-        parent::__construct($attributes);
-    }
 
     public function getGoodsId()
     {
@@ -70,7 +59,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
             'goods_option_id' => $this->goodsOption->id,
             'goods_option_title' => $this->goodsOption->title,
             'goods_price' => sprintf('%.2f', $this->getGoodsPrice()),
-            'vip_price' => sprintf('%.2f', $this->getVipPrice()),
+            'vip_price' => sprintf('%.2f', $this->getFinalPrice()),
             'coupon_price' => sprintf('%.2f', $this->getCouponPrice()),
             'coupons' => $this->coupons
         );
@@ -109,6 +98,7 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
         if (isset($this->goodsOption)) {
             return $this->goodsOption->product_price * $this->getTotal();
         }
+
         return $this->getTotal() * $this->goods->price;
 
     }
@@ -162,13 +152,13 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     }
 
-    public function getVipPrice()
+    public function getFinalPrice()
     {
         if (isset($this->goodsOption)) {
-            return $this->goodsOption->vip_price * $this->getTotal();
+            return $this->goodsOption->final_price * $this->getTotal();
         }
 
-        return $this->goods->vip_price * $this->getTotal();
+        return $this->goods->final_price * $this->getTotal();
     }
 
 }

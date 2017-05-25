@@ -1,15 +1,15 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/5/3
  * Time: 上午11:46
  */
 
-namespace app\frontend\modules\goods\models\goods;
+namespace app\frontend\models\goods;
 
 
-use app\frontend\modules\order\models\OrderGoods;
+use app\frontend\models\OrderGoods;
 
 class Sale extends \app\common\models\Sale
 {

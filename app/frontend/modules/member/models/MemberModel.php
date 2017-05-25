@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: dingran
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 17/2/22
  * Time: 下午4:53
  */
@@ -392,7 +392,7 @@ class MemberModel extends Member
             $member_info['birthday'] = date('Y-m-d', time());
         }
 
-        $order_info = \app\frontend\modules\order\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        $order_info = \app\frontend\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
 
         $member_info['order'] = $order_info;
 

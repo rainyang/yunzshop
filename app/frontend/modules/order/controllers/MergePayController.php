@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/25
  * Time: 上午11:00
  */
@@ -30,7 +30,7 @@ class MergePayController extends ApiController
     protected $ignoreAction = ['alipay'];
 
     /**
-     * @param $order_ids
+     * @param $orderIds
      * @return Collection
      * @throws AppException
      */

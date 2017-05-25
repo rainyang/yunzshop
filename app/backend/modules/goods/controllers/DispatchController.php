@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: luckystar_D
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/3
  * Time: 下午4:30
  */
@@ -60,12 +60,12 @@ class DispatchController extends BaseController
                 $this->error($validator->messages());
             } else {
                 //取消其他默认模板
-                $defaultModel = Dispatch::getOneByDefault();
-                if ($defaultModel) {
-                    $defaultModel->is_default = 0;
-                    $defaultModel->save();
-                } else {
-                    $dispatchModel->is_default = 1;
+                if($dispatchModel->is_default){
+                    $defaultModel = Dispatch::getOneByDefault();
+                    if ($defaultModel) {
+                        $defaultModel->is_default = 0;
+                        $defaultModel->save();
+                    }
                 }
                 //数据保存
                 if ($dispatchModel->save()) {
@@ -118,10 +118,13 @@ class DispatchController extends BaseController
                 $this->error($validator->messages());
             } else {
                 //取消其他默认模板
-                $defaultModel = Dispatch::getOneByDefault();
-                if ($defaultModel) {
-                    $defaultModel->is_default = 0;
-                    $defaultModel->save();
+                if($dispatchModel->is_default){
+                    $defaultModel = Dispatch::getOneByDefault();
+
+                    if ($defaultModel && ($defaultModel->id != \YunShop::request()->id) ) {
+                        $defaultModel->is_default = 0;
+                        $defaultModel->save();
+                    }
                 }
 
                 //数据保存

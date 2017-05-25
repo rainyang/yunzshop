@@ -1,12 +1,12 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yangyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/10
  * Time: 上午10:31
  */
 
-namespace app\frontend\modules\order\models;
+namespace app\frontend\models;
 
 
 use app\common\models\CorePayLog;

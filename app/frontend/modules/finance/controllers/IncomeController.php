@@ -2,7 +2,7 @@
 
 /**
  * Created by PhpStorm.
- * User: yanglei
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/27
  * Time: 下午10:15
  */
@@ -15,6 +15,7 @@ use app\common\models\Income;
 use app\common\services\Pay;
 use app\common\services\PayFactory;
 use app\frontend\modules\finance\models\Withdraw;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Yunshop\Commission\models\CommissionOrder;
 
@@ -30,7 +31,7 @@ class IncomeController extends ApiController
         if ($status >= '0') {
             $incomeModel = $incomeModel->where('status', $status);
         }
-        $config = \Config::get('income');
+        $config = \Config::get('plugin');
         $incomeData['total'] = [
             'title' => '推广收入',
             'type' => 'total',
@@ -44,21 +45,22 @@ class IncomeController extends ApiController
                 'title' => $item['title'],
                 'ico' => $item['ico'],
                 'type' => $item['type'],
-                'type_name' => $item['type_name'],
+                'type_name' => $item['title'],
                 'income' => $typeModel->sum('amount')
             ];
-
             $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
-            if($item['agent_status']){
-                $agentModel = $agentModel->where('status',1);
+
+            if ($item['agent_status']) {
+                $agentModel = $agentModel->where('status', 1);
             }
+
+            //推广中心显示
             $agent = $agentModel->first();
-            if($agent){
+            if ($agent) {
                 $incomeData[$key]['can'] = true;
-            }else{
+            } else {
                 $incomeData[$key]['can'] = false;
             }
-            
         }
         if ($incomeData) {
             return $this->successJson('获取数据成功!', $incomeData);
@@ -75,14 +77,13 @@ class IncomeController extends ApiController
         $type = \YunShop::request()->income_type;
         $search = [];
         foreach ($configs as $key => $config) {
-            if($config['type'] == $type){
+            if ($config['type'] == $type) {
                 $search['type'] = $config['class'];
                 break;
             }
         }
 
         $incomeModel = Income::getIncomeInMonth($search)->where('member_id', \YunShop::app()->getMemberId());
-
         $incomeModel = $incomeModel->get();
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
@@ -111,7 +112,7 @@ class IncomeController extends ApiController
         $configs = \Config::get('income');
         foreach ($configs as $key => $config) {
             $searchType[] = [
-                'title' => $config['type_name'],
+                'title' => $config['title'],
                 'type' => $config['type']
             ];
         }
@@ -128,17 +129,16 @@ class IncomeController extends ApiController
     {
         $config = \Config::get('income');
 
-
         foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('withdraw.' . $key);
-            
+
             $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
             $incomeModel = $incomeModel->where('status', '0');
-            
+
             $incomeModel = $incomeModel->where('incometable_type', $item['class']);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
-            $poundage = sprintf("%.2f",substr(sprintf("%.3f", $poundage), 0, -2));
+            $poundage = sprintf("%.2f", substr(sprintf("%.3f", $poundage), 0, -2));
             $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
             if (($amount > 0) && (bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1)) {
                 $type_id = '';
@@ -148,7 +148,7 @@ class IncomeController extends ApiController
                 $incomeData[] = [
                     'type' => $item['class'],
                     'key_name' => $item['type'],
-                    'type_name' => $item['type_name'],
+                    'type_name' => $item['title'],
                     'type_id' => rtrim($type_id, ','),
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
@@ -160,7 +160,7 @@ class IncomeController extends ApiController
                 $incomeData[] = [
                     'type' => $item['class'],
                     'key_name' => $item['type'],
-                    'type_name' => $item['type_name'],
+                    'type_name' => $item['title'],
                     'type_id' => '',
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
@@ -183,35 +183,33 @@ class IncomeController extends ApiController
     {
         $config = \Config::get('income');
         $withdrawData = \YunShop::request()->data;
-        Log::info("POST - data ",$withdrawData);
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
 
         $withdrawTotal = $withdrawData['total'];
-        Log::info("POST - Withdraw Total ",$withdrawTotal);
+        Log::info("POST - Withdraw Total ", $withdrawTotal);
 
         $incomeModel = Income::getIncomes();
         $incomeModel = $incomeModel->where('member_id', \YunShop::app()->getMemberId());
         $incomeModel = $incomeModel->where('status', '0');
 
-        Log::info("POST - Withdraw Data ",$withdrawData);
+        Log::info("POST - Withdraw Data ", $withdrawData);
         /**
          * 验证数据
          */
         foreach ($withdrawData['withdrawal'] as $item) {
-
             $set[$item['key_name']] = \Setting::get('withdraw.' . $item['key_name']);
             $incomeModel = $incomeModel->whereIn('id', explode(',', $item['type_id']));
             $incomes = $incomeModel->get();
-            Log::info("INCOME:",$incomes);
+            Log::info("INCOME:", $incomes);
 
             $set[$item['key_name']]['roll_out_limit'] = $set[$item['key_name']]['roll_out_limit'] ? $set[$item['key_name']]['roll_out_limit'] : 0;
 
             Log::info("roll_out_limit:");
             Log::info($set[$item['key_name']]['roll_out_limit']);
 
-            if ( bccomp($incomes->sum('amount'), $set[$item['key_name']]['roll_out_limit'], 2) == -1 ) {
+            if (bccomp($incomes->sum('amount'), $set[$item['key_name']]['roll_out_limit'], 2) == -1) {
                 return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
             }
 
@@ -232,6 +230,17 @@ class IncomeController extends ApiController
     {
         static::setIncome($type, $typeId);
         static::setCommissionOrder($type, $typeId);
+
+        $configs = Config::get('income');
+        foreach ($configs as $config) {
+            if($config['name']){
+                $income = \Yunshop\Commission\models\Income::whereIn('id',explode(',',$typeId))->get();
+                foreach ($income as $item) {
+                    $type::$config['name'](['status'=>1],['id'=>$item->incometable_id]);
+                }
+
+            }
+        }
     }
 
     /**
@@ -262,7 +271,6 @@ class IncomeController extends ApiController
     public function setWithdraw($withdrawData, $withdrawTotal)
     {
 
-
         foreach ($withdrawData as $item) {
             $data[] = [
                 'withdraw_sn' => Pay::setUniacidNo(\YunShop::app()->uniacid),
@@ -274,7 +282,7 @@ class IncomeController extends ApiController
                 'amounts' => $item['income'],
                 'poundage' => $item['poundage'],
                 'poundage_rate' => $item['poundage_rate'],
-                'actual_amounts' => $item['income']-$item['poundage'],
+                'actual_amounts' => $item['income'] - $item['poundage'],
                 'actual_poundage' => $item['poundage'],
                 'pay_way' => $withdrawTotal['pay_way'],
                 'status' => 0,
@@ -283,7 +291,7 @@ class IncomeController extends ApiController
             ];
             static::setIncomeAndOrder($item['type'], $item['type_id']);
         }
-        Log::info("Withdraw - data",$data);
+        Log::info("Withdraw - data", $data);
         return Withdraw::insert($data);
     }
 

@@ -4,13 +4,13 @@ namespace app\frontend\modules\dispatch\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
-use app\frontend\modules\order\models\Order;
+use app\frontend\models\Order;
 use Ixudra\Curl\Facades\Curl;
 use \Request;
 
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/4/6
  * Time: 下午4:03
  */

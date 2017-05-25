@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: shenyang
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/3
  * Time: 上午9:10
  */
@@ -11,8 +11,8 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\common\requests\Request;
-use app\frontend\modules\order\models\Order;
-use app\frontend\modules\order\models\OrderAddress;
+use app\frontend\models\Order;
+use app\frontend\models\OrderAddress;
 
 
 class DetailController extends ApiController
@@ -29,7 +29,6 @@ class DetailController extends ApiController
         if ($order->uid != \YunShop::app()->getMemberId()) {
             throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
         }
-        $order->button_models = $order->button_models;
 
         $data = $order->toArray();
 

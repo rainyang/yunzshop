@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: libaojia
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/3/1
  * Time: 下午4:39
  */
@@ -22,7 +22,7 @@ use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
-use app\frontend\modules\order\models\OrderListModel;
+use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
 

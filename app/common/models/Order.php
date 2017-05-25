@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yanglei
+ * Author: 芸众商城 www.yunzshop.com
  * Date: 2017/2/28
  * Time: 上午11:32
  */
@@ -85,7 +85,7 @@ class Order extends BaseModel
 
     public function hasManyOrderGoods()
     {
-        return $this->hasMany(OrderGoods::class, 'order_id', 'id');
+        return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
     }
 
     public function orderChangePriceLogs()
@@ -117,6 +117,7 @@ class Order extends BaseModel
         return $this->hasOne(Remark::class, 'order_id', 'id');
     }
 
+    //支付方式
     public function hasOnePayType()
     {
         return $this->hasOne(PayType::class, 'id', 'pay_type_id');
