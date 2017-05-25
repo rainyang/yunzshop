@@ -229,7 +229,7 @@ class IncomeController extends ApiController
     {
         static::setIncome($type, $typeId);
         static::setCommissionOrder($type, $typeId);
-
+echo "<pre>"; print_r('----');exit;
         $configs = Config::get('income');
         foreach ($configs as $config) {
             if($config['name']){
@@ -288,7 +288,6 @@ class IncomeController extends ApiController
                 'created_at' => time(),
                 'updated_at' => time(),
             ];
-            echo "<pre>"; print_r($data);exit;
             static::setIncomeAndOrder($item['type'], $item['type_id']);
         }
         Log::info("Withdraw - data", $data);
