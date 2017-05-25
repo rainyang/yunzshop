@@ -28,18 +28,20 @@ class GoodsOption extends \app\common\models\GoodsOption
      */
     public function getVipPriceAttribute()
     {
-        $result = $this->product_price;
         if (!isset($member)) {
             $member = MemberService::getCurrentMemberModel();
         }
+
         /**
          * @var $goodsDiscount GoodsDiscount
          */
-//        dd($this->goods);
-//        exit;
         $goodsDiscount = $this->goods->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
         if (isset($goodsDiscount)) {
+            //优先使用商品设置
             $result = $goodsDiscount->getPrice($this->product_price);
+        }else{
+            //其次等级商品全局设置
+            $result = $member->yzMember->level->getMemberLevelGoodsDiscountPrice($this->product_price);
         }
         return $result;
     }
