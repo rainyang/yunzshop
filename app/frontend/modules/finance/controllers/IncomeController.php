@@ -186,7 +186,6 @@ class IncomeController extends ApiController
         if (!$withdrawData) {
             return $this->errorJson('未检测到数据!');
         }
-echo "<pre>"; print_r($withdrawData);exit;
         $withdrawTotal = $withdrawData['total'];
         Log::info("POST - Withdraw Total ", $withdrawTotal);
 
@@ -289,6 +288,7 @@ echo "<pre>"; print_r($withdrawData);exit;
                 'created_at' => time(),
                 'updated_at' => time(),
             ];
+            echo "<pre>"; print_r($data);exit;
             static::setIncomeAndOrder($item['type'], $item['type_id']);
         }
         Log::info("Withdraw - data", $data);
