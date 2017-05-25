@@ -1,16 +1,17 @@
 <?php
 /**
  * Created by PhpStorm.
- * Author: 芸众商城 www.yunzshop.com
+ * User: shenyang
  * Date: 2017/3/31
  * Time: 下午5:55
  */
 
-namespace app\frontend\models;
+namespace app\frontend\modules\goods\models;
 
 use app\common\exceptions\AppException;
 use app\common\models\GoodsDiscount;
-use app\frontend\models\goods\Sale;
+use app\frontend\modules\goods\models\goods\GoodsDispatch;
+use app\frontend\modules\goods\models\goods\Sale;
 use app\frontend\modules\member\services\MemberService;
 use app\common\models\Coupon;
 
@@ -22,15 +23,7 @@ class Goods extends \app\common\models\Goods
     {
         return $this->hasOne(GoodsOption::class);
     }
-    /**
-     * 获取商品规格最终价格
-     * @return mixed
-     */
-    public function getFinalPriceAttribute()
-    {
 
-        return $this->vip_price;
-    }
     /**
      * 获取商品的会员价格
      * @author shenyang
@@ -41,11 +34,15 @@ class Goods extends \app\common\models\Goods
         if (!isset($member)) {
             $member = MemberService::getCurrentMemberModel();
         }
+<<<<<<< HEAD
 <<<<<<< HEAD:app/frontend/models/Goods.php
         //todo 会员等级折扣
 =======
 
 >>>>>>> fix-bug-member-level-discount-5-25:app/frontend/modules/goods/models/Goods.php
+=======
+
+>>>>>>> 5e943147c71a46262628002f9783b3125c7348e9
         /**
          * @var $goodsDiscount GoodsDiscount
          */
