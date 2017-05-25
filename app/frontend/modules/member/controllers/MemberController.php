@@ -29,8 +29,8 @@ use Illuminate\Support\Str;
 
 class MemberController extends ApiController
 {
-    protected $publicAction = ['wxJsSdkConfig'];
-    protected $ignoreAction = ['wxJsSdkConfig'];
+    protected $publicAction = [''];
+    protected $ignoreAction = [''];
 
     /**
      * 获取用户信息
