@@ -18,6 +18,14 @@ class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
 
+    /**
+     * 获取商品规格最终价格
+     * @return mixed
+     */
+    public function getFinalPriceAttribute()
+    {
+        return $this->vip_price;
+    }
     public function hasOneOptions()
     {
         return $this->hasOne(GoodsOption::class);
