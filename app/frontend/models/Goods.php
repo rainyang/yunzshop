@@ -35,20 +35,9 @@ class Goods extends \app\common\models\Goods
         if (!isset($member)) {
             $member = MemberService::getCurrentMemberModel();
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD:app/frontend/models/Goods.php
-        //todo 会员等级折扣
-=======
 
->>>>>>> fix-bug-member-level-discount-5-25:app/frontend/modules/goods/models/Goods.php
-=======
-
->>>>>>> 5e943147c71a46262628002f9783b3125c7348e9
-=======
-        //todo 会员等级折扣
->>>>>>> bugfix-data
         /**
+         *会员等级折扣
          * @var $goodsDiscount GoodsDiscount
          */
         $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
