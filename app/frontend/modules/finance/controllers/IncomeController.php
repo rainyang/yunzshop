@@ -229,10 +229,11 @@ class IncomeController extends ApiController
     {
         static::setIncome($type, $typeId);
         static::setCommissionOrder($type, $typeId);
-echo "<pre>"; print_r('----');exit;
         $configs = Config::get('income');
+        echo "<pre>"; print_r($configs);
         foreach ($configs as $config) {
             if($config['name']){
+                echo "<pre>"; print_r($config['name']);exit;
                 $income = \Yunshop\Commission\models\Income::whereIn('id',explode(',',$typeId))->get();
                 foreach ($income as $item) {
                     $type::$config['name'](['status'=>1],['id'=>$item->incometable_id]);
