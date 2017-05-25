@@ -185,7 +185,7 @@ class Balance extends BaseModel
      */
     public function scopeOfSource($query, $source)
     {
-        return $query-where('service_type', $source);
+        return $query->where('service_type', $source);
     }
 
     /**
