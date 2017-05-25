@@ -9,6 +9,7 @@
 namespace app\backend\modules\member\models;
 
 
+
 use app\common\facades\Setting;
 
 class MemberLevel extends \app\common\models\MemberLevel
@@ -21,7 +22,6 @@ class MemberLevel extends \app\common\models\MemberLevel
     {
         return static::defaultLevelName($this->attributes['level_name']);
     }
-
     public static function defaultLevelName($levelName)
     {
         return $levelName ?: Setting::get('shop.member')['level_name'];
@@ -32,8 +32,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     /**
      * Get membership list
      *
-     * @return
-     */
+     * @return */
     public static function getMemberLevelList()
     {
         return static::uniacid()->get()->toArray();
@@ -45,14 +44,13 @@ class MemberLevel extends \app\common\models\MemberLevel
      * @access public
      * @param int $levelId 等级id
      *
-     * @return mixed
-     */
+     * @return mixed */
     public static function getMemberLevelNameById($levelId)
     {
         $level = MemberLevel::when($levelId, function ($query) use ($levelId) {
             return $query->select('levelname')->where('id', $levelId);
         })
-            ->first()->levelname;
+        ->first()->levelname;
         return $level ? $level : '';
     }
 
@@ -66,8 +64,8 @@ class MemberLevel extends \app\common\models\MemberLevel
     {
         //todo 需要关联商品去title值
         return static::uniacid()
-            ->with(['goods' => function ($query) {
-                return $query->select('id', 'title');
+            ->with(['goods' => function($query) {
+                return $query->select('id','title');
             }])
             ->orderBy('level')
             ->paginate($pageSize);
@@ -78,13 +76,12 @@ class MemberLevel extends \app\common\models\MemberLevel
      *
      * @param int $levelId
      *
-     * @return object
-     */
+     * @return object */
     public static function getMemberLevelById($levelId)
     {
         return static::where('id', $levelId)
-            ->with(['goods' => function ($query) {
-                return $query->select('id', 'title');
+            ->with(['goods' => function($query) {
+                return $query->select('id','title');
             }])
             ->first();
     }
@@ -97,52 +94,50 @@ class MemberLevel extends \app\common\models\MemberLevel
     public static function getMembersByLevel($level)
     {
         return static::uniacid()
-            ->select(['id', 'level'])
-            ->where('level', $level)
-            ->with(['member' => function ($query) {
-                return $query->select('member_id', 'level_id')
-                    ->where('uniacid', \YunShop::app()->uniacid);
-            }])
-            ->first();
+                    ->select(['id','level'])
+                    ->where('level', $level)
+                    ->with(['member' => function($query){
+                        return $query->select('member_id', 'level_id')
+                                    ->where('uniacid', \YunShop::app()->uniacid);
+                    }])
+                    ->first();
     }
 
     /**
      * 定义字段名
      *
-     * @return array
-     */
-    public function atributeNames()
-    {
+     * @return array */
+    public  function atributeNames() {
         return [
-            'level' => '等级权重',
-            'level_name' => '等级名称',
-            'order_money' => '订单金额',
-            'order_count' => '订单数量',
-            'goods_id' => '商品ID',
-            'discount' => '折扣'
+            'level'         => '等级权重',
+            'level_name'    => '等级名称',
+            'order_money'   => '订单金额',
+            'order_count'   => '订单数量',
+            'goods_id'      => '商品ID',
+            'discount'      => '折扣'
         ];
     }
 
     /**
      * 字段规则
      *
-     * @return array
-     */
-    public function rules()
+     * @return array */
+    public  function rules()
     {
-        $rule = [
-            'level' => [
+        $rule =  [
+            'level'      => [
                 'required',
-                \Illuminate\Validation\Rule::unique($this->table)->where('uniacid', \YunShop::app()->uniacid)->ignore($this->id),
+                \Illuminate\Validation\Rule::unique($this->table)->where('uniacid',\YunShop::app()->uniacid)->ignore($this->id),
                 'numeric',
                 'between:1,9999'
             ],
             'level_name' => 'required',
-            'discount' => 'numeric|between:0.1,10'
+            'discount'   => 'numeric|between:0.1,10'
         ];
 
         $levelSet = Setting::get('shop.member');
-        switch ($levelSet['level_type']) {
+        switch ($levelSet['level_type'])
+        {
             case 0:
                 $rule = array_merge(['order_money' => 'numeric|between:1,9999999999'], $rule);
                 break;
@@ -169,9 +164,5 @@ class MemberLevel extends \app\common\models\MemberLevel
         return $this->hasMany('app\common\models\MemberShopInfo', 'level_id', 'id'); //注意yz_member数据表记录和关联的是member_level表的主键id, 而不是level值
     }
 
-    public function getMemberLevelGoodsDiscountPrice($goodsPrice)
-    {
-        $this->discount = $this->discount == false ? 1 : $this->discount;
-        return $this->discount * $goodsPrice;
-    }
+
 }
