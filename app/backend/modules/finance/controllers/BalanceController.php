@@ -21,6 +21,8 @@ use app\common\models\finance\Balance;
 use app\common\models\finance\BalanceRecharge;
 use app\common\models\finance\BalanceTransfer;
 use \app\backend\modules\finance\models\BalanceRecharge as BackendBalanceRecharge;
+use app\common\services\credit\ConstService;
+use app\common\services\finance\BalanceChange;
 
 /*
  * 余额基础设置页面
@@ -208,7 +210,7 @@ class BalanceController extends BaseController
             return $this->message('未获取到会员信息', Url::absoluteWeb('finance.balance.member'), 'error');
         }
         if ($this->_memebr_model && \YunShop::request()->num) {
-            $result = $this->getMemberInfo() ? $this->rechargeStart() : '未获取到会员信息，轻刷新重试';
+            $result = $this->rechargeStart();
             if ($result === true) {
                 return $this->message('余额充值成功', Url::absoluteWeb('finance.balance.recharge',array('member_id' => $this->_memebr_model->uid)), 'success');
             }
@@ -232,7 +234,18 @@ class BalanceController extends BaseController
             return $validator->messages();
         }
         if ($this->_recharge_model->save()) {
-            $result = (new BalanceService())->changeBalance($this->getChangeBalanceData());
+
+
+            //$result = (new BalanceService())->changeBalance($this->getChangeBalanceData());
+            $data = $this->getChangeBalanceData();
+
+            if ($this->_recharge_model->money > 0 ) {
+                $data['change_value'] = $this->_recharge_model->money;
+                $result = (new BalanceChange())->recharge($data);
+            } else {
+                $data['change_value'] = -$this->_recharge_model->money;
+                $result = (new BalanceChange())->rechargeMinus($data);
+            }
             return $result === true ? $this->updateRechargeStatus() : $result;
         }
         return '充值记录写入出错，请联系管理员';
@@ -260,7 +273,7 @@ class BalanceController extends BaseController
             'uniacid'       => \YunShop::app()->uniacid,
             'member_id'     => \YunShop::request()->member_id,
             'old_money'     => $this->_memebr_model->credit2,
-            'money'  => $rechargeMoney,
+            'money'         => $rechargeMoney,
             'new_money'     => $this->getNewMoney(),
             'type'          => BalanceRecharge::PAY_TYPE_SHOP,
             'ordersn'       => $this->getRechargeOrderSN(),
@@ -290,13 +303,13 @@ class BalanceController extends BaseController
 
     private function getChangeBalanceData()
     {
+        $money = $this->_recharge_model->money > 0 ? $this->_recharge_model->money : -$this->_recharge_model->money;
         return array(
             'member_id'     => $this->_recharge_model->member_id,
-            'serial_number' => $this->_recharge_model->ordersn,
-            'money'         => $this->_recharge_model->money,
             'remark'        => '后台充值' . $this->_recharge_model->money . "元",
-            'service_type'  => Balance::BALANCE_RECHARGE,
-            'operator'      => Balance::OPERATOR_SHOP,
+            'source'        => ConstService::SOURCE_RECHARGE,
+            'relation'      => $this->_recharge_model->ordersn,
+            'operator'      => ConstService::OPERATOR_SHOP,
             'operator_id'   => \YunShop::app()->uid
         );
     }
