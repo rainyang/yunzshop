@@ -504,7 +504,6 @@ class MemberOfficeAccountService extends MemberService
         \Log::debug('Regular mid', $mid);
         \Log::debug('###huhu-013###', $mid.' member_id: '.$member_id);
 
-        return;
         //发展下线
         Member::chkAgent($member_id, $mid);
 
