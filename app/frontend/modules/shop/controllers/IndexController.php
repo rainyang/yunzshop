@@ -52,8 +52,8 @@ class IndexController extends ApiController
         ->where('is_home','1')
         ->get();
         foreach ($request as &$item) {
-            $item['thumb'] = tomedia($item['thumb']);
-            $item['adv_img'] = tomedia($item['adv_img']);
+            $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
         }
 
         return $request;
@@ -72,7 +72,7 @@ class IndexController extends ApiController
             $slide = $slide->toArray();
             foreach ($slide as &$item)
             {
-                $item['thumb'] = tomedia($item['thumb']);
+                $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
             }
         }
         return $slide;
