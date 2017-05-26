@@ -185,6 +185,13 @@ if (!function_exists("tomedia")) {
         return $src;
     }
 }
+
+function replace_yunshop($url)
+{
+    $moduleName = \Config::get('app.module_name');
+    return str_replace(DIRECTORY_SEPARATOR . "addons" . DIRECTORY_SEPARATOR . $moduleName, "", $url);
+}
+
 if (!function_exists("strexists")) {
     /**
      * 判断字符串是否包含子串
