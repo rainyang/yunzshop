@@ -121,20 +121,24 @@ class MemberOfficeAccountService extends MemberService
      */
     public function unionidLogin($uniacid, $userinfo)
     {
+        \Log::debug('###huhu-001###');
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
 
         if (!empty($UnionidInfo)) {
+            \Log::debug('###huhu-002###');
             $UnionidInfo = $UnionidInfo->toArray();
         }
 
         if (!empty($UnionidInfo['unionid'])) {
+            \Log::debug('###huhu-003###');
             $types = explode('|', $UnionidInfo['type']);
             $member_id = $UnionidInfo['member_id'];
 
             if (!in_array(self::LOGIN_TYPE, $types)) {
+                \Log::debug('###huhu-004###');
                 //更新ims_yz_member_unique表
                 MemberUniqueModel::updateData(array(
                     'unique_id' => $UnionidInfo['unique_id'],
@@ -149,10 +153,12 @@ class MemberOfficeAccountService extends MemberService
             $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
 
             if ($mc_mapping_fans_model->uid) {
+                \Log::debug('###huhu-005###');
                 $member_id = $mc_mapping_fans_model->uid;
 
                 $this->updateMemberInfo($member_id, $userinfo);
             } else {
+                \Log::debug('###huhu-006###');
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
                 if ($member_id === false) {
@@ -161,12 +167,15 @@ class MemberOfficeAccountService extends MemberService
             }
 
             $this->addSubMemberInfo($uniacid, $member_id);
+            \Log::debug('###huhu-007###');
 
             //添加ims_yz_member_unique表
             $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
 
             //生成分销关系链
             Member::createRealtion($member_id);
+
+            \Log::debug('###huhu-008###');
         }
 
         return $member_id;
