@@ -197,15 +197,19 @@ class MemberRelation extends BackendModel
      */
     public function becomeChildAgent($mid, MemberShopInfo $model)
     {
+        \Log::debug('###child_000');
+
         $set = self::getSetInfo()->first();
 
         if (empty($set)) {
+            \Log::debug('###child_001');
             return;
         }
 
         $member = SubMemberModel::getMemberShopInfo($model->member_id);
 
         if (empty($member)) {
+            \Log::debug('###child_002');
             return;
         }
 
@@ -218,8 +222,10 @@ class MemberRelation extends BackendModel
         $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
         if ($member->is_agent == 1) {
+            \Log::debug('###child_003');
             return;
         }
+
 
         $become_child =  intval($set->become_child);
         $become_check = intval($set->become_check);
@@ -230,6 +236,7 @@ class MemberRelation extends BackendModel
             if ($member->member_id != $parent->member_id) {
                 if (empty($become_child)) {
                     $this->changeChildAgent($mid, $model);
+
 
                     // TODO message notice
                 } else {
@@ -242,16 +249,19 @@ class MemberRelation extends BackendModel
 
         if (empty($set->become) ) {
             $member->is_agent = 1;
+            \Log::debug('###child_005');
 
             if ($become_check == 0) {
                 $member->status = 2;
                 $member->agent_time = time();
+                \Log::debug('###child_006');
 
                 // TODO message notice
             } else {
                 $member->status = 1;
+                \Log::debug('###child_007');
             }
-
+            \Log::debug('###child_008');
             $member->save();
         }
     }
