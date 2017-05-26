@@ -56,8 +56,8 @@ class MemberController extends ApiController
                 $shopInfo = Setting::get('shop.shop');
                 $data['poster'] = [ //个人中心的推广海报
                     'name' => $shopInfo['name'],
-                    'logo' => tomedia($shopInfo['logo']),
-                    'img' => tomedia($shopInfo['signimg']),
+                    'logo' => set_medias($shopInfo['logo']),
+                    'img' => set_medias($shopInfo['signimg']),
                     'qr' => MemberModel::getAgentQR(),
                 ];
 
