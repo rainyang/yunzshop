@@ -90,19 +90,7 @@ class MemberOfficeAccountService extends MemberService
             \Log::debug('userinfo', $userinfo);
 
             //Login
-            if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-                $member_id = $this->unionidLogin($uniacid, $userinfo);
-            } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
-                $member_id = $this->openidLogin($uniacid, $userinfo);
-            }
-
-            \Log::debug('officaccount mid', \YunShop::request()->mid);
-
-            $mid = Member::getMid();
-            \Log::debug('Regular mid', $mid);
-
-            //发展下线
-            Member::chkAgent($member_id, $mid);
+            $member_id = $this->memberLogin($userinfo);
 
             \Log::debug('uid', $member_id);
 
@@ -482,5 +470,30 @@ class MemberOfficeAccountService extends MemberService
     private function _getClientRequestUrl()
     {
         return Session::get('client_url');
+    }
+
+    /**
+     * 登陆处理
+     *
+     * @param $userinfo
+     *
+     * @return integer
+     */
+    public function memberLogin($userinfo){
+        if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+            $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo);
+        } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
+            $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo);
+        }
+
+        \Log::debug('officaccount mid', \YunShop::request()->mid);
+
+        $mid = Member::getMid();
+        \Log::debug('Regular mid', $mid);
+
+        //发展下线
+        Member::chkAgent($member_id, $mid);
+
+        return $member_id;
     }
 }
