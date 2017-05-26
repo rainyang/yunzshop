@@ -116,148 +116,148 @@
                         </div>
 
 
-                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzWebFullUrl('home') }}">商城首页</div>
-                        <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" data-href="{{ yzAppFullUrl('category') }}">分类导航</div>
+                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" nhref="{{ yzAppFullUrl('home') }}">商城首页</div>
+                        <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" nhref="{{ yzAppFullUrl('category') }}">分类导航</div>
 
-                        {{--<div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>--}}
-                        {{--<div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>--}}
+                        {{--<div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" nhref="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>--}}
+                        {{--<div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" nhref="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>--}}
 
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 会员中心链接</h4>
                         </div>
 
-                        <div id="fe-tab-link-li-21" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 21)" data-href="{{ yzAppFullUrl('member') }}">会员中心</div>
-                        <div id="fe-tab-link-li-22" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 22)" data-href="{{ yzAppFullUrl('member/orderList/0')}}">我的订单</div>
-                        <div id="fe-tab-link-li-23" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 23)" data-href="{{ yzAppFullUrl('cart') }}">我的购物车</div>
-                        <div id="fe-tab-link-li-24" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 24)" data-href="{{ yzAppFullUrl('member/collection') }}">我的收藏</div>
-                        <div id="fe-tab-link-li-25" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 25)" data-href="{{ yzAppFullUrl('member/footprint') }}">我的足迹</div>
-                        <div id="fe-tab-link-li-26" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 26)" data-href="{{ yzAppFullUrl('member/balance') }}">会员充值</div>
-                        <div id="fe-tab-link-li-27" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 27)" data-href="{{ yzAppFullUrl('member/detailed') }}">余额明细</div>
-                        <div id="fe-tab-link-li-28" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 28)" data-href="{{ yzAppFullUrl('member/balance') }}">余额提现</div>
-                        <div id="fe-tab-link-li-29" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 29)" data-href="{{ yzAppFullUrl('member/address') }}">我的收货地址</div>
+                        <div id="fe-tab-link-li-21" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 21)" nhref="{{ yzAppFullUrl('member') }}">会员中心</div>
+                        <div id="fe-tab-link-li-22" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 22)" nhref="{{ yzAppFullUrl('member/orderList/0')}}">我的订单</div>
+                        <div id="fe-tab-link-li-23" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 23)" nhref="{{ yzAppFullUrl('cart') }}">我的购物车</div>
+                        <div id="fe-tab-link-li-24" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 24)" nhref="{{ yzAppFullUrl('member/collection') }}">我的收藏</div>
+                        <div id="fe-tab-link-li-25" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 25)" nhref="{{ yzAppFullUrl('member/footprint') }}">我的足迹</div>
+                        <div id="fe-tab-link-li-26" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 26)" nhref="{{ yzAppFullUrl('member/balance') }}">会员充值</div>
+                        <div id="fe-tab-link-li-27" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 27)" nhref="{{ yzAppFullUrl('member/detailed') }}">余额明细</div>
+                        <div id="fe-tab-link-li-28" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 28)" nhref="{{ yzAppFullUrl('member/balance') }}">余额提现</div>
+                        <div id="fe-tab-link-li-29" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 29)" nhref="{{ yzAppFullUrl('member/address') }}">我的收货地址</div>
 <!-- ======================================================================= -->
             <!-- 页面新增链接 -->
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> webapp链接</h4>
                         </div>
 
-                        <div id="fe-tab-link-li-32" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 32)" data-href="{{ yzAppFullUrl('member/tabs') }}">tabs</div>
+                        <div id="fe-tab-link-li-32" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 32)" nhref="{{ yzAppFullUrl('member/tabs') }}">tabs</div>
 
-                        <div id="fe-tab-link-li-33" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 33)" data-href="{{ yzAppFullUrl('member/po') }}">po</div>
+                        <div id="fe-tab-link-li-33" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 33)" nhref="{{ yzAppFullUrl('member/po') }}">po</div>
 
-                        <div id="fe-tab-link-li-34" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 34)" data-href="{{ yzAppFullUrl('member/info') }}">会员信息</div>
+                        <div id="fe-tab-link-li-34" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 34)" nhref="{{ yzAppFullUrl('member/info') }}">会员信息</div>
 
-                        <div id="fe-tab-link-li-35" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 35)" data-href="{{ yzAppFullUrl('member/editmobile') }}">修改手机</div>
+                        <div id="fe-tab-link-li-35" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 35)" nhref="{{ yzAppFullUrl('member/editmobile') }}">修改手机</div>
 
-                        <div id="fe-tab-link-li-36" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 36)" data-href="{{ yzAppFullUrl('member/balance') }}">余额</div>
+                        <div id="fe-tab-link-li-36" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 36)" nhref="{{ yzAppFullUrl('member/balance') }}">余额</div>
 
-                        <div id="fe-tab-link-li-37" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 37)" data-href="{{ yzAppFullUrl('member/detailed') }}">余额明细</div>
+                        <div id="fe-tab-link-li-37" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 37)" nhref="{{ yzAppFullUrl('member/detailed') }}">余额明细</div>
 
-                        <div id="fe-tab-link-li-38" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 38)" data-href="{{ yzAppFullUrl('member/screen') }}">余额筛选</div>
+                        <div id="fe-tab-link-li-38" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 38)" nhref="{{ yzAppFullUrl('member/screen') }}">余额筛选</div>
 
-                        <div id="fe-tab-link-li-40" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 40)" data-href="{{ yzAppFullUrl('member/integral') }}">积分</div>
+                        <div id="fe-tab-link-li-40" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 40)" nhref="{{ yzAppFullUrl('member/integral') }}">积分</div>
 
-                        <div id="fe-tab-link-li-41" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 41)" data-href="{{ yzAppFullUrl('member/income') }}">收入</div>
+                        <div id="fe-tab-link-li-41" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 41)" nhref="{{ yzAppFullUrl('member/income') }}">收入</div>
 
-                        <div id="fe-tab-link-li-44" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 44)" data-href="{{ yzAppFullUrl('member/withdrawal') }}">收入提现</div>
+                        <div id="fe-tab-link-li-44" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 44)" nhref="{{ yzAppFullUrl('member/withdrawal') }}">收入提现</div>
 
-                        <div id="fe-tab-link-li-45" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 45)" data-href="{{ yzAppFullUrl('member/incomedetails') }}">收入明细</div>
+                        <div id="fe-tab-link-li-45" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 45)" nhref="{{ yzAppFullUrl('member/incomedetails') }}">收入明细</div>
 
-                        <div id="fe-tab-link-li-46" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 46)" data-href="{{ yzAppFullUrl('member/member_income_incomedetails_info') }}">收入明细详情</div>
+                        <div id="fe-tab-link-li-46" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 46)" nhref="{{ yzAppFullUrl('member/member_income_incomedetails_info') }}">收入明细详情</div>
 
-                        <div id="fe-tab-link-li-47" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 47)" data-href="{{ yzAppFullUrl('member/integraldetail') }}">积分明细</div>
+                        <div id="fe-tab-link-li-47" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 47)" nhref="{{ yzAppFullUrl('member/integraldetail') }}">积分明细</div>
 
-                        <div id="fe-tab-link-li-48" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 48)" data-href="{{ yzAppFullUrl('member/presentationRecord') }}">提现记录</div>
+                        <div id="fe-tab-link-li-48" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 48)" nhref="{{ yzAppFullUrl('member/presentationRecord') }}">提现记录</div>
 
-                        <div id="fe-tab-link-li-49" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 49)" data-href="{{ yzAppFullUrl('member/presentationDetails') }}">提现详情</div>
+                        <div id="fe-tab-link-li-49" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 49)" nhref="{{ yzAppFullUrl('member/presentationDetails') }}">提现详情</div>
 
-                        <div id="fe-tab-link-li-50" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 50)" data-href="{{ yzAppFullUrl('member/address') }}">收货地址</div>
+                        <div id="fe-tab-link-li-50" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 50)" nhref="{{ yzAppFullUrl('member/address') }}">收货地址</div>
 
-                        <div id="fe-tab-link-li-52" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 52)" data-href="{{ yzAppFullUrl('member/appendAddress') }}">添加收货地址</div>
+                        <div id="fe-tab-link-li-52" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 52)" nhref="{{ yzAppFullUrl('member/appendAddress') }}">添加收货地址</div>
 
-                        <div id="fe-tab-link-li-53" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 53)" data-href="{{ yzAppFullUrl('member/distributionCommission') }}">未提现分销佣金</div>
+                        <div id="fe-tab-link-li-53" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 53)" nhref="{{ yzAppFullUrl('member/distributionCommission') }}">未提现分销佣金</div>
 
-                        <div id="fe-tab-link-li-54" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 54)" data-href="{{ yzAppFullUrl('member/footprint') }}">我的足记</div>
+                        <div id="fe-tab-link-li-54" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 54)" nhref="{{ yzAppFullUrl('member/footprint') }}">我的足记</div>
 
-                        <div id="fe-tab-link-li-55" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 55)" data-href="{{ yzAppFullUrl('member/collection') }}">我的收藏</div>
+                        <div id="fe-tab-link-li-55" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 55)" nhref="{{ yzAppFullUrl('member/collection') }}">我的收藏</div>
 
-                        <div id="fe-tab-link-li-56" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 56)" data-href="{{ yzAppFullUrl('member/myrelationship') }}">我的关系</div>
+                        <div id="fe-tab-link-li-56" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 56)" nhref="{{ yzAppFullUrl('member/myrelationship') }}">我的关系</div>
 
-                        <div id="fe-tab-link-li-57" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 57)" data-href="{{ yzAppFullUrl('member/offlineSearch') }}">下线搜索</div>
+                        <div id="fe-tab-link-li-57" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 57)" nhref="{{ yzAppFullUrl('member/offlineSearch') }}">下线搜索</div>
 
-                        <div id="fe-tab-link-li-58" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 58)" data-href="{{ yzAppFullUrl('member/myEvaluation') }}">我的评价</div>
+                        <div id="fe-tab-link-li-58" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 58)" nhref="{{ yzAppFullUrl('member/myEvaluation') }}">我的评价</div>
 
-                        <div id="fe-tab-link-li-59" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 59)" data-href="{{ yzAppFullUrl('member/comment') }}">多商品评价</div>
+                        <div id="fe-tab-link-li-59" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 59)" nhref="{{ yzAppFullUrl('member/comment') }}">多商品评价</div>
 
-                        <div id="fe-tab-link-li-60" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 60)" data-href="{{ yzAppFullUrl('member/evaluationDetails') }}">评价详情</div>
+                        <div id="fe-tab-link-li-60" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 60)" nhref="{{ yzAppFullUrl('member/evaluationDetails') }}">评价详情</div>
 
-                        <div id="fe-tab-link-li-61" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 61)" data-href="{{ yzAppFullUrl('member/extension') }}">我的推广</div>
+                        <div id="fe-tab-link-li-61" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 61)" nhref="{{ yzAppFullUrl('member/extension') }}">我的推广</div>
 
-                        <div id="fe-tab-link-li-62" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 62)" data-href="{{ yzAppFullUrl('extension/distribution') }}">分销商</div>
+                        <div id="fe-tab-link-li-62" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 62)" nhref="{{ yzAppFullUrl('extension/distribution') }}">分销商</div>
 
-                        <div id="fe-tab-link-li-63" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 63)" data-href="{{ yzAppFullUrl('extension/commission') }}">预计佣金</div>
+                        <div id="fe-tab-link-li-63" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 63)" nhref="{{ yzAppFullUrl('extension/commission') }}">预计佣金</div>
 
-                        <div id="fe-tab-link-li-64" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 64)" data-href="{{ yzAppFullUrl('extension/commissionDetails') }}">预计佣金详情</div>
+                        <div id="fe-tab-link-li-64" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 64)" nhref="{{ yzAppFullUrl('extension/commissionDetails') }}">预计佣金详情</div>
 
-                        <div id="fe-tab-link-li-65" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 65)" data-href="{{ yzAppFullUrl('extension/unsettled') }}">未结算佣金</div>
+                        <div id="fe-tab-link-li-65" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 65)" nhref="{{ yzAppFullUrl('extension/unsettled') }}">未结算佣金</div>
 
-                        <div id="fe-tab-link-li-66" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 66)" data-href="{{ yzAppFullUrl('extension/unsettledDetails') }}">未结算佣金详情</div>
+                        <div id="fe-tab-link-li-66" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 66)" nhref="{{ yzAppFullUrl('extension/unsettledDetails') }}">未结算佣金详情</div>
 
-                        <div id="fe-tab-link-li-67" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 67)" data-href="{{ yzAppFullUrl('extension/alreadySettled') }}">已结算佣金</div>
+                        <div id="fe-tab-link-li-67" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 67)" nhref="{{ yzAppFullUrl('extension/alreadySettled') }}">已结算佣金</div>
 
-                        <div id="fe-tab-link-li-68" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 68)" data-href="{{ yzAppFullUrl('extension/alreadySettledDetails') }}">已结算佣金详情</div>
+                        <div id="fe-tab-link-li-68" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 68)" nhref="{{ yzAppFullUrl('extension/alreadySettledDetails') }}">已结算佣金详情</div>
 
-                        <div id="fe-tab-link-li-69" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 69)" data-href="{{ yzAppFullUrl('extension/notPresent') }}">未提现佣金</div>
+                        <div id="fe-tab-link-li-69" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 69)" nhref="{{ yzAppFullUrl('extension/notPresent') }}">未提现佣金</div>
 
-                        <div id="fe-tab-link-li-70" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 70)" data-href="{{ yzAppFullUrl('extension/notPresentDetails') }}">未提现佣金详情</div>
+                        <div id="fe-tab-link-li-70" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 70)" nhref="{{ yzAppFullUrl('extension/notPresentDetails') }}">未提现佣金详情</div>
 
-                        <div id="fe-tab-link-li-71" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 71)" data-href="{{ yzAppFullUrl('extension/present') }}">已提现佣金</div>
+                        <div id="fe-tab-link-li-71" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 71)" nhref="{{ yzAppFullUrl('extension/present') }}">已提现佣金</div>
 
-                        <div id="fe-tab-link-li-72" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 72)" data-href="{{ yzAppFullUrl('extension/presentDetails') }}">已提现佣金详情</div>
+                        <div id="fe-tab-link-li-72" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 72)" nhref="{{ yzAppFullUrl('extension/presentDetails') }}">已提现佣金详情</div>
 
-                        <div id="fe-tab-link-li-73" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 73)" data-href="{{ yzAppFullUrl('extension/distributionOrder') }}">分销订单</div>
+                        <div id="fe-tab-link-li-73" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 73)" nhref="{{ yzAppFullUrl('extension/distributionOrder') }}">分销订单</div>
 
-                        <div id="fe-tab-link-li-75" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 75)" data-href="{{ yzAppFullUrl('member/orderdetail/:order_data') }}">订单详情</div>
+                        <div id="fe-tab-link-li-75" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 75)" nhref="{{ yzAppFullUrl('member/orderdetail/:order_data') }}">订单详情</div>
 
-                        <div id="fe-tab-link-li-76" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 76)" data-href="{{ yzAppFullUrl('member/logistics') }}">物流详情</div>
+                        <div id="fe-tab-link-li-76" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 76)" nhref="{{ yzAppFullUrl('member/logistics') }}">物流详情</div>
 
-                        <div id="fe-tab-link-li-77" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 77)" data-href="{{ yzAppFullUrl('member/evaluate') }}">评价</div>
+                        <div id="fe-tab-link-li-77" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 77)" nhref="{{ yzAppFullUrl('member/evaluate') }}">评价</div>
 
-                        <div id="fe-tab-link-li-78" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 78)" data-href="{{ yzAppFullUrl('member/replyEvaluate') }}">回复评价</div>
+                        <div id="fe-tab-link-li-78" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 78)" nhref="{{ yzAppFullUrl('member/replyEvaluate') }}">回复评价</div>
 
-                        <div id="fe-tab-link-li-79" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 79)" data-href="{{ yzAppFullUrl('member/addevaluate') }}">追加评价</div>
+                        <div id="fe-tab-link-li-79" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 79)" nhref="{{ yzAppFullUrl('member/addevaluate') }}">追加评价</div>
 
-                        <div id="fe-tab-link-li-80" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 80)" data-href="{{ yzAppFullUrl('member/refund') }}">申请售后</div>
+                        <div id="fe-tab-link-li-80" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 80)" nhref="{{ yzAppFullUrl('member/refund') }}">申请售后</div>
 
-                        <div id="fe-tab-link-li-81" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 81)" data-href="{{ yzAppFullUrl('member/aftersaleslist') }}">售后列表</div>
+                        <div id="fe-tab-link-li-81" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 81)" nhref="{{ yzAppFullUrl('member/aftersaleslist') }}">售后列表</div>
 
-                        <div id="fe-tab-link-li-84" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 84)" data-href="{{ yzAppFullUrl('coupon/coupon_index') }}">优惠券</div>
+                        <div id="fe-tab-link-li-84" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 84)" nhref="{{ yzAppFullUrl('coupon/coupon_index') }}">优惠券</div>
 
-                        <div id="fe-tab-link-li-85" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 85)" data-href="{{ yzAppFullUrl('coupon/coupon_store') }}">领券中心</div>
+                        <div id="fe-tab-link-li-85" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 85)" nhref="{{ yzAppFullUrl('coupon/coupon_store') }}">领券中心</div>
 
-                        <div id="fe-tab-link-li-86" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 86)" data-href="{{ yzAppFullUrl('coupon/coupon_info') }}">详情</div>
+                        <div id="fe-tab-link-li-86" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 86)" nhref="{{ yzAppFullUrl('coupon/coupon_info') }}">详情</div>
 
-                        <div id="fe-tab-link-li-87" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 87)" data-href="{{ yzAppFullUrl('member/marketing') }}">营销工具</div>
+                        <div id="fe-tab-link-li-87" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 87)" nhref="{{ yzAppFullUrl('member/marketing') }}">营销工具</div>
 
-                        <div id="fe-tab-link-li-88" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 88)" data-href="{{ yzAppFullUrl('member/messageSettings') }}">消息提醒设置</div>
+                        <div id="fe-tab-link-li-88" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 88)" nhref="{{ yzAppFullUrl('member/messageSettings') }}">消息提醒设置</div>
 
-                        <div id="fe-tab-link-li-89" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 89)" data-href="{{ yzAppFullUrl('search') }}">搜索</div>
+                        <div id="fe-tab-link-li-89" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 89)" nhref="{{ yzAppFullUrl('search') }}">搜索</div>
 
-                        <div id="fe-tab-link-li-90" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 90)" data-href="{{ yzAppFullUrl('ogin') }}">登录</div>
+                        <div id="fe-tab-link-li-90" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 90)" nhref="{{ yzAppFullUrl('ogin') }}">登录</div>
 
-                        <div id="fe-tab-link-li-91" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 91)" data-href="{{ yzAppFullUrl('register') }}">注册</div>
+                        <div id="fe-tab-link-li-91" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 91)" nhref="{{ yzAppFullUrl('register') }}">注册</div>
 
-                        <div id="fe-tab-link-li-92" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 92)" data-href="{{ yzAppFullUrl('category') }}">分类</div>
+                        <div id="fe-tab-link-li-92" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 92)" nhref="{{ yzAppFullUrl('category') }}">分类</div>
 
-                        <div id="fe-tab-link-li-94" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 94)" data-href="{{ yzAppFullUrl('brand') }}">品牌</div>
+                        <div id="fe-tab-link-li-94" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 94)" nhref="{{ yzAppFullUrl('brand') }}">品牌</div>
 
-                        <div id="fe-tab-link-li-95" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 95)" data-href="{{ yzAppFullUrl('brandgoods') }}">品牌商品</div>
+                        <div id="fe-tab-link-li-95" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 95)" nhref="{{ yzAppFullUrl('brandgoods') }}">品牌商品</div>
 
-                        <div id="fe-tab-link-li-96" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 96)" data-href="{{ yzAppFullUrl('cart') }}">购物车</div>
+                        <div id="fe-tab-link-li-96" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 96)" nhref="{{ yzAppFullUrl('cart') }}">购物车</div>
 
-                        <div id="fe-tab-link-li-97" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 97)" data-href="{{ yzAppFullUrl('cart/settlement') }}">结算</div>
+                        <div id="fe-tab-link-li-97" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 97)" nhref="{{ yzAppFullUrl('cart/settlement') }}">结算</div>
 
-                        <div id="fe-tab-link-li-99" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 99)" data-href="{{ yzAppFullUrl('goodsorder') }}">填写订单</div>
+                        <div id="fe-tab-link-li-99" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 99)" nhref="{{ yzAppFullUrl('goodsorder') }}">填写订单</div>
 
             <!-- 新增链接结束 -->
 <!-- ========================================================================= -->
@@ -297,28 +297,35 @@
                                     </div>
                                 </div>
 
+                                <!-- 二级分类 -->
                                 @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_chlid)
                                     @if ($goodcate_chlid['parentid'] == $goodcate_parent['id'])
                                         <div class="mylink-line">
                                             <span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
                                             {{ $goodcate_chlid['name'] }}
                                             <div class="mylink-sub">
-                                                <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_chlid['id']) }}">选择</a>
+                                                <a href="javascript:;" class="mylink-nav" nhref="{{ yzAppFullUrl('catelist/' . $goodcate_chlid['id']) }}">选择</a>
                                             </div>
                                         </div>
+
+                                        <!-- 三级分类 -->
                                         @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_third)
                                             @if ($goodcate_third['parentid'] == $goodcate_chlid['id'])
                                                 <div class="mylink-line">
                                                     <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
                                                     {{ $goodcate_third['name'] }}
                                                     <div class="mylink-sub">
-                                                        <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_third['id']) }}">选择</a>
+                                                        <a href="javascript:;" class="mylink-nav" nhref="{{ yzAppFullUrl('catelist/' . $goodcate_third['id']) }}">选择</a>
                                                     </div>
                                                 </div>
                                             @endif
                                         @endforeach
+                                        <!-- 三级分类 end -->
+
                                     @endif
                                 @endforeach
+
+                                <!-- 二级分类 end -->
                             @endif
                         @endforeach
                     </div>
