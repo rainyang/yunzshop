@@ -488,7 +488,7 @@ class MemberOfficeAccountService extends MemberService
      *
      * @return integer
      */
-    public function memberLogin($userinfo){
+    public function memberLogin($userinfo, $memberId = NULL){
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
             \Log::debug('###huhu-010###');
             $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo);
@@ -500,7 +500,7 @@ class MemberOfficeAccountService extends MemberService
         \Log::debug('officaccount mid', \YunShop::request()->mid);
         \Log::debug('###huhu-012###', \YunShop::request()->mid);
 
-        $mid = Member::getMid();
+        $mid = $memberId ?: Member::getMid();
         \Log::debug('Regular mid', $mid);
         \Log::debug('###huhu-013###', $mid.' member_id: '.$member_id);
 
