@@ -121,24 +121,20 @@ class MemberOfficeAccountService extends MemberService
      */
     public function unionidLogin($uniacid, $userinfo)
     {
-        \Log::debug('###huhu-001###');
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
 
         if (!empty($UnionidInfo)) {
-            \Log::debug('###huhu-002###');
             $UnionidInfo = $UnionidInfo->toArray();
         }
 
         if (!empty($UnionidInfo['unionid'])) {
-            \Log::debug('###huhu-003###');
             $types = explode('|', $UnionidInfo['type']);
             $member_id = $UnionidInfo['member_id'];
 
             if (!in_array(self::LOGIN_TYPE, $types)) {
-                \Log::debug('###huhu-004###');
                 //更新ims_yz_member_unique表
                 MemberUniqueModel::updateData(array(
                     'unique_id' => $UnionidInfo['unique_id'],
@@ -153,12 +149,10 @@ class MemberOfficeAccountService extends MemberService
             $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
 
             if ($mc_mapping_fans_model->uid) {
-                \Log::debug('###huhu-005###');
                 $member_id = $mc_mapping_fans_model->uid;
 
                 $this->updateMemberInfo($member_id, $userinfo);
             } else {
-                \Log::debug('###huhu-006###');
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
                 if ($member_id === false) {
@@ -167,7 +161,6 @@ class MemberOfficeAccountService extends MemberService
             }
 
             $this->addSubMemberInfo($uniacid, $member_id);
-            \Log::debug('###huhu-007###');
 
             //添加ims_yz_member_unique表
             $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
@@ -175,7 +168,6 @@ class MemberOfficeAccountService extends MemberService
             //生成分销关系链
             Member::createRealtion($member_id);
 
-            \Log::debug('###huhu-008###');
         }
 
         return $member_id;
@@ -488,21 +480,19 @@ class MemberOfficeAccountService extends MemberService
      *
      * @return integer
      */
-    public function memberLogin($userinfo, $memberId = NULL){
+
+    public function memberLogin($userinfo, $upperMemberId = NULL)
+    {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-            \Log::debug('###huhu-010###');
             $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo);
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
-            \Log::debug('###huhu-011###');
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo);
         }
 
         \Log::debug('officaccount mid', \YunShop::request()->mid);
-        \Log::debug('###huhu-012###', \YunShop::request()->mid);
 
-        $mid = $memberId ?: Member::getMid();
+        $mid = $upperMemberId ?: Member::getMid();
         \Log::debug('Regular mid', $mid);
-        \Log::debug('###huhu-013###', $mid.' member_id: '.$member_id);
 
         //发展下线
         Member::chkAgent($member_id, $mid);
