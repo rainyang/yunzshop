@@ -287,10 +287,10 @@
                 <div role="tabpanel" class="tab-pane link_goods" id="link_goods">
                     <div class="input-group">
                         <input type="text" class="form-control" name="keyword" value="" id="secect-kw" placeholder="请输入商品名称进行搜索 (多规格商品不支持一键下单)">
-                        <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="selectgood(focus);" id="select-good-btn">搜索</button></span>
+                        <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="searchgood(focus);" id="select-good-btn">搜索</button></span>
                     </div>
                     <div class="mylink-con" id="select-goods" style="height:266px;">
-                        <div class="good"  ng-repeat="good in selectGoods">
+                        <div class="good"  ng-repeat="good in searchGoods">
                             <div class="img">
                                 <img ng-src="@{{good.thumb}}">
                             </div>
