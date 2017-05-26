@@ -40,7 +40,7 @@ class HomePageController extends ApiController
         }
 
         if($setting){
-            $setting['logo'] = tomedia($setting['logo']);
+            $setting['logo'] = replace_yunshop(tomedia($setting['logo']));
 
             $relation = MemberRelation::getSetInfo()->first();
 
@@ -98,7 +98,7 @@ class HomePageController extends ApiController
                 $setting = Setting::get('shop');
                 $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
-                $logo = tomedia($setting['logo']);
+                $logo = replace_yunshop(tomedia($setting['logo']));
                 $text = $account->name;
             }
 
@@ -161,7 +161,7 @@ class HomePageController extends ApiController
     public static function defaultDesign()
     {
         $set = Setting::get('shop.category');
-        $set['cat_adv_img'] = tomedia($set['cat_adv_img']);
+        $set['cat_adv_img'] = replace_yunshop(tomedia($set['cat_adv_img']));
 
         return  Array(
             'ads' => (new IndexController())->getAds(),
