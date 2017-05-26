@@ -151,6 +151,12 @@ if (!function_exists("xml_to_array")) {
     }
 }
 
+function replace_yunshop($url)
+{
+    $moduleName = \Config::get('app.module_name');
+    //echo DIRECTORY_SEPARATOR;exit;
+    return str_replace(DIRECTORY_SEPARATOR . "addons" . DIRECTORY_SEPARATOR . $moduleName, "", $url);
+}
 
 if (!function_exists("tomedia")) {
     /**
