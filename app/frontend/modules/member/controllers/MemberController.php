@@ -494,14 +494,14 @@ class MemberController extends ApiController
 
         if ($share) {
             if ($share['icon']) {
-                $share['icon'] = tomedia($share['icon']);
+                $share['icon'] = replace_yunshop(tomedia($share['icon']));
             }
         } else {
             $share = [];
         }
 
         $shop = \Setting::get('shop');
-        $shop['logo'] = tomedia($shop['logo']);
+        $shop['logo'] = replace_yunshop(tomedia($shop['logo']));
 
         $data = [
             'config' => $config,
@@ -551,7 +551,7 @@ class MemberController extends ApiController
 
         if ($info) {
             return $this->successJson('', [
-                'banner'  => tomedia($info['banner'])
+                'banner'  => replace_yunshop(tomedia($info['banner']))
             ]);
         }
 
@@ -575,7 +575,7 @@ class MemberController extends ApiController
                 $setting = Setting::get('shop');
                 $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
-                $logo = tomedia($setting['logo']);
+                $logo = replace_yunshop(tomedia($setting['logo']));
                 $text = $account->name;
             }
 
