@@ -286,7 +286,7 @@
                                             <span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
                                             {{ $goodcate_chlid['name'] }}
                                             <div class="mylink-sub">
-                                                <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_parent['id']) }}">选择</a>
+                                                <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_chlid['id']) }}">选择</a>
                                             </div>
                                         </div>
                                         @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_third)
@@ -295,7 +295,7 @@
                                                     <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
                                                     {{ $goodcate_third['name'] }}
                                                     <div class="mylink-sub">
-                                                        <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_parent['id']) }}">选择</a>
+                                                        <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_third['id']) }}">选择</a>
                                                     </div>
                                                 </div>
                                             @endif

@@ -441,7 +441,7 @@ class GoodsController extends BaseController
             $goods = set_medias($goods, array('thumb', 'share_icon'));
 
             $goods = collect($goods)->map(function($item) {
-                return array_add($item , 'url', yzAppFullUrl('good/' . $item['id']));
+                return array_add($item , 'url', yzAppFullUrl('goods/' . $item['id']));
             });
 
             echo json_encode($goods); exit;
