@@ -428,9 +428,14 @@ class GoodsController extends BaseController
         $goods->save();
     }
 
-
     public function getMyLinkGoods()
     {
+        if (!\YunShop::request()->kw) {
+            $postData = file_get_contents('php://input', true);
+            $obj=json_decode($postData);
+            \YunShop::request()->kw = $obj->kw;
+            //dd($obj->kw);
+        }
         if (\YunShop::request()->kw) {
             $goods = Goods::getGoodsByName(\YunShop::request()->kw);
             $goods = set_medias($goods, array('thumb', 'share_icon'));
