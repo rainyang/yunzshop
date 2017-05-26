@@ -421,18 +421,13 @@
             data: {kw:kw},
             dataType:'json',
             success: function(data){
-                console.log(data);
                 $("#select-goods").html("");
-
-                http://restructure.mamp.com/addons/yun_shop/#/goods/123?i=2
-                //http://restructure.mamp.com/addons/yun_shop/#/0price?i=2
-                var a =sprintf('http://restructure.mamp.com/addons/yun_shop/#/goods/%1?i=2',123);
                 if(data){
                     $.each(data,function(n,value){
                         var html = '<div class="good">';
                         html+='<div class="img"><img src="'+value.thumb+'"/></div>'
                         html+='<div class="choosebtn">';
-                        html+='<a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('goods/' ) }}">详情链接</a><br>';
+                        html+='<a href="javascript:;" class="mylink-nav" data-href="'+value.url+'">详情链接</a><br>';
                         /*if(value.hasoption==0){
                             html+='<a href="javascript:;" class="mylink-nav" data-href="">下单链接</a>';
                         }*/

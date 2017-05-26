@@ -434,7 +434,11 @@ class GoodsController extends BaseController
         if (\YunShop::request()->kw) {
             $goods = Goods::getGoodsByName(\YunShop::request()->kw);
             $goods = set_medias($goods, array('thumb', 'share_icon'));
-            dd($goods);
+
+            $goods = collect($goods)->map(function($item) {
+                return array_add($item , 'url', yzAppFullUrl('good/' . $item['id']));
+            });
+
             echo json_encode($goods); exit;
         }
     }
