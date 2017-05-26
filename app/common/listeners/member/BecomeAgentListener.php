@@ -10,8 +10,9 @@ namespace app\common\listeners\member;
 
 
 use app\backend\modules\member\models\MemberRelation;
-use app\common\events\BecomeAgent;
+use app\common\events\member\BecomeAgent;
 use app\frontend\modules\member\models\MemberModel;
+use app\common\events\member\RegisterByAgent;
 
 class BecomeAgentListener
 {

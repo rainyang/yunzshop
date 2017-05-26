@@ -60,7 +60,7 @@ class RegisterController extends ApiController
             $member_set = \Setting::get('shop.member');
 
             if (isset($member_set) && $member_set['headimg']) {
-                $avatar = tomedia($member_set['headimg']);
+                $avatar = replace_yunshop(tomedia($member_set['headimg']));
             } else {
                 $avatar = Url::shopUrl('static/images/photo-mr.jpg');
             }
