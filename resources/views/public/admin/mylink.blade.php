@@ -270,9 +270,10 @@
 
 
                 <div role="tabpanel" class="tab-pane link_cate" id="link_cate">
+                    <?php $category = \app\backend\modules\goods\models\Category::getAllCategory(); ?>
                     <div class="mylink-con">
-                        @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_parent)
-                            @if (empty($goodcate_parent['parentid']))
+                        @foreach ($category as $goodcate_parent)
+                            @if (empty($goodcate_parent['parent_id']))
                                 <div class="mylink-line">
                                     {{ $goodcate_parent['name'] }}
                                     <div class="mylink-sub">
@@ -280,8 +281,8 @@
                                     </div>
                                 </div>
 
-                                @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_chlid)
-                                    @if ($goodcate_chlid['parentid'] == $goodcate_parent['id'])
+                                @foreach ($category as $goodcate_chlid)
+                                    @if ($goodcate_chlid['parent_id'] == $goodcate_parent['id'])
                                         <div class="mylink-line">
                                             <span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
                                             {{ $goodcate_chlid['name'] }}
@@ -289,8 +290,8 @@
                                                 <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_chlid['id']) }}">选择</a>
                                             </div>
                                         </div>
-                                        @foreach (\app\backend\modules\goods\models\Category::getAllCategory() as $goodcate_third)
-                                            @if ($goodcate_third['parentid'] == $goodcate_chlid['id'])
+                                        @foreach ($category as $goodcate_third)
+                                            @if ($goodcate_third['parent_id'] == $goodcate_chlid['id'])
                                                 <div class="mylink-line">
                                                     <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
                                                     {{ $goodcate_third['name'] }}
