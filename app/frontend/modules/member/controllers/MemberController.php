@@ -52,6 +52,7 @@ class MemberController extends ApiController
                 $data = MemberModel::addPlugins($data);
 
                 $data['income'] = MemberModel::getIncomeCount();
+                $data['shopinfo'] = set_medias(Setting::get('shop.shop'), ['logo', 'signimg']);
 
                 return $this->successJson('', $data);
             } else {
