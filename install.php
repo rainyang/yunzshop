@@ -2042,7 +2042,6 @@ VALUES
   (78, '资格申请', 'agent_apply', 'member.member-relation.apply', '', 1, 1, 'fa-sliders', 100, 0, 1, 1491981655, 1492477754, NULL),
   (88, '待收货订单', 'order.list.waitReceive', 'order.list.waitReceive', '', 1, 1, 'fa-circle-o', 28, 3, 1, 1492050693, 1492051034, NULL),
   (89, '已完成订单', 'order.list.completed', 'order.list.completed', '', 1, 1, 'fa-circle-o', 28, 5, 1, 1492050737, 1492439034, NULL),
-  (90, '申请协议', 'applyprotocol', 'member.member-relation.applyprotocol', '', 1, 1, 'fa-circle-o', 100, 0, 1, 1492093073, 1492477776, NULL),
   (91, '余额管理', 'balance', 'balance', '', 1, 1, 'fa-circle-o', 58, 0, 1, 1492129346, 1492129346, NULL),
   (92, '待审核提现', 'withdraw-status-wait-audit', 'finance.withdraw', '&search[status]=0', 1, 1, 'fa-circle-o', 66, 0, 1, 1492149299, 1492150356, NULL),
   (93, '待打款提现', 'withdraw-status-wait-pay', 'finance.withdraw', '&search[status]=1', 1, 1, 'fa-circle-o', 66, 0, 1, 1492150423, 1492150701, NULL),

@@ -117,8 +117,34 @@ Route::any('/', function () {
         if(YunShop::request()->route){
             YunShop::parseRoute(YunShop::request()->route);
         }else{
-            return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=index.index');
+            $eid = YunShop::request()->eid;
 
+            if (!empty($eid)) {
+                $entry = module_entry($eid);
+
+                switch ($entry['do']) {
+                    case 'shop':
+                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=index.index');
+                        break;
+                    case 'member':
+                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=member.member.index');
+                        break;
+                    case 'order':
+                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=order.list');
+                        break;
+                    case 'finance':
+                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=finance.withdraw.set');
+                        break;
+                    case 'plugins':
+                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=plugins.get-plugin-data');
+                        break;
+                    case 'system':
+                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=setting.shop.index');
+                        break;
+                    default:
+                        return redirect('?c=site&a=entry&do=shop&m=yun_shop&route=index.index');
+                }
+            }
         }
     }
     return;
