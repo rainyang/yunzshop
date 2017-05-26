@@ -258,7 +258,7 @@ class MemberModel extends Member
                 ];
             } else {
                 if (isset($set) && $set['headimg']) {
-                    $avatar = tomedia($set['headimg']);
+                    $avatar = replace_yunshop(tomedia($set['headimg']));
                 } else {
                     $avatar = Url::shopUrl('static/images/photo-mr.jpg');
                 }
