@@ -490,15 +490,19 @@ class MemberOfficeAccountService extends MemberService
      */
     public function memberLogin($userinfo){
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+            \Log::debug('###huhu-010###');
             $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo);
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
+            \Log::debug('###huhu-011###');
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo);
         }
 
         \Log::debug('officaccount mid', \YunShop::request()->mid);
+        \Log::debug('###huhu-012###', \YunShop::request()->mid);
 
         $mid = Member::getMid();
         \Log::debug('Regular mid', $mid);
+        \Log::debug('###huhu-013###', $mid.' member_id: '.$member_id);
 
         //发展下线
         Member::chkAgent($member_id, $mid);
