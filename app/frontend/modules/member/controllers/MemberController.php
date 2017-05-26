@@ -53,6 +53,14 @@ class MemberController extends ApiController
 
                 $data['income'] = MemberModel::getIncomeCount();
 
+                $shopInfo = Setting::get('shop.shop');
+                $data['poster'] = [ //个人中心的推广海报
+                    'name' => $shopInfo['name'],
+                    'logo' => tomedia($shopInfo['logo']),
+                    'img' => tomedia($shopInfo['signimg']),
+                    'qr' => MemberModel::getAgentQR(),
+                ];
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('['. $member_id .']用户不存在');

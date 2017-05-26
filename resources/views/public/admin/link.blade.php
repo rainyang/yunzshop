@@ -286,15 +286,26 @@
                 </div>
                 <div role="tabpanel" class="tab-pane link_goods" id="link_goods">
                     <div class="input-group">
-                        <input type="text" class="form-control" name="keyword" value="" id="select-good-kw" placeholder="请输入商品名称进行搜索 (多规格商品不支持一键下单)">
-                        <span class="input-group-btn"><button type="button" class="btn btn-default" id="select-good-btn">搜索</button></span>
+                        <input type="text" class="form-control" name="keyword" value="" id="secect-kw" placeholder="请输入商品名称进行搜索 (多规格商品不支持一键下单)">
+                        <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="searchgood(focus);" id="select-good-btn">搜索</button></span>
                     </div>
-                    <div class="mylink-con" id="select-goods" style="height:266px;"></div>
+                    <div class="mylink-con" id="select-goods" style="height:266px;">
+                        <div class="good"  ng-repeat="good in searchGoods">
+                            <div class="img">
+                                <img ng-src="@{{good.thumb}}">
+                            </div>
+                            <div class="choosebtn">
+                                <a href="javascript:;" id="@{{good.id}}" ng-click="chooseLink(1, good.id)" data-href="{{ yzAppFullUrl('goods/:id') }}">详情链接</a>
+                                <br>
+                            </div>
+                            <div class="info">
+                                <div class="info-title">@{{good.title}}</div>
+                                <div class="info-price">原价:￥@{{good.market_price}} 现价￥@{{good.price}}</div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
-
-
-
-
 
                 <div role="tabpanel" class="tab-pane link_cate" id="link_cate">
                     <div class="mylink-con">
@@ -336,7 +347,6 @@
 
                 {!! my_link_extra('content') !!}
 
-
                 <div role="tabpanel" class="tab-pane link_cate" id="link_other">
                     <div class="mylink-con" style="height: 150px;">
                         <div class="form-group" style="overflow: hidden;">
@@ -357,97 +367,3 @@
         </div>
     </div>
 </div>
-</div>
-
-<!-- mylink end -->
-<script language="javascript">
-    require(['jquery'],function(){
-
-    $(function() {
-        $("#chkoption").click(function() {
-            var obj = $(this);
-            if (obj.get(0).checked) {
-                $("#tboption").show();
-                $(".trp").hide();
-            }
-            else {
-                $("#tboption").hide();
-                $(".trp").show();
-            }
-        });
-    })
-
-    $(document).on("click",".nav-link",function(){
-        var id = $(this).data("id");
-        if(id){
-            $("#modal-mylink").attr({"data-id":id});
-            $("#modal-mylink").modal();
-        }
-    });
-    $(document).on("click",".mylink-nav",function(){
-        var href = $(this).data("href");
-        var id = $("#modal-mylink").attr("data-id");
-
-        if(id){
-            $("input[data-id="+id+"]").val(href);
-            $("#modal-mylink").attr("data-id","");
-        }else{
-            //console.log(href);
-            ue.execCommand('link', {href:href});
-        }
-
-        $("#modal-mylink .close").click();
-    });
-    $(".mylink-nav2").click(function(){
-        var href = $("textarea[name=mylink_href]").val();
-        if(href){
-            var id = $("#modal-mylink").attr("data-id");
-            if(id){
-                $("input[data-id="+id+"]").val(href);
-                $("#modal-mylink").attr("data-id","");
-            }else{
-                ue.execCommand('link', {href:href});
-            }
-            $("#modal-mylink .close").click();
-            $("textarea[name=mylink_href]").val("");
-        }else{
-            $("textarea[name=mylink_href]").focus();
-            alert("链接不能为空!");
-        }
-    });
-    // ajax 选择商品
-    $("#select-good-btn").click(function(){
-        var kw = $("#select-good-kw").val();
-        $.ajax({
-            type: 'POST',
-            url: "{!! yzWebUrl('goods.goods.getMyLinkGoods') !!}",
-            data: {kw:kw},
-            dataType:'json',
-            success: function(data){
-                //console.log(data);
-                $("#select-goods").html("");
-                if(data){
-                    $.each(data,function(n,value){
-                        var html = '<div class="good">';
-                        html+='<div class="img"><img src="'+value.thumb+'"/></div>'
-                        html+='<div class="choosebtn">';
-                        html+='<a href="javascript:;" id="goods-'+value.id+'" ng-click="chooseLink(1, \'goods-'+value.id+'\') class="mylink-nav" data-href="{{ yzAppFullUrl('goods/:id') }}">详情链接</a><br>';
-                        /*if(value.hasoption==0){
-                            html+='<a href="javascript:;" class="mylink-nav" data-href="">下单链接</a>';
-                        }*/
-                        //id="other-1" ng-click="chooseLink(1, 'other-1')"
-                        html+='</div>';
-                        html+='<div class="info">';
-                        html+='<div class="info-title">'+value.title+'</div>';
-                        html+='<div class="info-price">原价:￥'+value.market_price+' 现价￥'+value.price+'</div>';
-                        html+='</div>'
-                        html+='</div>';
-                        $("#select-goods").append(html);
-                    });
-                }
-            }
-        });
-    });
-
-    })
-</script>

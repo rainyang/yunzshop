@@ -10,16 +10,65 @@ namespace app\common\models;
 
 
 use app\backend\models\BackendModel;
+use Illuminate\Database\Eloquent\Builder;
 
 class MemberShopInfo extends BackendModel
 {
     protected $table = 'yz_member';
 
+    protected $guarded = [''];
+
     public $timestamps = true;
 
     public $primaryKey = 'member_id';
 
-    protected $guarded = [''];
+
+    /**
+     * 设置全局作用域
+     */
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(
+            function(Builder $builder){
+                return $builder->uniacid();
+            }
+        );
+    }
+
+    /**
+     * 关联会员等级表
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function level()
+    {
+        return $this->belongsTo('app\backend\modules\member\models\MemberLevel', 'level_id', 'id');
+    }
+
+    /**
+     * 会员ID检索
+     * @param $query
+     * @param $memberId
+     * @return mixed
+     */
+    public function scopeOfMemberId($query, $memberId)
+    {
+        return $query->where('member_id', $memberId);
+    }
+
+    /**
+     * 检索关联会员等级表
+     * @param $query
+     * @return mixed
+     */
+    public function scopeWithLevel($query)
+    {
+        return $query->with(['level' => function($query) {
+            return $query;
+        }]);
+    }
+
+
 
     /**
      * 获取用户信息
