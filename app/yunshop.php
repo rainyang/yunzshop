@@ -390,10 +390,14 @@ class YunApp extends YunComponent
 
     public function getW()
     {
+
+        include_once dirname(dirname(dirname(__DIR__))) . '/data/config.php';
+        global $config;
         return [
             'uniacid' => request()->get('i'),
             'weid' => request()->get('i'),
             'acid' => request()->get('i'),
+            'setting'=>$config['setting'],
             'account' => \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i')) ? \app\common\models\AccountWechats::getAccountByUniacid(request()->get('i'))->toArray() : ''
         ];
     }
