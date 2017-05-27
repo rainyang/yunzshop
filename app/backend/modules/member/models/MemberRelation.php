@@ -200,6 +200,7 @@ class MemberRelation extends BackendModel
         \Log::debug('###child_000987');
 
         $set = self::getSetInfo()->first();
+        \Log::debug(print_r($set, 1));
 
         if (empty($set)) {
             \Log::debug('###child_001');
@@ -221,7 +222,7 @@ class MemberRelation extends BackendModel
         }
 
         $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
-        \Log::debug('###child.$parent_is_agent: '.$parent_is_agent);
+        \Log::debug('###child.$parent_is_agent: '.$parent_is_agent.' is_agent: '.$parent->is_agent.' status: '.$parent->status);
 
         if ($member->is_agent == 1) {
             \Log::debug('###child_003');
@@ -231,8 +232,8 @@ class MemberRelation extends BackendModel
 
         $become_child =  intval($set->become_child);
         $become_check = intval($set->become_check);
-        \Log::debug('###child.become_child: '.$set->become_child);
-        \Log::debug('###child.become_check'.$set->become_check);
+        \Log::debug('###child.become_child: '.$become_child);
+        \Log::debug('###child.become_check'.$become_check);
 
         if ($parent_is_agent && empty($member->parent_id)) {
             \Log::debug('parant is agent');
