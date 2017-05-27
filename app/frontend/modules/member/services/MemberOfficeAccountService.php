@@ -219,7 +219,11 @@ class MemberOfficeAccountService extends MemberService
             $this->addSubMemberInfo($uniacid, $member_id);
 
             //生成分销关系链
-            Member::createRealtion($member_id);
+            if ($upperMemberId) {
+                Member::createRealtion($member_id, $upperMemberId);
+            } else {
+                Member::createRealtion($member_id);
+            }
         }
 
         return $member_id;
@@ -483,7 +487,6 @@ class MemberOfficeAccountService extends MemberService
      *
      * @return integer
      */
-
     public function memberLogin($userinfo, $upperMemberId = NULL)
     {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
