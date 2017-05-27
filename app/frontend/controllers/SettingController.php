@@ -32,7 +32,7 @@ class SettingController extends BaseController
             return $this->errorJson('未进行设置.');
         }
 
-        $setting['logo'] = tomedia($setting['logo']);
+        $setting['logo'] = replace_yunshop(tomedia($setting['logo']));
 
         $relation = MemberRelation::getSetInfo()->first();
 
