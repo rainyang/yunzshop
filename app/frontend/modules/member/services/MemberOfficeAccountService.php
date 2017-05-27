@@ -171,7 +171,6 @@ class MemberOfficeAccountService extends MemberService
             } else {
                 Member::createRealtion($member_id);
             }
-
         }
 
         return $member_id;
@@ -488,7 +487,8 @@ class MemberOfficeAccountService extends MemberService
      *
      * @return integer
      */
-    public function memberLogin($userinfo, $upperMemberId = NULL){
+    public function memberLogin($userinfo, $upperMemberId = NULL)
+    {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
             $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {

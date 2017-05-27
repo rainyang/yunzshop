@@ -115,8 +115,10 @@
                             <h4><i class="fa fa-folder-open-o"></i> 商城页面链接</h4>
                         </div>
 
-                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzWebFullUrl('home') }}">商城首页</div>
+
+                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{{ yzAppFullUrl('home') }}">商城首页</div>
                         <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" data-href="{{ yzAppFullUrl('category') }}">分类导航</div>
+
 
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 会员中心链接</h4>
@@ -277,7 +279,7 @@
                                 <div class="mylink-line">
                                     {{ $goodcate_parent['name'] }}
                                     <div class="mylink-sub">
-                                        <a href="javascript:;" class="mylink-nav" data-href="{{ yzAppFullUrl('catelist/' . $goodcate_parent['id']) }}">选择</a>
+                                        <a href="javascript:;" id="category-{{ $goodcate_parent['id'] }}" class="mylink-nav" ng-click="chooseLink(1, 'category-{{ $goodcate_parent['id'] }}')" data-href="{{ yzAppFullUrl('catelist/:id') }}">选择</a>
                                     </div>
                                 </div>
 
@@ -322,7 +324,7 @@
                         <div class="form-group" style="overflow: hidden; margin-bottom: 0px;">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="line-height: 34px;"></label>
                             <div class="col-sm-9 col-xs-12">
-                                <div class="btn btn-primary col-lg-1 mylink-nav2" style="margin-left: 20px; width: auto; overflow: hidden; margin-left: 0px;"> 插入 </div>
+                                <div class="btn btn-primary col-lg-1 mylink-nav2" id="other-1" ng-click="chooseLink(1, 'other-1')" style="margin-left: 20px; width: auto; overflow: hidden; margin-left: 0px;"> 插入 </div>
                             </div>
                         </div>
                     </div>
@@ -366,9 +368,10 @@
             $("input[data-id="+id+"]").val(href);
             $("#modal-mylink").attr("data-id","");
         }else{
-            console.log(href);
+            //console.log(href);
             ue.execCommand('link', {href:href});
         }
+
         $("#modal-mylink .close").click();
     });
     $(".mylink-nav2").click(function(){
@@ -397,6 +400,7 @@
             data: {kw:kw},
             dataType:'json',
             success: function(data){
+
                 $("#select-goods").html("");
                 if(data){
                     $.each(data,function(n,value){
@@ -407,6 +411,7 @@
                         /*if(value.hasoption==0){
                             html+='<a href="javascript:;" class="mylink-nav" data-href="">下单链接</a>';
                         }*/
+                        //id="other-1" ng-click="chooseLink(1, 'other-1')"
                         html+='</div>';
                         html+='<div class="info">';
                         html+='<div class="info-title">'+value.title+'</div>';

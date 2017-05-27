@@ -126,6 +126,7 @@
                             <h4><i class="fa fa-folder-open-o"></i> 会员中心链接</h4>
                         </div>
 
+
                         <div id="fe-tab-link-li-21" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 21)" nhref="{{ yzAppFullUrl('member') }}">会员中心</div>
                         <div id="fe-tab-link-li-22" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 22)" nhref="{{ yzAppFullUrl('member/orderList/0')}}">我的订单</div>
                         <div id="fe-tab-link-li-23" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 23)" nhref="{{ yzAppFullUrl('cart') }}">我的购物车</div>
@@ -288,6 +289,7 @@
 
                 <div role="tabpanel" class="tab-pane link_cate" id="link_cate">
                     <div class="mylink-con">
+
                         <?php $category = \app\backend\modules\goods\models\Category::getAllCategory(); ?>
                         @foreach ($category as $goodcate_parent)
                             @if (empty($goodcate_parent['parent_id']))
@@ -321,6 +323,7 @@
                                                 </div>
                                             @endif
                                         @endforeach
+
                                         <!-- 三级分类 end -->
 
                                     @endif

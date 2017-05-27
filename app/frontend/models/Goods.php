@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * Author: 芸众商城 www.yunzshop.com
+ * User: shenyang
  * Date: 2017/3/31
  * Time: 下午5:55
  */
@@ -18,19 +18,19 @@ class Goods extends \app\common\models\Goods
 {
     public $appends = ['vip_price'];
 
-    public function hasOneOptions()
-    {
-        return $this->hasOne(GoodsOption::class);
-    }
     /**
      * 获取商品规格最终价格
      * @return mixed
      */
     public function getFinalPriceAttribute()
     {
-
         return $this->vip_price;
     }
+    public function hasOneOptions()
+    {
+        return $this->hasOne(GoodsOption::class);
+    }
+
     /**
      * 获取商品的会员价格
      * @author shenyang
@@ -42,8 +42,9 @@ class Goods extends \app\common\models\Goods
         if (!isset($member)) {
             $member = MemberService::getCurrentMemberModel();
         }
-        //todo 会员等级折扣
+
         /**
+         *会员等级折扣
          * @var $goodsDiscount GoodsDiscount
          */
         $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();

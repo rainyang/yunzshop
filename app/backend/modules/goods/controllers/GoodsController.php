@@ -436,6 +436,7 @@ class GoodsController extends BaseController
             \YunShop::request()->kw = $obj->kw;
             //dd($obj->kw);
         }
+
         if (\YunShop::request()->kw) {
             $goods = Goods::getGoodsByName(\YunShop::request()->kw);
             $goods = set_medias($goods, array('thumb', 'share_icon'));
