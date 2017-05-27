@@ -197,7 +197,7 @@ class MemberRelation extends BackendModel
      */
     public function becomeChildAgent($mid, MemberShopInfo $model)
     {
-        \Log::debug('###child_000987');
+        \Log::debug('###child_0009872111');
 
         $set = self::getSetInfo()->first();
         \Log::debug(print_r($set, 1));
