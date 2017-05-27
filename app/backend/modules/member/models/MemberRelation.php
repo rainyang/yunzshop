@@ -234,6 +234,7 @@ class MemberRelation extends BackendModel
         $become_check = intval($set->become_check);
         \Log::debug('###child.become_child: '.$become_child);
         \Log::debug('###child.become_check: '.$become_check);
+        \Log::debug('###child.become_check: '.$member->member_id);
         \Log::debug('###child.parent_id'.$member->parent_id);
 
 
