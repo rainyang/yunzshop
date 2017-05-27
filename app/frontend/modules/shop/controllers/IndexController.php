@@ -22,11 +22,15 @@ class IndexController extends ApiController
     public function getDefaultIndex()
     {
         $set = Setting::get('shop.category');
-        $set['cat_adv_img'] = tomedia($set['cat_adv_img']);
-
+        $set['cat_adv_img'] = replace_yunshop(tomedia($set['cat_adv_img']));
+        $category = $this->getRecommentCategoryList();
+        foreach ($category  as &$item){
+            $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
+        }
         $data = [
             'ads' => $this->getAds(),
-            'category' => $this->getRecommentCategoryList(),
+            'category' => $category,
             'set' => $set,
             'goods' => $this->getRecommentGoods(),
         ];
