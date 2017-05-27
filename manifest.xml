@@ -21,10 +21,10 @@
 	</platform>
 	<bindings>
 		<cover>
-			<entry title="芸商城入口" do="shop" />
+			<entry title="商城入口" do="shop" />
 		</cover>
 		<menu>
-		<entry title="芸商城管理" do="shop" state="" direct="true" />
+		<entry title="商城管理" do="shop" state="" direct="true" />
 		<entry title="会员管理" do="member" state="" direct="true" />
 		<entry title="订单管理" do="order" state="" direct="true" />
 		<entry title="财务管理" do="finance" state="" direct="true" />
