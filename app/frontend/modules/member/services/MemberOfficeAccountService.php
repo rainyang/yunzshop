@@ -119,7 +119,7 @@ class MemberOfficeAccountService extends MemberService
      * @param $userinfo
      * @return array|int|mixed
      */
-    public function unionidLogin($uniacid, $userinfo)
+    public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
@@ -166,8 +166,11 @@ class MemberOfficeAccountService extends MemberService
             $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
 
             //生成分销关系链
-            Member::createRealtion($member_id);
-
+            if ($upperMemberId) {
+                Member::createRealtion($member_id, $upperMemberId);
+            } else {
+                Member::createRealtion($member_id);
+            }
         }
 
         return $member_id;
@@ -180,7 +183,7 @@ class MemberOfficeAccountService extends MemberService
      * @param $userinfo
      * @return array|int|mixed
      */
-    public function openidLogin($uniacid, $userinfo)
+    public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
@@ -484,9 +487,9 @@ class MemberOfficeAccountService extends MemberService
     public function memberLogin($userinfo, $upperMemberId = NULL)
     {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-            $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo);
+            $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
-            $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo);
+            $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
 
         \Log::debug('officaccount mid', \YunShop::request()->mid);

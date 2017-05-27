@@ -234,10 +234,15 @@ class Member extends BackendModel
      *
      * @param $member_id
      */
-    public function createRealtion($member_id)
+    public function createRealtion($member_id, $upperMemberId = NULL)
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
-        event(new BecomeAgent(\YunShop::request()->mid, $model));
+
+        if ($upperMemberId) {
+            event(new BecomeAgent($upperMemberId, $model));
+        } else {
+            event(new BecomeAgent(\YunShop::request()->mid, $model));
+        }
     }
 
     public static function getMid()
