@@ -10,6 +10,8 @@ namespace app\frontend\models\goods;
 
 use app\common\exceptions\AppException;
 use app\frontend\models\goods;
+use app\frontend\modules\goods\models\goods\MemberGroup;
+use app\frontend\modules\goods\models\goods\MemberLevel;
 use app\frontend\modules\member\services\MemberService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
