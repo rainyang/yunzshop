@@ -428,7 +428,6 @@ class GoodsController extends BaseController
         $goods->save();
     }
 
-
     public function getMyLinkGoods()
     {
         if (!\YunShop::request()->kw) {
@@ -441,6 +440,11 @@ class GoodsController extends BaseController
         if (\YunShop::request()->kw) {
             $goods = Goods::getGoodsByName(\YunShop::request()->kw);
             $goods = set_medias($goods, array('thumb', 'share_icon'));
+
+            $goods = collect($goods)->map(function($item) {
+                return array_add($item , 'url', yzAppFullUrl('goods/' . $item['id']));
+            });
+
             echo json_encode($goods); exit;
         }
     }

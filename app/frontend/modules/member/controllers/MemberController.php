@@ -57,8 +57,8 @@ class MemberController extends ApiController
                 $shopInfo = Setting::get('shop.shop');
                 $data['poster'] = [ //个人中心的推广海报
                     'name' => $shopInfo['name'],
-                    'logo' => replace_yunshop(tomedia($shopInfo['logo'])),
-                    'img' => replace_yunshop(tomedia($shopInfo['signimg'])),
+                    'logo' => self::replace_yunshop(tomedia($shopInfo['logo'])),
+                    'img' => self::replace_yunshop(tomedia($shopInfo['signimg'])),
                     'qr' => MemberModel::getAgentQR(),
                 ];
 
@@ -71,6 +71,14 @@ class MemberController extends ApiController
             return $this->errorJson('缺少访问参数');
         }
 
+    }
+
+    //临时使用
+    //因为其它地方的tomedia()还未全部替代, 所以不能全局修改, 只能这里局部修改
+    public static function replace_yunshop($url)
+    {
+        $moduleName = \Config::get('app.module_name');
+        return str_replace(DIRECTORY_SEPARATOR . "addons" . DIRECTORY_SEPARATOR . $moduleName, "", $url);
     }
 
     /**
@@ -486,14 +494,14 @@ class MemberController extends ApiController
 
         if ($share) {
             if ($share['icon']) {
-                $share['icon'] = tomedia($share['icon']);
+                $share['icon'] = replace_yunshop(tomedia($share['icon']));
             }
         } else {
             $share = [];
         }
 
         $shop = \Setting::get('shop');
-        $shop['logo'] = tomedia($shop['logo']);
+        $shop['logo'] = replace_yunshop(tomedia($shop['logo']));
 
         $data = [
             'config' => $config,
@@ -543,7 +551,7 @@ class MemberController extends ApiController
 
         if ($info) {
             return $this->successJson('', [
-                'banner'  => tomedia($info['banner'])
+                'banner'  => replace_yunshop(tomedia($info['banner']))
             ]);
         }
 
@@ -567,7 +575,7 @@ class MemberController extends ApiController
                 $setting = Setting::get('shop');
                 $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
-                $logo = tomedia($setting['logo']);
+                $logo = replace_yunshop(tomedia($setting['logo']));
                 $text = $account->name;
             }
 
