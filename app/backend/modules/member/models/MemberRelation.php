@@ -233,7 +233,9 @@ class MemberRelation extends BackendModel
         $become_child =  intval($set->become_child);
         $become_check = intval($set->become_check);
         \Log::debug('###child.become_child: '.$become_child);
-        \Log::debug('###child.become_check'.$become_check);
+        \Log::debug('###child.become_check: '.$become_check);
+        \Log::debug('###child.parent_id'.$member->parent_id);
+
 
         if ($parent_is_agent && empty($member->parent_id)) {
             \Log::debug('parant is agent');
