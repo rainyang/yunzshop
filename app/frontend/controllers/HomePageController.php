@@ -162,7 +162,11 @@ class HomePageController extends ApiController
     {
         $set = Setting::get('shop.category');
         $set['cat_adv_img'] = replace_yunshop(tomedia($set['cat_adv_img']));
-
+        $category = (new IndexController())->getRecommentCategoryList();
+        foreach ($category  as &$item){
+            $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
+        }
         return  Array(
             'ads' => (new IndexController())->getAds(),
             'category' => (new IndexController())->getRecommentCategoryList(),
