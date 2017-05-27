@@ -193,6 +193,7 @@ if (!function_exists("replace_yunshop")) {
         return str_replace(DIRECTORY_SEPARATOR . "addons" . DIRECTORY_SEPARATOR . $moduleName, "", $url);
     }
 }
+
 if (!function_exists("strexists")) {
     /**
      * 判断字符串是否包含子串

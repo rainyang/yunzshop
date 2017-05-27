@@ -7,6 +7,8 @@ require '../../framework/bootstrap.inc.php';
 
 //require IA_ROOT . '/framework/class/loader.class.php';
 
+require '../../framework/bootstrap.inc.php';
+
 include_once __DIR__ . '/app/laravel.php';
 
 include_once __DIR__ . '/app/yunshop.php';

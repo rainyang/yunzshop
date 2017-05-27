@@ -40,8 +40,7 @@ class HomePageController extends ApiController
         }
 
         if($setting){
-            $setting['logo'] = self::replace_yunshop(tomedia($setting['logo']));
-
+            $setting['logo'] = replace_yunshop(tomedia($setting['logo']));
             $relation = MemberRelation::getSetInfo()->first();
 
             if ($relation) {
@@ -98,7 +97,7 @@ class HomePageController extends ApiController
                 $setting = Setting::get('shop');
                 $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
-                $logo = self::replace_yunshop(tomedia($setting['logo']));
+                $logo = replace_yunshop(tomedia($setting['logo']));
                 $text = $account->name;
             }
 
@@ -262,14 +261,6 @@ class HomePageController extends ApiController
             "showborder2" => 1,
             "bgalpha" => ".5",
         );
-    }
-
-    //临时使用
-    //因为其它地方的tomedia()还未全部替代, 所以不能全局修改, 只能这里局部修改; 之后再换成全局函数
-    public static function replace_yunshop($url)
-    {
-        $moduleName = \Config::get('app.module_name');
-        return str_replace(DIRECTORY_SEPARATOR . "addons" . DIRECTORY_SEPARATOR . $moduleName, "", $url);
     }
 
 }
