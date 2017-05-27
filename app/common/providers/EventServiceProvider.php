@@ -11,6 +11,7 @@ use app\common\listeners\point\PointLisrener;
 use app\common\listeners\WechatProcessorListener;
 use app\frontend\modules\finance\listeners\Order;
 use app\frontend\modules\goods\listeners\GoodsStock;
+use app\frontend\modules\member\listeners\level\LevelListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -58,8 +59,10 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $subscribe = [
+        //会员等级升级
+        \app\common\listeners\member\level\LevelListener::class,
+
         \app\frontend\modules\dispatch\listeners\types\Express::class,
-        \app\frontend\modules\member\listeners\Level::class,
         \app\common\listeners\order\OrderTestListener::class,
         \app\common\listeners\goods\GoodsTestListener::class,
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,

@@ -1,6 +1,11 @@
 <?php
 
-define('IN_IA', true);
+//define('IN_IA', true);
+
+require '../../framework/bootstrap.inc.php';
+//define('IA_ROOT', str_replace("\\", '/', dirname(dirname(dirname(__FILE__)))));
+
+//require IA_ROOT . '/framework/class/loader.class.php';
 
 require '../../framework/bootstrap.inc.php';
 

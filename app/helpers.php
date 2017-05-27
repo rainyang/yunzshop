@@ -178,7 +178,7 @@ if (!function_exists("tomedia")) {
         }
 
         if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
-            $src = request()->getSchemeAndHttpHost() .  '/attachment/' . $src;
+            $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
         } else {
             $src = YunShop::app()->attachurl_remote . $src;
         }
@@ -186,10 +186,12 @@ if (!function_exists("tomedia")) {
     }
 }
 
-function replace_yunshop($url)
-{
-    $moduleName = \Config::get('app.module_name');
-    return str_replace(DIRECTORY_SEPARATOR . "addons" . DIRECTORY_SEPARATOR . $moduleName, "", $url);
+if (!function_exists("replace_yunshop")) {
+    function replace_yunshop($url)
+    {
+        $moduleName = \Config::get('app.module_name');
+        return str_replace(DIRECTORY_SEPARATOR . "addons" . DIRECTORY_SEPARATOR . $moduleName, "", $url);
+    }
 }
 
 if (!function_exists("strexists")) {

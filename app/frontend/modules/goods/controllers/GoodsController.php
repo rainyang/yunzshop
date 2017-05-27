@@ -69,12 +69,12 @@ class GoodsController extends ApiController
                 'reduce_stock_method',
             ]);
         if ($goodsModel->thumb) {
-            $goodsModel->thumb = tomedia($goodsModel->thumb);
+            $goodsModel->thumb = replace_yunshop(tomedia($goodsModel->thumb));
         }
         if ($goodsModel->thumb_url) {
             $thumb_url = unserialize($goodsModel->thumb_url);
             foreach ($thumb_url as &$item) {
-                $item = tomedia($item);
+                $item = replace_yunshop(tomedia($item));
             }
             $goodsModel->thumb_url = $thumb_url;
         }
