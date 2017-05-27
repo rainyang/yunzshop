@@ -151,7 +151,41 @@ if (!function_exists("xml_to_array")) {
     }
 }
 
-if (!function_exists(replace_yunshop)) {
+
+if (!function_exists("tomedia")) {
+    /**
+     * 获取附件的HTTP绝对路径
+     * @param string $src 附件地址
+     * @param bool $local_path 是否直接返回本地图片路径
+     * @return string
+     */
+    function tomedia($src, $local_path = false)
+    {
+        if (empty($src)) {
+            return '';
+        }
+        if (strexists($src, 'addons/')) {
+            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, 'addons/'));
+        }
+        //如果远程地址中包含本地host也检测是否远程图片
+        if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
+            $urls = parse_url($src);
+            $src = $t = substr($urls['path'], strpos($urls['path'], 'images'));
+        }
+        $t = strtolower($src);
+        if (strexists($t, 'http://') || strexists($t, 'https://') || substr($t, 0, 2) == '//') {
+            return $src;
+        }
+
+        if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+            $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+        } else {
+            $src = YunShop::app()->attachurl_remote . $src;
+        }
+        return $src;
+    }
+}
+if (!function_exists("replace_yunshop")) {
     function replace_yunshop($url)
     {
         $moduleName = \Config::get('app.module_name');
