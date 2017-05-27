@@ -159,7 +159,7 @@ if (!function_exists("tomedia")) {
      * @param bool $local_path 是否直接返回本地图片路径
      * @return string
      */
-    function nbtomedia($src, $local_path = false)
+    function tomedia($src, $local_path = false)
     {
         if (empty($src)) {
             return '';
@@ -183,6 +183,14 @@ if (!function_exists("tomedia")) {
             $src = YunShop::app()->attachurl_remote . $src;
         }
         return $src;
+    }
+}
+
+if (!function_exists("replace_yunshop")) {
+    function replace_yunshop($url)
+    {
+        $moduleName = \Config::get('app.module_name');
+        return str_replace(DIRECTORY_SEPARATOR . "addons" . DIRECTORY_SEPARATOR . $moduleName, "", $url);
     }
 }
 if (!function_exists("strexists")) {
