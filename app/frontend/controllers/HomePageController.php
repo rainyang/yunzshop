@@ -154,7 +154,7 @@ class HomePageController extends ApiController
             if(empty($pageId)) { //如果是请求首页的数据
                 $menustyle = $menuId ? DesignerMenu::getMenuById($menuId) : DesignerMenu::getDefaultMenu();
             } else{
-                $menustyle = $menuId ? '' : DesignerMenu::getDefaultMenu();
+                $menustyle = $menuId ? DesignerMenu::getMenuById($menuId) : '';
             }
 
             if ($menustyle) {
