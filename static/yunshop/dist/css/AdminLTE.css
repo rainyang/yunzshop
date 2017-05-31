@@ -30,7 +30,7 @@ body {
 .wrapper {
   min-height: 100%;
   position: relative;
- 
+
 }
 .wrapper:before,
 .wrapper:after {
