@@ -29,6 +29,8 @@ class HomePageController extends ApiController
         $i = \YunShop::request()->i;
         $mid = \YunShop::request()->mid;
         $type = \YunShop::request()->type;
+        $menuId = \YunShop::request()->menu_id;
+        $pageId = \YunShop::request()->page_id;
 
 
         //商城设置, 原来接口在 setting.get
@@ -40,7 +42,7 @@ class HomePageController extends ApiController
         }
 
         if($setting){
-            $setting['logo'] = self::replace_yunshop(tomedia($setting['logo']));
+            $setting['logo'] = replace_yunshop(tomedia($setting['logo']));
 
             $relation = MemberRelation::getSetInfo()->first();
 
@@ -69,44 +71,48 @@ class HomePageController extends ApiController
         }
 
         //用户信息, 原来接口在 member.member.getUserInfo
-        $member_id = \YunShop::app()->getMemberId();
-        if (!empty($member_id)) {
-            $member_info = MemberModel::getUserInfos($member_id)->first();
+        if(empty($pageId)){ //如果是请求首页的数据
+            $member_id = \YunShop::app()->getMemberId();
+            if (!empty($member_id)) {
+                $member_info = MemberModel::getUserInfos($member_id)->first();
 
-            if (!empty($member_info)) {
-                $member_info = $member_info->toArray();
-                $data = MemberModel::userData($member_info, $member_info['yz_member']);
-                $data = MemberModel::addPlugins($data);
+                if (!empty($member_info)) {
+                    $member_info = $member_info->toArray();
+                    $data = MemberModel::userData($member_info, $member_info['yz_member']);
+                    $data = MemberModel::addPlugins($data);
 
-                $result['memberinfo'] = $data;
+                    $result['memberinfo'] = $data;
+                }
             }
         }
 
 
         //用户信息, 原来接口在 member.member.guideFollow
-        $set = \Setting::get('shop.share');
-        $fans_model = McMappingFans::getFansById(\YunShop::app()->getMemberId());
+        if(empty($pageId)){ //如果是请求首页的数据
+            $set = \Setting::get('shop.share');
+            $fans_model = McMappingFans::getFansById(\YunShop::app()->getMemberId());
 
-        if (!empty($set['follow_url']) && 0 == $fans_model->follow) {
+            if (!empty($set['follow_url']) && 0 == $fans_model->follow) {
 
-            if ($mid != null && $mid != 'undefined' && $mid > 0) {
-                $member_model = Member::getMemberById($mid);
+                if ($mid != null && $mid != 'undefined' && $mid > 0) {
+                    $member_model = Member::getMemberById($mid);
 
-                $logo = $member_model->avatar;
-                $text = $member_model->nickname;
-            } else {
-                $setting = Setting::get('shop');
-                $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+                    $logo = $member_model->avatar;
+                    $text = $member_model->nickname;
+                } else {
+                    $setting = Setting::get('shop');
+                    $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
-                $logo = self::replace_yunshop(tomedia($setting['logo']));
-                $text = $account->name;
+                    $logo = replace_yunshop(tomedia($setting['logo']));
+                    $text = $account->name;
+                }
+
+                $result['subscribe'] = [
+                    'logo' => $logo,
+                    'text' => $text,
+                    'url' => $set['follow_url'],
+                ];
             }
-
-            $result['subscribe'] = [
-                'logo' => $logo,
-                'text' => $text,
-                'url' => $set['follow_url'],
-            ];
         }
 
 
@@ -127,27 +133,38 @@ class HomePageController extends ApiController
         if(array_key_exists('designer', $enableds)){
 
             //装修, 原来接口在 plugin.designer.home.index.page
-            $page = Designer::getDefaultDesigner();
+            if(empty($pageId)){ //如果是请求首页的数据
+                $page = Designer::getDefaultDesigner();
+            } else{
+                $page = Designer::getDesignerByPageID($pageId);
+            }
             if ($page) {
                 $designer = (new DesignerService())->getPageForHomePage($page->toArray());
                 $result['item'] = $designer;
-            } else{
+            } elseif(empty($pageId)){ //如果是请求首页的数据, 提供默认值
                 $result['default'] = self::defaultDesign();
+                $result['item']['data'] = ''; //前端需要该字段
+            } else{ //如果是请求预览装修的数据
                 $result['item']['data'] = ''; //前端需要该字段
             }
 
             $result['system'] = (new DesignerService())->getSystemInfo();
 
             //菜单背景色, 原来接口在  plugin.designer.home.index.menu
-            $menustyle = DesignerMenu::getDefaultMenu();
+            if(empty($pageId)) { //如果是请求首页的数据
+                $menustyle = $menuId ? DesignerMenu::getMenuById($menuId) : DesignerMenu::getDefaultMenu();
+            } else{
+                $menustyle = $menuId ? '' : DesignerMenu::getDefaultMenu();
+            }
+
             if ($menustyle) {
                 $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
                 $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
-            } else{ //提供默认值
+            } elseif(empty($pageId)){ //如果是请求首页的数据, 提供默认值
                 $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
                 $result['item']['menustyle'] = self::defaultMenuStyle();
             }
-        } else{ //没有安装装修插件或者没有开启
+        } elseif(empty($pageId)){ //如果是请求首页的数据, 没有安装装修插件或者没有开启
             $result['default'] = self::defaultDesign();
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
             $result['item']['menustyle'] = self::defaultMenuStyle();
@@ -266,14 +283,6 @@ class HomePageController extends ApiController
             "showborder2" => 1,
             "bgalpha" => ".5",
         );
-    }
-
-    //临时使用
-    //因为其它地方的tomedia()还未全部替代, 所以不能全局修改, 只能这里局部修改; 之后再换成全局函数
-    public static function replace_yunshop($url)
-    {
-        $moduleName = \Config::get('app.module_name');
-        return str_replace(DIRECTORY_SEPARATOR . "addons" . DIRECTORY_SEPARATOR . $moduleName, "", $url);
     }
 
 }
