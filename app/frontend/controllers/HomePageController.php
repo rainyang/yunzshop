@@ -22,7 +22,7 @@ use app\frontend\modules\shop\controllers\IndexController;
 class HomePageController extends ApiController
 {
     protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
-    protected $ignoreAction = [];
+    protected $ignoreAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
 
     public function index()
     {
