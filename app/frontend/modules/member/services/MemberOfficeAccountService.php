@@ -487,7 +487,6 @@ class MemberOfficeAccountService extends MemberService
      *
      * @return integer
      */
-
     public function memberLogin($userinfo, $upperMemberId = NULL)
     {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
