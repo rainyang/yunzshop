@@ -4,7 +4,7 @@
         Yun Shop
     </div>
     <!-- Default to the left -->
-    <strong>Copyright &copy; 2017 <a href="http://www.yunzshop.com" target="_blank">芸商城</a>.</strong> All rights reserved.
+    <strong>Copyright &copy; 2017 {{\Config::get('module.name')}}.</strong> All rights reserved.
 
   </footer>
 
