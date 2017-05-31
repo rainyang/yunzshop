@@ -99,9 +99,9 @@ class SendCouponController extends BaseController
 
                 //发放优惠券
                 $responseData = [
-                    'title' => $couponModel->resp_title,
+                    'title' => htmlspecialchars_decode($couponModel->resp_title),
                     'image' => tomedia($couponModel->resp_thumb),
-                    'description' => $couponModel->resp_desc ?: '亲爱的 [nickname], 你获得了 1 张 "'.$couponModel->name.'" 优惠券',
+                    'description' => $couponModel->resp_desc ? htmlspecialchars_decode($couponModel->resp_desc) : '亲爱的 [nickname], 你获得了 1 张 "'.$couponModel->name.'" 优惠券',
                     'url' => $couponModel->resp_url ?: yzAppFullUrl('home'),
                 ];
                 $res = $this->sendCoupon($couponModel, $memberIds, $sendTotal, $responseData);

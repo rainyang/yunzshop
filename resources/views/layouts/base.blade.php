@@ -169,8 +169,7 @@ desired effect
     <!-- Add the sidebar's background. This div must be placed
          immediately after the control sidebar -->
     <div class="control-sidebar-bg"></div>
-</div>
-<!-- ./wrapper -->
+
 
 
 <!-- REQUIRED JS SCRIPTS -->
@@ -190,5 +189,7 @@ desired effect
         <!-- Main Footer -->
 @include('layouts.mainFooter')
 {!! yz_footer('admin') !!}
+</div>
+<!-- ./wrapper -->
 </body>
 </html>

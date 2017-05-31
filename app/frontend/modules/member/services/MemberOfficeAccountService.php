@@ -90,19 +90,7 @@ class MemberOfficeAccountService extends MemberService
             \Log::debug('userinfo', $userinfo);
 
             //Login
-            if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-                $member_id = $this->unionidLogin($uniacid, $userinfo);
-            } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
-                $member_id = $this->openidLogin($uniacid, $userinfo);
-            }
-
-            \Log::debug('officaccount mid', \YunShop::request()->mid);
-
-            $mid = Member::getMid();
-            \Log::debug('Regular mid', $mid);
-
-            //发展下线
-            Member::chkAgent($member_id, $mid);
+            $member_id = $this->memberLogin($userinfo);
 
             \Log::debug('uid', $member_id);
 
@@ -131,7 +119,7 @@ class MemberOfficeAccountService extends MemberService
      * @param $userinfo
      * @return array|int|mixed
      */
-    public function unionidLogin($uniacid, $userinfo)
+    public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
@@ -178,7 +166,11 @@ class MemberOfficeAccountService extends MemberService
             $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
 
             //生成分销关系链
-            Member::createRealtion($member_id);
+            if ($upperMemberId) {
+                Member::createRealtion($member_id, $upperMemberId);
+            } else {
+                Member::createRealtion($member_id);
+            }
         }
 
         return $member_id;
@@ -191,7 +183,7 @@ class MemberOfficeAccountService extends MemberService
      * @param $userinfo
      * @return array|int|mixed
      */
-    public function openidLogin($uniacid, $userinfo)
+    public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
         $userinfo['nickname'] = $this->filteNickname($userinfo);
@@ -227,7 +219,11 @@ class MemberOfficeAccountService extends MemberService
             $this->addSubMemberInfo($uniacid, $member_id);
 
             //生成分销关系链
-            Member::createRealtion($member_id);
+            if ($upperMemberId) {
+                Member::createRealtion($member_id, $upperMemberId);
+            } else {
+                Member::createRealtion($member_id);
+            }
         }
 
         return $member_id;
@@ -482,5 +478,31 @@ class MemberOfficeAccountService extends MemberService
     private function _getClientRequestUrl()
     {
         return Session::get('client_url');
+    }
+
+    /**
+     * 登陆处理
+     *
+     * @param $userinfo
+     *
+     * @return integer
+     */
+    public function memberLogin($userinfo, $upperMemberId = NULL)
+    {
+        if (is_array($userinfo) && !empty($userinfo['unionid'])) {
+            $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
+        } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
+            $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
+        }
+
+        \Log::debug('officaccount mid', \YunShop::request()->mid);
+
+        $mid = $upperMemberId ?: Member::getMid();
+        \Log::debug('Regular mid', $mid);
+
+        //发展下线
+        Member::chkAgent($member_id, $mid);
+
+        return $member_id;
     }
 }

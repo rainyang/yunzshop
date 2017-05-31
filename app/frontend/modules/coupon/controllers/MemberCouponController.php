@@ -83,7 +83,11 @@ class MemberCouponController extends ApiController
         $pageSize = \YunShop::request()->get('pagesize');
         $pageSize = $pageSize ? $pageSize : 10;
         $uid = \YunShop::app()->getMemberId();
-        $memberLevel = MemberShopInfo::getMemberShopInfo($uid)->level_id;
+        $member = MemberShopInfo::getMemberShopInfo($uid);
+        if(empty($member)){
+            return $this->errorJson('没有找到该用户', []);
+        }
+        $memberLevel = $member->level_id;
 
         $now = strtotime('now');
         $coupons = Coupon::getCouponsForMember($uid, $memberLevel, null, $now)

@@ -10,8 +10,9 @@ namespace app\common\listeners\member;
 
 
 use app\backend\modules\member\models\MemberRelation;
-use app\common\events\BecomeAgent;
+use app\common\events\member\BecomeAgent;
 use app\frontend\modules\member\models\MemberModel;
+use app\common\events\member\RegisterByAgent;
 
 class BecomeAgentListener
 {
@@ -27,6 +28,7 @@ class BecomeAgentListener
         $member_model = MemberModel::getMyAgentsParentInfo($mid)->first();
 
         if (!empty($member_model)) {
+            \Log::debug('生成关系3级关系链');
             $member_data = $member_model->toArray();
 
             $relation_str = $mid;

@@ -187,10 +187,13 @@ class Member extends BackendModel
      */
     public static function chkAgent($member_id, $mid)
     {
-        \Log::debug('成为下线 上线uid', $mid);
+        \Log::debug('上线uid: ', $mid);
+        \Log::debug('up_uid: ', $mid);
 
         $model = MemberShopInfo::getMemberShopInfo($member_id);
 
+        \Log::debug('下线uid: ', $member_id);
+        \Log::debug('down_uid: ', $member_id);
         $relation = new MemberRelation();
         $relation->becomeChildAgent($mid, $model);
     }
@@ -231,10 +234,15 @@ class Member extends BackendModel
      *
      * @param $member_id
      */
-    public function createRealtion($member_id)
+    public function createRealtion($member_id, $upperMemberId = NULL)
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
-        event(new BecomeAgent(\YunShop::request()->mid, $model));
+
+        if ($upperMemberId) {
+            event(new BecomeAgent($upperMemberId, $model));
+        } else {
+            event(new BecomeAgent(\YunShop::request()->mid, $model));
+        }
     }
 
     public static function getMid()
@@ -271,7 +279,7 @@ class Member extends BackendModel
         if ($plugin_class->isEnabled('micro')) {
             $micro_set = \Setting::get('plugin.micro');
             if ($micro_set['is_open_miceo'] == 0) {
-                $data['micro'] = [];
+                $data['micro'] = '';
             } else {
                 $data['micro'] = GetButtonService::verify(\YunShop::app()->getMemberId());
             }

@@ -23,7 +23,7 @@ class HomePageController extends ApiController
 {
     protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
     protected $ignoreAction = [];
-    
+
     public function index()
     {
         $i = \YunShop::request()->i;
@@ -40,8 +40,7 @@ class HomePageController extends ApiController
         }
 
         if($setting){
-            $setting['logo'] = tomedia($setting['logo']);
-
+            $setting['logo'] = replace_yunshop(tomedia($setting['logo']));
             $relation = MemberRelation::getSetInfo()->first();
 
             if ($relation) {
@@ -98,7 +97,7 @@ class HomePageController extends ApiController
                 $setting = Setting::get('shop');
                 $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
-                $logo = tomedia($setting['logo']);
+                $logo = replace_yunshop(tomedia($setting['logo']));
                 $text = $account->name;
             }
 
@@ -133,7 +132,10 @@ class HomePageController extends ApiController
                 $result['item'] = $designer;
             } else{
                 $result['default'] = self::defaultDesign();
+                $result['item']['data'] = ''; //前端需要该字段
             }
+
+            $result['system'] = (new DesignerService())->getSystemInfo();
 
             //菜单背景色, 原来接口在  plugin.designer.home.index.menu
             $menustyle = DesignerMenu::getDefaultMenu();
@@ -148,6 +150,7 @@ class HomePageController extends ApiController
             $result['default'] = self::defaultDesign();
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
             $result['item']['menustyle'] = self::defaultMenuStyle();
+            $result['item']['data'] = ''; //前端需要该字段
         }
 
         return $this->successJson('ok', $result);
@@ -157,8 +160,12 @@ class HomePageController extends ApiController
     public static function defaultDesign()
     {
         $set = Setting::get('shop.category');
-        $set['cat_adv_img'] = tomedia($set['cat_adv_img']);
-
+        $set['cat_adv_img'] = replace_yunshop(tomedia($set['cat_adv_img']));
+        $category = (new IndexController())->getRecommentCategoryList();
+        foreach ($category  as &$item){
+            $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
+        }
         return  Array(
             'ads' => (new IndexController())->getAds(),
             'category' => (new IndexController())->getRecommentCategoryList(),

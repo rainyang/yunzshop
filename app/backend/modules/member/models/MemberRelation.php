@@ -197,42 +197,59 @@ class MemberRelation extends BackendModel
      */
     public function becomeChildAgent($mid, MemberShopInfo $model)
     {
+        \Log::debug('###child_0009872111');
+
         $set = self::getSetInfo()->first();
+        \Log::debug(print_r($set, 1));
 
         if (empty($set)) {
+            \Log::debug('###child_001');
             return;
         }
 
         $member = SubMemberModel::getMemberShopInfo($model->member_id);
 
         if (empty($member)) {
+            \Log::debug('###child_002');
             return;
         }
 
         $parent = false;
 
         if (!empty($mid)) {
+            \Log::debug('###child_0021');
             $parent =  SubMemberModel::getMemberShopInfo($mid);
         }
 
         $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
+        \Log::debug('###child.$parent_is_agent: '.$parent_is_agent.' is_agent: '.$parent->is_agent.' status: '.$parent->status);
 
         if ($member->is_agent == 1) {
+            \Log::debug('###child_003');
             return;
         }
 
+
         $become_child =  intval($set->become_child);
         $become_check = intval($set->become_check);
+        \Log::debug('###child.become_child: '.$become_child);
+        \Log::debug('###child.become_check: '.$become_check);
+        \Log::debug('###child.become_check: '.$member->member_id);
+        \Log::debug('###child.parent_id'.$member->parent_id);
+
 
         if ($parent_is_agent && empty($member->parent_id)) {
             \Log::debug('parant is agent');
-
+            \Log::debug('become_child: '.$become_child);
             if ($member->member_id != $parent->member_id) {
                 if (empty($become_child)) {
+                    \Log::debug('set pareant_id');
                     $this->changeChildAgent($mid, $model);
 
+                    \Log::debug('###998.mid: '.$mid);
                     // TODO message notice
                 } else {
+                    \Log::debug('###998.parent->member_id: '.$parent->member_id);
                     $model->inviter = $parent->member_id;
 
                     $model->save();
@@ -242,16 +259,19 @@ class MemberRelation extends BackendModel
 
         if (empty($set->become) ) {
             $member->is_agent = 1;
+            \Log::debug('###child_005');
 
             if ($become_check == 0) {
                 $member->status = 2;
                 $member->agent_time = time();
+                \Log::debug('###child_006');
 
                 // TODO message notice
             } else {
                 $member->status = 1;
+                \Log::debug('###child_007');
             }
-
+            \Log::debug('###child_008');
             $member->save();
         }
     }
