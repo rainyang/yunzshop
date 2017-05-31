@@ -40,6 +40,9 @@ class BaseController extends Controller
     public function preAction()
     {
         strpos(request()->get('route'),'setting.key')!== 0 && Check::app();
+
+        //是否为商城后台管理路径
+        strpos(request()->getBaseUrl(),'/web/index.php') === 0 && Check::setKey();
     }
 
     protected function formatValidationErrors(Validator $validator)
