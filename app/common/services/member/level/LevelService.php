@@ -29,10 +29,6 @@ class LevelService
 
         $result = $this->check();
 
-        $test = $this->upgrade($result);
-
-        dd($test);
-
         return empty($result) ?: $this->upgrade($result);
     }
 
