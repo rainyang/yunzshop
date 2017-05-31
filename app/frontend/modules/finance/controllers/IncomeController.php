@@ -55,11 +55,15 @@ class IncomeController extends ApiController
             }
 
             //推广中心显示
-            $agent = $agentModel->first();
-            if ($agent) {
-                $incomeData[$key]['can'] = true;
-            } else {
+            if (!$agentModel) {
                 $incomeData[$key]['can'] = false;
+            } else {
+                $agent = $agentModel->first();
+                if ($agent) {
+                    $incomeData[$key]['can'] = true;
+                } else {
+                    $incomeData[$key]['can'] = false;
+                }
             }
         }
         if ($incomeData) {
