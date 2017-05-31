@@ -29,7 +29,6 @@ class HomePageController extends ApiController
         $i = \YunShop::request()->i;
         $mid = \YunShop::request()->mid;
         $type = \YunShop::request()->type;
-        $menuId = \YunShop::request()->menu_id;
         $pageId = \YunShop::request()->page_id;
 
 
@@ -139,6 +138,7 @@ class HomePageController extends ApiController
             }
             if ($page) {
                 $designer = (new DesignerService())->getPageForHomePage($page->toArray());
+                $menuId = $designer['footermenu'];
                 $result['item'] = $designer;
             } elseif(empty($pageId)){ //如果是请求首页的数据, 提供默认值
                 $result['default'] = self::defaultDesign();
