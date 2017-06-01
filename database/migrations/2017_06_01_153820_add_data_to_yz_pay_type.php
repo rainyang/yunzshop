@@ -58,8 +58,6 @@ class AddDataToYzPayType extends Migration
         );
         \app\common\models\PayType::where('code','unPay')->update(['id'=>0]);
 
-        //\app\common\models\PayType::where('id','>','-1');
-
     }
 
     /**
