@@ -18,12 +18,14 @@ use app\common\models\AccountWechats;
 use app\common\models\McMappingFans;
 use app\frontend\modules\shop\controllers\IndexController;
 
-
 class HomePageController extends ApiController
 {
     protected $publicAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
     protected $ignoreAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
 
+    /**
+     * @return \Illuminate\Http\JsonResponse 提供商城首页数据
+     */
     public function index()
     {
         $i = \YunShop::request()->i;
@@ -173,7 +175,10 @@ class HomePageController extends ApiController
         return $this->successJson('ok', $result);
     }
 
-    //默认首页样式
+
+    /**
+     * @return array 默认的首页元素(轮播图 & 商品 & 分类 & 商城设置)
+     */
     public static function defaultDesign()
     {
         $set = Setting::get('shop.category');
@@ -191,10 +196,16 @@ class HomePageController extends ApiController
         );
     }
 
-    //默认菜单
+
+    /**
+     * @param $i 公众号ID
+     * @param $mid 上级的uid
+     * @param $type
+     * @return array 默认的底部菜单数据
+     */
     public static function defaultMenu($i, $mid, $type)
     {
-        return Array(
+        $defaultMenu = Array(
             Array(
                 "id"=>1,
                 "title"=>"首页",
@@ -216,19 +227,6 @@ class HomePageController extends ApiController
                 "subMenus"=>[],
                 "textcolor"=>"#70c10b",
                 "bgcolor"=>"#24d7e6",
-                "iconcolor"=>"#666666",
-                "bordercolor"=>"#bfbfbf"
-            ),
-            Array(
-                "id"=>"menu_1489731319695",
-                "classt"=>"no",
-                "title"=>"推广",
-                "icon"=>"fa fa-send",
-                "url"=>"/addons/yun_shop/#/member/extension?i=".$i."&mid=".$mid."&type=".$type,
-                "name"=>"extension",
-                "subMenus"=>[],
-                "textcolor"=>"#666666",
-                "bgcolor"=>"#837aef",
                 "iconcolor"=>"#666666",
                 "bordercolor"=>"#bfbfbf"
             ),
@@ -258,8 +256,32 @@ class HomePageController extends ApiController
             ),
         );
 
+        //如果开启了"会员关系链", 则默认菜单里面添加"推广"菜单
+        $relation = MemberRelation::getSetInfo()->first();
+        if($relation->status == 1){
+            $promoteMenu = Array(
+                "id"=>"menu_1489731319695",
+                "classt"=>"no",
+                "title"=>"推广",
+                "icon"=>"fa fa-send",
+                "url"=>"/addons/yun_shop/#/member/extension?i=".$i."&mid=".$mid."&type=".$type,
+                "name"=>"extension",
+                "subMenus"=>[],
+                "textcolor"=>"#666666",
+                "bgcolor"=>"#837aef",
+                "iconcolor"=>"#666666",
+                "bordercolor"=>"#bfbfbf"
+            );
+            $defaultMenu[4] = $defaultMenu[2];
+            $defaultMenu[2] = $promoteMenu; //需要排在第 3 位,所以索引为 2
+        }
+        return $defaultMenu;
+
     }
 
+    /**
+     * @return array 默认的底部菜单样式
+     */
     public static function defaultMenuStyle()
     {
         return Array(
