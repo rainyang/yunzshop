@@ -285,7 +285,7 @@ class MemberModel extends Member
     public static function getAgentQR($extra='')
     {
         $url = Url::absoluteApp('/home');
-        $url = $url . '?mid=' . \YunShop::app()->getMemberId();
+        $url = $url . '&mid=' . \YunShop::app()->getMemberId();
 
         if (!empty($extra)) {
             $extra = '_' . $extra;
