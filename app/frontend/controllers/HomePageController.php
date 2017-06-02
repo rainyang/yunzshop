@@ -272,8 +272,9 @@ class HomePageController extends ApiController
                 "iconcolor"=>"#666666",
                 "bordercolor"=>"#bfbfbf"
             );
-            $defaultMenu[4] = $defaultMenu[2];
-            $defaultMenu[2] = $promoteMenu; //需要排在第 3 位,所以索引为 2
+            $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
+            $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
+            $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
         }
         return $defaultMenu;
 
