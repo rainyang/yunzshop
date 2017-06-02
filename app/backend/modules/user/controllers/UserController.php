@@ -24,11 +24,12 @@ class UserController extends BaseController
      **/
     public function index()
     {
+        $pageSize = 10;
         $userList = User::getPageList(static::PageSize);
 
         $search = \YunShop::request()->search;
         if ($search) {
-            $userList = User::searchPagelist(static::PageSize, $search);
+            $userList = User::searchPagelist($pageSize, $search);
         }
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
 
@@ -114,6 +115,10 @@ class UserController extends BaseController
             $userModel->widgets = \YunShop::request()->widgets;
             $userModel->widgets['perms'] = \YunShop::request()->perms;
             if ($userModel->save()) {
+
+                //todo 完善更新权限缓存
+                //$key = 'user.permissions.'.\YunShop::app()->uid;
+                //\Cache::put($key,$list,3600);
                 return $this->message('修改操作员成功.', Url::absoluteWeb('user.user.update', array('id' => $userModel->uid)));
             }
         }

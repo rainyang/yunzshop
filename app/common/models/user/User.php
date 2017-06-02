@@ -163,6 +163,7 @@ class User extends BaseModel
     {
         $key = 'user.permissions.'.\YunShop::app()->uid;
         $list = \Cache::get($key);
+        $list = null;
         if($list === null){
             $list =  static::select(['uid'])
                 ->where(['uid' => \YunShop::app()->uid])
@@ -178,7 +179,7 @@ class User extends BaseModel
 
             \Cache::put($key,$list,3600);
         }
-
+//dd($list);
         return $list;
     }
 
@@ -206,6 +207,7 @@ class User extends BaseModel
                 }
             }
         }
+        //dd($permissions);
         return $permissions;
     }
 
