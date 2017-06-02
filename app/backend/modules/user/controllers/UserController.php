@@ -93,7 +93,7 @@ class UserController extends BaseController
         $permissionService = new PermissionService();
 
         $userPermissions = $permissionService->handlePermission($userModel->permissions->toArray());
-//dd($userPermissions);
+
         $permissions = \Config::get('menu');
         $roleList = YzRole::getRoleListToUser();
 
@@ -115,10 +115,8 @@ class UserController extends BaseController
             $userModel->widgets = \YunShop::request()->widgets;
             $userModel->widgets['perms'] = \YunShop::request()->perms;
             if ($userModel->save()) {
-
-                //todo 完善更新权限缓存
-                //$key = 'user.permissions.'.\YunShop::app()->uid;
-                //\Cache::put($key,$list,3600);
+                $key = 'user.permissions.'.$userModel->uid;
+                \Cache::forget($key);
                 return $this->message('修改操作员成功.', Url::absoluteWeb('user.user.update', array('id' => $userModel->uid)));
             }
         }
