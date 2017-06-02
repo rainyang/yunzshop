@@ -39,7 +39,6 @@ class MemberController extends ApiController
      */
     public function getUserInfo()
     {
-        include(__DIR__.'../../../../helpers.php');
         $member_id = \YunShop::app()->getMemberId();
 
         if (!empty($member_id)) {
@@ -57,8 +56,8 @@ class MemberController extends ApiController
                 $shopInfo = Setting::get('shop.shop');
                 $data['poster'] = [ //个人中心的推广海报
                     'name' => $shopInfo['name'],
-                    'logo' => self::replace_yunshop(tomedia($shopInfo['logo'])),
-                    'img' => self::replace_yunshop(tomedia($shopInfo['signimg'])),
+                    'logo' => replace_yunshop(tomedia($shopInfo['logo'])),
+                    'img' => replace_yunshop(tomedia($shopInfo['signimg'])),
                     'qr' => MemberModel::getAgentQR(),
                 ];
 
@@ -71,14 +70,6 @@ class MemberController extends ApiController
             return $this->errorJson('缺少访问参数');
         }
 
-    }
-
-    //临时使用
-    //因为其它地方的tomedia()还未全部替代, 所以不能全局修改, 只能这里局部修改
-    public static function replace_yunshop($url)
-    {
-        $moduleName = \Config::get('app.module_name');
-        return str_replace(DIRECTORY_SEPARATOR . "addons" . DIRECTORY_SEPARATOR . $moduleName, "", $url);
     }
 
     /**
