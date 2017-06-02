@@ -18,17 +18,17 @@ use app\common\models\user\YzRole;
 
 class UserController extends BaseController
 {
+    const PageSize = 10;
     /*
      *  操作员分页列表
      **/
     public function index()
     {
-        $pageSize = 10;
-        $userList = User::getPageList($pageSize);
+        $userList = User::getPageList(static::PageSize);
 
         $search = \YunShop::request()->search;
         if ($search) {
-            $userList = User::searchPagelist($pageSize, $search);
+            $userList = User::searchPagelist(static::PageSize, $search);
         }
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
 

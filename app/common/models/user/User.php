@@ -189,26 +189,23 @@ class User extends BaseModel
     public static function getAllPermissions()
     {
         $userPermissions = self::getUserPermissionsCache()->toArray();
+        //dd($userPermissions);
         $permissions = [];
         if($userPermissions) {
             foreach ($userPermissions as $v) {
+                //dd($v);
                 if ($v['permissions']) {
                     foreach ($v['permissions'] as $v1) {
                         $permissions[] = $v1['permission'];
                     }
                 }
-                if ($v['user_roles']) {
-                    foreach ($v['user_roles'] as $v2) {
-                        if ($v2['permissions']) {
-                            foreach ($v2['permissions'] as $v3) {
-                                !in_array($v3['permission'], $permissions) && $permissions[] = $v3['permission'];
-                            }
-                        }
+                if ($v['user_role']['permissions']) {
+                    foreach ($v['user_role']['permissions'] as $key => $v2) {
+                        !in_array($v2['permission'], $permissions) && $permissions[] = $v2['permission'];
                     }
                 }
             }
         }
-
         return $permissions;
     }
 
