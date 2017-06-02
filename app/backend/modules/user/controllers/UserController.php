@@ -28,15 +28,11 @@ class UserController extends BaseController
 
         $search = \YunShop::request()->search;
         if ($search) {
-            //dd($search);
-            //dd(\YunShop::request()->keyword);
             $userList = User::searchPagelist($pageSize, $search);
-            //dd($userList);
         }
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
 
         $roleList = YzRole::getRoleListToUser();
-        //dd($roleList);
         return view('user.user.user', [
             'pager' => $pager,
             'roleList' => $roleList,
@@ -113,7 +109,7 @@ class UserController extends BaseController
             //dd(\YunShop::request());
             $userModel->status = $requestUser['status'];
             if ($requestUser['password']) {
-                $userModel->password = $this->password($requestUser->password, $userModel->salt);
+                $userModel->password = $this->password($requestUser['password'], $userModel->salt);
             }
             $userModel->widgets = \YunShop::request()->widgets;
             $userModel->widgets['perms'] = \YunShop::request()->perms;
