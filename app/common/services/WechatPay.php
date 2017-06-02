@@ -61,8 +61,10 @@ class WechatPay extends Pay
             $prepayId = $result->prepay_id;
 
             $this->changeOrderStatus($pay_order_model, Pay::ORDER_STATUS_WAITPAY,'');
+        } elseif ($result->return_code == 'SUCCESS') {
+                throw new AppException($result->err_code_des);
         } else {
-            throw new AppException($result->err_code_des);
+            throw new AppException($result->return_msg);
         }
 
         $config = $payment->configForJSSDKPayment($prepayId);
