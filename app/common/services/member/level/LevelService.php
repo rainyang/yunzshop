@@ -28,12 +28,10 @@ class LevelService
 
 
         $result = $this->check();
-
-        $test = $this->upgrade($result);
-
-        dd($test);
-
-        return empty($result) ?: $this->upgrade($result);
+        if ($result) {
+            return $this->upgrade($result);
+        }
+        return '';
     }
 
 
@@ -54,7 +52,7 @@ class LevelService
                 $level =  $this->checkGoodsId();
                 break;
             default:
-                $level =  [];
+                $level =  '';
         }
 
         //比对当前等级权重，判断是否升级

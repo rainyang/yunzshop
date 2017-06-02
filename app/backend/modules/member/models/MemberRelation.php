@@ -197,9 +197,10 @@ class MemberRelation extends BackendModel
      */
     public function becomeChildAgent($mid, MemberShopInfo $model)
     {
-        \Log::debug('###child_000');
+        \Log::debug('###child_0009872111');
 
         $set = self::getSetInfo()->first();
+        \Log::debug(print_r($set, 1));
 
         if (empty($set)) {
             \Log::debug('###child_001');
@@ -216,10 +217,12 @@ class MemberRelation extends BackendModel
         $parent = false;
 
         if (!empty($mid)) {
+            \Log::debug('###child_0021');
             $parent =  SubMemberModel::getMemberShopInfo($mid);
         }
 
         $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
+        \Log::debug('###child.$parent_is_agent: '.$parent_is_agent.' is_agent: '.$parent->is_agent.' status: '.$parent->status);
 
         if ($member->is_agent == 1) {
             \Log::debug('###child_003');
@@ -229,17 +232,24 @@ class MemberRelation extends BackendModel
 
         $become_child =  intval($set->become_child);
         $become_check = intval($set->become_check);
+        \Log::debug('###child.become_child: '.$become_child);
+        \Log::debug('###child.become_check: '.$become_check);
+        \Log::debug('###child.become_check: '.$member->member_id);
+        \Log::debug('###child.parent_id'.$member->parent_id);
+
 
         if ($parent_is_agent && empty($member->parent_id)) {
             \Log::debug('parant is agent');
-
+            \Log::debug('become_child: '.$become_child);
             if ($member->member_id != $parent->member_id) {
                 if (empty($become_child)) {
+                    \Log::debug('set pareant_id');
                     $this->changeChildAgent($mid, $model);
 
-
+                    \Log::debug('###998.mid: '.$mid);
                     // TODO message notice
                 } else {
+                    \Log::debug('###998.parent->member_id: '.$parent->member_id);
                     $model->inviter = $parent->member_id;
 
                     $model->save();
