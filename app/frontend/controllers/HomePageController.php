@@ -272,6 +272,7 @@ class HomePageController extends ApiController
                 "iconcolor"=>"#666666",
                 "bordercolor"=>"#bfbfbf"
             );
+            $defaultMenu[4] = $defaultMenu[2];
             $defaultMenu[2] = $promoteMenu; //需要排在第 3 位,所以索引为 2
         }
         return $defaultMenu;
