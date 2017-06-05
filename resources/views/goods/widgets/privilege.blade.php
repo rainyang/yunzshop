@@ -107,7 +107,7 @@
 --}}
 
 
-<script language='javascript'>
+{{--<script language='javascript'>
     if ($('input:radio[name="widgets[privilege][enable_time_limit]"]:checked').val() == 1) {
         $('#time_limit').show();
     };
@@ -119,4 +119,4 @@
             $('#time_limit').hide();
         }
     });
-</script>
+</script>--}}
