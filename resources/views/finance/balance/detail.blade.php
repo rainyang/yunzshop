@@ -14,9 +14,6 @@
             <div class="panel-heading">筛选</div>
             <div class="panel-body">
                 <form action="" method="post" class="form-horizontal" role="form" id="form1">
-                    <input type="hidden" name="c" value="site" />
-                    <input type="hidden" name="a" value="entry" />
-                    <input type="hidden" name="m" value="yun_shop" />
                     <div class="form-group">
                         <div class="col-sm-8 col-lg-12 col-xs-12">
                             <div class='input-group'>
