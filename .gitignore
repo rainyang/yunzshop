@@ -20,3 +20,4 @@ vendor/
 .DS_Store
 /index.html
 /index.php
+/storage/framework/cache/data
