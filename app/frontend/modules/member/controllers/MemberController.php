@@ -68,8 +68,6 @@ class MemberController extends ApiController
                     'img' => replace_yunshop(tomedia($shopInfo['signimg'])),
                     'qr' => MemberModel::getAgentQR(),
                 ];
-                dd(MemberRelation::getSetInfo()->first());
-                exit;
 
                 return $this->successJson('', $data);
             } else {
