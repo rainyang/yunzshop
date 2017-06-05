@@ -26,6 +26,19 @@
             </style>
 
             <div class='panel-heading'>
+                任务处理通知
+            </div>
+            <div class='panel-body'>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">任务处理通知</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" name="notice[task]" class="form-control" value="{{ $set['task'] }}" />
+                        <div class="help-block">积分、余额、新增下线等通知 </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class='panel-heading'>
                 卖家通知
             </div>
             <div class='panel-body'>
