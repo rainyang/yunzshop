@@ -25,6 +25,34 @@
                         </div>
                     </div>
 
+                </div>
+
+                <div class='panel-heading'>
+                    {{trans('通知设置')}}
+                </div>
+                <div class='panel-body'>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">任务处理通知</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="base[template_id]" class="form-control" value="{{$base['template_id']}}" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">获得推广权限通知</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <textarea  name="base[generalize_msg]" class="form-control" >{{$base['generalize_msg']}}</textarea>
+                            模板变量: [昵称] [时间]
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">新增下线通知</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <textarea  name="base[agent_msg]" class="form-control" >{{$base['agent_msg']}}</textarea>
+                            模板变量: [昵称] [时间] [下级昵称]
+                        </div>
+                    </div>
 
                     <div class="form-group"></div>
                     <div class="form-group">
@@ -36,5 +64,6 @@
                     </div>
 
                 </div>
+            </div>
         </form>
     </section>@endsection
