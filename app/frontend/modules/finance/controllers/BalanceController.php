@@ -49,8 +49,6 @@ class BalanceController extends ApiController
         }
 
 
-
-
         
 
         $balanceSet = new BalanceService();
@@ -76,6 +74,7 @@ class BalanceController extends ApiController
     //余额设置+会员余额值
     public function balance()
     {
+        dd(123);
         $memberInfo = $this->getMemberInfo();
         if ($memberInfo) {
             $result = (new BalanceService())->getBalanceSet();
