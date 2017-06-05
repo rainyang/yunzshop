@@ -93,17 +93,18 @@ class PointService
     public function messageNotice()
     {
         $this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
-        if (!$this->member['openid']) {
-            return;
-        }
+        $noticeMember = Member::getMemberByUid($this->member->uid)->with('hasOneFans')->first();
         $news = new News([
             'title'       => '积分变动通知',
-            'description' => '尊敬的[' . $this->member['nickname'] ? $this->member['nickname'] : $this->member['realname'] . ']，您与[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
+            'description' => '尊敬的[' . $this->member['nickname'] . ']，您与[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
             'url'         => '',
             'image'       => '',
             // ...
         ]);
-        PointNoticeService::sendNotice($this->member['openid'], $news);
+        if (!$noticeMember->hasOneFans->openid) {
+            return;
+        }
+        PointNoticeService::sendNotice($noticeMember->hasOneFans->openid, $news);
     }
 
     /**
