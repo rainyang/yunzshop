@@ -13,14 +13,15 @@ use app\common\models\Member;
 
 class MessageService extends \app\common\services\MessageService
 {
-    public static function sendMessage($templateId, $msg)
+    public static function sendMessage($templateId, $msg, $uid)
     {
         $app = app('wechat');
         $notice = $app->notice;
         $result = $notice->uses($templateId)->andData($msg);
 
+        $result->andReceiver(Member::getOpenId($uid));
 
-        foreach (\Setting::get('shop.notice.salers') as $saler){
+        foreach (\Setting::get('shop.notice.salers') as $saler) {
             $openid = Member::getOpenId($saler['uid']);
             $result->andReceiver($openid);
         }
@@ -59,7 +60,7 @@ class MessageService extends \app\common\services\MessageService
             )
         );
 
-        return self::sendMessage($template_id, $msg);
+        return self::sendMessage($template_id, $msg, $order['uid']);
     }
 
 
