@@ -244,7 +244,7 @@
                 }
             }
 
-            if ($(':input[name="widgets[privilege][time_begin_limit]"]').val() == '') {
+            /*if ($(':input[name="widgets[privilege][time_begin_limit]"]').val() == '') {
                 $('#myTab a[href="#tab_privilege"]').tab('show');
                 Tip.focus(':input[name="widgets[privilege][time_begin_limit]"]', "请输入限购起始时间!");
                 return false;
@@ -254,9 +254,9 @@
                     Tip.focus(':input[name="widgets[privilege][time_begin_limit]"]', '限购起始时间格式错误,只能0000-00-00 00:00:00格式.');
                     return false;
                 }
-            }
+            }*/
 
-            if ($(':input[name="widgets[privilege][time_end_limit]"]').val() == '') {
+            /*if ($(':input[name="widgets[privilege][time_end_limit]"]').val() == '') {
                 $('#myTab a[href="#tab_privilege"]').tab('show');
                 Tip.focus(':input[name="widgets[privilege][time_end_limit]"]', "请输入限购结束时间!");
                 return false;
@@ -266,7 +266,7 @@
                     Tip.focus(':input[name="widgets[privilege][time_end_limit]"]', '限购结束时间格式错误,只能0000-00-00 00:00:00格式.');
                     return false;
                 }
-            }
+            }*/
 
             if ($('.discounts_value').val()) {
                 if (!reg.test($('.discounts_value').val())) {

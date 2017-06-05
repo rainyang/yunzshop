@@ -125,6 +125,7 @@ class RoleController extends BaseController
             } else {
                 if ($roleModel->save()) {
                     //return $this->message("更新角色成功");
+                    \Cache::flush();
                     $requestPermission = \YunShop::request()->perms;
                     if ($requestPermission) {
                         //dd(1);
