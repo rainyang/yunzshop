@@ -11,6 +11,7 @@ namespace app\common\services\finance;
 
 use app\backend\modules\member\models\Member;
 use app\common\models\finance\PointLog;
+use app\common\services\MessageService;
 use EasyWeChat\Foundation\Application;
 use EasyWeChat\Message\News;
 
@@ -94,17 +95,16 @@ class PointService
     {
         $this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
         $noticeMember = Member::getMemberByUid($this->member->uid)->with('hasOneFans')->first();
-        $news = new News([
-            'title'       => '积分变动通知',
-            'description' => '尊敬的[' . $this->member['nickname'] . ']，您与[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
-            'url'         => '',
-            'image'       => '',
-            // ...
-        ]);
         if (!$noticeMember->hasOneFans->openid) {
             return;
         }
-        PointNoticeService::sendNotice($noticeMember->hasOneFans->openid, $news);
+        $msg = [
+            "first" => '您好',
+            "keyword1" => '积分变动通知',
+            "keyword2" => '尊敬的[' . $this->member['nickname'] . ']，您与[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
+            "remark" => "",
+        ];
+        MessageService::notice('No_IuF0fTnk7dWZSnie-J4Q7ZI_ZPi_nZwvAUi234ks', $msg, $noticeMember->hasOneFans->openid);
     }
 
     /**
