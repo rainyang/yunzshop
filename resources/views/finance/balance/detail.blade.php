@@ -92,7 +92,7 @@
                                 </td>
                                 <td>{{ $list->member->realname }}<br/>{{ $list->member->mobile }}</td>
                                 <td><label class="label label-danger">余额：{{ $list->new_money }}</label></td>
-                                <td>{{ $list->type_name }}</td>
+                                <td>{{ $list->service_type_name }}</td>
                                 <td>{{ $list->change_money }}</td>
                                 <td  style="overflow:visible;">
                                     <a class='btn btn-default' href="{{ yzWebUrl('finance.balance.lookBalanceDetail', array('id' => $list->id )) }}" style="margin-bottom: 2px">查看详情</a>
