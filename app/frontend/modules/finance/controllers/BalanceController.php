@@ -42,7 +42,7 @@ class BalanceController extends ApiController
 
 
     //增加余额提现页面接口
-    public function withdrawPage()
+    public function poundage()
     {
         if (!$this->getMemberInfo()) {
             return $this->errorJson('未获取到会员信息');
