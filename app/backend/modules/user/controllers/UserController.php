@@ -18,25 +18,22 @@ use app\common\models\user\YzRole;
 
 class UserController extends BaseController
 {
+    const PageSize = 10;
     /*
      *  操作员分页列表
      **/
     public function index()
     {
         $pageSize = 10;
-        $userList = User::getPageList($pageSize);
+        $userList = User::getPageList(static::PageSize);
 
         $search = \YunShop::request()->search;
         if ($search) {
-            //dd($search);
-            //dd(\YunShop::request()->keyword);
             $userList = User::searchPagelist($pageSize, $search);
-            //dd($userList);
         }
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
 
         $roleList = YzRole::getRoleListToUser();
-        //dd($roleList);
         return view('user.user.user', [
             'pager' => $pager,
             'roleList' => $roleList,
@@ -96,7 +93,7 @@ class UserController extends BaseController
         $permissionService = new PermissionService();
 
         $userPermissions = $permissionService->handlePermission($userModel->permissions->toArray());
-//dd($userPermissions);
+
         $permissions = \Config::get('menu');
         $roleList = YzRole::getRoleListToUser();
 
@@ -113,11 +110,13 @@ class UserController extends BaseController
             //dd(\YunShop::request());
             $userModel->status = $requestUser['status'];
             if ($requestUser['password']) {
-                $userModel->password = $this->password($requestUser->password, $userModel->salt);
+                $userModel->password = $this->password($requestUser['password'], $userModel->salt);
             }
             $userModel->widgets = \YunShop::request()->widgets;
             $userModel->widgets['perms'] = \YunShop::request()->perms;
             if ($userModel->save()) {
+                $key = 'user.permissions.'.$userModel->uid;
+                \Cache::forget($key);
                 return $this->message('修改操作员成功.', Url::absoluteWeb('user.user.update', array('id' => $userModel->uid)));
             }
         }
