@@ -200,17 +200,17 @@ class MessageService extends \app\common\services\MessageService
             ),
             'keyword3' => array(
                 'title' => '下单时间',
-                'value' => (string)date('Y-m-d H:i:s', $order['create_time']),
+                'value' => (string)$order['create_time']->toDateTimeString(),
                 "color" => "#4a5077"
             ),
             'keyword4' => array(
                 'title' => '发货时间',
-                'value' => (string)date('Y-m-d H:i:s', $order['send_time']),
+                'value' => (string)$order['create_time']->toDateTimeString(),
                 "color" => "#4a5077"
             ),
             'keyword5' => array(
                 'title' => '确认收货时间',
-                'value' => (string)date('Y-m-d H:i:s', $order['finish_time']),
+                'value' => (string)$order['create_time']->toDateTimeString(),
                 "color" => "#4a5077"
             ),
             'remark' => array(
