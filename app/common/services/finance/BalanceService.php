@@ -115,6 +115,7 @@ abstract class BalanceService
         //echo '<pre>'; print_r($this->memberModel); exit;
         $this->memberModel->credit2 = $this->result_money;
         if ($this->memberModel->save()) {
+            dd(123);
             $this->notice();
             return true;
         }
