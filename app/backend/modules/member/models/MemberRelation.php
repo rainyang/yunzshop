@@ -10,6 +10,7 @@ namespace app\backend\modules\member\models;
 
 use app\backend\models\BackendModel;
 use app\backend\modules\order\models\Order;
+use app\common\events\member\MemberRelationEvent;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 
@@ -524,7 +525,11 @@ class MemberRelation extends BackendModel
     public static function sendGeneralizeNotify($uid)
     {
         \Log::debug('获得推广权限通知');
+
         $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
+
+        event(new MemberRelationEvent($member));
+
         $member->follow = $member->hasOneFans->follow;
         $member->openid = $member->hasOneFans->openid;
 
@@ -557,7 +562,7 @@ class MemberRelation extends BackendModel
      */
     public static function sendAgentNotify($uid, $puid)
     {
-        \Log::debug('新增下线通知', $puid . '_' . $uid);
+        \Log::debug('新增下线通知');
         $parent = Member::getMemberByUid($puid)->with('hasOneFans')->first();
         $parent->follow = $parent->hasOneFans->follow;
         $parent->openid = $parent->hasOneFans->openid;
