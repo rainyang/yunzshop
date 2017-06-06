@@ -11,6 +11,8 @@ namespace app\frontend\modules\finance\services;
 use app\backend\modules\member\models\Member;
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
+use app\common\services\credit\ConstService;
+use app\common\services\finance\BalanceChange;
 use \app\common\services\finance\BalanceService as BaseBalanceService;
 use app\common\facades\Setting;
 use app\frontend\modules\finance\models\BalanceRecharge;
@@ -94,15 +96,24 @@ class BalanceService extends BaseBalanceService
         $rechargeMode->status = BalanceRecharge::PAY_STATUS_SUCCESS;
         if ($rechargeMode->save()) {
             $this->data = array(
-                'member_id'         => $rechargeMode->member_id,
+               /* 'member_id'         => $rechargeMode->member_id,
                 'money'             => $rechargeMode->money,
                 'serial_number'     => $rechargeMode->ordersn,
-                'operator'          => Balance::OPERRTOR_MEMBER,
+                'operator'          => Balance::OPERATOR_MEMBER,
                 'operator_id'       => $rechargeMode->member_id,
                 'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
-                'service_type'      => Balance::BALANCE_RECHARGE
+                'service_type'      => Balance::BALANCE_RECHARGE,*/
+
+                'member_id'     => $rechargeMode->member_id,
+                'remark'        => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
+                'source'        => ConstService::SOURCE_RECHARGE,
+                'relation'      => $rechargeMode->ordersn,
+                'operator'      => ConstService::OPERATOR_MEMBER,
+                'operator_id'   => $rechargeMode->member_id,
+                'change_value'  => $rechargeMode->money,
             );
-            $result = $this->balanceChange($this->data);
+            //$result = $this->balanceChange($this->data);
+            $result = (new BalanceChange())->recharge($this->data);
             if ($result === true) {
                 return $this->rechargeSaleMath();
             }
@@ -115,7 +126,8 @@ class BalanceService extends BaseBalanceService
     //余额变动接口（对外接口）
     public function balanceChange($data)
     {
-        $this->data = $data;
+        //todo 此接口废弃使用，
+        /*$this->data = $data;
         $this->getMemberInfo();
         $this->service_type = $data['service_type'];
 
@@ -123,7 +135,7 @@ class BalanceService extends BaseBalanceService
            return $this->balanceTransfer();
         }
 
-        return  $this->detectionBalance() ? $this->judgeMethod() : '余额必须大于零';
+        return  $this->detectionBalance() ? $this->judgeMethod() : '余额必须大于零';*/
     }
 
     protected function validatorResultMoney()
@@ -190,16 +202,26 @@ class BalanceService extends BaseBalanceService
             }
         }
         $result = array(
-            'member_id' => $this->data['member_id'],
+            /*'member_id' => $this->data['member_id'],
             //todo 验证余额值
             'money' => $result,
             'serial_number' => $this->data['serial_number'],
-            'operator' => Balance::OPERRTOR_MEMBER,
+            'operator' => Balance::OPERATOR_MEMBER,
             'operator_id' => $this->data['member_id'],
             'remark' => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['money'] . '元)',
-            'service_type' => Balance::BALANCE_AWARD,
+            'service_type' => Balance::BALANCE_AWARD,*/
+
+            'member_id'     => $this->data['member_id'],
+            'remark'        => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['money'] . '元)',
+            'source'        => ConstService::SOURCE_AWARD,
+            'relation'      => $this->data['serial_number'],
+            'operator'      => ConstService::OPERATOR_MEMBER,
+            'operator_id'   => $this->data['member_id'],
+            //todo 验证余额值
+            'change_value'  => $result,
         );
-        return $this->balanceChange($result);
+        return  (new BalanceChange())->award($this->data);
+        //return $this->balanceChange($result);
     }
 
 }

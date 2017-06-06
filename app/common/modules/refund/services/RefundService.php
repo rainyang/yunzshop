@@ -7,6 +7,8 @@ use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\exceptions\AdminException;
 use app\common\models\finance\Balance;
 use app\common\models\PayType;
+use app\common\services\credit\ConstService;
+use app\common\services\finance\BalanceChange;
 use app\common\services\PayFactory;
 use app\frontend\modules\finance\services\BalanceService;
 use Illuminate\Support\Facades\DB;
@@ -78,7 +80,7 @@ class RefundService
             //退款状态设为完成
             RefundOperationService::refundComplete(['order_id' => $refundApply->order->id]);
             //改变余额
-            $data = array(
+            /*$data = array(
                 'serial_number' => $refundApply->refund_sn,
                 'money' => $refundApply->price,
                 'remark' => '订单(ID' . $refundApply->order->id . ')余额支付退款(ID' . $refundApply->id . ')' . $refundApply->price,
@@ -87,7 +89,19 @@ class RefundService
                 'operator_id' => $refundApply->uid,
                 'member_id' => $refundApply->uid
             );
-            return (new BalanceService())->balanceChange($data);
+            //return (new BalanceService())->balanceChange($data);*/
+
+            //todo 原余额接口废弃
+            $data = [
+                'member_id'     => $refundApply->uid,
+                'remark'        => '订单(ID' . $refundApply->order->id . ')余额支付退款(ID' . $refundApply->id . ')' . $refundApply->price,
+                'source'        => ConstService::SOURCE_CANCEL_CONSUME,
+                'relation'      => $refundApply->refund_sn,
+                'operator'      => ConstService::OPERATOR_ORDER,
+                'operator_id'   => $refundApply->uid,
+                'change_value'  => $refundApply->price
+            ];
+            return (new BalanceChange())->cancelConsume($data);
 
         });
 
