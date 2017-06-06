@@ -52,7 +52,7 @@ abstract class Credit
      */
     public function rechargeMinus(array $data)
     {
-        $this->source = ConstService::SOURCE_RECHARGE;
+        $this->source = ConstService::SOURCE_RECHARGE_MINUS;
         return $this->subtraction($data);
     }
 

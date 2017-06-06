@@ -93,7 +93,7 @@ class ConstService
     {
         return [
             self::OPERATOR_SHOP                 => '商城操作',
-            self::OPERATOR_ORDER_               => '会员操作',
+            self::OPERATOR_ORDER                => '会员操作',
             self::OPERRTOR_MEMBER               => '订单操作'
         ];
     }

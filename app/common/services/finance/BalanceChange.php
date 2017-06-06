@@ -10,7 +10,9 @@ namespace app\common\services\finance;
 
 use app\common\models\finance\Balance;
 use app\common\models\Member;
+use app\common\services\credit\ConstService;
 use app\common\services\credit\Credit;
+use app\common\services\MessageService;
 
 class BalanceChange extends Credit
 {
@@ -53,7 +55,12 @@ class BalanceChange extends Credit
     {
         $this->memberModel->credit2 = $this->new_value;
 
-        return $this->memberModel->save() ? true : '写入会员余额失败';
+        if ($this->memberModel->save()) {
+            $this->notice();
+            return true;
+        }
+        return '写入会员余额失败';
+        //return $this->memberModel->save() ? true : '写入会员余额失败';
     }
 
 
@@ -125,6 +132,25 @@ class BalanceChange extends Credit
             'operator_id'   => $this->data['operator_id'],
             'remark'        => $this->data['remark']
         ];
+    }
+
+    private function notice()
+    {
+        $noticeMember = Member::getMemberByUid($this->memberModel->uid)->with('hasOneFans')->first();
+        if (!$noticeMember->hasOneFans->openid) {
+            return;
+        }
+        $template_id = \Setting::get('shop.notice')['task'];
+        if (!$template_id) {
+            return;
+        }
+        $msg = [
+            "first" => '您好',
+            "keyword1" => '余额变动通知',
+            "keyword2" => "尊敬的[" . $this->memberModel->nickname . "]，您于[" . date('Y-m-d H:i', time()) . "]发生余额变动，变动数值为[" .  $this->change_value . "]，类型[" . (new ConstService(''))->sourceComment()[$this->source] . "]，您目前余额余值为[" . $this->new_value . "]",
+            "remark" => "",
+        ];
+        MessageService::notice($template_id, $msg, $noticeMember->hasOneFans->openid);
     }
 
 
