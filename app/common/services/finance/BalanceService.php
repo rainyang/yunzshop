@@ -13,6 +13,7 @@ namespace app\common\services\finance;
 use app\backend\modules\member\models\Member;
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
+use app\common\services\MessageService;
 
 abstract class BalanceService
 {
@@ -154,12 +155,9 @@ abstract class BalanceService
         $msg = [
             "first" => '您好',
             "keyword1" => '余额变动通知',
-            "keyword2" => '尊敬的[' . $this->memberModel->nickname . ']，您于[' . date('Y-m-d H:i', time()) . ']发生余额变动，变动数值为[' .  $this->data['money'] . ']，类型[' . Balance::getBalanceComment($this->service_type) . ']，您目前余额余值为[' . $this->result_money > 0 ? $this->result_money : 0 . ']',
+            "keyword2" => "尊敬的[" . $this->memberModel->nickname . "]，您于[" . date('Y-m-d H:i', time()) . "]发生余额变动，变动数值为[" .  $this->data['money'] . "]，类型[" . Balance::getBalanceComment($this->service_type) . "]，您目前余额余值为[" . $this->result_money > 0 ? $this->result_money : 0 . "]",
             "remark" => "",
         ];
-        if (!\Setting::get('shop.notice')['task']) {
-            return;
-        }
         MessageService::notice($template_id, $msg, $noticeMember->hasOneFans->openid);
     }
 
