@@ -203,7 +203,7 @@ class MemberRelationController extends BaseController
             $member_shop_info_model->status = 2;
 
             if ($member_shop_info_model->save()) {
-                MemberRelation::sendGeneralizeNotify($member_shop_info_model->member_id);
+                Relation::sendGeneralizeNotify($member_shop_info_model->member_id);
 
                 return $this->successJson('审核通过');
             } else {
