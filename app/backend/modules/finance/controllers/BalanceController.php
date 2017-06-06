@@ -205,6 +205,7 @@ class BalanceController extends BaseController
      * @Author yitian */
     public function recharge()
     {
+        dd(1);
         $memberInfo =$this->getMemberInfo();
         if (!$this->_memebr_model) {
             return $this->message('未获取到会员信息', Url::absoluteWeb('finance.balance.member'), 'error');
