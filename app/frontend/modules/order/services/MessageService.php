@@ -96,7 +96,7 @@ class MessageService extends \app\common\services\MessageService
             )
         );
 
-        return self::sendMessage($template_id, $msg);
+        return self::sendMessage($template_id, $msg, $order['uid']);
     }
 
     public static function paid($order)
@@ -132,7 +132,7 @@ class MessageService extends \app\common\services\MessageService
                 "color" => "#4a5077"
             )
         );
-        return self::sendMessage($template_id, $msg);
+        return self::sendMessage($template_id, $msg, $order['uid']);
     }
 
     public static function sent($order)
@@ -173,7 +173,7 @@ class MessageService extends \app\common\services\MessageService
             )
         );
 
-        return self::sendMessage($template_id, $msg);
+        return self::sendMessage($template_id, $msg, $order['uid']);
     }
 
     public static function received($order)
@@ -219,6 +219,6 @@ class MessageService extends \app\common\services\MessageService
             )
         );
 
-        return self::sendMessage($template_id, $msg);
+        return self::sendMessage($template_id, $msg, $order['uid']);
     }
 }
