@@ -10,6 +10,7 @@ namespace app\backend\modules\member\models;
 
 use app\backend\models\BackendModel;
 use app\backend\modules\order\models\Order;
+use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 
 class MemberRelation extends BackendModel
@@ -93,6 +94,7 @@ class MemberRelation extends BackendModel
             if ($info['become_check'] == 0) {
                 $member_info->is_agent = 1;
                 $member_info->status = 2;
+
                 $member_info->save();
             }
         }
@@ -230,7 +232,8 @@ class MemberRelation extends BackendModel
                 if (empty($become_child)) {
                     $this->changeChildAgent($mid, $model);
 
-                    // TODO message notice
+                    //notice
+                    self::sendAgentNotify($member->member_id, $mid);
                 } else {
                     $model->inviter = $parent->member_id;
 
@@ -246,7 +249,8 @@ class MemberRelation extends BackendModel
                 $member->status = 2;
                 $member->agent_time = time();
 
-                // TODO message notice
+                //message notice
+                self::sendGeneralizeNotify($member->member_id);
             } else {
                 $member->status = 1;
             }
@@ -293,7 +297,8 @@ class MemberRelation extends BackendModel
 
                     $member->save();
 
-                    // TODO message notice
+                    //message notice
+                    self::sendAgentNotify($member->member_id, $parent->member_id);
                 }
             }
         }
@@ -340,7 +345,8 @@ class MemberRelation extends BackendModel
 
                     $member->save();
 
-                    // TODO message notice
+                    //message notice
+                    self::sendAgentNotify($member->member_id, $parent->member_id);
                 }
             }
         }
@@ -357,7 +363,8 @@ class MemberRelation extends BackendModel
                     $member->is_agent = 1;
                     $member->agent_time = time();
 
-                    // TODO message notice
+                    //message notice
+                    self::sendGeneralizeNotify($member->member_id);
                 }
             }
         }
@@ -395,7 +402,8 @@ class MemberRelation extends BackendModel
                             $member->status = 2;
                             $member->agent_time = time();
 
-                            // TODO message notice
+                            //message notice
+                            self::sendGeneralizeNotify($member->member_id);
                         } else {
                             $member->status = 1;
                         }
@@ -463,7 +471,8 @@ class MemberRelation extends BackendModel
                             $member->status = 2;
                             $member->agent_time = time();
 
-                            // TODO message notice
+                            //message notice
+                            self::sendGeneralizeNotify($member->member_id);
                         } else {
                             $member->status = 1;
                         }
@@ -473,5 +482,76 @@ class MemberRelation extends BackendModel
                 }
             }
         }
+    }
+
+    /**
+     * 获得推广权限通知
+     *
+     * @param $uid
+     */
+    public static function sendGeneralizeNotify($uid)
+    {
+        \Log::debug('获得推广权限通知');
+        $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
+        $member->follow = $member->hasOneFans->follow;
+        $member->openid = $member->hasOneFans->openid;
+
+        self::generalizeMessage($member);
+    }
+
+    public static function generalizeMessage($member)
+    {
+        $msg_set = \Setting::get('relation_base');
+        if ($msg_set['template_id'] && ($member->follow == 1)) {
+            $message = $msg_set['generalize_msg'];
+            $message = str_replace('[昵称]', $member->nickname, $message);
+            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
+            $msg = [
+                "first" => '您好',
+                "keyword1" => "获得推广权限通知",
+                "keyword2" => $message,
+                "remark" => "",
+            ];
+
+            MessageService::notice($msg_set['template_id'], $msg, $member->openid);
+        }
+        return;
+    }
+
+    /**
+     * 新增下线通知
+     *
+     * @param $uid
+     */
+    public static function sendAgentNotify($uid, $puid)
+    {
+        \Log::debug('新增下线通知', $puid . '_' . $uid);
+        $parent = Member::getMemberByUid($puid)->with('hasOneFans')->first();
+        $parent->follow = $parent->hasOneFans->follow;
+        $parent->openid = $parent->hasOneFans->openid;
+
+        $member = Member::getMemberByUid($uid)->first();
+
+        self::agentMessage($parent, $member);
+    }
+
+    public static function agentMessage($parent, $member)
+    {
+        $msg_set = \Setting::get('relation_base');
+        if ($msg_set['template_id'] && ($parent->follow == 1)) {
+            $message = $msg_set['agent_msg'];
+            $message = str_replace('[昵称]', $parent->nickname, $message);
+            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
+            $message = str_replace('[下级昵称]', $member->nickname, $message);
+            $msg = [
+                "first" => '您好',
+                "keyword1" => "新增下线通知",
+                "keyword2" => $message,
+                "remark" => "",
+            ];
+
+            MessageService::notice($msg_set['template_id'], $msg, $parent->openid);
+        }
+        return;
     }
 }

@@ -13,6 +13,7 @@ namespace app\common\services\finance;
 use app\backend\modules\member\models\Member;
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
+use app\common\services\MessageService;
 
 abstract class BalanceService
 {
@@ -103,6 +104,8 @@ abstract class BalanceService
             throw new AppException($validator->messages());
         }
         if ($this->balanceModel->save()) {
+            $result = $this->updateMemberBalance();
+            dd($result);
             return $this->updateMemberBalance();
         }
         return '余额变动记录写入失败，请联系管理员！';
@@ -111,9 +114,12 @@ abstract class BalanceService
     //修改会员余额
     protected function updateMemberBalance()
     {
-        //echo '<pre>'; print_r($this->memberModel); exit;
+        echo '<pre>'; print_r($this->memberModel); exit;
         $this->memberModel->credit2 = $this->result_money;
         if ($this->memberModel->save()) {
+
+            $test = $this->notice();
+            dd($test);
             return true;
         }
         return '会员余额写入出错，请联系管理员';
@@ -137,6 +143,27 @@ abstract class BalanceService
             'operator_id'   => $this->data['operator_id'],
             'remark'        => $this->data['remark'],
         );
+    }
+
+    protected function notice()
+    {
+        //$this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
+        $noticeMember = Member::getMemberByUid($this->memberModel->uid)->with('hasOneFans')->first();
+        if (!$noticeMember->hasOneFans->openid) {
+            return;
+        }
+        $template_id = \Setting::get('shop.notice')['task'];
+        if (!$template_id) {
+            return;
+        }
+        $msg = [
+            "first" => '您好',
+            "keyword1" => '余额变动通知',
+            "keyword2" => "尊敬的[" . $this->memberModel->nickname . "]，您于[" . date('Y-m-d H:i', time()) . "]发生余额变动，变动数值为[" .  $this->data['money'] . "]，类型[" . Balance::getBalanceComment($this->service_type) . "]，您目前余额余值为[" . $this->result_money > 0 ? $this->result_money : 0 . "]",
+            "remark" => "",
+        ];
+        dd($msg);
+        MessageService::notice($template_id, $msg, $noticeMember->hasOneFans->openid);
     }
 
 

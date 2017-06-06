@@ -27,13 +27,6 @@ class BalanceController extends ApiController
     protected $publicAction = ['recharge'];
     protected $ignoreAction = ['recharge'];
 
-    public function test()
-    {
-        $data = array('order_sn' => 'RV20170503102112814288');
-        $test = (new BalanceService())->payResult($data);
-        echo '<pre>'; print_r($test); exit;
-    }
-
     private $memberInfo;
 
     private $model;
@@ -41,7 +34,23 @@ class BalanceController extends ApiController
     private $money;
 
 
-    //转让（是否做独立文件）
+    //增加余额提现页面接口
+    public function poundage()
+    {
+        if (!$this->getMemberInfo()) {
+            return $this->errorJson('未获取到会员信息');
+        }
+
+        $balanceSet = new BalanceService();
+        $data = [
+            'balance'       => $this->memberInfo->credit2 ?: 0,
+            'wecht'         => $balanceSet->withdrawWecht(),
+            'alipay'        => $balanceSet->withdrawAlipay(),
+            'poundage'      => $balanceSet->withdrawPoundage(),
+        ];
+
+        return $this->successJson('获取数据成功', $data);
+    }
 
     //提现+提现限制+提现手续费
     public function withdraw()
@@ -103,7 +112,7 @@ class BalanceController extends ApiController
     private function getMemberInfo()
     {
         $member_id = \YunShop::app()->getMemberId();
-        $member_id = \YunShop::app()->getMemberId() ?: \YunShop::request()->uid;
+        //$member_id = \YunShop::app()->getMemberId() ?: \YunShop::request()->uid;
         return $this->memberInfo = Member::getMemberInfoById($member_id) ?: false;
     }
 
