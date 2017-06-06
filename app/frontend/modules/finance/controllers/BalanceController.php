@@ -27,7 +27,6 @@ class BalanceController extends ApiController
     protected $publicAction = ['recharge'];
     protected $ignoreAction = ['recharge'];
 
-
     private $memberInfo;
 
     private $model;
@@ -41,9 +40,6 @@ class BalanceController extends ApiController
         if (!$this->getMemberInfo()) {
             return $this->errorJson('未获取到会员信息');
         }
-
-
-        
 
         $balanceSet = new BalanceService();
         $data = [
