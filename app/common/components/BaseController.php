@@ -2,6 +2,7 @@
 
 namespace app\common\components;
 
+use app\common\models\Modules;
 use app\common\services\Check;
 use app\common\traits\JsonTrait;
 use app\common\traits\MessageTrait;
@@ -27,6 +28,10 @@ class BaseController extends Controller
     public function __construct()
     {
         $this->setCookie();
+
+        $modules = Modules::getModuleName('yun_shop');
+
+        \Config::set('module.name', $modules->title);
     }
 
     /**
@@ -35,6 +40,9 @@ class BaseController extends Controller
     public function preAction()
     {
         strpos(request()->get('route'),'setting.key')!== 0 && Check::app();
+
+        //是否为商城后台管理路径
+        strpos(request()->getBaseUrl(),'/web/index.php') === 0 && Check::setKey();
     }
 
     protected function formatValidationErrors(Validator $validator)

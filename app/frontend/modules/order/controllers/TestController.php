@@ -9,6 +9,7 @@ use app\frontend\models\goods;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\Order;
+use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
 
 use app\common\events\order\AfterOrderCancelPaidEvent;
@@ -23,7 +24,7 @@ class TestController extends ApiController
 {
     public function index()
     {
-        $t = \app\common\models\Order::getOrderCountGroupByStatus();
+        $t = MessageService::canceled(\app\common\models\Order::first());
         dd($t);
         exit;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);
