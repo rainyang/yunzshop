@@ -141,7 +141,6 @@ abstract class BalanceService
         );
     }
 
-
     protected function notice()
     {
         //$this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
@@ -164,6 +163,7 @@ abstract class BalanceService
         }
         MessageService::notice($template_id, $msg, $noticeMember->hasOneFans->openid);
     }
+
 
 
 
