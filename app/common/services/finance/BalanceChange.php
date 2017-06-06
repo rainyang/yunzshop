@@ -80,6 +80,18 @@ class BalanceChange extends Credit
         return true;
     }
 
+    public function transfer(array $data)
+    {
+        if (!$data['recipient']) {
+            return '被转让者不存在';
+        }
+
+        $result = parent::transfer($data);
+
+        $data['member_id'] = $data['recipient'];
+        return $result === true ? $this->addition($data) : $result;
+    }
+
     /**
      * 检测单号是否可用，为空则生成唯一单号
      * @return bool|string

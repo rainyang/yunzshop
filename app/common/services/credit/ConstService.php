@@ -16,7 +16,7 @@ class ConstService
 
     const OPERATOR_ORDER    = -1; //操作者 订单
 
-    const OPERRTOR_MEMBER   = -2; //操作者 会员
+    const OPERATOR_MEMBER   = -2; //操作者 会员
 
     //类型：收入
     const TYPE_INCOME = 1;
@@ -93,8 +93,8 @@ class ConstService
     {
         return [
             self::OPERATOR_SHOP                 => '商城操作',
-            self::OPERATOR_ORDER                => '会员操作',
-            self::OPERRTOR_MEMBER               => '订单操作'
+            self::OPERATOR_ORDER               => '会员操作',
+            self::OPERATOR_MEMBER               => '订单操作'
         ];
     }
 }

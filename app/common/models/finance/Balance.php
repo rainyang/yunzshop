@@ -29,7 +29,7 @@ class Balance extends BaseModel
 
     const OPERATOR_ORDER_   = -1; //操作者 订单
 
-    const OPERRTOR_MEMBER   = -2; //操作者 会员
+    const OPERATOR_MEMBER   = -2; //操作者 会员
 
     //类型：收入
     const TYPE_INCOME = 1;
