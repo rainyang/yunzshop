@@ -35,27 +35,27 @@ class MessageService extends \app\common\services\MessageService
 
         $msg = array(
             'first' => array(
-                'value' => "您的订单已取消!",
+                'value' => (string)"您的订单已取消!",
                 "color" => "#4a5077"
             ),
             'orderProductPrice' => array(
                 'title' => '订单金额',
-                'value' => '￥' . $order['price'] . '元(含运费' . $order['dispatch_price'] . '元)',
+                'value' => (string)'￥' . $order['price'] . '元(含运费' . $order['dispatch_price'] . '元)',
                 "color" => "#4a5077"
             ),
             'orderProductName' => array(
                 'title' => '商品详情',
-                'value' => $order->hasManyOrderGoods()->first()->title,
+                'value' => (string)$order->hasManyOrderGoods()->first()->title,
                 "color" => "#4a5077"
             ),
             'orderAddress' => $order['address']['address'],
             'orderName' => array(
                 'title' => '订单编号',
-                'value' => $order['order_sn'],
+                'value' => (string)$order['order_sn'],
                 "color" => "#4a5077"
             ),
             'remark' => array(
-                'value' => "欢迎您的再次购物！",
+                'value' => (string)"欢迎您的再次购物！",
                 "color" => "#4a5077"
             )
         );
@@ -72,26 +72,26 @@ class MessageService extends \app\common\services\MessageService
         $orderpricestr = ' 订单总价: ' . $order['price'] . '(包含运费:' . $order['dispatch_price'] . ')';
         $msg = array(
             'first' => array(
-                'value' => "订单下单通知!",
+                'value' => (string)"订单下单通知!",
                 "color" => "#4a5077"
             ),
             'keyword1' => array(
                 'title' => '时间',
-                'value' => $order['create_time'],
+                'value' => (string)$order['create_time'],
                 "color" => "#4a5077"
             ),
             'keyword2' => array(
                 'title' => '商品名称',
-                'value' => $order->hasManyOrderGoods()->first()->title . $orderpricestr,
+                'value' => (string)$order->hasManyOrderGoods()->first()->title . $orderpricestr,
                 "color" => "#4a5077"
             ),
             'keyword3' => array(
                 'title' => '订单号',
-                'value' => $order['order_sn'],
+                'value' => (string)$order['order_sn'],
                 "color" => "#4a5077"
             ),
             'remark' => array(
-                'value' => $remark,
+                'value' => (string)$remark,
                 "color" => "#4a5077"
             )
         );
@@ -109,26 +109,26 @@ class MessageService extends \app\common\services\MessageService
 
         $msg = array(
             'first' => array(
-                'value' => "订单下单支付通知!",
+                'value' => (string)"订单下单支付通知!",
                 "color" => "#4a5077"
             ),
             'keyword1' => array(
                 'title' => '时间',
-                'value' => $order['create_time'],
+                'value' => (string)$order['create_time'],
                 "color" => "#4a5077"
             ),
             'keyword2' => array(
                 'title' => '商品名称',
-                'value' => $order->hasManyOrderGoods()->first()->title . $orderpricestr,
+                'value' => (string)$order->hasManyOrderGoods()->first()->title . $orderpricestr,
                 "color" => "#4a5077"
             ),
             'keyword3' => array(
                 'title' => '订单号',
-                'value' => $order['order_sn'],
+                'value' => (string)$order['order_sn'],
                 "color" => "#4a5077"
             ),
             'remark' => array(
-                'value' => $remark,
+                'value' => (string)$remark,
                 "color" => "#4a5077"
             )
         );
@@ -142,33 +142,34 @@ class MessageService extends \app\common\services\MessageService
         $template_id = \Setting::get('shop.notice.order_send');
 
         $orderpricestr = ' 订单总价: ' . $order['price'] . '(包含运费:' . $order['dispatch_price'] . ')';
+
         $msg = array(
             'first' => array(
-                'value' => "您的宝贝已经发货！",
+                'value' => (string)"您的宝贝已经发货！",
                 "color" => "#4a5077"
             ),
             'keyword1' => array(
                 'title' => '订单内容',
-                'value' => $order->hasManyOrderGoods()->first()->title . $orderpricestr,
+                'value' => (string)$order->hasManyOrderGoods()->first()->title . $orderpricestr,
                 "color" => "#4a5077"
             ),
             'keyword2' => array(
                 'title' => '物流服务',
-                'value' => $order['expresscom'],
+                'value' => (string)$order['order_express']['express_company_name'],
                 "color" => "#4a5077"
             ),
             'keyword3' => array(
                 'title' => '快递单号',
-                'value' => $order['expresssn'],
+                'value' => (string)$order['order_express']['express_sn'],
                 "color" => "#4a5077"
             ),
             'keyword4' => array(
                 'title' => '收货信息',
-                'value' => "地址: " . $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address'] . "收件人: " . $address['realname'] . ' (' . $address['mobile'] . ') ',
+                'value' => (string)"地址: " . $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address'] . "收件人: " . $address['realname'] . ' (' . $address['mobile'] . ') ',
                 "color" => "#4a5077"
             ),
             'remark' => array(
-                'value' => "\r\n我们正加速送到您的手上，请您耐心等候。",
+                'value' => (string)"\r\n我们正加速送到您的手上，请您耐心等候。",
                 "color" => "#4a5077"
             )
         );
@@ -184,37 +185,37 @@ class MessageService extends \app\common\services\MessageService
         //$orderpricestr = ' 订单总价: ' . $order['price'] . '(包含运费:' . $order['dispatch_price'] . ')';
         $msg = array(
             'first' => array(
-                'value' => '订单完成通知',
+                'value' => (string)'订单完成通知',
                 "color" => "#4a5077"
             ),
             'keyword1' => array(
                 'title' => '订单号',
-                'value' => $order['order_sn'],
+                'value' => (string)$order['order_sn'],
                 "color" => "#4a5077"
             ),
             'keyword2' => array(
                 'title' => '商品名称',
-                'value' => $order->hasManyOrderGoods()->first()->title,
+                'value' => (string)$order->hasManyOrderGoods()->first()->title,
                 "color" => "#4a5077"
             ),
             'keyword3' => array(
                 'title' => '下单时间',
-                'value' => date('Y-m-d H:i:s', $order['create_time']),
+                'value' => (string)date('Y-m-d H:i:s', $order['create_time']),
                 "color" => "#4a5077"
             ),
             'keyword4' => array(
                 'title' => '发货时间',
-                'value' => date('Y-m-d H:i:s', $order['send_time']),
+                'value' => (string)date('Y-m-d H:i:s', $order['send_time']),
                 "color" => "#4a5077"
             ),
             'keyword5' => array(
                 'title' => '确认收货时间',
-                'value' => date('Y-m-d H:i:s', $order['finish_time']),
+                'value' => (string)date('Y-m-d H:i:s', $order['finish_time']),
                 "color" => "#4a5077"
             ),
             'remark' => array(
                 'title' => '',
-                'value' => $remark,
+                'value' => (string)$remark,
                 "color" => "#4a5077"
             )
         );
