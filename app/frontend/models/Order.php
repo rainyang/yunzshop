@@ -92,11 +92,14 @@ class Order extends \app\common\models\Order
      * @param $uid
      * @return \Illuminate\Database\Eloquent\Collection|static[]
      */
-    public static function getOrderListByUid($uid)
+    public static function getOrderListByUid()
     {
-        return self::getOrderList($uid)
+        return self::select(['*'])
             ->where('status','>=',1)
             ->where('status','<=',3)
+            ->with(['hasManyOrderGoods'=>function($query){
+                return $query->select(['*']);
+            }])
             ->get();
     }
 
