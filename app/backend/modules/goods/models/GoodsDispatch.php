@@ -37,6 +37,9 @@ class GoodsDispatch extends \app\common\models\goods\GoodsDispatch
         if(!$goodsId){
             return false;
         }
+        if (!$data) {
+            return false;
+        }
         $dispatchModel = self::getModel($goodsId, $operate);
         //判断deleted
         if ($operate == 'deleted') {
