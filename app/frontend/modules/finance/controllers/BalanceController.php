@@ -27,13 +27,6 @@ class BalanceController extends ApiController
     protected $publicAction = ['recharge'];
     protected $ignoreAction = ['recharge'];
 
-    public function test()
-    {
-        $data = array('order_sn' => 'RV20170503102112814288');
-        $test = (new BalanceService())->payResult($data);
-        echo '<pre>'; print_r($test); exit;
-    }
-
     private $memberInfo;
 
     private $model;
@@ -47,11 +40,6 @@ class BalanceController extends ApiController
         if (!$this->getMemberInfo()) {
             return $this->errorJson('未获取到会员信息');
         }
-
-
-
-
-        
 
         $balanceSet = new BalanceService();
         $data = [
