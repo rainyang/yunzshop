@@ -134,6 +134,9 @@ class BalanceChange extends Credit
         ];
     }
 
+    /**
+     * 余额变动消息通知
+     */
     private function notice()
     {
         $noticeMember = Member::getMemberByUid($this->memberModel->uid)->with('hasOneFans')->first();
