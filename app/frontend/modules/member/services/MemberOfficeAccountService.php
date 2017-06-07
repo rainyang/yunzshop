@@ -496,7 +496,6 @@ class MemberOfficeAccountService extends MemberService
         }
 
         $mid = $upperMemberId ?: Member::getMid();
-        \Log::debug('Regular mid', $mid);
 
         //发展下线
         Member::chkAgent($member_id, $mid);
