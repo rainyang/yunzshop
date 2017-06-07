@@ -9,7 +9,9 @@
 namespace app\common\models;
 
 use app\backend\modules\goods\models\Sale;
+use app\backend\modules\goods\observers\GoodsObserver;
 use app\common\exceptions\AppException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use app\common\models\Coupon;
@@ -152,7 +154,7 @@ class Goods extends BaseModel
 
     public function scopeSearch($query, $filters)
     {
-        $query->uniacid()->isPlugin();
+        $query->uniacid();
 
         if (!$filters) {
             return;
@@ -338,5 +340,15 @@ class Goods extends BaseModel
             return false;
         }
         return $this->type == self::REAL_GOODS;
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::observe(new GoodsObserver());
+
+        static::addGlobalScope(function (Builder $builder) {
+            $builder->uniacid();
+        });
     }
 }

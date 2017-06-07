@@ -53,6 +53,14 @@ class MemberController extends ApiController
 
                 $data['income'] = MemberModel::getIncomeCount();
 
+                //标识"会员关系链"是否开启(如果没有设置,则默认为未开启),用于前端判断是否显示个人中心的"推广二维码"
+                $info = MemberRelation::getSetInfo()->first();
+                if (!empty($info)){
+                    $data['relation_switch'] = $info->status == 1 ?  1 : 0;
+                } else{
+                    $data['relation_switch'] = 0;
+                }
+
                 $shopInfo = Setting::get('shop.shop');
                 $data['poster'] = [ //个人中心的推广海报
                     'name' => $shopInfo['name'],
