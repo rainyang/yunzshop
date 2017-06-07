@@ -629,7 +629,7 @@ class AutoUpdate
                 }
             }
             // Skip if entry is a directory
-            if (substr($filename, -1, 1) == DIRECTORY_SEPARATOR || substr($filename, -1, 1) == '.')
+            if (substr($filename, -1, 1) == '/' || substr($filename, -1, 1) == '\\' || substr($filename, -1, 1) == '.')
                 continue;
             // Read file contents from archive
             $contents = zip_entry_read($file, zip_entry_filesize($file));
