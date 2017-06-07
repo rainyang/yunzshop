@@ -237,7 +237,6 @@ class MemberRelation extends BackendModel
 
                     //notice
                     self::sendAgentNotify($member->member_id, $mid);
-
                 } else {
                     $model->inviter = $parent->member_id;
 
