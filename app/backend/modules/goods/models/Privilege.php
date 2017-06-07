@@ -32,6 +32,9 @@ class Privilege extends \app\common\models\goods\Privilege
         if(!$goodsId){
             return false;
         }
+        if (!$data) {
+            return false;
+        }
         $privilegeModel = self::getModel($goodsId, $operate);
         //判断deleted
         if ($operate == 'deleted') {
