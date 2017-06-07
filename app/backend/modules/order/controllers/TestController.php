@@ -18,6 +18,8 @@ class TestController extends BaseController
 
     public function index()
     {
+        $this->test();
+        exit;
         //dd(Schema::table('yz_member'));
         //exit;
         $table = 'yz_member';
@@ -25,7 +27,7 @@ class TestController extends BaseController
         collect(Schema::getColumnListing('yz_member'))->each(
             function ($column) use ($table) {
                 dd($column);
-                return ;
+                return;
                 $type = Schema::getColumnType('yz_member', $column);
 
                 $table->$type($column);
@@ -38,4 +40,24 @@ class TestController extends BaseController
 
     }
 
+    private function test()
+    {
+        $permissions = \Config::get('menu');
+            dd($permissions);
+           exit;
+        dd($this->getAllNodes($permissions['system']['child']));
+    }
+
+    private function getAllNodes($tree)
+    {
+        $result = [];
+        foreach ($tree as $key => $node) {
+            if (!isset($node['child'])) {
+                $result[$key] = $node;
+            } else {
+                $result[$key] = $this->getAllNodes($node);
+            }
+        }
+        return $result;
+    }
 }

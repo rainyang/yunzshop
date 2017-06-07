@@ -15,8 +15,8 @@ class BuyerMessage extends Message
     protected function sendToBuyer()
     {
         $openid = Member::getOpenId($this->order->uid);
-        if(empty($openid)){
-            return ;
+        if (empty($openid)) {
+            return;
         }
         //客户发送消息通知
         $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver(Member::getOpenId($this->order->uid))->send();
@@ -28,7 +28,8 @@ class BuyerMessage extends Message
         $this->templateId = \Setting::get('shop.notice.new');
 
         $remark = "\r\n订单下单成功,请到后台查看!";
-        $orderpricestr = ' 订单总价: ' . $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
+        $orderpricestr = '订单总价: ' . $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
+
         $this->msg = array(
             'first' => array(
                 'value' => (string)"订单下单通知!",
@@ -44,7 +45,7 @@ class BuyerMessage extends Message
                 "color" => "#4a5077"
             ),
             'keyword3' => array(
-                'value' => (string)$this->order->hasManyOrderGoods()->first()->title . ' ' . $orderpricestr,
+                'value' => (string)$this->order->hasManyOrderGoods()->first()->title,
                 "color" => "#4a5077"
             ),
             'keyword4' => array(
@@ -57,7 +58,7 @@ class BuyerMessage extends Message
             )
         );
         //$this->sendToShops();
-        $this->msg['remark']['value'] = '\n订单下单成功';
+        $this->msg['remark']['value'] = "\r\n订单下单成功";
 
         $this->sendToBuyer();
 

@@ -29,6 +29,7 @@ class ShopMessage extends Message
 
         $remark = "\r\n订单下单成功,请到后台查看!";
         $orderpricestr = $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
+
         $this->msg = array(
             'first' => array(
                 'value' => (string)"订单下单通知!",
@@ -36,21 +37,18 @@ class ShopMessage extends Message
             ),
             'keyword1' => array(
                 //todo
-                'value' => (string)'自营',
-                "color" => "#4a5077"
-            ),
-            'keyword2' => array(
                 'value' => (string)$this->order['create_time']->toDateTimeString(),
                 "color" => "#4a5077"
             ),
-            'keyword3' => array(
+            'keyword2' => array(
                 'value' => (string)$this->order->hasManyOrderGoods()->first()->title,
                 "color" => "#4a5077"
             ),
-            'keyword4' => array(
+            'keyword3' => array(
                 'value' => (string)$orderpricestr,
                 "color" => "#4a5077"
             ),
+
             'remark' => array(
                 'value' => (string)$remark,
                 "color" => "#4a5077"
@@ -112,7 +110,7 @@ class ShopMessage extends Message
             ),
             'keyword2' => array(
                 'value' => (string)$this->order->hasManyOrderGoods()->first()->title
-                    . "\r\n".$orderpricestr .
+                    . "\r\n" . $orderpricestr .
                     "\r\n订单号: " . (string)$this->order['order_sn'],
                 "\r\n完成时间: " . (string)$this->order['finish_time']->toDateTimeString(),
                 "color" => "#4a5077"
