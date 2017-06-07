@@ -51,4 +51,12 @@ class PermissionService
         }
         return $permissions;
     }
+
+
+    //test
+
+    public static function test()
+    {
+        return 1234;
+    }
 }

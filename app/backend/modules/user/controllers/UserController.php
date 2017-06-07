@@ -69,6 +69,13 @@ class UserController extends BaseController
 
         }
         $permissions = \Config::get('menu');
+
+        $permissions = collect($permissions);
+
+
+        echo '<pre>'; print_r($permissions); exit;
+
+
         $roleList = YzRole::getRoleListToUser();
 
         return view('user.user.form',[
