@@ -32,6 +32,7 @@ class HomePageController extends ApiController
         $mid = \YunShop::request()->mid;
         $type = \YunShop::request()->type;
         $pageId = \YunShop::request()->page_id;
+        $member_id = \YunShop::app()->getMemberId();
 
 
         //商城设置, 原来接口在 setting.get
@@ -55,8 +56,8 @@ class HomePageController extends ApiController
             //强制绑定手机号
             $member_set = Setting::get('shop.member');
 
-            if ((1 == $member_set['is_bind_mobile']) && \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
-                $member_model = Member::getMemberById(\YunShop::app()->getMemberId());
+            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
+                $member_model = Member::getMemberById($member_id);
 
                 if ($member_model && $member_model->mobile) {
                     $setting['is_bind_mobile'] = 0;
@@ -72,7 +73,6 @@ class HomePageController extends ApiController
 
         //用户信息, 原来接口在 member.member.getUserInfo
         if(empty($pageId)){ //如果是请求首页的数据
-            $member_id = \YunShop::app()->getMemberId();
             if (!empty($member_id)) {
                 $member_info = MemberModel::getUserInfos($member_id)->first();
 
@@ -90,7 +90,7 @@ class HomePageController extends ApiController
         //用户信息, 原来接口在 member.member.guideFollow
         if(empty($pageId)){ //如果是请求首页的数据
             $set = \Setting::get('shop.share');
-            $fans_model = McMappingFans::getFansById(\YunShop::app()->getMemberId());
+            $fans_model = McMappingFans::getFansById($member_id);
 
             if (!empty($set['follow_url']) && 0 == $fans_model->follow) {
 
