@@ -112,6 +112,8 @@ class HomePageController extends ApiController
                     'text' => $text,
                     'url' => $set['follow_url'],
                 ];
+            } else{
+                $result['subscribe'] = ''; //前端需要该空值
             }
         }
 
@@ -156,7 +158,7 @@ class HomePageController extends ApiController
                 $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
                 $result['item']['menustyle'] = self::defaultMenuStyle();
             }
-        } elseif(empty($pageId)){ //如果是请求首页的数据, 没有安装装修插件或者没有开启
+        } elseif(empty($pageId)){ //如果是请求首页的数据, 没有安装"装修插件"或者"装修插件"没有开启
             $result['default'] = self::defaultDesign();
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
             $result['item']['menustyle'] = self::defaultMenuStyle();
