@@ -495,8 +495,6 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
 
-        \Log::debug('officaccount mid', \YunShop::request()->mid);
-
         $mid = $upperMemberId ?: Member::getMid();
         \Log::debug('Regular mid', $mid);
 
