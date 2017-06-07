@@ -120,15 +120,6 @@ class HomePageController extends ApiController
         $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
         $enableds = $plugins->getEnabledPlugins()->toArray();
 
-        foreach ($enableds as &$enabled) {
-            unset($enabled['path']);
-        }
-
-        if($enableds){
-            $result['plugins'] = $enableds;
-        }
-
-
         //如果安装了装修插件并开启插件
         if(array_key_exists('designer', $enableds)){
 
