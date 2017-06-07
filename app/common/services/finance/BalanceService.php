@@ -147,7 +147,6 @@ abstract class BalanceService
 
     protected function notice()
     {
-        //$this->point_data['point_mode'] = $this->getModeAttribute($this->point_data['point_mode']);
         $noticeMember = Member::getMemberByUid($this->memberModel->uid)->with('hasOneFans')->first();
         if (!$noticeMember->hasOneFans->openid) {
             return;
@@ -159,7 +158,7 @@ abstract class BalanceService
         $msg = [
             "first" => '您好',
             "keyword1" => '余额变动通知',
-            "keyword2" => "尊敬的[" . $this->memberModel->nickname . "]，您于[" . date('Y-m-d H:i', time()) . "]发生余额变动，变动数值为[" .  $this->data['money'] . "]，类型[" . Balance::getBalanceComment($this->service_type) . "]，您目前余额余值为[" . $this->result_money > 0 ? $this->result_money : 0 . "]",
+            "keyword2" => "尊敬的[" . $this->memberModel->nickname . "]，您于[" . date('Y-m-d H:i', time()) . "]发生余额变动，变动数值为[" .  $this->data['money'] . "]，类型[" . Balance::getBalanceComment($this->service_type) . "]，您目前余额余值为[" . $this->result_money . "]",
             "remark" => "",
         ];
         dd($msg);

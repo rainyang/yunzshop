@@ -2,6 +2,8 @@
 namespace app\backend\modules\finance\services;
 
 use app\backend\modules\finance\services\BalanceService;
+use app\common\services\credit\ConstService;
+use app\common\services\finance\BalanceChange;
 use app\common\services\finance\Withdraw;
 use app\common\services\PayFactory;
 
@@ -36,15 +38,23 @@ class WithdrawService extends Withdraw
     public static function balanceWithdrawPay($withdraw, $remark)
     {
         $data = array(
-            'member_id' => $withdraw->member_id,
+           /* 'member_id' => $withdraw->member_id,
             'money' => $withdraw->actual_amounts,
             'serial_number' => '',
             'operator' => '-2',
             'operator_id' => $withdraw->id,
             'remark' => $remark,
-            'service_type' => \app\common\models\finance\Balance::BALANCE_INCOME,
+            'service_type' => \app\common\models\finance\Balance::BALANCE_INCOME,*/
+
+            'member_id'     => $withdraw->member_id,
+            'remark'        => $remark,
+            'source'        => ConstService::SOURCE_INCOME,
+            'relation'      => '',
+            'operator'      => ConstService::OPERATOR_MEMBER,
+            'operator_id'   => $withdraw->id,
+            'change_value'  => $withdraw->actual_amounts
         );
-        return (new BalanceService())->changeBalance($data);
+        return (new BalanceChange())->income($data);
     }
 
     public static function wechtWithdrawPay($withdraw, $remark)
