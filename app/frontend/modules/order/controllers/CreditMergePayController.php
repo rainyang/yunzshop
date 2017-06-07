@@ -53,6 +53,7 @@ class CreditMergePayController extends MergePayController
             'operator_id' => $orderPay->id,
             'remark' => '合并支付(id:' . $orderPay->id . '),余额付款' . $orderPay->amount . '元',
             'service_type' => Balance::BALANCE_CONSUME,
+            'trade_no' => 0,
             ];
 
         return array_merge(parent::getPayParams($orderPay,$orders), $result);

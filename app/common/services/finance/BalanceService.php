@@ -104,8 +104,6 @@ abstract class BalanceService
             throw new AppException($validator->messages());
         }
         if ($this->balanceModel->save()) {
-            $result = $this->updateMemberBalance();
-            dd($result);
             return $this->updateMemberBalance();
         }
         return '余额变动记录写入失败，请联系管理员！';
@@ -114,12 +112,10 @@ abstract class BalanceService
     //修改会员余额
     protected function updateMemberBalance()
     {
-        echo '<pre>'; print_r($this->memberModel); exit;
+        //echo '<pre>'; print_r($this->memberModel); exit;
         $this->memberModel->credit2 = $this->result_money;
         if ($this->memberModel->save()) {
-
-            $test = $this->notice();
-            dd($test);
+            $this->notice();
             return true;
         }
         return '会员余额写入出错，请联系管理员';
@@ -161,7 +157,6 @@ abstract class BalanceService
             "keyword2" => "尊敬的[" . $this->memberModel->nickname . "]，您于[" . date('Y-m-d H:i', time()) . "]发生余额变动，变动数值为[" .  $this->data['money'] . "]，类型[" . Balance::getBalanceComment($this->service_type) . "]，您目前余额余值为[" . $this->result_money . "]",
             "remark" => "",
         ];
-        dd($msg);
         MessageService::notice($template_id, $msg, $noticeMember->hasOneFans->openid);
     }
 

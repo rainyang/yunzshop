@@ -22,31 +22,31 @@ class orderListener
     public function onCreated(AfterOrderCreatedEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
-        MessageService::created($order);
+        (new MessageService($order))->created();
     }
 
-    public function onPaid(AfterOrderCreatedEvent $event)
+    public function onPaid(AfterOrderPaidEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
-        MessageService::paid($order);
+        (new MessageService($order))->paid();
     }
 
-    public function onCanceled(AfterOrderCreatedEvent $event)
+    public function onCanceled(AfterOrderCanceledEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
-        MessageService::canceled($order);
+        (new MessageService($order))->canceled();
     }
 
-    public function onSent(AfterOrderCreatedEvent $event)
+    public function onSent(AfterOrderSentEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
-        MessageService::sent($order);
+        (new MessageService($order))->sent();
     }
 
-    public function onReceived(AfterOrderCreatedEvent $event)
+    public function onReceived(AfterOrderReceivedEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
-        MessageService::received($order);
+        (new MessageService($order))->received();
     }
 
     public function subscribe(Dispatcher $events)

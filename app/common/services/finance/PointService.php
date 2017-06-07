@@ -98,6 +98,9 @@ class PointService
         if (!$noticeMember->hasOneFans->openid) {
             return;
         }
+        if ($noticeMember->hasOneFans->follow != 1) {
+            return;
+        }
         $msg = [
             "first" => '您好',
             "keyword1" => '积分变动通知',
