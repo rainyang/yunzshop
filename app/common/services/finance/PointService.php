@@ -98,7 +98,7 @@ class PointService
         }
         $news = new News([
             'title'       => '积分变动通知',
-            'description' => '尊敬的[' . $this->member['nickname'] ? $this->member['nickname'] : $this->member['realname'] . ']，您与[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
+            'description' => '尊敬的[' . $this->member['nickname'] ? $this->member['nickname'] : $this->member['realname'] . ']，您于[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
             'url'         => '',
             'image'       => '',
             // ...

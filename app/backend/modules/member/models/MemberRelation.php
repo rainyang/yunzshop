@@ -131,7 +131,7 @@ class MemberRelation extends BackendModel
      */
     public static function checkOrderGoods($goods_id)
     {
-        $list = OrderListModel::getOrderListByUid(\YunShop::app()->getMemberId());
+        $list = \app\frontend\models\Order::getOrderListByUid();
 
         if (!empty($list)) {
             $list = $list->toArray();

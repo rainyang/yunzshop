@@ -51,8 +51,6 @@ class UpdateController extends BaseController
         $key = Setting::get('shop.key')['key'];
         $secret = Setting::get('shop.key')['secret'];
         if(!$key || !$secret) {
-            $result['msg'] = 'key or secret is null';
-             response()->json($result)->send();
             return;
         }
 

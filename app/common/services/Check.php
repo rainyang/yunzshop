@@ -44,4 +44,16 @@ class Check
         return true;
     }
 
+    public static function setKey()
+    {
+        if (app()->environment() == 'production' && \YunShop::request()->route !== 'setting.key.index') {
+            $key = Setting::get('shop.key')['key'];
+            $secret = Setting::get('shop.key')['secret'];
+
+            if (!$key || !$secret) {
+                redirect(Url::absoluteWeb('setting.key.index'))->send();
+            }
+        }
+    }
+
 }

@@ -29,7 +29,7 @@ class Balance extends BaseModel
 
     const OPERATOR_ORDER_   = -1; //操作者 订单
 
-    const OPERRTOR_MEMBER   = -2; //操作者 会员
+    const OPERATOR_MEMBER   = -2; //操作者 会员
 
     //类型：收入
     const TYPE_INCOME = 1;
@@ -59,14 +59,14 @@ class Balance extends BaseModel
     const BALANCE_CANCEL_CONSUME    = 10; //消费取消回滚
 
     public static $balanceComment = [
-        self::BALANCE_RECHARGE      => '充值',
-        self::BALANCE_CONSUME       => '消费',
-        self::BALANCE_TRANSFER      => '转让',
-        self::BALANCE_DEDUCTION     => '抵扣',
-        self::BALANCE_AWARD         => '奖励',
+        self::BALANCE_RECHARGE      => '余额充值',
+        self::BALANCE_CONSUME       => '余额消费',
+        self::BALANCE_TRANSFER      => '余额转让',
+        self::BALANCE_DEDUCTION     => '余额抵扣',
+        self::BALANCE_AWARD         => '余额奖励',
         self::BALANCE_WITHDRAWAL    => '余额提现',
         self::BALANCE_INCOME        => '提现至余额',
-        self::BALANCE_CANCEL_DEDUCTION      => '抵扣取消余额回滚',
+        self::BALANCE_CANCEL_DEDUCTION      => '抵扣取消回滚',
         self::BALANCE_CANCEL_AWARD          => '奖励取消回滚',
         self::BALANCE_CANCEL_CONSUME        => '消费取消回滚'
     ];
