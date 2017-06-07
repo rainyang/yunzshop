@@ -25,13 +25,13 @@ class MessageService extends \app\common\services\MessageService
 
     public function canceled()
     {
-        //$this->buyerMessage->canceled();
+        $this->buyerMessage->canceled();
 
     }
 
     public function created()
     {
-        //$this->buyerMessage->created();
+        $this->buyerMessage->created();
         $this->shopMessage->created();
     }
 
@@ -50,6 +50,6 @@ class MessageService extends \app\common\services\MessageService
     public function received()
     {
         $this->shopMessage->received();
-        //$this->buyerMessage->received();
+        $this->buyerMessage->received();
     }
 }
