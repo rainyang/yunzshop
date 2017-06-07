@@ -34,7 +34,6 @@ class HomePageController extends ApiController
         $pageId = \YunShop::request()->page_id;
         $member_id = \YunShop::app()->getMemberId();
 
-
         //商城设置, 原来接口在 setting.get
         $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
         if (!empty($key)) {
@@ -85,38 +84,6 @@ class HomePageController extends ApiController
                 }
             }
         }
-
-
-        //用户信息, 原来接口在 member.member.guideFollow
-        if(empty($pageId)){ //如果是请求首页的数据
-            $set = \Setting::get('shop.share');
-            $fans_model = McMappingFans::getFansById($member_id);
-
-            if (!empty($set['follow_url']) && 0 == $fans_model->follow) {
-
-                if ($mid != null && $mid != 'undefined' && $mid > 0) {
-                    $member_model = Member::getMemberById($mid);
-
-                    $logo = $member_model->avatar;
-                    $text = $member_model->nickname;
-                } else {
-                    $setting = Setting::get('shop');
-                    $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-
-                    $logo = replace_yunshop(tomedia($setting['logo']));
-                    $text = $account->name;
-                }
-
-                $result['subscribe'] = [
-                    'logo' => $logo,
-                    'text' => $text,
-                    'url' => $set['follow_url'],
-                ];
-            } else{
-                $result['subscribe'] = ''; //前端需要该空值
-            }
-        }
-
 
         //插件信息, 原来接口在 plugins.get-plugin-data
         $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());

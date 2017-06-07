@@ -29,8 +29,8 @@ use Illuminate\Support\Str;
 
 class MemberController extends ApiController
 {
-    protected $publicAction = [''];
-    protected $ignoreAction = [''];
+    protected $publicAction = ['guideFollow'];
+    protected $ignoreAction = ['guideFollow'];
 
     /**
      * 获取用户信息
