@@ -14,9 +14,6 @@
             <div class="panel-heading">筛选</div>
             <div class="panel-body">
                 <form action="" method="post" class="form-horizontal" role="form" id="form1">
-                    <input type="hidden" name="c" value="site" />
-                    <input type="hidden" name="a" value="entry" />
-                    <input type="hidden" name="m" value="yun_shop" />
                     <div class="form-group">
                         <div class="col-sm-8 col-lg-12 col-xs-12">
                             <div class='input-group'>
@@ -92,7 +89,7 @@
                                 </td>
                                 <td>{{ $list->member->realname }}<br/>{{ $list->member->mobile }}</td>
                                 <td><label class="label label-danger">余额：{{ $list->new_money }}</label></td>
-                                <td>{{ $list->type_name }}</td>
+                                <td>{{ $list->service_type_name }}</td>
                                 <td>{{ $list->change_money }}</td>
                                 <td  style="overflow:visible;">
                                     <a class='btn btn-default' href="{{ yzWebUrl('finance.balance.lookBalanceDetail', array('id' => $list->id )) }}" style="margin-bottom: 2px">查看详情</a>
