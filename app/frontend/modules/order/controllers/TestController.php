@@ -5,11 +5,11 @@ use app\common\components\ApiController;
 
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\ShowPreGenerateOrder;
+use app\common\services\MessageService;
 use app\frontend\models\goods;
 use app\frontend\modules\goods\services\GoodsService;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\Order;
-use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
 
 use app\common\events\order\AfterOrderCancelPaidEvent;
@@ -24,8 +24,10 @@ class TestController extends ApiController
 {
     public function index()
     {
-        $t = MessageService::canceled(\app\common\models\Order::first());
-        dd($t);
+//        dd(\Setting::get('shop.notice'));
+//        $t = MessageService::getWechatTemplates();
+//        dd($t);
+        (new \app\frontend\modules\order\services\MessageService(Order::first()))->received();
         exit;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
