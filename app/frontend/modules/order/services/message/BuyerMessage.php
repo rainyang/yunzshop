@@ -14,10 +14,10 @@ class BuyerMessage extends Message
 {
     protected function sendToBuyer()
     {
+        if(1){}
         //客户发送消息通知
-        $t = $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver(Member::getOpenId($this->order->uid))->send();
-        dd($t);
-        exit;
+        $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver(Member::getOpenId($this->order->uid))->send();
+
     }
 
     public function created()
