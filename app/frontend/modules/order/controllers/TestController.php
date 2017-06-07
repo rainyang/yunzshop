@@ -27,7 +27,9 @@ class TestController extends ApiController
 //        dd(\Setting::get('shop.notice'));
 //        $t = MessageService::getWechatTemplates();
 //        dd($t);
-        (new \app\frontend\modules\order\services\MessageService(Order::first()))->received();
+        $permissions = \Config::get('menu');
+        dd($permissions);
+        exit;
         exit;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);
         //Event::fire(new BeforeOrderCancelPaidEvent(Order::find(1)));
