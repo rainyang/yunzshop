@@ -29,8 +29,8 @@ use Illuminate\Support\Str;
 
 class MemberController extends ApiController
 {
-    protected $publicAction = [''];
-    protected $ignoreAction = [''];
+    protected $publicAction = ['guideFollow'];
+    protected $ignoreAction = ['guideFollow'];
 
     /**
      * 获取用户信息
@@ -52,6 +52,14 @@ class MemberController extends ApiController
                 $data = MemberModel::addPlugins($data);
 
                 $data['income'] = MemberModel::getIncomeCount();
+
+                //标识"会员关系链"是否开启(如果没有设置,则默认为未开启),用于前端判断是否显示个人中心的"推广二维码"
+                $info = MemberRelation::getSetInfo()->first();
+                if (!empty($info)){
+                    $data['relation_switch'] = $info->status == 1 ?  1 : 0;
+                } else{
+                    $data['relation_switch'] = 0;
+                }
 
                 $shopInfo = Setting::get('shop.shop');
                 $data['poster'] = [ //个人中心的推广海报
@@ -551,11 +559,16 @@ class MemberController extends ApiController
 
     public function guideFollow()
     {
+        $member_id = \YunShop::app()->getMemberId();
+        if(empty($member_id)){
+            return $this->errorJson('用户未登录', []);
+        }
+
         $set = \Setting::get('shop.share');
-        $fans_model = McMappingFans::getFansById(\YunShop::app()->getMemberId());
+        $fans_model = McMappingFans::getFansById($member_id);
         $mid = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
 
-        if (!empty($set['follow_url']) && 0 == $fans_model->follow) {
+        if (!empty($set['follow_url']) && $fans_model->follow === 0) {
 
             if ($mid != null && $mid != 'undefined' && $mid > 0) {
                 $member_model = Member::getMemberById($mid);

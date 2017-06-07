@@ -32,6 +32,9 @@ class Share extends \app\common\models\goods\Share
         if(!$goodsId){
             return false;
         }
+        if (!$data) {
+            return false;
+        }
         $shareModel = self::getModel($goodsId, $operate);
         //判断deleted
         if ($operate == 'deleted') {

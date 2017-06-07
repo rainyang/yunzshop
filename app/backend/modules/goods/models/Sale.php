@@ -25,6 +25,9 @@ class Sale extends \app\common\models\Sale
         if (!$goodsId) {
             return false;
         }
+        if (!$data) {
+            return false;
+        }
         $saleModel = self::getModel($goodsId, $operate);
         //判断deleted
         if ($operate == 'deleted') {
