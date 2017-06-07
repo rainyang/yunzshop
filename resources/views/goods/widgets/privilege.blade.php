@@ -81,6 +81,7 @@
         <span class='help-block'>会员限购的总数</span>
     </div>
 </div>
+{{--
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启限时限购</label>
     <div class="col-sm-6 col-xs-6">
@@ -103,9 +104,10 @@
         {!! \app\backend\modules\goods\services\GoodsPrivilegeService::tpl_form_field_date('widgets[privilege][time_end_limit]', !empty($privilege['time_end_limit']) ? date('Y-m-d H:i',$privilege['time_end_limit']) : date('Y-m-d H:i'), 1) !!}
     </div>
 </div>
+--}}
 
 
-<script language='javascript'>
+{{--<script language='javascript'>
     if ($('input:radio[name="widgets[privilege][enable_time_limit]"]:checked').val() == 1) {
         $('#time_limit').show();
     };
@@ -117,4 +119,4 @@
             $('#time_limit').hide();
         }
     });
-</script>
+</script>--}}

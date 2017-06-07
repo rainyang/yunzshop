@@ -14,8 +14,23 @@ use \app\common\services\finance\BalanceService as BaseBalanceService;
 class BalanceService extends BaseBalanceService
 {
 
+
+    //todo 删除此文件，此文件废弃，调用方法改为：(new BalanceChange())->income($data);
+
+    //todo $data[
+    //
+    //todo 'member_id'     => $withdraw->member_id,
+    //todo 'remark'        => $remark,
+    //todo 'source'        => ConstService::SOURCE_INCOME,
+    //todo 'relation'      => '',
+    //todo 'operator'      => ConstService::OPERATOR_MEMBER,
+    //todo 'operator_id'   => $withdraw->id,
+    //todo 'change_value'  => $withdraw->actual_amounts
+    //
+    //todo ];
+
     public function changeBalance($data)
-    {
+    {/*
         $this->data = $data;
         $this->service_type = $data['service_type'];
         $this->getMemberInfo();
@@ -26,7 +41,7 @@ class BalanceService extends BaseBalanceService
             return $this->subtraction();
         }
 
-        return $this->judgeMethod();
+        return $this->judgeMethod();*/
     }
 
 
@@ -34,22 +49,22 @@ class BalanceService extends BaseBalanceService
     //实现抽象方法，附值会员信息
     protected function getMemberInfo()
     {
-        $member_id = $this->data['member_id'] ?: \YunShop::request()->member_id;
-        return $this->memberModel = Member::getMemberInfoById($member_id) ?: '未获取到会员数据';
+        /*$member_id = $this->data['member_id'] ?: \YunShop::request()->member_id;
+        return $this->memberModel = Member::getMemberInfoById($member_id) ?: '未获取到会员数据';*/
     }
 
 
     //
     protected function validatorResultMoney()
     {
-        if ($this->result_money >= 0) {
+        /*if ($this->result_money >= 0) {
             return true;
         }
         if ($this->result_money < 0 && $this->data['operator'] == Balance::OPERATOR_SHOP && $this->data['service_type'] == Balance::BALANCE_RECHARGE ) {
             $this->result_money = 0;
             return true;
         }
-        return false;
+        return false;*/
     }
 
 

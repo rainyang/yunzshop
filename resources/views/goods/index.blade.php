@@ -265,11 +265,11 @@
                                         <td colspan="10">
                                             <label class="empty"></label>
 
-                                            @if($item['goods_sn'])
+                                            {{--@if($item['goods_sn'])
                                                 <label data='{{$item['isnew']}}'
                                                        class='label label-default text-default'>商品编号：</label><span
                                                         style="font-size:14px;color:#7B7B7B; margin-right:20px;">{{$item['goods_sn']}}</span>
-                                            @endif
+                                            @endif--}}
                                             <label data='{{$item['is_new']}}'
                                                    class='label label-default text-default @if($item['is_new']==1)label-info text-pinfo @endif'
                                                    onclick="setProperty(this,{{$item['id']}},'is_new')">新品</label>-
