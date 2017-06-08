@@ -428,7 +428,7 @@ class MemberRelation extends BackendModel
     public static function checkOrderFinish()
     {
         $set = self::getSetInfo()->first();
-
+\Log::debug('订单完成');
         if (empty($set)) {
             return;
         }
