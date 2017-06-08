@@ -319,7 +319,7 @@ class MemberRelation extends BackendModel
     public static function checkOrderPay($uid)
     {
         $set = self::getSetInfo()->first();
-        \Log::debug('订单完成'. $uid);
+        \Log::debug('付款后：'. $uid);
         if (empty($set)) {
             return;
         }
@@ -388,7 +388,8 @@ class MemberRelation extends BackendModel
 
                     if ($set->become == '2') {
                         $ordercount = Order::getCostTotalNum($member->member_id);
-
+                        \Log::debug('用户：'. $ordercount);
+                        \Log::debug('系统：'. intval($set->become_ordercount));
                         $can = $ordercount >= intval($set->become_ordercount);
                     } else if ($set->become == '3') {
                         $moneycount = Order::getCostTotalPrice($member->member_id);
