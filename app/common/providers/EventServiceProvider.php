@@ -4,6 +4,7 @@ namespace app\common\providers;
 
 
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
@@ -46,8 +47,9 @@ class EventServiceProvider extends ServiceProvider
         AfterOrderCreatedEvent::class => [ //下单成功后调用会员成为下线事件
             \app\common\listeners\member\AfterOrderCreatedListener::class,
             \app\frontend\modules\member\listeners\Order::class, //统一运费
-
-
+        ],
+        AfterOrderReceivedEvent::class => [ //确认收货
+            \app\common\listeners\member\AfterOrderReceivedListener::class
         ],
         //微信接口回调触发事件进程
         WechatProcessor::class => [

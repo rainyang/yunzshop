@@ -9,6 +9,7 @@
 namespace app\backend\modules\user\controllers;
 
 
+use app\backend\modules\user\services\PermissionService;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
@@ -92,11 +93,11 @@ class RoleController extends BaseController
                 }
             }
         }
-        $permissions = \Config::get('menu');
+        $permissions = PermissionService::getPermission();
         return view('user.role.form',[
             'role'          => $roleModel,
             'permissions'   =>$permissions,
-            'userPermissons'=>[],
+            'userPermissions'=>[],
         ])->render();
     }
 
@@ -105,7 +106,7 @@ class RoleController extends BaseController
      */
     public function update()
     {
-        $permissions = \Config::get('menu');
+        $permissions = PermissionService::getPermission();
         $roleModel = YzRole::getRoleById(\YunShop::request()->id);
         //dd($role);
         $rolePermission = $roleModel->toArray();
@@ -167,7 +168,7 @@ class RoleController extends BaseController
         return view('user.role.form',[
             'role'=>$rolePermission,
             'permissions'=>$permissions,
-            'userPermissons'=>$rolePermissions
+            'userPermissions'=>$rolePermissions
         ])->render();
     }
 

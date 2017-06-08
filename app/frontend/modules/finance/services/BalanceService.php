@@ -201,27 +201,20 @@ class BalanceService extends BaseBalanceService
                 break;
             }
         }
-        $result = array(
-            /*'member_id' => $this->data['member_id'],
-            //todo 验证余额值
-            'money' => $result,
-            'serial_number' => $this->data['serial_number'],
-            'operator' => Balance::OPERATOR_MEMBER,
-            'operator_id' => $this->data['member_id'],
-            'remark' => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['money'] . '元)',
-            'service_type' => Balance::BALANCE_AWARD,*/
-
-            'member_id'     => $this->data['member_id'],
-            'remark'        => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['money'] . '元)',
-            'source'        => ConstService::SOURCE_AWARD,
-            'relation'      => $this->data['serial_number'],
-            'operator'      => ConstService::OPERATOR_MEMBER,
-            'operator_id'   => $this->data['member_id'],
-            //todo 验证余额值
-            'change_value'  => $result,
-        );
-        return  (new BalanceChange())->award($this->data);
-        //return $this->balanceChange($result);
+        if ($result) {
+            $result = array(
+                'member_id' => $this->data['member_id'],
+                'remark' => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['money'] . '元)',
+                'source' => ConstService::SOURCE_AWARD,
+                'relation' => $this->data['serial_number'],
+                'operator' => ConstService::OPERATOR_MEMBER,
+                'operator_id' => $this->data['member_id'],
+                //todo 验证余额值
+                'change_value' => $result,
+            );
+            return (new BalanceChange())->award($result);
+        }
+        return true;
     }
 
 }
