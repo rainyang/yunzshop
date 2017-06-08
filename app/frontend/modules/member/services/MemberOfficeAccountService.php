@@ -184,6 +184,10 @@ class MemberOfficeAccountService extends MemberService
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
 
             $member_id = $fans_mode->uid;
+        } else {
+            if (Client::is_weixin()) {
+
+            }
         }
 
         if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {

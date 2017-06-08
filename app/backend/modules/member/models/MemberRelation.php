@@ -439,9 +439,24 @@ class MemberRelation extends BackendModel
         if (empty($member)) {
             return;
         }
-        \Log::debug('会员存在');
+
         $isagent = $member->is_agent == 1 && $member->status == 2;
-        \Log::debug('条件完成后进入');
+
+        if (!$isagent) {
+            if (intval($set->become) == 4 && !empty($set->become_goods_id)) {
+                $result = self::checkOrderGoods($set->become_goods_id);
+
+                if ($result) {
+                    $member->status = 2;
+                    $member->is_agent = 1;
+                    $member->agent_time = time();
+
+                    //message notice
+                    self::sendGeneralizeNotify($member->member_id);
+                }
+            }
+        }
+
         if (!$isagent && $set->become_order == 1) {
             \Log::debug('条件完成后');
             if ($set->become == 2 || $set->become == 3) {
