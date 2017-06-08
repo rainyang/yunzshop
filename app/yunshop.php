@@ -58,11 +58,13 @@ class YunShop
             }
             $menuList = array_merge($dbMenu, (array)Config::get('menu'));
             Config::set('menu', $menuList);
+            //dump($menuList);
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
             //检测权限
             if (!PermissionService::can($item)) {
-                throw new NotFoundException('无权限');
+                //throw new NotFoundException('Sorry,无权限');
+                throw new \app\common\exceptions\AppException('Sorry,您没有操作无权限，请联系管理员！');
 
             }
         }
