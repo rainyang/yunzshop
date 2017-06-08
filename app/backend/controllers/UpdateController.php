@@ -84,6 +84,7 @@ class UpdateController extends BaseController
      */
     public function startDownload()
     {
+        \Cache::flush();
         $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
         set_time_limit(0);
 
