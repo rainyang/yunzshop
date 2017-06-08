@@ -19,6 +19,9 @@ class BuyerMessage extends Message
             return;
         }
         //客户发送消息通知
+        if (!$this->templateId) {
+            return;
+        }
         $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver(Member::getOpenId($this->order->uid))->send();
 
     }
