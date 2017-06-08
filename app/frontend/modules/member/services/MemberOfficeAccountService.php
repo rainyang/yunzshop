@@ -184,6 +184,10 @@ class MemberOfficeAccountService extends MemberService
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
 
             $member_id = $fans_mode->uid;
+        } else {
+            if (Client::is_weixin()) {
+
+            }
         }
 
         if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
@@ -478,7 +482,7 @@ class MemberOfficeAccountService extends MemberService
     public function memberLogin($userinfo, $upperMemberId = NULL)
     {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-            $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
+            $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
