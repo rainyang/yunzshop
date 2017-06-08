@@ -51,13 +51,9 @@ class MemberOfficeAccountService extends MemberService
 
         }
 
-        \Log::debug('微信登陆回调地址', $callback);
-
         $state = 'yz-' . session_id();
 
         if (!Session::get('member_id')) {
-            \Log::debug('scope', $params['scope']);
-
             if ($params['scope'] == 'user_info' || \YunShop::request()->scope == 'user_info') {
                 $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
             } else {
@@ -83,21 +79,16 @@ class MemberOfficeAccountService extends MemberService
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
-                \Log::debug('微信登陆授权失败', $userinfo);
+                \Log::debug('微信登陆授权失败');
                 return show_json('-3', '微信登陆授权失败');
             }
-
-            \Log::debug('userinfo', $userinfo);
 
             //Login
             $member_id = $this->memberLogin($userinfo);
 
-            \Log::debug('uid', $member_id);
-
             \YunShop::app()->openid = $userinfo['openid'];
             Session::set('member_id', $member_id);
         } else {
-            \Log::debug('获取code', $authurl);
             $this->_setClientRequestUrl();
 
             redirect($authurl)->send();
@@ -107,7 +98,6 @@ class MemberOfficeAccountService extends MemberService
         if (\YunShop::request()->scope == 'user_info') {
             return show_json(1, 'user_info_api');
         } else {
-            \Log::debug('微信登陆成功跳转地址', $redirect_url);
             redirect($redirect_url)->send();
         }
     }
@@ -195,8 +185,6 @@ class MemberOfficeAccountService extends MemberService
 
             $member_id = $fans_mode->uid;
         }
-
-        \Log::debug('粉丝', $fans_mode->uid);
 
         if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
             \Log::debug('微信登陆更新');
@@ -495,10 +483,7 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
 
-        \Log::debug('officaccount mid', \YunShop::request()->mid);
-
         $mid = $upperMemberId ?: Member::getMid();
-        \Log::debug('Regular mid', $mid);
 
         //发展下线
         Member::chkAgent($member_id, $mid);

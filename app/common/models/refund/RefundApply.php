@@ -210,6 +210,10 @@ class RefundApply extends BaseModel
         return false;
     }
 
+    public function order()
+    {
+        return $this->belongsTo(\app\backend\modules\order\models\Order::class, 'order_id', 'id');
+    }
     /**
      * 退款中
      * @return bool

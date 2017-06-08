@@ -41,7 +41,7 @@ class ChangeOrderPriceController extends BaseController
     {
         OrderService::changeOrderPrice($request);
 
-        return $this->successJson();
+        return $this->message('改价成功');
     }
 
     /**
