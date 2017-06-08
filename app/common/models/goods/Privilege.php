@@ -24,6 +24,7 @@ class Privilege extends BaseModel
         'total_buy_limit' => 0,
         'time_begin_limit' => 0,
         'time_end_limit' => 0,
+        'enable_time_limit' => 0
 
     ];
     /**
