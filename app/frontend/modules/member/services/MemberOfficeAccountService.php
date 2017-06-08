@@ -201,7 +201,6 @@ class MemberOfficeAccountService extends MemberService
                 $member_id = $fans_mode->uid;
                 $this->updateMemberInfo($member_id, $userinfo);
             } else {
-                \Log::debug('添加主会员');
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
                 if ($member_id === false) {
@@ -483,7 +482,7 @@ class MemberOfficeAccountService extends MemberService
     public function memberLogin($userinfo, $upperMemberId = NULL)
     {
         if (is_array($userinfo) && !empty($userinfo['unionid'])) {
-            $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
+            $member_id = $this->unionidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         } elseif (is_array($userinfo) && !empty($userinfo['openid'])) {
             $member_id = $this->openidLogin(\YunShop::app()->uniacid, $userinfo, $upperMemberId);
         }
