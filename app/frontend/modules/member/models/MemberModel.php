@@ -337,10 +337,12 @@ class MemberModel extends Member
 
         if ($agent_data) {
             foreach ($agent_data as $item) {
+                $nickname = @iconv("utf-8", "gbk", $item['nickname']);
+                $nickname = @iconv("gbk", "utf-8", $nickname);
                 $data[] = [
                     'uid' => $item['uid'],
                     'avatar' => $item['avatar'],
-                    'nickname' => $item['nickname'],
+                    'nickname' => $nickname,
                     'order_total' => $item['has_one_order']['total'],
                     'order_price' => $item['has_one_order']['sum'],
                     'agent_total' => $item['agent_total'],

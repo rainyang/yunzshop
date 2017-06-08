@@ -136,6 +136,9 @@ class IncomeController extends ApiController
         foreach ($config as $key => $item) {
             $set[$key] = \Setting::get('withdraw.' . $key);
 
+            $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
+            $set[$key]['poundage_rate'] = $set[$key]['poundage_rate'] ? $set[$key]['poundage_rate'] : 0;
+
             $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId());
             $incomeModel = $incomeModel->where('status', '0');
 
@@ -143,7 +146,6 @@ class IncomeController extends ApiController
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
             $poundage = sprintf("%.2f", substr(sprintf("%.3f", $poundage), 0, -2));
-            $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
             if (($amount > 0) && (bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1)) {
                 $type_id = '';
                 foreach ($incomeModel->get() as $ids) {

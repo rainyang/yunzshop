@@ -32,7 +32,7 @@ class HomePageController extends ApiController
         $mid = \YunShop::request()->mid;
         $type = \YunShop::request()->type;
         $pageId = \YunShop::request()->page_id;
-
+        $member_id = \YunShop::app()->getMemberId();
 
         //商城设置, 原来接口在 setting.get
         $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
@@ -55,8 +55,8 @@ class HomePageController extends ApiController
             //强制绑定手机号
             $member_set = Setting::get('shop.member');
 
-            if ((1 == $member_set['is_bind_mobile']) && \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
-                $member_model = Member::getMemberById(\YunShop::app()->getMemberId());
+            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
+                $member_model = Member::getMemberById($member_id);
 
                 if ($member_model && $member_model->mobile) {
                     $setting['is_bind_mobile'] = 0;
@@ -72,7 +72,6 @@ class HomePageController extends ApiController
 
         //用户信息, 原来接口在 member.member.getUserInfo
         if(empty($pageId)){ //如果是请求首页的数据
-            $member_id = \YunShop::app()->getMemberId();
             if (!empty($member_id)) {
                 $member_info = MemberModel::getUserInfos($member_id)->first();
 
@@ -86,48 +85,9 @@ class HomePageController extends ApiController
             }
         }
 
-
-        //用户信息, 原来接口在 member.member.guideFollow
-        if(empty($pageId)){ //如果是请求首页的数据
-            $set = \Setting::get('shop.share');
-            $fans_model = McMappingFans::getFansById(\YunShop::app()->getMemberId());
-
-            if (!empty($set['follow_url']) && 0 == $fans_model->follow) {
-
-                if ($mid != null && $mid != 'undefined' && $mid > 0) {
-                    $member_model = Member::getMemberById($mid);
-
-                    $logo = $member_model->avatar;
-                    $text = $member_model->nickname;
-                } else {
-                    $setting = Setting::get('shop');
-                    $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-
-                    $logo = replace_yunshop(tomedia($setting['logo']));
-                    $text = $account->name;
-                }
-
-                $result['subscribe'] = [
-                    'logo' => $logo,
-                    'text' => $text,
-                    'url' => $set['follow_url'],
-                ];
-            }
-        }
-
-
         //插件信息, 原来接口在 plugins.get-plugin-data
         $plugins = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
         $enableds = $plugins->getEnabledPlugins()->toArray();
-
-        foreach ($enableds as &$enabled) {
-            unset($enabled['path']);
-        }
-
-        if($enableds){
-            $result['plugins'] = $enableds;
-        }
-
 
         //如果安装了装修插件并开启插件
         if(array_key_exists('designer', $enableds)){
@@ -165,7 +125,7 @@ class HomePageController extends ApiController
                 $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
                 $result['item']['menustyle'] = self::defaultMenuStyle();
             }
-        } elseif(empty($pageId)){ //如果是请求首页的数据, 没有安装装修插件或者没有开启
+        } elseif(empty($pageId)){ //如果是请求首页的数据, 没有安装"装修插件"或者"装修插件"没有开启
             $result['default'] = self::defaultDesign();
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
             $result['item']['menustyle'] = self::defaultMenuStyle();
