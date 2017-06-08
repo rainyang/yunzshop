@@ -201,6 +201,7 @@ class MemberOfficeAccountService extends MemberService
                 $member_id = $fans_mode->uid;
                 $this->updateMemberInfo($member_id, $userinfo);
             } else {
+                \Log::debug('添加主会员');
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
                 if ($member_id === false) {
