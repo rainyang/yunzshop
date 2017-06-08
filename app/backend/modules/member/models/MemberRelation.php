@@ -198,7 +198,7 @@ class MemberRelation extends BackendModel
      * @param $mid
      * @param MemberShopInfo $user
      */
-    public function becomeChildAgent($mid, MemberShopInfo $model)
+    public function becomeChildAgent($mid, \app\common\models\MemberShopInfo $model)
     {
         $set = self::getSetInfo()->first();
 
