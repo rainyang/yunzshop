@@ -32,7 +32,6 @@
         <span class="help-block">支付宝支付方式： 会返回到相应的的支付渠道</span>
         <span class="help-block">其他支付方式： 会返回到微信钱包(需商户平台余额充足)</span>
         <span class="help-block">如有余额抵扣： 会返回金额到商城用户余额</span>
-        <span class="help-block">如有积分抵扣： 会返回积分到商城用户积分</span>
         {{--{if $plugin_commission && $cset['deduction']}--}}
         {{--<span class="help-block">如有佣金抵扣： 会返回佣金到商城用户佣金</span>--}}
         {{--{/if}--}}
