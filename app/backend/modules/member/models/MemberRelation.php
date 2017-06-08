@@ -440,7 +440,7 @@ class MemberRelation extends BackendModel
         }
 
         $isagent = $member->is_agent == 1 && $member->status == 2;
-
+        \Log::debug('条件完成后进入');
         if (!$isagent && $set->become_order == 1) {
             \Log::debug('条件完成后');
             if ($set->become == 2 || $set->become == 3) {
