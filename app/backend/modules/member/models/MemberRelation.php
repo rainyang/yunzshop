@@ -268,7 +268,7 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public static function checkOrderConfirm()
+    public static function checkOrderConfirm($uid)
     {
         $set = self::getSetInfo()->first();
 
@@ -276,7 +276,7 @@ class MemberRelation extends BackendModel
             return;
         }
 
-        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $member = SubMemberModel::getMemberShopInfo($uid);
 
         if (empty($member)) {
             return;
@@ -316,7 +316,7 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public static function checkOrderPay()
+    public static function checkOrderPay($uid)
     {
         $set = self::getSetInfo()->first();
 
@@ -324,7 +324,7 @@ class MemberRelation extends BackendModel
             return;
         }
 
-        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $member = SubMemberModel::getMemberShopInfo($uid);
         if (empty($member)) {
             return;
         }
@@ -425,15 +425,15 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public static function checkOrderFinish()
+    public static function checkOrderFinish($uid)
     {
         $set = self::getSetInfo()->first();
-\Log::debug('订单完成');
+\Log::debug('订单完成'. $uid);
         if (empty($set)) {
             return;
         }
         \Log::debug('关系链设置');
-        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $member = SubMemberModel::getMemberShopInfo($uid);
 
         if (empty($member)) {
             return;

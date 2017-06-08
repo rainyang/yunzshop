@@ -16,7 +16,10 @@ class AfterOrderReceivedListener
     public function handle(AfterOrderReceivedEvent $event)
     {
         \Log::debug('AfterOrderReceivedListener');
-        MemberRelation::checkOrderFinish();
+
+        $model = $event->getOrderModel();
+
+        MemberRelation::checkOrderFinish($model->uid);
 
     }
 }

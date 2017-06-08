@@ -97,7 +97,7 @@ class PaymentController extends BaseController
                 }
                 \Log::debug('操作的订单', $data['out_trade_no'] . '/' . $orderPay->amount . '/' . $data['total_fee']);
                 if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
-                    MemberRelation::checkOrderPay();
+                    MemberRelation::checkOrderPay(\YunShop::app()->getMemberId());
 
                     \Log::debug('更新订单状态');
                     OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
