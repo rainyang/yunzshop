@@ -47,6 +47,8 @@ class MemberController extends ApiController
             if (!empty($member_info)) {
                 $member_info = $member_info->toArray();
 
+
+
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
 
                 $data = MemberModel::addPlugins($data);
@@ -68,6 +70,9 @@ class MemberController extends ApiController
                     'img' => replace_yunshop(tomedia($shopInfo['signimg'])),
                     'qr' => MemberModel::getAgentQR(),
                 ];
+
+                $data['nickname'] = @iconv("utf-8", "gbk", $data['nickname']);
+                $data['nickname'] = @iconv("gbk", "utf-8", $data['nickname']);
 
                 return $this->successJson('', $data);
             } else {
