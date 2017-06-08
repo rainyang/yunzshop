@@ -16,12 +16,6 @@ use app\common\services\MyLink;
 
 class ShopController extends BaseController
 {
-
-    public function __construct()
-    {
-        $this->uniacid = \YunShop::app()->uniacid;
-    }
-
     /**
      * 商城设置
      * @return mixed
