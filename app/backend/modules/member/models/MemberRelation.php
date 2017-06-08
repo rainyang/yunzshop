@@ -432,13 +432,13 @@ class MemberRelation extends BackendModel
         if (empty($set)) {
             return;
         }
-
+        \Log::debug('关系链设置');
         $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         if (empty($member)) {
             return;
         }
-
+        \Log::debug('会员存在');
         $isagent = $member->is_agent == 1 && $member->status == 2;
         \Log::debug('条件完成后进入');
         if (!$isagent && $set->become_order == 1) {
