@@ -56,7 +56,7 @@ class Url
             $params['i'] = \YunShop::app()->uniacid;
         }
         $module = request()->get('m','yun_shop');
-        return   '/addons/' . $module . '/#'.$route .  ($params ? '?'.http_build_query($params) : '');
+        return   '/addons/' . $module . '/?#'.$route .  ($params ? '?'.http_build_query($params) : '');
     }
 
     /**

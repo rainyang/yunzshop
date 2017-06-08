@@ -216,7 +216,7 @@ class MemberModel extends Member
         $uid = \YunShop::app()->getMemberId();
 
         if (!empty($uid)) {
-            MemberRelation::checkAgent($uid);
+            //MemberRelation::checkAgent($uid);
 
             $member_info = SubMemberModel::getMemberShopInfo($uid);
 

@@ -187,11 +187,8 @@ class Member extends BackendModel
      */
     public static function chkAgent($member_id, $mid)
     {
-        \Log::debug('上线uid: ', $mid);
-
         $model = MemberShopInfo::getMemberShopInfo($member_id);
 
-        \Log::debug('下线uid: ', $member_id);
         $relation = new MemberRelation();
         $relation->becomeChildAgent($mid, $model);
     }
