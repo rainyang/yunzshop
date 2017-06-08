@@ -319,7 +319,7 @@ class MemberRelation extends BackendModel
     public static function checkOrderPay($uid)
     {
         $set = self::getSetInfo()->first();
-
+        \Log::debug('订单完成'. $uid);
         if (empty($set)) {
             return;
         }
