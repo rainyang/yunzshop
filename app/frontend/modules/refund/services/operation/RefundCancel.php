@@ -22,6 +22,8 @@ class RefundCancel extends ChangeStatusOperation
 
     protected function updateTable()
     {
+        $this->order->refund_id = 0;
+        $this->order->save();
         parent::updateTable();
     }
 }
