@@ -65,6 +65,9 @@ class Notice extends \app\common\models\Notice
         if(!$goodsId){
             return false;
         }
+        if (!$data) {
+            return false;
+        }
         self::deleteAllByGoodsId($goodsId);
         if(!$data['uid'] || !isset($data['type'])){
             return false;

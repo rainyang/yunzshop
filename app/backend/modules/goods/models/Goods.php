@@ -8,6 +8,7 @@
 namespace app\backend\modules\goods\models;
 
 use app\backend\modules\goods\observers\GoodsObserver;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class Goods extends \app\common\models\Goods
@@ -24,18 +25,9 @@ class Goods extends \app\common\models\Goods
     {
         parent::boot();
 
-        //static::$booted[get_class($this)] = true;
-        // 开始事件的绑定...
-        //creating, created, updating, updated, saving, saved,  deleting, deleted, restoring, restored.
-        /*static::creating(function (Eloquent $model) {
-            if ( ! $model->isValid()) {
-                // Eloquent 事件监听器中返回的是 false ，将取消 save / update 操作
-                return false;
-            }
-        });*/
-
-        //注册观察者
-        static::observe(new GoodsObserver);
+        static::addGlobalScope(function (Builder $builder) {
+            $builder->isPlugin();
+        });
     }
 
     public function scopeGoods($query){

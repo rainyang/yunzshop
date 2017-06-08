@@ -15,7 +15,9 @@ class AfterOrderCreatedListener
 {
     public function handle(AfterOrderCreatedEvent $event)
     {
-        MemberRelation::checkOrderConfirm();
+        $model = $event->getOrderModel();
+
+        MemberRelation::checkOrderConfirm($model->uid);
 
     }
 }
