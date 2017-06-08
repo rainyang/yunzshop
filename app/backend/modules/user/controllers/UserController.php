@@ -91,11 +91,11 @@ class UserController extends BaseController
         if (!$userModel) {
             return $this->message("未找到数据或以删除！", '', 'error');
         }
-        $permissionService = PermissionService::getPermission();
+        $permissionService = new PermissionService();
 
         $userPermissions = $permissionService->handlePermission($userModel->permissions->toArray());
 
-        $permissions = \Config::get('menu');
+        $permissions = PermissionService::getPermission();
         $roleList = YzRole::getRoleListToUser();
 
         $rolePermissions = [];
@@ -128,7 +128,7 @@ class UserController extends BaseController
             'roleList'      => $roleList,
             'permissions'   => $permissions,
             'rolePermission' => $rolePermissions,
-            'userPermissons' => $userPermissions
+            'userPermissions' => $userPermissions
         ])->render();
     }
 
