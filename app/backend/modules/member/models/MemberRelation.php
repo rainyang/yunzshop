@@ -233,6 +233,8 @@ class MemberRelation extends BackendModel
                 if (empty($become_child)) {
                     $this->changeChildAgent($mid, $model);
 
+                    \Log::debug('###998.mid: '.$mid);
+
                     //notice
                     self::sendAgentNotify($member->member_id, $mid);
                 } else {
