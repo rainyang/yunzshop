@@ -24,7 +24,7 @@ class HomePageController extends ApiController
     protected $ignoreAction = ['index', 'defaultDesign', 'defaultMenu', 'defaultMenuStyle'];
 
     /**
-     * @return \Illuminate\Http\JsonResponse 提供商城首页数据
+     * @return \Illuminate\Http\JsonResponse 当路由不包含page_id参数时,提供商城首页数据; 当路由包含page_id参数时,提供装修预览数据
      */
     public function index()
     {
@@ -92,7 +92,10 @@ class HomePageController extends ApiController
         //如果安装了装修插件并开启插件
         if(array_key_exists('designer', $enableds)){
 
-            //装修, 原来接口在 plugin.designer.home.index.page
+            //系统信息
+            $result['system'] = (new DesignerService())->getSystemInfo();
+
+            //装修数据, 原来接口在 plugin.designer.home.index.page
             if(empty($pageId)){ //如果是请求首页的数据
                 $page = Designer::getDefaultDesigner();
             } else{
@@ -100,32 +103,36 @@ class HomePageController extends ApiController
             }
             if ($page) {
                 $designer = (new DesignerService())->getPageForHomePage($page->toArray());
-                $menuId = $designer['footermenu'];
                 $result['item'] = $designer;
+                $footerMenuType = $designer['footertype']; //底部菜单: 0 - 不显示, 1 - 显示系统默认, 2 - 显示选中的自定义菜单
+                $footerMenuId = $designer['footermenu'];
             } elseif(empty($pageId)){ //如果是请求首页的数据, 提供默认值
                 $result['default'] = self::defaultDesign();
                 $result['item']['data'] = ''; //前端需要该字段
+                $footerMenuType = 1;
             } else{ //如果是请求预览装修的数据
                 $result['item']['data'] = ''; //前端需要该字段
+                $footerMenuType = 0;
             }
 
-            $result['system'] = (new DesignerService())->getSystemInfo();
-
-            //菜单背景色, 原来接口在  plugin.designer.home.index.menu
-            if(empty($pageId)) { //如果是请求首页的数据
-                $menustyle = $menuId ? DesignerMenu::getMenuById($menuId) : DesignerMenu::getDefaultMenu();
-            } else{
-                $menustyle = $menuId ? DesignerMenu::getMenuById($menuId) : '';
+            //自定义菜单, 原来接口在  plugin.designer.home.index.menu
+            switch ($footerMenuType){
+                case 1:
+                    $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
+                    $result['item']['menustyle'] = self::defaultMenuStyle();
+                    break;
+                case 2:
+                    if(!empty($footerMenuId)){
+                        $menustyle = DesignerMenu::getMenuById($footerMenuId);
+                    }
+                    $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
+                    $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
+                    break;
+                default:
+                    $result['item']['menus'] = false;
+                    $result['item']['menustyle'] = false;
             }
-
-            if ($menustyle) {
-                $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
-                $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
-            } elseif(empty($pageId)){ //如果是请求首页的数据, 提供默认值
-                $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
-                $result['item']['menustyle'] = self::defaultMenuStyle();
-            }
-        } elseif(empty($pageId)){ //如果是请求首页的数据, 没有安装"装修插件"或者"装修插件"没有开启
+        } elseif(empty($pageId)){ //如果是请求首页的数据, 但是没有安装"装修插件"或者"装修插件"没有开启, 则提供默认值
             $result['default'] = self::defaultDesign();
             $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
             $result['item']['menustyle'] = self::defaultMenuStyle();
