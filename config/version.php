@@ -5,4 +5,8 @@
  * Date: 20/04/2017
  * Time: 22:16
  */
+<<<<<<< HEAD
 return "2.0.76";
+=======
+return "2.0.74";
+>>>>>>> parent of ae0d2ae... upgrade version is 2.0.75
