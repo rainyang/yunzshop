@@ -68,14 +68,15 @@ class UserController extends BaseController
             }
 
         }
-        $permissions = \Config::get('menu');
+        //$permissions = \Config::get('menu');
+
         $roleList = YzRole::getRoleListToUser();
 
         return view('user.user.form',[
             'user'=>$userModel,
             'roleList' => $roleList,
-            'permissions'=>$permissions,
-            'userPermissons'=>[],
+            'permissions'=>PermissionService::getPermission(),
+            'userPermissions'=>[],
         ])->render();
     }
 
@@ -94,7 +95,7 @@ class UserController extends BaseController
 
         $userPermissions = $permissionService->handlePermission($userModel->permissions->toArray());
 
-        $permissions = \Config::get('menu');
+        $permissions = PermissionService::getPermission();
         $roleList = YzRole::getRoleListToUser();
 
         $rolePermissions = [];
@@ -127,7 +128,7 @@ class UserController extends BaseController
             'roleList'      => $roleList,
             'permissions'   => $permissions,
             'rolePermission' => $rolePermissions,
-            'userPermissons' => $userPermissions
+            'userPermissions' => $userPermissions
         ])->render();
     }
 

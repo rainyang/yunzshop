@@ -1963,6 +1963,7 @@ CREATE TABLE ". tablename('yz_withdraw')." (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS ". tablename('yz_menu').";
  
 INSERT INTO ". tablename('yz_menu')." (`id`, `name`, `item`, `url`, `url_params`, `permit`, `menu`, `icon`, `parent_id`, `sort`, `status`, `created_at`, `updated_at`, `deleted_at`)
 VALUES
