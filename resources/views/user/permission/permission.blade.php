@@ -8,7 +8,7 @@
                     <div class='panel-heading'>
                         <label class='checkbox-inline'>
                             <input type='checkbox' name='perms[]' value='{{$keyOne}}' class='perm-all' {{in_array($keyOne, $rolePermission) ? 'disabled' : ''}}
-                                   data-group='{{$keyOne}}' {{in_array($keyOne, $userPermissons) ? 'checked' : ''}} />
+                                   data-group='{{$keyOne}}' {{in_array($keyOne, $userPermissions) ? 'checked' : ''}} />
                             {{$valueOne['name'] or ''}}
                         </label>
                     </div>
@@ -22,7 +22,7 @@
                                                <input type='checkbox' name='perms[]' value='{{$keyTwo}}'
                                                       class='perm-all-item' data-group='{{$keyOne}}'
                                                       data-child='{{$keyTwo}}' {{in_array($keyTwo, $rolePermission) ? 'disabled' : ''}}
-                                                       {{in_array($keyTwo, $userPermissons) ? 'checked' : ''}}
+                                                       {{in_array($keyTwo, $userPermissions) ? 'checked' : ''}}
                                                /> <b> {{$valueTwo['name'] or ''}}</b>
                                            </label>
                                         <!-- 第三级-->
@@ -33,7 +33,7 @@
                                                 <input type="checkbox" name="perms[]" value="{{$keyThird}}"
                                                        class="perm-item" data-group="{{$keyOne}}" {{in_array($keyThird, $rolePermission) ? 'disabled' : ''}}
                                                        data-child="{{$keyTwo}}" data-op="{{$keyThird}}"
-                                                        {{in_array($keyThird, $userPermissons) ? 'checked' : ''}}>
+                                                        {{in_array($keyThird, $userPermissions) ? 'checked' : ''}}>
                                                     {{$valueThird['name'] or ''}}
                                             </label>
                                                 @endif
@@ -64,15 +64,19 @@
         $(".perm-item[data-group='" + group + "'],.perm-all-item[data-group='" + group + "']").each(function () {
           $(this).get(0).checked = checked;
         })
-      })
+      });
+
       $('.perm-all-item').click(function () {
         var checked = $(this).get(0).checked;
         var group = $(this).data('group');
         var child = $(this).data('child');
         $(".perm-item[data-group='" + group + "'][data-child='" + child + "']").each(function () {
           $(this).get(0).checked = checked;
-        })
+        });
+        $(".perm-all[data-group=" + group + "]").get(0).checked = checked;
       });
+
+
       $('.perm-item').click(function () {
         var group = $(this).data('group');
         var child = $(this).data('child');
@@ -88,11 +92,8 @@
           allitem.get(0).checked = check;
         }
         $(".perm-all[data-group=" + group + "]").get(0).checked = check;
-
       });
-
-
-    })
+    });
       /*
        $(function () {
        $(':checkbox').attr('disabled', true);
