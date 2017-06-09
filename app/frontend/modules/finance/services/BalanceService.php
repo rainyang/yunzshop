@@ -8,16 +8,13 @@
 
 namespace app\frontend\modules\finance\services;
 
-use app\backend\modules\member\models\Member;
 use app\common\exceptions\AppException;
-use app\common\models\finance\Balance;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
-use \app\common\services\finance\BalanceService as BaseBalanceService;
 use app\common\facades\Setting;
 use app\frontend\modules\finance\models\BalanceRecharge;
 
-class BalanceService extends BaseBalanceService
+class BalanceService
 {
     private $_recharge_set;
 
@@ -90,20 +87,20 @@ class BalanceService extends BaseBalanceService
         return $this->_withdraw_set['alipay'] ? true : false;
     }
 
+    /**
+     * 余额充值回调，支付成功回调方法
+     *
+     *
+     * @param array $data
+     * @return bool|string
+     * @throws AppException
+     */
     public function payResult($data = [])
     {
         $rechargeMode = BalanceRecharge::getRechargeRecordByOrdersn($data['order_sn']);
         $rechargeMode->status = BalanceRecharge::PAY_STATUS_SUCCESS;
         if ($rechargeMode->save()) {
             $this->data = array(
-               /* 'member_id'         => $rechargeMode->member_id,
-                'money'             => $rechargeMode->money,
-                'serial_number'     => $rechargeMode->ordersn,
-                'operator'          => Balance::OPERATOR_MEMBER,
-                'operator_id'       => $rechargeMode->member_id,
-                'remark'            => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
-                'service_type'      => Balance::BALANCE_RECHARGE,*/
-
                 'member_id'     => $rechargeMode->member_id,
                 'remark'        => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
                 'source'        => ConstService::SOURCE_RECHARGE,
@@ -112,7 +109,6 @@ class BalanceService extends BaseBalanceService
                 'operator_id'   => $rechargeMode->member_id,
                 'change_value'  => $rechargeMode->money,
             );
-            //$result = $this->balanceChange($this->data);
             $result = (new BalanceChange())->recharge($this->data);
             if ($result === true) {
                 return $this->rechargeSaleMath();
@@ -122,62 +118,11 @@ class BalanceService extends BaseBalanceService
         throw new AppException('修改充值状态失败');
     }
 
-
-    //余额变动接口（对外接口）
-    public function balanceChange($data)
-    {
-        //todo 此接口废弃使用，
-        /*$this->data = $data;
-        $this->getMemberInfo();
-        $this->service_type = $data['service_type'];
-
-        if ($this->service_type == Balance::BALANCE_TRANSFER) {
-           return $this->balanceTransfer();
-        }
-
-        return  $this->detectionBalance() ? $this->judgeMethod() : '余额必须大于零';*/
-    }
-
-    protected function validatorResultMoney()
-    {
-        if ($this->result_money >= 0) {
-            return true;
-        }
-        throw new AppException('余额不足');
-    }
-
-    protected function getMemberInfo()
-    {
-        $this->memberModel = Member::getMemberInfoById(\YunShop::app()->getMemberId());
-        if ($this->data['member_id']) {
-            $this->memberModel = Member::getMemberInfoById($this->data['member_id']);
-        }
-        if (!$this->memberModel) {
-            throw new AppException('未获取到会员信息，请重试！');
-        }
-    }
-
-
-    private function detectionBalance()
-    {
-        return $this->data['money'] > 0 ? true : false;
-    }
-
-    private function balanceTransfer()
-    {
-        $this->attachedMoney();
-        $this->type = Balance::TYPE_EXPENDITURE;
-        $result = $this->subtraction();
-        if ($result === true) {
-            $this->type = Balance::TYPE_INCOME;
-            $this->data['member_id'] = $this->data['recipient'];
-            $this->getMemberInfo();
-            return $this->addition();
-        }
-        throw new AppException($result);
-    }
-
-
+    /**
+     * 余额满额送计算，充值赠送
+     *
+     * @return bool|string
+     */
     private function rechargeSaleMath()
     {
         $sale = $this->rechargeSale();
@@ -190,7 +135,7 @@ class BalanceService extends BaseBalanceService
             if (empty($key['enough']) || empty($key['give'])) {
                 continue;
             }
-            if ($this->data['money'] >= floatval($key['enough'])) {
+            if ($this->data['change_value'] >= floatval($key['enough'])) {
                 if (strexists($key['give'], '%')) {
                     $result = round(floatval(str_replace('%', '', $key['give'])) / 100 * $this->data['change_money'], 2);
                 } else {
@@ -201,13 +146,12 @@ class BalanceService extends BaseBalanceService
                 break;
             }
         }
-        file_put_contents(storage_path('logs/recharge.log'), $result);
         if ($result) {
             $result = array(
                 'member_id' => $this->data['member_id'],
-                'remark' => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['money'] . '元)',
+                'remark' => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['change_value'] . '元)',
                 'source' => ConstService::SOURCE_AWARD,
-                'relation' => $this->data['serial_number'],
+                'relation' => $this->data['source'],
                 'operator' => ConstService::OPERATOR_MEMBER,
                 'operator_id' => $this->data['member_id'],
                 //todo 验证余额值
