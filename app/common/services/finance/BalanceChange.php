@@ -72,11 +72,7 @@ class BalanceChange extends Credit
     {
         $this->new_value = $this->memberModel->credit2 + $this->change_value;
         if ($this->new_value < 0) {
-<<<<<<< HEAD
-            throw new AppException('余额值不足');
-=======
             throw new AppException('余额不足');
->>>>>>> fixbug_0609_master
         }
         if (!$this->relation()) {
             throw new AppException('该订单已经提交过，不能重复使用');
