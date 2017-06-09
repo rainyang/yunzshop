@@ -15,6 +15,9 @@ class ShopMessage extends Message
 {
     private function sendToShops()
     {
+        if(empty(\Setting::get('shop.notice.salers'))){
+            return ;
+        }
         if(empty($this->templateId)){
             return ;
         }
@@ -22,10 +25,8 @@ class ShopMessage extends Message
         foreach (\Setting::get('shop.notice.salers') as $saler) {
             $openid = Member::getOpenId($saler['uid']);
             if(!empty($openid)){
-
                 $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($openid)->send();
             }
-
         }
     }
 
