@@ -46,7 +46,7 @@ class BalanceController extends ApiController
         $balanceSet = new BalanceService();
         $data = [
             'balance'       => $this->memberInfo->credit2 ?: 0,
-            'wecht'         => $balanceSet->withdrawWecht(),
+            'wechat'         => $balanceSet->withdrawWechat(),
             'alipay'        => $balanceSet->withdrawAlipay(),
             'poundage'      => $balanceSet->withdrawPoundage(),
         ];
@@ -188,7 +188,7 @@ class BalanceController extends ApiController
         if (!$this->getWithdrawType()) {
             return '未找到提现类型';
         }
-        if (!(new BalanceService())->withdrawWecht() && $this->getWithdrawType() == 'wecht') {
+        if (!(new BalanceService())->withdrawWechat() && $this->getWithdrawType() == 'wechat') {
             return '未开启提现到微信';
         }
         if (!(new BalanceService())->withdrawAlipay() && $this->getWithdrawType() == 'alipay') {
@@ -306,7 +306,7 @@ class BalanceController extends ApiController
         switch (trim(\YunShop::request()->withdraw_type))
         {
             case 1:
-                return 'wecht';
+                return 'wechat';
                 break;
             case 2:
                 return 'alipay';

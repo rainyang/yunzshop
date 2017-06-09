@@ -84,10 +84,10 @@ class BalanceWithdrawController extends BaseController
             //支付宝打款
             $resultPay = WithdrawService::alipayWithdrawPay($this->withdrawModel, $remark);
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
-        } elseif ($this->withdrawModel->pay_way == 'wecht') {
+        } elseif ($this->withdrawModel->pay_way == 'wechat') {
             //微信打款
             //echo '<pre>'; print_r('test'); exit;
-            $resultPay = WithdrawService::wechtWithdrawPay($this->withdrawModel, $remark);
+            $resultPay = WithdrawService::wechatWithdrawPay($this->withdrawModel, $remark);
             Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
         }
 

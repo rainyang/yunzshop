@@ -38,7 +38,7 @@ class WithdrawService
             case 'alipay':
                 return '支付宝';
                 break;
-            case 'wecht':
+            case 'wechat':
                 return '微信';
                 break;
         }
