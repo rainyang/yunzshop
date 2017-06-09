@@ -101,7 +101,7 @@ class PaymentController extends BaseController
                     OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
 
                     //会员推广资格
-                    //MemberRelation::checkOrderPay(\YunShop::app()->getMemberId());
+                    MemberRelation::checkOrderPay(\YunShop::app()->getMemberId());
                 }
                 break;
             case "recharge.succeeded":
