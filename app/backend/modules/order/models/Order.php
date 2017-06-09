@@ -27,9 +27,9 @@ class Order extends \app\common\models\Order
         return $this->hasMany(OrderGoods::class, 'order_id', 'id');
     }
 
-    public function scopeExportOrders($search)
+    public function scopeExportOrders($query, $search)
     {
-        $order_builder = self::search($search);
+        $order_builder = $query->search($search);
 
         $orders = $order_builder->with([
             'belongsToMember' => self::memberBuilder(),
@@ -39,6 +39,7 @@ class Order extends \app\common\models\Order
             'hasOneOrderRemark',
             'express',
             'hasOnePayType',
+            'hasOneOrderPay'
         ]);
         return $orders;
     }
