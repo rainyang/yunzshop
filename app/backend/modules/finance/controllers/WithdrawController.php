@@ -221,7 +221,7 @@ class WithdrawController extends BaseController
         } elseif ($payWay == '1') {
             //微信打款
 
-            $resultPay = WithdrawService::wechtWithdrawPay($withdraw, $remark);
+            $resultPay = WithdrawService::wechatWithdrawPay($withdraw, $remark);
             Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "微信打款中!");
 
         }

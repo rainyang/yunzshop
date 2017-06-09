@@ -12,11 +12,11 @@ use app\backend\models\Menu;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\models\MenuSelect;
+use app\frontend\modules\finance\services\BalanceService;
 use Ixudra\Curl\Facades\Curl;
 
 class MenuController extends BaseController
 {
-
     /**
      * 菜单功能停止对外使用，（菜单表示控制权限js，随意修改会导致js失效，同时路由比对权限）
      *
