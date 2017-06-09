@@ -357,6 +357,7 @@ class MemberOfficeAccountService extends MemberService
         //更新mapping_fans
         $record = array(
             'openid' => $userinfo['openid'],
+            'unionid' => !empty($userinfo['unionid']) ? $userinfo['unionid'] : '',
             'nickname' => stripslashes($userinfo['nickname']),
             'follow' => $userinfo['subscribe'],
             'tag' => base64_encode(serialize($userinfo))
