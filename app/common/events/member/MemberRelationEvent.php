@@ -13,11 +13,7 @@ use app\backend\modules\member\models\Member;
 
 class MemberRelationEvent extends Event
 {
-<<<<<<< HEAD
     protected $mid;
-
-=======
->>>>>>> b81d83f8cad2ea730c79ff317c09610b4476387e
     protected $user;
 
     public function __construct(Member $model)
