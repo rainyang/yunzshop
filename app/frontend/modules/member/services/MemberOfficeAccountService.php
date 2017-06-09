@@ -187,11 +187,6 @@ class MemberOfficeAccountService extends MemberService
         //$userinfo['nickname'] = $this->filteNickname($userinfo);
         $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
 
-        if (empty($fans_mode)) {
-            $this->addFansInfo($member_id, $uniacid, $userinfo);
-            $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
-        }
-
         if ($fans_mode) {
             $member_model = Member::getMemberById($fans_mode->uid);
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
