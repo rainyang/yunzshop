@@ -162,7 +162,7 @@ class BalanceChange extends Credit
         $msg = [
             "first" => '您好',
             "keyword1" => '余额变动通知',
-            "keyword2" => "尊敬的[" . $this->memberModel->nickname . "]，您于[" . date('Y-m-d H:i', time()) . "]发生余额变动，变动数值为[" .  $this->change_value . "]，类型[" . (new ConstService(''))->sourceComment()[$this->source] . "]，您目前余额余值为[" . $this->new_value . "]",
+            "keyword2" => "尊敬的" . $this->memberModel->nickname . "，您于" . date('Y-m-d H:i', time()) . "发生余额变动，变动金额为" .  $this->change_value . "元，类型" . (new ConstService(''))->sourceComment()[$this->source] . "，您当前余额为" . $this->new_value . "元",
             "remark" => "",
         ];
         if ($noticeMember->hasOneFans->follow) {
