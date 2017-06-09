@@ -16,7 +16,6 @@ use Ixudra\Curl\Facades\Curl;
 
 class MenuController extends BaseController
 {
-
     /**
      * 菜单功能停止对外使用，（菜单表示控制权限js，随意修改会导致js失效，同时路由比对权限）
      *
