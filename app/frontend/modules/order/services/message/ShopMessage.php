@@ -23,13 +23,12 @@ class ShopMessage extends Message
             return ;
         }
         //客服发送消息通知
-        foreach (\Setting::get('shop.notice.salers') as $saler) {
-            $noticeMember = Member::getMemberByUid($saler['uid'])->with('hasOneFans')->first();
-            if (!empty($noticeMember->hasOneFans->openid)) {
-                $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($noticeMember->hasOneFans->openid)->send();
+       /* foreach (\Setting::get('shop.notice.salers') as $saler) {
+            $openid = Member::getOpenId($saler['uid']);
+            if(!empty($openid)){
+                $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($openid)->send();
             }
-
-        }
+        }*/
     }
 
     public function created()

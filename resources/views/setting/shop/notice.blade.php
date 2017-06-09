@@ -186,7 +186,7 @@
                         <div class="help-block">请搜索“任务处理通知”公众平台模板消息编号:  OPENTM200605630  </div>
                     </div>
                 </div>
-                <div class="form-group">
+                {{--<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">充值成功通知</label>
                     <div class="col-sm-9 col-xs-12">
                         <input type="text" name="notice[recharge_success]" class="form-control" value="{{ $set['recharge_success'] }}" />
@@ -199,7 +199,7 @@
                         <input type="text" name="notice[recharge_refund]" class="form-control" value="{{ $set['recharge_refund'] }}" />
                         <div class="help-block">搜索“退款通知”，公众平台模板消息编号:  TM00004</div>
                     </div>
-                </div>
+                </div>--}}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现提交通知</label>
                     <div class="col-sm-9 col-xs-12">

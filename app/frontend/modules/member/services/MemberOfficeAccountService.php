@@ -112,15 +112,23 @@ class MemberOfficeAccountService extends MemberService
     public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
+        //$userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
+        $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
 
         if (!empty($UnionidInfo)) {
             $UnionidInfo = $UnionidInfo->toArray();
         }
 
-        if (!empty($UnionidInfo['unionid'])) {
+        if ($mc_mapping_fans_model) {
+            $member_model = Member::getMemberById($mc_mapping_fans_model->uid);
+            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($mc_mapping_fans_model->uid);
+
+            $member_id = $mc_mapping_fans_model->uid;
+        }
+
+        if (!empty($UnionidInfo['unionid']) && !empty($member_model) && !empty($mc_mapping_fans_model) && !empty($member_shop_info_model)) {
             $types = explode('|', $UnionidInfo['type']);
             $member_id = $UnionidInfo['member_id'];
 
@@ -136,18 +144,17 @@ class MemberOfficeAccountService extends MemberService
         } else {
             \Log::debug('添加新会员');
 
-            $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
-
-            if ($mc_mapping_fans_model->uid) {
-                $member_id = $mc_mapping_fans_model->uid;
-
-                $this->updateMemberInfo($member_id, $userinfo);
-            } else {
+            if (empty($member_model) && empty($mc_mapping_fans_model)) {
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
+            } elseif (!empty($member_model) && empty($mc_mapping_fans_model)) {
+                $member_id = $member_model->uid;
 
-                if ($member_id === false) {
-                    return show_json(8, '保存用户信息失败');
-                }
+                $this->updateMainInfo($member_id, $userinfo);
+                $this->addFansInfo($member_id, $uniacid, $userinfo);
+            }
+
+            if ($member_id === false) {
+                return show_json(8, '保存用户信息失败');
             }
 
             $this->addSubMemberInfo($uniacid, $member_id);
@@ -175,9 +182,15 @@ class MemberOfficeAccountService extends MemberService
      */
     public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
+        \Log::debug('userinfo', $userinfo);
         $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
+        //$userinfo['nickname'] = $this->filteNickname($userinfo);
         $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
+
+        if (empty($fans_mode)) {
+            $this->addFansInfo($member_id, $uniacid, $userinfo);
+            $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
+        }
 
         if ($fans_mode) {
             $member_model = Member::getMemberById($fans_mode->uid);
@@ -186,22 +199,28 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $fans_mode->uid;
         }
 
-        if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
+        \Log::debug('member_model',$member_model);
+        \Log::debug('fans_mode',$fans_mode);
+        \Log::debug('member_shop_info_model',$member_shop_info_model);
+
+        if (!empty($member_model) && !empty($fans_mode) && !empty($member_shop_info_model)) {
             \Log::debug('微信登陆更新');
 
             $this->updateMemberInfo($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
 
-            if ($fans_mode->uid) {
-                $member_id = $fans_mode->uid;
-                $this->updateMemberInfo($member_id, $userinfo);
-            } else {
+            if (empty($member_model) && empty($fans_mode)) {
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
+            } elseif (!empty($member_model) && empty($fans_mode)) {
+                $member_id = $member_model->uid;
+\Log::debug('update');
+                $this->updateMainInfo($member_id, $userinfo);
+                $this->addFansInfo($member_id, $uniacid, $userinfo);
+            }
 
-                if ($member_id === false) {
-                    return show_json(8, '保存用户信息失败');
-                }
+            if ($member_id === false) {
+                return show_json(8, '保存用户信息失败');
             }
 
             $this->addSubMemberInfo($uniacid, $member_id);
@@ -343,11 +362,54 @@ class MemberOfficeAccountService extends MemberService
         //更新mapping_fans
         $record = array(
             'openid' => $userinfo['openid'],
+            'unionid' => !empty($userinfo['unionid']) ? $userinfo['unionid'] : '',
             'nickname' => stripslashes($userinfo['nickname']),
             'follow' => $userinfo['subscribe'],
             'tag' => base64_encode(serialize($userinfo))
         );
+
         McMappingFansModel::updateData($member_id, $record);
+    }
+
+    /**
+     * 更新mc_members
+     *
+     * @param $member_id
+     * @param $userinfo
+     */
+    public function updateMainInfo($member_id, $userinfo)
+    {
+        //更新mc_members
+        $mc_data = array(
+            'nickname' => stripslashes($userinfo['nickname']),
+            'avatar' => $userinfo['headimgurl'],
+            'gender' => $userinfo['sex'],
+            'nationality' => $userinfo['country'],
+            'resideprovince' => $userinfo['province'] . '省',
+            'residecity' => $userinfo['city'] . '市'
+        );
+        MemberModel::updataData($member_id, $mc_data);
+    }
+
+    /**
+     * 添加粉丝表
+     *
+     * @param $uid
+     * @param $uniacid
+     * @param $userinfo
+     * @return mixed
+     */
+    public function addFansInfo($uid, $uniacid, $userinfo)
+    {
+        //添加mapping_fans表
+        McMappingFansModel::insertData($userinfo, array(
+            'uid' => $uid,
+            'acid' => $uniacid,
+            'uniacid' => $uniacid,
+            'salt' => Client::random(8),
+        ));
+
+        return $uid;
     }
 
     /**

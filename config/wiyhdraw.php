@@ -5,9 +5,9 @@ return [
         'type' => 'balance',
         'class' => '',
     ],
-    'wecht' => [
+    'wechat' => [
         'title' => '微信',
-        'type' => 'wecht',
+        'type' => 'wechat',
         'class' => '',
     ],
     'alipay' => [

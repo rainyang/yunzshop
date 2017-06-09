@@ -8,6 +8,7 @@
 namespace app\common\services\finance;
 
 
+use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
 use app\common\models\Member;
 use app\common\services\credit\ConstService;
@@ -71,10 +72,10 @@ class BalanceChange extends Credit
     {
         $this->new_value = $this->memberModel->credit2 + $this->change_value;
         if ($this->new_value < 0) {
-            return trans('Yunshop\Gold::gold.name') . '值不足';
+            throw new AppException('余额不足');
         }
         if (!$this->relation()) {
-            return '该订单已经提交过，不能重复使用';
+            throw new AppException('该订单已经提交过，不能重复使用');
         }
 
         return true;
@@ -83,7 +84,7 @@ class BalanceChange extends Credit
     public function transfer(array $data)
     {
         if (!$data['recipient']) {
-            return '被转让者不存在';
+            throw new AppException('被转让者不存在');
         }
 
         $result = parent::transfer($data);
@@ -162,10 +163,10 @@ class BalanceChange extends Credit
         $msg = [
             "first" => '您好',
             "keyword1" => '余额变动通知',
-            "keyword2" => "尊敬的[" . $this->memberModel->nickname . "]，您于[" . date('Y-m-d H:i', time()) . "]发生余额变动，变动数值为[" .  $this->change_value . "]，类型[" . (new ConstService(''))->sourceComment()[$this->source] . "]，您目前余额余值为[" . $this->new_value . "]",
+            "keyword2" => "尊敬的" . $this->memberModel->nickname . "，您于" . date('Y-m-d H:i', time()) . "发生余额变动，变动金额为" .  $this->change_value . "元，类型" . (new ConstService(''))->sourceComment()[$this->source] . "，您当前余额为" . $this->new_value . "元",
             "remark" => "",
         ];
-        if ($noticeMember->hasOneFans->openid) {
+        if ($noticeMember->hasOneFans->follow) {
             MessageService::notice($template_id, $msg, $noticeMember->hasOneFans->openid);
         }
     }

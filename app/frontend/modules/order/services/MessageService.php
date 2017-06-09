@@ -32,7 +32,7 @@ class MessageService extends \app\common\services\MessageService
     public function created()
     {
         $this->buyerMessage->created();
-        //$this->shopMessage->created();
+        $this->shopMessage->created();
     }
 
     public function paid()

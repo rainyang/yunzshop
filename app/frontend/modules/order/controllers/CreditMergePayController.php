@@ -10,6 +10,7 @@
 namespace app\frontend\modules\order\controllers;
 
 
+use app\backend\modules\member\models\MemberRelation;
 use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
 use app\common\services\PayFactory;
@@ -41,6 +42,9 @@ class CreditMergePayController extends MergePayController
 
             $this->orderPay->status = 1;
             $this->orderPay->save();
+
+            //会员推广资格
+            MemberRelation::checkOrderPay($this->orderPay->uid);
         });
         return $this->successJson('成功', []);
     }
