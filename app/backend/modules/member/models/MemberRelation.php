@@ -268,7 +268,7 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public static function checkOrderConfirm()
+    public static function checkOrderConfirm($uid)
     {
         $set = self::getSetInfo()->first();
 
@@ -276,7 +276,7 @@ class MemberRelation extends BackendModel
             return;
         }
 
-        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $member = SubMemberModel::getMemberShopInfo($uid);
 
         if (empty($member)) {
             return;
@@ -316,15 +316,15 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public static function checkOrderPay()
+    public static function checkOrderPay($uid)
     {
         $set = self::getSetInfo()->first();
-
+        \Log::debug('付款后：'. $uid);
         if (empty($set)) {
             return;
         }
 
-        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $member = SubMemberModel::getMemberShopInfo($uid);
         if (empty($member)) {
             return;
         }
@@ -388,7 +388,8 @@ class MemberRelation extends BackendModel
 
                     if ($set->become == '2') {
                         $ordercount = Order::getCostTotalNum($member->member_id);
-
+                        \Log::debug('用户：'. $ordercount);
+                        \Log::debug('系统：'. intval($set->become_ordercount));
                         $can = $ordercount >= intval($set->become_ordercount);
                     } else if ($set->become == '3') {
                         $moneycount = Order::getCostTotalPrice($member->member_id);
@@ -425,23 +426,24 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public static function checkOrderFinish()
+    public static function checkOrderFinish($uid)
     {
         $set = self::getSetInfo()->first();
-
+\Log::debug('订单完成'. $uid);
         if (empty($set)) {
             return;
         }
-
-        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        \Log::debug('关系链设置');
+        $member = SubMemberModel::getMemberShopInfo($uid);
 
         if (empty($member)) {
             return;
         }
-
+        \Log::debug('会员存在');
         $isagent = $member->is_agent == 1 && $member->status == 2;
-
+        \Log::debug('条件完成后进入');
         if (!$isagent && $set->become_order == 1) {
+            \Log::debug('条件完成后');
             if ($set->become == 2 || $set->become == 3) {
                 $parentisagent = true;
 
@@ -457,7 +459,8 @@ class MemberRelation extends BackendModel
 
                     if ($set->become == '2') {
                         $ordercount = Order::getCostTotalNum($member->member_id);
-
+                        \Log::debug('系统：' . intval($set->become_ordercount));
+                        \Log::debug('会员：' . $ordercount);
                         $can = $ordercount >= intval($set->become_ordercount);
                     } else if ($set->become == '3') {
                         $moneycount = Order::getCostTotalPrice($member->member_id);

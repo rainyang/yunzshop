@@ -50,7 +50,7 @@ class CreditPay extends Pay
         $result = (new BalanceChange())->consume($data);
 
         if ($result === true) {
-            MemberRelation::checkOrderPay();
+            MemberRelation::checkOrderPay(\YunShop::app()->getMemberId());
 
             $pay_order_model = PayOrder::uniacid()->where('out_order_no', $params['order_no'])->first();
 
