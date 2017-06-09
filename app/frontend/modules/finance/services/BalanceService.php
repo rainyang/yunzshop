@@ -112,12 +112,9 @@ class BalanceService extends BaseBalanceService
                 'operator_id'   => $rechargeMode->member_id,
                 'change_value'  => $rechargeMode->money,
             );
-            file_put_contents(storage_path('logs/data.log'), print_r($this->data,true));
             //$result = $this->balanceChange($this->data);
             $result = (new BalanceChange())->recharge($this->data);
-            file_put_contents(storage_path('logs/result.log'), print_r($result,true));
             if ($result === true) {
-                file_put_contents(storage_path('logs/1.log'), print_r(1,true));
                 return $this->rechargeSaleMath();
             }
             throw new AppException($result);
@@ -184,13 +181,11 @@ class BalanceService extends BaseBalanceService
     private function rechargeSaleMath()
     {
         $sale = $this->rechargeSale();
-        file_put_contents(storage_path('2/result.log'), print_r($sale,true));
         $sale = array_values(array_sort($sale, function ($value) {
 
             return $value['enough'];
         }));
         rsort($sale);
-        file_put_contents(storage_path('logs/sale.log'), $sale);
         foreach ($sale as $key) {
             if (empty($key['enough']) || empty($key['give'])) {
                 continue;
