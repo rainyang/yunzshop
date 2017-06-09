@@ -15,12 +15,20 @@ class ShopMessage extends Message
 {
     private function sendToShops()
     {
-        //客服发送消息通知
-        foreach (\Setting::get('shop.notice.salers') as $saler) {
-            $openid = Member::getOpenId($saler['uid']);
-            $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($openid)->send();
 
+        if(empty(\Setting::get('shop.notice.salers'))){
+            return ;
         }
+        if(empty($this->templateId)){
+            return ;
+        }
+        //客服发送消息通知
+       /* foreach (\Setting::get('shop.notice.salers') as $saler) {
+            $openid = Member::getOpenId($saler['uid']);
+            if(!empty($openid)){
+                $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($openid)->send();
+            }
+        }*/
     }
 
     public function created()

@@ -12,6 +12,7 @@ use app\backend\models\Menu;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\models\MenuSelect;
+use app\frontend\modules\finance\services\BalanceService;
 use Ixudra\Curl\Facades\Curl;
 
 class MenuController extends BaseController

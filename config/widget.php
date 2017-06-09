@@ -26,5 +26,11 @@ return [
             'title' => '配送',
             'class' => 'app\backend\widgets\goods\DispatchWidget'
         ],
+    ],
+    'withdraw' => [
+        'income' => [
+            'title' => '收入提现基础设置',
+            'class' => 'app\backend\widgets\finance\IncomeWidget',
+        ]
     ]
 ];

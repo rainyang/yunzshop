@@ -84,7 +84,7 @@ class BalanceChange extends Credit
     public function transfer(array $data)
     {
         if (!$data['recipient']) {
-            return '被转让者不存在';
+            throw new AppException('被转让者不存在');
         }
 
         $result = parent::transfer($data);
