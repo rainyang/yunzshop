@@ -112,6 +112,7 @@ class MemberOfficeAccountService extends MemberService
     public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
+        $userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
         $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
@@ -182,7 +183,7 @@ class MemberOfficeAccountService extends MemberService
     public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
-
+        $userinfo['nickname'] = $this->filteNickname($userinfo);
         $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
 
         if ($fans_mode) {
