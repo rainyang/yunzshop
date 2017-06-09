@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\controllers;
 use app\common\components\ApiController;
 use app\common\components\BaseController;
 use app\common\models\member\Address;
+use app\common\models\Street;
 use app\frontend\modules\member\models\MemberAddress;
 
 class MemberAddressController extends ApiController
@@ -226,6 +227,20 @@ class MemberAddressController extends ApiController
             'city' => $city,
             'district' => $district,
         );
+    }
+
+    public function getStreet()
+    {
+        //member.member-address.get-street
+        $districtId = \YunShop::request()->get('district_id');
+
+        $street = Street::getStreetByParentId($districtId);
+
+        if($street){
+            return $this->successJson('获取街道数据成功!', $street);
+        }
+        return $this->successJson('获取数据失败!', $street);
+
     }
 
 
