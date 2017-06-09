@@ -33,13 +33,16 @@ class WithdrawService
     {
         switch ($withdraw->pay_way) {
             case 'balance':
-                return '余额';
-                break;
-            case 'alipay':
-                return '支付宝';
+                return '提现到余额';
                 break;
             case 'wechat':
-                return '微信';
+                return '提现到微信';
+                break;
+            case 'alipay':
+                return '提现到支付宝';
+                break;
+            case 'manual':
+                return '提现手动打款';
                 break;
         }
     }

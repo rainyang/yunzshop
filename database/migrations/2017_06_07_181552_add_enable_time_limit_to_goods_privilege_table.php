@@ -13,9 +13,12 @@ class AddEnableTimeLimitToGoodsPrivilegeTable extends Migration
      */
     public function up()
     {
-        Schema::table('yz_goods_privilege', function (Blueprint $table) {
-            $table->tinyInteger('enable_time_limit')->nullable()->default(0);
-        });
+        if (!Schema::hasColumn('yz_goods_privilege', 'enable_time_limit')) {
+
+            Schema::table('yz_goods_privilege', function (Blueprint $table) {
+                $table->tinyInteger('enable_time_limit')->nullable()->default(0);
+            });
+        }
     }
 
     /**
@@ -25,8 +28,11 @@ class AddEnableTimeLimitToGoodsPrivilegeTable extends Migration
      */
     public function down()
     {
-        Schema::table('yz_goods_privilege', function (Blueprint $table) {
-            $table->dropColumn('enable_time_limit');
-        });
+        if (Schema::hasColumn('yz_goods_privilege', 'enable_time_limit')) {
+
+            Schema::table('yz_goods_privilege', function (Blueprint $table) {
+                $table->dropColumn('enable_time_limit');
+            });
+        }
     }
 }
