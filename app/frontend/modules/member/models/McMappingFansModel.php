@@ -60,7 +60,7 @@ class McMappingFansModel extends McMappingFans
 
 
         $fans_model = new McMappingFansModel();
-
+\Log::debug('fans', $userinfo);
         $fans_model->openid = $userinfo['openid'];
         $fans_model->unionid = !empty($userinfo['unionid']) ? $userinfo['unionid'] : '';
         $fans_model->uid = $data['uid'];

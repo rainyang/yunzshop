@@ -45,7 +45,7 @@ class MemberModel extends Member
     public static function insertData($userinfo, $data)
     {
         $member_model = new MemberModel();
-
+\Log::debug('mc_member', $userinfo);
         $member_model->uniacid = $data['uniacid'];
         $member_model->email = '';
         $member_model->groupid = $data['groupid'];
