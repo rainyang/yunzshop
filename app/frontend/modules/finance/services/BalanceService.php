@@ -79,7 +79,7 @@ class BalanceService extends BaseBalanceService
     }
 
     //余额提现到微信
-    public function withdrawWecht()
+    public function withdrawWechat()
     {
         return $this->_withdraw_set['wechat'] ? true : false;
     }

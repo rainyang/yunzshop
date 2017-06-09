@@ -57,7 +57,7 @@ class WithdrawService extends Withdraw
         return (new BalanceChange())->income($data);
     }
 
-    public static function wechtWithdrawPay($withdraw, $remark)
+    public static function wechatWithdrawPay($withdraw, $remark)
     {
         return  PayFactory::create(1)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn,
             $withdraw->actual_amounts, $remark);
