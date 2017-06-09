@@ -8,6 +8,7 @@
 namespace app\common\services\finance;
 
 
+use app\common\exceptions\AppException;
 use app\common\models\finance\Balance;
 use app\common\models\Member;
 use app\common\services\credit\ConstService;
@@ -71,10 +72,10 @@ class BalanceChange extends Credit
     {
         $this->new_value = $this->memberModel->credit2 + $this->change_value;
         if ($this->new_value < 0) {
-            return trans('Yunshop\Gold::gold.name') . '值不足';
+            throw new AppException('余额值不足');
         }
         if (!$this->relation()) {
-            return '该订单已经提交过，不能重复使用';
+            throw new AppException('该订单已经提交过，不能重复使用');
         }
 
         return true;
@@ -83,7 +84,7 @@ class BalanceChange extends Credit
     public function transfer(array $data)
     {
         if (!$data['recipient']) {
-            return '被转让者不存在';
+            throw new AppException('被转让者不存在');
         }
 
         $result = parent::transfer($data);

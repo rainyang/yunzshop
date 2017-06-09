@@ -121,7 +121,7 @@
                     @if($item['pay_way'] == 'balance')
                         <input type="hidden" name="pay_way" value="3">
                         <input type="submit" name="submit_pay" value="打款到余额" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
-                    @elseif($item['pay_way'] == 'wecht')
+                    @elseif($item['pay_way'] == 'wechat')
                         <input type="hidden" name="pay_way" value="1">
                         <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return '/>
                     @elseif($item['pay_way'] == 'alipay')
