@@ -182,7 +182,7 @@ class MemberOfficeAccountService extends MemberService
     public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
-        
+
         $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
 
         if ($fans_mode) {

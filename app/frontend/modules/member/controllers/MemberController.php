@@ -71,8 +71,8 @@ class MemberController extends ApiController
                     'qr' => MemberModel::getAgentQR(),
                 ];
 
-                $data['nickname'] = @iconv("utf-8", "gbk", $data['nickname']);
-                $data['nickname'] = @iconv("gbk", "utf-8", $data['nickname']);
+              //  $data['nickname'] = @iconv("utf-8", "gbk", $data['nickname']);
+              //  $data['nickname'] = @iconv("gbk", "utf-8", $data['nickname']);
 
                 return $this->successJson('', $data);
             } else {
