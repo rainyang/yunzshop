@@ -98,6 +98,9 @@ class BalanceService
     public function payResult($data = [])
     {
         $rechargeMode = BalanceRecharge::getRechargeRecordByOrdersn($data['order_sn']);
+        if (!$rechargeMode) {
+            throw new AppException('充值失败');
+        }
         $rechargeMode->status = BalanceRecharge::PAY_STATUS_SUCCESS;
         if ($rechargeMode->save()) {
             $this->data = array(
