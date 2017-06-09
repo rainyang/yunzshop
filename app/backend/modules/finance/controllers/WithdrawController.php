@@ -102,7 +102,6 @@ class WithdrawController extends BaseController
         if (!$withdrawModel) {
             return $this->message('数据不存在或已被删除!', '', error);
         }
-        $withdrawModel = $withdrawModel->toArray();
 
         return view('finance.withdraw.withdraw-info', [
             'item' => $withdrawModel,
@@ -223,6 +222,11 @@ class WithdrawController extends BaseController
 
             $resultPay = WithdrawService::wechatWithdrawPay($withdraw, $remark);
             Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "微信打款中!");
+
+        } elseif ($payWay == '4') {
+            //手动打款
+            $resultPay = true;
+            Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "手动打款!");
 
         }
 
