@@ -17,6 +17,17 @@ use Ixudra\Curl\Facades\Curl;
 
 class MenuController extends BaseController
 {
+    public function test()
+    {
+        $data = [
+            'order_sn' => 'RV20170609113141298286',
+            'pay_sn'    => 123
+        ];
+
+        $result = (new BalanceService())->payResult($data);
+
+        dd($result);
+    }
     /**
      * 菜单功能停止对外使用，（菜单表示控制权限js，随意修改会导致js失效，同时路由比对权限）
      *
