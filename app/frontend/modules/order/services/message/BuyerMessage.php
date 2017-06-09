@@ -17,12 +17,11 @@ class BuyerMessage extends Message
         if(empty($this->templateId)){
             return ;
         }
-        $openid = Member::getOpenId($this->order->uid);
-        if (empty($openid)) {
-            return;
+
+        $noticeMember = Member::getMemberByUid($this->order->uid)->with('hasOneFans')->first();
+        if (!empty($noticeMember->hasOneFans->openid)) {
+            $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($noticeMember->hasOneFans->openid)->send();
         }
-        //客户发送消息通知
-        $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($openid)->send();
 
     }
 
