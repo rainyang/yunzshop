@@ -186,6 +186,7 @@ class BalanceService extends BaseBalanceService
             return $value['enough'];
         }));
         rsort($sale);
+        file_put_contents(storage_path('logs/sale.log'), $sale);
         foreach ($sale as $key) {
             if (empty($key['enough']) || empty($key['give'])) {
                 continue;
@@ -201,6 +202,7 @@ class BalanceService extends BaseBalanceService
                 break;
             }
         }
+        file_put_contents(storage_path('logs/recharge.log'), $result);
         if ($result) {
             $result = array(
                 'member_id' => $this->data['member_id'],
