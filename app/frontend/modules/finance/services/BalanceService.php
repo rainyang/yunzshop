@@ -112,7 +112,7 @@ class BalanceService extends BaseBalanceService
                 'operator_id'   => $rechargeMode->member_id,
                 'change_value'  => $rechargeMode->money,
             );
-            file_put_contents(storage_path('logs/data.log'), print_r($data,true));
+            file_put_contents(storage_path('logs/data.log'), print_r($this->data,true));
             //$result = $this->balanceChange($this->data);
             $result = (new BalanceChange())->recharge($this->data);
             file_put_contents(storage_path('logs/result.log'), print_r($result,true));
