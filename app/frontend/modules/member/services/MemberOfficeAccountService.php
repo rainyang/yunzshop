@@ -128,7 +128,12 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $mc_mapping_fans_model->uid;
         }
 
-        if (!empty($UnionidInfo['unionid']) && !empty($member_model) && !empty($fans_mode) && !empty($member_shop_info_model)) {
+        \Log::debug('UnionidInfo', $UnionidInfo);
+        \Log::debug('member_model', $member_model);
+        \Log::debug('mc_mapping_fans_model', $mc_mapping_fans_model);
+        \Log::debug('member_shop_info_model', $member_shop_info_model);
+
+        if (!empty($UnionidInfo['unionid']) && !empty($member_model) && !empty($mc_mapping_fans_model) && !empty($member_shop_info_model)) {
             $types = explode('|', $UnionidInfo['type']);
             $member_id = $UnionidInfo['member_id'];
 
