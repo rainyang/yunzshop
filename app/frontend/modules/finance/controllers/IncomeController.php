@@ -11,7 +11,9 @@ namespace app\frontend\modules\finance\controllers;
 
 use app\common\components\ApiController;
 use app\common\components\BaseController;
+use app\common\facades\Setting;
 use app\common\models\Income;
+use app\common\services\finance\IncomeService;
 use app\common\services\Pay;
 use app\common\services\PayFactory;
 use app\frontend\modules\finance\models\Withdraw;
@@ -160,6 +162,7 @@ class IncomeController extends ApiController
                     'poundage' => $poundage,
                     'poundage_rate' => $set[$key]['poundage_rate'],
                     'can' => true,
+                    'roll_out_limit' => $set[$key]['roll_out_limit'],
                     'selected' => true,
                 ];
             } else {
@@ -172,6 +175,7 @@ class IncomeController extends ApiController
                     'poundage' => $poundage,
                     'poundage_rate' => $set[$key]['poundage_rate'],
                     'can' => false,
+                    'roll_out_limit' => $set[$key]['roll_out_limit'],
                     'selected' => false,
                 ];
             }
@@ -299,6 +303,17 @@ class IncomeController extends ApiController
         }
         Log::info("Withdraw - data", $data);
         return Withdraw::insert($data);
+    }
+
+    public function getIncomeWithdrawMode()
+    {
+        //finance.income.get-income-withdraw-mode
+        
+        $incomeWithdrawMode= IncomeService::getIncomeWithdrawMode();
+
+        if ($incomeWithdrawMode) {
+            return $this->successJson('获取数据成功!', $incomeWithdrawMode);
+        }
     }
 
 }
