@@ -149,17 +149,17 @@ class MemberOfficeAccountService extends MemberService
         } else {
             \Log::debug('添加新会员');
 
-            if (!empty($member_model) && empty($mc_mapping_fans_model)) {
+            if (empty($member_model) && empty($mc_mapping_fans_model)) {
+                $member_id = $this->addMemberInfo($uniacid, $userinfo);
+            } elseif (!empty($member_model) && empty($mc_mapping_fans_model)) {
                 $member_id = $member_model->uid;
 
                 $this->updateMainInfo($member_id, $userinfo);
                 $this->addFansInfo($member_id, $uniacid, $userinfo);
-            } else {
-                $member_id = $this->addMemberInfo($uniacid, $userinfo);
+            }
 
-                if ($member_id === false) {
-                    return show_json(8, '保存用户信息失败');
-                }
+            if ($member_id === false) {
+                return show_json(8, '保存用户信息失败');
             }
 
             $this->addSubMemberInfo($uniacid, $member_id);
@@ -198,20 +198,20 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $fans_mode->uid;
         }
 
-        if (!empty($member_model) && !empty($fans_mode) && !empty($member_shop_info_model)) {
+        if (!empty($member_model) && !empty($fans_mode)) {
             \Log::debug('微信登陆更新');
 
             $this->updateMemberInfo($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
 
-            if (!empty($member_model) && empty($fans_mode)) {
+            if (empty($member_model) && empty($fans_mode)) {
+                $member_id = $this->addMemberInfo($uniacid, $userinfo);
+            } elseif (!empty($member_model) && empty($fans_mode)) {
                 $member_id = $member_model->uid;
 
                 $this->updateMainInfo($member_id, $userinfo);
                 $this->addFansInfo($member_id, $uniacid, $userinfo);
-            } else {
-                $member_id = $this->addMemberInfo($uniacid, $userinfo);
             }
 
             if ($member_id === false) {
