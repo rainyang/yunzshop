@@ -158,7 +158,7 @@ class SendCouponController extends BaseController
                 $this->log($log, $couponModel, $memberId);
             }
 
-            if(!empty($responseData['title']) && $memberOpenid){
+            if(!empty($responseData['title']) && $memberOpenid){ //没有关注公众号的用户是没有 openid
                 $templateId = \Setting::get('coupon_template_id'); //模板消息ID
                 $nickname = Member::getMemberById($memberId)->nickname;
                 $dynamicData = [

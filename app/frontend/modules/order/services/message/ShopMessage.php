@@ -15,6 +15,7 @@ class ShopMessage extends Message
 {
     private function sendToShops()
     {
+
         if(empty(\Setting::get('shop.notice.salers'))){
             return ;
         }
