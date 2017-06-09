@@ -112,7 +112,7 @@ class MemberOfficeAccountService extends MemberService
     public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
+        //$userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
         $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
@@ -128,11 +128,6 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $mc_mapping_fans_model->uid;
         }
 
-        \Log::debug('UnionidInfo', $UnionidInfo);
-        \Log::debug('member_model', $member_model);
-        \Log::debug('mc_mapping_fans_model', $mc_mapping_fans_model);
-        \Log::debug('member_shop_info_model', $member_shop_info_model);
-
         if (!empty($UnionidInfo['unionid']) && !empty($member_model) && !empty($mc_mapping_fans_model) && !empty($member_shop_info_model)) {
             $types = explode('|', $UnionidInfo['type']);
             $member_id = $UnionidInfo['member_id'];
@@ -144,7 +139,7 @@ class MemberOfficeAccountService extends MemberService
                     'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
                 ));
             }
-            \Log::debug('userinfo', $userinfo);
+
             $this->updateMemberInfo($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
@@ -188,7 +183,7 @@ class MemberOfficeAccountService extends MemberService
     public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
+        //$userinfo['nickname'] = $this->filteNickname($userinfo);
         $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
 
         if ($fans_mode) {
@@ -362,7 +357,7 @@ class MemberOfficeAccountService extends MemberService
             'follow' => $userinfo['subscribe'],
             'tag' => base64_encode(serialize($userinfo))
         );
-        \Log::debug('record',$record);
+
         McMappingFansModel::updateData($member_id, $record);
     }
 
