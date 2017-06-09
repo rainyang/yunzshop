@@ -182,9 +182,15 @@ class MemberOfficeAccountService extends MemberService
      */
     public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
+        \Log::debug('userinfo', $userinfo);
         $member_id = 0;
         //$userinfo['nickname'] = $this->filteNickname($userinfo);
         $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
+
+        if (empty($fans_mode)) {
+            $this->addFansInfo($member_id, $uniacid, $userinfo);
+            $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
+        }
 
         if ($fans_mode) {
             $member_model = Member::getMemberById($fans_mode->uid);
@@ -200,9 +206,9 @@ class MemberOfficeAccountService extends MemberService
         if (!empty($member_model) && !empty($fans_mode) && !empty($member_shop_info_model)) {
             \Log::debug('微信登陆更新');
 
-            //$this->updateMemberInfo($member_id, $userinfo);
+            $this->updateMemberInfo($member_id, $userinfo);
         } else {
-            /*\Log::debug('添加新会员');
+            \Log::debug('添加新会员');
 
             if (empty($member_model) && empty($fans_mode)) {
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
@@ -224,7 +230,7 @@ class MemberOfficeAccountService extends MemberService
                 Member::createRealtion($member_id, $upperMemberId);
             } else {
                 Member::createRealtion($member_id);
-            }*/
+            }
         }
 
         return $member_id;
