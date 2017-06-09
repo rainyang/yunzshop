@@ -112,7 +112,6 @@ class MemberOfficeAccountService extends MemberService
     public function unionidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
-        $userinfo['nickname'] = stripslashes($userinfo['nickname']);//$this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
         $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
@@ -127,11 +126,6 @@ class MemberOfficeAccountService extends MemberService
 
             $member_id = $mc_mapping_fans_model->uid;
         }
-
-        \Log::debug('UnionidInfo', $UnionidInfo);
-        \Log::debug('member_model', $member_model);
-        \Log::debug('mc_mapping_fans_model', $mc_mapping_fans_model);
-        \Log::debug('member_shop_info_model', $member_shop_info_model);
 
         if (!empty($UnionidInfo['unionid']) && !empty($member_model) && !empty($mc_mapping_fans_model) && !empty($member_shop_info_model)) {
             $types = explode('|', $UnionidInfo['type']);
@@ -188,7 +182,7 @@ class MemberOfficeAccountService extends MemberService
     public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
     {
         $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
+        
         $fans_mode = McMappingFansModel::getUId($userinfo['openid']);
 
         if ($fans_mode) {
