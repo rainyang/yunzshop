@@ -25,6 +25,8 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
+use app\common\services\Storage;
+use Illuminate\Filesystem\Filesystem;
 
 
 class MemberController extends ApiController
@@ -597,4 +599,98 @@ class MemberController extends ApiController
 
         return $this->errorJson('暂无数据', []);
     }
+
+    //合成推广海报
+    public function createPoster()
+    {
+        $member_id = \YunShop::app()->getMemberId();
+
+        $shopInfo = Setting::get('shop.shop');
+        $shopName = $shopInfo['name'] ?: '商城'; //todo 默认值需要更新
+        $shopLogo = $shopInfo['logo'] ? replace_yunshop(tomedia($shopInfo['logo'])) : base_path().'/static/images/logo.png'; //todo 默认值需要更新
+        $shopImg = $shopInfo['signimg'] ? replace_yunshop(tomedia($shopInfo['signimg'])) : base_path().'/static/images/photo-mr.jpg'; //todo 默认值需要更新
+        $qrcode = MemberModel::getAgentQR();
+
+        $uniacid = \YunShop::app()->uniacid;
+        $path = storage_path('app/public/personalposter/'.$uniacid);
+        if (!file_exists($path)) {
+            (new Filesystem)->makeDirectory($path);
+        }
+        $md5 = md5($member_id.$shopInfo['name'].$shopInfo['logo'].$shopInfo['signimg']); //用于标识组成元素是否有变化
+        $extend = '.png';
+        $file = $md5.$extend;
+
+        if(!file_exists($path.'/'.$file)){
+            $targetImg = imagecreatetruecolor(320, 540);
+            $white = imagecolorallocate($targetImg, 255, 255, 255);
+            imagefill($targetImg,0,0,$white);
+
+            $imgSource = imagecreatefromstring(file_get_contents($shopImg));
+            $logoSource = imagecreatefromstring(file_get_contents($shopLogo));
+            $qrSource = imagecreatefromstring(file_get_contents($qrcode));
+            $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path().'/static/app/images/ewm.png'));
+            $mergeData = [
+                'dst_left' => 100,
+                'dst_top' => 10,
+                'dst_width' => 40,
+                'dst_height' => 40,
+            ];
+            self::mergeImage($targetImg, $logoSource, $mergeData); //合并商城logo图片
+            $mergeData = [
+                'size' => 15,
+                'left' => 150,
+                'top' => 37,
+            ];
+            self::mergeText($targetImg, $shopName, $mergeData);//合并商城名称(文字)
+            $mergeData = [
+                'dst_left' => 0,
+                'dst_top' => 60,
+                'dst_width' => 320,
+                'dst_height' => 320,
+            ];
+            self::mergeImage($targetImg, $imgSource, $mergeData); //合并商城海报图片
+            $mergeData = [
+                'dst_left' => 0,
+                'dst_top' => 380,
+                'dst_width' => 160,
+                'dst_height' => 160,
+            ];
+            self::mergeImage($targetImg, $fingerPrintImg, $mergeData); //合并指纹图片
+            $mergeData = [
+                'dst_left' => 160,
+                'dst_top' => 380,
+                'dst_width' => 160,
+                'dst_height' => 160,
+            ];
+            self::mergeImage($targetImg, $qrSource, $mergeData); //合并二维码图片
+
+            header("Content-Type: image/png");
+            $imgPath = $path . "/" . $file;
+            imagepng($targetImg, $imgPath);
+        }
+
+        return $this->successJson('ok',$path.'/'.$file);
+    }
+
+    //合并图片并指定图片大小
+    private static function mergeImage($destinationImg, $sourceImg, $data)
+    {
+        $w = imagesx($sourceImg);
+        $h = imagesy($sourceImg);
+        imagecopyresized($destinationImg, $sourceImg, $data['dst_left'], $data['dst_top'], 0, 0, $data['dst_width'], $data['dst_height'], $w, $h);
+        imagedestroy($sourceImg);
+        return $destinationImg;
+    }
+
+    //合并字符串
+    private static function mergeText($destinationImg, $text, $data)
+    {
+        putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
+        $font = "source_han_sans";
+
+        $black = imagecolorallocate($destinationImg, 0, 0, 0);
+        imagettftext($destinationImg, $data['size'], 0, $data['left'], $data['top'], $black, $font, $text);
+        return $destinationImg;
+    }
+
 }
