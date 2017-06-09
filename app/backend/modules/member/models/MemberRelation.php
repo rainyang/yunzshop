@@ -10,6 +10,8 @@ namespace app\backend\modules\member\models;
 
 use app\backend\models\BackendModel;
 use app\backend\modules\order\models\Order;
+use app\common\events\member\MemberRelationEvent;
+use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 
 class MemberRelation extends BackendModel
@@ -93,6 +95,7 @@ class MemberRelation extends BackendModel
             if ($info['become_check'] == 0) {
                 $member_info->is_agent = 1;
                 $member_info->status = 2;
+
                 $member_info->save();
             }
         }
@@ -195,7 +198,7 @@ class MemberRelation extends BackendModel
      * @param $mid
      * @param MemberShopInfo $user
      */
-    public function becomeChildAgent($mid, MemberShopInfo $model)
+    public function becomeChildAgent($mid, \app\common\models\MemberShopInfo $model)
     {
         $set = self::getSetInfo()->first();
 
@@ -230,7 +233,10 @@ class MemberRelation extends BackendModel
                 if (empty($become_child)) {
                     $this->changeChildAgent($mid, $model);
 
-                    // TODO message notice
+                    \Log::debug('###998.mid: '.$mid);
+
+                    //notice
+                    self::sendAgentNotify($member->member_id, $mid);
                 } else {
                     $model->inviter = $parent->member_id;
 
@@ -246,7 +252,8 @@ class MemberRelation extends BackendModel
                 $member->status = 2;
                 $member->agent_time = time();
 
-                // TODO message notice
+                //message notice
+                self::sendGeneralizeNotify($member->member_id);
             } else {
                 $member->status = 1;
             }
@@ -261,7 +268,7 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public static function checkOrderConfirm()
+    public static function checkOrderConfirm($uid)
     {
         $set = self::getSetInfo()->first();
 
@@ -269,7 +276,7 @@ class MemberRelation extends BackendModel
             return;
         }
 
-        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $member = SubMemberModel::getMemberShopInfo($uid);
 
         if (empty($member)) {
             return;
@@ -293,7 +300,8 @@ class MemberRelation extends BackendModel
 
                     $member->save();
 
-                    // TODO message notice
+                    //message notice
+                    self::sendAgentNotify($member->member_id, $parent->member_id);
                 }
             }
         }
@@ -308,15 +316,15 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public static function checkOrderPay()
+    public static function checkOrderPay($uid)
     {
         $set = self::getSetInfo()->first();
-
+        \Log::debug('付款后：'. $uid);
         if (empty($set)) {
             return;
         }
 
-        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        $member = SubMemberModel::getMemberShopInfo($uid);
         if (empty($member)) {
             return;
         }
@@ -340,7 +348,8 @@ class MemberRelation extends BackendModel
 
                     $member->save();
 
-                    // TODO message notice
+                    //message notice
+                    self::sendAgentNotify($member->member_id, $parent->member_id);
                 }
             }
         }
@@ -357,7 +366,8 @@ class MemberRelation extends BackendModel
                     $member->is_agent = 1;
                     $member->agent_time = time();
 
-                    // TODO message notice
+                    //message notice
+                    self::sendGeneralizeNotify($member->member_id);
                 }
             }
         }
@@ -378,7 +388,8 @@ class MemberRelation extends BackendModel
 
                     if ($set->become == '2') {
                         $ordercount = Order::getCostTotalNum($member->member_id);
-
+                        \Log::debug('用户：'. $ordercount);
+                        \Log::debug('系统：'. intval($set->become_ordercount));
                         $can = $ordercount >= intval($set->become_ordercount);
                     } else if ($set->become == '3') {
                         $moneycount = Order::getCostTotalPrice($member->member_id);
@@ -395,7 +406,8 @@ class MemberRelation extends BackendModel
                             $member->status = 2;
                             $member->agent_time = time();
 
-                            // TODO message notice
+                            //message notice
+                            self::sendGeneralizeNotify($member->member_id);
                         } else {
                             $member->status = 1;
                         }
@@ -414,23 +426,24 @@ class MemberRelation extends BackendModel
      *
      * @return void
      */
-    public static function checkOrderFinish()
+    public static function checkOrderFinish($uid)
     {
         $set = self::getSetInfo()->first();
-
+\Log::debug('订单完成'. $uid);
         if (empty($set)) {
             return;
         }
-
-        $member = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
+        \Log::debug('关系链设置');
+        $member = SubMemberModel::getMemberShopInfo($uid);
 
         if (empty($member)) {
             return;
         }
-
+        \Log::debug('会员存在');
         $isagent = $member->is_agent == 1 && $member->status == 2;
-
+        \Log::debug('条件完成后进入');
         if (!$isagent && $set->become_order == 1) {
+            \Log::debug('条件完成后');
             if ($set->become == 2 || $set->become == 3) {
                 $parentisagent = true;
 
@@ -446,7 +459,8 @@ class MemberRelation extends BackendModel
 
                     if ($set->become == '2') {
                         $ordercount = Order::getCostTotalNum($member->member_id);
-
+                        \Log::debug('系统：' . intval($set->become_ordercount));
+                        \Log::debug('会员：' . $ordercount);
                         $can = $ordercount >= intval($set->become_ordercount);
                     } else if ($set->become == '3') {
                         $moneycount = Order::getCostTotalPrice($member->member_id);
@@ -463,7 +477,8 @@ class MemberRelation extends BackendModel
                             $member->status = 2;
                             $member->agent_time = time();
 
-                            // TODO message notice
+                            //message notice
+                            self::sendGeneralizeNotify($member->member_id);
                         } else {
                             $member->status = 1;
                         }
@@ -473,5 +488,80 @@ class MemberRelation extends BackendModel
                 }
             }
         }
+    }
+
+    /**
+     * 获得推广权限通知
+     *
+     * @param $uid
+     */
+    public static function sendGeneralizeNotify($uid)
+    {
+        \Log::debug('获得推广权限通知');
+
+        $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
+
+        event(new MemberRelationEvent($member));
+
+        $member->follow = $member->hasOneFans->follow;
+        $member->openid = $member->hasOneFans->openid;
+
+        self::generalizeMessage($member);
+    }
+
+    public static function generalizeMessage($member)
+    {
+        $msg_set = \Setting::get('relation_base');
+        if ($msg_set['template_id'] && ($member->follow == 1)) {
+            $message = $msg_set['generalize_msg'];
+            $message = str_replace('[昵称]', $member->nickname, $message);
+            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
+            $msg = [
+                "first" => '您好',
+                "keyword1" => "获得推广权限通知",
+                "keyword2" => $message,
+                "remark" => "",
+            ];
+
+            MessageService::notice($msg_set['template_id'], $msg, $member->openid);
+        }
+        return;
+    }
+
+    /**
+     * 新增下线通知
+     *
+     * @param $uid
+     */
+    public static function sendAgentNotify($uid, $puid)
+    {
+        \Log::debug('新增下线通知');
+        $parent = Member::getMemberByUid($puid)->with('hasOneFans')->first();
+        $parent->follow = $parent->hasOneFans->follow;
+        $parent->openid = $parent->hasOneFans->openid;
+
+        $member = Member::getMemberByUid($uid)->first();
+
+        self::agentMessage($parent, $member);
+    }
+
+    public static function agentMessage($parent, $member)
+    {
+        $msg_set = \Setting::get('relation_base');
+        if ($msg_set['template_id'] && ($parent->follow == 1)) {
+            $message = $msg_set['agent_msg'];
+            $message = str_replace('[昵称]', $parent->nickname, $message);
+            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
+            $message = str_replace('[下级昵称]', $member->nickname, $message);
+            $msg = [
+                "first" => '您好',
+                "keyword1" => "新增下线通知",
+                "keyword2" => $message,
+                "remark" => "",
+            ];
+
+            MessageService::notice($msg_set['template_id'], $msg, $parent->openid);
+        }
+        return;
     }
 }

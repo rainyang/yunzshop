@@ -51,4 +51,43 @@ class PermissionService
         }
         return $permissions;
     }
+
+
+    //test
+
+    public static function getPermission()
+    {
+        $permissions = \Config::get('menu');
+
+        //一级循环
+        foreach ($permissions as $keyOne => &$permissionOne) {
+            if (isset($permissionOne['child']) && $permissionOne['child']) {
+                $permissionOne['child'] = static::getAllChild($permissionOne['child']);
+            }
+        }
+        return $permissions;
+    }
+
+    public static function getAllChild($permissions)
+    {
+        foreach ($permissions as $keyTwo => &$permissionTwo) {
+
+            if (isset($permissionTwo['child']) && $permissionTwo['child']) {
+                //三级循环
+                foreach ($permissionTwo['child'] as $keyThree => $permissionThree) {
+                    //dump($keyThree);
+                    //dump($permissionThree);
+                    //如果三级有子集的提出，改为和二级同级别
+                    if (isset($permissionThree['child']) && $permissionThree['child']) {
+                        //$permissionThree['']
+                        $permissions[$keyThree] = $permissionThree;
+                        unset($permissionTwo['child'][$keyThree]);
+
+                        $permissions = static::getAllChild($permissions);
+                    }
+                }
+            }
+        }
+        return $permissions;
+    }
 }
