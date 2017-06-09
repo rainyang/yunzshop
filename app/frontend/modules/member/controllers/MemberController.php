@@ -25,9 +25,6 @@ use app\frontend\modules\member\services\MemberService;
 use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Str;
-use app\common\services\Storage;
-use Illuminate\Filesystem\Filesystem;
-
 
 class MemberController extends ApiController
 {
@@ -65,13 +62,7 @@ class MemberController extends ApiController
                     $data['relation_switch'] = 0;
                 }
 
-                $shopInfo = Setting::get('shop.shop');
-                $data['poster'] = [ //个人中心的推广海报
-                    'name' => $shopInfo['name'],
-                    'logo' => replace_yunshop(tomedia($shopInfo['logo'])),
-                    'img' => replace_yunshop(tomedia($shopInfo['signimg'])),
-                    'qr' => MemberModel::getAgentQR(),
-                ];
+                $data['poster'] = $this->createPoster(); //个人中心的推广海报
 
               //  $data['nickname'] = @iconv("utf-8", "gbk", $data['nickname']);
               //  $data['nickname'] = @iconv("gbk", "utf-8", $data['nickname']);
@@ -601,7 +592,7 @@ class MemberController extends ApiController
     }
 
     //合成推广海报
-    public function createPoster()
+    private function createPoster()
     {
         $member_id = \YunShop::app()->getMemberId();
 
@@ -614,7 +605,8 @@ class MemberController extends ApiController
         $uniacid = \YunShop::app()->uniacid;
         $path = storage_path('app/public/personalposter/'.$uniacid);
         if (!file_exists($path)) {
-            (new Filesystem)->makeDirectory($path);
+            load()->func('file');
+            mkdirs($path);
         }
         $md5 = md5($member_id.$shopInfo['name'].$shopInfo['logo'].$shopInfo['signimg']); //用于标识组成元素是否有变化
         $extend = '.png';
@@ -630,7 +622,7 @@ class MemberController extends ApiController
             $qrSource = imagecreatefromstring(file_get_contents($qrcode));
             $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path().'/static/app/images/ewm.png'));
             $mergeData = [
-                'dst_left' => 100,
+                'dst_left' => 90,
                 'dst_top' => 10,
                 'dst_width' => 40,
                 'dst_height' => 40,
@@ -669,7 +661,8 @@ class MemberController extends ApiController
             imagepng($targetImg, $imgPath);
         }
 
-        return $this->successJson('ok',$path.'/'.$file);
+        $imgUrl = request()->getSchemeAndHttpHost() . '/'. substr($path, strpos($path, 'addons')) . '/' . $file;
+        return $imgUrl;
     }
 
     //合并图片并指定图片大小
