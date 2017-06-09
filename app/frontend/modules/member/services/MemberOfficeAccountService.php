@@ -193,6 +193,10 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $fans_mode->uid;
         }
 
+        \Log::debug('member_model',$member_model);
+        \Log::debug('fans_mode',$fans_mode);
+        \Log::debug('member_shop_info_model',$member_shop_info_model);
+
         if (!empty($member_model) && !empty($fans_mode) && !empty($member_shop_info_model)) {
             \Log::debug('微信登陆更新');
 
@@ -204,7 +208,7 @@ class MemberOfficeAccountService extends MemberService
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
             } elseif (!empty($member_model) && empty($fans_mode)) {
                 $member_id = $member_model->uid;
-
+\Log::debug('update');
                 $this->updateMainInfo($member_id, $userinfo);
                 $this->addFansInfo($member_id, $uniacid, $userinfo);
             }
