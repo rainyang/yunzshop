@@ -201,6 +201,7 @@ class BalanceService extends BaseBalanceService
                 break;
             }
         }
+        file_put_contents(storage_path('logs/recharge.log'), $result);
         if ($result) {
             $result = array(
                 'member_id' => $this->data['member_id'],
