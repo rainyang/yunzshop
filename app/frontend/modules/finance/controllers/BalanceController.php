@@ -238,14 +238,14 @@ class BalanceController extends ApiController
             'transferor'    => \YunShop::app()->getMemberId(),
             'recipient'     => \YunShop::request()->recipient,*/
 
-            'member_id'     => \YunShop::app()->getMemberId(),
+            'member_id'     =>  $this->model->transferor,
             'remark'        => '会员【ID:'.$this->model->transferor.'】余额转让会员【ID：'.$this->model->recipient. '】' . $this->model->money . '元',
             'source'        => ConstService::SOURCE_TRANSFER,
             'relation'      => '',
             'operator'      => ConstService::OPERATOR_MEMBER,
-            'operator_id'   => $this->model->member_id,
+            'operator_id'   => $this->model->transferor,
             'change_value'  => $this->model->money,
-            'recipient'     => \YunShop::request()->recipient,
+            'recipient'     =>  $this->model->recipient,
         );
     }
 
