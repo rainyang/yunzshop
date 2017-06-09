@@ -78,7 +78,7 @@ class ApplyController extends ApiController
         if ($order < Order::WAIT_SEND) {
             throw new AppException('订单未付款,无法退款');
         }
-        if (RefundApply::where('order_id', $request->input('order_id'))->count()) {
+        if (RefundApply::where('order_id', $request->input('order_id'))->where('status', '>=', RefundApply::WAIT_CHECK)->count()) {
             throw new AppException('申请已提交,处理中');
         }
         $refundApply = new RefundApply($request->only(['reason', 'content', 'refund_type', 'order_id']));
