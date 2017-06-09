@@ -144,7 +144,7 @@ class MemberOfficeAccountService extends MemberService
                     'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
                 ));
             }
-
+            \Log::debug('userinfo', $userinfo);
             $this->updateMemberInfo($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
@@ -198,7 +198,7 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $fans_mode->uid;
         }
 
-        if (!empty($member_model) && !empty($fans_mode)) {
+        if (!empty($member_model) && !empty($fans_mode) && !empty($member_shop_info_model)) {
             \Log::debug('微信登陆更新');
 
             $this->updateMemberInfo($member_id, $userinfo);
@@ -362,6 +362,7 @@ class MemberOfficeAccountService extends MemberService
             'follow' => $userinfo['subscribe'],
             'tag' => base64_encode(serialize($userinfo))
         );
+        \Log::debug('record',$record);
         McMappingFansModel::updateData($member_id, $record);
     }
 
