@@ -9,6 +9,7 @@
 namespace app\backend\controllers;
 
 
+use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
 use app\common\services\JsonRpc;
 use app\frontend\modules\member\models\SubMemberModel;
@@ -38,5 +39,11 @@ class TestController extends BaseController
         echo 'ko';
     }
 
+    }
+
+    public function relation()
+    {
+        MemberRelation::checkOrderPay();
+        MemberRelation::checkOrderFinish();
     }
 }

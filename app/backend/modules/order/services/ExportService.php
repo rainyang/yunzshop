@@ -33,12 +33,11 @@ class ExportService
     }
 
     protected function getOrder($order){
-        $address = json_decode($order['address']['address']);
         $order['pay_sn'] = $order['has_one_order_pay']['pay_sn'];
         $order['nickname'] = $order['belongs_to_member']['nickname'];
-        $order['realname'] = $order['belongs_to_member']['realname'];
-        $order['mobile'] = $order['belongs_to_member']['mobile'];
-        $order['address'] = $address->province . $address->city . $address->area . $address->address;
+        $order['realname'] = $order['address']['realname'];
+        $order['mobile'] = $order['address']['mobile'];
+        $order['address'] = $order['address']['address'];
 
         $order += $this->getGoods($order);
 
@@ -47,6 +46,8 @@ class ExportService
         $order += $this->setOrder($order);
 
         $order['pay_type'] = $order['has_one_pay_type']['name'];
+
+        $order['pay_sn'] = $order['has_one_order_pay']['pay_sn'];
 
         $order['remark'] = $order['has_one_order_remark']['remark'];
         $order['express_company_name'] = $order['has_one_order_express']['express_company_name'];
@@ -80,7 +81,7 @@ class ExportService
         foreach ($order['has_many_order_goods'] as $key => $goods) {
             if ($key == 0) {
                 $order['goods_title'] = $goods['title'];
-                $order['goods_sn'] = $goods['goods_sn'];
+                $order['goods_sn'] = $goods['goods']['goods_sn'];
                 $order['total'] = $goods['total'];
             }
         }
