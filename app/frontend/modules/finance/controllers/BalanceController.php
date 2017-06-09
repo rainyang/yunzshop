@@ -46,7 +46,7 @@ class BalanceController extends ApiController
         $balanceSet = new BalanceService();
         $data = [
             'balance'       => $this->memberInfo->credit2 ?: 0,
-            'wechat'         => $balanceSet->withdrawWechat(),
+            'wechat'        => $balanceSet->withdrawWechat(),
             'alipay'        => $balanceSet->withdrawAlipay(),
             'poundage'      => $balanceSet->withdrawPoundage(),
         ];
@@ -229,15 +229,6 @@ class BalanceController extends ApiController
     private function getChangeBalanceDataToTransfer()
     {
         return array(
-            /*'serial_number'     => '',
-            'money'             => $this->model->money,
-            'remark'            => '会员【ID:'.$this->model->transferor.'】余额转让会员【ID：'.$this->model->recipient. '】' . $this->model->money . '元',
-            'service_type'      => BalanceCommon::BALANCE_TRANSFER,
-            'operator'          => BalanceCommon::OPERATOR_MEMBER,
-            'operator_id'       => $this->model->transferor,
-            'transferor'    => \YunShop::app()->getMemberId(),
-            'recipient'     => \YunShop::request()->recipient,*/
-
             'member_id'     =>  $this->model->transferor,
             'remark'        => '会员【ID:'.$this->model->transferor.'】余额转让会员【ID：'.$this->model->recipient. '】' . $this->model->money . '元',
             'source'        => ConstService::SOURCE_TRANSFER,
@@ -245,7 +236,7 @@ class BalanceController extends ApiController
             'operator'      => ConstService::OPERATOR_MEMBER,
             'operator_id'   => $this->model->transferor,
             'change_value'  => $this->model->money,
-            'recipient'     =>  $this->model->recipient,
+            'recipient'     => $this->model->recipient,
         );
     }
 
