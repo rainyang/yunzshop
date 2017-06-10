@@ -31,11 +31,11 @@ class BalanceService
     public function getBalanceSet()
     {
         return array(
-            'recharge'          => $this->_recharge_set['recharge'],
-            'transfer'          => $this->_recharge_set['transfer'],
-            'withdraw'          => $this->_withdraw_set['status'],
-            'withdrawToWechat'  => $this->_withdraw_set['wechat'],
-            'withdrawToAlipay'  => $this->_withdraw_set['alipay']
+            'recharge'          => $this->_recharge_set['recharge'] ? true : false,
+            'transfer'          => $this->_recharge_set['transfer'] ? true : false,
+            'withdraw'          => $this->_withdraw_set['status'] ? true : false,
+            'withdrawToWechat'  => $this->_withdraw_set['wechat'] ? true : false,
+            'withdrawToAlipay'  => $this->_withdraw_set['alipay'] ? true : false
         );
     }
 
