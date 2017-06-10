@@ -60,6 +60,7 @@ class MemberOfficeAccountService extends MemberService
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
             }
         } else {
+            \Log::debug('session', [Session::get('member_id')]);
             $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
         }
 
@@ -77,6 +78,11 @@ class MemberOfficeAccountService extends MemberService
             }
 
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
+            //fans
+
+            \Log::debug('会员信息', $userinfo);
+            $fansmode = McMappingFansModel::getUId($userinfo['openid']);
+            \Log::debug('fansmode', $fansmode);
 
             \Log::debug('会员信息', $userinfo);
 
@@ -198,10 +204,12 @@ class MemberOfficeAccountService extends MemberService
 
             if ($fans_mode->uid) {
                 $member_id = $fans_mode->uid;
+
                 \Log::debug('update member');
                 $this->updateMemberInfo($member_id, $userinfo);
             } else {
                 \Log::debug('add member');
+
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
                 if ($member_id === false) {
@@ -272,7 +280,7 @@ class MemberOfficeAccountService extends MemberService
             'uniacid' => $uniacid,
             'groupid' => $default_group->groupid
         ));
-
+        \Log::debug('add mapping fans');
         //添加mapping_fans表
         McMappingFansModel::insertData($userinfo, array(
             'uid' => $uid,
@@ -383,7 +391,7 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _getAuthUrl($appId, $url, $state)
     {
-       return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_userinfo&state={$state}#wechat_redirect";
+        return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" . $appId . "&redirect_uri=" . urlencode($url) . "&response_type=code&scope=snsapi_userinfo&state={$state}#wechat_redirect";
     }
 
     /**
@@ -412,7 +420,7 @@ class MemberOfficeAccountService extends MemberService
      */
     private function _getTokenUrl($appId, $appSecret, $code)
     {
-       return "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appId . "&secret=" . $appSecret . "&code=" . $code . "&grant_type=authorization_code";
+        return "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appId . "&secret=" . $appSecret . "&code=" . $code . "&grant_type=authorization_code";
     }
 
     /**
@@ -457,7 +465,7 @@ class MemberOfficeAccountService extends MemberService
     private function _setClientRequestUrl()
     {
         if (\YunShop::request()->yz_redirect) {
-           Session::set('client_url', base64_decode(\YunShop::request()->yz_redirect));
+            Session::set('client_url', base64_decode(\YunShop::request()->yz_redirect));
         } else {
             Session::set('client_url', '');
         }
