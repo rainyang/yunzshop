@@ -72,7 +72,7 @@ class BalanceController extends ApiController
             $result['member_credit2'] = $memberInfo->credit2;
 
             $pay = \Setting::get('shop.pay');
-            $result['wechat'] = $pay['wechat'] ? true : false;
+            $result['wechat'] = $pay['weixin'] ? true : false;
             $result['alipay'] = $pay['alipay'] ? true : false;
 
             return $this->successJson('获取数据成功', $result);
