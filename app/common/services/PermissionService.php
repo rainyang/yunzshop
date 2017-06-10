@@ -32,6 +32,8 @@ class PermissionService
             return false;
         }
         */
+
+
         //todo 测试临时修改
         if (\Yunshop::isPHPUnit()) {
             return true;
@@ -93,4 +95,5 @@ class PermissionService
     {
         return \YunShop::app()->isfounder === true;
     }
+
 }

@@ -418,6 +418,9 @@ class MemberModel extends Member
             'data' => $member_info['credit1']
             ];
 
+        $member_info['nickname'] = @iconv("utf-8", "gbk", $member_info['nickname']);
+        $member_info['nickname'] = @iconv("gbk", "utf-8", $member_info['nickname']);
+
         return $member_info;
     }
 
