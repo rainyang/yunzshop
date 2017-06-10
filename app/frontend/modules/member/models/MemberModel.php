@@ -45,7 +45,7 @@ class MemberModel extends Member
     public static function insertData($userinfo, $data)
     {
         $member_model = new MemberModel();
-\Log::debug('mc_member', $userinfo);
+
         $member_model->uniacid = $data['uniacid'];
         $member_model->email = '';
         $member_model->groupid = $data['groupid'];
@@ -417,6 +417,9 @@ class MemberModel extends Member
             'text' => !empty($shop['credit1']) ? $shop['credit1'] : '积分',
             'data' => $member_info['credit1']
             ];
+
+        $member_info['nickname'] = @iconv("utf-8", "gbk", $member_info['nickname']);
+        $member_info['nickname'] = @iconv("gbk", "utf-8", $member_info['nickname']);
 
         return $member_info;
     }
