@@ -88,7 +88,7 @@ class BalanceController extends ApiController
 
         if ($result === true) {
             if (intval(\YunShop::request()->pay_type) == PayFactory::PAY_ALIPAY) {
-                return $this->successJson('支付接口对接成功', $this->model->order_sn);
+                return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn]);
             }
             return  $this->successJson('支付接口对接成功', $this->payOrder());
         }
