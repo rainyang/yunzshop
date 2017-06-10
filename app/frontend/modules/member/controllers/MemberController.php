@@ -64,9 +64,6 @@ class MemberController extends ApiController
 
                 $data['poster'] = $this->createPoster(); //个人中心的推广海报
 
-                $data['nickname'] = @iconv("utf-8", "gbk", $data['nickname']);
-                $data['nickname'] = @iconv("gbk", "utf-8", $data['nickname']);
-
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('['. $member_id .']用户不存在');
