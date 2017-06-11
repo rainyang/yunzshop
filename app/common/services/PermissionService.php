@@ -10,6 +10,7 @@ namespace app\common\services;
 
 
 use app\common\models\Menu;
+use app\common\models\user\UniAccountUser;
 use app\common\models\user\User;
 
 class PermissionService
@@ -40,6 +41,10 @@ class PermissionService
             return true;
         }
         if (self::isFounder()) {
+            return true;
+        }
+        //临时使用
+        if (static::isManager()) {
             return true;
         }
         return in_array($item, User::getAllPermissions());
@@ -92,5 +97,14 @@ class PermissionService
     public static function isFounder()
     {
         return \YunShop::app()->isfounder === true;
+    }
+
+    /**
+     * 是否是管理员 （临时使用，管理员拥有所有权限）
+     * @return bool
+     */
+    public static function isManager()
+    {
+        return UniAccountUser::uniacid()->where('role', 'manager')->where('uid',static::isAuth())->first() ? true : false;
     }
 }
