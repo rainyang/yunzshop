@@ -101,7 +101,7 @@ class AddDataImsYzMenu extends Migration
                 }
             }
 
-            $_menu = Menu::select('id')->where('url', 'order.list')->first();
+           /* $_menu = Menu::select('id')->where('url', 'order.list')->first();
             if ($_menu->id) {
                 $modelOne = Menu::select('id')->where('url', 'refund.list.refund')->first();
                 if ($modelOne) {
@@ -311,7 +311,7 @@ class AddDataImsYzMenu extends Migration
                         'deleted_at'        => NULL
                     ]);
                 }
-            }
+            }*/
 
 
 
