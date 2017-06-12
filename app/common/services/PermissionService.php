@@ -44,9 +44,9 @@ class PermissionService
             return true;
         }
         //临时使用
-        if (static::isManager()) {
+        /*if (static::isManager()) {
             return true;
-        }
+        }*/
         return in_array($item, User::getAllPermissions());
     }
 
@@ -103,8 +103,8 @@ class PermissionService
      * 是否是管理员 （临时使用，管理员拥有所有权限）
      * @return bool
      */
-    public static function isManager()
+   /* public static function isManager()
     {
         return UniAccountUser::uniacid()->where('role', 'manager')->where('uid',static::isAuth())->first() ? true : false;
-    }
+    }*/
 }
