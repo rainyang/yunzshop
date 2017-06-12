@@ -375,7 +375,20 @@ class MemberOfficeAccountService extends MemberService
         $nickname = json_encode($userinfo['nickname']);
         $nickname = preg_replace($patten, "", $nickname);
 
-        return json_decode($nickname);
+        return $this->cutNickname(json_decode($nickname));
+    }
+
+    /**
+     * 截取字符串长度
+     *
+     * @param $nickname
+     * @return string
+     */
+    private function cutNickname($nickname)
+    {
+        if (mb_strlen($nickname) > 18) {
+            return mb_substr($nickname, 0, 18);
+        }
     }
 
     /**
