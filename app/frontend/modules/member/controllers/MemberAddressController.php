@@ -80,6 +80,33 @@ class MemberAddressController extends ApiController
     {
         $addressModel = new MemberAddress();
         $requestAddress = \YunShop::request();
+        if (!\YunShop::request()->username) {
+            return $this->errorJson('收件人不能为空');
+        }
+
+        $mobile = \YunShop::request()->mobile;
+        if (!$mobile) {
+            return $this->errorJson('手机号不能为空');
+        }
+        if (!preg_match("/^1[34578]{1}\d{9}$/",$mobile)) {
+            return $this->errorJson('手机号格式不正确');
+        }
+
+        if (!\YunShop::request()->province) {
+            return $this->errorJson('请选择省份');
+        }
+
+        if (!\YunShop::request()->city) {
+            return $this->errorJson('请选择城市');
+        }
+
+        if (!\YunShop::request()->district) {
+            return $this->errorJson('请选择区域');
+        }
+
+        if (!\YunShop::request()->address) {
+            return $this->errorJson('请输入详细地址');
+        }
         if ($requestAddress) {
             $data = array(
                 'username'  => \YunShop::request()->username,
@@ -127,6 +154,35 @@ class MemberAddressController extends ApiController
         if (!$addressModel) {
             return $this->errorJson("未找到数据或已删除");
         }
+
+        if (!\YunShop::request()->username) {
+            return $this->errorJson('收件人不能为空');
+        }
+
+        $mobile = \YunShop::request()->mobile;
+        if (!$mobile) {
+            return $this->errorJson('手机号不能为空');
+        }
+        if (!preg_match("/^1[34578]{1}\d{9}$/",$mobile)) {
+            return $this->errorJson('手机号格式不正确');
+        }
+
+        if (!\YunShop::request()->province) {
+            return $this->errorJson('请选择省份');
+        }
+
+        if (!\YunShop::request()->city) {
+            return $this->errorJson('请选择城市');
+        }
+
+        if (!\YunShop::request()->district) {
+            return $this->errorJson('请选择区域');
+        }
+
+        if (!\YunShop::request()->address) {
+            return $this->errorJson('请输入详细地址');
+        }
+
         if (\YunShop::request()->address_id) {
             $requestAddress = array(
                 //'uid' => $requestAddress->uid,
@@ -134,7 +190,7 @@ class MemberAddressController extends ApiController
                 'username'      => \YunShop::request()->username,
                 'mobile'        => \YunShop::request()->mobile,
                 'zipcode'       => '',
-                'isdefault'     => \YunShop::request()->isdefault,
+                'isdefault'     => \YunShop::request()->isdefault ?: 0,
                 'province'      => \YunShop::request()->province,
                 'city'          => \YunShop::request()->city,
                 'district'      => \YunShop::request()->district,
@@ -151,7 +207,7 @@ class MemberAddressController extends ApiController
                 MemberAddress::cancelDefaultAddress($addressModel->member_id);
             }
             if ($addressModel->save()) {
-                return $this->successJson('添加收货地址成功');
+                return $this->successJson('修改收货地址成功');
             } else {
                 return $this->errorJson("写入数据出错，请重试！");
             }
