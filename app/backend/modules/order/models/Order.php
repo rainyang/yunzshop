@@ -56,7 +56,8 @@ class Order extends \app\common\models\Order
             'address',
             'hasOnePayType',
             'hasOneRefundApply' => self::refundBuilder(),
-            'hasOneOrderRemark'
+            'hasOneOrderRemark',
+            'hasOneOrderPay'
 
         ]);
         return $orders;
@@ -112,13 +113,16 @@ class Order extends \app\common\models\Order
     public function scopeSearch($order_builder, $params)
     {
         if (array_get($params, 'ambiguous.field', '') && array_get($params, 'ambiguous.string', '')) {
-            //订单
+            //订单.支付单号
             if ($params['ambiguous']['field'] == 'order') {
                 call_user_func(function () use (&$order_builder, $params) {
                     list($field, $value) = explode(':', $params['ambiguous']['string']);
                     if (isset($value)) {
                         return $order_builder->where($field, $value);
                     } else {
+                        $order_builder->whereHas('hasOneOrderPay', function ($query) use ($params) {
+                            return $query->searchLike($params['ambiguous']['string']);
+                        });
                         return $order_builder->searchLike($params['ambiguous']['string']);
                     }
                 });

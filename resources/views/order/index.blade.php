@@ -3,7 +3,7 @@
 
 @section('content')
 
-<link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
+    <link href="{{static_url('yunshop/css/order.css')}}" media="all" rel="stylesheet" type="text/css"/>
 
     <div class="w1200 m0a">
         <script type="text/javascript" src="{{static_url('js/dist/jquery.gcjs.js')}}"></script>
@@ -16,7 +16,7 @@
                     <li class="active"><a href="#">订单管理</a></li>
                 </ul>
             </div>
-            <div class="panel panel-info" >
+            <div class="panel panel-info">
                 <div class="panel-body">
                     <form action="" method="get" class="form-horizontal" role="form" id="form1">
                         @section('form')
@@ -26,91 +26,91 @@
                             <input type="hidden" name="do" value="order" id="form_do"/>
                             <input type="hidden" name="route" value="{{$url}}" id="form_p"/>
                         @show
-                            <div class="">
-                                @section('search_bar')
-                                    <div class='form-group col-sm-8 col-lg-5 col-xs-12'>
-                                        <select name="search[ambiguous][field]" id="ambiguous-field"
-                                                class="form-control" >
-                                            <option value="order"
-                                                    @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
-                                                订单号/支付号
-                                            </option>
-                                            <option value="member"
-                                                    @if( array_get($requestSearch,'ambiguous.field','')=='member')  selected="selected"@endif>
-                                                用户姓名/ID/昵称/手机号
-                                            </option>
-                                            <option value="order_goods"
-                                                    @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
-                                                商品名称/ID
-                                            </option>
-                                            <option value="dispatch"
-                                                    @if( array_get($requestSearch,'ambiguous.field','')=='dispatch')  selected="selected"@endif>
-                                                快递单号
-                                            </option>
-                                        </select>
-                                        <input  class="form-control" name="search[ambiguous][string]" type="text"
-                                               value="{{array_get($requestSearch,'ambiguous.string','')}}"
-                                               placeholder="订单号/支付单号">
-                                    </div>
-                                    <div class='form-group form-group col-sm-8 col-lg-2 col-xs-12'>
+                        <div class="">
+                            @section('search_bar')
+                                <div class='form-group col-sm-8 col-lg-5 col-xs-12'>
+                                    <select name="search[ambiguous][field]" id="ambiguous-field"
+                                            class="form-control">
+                                        <option value="order"
+                                                @if(array_get($requestSearch,'ambiguous.field','') =='order')  selected="selected"@endif >
+                                            订单号/支付号
+                                        </option>
+                                        <option value="member"
+                                                @if( array_get($requestSearch,'ambiguous.field','')=='member')  selected="selected"@endif>
+                                            用户姓名/ID/昵称/手机号
+                                        </option>
+                                        <option value="order_goods"
+                                                @if( array_get($requestSearch,'ambiguous.field','')=='order_goods')  selected="selected"@endif>
+                                            商品名称/ID
+                                        </option>
+                                        <option value="dispatch"
+                                                @if( array_get($requestSearch,'ambiguous.field','')=='dispatch')  selected="selected"@endif>
+                                            快递单号
+                                        </option>
+                                    </select>
+                                    <input class="form-control" name="search[ambiguous][string]" type="text"
+                                           value="{{array_get($requestSearch,'ambiguous.string','')}}"
+                                           placeholder="订单号/支付单号">
+                                </div>
+                                <div class='form-group form-group col-sm-8 col-lg-2 col-xs-12'>
 
-                                        <select name="search[pay_type]" class="form-control">
-                                            <option value=""
-                                                    @if( array_get($requestSearch,'pay_type',''))  selected="selected"@endif>
-                                                支付方式
-                                            </option>
-                                            <option value="1"
-                                                    @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
-                                                微信支付
-                                            </option>
-                                            <option value="2"
-                                                    @if( array_get($requestSearch,'pay_type','') == '2')  selected="selected"@endif>
-                                                支付宝支付
-                                            </option>
-                                            <option value="3"
-                                                    @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
-                                                余额支付
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class='form-group col-sm-8 col-lg-5 col-xs-12'>
+                                    <select name="search[pay_type]" class="form-control">
+                                        <option value=""
+                                                @if( array_get($requestSearch,'pay_type',''))  selected="selected"@endif>
+                                            支付方式
+                                        </option>
+                                        <option value="1"
+                                                @if( array_get($requestSearch,'pay_type','') == '1')  selected="selected"@endif>
+                                            微信支付
+                                        </option>
+                                        <option value="2"
+                                                @if( array_get($requestSearch,'pay_type','') == '2')  selected="selected"@endif>
+                                            支付宝支付
+                                        </option>
+                                        <option value="3"
+                                                @if( array_get($requestSearch,'pay_type','') == '3')  selected="selected"@endif>
+                                            余额支付
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class='form-group col-sm-8 col-lg-5 col-xs-12'>
 
-                                        <select name="search[time_range][field]" class="form-control form-time">
-                                            <option value=""
-                                                    @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
-                                                操作时间
-                                            </option>
-                                            <option value="create_time"
-                                                    @if( array_get($requestSearch,'time_range.field','')=='create_time')  selected="selected"@endif >
-                                                下单
-                                            </option>
-                                            <option value="pay_time"
-                                                    @if( array_get($requestSearch,'time_range.field','')=='pay_time')  selected="selected"@endif>
-                                                付款
-                                            </option>
-                                            <option value="send_time"
-                                                    @if( array_get($requestSearch,'time_range.field','')=='send_time')  selected="selected"@endif>
-                                                发货
-                                            </option>
-                                            <option value="finish_time"
-                                                    @if( array_get($requestSearch,'time_range.field','')=='finish_time')  selected="selected"@endif>
-                                                完成
-                                            </option>
-                                        </select>
-                                        {!! \app\backend\modules\goods\services\GoodsPrivilegeService::tpl_form_field_date(
-                                            'search[time_range]',
-                                            array(
-                                                'starttime'=>array_get($requestSearch,'time_range.start',0),
-                                                'endtime'=>array_get($requestSearch,'time_range.end',0),
-                                                'start'=>0,
-                                                'end'=>0
-                                            ),
-                                            true
-                                            )!!}
+                                    <select name="search[time_range][field]" class="form-control form-time">
+                                        <option value=""
+                                                @if( array_get($requestSearch,'time_range.field',''))selected="selected"@endif >
+                                            操作时间
+                                        </option>
+                                        <option value="create_time"
+                                                @if( array_get($requestSearch,'time_range.field','')=='create_time')  selected="selected"@endif >
+                                            下单
+                                        </option>
+                                        <option value="pay_time"
+                                                @if( array_get($requestSearch,'time_range.field','')=='pay_time')  selected="selected"@endif>
+                                            付款
+                                        </option>
+                                        <option value="send_time"
+                                                @if( array_get($requestSearch,'time_range.field','')=='send_time')  selected="selected"@endif>
+                                            发货
+                                        </option>
+                                        <option value="finish_time"
+                                                @if( array_get($requestSearch,'time_range.field','')=='finish_time')  selected="selected"@endif>
+                                            完成
+                                        </option>
+                                    </select>
+                                    {!! \app\backend\modules\goods\services\GoodsPrivilegeService::tpl_form_field_date(
+                                        'search[time_range]',
+                                        array(
+                                            'starttime'=>array_get($requestSearch,'time_range.start',0),
+                                            'endtime'=>array_get($requestSearch,'time_range.end',0),
+                                            'start'=>0,
+                                            'end'=>0
+                                        ),
+                                        true
+                                        )!!}
 
-                                    </div>
-                                @show
-                            </div>
+                                </div>
+                            @show
+                        </div>
 
                         <div class="form-group">
 
@@ -118,9 +118,9 @@
                                 <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
                                 <input type="hidden" name="token" value="{{$var['token']}}"/>
                                 @section('export')
-                                <button type="button" name="export" value="1" id="export" class="btn btn-default">导出
-                                    Excel
-                                </button>
+                                    <button type="button" name="export" value="1" id="export" class="btn btn-default">导出
+                                        Excel
+                                    </button>
                                 @show
                                 @if( $requestSearch['plugin'] != "fund")
                                     <a class="btn btn-warning"
@@ -151,140 +151,143 @@
                 </table>
 
                 @section('is_plugin')
-                @foreach ($list['data'] as $order_index => $order)
-                <div class="order-info">
-                    <table class='table order-title' >
-                        <tr>
-                            <td class="left" colspan='8' >
-                                <b>订单编号:</b> {{$order['order_sn']}}
-
-                                <b>下单时间: </b>{{$order['create_time']}}
-                                @if( $order['has_one_refund_apply'] == \app\common\models\refund\RefundApply::WAIT_RECEIVE_RETURN_GOODS)<label class='label label-primary'>客户已经寄出快递</label>@endif
-
-                                {{--@yield('shop_name')
-                                @section('shop_name','')--}}
-                                <label class="label label-info">总店</label>
-
-                                @if(!empty($order['has_one_refund_apply']))
-                                    <label class="label label-danger">{{$order['has_one_refund_apply']['refund_type_name']}}:{{$order['has_one_refund_apply']['status_name']}}</label>
-                                @endif
-
-
-                            <td class="right" >
-                                @if(empty($order['status']))
-                                    <a class="btn btn-default btn-sm" href="javascript:;"
-                                       onclick="$('#modal-close').find(':input[name=order_id]').val('{{$order['id']}}')"
-                                       data-toggle="modal" data-target="#modal-close">关闭订单</a>
-                                @endif
-
-                            </td>
-
-
-
-                        </tr>
-                    </table>
-                    <table class='table order-main' >
-                        @foreach( $order['has_many_order_goods'] as $order_goods_index => $order_goods)
-                            <tr class='trbody'>
-                                <td class="goods_info">
-                                    <img src="{{tomedia($order_goods['thumb'])}}">
-                                </td>
-                                <td class="top" valign='top' >
-                                    <a href="{{yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
-                                    @if( !empty($order_goods['goods_option_title']))<br/><span
-                                            class="label label-primary sizebg">{{$order_goods['goods_option_title']}}</span>
-                                    @endif
-                                    <br/>{{$order_goods['goods_sn']}}
-                                </td>
-                                <td class="price">
-                                        原价: {{ number_format($order_goods['goods_price']/$order_goods['total'],2)}}
-                                    <br/>应付: {{ number_format($order_goods['price']/$order_goods['total'],2) }}
-                                    <br/>数量: {{$order_goods['total']}}
-                                </td>
-
-
-                                @if( $order_goods_index == 0)
-                                    <td rowspan="{{count($order['has_many_order_goods'])}}">
-                                        <a href="{!! yzWebUrl('member.member.detail',array('id'=>$order['belongs_to_member']['uid'])) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
-                                        <br/>
-                                        {{$order['belongs_to_member']['realname']}}
-                                        <br/>{{$order['belongs_to_member']['mobile']}}
-                                    </td>
-
-                                    <td rowspan="{{count($order['has_many_order_goods'])}}">
-                                        <label class='label label-info'>{{$order['pay_type_name']}}</label>
-                                        <br/>
-
-                                        {{$order['has_one_dispatch_type']['name']}}
-                                        @if( 0&&$order['addressid']!=0 && $order['statusvalue']>=2)<br/>
-                                        <button type='button' class='btn btn-default btn-sm'
-                                                onclick='express_find(this,"{{$order['id']}}")'>查看物流
-                                        </button>
+                    @foreach ($list['data'] as $order_index => $order)
+                        <div class="order-info">
+                            <table class='table order-title'>
+                                <tr>
+                                    <td class="left" colspan='8'>
+                                        <b>订单编号:</b> {{$order['order_sn']}}
+                                        @if($order['status']>\app\common\models\Order::WAIT_PAY && isset($order['has_one_order_pay']))
+                                            <b>支付单号:</b> {{$order['has_one_order_pay']['pay_sn']}}
                                         @endif
+                                        <b>下单时间: </b>{{$order['create_time']}}
+                                        @if( $order['has_one_refund_apply'] == \app\common\models\refund\RefundApply::WAIT_RECEIVE_RETURN_GOODS)
+                                            <label class='label label-primary'>客户已经寄出快递</label>@endif
+
+                                        {{--@yield('shop_name')
+                                        @section('shop_name','')--}}
+                                        <label class="label label-info">总店</label>
+
+                                        @if(!empty($order['has_one_refund_apply']))
+                                            <label class="label label-danger">{{$order['has_one_refund_apply']['refund_type_name']}}
+                                                :{{$order['has_one_refund_apply']['status_name']}}</label>
+                                    @endif
+
+
+                                    <td class="right">
+                                        @if(empty($order['status']))
+                                            <a class="btn btn-default btn-sm" href="javascript:;"
+                                               onclick="$('#modal-close').find(':input[name=order_id]').val('{{$order['id']}}')"
+                                               data-toggle="modal" data-target="#modal-close">关闭订单</a>
+                                        @endif
+
                                     </td>
-                                    <td rowspan="{{count($order['has_many_order_goods'])}}" style='width:18%;'>
-                                        <table class="goods-price" >
-                                            <tr>
-                                                <td style=''>商品小计：</td>
-                                                <td style=''>￥{!! number_format(
+
+
+                                </tr>
+                            </table>
+                            <table class='table order-main'>
+                                @foreach( $order['has_many_order_goods'] as $order_goods_index => $order_goods)
+                                    <tr class='trbody'>
+                                        <td class="goods_info">
+                                            <img src="{{tomedia($order_goods['thumb'])}}">
+                                        </td>
+                                        <td class="top" valign='top'>
+                                            <a href="{{yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
+                                            @if( !empty($order_goods['goods_option_title']))<br/><span
+                                                    class="label label-primary sizebg">{{$order_goods['goods_option_title']}}</span>
+                                            @endif
+                                            <br/>{{$order_goods['goods_sn']}}
+                                        </td>
+                                        <td class="price">
+                                            原价: {{ number_format($order_goods['goods_price']/$order_goods['total'],2)}}
+                                            <br/>应付: {{ number_format($order_goods['price']/$order_goods['total'],2) }}
+                                            <br/>数量: {{$order_goods['total']}}
+                                        </td>
+
+
+                                        @if( $order_goods_index == 0)
+                                            <td rowspan="{{count($order['has_many_order_goods'])}}">
+                                                <a href="{!! yzWebUrl('member.member.detail',array('id'=>$order['belongs_to_member']['uid'])) !!}"> {{$order['belongs_to_member']['nickname']}}</a>
+                                                <br/>
+                                                {{$order['belongs_to_member']['realname']}}
+                                                <br/>{{$order['belongs_to_member']['mobile']}}
+                                            </td>
+
+                                            <td rowspan="{{count($order['has_many_order_goods'])}}">
+                                                <label class='label label-info'>{{$order['pay_type_name']}}</label>
+                                                <br/>
+
+                                                {{$order['has_one_dispatch_type']['name']}}
+                                                @if( 0&&$order['addressid']!=0 && $order['statusvalue']>=2)<br/>
+                                                <button type='button' class='btn btn-default btn-sm'
+                                                        onclick='express_find(this,"{{$order['id']}}")'>查看物流
+                                                </button>
+                                                @endif
+                                            </td>
+                                            <td rowspan="{{count($order['has_many_order_goods'])}}" style='width:18%;'>
+                                                <table class="goods-price">
+                                                    <tr>
+                                                        <td style=''>商品小计：</td>
+                                                        <td style=''>￥{!! number_format(
                                                 $order['goods_price'] ,2) !!}
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td style=''>运费：</td>
-                                                <td style=''>￥{!! number_format(
-                                                $order['dispatch_price'],2) !!}
-                                                </td>
-                                            </tr>
-                                            @if($order['change_price'] != 0)
-                                            <tr>
-                                                <td style=''>卖家改价：</td>
-                                                <td style='color:green'>￥{!! number_format(
-                                                $order['change_price'] ,2) !!}
-                                                </td>
-                                            </tr>
-                                            @endif
-                                            @if($order['change_dispatch_price'] != 0)
-                                            <tr>
-                                                <td style=''>卖家改运费：</td>
-                                                <td style='color:green'>￥{{ number_format(
-                                                $order['change_dispatch_price'] ,2) }}
-                                                </td>
-                                            </tr>
-                                            @endif
-                                            <tr>
-                                                <td style=''>应收款：</td>
-                                                <td style='color:green'>￥{!! number_format(
-                                                $order['price'] ,2) !!}
-                                                </td>
-                                            </tr>
-                                        @if($order['status'] == 0)
-                                                <tr>
-                                                    <td ></td>
-                                                        <td style='color:green;'>
-                                                            <a href="javascript:;" class="btn btn-link "
-                                                               onclick="changePrice('{{$order['id']}}')">修改价格</a>
                                                         </td>
-                                                </tr>
-                                            @endif
-                                        </table>
-                                    </td>
-                                    <td rowspan="{{count($order['has_many_order_goods'])}}"><label
-                                                class='label label-info'>{{$order['status_name']}}</label><br/>
-                                        <a href="{!! yzWebUrl($detail_url,['id'=>$order['id']])!!}">查看详情</a>
-                                    </td>
-                                    <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">
+                                                    </tr>
 
-                                            @include($include_ops)
+                                                    <tr>
+                                                        <td style=''>运费：</td>
+                                                        <td style=''>￥{!! number_format(
+                                                $order['dispatch_price'],2) !!}
+                                                        </td>
+                                                    </tr>
+                                                    @if($order['change_price'] != 0)
+                                                        <tr>
+                                                            <td style=''>卖家改价：</td>
+                                                            <td style='color:green'>￥{!! number_format(
+                                                $order['change_price'] ,2) !!}
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                    @if($order['change_dispatch_price'] != 0)
+                                                        <tr>
+                                                            <td style=''>卖家改运费：</td>
+                                                            <td style='color:green'>￥{{ number_format(
+                                                $order['change_dispatch_price'] ,2) }}
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                    <tr>
+                                                        <td style=''>应收款：</td>
+                                                        <td style='color:green'>￥{!! number_format(
+                                                $order['price'] ,2) !!}
+                                                        </td>
+                                                    </tr>
+                                                    @if($order['status'] == 0)
+                                                        <tr>
+                                                            <td></td>
+                                                            <td style='color:green;'>
+                                                                <a href="javascript:;" class="btn btn-link "
+                                                                   onclick="changePrice('{{$order['id']}}')">修改价格</a>
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                </table>
+                                            </td>
+                                            <td rowspan="{{count($order['has_many_order_goods'])}}"><label
+                                                        class='label label-info'>{{$order['status_name']}}</label><br/>
+                                                <a href="{!! yzWebUrl($detail_url,['id'=>$order['id']])!!}">查看详情</a>
+                                            </td>
+                                            <td rowspan="{{count($order['has_many_order_goods'])}}" width="10%">
 
-                                    </td>
-                                @endif
-                            </tr>
-                        @endforeach
-                    </table>
-                </div>
-                @endforeach
+                                                @include($include_ops)
+
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                    @endforeach
                 @show
                 @include('order.modals')
                 <div id="pager">{!! $pager !!}</div>
@@ -306,7 +309,7 @@
         });
 
         function changePrice(orderid) {
-            $.post("{!! yzWebUrl('order.change-order-price') !!}", {order_id:orderid}, function(html){
+            $.post("{!! yzWebUrl('order.change-order-price') !!}", {order_id: orderid}, function (html) {
                 if (html == -1) {
                     alert('订单不能改价!');
                     return;
@@ -318,6 +321,6 @@
             });
         }
     </script>
-    @section('plugin_js')
-        @show
+@section('plugin_js')
+@show
 @endsection('content')
