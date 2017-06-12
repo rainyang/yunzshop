@@ -15,7 +15,17 @@ return [
         'icon' => '',                   //菜单图标
         'parents'=>[],
         'child' => []
-        ]
+    ],
+    'goods.comment.updated' => [
+        'name' => '控制面板',
+        'url' => 'goods.goods.get-search-goods',
+        'urlParams' => '',
+        'permit' => 0,
+        'menu' => 0,
+        'icon' => '',
+        'parents'=>[],
+        'child' => []
+    ]
 
 
 ];
