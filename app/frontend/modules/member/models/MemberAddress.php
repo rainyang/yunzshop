@@ -68,10 +68,10 @@ class MemberAddress extends \app\common\models\MemberAddress
     public  function atributeNames() {
         return [
             'mobile'    => 'mobile_phone',
-            'username'  => '收货人不能为空',
-            'province'  => '省份不能为空',
-            'city'      => '城市不能为空',
-            'district'  => '区域不能为空',
+            'username'  => '收货人',
+            'province'  => '省份',
+            'city'      => '城市',
+            'district'  => '区域',
         ];
     }
 
@@ -82,8 +82,8 @@ class MemberAddress extends \app\common\models\MemberAddress
     public  function rules()
     {
         return [
-            'mobile'    => 'required',
-            'username'  => 'required',
+            'mobile'    => 'regex:/^1[34578]{1}\d{9}$/',
+            'username'  => 'required|max:45',
             'province'  => 'required',
             'city'      => 'required',
             'district'  => 'required',

@@ -202,19 +202,18 @@ class MemberOfficeAccountService extends MemberService
         } else {
             \Log::debug('添加新会员');
 
-            if ($fans_mode->uid) {
-                $member_id = $fans_mode->uid;
-
-                \Log::debug('update member');
-                $this->updateMemberInfo($member_id, $userinfo);
-            } else {
+            if (empty($member_model) && empty($fans_mode)) {
                 \Log::debug('add member');
-
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
                 if ($member_id === false) {
                     return show_json(8, '保存用户信息失败');
                 }
+            } elseif ($fans_mode->uid) {
+                $member_id = $fans_mode->uid;
+
+                \Log::debug('update member');
+                $this->updateMemberInfo($member_id, $userinfo);
             }
 
             $this->addSubMemberInfo($uniacid, $member_id);
