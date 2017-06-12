@@ -138,7 +138,7 @@ class MemberRelation extends BackendModel
 
         if (!empty($list)) {
             $list = $list->toArray();
-
+\Log::debug('商品列表', $list);
             foreach ($list as $rows) {
                 foreach ($rows['has_many_order_goods'] as $item) {
                     if ($item['goods_id'] == $goods_id) {
