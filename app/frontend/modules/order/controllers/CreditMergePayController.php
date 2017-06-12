@@ -44,6 +44,7 @@ class CreditMergePayController extends MergePayController
             $this->orderPay->save();
 
             //会员推广资格
+            \Log::debug('余额支付-会员推广');
             MemberRelation::checkOrderPay($this->orderPay->uid);
         });
         return $this->successJson('成功', []);
