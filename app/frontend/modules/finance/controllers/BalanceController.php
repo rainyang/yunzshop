@@ -26,8 +26,8 @@ use app\backend\modules\member\models\Member;
 
 class BalanceController extends ApiController
 {
-    protected $publicAction = ['recharge'];
-    protected $ignoreAction = ['recharge'];
+    protected $publicAction = ['alipay'];
+    protected $ignoreAction = ['alipay'];
 
     private $memberInfo;
 
@@ -72,8 +72,8 @@ class BalanceController extends ApiController
             $result['member_credit2'] = $memberInfo->credit2;
 
             $pay = \Setting::get('shop.pay');
-            $result['weixin'] = $pay['weixin'];
-            $result['alipay'] = $pay['alipay'];
+            $result['wechat'] = $pay['weixin'] ? true : false;
+            $result['alipay'] = $pay['alipay'] ? true : false;
 
             return $this->successJson('获取数据成功', $result);
         }
@@ -86,7 +86,27 @@ class BalanceController extends ApiController
     {
         $result = (new BalanceService())->rechargeSet() ? $this->rechargeStart() : '未开启余额充值';
 
-        return $result === true ? $this->successJson('支付接口对接成功', $this->payOrder()) : $this->errorJson($result);
+        if ($result === true) {
+            if (intval(\YunShop::request()->pay_type) == PayFactory::PAY_ALIPAY) {
+                return $this->successJson('支付接口对接成功', ['ordersn' => $this->model->ordersn]);
+            }
+            return  $this->successJson('支付接口对接成功', $this->payOrder());
+        }
+        //return $result === true ? $this->successJson('支付接口对接成功', $this->payOrder()) : $this->errorJson($result);
+        return $this->errorJson($result);
+    }
+
+    //余额充值，如果是支付宝支付需要二次请求 alipay 支付接口
+    public function alipay()
+    {
+        $orderSn = \YunShop::request()->order_sn;
+
+        $this->model = BalanceRecharge::getRechargeRecordByOrdersn($orderSn);
+        if ($this->model) {
+            return  $this->successJson('支付接口对接成功', $this->payOrder());
+        }
+
+        return $this->errorJson('充值订单不存在');
     }
 
     //余额转让
@@ -96,6 +116,7 @@ class BalanceController extends ApiController
 
         return $result === true ? $this->successJson('转让成功') : $this->errorJson($result);
     }
+
 
     //记录【全部、收入、支出】
     public function record()
