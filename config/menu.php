@@ -17,7 +17,7 @@ return [
         'child' => []
     ],
     'goods.comment.updated' => [
-        'name' => '控制面板',
+        'name' => '搜索商品',
         'url' => 'goods.goods.get-search-goods',
         'urlParams' => '',
         'permit' => 0,
@@ -29,3 +29,4 @@ return [
 
 
 ];
+http://restructure.mamp.com/web/index.php?c=site&a=entry&m=yun_shop&do=4873&route=goods.comment.createReply
