@@ -26,4 +26,5 @@ class Message extends MessageService
         $app = app('wechat');
         $this->notice = $app->notice;
     }
+
 }

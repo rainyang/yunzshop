@@ -50,10 +50,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        //消息推送异常
-        if($exception instanceof HttpException){
-            return ;
-        }
         // 商城异常
         if ($exception instanceof ShopException) {
             return $this->renderShopException($exception);
