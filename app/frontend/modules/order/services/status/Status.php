@@ -38,7 +38,16 @@ abstract class Status
      */
     public static function getRefundButtons(Order $order)
     {
+        // 完成后不许退款
+        if (\Setting::get('shop.trade.refund_days') === '0') {
+            return [];
+        }
+        // 完成后n天不许退款
+        if ($order->finish_time->diffInDays() > \Setting::get('shop.trade.refund_days')) {
+            return [];
+        }
         if (!empty($order->refund_id) && isset($order->hasOneRefundApply)) {
+            // 退款处理中
             if ($order->hasOneRefundApply->isRefunded()) {
                 $result[] = [
                     'name' => '已退款',
@@ -54,6 +63,7 @@ abstract class Status
             }
 
         } else {
+            // 可申请
             $result[] = [
                 'name' => '申请退款',
                 'api' => 'refund.apply',
@@ -61,7 +71,6 @@ abstract class Status
             ];
 
         }
-
         return $result;
     }
 
