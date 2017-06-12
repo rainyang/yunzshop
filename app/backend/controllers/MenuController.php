@@ -26,19 +26,19 @@ class MenuController extends BaseController
 
     public function index()
     {
-        if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {
+        /*if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {*/
             $menu = new Menu();
             $menuList = $menu->getDescendants(0);
 
             return view('menu.index', [
                 'menuList' => $menuList
             ])->render();
-        }
+        /*}*/
     }
 
     public function add()
     {
-        if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {
+        /*if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {*/
             $model = new MenuSelect();
 
             $parentId = intval(\YunShop::request()->parent_id);
@@ -67,12 +67,12 @@ class MenuController extends BaseController
                 'parentMenu' => $parentMenu,
                 'model' => $model
             ])->render();
-        }
+        /*}*/
     }
 
     public function edit()
     {
-        if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {
+        /*if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {*/
             $id = \YunShop::request()->id;
             $data = \YunShop::request()->menu;
 
@@ -103,12 +103,12 @@ class MenuController extends BaseController
                 'model' => $model,
                 'parentMenu' => $parentMenu,
             ])->render();
-        }
+        /*}*/
     }
 
     public function del()
     {
-        if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {
+        /*if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {*/
             $id = \YunShop::request()->id;
 
             $model = Menu::getMenuInfoById($id);
@@ -125,12 +125,12 @@ class MenuController extends BaseController
             } else {
                 $this->error('菜单删除失败');
             }
-        }
+       /* }*/
     }
 
     public function getRemoteUpdate()
     {
-        if (request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {
+        /*if (request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {*/
             $url = "http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=menu.to-list";
             $responseData = Curl::to($url)->get();
 
@@ -152,6 +152,6 @@ class MenuController extends BaseController
             }
             return $this->message('更新远程菜单成功');
         }
-    }
+    /*}*/
 
 }

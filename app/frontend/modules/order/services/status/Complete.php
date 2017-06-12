@@ -14,6 +14,7 @@ use app\common\models\Order;
 class Complete extends Status
 {
     private $order;
+
     public function __construct(Order $order)
     {
         $this->order = $order;
@@ -40,9 +41,8 @@ class Complete extends Status
                 ],
 
             ];
-        //$result = array_merge($result, self::getCommentButtons($this->order));
 
-        $result = array_merge($result,self::getRefundButtons($this->order));
+            $result = array_merge($result, self::getRefundButtons($this->order));
 
         return $result;
     }

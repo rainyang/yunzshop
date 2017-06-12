@@ -23,20 +23,21 @@ class ShopMessage extends Message
             return ;
         }
         //客服发送消息通知
-       /* foreach (\Setting::get('shop.notice.salers') as $saler) {
-            $openid = Member::getOpenId($saler['uid']);
-            if(!empty($openid)){
-                $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($openid)->send();
-            }
-        }*/
+       foreach (\Setting::get('shop.notice.salers') as $saler) {
+           $noticeMember = Member::getMemberByUid($saler['uid'])->with('hasOneFans')->first();
+           if (!empty($noticeMember->hasOneFans->openid)) {
+               $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($noticeMember->hasOneFans->openid)->send();
+           }
+
+        }
     }
 
     public function created()
     {
-        $this->templateId = \Setting::get('shop.notice.order_submit_success');
+        $this->templateId = \Setting::get('shop.notice.new');
 
         $remark = "\r\n订单下单成功,请到后台查看!";
-        $orderpricestr = $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
+        $orderpricestr = ' 订单总金额: '.$this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
 
         $this->msg = array(
             'first' => array(
@@ -49,11 +50,11 @@ class ShopMessage extends Message
                 "color" => "#4a5077"
             ),
             'keyword2' => array(
-                'value' => (string)$this->order->hasManyOrderGoods()->first()->title,
+                'value' => (string)$this->order->hasManyOrderGoods()->first()->title . $orderpricestr,
                 "color" => "#4a5077"
             ),
             'keyword3' => array(
-                'value' => (string)$orderpricestr,
+                'value' => (string)$this->order->order_sn,
                 "color" => "#4a5077"
             ),
 
@@ -74,16 +75,16 @@ class ShopMessage extends Message
 
         $this->templateId = \Setting::get('shop.notice.task');
 
-        $remark = "\r\n订单已经下单支付，请及时备货，谢谢!";
+        $remark = "\r\n订单已经支付，请及时备货，谢谢!";
         $orderpricestr = "\r\n订单总价: " . $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
 
         $this->msg = array(
             'first' => array(
-                'value' => (string)"订单下单支付通知!",
+                'value' => (string)"订单支付通知!",
                 "color" => "#4a5077"
             ),
             'keyword1' => array(
-                'value' => (string)'订单下单支付通知!',
+                'value' => (string)'订单支付通知!',
                 "color" => "#4a5077"
             ),
             'keyword2' => array(

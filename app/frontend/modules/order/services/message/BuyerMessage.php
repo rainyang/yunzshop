@@ -14,12 +14,13 @@ class BuyerMessage extends Message
 {
     protected function sendToBuyer()
     {
-        if(empty($this->templateId)){
-            return ;
+        if (empty($this->templateId)) {
+            return;
         }
 
         $noticeMember = Member::getMemberByUid($this->order->uid)->with('hasOneFans')->first();
         if (!empty($noticeMember->hasOneFans->openid)) {
+
             $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($noticeMember->hasOneFans->openid)->send();
         }
 
@@ -27,10 +28,10 @@ class BuyerMessage extends Message
 
     public function created()
     {
-        $this->templateId = \Setting::get('shop.notice.new');
+        $this->templateId = \Setting::get('shop.notice.order_submit_success');
 
         $remark = "\r\n订单下单成功,请到后台查看!";
-        $orderpricestr = '订单总价: ' . $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
+        $orderpricestr = $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
 
         $this->msg = array(
             'first' => array(
@@ -63,7 +64,47 @@ class BuyerMessage extends Message
         $this->msg['remark']['value'] = "\r\n订单下单成功";
 
         $this->sendToBuyer();
+//order_pay_success
+    }
 
+    public function paid()
+    {
+        $this->templateId = \Setting::get('shop.notice.order_pay_success');
+        $orderpricestr = $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
+        $remark = "\r\n订单已支付!";
+        $this->msg = array(
+            'first' => array(
+                'value' => (string)"您的订单已支付成功!",
+                "color" => "#4a5077"
+            ),
+            'keyword1' => array(
+                //todo
+                'value' => (string)$this->order['order_sn'].
+                            "\r\n商品: ".(string)$this->order->hasManyOrderGoods()->first()->title,
+                "color" => "#4a5077"
+            ),
+            'keyword2' => array(
+                'value' => (string)'已支付',
+                "color" => "#4a5077"
+            ),
+            'keyword3' => array(
+                'value' => (string)$this->order['pay_time']->toDateTimeString(),
+                "color" => "#4a5077"
+            ),
+            'keyword4' => array(
+                'value' => '自营',
+                "color" => "#4a5077"
+            ),
+            'keyword5' => array(
+                'value' => (string)$orderpricestr,
+                "color" => "#4a5077"
+            ),
+            'remark' => array(
+                'value' => (string)$remark,
+                "color" => "#4a5077"
+            )
+        );
+        $this->sendToBuyer();
     }
 
     public function canceled()
@@ -147,7 +188,7 @@ class BuyerMessage extends Message
         $this->templateId = \Setting::get('shop.notice.order_finish');
 
         $remark = "\r\n订单已完成!";
-        $orderpricestr = $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
+        $orderpricestr = " \r\n订单总金额: " . $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
         $this->msg = array(
             'first' => array(
                 'value' => (string)'订单完成通知',
@@ -159,15 +200,19 @@ class BuyerMessage extends Message
             ),
 
             'keyword2' => array(
-                'value' => (string)$this->order['create_time']->toDateTimeString(),
+                'value' => (string)$this->order->hasManyOrderGoods()->first()->title . $orderpricestr,
                 "color" => "#4a5077"
             ),
             'keyword3' => array(
-                'value' => (string)$this->order->hasManyOrderGoods()->first()->title,
+                'value' => (string)$this->order['create_time']->toDateTimeString(),
                 "color" => "#4a5077"
             ),
             'keyword4' => array(
-                'value' => (string)$orderpricestr,
+                'value' => (string)$this->order['send_time']->toDateTimeString(),
+                "color" => "#4a5077"
+            ),
+            'keyword5' => array(
+                'value' => (string)$this->order['finish_time']->toDateTimeString(),
                 "color" => "#4a5077"
             ),
 

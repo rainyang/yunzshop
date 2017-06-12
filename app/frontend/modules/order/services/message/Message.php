@@ -3,6 +3,7 @@
 namespace app\frontend\modules\order\services\message;
 
 use app\common\services\MessageService;
+use app\common\services\wechat\Notice;
 
 /**
  * Created by PhpStorm.
@@ -24,6 +25,7 @@ class Message extends MessageService
     {
         $this->order = $order;
         $app = app('wechat');
-        $this->notice = $app->notice;
+        $this->notice = new Notice($app['access_token']);
     }
+
 }
