@@ -84,6 +84,18 @@ class MemberShopInfo extends BackendModel
     }
 
     /**
+     * 通过 openid 获取用户信息
+     * @param $openid
+     * @return mixed
+     */
+    public static function getMemberShopInfoByOpenid($openid)
+    {
+        return static::uniacid()->whereHas('hasOneMappingFans', function($query) use ($openid){
+            $query->where('openid', '=', $openid);
+        })->first();
+    }
+
+    /**
      * 获取我的下线
      *
      * @return mixed
@@ -120,6 +132,11 @@ class MemberShopInfo extends BackendModel
     public function hasOnePreSelf()
     {
         return $this->hasOne('app\common\models\MemberShopInfo', 'member_id', 'parent_id');
+    }
+
+    public function hasOneMappingFans()
+    {
+        return $this->hasOne('app\common\models\McMappingFans', 'uid', 'member_id');
     }
 
     /**
