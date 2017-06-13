@@ -138,11 +138,11 @@ class MemberRelation extends BackendModel
 
         if (!empty($list)) {
             $list = $list->toArray();
-\Log::info('商品列表', $list);
+\Log::debug('商品列表', $list);
             foreach ($list as $rows) {
                 foreach ($rows['has_many_order_goods'] as $item) {
                     if ($item['goods_id'] == $goods_id) {
-                        \Log::info('购买商品指定商品', $goods_id);
+                        \Log::debug('购买商品指定商品', [$goods_id]);
                         return true;
                     }
                 }
@@ -320,7 +320,7 @@ class MemberRelation extends BackendModel
     public static function checkOrderPay($uid)
     {
         $set = self::getSetInfo()->first();
-        \Log::info('付款后：'. $uid);
+        \Log::debug('付款后：'. $uid);
         if (empty($set)) {
             return;
         }
