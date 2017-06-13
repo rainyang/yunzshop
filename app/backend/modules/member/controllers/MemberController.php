@@ -17,6 +17,7 @@ use app\backend\modules\member\models\MemberShopInfo;
 use app\backend\modules\member\models\MemberUnique;
 use app\backend\modules\member\services\MemberServices;
 use app\common\components\BaseController;
+use app\common\events\member\MemberRelationEvent;
 use app\common\helpers\PaginationHelper;
 
 
@@ -164,6 +165,7 @@ class MemberController extends BaseController
         if ($parame->data['agent']) {
             $yz['is_agent'] = 1;
             $yz['status'] = 2;
+
         } else {
             $yz['is_agent'] = 0;
             $yz['status'] =  0;
@@ -177,6 +179,13 @@ class MemberController extends BaseController
             $this->error($validator->messages());
         } else {
             if ($shopInfoModel->save()) {
+
+                if ($parame->data['agent']) {
+                    $member = Member::getMemberByUid($uid)->with('hasOneFans')->first();
+
+                    event(new MemberRelationEvent($member));
+                }
+
                 return $this->message("用户资料更新成功", yzWebUrl('member.member.detail', ['id' => $uid]));
             }
         }
