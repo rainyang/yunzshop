@@ -229,20 +229,22 @@ class MemberRelation extends BackendModel
         $become_child =  intval($set->become_child);
         $become_check = intval($set->become_check);
 
-        if ($parent_is_agent && empty($member->parent_id)) {
+        if ($parent_is_agent && empty($member->inviter)) {
             if ($member->member_id != $parent->member_id) {
-                if (empty($become_child)) {
-                    $this->changeChildAgent($mid, $model);
+                $this->changeChildAgent($mid, $model);
 
-                    \Log::debug('###998.mid: '.$mid);
+                \Log::debug('###998.mid: '.$mid);
+
+                if (empty($become_child)) {
+                    $model->inviter = 1;
 
                     //notice
                     self::sendAgentNotify($member->member_id, $mid);
                 } else {
-                    $model->inviter = $parent->member_id;
-
-                    $model->save();
+                    $model->inviter = 0;
                 }
+
+                $model->save();
             }
         }
 
@@ -285,11 +287,7 @@ class MemberRelation extends BackendModel
 
         $become_child = intval($set->become_child);
 
-        if (empty($become_child)) {
-            $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
-        } else {
-            $parent = SubMemberModel::getMemberShopInfo($member->inviter);
-        }
+        $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
 
         $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
@@ -332,11 +330,7 @@ class MemberRelation extends BackendModel
 
         $become_child = intval($set->become_child);
 
-        if (empty($become_child)) {
-            $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
-        } else {
-            $parent = SubMemberModel::getMemberShopInfo($member->inviter);
-        }
+        $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
 
         $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
