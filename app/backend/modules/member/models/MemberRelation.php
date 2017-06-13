@@ -84,7 +84,7 @@ class MemberRelation extends BackendModel
                     }
                     break;
                 case 4:
-                    $isAgent = self::checkOrderGoods($info['become_goods_id']);
+                    $isAgent = self::checkOrderGoods($info['become_goods_id'], $uid);
                     break;
                 default:
                     $isAgent = false;
@@ -132,9 +132,9 @@ class MemberRelation extends BackendModel
      * @param $goods_id
      * @return bool
      */
-    public static function checkOrderGoods($goods_id)
+    public static function checkOrderGoods($goods_id, $uid)
     {
-        $list = \app\frontend\models\Order::getOrderListByUid();
+        $list = \app\common\models\Order::getOrderListByUid($uid);
 
         if (!empty($list)) {
             $list = $list->toArray();
@@ -359,7 +359,7 @@ class MemberRelation extends BackendModel
 
         if (!$isagent && empty($set->become_order)) {
             if (intval($set->become) == 4 && !empty($set->become_goods_id)) {
-                $result = self::checkOrderGoods($set->become_goods_id);
+                $result = self::checkOrderGoods($set->become_goods_id, $uid);
 
                 if ($result) {
                     $member->status = 2;
@@ -445,7 +445,7 @@ class MemberRelation extends BackendModel
         if (!$isagent && $set->become_order == 1) {
             //购买指定商品
             if (intval($set->become) == 4 && !empty($set->become_goods_id)) {
-                $result = self::checkOrderGoods($set->become_goods_id);
+                $result = self::checkOrderGoods($set->become_goods_id, $uid);
 
                 if ($result) {
                     $member->status = 2;
