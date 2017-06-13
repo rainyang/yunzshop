@@ -142,6 +142,7 @@ class MemberRelation extends BackendModel
             foreach ($list as $rows) {
                 foreach ($rows['has_many_order_goods'] as $item) {
                     if ($item['goods_id'] == $goods_id) {
+                        \Log::info('购买商品指定商品', $goods_id);
                         return true;
                     }
                 }
@@ -366,6 +367,7 @@ class MemberRelation extends BackendModel
                     $member->is_agent = 1;
                     $member->agent_time = time();
 
+                    $member->save();
                     //message notice
                     self::sendGeneralizeNotify($member->member_id);
                 }
@@ -451,6 +453,7 @@ class MemberRelation extends BackendModel
                     $member->is_agent = 1;
                     $member->agent_time = time();
 
+                    $member->save();
                     //message notice
                     self::sendGeneralizeNotify($member->member_id);
                 }
