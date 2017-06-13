@@ -356,9 +356,9 @@ class MemberRelation extends BackendModel
 
         //发展下线资格
         $isagent = $member->is_agent == 1 && $member->status == 2;
-
+echo 1;
         if (!$isagent) {
-            if (intval($set->become) == 4 && !empty($set->become_goods_id)) {
+            if (intval($set->become) == 4 && !empty($set->become_goods_id)) {echo 2;
                 $result = self::checkOrderGoods($set->become_goods_id);
 
                 if ($result) {
@@ -371,7 +371,7 @@ class MemberRelation extends BackendModel
                 }
             }
         }
-
+echo 3;exit;
         if (!$isagent && empty($set->become_order)) {
             if ($set->become == 2 || $set->become == 3) {
                 $parentisagent = true;

@@ -42,7 +42,7 @@ class TestController extends BaseController
     }
 
     public function relation()
-    {echo 3;exit;
+    {
         MemberRelation::checkOrderPay(356);
        // MemberRelation::checkOrderFinish();
     }
