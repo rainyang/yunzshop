@@ -9,6 +9,7 @@
 namespace app\frontend\models\goods;
 
 use app\common\exceptions\AppException;
+use app\common\models\MemberShopInfo;
 use app\frontend\models\goods;
 use app\frontend\modules\goods\models\goods\MemberGroup;
 use app\frontend\modules\goods\models\goods\MemberLevel;
@@ -91,11 +92,12 @@ class Privilege extends \app\common\models\goods\Privilege
             return;
         }
         $buy_levels = explode(',', $this->buy_levels);
-        $level_names = MemberLevel::select(DB::raw('group_concat(level_name)'))->whereIn('id', $buy_levels)->find();
+        $level_names = MemberLevel::select(DB::raw('group_concat(level_name) as level_name'))->whereIn('id', $buy_levels)->value('level_name');
         if (empty($level_names)) {
             return;
         }
-        if (!in_array(MemberService::getCurrentMemberModel()->level_id, $buy_levels)) {
+
+        if (!in_array(MemberShopInfo::whereMemberId(\YunShop::app()->getMemberId())->value('level_id'), $buy_levels)) {
             throw new AppException('商品(' . $this->goods->title . ')仅限' . $level_names . '购买');
         }
     }
@@ -111,12 +113,12 @@ class Privilege extends \app\common\models\goods\Privilege
             return;
         }
         $buy_groups = explode(',', $this->buy_groups);
-        $group_names = MemberGroup::select(DB::raw('group_concat(group_name)'))->whereIn('id', $buy_groups)->find();
+        $group_names = MemberGroup::select(DB::raw('group_concat(group_name) as level_name'))->whereIn('id', $buy_groups)->value('level_name');
         if (empty($group_names)) {
             return;
         }
-        if (!in_array(MemberService::getCurrentMemberModel()->group_id, $buy_groups)) {
-            throw new AppException('(' . $this->goods->title . ')该商品仅限' . $group_names . '购买');
+        if (!in_array(MemberShopInfo::whereMemberId(\YunShop::app()->getMemberId())->value('group_id'), $buy_groups)) {
+            throw new AppException('(' . $this->goods->title . ')该商品仅限[' . $group_names . ']购买');
         }
     }
 }
