@@ -207,6 +207,24 @@ class Order extends BaseModel
         return self::where('uid', $member_id)->isComment($status);
     }
 
+    /**
+     * 关系链 指定商品
+     *
+     * @param $uid
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public static function getOrderListByUid($uid)
+    {
+        return self::select(['*'])
+            ->where('uid', $uid)
+            ->where('status','>=',1)
+            ->where('status','<=',3)
+            ->with(['hasManyOrderGoods'=>function($query){
+                return $query->select(['*']);
+            }])
+            ->get();
+    }
+
     public static function boot()
     {
         parent::boot();
