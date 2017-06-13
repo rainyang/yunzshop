@@ -135,7 +135,7 @@ class MemberRelation extends BackendModel
     public static function checkOrderGoods($goods_id)
     {
         $list = \app\frontend\models\Order::getOrderListByUid();
-echo '<pre>';print_r($list);exit;
+
         if (!empty($list)) {
             $list = $list->toArray();
 \Log::info('商品列表', $list);
@@ -356,9 +356,9 @@ echo '<pre>';print_r($list);exit;
 
         //发展下线资格
         $isagent = $member->is_agent == 1 && $member->status == 2;
-echo 1;
+
         if (!$isagent) {
-            if (intval($set->become) == 4 && !empty($set->become_goods_id)) {echo 2;
+            if (intval($set->become) == 4 && !empty($set->become_goods_id)) {
                 $result = self::checkOrderGoods($set->become_goods_id);
 
                 if ($result) {
@@ -371,7 +371,7 @@ echo 1;
                 }
             }
         }
-echo 3;exit;
+
         if (!$isagent && empty($set->become_order)) {
             if ($set->become == 2 || $set->become == 3) {
                 $parentisagent = true;
