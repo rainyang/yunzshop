@@ -135,7 +135,7 @@ class MemberRelation extends BackendModel
     public static function checkOrderGoods($goods_id)
     {
         $list = \app\frontend\models\Order::getOrderListByUid();
-echo 4;
+echo '<pre>';print_r($list);exit;
         if (!empty($list)) {
             $list = $list->toArray();
 \Log::info('商品列表', $list);
