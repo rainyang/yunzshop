@@ -366,6 +366,8 @@ class MemberRelation extends BackendModel
                     $member->is_agent = 1;
                     $member->agent_time = time();
 
+                    $member->save();
+
                     //message notice
                     self::sendGeneralizeNotify($member->member_id);
                 }
@@ -450,6 +452,8 @@ class MemberRelation extends BackendModel
                     $member->status = 2;
                     $member->is_agent = 1;
                     $member->agent_time = time();
+
+                    $member->save();
 
                     //message notice
                     self::sendGeneralizeNotify($member->member_id);
