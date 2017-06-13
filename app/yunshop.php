@@ -180,9 +180,11 @@ class YunShop
         global $_W;
         $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
         if ($plugin_class->isEnabled('supplier')) {
-            $res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
-            if ($res) {
-                return $res;
+            if (Schema::hasColumn('yz_supplier', 'uid')) {
+                $res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
+                if ($res) {
+                    return $res;
+                }
             }
         }
         return false;
