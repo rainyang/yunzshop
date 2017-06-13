@@ -5,6 +5,10 @@ use app\common\services\PermissionService;
 use app\common\models\Menu;
 use app\common\services\Session;
 use app\common\exceptions\NotFoundException;
+use app\common\services\PluginManager;
+use app\common\repositories\OptionRepository;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
 
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
@@ -57,6 +61,8 @@ class YunShop
                 $dbMenu = \Cache::get('db_menu');
             }
             $menuList = array_merge($dbMenu, (array)Config::get('menu'));
+            $menuList = array_merge($menuList, (array)config(config('app.menu_key','menu')));
+            //echo '<pre>';print_r(config(config('app.menu_key','menu')));exit;
             Config::set('menu', $menuList);
             //dump($menuList);
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
@@ -162,6 +168,24 @@ class YunShop
     {
         return (strpos($_SERVER['PHP_SELF'], '/web/') !== false &&
             strpos($_SERVER['PHP_SELF'], '/plugin.php') !== false) ? true : false;
+    }
+
+    /**
+     * @name 验证是否商城操作员
+     * @author
+     * @return bool
+     */
+    public static function isRole()
+    {
+        global $_W;
+        $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+        if ($plugin_class->isEnabled('supplier')) {
+            $res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
+            if ($res) {
+                return $res;
+            }
+        }
+        return false;
     }
 
     public static function isPayment()
