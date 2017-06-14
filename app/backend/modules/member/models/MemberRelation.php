@@ -232,8 +232,6 @@ class MemberRelation extends BackendModel
             if ($member->member_id != $parent->member_id) {
                 $this->changeChildAgent($mid, $model);
 
-                \Log::debug('###998.mid: '.$mid);
-
                 if (empty($become_child)) {
                     $model->inviter = 1;
 
