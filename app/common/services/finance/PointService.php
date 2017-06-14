@@ -101,10 +101,12 @@ class PointService
         if ($noticeMember->hasOneFans->follow != 1) {
             return;
         }
+        $nickname = @iconv("utf-8", "gbk", $this->member['nickname']);
+        $nickname = @iconv("gbk", "utf-8", $nickname);
         $msg = [
             "first" => '您好',
             "keyword1" => '积分变动通知',
-            "keyword2" => '尊敬的[' . $this->member['nickname'] . ']，您于[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
+            "keyword2" => '尊敬的[' . $nickname . ']，您于[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
             "remark" => "",
         ];
         if (!\Setting::get('shop.notice')['task']) {
