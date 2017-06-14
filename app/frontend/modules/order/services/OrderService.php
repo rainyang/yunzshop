@@ -261,7 +261,6 @@ class OrderService
                 }
             });
         });
-
     }
 
     /**
