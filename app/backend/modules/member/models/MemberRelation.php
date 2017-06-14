@@ -225,15 +225,12 @@ class MemberRelation extends BackendModel
             return;
         }
 
-
         $become_child =  intval($set->become_child);
         $become_check = intval($set->become_check);
 
         if ($parent_is_agent && empty($member->inviter)) {
             if ($member->member_id != $parent->member_id) {
                 $this->changeChildAgent($mid, $model);
-
-                \Log::debug('###998.mid: '.$mid);
 
                 if (empty($become_child)) {
                     $model->inviter = 1;
@@ -296,6 +293,7 @@ class MemberRelation extends BackendModel
                 if (empty($member->parent_id) && $member->member_id != $parent->member_id) {
                     $member->parent_id = $parent->member_id;
                     $member->child_time = time();
+                    $member->inviter = 1;
 
                     $member->save();
 
@@ -340,6 +338,7 @@ class MemberRelation extends BackendModel
                 if (empty($member->parent_id) && $member->member_id != $parent->member_id) {
                     $member->parent_id = $parent->member_id;
                     $member->child_time = time();
+                    $member->inviter = 1;
 
                     $member->save();
 
