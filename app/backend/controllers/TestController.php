@@ -43,7 +43,7 @@ class TestController extends BaseController
 
     public function relation()
     {
-        MemberRelation::checkOrderPay();
-        MemberRelation::checkOrderFinish();
+        MemberRelation::checkOrderPay(356);
+       // MemberRelation::checkOrderFinish();
     }
 }

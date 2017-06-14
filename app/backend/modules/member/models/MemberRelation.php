@@ -142,6 +142,7 @@ class MemberRelation extends BackendModel
             foreach ($list as $rows) {
                 foreach ($rows['has_many_order_goods'] as $item) {
                     if ($item['goods_id'] == $goods_id) {
+                        \Log::debug('购买商品指定商品', [$goods_id]);
                         return true;
                     }
                 }
@@ -230,8 +231,6 @@ class MemberRelation extends BackendModel
         if ($parent_is_agent && empty($member->inviter)) {
             if ($member->member_id != $parent->member_id) {
                 $this->changeChildAgent($mid, $model);
-
-                \Log::debug('###998.mid: '.$mid);
 
                 if (empty($become_child)) {
                     $model->inviter = 1;

@@ -5,6 +5,7 @@ use app\common\components\ApiController;
 
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
+use app\common\models\AccountWechats;
 use app\common\models\Member;
 use app\common\models\Order;
 use app\common\services\MessageService;
@@ -26,11 +27,18 @@ class TestController extends ApiController
 {
     public function index()
     {
+
+        dd(config('wechat'));
+        exit;
 //$t = MessageService::getWechatTemplates();
 //        dd($t);
         //\Log::info(4);
 //        dd(Message::getWechatTemplates());
 //        exit;
+        $app = app('wechat');
+
+        dd($app['access_token']);
+        exit;
         $permissions = (new \app\frontend\modules\order\services\MessageService(\app\frontend\models\Order::first()))->paid();
         exit;
         //dd(MemberService::getCurrentMemberModel()->defaultAddress);

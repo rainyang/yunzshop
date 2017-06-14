@@ -73,7 +73,7 @@ class MergePayController extends ApiController
         $orders = $this->orders($request->input('order_ids'));
 
         $member = $orders->first()->belongsToMember()->select(['credit2'])->first()->toArray();
-        if ($orders->sum('price') <= 0) {
+        if ($orders->sum('price') < 0) {
             throw new AppException('(' . $orders->sum('price') . ')订单金额有误');
         }
         $buttons = $this->getPayTypeButtons();
