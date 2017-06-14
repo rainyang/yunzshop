@@ -225,7 +225,6 @@ class MemberRelation extends BackendModel
             return;
         }
 
-
         $become_child =  intval($set->become_child);
         $become_check = intval($set->become_check);
 
@@ -296,6 +295,7 @@ class MemberRelation extends BackendModel
                 if (empty($member->parent_id) && $member->member_id != $parent->member_id) {
                     $member->parent_id = $parent->member_id;
                     $member->child_time = time();
+                    $member->inviter = 1;
 
                     $member->save();
 
@@ -340,6 +340,7 @@ class MemberRelation extends BackendModel
                 if (empty($member->parent_id) && $member->member_id != $parent->member_id) {
                     $member->parent_id = $parent->member_id;
                     $member->child_time = time();
+                    $member->inviter = 1;
 
                     $member->save();
 

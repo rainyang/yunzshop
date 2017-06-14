@@ -229,7 +229,7 @@ class Member extends BackendModel
      *
      * @param $member_id
      */
-    public function createRealtion($member_id, $upperMemberId = NULL)
+    public static function createRealtion($member_id, $upperMemberId = NULL)
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
 
