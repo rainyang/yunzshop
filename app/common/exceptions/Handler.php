@@ -4,6 +4,7 @@ namespace app\common\exceptions;
 
 use app\common\traits\JsonTrait;
 use app\common\traits\MessageTrait;
+use EasyWeChat\Core\Exceptions\HttpException;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -49,20 +50,24 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        // 商城异常
         if ($exception instanceof ShopException) {
             return $this->renderShopException($exception);
         }
+        // 404
         if ($exception instanceof NotFoundException) {
             return $this->renderNotFoundException($exception);
 
         }
+        //默认异常
         if ($this->isHttpException($exception)) {
             return $this->renderHttpException($exception);
         }
-
+        //开发模式异常
         if (config('app.debug')) {
             return $this->renderExceptionWithWhoops($exception);
         }
+        //api异常
         if (\YunShop::isApi()) {
             return $this->errorJson($exception->getMessage());
         }

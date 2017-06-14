@@ -70,7 +70,7 @@ class DispatchController extends BaseController
                 //数据保存
                 if ($dispatchModel->save()) {
                     //显示信息并跳转
-                    return $this->message('配送模板创建成功', Url::absoluteWeb('goods.dispatch.index'));
+                    return $this->message('配送模板创建成功', '');
                 } else {
                     $this->error('配送模板创建失败');
                 }
@@ -130,7 +130,7 @@ class DispatchController extends BaseController
                 //数据保存
                 if ($dispatchModel->save()) {
                     //显示信息并跳转
-                    return $this->message('配送模板更新成功', Url::absoluteWeb('goods.dispatch.index'));
+                    return $this->message('配送模板更新成功', '');
                 } else {
                     $this->error('配送模板更新失败');
                 }
@@ -154,9 +154,9 @@ class DispatchController extends BaseController
             return $this->message('无此配送模板或已经删除', '', 'error');
         }
 
-        $result = Dispatch::deletedDispatch(\YunShop::request()->id);
-        if ($result) {
-            return $this->message('删除模板成功', Url::absoluteWeb('goods.dispatch.index'));
+        $model = Dispatch::find(\YunShop::request()->id);
+        if ($model->delete()) {
+            return $this->message('删除模板成功', '');
         } else {
             return $this->message('删除模板失败', '', 'error');
         }
@@ -174,6 +174,6 @@ class DispatchController extends BaseController
             $dispatch->display_order = $displayOrder;
             $dispatch->save();
         }
-        return $this->message('排序成功', Url::absoluteWeb('goods.dispatch.index'));
+        return $this->message('排序成功', '');
     }
 }

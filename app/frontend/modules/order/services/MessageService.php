@@ -37,6 +37,8 @@ class MessageService extends \app\common\services\MessageService
 
     public function paid()
     {
+        $this->buyerMessage->paid();
+
         $this->shopMessage->paid();
 
     }

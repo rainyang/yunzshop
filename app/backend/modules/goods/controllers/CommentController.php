@@ -157,6 +157,10 @@ class CommentController extends BaseController
             return $this->message('无此记录或已被删除', '', 'error');
         }
 
+        if (\YunShop::request()->reply) {
+            return $this->createReply();
+        }
+
 
         $commentModel = $commentModel->toArray();
         $goods = Goods::getGoodsById($commentModel['goods_id']);
