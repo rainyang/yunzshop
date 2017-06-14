@@ -290,7 +290,7 @@ class MemberRelation extends BackendModel
 
         if ($parent_is_agent) {
             if ($become_child == 1) {
-                if (empty($member->parent_id) && $member->member_id != $parent->member_id) {
+                if (empty($member->inviter) && $member->member_id != $parent->member_id) {
                     $member->parent_id = $parent->member_id;
                     $member->child_time = time();
                     $member->inviter = 1;
@@ -335,7 +335,7 @@ class MemberRelation extends BackendModel
         //成为下线
         if ($parent_is_agent) {
             if ($become_child == 2) {
-                if (empty($member->parent_id) && $member->member_id != $parent->member_id) {
+                if (empty($member->inviter) && $member->member_id != $parent->member_id) {
                     $member->parent_id = $parent->member_id;
                     $member->child_time = time();
                     $member->inviter = 1;
