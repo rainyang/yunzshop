@@ -64,7 +64,7 @@ class ApiController extends BaseController
             return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
         } else {
             if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
-                Session::clear('member_id');
+                //Session::clear('member_id');
 
 //                $this->jumpUrl($type, $mid);
             }
