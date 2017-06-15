@@ -284,21 +284,30 @@ class MemberRelation extends BackendModel
 
         $become_child = intval($set->become_child);
 
-        $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
+        if ($member->parent_id == 0) {
+            if ($become_child == 1 && empty($member->inviter)) {
+                $member->child_time = time();
+                $member->inviter = 1;
 
-        $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
+                $member->save();
+            }
+        } else {
+            $parent = SubMemberModel::getMemberShopInfo($member->parent_id);
 
-        if ($parent_is_agent) {
-            if ($become_child == 1) {
-                if (empty($member->inviter) && $member->member_id != $parent->member_id) {
-                    $member->parent_id = $parent->member_id;
-                    $member->child_time = time();
-                    $member->inviter = 1;
+            $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
-                    $member->save();
+            if ($parent_is_agent) {
+                if ($become_child == 1) {
+                    if (empty($member->inviter) && $member->member_id != $parent->member_id) {
+                        $member->parent_id = $parent->member_id;
+                        $member->child_time = time();
+                        $member->inviter = 1;
 
-                    //message notice
-                    self::sendAgentNotify($member->member_id, $parent->member_id);
+                        $member->save();
+
+                        //message notice
+                        self::sendAgentNotify($member->member_id, $parent->member_id);
+                    }
                 }
             }
         }
@@ -333,17 +342,26 @@ class MemberRelation extends BackendModel
         $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
         //成为下线
-        if ($parent_is_agent) {
-            if ($become_child == 2) {
-                if (empty($member->inviter) && $member->member_id != $parent->member_id) {
-                    $member->parent_id = $parent->member_id;
-                    $member->child_time = time();
-                    $member->inviter = 1;
+        if ($member->parent_id == 0) {
+            if ($become_child == 2 && empty($member->inviter)) {
+                $member->child_time = time();
+                $member->inviter = 1;
 
-                    $member->save();
+                $member->save();
+            }
+        } else {
+            if ($parent_is_agent) {
+                if ($become_child == 2) {
+                    if (empty($member->inviter) && $member->member_id != $parent->member_id) {
+                        $member->parent_id = $parent->member_id;
+                        $member->child_time = time();
+                        $member->inviter = 1;
 
-                    //message notice
-                    self::sendAgentNotify($member->member_id, $parent->member_id);
+                        $member->save();
+
+                        //message notice
+                        self::sendAgentNotify($member->member_id, $parent->member_id);
+                    }
                 }
             }
         }
