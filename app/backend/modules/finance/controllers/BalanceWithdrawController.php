@@ -90,6 +90,7 @@ class BalanceWithdrawController extends BaseController
 
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
+            $this->withdrawModel->status = 2;
             if ($this->withdrawModel->save()) {
                 Log::info('打款完成!');
                 return true;
