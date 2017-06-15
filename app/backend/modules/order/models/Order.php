@@ -120,10 +120,14 @@ class Order extends \app\common\models\Order
                     if (isset($value)) {
                         return $order_builder->where($field, $value);
                     } else {
-                        return $order_builder->whereHas('hasOneOrderPay', function ($query) use ($params) {
-                             $query->where('pay_sn','like',"%{$params['ambiguous']['string']}%");
+                        return $order_builder->where(function ($query)use ($params){
+                            $query->searchLike($params['ambiguous']['string']);
+
+                            $query->orWhereHas('hasOneOrderPay', function ($query) use ($params) {
+                                $query->where('pay_sn','like',"%{$params['ambiguous']['string']}%");
+                            });
                         });
-                        return $order_builder->searchLike($params['ambiguous']['string']);
+
                     }
                 });
 
