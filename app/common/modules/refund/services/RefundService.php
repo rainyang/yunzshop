@@ -63,9 +63,16 @@ class RefundService
 
     private function alipay()
     {
-        $pay = PayFactory::create($this->refundApply->order->pay_type_id);
+        $refundApply = $this->refundApply;
 
-        $result = $pay->doRefund($this->refundApply->order->order_sn, $this->refundApply->order->price, $this->refundApply->order->price);
+        $result = DB::transaction(function () use ($refundApply) {
+            RefundOperationService::refundComplete(['order_id' => $this->refundApply->order->id]);
+
+            $pay = PayFactory::create($this->refundApply->order->pay_type_id);
+
+            return $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
+        });
+
         if (!$result) {
             throw new AdminException('支付宝退款失败');
         }
