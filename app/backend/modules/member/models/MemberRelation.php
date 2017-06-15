@@ -213,17 +213,29 @@ class MemberRelation extends BackendModel
             return;
         }
 
-        $parent = false;
-
-        if (!empty($mid)) {
-            $parent =  SubMemberModel::getMemberShopInfo($mid);
-        }
-
-        $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
-
         if ($member->is_agent == 1) {
             return;
         }
+
+        $parent = null;
+
+        if (!empty($mid)) {
+            $parent =  SubMemberModel::getMemberShopInfo($mid);
+        } else {
+            if (empty($member->inviter)) {
+                $this->changeChildAgent($mid, $model);
+
+                if (empty($become_child)) {
+                    $model->inviter = 1;
+                } else {
+                    $model->inviter = 0;
+                }
+
+                $model->save();
+            }
+        }
+
+        $parent_is_agent = !empty($parent) && $parent->is_agent == 1 && $parent->status == 2;
 
         $become_child =  intval($set->become_child);
         $become_check = intval($set->become_check);
