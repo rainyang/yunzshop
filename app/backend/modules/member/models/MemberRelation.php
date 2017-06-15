@@ -223,7 +223,8 @@ class MemberRelation extends BackendModel
             $parent =  SubMemberModel::getMemberShopInfo($mid);
         } else {
             if (empty($member->inviter)) {
-                $this->changeChildAgent($mid, $model);
+                $model->parent_id = intval($mid);
+                $model->child_time = time();
 
                 if (empty($become_child)) {
                     $model->inviter = 1;
