@@ -20,18 +20,18 @@
                 <b>手机号:</b>
                 {{$item->hasOneMember->mobile}}
             </p>
-            <p><b>分销等级:</b> {{$item->hasOneAgent->agent_level->name}} (
-                @if($set['level']>=1)一级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->first_level}}
-                    %</span>
-                @endif
-                @if($set['level']>=2)二级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->second_level}}
-                    %</span>
-                @endif
-                @if($set['level']>=3)三级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->third_level}}
-                    %</span>
-                @endif
-                 )
-            </p>
+            {{--<p><b>分销等级:</b> {{$item->hasOneAgent->agent_level->name}} (--}}
+                {{--@if($set['level']>=1)一级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->first_level}}--}}
+                    {{--%</span>--}}
+                {{--@endif--}}
+                {{--@if($set['level']>=2)二级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->second_level}}--}}
+                    {{--%</span>--}}
+                {{--@endif--}}
+                {{--@if($set['level']>=3)三级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->third_level}}--}}
+                    {{--%</span>--}}
+                {{--@endif--}}
+                 {{--)--}}
+            {{--</p>--}}
             <p>
                 <b>累计收入: </b><span style='color:red'>{{$item->hasOneAgent->commission_total}}</span> 元
             </p>
