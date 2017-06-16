@@ -77,12 +77,6 @@ class MemberOfficeAccountService extends MemberService
             }
 
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
-            //fans
-
-            \Log::debug('会员信息', $userinfo);
-            $fansmode = McMappingFansModel::getUId($userinfo['openid']);
-            \Log::debug('fansmode', $fansmode);
-
             \Log::debug('会员信息', $userinfo);
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {

@@ -8,7 +8,6 @@
 
 namespace app\common\components;
 
-
 use app\backend\modules\member\models\MemberRelation;
 use app\common\exceptions\AppException;
 use app\common\helpers\Client;
