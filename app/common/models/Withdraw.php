@@ -138,9 +138,9 @@ class Withdraw extends BackendModel
         $Model->with(['hasOneMember' => function ($query) {
             $query->select('uid', 'mobile', 'realname', 'nickname', 'avatar');
         }]);
-        $Model->with(['hasOneAgent' => function ($query) {
-            $query->select('member_id', 'agent_level_id', 'commission_total');
-        }]);
+//        $Model->with(['hasOneAgent' => function ($query) {
+//            $query->select('member_id', 'agent_level_id', 'commission_total');
+//        }]);
 
         return $Model;
     }
@@ -153,10 +153,10 @@ class Withdraw extends BackendModel
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
-    public function hasOneAgent()
-    {
-        return $this->hasOne('Yunshop\Commission\models\Agents', 'member_id', 'member_id');
-    }
+//    public function hasOneAgent()
+//    {
+//        return $this->hasOne('Yunshop\Commission\models\Agents', 'member_id', 'member_id');
+//    }
 
     public static function updatedWithdrawStatus($id, $updatedData)
     {
