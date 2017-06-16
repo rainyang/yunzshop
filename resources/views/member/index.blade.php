@@ -184,21 +184,24 @@
                                             title='ID: {{$row['yz_member']['parent_id']}}'
                                                 @endif
                                         >
-                                            @if(empty($row['yz_member']['parent_id']))
-                                                @if($row['yz_member']['is_agent']==1)
-                                                    <label class='label label-primary'>总店</label>
-                                                @else
-                                                    <label class='label label-default'>暂无</label>
-                                                @endif
+                                            @if(empty($row['yz_member']['inviter']))
+                                                <label class='label label-default'>暂无</label>
                                             @else
-
-                                                @if(!empty($row['yz_member']['agent']['avatar']))
-                                                    <img src='{{$row['yz_member']['agent']['avatar']}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
-                                                @endif
-                                                @if(empty($row['yz_member']['agent']['nickname']))
-                                                    未更新
+                                                @if(empty($row['yz_member']['parent_id']))
+                                                    @if($row['yz_member']['is_agent']==1)
+                                                        <label class='label label-primary'>总店</label>
+                                                    @else
+                                                        <label class='label label-default'>暂无</label>
+                                                    @endif
                                                 @else
-                                                    {{$row['yz_member']['agent']['nickname']}}
+                                                    @if(!empty($row['yz_member']['agent']['avatar']))
+                                                        <img src='{{$row['yz_member']['agent']['avatar']}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                                    @endif
+                                                    @if(empty($row['yz_member']['agent']['nickname']))
+                                                        未更新
+                                                    @else
+                                                        {{$row['yz_member']['agent']['nickname']}}
+                                                    @endif
                                                 @endif
                                             @endif
                                         </td>

@@ -20,7 +20,7 @@ class UniAccountUser extends BaseModel
     protected $guarded = [''];
 
     protected $attributes = [
-        'rank'   => ''
+        'rank'   => 0
     ];
 
     public function hasUser()
