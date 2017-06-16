@@ -63,11 +63,11 @@ class ApiController extends BaseController
 
             return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
         } else {
-            if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
-                Session::clear('member_id');
-
-//                $this->jumpUrl($type, $mid);
-            }
+//            if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
+//                Session::clear('member_id');
+//
+////                $this->jumpUrl($type, $mid);
+//            }
 
             if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
                 return $this->errorJson('黑名单用户，请联系管理员', ['login_status' => -1]);
