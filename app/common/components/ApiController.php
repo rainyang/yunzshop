@@ -39,7 +39,9 @@ class ApiController extends BaseController
         }
 
         $relaton_set = MemberRelation::getSetInfo()->first();
+
         $type  = \YunShop::request()->type;
+        $mid   = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
 
         if (!MemberService::isLogged()) {
             if (($relaton_set->status == 1 && !in_array($this->action,$this->ignoreAction))
@@ -60,12 +62,6 @@ class ApiController extends BaseController
 
                     $this->jumpUrl($type, $mid);
                 }
-            }
-
-            return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
-        } else {
-            if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
-                Session::clear('member_id');
             }
 
             if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
@@ -89,13 +85,19 @@ class ApiController extends BaseController
         }
     }
 
-/*    private function jumpUrl($type, $data)
+    private function jumpUrl($type, $mid)
     {
-        if (5 == $type) {
-            return $this->errorJson('',['login_status'=> 1,'login_url'=>'', 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, $data['mid']]);
+        if (empty($type) || $type == 'undefined') {
+            $type = Client::getType();
         }
 
-        return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $data['$queryString'])]);
-    }*/
+        $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
+
+        if (5 == $type) {
+            return $this->errorJson('',['login_status'=> 1,'login_url'=>'', 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid]);
+        }
+
+        return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
+    }
 
 }
