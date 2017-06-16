@@ -46,8 +46,6 @@ class MemberController extends ApiController
             if (!empty($member_info)) {
                 $member_info = $member_info->toArray();
 
-
-
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
 
                 $data = MemberModel::addPlugins($data);

@@ -41,23 +41,25 @@ class ApiController extends BaseController
         $relaton_set = MemberRelation::getSetInfo()->first();
         $type  = \YunShop::request()->type;
 
-        if (!MemberService::isLogged()
-            && (($relaton_set->status == 1 && !in_array($this->action,$this->ignoreAction))
+        if (!MemberService::isLogged()) {
+            if (($relaton_set->status == 1 && !in_array($this->action,$this->ignoreAction))
                 || ($relaton_set->status == 0 && !in_array($this->action,$this->publicAction))
-               )
-        ) {
-            $mid   = \YunShop::request()->mid ? \YunShop::request()->mid : 0;
+            ) {
+                \Log::debug('api mid', $mid);
 
-            \Log::debug('api mid', $mid);
-
-            if (empty($type) || $type == 'undefined') {
-                $type = Client::getType();
+                $this->jumpUrl($type, $mid);
             }
+        } else {
+            if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
+                Session::clear('member_id');
 
-            $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
+                if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
+                    || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
+                ) {
+                    \Log::debug('api mid', $mid);
 
-            if (5 == $type) {
-                return $this->errorJson('',['login_status'=> 1,'login_url'=>'', 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid]);
+                    $this->jumpUrl($type, $mid);
+                }
             }
 
             return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
