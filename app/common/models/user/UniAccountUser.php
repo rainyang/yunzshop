@@ -19,6 +19,10 @@ class UniAccountUser extends BaseModel
 
     protected $guarded = [''];
 
+    protected $attributes = [
+        'rank'   => ''
+    ];
+
     public function hasUser()
     {
         return $this->hasMany('app\common\models\user\User', 'uid', 'uid');

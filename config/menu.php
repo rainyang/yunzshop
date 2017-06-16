@@ -14,8 +14,21 @@ return [
         'menu' => 0,                    //如果不设置则不显示菜单，子菜单也将不显示
         'icon' => '',                   //菜单图标
         'parents'=>[],
-        'child' => []
+        'child' => [
+            'goods_search' => [
+                'name' => '搜索商品',
+                'url' => 'goods.goods.get-search-goods',
+                'urlParams' => '',
+                'permit' => 0,
+                'menu' => 0,
+                'icon' => '',
+                'parents'=>[],
+                'child' => []
+            ],
         ]
+    ],
+
 
 
 ];
+http://restructure.mamp.com/web/index.php?c=site&a=entry&m=yun_shop&do=4873&route=goods.comment.createReply

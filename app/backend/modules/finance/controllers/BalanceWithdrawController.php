@@ -81,30 +81,42 @@ class BalanceWithdrawController extends BaseController
         $remark = '提现打款-' . $this->withdrawModel->type_name . '-金额:' . $this->withdrawModel->actual_amounts . '元,' .
             '手续费:' . $this->withdrawModel->actual_poundage;
         if ($this->withdrawModel->pay_way == 'alipay') {
-            //支付宝打款
-            $resultPay = WithdrawService::alipayWithdrawPay($this->withdrawModel, $remark);
-            Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
+           $resultPay = $this->alipayWithdrawPay($remark);
+
         } elseif ($this->withdrawModel->pay_way == 'wechat') {
             //微信打款
-            //echo '<pre>'; print_r('test'); exit;
-            $resultPay = WithdrawService::wechatWithdrawPay($this->withdrawModel, $remark);
-            Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
+            $resultPay = $this->wechatWithdrawPay($remark);
         }
-
-
 
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
+            $this->withdrawModel->status = 2;
             if ($this->withdrawModel->save()) {
                 Log::info('打款完成!');
                 return true;
             }
         }
+
+        return $resultPay;
+        //return $resultPay;
+        //return $resultPay ? $this->updatePayTime(): "打款失败";
+    }
+
+    private function alipayWithdrawPay($remark)
+    {
+        $resultPay = WithdrawService::alipayWithdrawPay($this->withdrawModel, $remark);
+        Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "支付宝打款中!");
+        return $resultPay;
+    }
+
+    private function wechatWithdrawPay($remark)
+    {
+        $resultPay = WithdrawService::wechatWithdrawPay($this->withdrawModel, $remark);
+        Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
         if ($resultPay['errno'] == 0){
             return $resultPay['message'];
         }
-        //return $resultPay;
-        //return $resultPay ? $this->updatePayTime(): "打款失败";
+        return $resultPay;
     }
 
     //保存数据

@@ -11,7 +11,7 @@
             </ul>
         </div>
 
-        <form id="dataform" action="{{yzWebUrl("goods.comment.createReply")}}" method="post" class="form-horizontal form" onsubmit='return formcheck()'>
+        <form id="dataform" action="{{yzWebUrl("goods.comment.reply")}}" method="post" class="form-horizontal form" onsubmit='return formcheck()'>
 
             <div class='panel panel-default'>
                 <div class='panel-heading'>
