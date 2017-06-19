@@ -127,12 +127,12 @@ class HomePageController extends ApiController
                             $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
                             $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
                         } else{
-                            $result['item']['menus'] = false;
-                            $result['item']['menustyle'] = false;
+                            $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
+                            $result['item']['menustyle'] = self::defaultMenuStyle();
                         }
                     } else{
-                        $result['item']['menus'] = false;
-                        $result['item']['menustyle'] = false;
+                        $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
+                        $result['item']['menustyle'] = self::defaultMenuStyle();
                     }
                     break;
                 default:
