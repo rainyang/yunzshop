@@ -124,9 +124,17 @@ class HomePageController extends ApiController
                 case 2:
                     if(!empty($footerMenuId)){
                         $menustyle = DesignerMenu::getMenuById($footerMenuId);
+                        if(!empty($menustyle->menus) && !empty($menustyle->params)){
+                            $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
+                            $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
+                        } else{
+                            $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
+                            $result['item']['menustyle'] = self::defaultMenuStyle();
+                        }
+                    } else{
+                        $result['item']['menus'] = self::defaultMenu($i, $mid, $type);
+                        $result['item']['menustyle'] = self::defaultMenuStyle();
                     }
-                    $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
-                    $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
                     break;
                 default:
                     $result['item']['menus'] = false;
@@ -255,7 +263,7 @@ class HomePageController extends ApiController
         return Array(
             "previewbg" => "#ef372e",
             "height" => "49px",
-            "textcolor" => "#70c10b",
+            "textcolor" => "#666666",
             "textcolorhigh" => "#ff4949",
             "iconcolor" => "#666666",
             "iconcolorhigh" => "#ff4949",
