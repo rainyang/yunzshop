@@ -598,7 +598,6 @@ class MemberController extends ApiController
         $shopName = $shopInfo['name'] ?: '商城'; //todo 默认值需要更新
         $shopLogo = $shopInfo['logo'] ? replace_yunshop(tomedia($shopInfo['logo'])) : base_path().'/static/images/logo.png'; //todo 默认值需要更新
         $shopImg = $shopInfo['signimg'] ? replace_yunshop(tomedia($shopInfo['signimg'])) : base_path().'/static/images/photo-mr.jpg'; //todo 默认值需要更新
-        $qrcode = MemberModel::getAgentQR();
 
         $uniacid = \YunShop::app()->uniacid;
         $path = storage_path('app/public/personalposter/'.$uniacid);
@@ -617,6 +616,7 @@ class MemberController extends ApiController
 
             $imgSource = imagecreatefromstring(file_get_contents($shopImg));
             $logoSource = imagecreatefromstring(file_get_contents($shopLogo));
+            $qrcode = MemberModel::getAgentQR();
             $qrSource = imagecreatefromstring(file_get_contents($qrcode));
             $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path().'/static/app/images/ewm.png'));
             $mergeData = [
