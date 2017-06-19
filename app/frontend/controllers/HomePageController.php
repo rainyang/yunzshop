@@ -125,7 +125,7 @@ class HomePageController extends ApiController
                         $menustyle = DesignerMenu::getMenuById($footerMenuId);
                         $result['item']['menus'] = json_decode($menustyle->toArray()['menus'], true);
                         $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
-                    }else{
+                    } else{
                         $result['item']['menus'] = false;
                         $result['item']['menustyle'] = false;
                     }
