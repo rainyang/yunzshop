@@ -375,7 +375,7 @@ class MemberOfficeAccountService extends MemberService
     {
         $patten = "/(\\\u[ed][0-9a-f]{3})/ie";
 
-        $nickname = json_encode($userinfo['nickiname']);
+        $nickname = json_encode($userinfo['nickname']);
         \Log::debug('re_nickname', [$nickname]);
 
         $nickname = preg_replace($patten, "", $nickname);
