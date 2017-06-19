@@ -17,6 +17,7 @@ class YunShop
 {
     private static $_req;
     private static $_app;
+    private static $_plugin;
     public static $currentItems = [];
 
     public function __construct()
@@ -326,6 +327,12 @@ class YunShop
         return ucfirst($name);
     }
 
+    public static function plugin()
+    {
+        self::$_plugin = new YunPlugin();
+        return self::$_plugin;
+    }
+
 }
 
 class YunComponent implements ArrayAccess
@@ -496,4 +503,9 @@ class YunApp extends YunComponent
 
 
 }
+class YunPlugin extends YunComponent
+{
+    protected $values;
 
+
+}
