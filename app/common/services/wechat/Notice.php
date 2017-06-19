@@ -8,16 +8,16 @@
 
 namespace app\common\services\wechat;
 
-use app\common\models\Setting;
+use app\common\facades\Setting;
 
 class Notice extends \EasyWeChat\Notice\Notice
 {
     public function send($data = [])
     {
-        if (Setting::get('toggle') == false) {
+        if(Setting::get('shop.notice.toggle') == false){
             return false;
         }
-        parent::send($data);
+        return parent::send();
     }
 
     protected function checkAndThrow(array $contents)
