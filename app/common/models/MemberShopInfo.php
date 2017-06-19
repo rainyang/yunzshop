@@ -11,12 +11,9 @@ namespace app\common\models;
 
 use app\backend\models\BackendModel;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberShopInfo extends BackendModel
 {
-    use SoftDeletes;
-
     protected $table = 'yz_member';
 
     protected $guarded = [''];

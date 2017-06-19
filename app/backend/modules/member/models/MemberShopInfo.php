@@ -76,10 +76,4 @@ class MemberShopInfo extends \app\common\models\MemberShopInfo
                 return $query->select('id','level','level_name')->uniacid();
             }])->first();
     }
-
-    public static function test()
-    {
-        dd(self::uniacid()->where('member_id', 204)->first());
-        return self::uniacid()->where('member_id', 204)->update(['level_id' => 20]);
-    }
 }
