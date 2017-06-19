@@ -373,11 +373,18 @@ class MemberOfficeAccountService extends MemberService
      */
     private function filteNickname($userinfo)
     {
-        $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
+        $patten = "/(\\\u[ed][0-9a-f]{3})/ie";
 
-        $nickname = json_encode($userinfo['nickname']);
+        $nickname = json_encode($userinfo['nickiname']);
+        \Log::debug('re_nickname', [$nickname]);
+
         $nickname = preg_replace($patten, "", $nickname);
 
+        $nickname = preg_replace("#\\\u([0-9a-f]+)#ie","iconv('UCS-2','UTF-8', pack('H4', '\\1'))",$nickname);
+
+        \Log::debug('post_nickname', $nickname);
+        \Log::debug('decode nickname', [json_decode($nickname)]);
+        //return json_decode($nickname);
         return $this->cutNickname(json_decode($nickname));
     }
 
