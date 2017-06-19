@@ -258,7 +258,7 @@ class HomePageController extends ApiController
         return Array(
             "previewbg" => "#ef372e",
             "height" => "49px",
-            "textcolor" => "#70c10b",
+            "textcolor" => "#666666",
             "textcolorhigh" => "#ff4949",
             "iconcolor" => "#666666",
             "iconcolorhigh" => "#ff4949",
