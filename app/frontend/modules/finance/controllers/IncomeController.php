@@ -239,7 +239,7 @@ class IncomeController extends ApiController
     public function setIncomeAndOrder($type, $typeId)
     {
         static::setIncome($type, $typeId);
-        static::setCommissionOrder($type, $typeId);
+//        static::setCommissionOrder($type, $typeId);
 
         $configs = Config::get('income');
         foreach ($configs as $config) {
@@ -267,11 +267,11 @@ class IncomeController extends ApiController
      * @param $type
      * @param $typeId
      */
-    public function setCommissionOrder($type, $typeId)
-    {
-        Log::info('setCommissionOrder');
-        $request = CommissionOrder::updatedCommissionOrderWithdraw($type, $typeId, '1');
-    }
+//    public function setCommissionOrder($type, $typeId)
+//    {
+//        Log::info('setCommissionOrder');
+//        $request = CommissionOrder::updatedCommissionOrderWithdraw($type, $typeId, '1');
+//    }
 
     /**
      * @param $withdrawData

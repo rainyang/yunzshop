@@ -75,8 +75,12 @@ class WithdrawController extends BaseController
                 return $item !== '';// && $item !== 0;
             });
         }
-
+        $configs = Config::get('income');
+        foreach ($configs as $config) {
+            $type[] = $config['class'];
+        }
         $list = Withdraw::getWithdrawList($requestSearch)
+            ->whereIn('type',$type)
             ->orderBy('created_at','desc')
             ->paginate($pageSize);
 
