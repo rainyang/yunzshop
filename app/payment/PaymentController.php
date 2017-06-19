@@ -4,6 +4,7 @@ namespace  app\payment;
 
 use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
+use app\common\events\payment\RechargeComplatedEvent;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
 use app\frontend\modules\finance\services\BalanceService;
@@ -111,6 +112,13 @@ class PaymentController extends BaseController
                     'order_sn'=> $data['out_trade_no'],
                     'pay_sn'=> $data['trade_no']
                 ]);
+
+                //充值成功事件
+                event(new RechargeComplatedEvent([
+                    'order_sn'=> $data['out_trade_no'],
+                    'pay_sn'=> $data['trade_no']
+                ]));
+                
                 break;
             case "gold_recharge.succeeded":
                 \Log::debug('金币支付操作', 'gold_recharge.succeeded');

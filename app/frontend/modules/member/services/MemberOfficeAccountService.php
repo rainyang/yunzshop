@@ -60,7 +60,6 @@ class MemberOfficeAccountService extends MemberService
                 $authurl = $this->_getAuthUrl($appId, $callback, $state);
             }
         } else {
-            \Log::debug('session', [Session::get('member_id')]);
             $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
         }
 
@@ -118,20 +117,25 @@ class MemberOfficeAccountService extends MemberService
         $userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
+        $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
 
-        if (!empty($UnionidInfo)) {
-            $UnionidInfo = $UnionidInfo->toArray();
+        if ($mc_mapping_fans_model) {
+            $member_model = Member::getMemberById($mc_mapping_fans_model->uid);
+            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($mc_mapping_fans_model->uid);
+
+            $member_id = $mc_mapping_fans_model->uid;
         }
 
-        if (!empty($UnionidInfo['unionid'])) {
-            $types = explode('|', $UnionidInfo['type']);
-            $member_id = $UnionidInfo['member_id'];
+        if (!empty($UnionidInfo->unionid) && !empty($member_model)
+                 && !empty($mc_mapping_fans_model) && !empty($member_shop_info_model)) {
+            $types = explode('|', $UnionidInfo->type);
+            $member_id = $UnionidInfo->member_id;
 
             if (!in_array(self::LOGIN_TYPE, $types)) {
                 //更新ims_yz_member_unique表
                 MemberUniqueModel::updateData(array(
-                    'unique_id' => $UnionidInfo['unique_id'],
-                    'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
+                    'unique_id' => $UnionidInfo->unique_id,
+                    'type' => $UnionidInfo->type . '|' . self::LOGIN_TYPE
                 ));
             }
 
@@ -139,24 +143,26 @@ class MemberOfficeAccountService extends MemberService
         } else {
             \Log::debug('添加新会员');
 
-            $mc_mapping_fans_model = McMappingFansModel::getUId($userinfo['openid']);
-
-            if ($mc_mapping_fans_model->uid) {
-                $member_id = $mc_mapping_fans_model->uid;
-
-                $this->updateMemberInfo($member_id, $userinfo);
-            } else {
+            if (empty($member_model) && empty($mc_mapping_fans_model)) {
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
                 if ($member_id === false) {
                     return show_json(8, '保存用户信息失败');
                 }
+            } elseif ($mc_mapping_fans_model->uid) {
+                $member_id = $mc_mapping_fans_model->uid;
+
+                $this->updateMemberInfo($member_id, $userinfo);
             }
 
-            $this->addSubMemberInfo($uniacid, $member_id);
+            if (empty($member_shop_info_model)) {
+                $this->addSubMemberInfo($uniacid, $member_id);
+            }
 
-            //添加ims_yz_member_unique表
-            $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
+            if (empty($UnionidInfo->unionid)) {
+                //添加ims_yz_member_unique表
+                $this->addMemberUnionid($uniacid, $member_id, $userinfo['unionid']);
+            }
 
             //生成分销关系链
             if ($upperMemberId) {
@@ -210,7 +216,10 @@ class MemberOfficeAccountService extends MemberService
                 $this->updateMemberInfo($member_id, $userinfo);
             }
 
-            $this->addSubMemberInfo($uniacid, $member_id);
+            if (empty($member_shop_info_model)) {
+                \Log::debug('add yz_member');
+                $this->addSubMemberInfo($uniacid, $member_id);
+            }
 
             //生成分销关系链
             if ($upperMemberId) {
@@ -364,12 +373,32 @@ class MemberOfficeAccountService extends MemberService
      */
     private function filteNickname($userinfo)
     {
-        $patten = "#(\\\ud[0-9a-f][3])|(\\\ue[0-9a-f]{3})#ie";
+        $patten = "/(\\\u[ed][0-9a-f]{3})/ie";
 
         $nickname = json_encode($userinfo['nickname']);
+        \Log::debug('re_nickname', [$nickname]);
+
         $nickname = preg_replace($patten, "", $nickname);
 
-        return json_decode($nickname);
+        $nickname = preg_replace("#\\\u([0-9a-f]+)#ie","iconv('UCS-2','UTF-8', pack('H4', '\\1'))",$nickname);
+
+        \Log::debug('post_nickname', $nickname);
+        \Log::debug('decode nickname', [json_decode($nickname)]);
+        //return json_decode($nickname);
+        return $this->cutNickname(json_decode($nickname));
+    }
+
+    /**
+     * 截取字符串长度
+     *
+     * @param $nickname
+     * @return string
+     */
+    private function cutNickname($nickname)
+    {
+        if (mb_strlen($nickname) > 18) {
+            return mb_substr($nickname, 0, 18);
+        }
     }
 
     /**
