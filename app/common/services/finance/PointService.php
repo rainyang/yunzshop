@@ -109,7 +109,7 @@ class PointService
             "keyword2" => '尊敬的[' . $nickname . ']，您于[' . date('Y-m-d H:i', time()) . ']发生积分变动，变动数值为[' . $this->point_data['point'] . ']，类型[' . $this->point_data['point_mode'] . ']，您目前积分余值为[' . $this->point_data['after_point'] . ']',
             "remark" => "",
         ];
-        if (!\Setting::get('shop.notice')['task']) {
+        if (isset(\Setting::get('shop.notice')['task']) && !\Setting::get('shop.notice')['task']) {
             return;
         }
         MessageService::notice(\Setting::get('shop.notice')['task'], $msg, $noticeMember->hasOneFans->openid);
