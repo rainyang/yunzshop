@@ -9,6 +9,7 @@
 
 namespace app\frontend\modules\order\services;
 
+use app\backend\modules\member\models\MemberRelation;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\OnPreGenerateOrderCreatingEvent;
