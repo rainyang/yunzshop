@@ -41,7 +41,6 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享图标</label>
                     <div class="col-sm-9 col-xs-12">
                         {!! app\common\helpers\ImageHelper::tplFormFieldImage('share[icon]', $set['icon'])!!}
-                        <span class="help-block">不选择默认商城LOGO</span>
                     </div>
                 </div>
                 <div class="form-group">
