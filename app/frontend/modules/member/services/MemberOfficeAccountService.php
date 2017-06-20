@@ -355,6 +355,7 @@ class MemberOfficeAccountService extends MemberService
             'resideprovince' => $userinfo['province'] . '省',
             'residecity' => $userinfo['city'] . '市'
         );
+        \Log::debug('更新mc_members',$mc_data);
         MemberModel::updataData($member_id, $mc_data);
 
         //更新mapping_fans
@@ -364,6 +365,7 @@ class MemberOfficeAccountService extends MemberService
             'follow' => $userinfo['subscribe'],
             'tag' => base64_encode(serialize($userinfo))
         );
+        \Log::debug('更新mapping_fans', $record);
         McMappingFansModel::updateData($member_id, $record);
     }
 
@@ -384,7 +386,7 @@ class MemberOfficeAccountService extends MemberService
 
         $nickname = preg_replace("#\\\u([0-9a-f]+)#ie","iconv('UCS-2','UTF-8', pack('H4', '\\1'))",$nickname);
 
-        \Log::debug('post_nickname', $nickname);
+        \Log::debug('post_nickname', [$nickname]);
         \Log::debug('decode nickname', [json_decode($nickname)]);
         //return json_decode($nickname);
         return $this->cutNickname(json_decode($nickname));
