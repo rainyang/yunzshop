@@ -128,6 +128,8 @@ class MemberOfficeAccountService extends MemberService
 
         if (!empty($UnionidInfo->unionid) && !empty($member_model)
                  && !empty($mc_mapping_fans_model) && !empty($member_shop_info_model)) {
+            \Log::debug('微信登陆更新');
+
             $types = explode('|', $UnionidInfo->type);
             $member_id = $UnionidInfo->member_id;
 
