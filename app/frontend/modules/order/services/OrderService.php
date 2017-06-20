@@ -261,6 +261,10 @@ class OrderService
                 }
             });
         });
+
+        //会员推广资格
+        \Log::debug('推广资格-' .$orderPay->uid);
+        MemberRelation::checkOrderPay($orderPay->uid);
     }
 
     /**
