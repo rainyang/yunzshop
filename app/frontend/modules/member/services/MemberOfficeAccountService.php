@@ -386,8 +386,8 @@ class MemberOfficeAccountService extends MemberService
 
         \Log::debug('post_nickname', $nickname);
         \Log::debug('decode nickname', [json_decode($nickname)]);
-        //return json_decode($nickname);
-        return $this->cutNickname(json_decode($nickname));
+
+        return json_decode($this->cutNickname($nickname));
     }
 
     /**
@@ -397,10 +397,12 @@ class MemberOfficeAccountService extends MemberService
      * @return string
      */
     private function cutNickname($nickname)
-    {
+    {\Log::debug('strleng', mb_strlen($nickname));
         if (mb_strlen($nickname) > 18) {
             return mb_substr($nickname, 0, 18);
         }
+
+        return $nickname;
     }
 
     /**
