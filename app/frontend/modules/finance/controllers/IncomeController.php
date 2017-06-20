@@ -40,8 +40,8 @@ class IncomeController extends ApiController
             'type_name' => '推广佣金',
             'income' => $incomeModel->sum('amount')
         ];
-
         foreach ($config as $key => $item) {
+
             $typeModel = $incomeModel->where('incometable_type', $item['class']);
             $incomeData[$key] = [
                 'title' => $item['title'],
@@ -50,23 +50,28 @@ class IncomeController extends ApiController
                 'type_name' => $item['title'],
                 'income' => $typeModel->sum('amount')
             ];
-            $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
+            if($item['agent_class']){
+                $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
 
-            if ($item['agent_status']) {
-                $agentModel = $agentModel->where('status', 1);
-            }
-
-            //推广中心显示
-            if (!$agentModel) {
-                $incomeData[$key]['can'] = false;
-            } else {
-                $agent = $agentModel->first();
-                if ($agent) {
-                    $incomeData[$key]['can'] = true;
-                } else {
-                    $incomeData[$key]['can'] = false;
+                if ($item['agent_status']) {
+                    $agentModel = $agentModel->where('status', 1);
                 }
+
+                //推广中心显示
+                if (!$agentModel) {
+                    $incomeData[$key]['can'] = false;
+                } else {
+                    $agent = $agentModel->first();
+                    if ($agent) {
+                        $incomeData[$key]['can'] = true;
+                    } else {
+                        $incomeData[$key]['can'] = false;
+                    }
+                }
+            }else{
+                $incomeData[$key]['can'] = true;
             }
+
         }
         if ($incomeData) {
             return $this->successJson('获取数据成功!', $incomeData);
@@ -239,7 +244,7 @@ class IncomeController extends ApiController
     public function setIncomeAndOrder($type, $typeId)
     {
         static::setIncome($type, $typeId);
-        static::setCommissionOrder($type, $typeId);
+//        static::setCommissionOrder($type, $typeId);
 
         $configs = Config::get('income');
         foreach ($configs as $config) {
@@ -267,11 +272,11 @@ class IncomeController extends ApiController
      * @param $type
      * @param $typeId
      */
-    public function setCommissionOrder($type, $typeId)
-    {
-        Log::info('setCommissionOrder');
-        $request = CommissionOrder::updatedCommissionOrderWithdraw($type, $typeId, '1');
-    }
+//    public function setCommissionOrder($type, $typeId)
+//    {
+//        Log::info('setCommissionOrder');
+//        $request = CommissionOrder::updatedCommissionOrderWithdraw($type, $typeId, '1');
+//    }
 
     /**
      * @param $withdrawData

@@ -1,8 +1,10 @@
 <?php
 namespace app\common\services;
 
+use app\common\models\AccountWechats;
 use EasyWeChat\Message\News;
 use EasyWeChat\Message\Text;
+use EasyWeChat\Foundation\Application;
 
 class MessageService
 {
@@ -12,9 +14,19 @@ class MessageService
      * @param $data
      * @param $openId
      */
-    public static function notice($templateId, $data, $openId)
+    public static function notice($templateId, $data, $openId,$uniacid='')
     {
-        $app = app('wechat');
+        if($uniacid){
+            $res = AccountWechats::getAccountByUniacid($uniacid);
+            $options = [
+                'app_id'  => $res['key'],
+                'secret'  => $res['secret'],
+            ];
+            $app = new Application($options);
+        }else{
+            $app = app('wechat');
+        }
+        
         $notice = $app->notice;
         $notice->uses($templateId)->andData($data)->andReceiver($openId)->send();
     }

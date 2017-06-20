@@ -32,6 +32,9 @@ class Member extends \app\common\models\Member
         return self::select(['uid', 'avatar', 'nickname', 'realname', 'mobile', 'createtime',
             'credit1', 'credit2'])
             ->uniacid()
+            ->whereHas('yzMember', function($query) {
+                $query->whereNull('deleted_at');
+            })
             ->with(['yzMember'=>function($query){
                 return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])->uniacid()
                     ->with(['group'=>function($query1){
@@ -64,6 +67,9 @@ class Member extends \app\common\models\Member
             'credit1', 'credit2'])
             ->uniacid()
             ->where('uid', $id)
+            ->whereHas('yzMember', function($query) {
+                $query->whereNull('deleted_at');
+            })
             ->with(['yzMember'=>function($query){
                 return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black', 'alipayname', 'alipay', 'content', 'status'])->where('is_black', 0)
                     ->with(['group'=>function($query1){
@@ -174,7 +180,7 @@ class Member extends \app\common\models\Member
 
 
         $result = $result->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])
+                return $query->select(['member_id','parent_id', 'inviter', 'is_agent', 'group_id','level_id', 'is_black'])
                     ->with(['group'=>function($query1){
                         return $query1->select(['id','group_name'])->uniacid();
                     },'level'=>function($query2){

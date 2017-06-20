@@ -13,7 +13,11 @@ class Message
         try{
             self::sendNotice($openid, $data);
         }catch(\Exception $e){
-            self::sendTemplateNotice($openid, $templateId, $data);
+            try{
+                self::sendTemplateNotice($openid, $templateId, $data);
+            }catch(\Exception $e){
+                //
+            }
         }
     }
 
