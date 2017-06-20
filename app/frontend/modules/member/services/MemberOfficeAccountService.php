@@ -140,7 +140,7 @@ class MemberOfficeAccountService extends MemberService
                     'type' => $UnionidInfo->type . '|' . self::LOGIN_TYPE
                 ));
             }
-
+\Log::debug('userinfo',$userinfo);
             $this->updateMemberInfo($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
