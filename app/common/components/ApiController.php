@@ -46,8 +46,6 @@ class ApiController extends BaseController
             if (($relaton_set->status == 1 && !in_array($this->action,$this->ignoreAction))
                 || ($relaton_set->status == 0 && !in_array($this->action,$this->publicAction))
             ) {
-                \Log::debug('api mid', $mid);
-
                 $this->jumpUrl($type, $mid);
             }
         } else {
@@ -57,8 +55,6 @@ class ApiController extends BaseController
                 if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
                     || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
                 ) {
-                    \Log::debug('api mid', $mid);
-
                     $this->jumpUrl($type, $mid);
                 }
             }
@@ -68,7 +64,6 @@ class ApiController extends BaseController
             }
 
             $mid = Member::getMid();
-            \Log::debug('Logined mid', $mid);
 
             //发展下线
             Member::chkAgent(\YunShop::app()->getMemberId(), $mid);
