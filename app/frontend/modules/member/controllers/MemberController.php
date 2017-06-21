@@ -62,7 +62,14 @@ class MemberController extends ApiController
                     $data['relation_switch'] = 0;
                 }
 
-                $data['poster'] = $this->createPoster(); //个人中心的推广海报
+                //个人中心的推广二维码
+                $data['poster'] = $this->createPoster();
+
+                //文章营销
+                $articleSetting = Setting::get('plugin.article');
+                if($articleSetting['enabled'] == 1){
+                    $data['article_title'] = $articleSetting['center'] ?: '文章营销';
+                }
 
                 return $this->successJson('', $data);
             } else {
