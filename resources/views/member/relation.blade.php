@@ -94,7 +94,7 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为下线条件</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_child]" value="0" @if($set['become_child'] ==0) checked="checked"
-                                    @endif/> 首次点击分享连接</label>
+                                    @endif/> 首次点击分享链接</label>
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_child]" value="1" @if($set['become_child'] ==1) checked="checked"
                                             @endif /> 首次下单</label>
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_child]" value="2" @if($set['become_child'] ==2) checked="checked"
