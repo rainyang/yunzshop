@@ -68,7 +68,7 @@ class MemberController extends ApiController
                 //文章营销
                 $articleSetting = Setting::get('plugin.article');
                 if($articleSetting['enabled'] == 1){
-                    $data['article_title'] = $articleSetting['center'] ?: '文章营销';
+                    $data['article_title'] = $articleSetting['center'] ? html_entity_decode($articleSetting['center']) : '文章营销';
                 }
 
                 return $this->successJson('', $data);
