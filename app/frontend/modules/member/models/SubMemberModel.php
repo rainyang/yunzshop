@@ -12,12 +12,9 @@
 namespace app\frontend\modules\member\models;
 
 use app\common\models\MemberShopInfo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SubMemberModel extends MemberShopInfo
 {
-    use SoftDeletes;
-
     public static function getInfo($uniacid, $referralsn)
     {
         return self::where('uniacid', $uniacid)
