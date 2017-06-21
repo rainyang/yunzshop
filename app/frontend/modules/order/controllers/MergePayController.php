@@ -148,7 +148,7 @@ class MergePayController extends ApiController
         return [
             'order_no' => $orderPay->pay_sn,
             'amount' => $orderPay->amount,
-            'subject' => '微信支付',
+            'subject' => $orders->first()->hasManyOrderGoods[0]->title,
             'body' => $orders->first()->hasManyOrderGoods[0]->title . ':' . \YunShop::app()->uniacid,
             'extra' => ['type' => 1]
 
