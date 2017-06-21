@@ -30,7 +30,8 @@ class TestController extends ApiController
 {
     public function index()
     {
-        event(Order::find(2217));
+        $e = new AfterOrderPaidEvent(Order::find(2217));
+        event($e);
         exit;
     }
 
