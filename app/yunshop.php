@@ -503,9 +503,29 @@ class YunApp extends YunComponent
 
 
 }
-class YunPlugin extends YunComponent
+class YunPlugin
 {
     protected $values;
 
+    public function __construct()
+    {
+        $this->values = false;
+    }
+
+    /**
+     * @param null $key
+     * @return bool
+     */
+    public function get($key = null)
+    {
+        if (isset($key)) {
+            $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+
+            if ($plugin_class->isEnabled($key)) {
+                return true;
+            }
+        }
+        return $this->values;
+    }
 
 }
