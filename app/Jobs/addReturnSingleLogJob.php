@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Config;
-use Yunshop\SingleReturn\models\returnSingleLog;
+use Yunshop\SingleReturn\models\ReturnSingleLog;
 use Yunshop\SingleReturn\services\TimedTaskReturnService;
 
 class addReturnSingleLogJob implements ShouldQueue
@@ -34,7 +34,7 @@ class addReturnSingleLogJob implements ShouldQueue
      */
     public function handle()
     {
-        $logId = returnSingleLog::insertGetId($this->returnSingleLogData);
+        $logId = ReturnSingleLog::insertGetId($this->returnSingleLogData);
         $incomeData = [
             'uniacid' => $this->returnSingleLogData['uniacid'],
             'member_id' => $this->returnSingleLogData['uid'],

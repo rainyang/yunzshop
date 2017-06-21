@@ -138,7 +138,7 @@ class MemberRelation extends BackendModel
 
         if (!empty($list)) {
             $list = $list->toArray();
-\Log::debug('商品列表', $list);
+
             foreach ($list as $rows) {
                 foreach ($rows['has_many_order_goods'] as $item) {
                     if ($item['goods_id'] == $goods_id) {
@@ -338,7 +338,7 @@ class MemberRelation extends BackendModel
     public static function checkOrderPay($uid)
     {
         $set = self::getSetInfo()->first();
-        \Log::debug('付款后：'. $uid);
+        \Log::debug('付款后');
         if (empty($set)) {
             return;
         }
@@ -454,7 +454,9 @@ class MemberRelation extends BackendModel
     public static function checkOrderFinish($uid)
     {
         $set = self::getSetInfo()->first();
-\Log::debug('订单完成'. $uid);
+
+        \Log::debug('订单完成');
+
         if (empty($set)) {
             return;
         }
@@ -567,7 +569,6 @@ class MemberRelation extends BackendModel
 
             MessageService::notice($msg_set['template_id'], $msg, $member->openid);
         }
-        return;
     }
 
     /**
@@ -604,6 +605,5 @@ class MemberRelation extends BackendModel
 
             MessageService::notice($msg_set['template_id'], $msg, $parent->openid);
         }
-        return;
     }
 }

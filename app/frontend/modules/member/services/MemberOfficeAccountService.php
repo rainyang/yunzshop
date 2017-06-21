@@ -41,12 +41,10 @@ class MemberOfficeAccountService extends MemberService
         $appSecret = $account->secret;
 
         if ($params['scope'] == 'user_info') {
-            \Log::debug('user info callback');
             $callback = Url::absoluteApi('member.login.index', ['type' => 1, 'scope' => 'user_info']);
 
 
         } else {
-            \Log::debug('default');
             $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         }
@@ -77,7 +75,6 @@ class MemberOfficeAccountService extends MemberService
             }
 
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
-            \Log::debug('会员信息', $userinfo);
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
                 \Log::debug('微信登陆授权失败');
@@ -128,6 +125,8 @@ class MemberOfficeAccountService extends MemberService
 
         if (!empty($UnionidInfo->unionid) && !empty($member_model)
                  && !empty($mc_mapping_fans_model) && !empty($member_shop_info_model)) {
+            \Log::debug('微信登陆更新');
+
             $types = explode('|', $UnionidInfo->type);
             $member_id = $UnionidInfo->member_id;
 
@@ -203,7 +202,6 @@ class MemberOfficeAccountService extends MemberService
             \Log::debug('添加新会员');
 
             if (empty($member_model) && empty($fans_mode)) {
-                \Log::debug('add member');
                 $member_id = $this->addMemberInfo($uniacid, $userinfo);
 
                 if ($member_id === false) {
@@ -212,12 +210,10 @@ class MemberOfficeAccountService extends MemberService
             } elseif ($fans_mode->uid) {
                 $member_id = $fans_mode->uid;
 
-                \Log::debug('update member');
                 $this->updateMemberInfo($member_id, $userinfo);
             }
 
             if (empty($member_shop_info_model)) {
-                \Log::debug('add yz_member');
                 $this->addSubMemberInfo($uniacid, $member_id);
             }
 
@@ -353,6 +349,7 @@ class MemberOfficeAccountService extends MemberService
             'resideprovince' => $userinfo['province'] . '省',
             'residecity' => $userinfo['city'] . '市'
         );
+
         MemberModel::updataData($member_id, $mc_data);
 
         //更新mapping_fans
@@ -362,6 +359,7 @@ class MemberOfficeAccountService extends MemberService
             'follow' => $userinfo['subscribe'],
             'tag' => base64_encode(serialize($userinfo))
         );
+
         McMappingFansModel::updateData($member_id, $record);
     }
 
@@ -376,16 +374,10 @@ class MemberOfficeAccountService extends MemberService
         $patten = "/(\\\u[ed][0-9a-f]{3})/ie";
 
         $nickname = json_encode($userinfo['nickname']);
-        \Log::debug('re_nickname', [$nickname]);
-
         $nickname = preg_replace($patten, "", $nickname);
-
         $nickname = preg_replace("#\\\u([0-9a-f]+)#ie","iconv('UCS-2','UTF-8', pack('H4', '\\1'))",$nickname);
 
-        \Log::debug('post_nickname', $nickname);
-        \Log::debug('decode nickname', [json_decode($nickname)]);
-        //return json_decode($nickname);
-        return $this->cutNickname(json_decode($nickname));
+        return json_decode($this->cutNickname($nickname));
     }
 
     /**
@@ -399,6 +391,8 @@ class MemberOfficeAccountService extends MemberService
         if (mb_strlen($nickname) > 18) {
             return mb_substr($nickname, 0, 18);
         }
+
+        return $nickname;
     }
 
     /**
