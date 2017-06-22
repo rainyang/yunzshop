@@ -47,6 +47,7 @@ class GoodsStock
              */
             $goods_option->reduceStock($orderGoods->total);
             $orderGoods->hasOneGoods->addSales($orderGoods->total);
+            $orderGoods->hasOneGoods->save();
             return $goods_option->save();
         }
         /**
