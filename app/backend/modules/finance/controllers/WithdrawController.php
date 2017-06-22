@@ -86,7 +86,10 @@ class WithdrawController extends BaseController
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
         $incomeConfug = Config::get('income');
-        
+        if(!$requestSearch['searchtime']){
+            $requestSearch['times']['start'] = time();
+            $requestSearch['times']['end'] = time();
+        }
         return view('finance.withdraw.withdraw-list', [
             'list' => $list,
             'pager' => $pager,
