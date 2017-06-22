@@ -35,7 +35,6 @@
                             @foreach($types as $type)
                                 <option value='{{$type['class']}}' @if($search['type']==$type['class']) selected @endif>{{$type['title']}}</option>
                             @endforeach
-
                         </select>
                     </div>
                 </div>
