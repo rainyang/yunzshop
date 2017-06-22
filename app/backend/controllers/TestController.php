@@ -62,7 +62,7 @@ class TestController extends BaseController
                 "keyword2" => $message,
                 "remark" => "",
             ];
-            echo '<pre>';print_r($msg);exit;
+            
             MessageService::notice($teamDividendNotice['template_id'], $msg, 'oNnNJwqQwIWjAoYiYfdnfiPuFV9Y');
 
         }
