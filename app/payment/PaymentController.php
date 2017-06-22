@@ -96,14 +96,10 @@ class PaymentController extends BaseController
                 if ($data['unit'] == 'fen') {
                     $orderPay->amount = $orderPay->amount * 100;
                 }
-                \Log::debug('操作的订单', $data['out_trade_no'] . '/' . $orderPay->amount . '/' . $data['total_fee']);
+
                 if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
                     \Log::debug('更新订单状态');
                     OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
-
-                    //会员推广资格
-                   /* \Log::debug('推广资格-' . \YunShop::app()->getMemberId());
-                    MemberRelation::checkOrderPay(\YunShop::app()->getMemberId());*/
                 }
                 break;
             case "recharge.succeeded":
@@ -126,6 +122,12 @@ class PaymentController extends BaseController
                     'order_sn'=> $data['out_trade_no'],
                     'pay_sn'=> $data['trade_no']
                 ]);
+
+                //充值成功事件
+                event(new RechargeComplatedEvent([
+                    'order_sn'=> $data['out_trade_no'],
+                    'pay_sn'=> $data['trade_no']
+                ]));
                 break;
         }
     }
