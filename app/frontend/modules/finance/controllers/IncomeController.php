@@ -251,7 +251,7 @@ class IncomeController extends ApiController
             if(isset($config['name']) && ($type == $config['class'])){
                 $income = \Yunshop\Commission\models\Income::whereIn('id',explode(',',$typeId))->get();
                 foreach ($income as $item) {
-                    $config['class']::$config['name'](['status'=>1],['id'=>$item->incometable_id]);
+                    $config['class']::$config['name']([$config['value']=>1],['id'=>$item->incometable_id]);
                 }
 
             }
