@@ -49,8 +49,14 @@ class Goods extends \app\common\models\Goods
          */
         $goodsDiscount = $this->hasManyGoodsDiscount()->where('level_id', $member->yzMember->level_id)->first();
         if (isset($goodsDiscount)) {
+            //优先使用商品设置
             $result = $goodsDiscount->getPrice($this->price);
+        }else{
+            //其次等级商品全局设置
+            $result = $member->yzMember->level->getMemberLevelGoodsDiscountPrice($this->price);
         }
+
+
         return $result;
     }
 
