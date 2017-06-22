@@ -11,6 +11,7 @@ namespace app\frontend\modules\dispatch\listeners\prices;
 use app\backend\modules\goods\models\Dispatch;
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\common\models\goods\GoodsDispatch;
+use app\common\models\Address;
 
 class TemplateOrderDispatchPrice
 {
@@ -80,10 +81,20 @@ class TemplateOrderDispatchPrice
     private function calculationByWeight($orderGoods)
     {
         $weight = $orderGoods->hasOneGoods->weight * $orderGoods->total;
-        if ($weight > $this->dispatch->first_weight) {
-            return $this->dispatch->first_weight_price + ceil(($weight - $this->dispatch->first_weight) / $this->dispatch->another_weight) * $this->dispatch->another_weight_price;
+        $weight_data = unserialize($this->dispatch->weight);
+        if ($weight_data) {
+            $address = json_decode(\YunShop::request()->address, true);
+            if ($address['city']) {
+                return $this->areaDispatchPrice($address['city'], $weight_data, $weight);
+            } else {
+                return 0;
+            }
         } else {
-            return $this->dispatch->first_weight_price;
+            if ($weight > $this->dispatch->first_weight) {
+                return $this->dispatch->first_weight_price + ceil(($weight - $this->dispatch->first_weight) / $this->dispatch->another_weight) * $this->dispatch->another_weight_price;
+            } else {
+                return $this->dispatch->first_weight_price;
+            }
         }
     }
 
@@ -93,5 +104,26 @@ class TemplateOrderDispatchPrice
             return 0;
         }
         return $price;
+    }
+
+    private function areaDispatchPrice($city, $weight_data, $weight_total)
+    {
+        $dispatch = '';
+        $city_id = Address::where('areaname', $city)->value('id');
+        foreach ($weight_data as $key => $weight) {
+            $area_ids = explode(';', $weight['area_ids']);
+            if (in_array($city_id, $area_ids)) {
+                $dispatch = $weight;
+                break;
+            }
+        }
+        if ($dispatch) {
+            if ($weight_total > $dispatch['first_weight']) {
+                return $dispatch['first_weight_price'] + ceil(($weight_total - $dispatch['first_weight']) / $dispatch['another_weight']) * $dispatch['another_weight_price'];
+            } else {
+                return $dispatch['first_weight_price'];
+            }
+        }
+        return 0;
     }
 }
