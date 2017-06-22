@@ -92,7 +92,7 @@ class BalanceWithdrawController extends BaseController
             //微信打款
             $resultPay = $this->wechatWithdrawPay($remark);
         }
-        file_put_contents(storage_path('logs/withdraw2'),print_r($resultPay,true));
+        file_put_contents(storage_path('logs/withdraw2.log'),print_r($resultPay,true));
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
             $this->withdrawModel->status = 2;
@@ -114,7 +114,7 @@ class BalanceWithdrawController extends BaseController
     private function wechatWithdrawPay($remark)
     {
         $resultPay = WithdrawService::wechatWithdrawPay($this->withdrawModel, $remark);
-        file_put_contents(storage_path('logs/withdraw1'),print_r($resultPay,true));
+        file_put_contents(storage_path('logs/withdraw1.log'),print_r($resultPay,true));
         Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
         if ($resultPay['errno'] == 0){
             return $resultPay['message'];
