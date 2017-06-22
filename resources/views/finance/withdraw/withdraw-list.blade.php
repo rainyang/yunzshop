@@ -33,9 +33,8 @@
                         <select name='search[type]' class='form-control'>
                             <option value='' @if($search['type']=='') selected @endif>全部</option>
                             @foreach($types as $type)
-                                <option value='{{$type['class']}}' @if($search['type']==$type['class']) selected @endif>{{$type['type_name']}}</option>
+                                <option value='{{$type['class']}}' @if($search['type']==$type['class']) selected @endif>{{$type['title']}}</option>
                             @endforeach
-
                         </select>
                     </div>
                 </div>
@@ -49,7 +48,12 @@
                         </select>
                     </div>
                     <div class="col-sm-7 col-lg-7 col-xs-12">
-                        {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', ['starttime'=>date('Y-m-d H:i', $search['starttime']), 'endtime'=>date('Y-m-d H:i',$search['endtime'])], true);!!}
+                        {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', [
+	                                                        'starttime'=>date('Y-m-d H:i', $search['times']['start']),
+	                                                        'endtime'=>date('Y-m-d H:i', $search['times']['end']),
+	                                                        'start'=>date('Y-m-d H:i', $search['times']['start']),
+	                                                        'end'=>date('Y-m-d H:i', $search['times']['end'])
+	                                                        ], true) !!}
                     </div>
 
                 </div>
