@@ -40,7 +40,7 @@ class Member extends \app\common\models\Member
                     ->with(['group'=>function($query1){
                         return $query1->select(['id','group_name'])->uniacid();
                     },'level'=>function($query2){
-                        return $query2->select(['id','level_name'])->uniacid();
+                        return $query2->select(['id', 'level', 'level_name'])->uniacid();
                     }, 'agent'=>function($query3){
                         return $query3->select(['uid', 'avatar', 'nickname'])->uniacid();
                     }]);
