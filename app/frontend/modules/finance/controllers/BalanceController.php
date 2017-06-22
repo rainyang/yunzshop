@@ -23,6 +23,7 @@ use app\frontend\modules\finance\models\BalanceRecharge;
 use app\frontend\modules\finance\services\BalanceService;
 
 use app\backend\modules\member\models\Member;
+use Illuminate\Support\Facades\DB;
 
 class BalanceController extends ApiController
 {
@@ -233,6 +234,7 @@ class BalanceController extends ApiController
         }
 
         //写入提现记录
+        DB::beginTransaction();
         $result = $this->withdrawRecordSave();
         if ($result !== true) {
             return $result;
@@ -241,9 +243,11 @@ class BalanceController extends ApiController
         //修改会员余额
         $result = (new BalanceChange())->withdrawal($this->getChangeBalanceDataToWithdraw());
         if ($result !== true) {
+            DB::rollBack();
             return '提现写入失败，请联系管理员';
         }
 
+        DB::commit();
         return true;
     }
 
