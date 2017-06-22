@@ -81,7 +81,7 @@ class TemplateOrderDispatchPrice
     private function calculationByWeight($orderGoods)
     {
         $weight = $orderGoods->hasOneGoods->weight * $orderGoods->total;
-        $weight_data = unserialize($this->dispatch->weight);
+        $weight_data = unserialize($this->dispatch->weight_data);
         if ($weight_data) {
             $address = json_decode(\YunShop::request()->address, true);
             if ($address['city']) {
