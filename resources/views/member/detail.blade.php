@@ -138,11 +138,7 @@
                             <div class="col-sm-9 col-xs-12">
                                 <div class='form-control-static'>
                                     @if(!$member['has_one_fans']['followed'])
-                                    @if(empty($member['uid']))
                                     <label class='label label-default'>未关注</label>
-                                    @else
-                                    <label class='label label-warning'>取消关注</label>
-                                    @endif
                                     @else
                                     <label class='label label-success'>已关注</label>
                                     @endif

@@ -5,7 +5,6 @@ namespace app\frontend\controllers;
 use app\common\components\ApiController;
 use Yunshop\Designer\models\Designer;
 use Yunshop\Designer\models\DesignerMenu;
-use Yunshop\Designer\services\DesignerService;
 use app\frontend\modules\member\models\MemberModel;
 use app\backend\modules\member\models\MemberRelation;
 use app\common\facades\Setting;
@@ -93,7 +92,7 @@ class HomePageController extends ApiController
         if(array_key_exists('designer', $enableds)){
 
             //系统信息
-            $result['system'] = (new DesignerService())->getSystemInfo();
+            $result['system'] = (new \Yunshop\Designer\services\DesignerService())->getSystemInfo();
 
             //装修数据, 原来接口在 plugin.designer.home.index.page
             if(empty($pageId)){ //如果是请求首页的数据
@@ -102,7 +101,7 @@ class HomePageController extends ApiController
                 $page = Designer::getDesignerByPageID($pageId);
             }
             if ($page) {
-                $designer = (new DesignerService())->getPageForHomePage($page->toArray());
+                $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
                 $result['item'] = $designer;
                 $footerMenuType = $designer['footertype']; //底部菜单: 0 - 不显示, 1 - 显示系统默认, 2 - 显示选中的自定义菜单
                 $footerMenuId = $designer['footermenu'];

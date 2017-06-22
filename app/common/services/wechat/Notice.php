@@ -8,8 +8,17 @@
 
 namespace app\common\services\wechat;
 
+use app\common\facades\Setting;
+
 class Notice extends \EasyWeChat\Notice\Notice
 {
+    public function send($data = [])
+    {
+        if(Setting::get('shop.notice.toggle') == false){
+            return false;
+        }
+        return parent::send();
+    }
 
     protected function checkAndThrow(array $contents)
     {
@@ -17,7 +26,7 @@ class Notice extends \EasyWeChat\Notice\Notice
             if (empty($contents['errmsg'])) {
                 $contents['errmsg'] = 'Unknown';
             }
-            \Log::error('消息推送出错',$contents);
+            \Log::error('消息推送出错', $contents);
         }
     }
 }

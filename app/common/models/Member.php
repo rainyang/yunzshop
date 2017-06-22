@@ -87,6 +87,9 @@ class Member extends BackendModel
         return self::select(['*'])
             ->uniacid()
             ->where('uid', $member_id)
+            ->whereHas('yzMember', function($query) {
+                $query->whereNull('deleted_at');
+            })
             ->with([
                 'yzMember' => function ($query) {
                     return $query->select(['*'])->where('is_black', 0)
