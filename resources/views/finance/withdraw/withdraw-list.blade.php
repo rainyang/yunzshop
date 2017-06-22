@@ -33,7 +33,7 @@
                         <select name='search[type]' class='form-control'>
                             <option value='' @if($search['type']=='') selected @endif>全部</option>
                             @foreach($types as $type)
-                                <option value='{{$type['class']}}' @if($search['type']==$type['class']) selected @endif>{{$type['type_name']}}</option>
+                                <option value='{{$type['class']}}' @if($search['type']==$type['class']) selected @endif>{{$type['title']}}</option>
                             @endforeach
 
                         </select>
