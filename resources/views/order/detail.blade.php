@@ -194,7 +194,7 @@
                         @endif
 
                     </div>
-                    @if (!empty($order['address']) && $order['status'] >= \app\backend\modules\order\models\Order::WAIT_RECEIVE)
+                    @if (!empty($order['address']))
                         @include('dispatch.detail')
                     @endif
                     @if (!empty($order['has_one_refund_apply']))
