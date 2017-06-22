@@ -138,7 +138,7 @@ class WechatPay extends Pay
         $pay = \Setting::get('shop.pay');
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
-            return error(1, '没有设定支付参数');
+            return show_json(0, '没有设定支付参数');
         }
 
         if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
@@ -203,13 +203,15 @@ class WechatPay extends Pay
 
             Withdraw::paySuccess($result->partner_trade_no);
 
-            return true;
+            return show_json(1);
 
+        } elseif ($result->return_code == 'SUCCESS') {
+            return show_json('0', $result->err_code_des);
         } else {
-            return error('0', $result->err_code_des);
+            return show_json('0', $result->return_msg);
         }
 
-        return false;
+        return show_json(0);
     }
 
     /**
