@@ -14,6 +14,7 @@ use app\common\components\BaseController;
 use app\common\models\Member;
 use app\common\services\JsonRpc;
 use app\common\services\MessageService;
+use app\common\services\WechatPay;
 use app\frontend\modules\member\models\SubMemberModel;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
@@ -67,6 +68,13 @@ class TestController extends BaseController
 
         }
         return;
+    }
+
+    public function wx()
+    {
+        $msg = (new WechatPay())->doWithdraw(369,'3232', 100);
+
+        dd($msg);
     }
 
 }
