@@ -15,7 +15,6 @@ class ShopMessage extends Message
 {
     private function sendToShops()
     {
-
         if(empty(\Setting::get('shop.notice.salers'))){
             return ;
         }
@@ -25,7 +24,7 @@ class ShopMessage extends Message
         //客服发送消息通知
        foreach (\Setting::get('shop.notice.salers') as $saler) {
            $noticeMember = Member::getMemberByUid($saler['uid'])->with('hasOneFans')->first();
-           if (!empty($noticeMember->hasOneFans->openid)) {
+           if ($noticeMember->hasOneFans->follow && !empty($noticeMember->hasOneFans->openid)) {
                $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($noticeMember->hasOneFans->openid)->send();
            }
 

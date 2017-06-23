@@ -1963,7 +1963,7 @@ CREATE TABLE ". tablename('yz_withdraw')." (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS ". tablename('yz_menu').";
+
  
 INSERT INTO ". tablename('yz_menu')." (`id`, `name`, `item`, `url`, `url_params`, `permit`, `menu`, `icon`, `parent_id`, `sort`, `status`, `created_at`, `updated_at`, `deleted_at`)
 VALUES
@@ -2068,12 +2068,11 @@ VALUES
   (108,'退货退款','refund.list.returnGoods','refund.list.returnGoods','',1,1,'fa-circle-o',97,3,1,1493967852,1493985904,NULL),
   (109,'换货','refund.list.exchangeGoods','refund.list.exchangeGoods','',1,1,'fa-circle-o',97,4,1,1493967934,1493985857,NULL),
   (110,'全部','refund.list.refund','refund.list.refund','',1,1,'fa-circle-o',97,1,1,1493967747,1493985887,NULL),
-  
+ 
   (111,'编辑商品','goods.goods.edit','goods.goods.edit','',1,0,'fa-circle-o',27,0,1,1495521115,1495523929,NULL),
   (112,'添加商品','goods.goods.create','goods.goods.create','',1,0,'fa-circle-o',27,0,1,1495522464,1495523974,NULL),
   (113,'删除商品','goods.goods.destroy','goods.goods.destroy','',1,0,'fa-circle-o',27,0,1,1495522603,1495522603,NULL),
-  (114,'复制商品','goods.goods.copy','goods.goods.copy','',1,0,'fa-circle-o',27,0,1,1495523880,1495523902,NULL)
-  
+  (114,'复制商品','goods.goods.copy','goods.goods.copy','',1,0,'fa-circle-o',27,0,1,1495523880,1495523902,NULL),
   (115,'编辑优惠券','coupon.coupon.edit','coupon.coupon.edit','id',1,0,'fa-circle-o',102,0,1,1495530444,1495530444,NULL),
   (116,'删除优惠券','coupon.coupon.destory','coupon.coupon.destory','id',1,0,'fa-circle-o',102,0,1,1495530493,1495530493,NULL);
   
