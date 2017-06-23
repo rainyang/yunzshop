@@ -14,18 +14,24 @@ class BuyerMessage extends Message
 {
     protected function sendToBuyer()
     {
+        return $this->sendToMember($this->order->uid);
+    }
+    protected function sendToParentBuyer(){
+        if(!isset($this->order->belongsToMember->yzMember->parent_id)){
+            return;
+        }
+        return $this->sendToMember($this->order->belongsToMember->yzMember->parent_id);
+    }
+    protected function sendToMember($uid){
         if (empty($this->templateId)) {
             return;
         }
 
-        $noticeMember = Member::getMemberByUid($this->order->uid)->with('hasOneFans')->first();
+        $noticeMember = Member::getMemberByUid($uid)->with('hasOneFans')->first();
         if ($noticeMember->hasOneFans->follow && !empty($noticeMember->hasOneFans->openid)) {
-
             $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($noticeMember->hasOneFans->openid)->send();
         }
-
     }
-
     public function created()
     {
         $this->templateId = \Setting::get('shop.notice.order_submit_success');
@@ -80,7 +86,7 @@ class BuyerMessage extends Message
             'keyword1' => array(
                 //todo
                 'value' => (string)$this->order['order_sn'].
-                            "\r\n商品: ".(string)$this->order->hasManyOrderGoods()->first()->title,
+                    "\r\n商品: ".(string)$this->order->hasManyOrderGoods()->first()->title,
                 "color" => "#4a5077"
             ),
             'keyword2' => array(
@@ -137,7 +143,8 @@ class BuyerMessage extends Message
                 "color" => "#4a5077"
             )
         );
-        $this->sendToBuyer();
+        //$this->sendToBuyer();
+        $this->sendToParentBuyer();
     }
 
     public function sent()
@@ -160,12 +167,12 @@ class BuyerMessage extends Message
             ),
             'keyword2' => array(
                 'title' => '物流服务',
-                'value' => (string)$this->order['order_express']['express_company_name'] ?: "暂无信息",
+                'value' => (string)$this->order['express']['express_company_name'] ?: "暂无信息",
                 "color" => "#4a5077"
             ),
             'keyword3' => array(
                 'title' => '快递单号',
-                'value' => (string)$this->order['order_express']['express_sn'] ?: "暂无信息",
+                'value' => (string)$this->order['express']['express_sn'] ?: "暂无信息",
                 "color" => "#4a5077"
             ),
             'keyword4' => array(
