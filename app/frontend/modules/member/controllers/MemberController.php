@@ -255,7 +255,7 @@ class MemberController extends ApiController
      */
     public function getMyAgentCount()
     {
-         return $this->successJson('', ['count'=>MemberShopInfo::getAgentCount()]);
+         return $this->successJson('', ['count'=>MemberModel::getAgentCount(\YunShop::app()->getMemberId())]);
     }
 
     /**

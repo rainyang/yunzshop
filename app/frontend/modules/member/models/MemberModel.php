@@ -131,6 +131,20 @@ class MemberModel extends Member
     }
 
     /**
+     * 获取我的下线
+     *
+     * @return mixed
+     */
+    public static function getAgentCount($uid)
+    {
+        return self::uniacid()
+            ->whereHas('yzMember', function($query) use ($uid){
+                $query->where('parent_id', $uid);
+            })
+            ->count();
+    }
+
+    /**
      * 我的下线信息 1级
      *
      * @param $uid
