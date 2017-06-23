@@ -432,18 +432,6 @@ class MemberModel extends Member
             'data' => $member_info['credit1']
             ];
 
-        $member_info['nickname'] = @iconv("utf-8", "gbk", $member_info['nickname']);
-        $member_info['nickname'] = @iconv("gbk", "utf-8", $member_info['nickname']);
-
-        if (!empty($member_info['referral'])) {
-            $member_info['referral']['nickname'] = @iconv("utf-8", "gbk", $member_info['referral']['nickname']);
-            $member_info['referral']['nickname'] = @iconv("gbk", "utf-8", $member_info['referral']['nickname']);
-        }
-
-        if (!empty($member_info['yz_member']['agent']['nickname'])) {
-            $member_info['yz_member']['agent']['nickname'] = @iconv("utf-8", "gbk", $member_info['yz_member']['agent']['nickname']);
-            $member_info['yz_member']['agent']['nickname'] = @iconv("gbk", "utf-8", $member_info['yz_member']['agent']['nickname']);
-        }
 
         return $member_info;
     }
