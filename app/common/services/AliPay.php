@@ -8,6 +8,7 @@
 
 namespace app\common\services;
 
+use app\common\exceptions\AppException;
 use app\common\helpers\Client;
 use app\common\models\PayOrder;
 use app\common\services\alipay\MobileAlipay;
@@ -122,14 +123,14 @@ class AliPay extends Pay
         if ($member_info) {
             $member_info = $member_info->toArray();
         } else {
-            return show_json('0', '会员不存在');
+            throw new AppException('会员不存在');
         }
 
         if (!empty($member_info['yz_member']['alipay']) && !empty($member_info['yz_member']['alipayname'])) {
             $account = $member_info['yz_member']['alipay'];
             $name = $member_info['yz_member']['alipayname'];
         } else {
-            return error(1, '没有设定支付宝账号');
+            throw new AppException('没有设定支付宝账号');
         }
 
         return $alipay->withdraw($account, $name, $out_trade_no);
