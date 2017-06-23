@@ -246,7 +246,7 @@ class WithdrawController extends BaseController
                 return ['msg' => '提现打款成功!'];
             }
         }
-        return ['msg' => $resultPay];
+//        return ['msg' => $resultPay];
     }
 
 
