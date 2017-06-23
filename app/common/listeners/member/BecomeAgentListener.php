@@ -31,7 +31,11 @@ class BecomeAgentListener
             \Log::debug('生成关系3级关系链');
             $member_data = $member_model->toArray();
 
-            $relation_str = $mid;
+            if ($mid == '' || $mid == 'undefined') {
+                $relation_str = 0;
+            } else {
+                $relation_str = $mid;
+            }
 
             if (!empty($member_data['yz_member'])) {
                 $count = count($member_data['yz_member'], 1);
@@ -43,7 +47,6 @@ class BecomeAgentListener
                 if ($count > 6) {
                     $relation_str .= ',' . $member_data['yz_member']['has_one_pre_self']['parent_id'];
                 }
-
             }
 
             $agent_data = [
