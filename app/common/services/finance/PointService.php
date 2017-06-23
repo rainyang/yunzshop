@@ -66,6 +66,9 @@ class PointService
         $this->point_data = $point_data;
         $member = Member::getMemberById($point_data['member_id']);
         $this->member = $member;
+        if (!$member['credit1']) {
+            $member['credit1'] = 0;
+        }
         $this->member_point = $member['credit1'];
     }
 
