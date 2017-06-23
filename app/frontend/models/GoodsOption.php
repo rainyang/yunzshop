@@ -45,7 +45,7 @@ class GoodsOption extends \app\common\models\GoodsOption
         } else {
             //其次等级商品全局设置
             if (isset($member->yzMember->level)) {
-                $result = $member->yzMember->level->getMemberLevelGoodsDiscountPrice($this->product_price);
+                //$result = $member->yzMember->level->getMemberLevelGoodsDiscountPrice($this->product_price);
             }
         }
         return $result;
