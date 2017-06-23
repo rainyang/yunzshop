@@ -138,6 +138,8 @@ class MemberController extends BaseController
     {
         $uid = \YunShop::request()->id ? intval(\YunShop::request()->id) : 0;
 
+        $shopInfoModel = MemberShopInfo::getMemberShopInfo($uid) ?: new MemberShopInfo();
+
         if ($uid == 0 || !is_int($uid)) {
             $this->message('参数错误', '', 'error');
             exit;
@@ -166,12 +168,15 @@ class MemberController extends BaseController
             $yz['is_agent'] = 1;
             $yz['status'] = 2;
 
+            if ($shopInfoModel->inviter == 0) {
+                $shopInfoModel->inviter = 1;
+                $shopInfoModel->parent_id = 0;
+            }
+
         } else {
             $yz['is_agent'] = 0;
             $yz['status'] =  0;
         }
-
-        $shopInfoModel = MemberShopInfo::getMemberShopInfo($uid) ?: new MemberShopInfo();
 
         $shopInfoModel->fill($yz);
         $validator = $shopInfoModel->validator();
