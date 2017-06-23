@@ -241,10 +241,8 @@ class WithdrawController extends BaseController
             $updatedData = ['pay_at' => time()];
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::otherWithdrawSuccess($withdrawId);
-            if ($result) {
-                Log::info('打款完成!');
-                return ['msg' => '提现打款成功!'];
-            }
+            Log::info('打款完成!');
+            return ['msg' => '提现打款成功!'];
         }
 //        return ['msg' => $resultPay];
     }
