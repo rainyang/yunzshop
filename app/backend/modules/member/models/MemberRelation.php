@@ -265,6 +265,11 @@ class MemberRelation extends BackendModel
                 $member->status = 2;
                 $member->agent_time = time();
 
+                if ($model->inviter == 0) {
+                    $member->inviter = 1;
+                    $member->parent_id = 0;
+                }
+
                 //message notice
                 self::sendGeneralizeNotify($member->member_id);
             } else {

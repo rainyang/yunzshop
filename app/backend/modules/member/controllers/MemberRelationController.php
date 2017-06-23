@@ -202,6 +202,11 @@ class MemberRelationController extends BaseController
             $member_shop_info_model->is_agent = 1;
             $member_shop_info_model->status = 2;
 
+            if ($member_shop_info_model->inviter == 0) {
+                $member_shop_info_model->inviter = 1;
+                $member_shop_info_model->parent_id = 0;
+            }
+
             if ($member_shop_info_model->save()) {
                 Relation::sendGeneralizeNotify($member_shop_info_model->member_id);
 
