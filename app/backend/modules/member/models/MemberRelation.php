@@ -549,13 +549,11 @@ class MemberRelation extends BackendModel
 
         $member->follow = $member->hasOneFans->follow;
         $member->openid = $member->hasOneFans->openid;
-        \Log::debug('uniacid', [\YunShop::app()->uniacid]);
-        $uniacid = \YunShop::app()->uniacid ?: $member->uniacid;
 
-        self::generalizeMessage($member, $uniacid);
+        self::generalizeMessage($member);
     }
 
-    public static function generalizeMessage($member, $uniacid)
+    public static function generalizeMessage($member)
     {
         $msg_set = \Setting::get('relation_base');
         if ($msg_set['template_id'] && ($member->follow == 1)) {
@@ -569,7 +567,7 @@ class MemberRelation extends BackendModel
                 "remark" => "",
             ];
 
-            MessageService::notice($msg_set['template_id'], $msg, $member->openid, $uniacid);
+            MessageService::notice($msg_set['template_id'], $msg, $member->openid);
         }
     }
 
@@ -586,13 +584,11 @@ class MemberRelation extends BackendModel
         $parent->openid = $parent->hasOneFans->openid;
 
         $member = Member::getMemberByUid($uid)->first();
-\Log::debug('uniacid', [\YunShop::app()->uniacid]);
-        $uniacid = \YunShop::app()->uniacid ?: $parent->uniacid;
 
-        self::agentMessage($parent, $member, $uniacid);
+        self::agentMessage($parent, $member);
     }
 
-    public static function agentMessage($parent, $member, $uniacid)
+    public static function agentMessage($parent, $member)
     {
         $msg_set = \Setting::get('relation_base');
         if ($msg_set['template_id'] && ($parent->follow == 1)) {
@@ -607,7 +603,7 @@ class MemberRelation extends BackendModel
                 "remark" => "",
             ];
 
-            MessageService::notice($msg_set['template_id'], $msg, $parent->openid, $uniacid);
+            MessageService::notice($msg_set['template_id'], $msg, $parent->openid);
         }
     }
 }
