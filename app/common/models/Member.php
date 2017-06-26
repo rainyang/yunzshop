@@ -320,7 +320,7 @@ class Member extends BackendModel
     {
         $model = MemberShopInfo::getMemberShopInfo($uid);
 
-        if (!isset($mid)) {
+        if (empty($mid)) {
             $mid   = self::getMid();
         }
 
