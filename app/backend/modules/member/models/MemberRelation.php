@@ -635,7 +635,7 @@ class MemberRelation extends BackendModel
     private static function setRelationInfo($member)
     {
         if ($member->is_agent == 1 && $member->status == 2) {
-            Member::setMemberRelation($member->member_id);
+            Member::setMemberRelation($member->member_id,$member->parent_id);
 
             //message notice
             self::sendGeneralizeNotify($member->member_id);
