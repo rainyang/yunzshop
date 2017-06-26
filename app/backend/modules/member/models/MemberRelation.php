@@ -249,7 +249,7 @@ class MemberRelation extends BackendModel
                     $model->inviter = 1;
 
                     //notice
-                    self::sendAgentNotify($member->member_id, $mid);
+                    //self::sendAgentNotify($member->member_id, $mid);
                 } else {
                     $model->inviter = 0;
                 }
@@ -268,7 +268,7 @@ class MemberRelation extends BackendModel
                 Member::setMemberRelation($model->member_id);
 
                 //message notice
-                self::sendGeneralizeNotify($member->member_id);
+                //self::sendGeneralizeNotify($member->member_id);
             } else {
                 $member->status = 1;
             }
