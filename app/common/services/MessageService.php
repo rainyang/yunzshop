@@ -16,7 +16,7 @@ class MessageService
      */
     public static function notice($templateId, $data, $openId,$uniacid='')
     {
-        if($uniacid){
+        if(!empty($uniacid)){
             $res = AccountWechats::getAccountByUniacid($uniacid);
             $options = [
                 'app_id'  => $res['key'],
