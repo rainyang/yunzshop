@@ -265,6 +265,8 @@ class MemberRelation extends BackendModel
                 $member->status = 2;
                 $member->agent_time = time();
 
+                Member::setMemberRelation($model->member_id);
+
                 //message notice
                 self::sendGeneralizeNotify($member->member_id);
             } else {
@@ -393,6 +395,8 @@ class MemberRelation extends BackendModel
 
                     $member->save();
 
+                    Member::setMemberRelation($uid);
+
                     //message notice
                     self::sendGeneralizeNotify($member->member_id);
                 }
@@ -430,6 +434,8 @@ class MemberRelation extends BackendModel
                         if ($become_check == 0) {
                             $member->status = 2;
                             $member->agent_time = time();
+
+                            Member::setMemberRelation($uid);
 
                             //message notice
                             self::sendGeneralizeNotify($member->member_id);
@@ -481,6 +487,8 @@ class MemberRelation extends BackendModel
 
                     $member->save();
 
+                    Member::setMemberRelation($uid);
+
                     //message notice
                     self::sendGeneralizeNotify($member->member_id);
                 }
@@ -520,6 +528,8 @@ class MemberRelation extends BackendModel
                         if ($become_check == 0) {
                             $member->status = 2;
                             $member->agent_time = time();
+
+                            Member::setMemberRelation($uid);
 
                             //message notice
                             self::sendGeneralizeNotify($member->member_id);
