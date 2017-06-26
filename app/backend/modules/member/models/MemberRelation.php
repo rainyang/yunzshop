@@ -265,14 +265,17 @@ class MemberRelation extends BackendModel
                 $member->status = 2;
                 $member->agent_time = time();
 
-                Member::setMemberRelation($model->member_id);
-
-                //message notice
-                self::sendGeneralizeNotify($member->member_id);
+                if ($member->inviter == 0) {
+                    $member->inviter = 1;
+                    $member->parent_id = 0;
+                }
             } else {
                 $member->status = 1;
             }
-            $member->save();
+
+            if ($member->save()) {
+                self::setRelationInfo($member);
+            }
         }
     }
 
@@ -393,12 +396,14 @@ class MemberRelation extends BackendModel
                     $member->is_agent = 1;
                     $member->agent_time = time();
 
-                    $member->save();
+                    if ($member->inviter == 0) {
+                        $member->inviter = 1;
+                        $member->parent_id = 0;
+                    }
 
-                    Member::setMemberRelation($uid);
-
-                    //message notice
-                    self::sendGeneralizeNotify($member->member_id);
+                    if ($member->save()) {
+                        self::setRelationInfo($member);
+                    }
                 }
             }
 
@@ -435,15 +440,17 @@ class MemberRelation extends BackendModel
                             $member->status = 2;
                             $member->agent_time = time();
 
-                            Member::setMemberRelation($uid);
-
-                            //message notice
-                            self::sendGeneralizeNotify($member->member_id);
+                            if ($member->inviter == 0) {
+                                $member->inviter = 1;
+                                $member->parent_id = 0;
+                            }
                         } else {
                             $member->status = 1;
                         }
 
-                        $member->save();
+                        if ($member->save()) {
+                            self::setRelationInfo($member);
+                        }
                     }
                 }
             }
@@ -485,12 +492,14 @@ class MemberRelation extends BackendModel
                     $member->is_agent = 1;
                     $member->agent_time = time();
 
-                    $member->save();
+                    if ($member->inviter == 0) {
+                        $member->inviter = 1;
+                        $member->parent_id = 0;
+                    }
 
-                    Member::setMemberRelation($uid);
-
-                    //message notice
-                    self::sendGeneralizeNotify($member->member_id);
+                    if ($member->save()) {
+                        self::setRelationInfo($member);
+                    }
                 }
             }
 
@@ -529,15 +538,17 @@ class MemberRelation extends BackendModel
                             $member->status = 2;
                             $member->agent_time = time();
 
-                            Member::setMemberRelation($uid);
-
-                            //message notice
-                            self::sendGeneralizeNotify($member->member_id);
+                            if ($member->inviter == 0) {
+                                $member->inviter = 1;
+                                $member->parent_id = 0;
+                            }
                         } else {
                             $member->status = 1;
                         }
 
-                        $member->save();
+                        if ($member->save()) {
+                            self::setRelationInfo($member);
+                        }
                     }
                 }
             }
@@ -618,6 +629,16 @@ class MemberRelation extends BackendModel
             ];
 
             MessageService::notice($msg_set['template_id'], $msg, $parent->openid, $uniacid);
+        }
+    }
+
+    private static function setRelationInfo($member)
+    {
+        if ($member->is_agent == 1 && $member->status == 2) {
+            Member::setMemberRelation($member->member_id);
+
+            //message notice
+            self::sendGeneralizeNotify($member->member_id);
         }
     }
 }
