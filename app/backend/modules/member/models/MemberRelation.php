@@ -549,8 +549,8 @@ class MemberRelation extends BackendModel
 
         $member->follow = $member->hasOneFans->follow;
         $member->openid = $member->hasOneFans->openid;
-
-        $uniacid = \YunShop::app()->uniacid()?:$member->uniacid;
+        \Log::debug('uniacid', [\YunShop::app()->uniacid]);
+        $uniacid = \YunShop::app()->uniacid ?: $member->uniacid;
 
         self::generalizeMessage($member, $uniacid);
     }
@@ -586,8 +586,8 @@ class MemberRelation extends BackendModel
         $parent->openid = $parent->hasOneFans->openid;
 
         $member = Member::getMemberByUid($uid)->first();
-
-        $uniacid = \YunShop::app()->uniacid()?:$parent->uniacid;
+\Log::debug('uniacid', [\YunShop::app()->uniacid]);
+        $uniacid = \YunShop::app()->uniacid ?: $parent->uniacid;
 
         self::agentMessage($parent, $member, $uniacid);
     }
