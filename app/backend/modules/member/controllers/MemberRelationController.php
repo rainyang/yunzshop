@@ -208,6 +208,8 @@ class MemberRelationController extends BaseController
             }
 
             if ($member_shop_info_model->save()) {
+                Member::setMemberRelation($member_shop_info_model->member_id);
+
                 Relation::sendGeneralizeNotify($member_shop_info_model->member_id);
 
                 return $this->successJson('审核通过');
