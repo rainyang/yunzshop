@@ -143,7 +143,7 @@ class BuyerMessage extends Message
                 "color" => "#4a5077"
             )
         );
-        //$this->sendToBuyer();
+        $this->sendToBuyer();
         $this->sendToParentBuyer();
     }
 
