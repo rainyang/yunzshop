@@ -121,7 +121,7 @@ class MemberModel extends Member
             ->where('uid', $uid)
             ->with([
                 'yzMember' => function ($query) {
-                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'status'])
+                    return $query->select(['member_id', 'parent_id', 'is_agent', 'group_id', 'level_id', 'is_black', 'alipayname', 'alipay', 'status', 'inviter'])
                         ->where('is_black', 0)
                         ->with(['level'=>function($query2){
                             return $query2->select(['id','level_name'])->uniacid();
@@ -257,30 +257,43 @@ class MemberModel extends Member
         $data = [];
 
         if (!empty($member_info)) {
+            if (isset($set) && $set['headimg']) {
+                $avatar = replace_yunshop(tomedia($set['headimg']));
+            } else {
+                $avatar = Url::shopUrl('static/images/photo-mr.jpg');
+            }
+
             $member_info = $member_info->toArray();
 
             $referrer_info = self::getUserInfos($member_info['yz_member']['parent_id'])->first();
 
-            if (!empty($referrer_info)) {
-                $info = $referrer_info->toArray();
-                $data = [
-                    'uid' => $info['uid'],
-                    'avatar' => $info['avatar'],
-                    'nickname' => $info['nickname'],
-                    'level' => $info['yz_member']['level']['level_name'],
-                    'is_show' => $set['is_referrer']
-                ];
-            } else {
-                if (isset($set) && $set['headimg']) {
-                    $avatar = replace_yunshop(tomedia($set['headimg']));
-                } else {
-                    $avatar = Url::shopUrl('static/images/photo-mr.jpg');
-                }
+            if ($member_info['yz_member']['is_agent'] == 1
+                    && $member_info['yz_member']['status'] == 2
+                    && $member_info['yz_member']['inviter'] == 1) {
 
+                if (!empty($referrer_info)) {
+                    $info = $referrer_info->toArray();
+                    $data = [
+                        'uid' => $info['uid'],
+                        'avatar' => $info['avatar'],
+                        'nickname' => $info['nickname'],
+                        'level' => $info['yz_member']['level']['level_name'],
+                        'is_show' => $set['is_referrer']
+                    ];
+                } else {
+                    $data = [
+                        'uid' => '',
+                        'avatar' => $avatar,
+                        'nickname' => '总店',
+                        'level' => '',
+                        'is_show' => $set['is_referrer']
+                    ];
+                }
+            } else {
                 $data = [
                     'uid' => '',
                     'avatar' => $avatar,
-                    'nickname' => (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status']) ? '总店' : '暂无',
+                    'nickname' => '暂无',
                     'level' => '',
                     'is_show' => $set['is_referrer']
                 ];
