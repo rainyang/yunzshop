@@ -208,7 +208,7 @@ class MemberRelationController extends BaseController
             }
 
             if ($member_shop_info_model->save()) {
-                Member::setMemberRelation($member_shop_info_model->member_id);
+                Member::setMemberRelation($member_shop_info_model->member_id, $member_shop_info_model->parent_id);
 
                 Relation::sendGeneralizeNotify($member_shop_info_model->member_id);
 
