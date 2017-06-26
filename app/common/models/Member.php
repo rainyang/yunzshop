@@ -316,10 +316,13 @@ class Member extends BackendModel
      *
      * @param $uid
      */
-    public static function setMemberRelation($uid)
+    public static function setMemberRelation($uid, $mid='')
     {
         $model = MemberShopInfo::getMemberShopInfo($uid);
-        $mid   = self::getMid();
+
+        if (!isset($mid)) {
+            $mid   = self::getMid();
+        }
 
         //生成关系3级关系链
         $member_model = MemberModel::getMyAgentsParentInfo($mid)->first();
