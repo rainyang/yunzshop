@@ -119,11 +119,10 @@
                             <div class="time">
 
                                 <select name='searchtime' class='form-control'>
-                                    <option value=''>注册时间不限</option>
                                     <option value='0'
                                             @if($request['searchtime']=='0')
                                     selected
-                                    @endif>不搜索注册时间</option>
+                                    @endif>注册时间不限</option>
                                     <option value='1'
                                             @if($request['searchtime']=='1')
                                     selected
