@@ -590,7 +590,9 @@ class MemberRelation extends BackendModel
                 "remark" => "",
             ];
 
-            MessageService::notice($msg_set['template_id'], $msg, $member->openid, $uniacid);
+            if ($msg_set['template_id']) {
+                MessageService::notice($msg_set['template_id'], $msg, $member->openid, $uniacid);
+            }
         }
     }
 
@@ -628,7 +630,9 @@ class MemberRelation extends BackendModel
                 "remark" => "",
             ];
 
-            MessageService::notice($msg_set['template_id'], $msg, $parent->openid, $uniacid);
+            if ($msg_set['template_id']) {
+                MessageService::notice($msg_set['template_id'], $msg, $parent->openid, $uniacid);
+            }
         }
     }
 
