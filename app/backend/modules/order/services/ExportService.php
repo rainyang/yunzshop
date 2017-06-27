@@ -168,7 +168,7 @@ class ExportService
             ] ,
             [
                 "title" => "状态",
-                "field" => "status",
+                "field" => "status_name",
                 "width" => 12
             ] ,
             [
