@@ -31,12 +31,14 @@ class ListController extends BaseController
 
     public function index()
     {
+        $this->export($this->orderModel);
         return view('order.index', $this->getData())->render();
     }
 
     public function waitPay()
     {
         $this->orderModel->waitPay();
+        $this->export($this->orderModel->waitPay());
         return view('order.index', $this->getData())->render();
     }
 
@@ -44,12 +46,14 @@ class ListController extends BaseController
     {
 
         $this->orderModel->waitSend();
+        $this->export($this->orderModel->waitSend());
         return view('order.index', $this->getData())->render();
     }
 
     public function waitReceive()
     {
         $this->orderModel->waitReceive();
+        $this->export($this->orderModel->waitReceive());
         return view('order.index', $this->getData())->render();
     }
 
@@ -57,13 +61,14 @@ class ListController extends BaseController
     {
 
         $this->orderModel->completed();
+        $this->export($this->orderModel->completed());
         return view('order.index', $this->getData())->render();
     }
 
     public function cancelled()
     {
-
         $this->orderModel->cancelled();
+        $this->export($this->orderModel->cancelled());
         return view('order.index', $this->getData())->render();
     }
 
@@ -110,11 +115,14 @@ class ListController extends BaseController
         return $data;
     }
 
-    public function export()
+    public function export($orders)
     {
-        $params = \YunShop::request()->search;
-        $orders = Order::getExportOrders($params);
-        $export_class = new ExportService();
-        $export_class->export($orders);
+        if (\YunShop::request()->export == 1) {
+            $orders = $orders->get();
+            if (!$orders->isEmpty()) {
+                $export_class = new ExportService();
+                $export_class->export($orders->toArray());
+            }
+        }
     }
 }
