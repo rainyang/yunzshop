@@ -50,8 +50,17 @@ class ExportService
         $order['pay_sn'] = $order['has_one_order_pay']['pay_sn'];
 
         $order['remark'] = $order['has_one_order_remark']['remark'];
-        $order['express_company_name'] = $order['has_one_order_express']['express_company_name'];
-        $order['express_sn'] = $order['has_one_order_express']['express_sn'];
+        $order['express_company_name'] = $order['express']['express_company_name'];
+        $order['express_sn'] = $order['express']['express_sn'];
+        if (empty(strtotime($order['finish_time']))) {
+            $order['finish_time'] = '';
+        }
+        if (empty(strtotime($order['pay_time']))) {
+            $order['pay_time'] = '';
+        }
+        if (empty(strtotime($order['send_time']))) {
+            $order['send_time'] = '';
+        }
         return $order;
     }
 
@@ -78,12 +87,13 @@ class ExportService
 
     protected function getGoods($order)
     {
+        $order['goods_title'] = '';
+        $order['goods_sn'] = '';
+        $order['total'] = '';
         foreach ($order['has_many_order_goods'] as $key => $goods) {
-            if ($key == 0) {
-                $order['goods_title'] = $goods['title'];
-                $order['goods_sn'] = $goods['goods']['goods_sn'];
-                $order['total'] = $goods['total'];
-            }
+            $order['goods_title'] .= $goods['title'].'/';
+            $order['goods_sn'] .= $goods['goods']['goods_sn'].'/';
+            $order['total'] .= $goods['total'].'/';
         }
         return $order;
     }
