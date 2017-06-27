@@ -80,12 +80,9 @@ class CouponService
      */
     public function destroyUsedCoupons()
     {
-        foreach ($this->getAllValidCoupons() as $coupon) {
-            /**
-             * @var $coupon Coupon
-             */
-            $coupon->destroy();
-        }
+        $this->getSelectedMemberCoupon()->map(function ($memberCoupon) {
+            return (new Coupon($memberCoupon, $this->order))->destroy();
+        });
     }
 
     /**
