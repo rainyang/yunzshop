@@ -53,7 +53,9 @@ class Goods extends \app\common\models\Goods
             $result = $goodsDiscount->getPrice($this->price);
         }else{
             //其次等级商品全局设置
-            $result = $member->yzMember->level->getMemberLevelGoodsDiscountPrice($this->price);
+            if (isset($member->yzMember->level)) {
+                $result = $member->yzMember->level->getMemberLevelGoodsDiscountPrice($this->price);
+            }
         }
 
 

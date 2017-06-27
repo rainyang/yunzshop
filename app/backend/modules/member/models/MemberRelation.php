@@ -265,12 +265,17 @@ class MemberRelation extends BackendModel
                 $member->status = 2;
                 $member->agent_time = time();
 
-                //message notice
-                self::sendGeneralizeNotify($member->member_id);
+                if ($member->inviter == 0) {
+                    $member->inviter = 1;
+                    $member->parent_id = 0;
+                }
             } else {
                 $member->status = 1;
             }
-            $member->save();
+
+            if ($member->save()) {
+                self::setRelationInfo($member);
+            }
         }
     }
 
@@ -391,10 +396,14 @@ class MemberRelation extends BackendModel
                     $member->is_agent = 1;
                     $member->agent_time = time();
 
-                    $member->save();
+                    if ($member->inviter == 0) {
+                        $member->inviter = 1;
+                        $member->parent_id = 0;
+                    }
 
-                    //message notice
-                    self::sendGeneralizeNotify($member->member_id);
+                    if ($member->save()) {
+                        self::setRelationInfo($member);
+                    }
                 }
             }
 
@@ -431,13 +440,17 @@ class MemberRelation extends BackendModel
                             $member->status = 2;
                             $member->agent_time = time();
 
-                            //message notice
-                            self::sendGeneralizeNotify($member->member_id);
+                            if ($member->inviter == 0) {
+                                $member->inviter = 1;
+                                $member->parent_id = 0;
+                            }
                         } else {
                             $member->status = 1;
                         }
 
-                        $member->save();
+                        if ($member->save()) {
+                            self::setRelationInfo($member);
+                        }
                     }
                 }
             }
@@ -479,10 +492,14 @@ class MemberRelation extends BackendModel
                     $member->is_agent = 1;
                     $member->agent_time = time();
 
-                    $member->save();
+                    if ($member->inviter == 0) {
+                        $member->inviter = 1;
+                        $member->parent_id = 0;
+                    }
 
-                    //message notice
-                    self::sendGeneralizeNotify($member->member_id);
+                    if ($member->save()) {
+                        self::setRelationInfo($member);
+                    }
                 }
             }
 
@@ -521,13 +538,17 @@ class MemberRelation extends BackendModel
                             $member->status = 2;
                             $member->agent_time = time();
 
-                            //message notice
-                            self::sendGeneralizeNotify($member->member_id);
+                            if ($member->inviter == 0) {
+                                $member->inviter = 1;
+                                $member->parent_id = 0;
+                            }
                         } else {
                             $member->status = 1;
                         }
 
-                        $member->save();
+                        if ($member->save()) {
+                            self::setRelationInfo($member);
+                        }
                     }
                 }
             }
@@ -550,10 +571,12 @@ class MemberRelation extends BackendModel
         $member->follow = $member->hasOneFans->follow;
         $member->openid = $member->hasOneFans->openid;
 
-        self::generalizeMessage($member);
+        $uniacid = \YunShop::app()->uniacid ?: $member->uniacid;
+
+        self::generalizeMessage($member, $uniacid);
     }
 
-    public static function generalizeMessage($member)
+    public static function generalizeMessage($member, $uniacid)
     {
         $msg_set = \Setting::get('relation_base');
         if ($msg_set['template_id'] && ($member->follow == 1)) {
@@ -567,7 +590,7 @@ class MemberRelation extends BackendModel
                 "remark" => "",
             ];
 
-            MessageService::notice($msg_set['template_id'], $msg, $member->openid);
+            MessageService::notice($msg_set['template_id'], $msg, $member->openid, $uniacid);
         }
     }
 
@@ -585,10 +608,12 @@ class MemberRelation extends BackendModel
 
         $member = Member::getMemberByUid($uid)->first();
 
-        self::agentMessage($parent, $member);
+        $uniacid = \YunShop::app()->uniacid ?: $parent->uniacid;
+
+        self::agentMessage($parent, $member, $uniacid);
     }
 
-    public static function agentMessage($parent, $member)
+    public static function agentMessage($parent, $member, $uniacid)
     {
         $msg_set = \Setting::get('relation_base');
         if ($msg_set['template_id'] && ($parent->follow == 1)) {
@@ -603,7 +628,17 @@ class MemberRelation extends BackendModel
                 "remark" => "",
             ];
 
-            MessageService::notice($msg_set['template_id'], $msg, $parent->openid);
+            MessageService::notice($msg_set['template_id'], $msg, $parent->openid, $uniacid);
+        }
+    }
+
+    private static function setRelationInfo($member)
+    {
+        if ($member->is_agent == 1 && $member->status == 2) {
+            Member::setMemberRelation($member->member_id,$member->parent_id);
+
+            //message notice
+            self::sendGeneralizeNotify($member->member_id);
         }
     }
 }

@@ -95,11 +95,11 @@ class WechatPay extends Pay
         $pay = \Setting::get('shop.pay');
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
-            return error(1, '没有设定支付参数');
+            throw new AppException('没有设定支付参数');
         }
 
         if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
-            message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+            throw new AppException('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
         }
 
         $notify_url = '';
@@ -138,11 +138,11 @@ class WechatPay extends Pay
         $pay = \Setting::get('shop.pay');
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
-            return error(1, '没有设定支付参数');
+            throw new AppException('没有设定支付参数');
         }
 
         if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
-            return show_json('0', '\'未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!\'');
+            throw new AppException('\'未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!\'');
         }
 
         $mc_mapping_fans_model = McMappingFans::getFansById($member_id);
@@ -150,7 +150,7 @@ class WechatPay extends Pay
         if ($mc_mapping_fans_model) {
             $openid = $mc_mapping_fans_model->openid;
         } else {
-            return show_json('0', '提现用户不存在');
+            throw new AppException('提现用户不存在');
         }
 
         $notify_url = '';
@@ -204,12 +204,11 @@ class WechatPay extends Pay
             Withdraw::paySuccess($result->partner_trade_no);
 
             return true;
-
+        } elseif ($result->return_code == 'SUCCESS') {
+            throw new AppException($result->err_code_des);
         } else {
-            return error('0', $result->err_code_des);
+            throw new AppException($result->return_msg);
         }
-
-        return false;
     }
 
     /**

@@ -8,6 +8,7 @@ use app\common\services\Session;
 
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
+use app\frontend\modules\member\models\MemberModel;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Yunshop\Gold\frontend\services\MemberCenterService;
@@ -308,5 +309,47 @@ class Member extends BackendModel
         }
 
         return 0;
+    }
+
+    /**
+     * 会员3级关系链
+     *
+     * @param $uid
+     */
+    public static function setMemberRelation($uid, $mid='')
+    {
+        $model = MemberShopInfo::getMemberShopInfo($uid);
+
+        if (empty($mid)) {
+            $mid   = self::getMid();
+        }
+
+        //生成关系3级关系链
+        $member_model = MemberModel::getMyAgentsParentInfo($mid)->first();
+
+        if (!empty($member_model)) {
+            \Log::debug('生成关系3级关系链');
+            $member_data = $member_model->toArray();
+
+            $relation_str = $mid;
+
+            if (!empty($member_data['yz_member'])) {
+                $count = count($member_data['yz_member'], 1);
+
+                if ($count > 3) {
+                    $relation_str .= ',' . $member_data['yz_member']['parent_id'];
+                }
+
+                if ($count > 6) {
+                    $relation_str .= ',' . $member_data['yz_member']['has_one_pre_self']['parent_id'];
+                }
+            }
+        } else {
+            $relation_str = '0,';
+        }
+
+        $model->relation = $relation_str;
+
+        $model->save();
     }
 }
