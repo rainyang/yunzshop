@@ -54,17 +54,13 @@ class PaymentController extends BaseController
                     break;
             }
         }
-        \YunShop::app()->uniacid = 2;
-        //dd(\YunShop::app()->uniacid);
+
         \Setting::$uniqueAccountId = \YunShop::app()->uniacid;
         AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
-        (new MessageService(Order::first()))->canceled();
-        echo 1;exit;
     }
 
     private function getUniacid()
     {
-        return 2;
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
 
