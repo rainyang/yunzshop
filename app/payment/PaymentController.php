@@ -64,7 +64,7 @@ class PaymentController extends BaseController
     }
 
     private function getUniacid()
-    {
+    {return 2;
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
 
