@@ -8,6 +8,7 @@
 
 namespace app\payment\controllers;
 
+use app\common\models\AccountWechats;
 use app\common\models\Order;
 use app\common\services\Pay;
 use app\payment\PaymentController;
