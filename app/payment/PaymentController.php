@@ -2,9 +2,9 @@
 
 namespace  app\payment;
 
-use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
 use app\common\events\payment\RechargeComplatedEvent;
+use app\common\models\AccountWechats;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
 use app\frontend\modules\finance\services\BalanceService;
@@ -54,6 +54,7 @@ class PaymentController extends BaseController
         }
 
         \Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+        AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
     }
 
     private function getUniacid()
