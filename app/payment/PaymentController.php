@@ -59,7 +59,7 @@ class PaymentController extends BaseController
         AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
 
         \Log::debug('支付宝订单批次号', [\YunShop::app()->uniacid,app('wechat')]);
-        
+
     }
 
     private function getUniacid()
@@ -95,7 +95,7 @@ class PaymentController extends BaseController
 
         switch ($type) {
             case "charge.succeeded":
-                \Log::debug('支付操作', 'charge.succeeded');
+               // \Log::debug('支付操作', 'charge.succeeded');
 
                 $orderPay = OrderPay::where('pay_sn', $data['out_trade_no'])->first();
 
@@ -104,7 +104,7 @@ class PaymentController extends BaseController
                 }
 
                 if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
-                    \Log::debug('更新订单状态');
+                //    \Log::debug('更新订单状态');
                     OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
 
                 }
