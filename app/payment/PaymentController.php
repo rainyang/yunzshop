@@ -59,8 +59,7 @@ class PaymentController extends BaseController
         AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
 
         \Log::debug('支付宝订单批次号', [\YunShop::app()->uniacid,app('wechat')]);
-        (new MessageService(Order::first()))->canceled();
-        echo 1;exit;
+        
     }
 
     private function getUniacid()
