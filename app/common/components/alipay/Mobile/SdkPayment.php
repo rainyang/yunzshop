@@ -1,6 +1,9 @@
 <?php
 namespace app\common\components\alipay\Mobile;
 
+use app\common\events\PayLog;
+use app\common\services\alipay\MobileAlipay;
+
 class SdkPayment
 {
 
@@ -77,6 +80,9 @@ class SdkPayment
 			'exter_invoke_ip' => $this->exter_invoke_ip,
 			'_input_charset' => trim(strtolower($this->_input_charset))
 		);
+
+        //请求数据日志
+        event(new PayLog($parameter, new MobileAlipay()));
 
 		$para = $this->buildRequestPara($parameter);
 

@@ -48,6 +48,8 @@ class PaymentController extends BaseController
         }
 
         \Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+
+        AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
     }
 
     /**
