@@ -8,6 +8,7 @@
 
 namespace app\payment\controllers;
 
+use app\common\models\AccountWechats;
 use app\common\models\Order;
 use app\common\services\Pay;
 use app\payment\PaymentController;
@@ -26,6 +27,8 @@ class WechatController extends PaymentController
             $post = $this->getResponseResult();
 
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $post['attach'];
+
+            AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
     }
 
