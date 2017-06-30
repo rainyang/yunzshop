@@ -11,7 +11,7 @@ namespace app\backend\widgets\finance;
 use app\common\components\Widget;
 use app\common\facades\Setting;
 
-class NoticeWidget extends Widget
+class WithdrawNoticeWidget extends Widget
 {
 
     public function run()
