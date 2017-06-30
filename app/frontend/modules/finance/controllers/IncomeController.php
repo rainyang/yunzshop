@@ -127,6 +127,9 @@ class IncomeController extends ApiController
     {
         $configs = \Config::get('income');
         foreach ($configs as $key => $config) {
+            if($config['type'] == 'balance'){
+                continue;
+            }
             $searchType[] = [
                 'title' => $config['title'],
                 'type' => $config['type']
