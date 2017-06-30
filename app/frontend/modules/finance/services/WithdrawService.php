@@ -9,8 +9,8 @@
 
 namespace app\frontend\modules\finance\services;
 
-class WithdrawService
-{
+class WithdrawService extends \app\common\services\finance\WithdrawService
+{ 
     public static function createStatusService($withdraw)
     {
         switch ($withdraw->status) {

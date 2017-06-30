@@ -31,6 +31,10 @@ return [
         'income' => [
             'title' => '收入提现基础设置',
             'class' => 'app\backend\widgets\finance\IncomeWidget',
+        ],
+        'notice' => [
+            'title' => '收入提现通知',
+            'class' => 'app\backend\widgets\finance\NoticeWidget',
         ]
     ]
 ];
