@@ -7,7 +7,9 @@ use app\common\events\payment\RechargeComplatedEvent;
 use app\common\models\AccountWechats;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
+use app\frontend\models\Order;
 use app\frontend\modules\finance\services\BalanceService;
+use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
 use Yunshop\Gold\frontend\services\RechargeService;
 
@@ -101,6 +103,7 @@ class PaymentController extends BaseController
                 if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
                     \Log::debug('更新订单状态');
                     OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
+
                 }
                 break;
             case "recharge.succeeded":

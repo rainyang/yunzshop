@@ -54,7 +54,7 @@ class Order extends \app\common\models\Order
             'hasOneDispatchType',
             'hasOnePayType',
             'address',
-            'hasOnePayType',
+            'express',
             'hasOneRefundApply' => self::refundBuilder(),
             'hasOneOrderRemark',
             'hasOneOrderPay'
