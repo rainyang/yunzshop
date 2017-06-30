@@ -34,7 +34,7 @@ return [
         ],
         'notice' => [
             'title' => '收入提现通知',
-            'class' => 'app\backend\widgets\finance\NoticeWidget',
+            'class' => 'app\backend\widgets\finance\WithdrawNoticeWidget',
         ]
     ]
 ];
