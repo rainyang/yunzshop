@@ -23,4 +23,8 @@ class MemberShopInfo extends \app\common\models\MemberShopInfo
     {
         return $this->belongsTo('app\backend\modules\member\models\MemberGroup');
     }
+    public function agent()
+    {
+        return $this->belongsTo('app\backend\modules\member\models\Member', 'parent_id', 'uid');
+    }
 }
