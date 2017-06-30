@@ -11,6 +11,7 @@ namespace app\frontend\modules\finance\controllers;
 
 use app\common\components\ApiController;
 use app\common\components\BaseController;
+use app\common\events\finance\AfterIncomeWithdrawEvent;
 use app\common\facades\Setting;
 use app\common\models\Income;
 use app\common\services\finance\IncomeService;
@@ -18,6 +19,7 @@ use app\common\services\Pay;
 use app\common\services\PayFactory;
 use app\frontend\modules\finance\models\Withdraw;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yunshop\Commission\models\CommissionOrder;
 
@@ -50,7 +52,7 @@ class IncomeController extends ApiController
                 'type_name' => $item['title'],
                 'income' => $typeModel->sum('amount')
             ];
-            if($item['agent_class']){
+            if ($item['agent_class']) {
                 $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
 
                 if ($item['agent_status']) {
@@ -68,7 +70,7 @@ class IncomeController extends ApiController
                         $incomeData[$key]['can'] = false;
                     }
                 }
-            }else{
+            } else {
                 $incomeData[$key]['can'] = true;
             }
 
@@ -204,21 +206,18 @@ class IncomeController extends ApiController
 
         $withdrawTotal = $withdrawData['total'];
         Log::info("POST - Withdraw Total ", $withdrawTotal);
-
-        $incomeModel = Income::getIncomes();
-        $incomeModel = $incomeModel->where('member_id', \YunShop::app()->getMemberId());
-        $incomeModel = $incomeModel->where('status', '0');
-
         Log::info("POST - Withdraw Data ", $withdrawData);
         /**
          * 验证数据
          */
         foreach ($withdrawData['withdrawal'] as $item) {
             $set[$item['key_name']] = \Setting::get('withdraw.' . $item['key_name']);
-            $incomeModel = $incomeModel->whereIn('id', explode(',', $item['type_id']));
-            $incomes = $incomeModel->get();
-            Log::info("INCOME:", $incomes);
 
+            $incomes = Income::getIncomes()
+                ->where('member_id', \YunShop::app()->getMemberId())
+                ->where('status', '0')
+                ->whereIn('id', explode(',', $item['type_id']))
+                ->get();
             $set[$item['key_name']]['roll_out_limit'] = $set[$item['key_name']]['roll_out_limit'] ? $set[$item['key_name']]['roll_out_limit'] : 0;
 
             Log::info("roll_out_limit:");
@@ -248,10 +247,10 @@ class IncomeController extends ApiController
 
         $configs = Config::get('income');
         foreach ($configs as $config) {
-            if(isset($config['name']) && ($type == $config['class'])){
-                $income = \Yunshop\Commission\models\Income::whereIn('id',explode(',',$typeId))->get();
+            if (isset($config['name']) && ($type == $config['class'])) {
+                $income = \Yunshop\Commission\models\Income::whereIn('id', explode(',', $typeId))->get();
                 foreach ($income as $item) {
-                    $config['class']::$config['name']([$config['value']=>1],['id'=>$item->incometable_id]);
+                    $config['class']::$config['name']([$config['value'] => 1], ['id' => $item->incometable_id]);
                 }
 
             }
@@ -285,7 +284,14 @@ class IncomeController extends ApiController
      */
     public function setWithdraw($withdrawData, $withdrawTotal)
     {
+        return DB::transaction(function () use ($withdrawData, $withdrawTotal) {
+            return $this->_setWithdraw($withdrawData, $withdrawTotal);
+        });
 
+    }
+
+    public function _setWithdraw($withdrawData, $withdrawTotal)
+    {
         foreach ($withdrawData as $item) {
             $data[] = [
                 'withdraw_sn' => Pay::setUniacidNo(\YunShop::app()->uniacid),
@@ -306,6 +312,7 @@ class IncomeController extends ApiController
             ];
             static::setIncomeAndOrder($item['type'], $item['type_id']);
         }
+        event(new AfterIncomeWithdrawEvent($data));
         Log::info("Withdraw - data", $data);
         return Withdraw::insert($data);
     }
@@ -313,8 +320,8 @@ class IncomeController extends ApiController
     public function getIncomeWithdrawMode()
     {
         //finance.income.get-income-withdraw-mode
-        
-        $incomeWithdrawMode= IncomeService::getIncomeWithdrawMode();
+
+        $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
 
         if ($incomeWithdrawMode) {
             return $this->successJson('获取数据成功!', $incomeWithdrawMode);

@@ -10,6 +10,7 @@ use app\common\events\WechatProcessor;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointLisrener;
 use app\common\listeners\WechatProcessorListener;
+use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\finance\listeners\Order;
 use app\frontend\modules\goods\listeners\GoodsStock;
 use app\frontend\modules\member\listeners\level\LevelListener;
@@ -79,7 +80,8 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\Alipay::class,
         \app\frontend\modules\payment\listeners\Credit::class,
         \app\frontend\modules\payment\listeners\Wechat::class,
-        orderListener::class
+        orderListener::class,
+        IncomeWithdraw::class
     ];
     /**
      * Register any events for your application.
