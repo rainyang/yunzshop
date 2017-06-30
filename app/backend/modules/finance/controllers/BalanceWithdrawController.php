@@ -23,26 +23,27 @@ class BalanceWithdrawController extends BaseController
     private $withdrawPoundage;
 
 
-
+    /**
+     * 提现详情
+     * @return mixed|string
+     */
     public function detail()
     {
-        $this->attachedMode();
-        if (!$this->withdrawModel) {
-            return $this->message('数据错误，请刷新重试！');
+        if (!$this->attachedMode()) {
+            return $this->message('数据错误，请刷新重试！','','error');
         }
 
         return view('finance.balance.withdraw', [
             'item' => $this->withdrawModel->toArray(),
-            'examine' => $this->getExamine(),
         ])->render();
     }
 
     public function examine()
     {
-        $this->attachedMode();
-        if (!$this->withdrawModel) {
-            return $this->message('数据错误，请刷新重试！');
+        if (!$this->attachedMode()) {
+            return $this->message('数据错误，请刷新重试!', '', 'error');
         }
+
         $requestData = \YunShop::request();
         if (isset($requestData['submit_check']) || isset($requestData['submit_cancel'])) {
             //审核--重新审核
@@ -68,15 +69,19 @@ class BalanceWithdrawController extends BaseController
     //提交审核
     private function submitCheck()
     {
-        $this->attachedExamineData();
-        $this->withdrawModel->status = \YunShop::request()->status;
+        $this->withdrawModel->status = $this->getPostStatus();
         return $this->withdrawUpdate();
+    }
+
+    //保存数据
+    private function withdrawUpdate()
+    {
+        return $this->withdrawModel->save() ?: '数据修改失败，请刷新重试';
     }
 
     //打款
     private function submitPay()
     {
-        //echo '<pre>'; print_r($this->withdrawModel->toArray()); exit;
         $resultPay = '';
         $remark = '提现打款-' . $this->withdrawModel->type_name . '-金额:' . $this->withdrawModel->actual_amounts . '元,' .
             '手续费:' . $this->withdrawModel->actual_poundage;
@@ -87,7 +92,7 @@ class BalanceWithdrawController extends BaseController
             //微信打款
             $resultPay = $this->wechatWithdrawPay($remark);
         }
-
+        file_put_contents(storage_path('logs/withdraw2.log'),print_r($resultPay,true));
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
             $this->withdrawModel->status = 2;
@@ -96,10 +101,7 @@ class BalanceWithdrawController extends BaseController
                 return true;
             }
         }
-
         return $resultPay;
-        //return $resultPay;
-        //return $resultPay ? $this->updatePayTime(): "打款失败";
     }
 
     private function alipayWithdrawPay($remark)
@@ -112,6 +114,7 @@ class BalanceWithdrawController extends BaseController
     private function wechatWithdrawPay($remark)
     {
         $resultPay = WithdrawService::wechatWithdrawPay($this->withdrawModel, $remark);
+        file_put_contents(storage_path('logs/withdraw1.log'),print_r($resultPay,true));
         Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
         if ($resultPay['errno'] == 0){
             return $resultPay['message'];
@@ -119,56 +122,28 @@ class BalanceWithdrawController extends BaseController
         return $resultPay;
     }
 
-    //保存数据
-    private function withdrawUpdate()
-    {
-        return $this->withdrawModel->save() ?: '数据修改失败，请刷新重试';
-    }
 
-    //修改打款时间
-    private function updatePayTime()
-    {
-        $this->withdrawModel->pay_at = time();
-        return $this->withdrawUpdate();
-    }
-
-    //附值审核数据
-    private function attachedExamineData()
-    {
-        $examine = $this->getExamine();
-        $this->withdrawModel->actual_poundage = $examine['poundage'];
-        $this->withdrawModel->actual_amounts  = $examine['result_money'];
-        $this->withdrawModel->audit_at        = time();
-    }
-
-    //获取提现手续费设置
-    private function withdrawSet()
-    {
-        $withdrawSet = Setting::get('withdraw.balance');
-        $this->withdrawPoundage = $withdrawSet['poundage'];
-    }
-
-    //余额提现手续费N元
-    private function withdrawPoundageMath()
-    {
-        $this->withdrawSet();
-        return round(floatval($this->withdrawModel->amounts * $this->withdrawPoundage / 100), 2);
-    }
-
-    //审核金额运算数据、结果
-    private function getExamine()
-    {
-        return array(
-            'examine_money' => $this->withdrawModel->amounts,
-            'poundage'      => $this->withdrawPoundageMath(),
-            'result_money'  => $this->withdrawModel->amounts - $this->withdrawPoundageMath()
-        );
-    }
-
-    //附值 model
+    /**
+     * 获取提现数据 model
+     * @return mixed
+     */
     private function attachedMode()
     {
-        $this->withdrawModel = Withdraw::getBalanceWithdrawById(\YunShop::request()->id);
+        return $this->withdrawModel = Withdraw::getBalanceWithdrawById($this->getPostId());
+    }
+
+    /**
+     * 获取 post 提交的ID值
+     * @return string
+     */
+    private function getPostId()
+    {
+        return trim(\YunShop::request()->id);
+    }
+
+    private function getPostStatus()
+    {
+        return trim(\YunShop::request()->status);
     }
 
 

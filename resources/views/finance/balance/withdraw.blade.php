@@ -8,8 +8,7 @@
         </div>
         <div class='panel-body'>
             <div style='height:auto;width:120px;float:left;'>
-                <img src='{{tomedia($item['has_one_member']['avatar'])}}'
-                     style='width:100px;height:100px;border:1px solid #ccc;padding:1px'/>
+                <img src='{{tomedia($item['has_one_member']['avatar'])}}' style='width:100px;height:100px;border:1px solid #ccc;padding:1px'/>
             </div>
             <div style='float:left;height:auto;overflow: hidden'>
                 <p>
@@ -58,7 +57,7 @@
         </div>
 
         <div class='panel-heading'>
-            余额提现申请信息
+            提现申请信息
         </div>
         <form action="{{yzWebUrl("finance.balance-withdraw.examine",['id'=>$item['id']])}}" method='post' class='form-horizontal'>
             <div class='panel-body'>
@@ -105,9 +104,9 @@
             </div>
             <div class='panel-body'>
                 打款信息【
-                审核金额: <span style='color:red'>{{ $examine['examine_money'] }}</span> 元
-                手续费: <span style='color:red'>{{ $examine['poundage'] }}</span> 元
-                应打款：<span style='color:red'>{{ $examine['result_money'] }}</span>元】
+                审核金额: <span style='color:red'>{{ $item['amounts'] }}</span> 元
+                手续费: <span style='color:red'>{{ $item['actual_poundage'] }}</span> 元
+                应打款：<span style='color:red'>{{ $item['actual_amounts'] }}</span>元】
 
             </div>
 

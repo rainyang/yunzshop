@@ -1,6 +1,9 @@
 <?php
 namespace app\common\components\alipay\Wap;
 
+use app\common\events\PayLog;
+use app\common\services\alipay\WapAlipay;
+
 class SdkPayment
 {
 
@@ -76,6 +79,8 @@ class SdkPayment
 			'_input_charset' => strtolower($this->_input_charset)
 		);
 
+        //请求数据日志
+        event(new PayLog($parameter, new WapAlipay()));
 
 		$para = $this->buildRequestPara($parameter);
 

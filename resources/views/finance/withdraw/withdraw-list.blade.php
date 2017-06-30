@@ -89,9 +89,9 @@
                         <td title="{{$row->withdraw_sn}}" class="tip">{{$row->withdraw_sn}}</td>
                         <td><img src="{{tomedia($row->hasOneMember['avatar'])}}"
                                  style="width: 30px; height: 30px;border:1px solid #ccc;padding:1px;">
-                            </br>
+                            <br/>
                             {{$row->hasOneMember['nickname']}}</td>
-                        <td>{{$row->hasOneMember['realname']}}</br>{{$row->hasOneMember['mobile']}}</td>
+                        <td>{{$row->hasOneMember['realname']}}<br/>{{$row->hasOneMember['mobile']}}</td>
                         <td>{{$row->type_name}}</td>
                         <td>{{$row->pay_way_name}}</td>
                         <td>{{$row->amounts}}</td>
