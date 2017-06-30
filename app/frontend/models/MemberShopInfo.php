@@ -19,4 +19,8 @@ class MemberShopInfo extends \app\common\models\MemberShopInfo
     {
         return $this->belongsTo(self::getNearestModel('MemberLevel'), 'level_id', 'id');
     }
+    public function group()
+    {
+        return $this->belongsTo('app\backend\modules\member\models\MemberGroup');
+    }
 }
