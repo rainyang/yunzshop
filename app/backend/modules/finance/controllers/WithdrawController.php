@@ -249,6 +249,7 @@ class WithdrawController extends BaseController
             //微信打款
 
             $resultPay = WithdrawService::wechatWithdrawPay($withdraw, $remark);
+            Log::info('resultPay:' . $resultPay );
             Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "微信打款中!");
 
         } elseif ($payWay == '4') {
@@ -267,10 +268,7 @@ class WithdrawController extends BaseController
             $updatedData = ['pay_at' => time()];
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::otherWithdrawSuccess($withdrawId);
-            if ($result) {
-                Log::info('打款完成!');
-                return ['msg' => '提现打款成功!'];
-            }
+            return ['msg' => '提现打款成功!'];
         }
     }
 
