@@ -30,6 +30,28 @@ class WithdrawService
                 break;
         }
     }
+    public static function getWithdrawStatusName($status)
+    {
+        switch ($status) {
+            case '-1':
+                return '审核为无效';
+                break;
+            case '1':
+                return '审核通过';
+                break;
+        }
+    }
 
+    public static function getPayStatusName($status)
+    {
+        switch ($status) {
+            case '0':
+                return '打款失败';
+                break;
+            case '1':
+                return '打款成功';
+                break;
+        }
+    }
 
 }

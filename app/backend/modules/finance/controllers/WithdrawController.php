@@ -259,7 +259,8 @@ class WithdrawController extends BaseController
         }
 
         if ($resultPay) {
-            
+
+            $withdraw->pay_status = $resultPay;
             //审核通知事件
             event(new AfterIncomeWithdrawPayEvent($withdraw));
 

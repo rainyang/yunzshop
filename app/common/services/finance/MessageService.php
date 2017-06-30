@@ -16,6 +16,7 @@ class MessageService
 
     public static function incomeWithdraw($withdrawData, $member, $uniacid = '')
     {
+
         if ($uniacid) {
             Setting::$uniqueAccountId = $uniacid;
         }
@@ -24,10 +25,10 @@ class MessageService
             $message = $withdrawNotice['incone_withdraw'];
             $message = str_replace('[昵称]', $member['nickname'], $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-            $message = str_replace('[收入类型]', $withdrawData->type_name, $message);
-            $message = str_replace('[金额]', $withdrawData->amounts, $message);
-            $message = str_replace('[手续费]', $withdrawData->poundage, $message);
-            $payWay = WithdrawService::getPayWayService($withdrawData->pay_way);
+            $message = str_replace('[收入类型]', $withdrawData['type_name'], $message);
+            $message = str_replace('[金额]', $withdrawData['amounts'], $message);
+            $message = str_replace('[手续费]', $withdrawData['poundage'], $message);
+            $payWay = WithdrawService::getPayWayService($withdrawData['pay_way']);
             $message = str_replace('[提现方式]', $payWay, $message);
             $msg = [
                 "first" => '您好',
@@ -47,15 +48,15 @@ class MessageService
         }
         $withdrawNotice = Setting::get('withdraw.notice');
         if ($withdrawNotice['template_id'] && ($member['follow'] == 1)) {
-            $message = $withdrawNotice['incone_withdraw'];
+            $message = $withdrawNotice['incone_withdraw_check'];
             $message = str_replace('[昵称]', $member['nickname'], $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-            $message = str_replace('[收入类型]', $withdrawData->type_name, $message);
-            $message = str_replace('[金额]', $withdrawData->amounts, $message);
-            $message = str_replace('[状态]', $withdrawData->status, $message);
-            $message = str_replace('[审核通过金额]', $withdrawData->actual_amounts, $message);
-            $message = str_replace('[手续费]', $withdrawData->actual_poundage, $message);
-            $payWay = WithdrawService::getPayWayService($withdrawData->pay_way);
+            $message = str_replace('[收入类型]', $withdrawData['type_name'], $message);
+            $message = str_replace('[金额]', $withdrawData['amounts'], $message);
+            $message = str_replace('[状态]', $withdrawData['status'], $message);
+            $message = str_replace('[审核通过金额]', $withdrawData['actual_amounts'], $message);
+            $message = str_replace('[手续费]', $withdrawData['actual_poundage'], $message);
+            $payWay = WithdrawService::getPayWayService($withdrawData['pay_way']);
             $message = str_replace('[提现方式]', $payWay, $message);
             $msg = [
                 "first" => '您好',
@@ -74,13 +75,13 @@ class MessageService
         }
         $withdrawNotice = Setting::get('withdraw.notice');
         if ($withdrawNotice['template_id'] && ($member['follow'] == 1)) {
-            $message = $withdrawNotice['incone_withdraw'];
+            $message = $withdrawNotice['incone_withdraw_pay'];
             $message = str_replace('[昵称]', $member['nickname'], $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-            $message = str_replace('[收入类型]', $withdrawData->type_name, $message);
-            $message = str_replace('[金额]', $withdrawData->amounts, $message);
-            $message = str_replace('[状态]', $withdrawData->status, $message);
-            $payWay = WithdrawService::getPayWayService($withdrawData->pay_way);
+            $message = str_replace('[收入类型]', $withdrawData['type_name'], $message);
+            $message = str_replace('[金额]', $withdrawData['actual_amounts'], $message);
+            $message = str_replace('[状态]', $withdrawData['pay_status'], $message);
+            $payWay = WithdrawService::getPayWayService($withdrawData['pay_way']);
             $message = str_replace('[提现方式]', $payWay, $message);
             $msg = [
                 "first" => '您好',
@@ -99,13 +100,13 @@ class MessageService
         }
         $withdrawNotice = Setting::get('withdraw.notice');
         if ($withdrawNotice['template_id'] && ($member['follow'] == 1)) {
-            $message = $withdrawNotice['incone_withdraw'];
+            $message = $withdrawNotice['incone_withdraw_arrival'];
             $message = str_replace('[昵称]', $member['nickname'], $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-            $message = str_replace('[收入类型]', $withdrawData->type_name, $message);
-            $message = str_replace('[金额]', $withdrawData->amounts, $message);
-            $message = str_replace('[状态]', $withdrawData->status, $message);
-            $payWay = WithdrawService::getPayWayService($withdrawData->pay_way);
+            $message = str_replace('[收入类型]', $withdrawData['type_name'], $message);
+            $message = str_replace('[金额]', $withdrawData['actual_amounts'], $message);
+            $message = str_replace('[状态]', $withdrawData['pay_status'], $message);
+            $payWay = WithdrawService::getPayWayService($withdrawData['pay_way']);
             $message = str_replace('[提现方式]', $payWay, $message);
             $msg = [
                 "first" => '您好',

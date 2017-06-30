@@ -35,6 +35,7 @@ class Withdraw
         if ($withdraw->status != '1') {
             return false;
         }
+        $withdraw->pay_status = 1;
         //提现打款到账事件
         event(new AfterIncomeWithdrawArrivalEvent($withdraw));
 //        $withdraw = $withdraw->toArray();
