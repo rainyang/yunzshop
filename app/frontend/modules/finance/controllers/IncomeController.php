@@ -107,10 +107,15 @@ class IncomeController extends ApiController
      */
     public function getDetail()
     {
+        $data = "";
         $id = \YunShop::request()->id;
         $detailModel = Income::getDetailById($id);
         if ($detailModel) {
-            return '{"result":1,"msg":"成功","data":' . $detailModel->first()->detail . '}';
+            if($detailModel->first()->detail != ''){
+                $data = $detailModel->first()->detail;
+                return '{"result":1,"msg":"成功","data":' . $data . '}';
+            }
+            return '{"result":1,"msg":"成功","data":""}';
         }
         return $this->errorJson('未检测到数据!');
     }
