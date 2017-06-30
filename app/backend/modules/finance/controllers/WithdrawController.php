@@ -260,7 +260,7 @@ class WithdrawController extends BaseController
 
         if ($resultPay) {
 
-            $withdraw->pay_status = $resultPay;
+            $withdraw->pay_status = 1;
             //审核通知事件
             event(new AfterIncomeWithdrawPayEvent($withdraw));
 
@@ -272,7 +272,6 @@ class WithdrawController extends BaseController
                 return ['msg' => '提现打款成功!'];
             }
         }
-        return ['msg' => '提现打款失败'];
     }
 
 
