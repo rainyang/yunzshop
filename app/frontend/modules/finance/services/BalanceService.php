@@ -72,7 +72,7 @@ class BalanceService
     //余额提现手续费
     public function withdrawPoundage()
     {
-        return $this->_withdraw_set['poundage'];
+        return $this->_withdraw_set['poundage'] ?: 0;
     }
 
     //余额提现到微信
