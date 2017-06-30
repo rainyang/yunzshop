@@ -40,4 +40,8 @@ class Member extends \app\common\models\Member
     {
         return $this->hasMany(OrderGoods::class,'uid','uid');
     }
+    public function yzMember()
+    {
+        return $this->hasOne(self::getNearestModel('MemberShopInfo'), 'member_id', 'uid');
+    }
 }

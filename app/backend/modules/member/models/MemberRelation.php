@@ -222,17 +222,13 @@ class MemberRelation extends BackendModel
         if (!empty($mid)) {
             $parent =  SubMemberModel::getMemberShopInfo($mid);
         } else {
-            if (empty($member->inviter)) {
-                $model->parent_id = intval($mid);
-                $model->child_time = time();
-
+            if ($member->inviter == 0 && $member->parent_id == 0) {
                 if (empty($become_child)) {
+                    $model->child_time = time();
                     $model->inviter = 1;
-                } else {
-                    $model->inviter = 0;
-                }
 
-                $model->save();
+                    $model->save();
+                }
             }
         }
 

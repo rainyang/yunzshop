@@ -2,12 +2,14 @@
 
 namespace  app\payment;
 
-use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
 use app\common\events\payment\RechargeComplatedEvent;
+use app\common\models\AccountWechats;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
+use app\frontend\models\Order;
 use app\frontend\modules\finance\services\BalanceService;
+use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
 use Yunshop\Gold\frontend\services\RechargeService;
 
@@ -30,8 +32,6 @@ class PaymentController extends BaseController
     {
         $script_info = pathinfo($_SERVER['SCRIPT_NAME']);
 
-        \Log::debug('执行脚本', $script_info['filename']);
-
         if (!empty($script_info)) {
             switch ($script_info['filename']) {
                 case 'notifyUrl':
@@ -41,11 +41,7 @@ class PaymentController extends BaseController
                 case 'withdrawNotifyUrl':
                     $batch_no = !empty($_REQUEST['batch_no']) ? $_REQUEST['batch_no'] : '';
 
-                    \Log::debug('支付宝订单批次号', $batch_no);
-
                     \YunShop::app()->uniacid = (int)substr($batch_no, 17, 5);
-
-                    \Log::debug('当前公众号', \YunShop::app()->uniacid);
                     break;
                 default:
                     \YunShop::app()->uniacid = $this->getUniacid();
@@ -54,18 +50,25 @@ class PaymentController extends BaseController
         }
 
         \Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+
+        AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
     }
 
+    /**
+     * 支付宝获取当前公众号
+     *
+     * @return int
+     */
     private function getUniacid()
     {
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
         $splits = explode(':', $body);
 
         if (!empty($splits[1])) {
-            \Log::debug('当前公众号', intval($splits[1]));
 
             return intval($splits[1]);
         } else {
+
             return 0;
         }
     }
@@ -89,7 +92,7 @@ class PaymentController extends BaseController
 
         switch ($type) {
             case "charge.succeeded":
-                \Log::debug('支付操作', 'charge.succeeded');
+                \Log::debug('支付操作', ['charge.succeeded']);
 
                 $orderPay = OrderPay::where('pay_sn', $data['out_trade_no'])->first();
 
@@ -100,10 +103,11 @@ class PaymentController extends BaseController
                 if (bccomp($orderPay->amount, $data['total_fee'], 2) == 0) {
                     \Log::debug('更新订单状态');
                     OrderService::ordersPay(['order_pay_id' => $orderPay->id]);
+
                 }
                 break;
             case "recharge.succeeded":
-                \Log::debug('支付操作', 'recharge.succeeded');
+                \Log::debug('支付操作', ['recharge.succeeded']);
                 (new BalanceService())->payResult([
                     'order_sn'=> $data['out_trade_no'],
                     'pay_sn'=> $data['trade_no']
@@ -117,7 +121,7 @@ class PaymentController extends BaseController
                 
                 break;
             case "gold_recharge.succeeded":
-                \Log::debug('金币支付操作', 'gold_recharge.succeeded');
+                \Log::debug('金币支付操作', ['gold_recharge.succeeded']);
                 RechargeService::payResult([
                     'order_sn'=> $data['out_trade_no'],
                     'pay_sn'=> $data['trade_no']

@@ -118,7 +118,7 @@
                                 <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
                                 <input type="hidden" name="token" value="{{$var['token']}}"/>
                                 @section('export')
-                                    <button type="button" name="export" value="1" id="export" class="btn btn-default">导出
+                                    <button type="submit" name="export" value="1" id="export" class="btn btn-default">导出
                                         Excel
                                     </button>
                                 @show
@@ -303,10 +303,6 @@
                 $(this).next('input').attr('placeholder', $(this).find(':selected').text().trim())
             });
         })
-        $('#export').click(function () {
-            $('#form_p').val("order.list.export");
-            $('#form1').submit();
-        });
 
         function changePrice(orderid) {
             $.post("{!! yzWebUrl('order.change-order-price') !!}", {order_id: orderid}, function (html) {
