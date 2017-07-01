@@ -12,6 +12,8 @@ namespace app\backend\modules\finance\controllers;
 use app\backend\modules\finance\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
+use app\common\events\finance\AfterIncomeWithdrawCheckEvent;
+use app\common\events\finance\AfterIncomeWithdrawPayEvent;
 use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
@@ -157,15 +159,24 @@ class WithdrawController extends BaseController
                 Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
         }
-        $actual_poundage = $actual_amounts / 100 * $withdraw['poundage_rate'];
+        $actual_poundage = number_format($actual_amounts / 100 * $withdraw['poundage_rate'],2);
         $updatedData = [
             'status' => $withdrawStatus,
             'actual_amounts' => $actual_amounts - $actual_poundage,
             'actual_poundage' => $actual_poundage,
             'audit_at' => time(),
         ];
+        
         $result = Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
+        
         if ($result) {
+            $noticeData = $withdraw;
+            $noticeData->status = $withdrawStatus;
+            $noticeData->actual_amounts = $updatedData['actual_amounts'];
+            $noticeData->actual_poundage = $updatedData['actual_poundage'];
+            $noticeData->audit_at = $updatedData['audit_at'];
+            //审核通知事件
+            event(new AfterIncomeWithdrawCheckEvent($noticeData));
             return ['msg' => '审核成功!'];
         }
         return ['msg' => '审核失败!'];
@@ -196,8 +207,18 @@ class WithdrawController extends BaseController
             'actual_poundage' => $actual_poundage,
             'audit_at' => time(),
         ];
+        
+        
         $result = Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
+        
         if ($result) {
+            $noticeData = $withdraw;
+            $noticeData->status = $withdrawStatus;
+            $noticeData->actual_amounts = $updatedData['actual_amounts'];
+            $noticeData->actual_poundage = $updatedData['actual_poundage'];
+            $noticeData->audit_at = $updatedData['audit_at'];
+            //重新审核通知事件
+            event(new AfterIncomeWithdrawCheckEvent($noticeData));
             return ['msg' => '审核成功!'];
         }
         return ['msg' => '审核失败!'];
@@ -228,6 +249,7 @@ class WithdrawController extends BaseController
             //微信打款
 
             $resultPay = WithdrawService::wechatWithdrawPay($withdraw, $remark);
+            Log::info('resultPay:' . $resultPay );
             Log::info('MemberId:' . $withdraw->member_id . ', ' . $remark . "微信打款中!");
 
         } elseif ($payWay == '4') {
@@ -238,13 +260,16 @@ class WithdrawController extends BaseController
         }
 
         if ($resultPay) {
+
+            $withdraw->pay_status = 1;
+            //审核通知事件
+            event(new AfterIncomeWithdrawPayEvent($withdraw));
+
             $updatedData = ['pay_at' => time()];
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::otherWithdrawSuccess($withdrawId);
-            Log::info('打款完成!');
             return ['msg' => '提现打款成功!'];
         }
-//        return ['msg' => $resultPay];
     }
 
 
