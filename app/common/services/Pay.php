@@ -279,7 +279,7 @@ abstract class Pay
     public static function payAccessLog()
     {
         PayAccessLog::create([
-            'uniacid' => \YunShop::app()->uniacid,
+            'uniacid' => \YunShop::app()->uniacid?:0,
             'member_id' => \YunShop::app()->getMemberId(),
             'url' => self::getHttpURL(),
             'http_method' => self::getHttpMethod(),
