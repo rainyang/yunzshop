@@ -288,9 +288,9 @@ class Member extends BackendModel
 
         // todo 后期需要重构
         if ($plugin_class->isEnabled('gold')) {
-            $data['glod'] = MemberCenterService::button(\YunShop::app()->getMemberId());
+            $data['gold'] = MemberCenterService::button(\YunShop::app()->getMemberId());
         } else {
-            $data['glod'] = '';
+            $data['gold'] = '';
         }
 
         return $data;
