@@ -575,9 +575,9 @@ class MemberRelation extends BackendModel
     public static function generalizeMessage($member, $uniacid)
     {
         $notice = \Setting::get('shop.notice');
-\Log::debug('notice', $notice);
+
         $msg_set = \Setting::get('relation_base');
-        if ($msg_set['template_id'] && ($member->follow == 1)) {
+        if ($notice['task'] && ($member->follow == 1)) {
             $message = $msg_set['generalize_msg'];
             $message = str_replace('[昵称]', $member->nickname, $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
@@ -589,7 +589,6 @@ class MemberRelation extends BackendModel
             ];
 
             if ($notice['toggle'] && $notice['task']) {
-                \Log::debug('tmpleate_id', [$notice['task']]);
                 MessageService::notice($notice['task'], $msg, $member->openid, $uniacid);
             }
         }
@@ -619,7 +618,7 @@ class MemberRelation extends BackendModel
         $notice = \Setting::get('shop.notice');
 
         $msg_set = \Setting::get('relation_base');
-        if ($msg_set['template_id'] && ($parent->follow == 1)) {
+        if ($notice['task'] && ($parent->follow == 1)) {
             $message = $msg_set['agent_msg'];
             $message = str_replace('[昵称]', $parent->nickname, $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
