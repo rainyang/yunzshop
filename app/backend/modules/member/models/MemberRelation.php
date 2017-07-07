@@ -631,7 +631,7 @@ class MemberRelation extends BackendModel
             ];
 
             if ($notice['toggle'] && $notice['task']) {
-                MessageService::notice($notice['template_id'], $msg, $parent->openid, $uniacid);
+                MessageService::notice($notice['task'], $msg, $parent->openid, $uniacid);
             }
         }
     }
