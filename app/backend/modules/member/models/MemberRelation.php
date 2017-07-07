@@ -575,7 +575,7 @@ class MemberRelation extends BackendModel
     public static function generalizeMessage($member, $uniacid)
     {
         $notice = \Setting::get('shop.notice');
-
+\Log::debug('notice', $notice);
         $msg_set = \Setting::get('relation_base');
         if ($msg_set['template_id'] && ($member->follow == 1)) {
             $message = $msg_set['generalize_msg'];
@@ -589,6 +589,7 @@ class MemberRelation extends BackendModel
             ];
 
             if ($notice['toggle'] && $notice['task']) {
+                \Log::debug('tmpleate_id', [$notice['task']]);
                 MessageService::notice($notice['task'], $msg, $member->openid, $uniacid);
             }
         }
