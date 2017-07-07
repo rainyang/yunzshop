@@ -41,6 +41,14 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">获得推广权限通知</label>
                         <div class="col-sm-9 col-xs-12">
+                            <input type="text"  name="base[generalize_title]" class="form-control" value="{{$base['generalize_title']}}" ></input>
+                            标题: 默认'获得推广权限通知'
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
                             <textarea  name="base[generalize_msg]" class="form-control" >{{$base['generalize_msg']}}</textarea>
                             模板变量: [昵称] [时间]
                         </div>
@@ -48,6 +56,14 @@
 
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">新增下线通知</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text"  name="base[agent_title]" class="form-control" value="{{$base['agent_title']}}" ></input>
+                            标题: 默认'新增下线通知'
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
                             <textarea  name="base[agent_msg]" class="form-control" >{{$base['agent_msg']}}</textarea>
                             模板变量: [昵称] [时间] [下级昵称]

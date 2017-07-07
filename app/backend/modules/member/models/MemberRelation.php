@@ -574,6 +574,8 @@ class MemberRelation extends BackendModel
 
     public static function generalizeMessage($member, $uniacid)
     {
+        $notice = \Setting::get('shop.notice');
+
         $msg_set = \Setting::get('relation_base');
         if ($msg_set['template_id'] && ($member->follow == 1)) {
             $message = $msg_set['generalize_msg'];
@@ -581,13 +583,13 @@ class MemberRelation extends BackendModel
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
             $msg = [
                 "first" => '您好',
-                "keyword1" => "获得推广权限通知",
+                "keyword1" => $msg_set['generalize_title']?:"获得推广权限通知",
                 "keyword2" => $message,
                 "remark" => "",
             ];
 
-            if ($msg_set['template_id']) {
-                MessageService::notice($msg_set['template_id'], $msg, $member->openid, $uniacid);
+            if ($notice['toggle'] && $notice['task']) {
+                MessageService::notice($notice['task'], $msg, $member->openid, $uniacid);
             }
         }
     }
@@ -613,6 +615,8 @@ class MemberRelation extends BackendModel
 
     public static function agentMessage($parent, $member, $uniacid)
     {
+        $notice = \Setting::get('shop.notice');
+
         $msg_set = \Setting::get('relation_base');
         if ($msg_set['template_id'] && ($parent->follow == 1)) {
             $message = $msg_set['agent_msg'];
@@ -621,13 +625,13 @@ class MemberRelation extends BackendModel
             $message = str_replace('[下级昵称]', $member->nickname, $message);
             $msg = [
                 "first" => '您好',
-                "keyword1" => "新增下线通知",
+                "keyword1" => $msg_set['agent_title']?:"新增下线通知",
                 "keyword2" => $message,
                 "remark" => "",
             ];
 
-            if ($msg_set['template_id']) {
-                MessageService::notice($msg_set['template_id'], $msg, $parent->openid, $uniacid);
+            if ($notice['toggle'] && $notice['task']) {
+                MessageService::notice($notice['template_id'], $msg, $parent->openid, $uniacid);
             }
         }
     }
