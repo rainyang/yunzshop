@@ -80,7 +80,7 @@ class MemberController extends BaseController
             'groups' => $groups,
             'endtime' => $endtime,
             'starttime' => $starttime,
-            'total' => $list['total'],
+            'total' => $list['current_page'] <= $list['last_page'] ? $list['total'] : 0,
             'pager' => $pager,
             'request' => \YunShop::request(),
             'set' => $set,
