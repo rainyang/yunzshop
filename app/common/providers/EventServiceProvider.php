@@ -9,7 +9,6 @@ use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
 use app\common\listeners\member\AfterOrderPaidListener;
-use app\common\listeners\member\AfterOrderPiadListener;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointLisrener;
 use app\common\listeners\WechatProcessorListener;
@@ -56,7 +55,7 @@ class EventServiceProvider extends ServiceProvider
             \app\common\listeners\member\AfterOrderReceivedListener::class
         ],
         AfterOrderPaidEvent::class => [ //支付完成
-            \app\common\listeners\member\AfterOrderPiadListener::class
+            \app\common\listeners\member\AfterOrderPaidListener::class
         ],
         //微信接口回调触发事件进程
         WechatProcessor::class => [
@@ -84,8 +83,7 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\Credit::class,
         \app\frontend\modules\payment\listeners\Wechat::class,
         orderListener::class,
-        IncomeWithdraw::class,
-        AfterOrderPaidListener::class
+        IncomeWithdraw::class
     ];
     /**
      * Register any events for your application.
