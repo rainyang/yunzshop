@@ -20,11 +20,4 @@ class AfterOrderPiadListener
         \Log::debug('推广资格-' . \YunShop::app()->getMemberId());
         MemberRelation::checkOrderPay($model->uid);
     }
-
-    public function subscribe(Dispatcher $events)
-    {
-        $res = $events->getListeners(\app\common\events\order\AfterOrderPaidEvent::class);
-
-        \Log::debug('支付成功事件', $res);
-    }
 }
