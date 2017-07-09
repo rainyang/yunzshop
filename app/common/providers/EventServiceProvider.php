@@ -83,7 +83,6 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\Wechat::class,
         orderListener::class,
         IncomeWithdraw::class,
-        AfterOrderPiadListener::class,
     ];
     /**
      * Register any events for your application.
