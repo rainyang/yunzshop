@@ -9,15 +9,16 @@ namespace app\common\listeners\member;
 
 
 use app\backend\modules\member\models\MemberRelation;
+use app\common\events\order\AfterOrderPaidEvent;
 
-class AfterOrderPiadListener
+class AfterOrderPaidListener
 {
     public function handle(AfterOrderPaidEvent $event)
     {
         \Log::debug('AfterOrderPaidEvent');
         $model = $event->getOrderModel();
 
-        \Log::debug('推广资格-' . \YunShop::app()->getMemberId());
+        \Log::debug('推广资格-' . $model->uid);
         MemberRelation::checkOrderPay($model->uid);
     }
 }
