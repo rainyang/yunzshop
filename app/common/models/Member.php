@@ -251,7 +251,9 @@ class Member extends BackendModel
         } elseif (Session::get('client_url') && strpos(Session::get('client_url'), 'mid')) {
             preg_match('/.+mid=(\d+).+/', Session::get('client_url'), $matches);
 
-            return $matches[1];
+            if (isset($matches) && !empty($matches[1])) {
+                return $matches[1];
+            }
         }
 
         return 0;
@@ -321,7 +323,7 @@ class Member extends BackendModel
         $model = MemberShopInfo::getMemberShopInfo($uid);
 
         if (empty($mid)) {
-            $mid   = self::getMid();
+            $mid   = 0;
         }
 
         //生成关系3级关系链
