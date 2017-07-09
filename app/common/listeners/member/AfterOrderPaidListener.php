@@ -1,16 +1,17 @@
 <?php
 /**
  * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/6/20
- * Time: 下午6:44
+ * Date: 2017/7/9
+ * Time: 下午3:09
  */
 
 namespace app\common\listeners\member;
 
 
 use app\backend\modules\member\models\MemberRelation;
+use app\common\events\order\AfterOrderPaidEvent;
 
-class AfterOrderPiadListener
+class AfterOrderPaidListener
 {
     public function handle(AfterOrderPaidEvent $event)
     {
