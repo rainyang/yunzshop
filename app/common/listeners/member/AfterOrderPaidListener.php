@@ -10,7 +10,6 @@ namespace app\common\listeners\member;
 
 use app\backend\modules\member\models\MemberRelation;
 use app\common\events\order\AfterOrderPaidEvent;
-use Illuminate\Events\Dispatcher;
 
 class AfterOrderPaidListener
 {
