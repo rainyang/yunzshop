@@ -4,9 +4,11 @@ namespace app\common\providers;
 
 
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
+use app\common\listeners\member\AfterOrderPaidListener;
 use app\common\listeners\member\AfterOrderPiadListener;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointLisrener;
@@ -83,6 +85,7 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\Wechat::class,
         orderListener::class,
         IncomeWithdraw::class,
+        AfterOrderPaidListener::class
     ];
     /**
      * Register any events for your application.

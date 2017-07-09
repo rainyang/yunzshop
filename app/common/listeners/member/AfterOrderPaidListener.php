@@ -10,6 +10,7 @@ namespace app\common\listeners\member;
 
 use app\backend\modules\member\models\MemberRelation;
 use app\common\events\order\AfterOrderPaidEvent;
+use Illuminate\Events\Dispatcher;
 
 class AfterOrderPaidListener
 {
@@ -20,5 +21,10 @@ class AfterOrderPaidListener
 
         \Log::debug('推广资格-' . \YunShop::app()->getMemberId());
         MemberRelation::checkOrderPay($model->uid);
+    }
+
+    public function subscribe(Dispatcher $events)
+    {
+        $res = $events->getListeners(\app\common\events\order\AfterOrderPaidEvent::class);
     }
 }
