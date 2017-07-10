@@ -10,6 +10,7 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
+use Illuminate\Database\Eloquent\Builder;
 
 /*
  * 余额转让记录
@@ -25,26 +26,93 @@ class BalanceTransfer extends BaseModel
 
     const TRANSFER_STATUS_ERROR =-1;
 
-    /*
+
+    /**
+     * 设置全局作用域 拼接 uniacid()
+     */
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(
+            function(Builder $builder){
+                return $builder->uniacid();
+            }
+        );
+    }
+
+
+
+    /**
      * 关联会员数据表，一对一
-     * @Author yitian */
-    public function transferorInfo()
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function transferInfo()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'transferor');
     }
-
-    /*
+    /**
      * 关联会员数据表，一对一
-     * @Author yitian */
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function recipientInfo()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'recipient');
     }
 
-    /*
+
+    /**
+     * 检索条件 单号／流水号
+     * @param $query
+     * @param $orderSn
+     * @return mixed
+     */
+    public function scopeOfOrderSn($query,$orderSn)
+    {
+        return $query->where('order_sn',$orderSn);
+    }
+
+
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeWithTransfer($query)
+    {
+        return $query->with(['transferInfo' => function($transferInfo) {
+            return $transferInfo->select('uid', 'nickname', 'realname', 'avatar', 'mobile');
+        }]);
+    }
+
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeWithRecipient($query)
+    {
+        return $query->with(['recipientInfo' => function($recipientInfo) {
+            return $recipientInfo->select('uid', 'nickname', 'realname', 'avatar', 'mobile');
+        }]);
+    }
+
+
+/////////////////////////////////
+
+// 以下废弃使用， 慢慢移除
+
+
+    /**
+     * 关联会员数据表，一对一
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function transferorInfo()
+    {
+        return $this->hasOne('app\common\models\Member', 'uid', 'transferor');
+    }
+    /**
      * 获取余额转让记录分页列表，后台使用
-     *
-     * @return objece */
+     * @param $pageSize
+     * @return mixed
+     */
     public static function getTransferPageList($pageSize)
     {
         return self::uniacid()
