@@ -53,7 +53,7 @@ class ConstService
     const SOURCE_RECHARGE_MINUS    = 11; //后台扣除
 
 
-    private static $title = '余额';
+    protected static $title = '余额';
 
 
 

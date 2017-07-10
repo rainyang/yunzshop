@@ -10,6 +10,8 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
+use app\common\services\credit\ConstService;
+use Illuminate\Database\Eloquent\Builder;
 
 /*
  * 余额变动记录表
@@ -21,74 +23,52 @@ class Balance extends BaseModel
 
     protected $guarded= [''];
 
-
-
     protected $appends = ['service_type_name','type_name'];
 
-    const OPERATOR_SHOP     = 0;  //操作者 商城
 
-    const OPERATOR_ORDER_   = -1; //操作者 订单
+    /**
+     * 设置全局作用域 拼接 uniacid()
+     */
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(
+            function(Builder $builder){
+                return $builder->uniacid();
+            }
+        );
+    }
 
-    const OPERATOR_MEMBER   = -2; //操作者 会员
-
-    //类型：收入
-    const TYPE_INCOME = 1;
-
-    //类型：支出
-    const TYPE_EXPENDITURE = 2;
-
-
-    const BALANCE_RECHARGE  = 1; //充值
-
-    const BALANCE_CONSUME   = 2; //消费
-
-    const BALANCE_TRANSFER  = 3; //转让
-
-    const BALANCE_DEDUCTION = 4; //抵扣
-
-    const BALANCE_AWARD     = 5; //奖励
-
-    const BALANCE_WITHDRAWAL= 6; //余额提现
-
-    const BALANCE_INCOME    = 7; //提现至余额
-
-    const BALANCE_CANCEL_DEDUCTION  = 8; //抵扣取消余额回滚
-
-    const BALANCE_CANCEL_AWARD      = 9; //奖励取消回滚
-
-    const BALANCE_CANCEL_CONSUME    = 10; //消费取消回滚
-
-    public static $balanceComment = [
-        self::BALANCE_RECHARGE      => '余额充值',
-        self::BALANCE_CONSUME       => '余额消费',
-        self::BALANCE_TRANSFER      => '余额转让',
-        self::BALANCE_DEDUCTION     => '余额抵扣',
-        self::BALANCE_AWARD         => '余额奖励',
-        self::BALANCE_WITHDRAWAL    => '余额提现',
-        self::BALANCE_INCOME        => '提现至余额',
-        self::BALANCE_CANCEL_DEDUCTION      => '抵扣取消回滚',
-        self::BALANCE_CANCEL_AWARD          => '奖励取消回滚',
-        self::BALANCE_CANCEL_CONSUME        => '消费取消回滚'
-    ];
-
-    public static $type_name = [
-        self::TYPE_INCOME       => '收入',
-        self::TYPE_EXPENDITURE  => '支出'
-    ];
-
-    /*
-     * 模型管理，关联会员数据表
-     *
-     * @Author yitian */
+    /**
+     * 模型关联，关联会员数据表
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function member()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
+    public function Transfer()
+    {
+        return $this->belongsTo('app\common\models\finance\BalanceTransfer', 'order_sn', 'serial_number');
+    }
+
+
+
+
+    /**
+     * @param $balance
+     * @return mixed|string
+     */
     public static function getBalanceComment($balance)
     {
         return isset(static::$balanceComment[$balance]) ? static::$balanceComment[$balance]: '';
     }
+
+    /**
+     * @param $balance
+     * @return mixed|string
+     */
     public static function getTypeNameComment($balance)
     {
         return isset(static::$type_name[$balance]) ? static::$type_name[$balance]: '';
@@ -97,24 +77,74 @@ class Balance extends BaseModel
     /**
      * 通过字段 service_type 输出 service_type_name ;
      * @return string
-     * @Author yitian */
+     */
     public function getServiceTypeNameAttribute()
     {
         return static::getBalanceComment($this->attributes['service_type']);
     }
 
+    /**
+     * 通过字段 type 输出 type_name 名称
+     * @return mixed|string
+     */
     public function getTypeNameAttribute()
     {
         return static::getTypeNameComment($this->attributes['type']);
     }
 
-    /*
+
+
+
+    /**
+     * 检索条件 服务类型
+     * @param $query
+     * @param $source
+     * @return mixed
+     */
+    public function scopeOfSource($query, $source)
+    {
+        return $query->where('service_type', $source);
+    }
+
+    /**
+     * 检索条件 会员ID
+     * @param $query
+     * @param $memberId
+     * @return mixed
+     */
+    public function scopeOfMemberId($query, $memberId)
+    {
+        return $query->where('member_id', $memberId);
+    }
+
+    /**
+     * 检索条件 单号／流水号
+     * @param $query
+     * @param $orderSn
+     * @return mixed
+     */
+    public function scopeOfOrderSn($query, $orderSn)
+    {
+        return $query->where('serial_number', $orderSn);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
      * 获取分页列表
-     *
-     * @params int $pageSize
-     *
-     * @return object
-     * @Autho yitian */
+     * @param $pageSize
+     * @return mixed
+     */
     public static function getPageList($pageSize)
     {
         return self::uniacid()
@@ -177,37 +207,67 @@ class Balance extends BaseModel
             ->first();
     }
 
-    /**
-     * 检索条件 服务类型
-     * @param $query
-     * @param $source
-     * @return mixed
-     */
-    public function scopeOfSource($query, $source)
-    {
-        return $query->where('service_type', $source);
-    }
 
-    /**
-     * 检索条件 会员ID
-     * @param $query
-     * @param $memberId
-     * @return mixed
-     */
-    public function scopeOfMemberId($query, $memberId)
-    {
-        return $query->where('member_id', $memberId);
-    }
 
-    /**
-     * 检索条件 单号／流水号
-     * @param $query
-     * @param $orderSn
-     * @return mixed
-     */
-    public function scopeOfOrderSn($query, $orderSn)
-    {
-        return $query->where('serial_number', $orderSn);
-    }
+
+
+
+
+//以下常量、方法已经废弃， 防止报错，暂时未删除，请不要使用
+//
+//
+//
+
+
+    const OPERATOR_SHOP     = 0;  //操作者 商城
+
+    const OPERATOR_ORDER_   = -1; //操作者 订单
+
+    const OPERATOR_MEMBER   = -2; //操作者 会员
+
+    //类型：收入
+    const TYPE_INCOME = 1;
+
+    //类型：支出
+    const TYPE_EXPENDITURE = 2;
+
+
+    const BALANCE_RECHARGE  = 1; //充值
+
+    const BALANCE_CONSUME   = 2; //消费
+
+    const BALANCE_TRANSFER  = 3; //转让
+
+    const BALANCE_DEDUCTION = 4; //抵扣
+
+    const BALANCE_AWARD     = 5; //奖励
+
+    const BALANCE_WITHDRAWAL= 6; //余额提现
+
+    const BALANCE_INCOME    = 7; //提现至余额
+
+    const BALANCE_CANCEL_DEDUCTION  = 8; //抵扣取消余额回滚
+
+    const BALANCE_CANCEL_AWARD      = 9; //奖励取消回滚
+
+    const BALANCE_CANCEL_CONSUME    = 10; //消费取消回滚
+
+    public static $balanceComment = [
+        self::BALANCE_RECHARGE      => '余额充值',
+        self::BALANCE_CONSUME       => '余额消费',
+        self::BALANCE_TRANSFER      => '余额转让',
+        self::BALANCE_DEDUCTION     => '余额抵扣',
+        self::BALANCE_AWARD         => '余额奖励',
+        self::BALANCE_WITHDRAWAL    => '余额提现',
+        self::BALANCE_INCOME        => '提现至余额',
+        self::BALANCE_CANCEL_DEDUCTION      => '抵扣取消回滚',
+        self::BALANCE_CANCEL_AWARD          => '奖励取消回滚',
+        self::BALANCE_CANCEL_CONSUME        => '消费取消回滚'
+    ];
+
+    public static $type_name = [
+        self::TYPE_INCOME       => '收入',
+        self::TYPE_EXPENDITURE  => '支出'
+    ];
 
 }
