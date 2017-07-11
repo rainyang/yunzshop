@@ -25,7 +25,7 @@ class ShopMessage extends Message
        foreach (\Setting::get('shop.notice.salers') as $saler) {
            $noticeMember = Member::getMemberByUid($saler['uid'])->with('hasOneFans')->first();
            if ($noticeMember->hasOneFans->follow && !empty($noticeMember->hasOneFans->openid)) {
-               $this->notice->uses($this->templateId)->andData($this->msg)->andReceiver($noticeMember->hasOneFans->openid)->send();
+               $this->notice($this->templateId, $this->msg, $noticeMember->hasOneFans->openid);
            }
 
         }
