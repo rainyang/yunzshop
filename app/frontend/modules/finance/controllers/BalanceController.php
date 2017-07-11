@@ -15,8 +15,8 @@ use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\PayFactory;
 use app\common\components\ApiController;
-use app\common\models\finance\Balance as BalanceCommon;
 
+use app\frontend\modules\finance\models\Balance as BalanceCommon;
 use app\frontend\modules\finance\models\BalanceTransfer;
 use app\frontend\modules\finance\models\Withdraw;
 use app\frontend\modules\finance\models\BalanceRecharge;
@@ -283,7 +283,7 @@ class BalanceController extends ApiController
             'member_id'     =>  $this->model->transferor,
             'remark'        => '会员【ID:'.$this->model->transferor.'】余额转让会员【ID：'.$this->model->recipient. '】' . $this->model->money . '元',
             'source'        => ConstService::SOURCE_TRANSFER,
-            'relation'      => '',
+            'relation'      => $this->model->order_sn,
             'operator'      => ConstService::OPERATOR_MEMBER,
             'operator_id'   => $this->model->transferor,
             'change_value'  => $this->model->money,
@@ -316,7 +316,8 @@ class BalanceController extends ApiController
             'transferor'    => \YunShop::app()->getMemberId(),
             'recipient'     => \YunShop::request()->recipient,
             'money'         => trim(\YunShop::request()->transfer_money),
-            'status'        => BalanceTransfer::TRANSFER_STATUS_ERROR
+            'status'        => BalanceTransfer::TRANSFER_STATUS_ERROR,
+            'order_sn'      => $this->getTransferOrderSN()
         );
     }
 
@@ -433,6 +434,22 @@ class BalanceController extends ApiController
             $withdraw_sn = createNo('WS', true);
         }
         return $withdraw_sn;
+    }
+
+    /**
+     * 生成唯一转让订单号
+     * @return string
+     */
+    private function getTransferOrderSN()
+    {
+        $orderSn = createNo('TS', true);
+        while (1) {
+            if (!BalanceTransfer::ofOrderSn($orderSn)->first()) {
+                break;
+            }
+            $orderSn = createNo('TS', true);
+        }
+        return $orderSn;
     }
 
 

@@ -17,6 +17,7 @@ class YunShop
 {
     private static $_req;
     private static $_app;
+    private static $_plugin;
     public static $currentItems = [];
 
     public function __construct()
@@ -326,6 +327,12 @@ class YunShop
         return ucfirst($name);
     }
 
+    public static function plugin()
+    {
+        self::$_plugin = new YunPlugin();
+        return self::$_plugin;
+    }
+
 }
 
 class YunComponent implements ArrayAccess
@@ -496,4 +503,29 @@ class YunApp extends YunComponent
 
 
 }
+class YunPlugin
+{
+    protected $values;
 
+    public function __construct()
+    {
+        $this->values = false;
+    }
+
+    /**
+     * @param null $key
+     * @return bool
+     */
+    public function get($key = null)
+    {
+        if (isset($key)) {
+            $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+
+            if ($plugin_class->isEnabled($key)) {
+                return true;
+            }
+        }
+        return $this->values;
+    }
+
+}
