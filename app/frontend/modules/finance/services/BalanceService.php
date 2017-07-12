@@ -107,11 +107,14 @@ class BalanceService
     public function payResult($data = [])
     {
         $rechargeMode = BalanceRecharge::getRechargeRecordByOrdersn($data['order_sn']);
+        \Log::debug('余额充值result',['content'=> $rechargeMode]);
         if (!$rechargeMode) {
             throw new AppException('充值失败');
         }
+
         $rechargeMode->status = BalanceRecharge::PAY_STATUS_SUCCESS;
         if ($rechargeMode->save()) {
+            \Log::debug('修改余额状态成功',[]);
             $this->data = array(
                 'member_id'     => $rechargeMode->member_id,
                 'remark'        => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
@@ -123,6 +126,7 @@ class BalanceService
             );
             $result = (new BalanceChange())->recharge($this->data);
             if ($result === true) {
+                \Log::debug('余额充值成功',[]);
                 return $this->rechargeSaleMath();
             }
             throw new AppException('更新会员余额失败');
@@ -137,6 +141,7 @@ class BalanceService
      */
     private function rechargeSaleMath()
     {
+        \Log::debug('余额充值赠送开始',[]);
         $sale = $this->rechargeSale();
         $sale = array_values(array_sort($sale, function ($value) {
             return $value['enough'];
@@ -160,6 +165,7 @@ class BalanceService
                 break;
             }
         }
+        \Log::debug('余额充值赠送',['give'=>$result]);
         if ($result) {
             $result = array(
                 'member_id' => $this->data['member_id'],
