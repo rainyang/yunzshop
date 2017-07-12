@@ -125,7 +125,7 @@ class BalanceService
             if ($result === true) {
                 return $this->rechargeSaleMath();
             }
-            throw new AppException($result);
+            throw new AppException('更新会员余额失败');
         }
         throw new AppException('修改充值状态失败');
     }
