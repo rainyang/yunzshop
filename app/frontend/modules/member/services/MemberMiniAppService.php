@@ -46,7 +46,7 @@ class MemberMiniAppService extends MemberService
             ->withData($data)
             ->asJsonResponse(true)
             ->get();
-
+\Log::debug('----小程序解析-----', $res);
         $user_info = json_decode($res['content'], true);
 
         $data = '';  //json
