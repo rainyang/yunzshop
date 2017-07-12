@@ -43,7 +43,6 @@ class RefundService
             default:
                 break;
         }
-        event(new AfterOrderRefundedEvent($this->refundApply->order));
     }
     private function wechat()
     {

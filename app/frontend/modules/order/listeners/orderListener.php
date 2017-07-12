@@ -6,6 +6,7 @@ use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
+use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\events\order\AfterOrderSentEvent;
 use app\common\models\Order;
 use app\frontend\modules\order\services\MessageService;

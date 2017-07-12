@@ -267,10 +267,7 @@ class MemberModel extends Member
 
             $referrer_info = self::getUserInfos($member_info['yz_member']['parent_id'])->first();
 
-            if ($member_info['yz_member']['is_agent'] == 1
-                    && $member_info['yz_member']['status'] == 2
-                    && $member_info['yz_member']['inviter'] == 1) {
-
+            if ($member_info['yz_member']['inviter'] == 1) {
                 if (!empty($referrer_info)) {
                     $info = $referrer_info->toArray();
                     $data = [
