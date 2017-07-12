@@ -701,4 +701,17 @@ class MemberController extends ApiController
         return $destinationImg;
     }
 
+    public function memberInfo()
+    {
+        $member_id = \YunShop::request()->uid;
+
+        if (empty($member_id)) {
+            return $this->errorJson('会员不存在');
+        }
+
+        $member_info = MemberModel::getMemberById($member_id);
+
+        return $this->successJson('', $member_info);
+    }
+
 }
