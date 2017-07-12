@@ -54,6 +54,7 @@ class BalanceService
     }
 
     //0赠送固定金额，1赠送充值比例
+    
     public function proportionStatus()
     {
         return isset($this->_recharge_set['proportion_status']) ? $this->_recharge_set['proportion_status'] : '0';
