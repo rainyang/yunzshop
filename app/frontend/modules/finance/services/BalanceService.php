@@ -143,12 +143,11 @@ class BalanceService
         rsort($sale);
         $result = '';
 
-        //dd($sale);
         foreach ($sale as $key) {
             if (empty($key['enough']) || empty($key['give'])) {
                 continue;
             }
-            if ($this->data['change_value'] >= floatval($key['enough'])) {
+            if (bccomp($this->data['change_value'],$key['enough'],2) != -1) {
                 if ($this->proportionStatus()) {
                     $result = bcdiv(bcmul($this->data['change_value'],$key['give'],2),100,2);
                 } else {
