@@ -136,11 +136,14 @@ class BalanceService
      */
     private function rechargeSaleMath()
     {
+        file_put_contents(storage_path('logs/data.log'), print_r($this->data,1));
         $sale = $this->rechargeSale();
         $sale = array_values(array_sort($sale, function ($value) {
             return $value['enough'];
         }));
         rsort($sale);
+        file_put_contents(storage_path('logs/sale.log'), print_r($sale,1));
+        file_put_contents(storage_path('logs/proportion.log'), print_r($this->proportionStatus(),1));
         $result = '';
         foreach ($sale as $key) {
             if (empty($key['enough']) || empty($key['give'])) {
@@ -158,6 +161,7 @@ class BalanceService
                 break;
             }
         }
+        file_put_contents(storage_path('logs/result.log'), print_r($result,1));
         if ($result) {
             $result = array(
                 'member_id' => $this->data['member_id'],
