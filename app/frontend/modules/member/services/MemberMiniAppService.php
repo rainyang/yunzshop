@@ -9,10 +9,9 @@
 namespace app\frontend\modules\member\services;
 
 use app\common\services\Session;
-use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\member\models\MemberMiniAppModel;
-use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\MemberUniqueModel;
 
 class MemberMiniAppService extends MemberService
 {
@@ -61,7 +60,7 @@ class MemberMiniAppService extends MemberService
 
         if ($errCode == 0) {
             $json_user = json_decode($data, true);
-        } else {echo 1;
+        } else {
             return show_json(0,'登录认证失败');
         }
 
