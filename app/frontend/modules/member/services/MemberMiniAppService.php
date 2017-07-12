@@ -22,7 +22,7 @@ class MemberMiniAppService extends MemberService
 
     public function login()
     {
-        include dirname(__FILE__ ) . "/../vendor/wechat/wxBizDataCrypt.php";
+        include dirname(__FILE__ ) . "/../vendors/wechat/wxBizDataCrypt.php";
 
         $uniacid = \YunShop::app()->uniacid;
 
