@@ -129,6 +129,7 @@ class BalanceService
                 \Log::debug('余额充值成功',[]);
                 return $this->rechargeSaleMath();
             }
+            \Log::debug('余额充值结果',['give'=>$result]);
             throw new AppException('更新会员余额失败');
         }
         throw new AppException('修改充值状态失败');
@@ -177,6 +178,7 @@ class BalanceService
                 //todo 验证余额值
                 'change_value' => $result,
             );
+            \Log::debug('余额充值数据',['resutl'=>$result]);
             return (new BalanceChange())->award($result);
         }
         return true;
