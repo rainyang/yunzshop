@@ -10,6 +10,7 @@ namespace app\common\models;
 
 
 
+use app\common\scopes\UniacidScope;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberLevel extends BaseModel
@@ -19,6 +20,20 @@ class MemberLevel extends BaseModel
     public $table = 'yz_member_level';
 
     protected $guarded = [''];
+
+    /**
+     * 设置全局作用域 拼接 uniacid()
+     */
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('uniacid',new UniacidScope);
+    }
+
+    public function scopeRecords($query)
+    {
+        return $query->select('id','level','level_name');
+    }
 
     /**
      * 获取默认等级

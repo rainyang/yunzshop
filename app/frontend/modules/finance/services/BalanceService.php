@@ -20,6 +20,8 @@ class BalanceService
 
     private $_withdraw_set;
 
+    private $data;
+
     public function __construct()
     {
         $this->_recharge_set = Setting::get('finance.balance');
@@ -48,7 +50,13 @@ class BalanceService
     //余额充值优惠
     public function rechargeSale()
     {
-        return $this->rechargeSet() ? $this->_recharge_set['sale'] : '';
+        return $this->rechargeSet() ? $this->_recharge_set['sale'] : [];
+    }
+
+    //0赠送固定金额，1赠送充值比例
+    public function proportionStatus()
+    {
+        return $this->_recharge_set['proportion_status'] ? $this->_recharge_set['proportion_status'] : '0';
     }
 
     //余额转让设置
@@ -130,19 +138,20 @@ class BalanceService
     {
         $sale = $this->rechargeSale();
         $sale = array_values(array_sort($sale, function ($value) {
-
             return $value['enough'];
         }));
         rsort($sale);
+        $result = '';
         foreach ($sale as $key) {
             if (empty($key['enough']) || empty($key['give'])) {
                 continue;
             }
             if ($this->data['change_value'] >= floatval($key['enough'])) {
-                if (strexists($key['give'], '%')) {
-                    $result = round(floatval(str_replace('%', '', $key['give'])) / 100 * $this->data['change_money'], 2);
+                if ($this->proportionStatus()) {
+                    $result = bcdiv(bcmul($this->data['change_value'],$key['give'],2),100,2);
                 } else {
-                    $result = round(floatval($key['give']), 2);
+                    //$result = round(floatval($key['give']), 2);
+                    $result = bcmul($key['give'],1,2);
                 }
                 $enough = floatval($key['enough']);
                 $give = $key['give'];
