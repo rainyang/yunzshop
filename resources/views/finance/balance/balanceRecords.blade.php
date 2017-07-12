@@ -19,18 +19,18 @@
                     <input type="hidden" name="route" value="finance.balance-records.index" id="route" />
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2 ">
                         <div class="">
-                            <input type="text" placeholder="{{ trans('Yunshop\Love::change_records.search_member_id') }}" class="form-control"  name="search[member_id]" value="{{$search['member_id']}}"/>
+                            <input type="text" placeholder="会员ID" class="form-control"  name="search[member_id]" value="{{$search['member_id']}}"/>
                         </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                         <div class="">
-                            <input type="text" class="form-control"  name="search[realname]" value="{{$search['realname']}}" placeholder="{{ trans('Yunshop\Love::change_records.search_member') }}"/>
+                            <input type="text" class="form-control"  name="search[realname]" value="{{$search['realname']}}" placeholder="昵称／姓名／手机号"/>
                         </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                         <div class="">
                             <select name='search[member_level]' class='form-control'>
-                                <option value=''>{{ trans('Yunshop\Love::change_records.search_member_level') }}</option>
+                                <option value=''>会员等级</option>
 
                                 @foreach($memberLevels as $list)
                                     <option value='{{ $list['id'] }}' @if($search['member_level'] == $list['id']) selected @endif>{{ $list['level_name'] }}</option>
@@ -40,10 +40,9 @@
                         </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                        <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员等级</label>-->
                         <div class="">
                             <select name='search[member_group]' class='form-control'>
-                                <option value=''>{{ trans('Yunshop\Love::change_records.search_member_group') }}</option>
+                                <option value=''>会员分组</option>
                                 @foreach($memberGroups as $list)
                                     <option value='{{ $list['id'] }}' @if($search['member_group'] == $list['id']) selected @endif>{{ $list['group_name'] }}</option>
                                 @endforeach
@@ -51,10 +50,9 @@
                         </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                        <!--  <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员分组</label>-->
                         <div class="">
                             <select name='search[source]' class='form-control'>
-                                <option value=''>{{ trans('Yunshop\Love::change_records.search_source') }}</option>
+                                <option value=''>业务类型</option>
                                 @foreach($sourceName as $key => $value)
                                     <option value='{{ $key }}' @if($search['source'] == $key) selected @endif>{{ $value }}</option>
                                 @endforeach
@@ -62,12 +60,11 @@
                         </div>
                     </div>
                     <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                        <!--        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">黑名单</label>-->
                         <div class="">
                             <select name='search[type]' class='form-control'>
-                                <option value=''>{{ trans('Yunshop\Love::change_records.search_type') }}</option>
-                                <option value='1' @if($search['type']=='1') selected @endif>{{ trans('Yunshop\Love::change_records.search_type_income') }}</option>
-                                <option value='2' @if($search['type']=='2') selected @endif>{{ trans('Yunshop\Love::change_records.search_type_expend') }}</option>
+                                <option value=''>收入／支出</option>
+                                <option value='1' @if($search['type']=='1') selected @endif>收入</option>
+                                <option value='2' @if($search['type']=='2') selected @endif>支出</option>
                             </select>
                         </div>
                     </div>
@@ -83,8 +80,8 @@
                         <div class="time">
 
                             <select name='search[search_time]' class='form-control'>
-                                <option value='0' @if($search['search_time']=='0') selected @endif>{{ trans('Yunshop\Love::change_records.search_time_off') }}</option>
-                                <option value='1' @if($search['search_time']=='1') selected @endif>{{ trans('Yunshop\Love::change_records.search_time_on') }}</option>
+                                <option value='0' @if($search['search_time']=='0') selected @endif>不搜索时间</option>
+                                <option value='1' @if($search['search_time']=='1') selected @endif>搜索时间</option>
                             </select>
                         </div>
                         <div class="search-select">
@@ -99,9 +96,9 @@
 
                     <div class="form-group  col-xs-12 col-sm-7 col-lg-4">
                         <div class="">
-                            <button type="button" name="export" value="1" id="export" class="btn btn-default excel back ">{{ trans('Yunshop\Love::change_records.button.export') }}</button>
+                            <button type="button" name="export" value="1" id="export" class="btn btn-default excel back ">导出Excel</button>
                             <input type="hidden" name="token" value="{{$var['token']}}" />
-                            <button class="btn btn-success "><i class="fa fa-search"></i>{{ trans('Yunshop\Love::change_records.button.search') }}</button>
+                            <button class="btn btn-success "><i class="fa fa-search"></i>搜索</button>
 
                         </div>
                     </div>
@@ -109,52 +106,7 @@
                 </form>
             </div>
 
-            {{--<div class="panel-body">
-                <form action="" method="post" class="form-horizontal" role="form" id="form1">
-                    <div class="form-group">
-                        <div class="col-sm-8 col-lg-12 col-xs-12">
-                            <div class='input-group'>
-                                <div class='input-group-addon'>会员信息</div>
-                                <input class="form-control" name="search[realname]" type="text" value="{{ $search['realname'] or ''}}" placeholder="会员姓名／昵称／手机号">
-                                <div class='input-group-addon'>业务类型</div>
-                                <select name="search[service_type]" class="form-control">
-                                    <option value="" selected>不限</option>
-                                    @foreach($serviceType as $key => $value)
-                                        <option value="{{ $key }}" @if($search['service_type'] == $key) selected @endif>{{ $value }}</option>
-                                    @endforeach
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-xs-12 col-sm-6 col-lg-6 search-time">
-                        <div class="time-select" >
-                            <select name='search[searchtime]' class='form-control'>
-                                <option value='' @if(empty($search['searchtime'])) selected @endif>不搜索充值时间</option>
-                                <option value='1' @if($search['searchtime']==1) selected @endif >搜索充值时间</option>
-                            </select>
-                        </div>
-                        <div class="time-btn">
-                            {!! tpl_form_field_daterange(
-                                'search[time_range]',
-                                array(
-                                    'starttime'=>array_get($requestSearch,'time_range.start',0),
-                                    'endtime'=>array_get($requestSearch,'time_range.end',0),
-                                    'start'=>0,
-                                    'end'=>0
-                                ),
-                                true
-                            )!!}
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
-                        <div class="col-sm-7 col-lg-9 col-xs-12">
-                            <input type="submit" class="btn btn-default" value="搜索">
-                        </div>
-                    </div>
-                </form>
-            </div>--}}
+            
         </div>
         <div class="clearfix">
             <div class="panel panel-default">
