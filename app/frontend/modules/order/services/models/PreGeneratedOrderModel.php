@@ -40,9 +40,9 @@ class PreGeneratedOrderModel extends OrderModel
      */
     protected $orderDiscount;
 
-    public function setOrderGoodsModels(Collection $orderGoodsModels)
+    public function setOrderGoods(Collection $orderGoodsModels)
     {
-        $this->orderGoodsModels = $orderGoodsModels;
+        $this->orderGoods = $orderGoodsModels;
         $orderGoodsModels->each(function ($orderGoodsModel) {
             /**
              * @var OrderGoods $orderGoodsModel
@@ -71,7 +71,7 @@ class PreGeneratedOrderModel extends OrderModel
      */
     public function getOrderGoodsModels()
     {
-        return $this->orderGoodsModels;
+        return $this->orderGoods;
     }
 
     public function getOrder()
@@ -150,7 +150,7 @@ class PreGeneratedOrderModel extends OrderModel
             'deduction_price' => sprintf('%.2f', $this->getDeductionPrice()),
 
         );
-        foreach ($this->orderGoodsModels as $orderGoodsModel) {
+        foreach ($this->orderGoods as $orderGoodsModel) {
             $data['order_goods'][] = $orderGoodsModel->toArray();
         }
         return $data;
@@ -180,7 +180,7 @@ class PreGeneratedOrderModel extends OrderModel
     private function createOrderGoods()
     {
         $result = [];
-        foreach ($this->orderGoodsModels as $preOrderGoodsModel) {
+        foreach ($this->orderGoods as $preOrderGoodsModel) {
             /**
              * @var $preOrderGoodsModel PreGeneratedOrderGoodsModel
              */

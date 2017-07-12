@@ -20,7 +20,12 @@ class OrderGoods extends \app\common\models\OrderGoods
 
     public function scopeDetail($query)
     {
-        return $query->select(['id','order_id','goods_option_title','goods_id','goods_price','total','price','title','thumb','comment_status']);
+        return $query->select(['id', 'order_id', 'goods_option_title', 'goods_id', 'goods_price', 'total', 'price', 'title', 'thumb', 'comment_status']);
+    }
+
+    public function sale()
+    {
+        return $this->hasOne($this->getNearestModel('goods\Sale'),'goods_id','goods_id');
     }
 
     public function getButtonsAttribute()
