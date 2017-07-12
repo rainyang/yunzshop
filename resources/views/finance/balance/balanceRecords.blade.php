@@ -153,6 +153,7 @@
                 </div>
             </div>
         </div>
+    </div>
         <script language='javascript'>
             $(function () {
                 $('#export').click(function(){
