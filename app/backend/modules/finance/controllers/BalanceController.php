@@ -102,7 +102,7 @@ class BalanceController extends BaseController
 \
         return view('finance.balance.balanceRecords', [
             'pageList'      => $detailList,
-            'pager'         => $page,
+            'page'         => $page,
             'search'        => $search,
             'shopSet'       => Setting::get('shop.member'),
             'serviceType'   => \app\common\models\finance\Balance::$balanceComment
