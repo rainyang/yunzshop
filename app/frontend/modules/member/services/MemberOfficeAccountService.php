@@ -377,7 +377,7 @@ class MemberOfficeAccountService extends MemberService
         \Log::debug('nickname', [$nickname]);
         $nickname = preg_replace($patten, "", $nickname);
         \Log::debug('pre', [$nickname]);
-        $nickname = preg_replace("#\\\u([0-9a-f]+)#ie","iconv('UCS-2','UTF-8', pack('H4', '\\1'))",$nickname);
+        $nickname = preg_replace("#\\\u([0-9a-f]+)#ie","iconv('UCS-2BE','UTF-8', pack('H4', '\\1'))",$nickname);
         \Log::debug('post', [$nickname]);
         \Log::debug('json', [json_decode($this->cutNickname($nickname))]);
         return json_decode($this->cutNickname($nickname));
