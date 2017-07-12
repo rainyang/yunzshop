@@ -9,12 +9,11 @@
 namespace app\backend\modules\member\models;
 
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Validation\Rule;
 
 class MemberGroup extends \app\common\models\MemberGroup
 {
-    use SoftDeletes;
+
 
     public $guarded = [''];
 

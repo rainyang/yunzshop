@@ -10,9 +10,30 @@ namespace app\common\models;
 
 
 
+use app\common\scopes\UniacidScope;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+
 class MemberGroup extends BaseModel
 {
+    use SoftDeletes;
+
     protected $table = 'yz_member_group';
+
+
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('uniacid',new UniacidScope);
+    }
+
+    public function scopeRecords($query)
+    {
+        return $query->select('id','group_name');
+    }
+
+
+
     /**
      * Get member group information by groupId
      *

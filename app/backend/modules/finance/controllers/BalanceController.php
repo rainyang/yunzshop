@@ -99,9 +99,10 @@ class BalanceController extends BaseController
 
         $page = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
-        return view('finance.balance.detail', [
-            'detailList'    => $detailList,
-            'page'         => $page,
+\
+        return view('finance.balance.balanceRecords', [
+            'pageList'      => $detailList,
+            'pager'         => $page,
             'search'        => $search,
             'shopSet'       => Setting::get('shop.member'),
             'serviceType'   => \app\common\models\finance\Balance::$balanceComment

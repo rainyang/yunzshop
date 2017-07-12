@@ -16,6 +16,8 @@ class AddDataImsYzMenu extends Migration
     {
         if (\Schema::hasTable('yz_menu')) {
 
+            $_menu = Menu::where('url','finance.balance.balanceDetail')->update(['url'=>'finance.balance-records.index']);
+
             $_menu = Menu::select('id')->where('item', 'goods.goods')->first();
 
             if ($_menu->id) {
