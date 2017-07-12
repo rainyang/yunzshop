@@ -80,11 +80,7 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    /**
-     * 余额明细记录[完成]
-     *
-     * @return string
-     * @Author yitian */
+    // todo 方法废弃，可以删除，已经转移到 BalanceRecordsController.php
     public function balanceDetail()
     {
 

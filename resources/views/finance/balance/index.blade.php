@@ -63,7 +63,7 @@
                                         <input type="text" class="form-control" name='balance[enough][]' value='{{ $list['enough'] or '' }}'/>
                                         <span class="input-group-addon">赠送</span>
                                         <input type="text" class="form-control" name='balance[give][]' value='{{ $list['give'] or '' }}'/>
-                                        <span class="input-group-addon unit">@if(empty($balance["proportion_status"]))) 元 @else % @endif</span>
+                                        <span class="input-group-addon unit">@if(empty($balance["proportion_status"])) 元 @else % @endif</span>
                                         <div class='input-group-btn'>
                                             <button class='btn btn-danger' type='button'
                                                     onclick="removeRechargeItem(this)"><i class='fa fa-remove'></i>

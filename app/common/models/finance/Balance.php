@@ -145,7 +145,7 @@ class Balance extends BaseModel
             $query->ofType($search['type']);
         }
         if ($search['order_sn']) {
-            $query->ofOrderSn($search['order_sn']);
+            $query->where('serial_number', 'like', $search['order_sn'] . '%');
         }
         if ($search['search_time']) {
             $query->whereBetween('created_at', [strtotime($search['time']['start']), strtotime($search['time']['end'])]);
