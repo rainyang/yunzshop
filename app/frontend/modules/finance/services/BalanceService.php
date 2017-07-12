@@ -56,7 +56,7 @@ class BalanceService
     //0赠送固定金额，1赠送充值比例
     public function proportionStatus()
     {
-        return $this->_recharge_set['proportion_status'] ? $this->_recharge_set['proportion_status'] : '0';
+        return isset($this->_recharge_set['proportion_status']) ? $this->_recharge_set['proportion_status'] : '0';
     }
 
     //余额转让设置
@@ -136,20 +136,18 @@ class BalanceService
      */
     private function rechargeSaleMath()
     {
-        file_put_contents(storage_path('logs/data.log'), print_r($this->data,1));
         $sale = $this->rechargeSale();
         $sale = array_values(array_sort($sale, function ($value) {
             return $value['enough'];
         }));
         rsort($sale);
-        file_put_contents(storage_path('logs/sale.log'), print_r($sale,1));
-        file_put_contents(storage_path('logs/proportion.log'), print_r($this->proportionStatus(),1));
         $result = '';
+
         foreach ($sale as $key) {
             if (empty($key['enough']) || empty($key['give'])) {
                 continue;
             }
-            if ($this->data['change_value'] >= floatval($key['enough'])) {
+            if (bccomp($this->data['change_value'],$key['enough'],2) != -1) {
                 if ($this->proportionStatus()) {
                     $result = bcdiv(bcmul($this->data['change_value'],$key['give'],2),100,2);
                 } else {
@@ -161,7 +159,6 @@ class BalanceService
                 break;
             }
         }
-        file_put_contents(storage_path('logs/result.log'), print_r($result,1));
         if ($result) {
             $result = array(
                 'member_id' => $this->data['member_id'],
