@@ -25,14 +25,14 @@ class MemberMiniAppService extends MemberService
     {
         include dirname(__FILE__ ) . "/../vendor/wechat/wxBizDataCrypt.php";
 
-        $uniacid = \YunApp::app()->uniacid;
+        $uniacid = \YunShop::app()->uniacid;
 
         if (config('app.debug')) {
             $appid = 'wx31002d5db09a6719';
             $secret = '217ceb372d5e3296f064593fe2e7c01e';
         }
 
-        $para = \YunApp::request();
+        $para = \YunShop::request();
 
         $data = array(
             'appid' => $appid,
@@ -42,7 +42,11 @@ class MemberMiniAppService extends MemberService
         );
 
         $url = 'https://api.weixin.qq.com/sns/jscode2session';
-        $res = @ihttp_request($url, $data);
+
+        $res = \Curl::to($url)
+            ->withData($data)
+            ->asJsonResponse(true)
+            ->get();
 
         $user_info = json_decode($res['content'], true);
 
@@ -57,7 +61,7 @@ class MemberMiniAppService extends MemberService
 
         if ($errCode == 0) {
             $json_user = json_decode($data, true);
-        } else {
+        } else {echo 1;
             return show_json(0,'登录认证失败');
         }
 
