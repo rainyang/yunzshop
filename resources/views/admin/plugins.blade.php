@@ -13,6 +13,9 @@
             <a href="{{yzWebUrl('plugin.plugins-market.Controllers.market.show')}}" class="btn btn-success" style="font-size: 13px;float: right">插件安装/升级</a>
         </section>
 
+        <div style="color:#ff2620">
+            （更新插件后，请在插件管理页面，将已更新了的插件禁用后再启用）
+        </div>
         <div class='panel panel-default'>
             <div class='panel-body'>
                 <table class="table">
