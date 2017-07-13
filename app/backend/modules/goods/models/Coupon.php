@@ -29,7 +29,6 @@ class Coupon extends GoodsCoupon
             return $coupnModel->delete();
         }
         $data['goods_id'] = $goodsId;
-        $data['point'] = trim($data['point']);
         $coupnModel->setRawAttributes($data);
         return $coupnModel->save();
     }

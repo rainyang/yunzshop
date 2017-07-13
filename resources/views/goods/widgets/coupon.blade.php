@@ -1,7 +1,22 @@
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启</label>
+    <div class="col-sm-6 col-xs-6">
+        <div class='input-group'>
+            <label class="radio-inline">
+                <input type="radio" name="widgets[coupon][is_coupon]" value="0"
+                       @if($item['is_coupon'] == '0') checked @endif /> 关闭
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="widgets[coupon][is_coupon]" value="1"
+                       @if($item['is_coupon'] == '1') checked @endif /> 开启
+            </label>
+        </div>
+    </div>
+</div>
 <div class="form-group coupon">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">购买商品赠送优惠券</label>
     <div class="col-sm-9 col-md-10">
-        <input type='hidden' id='coupon_id' name='widgets[coupon][coupon_id]' value="{{ $item->coupon_id }}"/>
+        <input type='hidden' id='coupon_id' name='widgets[coupon][coupon_id]' value="{{ $item['coupon_id'] }}"/>
         <div class='input-group'>
             <input type="text" name="coupon" maxlength="30"
                    value="@if (!empty($coupon)) {{ $coupon->name }}  @endif"
@@ -18,7 +33,7 @@
         <span class="help-block">单品下单赠送指定优惠券</span>
 
         <div id="modal-module-menus-coupon" class="modal fade" tabindex="-1">
-            <div class="modal-dialog" >
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
@@ -29,10 +44,11 @@
                                 <input type="text" class="form-control" name="keyword" value="" id="search-kwd-coupon"
                                        placeholder="请输入优惠券名称"/>
                                 <span class='input-group-btn'><button type="button" class="btn btn-default"
-                                                                      onclick="search_coupons();">搜索</button></span>
+                                                                      onclick="search_coupons();">搜索
+                                    </button></span>
                             </div>
                         </div>
-                        <div id="module-menus-coupon" ></div>
+                        <div id="module-menus-coupon"></div>
                     </div>
                     <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal"
                                                  aria-hidden="true">关闭</a></div>
@@ -47,7 +63,7 @@
     <div class="col-sm-6 col-xs-6">
         <div class='input-group'>
             <label class="radio-inline">
-                <input type="radio" name="widgets[coupon][send_times]" value="0" checked="checked" />
+                <input type="radio" name="widgets[coupon][send_times]" value="0" checked="checked"/>
                 <span>每月</span>
                 <span>默认每月1号 0:00</span>
             </label>
@@ -60,12 +76,11 @@
         <div class='input-group'>
             <div class='input-group-addon'>连续发放</div>
             <input type='text' name='widgets[coupon][send_num]' class="form-control"
-                   value="{{$set['delayed']}}"/>
+                   value="{{$item['send_num']}}"/>
             <div class='input-group-addon'>月</div>
         </div>
     </div>
 </div>
-
 
 
 <script language='javascript'>

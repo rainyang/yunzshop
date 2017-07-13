@@ -22,6 +22,14 @@ class CouponWidget extends Widget
 
         $coupon = Coupon::getCouponById($couponModel->coupon_id);
 
+        if(!$couponModel){
+            $couponModel = [
+                'is_coupon' => 0,
+                'coupon_id' => 0,
+                'send_times' => 0,
+                'send_num' => 0,
+            ];
+        }
         return view('goods.widgets.coupon', [
             'item' => $couponModel,
             'coupon' => $coupon,
