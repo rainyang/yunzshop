@@ -15,6 +15,7 @@ use app\common\models\Member;
 use app\common\services\JsonRpc;
 use app\common\services\MessageService;
 use app\common\services\WechatPay;
+use app\frontend\modules\finance\services\BalanceRechargeResultService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
@@ -22,8 +23,9 @@ class TestController extends BaseController
 {
     public function index()
     {
+        $result = (new BalanceRechargeResultService())->payResult(['order_sn'=>'RV20170415093601487652']);
 
-        $result = (new JsonRpc())->client('plus',['user'=>'1','pass'=>2]);
+        //$result = (new JsonRpc())->client('plus',['user'=>'1','pass'=>2]);
         dd($result);
     }
 
