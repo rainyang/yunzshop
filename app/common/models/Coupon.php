@@ -110,11 +110,6 @@ class  Coupon extends BaseModel
             ->where('id', '=', $couponId)
             ->value('category_ids');
     }
-
-    public static function getCouponList()
-    {
-        return self::uniacid()
-            ->where('status','1');
-    }
+    
 
 }
