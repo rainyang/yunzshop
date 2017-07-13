@@ -51,9 +51,9 @@ class CouponExpireNotice
             if ($memberCoupon->time_end == '不限时间') {
                 continue;
             }
-            $present = strtotime(date('Y-m-d H:i:s', time() + $this->set['delayed'] * 86400));
-            $end = strtotime(date('Y-m-d H:i:s', strtotime($memberCoupon->time_end)));
-            if ($present < $end && strtotime($memberCoupon->time_end) < time()) {
+            $present = time();
+            $end = strtotime(date('Y-m-d H:i:s', strtotime($memberCoupon->time_end) - $this->set['delayed'] * 86400));
+            if ($present < $end || strtotime($memberCoupon->time_end) < $present) {
                 continue;
             }
             $member = Member::getMemberByUid($memberCoupon->uid)->with('hasOneFans')->first();
@@ -106,7 +106,7 @@ class CouponExpireNotice
     public function subscribe()
     {
         \Event::listen('cron.collectJobs', function () {
-            \Cron::add('Coupon-expire-notice', '*/10 * * * * *', function () {
+            \Cron::add('Coupon-expire-notice', '*/1 * * * * *', function () {
                 $this->handle();
                 return;
             });
