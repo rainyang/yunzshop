@@ -17,7 +17,7 @@ class BalanceRecharge extends Recharge
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('member_id',new MemberIdScope);
+        static::addGlobalScope('member_id',new MemberIdScope());
     }
 
 
