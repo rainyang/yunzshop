@@ -20,8 +20,6 @@ class BalanceService
 
     private $_withdraw_set;
 
-    private $data;
-
     public function __construct()
     {
         $this->_recharge_set = Setting::get('finance.balance');
@@ -96,84 +94,5 @@ class BalanceService
         return $this->_withdraw_set['alipay'] ? true : false;
     }
 
-    /**
-     * 余额充值回调，支付成功回调方法
-     *
-     *
-     * @param array $data
-     * @return bool|string
-     * @throws AppException
-     */
-    public function payResult($data = [])
-    {
-        $rechargeMode = BalanceRecharge::getRechargeRecordByOrdersn($data['order_sn']);
-        if (!$rechargeMode) {
-            throw new AppException('充值失败');
-        }
-        $rechargeMode->status = BalanceRecharge::PAY_STATUS_SUCCESS;
-        if ($rechargeMode->save()) {
-            $this->data = array(
-                'member_id'     => $rechargeMode->member_id,
-                'remark'        => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
-                'source'        => ConstService::SOURCE_RECHARGE,
-                'relation'      => $rechargeMode->ordersn,
-                'operator'      => ConstService::OPERATOR_MEMBER,
-                'operator_id'   => $rechargeMode->member_id,
-                'change_value'  => $rechargeMode->money,
-            );
-            $result = (new BalanceChange())->recharge($this->data);
-            if ($result === true) {
-                return $this->rechargeSaleMath();
-            }
-            throw new AppException('更新会员余额失败');
-        }
-        throw new AppException('修改充值状态失败');
-    }
-
-    /**
-     * 余额满额送计算，充值赠送
-     *
-     * @return bool|string
-     */
-    private function rechargeSaleMath()
-    {
-        $sale = $this->rechargeSale();
-        $sale = array_values(array_sort($sale, function ($value) {
-            return $value['enough'];
-        }));
-        rsort($sale);
-        $result = '';
-
-        foreach ($sale as $key) {
-            if (empty($key['enough']) || empty($key['give'])) {
-                continue;
-            }
-            if (bccomp($this->data['change_value'],$key['enough'],2) != -1) {
-                if ($this->proportionStatus()) {
-                    $result = bcdiv(bcmul($this->data['change_value'],$key['give'],2),100,2);
-                } else {
-                    //$result = round(floatval($key['give']), 2);
-                    $result = bcmul($key['give'],1,2);
-                }
-                $enough = floatval($key['enough']);
-                $give = $key['give'];
-                break;
-            }
-        }
-        if ($result) {
-            $result = array(
-                'member_id' => $this->data['member_id'],
-                'remark' => '充值满赠送' . $result . '(充值金额:' . $this->data['change_value'] . '元)',
-                'source' => ConstService::SOURCE_AWARD,
-                'relation' => $this->data['order_sn'],
-                'operator' => ConstService::OPERATOR_MEMBER,
-                'operator_id' => $this->data['member_id'],
-                //todo 验证余额值
-                'change_value' => $result,
-            );
-            return (new BalanceChange())->award($result);
-        }
-        return true;
-    }
 
 }

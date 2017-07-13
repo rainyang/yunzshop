@@ -9,9 +9,18 @@
 namespace app\frontend\modules\finance\models;
 
 use \app\common\models\finance\BalanceRecharge as Recharge;
+use app\common\scopes\MemberIdScope;
 
 class BalanceRecharge extends Recharge
 {
+    //设置全局作用域
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('member_id',new MemberIdScope);
+    }
+
+
 
     /**
      * 定义字段名
