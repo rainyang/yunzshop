@@ -60,9 +60,10 @@ class BalanceRechargeResultService
      */
     private function updateRechargeStatus()
     {
-        $this->getRechargeModel();
-        $this->rechargeModel->status = ConstService::STATUS_SUCCESS;
-        return $this->rechargeModel->save();
+        $rechargeModel = $this->getRechargeModel();
+        //dd($rechargeModel);
+        $rechargeModel->status = ConstService::STATUS_SUCCESS;
+        return $rechargeModel->save();
     }
 
     /**
@@ -121,6 +122,7 @@ class BalanceRechargeResultService
         $sale = $this->getRechargeSale();
         $money = $this->rechargeModel->money;
 
+        rsort($sale);
         $result = '';
         foreach ($sale as $key) {
             if (empty($key['enough']) || empty($key['give'])) {
@@ -151,7 +153,7 @@ class BalanceRechargeResultService
         $sale = array_values(array_sort($sale, function ($value) {
             return $value['enough'];
         }));
-        return rsort($sale);
+        return $sale;
     }
 
     /**
