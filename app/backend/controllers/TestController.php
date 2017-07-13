@@ -23,6 +23,15 @@ class TestController extends BaseController
 {
     public function index()
     {
+        $test = 123;
+        $a = 'a';
+
+        if (is_string($a) && ! is_null($test)) {
+            dd(1);
+        } else {
+            dd(2);
+        }
+
         $result = (new BalanceRechargeResultService())->payResult(['order_sn'=>'RV20170415093601487652']);
 
         //$result = (new JsonRpc())->client('plus',['user'=>'1','pass'=>2]);
