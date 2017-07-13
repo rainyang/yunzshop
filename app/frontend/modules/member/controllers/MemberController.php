@@ -459,8 +459,9 @@ class MemberController extends ApiController
     }
 
     /**
-     * 微信JSSDKConfig
-     *
+     * @name 微信JSSDKConfig
+     * @author
+     * @param int $goods_id
      * @return \Illuminate\Http\JsonResponse
      */
     public function wxJsSdkConfig()
@@ -504,6 +505,15 @@ class MemberController extends ApiController
 
         $shop = \Setting::get('shop');
         $shop['logo'] = replace_yunshop(tomedia($shop['logo']));
+
+        if (!is_null(\Config('customer_service'))) {
+            $class = array_get(\Config('customer_service'),'class');
+            $function = array_get(\Config('customer_service'),'function');
+            $ret = $class::$function(request()->goods_id);
+            if ($ret) {
+                $shop['cservice'] = $ret;
+            }
+        }
 
         $data = [
             'config' => $config,
