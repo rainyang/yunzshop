@@ -1,5 +1,5 @@
 <?php
-namespace app\frontend\modules\shop\listeners;
+namespace app\frontend\modules\coupon\listeners;
 
 use app\common\facades\Setting;
 use app\common\models\Coupon;

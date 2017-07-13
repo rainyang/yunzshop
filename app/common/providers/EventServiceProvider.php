@@ -16,7 +16,7 @@ use app\frontend\modules\finance\listeners\Order;
 use app\frontend\modules\goods\listeners\GoodsStock;
 use app\frontend\modules\member\listeners\level\LevelListener;
 use app\frontend\modules\order\listeners\orderListener;
-use app\frontend\modules\shop\listeners\CouponExpireNotice;
+use app\frontend\modules\coupon\listeners\CouponExpireNotice;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
