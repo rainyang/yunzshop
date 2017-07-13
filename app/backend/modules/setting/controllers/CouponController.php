@@ -11,7 +11,6 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
-use app\frontend\modules\coupon\listeners\CouponExpireNotice;
 
 class CouponController extends BaseController
 {
