@@ -37,10 +37,10 @@ class CouponExpireNotice
     public function sendExpireNotice()
     {
         if ($this->set['every_day'] != date('H')) {
-            return;
+            //return;
         }
         if ($this->setLog['current_d'] == date('d')) {
-            return;
+            //return;
         }
         $this->setLog['current_d'] = date('d');
         Setting::set('shop.coupon_log', $this->setLog);

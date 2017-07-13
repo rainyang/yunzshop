@@ -11,11 +11,14 @@ namespace app\backend\modules\setting\controllers;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
+use app\frontend\modules\coupon\listeners\CouponExpireNotice;
 
 class CouponController extends BaseController
 {
     public function index()
     {
+        (new CouponExpireNotice)->handle();
+        echo "<pre>"; print_r('-----');exit;
         $coupon = Setting::get('shop.coupon');
         $requestModel = \YunShop::request()->coupon;
         if ($requestModel) {
