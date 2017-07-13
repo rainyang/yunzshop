@@ -2,23 +2,18 @@
 /**
  * Created by PhpStorm.
  * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/3/6
- * Time: 上午11:45
+ * Date: 2017/7/13
+ * Time: 上午16:45
  */
 
 namespace app\backend\modules\goods\models;
 
 
-class Sale extends \app\common\models\Sale
+use app\common\models\goods\GoodsCoupon;
+
+class Coupon extends GoodsCoupon
 {
     public $timestamps = false;
-
-    public static function getList($goodsId)
-    {
-        return self::where('goods_id', $goodsId)
-            ->first();
-    }
-
 
     public static function relationSave($goodsId, $data, $operate)
     {
@@ -28,15 +23,15 @@ class Sale extends \app\common\models\Sale
         if (!$data) {
             return false;
         }
-        $saleModel = self::getModel($goodsId, $operate);
+        $coupnModel = self::getModel($goodsId, $operate);
         //判断deleted
         if ($operate == 'deleted') {
-            return $saleModel->delete();
+            return $coupnModel->delete();
         }
         $data['goods_id'] = $goodsId;
         $data['point'] = trim($data['point']);
-        $saleModel->setRawAttributes($data);
-        return $saleModel->save();
+        $coupnModel->setRawAttributes($data);
+        return $coupnModel->save();
     }
 
     public static function getModel($goodsId, $operate)
