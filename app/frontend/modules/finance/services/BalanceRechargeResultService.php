@@ -62,8 +62,11 @@ class BalanceRechargeResultService
     {
         $this->rechargeModel = BalanceRecharge::withoutGlobalScope('member_id')->ofOrderSn($this->array['order_sn'])->first();
 
-        $this->rechargeModel->status = ConstService::STATUS_SUCCESS;
-        return $this->rechargeModel->save();
+        if ($this->rechargeModel) {
+            $this->rechargeModel->status = ConstService::STATUS_SUCCESS;
+            return $this->rechargeModel->save();
+        }
+        return false;
     }
 
     /**
