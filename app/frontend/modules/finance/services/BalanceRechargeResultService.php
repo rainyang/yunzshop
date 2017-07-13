@@ -42,14 +42,17 @@ class BalanceRechargeResultService
         $result = $this->updateRechargeStatus();
         if ($result !== true) {
             Log::debug('余额充值：订单号'. $array['order_sn']."修改充值状态失败");
+            return true;
         }
         $result = $this->updateMemberBalance();
         if ($result !== true) {
             Log::debug('余额充值：订单号'. $array['order_sn']."修改会员余额失败");
+            return true;
         }
         $result = $this->rechargeEnoughGive();
         if ($result !== true) {
             Log::debug('余额充值：订单号'. $array['order_sn']."充值满奖失败");
+            return true;
         }
         return true;
     }
