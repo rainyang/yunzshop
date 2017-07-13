@@ -22,7 +22,6 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
     public $coupons;
 
 
-
     public function getGoodsId()
     {
         return $this->goods->id;
@@ -150,6 +149,11 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
     {
         return $this->getCouponPrice();
 
+    }
+
+    public function getFullPriceReductions()
+    {
+        return $this->sale->getFullPriceReductions($this->getFinalPrice());
     }
 
     public function getFinalPrice()

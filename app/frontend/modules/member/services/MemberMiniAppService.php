@@ -8,10 +8,10 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\MemberService;
+use app\common\services\Session;
 use app\frontend\modules\member\models\MemberMiniAppModel;
-use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\MemberUniqueModel;
 
 class MemberMiniAppService extends MemberService
 {
@@ -22,19 +22,16 @@ class MemberMiniAppService extends MemberService
 
     public function login()
     {
-        include "./addons/sz_yi/core/inc/plugin/vendor/wechat/wxBizDataCrypt.php";
-        include "./framework/model/mc.mod.php";
+        include dirname(__FILE__ ) . "/../vendors/wechat/wxBizDataCrypt.php";
 
-        $uniacid = \YunApp::app()->uniacid;
+        $uniacid = \YunShop::app()->uniacid;
 
-        $setdata = pdo_fetch("select * from " . tablename('sz_yi_wxapp') . ' where uniacid=:uniacid limit 1', array(
-            ':uniacid' => $uniacid
-        ));
+        if (config('app.debug')) {
+            $appid = 'wx31002d5db09a6719';
+            $secret = '217ceb372d5e3296f064593fe2e7c01e';
+        }
 
-        $appid = $setdata['appid'];
-        $secret = $setdata['secret'];
-
-        $para = \YunApp::request();
+        $para = \YunShop::request();
 
         $data = array(
             'appid' => $appid,
@@ -44,8 +41,12 @@ class MemberMiniAppService extends MemberService
         );
 
         $url = 'https://api.weixin.qq.com/sns/jscode2session';
-        $res = @ihttp_request($url, $data);
 
+        $res = \Curl::to($url)
+            ->withData($data)
+            ->asJsonResponse(true)
+            ->get();
+\Log::debug('----小程序解析-----', $res);
         $user_info = json_decode($res['content'], true);
 
         $data = '';  //json
@@ -60,7 +61,7 @@ class MemberMiniAppService extends MemberService
         if ($errCode == 0) {
             $json_user = json_decode($data, true);
         } else {
-            $this->returnError('登录认证失败');
+            return show_json(0,'登录认证失败');
         }
 
         if (!empty($json_user) && !empty($json_user['unionid'])) {
@@ -129,6 +130,8 @@ class MemberMiniAppService extends MemberService
                 ));
             }
 
+            Session::set('member_id', $member_id);
+
             $random = $this->wx_app_session($user_info);
 
             $result = array('session' => $random, 'wx_token' =>session_id(), 'uid' => $member_id);
@@ -148,7 +151,7 @@ class MemberMiniAppService extends MemberService
     function wx_app_session($user_info)
     {
         if (empty($user_info['session_key']) || empty($user_info['openid'])) {
-            $this->returnError('登录认证失败！');
+            return show_json(0,'登录认证失败！');
         }
 
         $random = md5(uniqid(mt_rand()));

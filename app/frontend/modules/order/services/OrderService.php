@@ -145,7 +145,7 @@ class OrderService
         $order = static::createOrderModel(['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
 
         event(new OnPreGenerateOrderCreatingEvent($order));
-        $order->setOrderGoodsModels($orderGoodsArr);
+        $order->setOrderGoods($orderGoodsArr);
         return $order;
     }
 

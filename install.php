@@ -786,7 +786,10 @@ CREATE TABLE ". tablename('yz_member')." (
   `child_time` int(11) DEFAULT '0',
   `agent_time` int(11) DEFAULT '0',
   `apply_time` int(11) DEFAULT '0',
-  `relaton` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `relation` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '',
+  `created_at` int(11) NOT NULL,
+  `updated_at` int(11) NOT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
   KEY `idx_member_id` (`member_id`),
   KEY `idx_uniacid` (`uniacid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

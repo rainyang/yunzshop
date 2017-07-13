@@ -19,9 +19,9 @@ abstract class OrderModel extends Order
     /**
      * @var Collection 未插入数据库的订单商品数组
      */
-    protected $orderGoodsModels = [];
+    protected $orderGoods = [];
 
-    abstract public function setOrderGoodsModels(Collection $orderGoodsModels);
+    abstract public function setOrderGoods(Collection $orderGoods);
 
     /**
      * 统计商品总数
@@ -31,7 +31,7 @@ abstract class OrderModel extends Order
     {
         //累加所有商品数量
         $result = 0;
-        foreach ($this->orderGoodsModels as $orderGoodsModel) {
+        foreach ($this->orderGoods as $orderGoodsModel) {
             $result += $orderGoodsModel->getTotal();
         }
         return $result;
@@ -60,11 +60,11 @@ abstract class OrderModel extends Order
     protected function getFinalPrice()
     {
         $result = 0;
-        foreach ($this->orderGoodsModels as $OrderGoodsModel) {
+        foreach ($this->orderGoods as $aOrderGoods) {
             /**
-             * @var $OrderGoodsModel PreGeneratedOrderGoodsModel
+             * @var $aOrderGoods PreGeneratedOrderGoodsModel
              */
-            $result += $OrderGoodsModel->getFinalPrice();
+            $result += $aOrderGoods->getFinalPrice() - $aOrderGoods->getFullPriceReductions();
         }
         return $result;
     }
@@ -76,7 +76,7 @@ abstract class OrderModel extends Order
     protected function getOrderGoodsPrice()
     {
         $result = 0;
-        foreach ($this->orderGoodsModels as $OrderGoodsModel) {
+        foreach ($this->orderGoods as $OrderGoodsModel) {
             $result += $OrderGoodsModel->getPrice();
         }
         return $result;

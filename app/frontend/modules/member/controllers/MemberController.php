@@ -469,9 +469,19 @@ class MemberController extends ApiController
         $url = \YunShop::request()->url;
         $pay = \Setting::get('shop.pay');
 
+        if (!empty($pay['weixin_appid']) && !empty($pay['weixin_secret'])) {
+            $app_id  = $pay['weixin_appid'];
+            $secret  = $pay['weixin_secret'];
+        } else {
+            $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
+            $app_id  = $account->key;
+            $secret  = $account->secret;
+        }
+
         $options = [
-            'app_id'  => $pay['weixin_appid'],
-            'secret'  => $pay['weixin_secret']
+            'app_id'  => $app_id,
+            'secret'  => $secret
         ];
 
         $app = new Application($options);
@@ -699,6 +709,19 @@ class MemberController extends ApiController
         $black = imagecolorallocate($destinationImg, 0, 0, 0);
         imagettftext($destinationImg, $data['size'], 0, $data['left'], $data['top'], $black, $font, $text);
         return $destinationImg;
+    }
+
+    public function memberInfo()
+    {
+        $member_id = \YunShop::request()->uid;
+
+        if (empty($member_id)) {
+            return $this->errorJson('会员不存在');
+        }
+
+        $member_info = MemberModel::getMemberById($member_id);
+
+        return $this->successJson('', $member_info);
     }
 
 }

@@ -14,6 +14,30 @@ use app\frontend\models\OrderGoods;
 class Sale extends \app\common\models\Sale
 {
     /**
+     * 计算满额减
+     * @param $goods_price
+     * @return mixed
+     */
+    public function getFullPriceReductions($goods_price)
+    {
+        if ($goods_price < $this->ed_full) {
+            // 未满额
+            return 0;
+        }
+
+        if ($this->ed_reduction < 0 ) {
+            // 减额非正数时,记录异常
+            \Log::error('商品计算满减价格时,减额数据非正数', [$this->id, $this->ed_full, $this->ed_reduction]);
+            return 0;
+        }
+        if (!($this->ed_reduction < $goods_price)) {
+            // 减额大于商品价格时,记录异常
+            \Log::error('商品计算满减价格时,减额大于商品价格', [$this->id, $this->ed_full, $this->ed_reduction]);
+        }
+        return min($this->ed_reduction, $goods_price);
+    }
+
+    /**
      * 是否包邮
      * @param OrderGoods $orderGoods
      * @return bool

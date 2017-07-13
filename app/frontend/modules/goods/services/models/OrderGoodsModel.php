@@ -19,9 +19,8 @@ abstract class OrderGoodsModel extends OrderGoods
      */
     public function getPrice()
     {
-        //成交价格=商品销售价-优惠价格
-
-        $result = max($this->getFinalPrice() - $this->getDiscountPrice(),0);
+        //成交价格=商品销售价-单品满减-优惠价格
+        $result = max($this->getFinalPrice() - $this->getFullPriceReductions() - $this->getDiscountPrice(),0);
         return $result;
     }
 
@@ -35,5 +34,11 @@ abstract class OrderGoodsModel extends OrderGoods
      * @return number
      */
     abstract protected function getDiscountPrice();
+
+    /**
+     * 计算单品满减价格
+     * @return mixed
+     */
+    abstract protected function getFullPriceReductions();
     abstract public function getGoodsId();
 }
