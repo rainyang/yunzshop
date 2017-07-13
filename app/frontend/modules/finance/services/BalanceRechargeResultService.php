@@ -60,19 +60,10 @@ class BalanceRechargeResultService
      */
     private function updateRechargeStatus()
     {
-        $rechargeModel = $this->getRechargeModel();
-        //dd($rechargeModel);
-        $rechargeModel->status = ConstService::STATUS_SUCCESS;
-        return $rechargeModel->save();
-    }
+        $this->rechargeModel = BalanceRecharge::ofOrderSn($this->array['order_sn'])->first();
 
-    /**
-     * 获取充值记录 model
-     * @return mixed
-     */
-    private function getRechargeModel()
-    {
-        return $this->rechargeModel = BalanceRecharge::ofOrderSn($this->array['order_sn'])->first();
+        $this->rechargeModel->status = ConstService::STATUS_SUCCESS;
+        return $this->rechargeModel->save();
     }
 
     /**
