@@ -60,9 +60,9 @@ class BalanceRechargeResultService
      */
     private function updateRechargeStatus()
     {
-        $rechargeModel = $this->getRechargeModel();
-        $rechargeModel->status = ConstService::STATUS_SUCCESS;
-        return $rechargeModel->save();
+        $this->getRechargeModel();
+        $this->rechargeModel->status = ConstService::STATUS_SUCCESS;
+        return $this->rechargeModel->save();
     }
 
     /**
