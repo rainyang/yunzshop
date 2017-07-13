@@ -29,8 +29,6 @@ class CouponExpireNotice
             $this->uniacid = $u->uniacid;
             $this->set = Setting::get('shop.coupon');
             $this->setLog = Setting::get('shop.coupon_log');
-            echo "<pre>"; print_r('uniacid:--');
-            echo $u->uniacid;
             $this->sendExpireNotice();
 
         }
@@ -50,16 +48,12 @@ class CouponExpireNotice
         $memberCoupons = MemberCoupon::getExpireCoupon($this->set)->get();
 
         foreach ($memberCoupons as $memberCoupon) {
-            echo "<pre>"; print_r("COUPONID: ");
-            echo "<pre>"; print_r($memberCoupon->id);
             if ($memberCoupon->time_end == '不限时间') {
-                echo "<pre>"; print_r('不限时间');
                 continue;
             }
             $present = strtotime(date('Y-m-d H:i:s', time() + $this->set['delayed'] * 86400));
             $end = strtotime(date('Y-m-d H:i:s', strtotime($memberCoupon->time_end)));
             if ($present < $end && strtotime($memberCoupon->time_end) < time()) {
-                echo "<pre>"; print_r('不在发送时间');
                 continue;
             }
             $member = Member::getMemberByUid($memberCoupon->uid)->with('hasOneFans')->first();
@@ -74,9 +68,6 @@ class CouponExpireNotice
 
     public function sendNotice($ouponData, $member)
     {
-        echo "<pre>"; print_r($this->set['template_id']);
-        echo "<pre>"; print_r('member-follow: ');
-        echo "<pre>"; print_r($member['follow']);
         if ($this->set['template_id'] && ($member['follow'] == 1)) {
             $message = $this->set['expire'];
             $message = str_replace('[优惠券名称]', $ouponData['name'], $message);
@@ -88,7 +79,6 @@ class CouponExpireNotice
                 "keyword2" => $message,
                 "remark" => "",
             ];
-            echo "<pre>"; print_r($msg);
             \app\common\services\MessageService::notice($this->set['template_id'], $msg, $member['openid'], $this->uniacid);
         }
         return;

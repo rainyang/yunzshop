@@ -17,8 +17,6 @@ class CouponController extends BaseController
 {
     public function index()
     {
-        (new CouponExpireNotice)->handle();
-        echo "<pre>"; print_r('-----');exit;
         $coupon = Setting::get('shop.coupon');
         $requestModel = \YunShop::request()->coupon;
         if ($requestModel) {
