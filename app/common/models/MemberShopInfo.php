@@ -33,7 +33,7 @@ class MemberShopInfo extends BackendModel
     public static function boot()
     {
         parent::boot();
-        //static::addGlobalScope('uniacid',new UniacidScope);
+        static::addGlobalScope('uniacid',new UniacidScope());
     }
 
     /**
