@@ -8,6 +8,7 @@ use app\common\models\AccountWechats;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
 use app\frontend\models\Order;
+use app\frontend\modules\finance\services\BalanceRechargeResultService;
 use app\frontend\modules\finance\services\BalanceService;
 use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
@@ -108,7 +109,7 @@ class PaymentController extends BaseController
                 break;
             case "recharge.succeeded":
                 \Log::debug('支付操作', ['recharge.succeeded']);
-                (new BalanceService())->payResult([
+                (new BalanceRechargeResultService())->payResult([
                     'order_sn'=> $data['out_trade_no'],
                     'pay_sn'=> $data['trade_no']
                 ]);
