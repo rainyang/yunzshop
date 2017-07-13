@@ -60,12 +60,9 @@ class BalanceRechargeResultService
      */
     private function updateRechargeStatus()
     {
-       // return $this->rechargeModel = BalanceRecharge::ofOrderSn($this->array['order_sn'])->update(['status'=>ConstService::STATUS_SUCCESS]);
-
-        $this->rechargeModel = BalanceRecharge::ofOrderSn($this->array['order_sn'])->first();
+        $this->rechargeModel = BalanceRecharge::withoutGlobalScope('member_id')->ofOrderSn($this->array['order_sn'])->first();
 
         $this->rechargeModel->status = ConstService::STATUS_SUCCESS;
-        \Log::debug('余额充值model',['test'=> $this->rechargeModel]);
         return $this->rechargeModel->save();
     }
 
