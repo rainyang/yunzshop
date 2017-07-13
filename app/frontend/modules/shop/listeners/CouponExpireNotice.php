@@ -29,10 +29,7 @@ class CouponExpireNotice
             $this->uniacid = $u->uniacid;
             $this->set = Setting::get('shop.coupon');
             $this->setLog = Setting::get('shop.coupon_log');
-            if ($u->uniacid == 6) {
-                $this->sendExpireNotice();
-            }
-
+            $this->sendExpireNotice();
 
         }
     }
@@ -47,6 +44,7 @@ class CouponExpireNotice
         }
         $this->setLog['current_d'] = date('d');
         Setting::set('shop.coupon_log', $this->setLog);
+        
         $memberCoupons = MemberCoupon::getExpireCoupon($this->set)->get();
 
         foreach ($memberCoupons as $memberCoupon) {
@@ -86,9 +84,10 @@ class CouponExpireNotice
         return;
     }
 
-    public function apiLimit($coupon){
+    public function apiLimit($coupon)
+    {
         $api_limit = '';
-        switch($coupon->use_type){
+        switch ($coupon->use_type) {
             case Coupon::COUPON_SHOP_USE:
                 $api_limit = '商城通用';
                 break;
