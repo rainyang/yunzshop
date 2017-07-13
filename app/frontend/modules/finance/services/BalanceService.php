@@ -163,9 +163,9 @@ class BalanceService
         if ($result) {
             $result = array(
                 'member_id' => $this->data['member_id'],
-                'remark' => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['change_value'] . '元)',
+                'remark' => '充值满赠送' . $result . '(充值金额:' . $this->data['change_value'] . '元)',
                 'source' => ConstService::SOURCE_AWARD,
-                'relation' => $this->data['source'],
+                'relation' => $this->data['order_sn'],
                 'operator' => ConstService::OPERATOR_MEMBER,
                 'operator_id' => $this->data['member_id'],
                 //todo 验证余额值
