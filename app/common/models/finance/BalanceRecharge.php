@@ -10,7 +10,7 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
-use app\common\scopes\UniacidScope;
+use Illuminate\Database\Eloquent\Builder;
 
 /*
  * 余额充值记录数据表
@@ -26,7 +26,9 @@ class BalanceRecharge extends BaseModel
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('uniacid',new UniacidScope());
+        static::addGlobalScope('uniacid',function (Builder $builder) {
+            return $builder->uniacid();
+        });
     }
 
     /**

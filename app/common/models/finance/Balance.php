@@ -10,7 +10,6 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
-use app\common\scopes\UniacidScope;
 use app\common\services\credit\ConstService;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -33,7 +32,9 @@ class Balance extends BaseModel
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('uniacid',new UniacidScope());
+        static::addGlobalScope('uniacid',function (Builder $builder) {
+            return $builder->uniacid();
+        });
     }
 
     /**
