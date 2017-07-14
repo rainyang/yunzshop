@@ -32,9 +32,7 @@ class CouponSend
             Setting::$uniqueAccountId = $u->uniacid;
             $this->uniacid = $u->uniacid;
             $this->setLog = Setting::get('shop.coupon_send_log');
-            if ($u->uniacid != '6') {
-                continue;
-            }
+
             $this->sendCoupon();
 
         }
