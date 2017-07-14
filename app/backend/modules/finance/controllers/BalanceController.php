@@ -95,6 +95,7 @@ class BalanceController extends BaseController
 
         $page = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
+
         return view('finance.balance.balanceRecords', [
             'pageList'      => $detailList,
             'page'         => $page,

@@ -16,7 +16,6 @@ return [
     */
 
     'default' => env('QUEUE_DRIVER', 'database'),
-
     /*
     |--------------------------------------------------------------------------
     | Queue Connections
