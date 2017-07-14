@@ -11,6 +11,7 @@ use app\backend\modules\coupon\models\CouponLog;
 use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\models\Category;
 use app\common\facades\Setting;
+use app\frontend\modules\coupon\listeners\CouponSend;
 
 /**
  * Created by PhpStorm.
@@ -257,6 +258,12 @@ class CouponController extends BaseController
             'pager' => $pager,
             'couponid' => $couponId,
         ])->render();
+    }
+    
+    public function testSend()
+    {
+        (new CouponSend())->handle();
+        echo "<pre>"; print_r('发放优惠券定时任务');exit;
     }
 
 }

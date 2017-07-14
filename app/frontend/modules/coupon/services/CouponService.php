@@ -168,6 +168,7 @@ class CouponService
             'uid' => $this->order->uid,
             'coupon_id' => $goodsCoupon->coupon_id,
             'send_num' => $goodsCoupon->send_num,
+            'end_send_num' => 0,
             'status' => 0,
             'created_at' => time()
         ];

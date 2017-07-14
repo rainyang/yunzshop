@@ -72,7 +72,7 @@
     </form>
 
     <div class="panel panel-default">
-        <div class="panel-heading">领取发放记录</div>
+        <div class="panel-heading">领取发放记录 <a href="{{yzWebUrl('coupon.coupon.testSend')}}">测试发放</a></div>
         <div class="panel-body">
             <table class="table table-hover table-responsive">
                 <thead class="navbar-inner" >
