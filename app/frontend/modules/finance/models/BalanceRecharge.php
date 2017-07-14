@@ -9,7 +9,7 @@
 namespace app\frontend\modules\finance\models;
 
 use \app\common\models\finance\BalanceRecharge as Recharge;
-use app\common\scopes\MemberIdScope;
+use Illuminate\Database\Eloquent\Builder;
 
 class BalanceRecharge extends Recharge
 {
@@ -17,7 +17,9 @@ class BalanceRecharge extends Recharge
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('member_id',new MemberIdScope);
+        static::addGlobalScope('member_id',function (Builder $builder) {
+            return $builder->where('member_id',\YunShop::app()->getMemberId());
+        });
     }
 
 

@@ -10,7 +10,7 @@ namespace app\common\models;
 
 
 
-use app\common\scopes\UniacidScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
@@ -21,11 +21,13 @@ class MemberGroup extends BaseModel
     protected $table = 'yz_member_group';
 
 
-    public static function boot()
+    /*public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('uniacid',new UniacidScope);
-    }
+        static::addGlobalScope('uniacid',function (Builder $builder) {
+            return $builder->uniacid();
+        });
+    }*/
 
     public function scopeRecords($query)
     {
