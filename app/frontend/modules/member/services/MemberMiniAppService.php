@@ -65,39 +65,12 @@ class MemberMiniAppService extends MemberService
             return show_json(0,'登录认证失败');
         }
 
-        if (!empty($json_user) && !empty($json_user['unionid'])) {
-            $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $json_user['unionid']);
+        if (!empty($json_user)) {
 
-            if (!empty($UnionidInfo['unionid'])) {
-                $types = explode('|',$UnionidInfo['type']);
-                $member_id = $UnionidInfo['member_id'];
-
-                if (!in_array(self::LOGIN_TYPE, $types)) {
-                    //更新ims_yz_member_unique表
-                    MemberUniqueModel::updateData(array(
-                        'unique_id'=>$UnionidInfo['unique_id'],
-                        'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
-                    ));
-
-                    //添加ims_yz_member_mini_app表
-                    MemberMiniAppModel::insertData(array(
-                        'uniacid' => $uniacid,
-                        'member_id' => $UnionidInfo['member_id'],
-                        'openid' => $json_user['openid'],
-                        'nickname' => $json_user['nickname'],
-                        'avatar' => $json_user['headimgurl'],
-                        'gender' => $json_user['sex'],
-                        'nationality' => $json_user['country'],
-                        'resideprovince' => $json_user['province'] . '省',
-                        'residecity' => $json_user['city'] . '市',
-                        'created_at' => time()
-                    ));
-                }
-            } else {
                 //添加ims_mc_member表
                 $member_id = MemberModel::insertData(array(
                     'uniacid' => $uniacid,
-                    'groupid' => $json_user['unionid'],
+                    'groupid' => 0,
                     'createtime' => TIMESTAMP,
                     'nickname' => $json_user['nickname'],
                     'avatar' => $json_user['headimgurl'],
@@ -106,16 +79,7 @@ class MemberMiniAppService extends MemberService
                     'resideprovince' => $json_user['province'] . '省',
                     'residecity' => $json_user['city'] . '市'
                 ));
-
-
-                //添加ims_yz_member_unique表
-                MemberUniqueModel::insertData(array(
-                    'uniacid' => $uniacid,
-                    'unionid' => $json_user['unionid'],
-                    'member_id' => $member_id,
-                    'type' => self::LOGIN_TYPE
-                ));
-
+            
                 //添加ims_yz_member_mini_app表
                 MemberMiniAppModel::insertData(array(
                     'uniacid' => $uniacid,
@@ -129,7 +93,7 @@ class MemberMiniAppService extends MemberService
                     'residecity' => $json_user['city'] . '市',
                     'created_at' => time()
                 ));
-            }
+
 
             Session::set('member_id', $member_id);
 
