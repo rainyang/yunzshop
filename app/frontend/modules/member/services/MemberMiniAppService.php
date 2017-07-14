@@ -42,13 +42,12 @@ class MemberMiniAppService extends MemberService
 
         $url = 'https://api.weixin.qq.com/sns/jscode2session';
 
-        $res = \Curl::to($url)
+        $user_info = \Curl::to($url)
             ->withData($data)
             ->asJsonResponse(true)
             ->get();
-\Log::debug('----小程序解析-----', $res);
-        $user_info = json_decode($res['content'], true);
-
+\Log::debug('----小程序解析-----', $user_info);
+        
         $data = '';  //json
 
         if (!empty($para['info'])) {
