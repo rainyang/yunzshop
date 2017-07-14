@@ -28,7 +28,7 @@ class BuyerMessage extends Message
         }
 
         $noticeMember = Member::getMemberByUid($uid)->with('hasOneFans')->first();
-        if ($noticeMember->hasOneFans->follow && !empty($noticeMember->hasOneFans->openid)) {
+        if (isset($noticeMember->hasOneFans) && $noticeMember->hasOneFans->follow && !empty($noticeMember->hasOneFans->openid)) {
             $this->notice($this->templateId, $this->msg, $noticeMember->hasOneFans->openid);
         }
     }
