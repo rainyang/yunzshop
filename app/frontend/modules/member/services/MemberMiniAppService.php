@@ -64,7 +64,7 @@ class MemberMiniAppService extends MemberService
         } else {
             return show_json(0,'登录认证失败');
         }
-
+        \Log::debug('----解析data----', $json_user);
         if (!empty($json_user)) {
 
                 //添加ims_mc_member表
@@ -79,7 +79,7 @@ class MemberMiniAppService extends MemberService
                     'resideprovince' => $json_user['province'] . '省',
                     'residecity' => $json_user['city'] . '市'
                 ));
-            
+
                 //添加ims_yz_member_mini_app表
                 MemberMiniAppModel::insertData(array(
                     'uniacid' => $uniacid,
