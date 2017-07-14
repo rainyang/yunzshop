@@ -32,25 +32,23 @@ class CouponSend
             Setting::$uniqueAccountId = $u->uniacid;
             $this->uniacid = $u->uniacid;
             $this->setLog = Setting::get('shop.coupon_send_log');
-
             $this->sendCoupon();
-
         }
     }
 
     public function sendCoupon()
     {
-//        if (date('H') != '0') {
-//            return;
-//        }
-//        if (date('d') != '1') {
-//            return;
-//        }
-//        if (date('m') == $this->setLog['current_m']) {
-//            return;
-//        }
-//        $this->setLog['current_m'] = date('m');
-//        Setting::set('shop.coupon_send_log', $this->setLog);
+        if (date('H') != '0') {
+            return;
+        }
+        if (date('d') != '1') {
+            return;
+        }
+        if (date('m') == $this->setLog['current_m']) {
+            return;
+        }
+        $this->setLog['current_m'] = date('m');
+        Setting::set('shop.coupon_send_log', $this->setLog);
 
         $couponSendQueues = GoodsCouponQueue::getCouponQueue()->get();
         $surplusNums = [];//用于统计 剩余未发放数量

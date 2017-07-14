@@ -260,10 +260,4 @@ class CouponController extends BaseController
         ])->render();
     }
     
-//    public function testSend()
-//    {
-//        (new CouponSend())->handle();
-//        echo "<pre>"; print_r('发放优惠券定时任务');exit;
-//    }
-
 }
