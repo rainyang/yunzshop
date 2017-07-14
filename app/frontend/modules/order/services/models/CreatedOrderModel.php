@@ -15,7 +15,7 @@ use app\frontend\modules\dispatch\services\DispatchService;
 class CreatedOrderModel extends OrderModel
 {
     private $order;
-    protected $orderGoodsModels = [];
+    protected $orderGoods = [];
 
     public function __construct($order, $orderGoodsModels)
     {
@@ -23,9 +23,9 @@ class CreatedOrderModel extends OrderModel
         parent::__construct($orderGoodsModels);
     }
 
-    public function setOrderGoodsModels(array $orderGoodsModels)
+    public function setOrderGoods(array $orderGoods)
     {
-        $this->orderGoodsModels = $orderGoodsModels;
+        $this->orderGoods = $orderGoods;
 
     }
 
