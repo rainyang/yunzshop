@@ -7,24 +7,23 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Config;
-use Yunshop\SingleReturn\models\ReturnSingleLog;
-use Yunshop\SingleReturn\services\TimedTaskReturnService;
+use Yunshop\TeamReturn\models\TeamReturnLog;
+use Yunshop\TeamReturn\services\TimedTaskReturnService;
 
-class addReturnSingleLogJob implements ShouldQueue
+class addTeamReturnLogJob implements ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels;
-    protected $returnSingleLogData;
+    protected $teamReturnLogData;
     protected $config;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($returnSingleLogData)
+    public function __construct($teamReturnLogData)
     {
-        $this->returnSingleLogData = $returnSingleLogData;
-        $this->config = Config::get('income.singleReturn');
+        $this->teamReturnLogData = $teamReturnLogData;
+        $this->config = Config::get('income.teamReturn');
     }
 
     /**
@@ -34,21 +33,19 @@ class addReturnSingleLogJob implements ShouldQueue
      */
     public function handle()
     {
-        $logId = ReturnSingleLog::insertGetId($this->returnSingleLogData);
+        $logId = TeamReturnLog::insertGetId($this->teamReturnLogData);
         $incomeData = [
-            'uniacid' => $this->returnSingleLogData['uniacid'],
-            'member_id' => $this->returnSingleLogData['uid'],
+            'uniacid' => $this->teamReturnLogData['uniacid'],
+            'member_id' => $this->teamReturnLogData['uid'],
             'incometable_type' => $this->config['class'],
             'incometable_id' => $logId,
             'type_name' => $this->config['title'],
-            'amount' => $this->returnSingleLogData['amount'],
+            'amount' => $this->teamReturnLogData['amount'],
             'status' => 0,
             'pay_status' => 0,
             'create_month' => date('Y-m'),
             'created_at' => time()
         ];
         (new TimedTaskReturnService())->addIncome($incomeData);
-
-
     }
 }

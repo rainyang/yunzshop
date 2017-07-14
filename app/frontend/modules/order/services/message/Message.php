@@ -24,8 +24,6 @@ class Message extends MessageService
     function __construct($order)
     {
         $this->order = $order;
-        $app = app('wechat');
-        $this->notice = new Notice($app['access_token']);
     }
 
 }
