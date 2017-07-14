@@ -67,8 +67,7 @@ class GoodsController extends BaseController
 
     public function index()
     {
-        (new CouponSend)->handle();
-        echo "<pre>"; print_r('----');exit;
+
         //增加商品属性搜索
         $product_attr_list = [
             'is_new' => '新品',

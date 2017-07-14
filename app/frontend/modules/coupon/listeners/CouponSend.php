@@ -73,7 +73,7 @@ class CouponSend
                 'id' => $couponSendQueue->id
             ];
             $updatedData['end_send_num'] = $couponSendQueue->end_send_num + 1;
-            if($updatedData['end_send_num'] == $couponSendQueue->send_num){
+            if ($updatedData['end_send_num'] == $couponSendQueue->send_num) {
                 $updatedData['status'] = 1;
             }
             $this->dispatch((new updateCouponQueueJob($condition, $updatedData)));
