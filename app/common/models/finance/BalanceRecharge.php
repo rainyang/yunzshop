@@ -10,6 +10,7 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
+use Illuminate\Database\Eloquent\Builder;
 
 /*
  * 余额充值记录数据表
@@ -21,28 +22,40 @@ class BalanceRecharge extends BaseModel
 
     protected $guarded = [''];
 
+    //设置全局作用域
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('uniacid',function (Builder $builder) {
+            return $builder->uniacid();
+        });
+    }
 
-    //后台充值
-    const PAY_TYPE_SHOP = 0;
-
-
-
-
-
-
-    const PAY_STATUS_SUCCESS = 1;
-
-    const PAY_STATUS_ERROR = -1;
-
-    /*
+    /**
      * 模型管理，关联会员数据表
-     *
-     * @Author yitian */
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function member()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
+    /**
+     * 检索条件，订单号检索
+     * @param $query
+     * @param $orderSn
+     * @return mixed
+     */
+    public function scopeOfOrderSn($query,$orderSn)
+    {
+        return $query->where('ordersn',$orderSn);
+    }
+
+
+
+
+
+    //todo 以下代码需要重构
     /*
      *
      *
@@ -192,4 +205,12 @@ class BalanceRecharge extends BaseModel
         ];
     }
 
+
+
+    //后台充值
+    const PAY_TYPE_SHOP = 0;
+
+    const PAY_STATUS_SUCCESS = 1;
+
+    const PAY_STATUS_ERROR = -1;
 }

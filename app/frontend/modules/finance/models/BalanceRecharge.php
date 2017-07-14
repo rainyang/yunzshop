@@ -9,9 +9,20 @@
 namespace app\frontend\modules\finance\models;
 
 use \app\common\models\finance\BalanceRecharge as Recharge;
+use Illuminate\Database\Eloquent\Builder;
 
 class BalanceRecharge extends Recharge
 {
+    //设置全局作用域
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('member_id',function (Builder $builder) {
+            return $builder->where('member_id',\YunShop::app()->getMemberId());
+        });
+    }
+
+
 
     /**
      * 定义字段名

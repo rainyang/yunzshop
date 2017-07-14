@@ -10,7 +10,7 @@ namespace app\common\models;
 
 
 
-use app\common\scopes\UniacidScope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MemberLevel extends BaseModel
@@ -27,7 +27,9 @@ class MemberLevel extends BaseModel
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('uniacid',new UniacidScope);
+        static::addGlobalScope('uniacid',function (Builder $builder) {
+            return $builder->uniacid();
+        });
     }
 
     public function scopeRecords($query)
