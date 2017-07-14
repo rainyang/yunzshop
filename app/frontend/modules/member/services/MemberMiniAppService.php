@@ -12,6 +12,7 @@ use app\common\services\Session;
 use app\frontend\modules\member\models\MemberMiniAppModel;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
+use Symfony\Component\HttpKernel\DataCollector\LoggerDataCollector;
 
 class MemberMiniAppService extends MemberService
 {
@@ -56,7 +57,8 @@ class MemberMiniAppService extends MemberService
             $pc = new \WXBizDataCrypt($appid, $user_info['session_key']);
             $errCode = $pc->decryptData($json_data['encryptedData'], $json_data['iv'], $data);
         }
-
+        \Log::debug('----接口返回状态----', [$errCode]);
+\Log::debug('----接口返回data----', $data);
         if ($errCode == 0) {
             $json_user = json_decode($data, true);
         } else {
