@@ -113,4 +113,9 @@ class MemberCoupon extends BaseModel
             return $query->where('status', 0);
         }])->where('member_id', $MemberModel->uid)->where('used', 0);
     }
+    public static function getCouponBycouponId($couponId)
+    {
+        return self::uniacid()
+            ->where('coupon_id',$couponId);
+    }
 }

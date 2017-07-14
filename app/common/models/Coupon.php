@@ -29,6 +29,17 @@ class  Coupon extends BaseModel
         'goods_names' => 'json',
         'categorynames' => 'json',
     ];
+    public $Surplus;
+    protected $appends = ['surplus'];
+
+
+    public function getSurplusAttribute()
+    {
+        $issued = MemberCoupon::getCouponBycouponId($this->id)->count('id');
+        $this->Surplus = $this->total - $issued;
+        return $this->Surplus;
+    }
+
 
     public static function getMemberCoupon($used = 0) { //todo 这张表没有used这个字段, 应该放在member_coupon表?
         return static::uniacid()->where('used', $used);

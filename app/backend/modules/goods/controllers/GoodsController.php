@@ -27,6 +27,7 @@ use app\common\components\Widget;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\GoodsCategory;
+use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
 
 
@@ -66,6 +67,8 @@ class GoodsController extends BaseController
 
     public function index()
     {
+        (new CouponSend)->handle();
+        echo "<pre>"; print_r('----');exit;
         //增加商品属性搜索
         $product_attr_list = [
             'is_new' => '新品',
