@@ -61,6 +61,10 @@ class MemberMiniAppService extends MemberService
         }
 
         if (!empty($json_user)) {
+            $json_user['openid']     = $json_user['openId'];
+            $json_user['nickname']   = $json_user['nickName'];
+            $json_user['headimgurl'] = $json_user['avatarUrl'];
+            $json_user['sex']        = $json_user['gender'];
 
             //Login
             $member_id = $this->memberLogin($json_user);
@@ -99,13 +103,6 @@ class MemberMiniAppService extends MemberService
 
     public function createMiniMember($json_user, $arg)
     {
-        if (!empty($json_user)) {
-            $json_user['openid']     = $json_user['openId'];
-            $json_user['nickname']   = $json_user['nickName'];
-            $json_user['headimgurl'] = $json_user['avatarUrl'];
-            $json_user['sex']        = $json_user['gender'];
-        }
-
         $user_info = MemberMiniAppModel::getUserInfo($json_user['openid']);
 
         if (!empty($user_info)) {
