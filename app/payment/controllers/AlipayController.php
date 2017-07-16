@@ -161,7 +161,7 @@ class AlipayController extends PaymentController
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($post['out_trade_no'], $desc , json_encode($post));
+        Pay::payResponseDataLog($post['batch_no'], $desc , json_encode($post));
     }
 
     /**
