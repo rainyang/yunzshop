@@ -34,8 +34,11 @@ class Sale extends \app\common\models\Sale
             return $saleModel->delete();
         }
         $data['goods_id'] = $goodsId;
+        $data['ed_full'] = empty($data['ed_full']) ? 0 : $data['ed_full'];
+        $data['ed_reduction'] = empty($data['ed_reduction']) ? 0 : $data['ed_reduction'];
         $data['point'] = trim($data['point']);
         $saleModel->setRawAttributes($data);
+
         return $saleModel->save();
     }
 
