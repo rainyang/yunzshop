@@ -569,7 +569,7 @@ class MemberService
         $record = array(
             'openid' => $userinfo['openid'],
             'nickname' => stripslashes($userinfo['nickname']),
-            'follow' => $userinfo['subscribe'],
+            'follow' => isset($userinfo['subscribe'])?:0,
             'tag' => base64_encode(serialize($userinfo))
         );
 
