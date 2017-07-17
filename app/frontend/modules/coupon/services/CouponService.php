@@ -3,19 +3,25 @@
 namespace app\frontend\modules\coupon\services;
 
 use app\common\helpers\ArrayHelper;
+use app\common\models\goods\GoodsCoupon;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+use app\Jobs\addGoodsCouponQueueJob;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Collection;
 
 class CouponService
 {
+    use DispatchesJobs;
     private $order;
+    private $orderGoods;
     private $coupon_method = null;
 
-    public function __construct(PreGeneratedOrderModel $order, $coupon_method = null)
+    public function __construct(PreGeneratedOrderModel $order, $coupon_method = null, $orderGoods = [])
     {
 
         $this->order = $order;
+        $this->orderGoods = $orderGoods;
         $this->coupon_method = $coupon_method;
     }
 
@@ -134,4 +140,39 @@ class CouponService
             return in_array($memberCoupon->id, $member_coupon_ids);
         });
     }
+
+    public function sendCoupun()
+    {
+        $orderGoods = $this->orderGoods;
+        foreach ($orderGoods as $goods) {
+            $goodsCoupon = GoodsCoupon::getGoodsCouponByGoodsId($goods->goods_id)->first();
+            //未开启 或 已关闭
+            if(!$goodsCoupon || !$goodsCoupon->is_coupon){
+                continue;
+            }
+            //未设置优惠券 或 未设置赠送月份
+            if(!$goodsCoupon->coupon_id || !$goodsCoupon->send_num){
+                continue;
+            }
+            for ($i = 1; $i <= $goods->total; $i++) {
+                $this->addSendCoupunQueue($goodsCoupon);
+            }
+        }
+    }
+
+    public function addSendCoupunQueue($goodsCoupon)
+    {
+        $queueData = [
+            'uniacid' => \YunShop::app()->uniacid,
+            'goods_id' => $goodsCoupon->goods_id,
+            'uid' => $this->order->uid,
+            'coupon_id' => $goodsCoupon->coupon_id,
+            'send_num' => $goodsCoupon->send_num,
+            'end_send_num' => 0,
+            'status' => 0,
+            'created_at' => time()
+        ];
+        $this->dispatch((new addGoodsCouponQueueJob($queueData)));
+    }
+
 }

@@ -118,7 +118,13 @@ class MemberCoupon extends BaseModel
     public static function getExpireCoupon()
     {
         $model = self::uniacid();
-        $model->where('used',0);
+        $model->where('used', 0);
         return $model;
+    }
+
+    public static function getCouponBycouponId($couponId)
+    {
+        return self::uniacid()
+            ->where('coupon_id',$couponId);
     }
 }
