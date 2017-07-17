@@ -30,8 +30,8 @@ class MessageService
             $app = app('wechat');
         }
         \Log::info('notice-data',$data);
-        \Log::info('notice-templateId',$templateId);
-        \Log::info('notice-openId',$openId);
+        \Log::info('notice-templateId'.$templateId);
+        \Log::info('notice-openId'.$openId);
         (new MessageService())->noticeQueue($app->notice,$templateId,$data,$openId);
 //        $notice = $app->notice;
 //        $notice->uses($templateId)->andData($data)->andReceiver($openId)->send();
