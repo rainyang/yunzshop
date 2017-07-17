@@ -19,22 +19,17 @@ class MessageService
      */
     public static function notice($templateId, $data, $openId,$uniacid='')
     {
-//        if(!empty($uniacid)){
-//            $res = AccountWechats::getAccountByUniacid($uniacid);
-//            $options = [
-//                'app_id'  => $res['key'],
-//                'secret'  => $res['secret'],
-//            ];
-//            $app = new Application($options);
-//        }else{
-//            $app = app('wechat');
-//        }
-        $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-        $options = [
-            'app_id'  => $res['key'],
-            'secret'  => $res['secret'],
-        ];
-        $app = new Application($options);
+        if(!empty($uniacid)){
+            $res = AccountWechats::getAccountByUniacid($uniacid);
+            $options = [
+                'app_id'  => $res['key'],
+                'secret'  => $res['secret'],
+            ];
+            $app = new Application($options);
+        }else{
+            $app = app('wechat');
+        }
+
         (new MessageService())->noticeQueue($app->notice,$templateId,$data,$openId);
 //        $notice = $app->notice;
 //        $notice->uses($templateId)->andData($data)->andReceiver($openId)->send();
