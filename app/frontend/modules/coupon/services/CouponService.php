@@ -17,7 +17,7 @@ class CouponService
     private $orderGoods;
     private $coupon_method = null;
 
-    public function __construct(PreGeneratedOrderModel $order, $coupon_method = null, $orderGoods = [])
+    public function __construct( $order, $coupon_method = null, $orderGoods = [])
     {
 
         $this->order = $order;
