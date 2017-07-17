@@ -333,11 +333,14 @@ class Member extends BackendModel
         // todo 后期需要重构
         if ($plugin_class->isEnabled('love')) {
             $data['love'] = [
-                'status'  => '1',
+                'status'  => true,
                 'love_name'=> SetService::getLoveName(),
             ];
         } else {
-            $data['gold'] = '';
+            $data['love'] = [
+                'status'    => false,
+                'love_name' => '0',
+            ];
         }
 
         return $data;
