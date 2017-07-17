@@ -32,11 +32,9 @@ class Balance extends BaseModel
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope(
-            function(Builder $builder){
-                return $builder->uniacid();
-            }
-        );
+        static::addGlobalScope('uniacid',function (Builder $builder) {
+            return $builder->uniacid();
+        });
     }
 
     /**
@@ -48,13 +46,14 @@ class Balance extends BaseModel
         return $this->hasOne('app\common\models\Member', 'uid', 'member_id');
     }
 
+    /**
+     * 模型关联，关联余额转让记录表
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function Transfer()
     {
         return $this->belongsTo('app\common\models\finance\BalanceTransfer', 'order_sn', 'serial_number');
     }
-
-
-
 
     /**
      * @param $balance
@@ -92,9 +91,6 @@ class Balance extends BaseModel
         return static::getTypeNameComment($this->attributes['type']);
     }
 
-
-
-
     /**
      * 检索条件 服务类型
      * @param $query
@@ -128,11 +124,42 @@ class Balance extends BaseModel
         return $query->where('serial_number', $orderSn);
     }
 
+    public function scopeOfType($query,$type)
+    {
+        return $query->where('type',$type);
+    }
 
 
+    public function scopeWithMember($query)
+    {
+        return $query->with(['member' => function($query) {
+            return $query->select('uid', 'nickname', 'realname', 'avatar', 'mobile', 'credit2');
+        }]);
+    }
 
+    public function scopeSearch($query,$search)
+    {
+        if ($search['source']) {
+            $query->ofSource($search['source']);
+        }
+        if ($search['type']) {
+            $query->ofType($search['type']);
+        }
+        if ($search['order_sn']) {
+            $query->where('serial_number', 'like', $search['order_sn'] . '%');
+        }
+        if ($search['search_time']) {
+            $query->whereBetween('created_at', [strtotime($search['time']['start']), strtotime($search['time']['end'])]);
+        }
+        return $query;
+    }
 
-
+    public function scopeSearchMember($query,$search)
+    {
+        return $query->whereHas('member',function($query)use($search) {
+            return $query->search($search);
+        });
+    }
 
 
 
@@ -219,7 +246,6 @@ class Balance extends BaseModel
 //
 
 
-    const OPERATOR_SHOP     = 0;  //操作者 商城
 
     const OPERATOR_ORDER_   = -1; //操作者 订单
 

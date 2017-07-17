@@ -43,12 +43,12 @@ class PreGeneratedOrderModel extends OrderModel
     public function setOrderGoods(Collection $orderGoods)
     {
         $this->orderGoods = $orderGoods;
-        $orderGoods->each(function ($orderGoodsModel) {
+        $orderGoods->each(function ($orderGoods) {
             /**
              * @var PreGeneratedOrderGoodsModel $orderGoodsModel
              */
 
-            $orderGoodsModel->setOrder($this);
+            $orderGoods->setOrder($this);
         });
 
         $this->setDispatch();

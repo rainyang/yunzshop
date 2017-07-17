@@ -8,10 +8,8 @@
 
 namespace app\frontend\modules\member\services;
 
-use app\frontend\modules\member\services\MemberService;
+use app\common\services\Session;
 use app\frontend\modules\member\models\MemberMiniAppModel;
-use app\frontend\modules\member\models\MemberUniqueModel;
-use app\frontend\modules\member\models\MemberModel;
 
 class MemberMiniAppService extends MemberService
 {
@@ -22,19 +20,16 @@ class MemberMiniAppService extends MemberService
 
     public function login()
     {
-        include "./addons/sz_yi/core/inc/plugin/vendor/wechat/wxBizDataCrypt.php";
-        include "./framework/model/mc.mod.php";
+        include dirname(__FILE__ ) . "/../vendors/wechat/wxBizDataCrypt.php";
 
-        $uniacid = \YunApp::app()->uniacid;
+        $uniacid = \YunShop::app()->uniacid;
 
-        $setdata = pdo_fetch("select * from " . tablename('sz_yi_wxapp') . ' where uniacid=:uniacid limit 1', array(
-            ':uniacid' => $uniacid
-        ));
+        if (config('app.debug')) {
+            $appid = 'wx31002d5db09a6719';
+            $secret = '217ceb372d5e3296f064593fe2e7c01e';
+        }
 
-        $appid = $setdata['appid'];
-        $secret = $setdata['secret'];
-
-        $para = \YunApp::request();
+        $para = \YunShop::request();
 
         $data = array(
             'appid' => $appid,
@@ -44,10 +39,12 @@ class MemberMiniAppService extends MemberService
         );
 
         $url = 'https://api.weixin.qq.com/sns/jscode2session';
-        $res = @ihttp_request($url, $data);
 
-        $user_info = json_decode($res['content'], true);
-
+        $user_info = \Curl::to($url)
+            ->withData($data)
+            ->asJsonResponse(true)
+            ->get();
+        
         $data = '';  //json
 
         if (!empty($para['info'])) {
@@ -60,74 +57,20 @@ class MemberMiniAppService extends MemberService
         if ($errCode == 0) {
             $json_user = json_decode($data, true);
         } else {
-            $this->returnError('登录认证失败');
+            return show_json(0,'登录认证失败');
         }
 
-        if (!empty($json_user) && !empty($json_user['unionid'])) {
-            $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $json_user['unionid']);
+        if (!empty($json_user)) {
+            $json_user['openid']     = $json_user['openId'];
+            $json_user['nickname']   = $json_user['nickName'];
+            $json_user['headimgurl'] = $json_user['avatarUrl'];
+            $json_user['sex']        = $json_user['gender'];
 
-            if (!empty($UnionidInfo['unionid'])) {
-                $types = explode('|',$UnionidInfo['type']);
-                $member_id = $UnionidInfo['member_id'];
+            //Login
+            $member_id = $this->memberLogin($json_user);
+            $this->createMiniMember($json_user, ['uniacid'=>$uniacid, 'member_id'=>$member_id]);
 
-                if (!in_array(self::LOGIN_TYPE, $types)) {
-                    //更新ims_yz_member_unique表
-                    MemberUniqueModel::updateData(array(
-                        'unique_id'=>$UnionidInfo['unique_id'],
-                        'type' => $UnionidInfo['type'] . '|' . self::LOGIN_TYPE
-                    ));
-
-                    //添加ims_yz_member_mini_app表
-                    MemberMiniAppModel::insertData(array(
-                        'uniacid' => $uniacid,
-                        'member_id' => $UnionidInfo['member_id'],
-                        'openid' => $json_user['openid'],
-                        'nickname' => $json_user['nickname'],
-                        'avatar' => $json_user['headimgurl'],
-                        'gender' => $json_user['sex'],
-                        'nationality' => $json_user['country'],
-                        'resideprovince' => $json_user['province'] . '省',
-                        'residecity' => $json_user['city'] . '市',
-                        'created_at' => time()
-                    ));
-                }
-            } else {
-                //添加ims_mc_member表
-                $member_id = MemberModel::insertData(array(
-                    'uniacid' => $uniacid,
-                    'groupid' => $json_user['unionid'],
-                    'createtime' => TIMESTAMP,
-                    'nickname' => $json_user['nickname'],
-                    'avatar' => $json_user['headimgurl'],
-                    'gender' => $json_user['sex'],
-                    'nationality' => $json_user['country'],
-                    'resideprovince' => $json_user['province'] . '省',
-                    'residecity' => $json_user['city'] . '市'
-                ));
-
-
-                //添加ims_yz_member_unique表
-                MemberUniqueModel::insertData(array(
-                    'uniacid' => $uniacid,
-                    'unionid' => $json_user['unionid'],
-                    'member_id' => $member_id,
-                    'type' => self::LOGIN_TYPE
-                ));
-
-                //添加ims_yz_member_mini_app表
-                MemberMiniAppModel::insertData(array(
-                    'uniacid' => $uniacid,
-                    'member_id' => $member_id,
-                    'openid' => $json_user['openid'],
-                    'nickname' => $json_user['nickname'],
-                    'avatar' => $json_user['headimgurl'],
-                    'gender' => $json_user['sex'],
-                    'nationality' => $json_user['country'],
-                    'resideprovince' => $json_user['province'] . '省',
-                    'residecity' => $json_user['city'] . '市',
-                    'created_at' => time()
-                ));
-            }
+            Session::set('member_id', $member_id);
 
             $random = $this->wx_app_session($user_info);
 
@@ -135,7 +78,7 @@ class MemberMiniAppService extends MemberService
 
             return show_json(1, $result);
         } else {
-            return show_json(0);
+            return show_json(0, '获取用户信息失败');
         }
     }
 
@@ -148,7 +91,7 @@ class MemberMiniAppService extends MemberService
     function wx_app_session($user_info)
     {
         if (empty($user_info['session_key']) || empty($user_info['openid'])) {
-            $this->returnError('登录认证失败！');
+            return show_json(0,'用户信息有误');
         }
 
         $random = md5(uniqid(mt_rand()));
@@ -156,5 +99,27 @@ class MemberMiniAppService extends MemberService
         $_SESSION['wx_app'] = array($random => iserializer(array('session_key'=>$user_info['session_key'], 'openid'=>$user_info['openid'])));
 
         return $random;
+    }
+
+    public function createMiniMember($json_user, $arg)
+    {
+        $user_info = MemberMiniAppModel::getUserInfo($json_user['openid']);
+
+        if (!empty($user_info)) {
+            MemberMiniAppModel::updateUserInfo($json_user['openid'],array(
+                'nickname' => $json_user['nickname'],
+                'avatar' => $json_user['headimgurl'],
+                'gender' => $json_user['sex'],
+            ));
+        } else {
+            MemberMiniAppModel::insertData(array(
+                'uniacid' => $arg['uniacid'],
+                'member_id' => $arg['member_id'],
+                'openid' => $json_user['openid'],
+                'nickname' => $json_user['nickname'],
+                'avatar' => $json_user['headimgurl'],
+                'gender' => $json_user['sex'],
+            ));
+        }
     }
 }

@@ -55,6 +55,7 @@ class Goods extends BaseModel
             'cost_price' => '成本价',
             'sku' => '商品单位',
             'thumb' => '图片',
+            'weight' => '重量',
             'stock' => '库存',
         ];
     }
@@ -72,6 +73,7 @@ class Goods extends BaseModel
             'cost_price' => 'required|numeric|min:0',
             'sku' => 'required',
             'thumb' => 'required',
+            'weight' => 'required',
             'stock' => 'required|numeric|min:0',
         ];
     }

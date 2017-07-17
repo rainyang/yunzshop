@@ -227,4 +227,14 @@ class Client
 
         return 5;
     }
+
+    public static function getOS()
+    {
+        switch (true) {
+            case stristr(PHP_OS, 'DAR'): return 'OS_OSX';
+            case stristr(PHP_OS, 'WIN'): return 'OS_WIN';
+            case stristr(PHP_OS, 'LINUX'): return 'OS_LINUX';
+            default : return self::OS_UNKNOWN;
+        }
+    }
 }

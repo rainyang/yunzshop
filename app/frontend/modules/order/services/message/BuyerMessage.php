@@ -16,13 +16,17 @@ class BuyerMessage extends Message
     {
         return $this->sendToMember($this->order->uid);
     }
-    protected function sendToParentBuyer(){
-        if(!isset($this->order->belongsToMember->yzMember->parent_id)){
+
+    protected function sendToParentBuyer()
+    {
+        if (!isset($this->order->belongsToMember->yzMember->parent_id)) {
             return;
         }
         return $this->sendToMember($this->order->belongsToMember->yzMember->parent_id);
     }
-    protected function sendToMember($uid){
+
+    protected function sendToMember($uid)
+    {
         if (empty($this->templateId)) {
             return;
         }
@@ -32,6 +36,7 @@ class BuyerMessage extends Message
             $this->notice($this->templateId, $this->msg, $noticeMember->hasOneFans->openid);
         }
     }
+
     public function created()
     {
         $this->templateId = \Setting::get('shop.notice.order_submit_success');
@@ -85,8 +90,8 @@ class BuyerMessage extends Message
             ),
             'keyword1' => array(
                 //todo
-                'value' => (string)$this->order['order_sn'].
-                    "\r\n商品: ".(string)$this->order->hasManyOrderGoods()->first()->title,
+                'value' => (string)$this->order['order_sn'] .
+                    "\r\n商品: " . (string)$this->order->hasManyOrderGoods()->first()->title,
                 "color" => "#4a5077"
             ),
             'keyword2' => array(

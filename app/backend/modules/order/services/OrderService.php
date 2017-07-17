@@ -10,6 +10,7 @@ namespace app\backend\modules\order\services;
 
 
 use app\backend\modules\order\models\Order;
+use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\exceptions\AdminException;
 
 class OrderService
@@ -20,5 +21,6 @@ class OrderService
         $order->status = Order::CLOSE;
 
         $order->save();
+        event(new AfterOrderCanceledEvent($order));
     }
 }

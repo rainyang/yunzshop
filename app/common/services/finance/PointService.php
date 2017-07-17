@@ -38,6 +38,9 @@ class PointService
 
     const POINT_MODE_BY = 6; //购物抵扣
     const POINT_MODE_BY_ATTACHED = '购物抵扣';
+    
+    const POINT_MODE_TEAM = 7; //团队奖励
+    const POINT_MODE_TEAM_ATTACHED = '团队奖励';
 
     const POINT = 0;
 

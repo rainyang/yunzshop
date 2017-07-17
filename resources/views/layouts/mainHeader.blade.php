@@ -31,9 +31,10 @@
                 @endif
                 <li> <a href="?c=account&a=display&"><span class="fa fa-cogs fa-fw"></span>管理其他公众号</a> </li>
                 <li> <a target="_blank" href="?c=utility&a=emulator&"><span class="fa fa-mobile fa-fw"></span>模拟测试</a> </li>
-               {{-- @if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production')--}}
-                <li> <a target="_blank" href="{{yzWebUrl('menu.index')}}"><span class="fa fa-align-justify fa-fw"></span>菜单管理</a> </li>
-                {{--@endif--}}
+                @if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production')
+                <li> <a target="_blank" href="{{yzWebUrl('menu.index')}}"><span class="fa fa-align-justify fa-fw"></span>菜单管理</a></li>
+                @endif
+                <li> <a target="_self" href="{{yzWebUrl('cache.update')}}" onclick="return confirm('确认更新缓存？');return false;"><span class="fa fa-refresh fa-fw"></span>更新缓存</a></li>
                 <li> <a href="{{yzWebUrl('setting.shop.entry')}}"> <span class="fa fa-camera-retro fa-fw"></span>商城入口 </a>  </li>
               </ul>
             @endif

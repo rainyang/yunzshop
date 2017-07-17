@@ -15,18 +15,18 @@ class ShopMessage extends Message
 {
     private function sendToShops()
     {
-        if(empty(\Setting::get('shop.notice.salers'))){
-            return ;
+        if (empty(\Setting::get('shop.notice.salers'))) {
+            return;
         }
-        if(empty($this->templateId)){
-            return ;
+        if (empty($this->templateId)) {
+            return;
         }
         //客服发送消息通知
-       foreach (\Setting::get('shop.notice.salers') as $saler) {
-           $noticeMember = Member::getMemberByUid($saler['uid'])->with('hasOneFans')->first();
-           if (isset($noticeMember->hasOneFans) && $noticeMember->hasOneFans->follow && !empty($noticeMember->hasOneFans->openid)) {
+        foreach (\Setting::get('shop.notice.salers') as $saler) {
+            $noticeMember = Member::getMemberByUid($saler['uid'])->with('hasOneFans')->first();
+            if (isset($noticeMember->hasOneFans) && $noticeMember->hasOneFans->follow && !empty($noticeMember->hasOneFans->openid)) {
                $this->notice($this->templateId, $this->msg, $noticeMember->hasOneFans->openid);
-           }
+            }
 
         }
     }
@@ -36,7 +36,7 @@ class ShopMessage extends Message
         $this->templateId = \Setting::get('shop.notice.new');
 
         $remark = "\r\n订单下单成功,请到后台查看!";
-        $orderpricestr = ' 订单总金额: '.$this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
+        $orderpricestr = ' 订单总金额: ' . $this->order['price'] . '(包含运费:' . $this->order['dispatch_price'] . ')';
 
         $this->msg = array(
             'first' => array(

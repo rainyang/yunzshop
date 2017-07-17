@@ -151,6 +151,11 @@ class PreGeneratedOrderGoodsModel extends OrderGoodsModel
 
     }
 
+    public function getFullPriceReductions()
+    {
+        return $this->sale->getFullPriceReductions($this->getFinalPrice());
+    }
+
     public function getFinalPrice()
     {
         if (isset($this->goodsOption)) {

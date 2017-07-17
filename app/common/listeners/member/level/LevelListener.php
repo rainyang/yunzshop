@@ -18,7 +18,7 @@ class LevelListener
     {
         $event->listen(
             \app\common\events\order\AfterOrderReceivedEvent::class,
-            \app\common\services\member\level\LevelService::class.'@checkUpgrade'
+            \app\common\services\member\level\LevelUpgradeService::class.'@checkUpgrade'
         );
 
     }

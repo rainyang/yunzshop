@@ -4,6 +4,7 @@ namespace app\common\models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class MemberCoupon extends BaseModel
 {
@@ -11,10 +12,10 @@ class MemberCoupon extends BaseModel
 
     public $table = 'yz_member_coupon';
     protected $guarded = [];
-    protected $appends = ['time_start','time_end'];
+    protected $appends = ['time_start', 'time_end'];
     public $timestamps = false;
     public $dates = ['deleted_at'];
-    protected $casts = ['get_time'=>'date'];
+    protected $casts = ['get_time' => 'date'];
 
     /*
      *  定义字段名
@@ -40,9 +41,9 @@ class MemberCoupon extends BaseModel
     {
 
         if ($this->belongsToCoupon->time_limit == false) {
-            $result =  $this->get_time;
+            $result = $this->get_time;
         } else {
-            $result =  $this->belongsToCoupon->time_start;
+            $result = $this->belongsToCoupon->time_start;
         }
 
         return $result->toDateString();
@@ -51,16 +52,16 @@ class MemberCoupon extends BaseModel
     public function getTimeEndAttribute()
     {
         if ($this->belongsToCoupon->time_limit == false) {
-            if($this->belongsToCoupon->time_days == false){
+            if ($this->belongsToCoupon->time_days == false) {
                 $result = '不限时间';
-            }else{
+            } else {
 
                 $result = $this->get_time->addDays($this->belongsToCoupon->time_days);
             }
         } else {
             $result = $this->belongsToCoupon->time_end;
         }
-        if($result instanceof Carbon){
+        if ($result instanceof Carbon) {
             $result = $result->toDateString();
         }
         return $result;
@@ -112,5 +113,18 @@ class MemberCoupon extends BaseModel
             }
             return $query->where('status', 0);
         }])->where('member_id', $MemberModel->uid)->where('used', 0);
+    }
+
+    public static function getExpireCoupon()
+    {
+        $model = self::uniacid();
+        $model->where('used', 0);
+        return $model;
+    }
+
+    public static function getCouponBycouponId($couponId)
+    {
+        return self::uniacid()
+            ->where('coupon_id',$couponId);
     }
 }

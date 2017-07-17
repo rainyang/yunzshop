@@ -80,11 +80,7 @@ class BalanceController extends BaseController
         ])->render();
     }
 
-    /**
-     * 余额明细记录[完成]
-     *
-     * @return string
-     * @Author yitian */
+    // todo 方法废弃，可以删除，已经转移到 BalanceRecordsController.php
     public function balanceDetail()
     {
 
@@ -99,9 +95,10 @@ class BalanceController extends BaseController
 
         $page = PaginationHelper::show($detailList->total(), $detailList->currentPage(), $detailList->perPage());
 
-        return view('finance.balance.detail', [
-            'detailList'    => $detailList,
-            'pager'         => $page,
+
+        return view('finance.balance.balanceRecords', [
+            'pageList'      => $detailList,
+            'page'         => $page,
             'search'        => $search,
             'shopSet'       => Setting::get('shop.member'),
             'serviceType'   => \app\common\models\finance\Balance::$balanceComment

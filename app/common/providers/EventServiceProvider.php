@@ -8,14 +8,17 @@ use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
+use app\common\listeners\member\AfterOrderPaidListener;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
+use app\frontend\modules\coupon\listeners\CouponSend;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\finance\listeners\Order;
 use app\frontend\modules\goods\listeners\GoodsStock;
 use app\frontend\modules\member\listeners\level\LevelListener;
 use app\frontend\modules\order\listeners\orderListener;
+use app\frontend\modules\coupon\listeners\CouponExpireNotice;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -82,7 +85,9 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\Credit::class,
         \app\frontend\modules\payment\listeners\Wechat::class,
         orderListener::class,
-        IncomeWithdraw::class
+        IncomeWithdraw::class,
+        CouponExpireNotice::class,
+        CouponSend::class
     ];
     /**
      * Register any events for your application.

@@ -27,14 +27,14 @@ class Member extends BackendModel
 
     protected $guarded = ['credit1', 'credit2', 'credit3', 'credit4', 'credit5'];
 
-    protected $fillable = ['uniacid', 'mobile', 'groupid', 'createtime', 'nickname', 'avatar', 'gender'
-        , 'salt', 'password'];
+    protected $fillable = ['uniacid', 'mobile', 'groupid', 'createtime', 'nickname', 'avatar', 'gender', 'salt', 'password'];
 
     protected $attributes = ['bio' => '', 'resideprovince' => '', 'residecity' => '', 'nationality' => '', 'interest' => '', 'mobile' => '', 'email' => '', 'credit1' => 0, 'credit2' => 0, 'credit3' => 0, 'credit4' => 0, 'credit5' => 0, 'credit6' => 0, 'realname' => '', 'qq' => '', 'vip' => 0, 'birthyear' => 0, 'birthmonth' => 0, 'birthday' => 0, 'constellation' => '', 'zodiac' => '', 'telephone' => '', 'idcard' => '', 'studentid' => '', 'grade' => '', 'address' => '', 'zipcode' => '', 'residedist' => '', 'graduateschool' => '', 'company' => '', 'education' => '', 'occupation' => '', 'position' => '', 'revenue' => '', 'affectivestatus' => '', 'lookingfor' => '', 'bloodtype' => '', 'height' => '', 'weight' => '', 'alipay' => '', 'msn' => '', 'taobao' => '', 'site' => ''];
 
     const INVALID_OPENID = 0;
 
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
+
     protected $primaryKey = 'uid';
 
     public $timestamps = false;
@@ -77,6 +77,40 @@ class Member extends BackendModel
     {
         return $this->hasOne(MemberCoupon::class, 'uid', 'uid');
     }
+
+    public function scopeOfUid($query,$uid)
+    {
+        return $query->where('uid',$uid);
+    }
+
+    public function scopeSearchYzMember($query,$search)
+    {
+        return $query->whereHas('yzMember',function($query)use($search) {
+            return $query->search($search);
+        });
+    }
+
+
+    public function scopeSearch($query,$search)
+    {
+        if ($search['member_id']) {
+            $query->ofUid($search['member_id']);
+        }
+        if ($search['realname']) {
+            $query->searchLike($search['realname']);
+        }
+        if ($search['member_level'] || $search['member_group']) {
+            $query->searchYzMember($search);
+        }
+        return $query;
+    }
+
+
+
+
+
+
+
     /**
      * 获取用户信息
      *
