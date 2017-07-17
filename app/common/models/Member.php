@@ -334,7 +334,7 @@ class Member extends BackendModel
         if ($plugin_class->isEnabled('love')) {
             $data['love'] = [
                 'status'  => '1',
-                'love_name'=> SetService::getLoveName();
+                'love_name'=> SetService::getLoveName(),
             ];
         } else {
             $data['gold'] = '';
