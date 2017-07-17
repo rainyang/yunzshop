@@ -60,6 +60,7 @@ abstract class OrderModel extends Order
     protected function getFinalPrice()
     {
         $result = 0;
+
         foreach ($this->orderGoods as $aOrderGoods) {
             /**
              * @var $aOrderGoods PreGeneratedOrderGoodsModel
