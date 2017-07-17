@@ -2,12 +2,15 @@
 namespace app\common\services;
 
 use app\common\models\AccountWechats;
+use app\Jobs\MessageNoticeJob;
 use EasyWeChat\Message\News;
 use EasyWeChat\Message\Text;
 use EasyWeChat\Foundation\Application;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class MessageService
 {
+    use DispatchesJobs;
     /**
      * 发送微信模板消息
      * @param $templateId
@@ -27,10 +30,16 @@ class MessageService
             $app = app('wechat');
         }
         
-        $notice = $app->notice;
-        $notice->uses($templateId)->andData($data)->andReceiver($openId)->send();
+        (new MessageService())->noticeQueue($app->notice,$templateId,$data,$openId);
+//        $notice = $app->notice;
+//        $notice->uses($templateId)->andData($data)->andReceiver($openId)->send();
     }
 
+    public function noticeQueue($notice,$templateId,$data,$openId)
+    {
+        $this->dispatch((new MessageNoticeJob($notice,$templateId,$data,$openId)));
+    }
+    
     public static function getWechatTemplates() {
         $app = app('wechat');
         $notice = $app->notice;
