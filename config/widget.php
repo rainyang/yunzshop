@@ -26,6 +26,10 @@ return [
             'title' => '配送',
             'class' => 'app\backend\widgets\goods\DispatchWidget'
         ],
+        'tab_coupon' => [
+            'title' => '优惠券',
+            'class' => 'app\backend\widgets\goods\CouponWidget'
+        ],
     ],
     'withdraw' => [
         'income' => [
