@@ -580,12 +580,11 @@ class SdkPayment
      * @param $collectioner_name
      * @return string
      */
-    public function withdraw($collectioner_account, $collectioner_name, $out_trade_no)
+    public function withdraw($collectioner_account, $collectioner_name, $out_trade_no, $batch_no)
     {
         $service = 'batch_trans_notify';
         $pay = Setting::get('shop.pay');
 
-        $batch_no = $out_trade_no;
         $notify_url = Url::shopUrl('payment/alipay/withdrawNotifyUrl.php');
 
         $parameter = array(
@@ -598,7 +597,7 @@ class SdkPayment
             'batch_no' => $batch_no,
             'batch_fee' => $this->total_fee,
             'batch_num' => 1,
-            'detail_data' => $batch_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现_' . \YunShop::app()->uniacid,
+            'detail_data' => $out_trade_no.'^'.$collectioner_account.'^'.$collectioner_name.'^'.$this->total_fee.'^佣金提现_' . \YunShop::app()->uniacid,
             '_input_charset' => strtolower($this->_input_charset),
         );
 

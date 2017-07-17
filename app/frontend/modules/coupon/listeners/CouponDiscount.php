@@ -10,6 +10,7 @@ namespace app\frontend\modules\coupon\listeners;
 
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
+use app\common\events\order\AfterOrderReceivedEvent;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\coupon\services\CouponService;
 
@@ -48,6 +49,18 @@ class CouponDiscount
         $couponService->destroyUsedCoupons();
     }
 
+    /*
+     * 监听订单完成事件
+     */
+    public function onOrderReceived(AfterOrderReceivedEvent $event)
+    {
+        $this->event = $event;
+        $orderModel = $this->event->getOrderModel();
+        $orderGoods = $orderModel->hasManyOrderGoods;//订单商品
+        $couponService = new CouponService($orderModel, null, $orderGoods);
+        $couponService->sendCoupun();
+    }
+
     /**
      * @param $events
      * 监听多个事件
@@ -61,6 +74,10 @@ class CouponDiscount
         $events->listen(
             AfterOrderCreatedEvent::class,
             CouponDiscount::class . '@onOrderCreated'
+        );
+        $events->listen(
+            AfterOrderReceivedEvent::class,
+            CouponDiscount::class . '@onOrderReceived'
         );
 
     }

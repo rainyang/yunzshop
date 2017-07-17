@@ -10,8 +10,9 @@ use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
 use app\common\listeners\member\AfterOrderPaidListener;
 use app\common\listeners\PayLogListener;
-use app\common\listeners\point\PointLisrener;
+use app\common\listeners\point\PointListener;
 use app\common\listeners\WechatProcessorListener;
+use app\frontend\modules\coupon\listeners\CouponSend;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\finance\listeners\Order;
 use app\frontend\modules\goods\listeners\GoodsStock;
@@ -76,7 +77,7 @@ class EventServiceProvider extends ServiceProvider
         \app\common\listeners\order\OrderTestListener::class,
         \app\common\listeners\goods\GoodsTestListener::class,
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
-        PointLisrener::class,
+        PointListener::class,
         GoodsStock::class,
         Order::class,
         \app\frontend\modules\discount\listeners\Order::class,
@@ -85,7 +86,8 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\Wechat::class,
         orderListener::class,
         IncomeWithdraw::class,
-        CouponExpireNotice::class
+        CouponExpireNotice::class,
+        CouponSend::class
     ];
     /**
      * Register any events for your application.
