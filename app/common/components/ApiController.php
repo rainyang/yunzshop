@@ -88,7 +88,7 @@ class ApiController extends BaseController
         $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
         if (5 == $type) {
-            return $this->errorJson('',['login_status'=> 1,'login_url'=>'', 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid]);
+            return $this->errorJson('',['login_status'=> 1,'login_url'=>Url::absoluteApi('member.login.index'), 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid]);
         }
 
         return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
