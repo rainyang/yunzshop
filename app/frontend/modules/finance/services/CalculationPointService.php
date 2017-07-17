@@ -21,9 +21,12 @@ class CalculationPointService
 
     public function __construct($orderGoodsModels, $member_id)
     {
+        //验证积分设置
         $this->verifyPointSet();
+        //验证用户积分
         $this->verifyMemberPoint($member_id);
         $this->orderGoodsModels = $orderGoodsModels;
+        //计算积分
         $this->calculationPoint();
         $this->point_money = $this->point * $this->point_set['money'];
     }

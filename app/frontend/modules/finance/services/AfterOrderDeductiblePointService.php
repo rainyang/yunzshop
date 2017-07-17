@@ -19,15 +19,16 @@ class AfterOrderDeductiblePointService
     private $order_model;
     private $point_set;
     private $preGenerateOrder;
-    public static function isChecked($deduction_ids,$id = 1)
+
+    public static function isChecked($deduction_ids, $id = 1)
     {
         if (!is_array($deduction_ids)) {
-            $deduction_ids = json_decode($deduction_ids,true);
+            $deduction_ids = json_decode($deduction_ids, true);
             if (!is_array($deduction_ids)) {
-                $deduction_ids = explode(',',$deduction_ids);
+                $deduction_ids = explode(',', $deduction_ids);
             }
         }
-        return in_array($id,$deduction_ids);
+        return in_array($id, $deduction_ids);
     }
 
     public function deductiblePoint(AfterOrderCreatedEvent $event)
@@ -40,16 +41,19 @@ class AfterOrderDeductiblePointService
 
     private function calculationPoint()
     {
-        $this->isDeductible();
+        if (!$this->isDeductible()) {
+            return;
+        }
+        $this->addPointLog();
+
     }
 
     private function isDeductible()
     {
         $deduction_ids = $this->preGenerateOrder->getParams('deduction_ids');
         if (!self::isChecked($deduction_ids)) {
-            return;
+            return false;
         }
-        $this->addPointLog();
     }
 
     private function getPointData()
@@ -57,10 +61,10 @@ class AfterOrderDeductiblePointService
         $point_service = new CalculationPointService($this->order_model->hasManyOrderGoods, $this->order_model->uid);
         return [
             'point_income_type' => -1,
-            'point_mode'        => 6,
-            'member_id'         => $this->order_model->uid,
-            'point'             => -$point_service->point,
-            'remark'            => '订单[' . $this->order_model->order_sn . ']抵扣[' . $point_service->point_money .  ']元'
+            'point_mode' => 6,
+            'member_id' => $this->order_model->uid,
+            'point' => -$point_service->point,
+            'remark' => '订单[' . $this->order_model->order_sn . ']抵扣[' . $point_service->point_money . ']元'
         ];
     }
 
