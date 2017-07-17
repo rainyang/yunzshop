@@ -28,7 +28,7 @@ class OrderGoods extends BaseModel
     //public function
     public function hasOneGoods()
     {
-        return $this->hasOne('\app\common\models\Goods', 'id', 'goods_id');
+        return $this->hasOne($this->getNearestModel('Goods'), 'id', 'goods_id');
     }
 
     public function goods()

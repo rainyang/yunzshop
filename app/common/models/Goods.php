@@ -347,7 +347,6 @@ class Goods extends BaseModel
     public static function boot()
     {
         parent::boot();
-        static::observe(new GoodsObserver());
 
         static::addGlobalScope(function (Builder $builder) {
             $builder->uniacid();
