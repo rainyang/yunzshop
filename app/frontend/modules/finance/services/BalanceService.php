@@ -48,7 +48,14 @@ class BalanceService
     //余额充值优惠
     public function rechargeSale()
     {
-        return $this->rechargeSet() ? $this->_recharge_set['sale'] : '';
+        return $this->rechargeSet() ? $this->_recharge_set['sale'] : [];
+    }
+
+    //0赠送固定金额，1赠送充值比例
+    
+    public function proportionStatus()
+    {
+        return isset($this->_recharge_set['proportion_status']) ? $this->_recharge_set['proportion_status'] : '0';
     }
 
     //余额转让设置
@@ -87,82 +94,5 @@ class BalanceService
         return $this->_withdraw_set['alipay'] ? true : false;
     }
 
-    /**
-     * 余额充值回调，支付成功回调方法
-     *
-     *
-     * @param array $data
-     * @return bool|string
-     * @throws AppException
-     */
-    public function payResult($data = [])
-    {
-        $rechargeMode = BalanceRecharge::getRechargeRecordByOrdersn($data['order_sn']);
-        if (!$rechargeMode) {
-            throw new AppException('充值失败');
-        }
-        $rechargeMode->status = BalanceRecharge::PAY_STATUS_SUCCESS;
-        if ($rechargeMode->save()) {
-            $this->data = array(
-                'member_id'     => $rechargeMode->member_id,
-                'remark'        => '会员充值'.$rechargeMode->money . '元，支付单号：' . $data['pay_sn'],
-                'source'        => ConstService::SOURCE_RECHARGE,
-                'relation'      => $rechargeMode->ordersn,
-                'operator'      => ConstService::OPERATOR_MEMBER,
-                'operator_id'   => $rechargeMode->member_id,
-                'change_value'  => $rechargeMode->money,
-            );
-            $result = (new BalanceChange())->recharge($this->data);
-            if ($result === true) {
-                return $this->rechargeSaleMath();
-            }
-            throw new AppException($result);
-        }
-        throw new AppException('修改充值状态失败');
-    }
-
-    /**
-     * 余额满额送计算，充值赠送
-     *
-     * @return bool|string
-     */
-    private function rechargeSaleMath()
-    {
-        $sale = $this->rechargeSale();
-        $sale = array_values(array_sort($sale, function ($value) {
-
-            return $value['enough'];
-        }));
-        rsort($sale);
-        foreach ($sale as $key) {
-            if (empty($key['enough']) || empty($key['give'])) {
-                continue;
-            }
-            if ($this->data['change_value'] >= floatval($key['enough'])) {
-                if (strexists($key['give'], '%')) {
-                    $result = round(floatval(str_replace('%', '', $key['give'])) / 100 * $this->data['change_money'], 2);
-                } else {
-                    $result = round(floatval($key['give']), 2);
-                }
-                $enough = floatval($key['enough']);
-                $give = $key['give'];
-                break;
-            }
-        }
-        if ($result) {
-            $result = array(
-                'member_id' => $this->data['member_id'],
-                'remark' => '充值满' . $enough . '赠送' . $give . '(充值金额:' . $this->data['change_value'] . '元)',
-                'source' => ConstService::SOURCE_AWARD,
-                'relation' => $this->data['source'],
-                'operator' => ConstService::OPERATOR_MEMBER,
-                'operator_id' => $this->data['member_id'],
-                //todo 验证余额值
-                'change_value' => $result,
-            );
-            return (new BalanceChange())->award($result);
-        }
-        return true;
-    }
 
 }

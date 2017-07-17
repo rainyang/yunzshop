@@ -169,27 +169,16 @@
             }
         }
 
-        if ($(':input[name="widgets[sale][ed_full]"]').val() == '') {
-            $('#myTab a[href="#tab_sale"]').tab('show');
-            Tip.focus(':input[name="widgets[sale][ed_full]"]', "请输入满额立减金额!");
-            return false;
-        } else {
-            if (!reg.test($(':input[name="widgets[sale][ed_full]"]').val())) {
+        if ($(':input[name="widgets[sale][ed_full]"]').val() != '' && !reg.test($(':input[name="widgets[sale][ed_full]"]').val())) {
                 $('#myTab a[href="#tab_sale"]').tab('show');
                 Tip.focus(':input[name="widgets[sale][ed_full]"]', '满额立减金额格式错误,最多两位小数.');
                 return false;
-            }
         }
-        if ($(':input[name="widgets[sale][ed_reduction]"]').val() == '') {
-            $('#myTab a[href="#tab_sale"]').tab('show');
-            Tip.focus(':input[name="widgets[sale][ed_reduction]"]', "请输入满额立减金额!");
-            return false;
-        } else {
-            if (!reg.test($(':input[name="widgets[sale][ed_reduction]"]').val())) {
+        if ($(':input[name="widgets[sale][ed_reduction]"]').val() != '' && !reg.test($(':input[name="widgets[sale][ed_reduction]"]').val())) {
+
                 $('#myTab a[href="#tab_sale"]').tab('show');
                 Tip.focus(':input[name="widgets[sale][ed_reduction]"]', '满额立减金额格式错误,最多两位小数.');
                 return false;
-            }
         }
         if ($(':input[name="widgets[sale][ed_num]"]').val() == '') {
             $('#myTab a[href="#tab_sale"]').tab('show');

@@ -35,6 +35,19 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'>
+                                    <input type='radio' name='balance[proportion_status]' value='0' @if(empty($balance['proportion_status'])) checked @endif/>
+                                    赠送固定金额
+                                </label>
+                                <label class='radio-inline'>
+                                    <input type='radio' name='balance[proportion_status]' value='1' @if($balance['proportion_status'] == 1) checked @endif/>
+                                    赠送充值比例
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-9 col-xs-12">
                                 <h4>
                                     充值满额送:
                                     <button type='button' class="btn btn-default" onclick='addRechargeItem()' style="margin-bottom:5px">
@@ -50,20 +63,19 @@
                                         <input type="text" class="form-control" name='balance[enough][]' value='{{ $list['enough'] or '' }}'/>
                                         <span class="input-group-addon">赠送</span>
                                         <input type="text" class="form-control" name='balance[give][]' value='{{ $list['give'] or '' }}'/>
-                                        <span class="input-group-addon">元</span>
+                                        <span class="input-group-addon unit">@if(empty($balance["proportion_status"])) 元 @else % @endif</span>
                                         <div class='input-group-btn'>
                                             <button class='btn btn-danger' type='button'
                                                     onclick="removeRechargeItem(this)"><i class='fa fa-remove'></i>
                                             </button>
                                         </div>
-
                                     </div>
                                     @endforeach
                                 </div>
 
-                                <span class="help-block">两项都填写才能生效，赠送的余额可以固定数或比例(带%)号</span>
-                                <span class="help-block">例如：充值满100，赠送10</span>
-                                <span class="help-block">例如：充值满200，赠送15%，实际赠送30(200*15%)</span>
+                                <span class="help-block">两项都填写才能生效</span>
+                                <span class="help-block">赠送固定金额：充值满100，赠送10元,实际赠送10元</span>
+                                <span class="help-block">赠送充值比例：充值满200，赠送15%，实际赠送30【200*15%】元</span>
                             </div>
                         </div>
                     </div>
@@ -91,14 +103,38 @@
         </form>
     </div>
     <script language='javascript'>
-
+        $(function () {
+            $(":radio[name='balance[recharge]']").click(function () {
+                if ($(this).val() == 1) {
+                    $("#recharge").show();
+                }
+                else {
+                    $("#recharge").hide();
+                }
+            });
+            $(":radio[name='balance[proportion_status]']").click(function () {
+                if ($(this).val() == 1) {
+                    $(".unit").html('%');
+                }
+                else {
+                    $(".unit").html('元');
+                }
+            });
+        });
         function addRechargeItem() {
+            var value  = $('input[name="balance[proportion_status]"]:checked').val();
+            if (value == 1) {
+                var unit = '%';
+            } else {
+                var unit = '元';
+            }
+
             var html = '<div class="input-group recharge-item"  style="margin-top:5px; width: 60%;">';
             html += '<span class="input-group-addon">满</span>';
             html += '<input type="text" class="form-control" name="balance[enough][]"  />';
             html += '<span class="input-group-addon">赠送</span>';
             html += '<input type="text" class="form-control"  name="balance[give][]"  />';
-            html += '<span class="input-group-addon">元</span>';
+            html += '<span class="input-group-addon unit">'+ unit +'</span>';
             html += '<div class="input-group-btn"><button type="button" class="btn btn-danger" onclick="removeRechargeItem(this)"><i class="fa fa-remove"></i></button></div>';
             html += '</div>';
             $('.recharge-items').append(html);
@@ -109,26 +145,7 @@
 
 
     </script>
-    <script language="javascript">
-        $(function () {
-            $(":radio[name='balance[recharge]']").click(function () {
-                if ($(this).val() == 1) {
-                    $("#recharge").show();
-                }
-                else {
-                    $("#recharge").hide();
-                }
-            });
-            $(":radio[name='balance[withdraw][status]']").click(function () {
-                if ($(this).val() == 1) {
-                    $("#withdraw").show();
-                }
-                else {
-                    $("#withdraw").hide();
-                }
-            });
-        })
-    </script>
+
 
 
 @endsection

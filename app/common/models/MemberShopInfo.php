@@ -32,11 +32,9 @@ class MemberShopInfo extends BackendModel
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope(
-            function(Builder $builder){
-                return $builder->uniacid();
-            }
-        );
+        static::addGlobalScope('uniacid',function (Builder $builder) {
+            return $builder->uniacid();
+        });
     }
 
     /**
@@ -46,6 +44,27 @@ class MemberShopInfo extends BackendModel
     public function level()
     {
         return $this->belongsTo('app\backend\modules\member\models\MemberLevel', 'level_id', 'id');
+    }
+
+    public function scopeSearch($query,$search)
+    {
+        if ($search['member_level']) {
+            $query->ofLevelId($search['member_level']);
+        }
+        if ($search['member_group']) {
+            $query->ofGroupId($search['member_group']);
+        }
+        return $query;
+    }
+
+    public function scopeOfLevelId($query,$levelId)
+    {
+        return $query->where('level_id',$levelId);
+    }
+
+    public function scopeOfGroupId($query,$groupId)
+    {
+        return $query->where('group_id',$groupId);
     }
 
     /**

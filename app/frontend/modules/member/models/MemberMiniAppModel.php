@@ -23,9 +23,17 @@ class MemberMiniAppModel extends BackendModel
         self::insert($data);
     }
 
-    public function getUserInfo()
-    {}
+    public static function getUserInfo($openid)
+    {
+        return self::uniacid()
+            ->where('openid', $openid)
+            ->first();
+    }
 
-    public function getMemberId()
-    {}
+    public static function updateUserInfo($openid, $data)
+    {
+        return self::uniacid()
+            ->where('openid', $openid)
+            ->update($data);
+    }
 }

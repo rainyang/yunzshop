@@ -10,9 +10,32 @@ namespace app\common\models;
 
 
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+
 class MemberGroup extends BaseModel
 {
+    use SoftDeletes;
+
     protected $table = 'yz_member_group';
+
+
+    /*public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('uniacid',function (Builder $builder) {
+            return $builder->uniacid();
+        });
+    }*/
+
+    public function scopeRecords($query)
+    {
+        return $query->select('id','group_name');
+    }
+
+
+
     /**
      * Get member group information by groupId
      *

@@ -93,6 +93,7 @@ class Handler extends ExceptionHandler
     protected function renderShopException(Exception $exception)
     {
         if (\Yunshop::isApi()) {
+            \Log::error($exception);
             return $this->errorJson($exception->getMessage());
         }
         exit($this->message($exception->getMessage(), '', 'error'));
