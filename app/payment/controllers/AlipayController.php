@@ -108,7 +108,7 @@ class AlipayController extends PaymentController
                 if ($plits[4] == 'S') {
                     $data = [
                         'total_fee'    => $plits[3],
-                        'trade_no'     => $_POST['batch_no'],
+                        'trade_no'     => $plits[0],
                         'unit'         => 'yuan',
                         'pay_type'     => '支付宝'
                     ];
@@ -119,7 +119,7 @@ class AlipayController extends PaymentController
                 if ($plits[4] == 'F') {
                     $data = [
                         'total_fee'    => $plits[3],
-                        'trade_no'     => $_POST['trade_no'],
+                        'trade_no'     => $plits[0],
                         'unit'         => 'yuan',
                         'pay_type'     => '支付宝'
                     ];
