@@ -31,6 +31,11 @@ return [
             'function_validator'=>'relationValidator',
             'function_save'=>'relationSave'
         ],
+        'coupon'=>[
+            'class'=>'app\backend\modules\goods\models\Coupon',
+            'function_validator'=>'relationValidator',
+            'function_save'=>'relationSave'
+        ],
     ],
     'order' => [
         //订单操作记录

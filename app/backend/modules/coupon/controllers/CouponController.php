@@ -11,6 +11,7 @@ use app\backend\modules\coupon\models\CouponLog;
 use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\models\Category;
 use app\common\facades\Setting;
+use app\frontend\modules\coupon\listeners\CouponSend;
 
 /**
  * Created by PhpStorm.
@@ -258,5 +259,5 @@ class CouponController extends BaseController
             'couponid' => $couponId,
         ])->render();
     }
-
+    
 }

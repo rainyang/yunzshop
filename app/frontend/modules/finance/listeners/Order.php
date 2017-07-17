@@ -14,7 +14,8 @@ use app\frontend\modules\finance\services\CalculationPointService;
 
 class Order
 {
-    private $event;
+    protected $event;
+    protected $deductionId = 1;
 
     public function onDisplay(OnDeductionInfoDisplayEvent $event)
     {
@@ -27,14 +28,14 @@ class Order
         $event->addData($data);
     }
 
-    private function isChecked($id = 1)
+    protected function isChecked()
     {
         $deduction_ids = $this->event->getOrderModel()->getParams('deduction_ids');
 
-        return AfterOrderDeductiblePointService::isChecked($deduction_ids);
+        return AfterOrderDeductiblePointService::isChecked($deduction_ids,$this->deductionId);
     }
 
-    private function getPointData()
+    protected function getPointData()
     {
         $orderModel = $this->event->getOrderModel();
 
@@ -71,12 +72,12 @@ class Order
     {
         $events->listen(
             OnDeductionInfoDisplayEvent::class,
-            self::class . '@onDisplay'
+            static::class . '@onDisplay'
         );
         $events->listen(
 
             OnDeductionPriceCalculatedEvent::class,
-            self::class . '@onCalculated'
+            static::class . '@onCalculated'
         );
 
     }
