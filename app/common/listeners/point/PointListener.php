@@ -17,63 +17,63 @@ use app\common\services\finance\PointService;
 use app\frontend\modules\finance\services\AfterOrderDeductiblePointService;
 use Setting;
 
-class PointLisrener
+class PointListener
 {
-    private $point_set;
-    private $order_model;
+    private $pointSet;
+    private $orderModel;
 
     public function changePoint(AfterOrderReceivedEvent $event)
     {
-        $this->point_set = Setting::get('point.set');
-        $this->order_model = Order::find($event->getOrderModel()->id);
+        $this->pointSet = Setting::get('point.set');
+        $this->orderModel = Order::find($event->getOrderModel()->id);
         $this->byGoodsGivePoint();
         $this->orderGivePoint();
     }
 
     private function getPointDataByGoods($order_goods_model)
     {
-        $point_data = [
+        $pointData = [
             'point_income_type' => 1,
-            'member_id' => $this->order_model->uid,
-            'order_id' => $this->order_model->id,
+            'member_id' => $this->orderModel->uid,
+            'order_id' => $this->orderModel->id,
             'point_mode' => 1
         ];
-        $point_data += CalculationPointService::calcuationPointByGoods($order_goods_model);
-        return $point_data;
+        $pointData += CalculationPointService::calcuationPointByGoods($order_goods_model);
+        return $pointData;
     }
 
     private function getPointDateByOrder()
     {
-        $point_data = [
+        $pointData = [
             'point_income_type' => 1,
-            'member_id' => $this->order_model->uid,
-            'order_id' => $this->order_model->id,
+            'member_id' => $this->orderModel->uid,
+            'order_id' => $this->orderModel->id,
             'point_mode' => 2
         ];
-        $point_data += CalculationPointService::calcuationPointByOrder($this->order_model);
-        return $point_data;
+        $pointData += CalculationPointService::calcuationPointByOrder($this->orderModel);
+        return $pointData;
     }
 
-    private function addPointLog($point_data)
+    private function addPointLog($pointData)
     {
-        if (isset($point_data['point'])) {
-            $point_service = new PointService($point_data);
-            $point_service->changePoint();
+        if (isset($pointData['point'])) {
+            $pointService = new PointService($pointData);
+            $pointService->changePoint();
         }
     }
 
     private function byGoodsGivePoint()
     {
-        foreach ($this->order_model->hasManyOrderGoods as $order_goods_model) {
-            $point_data = $this->getPointDataByGoods($order_goods_model);
+        foreach ($this->orderModel->hasManyOrderGoods as $aOrderGoods) {
+            $point_data = $this->getPointDataByGoods($aOrderGoods);
             $this->addPointLog($point_data);
         }
     }
 
     private function orderGivePoint()
     {
-        $point_data = $this->getPointDateByOrder();
-        $this->addPointLog($point_data);
+        $pointData = $this->getPointDateByOrder();
+        $this->addPointLog($pointData);
     }
 
     public function subscribe($events)
@@ -81,7 +81,7 @@ class PointLisrener
         //收货之后 根据商品和订单赠送积分
         $events->listen(
             AfterOrderReceivedEvent::class,
-            PointLisrener::class . '@changePoint'
+            PointListener::class . '@changePoint'
         );
 
         //下单之后 扣除积分抵扣使用的积分
