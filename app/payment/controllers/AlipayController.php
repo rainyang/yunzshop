@@ -23,7 +23,7 @@ class AlipayController extends PaymentController
 
         $verify_result = $this->getSignResult();
 
-        \Log::debug('支付回调验证结果', intval($verify_result));
+        \Log::debug(sprintf('支付回调验证结果[%d]', intval($verify_result)));
 
         if($verify_result) {
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
@@ -63,11 +63,11 @@ class AlipayController extends PaymentController
     {
         \Log::debug('支付宝退款回调');
 
-        $this->log($_POST, '支付宝退款');
+        $this->refundLog($_POST, '支付宝退款');
 
         $verify_result = $this->getSignResult();
 
-        \Log::debug('支付回调验证结果', intval($verify_result));
+        \Log::debug(sprintf('支付回调验证结果[%d]', intval($verify_result)));
 
         if($verify_result) {
             if ($_POST['success_num'] >= 1) {
@@ -95,12 +95,11 @@ class AlipayController extends PaymentController
     public function withdrawNotifyUrl()
     {
         \Log::debug('支付宝提现回调');
-
-        $this->log($_POST, '支付宝提现');
+        $this->withdrawLog($_POST, '支付宝提现');
 
         $verify_result = $this->getSignResult();
 
-        \Log::debug('支付回调验证结果', intval($verify_result));
+        \Log::debug(sprintf('支付回调验证结果[%d]', intval($verify_result)));
 
         if($verify_result) {
             if ($_POST['success_details']) {
@@ -142,8 +141,9 @@ class AlipayController extends PaymentController
      */
     public function getSignResult()
     {
-        $key = Setting::get('alipay-web.key');
-
+        \Log::debug(sprintf('Uniacid[%d]', \YunShop::app()->uniacid));
+        $key = \Setting::get('alipay-web.key');
+        \Log::debug(sprintf('$key %s', $key));
         $alipay = app('alipay.web');
         $alipay->setSignType('MD5');
         $alipay->setKey($key);
@@ -161,8 +161,25 @@ class AlipayController extends PaymentController
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
+        Pay::payResponseDataLog($post['out_trade_no'], $desc , json_encode($post));
+    }
+
+    public function refundLog($post, $desc)
+    {
+        //访问记录
+        Pay::payAccessLog();
+        //保存响应数据
+        Pay::payResponseDataLog(0, $desc , json_encode($post));
+    }
+
+    public function withdrawLog($post, $desc)
+    {
+        //访问记录
+        Pay::payAccessLog();
+        //保存响应数据
         Pay::payResponseDataLog($post['batch_no'], $desc , json_encode($post));
     }
+
 
     /**
      * 支付宝退款回调操作
