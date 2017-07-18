@@ -150,6 +150,12 @@ class PointService
             case (5):
                 $mode_attribute = self::POINT_MODE_ADMIN_ATTACHED;
                 break;
+            case (6):
+                $mode_attribute = self::POINT_MODE_BY_ATTACHED;
+                break;
+            case (7):
+                $mode_attribute = self::POINT_MODE_TEAM_ATTACHED;
+                break;
         }
         return $mode_attribute;
     }
