@@ -297,7 +297,7 @@ class Member extends \app\common\models\Member
         }
 
         $query->with(['yzMember'=>function($query){
-                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black'])->with(['agent'=>function($query){
+                return $query->select(['member_id','parent_id', 'is_agent', 'group_id','level_id', 'is_black','status'])->with(['agent'=>function($query){
                         return $query->select(['uid', 'avatar', 'nickname']);
                     }]);
             }, 'hasOneFans' => function($query) {
