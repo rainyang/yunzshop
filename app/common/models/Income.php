@@ -117,6 +117,7 @@ class Income extends BackendModel
                 $query->where('incometable_type', $search['type']);
             }
             $query->where('member_id', \YunShop::app()->getMemberId());
+            $query->orderBy('id', 'desc');
             return $query->get();
         }]);
         $model->groupBy('create_month');
