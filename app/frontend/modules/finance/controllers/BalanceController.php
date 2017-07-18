@@ -112,7 +112,7 @@ class BalanceController extends ApiController
     {
         $orderSn = \YunShop::request()->order_sn;
 
-        $this->model = BalanceRecharge::getRechargeRecordByOrdersn($orderSn);
+        $this->model = BalanceRecharge::ofOrderSn($orderSn)->withoutGlobalScope('member_id')->first();
         if ($this->model) {
             return  $this->successJson('支付接口对接成功', $this->payOrder());
         }
