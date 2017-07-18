@@ -11,6 +11,7 @@ namespace app\frontend\modules\finance\controllers;
 
 
 use app\common\facades\Setting;
+use app\common\models\MemberShopInfo;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\PayFactory;
@@ -111,7 +112,7 @@ class BalanceController extends ApiController
     {
         $orderSn = \YunShop::request()->order_sn;
 
-        $this->model = BalanceRecharge::getRechargeRecordByOrdersn($orderSn);
+        $this->model = BalanceRecharge::ofOrderSn($orderSn)->withoutGlobalScope('member_id')->first();
         if ($this->model) {
             return  $this->successJson('支付接口对接成功', $this->payOrder());
         }
@@ -218,11 +219,15 @@ class BalanceController extends ApiController
         if (!$this->getWithdrawType()) {
             return '未找到提现类型';
         }
-        if (!(new BalanceService())->withdrawWechat() && $this->getWithdrawType() == 'wechat') {
+        $withdrawType = $this->getWithdrawType();
+        if (!(new BalanceService())->withdrawWechat() && $withdrawType == 'wechat') {
             return '未开启提现到微信';
         }
-        if (!(new BalanceService())->withdrawAlipay() && $this->getWithdrawType() == 'alipay') {
+        if (!(new BalanceService())->withdrawAlipay() && $withdrawType == 'alipay') {
             return '未开启提现到支付宝';
+        }
+        if (!$this->getMemberAlipaySet() && $withdrawType == 'alipay') {
+            return '您未配置支付宝信息，请先修改个人信息中支付宝信息';
         }
 
         $withdrawAstrict = (new BalanceService())->withdrawAstrict();
@@ -518,6 +523,15 @@ class BalanceController extends ApiController
             'order_no' => $this->model->ordersn,
             'extra' => ['type' => 2]
         );
+    }
+
+    private function getMemberAlipaySet()
+    {
+        $array = MemberShopInfo::select('alipay','alipayname')->where('member_id',\YunShop::app()->getMemberId())->first();
+        if ($array && $array['alipay'] && $array['alipayname']) {
+            return true;
+        }
+        return false;
     }
 
 
