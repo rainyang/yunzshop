@@ -19,7 +19,7 @@
                             <label class="radio-inline">
                                 <input type="radio" name="set[point_deduct]" value='0' @if (empty($set['point_deduct'])) checked @endif /> 关闭
                             </label>
-                            <span class='help-block'>开启积分抵扣, 商品最多抵扣的数目需要在商品【营销设置】中单独设置, 否则同意设置</span>
+                            <span class='help-block'>开启积分抵扣, 商品最多抵扣的数目需要在商品【营销设置】中单独设置, 否则统一设置</span>
                         </div>
                     </div>
                     <div class="form-group">
