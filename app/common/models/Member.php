@@ -12,6 +12,7 @@ use app\frontend\modules\member\models\MemberModel;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Yunshop\Gold\frontend\services\MemberCenterService;
+use Yunshop\Love\Common\Services\SetService;
 use Yunshop\Micro\common\services\MicroShop\GetButtonService;
 use Yunshop\Supplier\common\services\VerifyButton;
 
@@ -327,6 +328,19 @@ class Member extends BackendModel
             $data['gold'] = MemberCenterService::button(\YunShop::app()->getMemberId());
         } else {
             $data['gold'] = '';
+        }
+
+        // todo 后期需要重构
+        if ($plugin_class->isEnabled('love')) {
+            $data['love'] = [
+                'status'  => true,
+                'love_name'=> SetService::getLoveName(),
+            ];
+        } else {
+            $data['love'] = [
+                'status'    => false,
+                'love_name' => '0',
+            ];
         }
 
         return $data;
