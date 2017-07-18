@@ -27,7 +27,7 @@ class CopyGoodsService
         $newGoods = $goodsModel->replicate();
         $newGoods->save();
 
-        $goodsModel->load('hasOneShare', 'hasOneDiscount', 'hasOneGoodsDispatch', 'hasOnePrivilege');
+        $goodsModel->load('hasOneShare', 'hasOneDiscount','hasOneSale', 'hasOneGoodsDispatch', 'hasOnePrivilege');
         foreach($goodsModel->getRelations() as $relation => $item){
             if ($item) {
                 unset($item->id);
