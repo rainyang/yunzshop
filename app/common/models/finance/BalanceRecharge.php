@@ -10,6 +10,7 @@ namespace app\common\models\finance;
 
 
 use app\common\models\BaseModel;
+use app\common\traits\CreateOrderSnTrait;
 use Illuminate\Database\Eloquent\Builder;
 
 /*
@@ -18,6 +19,8 @@ use Illuminate\Database\Eloquent\Builder;
  * */
 class BalanceRecharge extends BaseModel
 {
+    use CreateOrderSnTrait;
+
     public $table = 'yz_balance_recharge';
 
     protected $guarded = [''];

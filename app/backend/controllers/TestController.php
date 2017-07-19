@@ -11,6 +11,7 @@ namespace app\backend\controllers;
 
 use app\backend\modules\member\models\MemberRelation;
 use app\common\components\BaseController;
+use app\common\models\finance\BalanceRecharge;
 use app\common\models\Member;
 use app\common\services\JsonRpc;
 use app\common\services\MessageService;
@@ -23,19 +24,8 @@ class TestController extends BaseController
 {
     public function index()
     {
-        $test = 123;
-        $a = 'a';
-
-        if (is_string($a) && ! is_null($test)) {
-            dd(1);
-        } else {
-            dd(2);
-        }
-
-        $result = (new BalanceRechargeResultService())->payResult(['order_sn'=>'RV20170415093601487652']);
-
-        //$result = (new JsonRpc())->client('plus',['user'=>'1','pass'=>2]);
-        dd($result);
+        $orderSn = (new BalanceRecharge())->createOrderSn('TT','ordersn');
+        dd($orderSn);
     }
 
     public function op_database()
