@@ -113,7 +113,7 @@ class IncomeController extends ApiController
         $id = \YunShop::request()->id;
         $detailModel = Income::getDetailById($id);
         if ($detailModel) {
-            if($detailModel->first()->detail != ''){
+            if ($detailModel->first()->detail != '') {
                 $data = $detailModel->first()->detail;
                 return '{"result":1,"msg":"成功","data":' . $data . '}';
             }
@@ -129,7 +129,7 @@ class IncomeController extends ApiController
     {
         $configs = \Config::get('income');
         foreach ($configs as $key => $config) {
-            if($config['type'] == 'balance'){
+            if ($config['type'] == 'balance') {
                 continue;
             }
             $searchType[] = [
@@ -148,6 +148,7 @@ class IncomeController extends ApiController
      */
     public function getWithdraw()
     {
+        $incomeSet = \Setting::get('withdraw.income');
         $config = \Config::get('income');
 
         foreach ($config as $key => $item) {
@@ -162,7 +163,14 @@ class IncomeController extends ApiController
             $incomeModel = $incomeModel->where('incometable_type', $item['class']);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
-            $poundage = sprintf("%.2f", substr(sprintf("%.3f", $poundage), 0, -2));
+            $poundage = number_format($poundage, 2);
+            //劳务税
+            $servicetax = 0;
+            if ($incomeSet['servicetax_rate']) {
+                $servicetax = ($amount - $poundage) / 100 * $incomeSet['servicetax_rate'];
+                $servicetax = number_format($servicetax, 2);
+            }
+
             if (($amount > 0) && (bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1)) {
                 $type_id = '';
                 foreach ($incomeModel->get() as $ids) {
@@ -176,6 +184,8 @@ class IncomeController extends ApiController
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
                     'poundage_rate' => $set[$key]['poundage_rate'],
+                    'servicetax' => $servicetax,
+                    'servicetax_rate' => $incomeSet['servicetax_rate'],
                     'can' => true,
                     'roll_out_limit' => $set[$key]['roll_out_limit'],
                     'selected' => true,
@@ -189,6 +199,8 @@ class IncomeController extends ApiController
                     'income' => $incomeModel->sum('amount'),
                     'poundage' => $poundage,
                     'poundage_rate' => $set[$key]['poundage_rate'],
+                    'servicetax' => $servicetax,
+                    'servicetax_rate' => $incomeSet['servicetax_rate'],
                     'can' => false,
                     'roll_out_limit' => $set[$key]['roll_out_limit'],
                     'selected' => false,
@@ -311,8 +323,11 @@ class IncomeController extends ApiController
                 'amounts' => $item['income'],
                 'poundage' => $item['poundage'],
                 'poundage_rate' => $item['poundage_rate'],
-                'actual_amounts' => $item['income'] - $item['poundage'],
+                'actual_amounts' => $item['income'] - $item['poundage'] - $item['servicetax'],
                 'actual_poundage' => $item['poundage'],
+                'servicetax' => $item['servicetax'],
+                'servicetax_rate' => $item['servicetax_rate'],
+                'actual_servicetax' => $item['servicetax'],
                 'pay_way' => $withdrawTotal['pay_way'],
                 'status' => 0,
                 'created_at' => time(),

@@ -179,8 +179,9 @@
             打款信息
         </div>
         <div class='panel-body'>
-            审核金额: <span style='color:red'>{{$item->actual_amounts + $item->actual_poundage}}</span> 元
+            审核金额: <span style='color:red'>{{$item->actual_amounts + $item->actual_poundage + $item->actual_servicetax}}</span> 元
             手续费: <span style='color:red'>{{$item->actual_poundage}}</span> 元
+            劳务税:<span style='color:red'>{{$item->actual_servicetax}}</span> 元
             应打款：<span style='color:red'>{{$item->actual_amounts}}</span>元
 
         </div>

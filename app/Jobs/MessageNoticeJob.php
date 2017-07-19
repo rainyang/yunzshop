@@ -9,7 +9,23 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class MessageNoticeJob implements ShouldQueue
 {
+
     use InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 5;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 120;
+    
     protected $noticeModel;
     protected $templateId;
     protected $noticeData;
