@@ -73,3 +73,20 @@
         </div>
     </div>
 </div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+    <div class="col-sm-9 col-xs-12">
+        <div class="alipay" >
+            <label class='radio-inline' >劳务税比例</label>
+        </div>
+        <div class="cost" >
+            <label class='radio-inline'>
+                <div class="input-group">
+                    <input type="text" name="withdraw[income][servicetax_rate]" class="form-control" value="{{ $set['servicetax_rate'] or '' }}" placeholder="请输入收入提现劳务税比例"/>
+                    <div class="input-group-addon">%</div>
+                </div>
+            </label>
+        </div>
+    </div>
+</div>
