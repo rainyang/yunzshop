@@ -36,33 +36,62 @@ class Order extends BaseModel
     const COMPLETE = 3;
     const REFUND = 11;
 
+    /**
+     * 时间类型字段
+     * @return array
+     */
     public function getDates()
     {
         return ['create_time', 'refund_time', 'operate_time', 'send_time', 'return_time', 'end_time', 'pay_time', 'send_time', 'cancel_time', 'create_time', 'cancel_pay_time', 'cancel_send_time', 'finish_time'] + parent::getDates();
     }
 
+    /**
+     * 订单状态:待付款
+     * @param $query
+     * @return mixed
+     */
     public function scopeWaitPay($query)
     {
         //AND o.status = 0 and o.paytype<>3
         return $query->where(['status' => self::WAIT_PAY]);
     }
 
+    /**
+     * 订单状态:待发货
+     * @param $query
+     * @return mixed
+     */
     public function scopeWaitSend($query)
     {
         //AND ( o.status = 1 or (o.status=0 and o.paytype=3) )
         return $query->where(['status' => self::WAIT_SEND]);
     }
 
+    /**
+     * 订单状态:待收货
+     * @param $query
+     * @return mixed
+     */
     public function scopeWaitReceive($query)
     {
         return $query->where(['status' => self::WAIT_RECEIVE]);
     }
 
+    /**
+     * 订单状态:完成
+     * @param $query
+     * @return mixed
+     */
     public function scopeCompleted($query)
     {
         return $query->where(['status' => self::COMPLETE]);
     }
 
+    /**
+     * 订单状态:退款中
+     * @param $query
+     * @return mixed
+     */
     public function scopeRefund($query)
     {
         return $query->where('refund_id', '>', '0')->whereHas('hasOneRefundApply', function ($query) {
@@ -71,6 +100,11 @@ class Order extends BaseModel
 
     }
 
+    /**
+     * 订单状态:已退款
+     * @param $query
+     * @return mixed
+     */
     public function scopeRefunded($query)
     {
         return $query->where('refund_id', '>', '0')->whereHas('hasOneRefundApply', function ($query) {
@@ -78,63 +112,102 @@ class Order extends BaseModel
         });
     }
 
+    /**
+     * 订单状态:取消
+     * @param $query
+     * @return mixed
+     */
     public function scopeCancelled($query)
     {
         return $query->where(['status' => self::CLOSE]);
     }
 
+    /**
+     * 关联模型 1对多:订单商品
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function hasManyOrderGoods()
     {
         return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
     }
 
+    /**
+     * 关联模型 1对多:改价记录
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function orderChangePriceLogs()
     {
         return $this->hasMany(OrderChangePriceLog::class, 'order_id', 'id');
     }
 
+    /**
+     * 关联模型 1对1:购买者
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function belongsToMember()
     {
         return $this->belongsTo(Member::class, 'uid', 'uid');
     }
 
-    //退款列表
+    /**
+     * 关联模型 1对1:退款列表
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function hasOneRefundApply()
     {
         return $this->hasOne(RefundApply::class, 'id', 'refund_id');
 
     }
 
-    //订单配送方式
+    /**
+     * 关联模型 1对1:订单配送方式
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function hasOneDispatchType()
     {
         return $this->hasOne(DispatchType::class, 'id', 'dispatch_type_id');
     }
 
-    //订单备注
+    /**
+     * 关联模型 1对1:订单备注
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function hasOneOrderRemark()
     {
         return $this->hasOne(Remark::class, 'order_id', 'id');
     }
 
-    //支付方式
+    /**
+     * 关联模型 1对1:支付方式
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function hasOnePayType()
     {
         return $this->hasOne(PayType::class, 'id', 'pay_type_id');
     }
 
-    //订单支付信息
+    /**
+     * 关联模型 1对1:订单支付信息
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function hasOneOrderPay()
     {
         return $this->belongsTo(Pay::class, 'order_pay_id', 'id');
     }
 
-    //订单快递
+    /**
+     * 关联模型 1对1:订单快递
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function express()
     {
         return $this->hasOne(Express::class, 'order_id', 'id');
     }
 
+    /**
+     * 对应每个订单状态的状态类,过于啰嗦,考虑删除
+     * @return \app\frontend\modules\order\services\status\Complete|\app\frontend\modules\order\services\status\WaitPay|\app\frontend\modules\order\services\status\WaitReceive|\app\frontend\modules\order\services\status\WaitSend
+     */
     public function getStatusService()
     {
         if (!isset($this->StatusService)) {
@@ -143,23 +216,37 @@ class Order extends BaseModel
         return $this->StatusService;
     }
 
-    //收货地址
+    /**
+     * 关联模型 1对1:收货地址
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function address()
     {
         return $this->hasOne(Address::class, 'order_id', 'id');
     }
 
-    //订单支付
+    /**
+     * 关联模型 1对1:订单支付信息
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function hasOnePay()
     {
         return $this->hasOne(Pay::class, 'order_id', 'id');
     }
 
+    /**
+     * 订单状态汉字
+     * @return string
+     */
     public function getStatusNameAttribute()
     {
         return $this->getStatusService()->getStatusName();
     }
 
+    /**
+     * 支付类型汉字
+     * @return string
+     */
     public function getPayTypeNameAttribute()
     {
         if ($this->status == self::WAIT_PAY) {
@@ -168,6 +255,10 @@ class Order extends BaseModel
         return $this->hasOnePayType->name;
     }
 
+    /**
+     * 订单可点的按钮
+     * @return array
+     */
     public function getButtonModelsAttribute()
     {
         $result = $this->getStatusService()->getButtonModels();
@@ -175,6 +266,12 @@ class Order extends BaseModel
         return $result;
     }
 
+    /**
+     * 按状态分组获取订单数量
+     * @param $query
+     * @param array $status
+     * @return array
+     */
     public function scopeGetOrderCountGroupByStatus($query, $status = [])
     {
         //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE, Order::REFUND];
@@ -192,11 +289,26 @@ class Order extends BaseModel
         return $status_counts;
     }
 
+    /**
+     * 区分订单属于插件或商城,考虑使用新添加的scopePluginId方法替代
+     * @param $query
+     * @return mixed
+     */
     public function scopeIsPlugin($query)
     {
         return $query->where('is_plugin', 0);
     }
 
+    /**
+     * 用来区分订单属于哪个.当插件需要查询自己的订单时,复写此方法
+     * @param $query
+     * @param int $pluginId
+     * @return mixed
+     */
+    public function scopePluginId($query,$pluginId = 0)
+    {
+        return $query->where('plugin', $pluginId);
+    }
     /**
      * 通过会员ID获取订单信息
      *
@@ -225,11 +337,14 @@ class Order extends BaseModel
             ->get();
     }
 
+    /**
+     * 初始化方法
+     */
     public static function boot()
     {
         parent::boot();
         static::observe(new OrderObserver());
-
+        // 添加了公众号id的全局条件.
         static::addGlobalScope(function (Builder $builder) {
             $builder->uniacid();
         });
