@@ -143,7 +143,7 @@ class WithdrawController extends BaseController
 
     public function submitCheck($withdrawId, $incomeData)
     {
-
+        $incomeSet = \Setting::get('withdraw.income');
         $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
         if ($withdraw->status != '0') {
             return ['msg' => '审核失败,数据不符合提现规则!'];
@@ -161,13 +161,14 @@ class WithdrawController extends BaseController
             }
         }
         $actual_poundage = number_format($actual_amounts / 100 * $withdraw['poundage_rate'],2);
+        $actual_servicetax = number_format(($actual_amounts - $actual_poundage) / 100 * $withdraw['servicetax_rate'],2);
         $updatedData = [
             'status' => $withdrawStatus,
-            'actual_amounts' => $actual_amounts - $actual_poundage,
+            'actual_amounts' => $actual_amounts - $actual_poundage - $actual_servicetax,
             'actual_poundage' => $actual_poundage,
+            'actual_servicetax' => $actual_servicetax,
             'audit_at' => time(),
         ];
-        
         $result = Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
         
         if ($result) {
@@ -201,11 +202,13 @@ class WithdrawController extends BaseController
                 Income::updatedIncomePayStatus($key, ['pay_status' => '-1']);
             }
         }
-        $actual_poundage = $actual_amounts / 100 * $withdraw['poundage_rate'];
+        $actual_poundage = number_format($actual_amounts / 100 * $withdraw['poundage_rate'],2);
+        $actual_servicetax = number_format(($actual_amounts - $actual_poundage) / 100 * $withdraw['servicetax_rate'],2);
         $updatedData = [
             'status' => $withdrawStatus,
-            'actual_amounts' => $actual_amounts - $actual_poundage,
+            'actual_amounts' => $actual_amounts - $actual_poundage - $actual_servicetax,
             'actual_poundage' => $actual_poundage,
+            'actual_servicetax' => $actual_servicetax,
             'audit_at' => time(),
         ];
         
