@@ -10,6 +10,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Events\Dispatcher;
 use app\common\repositories\OptionRepository;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\DB;
 
 class PluginManager
 {
@@ -43,9 +44,10 @@ class PluginManager
         OptionRepository $option,
         Dispatcher $dispatcher,
         Filesystem $filesystem
-    ) {
-        $this->app        = $app;
-        $this->option     = $option;
+    )
+    {
+        $this->app = $app;
+        $this->option = $option;
         $this->dispatcher = $dispatcher;
         $this->filesystem = $filesystem;
     }
@@ -62,16 +64,16 @@ class PluginManager
 
             $resource = opendir(base_path('plugins'));
             // traverse plugins dir
-            while($filename = @readdir($resource)) {
+            while ($filename = @readdir($resource)) {
                 if ($filename == "." || $filename == "..")
                     continue;
 
-                $path = base_path('plugins')."/".$filename;
+                $path = base_path('plugins') . "/" . $filename;
 
                 if (is_dir($path)) {
-                    if (file_exists($path."/package.json")) {
+                    if (file_exists($path . "/package.json")) {
                         // load packages installed
-                        $installed[$filename] = json_decode($this->filesystem->get($path."/package.json"), true);
+                        $installed[$filename] = json_decode($this->filesystem->get($path . "/package.json"), true);
                     }
                 }
 
@@ -81,7 +83,7 @@ class PluginManager
             foreach ($installed as $path => $package) {
 
                 // Instantiates an Plugin object using the package path and package.json file.
-                $plugin = new Plugin($this->getPluginsDir().'/'.$path, $package);
+                $plugin = new Plugin($this->getPluginsDir() . '/' . $path, $package);
 
                 // Per default all plugins are installed if they are registered in composer.
                 $plugin->setDirname($path);
@@ -119,19 +121,22 @@ class PluginManager
      */
     public function enable($name)
     {
-        if (! $this->isEnabled($name)) {
-            $plugin = $this->getPlugin($name);
+        if (!$this->isEnabled($name)) {
+            DB::transaction(function () use ($name) {
+                $plugin = $this->getPlugin($name);
 
-            $enabled = $this->getEnabled();
+                $enabled = $this->getEnabled();
 
-            $enabled[] = $name;
+                $enabled[] = $name;
 
-            $this->setEnabled($enabled);
+                $this->setEnabled($enabled);
 
-            $plugin->setEnabled(true);
+                $plugin->setEnabled(true);
 
-            $this->dispatcher->fire(new events\PluginWasEnabled($plugin));
+                $this->dispatcher->fire(new events\PluginWasEnabled($plugin));
+            });
         }
+
     }
 
     /**
@@ -139,7 +144,8 @@ class PluginManager
      *
      * @param string $name
      */
-    public function disable($name)
+    public
+    function disable($name)
     {
         $enabled = $this->getEnabled();
 
@@ -161,7 +167,8 @@ class PluginManager
      *
      * @param string $name
      */
-    public function uninstall($name)
+    public
+    function uninstall($name)
     {
         $plugin = $this->getPlugin($name);
 
@@ -181,7 +188,8 @@ class PluginManager
      *
      * @return Collection
      */
-    public function getEnabledPlugins()
+    public
+    function getEnabledPlugins()
     {
         return $this->getPlugins()->only($this->getEnabled());
     }
@@ -191,12 +199,13 @@ class PluginManager
      *
      * @return Collection
      */
-    public function getEnabledBootstrappers()
+    public
+    function getEnabledBootstrappers()
     {
         $bootstrappers = new Collection;
 
         foreach ($this->getEnabledPlugins() as $plugin) {
-            if ($this->filesystem->exists($file = $plugin->getPath().'/bootstrap.php')) {
+            if ($this->filesystem->exists($file = $plugin->getPath() . '/bootstrap.php')) {
                 $bootstrappers->push($file);
             }
         }
@@ -209,9 +218,10 @@ class PluginManager
      *
      * @return array
      */
-    public function getEnabled()
+    public
+    function getEnabled()
     {
-        return (array) json_decode($this->option->get('plugins_enabled'), true);
+        return (array)json_decode($this->option->get('plugins_enabled'), true);
     }
 
     /**
@@ -219,12 +229,13 @@ class PluginManager
      *
      * @param array $enabled
      */
-    protected function setEnabled(array $enabled)
+    protected
+    function setEnabled(array $enabled)
     {
         $enabled = array_values(array_unique($enabled));
 
         $this->option->set('plugins_enabled', json_encode($enabled));
- 
+
         // ensure to save options
         $this->option->save();
     }
@@ -235,7 +246,8 @@ class PluginManager
      * @param $plugin
      * @return bool
      */
-    public function isEnabled($plugin)
+    public
+    function isEnabled($plugin)
     {
         return in_array($plugin, $this->getEnabled());
     }
@@ -245,9 +257,10 @@ class PluginManager
      *
      * @return string
      */
-    protected function getPluginsDir()
+    protected
+    function getPluginsDir()
     {
-        return $this->app->basePath().'/plugins';
+        return $this->app->basePath() . '/plugins';
     }
 
 }

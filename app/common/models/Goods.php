@@ -352,7 +352,7 @@ class Goods extends BaseModel
      */
     public function scopePluginId($query,$pluginId = 0)
     {
-        return $query->where('plugin', $pluginId);
+        return $query->where('plugin_id', $pluginId);
     }
 
     public static function boot()

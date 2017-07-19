@@ -34,8 +34,6 @@ class CreateGoodsService
     public function create()
     {
         $goods_data = $this->request->goods;
-        dd($goods_data);
-        exit;
 
         $this->params = new GoodsParam();
         $this->goods_model = new Goods();

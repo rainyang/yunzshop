@@ -307,7 +307,7 @@ class Order extends BaseModel
      */
     public function scopePluginId($query,$pluginId = 0)
     {
-        return $query->where('plugin', $pluginId);
+        return $query->where('plugin_id', $pluginId);
     }
     /**
      * 通过会员ID获取订单信息
