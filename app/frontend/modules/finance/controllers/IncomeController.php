@@ -168,7 +168,7 @@ class IncomeController extends ApiController
             $servicetax = 0;
             if($incomeSet['servicetax_rate']){
                 $servicetax = ($amount - $poundage) / 100 * $incomeSet['servicetax_rate'];
-                $servicetax = sprintf("%.2f", substr(sprintf("%.3f", $servicetax), 0, -2));
+//                $servicetax = sprintf("%.2f", substr(sprintf("%.3f", $servicetax), 0, -2));
             }
 
             if (($amount > 0) && (bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1)) {
