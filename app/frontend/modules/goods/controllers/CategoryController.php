@@ -25,16 +25,23 @@ class CategoryController extends BaseController
 {
     public function getCategory()
     {
-        $set = Setting::get('shop.category');
-        $pageSize = 10;
-        $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
-        $list = Category::getCategorys($parent_id)->where('enabled', 1)->paginate($pageSize)->toArray();
-        foreach ($list['data'] as &$item) {
-            $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
-            $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
+        if (!\Cache::has('category')) {
+            $set = Setting::get('shop.category');
+            $pageSize = 10;
+            $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
+            $list = Category::getCategorys($parent_id)->where('enabled', 1)->paginate($pageSize)->toArray();
+            foreach ($list['data'] as &$item) {
+                $item['thumb'] = replace_yunshop(tomedia($item['thumb']));
+                $item['adv_img'] = replace_yunshop(tomedia($item['adv_img']));
+            }
+            $set['cat_adv_img'] = replace_yunshop(tomedia($set['cat_adv_img']));
+            $list['set'] = $set;
+            \Cache::put('category', $list, 3600);
+
+        } else {
+            $list = \Cache::get('category');
         }
-        $set['cat_adv_img'] = replace_yunshop(tomedia($set['cat_adv_img']));
-        $list['set'] = $set;
+
         if($list['data']){
             return $this->successJson('获取分类数据成功!', $list);
         }
