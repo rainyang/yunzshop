@@ -12,14 +12,23 @@ namespace app\common\traits;
 
 trait CreateOrderSnTrait
 {
-    public static function createOrderSn($prefix,$field='order_sn',$numeric=FALSE)
+    /**
+     * 生成唯一单号
+     *
+     * @param $prefix           //前缀一般为两个大写字母
+     * @param string $field     //字段不为 order_sn 时需要参数field
+     * @param int $length       //日期后随机数长度
+     * @param bool $numeric     //受否为纯数字
+     * @return string
+     */
+    public static function createOrderSn($prefix,$field='order_sn',$length=6, $numeric=true)
     {
         $orderSn = createNo($prefix,$numeric);
         while (1) {
             if (!self::where($field,$orderSn)->first()) {
                 break;
             }
-            $orderSn = createNo($prefix,$numeric);
+            $orderSn = createNo($prefix,$length,$numeric);
         }
         return $orderSn;
     }
