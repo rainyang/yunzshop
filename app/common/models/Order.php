@@ -305,10 +305,11 @@ class Order extends BaseModel
      * @param int $pluginId
      * @return mixed
      */
-    public function scopePluginId($query,$pluginId = 0)
+    public function scopePluginId($query, $pluginId = 0)
     {
         return $query->where('plugin_id', $pluginId);
     }
+
     /**
      * 通过会员ID获取订单信息
      *
@@ -329,12 +330,17 @@ class Order extends BaseModel
     {
         return self::select(['*'])
             ->where('uid', $uid)
-            ->where('status','>=',1)
-            ->where('status','<=',3)
-            ->with(['hasManyOrderGoods'=>function($query){
+            ->where('status', '>=', 1)
+            ->where('status', '<=', 3)
+            ->with(['hasManyOrderGoods' => function ($query) {
                 return $query->select(['*']);
             }])
             ->get();
+    }
+
+    public function isVirtual()
+    {
+        return $this->is_virtual == 1;
     }
 
     /**

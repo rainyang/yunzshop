@@ -9,7 +9,6 @@
 
 namespace app\frontend\modules\order\services;
 
-use app\backend\modules\member\models\MemberRelation;
 use app\common\events\discount\OnDiscountInfoDisplayEvent;
 use app\common\events\dispatch\OnDispatchTypeInfoDisplayEvent;
 use app\common\events\order\OnPreGenerateOrderCreatingEvent;
@@ -28,8 +27,6 @@ use app\frontend\modules\order\services\behavior\OrderOperation;
 use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
-use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
-use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use app\frontend\modules\shop\services\ShopService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -88,7 +85,7 @@ class OrderService
      * @return Collection
      * @throws \Exception
      */
-    public static function getOrderGoodsModels(Collection $memberCarts)
+    public static function getOrderGoods(Collection $memberCarts)
     {
         if ($memberCarts->isEmpty()) {
             throw new AppException("(" . $memberCarts->goods_id . ")未找到订单商品");
@@ -106,31 +103,26 @@ class OrderService
                 'goods_option_id' => $memberCart->option_id,
                 'total' => $memberCart->total,
             ];
-            return static::createOrderGoodsModel($data);
+            return app('OrderManager')->make('PreGeneratedOrderGoodsModel',$data);
         });
 
         return $result;
     }
 
-    protected static function createOrderGoodsModel($memberCart)
-    {
-        return new PreGeneratedOrderGoodsModel($memberCart);
-    }
-
-    protected static function createOrderModel($attributes)
-    {
-        return new PreGeneratedOrderModel($attributes);
-    }
 
     /**
-     * 根据购物车记录 获取订单信息
+     * 根据购物车记录,获取订单信息
      * @param Collection $memberCarts
-     * @return PreGeneratedOrderModel|bool
+     * @param null $member
+     * @return bool|mixed
      * @throws AppException
      */
-    public static function createOrderByMemberCarts(Collection $memberCarts)
+    public static function createOrderByMemberCarts(Collection $memberCarts, $member = null)
     {
-        $member = MemberService::getCurrentMemberModel();
+        if(!isset($member)){
+            //默认使用当前登录用户下单
+            $member = MemberService::getCurrentMemberModel();
+        }
         if (!isset($member)) {
             throw new AppException('用户登录状态过期');
         }
@@ -141,8 +133,8 @@ class OrderService
 
         $shop = ShopService::getCurrentShopModel();
 
-        $orderGoodsArr = OrderService::getOrderGoodsModels($memberCarts);
-        $order = static::createOrderModel(['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
+        $orderGoodsArr = OrderService::getOrderGoods($memberCarts);
+        $order = app('OrderManager')->make('PreGeneratedOrderModel',['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
 
         event(new OnPreGenerateOrderCreatingEvent($order));
         $order->setOrderGoods($orderGoodsArr);
@@ -243,6 +235,11 @@ class OrderService
         return self::OrderOperate($orderOperation);
     }
 
+    /**
+     * 根据流水号合并支付
+     * @param array $param
+     * @throws AppException
+     */
     public static function ordersPay(array $param)
     {
         $orderPay = \app\common\models\OrderPay::find($param['order_pay_id']);
@@ -262,14 +259,10 @@ class OrderService
                 }
             });
         });
-
-        //会员推广资格
-        \Log::debug('推广资格-' .$orderPay->uid);
-        MemberRelation::checkOrderPay($orderPay->uid);
     }
 
     /**
-     * 支付订单
+     * 后台支付订单
      * @param array $param
      * @return string
      */

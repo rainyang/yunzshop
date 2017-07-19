@@ -9,6 +9,7 @@ namespace app\frontend\modules\order\services;
 
 use app\backend\modules\order\models\Order;
 use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 use Illuminate\Container\Container;
 
 class OrderManager extends Container
@@ -18,6 +19,9 @@ class OrderManager extends Container
         //
         $this->bind('PreGeneratedOrderGoodsModel', function ($orderManager, $attributes) {
             return new PreGeneratedOrderGoodsModel($attributes);
+        });
+        $this->bind('PreGeneratedOrderModel', function ($orderManager, $attributes) {
+            return new PreGeneratedOrderModel($attributes);
         });
         // 订单model
         $this->bind('Order', function ($orderManager) {
