@@ -80,8 +80,10 @@ class GoodsController extends ApiController
         }
         foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
+            foreach ($spec['specitem'] as &$specitem) {
+                $specitem['thumb'] = replace_yunshop(tomedia($specitem['thumb']));
+            }
         }
-
         //return $this->successJson($goodsModel);
         $this->successJson('成功', $goodsModel);
     }
