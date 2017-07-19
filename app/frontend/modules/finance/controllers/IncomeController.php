@@ -113,7 +113,7 @@ class IncomeController extends ApiController
         $id = \YunShop::request()->id;
         $detailModel = Income::getDetailById($id);
         if ($detailModel) {
-            if($detailModel->first()->detail != ''){
+            if ($detailModel->first()->detail != '') {
                 $data = $detailModel->first()->detail;
                 return '{"result":1,"msg":"成功","data":' . $data . '}';
             }
@@ -129,7 +129,7 @@ class IncomeController extends ApiController
     {
         $configs = \Config::get('income');
         foreach ($configs as $key => $config) {
-            if($config['type'] == 'balance'){
+            if ($config['type'] == 'balance') {
                 continue;
             }
             $searchType[] = [
@@ -163,12 +163,12 @@ class IncomeController extends ApiController
             $incomeModel = $incomeModel->where('incometable_type', $item['class']);
             $amount = $incomeModel->sum('amount');
             $poundage = $incomeModel->sum('amount') / 100 * $set[$key]['poundage_rate'];
-            $poundage = sprintf("%.2f", substr(sprintf("%.3f", $poundage), 0, -2));
+            $poundage = number_format($poundage, 2);
             //劳务税
             $servicetax = 0;
-            if($incomeSet['servicetax_rate']){
+            if ($incomeSet['servicetax_rate']) {
                 $servicetax = ($amount - $poundage) / 100 * $incomeSet['servicetax_rate'];
-                $servicetax = sprintf("%.2f", substr(sprintf("%.3f", $servicetax), 0, -2));
+                $servicetax = number_format($servicetax, 2);
             }
 
             if (($amount > 0) && (bccomp($amount, $set[$key]['roll_out_limit'], 2) != -1)) {
