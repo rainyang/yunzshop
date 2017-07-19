@@ -20,12 +20,15 @@ class OrderSend extends ChangeStatusOperation
 
     protected $past_tense_class_name = 'OrderSent';
     protected function updateTable(){
-        $db_express_model = new Express();
-        $db_express_model->order_id = \YunShop::request()->order_id;
-        $db_express_model->express_code = \YunShop::request()->express_code;
-        $db_express_model->express_company_name = \YunShop::request()->express_company_name;
-        $db_express_model->express_sn = \YunShop::request()->express_sn;
-        $db_express_model->save();
+        if(!$this->isVirtual()){
+            //实体订单
+            $db_express_model = new Express();
+            $db_express_model->order_id = request()->input('order_id');
+            $db_express_model->express_code = request()->input('express_code');
+            $db_express_model->express_company_name = request()->input('express_company_name');
+            $db_express_model->express_sn = request()->input('express_sn');
+            $db_express_model->save();
+        }
         parent::updateTable();
     }
     public function check()

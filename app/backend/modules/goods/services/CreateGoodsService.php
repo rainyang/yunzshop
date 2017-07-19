@@ -34,6 +34,7 @@ class CreateGoodsService
     public function create()
     {
         $goods_data = $this->request->goods;
+
         $this->params = new GoodsParam();
         $this->goods_model = new Goods();
         $this->brands = Brand::getBrands()->get();

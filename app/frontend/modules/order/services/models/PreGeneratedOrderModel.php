@@ -162,6 +162,7 @@ class PreGeneratedOrderModel extends OrderModel
     public function generate()
     {
         $orderModel = $this->createOrder();
+
         $orderGoodsModels = $this->createOrderGoods();
         $order = Order::create($orderModel);
         foreach ($orderGoodsModels as $orderGoodsModel) {
@@ -194,7 +195,7 @@ class PreGeneratedOrderModel extends OrderModel
      * 订单插入数据库
      * @return array 新生成的order model
      */
-    private function createOrder()
+    protected function createOrder()
     {
         $data = array(
             'price' => $this->getPrice(),//订单最终支付价格

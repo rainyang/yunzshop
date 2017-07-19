@@ -17,9 +17,9 @@ class GoodsBuyController extends PreGeneratedController
     protected function getMemberCarts()
     {
         $goods_params = [
-            'goods_id' => Request::query('goods_id'),
-            'total' => Request::query('total'),
-            'option_id' => Request::query('option_id'),
+            'goods_id' => request()->input('goods_id'),
+            'total' => request()->input('total'),
+            'option_id' => request()->input('option_id'),
         ];
         $result = collect();
         $result->push(MemberCartService::newMemberCart($goods_params));
