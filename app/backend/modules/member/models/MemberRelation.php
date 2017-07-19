@@ -583,7 +583,7 @@ class MemberRelation extends BackendModel
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
             $msg = [
                 "first" => '您好',
-                "keyword1" => $msg_set['generalize_title']?:"获得推广权限通知",
+                "keyword1" => !empty($msg_set['generalize_title'])?$msg_set['generalize_title']:"获得推广权限通知",
                 "keyword2" => $message,
                 "remark" => "",
             ];
@@ -625,7 +625,7 @@ class MemberRelation extends BackendModel
             $message = str_replace('[下级昵称]', $member->nickname, $message);
             $msg = [
                 "first" => '您好',
-                "keyword1" => $msg_set['agent_title']?:"新增下线通知",
+                "keyword1" => !empty($msg_set['agent_title'])?$msg_set['agent_title']:"新增下线通知",
                 "keyword2" => $message,
                 "remark" => "",
             ];
