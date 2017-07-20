@@ -10,6 +10,7 @@ use app\common\events\order\AfterOrderSentEvent;
 use app\common\models\Order;
 use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
+use Carbon\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
 
 /**
@@ -58,15 +59,32 @@ class orderListener
         $events->listen(AfterOrderSentEvent::class, self::class . '@onSent');
         $events->listen(AfterOrderReceivedEvent::class, self::class . '@onReceived');
         $events->listen(AfterOrderReceivedEvent::class, self::class . '@onReceived');
-        $events->listen('cron.collectJobs', function() {
-            \Log::info("--订单定时任务start--");
-            \Cron::add('Order', '*/10 * * * * *', function() {
-                // todo 订单自动完成
-                //Order
-                //OrderService::orderReceive(['order_id'=>$order_id]);
-                // todo 未付款自动关闭
-                // todo 使用队列执行
-            });
+        
+        // 订单自动任务
+        $events->listen('cron.collectJobs', function () {
+            // 订单自动收货执行间隔时间 默认60分钟
+            $receive_min = (int)\Setting::get('shop.trade.receive_time') ?: 60;
+            if ((int)\Setting::get('shop.trade.receive')) {
+                // 开启自动收货时
+                \Log::info("--订单自动完成start--");
+                \Cron::add('Order', '*/' . $receive_min . ' * * * * *', function () {
+                    // 所有超时未收货的订单,遍历执行收货
+                    OrderService::autoReceive();
+                    // todo 使用队列执行
+                });
+            }
+
+            // 订单自动关闭执行间隔时间 默认60分钟
+            $close_min = (int)\Setting::get('shop.trade.close_order_time') ?: 60;
+            if ((int)\Setting::get('shop.trade.close_order_days')) {
+                // 开启自动关闭时
+                \Log::info("--订单自动关闭start--");
+                \Cron::add('Order', '*/' . $close_min . ' * * * * *', function () {
+                    // 所有超时付款的订单,遍历执行关闭
+                    OrderService::autoClose();
+                    // todo 使用队列执行
+                });
+            }
         });
     }
 }
