@@ -44,7 +44,7 @@ class Sale extends \app\common\models\Sale
      */
     public function isFree(OrderGoods $orderGoods)
     {
-        $this->setRelation('orderGoods', $orderGoods);
+        $this->orderGoods->orderGoods;
 
         if (!isset($this->orderGoods->order->orderAddress)) {
             //未选择地址时

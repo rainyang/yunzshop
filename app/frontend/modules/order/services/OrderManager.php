@@ -5,6 +5,7 @@
  * Date: 2017/5/24
  * Time: 下午3:11
  */
+
 namespace app\frontend\modules\order\services;
 
 use app\backend\modules\order\models\Order;
@@ -18,17 +19,23 @@ class OrderManager extends Container
     {
         //
         $this->bind('PreGeneratedOrderGoodsModel', function ($orderManager, $attributes) {
+            if (1) {
+                return new \app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsModel($attributes);
+            }
             return new PreGeneratedOrderGoodsModel($attributes);
         });
         $this->bind('PreGeneratedOrderModel', function ($orderManager, $attributes) {
+            if (1) {
+                return new \app\frontend\modules\order\models\PreGeneratedOrderModel($attributes);
+            }
             return new PreGeneratedOrderModel($attributes);
         });
         // 订单model
         $this->bind('Order', function ($orderManager) {
-            if(\YunShop::isApi()){
+            if (\YunShop::isApi()) {
                 return new \app\frontend\models\Order();
 
-            }else{
+            } else {
                 return new Order();
             }
         });
