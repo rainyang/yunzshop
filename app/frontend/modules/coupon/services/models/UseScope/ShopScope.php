@@ -10,7 +10,7 @@ namespace app\frontend\modules\coupon\services\models\UseScope;
 
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
 
 class ShopScope extends CouponUseScope
 {
@@ -19,7 +19,7 @@ class ShopScope extends CouponUseScope
         $orderGoods = $this->coupon->getPreGeneratedOrderModel()->getOrderGoodsModels()->filter(
             function ($orderGoods) {
                 /**
-                 * @var $orderGoods PreGeneratedOrderGoodsModel
+                 * @var $orderGoods PreGeneratedOrderGoods
                  */
 //                dd($orderGoods->goods->is_plugin);
 //                exit;

@@ -9,14 +9,14 @@
 namespace app\frontend\modules\dispatch\models;
 
 use app\common\events\dispatch\OrderDispatchWasCalculated;
-use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+use app\frontend\modules\order\models\PreGeneratedOrder;
 use app\frontend\modules\order\services\OrderService;
 
 class OrderDispatch
 {
     private $preGeneratedOrderModel;
 
-    public function __construct(PreGeneratedOrderModel $preGeneratedOrderModel)
+    public function __construct(PreGeneratedOrder $preGeneratedOrderModel)
     {
         $this->preGeneratedOrderModel = $preGeneratedOrderModel;
     }
