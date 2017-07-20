@@ -28,6 +28,7 @@ use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
 use app\frontend\modules\shop\services\ShopService;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -103,7 +104,7 @@ class OrderService
                 'goods_option_id' => $memberCart->option_id,
                 'total' => $memberCart->total,
             ];
-            return app('OrderManager')->make('PreGeneratedOrderGoodsModel',$data);
+            return app('OrderManager')->make('PreGeneratedOrderGoodsModel', $data);
         });
 
         return $result;
@@ -119,7 +120,7 @@ class OrderService
      */
     public static function createOrderByMemberCarts(Collection $memberCarts, $member = null)
     {
-        if(!isset($member)){
+        if (!isset($member)) {
             //默认使用当前登录用户下单
             $member = MemberService::getCurrentMemberModel();
         }
@@ -134,7 +135,7 @@ class OrderService
         $shop = ShopService::getCurrentShopModel();
 
         $orderGoodsArr = OrderService::getOrderGoods($memberCarts);
-        $order = app('OrderManager')->make('PreGeneratedOrderModel',['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
+        $order = app('OrderManager')->make('PreGeneratedOrderModel', ['uid' => $member->uid, 'uniacid' => $shop->uniacid]);
 
         event(new OnPreGenerateOrderCreatingEvent($order));
         $order->setOrderGoods($orderGoodsArr);
@@ -350,5 +351,35 @@ class OrderService
 
             return $orderGoods->belongsToGood->isRealGoods();
         });
+    }
+
+    public static function autoReceive()
+    {
+        $days = (int)\Setting::get('shop.trade.receive');
+        if (!$days) {
+            return;
+        }
+        $orders = \app\backend\modules\order\models\Order::waitReceive()->where('send_time', '<', (int)Carbon::now()->addDays(-$days)->timestamp)->normal()->get();
+        if (!$orders->isEmpty()) {
+            $orders->each(function ($order) {
+                //dd($order->send_time);
+                OrderService::orderReceive(['order_id' => $order->id]);
+            });
+        }
+    }
+
+    public static function autoClose()
+    {
+        $days = (int)\Setting::get('shop.trade.close_order_days');
+        if (!$days) {
+            return;
+        }
+        $orders = \app\backend\modules\order\models\Order::waitPay()->where('create_time', '<', (int)Carbon::now()->addDays(-\Setting::get('shop.trade.close_order_days'))->timestamp)->normal()->get();
+        if (!$orders->isEmpty()) {
+            $orders->each(function ($order) {
+                //dd($order->send_time);
+                OrderService::orderClose(['order_id' => $order->id]);
+            });
+        }
     }
 }
