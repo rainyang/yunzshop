@@ -26,8 +26,7 @@ class TemplateOrderDispatchPrice
             /**
              * @var $orderGoods OrderGoods
              */
-            if($orderGoods->isFreeShipping())
-            {
+            if ($orderGoods->isFreeShipping()) {
                 return 0;
             }
             if (!isset($orderGoods->hasOneGoodsDispatch)) {
