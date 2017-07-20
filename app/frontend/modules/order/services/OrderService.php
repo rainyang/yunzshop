@@ -45,10 +45,9 @@ class OrderService
         $result->put('order', $order->toArray());
         $result->put('discount', self::getDiscountEventData($order));
         $result->put('dispatch', self::getDispatchEventData($order));
-        //todo 此处没想到好的办法, 为了配合前端,将自营硬编码
 
         if (!$result->has('supplier')) {
-            $result->put('supplier', ['username' => '自营', 'id' => 0]);
+            $result->put('supplier', ['username' => array_get(\Setting::get('shop'),'name','自营'), 'id' => 0]);
         }
 
 
