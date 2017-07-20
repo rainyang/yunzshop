@@ -51,7 +51,7 @@ class BuyerMessage extends Message
             ),
             'keyword1' => array(
                 //todo
-                'value' => (string)'自营',
+                'value' => (string)array_get(\Setting::get('shop'),'name','自营'),
                 "color" => "#4a5077"
             ),
             'keyword2' => array(
@@ -103,7 +103,7 @@ class BuyerMessage extends Message
                 "color" => "#4a5077"
             ),
             'keyword4' => array(
-                'value' => '自营',
+                'value' => array_get(\Setting::get('shop'),'name','自营'),
                 "color" => "#4a5077"
             ),
             'keyword5' => array(
