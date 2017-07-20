@@ -4,7 +4,7 @@ namespace app\frontend\modules\orderGoods\price;
 
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsOptionPrice;
 use app\frontend\modules\orderGoods\price\option\NormalOrderGoodsPrice;
-use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
 use Illuminate\Support\Collection;
 
 /**
@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
 class OrderGoodsPriceCalculator
 {
     /**
-     * @var PreGeneratedOrderGoodsModel
+     * @var PreGeneratedOrderGoods
      */
     protected $orderGoods;
     /**
@@ -28,7 +28,7 @@ class OrderGoodsPriceCalculator
      */
     protected $decorators;
 
-    function __construct(PreGeneratedOrderGoodsModel $orderGoods)
+    function __construct(PreGeneratedOrderGoods $orderGoods)
     {
         $this->orderGoods = $orderGoods;
         $this->optionInstance = $this->setTypeInstance();
@@ -62,7 +62,7 @@ class OrderGoodsPriceCalculator
 
     /**
      * 获取订单商品模型
-     * @return PreGeneratedOrderGoodsModel
+     * @return PreGeneratedOrderGoods
      */
     public function getOrderGoods()
     {

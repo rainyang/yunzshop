@@ -12,13 +12,13 @@ use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
 use app\frontend\models\OrderGoods;
 use app\frontend\modules\orderGoods\price\OrderGoodsPriceCalculator;
-use app\frontend\modules\order\models\PreGeneratedOrderModel;
+use app\frontend\modules\order\models\PreGeneratedOrder;
 
-class PreGeneratedOrderGoodsModel extends OrderGoods
+class PreGeneratedOrderGoods extends OrderGoods
 {
 
     /**
-     * @var PreGeneratedOrderModel
+     * @var PreGeneratedOrder
      */
     protected $order;
     /**
@@ -38,9 +38,9 @@ class PreGeneratedOrderGoodsModel extends OrderGoods
 
     /**
      * 为订单model提供的方法 ,设置所属的订单model
-     * @param PreGeneratedOrderModel $order
+     * @param PreGeneratedOrder $order
      */
-    public function setOrder(PreGeneratedOrderModel $order)
+    public function setOrder(PreGeneratedOrder $order)
     {
         $this->order = $order;
         $this->uid = $order->uid;

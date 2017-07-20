@@ -8,9 +8,7 @@
 
 namespace app\common\events\discount;
 
-
 use app\common\events\order\PreGenerateOrderEvent;
-use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
 
 class OnDiscountInfoDisplayEvent extends PreGenerateOrderEvent
 {

@@ -15,7 +15,7 @@ abstract class OrderGoodsPrice
 {
     protected $orderGoodsPriceCalculator;
     /**
-     * @var \app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel
+     * @var \app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods
      */
     public $orderGoods;
 

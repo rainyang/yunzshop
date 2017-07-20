@@ -3,8 +3,8 @@
 namespace app\frontend\modules\coupon\services\models\UseScope;
 
 use app\common\exceptions\AppException;
-use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
-use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModelGroup;
+use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
+use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsGroup;
 use Illuminate\Support\Collection;
 
 /**
@@ -26,7 +26,7 @@ class GoodsScope extends CouponUseScope
         $orderGoods = $this->coupon->getPreGeneratedOrderModel()->getOrderGoodsModels()->filter(
             function ($orderGoods) {
                 /**
-                 * @var $orderGoods PreGeneratedOrderGoodsModel
+                 * @var $orderGoods PreGeneratedOrderGoods
                  */
                 return in_array($orderGoods->getGoodsId(), $this->coupon->getMemberCoupon()->belongsToCoupon->goods_ids);
             });

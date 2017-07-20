@@ -10,7 +10,7 @@
 namespace app\frontend\modules\coupon\services\models\Price;
 
 use app\common\models\coupon\GoodsMemberCoupon;
-use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
 
 class MoneyOffCouponPrice extends CouponPrice
 {
@@ -53,7 +53,7 @@ class MoneyOffCouponPrice extends CouponPrice
         //dd($this->getOrderGoodsInScope());
         $this->coupon->getOrderGoodsInScope()->getOrderGoodsGroup()->map(function($orderGoods){
                 /**
-                 * @var $orderGoods PreGeneratedOrderGoodsModel
+                 * @var $orderGoods PreGeneratedOrderGoods
                  */
                 //(优惠券金额/折扣优惠券后价格)*折扣优惠券后价格
 //            dd($this->getPrice());
