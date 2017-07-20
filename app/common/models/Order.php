@@ -56,6 +56,11 @@ class Order extends BaseModel
         return $query->where(['status' => self::WAIT_PAY]);
     }
 
+    public function scopeNormal($query)
+    {
+        return $query->where('refund_id', '0');
+    }
+
     /**
      * 订单状态:待发货
      * @param $query

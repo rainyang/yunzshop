@@ -23,7 +23,7 @@ trait CreateOrderSnTrait
      */
     public static function createOrderSn($prefix,$field='order_sn',$length=6, $numeric=true)
     {
-        $orderSn = createNo($prefix,$numeric);
+        $orderSn = createNo($prefix,$length,$numeric);
         while (1) {
             if (!self::where($field,$orderSn)->first()) {
                 break;

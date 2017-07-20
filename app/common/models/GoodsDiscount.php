@@ -15,7 +15,21 @@ class GoodsDiscount extends BaseModel
     const MONEY_OFF = 1;//立减
     const DISCOUNT = 2;//折扣
 
+    /**
+     * 开启商品独立优惠
+     * @return bool
+     */
+    public function enable()
+    {
+        //设置了折扣方式 并且 设置了折扣值
+        return $this->discount_method!=0 && $this->discount_value != 0;
+    }
 
+    /**
+     * 获取等级优惠价格
+     * @param $price
+     * @return int|mixed
+     */
     public function getPrice($price)
     {
         switch ($this->discount_method) {
@@ -32,19 +46,29 @@ class GoodsDiscount extends BaseModel
         return $result ? $result : 0;
     }
 
+    /**
+     * 商品独立等级立减后价格
+     * @param $price
+     * @return mixed
+     */
     private function getMoneyPrice($price)
     {
-        if($this->discount_value ==0){
+        if ($this->discount_value == 0) {
 
             return $price;
         }
         return $price - $this->discount_value;
     }
 
+    /**
+     * 商品独立等级折扣后价格
+     * @param $price
+     * @return mixed
+     */
     private function getDiscountPrice($price)
     {
 
-        if($this->discount_value ==0){
+        if ($this->discount_value == 0) {
 
             return $price;
         }

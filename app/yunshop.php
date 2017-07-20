@@ -18,6 +18,7 @@ class YunShop
     private static $_req;
     private static $_app;
     private static $_plugin;
+    private static $_notice;
     public static $currentItems = [];
 
     public function __construct()
@@ -332,7 +333,12 @@ class YunShop
         self::$_plugin = new YunPlugin();
         return self::$_plugin;
     }
-
+    
+    public static function notice()
+    {
+        self::$_notice = new YunNotice();
+        return self::$_notice;
+    }
 }
 
 class YunComponent implements ArrayAccess
@@ -526,6 +532,36 @@ class YunPlugin
             }
         }
         return $this->values;
+    }
+
+}
+class YunNotice
+{
+    protected $key;
+    protected $value;
+
+    public function __construct()
+    {
+        $this->key = 'shop';
+    }
+
+    /**
+     * @param null $key
+     * @return bool
+     */
+    public function getNotSend($routes = null)
+    {
+        $this->value = $routes;
+        $routesData = explode('.', $routes);
+        if(count($routesData) > 1)
+        {
+            $this->key = $routesData[0];
+            $this->value = $routesData[1];
+        }
+        
+        $noticeConfig = Config::get('notice.'.$this->key);
+        
+        return in_array($this->value,$noticeConfig) ? 0 : 1;
     }
 
 }
