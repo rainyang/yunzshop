@@ -160,7 +160,7 @@ class PreGeneratedOrder extends Order
     public function toArray()
     {
 
-        $this->setRawAttributes($this->getPreAttributes());
+        $this->setRawAttributes(array_merge($this->getAttributes(),$this->getPreAttributes()));
 //        foreach ($this->orderGoodsModels as $orderGoodsModel) {
 //            $data['order_goods'][] = $orderGoodsModel->toArray();
 //        }

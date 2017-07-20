@@ -47,7 +47,7 @@ class EventServiceProvider extends ServiceProvider
             PayLogListener::class //保存支付参数
         ],
         \app\common\events\member\BecomeAgent::class => [ //会员成为下线
-          \app\common\listeners\member\BecomeAgentListener::class
+            \app\common\listeners\member\BecomeAgentListener::class
         ],
         AfterOrderCreatedEvent::class => [ //下单成功后调用会员成为下线事件
             \app\common\listeners\member\AfterOrderCreatedListener::class,
@@ -62,7 +62,7 @@ class EventServiceProvider extends ServiceProvider
         //微信接口回调触发事件进程
         WechatProcessor::class => [
             WechatProcessorListener::class//示例监听类
-        ]
+        ],
 
     ];
     /**
@@ -74,8 +74,6 @@ class EventServiceProvider extends ServiceProvider
         \app\common\listeners\member\level\LevelListener::class,
 
         \app\frontend\modules\dispatch\listeners\types\Express::class,
-        \app\common\listeners\order\OrderTestListener::class,
-        \app\common\listeners\goods\GoodsTestListener::class,
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
         PointListener::class,
         GoodsStock::class,
@@ -89,6 +87,7 @@ class EventServiceProvider extends ServiceProvider
         CouponExpireNotice::class,
         CouponSend::class
     ];
+
     /**
      * Register any events for your application.
      *

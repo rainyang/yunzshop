@@ -6,10 +6,10 @@ use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
-use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\events\order\AfterOrderSentEvent;
 use app\common\models\Order;
 use app\frontend\modules\order\services\MessageService;
+use app\frontend\modules\order\services\OrderService;
 use Illuminate\Contracts\Events\Dispatcher;
 
 /**
@@ -57,5 +57,16 @@ class orderListener
         $events->listen(AfterOrderCanceledEvent::class, self::class . '@onCanceled');
         $events->listen(AfterOrderSentEvent::class, self::class . '@onSent');
         $events->listen(AfterOrderReceivedEvent::class, self::class . '@onReceived');
+        $events->listen(AfterOrderReceivedEvent::class, self::class . '@onReceived');
+        $events->listen('cron.collectJobs', function() {
+            \Log::info("--订单定时任务start--");
+            \Cron::add('Order', '*/10 * * * * *', function() {
+                // todo 订单自动完成
+                //Order
+                //OrderService::orderReceive(['order_id'=>$order_id]);
+                // todo 未付款自动关闭
+                // todo 使用队列执行
+            });
+        });
     }
 }
