@@ -6,11 +6,11 @@
  * Time: 下午1:44
  */
 
-namespace app\frontend\modules\goods\services\models;
+namespace app\frontend\modules\orderGoods\models;
 
 use Illuminate\Support\Collection;
 
-class PreGeneratedOrderGoodsModelGroup
+class PreGeneratedOrderGoodsGroup
 {
     private $orderGoodsGroup;
 
@@ -39,7 +39,7 @@ class PreGeneratedOrderGoodsModelGroup
         $result = 0;
         foreach ($this->orderGoodsGroup as $OrderGoods) {
             /**
-             * @var $OrderGoods PreGeneratedOrderGoodsModel
+             * @var $OrderGoods PreGeneratedOrderGoods
              */
             $result += $OrderGoods->getFinalPrice();
         }
@@ -55,7 +55,7 @@ class PreGeneratedOrderGoodsModelGroup
         $result = 0;
         foreach ($this->orderGoodsGroup as $OrderGoods) {
             /**
-             * @var $OrderGoods PreGeneratedOrderGoodsModel
+             * @var $OrderGoods PreGeneratedOrderGoods
              */
             $result += $OrderGoods->couponDiscountPrice;
         }

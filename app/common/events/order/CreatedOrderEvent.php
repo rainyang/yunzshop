@@ -11,7 +11,7 @@ namespace app\common\events\order;
 
 use app\common\events\Event;
 use app\common\models\Order;
-use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+use app\frontend\modules\order\models\PreGeneratedOrder;
 
 abstract class CreatedOrderEvent extends Event
 {
@@ -26,7 +26,7 @@ abstract class CreatedOrderEvent extends Event
     {
         //$order_model = Order::find($order_id);
         $this->orderModel = $order;
-        if($order instanceof PreGeneratedOrderModel){
+        if($order instanceof PreGeneratedOrder){
             $this->order = $order->getOrder();
         }
     }

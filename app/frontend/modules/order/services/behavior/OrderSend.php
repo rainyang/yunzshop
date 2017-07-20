@@ -20,6 +20,7 @@ class OrderSend extends ChangeStatusOperation
 
     protected $past_tense_class_name = 'OrderSent';
     protected function updateTable(){
+
         if(!$this->isVirtual()){
             //实体订单
             $db_express_model = new Express();

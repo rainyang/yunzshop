@@ -10,7 +10,7 @@ namespace app\frontend\modules\coupon\services\models\UseScope;
 
 
 use app\frontend\modules\coupon\services\models\Coupon;
-use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModelGroup;
+use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsGroup;
 
 abstract class CouponUseScope
 {
@@ -41,7 +41,7 @@ abstract class CouponUseScope
      */
     protected $coupon;
     /**
-     * @var PreGeneratedOrderGoodsModelGroup
+     * @var PreGeneratedOrderGoodsGroup
      */
     protected $orderGoodsGroup;
     public function __construct(Coupon $coupon)
@@ -58,7 +58,7 @@ abstract class CouponUseScope
     protected function setOrderGoodsGroup()
     {
         //dd($this->getOrderGoodsOfUsedCoupon());
-        $this->orderGoodsGroup = new PreGeneratedOrderGoodsModelGroup($this->getOrderGoodsOfUsedCoupon());
+        $this->orderGoodsGroup = new PreGeneratedOrderGoodsGroup($this->getOrderGoodsOfUsedCoupon());
     }
     abstract protected function _getOrderGoodsOfUsedCoupon();
 }
