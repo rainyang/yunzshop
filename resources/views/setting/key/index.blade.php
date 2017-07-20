@@ -22,7 +22,7 @@
 <!-- 新增加右侧顶部三级菜单 -->
     <div class="right-titpos">
         <ul class="add-snav">
-            <li class="active"><a href="#">注册芸商城</a></li>
+            <li class="active"><a href="#">注册商城</a></li>
         </ul>
     </div>
     <div class="form-group message-box" style="display: none">
