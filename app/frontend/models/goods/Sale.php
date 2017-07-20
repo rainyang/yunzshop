@@ -44,33 +44,31 @@ class Sale extends \app\common\models\Sale
      */
     public function isFree(OrderGoods $orderGoods)
     {
-        $this->orderGoods->orderGoods;
-
-        if (!isset($this->orderGoods->order->orderAddress)) {
+        if (!isset($orderGoods->order->orderAddress)) {
             //未选择地址时
             return false;
         }
 
-        if (!$this->inFreeArea()) {
+        if (!$this->inFreeArea($orderGoods)) {
             //收货地址不在包邮区域
             return false;
         }
 
-        return $this->enoughQuantity($this->orderGoods->total) || $this->enoughAmount($this->orderGoods->price);
+        return $this->enoughQuantity($orderGoods->total) || $this->enoughAmount($orderGoods->price);
     }
 
     /**
      * 收货地址不在包邮区域
      * @return bool
      */
-    private function inFreeArea()
+    private function inFreeArea($orderGoods)
     {
         $ed_areaids = (explode(',', $this->ed_areaids));
 
         if (empty($ed_areaids)) {
             return true;
         }
-        if (in_array($this->orderGoods->order->orderAddress->city_id, $ed_areaids)) {
+        if (in_array($orderGoods->order->orderAddress->city_id, $ed_areaids)) {
             return false;
         }
         return true;
