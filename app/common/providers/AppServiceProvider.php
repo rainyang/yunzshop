@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         //微信接口不输出错误
         if (strpos(request()->getRequestUri(), '/api.php') >= 0) {
             error_reporting(0);
-            strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
+            //strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
         }
 
         //设置uniacid
@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
                     //  time: The execution time for the query
                     //  connectionName: The name of the connection
 
-                    // To save the executed queries to file:
+                    // To save  the executed queries to file:
                     // Process the sql and the bindings:
                     foreach ($sql->bindings as $i => $binding) {
                         if ($binding instanceof \DateTime) {
