@@ -133,9 +133,12 @@ class Menu extends BaseModel
     public static function getCurrentMenuParents($item, array $menuList)
     {
         static $current = [];
+        //dump($menuList);
         foreach($menuList as $key=>$value){
+            //dump($key);
             if($key == $item){
                 $current = $value['parents'];
+                //dd(11);
                 break;
             }
             if(isset($value['child']) && $value['child']){
@@ -143,6 +146,10 @@ class Menu extends BaseModel
             }
         }
 
+        //dd($menuList);
+        //dd($current);
+
+        //exit;
         return $current;
     }
 

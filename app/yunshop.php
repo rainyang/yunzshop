@@ -13,6 +13,9 @@ use Illuminate\Filesystem\Filesystem;
 //商城根目录
 define('SHOP_ROOT', dirname(__FILE__));
 
+
+
+use app\common\models\user\User;
 class YunShop
 {
     private static $_req;
@@ -56,19 +59,26 @@ class YunShop
 
         if (self::isWeb()) {
             //菜单生成
+            $menu_array = Config::get('app.menu');
             if (!\Cache::has('db_menu')) {
-                $dbMenu = Menu::getMenuList();
+                $dbMenu = Config::get($menu_array['main_menu']);//$dbMenu = Menu::getMenuList();
                 \Cache::put('db_menu', $dbMenu, 3600);
             } else {
                 $dbMenu = \Cache::get('db_menu');
             }
-            $menuList = array_merge($dbMenu, (array)Config::get('menu'));
-            $menuList = array_merge($menuList, (array)config(config('app.menu_key','menu')));
-            //echo '<pre>';print_r(config(config('app.menu_key','menu')));exit;
+
+            $menuList = array_merge($dbMenu, (array)Config::get($menu_array['plugin_menu']));
+            //兼容旧插件使用
+            $menuList = array_merge($menuList, (array)Config::get($menu_array['old_plugin_menu']));
+
+            if (PermissionService::isFounder()) {
+                $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
+            }
             Config::set('menu', $menuList);
-            //dump($menuList);
+
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
+
             //检测权限
             if (!PermissionService::can($item)) {
                 //throw new NotFoundException('Sorry,无权限');
