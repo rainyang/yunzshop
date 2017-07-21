@@ -9,12 +9,13 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
+use app\common\services\Check;
 
 class IndexController extends BaseController
 {
     public function index()
     {
-
+        strpos(request()->getBaseUrl(),'/web/index.php') === 0 && Check::setKey();
         return view('index',[])->render();
     }
 }

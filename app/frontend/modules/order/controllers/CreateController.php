@@ -14,7 +14,7 @@ use app\frontend\modules\member\services\MemberCartService;
 use Illuminate\Support\Facades\DB;
 use Request;
 use app\common\events\order\AfterOrderCreatedEvent;
-use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+use app\frontend\modules\order\models\PreGeneratedOrder;
 
 class CreateController extends PreGeneratedController
 {
@@ -46,7 +46,7 @@ class CreateController extends PreGeneratedController
         $order_ids = DB::transaction(function () use ($orders) {
             return $orders->map(function ($order) {
                 /**
-                 * @var $order PreGeneratedOrderModel
+                 * @var $order PreGeneratedOrder
                  */
                 $order_id = $order->generate();
                 event(new AfterOrderCreatedEvent($order->getOrder()));
