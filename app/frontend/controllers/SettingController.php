@@ -29,7 +29,7 @@ class SettingController extends BaseController
         }
 
         if (!$setting) {
-            throw new \app\common\exceptions\ShopException('未进行设置.');
+            return $this->errorJson('未进行设置.');
         }
 
         $setting['logo'] = replace_yunshop(tomedia($setting['logo']));

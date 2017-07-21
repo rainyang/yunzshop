@@ -30,7 +30,7 @@ class PluginsController extends BaseController
         if($enableds){
             return $this->successJson('获取数据成功!', $enableds);
         }
-        throw new \app\common\exceptions\ShopException('未检测到数据!');
+        return $this->errorJson('未检测到数据!');
     }
 
 }

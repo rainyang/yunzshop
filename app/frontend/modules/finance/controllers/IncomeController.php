@@ -78,7 +78,7 @@ class IncomeController extends ApiController
         if ($incomeData) {
             return $this->successJson('获取数据成功!', $incomeData);
         }
-        throw new \app\common\exceptions\ShopException('未检测到数据!');
+        return $this->errorJson('未检测到数据!');
     }
 
     /**
@@ -101,7 +101,7 @@ class IncomeController extends ApiController
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
         }
-        throw new \app\common\exceptions\ShopException('未检测到数据!');
+        return $this->errorJson('未检测到数据!');
     }
 
     /**
@@ -119,7 +119,7 @@ class IncomeController extends ApiController
             }
             return '{"result":1,"msg":"成功","data":""}';
         }
-        throw new \app\common\exceptions\ShopException('未检测到数据!');
+        return $this->errorJson('未检测到数据!');
     }
 
     /**
@@ -140,7 +140,7 @@ class IncomeController extends ApiController
         if ($searchType) {
             return $this->successJson('获取数据成功!', $searchType);
         }
-        throw new \app\common\exceptions\ShopException('未检测到数据!');
+        return $this->errorJson('未检测到数据!');
     }
 
     /**
@@ -210,7 +210,7 @@ class IncomeController extends ApiController
         if ($incomeData) {
             return $this->successJson('获取数据成功!', $incomeData);
         }
-        throw new \app\common\exceptions\ShopException('未检测到数据!');
+        return $this->errorJson('未检测到数据!');
     }
 
     /**
@@ -221,7 +221,7 @@ class IncomeController extends ApiController
         $config = \Config::get('income');
         $withdrawData = \YunShop::request()->data;
         if (!$withdrawData) {
-            throw new \app\common\exceptions\ShopException('未检测到数据!');
+            return $this->errorJson('未检测到数据!');
         }
 
         $withdrawTotal = $withdrawData['total'];
@@ -244,7 +244,7 @@ class IncomeController extends ApiController
             Log::info($set[$item['key_name']]['roll_out_limit']);
 
             if (bccomp($incomes->sum('amount'), $set[$item['key_name']]['roll_out_limit'], 2) == -1) {
-                throw new \app\common\exceptions\ShopException('提现失败,' . $item['type_name'] . '未达到提现标准!');
+                return $this->errorJson('提现失败,' . $item['type_name'] . '未达到提现标准!');
             }
 
         }
@@ -253,7 +253,7 @@ class IncomeController extends ApiController
         if ($request) {
             return $this->successJson('提现成功!');
         }
-        throw new \app\common\exceptions\ShopException('提现失败!');
+        return $this->errorJson('提现失败!');
     }
 
     /**

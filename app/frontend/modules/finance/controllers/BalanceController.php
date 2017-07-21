@@ -55,7 +55,7 @@ class BalanceController extends ApiController
 
             return $this->successJson('获取数据成功', $result);
         }
-        throw new \app\common\exceptions\ShopException('未获取到会员数据');
+        return $this->errorJson('未获取到会员数据');
 
     }
 
@@ -68,7 +68,7 @@ class BalanceController extends ApiController
     public function poundage()
     {
         if (!$this->getMemberInfo()) {
-            throw new \app\common\exceptions\ShopException('未获取到会员信息');
+            return $this->errorJson('未获取到会员信息');
         }
 
         $balanceSet = new BalanceService();
@@ -104,7 +104,7 @@ class BalanceController extends ApiController
             return  $this->successJson('支付接口对接成功', $this->payOrder());
         }
         //return $result === true ? $this->successJson('支付接口对接成功', $this->payOrder()) : $this->errorJson($result);
-        throw new \app\common\exceptions\ShopException($result);
+        return $this->errorJson($result);
     }
 
     //余额充值，如果是支付宝支付需要二次请求 alipay 支付接口
@@ -117,7 +117,7 @@ class BalanceController extends ApiController
             return  $this->successJson('支付接口对接成功', $this->payOrder());
         }
 
-        throw new \app\common\exceptions\ShopException('充值订单不存在');
+        return $this->errorJson('充值订单不存在');
     }
 
     //余额转让
@@ -139,7 +139,7 @@ class BalanceController extends ApiController
 
             return $this->successJson('获取记录成功', $recordList->toArray());
         }
-        throw new \app\common\exceptions\ShopException('未获取到会员信息');
+        return $this->errorJson('未获取到会员信息');
     }
 
     //获取会员信息

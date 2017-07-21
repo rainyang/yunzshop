@@ -44,7 +44,7 @@ class MemberCartController extends ApiController
             }
             return $this->successJson('获取列表成功', $cartList);
         }
-        throw new \app\common\exceptions\ShopException('未获取到会员ID');
+        return $this->errorJson('未获取到会员ID');
     }
 
     /**
@@ -75,7 +75,7 @@ class MemberCartController extends ApiController
                 if ($hasGoodsModel->update()){
                     return $this->successJson('添加购物车成功');
                 }
-                throw new \app\common\exceptions\ShopException('数据更新失败，请重试！');
+                return $this->errorJson('数据更新失败，请重试！');
             }
 
             $cartModel->setRawAttributes($data);
@@ -84,13 +84,13 @@ class MemberCartController extends ApiController
                 $this->error($validator->messages());
             } else {
                 if ($cartModel->save()) {
-                    throw new \app\common\exceptions\ShopException("添加购物车成功");
+                    return $this->errorJson("添加购物车成功");
                 }else{
                     return $this->successJson("写入出错，添加购物车失败！！！");
                 }
             }
         }
-        throw new \app\common\exceptions\ShopException("接收数据出错，添加购物车失败！");
+        return $this->errorJson("接收数据出错，添加购物车失败！");
     }
 
     /*
@@ -112,7 +112,7 @@ class MemberCartController extends ApiController
             }
         }
 
-        throw new \app\common\exceptions\ShopException('未获取到数据，请重试！');
+        return $this->errorJson('未获取到数据，请重试！');
     }
 
     /*
