@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 
 class MergePayController extends ApiController
 {
+    public $transactionActions = ['*'];
     /**
      * @var Collection
      */
@@ -113,33 +114,30 @@ class MergePayController extends ApiController
         if ($orderPay->status > 0) {
             throw new AppException('(ID' . $request->input('order_pay_id') . '),此流水号已支付');
         }
-        $result = DB::transaction(function () use ($orderPay, $payType) {
 
-            $orders = $this->orders($orderPay->order_ids);
-            //支付流水号
-            $orderPay->pay_type_id = $payType;
-            $orderPay->save();
-            //订单支付方式,流水号保存
-            $orders->each(function ($order) use ($orderPay) {
-                $order->pay_type_id = $orderPay->pay_type_id;
-                $order->order_pay_id = $orderPay->id;
-                if (!$order->save()) {
-                    throw new AppException('支付方式选择失败');
-                }
-            });
-
-            $query_str = $this->getPayParams($orderPay, $orders);
-            $pay = PayFactory::create($payType);
-            //如果支付模块常量改变 数据会受影响
-
-            $result = $pay->doPay($query_str);
-            if (!isset($result)) {
-                throw new AppException('获取支付参数失败');
+        $orders = $this->orders($orderPay->order_ids);
+        //支付流水号
+        $orderPay->pay_type_id = $payType;
+        $orderPay->save();
+        //订单支付方式,流水号保存
+        $orders->each(function ($order) use ($orderPay) {
+            $order->pay_type_id = $orderPay->pay_type_id;
+            $order->order_pay_id = $orderPay->id;
+            if (!$order->save()) {
+                throw new AppException('支付方式选择失败');
             }
-            return $result;
         });
 
+        $query_str = $this->getPayParams($orderPay, $orders);
+        $pay = PayFactory::create($payType);
+        //如果支付模块常量改变 数据会受影响
+
+        $result = $pay->doPay($query_str);
+        if (!isset($result)) {
+            throw new AppException('获取支付参数失败');
+        }
         return $result;
+
 
     }
 
@@ -151,7 +149,6 @@ class MergePayController extends ApiController
             'subject' => $orders->first()->hasManyOrderGoods[0]->title,
             'body' => $orders->first()->hasManyOrderGoods[0]->title . ':' . \YunShop::app()->uniacid,
             'extra' => ['type' => 1]
-
         ];
     }
 
@@ -175,7 +172,5 @@ class MergePayController extends ApiController
         }
         $data = $this->pay($request, PayFactory::PAY_ALIPAY);
         return $this->successJson('成功', $data);
-
-        //获取支付宝 支付单 数据
     }
 }

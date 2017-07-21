@@ -16,6 +16,7 @@ use app\common\exceptions\AppException;
 use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
+use app\common\models\PayType;
 use \app\frontend\models\MemberCart;
 use app\frontend\modules\member\services\MemberService;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
@@ -103,7 +104,7 @@ class OrderService
                 'goods_option_id' => $memberCart->option_id,
                 'total' => $memberCart->total,
             ];
-            return app('OrderManager')->make('PreGeneratedOrderGoodsModel', $data);
+            return app('OrderManager')->make('PreGeneratedOrderGoods', $data);
         });
 
         return $result;
@@ -270,6 +271,7 @@ class OrderService
     public static function orderPay(array $param)
     {
         $orderOperation = OrderPay::find($param['order_id']);
+        $orderOperation->pay_type_id = PayType::BACKEND;
         return self::OrderOperate($orderOperation);
     }
 
