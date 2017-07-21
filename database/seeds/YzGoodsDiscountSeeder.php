@@ -20,18 +20,18 @@ class YzGoodsDiscountSeeder extends Seeder
             echo $this->oldTable." 不存在 跳过\n";
             return;
         }
-        $newList = DB::table($this->newTable)->get();
+        $newList = \Illuminate\Support\Facades\DB::table($this->newTable)->get();
         if ($newList->isNotEmpty()) {
             echo "yz_goods_share 已经有数据了跳过\n";
             return;
         }
-        $list = DB::table($this->oldTable)->get();
+        $list = \Illuminate\Support\Facades\DB::table($this->oldTable)->get();
 
         $memberLevels = MemberLevel::getMemberLevelList();
         if ($list) {
             foreach ($list as $v) {
                 $discounts = json_decode($v['discounts'], true);
-                DB::table($this->newTable)->insert([
+                \Illuminate\Support\Facades\DB::table($this->newTable)->insert([
                     'goods_id' => $v['id'],
                     'level_discount_type' => $v['discounttype'],
                     'discount_method' => $v['discountway'],
@@ -40,7 +40,7 @@ class YzGoodsDiscountSeeder extends Seeder
                 ]);
                 foreach ($memberLevels as $m) {
                     if ($discounts['level' . $m['id']]) {
-                        DB::table($this->newTable)->insert([
+                        \Illuminate\Support\Facades\DB::table($this->newTable)->insert([
                             'goods_id' => $v['id'],
                             'level_discount_type' => $v['discounttype'],
                             'discount_method' => $v['discountway'],

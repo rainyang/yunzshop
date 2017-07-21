@@ -20,7 +20,7 @@ class YzNoticeSeeder extends Seeder
             echo $this->oldTable." 不存在 跳过\n";
             return;
         }
-        $newList = DB::table($this->newTable)->get();
+        $newList = \Illuminate\Support\Facades\DB::table($this->newTable)->get();
         if($newList->isNotEmpty()){
             echo "yz_goods_notices 已经有数据了跳过\n";
             return ;

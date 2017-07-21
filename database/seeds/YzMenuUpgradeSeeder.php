@@ -13,7 +13,7 @@ class YzMenuUpgradeSeeder extends Seeder
 
     public function run()
     {
-        $item = DB::table($this->table)->where('item', 'system_update')->first();
+        $item = \Illuminate\Support\Facades\DB::table($this->table)->where('item', 'system_update')->first();
         if ($item) {
             echo "system_update 已经有数据了跳过\n";
             return;
@@ -31,7 +31,7 @@ class YzMenuUpgradeSeeder extends Seeder
             'status' => 1,
             'created_at' => time(),
         ];
-        DB::table($this->table)->insert($data);
+        \Illuminate\Support\Facades\DB::table($this->table)->insert($data);
     }
 
 }
