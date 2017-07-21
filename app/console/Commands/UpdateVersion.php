@@ -50,6 +50,8 @@ class UpdateVersion extends Command
         if(is_dir(base_path($versionMigration) )){
             \Artisan::call('migrate',['--force' => true,'--path' => $versionMigration]);
         }
+        \Log::debug('数据迁移');
+        \Artisan::call('db:seed');
     }
 
     public function createPluginFile()
