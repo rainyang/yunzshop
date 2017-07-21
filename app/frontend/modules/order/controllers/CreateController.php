@@ -54,7 +54,7 @@ class CreateController extends PreGeneratedController
             });
         });
 
-        $this->successJson('成功', ['order_ids' => $order_ids->implode(',')]);
+        return $this->successJson('成功', ['order_ids' => $order_ids->implode(',')]);
     }
     private function getPluginOrders(){
         $event = new CreatingOrder($this->getMemberCarts());

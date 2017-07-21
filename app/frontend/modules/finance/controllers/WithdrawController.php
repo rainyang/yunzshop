@@ -21,7 +21,7 @@ class WithdrawController extends ApiController
         if ($request) {
             return $this->successJson('获取数据成功!', $request->toArray());
         }
-        return $this->errorJson('未检测到数据!');
+        throw new \app\common\exceptions\ShopException('未检测到数据!');
     }
 
     public function withdrawInfo()
@@ -33,6 +33,6 @@ class WithdrawController extends ApiController
 
             return $this->successJson('获取数据成功!', $request->toArray());
         }
-        return $this->errorJson('未检测到数据!');
+        throw new \app\common\exceptions\ShopException('未检测到数据!');
     }
 }
