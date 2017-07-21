@@ -39,19 +39,19 @@ class RegisterController extends ApiController
             $check_code = MemberService::checkCode();
 
             if ($check_code['status'] != 1) {
-                throw new \app\common\exceptions\ShopException($check_code['json']);
+                return $this->errorJson($check_code['json']);
             }
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
-                throw new \app\common\exceptions\ShopException($msg['json']);
+                return $this->errorJson($msg['json']);
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             if (!empty($member_info)) {
-                throw new \app\common\exceptions\ShopException('该手机号已被注册');
+                return $this->errorJson('该手机号已被注册');
             }
 
             //添加mc_members表
@@ -111,7 +111,7 @@ class RegisterController extends ApiController
 
             return $this->successJson('', $data);
         } else {
-            throw new \app\common\exceptions\ShopException('手机号或密码格式错误');
+            return $this->errorJson('手机号或密码格式错误');
         }
     }
 
@@ -126,13 +126,13 @@ class RegisterController extends ApiController
         $reset_pwd = \YunShop::request()->reset;
 
         if (empty($mobile)) {
-            throw new \app\common\exceptions\ShopException('请填入手机号');
+            return $this->errorJson('请填入手机号');
         }
 
         $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
         if (!empty($info) && empty($reset_pwd)) {
-            throw new \app\common\exceptions\ShopException('该手机号已被注册！不能获取验证码');
+            return $this->errorJson('该手机号已被注册！不能获取验证码');
         }
         $code = rand(1000, 9999);
 
@@ -143,7 +143,7 @@ class RegisterController extends ApiController
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid, $mobile)) {
-            throw new \app\common\exceptions\ShopException('发送短信数量达到今日上限');
+            return $this->errorJson('发送短信数量达到今日上限');
         } else {
             $this->sendSms($mobile, $code);
         }
@@ -170,7 +170,7 @@ class RegisterController extends ApiController
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return $this->successJson();
             } else {
-                throw new \app\common\exceptions\ShopException($issendsms['SubmitResult']['msg']);
+                return $this->errorJson($issendsms['SubmitResult']['msg']);
             }
         } else {
             $result = MemberService::send_sms_alidayu($sms, $templateType);
@@ -207,7 +207,7 @@ class RegisterController extends ApiController
                 MemberService::udpateSmsSendTotal(\YunShop::app()->uniacid, $mobile);
                 return $this->successJson();
             } else {
-                //throw new \app\common\exceptions\ShopException($issendsms->msg . '/' . $issendsms->sub_msg);
+                //return $this->errorJson($issendsms->msg . '/' . $issendsms->sub_msg);
             }
         }
     }
@@ -226,11 +226,11 @@ class RegisterController extends ApiController
         $member_info = MemberModel::getId($uniacid, $mobile);
 
         if (empty($member_info)) {
-            throw new \app\common\exceptions\ShopException('手机号不存在');
+            return $this->errorJson('手机号不存在');
         }
 
         if ($check_code['status'] != 1) {
-            throw new \app\common\exceptions\ShopException($check_code['json']);
+            return $this->errorJson($check_code['json']);
         }
 
         return $this->successJson('ok');
@@ -252,19 +252,19 @@ class RegisterController extends ApiController
             $check_code = MemberService::checkCode();
 
             if ($check_code['status'] != 1) {
-                throw new \app\common\exceptions\ShopException($check_code['json']);
+                return $this->errorJson($check_code['json']);
             }
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
-                throw new \app\common\exceptions\ShopException($msg['json']);
+                return $this->errorJson($msg['json']);
             }
 
             $member_info = MemberModel::getId($uniacid, $mobile);
 
             if (empty($member_info)) {
-                throw new \app\common\exceptions\ShopException('该手机号不存在');
+                return $this->errorJson('该手机号不存在');
             }
 
             //更新密码
@@ -282,7 +282,7 @@ class RegisterController extends ApiController
 
             return $this->successJson('', $data);
         } else {
-            throw new \app\common\exceptions\ShopException('手机号或密码格式错误');
+            return $this->errorJson('手机号或密码格式错误');
         }
     }
 }

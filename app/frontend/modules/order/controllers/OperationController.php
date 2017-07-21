@@ -21,15 +21,15 @@ class OperationController extends ApiController
 
     public function __construct()
     {
-        throw new \app\common\exceptions\ShopException();
+        return $this->errorJson();
         parent::__construct();
         $this->_params = \YunShop::request()->get();
         if (!isset($this->_params['order_id'])) {
-            throw new \app\common\exceptions\ShopException('order_id 不能为空!');
+            return $this->errorJson('order_id 不能为空!');
         }
         $this->_Order = Order::find($this->_params['order_id']);
         if (!isset($this->_Order)) {
-            throw new \app\common\exceptions\ShopException('未找到该订单!');
+            return $this->errorJson('未找到该订单!');
             exit;
         }
     }
