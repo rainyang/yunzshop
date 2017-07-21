@@ -52,15 +52,12 @@ class RefundService
 
     private function wechat()
     {
-
         //微信退款 同步改变退款和订单状态
         RefundOperationService::refundComplete(['order_id' => $this->refundApply->order->id]);
         $pay = PayFactory::create($this->refundApply->order->pay_type_id);
         //dd([$this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price]);
 
         $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
-        echo 1;
-        dd($result);
 
         if (!$result) {
             throw new AdminException('微信退款失败');
