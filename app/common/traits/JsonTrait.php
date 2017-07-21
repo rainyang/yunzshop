@@ -25,6 +25,7 @@ trait JsonTrait
             'data' => $data
         ], 200, ['charset' => 'utf-8'])
             ->send();
+        exit;
     }
 
     /**
@@ -41,5 +42,6 @@ trait JsonTrait
             'data' => $data
         ], 200, ['charset' => 'utf-8'])
             ->send();
+        exit;
     }
 }
