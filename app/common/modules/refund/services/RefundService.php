@@ -30,6 +30,8 @@ class RefundService
         if (!isset($this->refundApply)) {
             throw new AdminException('未找到退款记录');
         }
+        dd($this->refundApply->order->pay_type_id);
+        exit;
 
         switch ($this->refundApply->order->pay_type_id) {
             case PayType::WECHAT_PAY:
