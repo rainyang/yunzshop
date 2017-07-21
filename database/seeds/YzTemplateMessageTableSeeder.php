@@ -14,9 +14,9 @@ class YzTemplateMessageTableSeeder extends Seeder
     {
         
 
-        \DB::table('yz_template_message')->delete();
+        \Illuminate\Support\Facades\DB::table('yz_template_message')->delete();
         
-        \DB::table('yz_template_message')->insert(array (
+        \Illuminate\Support\Facades\DB::table('yz_template_message')->insert(array (
             0 => 
             array (
                 'id' => 1,
