@@ -271,7 +271,9 @@ class OrderService
     public static function orderPay(array $param)
     {
         $orderOperation = OrderPay::find($param['order_id']);
-        $orderOperation->pay_type_id = PayType::BACKEND;
+        if(isset($param['pay_type_id'])){
+            $orderOperation->pay_type_id = $param['pay_type_id'];
+        }
         return self::OrderOperate($orderOperation);
     }
 

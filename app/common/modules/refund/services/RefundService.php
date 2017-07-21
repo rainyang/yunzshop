@@ -30,9 +30,6 @@ class RefundService
         if (!isset($this->refundApply)) {
             throw new AdminException('未找到退款记录');
         }
-        dd($this->refundApply->order->pay_type_id);
-        exit;
-
         switch ($this->refundApply->order->pay_type_id) {
             case PayType::WECHAT_PAY:
                 $result = $this->wechat();
@@ -59,8 +56,6 @@ class RefundService
         //微信退款 同步改变退款和订单状态
         RefundOperationService::refundComplete(['order_id' => $this->refundApply->order->id]);
         $pay = PayFactory::create($this->refundApply->order->pay_type_id);
-        dd([$this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price]);
-        exit;
 
         $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
         if (!$result) {
