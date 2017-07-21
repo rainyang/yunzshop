@@ -4,25 +4,11 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 
-use app\common\events\order\AfterOrderCreatedEvent;
-use app\common\events\order\AfterOrderPaidEvent;
-use app\common\exceptions\AppException;
-use app\common\exceptions\ShopException;
-use app\common\models\AccountWechats;
-use app\common\models\Member;
-use app\common\models\Order;
-use app\common\services\MessageService;
-use app\frontend\modules\goods\models\Brand;
-use app\frontend\modules\goods\services\GoodsService;
-use app\frontend\modules\member\services\MemberService;
 
-use app\frontend\modules\order\services\message\Message;
-use app\frontend\modules\order\services\OrderManager;
+use app\frontend\modules\goods\models\Brand;
+
 use app\frontend\modules\order\services\OrderService;
 
-use Carbon\Carbon;
-use Illuminate\Support\Facades\App;
-use Yunshop\Gold\common\services\Notice;
 
 /**
  * Created by PhpStorm.
@@ -35,8 +21,7 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-        $brand = Brand::where('id',1)->update(['name'=>'shenyang1']);
-echo 1;
+        dd(\Setting::get('shop.notice.notice_enable.created'));
         exit;
 
         OrderService::autoClose();
