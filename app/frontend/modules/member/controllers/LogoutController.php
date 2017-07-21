@@ -24,6 +24,6 @@ class LogoutController extends BaseController
 
         Session::clear('member_id');
 
-        $this->successJson('退出成功');
+        return $this->successJson('退出成功');
     }
 }
