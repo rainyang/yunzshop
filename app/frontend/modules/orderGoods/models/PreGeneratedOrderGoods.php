@@ -270,6 +270,7 @@ class PreGeneratedOrderGoods extends OrderGoods
         return $this->getPriceCalculator()->getGoodsCostPrice();
 
     }
+
     public function getGoodsMarketPrice()
     {
         return $this->getPriceCalculator()->getGoodsMarketPrice();
