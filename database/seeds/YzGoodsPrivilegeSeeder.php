@@ -14,15 +14,19 @@ class YzGoodsPrivilegeSeeder extends Seeder
     
     public function run()
     {
-        $newList = DB::table($this->newTable)->get();
+        if (!Schema::hasTable($this->oldTable)) {
+            echo $this->oldTable." 不存在 跳过\n";
+            return;
+        }
+        $newList = \Illuminate\Support\Facades\DB::table($this->newTable)->get();
         if($newList->isNotEmpty()){
             echo "yz_goods_share 已经有数据了跳过\n";
             return ;
         }
-        $list =  DB::table($this->oldTable)->get();
+        $list =  \Illuminate\Support\Facades\DB::table($this->oldTable)->get();
         if($list) {
             foreach ($list as $v) {
-                DB::table($this->newTable)->insert([
+                \Illuminate\Support\Facades\DB::table($this->newTable)->insert([
                     'goods_id'=> $v['id'],
                     'show_levels'=> $v['showlevels'],
                     'show_groups'=> $v['showgroups'],

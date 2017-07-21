@@ -16,7 +16,7 @@ class MessageService
 
     public static function incomeWithdraw($withdrawData, $member, $uniacid = '')
     {
-        if(\YunShop::notice()->getNotSend('withdraw.incone_withdraw_title')){
+        if(!\YunShop::notice()->getNotSend('withdraw.incone_withdraw_title')){
             return;
         }
         if ($uniacid) {
@@ -45,7 +45,7 @@ class MessageService
 
     public static function withdrawCheck($withdrawData, $member, $uniacid = '')
     {
-        if(\YunShop::notice()->getNotSend('withdraw.incone_withdraw_check_title')){
+        if(!\YunShop::notice()->getNotSend('withdraw.incone_withdraw_check_title')){
             return;
         }
         if ($uniacid) {
@@ -75,7 +75,7 @@ class MessageService
     }
     public static function withdrawPay($withdrawData, $member, $uniacid = '')
     {
-        if(\YunShop::notice()->getNotSend('withdraw.incone_withdraw_pay_title')){
+        if(!\YunShop::notice()->getNotSend('withdraw.incone_withdraw_pay_title')){
             return;
         }
         if ($uniacid) {
@@ -103,7 +103,7 @@ class MessageService
     }
     public static function withdrawArrival($withdrawData, $member, $uniacid = '')
     {
-        if(\YunShop::notice()->getNotSend('withdraw.incone_withdraw_arrival_title')){
+        if(!\YunShop::notice()->getNotSend('withdraw.incone_withdraw_arrival_title')){
             return;
         }
         if ($uniacid) {
