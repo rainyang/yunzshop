@@ -14,7 +14,7 @@ class YzMenuUpgradeSeeder extends Seeder
     public function run()
     {
         $item = DB::table($this->table)->where('item', 'system_update')->first();
-        if ($item->isNotEmpty()) {
+        if ($item) {
             echo "system_update 已经有数据了跳过\n";
             return;
         }

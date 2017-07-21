@@ -7,6 +7,8 @@
  * Time: 上午9:54
  */
 use Illuminate\Database\Seeder;
+//use Illuminate\Database\Schema\Blueprint;
+
 
 class YzStreetSeeder extends Seeder
 {
@@ -14,6 +16,10 @@ class YzStreetSeeder extends Seeder
     protected $newTable = 'yz_street';
     public function run()
     {
+        if (!Schema::hasTable($this->oldTable)) {
+            echo $this->oldTable." 不存在 跳过\n";
+            return;
+        }
         $newList = DB::table($this->newTable)->get();
         if($newList->isNotEmpty()){
             echo "yz_street 已经有数据了跳过\n";
