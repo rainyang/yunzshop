@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 
 class MergePayController extends ApiController
 {
-    public $transactionActions = ['*'];
+    public $transactionActions = ['wechatPay','alipay'];
     /**
      * @var Collection
      */
