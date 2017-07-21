@@ -152,6 +152,9 @@ class IncomeController extends ApiController
         $config = \Config::get('income');
 
         foreach ($config as $key => $item) {
+            if($item['type'] == 'balance'){
+                continue;
+            }
             $set[$key] = \Setting::get('withdraw.' . $key);
 
             $set[$key]['roll_out_limit'] = $set[$key]['roll_out_limit'] ? $set[$key]['roll_out_limit'] : 0;
