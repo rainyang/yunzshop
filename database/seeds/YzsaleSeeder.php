@@ -14,6 +14,10 @@ class YzSaleSeeder extends Seeder
     
     public function run()
     {
+        if (!Schema::hasTable($this->oldTable)) {
+            echo $this->oldTable." 不存在 跳过\n";
+            return;
+        }
         $newList = DB::table($this->newTable)->get();
         if($newList->isNotEmpty()){
             echo "yz_goods_sale 已经有数据了跳过\n";

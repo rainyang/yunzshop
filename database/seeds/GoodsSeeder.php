@@ -24,6 +24,10 @@ class GoodsSeeder extends \Illuminate\Database\Seeder
 
     public function run()
     {
+        if (!Schema::hasTable($this->oldGoodsTable)) {
+            echo $this->oldGoodsTable." 不存在 跳过\n";
+            return;
+        }
         $newList = DB::table($this->goodsTable)->get();
         if($newList->isNotEmpty()){
             echo "{$this->goodsTable}已经有数据了跳过\n";
