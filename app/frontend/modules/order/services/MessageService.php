@@ -32,7 +32,7 @@ class MessageService extends \app\common\services\MessageService
     public function created()
     {
         $this->buyerMessage->created();
-        if(\Setting::get('shop.notice.notice_enable.created')){
+        if (\Setting::get('shop.notice.notice_enable.created')) {
             $this->shopMessage->created();
         }
     }
@@ -41,7 +41,7 @@ class MessageService extends \app\common\services\MessageService
     {
         $this->buyerMessage->paid();
 
-        if(\Setting::get('shop.notice.notice_enable.paid')){
+        if (\Setting::get('shop.notice.notice_enable.paid')) {
             $this->shopMessage->paid();
         }
 
@@ -56,7 +56,7 @@ class MessageService extends \app\common\services\MessageService
     public function received()
     {
         $this->shopMessage->received();
-        if(\Setting::get('shop.notice.notice_enable.received')) {
+        if (\Setting::get('shop.notice.notice_enable.received')) {
             $this->buyerMessage->received();
         }
     }
