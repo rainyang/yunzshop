@@ -24,13 +24,17 @@ class GoodsSeeder extends \Illuminate\Database\Seeder
 
     public function run()
     {
-        $newList = DB::table($this->goodsTable)->get();
+        if (!Schema::hasTable($this->oldGoodsTable)) {
+            echo $this->oldGoodsTable." 不存在 跳过\n";
+            return;
+        }
+        $newList = \Illuminate\Support\Facades\DB::table($this->goodsTable)->get();
         if($newList->isNotEmpty()){
             echo "{$this->goodsTable}已经有数据了跳过\n";
             return ;
         }
 
-        $list =  DB::table($this->oldGoodsTable)->get();
+        $list =  \Illuminate\Support\Facades\DB::table($this->oldGoodsTable)->get();
         if($list){
 
         }
