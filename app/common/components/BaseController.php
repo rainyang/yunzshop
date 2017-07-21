@@ -23,8 +23,11 @@ use Validator;
 class BaseController extends Controller
 {
     use DispatchesJobs, MessageTrait, ValidatesRequests, TemplateTrait, PermissionTrait,JsonTrait;
-
-
+    /**
+     * controller中执行报错需要回滚的action数组
+     * @var array
+     */
+    public $transactionActions = [];
     public function __construct()
     {
         $this->setCookie();
@@ -39,7 +42,7 @@ class BaseController extends Controller
      */
     public function preAction()
     {
-        strpos(request()->get('route'),'setting.key')!== 0 && Check::app();
+        //strpos(request()->get('route'),'setting.key')!== 0 && Check::app();
 
         //是否为商城后台管理路径
         strpos(request()->getBaseUrl(),'/web/index.php') === 0 && Check::setKey();
@@ -94,7 +97,14 @@ class BaseController extends Controller
         session_start();
     }
 
-
+    /**
+     * 需要回滚
+     * @param $action
+     * @return bool
+     */
+    public function needTransaction($action){
+        return in_array($action, $this->transactionActions) || in_array('*', $this->transactionActions) || $this->transactionActions == '*';
+    }
 
 
 }
