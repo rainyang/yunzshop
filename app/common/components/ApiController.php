@@ -34,7 +34,7 @@ class ApiController extends BaseController
         parent::preAction();
 
         if(!UniAccount::checkIsExistsAccount(\YunShop::app()->uniacid)){
-            return $this->errorJson('无此公众号', ['login_status' => -2]);
+            throw new \app\common\exceptions\ShopException('无此公众号', ['login_status' => -2]);
         }
 
         $relaton_set = MemberRelation::getSetInfo()->first();
@@ -67,7 +67,7 @@ class ApiController extends BaseController
             }
 
             if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
-                return $this->errorJson('黑名单用户，请联系管理员', ['login_status' => -1]);
+                throw new \app\common\exceptions\ShopException('黑名单用户，请联系管理员', ['login_status' => -1]);
             }
 
             $mid = Member::getMid();
@@ -95,10 +95,10 @@ class ApiController extends BaseController
         $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
         if (5 == $type) {
-            return $this->errorJson('',['login_status'=> 1,'login_url'=>'', 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid]);
+            throw new \app\common\exceptions\ShopException('',['login_status'=> 1,'login_url'=>'', 'type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid]);
         }
 
-        return $this->errorJson('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
+        throw new \app\common\exceptions\ShopException('',['login_status'=> 0,'login_url'=>Url::absoluteApi('member.login.index', $queryString)]);
     }
 
 }

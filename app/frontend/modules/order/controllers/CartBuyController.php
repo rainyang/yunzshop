@@ -17,7 +17,7 @@ class CartBuyController extends PreGeneratedController
     public function index()
     {
         if (!isset($_GET['cart_ids'])) {
-            return $this->errorJson('请选择要结算的商品');
+            throw new \app\common\exceptions\ShopException('请选择要结算的商品');
         }
 
         parent::index();

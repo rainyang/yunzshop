@@ -51,16 +51,16 @@ class GoodsService
         return $goodsModel->toArray();
     }
 
-    public static function GoodsListAvailable(array $preGeneratedOrderGoodsModels)
+    public static function GoodsListAvailable(array $preGeneratedOrderGoods)
     {
-        foreach ($preGeneratedOrderGoodsModels as $preGeneratedOrderGoodsModel) {
-            foreach ($preGeneratedOrderGoodsModel as $orderGoodsModel) {
+        foreach ($preGeneratedOrderGoods as $PreGeneratedOrderGoods) {
+            foreach ($PreGeneratedOrderGoods as $orderGoodsModel) {
                 $result = self::GoodsAvailable($orderGoodsModel);
                 if($result !== true) {
                     return $result;
                 }
             }
-            /*$result = self::GoodsAvailable($preGeneratedOrderGoodsModel);
+            /*$result = self::GoodsAvailable($PreGeneratedOrderGoods);
             if($result !== true) {
                 return $result;
             }*/
@@ -68,9 +68,9 @@ class GoodsService
         return true;
     }
 
-    public static function GoodsAvailable(PreGeneratedOrderGoods $preGeneratedOrderGoodsModel)
+    public static function GoodsAvailable(PreGeneratedOrderGoods $PreGeneratedOrderGoods)
     {
-        $Event = new BeforeOrderGoodsAddInOrder($preGeneratedOrderGoodsModel);
+        $Event = new BeforeOrderGoodsAddInOrder($PreGeneratedOrderGoods);
         event($Event);
         if ($Event->hasOpinion()) {
             return [$Event->getOpinion()->result,$Event->getOpinion()->message];

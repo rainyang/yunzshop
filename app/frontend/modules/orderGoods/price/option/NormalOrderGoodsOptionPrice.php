@@ -19,4 +19,12 @@ class NormalOrderGoodsOptionPrice extends NormalOrderGoodsPrice
     {
         return $this->orderGoods->goodsOption->product_price * $this->orderGoods->total;
     }
+    public function getGoodsCostPrice()
+    {
+        return $this->orderGoods->goodsOption->cost_price * $this->orderGoods->total;
+    }
+    public function getGoodsMarketPrice()
+    {
+        return $this->orderGoods->goodsOption->market_price * $this->orderGoods->total;
+    }
 }
