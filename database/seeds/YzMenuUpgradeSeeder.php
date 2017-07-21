@@ -5,7 +5,9 @@
  * Date: 2017/7/21
  * Time: 下午2:01
  */
-class YzMenuUpgradeSeeder
+use Illuminate\Database\Seeder;
+
+class YzMenuUpgradeSeeder extends Seeder
 {
     protected $table = 'yz_menu';
 
