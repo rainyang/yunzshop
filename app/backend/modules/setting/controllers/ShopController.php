@@ -169,6 +169,7 @@ class ShopController extends BaseController
      */
     public function notice()
     {
+        $noticeConfig = \Config::get('notice.not-send');
         $notice = Setting::get('shop.notice');
 //        $salers = []; //订单通知的商家列表,数据如何取待定?
         //$new_type = []; //通知方式的数组,数据如何来的待定?
