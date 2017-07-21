@@ -41,7 +41,7 @@ class EditController extends ApiController
             throw new AppException('未找到该退款申请');
         }
         $data = compact('refundApply','reasons','refundTypes');
-        $this->successJson('成功',$data);
+        return $this->successJson('成功',$data);
     }
     public function store(\Request $request){
         $this->validate($request, [
