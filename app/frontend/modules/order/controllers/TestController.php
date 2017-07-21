@@ -1,4 +1,5 @@
 <?php
+
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
@@ -17,6 +18,7 @@ use app\frontend\modules\order\services\message\Message;
 use app\frontend\modules\order\services\OrderManager;
 use app\frontend\modules\order\services\OrderService;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Yunshop\Gold\common\services\Notice;
 
@@ -30,9 +32,30 @@ class TestController extends ApiController
 {
     public function index()
     {
-        echo 2;
-        \Log::info(1);
+        dd(\Setting::get('shop.trade.receive',10));
+        dd(\Setting::get('shop.trade'));
         exit;
+
+        OrderService::autoClose();
+        exit;
+        // 这样下次 app()->make('OrderManager') 时, 会执行下面的闭包
+        app('OrderManager')->extend('Order', function ($order, $app) {
+            //例如 使实例出来的对象带有某些属性,记住容器类是一个创建型模式
+            $order->uid = 1111;
+            return $order;
+        });
+        dd(app('OrderManager')->make('Order'));
+    }
+
+    public function index1()
+    {
+        // 最简单的单例
+        $result = app()->share(function ($var) {
+            return $var + 1;
+        });
+        dd($result(100));
+
+        dd($result(3));
     }
 
 }

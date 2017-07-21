@@ -4,7 +4,7 @@ namespace app\frontend\modules\goods\services;
 use app\common\events\order\BeforeOrderGoodsAddInOrder;
 use app\frontend\models\goods;
 use app\frontend\modules\goods\services\models\factory\GoodsModelFactory;
-use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
+use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
 
 /**
  * Created by PhpStorm.
@@ -68,7 +68,7 @@ class GoodsService
         return true;
     }
 
-    public static function GoodsAvailable(PreGeneratedOrderGoodsModel $preGeneratedOrderGoodsModel)
+    public static function GoodsAvailable(PreGeneratedOrderGoods $preGeneratedOrderGoodsModel)
     {
         $Event = new BeforeOrderGoodsAddInOrder($preGeneratedOrderGoodsModel);
         event($Event);

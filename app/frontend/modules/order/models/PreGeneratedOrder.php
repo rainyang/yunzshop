@@ -1,22 +1,23 @@
 <?php
 
-namespace app\frontend\modules\order\services\models;
+namespace app\frontend\modules\order\models;
 
-use app\common\models\Order;
+use app\common\exceptions\AppException;
 
+use app\frontend\models\Order;
 use app\frontend\modules\discount\models\OrderDiscount;
 use app\frontend\modules\dispatch\models\OrderDispatch;
-use app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel;
-use app\frontend\models\OrderGoods;
+use app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods;
 use app\frontend\modules\order\services\OrderService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * 订单生成类
  * 输入
  *  用户model
  *  店铺model
- *  未生成的订单商品(实例)app\frontend\modules\goods\services\models\PreGeneratedOrderGoodsModel
+ *  未生成的订单商品(实例)app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsModel
  * 输出
  *  预下单信息
  *  订单表插入结果
@@ -28,8 +29,9 @@ use Illuminate\Support\Collection;
  * Class PreGeneratedOrderModel
  * @package app\frontend\modules\order\services\models
  */
-class PreGeneratedOrderModel extends OrderModel
+class PreGeneratedOrder extends Order
 {
+    protected $appends = [];
 
     /**
      * @var OrderDispatch 运费类
@@ -42,13 +44,16 @@ class PreGeneratedOrderModel extends OrderModel
 
     public function setOrderGoods(Collection $orderGoods)
     {
-        $this->orderGoods = $orderGoods;
-        $orderGoods->each(function ($orderGoods) {
+        $this->setRelation('orderGoods', $this->newCollection());
+
+        $orderGoods->each(function ($aOrderGoods) {
             /**
-             * @var PreGeneratedOrderGoodsModel $orderGoodsModel
+             * @var PreGeneratedOrderGoods $aOrderGoods
              */
 
-            $orderGoods->setOrder($this);
+            $this->orderGoods->push($aOrderGoods);
+
+            $aOrderGoods->setOrder($this);
         });
 
         $this->setDispatch();
@@ -135,13 +140,9 @@ class PreGeneratedOrderModel extends OrderModel
         return $result;
     }
 
-    /**
-     * 输出订单信息
-     * @return array
-     */
-    public function toArray()
+    public function getPreAttributes()
     {
-        $data = array(
+        return array(
             'pre_id' => $this->getPreId(),
             'price' => sprintf('%.2f', $this->getPrice()),
             'goods_price' => sprintf('%.2f', $this->getFinalPrice()),
@@ -150,43 +151,77 @@ class PreGeneratedOrderModel extends OrderModel
             'deduction_price' => sprintf('%.2f', $this->getDeductionPrice()),
 
         );
-        foreach ($this->orderGoods as $orderGoodsModel) {
-            $data['order_goods'][] = $orderGoodsModel->toArray();
-        }
-        return $data;
     }
 
     /**
-     * @return bool 订单插入数据库,触发订单生成事件
+     * 输出订单信息
+     * @return array
+     */
+    public function toArray()
+    {
+
+        $this->setRawAttributes(array_merge($this->getAttributes(),$this->getPreAttributes()));
+//        foreach ($this->orderGoodsModels as $orderGoodsModel) {
+//            $data['order_goods'][] = $orderGoodsModel->toArray();
+//        }
+        return parent::toArray();
+    }
+
+    public function push()
+    {
+
+        // To sync all of the relationships to the database, we will simply spin through
+        // the relationships and save each model via this "push" method, which allows
+        // us to recurse into all of these nested relations for the model instance.
+        foreach ($this->relations as $models) {
+            if (!isset($models->order_id) && Schema::hasColumn($models->table, 'order_id')) {
+                $models->order_id = $this->id;
+            }
+//            $models = $models instanceof Collection
+//                ? $models->all() : [$models];
+//
+//            foreach ($models as $model) {
+//                if (! $model->push1()) {
+//                    return false;
+//                }
+//            }
+        }
+
+        return parent::push();
+    }
+
+    /**
+     * 订单插入数据库,触发订单生成事件
+     * @return mixed
+     * @throws AppException
      */
     public function generate()
     {
-        $orderModel = $this->createOrder();
-        $orderGoodsModels = $this->createOrderGoods();
-        $order = Order::create($orderModel);
-        foreach ($orderGoodsModels as $orderGoodsModel) {
-            $orderGoodsModel->order_id = $order->id;
-            $orderGoodsModel->save();
-        }
+        $orderAttributes = array_merge($this->getAttributes(),$this->createOrder());
+        //$this->get
+        $this->setRawAttributes($orderAttributes);
+        //dd($this);
+        //exit;
+        $this->save();
 
-        $this->id = $order->id;
+        $result = $this->push();
 
-        return $order->id;
-    }
+//        if($result === false){
+//            throw new AppException('订单相关信息保存失败');
+//        }
+//        //$orderGoodsModels = $this->createOrderGoods();
+//        dd($this);
+//
+//        $order = Order::create($orderModel);
+//        exit;
+//        $order->push();
+////        foreach ($orderGoodsModels as $orderGoodsModel) {
+////            $orderGoodsModel->order_id = $order->id;
+////            $orderGoodsModel->save();
+////        }
 
-    /**
-     * 订单商品生成
-     */
-    private function createOrderGoods()
-    {
-        $result = [];
-        foreach ($this->orderGoods as $preOrderGoodsModel) {
-            /**
-             * @var $preOrderGoodsModel PreGeneratedOrderGoodsModel
-             */
-            $result[] = $preOrderGoodsModel->generate($this);
-        }
-        return $result;
+        //$this->id = $order->id;
+        return $this->id;
     }
 
 
@@ -214,11 +249,63 @@ class PreGeneratedOrderModel extends OrderModel
 
         return $data;
     }
+
+    /**
+     * 统计商品总数
+     * @return int
+     */
+    protected function getGoodsTotal()
+    {
+        //累加所有商品数量
+        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+            return $aOrderGoods->total;
+        });
+
+        return $result;
+    }
+
+
+    /**
+     * 计算订单成交价格
+     * @return int
+     * @throws AppException
+     */
+    protected function getPrice()
+    {
+        //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
+
+        $result = max($this->getFinalPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(), 0);
+        
+        return $result;
+    }
+
+    /**
+     * 统计订单商品小计金额
+     * @return int
+     */
+    protected function getFinalPrice()
+    {
+        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+            return $aOrderGoods->getFinalPrice();
+        });
+
+        return $result;
+    }
+
+    /**
+     * 统计订单商品成交金额
+     * @return int
+     */
+    protected function getOrderGoodsPrice()
+    {
+        $result = $this->orderGoods->sum(function ($aOrderGoods) {
+            return $aOrderGoods->getPrice();
+        });
+        return $result;
+    }
+
     public function __get($key)
     {
-        if($key == 'orderGoods'){
-            return $this->getOrderGoodsModels();
-        }
         return parent::__get($key); // TODO: Change the autogenerated stub
     }
 }

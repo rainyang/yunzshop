@@ -55,7 +55,7 @@ class RouteServiceProvider extends ServiceProvider
             'middleware' => ['web'],
             'namespace' => $this->namespace,
         ], function ($router) {
-            strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
+            //strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
             require base_path('routes/web.php');
         });
     }

@@ -34,7 +34,7 @@ class OrderGoods extends BaseModel
     public function goods()
     {
         //todo ??需调查为什么 $this->goods 调取不到这个函数
-        return $this->belongsTo(self::getNearestModel('Goods'));
+        return $this->belongsTo(app('GoodsManager')->make('Goods'));
     }
 
     public function scopeOrderGoods(Builder $query)

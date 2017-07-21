@@ -11,7 +11,7 @@ namespace app\frontend\modules\discount\models;
 use app\common\events\discount\OnDeductionPriceCalculatedEvent;
 use app\common\models\Coupon;
 use app\frontend\modules\coupon\services\CouponService;
-use app\frontend\modules\order\services\models\PreGeneratedOrderModel;
+use app\frontend\modules\order\models\PreGeneratedOrder;
 
 class OrderDiscount
 {
@@ -19,7 +19,7 @@ class OrderDiscount
     private $couponPrice;
     private $deductionPrice;
 
-    public function __construct(PreGeneratedOrderModel $order)
+    public function __construct(PreGeneratedOrder $order)
     {
         $this->order = $order;
     }

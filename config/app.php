@@ -202,6 +202,8 @@ return [
         Liebig\Cron\Laravel5ServiceProvider::class,
         //上传
         zgldh\UploadManager\UploadManagerServiceProvider::class,
+        // 订单管理
+        \app\common\providers\ShopProvider::class
     ],
 
     /*

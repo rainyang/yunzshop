@@ -12,6 +12,7 @@ use app\backend\modules\goods\models\Dispatch;
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\Address;
+use app\frontend\models\OrderGoods;
 
 class TemplateOrderDispatchPrice
 {
@@ -22,6 +23,12 @@ class TemplateOrderDispatchPrice
     {
         $this->event = $event;
         $price = $event->getOrderModel()->getOrderGoodsModels()->sum(function ($orderGoods) {
+            /**
+             * @var $orderGoods OrderGoods
+             */
+            if ($orderGoods->isFreeShipping()) {
+                return 0;
+            }
             if (!isset($orderGoods->hasOneGoodsDispatch)) {
                 return 0;
             }
