@@ -49,6 +49,8 @@ class UpdateVersion extends Command
         $versionMigration = 'database/migrations/' . $username = $this->argument('version');
         if(is_dir(base_path($versionMigration) )){
             \Artisan::call('migrate',['--force' => true,'--path' => $versionMigration]);
+
+            \Artisan::call('db:seed');
         }
     }
 
