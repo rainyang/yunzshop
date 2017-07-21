@@ -200,8 +200,6 @@ class PreGeneratedOrder extends Order
         $orderAttributes = array_merge($this->getAttributes(),$this->createOrder());
         //$this->get
         $this->setRawAttributes($orderAttributes);
-        //dd($this);
-        //exit;
         $this->save();
 
         $result = $this->push();

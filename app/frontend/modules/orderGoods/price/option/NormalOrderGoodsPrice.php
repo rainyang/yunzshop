@@ -44,7 +44,11 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     public function getGoodsCostPrice()
     {
-        return $this->orderGoodsPriceCalculator->getGoodsPrice() - $this->orderGoodsPriceCalculator->getPrice();
+        return $this->orderGoods->goods->cost_price * $this->orderGoods->total;
+    }
+    public function getGoodsMarketPrice()
+    {
+        return $this->orderGoods->goods->market_price * $this->orderGoods->total;
     }
 
     //todo 此处混乱

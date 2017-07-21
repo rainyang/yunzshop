@@ -71,6 +71,7 @@ class PreGeneratedOrderGoods extends OrderGoods
             'thumb' => $this->goods->thumb,
             'goods_price' => $this->getGoodsPrice(),
             'goods_cost_price' => $this->getGoodsCostPrice(),
+            'goods_market_price' => $this->getGoodsMarketPrice(),
             'discount_price' => $this->getDiscountPrice(),
         );
         if (isset($this->goodsOption)) {
@@ -256,6 +257,7 @@ class PreGeneratedOrderGoods extends OrderGoods
      */
     protected function getFullPriceReductions()
     {
+        //return $this->getPriceCalculator()->getFullPriceReductions();
 
     }
 
@@ -268,4 +270,10 @@ class PreGeneratedOrderGoods extends OrderGoods
         return $this->getPriceCalculator()->getGoodsCostPrice();
 
     }
+    public function getGoodsMarketPrice()
+    {
+        return $this->getPriceCalculator()->getGoodsMarketPrice();
+
+    }
+
 }
