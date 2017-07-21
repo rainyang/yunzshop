@@ -37,7 +37,7 @@ class DetailController extends ApiController
             $data['address_info'] = OrderAddress::select('address', 'mobile', 'realname')->where('order_id', $order['id'])->first();
         }
         if (!$order) {
-            throw new \app\common\exceptions\ShopException($msg = '未找到数据', []);
+            return $this->errorJson($msg = '未找到数据', []);
         } else {
             return $this->successJson($msg = 'ok', $data);
         }
