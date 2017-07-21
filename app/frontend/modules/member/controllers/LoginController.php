@@ -39,7 +39,7 @@ class LoginController extends ApiController
                             return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
                         }
                     } else {
-                        echo $this->errorJson('登录失败', ['status' => 3]);
+                        return $this->errorJson('登录失败', ['status' => 3]);
                     }
                 } else {
                     return $this->errorJson('登录异常', ['status'=> 2]);
