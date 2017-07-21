@@ -69,7 +69,7 @@ class Handler extends ExceptionHandler
         }
         //api异常
         if (\YunShop::isApi()) {
-            return $this->errorJson($exception->getMessage());
+            throw new \app\common\exceptions\ShopException($exception->getMessage());
         }
         return parent::render($request, $exception);
     }
@@ -94,7 +94,7 @@ class Handler extends ExceptionHandler
     {
         if (\Yunshop::isApi()) {
             \Log::error($exception);
-            return $this->errorJson($exception->getMessage());
+            throw new \app\common\exceptions\ShopException($exception->getMessage());
         }
         exit($this->message($exception->getMessage(), '', 'error'));
     }
@@ -124,7 +124,7 @@ class Handler extends ExceptionHandler
             exit( $exception->getMessage());
         }
         if (\Yunshop::isApi()) {
-            return $this->errorJson($exception->getMessage());
+            throw new \app\common\exceptions\ShopException($exception->getMessage());
         }
 
         abort(404, $exception->getMessage());

@@ -13,35 +13,33 @@ trait JsonTrait
 
     /**
      * 接口返回成功 JSON格式
-     * @param string $message   提示信息
-     * @param array $data       返回数据
+     * @param string $message 提示信息
+     * @param array $data 返回数据
      * @return \Illuminate\Http\JsonResponse
      */
-    public  function successJson($message = '成功', $data = [])
+    public function successJson($message = '成功', $data = [])
     {
         response()->json([
             'result' => 1,
             'msg' => $message,
             'data' => $data
-        ],200,['charset'=>'utf-8'])
+        ], 200, ['charset' => 'utf-8'])
             ->send();
-        exit;
     }
 
     /**
      * 接口返回错误JSON 格式
-     * @param string $message    提示信息
-     * @param array $data        返回数据
+     * @param string $message 提示信息
+     * @param array $data 返回数据
      * @return \Illuminate\Http\JsonResponse
      */
-    public  function errorJson($message = '失败', $data = [])
+    public function errorJson($message = '失败', $data = [])
     {
-          response()->json([
+        response()->json([
             'result' => 0,
             'msg' => $message,
             'data' => $data
-        ],200,['charset'=>'utf-8'])
+        ], 200, ['charset' => 'utf-8'])
             ->send();
-          exit;
     }
 }

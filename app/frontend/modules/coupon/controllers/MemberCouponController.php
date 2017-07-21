@@ -40,7 +40,7 @@ class MemberCouponController extends ApiController
 
         $coupons = MemberCoupon::getCouponsOfMember($uid)->paginate($pageSize)->toArray();
         if (empty($coupons['data'])){
-            return $this->errorJson('没有找到记录', []);
+            throw new \app\common\exceptions\ShopException('没有找到记录', []);
         }
 
         //添加 "是否可用" & "是否已经使用" & "是否过期" 的标识
@@ -85,7 +85,7 @@ class MemberCouponController extends ApiController
         $uid = \YunShop::app()->getMemberId();
         $member = MemberShopInfo::getMemberShopInfo($uid);
         if(empty($member)){
-            return $this->errorJson('没有找到该用户', []);
+            throw new \app\common\exceptions\ShopException('没有找到该用户', []);
         }
         $memberLevel = $member->level_id;
 
@@ -94,7 +94,7 @@ class MemberCouponController extends ApiController
             ->orderBy('display_order','desc')
             ->orderBy('updated_at','desc');
         if($coupons->get()->isEmpty()){
-            return $this->errorJson('没有找到记录', []);
+            throw new \app\common\exceptions\ShopException('没有找到记录', []);
         }
         $coupons = $coupons->paginate($pageSize)->toArray();
 
@@ -164,7 +164,7 @@ class MemberCouponController extends ApiController
         }
 
         if (empty($coupons)){
-            return $this->errorJson('没有找到记录', []);
+            throw new \app\common\exceptions\ShopException('没有找到记录', []);
         } else{
             return $this->successJson('ok', $coupons);
         }
@@ -276,19 +276,19 @@ class MemberCouponController extends ApiController
     {
         $id = \YunShop::request()->id;
         if(empty($id)){
-            return $this->errorJson('缺少 ID 参数','');
+            throw new \app\common\exceptions\ShopException('缺少 ID 参数','');
         }
 
         $model = MemberCoupon::getById($id);
         if(!$model){
-            return $this->errorJson('找不到记录','');
+            throw new \app\common\exceptions\ShopException('找不到记录','');
         }
 
         $res = $model->delete();
         if($res){
             return $this->successJson('ok', '');
         } else{
-            return $this->errorJson('删除优惠券失败','');
+            throw new \app\common\exceptions\ShopException('删除优惠券失败','');
         }
     }
 
@@ -299,43 +299,43 @@ class MemberCouponController extends ApiController
         $couponId = \YunShop::request()->get('coupon_id');
         $memberId = \YunShop::app()->getMemberId();;
         if(!$couponId){
-            return $this->errorJson('没有提供优惠券ID','');
+            throw new \app\common\exceptions\ShopException('没有提供优惠券ID','');
         }
 
         //是否有该优惠券
         $couponModel = Coupon::getAvailableCouponById($couponId);
         if(!$couponModel){
-            return $this->errorJson('没有该优惠券或者优惠券不可用','');
+            throw new \app\common\exceptions\ShopException('没有该优惠券或者优惠券不可用','');
         }
 
         //是否达到优惠券要求的会员等级
         $member = MemberShopInfo::getMemberShopInfo($memberId);
         if(!empty($couponModel->level_limit) && ($couponModel->level_limit != -1)){ //优惠券有会员等级要求
             if (empty($member->level_id)){
-                return $this->errorJson('该优惠券有会员等级要求,但该用户没有会员等级','');
+                throw new \app\common\exceptions\ShopException('该优惠券有会员等级要求,但该用户没有会员等级','');
             } elseif($member->level_id < $couponModel->level_limit){
-                return $this->errorJson('没有达到领取该优惠券的会员等级要求','');
+                throw new \app\common\exceptions\ShopException('没有达到领取该优惠券的会员等级要求','');
             }
         }
 
         //判断优惠券是否过期
         $timeLimit = $couponModel->time_limit;
         if($timeLimit == 1 && strtotime('now') > $couponModel->time_end->timestamp){
-            return $this->errorJson('优惠券已过期','');
+            throw new \app\common\exceptions\ShopException('优惠券已过期','');
         }
 
         //是否达到个人领取上限
         $count = MemberCoupon::getMemberCouponCount($memberId, $couponId);
         $couponMaxLimit = Coupon::getter($couponId, 'get_max'); //优惠券限制每人的领取总数
         if($count >= $couponMaxLimit && ($couponMaxLimit != -1)){
-            return $this->errorJson('已经达到个人领取上限','');
+            throw new \app\common\exceptions\ShopException('已经达到个人领取上限','');
         }
 
         //验证是否达到优惠券总数上限
         $totalGetCount = MemberCoupon::getTotalGetCount($couponId);
         $couponSumLimit = Coupon::getter($couponId, 'total');
         if($totalGetCount >= $couponSumLimit && ($couponSumLimit != -1)){
-            return $this->errorJson('该优惠券已经被抢光','');
+            throw new \app\common\exceptions\ShopException('该优惠券已经被抢光','');
         }
 
         //表单验证, 保存
@@ -350,11 +350,11 @@ class MemberCouponController extends ApiController
         $memberCoupon->fill($data);
         $validator = $memberCoupon->validator();
         if ($validator->fails()) {
-            return $this->errorJson('领取失败', $validator->messages());
+            throw new \app\common\exceptions\ShopException('领取失败', $validator->messages());
         } else {
             $res = $memberCoupon->save();
             if(!$res){
-                return $this->errorJson('领取失败','');
+                throw new \app\common\exceptions\ShopException('领取失败','');
             } else{
                 //推送模板消息通知用户
                 $mappingFans = McMappingFans::getFansById($memberId);

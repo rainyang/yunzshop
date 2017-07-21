@@ -31,7 +31,7 @@ class MemberHistoryController extends ApiController
         //$goodsId = 100;
         $goodsId = \YunShop::request()->goods_id;
         if (!$goodsId) {
-            return $this->errorJson('未获取到商品ID，添加失败！');
+            throw new \app\common\exceptions\ShopException('未获取到商品ID，添加失败！');
         }
 
         $historyModel = MemberHistory::getHistoryByGoodsId($memberId, $goodsId) ?: new MemberHistory();
@@ -48,12 +48,12 @@ class MemberHistoryController extends ApiController
     {
         $historyModel = MemberHistory::getHistoryById(\YunShop::request()->id);
         if (!$historyModel) {
-            return $this->errorJson('未找到数据或已删除！');
+            throw new \app\common\exceptions\ShopException('未找到数据或已删除！');
         }
         if ($historyModel->delete()) {
             return $this->successJson('移除成功');
         }
-        return $this->errorJson('未获取到历史记录ID');
+        throw new \app\common\exceptions\ShopException('未获取到历史记录ID');
     }
 
 }
