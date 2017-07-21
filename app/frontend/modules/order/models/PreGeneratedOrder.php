@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Schema;
  * 输入
  *  用户model
  *  店铺model
- *  未生成的订单商品(实例)app\frontend\modules\orderGoods\models\PreGeneratedOrderGoodsModel
+ *  未生成的订单商品(实例)app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods
  * 输出
  *  预下单信息
  *  订单表插入结果
@@ -200,8 +200,6 @@ class PreGeneratedOrder extends Order
         $orderAttributes = array_merge($this->getAttributes(),$this->createOrder());
         //$this->get
         $this->setRawAttributes($orderAttributes);
-        //dd($this);
-        //exit;
         $this->save();
 
         $result = $this->push();

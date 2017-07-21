@@ -214,10 +214,10 @@ class MemberRelationController extends BaseController
 
                 return $this->successJson('审核通过');
             } else {
-                return $this->errorJson('审核失败');
+                throw new \app\common\exceptions\ShopException('审核失败');
             }
         } else {
-            return $this->errorJson('会员不存在');
+            throw new \app\common\exceptions\ShopException('会员不存在');
         }
     }
 

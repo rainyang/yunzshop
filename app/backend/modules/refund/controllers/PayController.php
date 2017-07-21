@@ -9,16 +9,16 @@
 namespace app\backend\modules\refund\controllers;
 
 use app\common\components\BaseController;
+use app\common\exceptions\ShopException;
 use app\common\modules\refund\services\RefundService;
 
 
 class PayController extends BaseController
 {
+    public $transactionActions = ['*'];
 
     /**
-     * 退款
-     * @param \Request $request
-     * @return mixed
+     * {@inheritdoc}
      */
     public function index(\Request $request)
     {
@@ -29,7 +29,11 @@ class PayController extends BaseController
         /**
          * @var $this ->refundApply RefundApply
          */
-        (new RefundService)->pay($request);
+
+        $result = (new RefundService)->pay($request);
+        if (!$result) {
+            throw new ShopException('操作失败');
+        }
         return $this->message('操作成功');
 
     }

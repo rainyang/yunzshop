@@ -74,6 +74,7 @@ class YunShop
             if (PermissionService::isFounder()) {
                 $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
             }
+
             Config::set('menu', $menuList);
 
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
@@ -89,10 +90,18 @@ class YunShop
         //执行方法
         $controller->preAction();
 
-
-        $content = $controller->$action(
-            Illuminate\Http\Request::capture()
-        );
+        if ($controller->needTransaction($action)) {
+            // action设置了需要回滚
+            $content = \Illuminate\Support\Facades\DB::transaction(function () use ($action, $controller) {
+                return $controller->$action(
+                    Illuminate\Http\Request::capture()
+                );
+            });
+        } else {
+            $content = $controller->$action(
+                Illuminate\Http\Request::capture()
+            );
+        }
         exit($content);
     }
 
@@ -149,7 +158,7 @@ class YunShop
 
     public static function isApp()
     {
-        if(self::isPHPUnit()){
+        if (self::isPHPUnit()) {
             return true;
         }
         return strpos($_SERVER['PHP_SELF'], '/app/index.php') !== false ? true : false;
@@ -189,7 +198,7 @@ class YunShop
     public static function isRole()
     {
         global $_W;
-        $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+        $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
         if ($plugin_class->isEnabled('supplier')) {
             if (Schema::hasColumn('yz_supplier', 'uid')) {
                 $res = \Yunshop\Supplier\common\models\Supplier::getSupplierByUid($_W['uid'])->first();
@@ -343,7 +352,7 @@ class YunShop
         self::$_plugin = new YunPlugin();
         return self::$_plugin;
     }
-    
+
     public static function notice()
     {
         self::$_notice = new YunNotice();
@@ -519,6 +528,7 @@ class YunApp extends YunComponent
 
 
 }
+
 class YunPlugin
 {
     protected $values;
@@ -535,7 +545,7 @@ class YunPlugin
     public function get($key = null)
     {
         if (isset($key)) {
-            $plugin_class = new PluginManager(app(),new OptionRepository(),new Dispatcher(),new Filesystem());
+            $plugin_class = new PluginManager(app(), new OptionRepository(), new Dispatcher(), new Filesystem());
 
             if ($plugin_class->isEnabled($key)) {
                 return true;
@@ -545,6 +555,7 @@ class YunPlugin
     }
 
 }
+
 class YunNotice
 {
     protected $key;
@@ -563,15 +574,14 @@ class YunNotice
     {
         $this->value = $routes;
         $routesData = explode('.', $routes);
-        if(count($routesData) > 1)
-        {
+        if (count($routesData) > 1) {
             $this->key = $routesData[0];
             $this->value = $routesData[1];
         }
-        
-        $noticeConfig = Config::get('notice.'.$this->key);
-        
-        return in_array($this->value,$noticeConfig) ? 0 : 1;
+
+        $noticeConfig = Config::get('notice.' . $this->key);
+
+        return in_array($this->value, $noticeConfig) ? 0 : 1;
     }
 
 }

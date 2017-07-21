@@ -23,6 +23,6 @@ class ListController extends ApiController
         $refunds = RefundApply::defaults()->paginate($request->query('pagesize', '20'));
         
 
-        $this->successJson('成功', $refunds->toArray());
+        return $this->successJson('成功', $refunds->toArray());
     }
 }

@@ -22,6 +22,6 @@ class DetailController extends ApiController
         if(!isset($refundApply)){
             throw new AppException('未找到该退款申请');
         }
-        $this->successJson('成功',$refundApply);
+        return $this->successJson('成功',$refundApply);
     }
 }

@@ -37,7 +37,11 @@ class UpdateController extends BaseController
             $list = $update->getUpdates();
         }
         krsort($list);
-        return view('update.index', ['list' => $list])->render();
+        $version = config('version');
+        return view('update.index', [
+            'list' => $list,
+            'version' => $version,
+        ])->render();
     }
 
 
@@ -105,6 +109,7 @@ class UpdateController extends BaseController
 
         if ($update->newVersionAvailable()) {
             $update->onEachUpdateFinish(function($version){
+                \Log::debug('----CLI----');
                 \Artisan::call('update:version' ,['version'=>$version]);
             });
             $result = $update->update();

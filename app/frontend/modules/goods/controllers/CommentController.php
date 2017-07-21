@@ -34,7 +34,7 @@ class CommentController extends ApiController
             }
             return $this->successJson('获取评论数据成功!', $list);
         }
-        return $this->errorJson('未检测到评论数据!', $list);
+        throw new \app\common\exceptions\ShopException('未检测到评论数据!', $list);
     }
 
     public function createComment()
@@ -42,7 +42,7 @@ class CommentController extends ApiController
         $commentModel = new \app\common\models\Comment();
         $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
         if (!$member) {
-            return $this->errorJson('评论失败!未检测到会员数据!');
+            throw new \app\common\exceptions\ShopException('评论失败!未检测到会员数据!');
         }
         $commentStatus = '1';
 
@@ -53,16 +53,16 @@ class CommentController extends ApiController
             'level' => \YunShop::request()->level,
         ];
         if (!$comment['order_id']) {
-            return $this->errorJson('评论失败!未检测到订单ID!');
+            throw new \app\common\exceptions\ShopException('评论失败!未检测到订单ID!');
         }
         if (!$comment['goods_id']) {
-            return $this->errorJson('评论失败!未检测到商品ID!');
+            throw new \app\common\exceptions\ShopException('评论失败!未检测到商品ID!');
         }
         if (!$comment['content']) {
-            return $this->errorJson('评论失败!未检测到评论内容!');
+            throw new \app\common\exceptions\ShopException('评论失败!未检测到评论内容!');
         }
         if (!$comment['level']) {
-            return $this->errorJson('评论失败!未检测到评论等级!');
+            throw new \app\common\exceptions\ShopException('评论失败!未检测到评论等级!');
         }
 
 
@@ -82,13 +82,13 @@ class CommentController extends ApiController
         $commentModel = new \app\common\models\Comment();
         $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
         if (!$member) {
-            return $this->errorJson('追加评论失败!未检测到会员数据!');
+            throw new \app\common\exceptions\ShopException('追加评论失败!未检测到会员数据!');
         }
         $commentStatus = '2';
         $id = \YunShop::request()->id;
         $append = $commentModel::find($id);
         if (!$append) {
-            return $this->errorJson('追加评论失败!未检测到评论数据!');
+            throw new \app\common\exceptions\ShopException('追加评论失败!未检测到评论数据!');
         }
 
         $comment = [
@@ -98,7 +98,7 @@ class CommentController extends ApiController
             'comment_id' => $append->id,
         ];
         if (!$comment['content']) {
-            return $this->errorJson('追加评论失败!未检测到评论内容!');
+            throw new \app\common\exceptions\ShopException('追加评论失败!未检测到评论内容!');
         }
 
         $commentModel->setRawAttributes($comment);
@@ -120,13 +120,13 @@ class CommentController extends ApiController
         $commentModel = new \app\common\models\Comment();
         $member = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
         if (!$member) {
-            return $this->errorJson('回复评论失败!未检测到会员数据!');
+            throw new \app\common\exceptions\ShopException('回复评论失败!未检测到会员数据!');
         }
 
         $id = \YunShop::request()->id;
         $reply = $commentModel::find($id);
         if (!$reply) {
-            return $this->errorJson('回复评论失败!未检测到评论数据!');
+            throw new \app\common\exceptions\ShopException('回复评论失败!未检测到评论数据!');
         }
 
         $comment = [
@@ -136,7 +136,7 @@ class CommentController extends ApiController
             'comment_id' => $reply->comment_id ? $reply->comment_id : $reply->id,
         ];
         if (!$comment['content']) {
-            return $this->errorJson('回复评论失败!未检测到评论内容!');
+            throw new \app\common\exceptions\ShopException('回复评论失败!未检测到评论内容!');
         }
 
         if (isset($comment['images']) && is_array($comment['images'])) {
@@ -163,7 +163,7 @@ class CommentController extends ApiController
         $validator = $commentModel->validator($commentModel->getAttributes());
         if ($validator->fails()) {
             //检测失败
-            return $this->errorJson($validator->messages());
+            throw new \app\common\exceptions\ShopException($validator->messages());
         } else {
             //数据保存
             if ($commentModel->save()) {
@@ -177,7 +177,7 @@ class CommentController extends ApiController
 
                 return $this->successJson('评论成功!',$commentModel);
             } else {
-                return $this->errorJson('评论失败!');
+                throw new \app\common\exceptions\ShopException('评论失败!');
             }
         }
     }
@@ -190,10 +190,10 @@ class CommentController extends ApiController
         $uid = intval(\YunShop::request()->uid) ? \YunShop::request()->uid : \YunShop::app()->getMemberId();
 
         if (!$orderId) {
-            return $this->errorJson('获取评论失败!未检测到订单ID!');
+            throw new \app\common\exceptions\ShopException('获取评论失败!未检测到订单ID!');
         }
         if (!$goodsId) {
-            return $this->errorJson('获取评论失败!未检测到商品ID!');
+            throw new \app\common\exceptions\ShopException('获取评论失败!未检测到商品ID!');
         }
         $comment = Comment::getOrderGoodsComment()
             ->with(['hasOneOrderGoods'=>function($query) use($goodsId) {
@@ -207,7 +207,7 @@ class CommentController extends ApiController
         if ($comment) {
             return $this->successJson('获取评论数据成功!', $comment->toArray());
         }
-        return $this->errorJson('未检测到评论数据!');
+        throw new \app\common\exceptions\ShopException('未检测到评论数据!');
 
 
     }

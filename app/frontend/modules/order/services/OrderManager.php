@@ -18,7 +18,7 @@ class OrderManager extends Container
     public function __construct()
     {
         //
-        $this->bind('PreGeneratedOrderGoodsModel', function ($orderManager, $attributes) {
+        $this->bind('PreGeneratedOrderGoods', function ($orderManager, $attributes) {
             if (1) {
                 return new \app\frontend\modules\orderGoods\models\PreGeneratedOrderGoods($attributes);
             }

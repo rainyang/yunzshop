@@ -10,6 +10,7 @@ namespace app\frontend\modules\orderGoods\price\option;
  */
 class NormalOrderGoodsPrice extends OrderGoodsPrice
 {
+    //todo 此处混乱
     public function getPrice()
     {
         //成交价格=商品销售价-单品满减-优惠价格
@@ -26,10 +27,10 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
     {
         return $this->orderGoods->goods->price * $this->orderGoods->total;
     }
-
+    //todo 此处混乱
     public function getFinalPrice()
     {
-        return $this->orderGoods->goods->finalPrice * $this->orderGoods->total;
+        return $this->orderGoods->goods->finalPrice * $this->orderGoods->total - $this->orderGoods->sale->getFullPriceReductions($this->orderGoods->goods->finalPrice * $this->orderGoods->total);
     }
 
     public function getCouponPrice()
@@ -43,9 +44,14 @@ class NormalOrderGoodsPrice extends OrderGoodsPrice
 
     public function getGoodsCostPrice()
     {
-        return $this->orderGoodsPriceCalculator->getGoodsPrice() - $this->orderGoodsPriceCalculator->getPrice();
+        return $this->orderGoods->goods->cost_price * $this->orderGoods->total;
+    }
+    public function getGoodsMarketPrice()
+    {
+        return $this->orderGoods->goods->market_price * $this->orderGoods->total;
     }
 
+    //todo 此处混乱
     public function getFullPriceReductions()
     {
         return $this->orderGoods->sale->getFullPriceReductions($this->getFinalPrice());

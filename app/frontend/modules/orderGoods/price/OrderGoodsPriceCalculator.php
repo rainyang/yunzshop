@@ -143,4 +143,9 @@ class OrderGoodsPriceCalculator
         return $this->decorator->getGoodsCostPrice();
     }
 
+    public function getGoodsMarketPrice()
+    {
+        return $this->decorator->getGoodsMarketPrice();
+    }
+
 }
