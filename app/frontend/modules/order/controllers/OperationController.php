@@ -9,8 +9,6 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
-use app\common\exceptions\ShopException;
 use app\common\models\Order;
 use app\frontend\modules\order\services\OrderService;
 
@@ -21,16 +19,14 @@ class OperationController extends ApiController
 
     public function __construct()
     {
-        throw new \app\common\exceptions\ShopException();
         parent::__construct();
         $this->_params = \YunShop::request()->get();
         if (!isset($this->_params['order_id'])) {
-            throw new \app\common\exceptions\ShopException('order_id 不能为空!');
+            return $this->errorJson('order_id 不能为空!');
         }
         $this->_Order = Order::find($this->_params['order_id']);
         if (!isset($this->_Order)) {
-            throw new \app\common\exceptions\ShopException('未找到该订单!');
-            exit;
+            return $this->errorJson('未找到该订单!');
         }
     }
 

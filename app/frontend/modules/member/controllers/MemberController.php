@@ -71,11 +71,11 @@ class MemberController extends ApiController
 
                 return $this->successJson('', $data);
             } else {
-                throw new \app\common\exceptions\ShopException('['. $member_id .']用户不存在');
+                return $this->errorJson('['. $member_id .']用户不存在');
             }
 
         } else {
-            throw new \app\common\exceptions\ShopException('缺少访问参数');
+            return $this->errorJson('缺少访问参数');
         }
 
     }
@@ -92,14 +92,14 @@ class MemberController extends ApiController
         $member_info = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
         if (empty($info)) {
-            throw new \app\common\exceptions\ShopException('缺少参数');
+            return $this->errorJson('缺少参数');
         } else {
             $info = $info->toArray();
         }
 
         if (empty($member_info))
         {
-            throw new \app\common\exceptions\ShopException('会员不存在');
+            return $this->errorJson('会员不存在');
         } else {
             $data = $member_info->toArray();
         }
@@ -206,7 +206,7 @@ class MemberController extends ApiController
     public function getAgentQR($extra='')
     {
         if (empty(\YunShop::app()->getMemberId())) {
-            throw new \app\common\exceptions\ShopException('请重新登录');
+            return $this->errorJson('请重新登录');
         }
 
         $qr_url = MemberModel::getAgentQR($extra='');
@@ -222,7 +222,7 @@ class MemberController extends ApiController
     public function addAgentApply()
     {
         if (!\YunShop::app()->getMemberId()) {
-            throw new \app\common\exceptions\ShopException('请重新登录');
+            return $this->errorJson('请重新登录');
         }
         $sub_member_model = SubMemberModel::getMemberShopInfo(\YunShop::app()->getMemberId());
 
@@ -230,7 +230,7 @@ class MemberController extends ApiController
         $sub_member_model->apply_time = time();
 
         if (!$sub_member_model->save()) {
-           throw new \app\common\exceptions\ShopException('会员信息保存失败');
+           return $this->errorJson('会员信息保存失败');
         }
 
         $realname = \YunShop::request()->realname;
@@ -242,7 +242,7 @@ class MemberController extends ApiController
         $member_mode->mobile = $moible;
 
         if (!$member_mode->save()) {
-            throw new \app\common\exceptions\ShopException('会员信息保存失败');
+            return $this->errorJson('会员信息保存失败');
         }
 
         return $this->successJson('ok');
@@ -270,7 +270,7 @@ class MemberController extends ApiController
         if (!empty($data)) {
             return $this->successJson('', $data);
         } else {
-            throw new \app\common\exceptions\ShopException('会员不存在');
+            return $this->errorJson('会员不存在');
         }
     }
 
@@ -286,7 +286,7 @@ class MemberController extends ApiController
         if (!empty($data)) {
             return $this->successJson('', $data);
         } else {
-            throw new \app\common\exceptions\ShopException('会员不存在');
+            return $this->errorJson('会员不存在');
         }
     }
 
@@ -323,7 +323,7 @@ class MemberController extends ApiController
         if (!empty($data)) {
             return $this->successJson('', $data->toArray());
         } else {
-            throw new \app\common\exceptions\ShopException('查无数据');
+            return $this->errorJson('查无数据');
         }
     }
 
@@ -341,7 +341,7 @@ class MemberController extends ApiController
         if (!empty($data)) {
             return $this->successJson('', $data->toArray());
         } else {
-            throw new \app\common\exceptions\ShopException('查无数据');
+            return $this->errorJson('查无数据');
         }
     }
 
@@ -399,22 +399,22 @@ class MemberController extends ApiController
                 $warnings = $member_validator->messages();
                 $show_warning = $warnings->first();
 
-                throw new \app\common\exceptions\ShopException($show_warning);
+                return $this->errorJson($show_warning);
             }
 
             if ($member_shop_info_validator->fails()) {
                 $warnings = $member_shop_info_validator->messages();
                 $show_warning = $warnings->first();
-                throw new \app\common\exceptions\ShopException($show_warning);
+                return $this->errorJson($show_warning);
             }
 
             if ($member_model->save() && $member_shop_info_model->save()) {
                     return $this->successJson('用户资料修改成功');
             } else {
-                    throw new \app\common\exceptions\ShopException('更新用户资料失败');
+                    return $this->errorJson('更新用户资料失败');
             }
         } else {
-            throw new \app\common\exceptions\ShopException('用户不存在');
+            return $this->errorJson('用户不存在');
         }
     }
 
@@ -434,13 +434,13 @@ class MemberController extends ApiController
             $check_code = MemberService::checkCode();
 
             if ($check_code['status'] != 1) {
-                throw new \app\common\exceptions\ShopException($check_code['json']);
+                return $this->errorJson($check_code['json']);
             }
 
             $msg = MemberService::validate($mobile, $password, $confirm_password);
 
             if ($msg['status'] != 1) {
-                throw new \app\common\exceptions\ShopException($msg['json']);
+                return $this->errorJson($msg['json']);
             }
 
             $salt = Str::random(8);
@@ -451,10 +451,10 @@ class MemberController extends ApiController
             if ($member_model->save()) {
                 return $this->successJson('手机号码绑定成功');
             } else {
-                throw new \app\common\exceptions\ShopException('手机号码绑定失败');
+                return $this->errorJson('手机号码绑定失败');
             }
         } else {
-            throw new \app\common\exceptions\ShopException('手机号或密码格式错误');
+            return $this->errorJson('手机号或密码格式错误');
         }
     }
 
@@ -577,14 +577,14 @@ class MemberController extends ApiController
             ]);
         }
 
-        throw new \app\common\exceptions\ShopException('暂无数据', []);
+        return $this->errorJson('暂无数据', []);
     }
 
     public function guideFollow()
     {
         $member_id = \YunShop::app()->getMemberId();
         if(empty($member_id)){
-            throw new \app\common\exceptions\ShopException('用户未登录', []);
+            return $this->errorJson('用户未登录', []);
         }
 
         $set = \Setting::get('shop.share');
@@ -613,7 +613,7 @@ class MemberController extends ApiController
             ]);
         }
 
-        throw new \app\common\exceptions\ShopException('暂无数据', []);
+        return $this->errorJson('暂无数据', []);
     }
 
     //合成推广海报
@@ -716,7 +716,7 @@ class MemberController extends ApiController
         $member_id = \YunShop::request()->uid;
 
         if (empty($member_id)) {
-            throw new \app\common\exceptions\ShopException('会员不存在');
+            return $this->errorJson('会员不存在');
         }
 
         $member_info = MemberModel::getMemberById($member_id);

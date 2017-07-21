@@ -24,7 +24,7 @@ class GoodsController extends ApiController
     {
         $id = intval(\YunShop::request()->id);
         if (!$id) {
-            throw new \app\common\exceptions\ShopException('请传入正确参数.');
+            return $this->errorJson('请传入正确参数.');
         }
         //$goods = new Goods();
         $goodsModel = Goods::uniacid()->with(['hasManyParams' => function ($query) {
@@ -44,11 +44,11 @@ class GoodsController extends ApiController
         ->find($id);
 
         if (!$goodsModel) {
-            throw new \app\common\exceptions\ShopException('商品不存在.');
+            return $this->errorJson('商品不存在.');
         }
 
         if (!$goodsModel->status) {
-            throw new \app\common\exceptions\ShopException('商品已下架.');
+            return $this->errorJson('商品已下架.');
         }
 
         $goodsModel->content = html_entity_decode($goodsModel->content);
@@ -116,7 +116,7 @@ class GoodsController extends ApiController
             ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
         if (empty($list)) {
-            throw new \app\common\exceptions\ShopException('没有找到商品.');
+            return $this->errorJson('没有找到商品.');
         }
         return $this->successJson('成功', $list);
     }
@@ -126,7 +126,7 @@ class GoodsController extends ApiController
         $category_id = intval(\YunShop::request()->category_id);
 
         if (empty($category_id)) {
-            throw new \app\common\exceptions\ShopException('请输入正确的商品分类.');
+            return $this->errorJson('请输入正确的商品分类.');
         }
 
         $order_field = \YunShop::request()->order_field;
@@ -147,7 +147,7 @@ class GoodsController extends ApiController
         $categorys->goods = $goodsList;
 
         if (empty($categorys)) {
-            throw new \app\common\exceptions\ShopException('此分类下没有商品.');
+            return $this->errorJson('此分类下没有商品.');
         }
         return $this->successJson('成功', $categorys);
     }
@@ -164,13 +164,13 @@ class GoodsController extends ApiController
 
 
         if (empty($brand_id)) {
-            throw new \app\common\exceptions\ShopException('请输入正确的品牌id.');
+            return $this->errorJson('请输入正确的品牌id.');
         }
 
         $brand = Brand::uniacid()->select("name", "logo", "id")->where(['id' => $brand_id])->first();
 
         if (!$brand) {
-            throw new \app\common\exceptions\ShopException('没有此品牌.');
+            return $this->errorJson('没有此品牌.');
         }
         $goodsList = Goods::uniacid()->select('id','id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->where('status', '1')
@@ -179,7 +179,7 @@ class GoodsController extends ApiController
             ->paginate(20)->toArray();
 
         if (empty($brand)) {
-            throw new \app\common\exceptions\ShopException('此品牌下没有商品.');
+            return $this->errorJson('此品牌下没有商品.');
         }
 
         $brand->goods = $goodsList;
