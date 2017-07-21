@@ -16,18 +16,21 @@ class YzCommentSeeder extends Seeder
 
     public function run()
     {
-
-        $newList = DB::table($this->newTable)->get();
+        if (!Schema::hasTable($this->oldTable)) {
+            echo $this->oldTable." 不存在 跳过\n";
+            return;
+        }
+        $newList = \Illuminate\Support\Facades\DB::table($this->newTable)->get();
         if ($newList->isNotEmpty()) {
             echo "yz_comment 已经有数据了跳过\n";
             return;
         }
-        $list = DB::table($this->oldTable)->get();
+        $list = \Illuminate\Support\Facades\DB::table($this->oldTable)->get();
         if ($list) {
             foreach ($list as $v) {
                 $uid = Member::getUidByOpenID($v['openid']);
                 //迁移主评论
-                $cid = DB::table($this->newTable)->insertGetId([
+                $cid = \Illuminate\Support\Facades\DB::table($this->newTable)->insertGetId([
                     'uniacid' => $v['uniacid'],
                     'order_id' => $v['orderid'],
                     'goods_id' => $v['goodsid'],
@@ -46,7 +49,7 @@ class YzCommentSeeder extends Seeder
                 ]);
                 //迁移管理员回复主评论
                 if (!empty($v['reply_content'])) {
-                    DB::table($this->newTable)->insert([
+                    \Illuminate\Support\Facades\DB::table($this->newTable)->insert([
                         'uniacid' => $v['uniacid'],
                         'order_id' => $v['orderid'],
                         'goods_id' => $v['goodsid'],
@@ -66,7 +69,7 @@ class YzCommentSeeder extends Seeder
                 }
                 //迁移追加评论
                 if (!empty($v['append_content'])) {
-                    DB::table($this->newTable)->insert([
+                    \Illuminate\Support\Facades\DB::table($this->newTable)->insert([
                         'uniacid' => $v['uniacid'],
                         'order_id' => $v['orderid'],
                         'goods_id' => $v['goodsid'],
@@ -86,7 +89,7 @@ class YzCommentSeeder extends Seeder
                 }
                 //迁移管理员回复追加评论
                 if (!empty($v['append_reply_content'])) {
-                    DB::table($this->newTable)->insert([
+                    \Illuminate\Support\Facades\DB::table($this->newTable)->insert([
                         'uniacid' => $v['uniacid'],
                         'order_id' => $v['orderid'],
                         'goods_id' => $v['goodsid'],

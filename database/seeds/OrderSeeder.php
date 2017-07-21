@@ -19,7 +19,7 @@ Class OrderSeeder extends Seeder
 //            return;
 //        }
 
-        $sourceList = DB::table($this->sourceTable)->chunk(100, function($records){
+        $sourceList = \Illuminate\Support\Facades\DB::table($this->sourceTable)->chunk(100, function($records){
             foreach ($records as $record){
 
                 //如果旧表字段没有值,则设为0
@@ -46,7 +46,7 @@ Class OrderSeeder extends Seeder
                 //微信登录用户的openid和uid的对应关系, 借助数据表mc_mapping_fans
                 //手机注册用户的openid和uid的对应关系, 借助会员迁移后生成的临时表
                 if (preg_match('/^o.*/', $record['openid'])){ //以o开头的就是微信登录用户
-                    $uid = DB::table($this->memberMappingTable)->select('uid')
+                    $uid = \Illuminate\Support\Facades\DB::table($this->memberMappingTable)->select('uid')
                            ->where('openid','=',$record['openid'])->first();
                     if($uid){
                         $record['uid'] = $uid['uid'];
@@ -72,7 +72,7 @@ Class OrderSeeder extends Seeder
                     $record['uid'] = 0; //todo 临时调试用
                 }
 
-                $newOrderId = DB::table($this->orderTable)->insertGetId(
+                $newOrderId = \Illuminate\Support\Facades\DB::table($this->orderTable)->insertGetId(
                     [
                         'uniacid' => $record['uniacid'], //公众号ID
                         'member_id' => $record['uid'], //mc_member的uid
@@ -95,7 +95,7 @@ Class OrderSeeder extends Seeder
                     ]
                 );
 
-                DB::table($this->orderMappingTable)->insert(
+                \Illuminate\Support\Facades\DB::table($this->orderMappingTable)->insert(
                     [
                         'old_order_id' => $record['id'],
                         'new_order_id' => $newOrderId,

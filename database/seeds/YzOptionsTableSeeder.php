@@ -13,13 +13,13 @@ class YzOptionsTableSeeder extends Seeder
     public function run()
     {
 
-        $newList = DB::table('yz_options')->get();
+        $newList = \Illuminate\Support\Facades\DB::table('yz_options')->get();
         if($newList->isNotEmpty()){
             echo "yz_options 已经有数据了跳过\n";
             return ;
         }
 
-        \DB::table('yz_options')->insert(array (
+        \Illuminate\Support\Facades\DB::table('yz_options')->insert(array (
             0 => 
             array (
                 'id' => 1,

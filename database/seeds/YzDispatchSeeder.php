@@ -15,15 +15,15 @@ class YzDispatchSeeder extends Seeder
 
     public function run()
     {
-        $newList = DB::table($this->newTable)->get();
+        $newList = \Illuminate\Support\Facades\DB::table($this->newTable)->get();
         if ($newList->isNotEmpty()) {
             echo "yz_goods_share 已经有数据了跳过\n";
             return;
         }
-        $list = DB::table($this->oldTable)->get();
+        $list = \Illuminate\Support\Facades\DB::table($this->oldTable)->get();
         if ($list) {
             foreach ($list as $v) {
-                DB::table($this->newTable)->insert([
+                \Illuminate\Support\Facades\DB::table($this->newTable)->insert([
                     'uniacid' => $v['uniacid'],
                     'dispatch_name' => $v['dispatchname'],
                     'display_order' => $v['displayorder'],
