@@ -9,7 +9,6 @@
 namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
-use app\common\components\BaseController;
 use app\common\models\Order;
 use app\frontend\modules\order\services\OrderService;
 
@@ -20,7 +19,6 @@ class OperationController extends ApiController
 
     public function __construct()
     {
-        throw new \app\common\exceptions\ShopException();
         parent::__construct();
         $this->_params = \YunShop::request()->get();
         if (!isset($this->_params['order_id'])) {
