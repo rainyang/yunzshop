@@ -21,7 +21,6 @@ class OperationController extends ApiController
 
     public function __construct()
     {
-        return $this->errorJson();
         parent::__construct();
         $this->_params = \YunShop::request()->get();
         if (!isset($this->_params['order_id'])) {
@@ -30,7 +29,6 @@ class OperationController extends ApiController
         $this->_Order = Order::find($this->_params['order_id']);
         if (!isset($this->_Order)) {
             return $this->errorJson('未找到该订单!');
-            exit;
         }
     }
 

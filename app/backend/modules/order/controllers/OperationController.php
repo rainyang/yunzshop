@@ -11,6 +11,7 @@ namespace app\backend\modules\order\controllers;
 use app\common\components\BaseController;
 use app\common\helpers\Url;
 use app\common\models\Order;
+use app\common\models\PayType;
 use app\frontend\modules\order\services\OrderService;
 
 class OperationController extends BaseController
@@ -36,7 +37,7 @@ class OperationController extends BaseController
     public function pay()
     {
         $message = OrderService::orderPay($this->param);
-
+        $this->param->pay_type_id = PayType::BACKEND;
         return $this->successJson($message);
 
     }
