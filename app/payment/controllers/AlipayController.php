@@ -212,13 +212,13 @@ class AlipayController extends PaymentController
 
         $order_info = Order::where('uniacid', \YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
         if (!isset($order_info)) {
-            \Log::error('退款订单信息不存在', $data);
+            return \Log::error('退款订单信息不存在', $data);
         }
         if (!(bccomp($order_info->price, $data['total_fee'], 2) == 0)) {
-            \Log::error("订单退款金额错误(订单金额:{$order_info->price}|退款金额:{$data['total_fee']})|比较结果:" . bccomp($order_info->price, $data['total_fee'], 2) . ")");
+            return \Log::error("订单退款金额错误(订单金额:{$order_info->price}|退款金额:{$data['total_fee']})|比较结果:" . bccomp($order_info->price, $data['total_fee'], 2) . ")");
         }
         if (!isset($order_info->hasOneRefundApply->id)) {
-            \Log::error('订单退款错误(退款申请id:' . $order_info->hasOneRefundApply->id . ',订单id:' . $order_info->id . ')');
+            return \Log::error('订单退款错误(退款申请id:' . $order_info->hasOneRefundApply->id . ',订单id:' . $order_info->id . ')');
         }
 
         \Log::debug('订单退款(退款申请id:' . $order_info->hasOneRefundApply->id . ',订单id:' . $order_info->id . ')');
