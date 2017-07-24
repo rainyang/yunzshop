@@ -288,14 +288,7 @@ class BalanceController extends BaseController
     //生成充值订单号
     private function getRechargeOrderSN()
     {
-        $ordersn = createNo('RV', true);
-        while (1) {
-            if (!BalanceRecharge::validatorOrderSn($ordersn)) {
-                break;
-            }
-            $ordersn = createNo('RV', true);
-        }
-        return $ordersn;
+        return BalanceRecharge::createOrderSn('RV','ordersn');
     }
 
     private function getChangeBalanceData()
