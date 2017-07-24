@@ -56,7 +56,7 @@ class RefundService
     {
 
         //微信退款 同步改变退款和订单状态
-        RefundOperationService::refundComplete(['order_id' => $this->refundApply->order->id]);
+        RefundOperationService::refundComplete(['id' => $this->refundApply->id]);
         $pay = PayFactory::create($this->refundApply->order->pay_type_id);
 
         $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
@@ -68,7 +68,7 @@ class RefundService
 
     private function alipay()
     {
-        RefundOperationService::refundComplete(['order_id' => $this->refundApply->order->id]);
+        //RefundOperationService::refundComplete(['id' => $this->refundApply->id]);
 
         $pay = PayFactory::create($this->refundApply->order->pay_type_id);
 
