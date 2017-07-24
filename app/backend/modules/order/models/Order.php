@@ -172,11 +172,6 @@ class Order extends \app\common\models\Order
         return self::orders()->find($order_id);
     }
 
-    public function close()
-    {
-        OrderService::close($this);
-    }
-
     public static function boot()
     {
         parent::boot();
