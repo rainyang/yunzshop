@@ -15,9 +15,11 @@ class YzMenuUpgradeSeeder extends Seeder
     {
         $item = \Illuminate\Support\Facades\DB::table($this->table)->where('item', 'system_update')->first();
         if ($item) {
+            \Log::info('system_update 已经有数据了跳过');
             echo "system_update 已经有数据了跳过\n";
             return;
         }
+        \Log::info($this->table.'增加 系统升级');
         $data = [
             'name' => '系统升级',
             'item' => 'system_update',

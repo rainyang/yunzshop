@@ -413,9 +413,9 @@ if (!function_exists('can')) {
      */
     function can($itemRoute, $isRoute = false)
     {
-        if(config('app.menu_key') != 'menu'){
+        /*if(config('app.menu_key') != 'menu'){
             return true;
-        }
+        }*/
         if ($isRoute == true) {
             $item = \app\common\models\Menu::getItemByRoute($itemRoute);
         } else {
@@ -748,8 +748,8 @@ if (!function_exists('float_equal')) {
    * @return mixed
    * @Author yitian */
 if (!function_exists('createNo')) {
-    function createNo($prefix, $numeric = FALSE)
+    function createNo($prefix, $length = 6, $numeric = FALSE)
     {
-        return $prefix . date('YmdHis') . \app\common\helpers\Client::random(6, $numeric);
+        return $prefix . date('YmdHis') . \app\common\helpers\Client::random($length, $numeric);
     }
 }
