@@ -160,7 +160,7 @@ class Order extends BaseModel
      */
     public function hasOneRefundApply()
     {
-        return $this->hasOne(RefundApply::class, 'id', 'refund_id');
+        return $this->hasOne(RefundApply::class, 'id', 'refund_id')->orderBy('created_at','desc');
 
     }
 
