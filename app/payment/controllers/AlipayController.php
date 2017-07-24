@@ -192,31 +192,39 @@ class AlipayController extends PaymentController
      */
     public function refundResutl($data)
     {
-        $pay_order = PayOrder::getPayOrderInfoByTradeNo($data['trade_no'])->first();
-
-        if ($pay_order) {
-            $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
-
-            if ($pay_refund_model) {
-                $pay_refund_model->status = 2;
-                $pay_refund_model->trade_no = $pay_refund_model->trade_no;
-                $pay_refund_model->third_type = $data['pay_type'];
-                $pay_refund_model->save();
-            }
-        }
-
         \Log::debug('退款操作', 'refund.succeeded');
 
-        $order_info = Order::where('uniacid', \YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
+        $pay_order = PayOrder::getPayOrderInfoByTradeNo($data['trade_no'])->first();
 
-        if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
-            \Log::debug('订单退款(退款申请id:' . $order_info->hasOneRefundApply->id . ',订单id:' . $order_info->id . ')');
-            if (isset($order_info->hasOneRefundApply->id)){
-                RefundOperationService::refundComplete(['id' => $order_info->hasOneRefundApply->id]);
-            }else{
-                \Log::error('订单退款错误(退款申请id:' . $order_info->hasOneRefundApply->id . ',订单id:' . $order_info->id . ')');
-            }
+        if (!$pay_order) {
+            return \Log::error('未找到退款订单支付信息', $data);
         }
+        $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
+
+        if (!$pay_refund_model) {
+            return \Log::error('退款订单支付信息保存失败', $data);
+        }
+
+        $pay_refund_model->status = 2;
+        $pay_refund_model->trade_no = $pay_refund_model->trade_no;
+        $pay_refund_model->third_type = $data['pay_type'];
+        $pay_refund_model->save();
+
+        $order_info = Order::where('uniacid', \YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
+        if (!isset($order_info)) {
+            \Log::error('退款订单信息不存在', $data);
+        }
+        if (!(bccomp($order_info->price, $data['total_fee'], 2) == 0)) {
+            \Log::error("订单退款金额错误(订单金额:{$order_info->price}|退款金额:{$data['total_fee']})|比较结果:" . bccomp($order_info->price, $data['total_fee'], 2) . ")");
+        }
+        if (!isset($order_info->hasOneRefundApply->id)) {
+            \Log::error('订单退款错误(退款申请id:' . $order_info->hasOneRefundApply->id . ',订单id:' . $order_info->id . ')');
+        }
+
+        \Log::debug('订单退款(退款申请id:' . $order_info->hasOneRefundApply->id . ',订单id:' . $order_info->id . ')');
+        RefundOperationService::refundComplete(['id' => $order_info->hasOneRefundApply->id]);
+
+
     }
 
     /**
