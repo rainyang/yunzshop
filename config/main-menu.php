@@ -302,7 +302,7 @@ return [
                                 'id' => '1126',
                                 'name' => '查看设置',
                                 'url' => '',
-                                'url_params' => 'setting.shop.trade',
+                                'url_params' => '',
                                 'permit' => '1',
                                 'menu' => '0',
                                 'icon' => 'fa-circle',
@@ -322,7 +322,7 @@ return [
                                 'id' => '1127',
                                 'name' => '提交设置',
                                 'url' => '',
-                                'url_params' => 'setting.shop.trade',
+                                'url_params' => '',
                                 'permit' => '1',
                                 'menu' => '0',
                                 'icon' => 'fa-circle-o',
@@ -586,7 +586,7 @@ return [
 
                     ],
 
-                    'role_destory' => [
+                    'role_destroy' => [
                         'id' => '33',
                         'name' => '删除角色',
                         'url' => 'user.role.destory',
@@ -906,7 +906,7 @@ return [
 
                     ],
 
-                    'goods_goods_displayorder' => [
+                    'goods_goods_display_order' => [
                         'id' => '1143',
                         'name' => '提交排序',
                         'url' => 'goods.goods.displayorder',
@@ -916,7 +916,7 @@ return [
                         'icon' => 'fa-circle',
                         'parent_id' => '27',
                         'sort' => '23',
-                        'item' => 'goods_goods_displayorder',
+                        'item' => 'goods_goods_display_order',
                         'parents' =>
                             [
                                 'Goods',
@@ -1025,7 +1025,7 @@ return [
                             ],
 
                         'child' => [
-                            'goods.category.edit-category_submit' => [
+                            'goods_category_edit_category_submit' => [
                                 'id' => '1147',
                                 'name' => '提交设置',
                                 'url' => 'goods.category.edit-category',
@@ -1035,7 +1035,7 @@ return [
                                 'icon' => 'fa-circle',
                                 'parent_id' => '13',
                                 'sort' => '27',
-                                'item' => 'goods.category.edit-category_submit',
+                                'item' => 'goods_category_edit_category_submit',
                                 'parents' =>
                                     [
                                         'Goods',
@@ -1045,7 +1045,7 @@ return [
 
                             ],
 
-                            'goods.category.edit-category_index' => [
+                            'goods_category_edit_category_index' => [
                                 'id' => '1148',
                                 'name' => '查看设置',
                                 'url' => 'goods.category.index',
@@ -1055,7 +1055,7 @@ return [
                                 'icon' => 'fa-circle',
                                 'parent_id' => '13',
                                 'sort' => '28',
-                                'item' => 'goods.category.edit-category_index',
+                                'item' => 'goods_category_edit_category_index',
                                 'parents' =>
                                     [
                                         'Goods',
@@ -1621,7 +1621,7 @@ return [
             'coupon' => [
                 'id' => '101',
                 'name' => '优惠券管理',
-                'url' => 'coupon.coupon.index',
+                'url' => '',
                 'url_params' => '',
                 'permit' => '1',
                 'menu' => '1',
@@ -1653,8 +1653,7 @@ return [
                             ],
 
                         'child' => [
-                            'coupon_coupon_edit' => '',
-                            [
+                            'coupon_coupon_edit' => [
                                 'id' => '116',
                                 'name' => '编辑优惠券',
                                 'url' => 'coupon.coupon.edit',
@@ -1674,7 +1673,7 @@ return [
 
                             ],
 
-                            'coupon_coupon_destory' => [
+                            'coupon_coupon_destroy' => [
                                 'id' => '117',
                                 'name' => '删除优惠券',
                                 'url' => 'coupon.coupon.destory',
@@ -2320,7 +2319,7 @@ return [
             'refund_list_refund' => [
                 'id' => '97',
                 'name' => '退换货订单',
-                'url' => 'refund.list.refund',
+                'url' => 'refund.list',
                 'url_params' => '',
                 'permit' => '1',
                 'menu' => '1',
@@ -2481,8 +2480,8 @@ return [
                     'withdraw_status_wait_audit' => [
                         'id' => '92',
                         'name' => '待审核提现',
-                        'url' => 'finance.withdraw',
-                        'url_params' => '&search[status]=0',
+                        'url' => 'finance.withdraw.index',
+                        'url_params' => "&search[status]=0",
                         'permit' => '1',
                         'menu' => '1',
                         'icon' => 'fa-circle-o',
@@ -2501,7 +2500,7 @@ return [
                         'id' => '93',
                         'name' => '待打款提现',
                         'url' => 'finance.withdraw',
-                        'url_params' => "&search['status']=1",
+                        'url_params' => "&search[status]=1",
                         'permit' => '1',
                         'menu' => '1',
                         'icon' => 'fa-circle-o',
@@ -2520,7 +2519,7 @@ return [
                         'id' => '94',
                         'name' => '已打款提现',
                         'url' => 'finance.withdraw',
-                        'url_params' => "&search['status']=2",
+                        'url_params' => "&search[status]=2",
                         'permit' => '1',
                         'menu' => '1',
                         'icon' => 'fa-circle-o',
@@ -2539,7 +2538,7 @@ return [
                         'id' => '95',
                         'name' => '已到账提现',
                         'url' => 'finance.withdraw',
-                        'url_params' => "&search['status']=3",
+                        'url_params' => "&search[status]=3",
                         'permit' => '1',
                         'menu' => '1',
                         'icon' => 'fa-circle-o',
@@ -2558,7 +2557,7 @@ return [
                         'id' => '96',
                         'name' => '无效提现',
                         'url' => 'finance.withdraw',
-                        'url_params' => "&search['status']=-1",
+                        'url_params' => "&search[status]=-1",
                         'permit' => '1',
                         'menu' => '1',
                         'icon' => 'fa-circle-o',
@@ -2597,7 +2596,7 @@ return [
                     'point_set' => [
                         'id' => '82',
                         'name' => '积分基础设置',
-                        'url' => 'finance.point-set',
+                        'url' => 'finance.point-set.index',
                         'url_params' => '',
                         'permit' => '1',
                         'menu' => '1',
@@ -2616,7 +2615,7 @@ return [
                     'point_member' => [
                         'id' => '83',
                         'name' => '会员积分',
-                        'url' => 'finance.point-member',
+                        'url' => 'finance.point-member.index',
                         'url_params' => '',
                         'permit' => '1',
                         'menu' => '1',
@@ -2635,7 +2634,7 @@ return [
                     'point_log' => [
                         'id' => '84',
                         'name' => '积分明细',
-                        'url' => 'finance.point-log',
+                        'url' => 'finance.point-log.index',
                         'url_params' => '',
                         'permit' => '1',
                         'menu' => '1',
@@ -2674,7 +2673,7 @@ return [
                     'balance_set' => [
                         'id' => '60',
                         'name' => '余额基础设置',
-                        'url' => 'finance.balance',
+                        'url' => 'finance.balance.index',
                         'url_params' => '',
                         'permit' => '1',
                         'menu' => '1',
