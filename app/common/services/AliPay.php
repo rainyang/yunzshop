@@ -90,6 +90,7 @@ class AliPay extends Pay
         $op = '支付宝退款 订单号：' . $out_trade_no . '退款单号：' . $out_refund_no . '退款总金额：' . $totalmoney;
         $this->refundlog(Pay::PAY_TYPE_REFUND, $this->pay_type[Pay::PAY_MODE_ALIPAY], $totalmoney, $op, $out_trade_no, Pay::ORDER_STATUS_NON, 0);
 
+        \Log::debug(sprintf('订单号 %s', $out_trade_no));
         //支付宝交易单号
         $pay_order_model = PayOrder::getPayOrderInfo($out_trade_no)->first();
 
@@ -99,7 +100,9 @@ class AliPay extends Pay
             $alipay->setOutTradeNo($pay_order_model->trade_no);
             $alipay->setTotalFee($totalmoney);
 
-            return $alipay->refund($out_refund_no);
+            $res = $alipay->refund($out_refund_no);
+            \Log::debug('退款返回结果', $res);
+            return $res;
         } else {
             return false;
         }
