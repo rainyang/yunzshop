@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 
+use app\backend\modules\order\services\OrderService;
 use app\common\models\order\Address;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
@@ -347,7 +348,10 @@ class Order extends BaseModel
     {
         return $this->is_virtual == 1;
     }
-
+    public function close()
+    {
+        return OrderService::close($this);
+    }
     /**
      * 初始化方法
      */
