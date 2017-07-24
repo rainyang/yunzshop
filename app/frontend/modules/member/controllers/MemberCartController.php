@@ -124,7 +124,7 @@ class MemberCartController extends ApiController
 
         $result = MemberCartService::clearCartByIds($ids);
         if($result) {
-            $this->successJson('移除购物车成功。');
+            return $this->successJson('移除购物车成功。');
         }
         throw new AppException('写入出错，移除购物车失败！');
     }

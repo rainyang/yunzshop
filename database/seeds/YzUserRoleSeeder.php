@@ -14,18 +14,18 @@ class YzUserRoleSeeder extends Seeder
     public function run()
     {
         return;
-        $roles = DB::table($this->sourceTable)
+        $roles = \Illuminate\Support\Facades\DB::table($this->sourceTable)
             ->where(['status'=>'1','deleted'=>'0' ])
             ->where('uniacid','>','0')
             ->get();
 
         if($roles){
             foreach($roles as $role){
-               $exists = DB::table($this->table)
+               $exists = \Illuminate\Support\Facades\DB::table($this->table)
                    ->where(['uniacid'=>$role['uniacid'],'name'=>$role['rolename']])
                    ->exists();
                if(!$exists){
-                    DB::table($this->table)->insert([
+                    \Illuminate\Support\Facades\DB::table($this->table)->insert([
                         'name'=>$role['rolename'],
                         'uniacid'=>$role['uniacid'],
                         'created_at'=>time(),

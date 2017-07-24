@@ -26,7 +26,7 @@ class OrderGoodsSeeder extends Seeder
 //        }
 //        print_r($_SERVER);
 
-        $sourceList = DB::table($this->sourceTable)->chunk(100, function($records){
+        $sourceList = \Illuminate\Support\Facades\DB::table($this->sourceTable)->chunk(100, function($records){
             foreach ($records as $record){
 
                 //如果旧表字段没有值,则设为0
@@ -41,7 +41,7 @@ class OrderGoodsSeeder extends Seeder
                 }
 
                 //获取"商品名称"和"商品图片URL"
-                $goodInfo = DB::table($this->sourceGoodsTable)->select('title','thumb')
+                $goodInfo = \Illuminate\Support\Facades\DB::table($this->sourceGoodsTable)->select('title','thumb')
                     ->where('id','=',$record['goodsid'])->first();
                 if ($goodInfo){
                     $record['title'] = $goodInfo['title'];
@@ -79,7 +79,7 @@ class OrderGoodsSeeder extends Seeder
 //                }
                 $goodsId = $record['goodsid']; //todo 调试用
 
-                DB::table($this->table)->insert(
+                \Illuminate\Support\Facades\DB::table($this->table)->insert(
                     [
                         'uniacid' => $record['uniacid'], //公众号ID
                         'order_id' => $orderId, //订单ID

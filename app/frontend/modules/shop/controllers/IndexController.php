@@ -34,7 +34,7 @@ class IndexController extends ApiController
             'set' => $set,
             'goods' => $this->getRecommentGoods(),
         ];
-        $this->successJson('成功', $data);
+        return $this->successJson('成功', $data);
     }
 
     public function getRecommentGoods()

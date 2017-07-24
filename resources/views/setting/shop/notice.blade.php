@@ -152,16 +152,16 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知方式</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="checkbox-inline">
-                                    <input type="checkbox" value="0" name='notice[new_type][]'
-                                           @if (in_array(0,$set['new_type'])) checked @endif /> 下单通知
+                                    <input type="checkbox" value="1" name='notice[notice_enable][created]'
+                                           @if ($set['notice_enable']['created']) checked @endif /> 下单通知
                                 </label>
                                 <label class="checkbox-inline">
-                                    <input type="checkbox" value="1" name='notice[new_type][]'
-                                           @if (in_array(1,$set['new_type'])) checked @endif /> 付款通知
+                                    <input type="checkbox" value="1" name='notice[notice_enable][paid]'
+                                           @if ($set['notice_enable']['paid']) checked @endif /> 付款通知
                                 </label>
                                 <label class="checkbox-inline">
-                                    <input type="checkbox" value="2" name='notice[new_type][]'
-                                           @if (in_array(2,$set['new_type'])) checked @endif /> 买家确认收货通知
+                                    <input type="checkbox" value="1" name='notice[notice_enable][received]'
+                                           @if ($set['notice_enable']['received']) checked @endif /> 买家确认收货通知
                                 </label>
                                 <div class="help-block">通知商家方式</div>
                             </div>

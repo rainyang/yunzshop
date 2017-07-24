@@ -67,7 +67,7 @@ class Member extends BackendModel
      */
     public function hasOneOrder()
     {
-        return $this->hasOne('app\backend\modules\order\models\Order', 'uid', 'uid');
+        return $this->hasOne('app\common\models\Order', 'uid', 'uid');
     }
     /**
      * 会员－会员优惠券1:多关系
