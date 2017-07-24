@@ -33,22 +33,20 @@ class PermissionService
             return false;
         }
         */
-
-
-        //todo 测试临时修改
         if (\Yunshop::isPHPUnit()) {
-            return true;
-        }
-        if (self::checkNoPermission($item) === true) {
             return true;
         }
         if (self::isFounder()) {
             return true;
         }
-        //临时使用
-        /*if (static::isManager()) {
+        if (static::isManager()) {
             return true;
-        }*/
+        }
+        if (self::checkNoPermission($item) === true) {
+            return true;
+        }
+
+
         return in_array($item, User::getAllPermissions());
     }
 
@@ -91,22 +89,39 @@ class PermissionService
         return $noPermissions;
     }
 
-
     /**
      * 是否是创始人
-     * @return mixed
+     * @return bool
      */
     public static function isFounder()
     {
-        return \YunShop::app()->isfounder === true;
+        return \YunShop::app()->role === 'founder' && \YunShop::app()->isfounder === true;
     }
 
     /**
-     * 是否是管理员 （临时使用，管理员拥有所有权限）
+     * 是否是主管理员
      * @return bool
      */
-    /*public static function isManager()
+    public static function isOwner()
     {
-        return UniAccountUser::uniacid()->where('role', 'manager')->where('uid',static::isAuth())->first() ? true : false;
-    }*/
+        return \YunShop::app()->role === 'owner';
+    }
+
+    /**
+     * 是否是管理员
+     * @return bool
+     */
+    public static function isManager()
+    {
+        return \YunShop::app()->role === 'manager';
+    }
+
+    /**
+     * 是否是操作员
+     * @return bool
+     */
+    public static function isOperator()
+    {
+        return \YunShop::app()->role === 'operator';
+    }
 }
