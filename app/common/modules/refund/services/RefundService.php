@@ -27,6 +27,7 @@ class RefundService
     public function pay($request)
     {
         $this->refundApply = RefundApply::find($request->input('refund_id'));
+
         if (!isset($this->refundApply)) {
             throw new AdminException('未找到退款记录');
         }
@@ -84,7 +85,7 @@ class RefundService
     {
         $refundApply = $this->refundApply;
         //退款状态设为完成
-        $result = RefundOperationService::refundComplete(['order_id' => $refundApply->order->id]);
+        $result = RefundOperationService::refundComplete(['id' => $refundApply->id]);
 
         if ($result !== true) {
             throw new AdminException($result);
@@ -96,7 +97,7 @@ class RefundService
     {
         $refundApply = $this->refundApply;
         //退款状态设为完成
-        RefundOperationService::refundComplete(['order_id' => $refundApply->order->id]);
+        RefundOperationService::refundComplete(['id' => $refundApply->id]);
 
         $data = [
             'member_id' => $refundApply->uid,

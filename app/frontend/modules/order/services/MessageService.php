@@ -55,9 +55,9 @@ class MessageService extends \app\common\services\MessageService
 
     public function received()
     {
-        $this->shopMessage->received();
         if (\Setting::get('shop.notice.notice_enable.received')) {
-            $this->buyerMessage->received();
+        $this->shopMessage->received();
         }
+        $this->buyerMessage->received();
     }
 }
