@@ -74,11 +74,13 @@ class RefundService
 
         $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
 
-        if (!$result) {
+        if ($result === false) {
             throw new AdminException('支付宝退款失败');
         }
-        //支付宝退款 等待异步通知后,改变退款和订单的状态
-        return $result;
+        //保存batch_no,回调成功后根据batch_no找到对应的退款记录
+        $this->refundApply->alipay_batch_sn = $result['batch_no'];
+        $this->refundApply->save();
+        return $result['url'];
     }
 
     private function backend()

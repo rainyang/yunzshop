@@ -15,6 +15,7 @@ use app\common\models\Order;
 use app\common\models\PayOrder;
 use app\common\models\PayRefundOrder;
 use app\common\models\PayWithdrawOrder;
+use app\common\models\refund\RefundApply;
 use app\common\services\finance\Withdraw;
 use app\common\services\Pay;
 use app\payment\PaymentController;
@@ -207,22 +208,21 @@ class AlipayController extends PaymentController
 
         $pay_refund_model->status = 2;
         $pay_refund_model->trade_no = $pay_refund_model->trade_no;
-        $pay_refund_model->third_type = $data['pay_type'];
+        $pay_refund_model->type = $data['pay_type'];
         $pay_refund_model->save();
 
-        $order_info = Order::where('uniacid', \YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
-        if (!isset($order_info)) {
-            return \Log::error('退款订单信息不存在', $data);
+        $refundApply = RefundApply::where('alipay_batch_sn',$data['batch_no'])->first();
+
+        if (!isset($refundApply)) {
+            return \Log::error('订单退款信息不存在', $data);
         }
-        if (!(bccomp($order_info->price, $data['total_fee'], 2) == 0)) {
-            return \Log::error("订单退款金额错误(订单金额:{$order_info->price}|退款金额:{$data['total_fee']})|比较结果:" . bccomp($order_info->price, $data['total_fee'], 2) . ")");
-        }
-        if (!isset($order_info->hasOneRefundApply->id)) {
-            return \Log::error('订单退款错误(退款申请id:' . $order_info->hasOneRefundApply->id . ',订单id:' . $order_info->id . ')');
+        if (!(bccomp($refundApply->price, $data['total_fee'], 2) == 0)) {
+            return \Log::error("订单退款金额错误(订单金额:{$refundApply->price}|退款金额:{$data['total_fee']})|比较结果:" . bccomp($refundApply->price, $data['total_fee'], 2) . ")");
         }
 
-        \Log::debug('订单退款(退款申请id:' . $order_info->hasOneRefundApply->id . ',订单id:' . $order_info->id . ')');
-        RefundOperationService::refundComplete(['id' => $order_info->hasOneRefundApply->id]);
+
+        \Log::debug('订单退款(退款申请id:' . $refundApply->id . ',订单id:' . $refundApply->order_id . ')');
+        RefundOperationService::refundComplete(['id' => $refundApply->id]);
 
 
     }
