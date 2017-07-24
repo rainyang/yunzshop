@@ -27,6 +27,7 @@ class RefundApply extends BaseModel
         'reply' => '',
         'remark' => '',
         'refund_address' => '',
+        'reject_reason' => '',
     ];
     protected $casts = [
         'images' => 'json',

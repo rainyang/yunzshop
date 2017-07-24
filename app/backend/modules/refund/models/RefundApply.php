@@ -75,6 +75,6 @@ class RefundApply extends \app\common\models\refund\RefundApply
 
     public function order()
     {
-        return $this->belongsTo(Order::class, 'order_id', 'id');
+        return $this->belongsTo(app('OrderManager')->make('Order'), 'order_id', 'id');
     }
 }
