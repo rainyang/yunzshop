@@ -123,4 +123,21 @@ return [
         ],
 
     ],
+    'shop_upgrade' => [
+        'id' => '',
+        'name' => '系统升级',
+        'url' => 'update.index',
+        'url_params' => '',
+        'permit' => '1',
+        'menu' => '1',
+        'icon' => 'fa-history',
+        'parent_id' => '79',
+        'sort' => '5',
+        'item' => 'shop_upgrade',
+        'parents' =>
+            [
+                'system',
+            ],
+
+    ]
 ];
