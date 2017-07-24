@@ -33,6 +33,6 @@ class BrandController extends ApiController
             }
             return $this->successJson('获取品牌数据成功!', $list);
         }
-        throw new \app\common\exceptions\ShopException('未检测到品牌数据!', $list);
+        return $this->errorJson('未检测到品牌数据!', $list);
     }
 }
