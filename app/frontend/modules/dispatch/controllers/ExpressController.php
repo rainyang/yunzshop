@@ -38,7 +38,7 @@ class ExpressController extends ApiController
         $data['thumb'] = $order->hasManyOrderGoods[0]->thumb;
         $data['tel'] = '95533';
         $data['status_name'] = $express['status_name'];
-        $this->successJson('成功', $data);
+        return $this->successJson('成功', $data);
     }
 
 

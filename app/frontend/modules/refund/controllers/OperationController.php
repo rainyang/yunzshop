@@ -15,6 +15,7 @@ use app\frontend\modules\refund\services\RefundOperationService;
 
 class OperationController extends ApiController
 {
+    public $transactionActions = ['*'];
     public function send(\Request $request)
     {
         $this->validate($request, [

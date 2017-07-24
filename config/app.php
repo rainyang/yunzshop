@@ -278,5 +278,14 @@ return [
          2 => '支付宝',
          3 => '余额'
     ],
-    'menu_key'=>'menu'
+    //'menu_key'=>'menu',
+    'menu'  => [
+        'main_menu'     => 'main-menu',
+        'plugin_menu'   => 'plugin_menu',
+        'founder_menu'  => 'founder-menu',
+        //兼容旧插件使用
+        'old_plugin_menu'   => 'menu'
+    ],
+
+
 ];
