@@ -83,7 +83,8 @@ class AlipayController extends PaymentController
                         'total_fee' => $plits[1],
                         'trade_no' => $plits[0],
                         'unit' => 'yuan',
-                        'pay_type' => '支付宝'
+                        'pay_type' => '支付宝',
+                        'batch_no' => $_POST['batch_no']
                     ];
 
                     $this->refundResutl($data);
