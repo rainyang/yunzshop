@@ -42,7 +42,7 @@ class BalanceNoticeService
         static::notice($template_id,$msg,$withdrawModel->member_id);
     }
 
-    public static function withdrawSuccessNotice($memberId,Model $withdrawModel)
+    public static function withdrawSuccessNotice(Model $withdrawModel)
     {
         $msg       = array(
             'first' => array(
@@ -68,7 +68,7 @@ class BalanceNoticeService
         static::notice($template_id,$msg,$withdrawModel->member_id);
     }
 
-    public static function withdrawFailureNotice($memberId,Model $withdrawModel)
+    public static function withdrawFailureNotice(Model $withdrawModel)
     {
         $msg       = array(
             'first' => array(

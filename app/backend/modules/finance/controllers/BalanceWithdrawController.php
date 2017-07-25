@@ -13,6 +13,7 @@ use app\common\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
+use app\common\services\finance\BalanceNoticeService;
 use Illuminate\Support\Facades\Log;
 
 class BalanceWithdrawController extends BaseController
@@ -70,8 +71,16 @@ class BalanceWithdrawController extends BaseController
     private function submitCheck()
     {
         $this->withdrawModel->status = $this->getPostStatus();
-        return $this->withdrawUpdate();
+        $result = $this->withdrawUpdate();
+        if ($result !== true) {
+            return $result;
+        }
+        if ($this->withdrawModel->status == -1) {
+            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
+        }
+        return true;
     }
+
 
     //保存数据
     private function withdrawUpdate()
