@@ -166,7 +166,14 @@ class ListController extends BaseController
         $goods_sn = '';
         $total = '';
         foreach ($order['has_many_order_goods'] as $goods) {
-            $goods_title .= $goods['title'].'/';
+            $res_title = $goods['title'];
+            $res_title = str_replace('-', '，', $res_title);
+            $res_title = str_replace('+', '，', $res_title);
+            $res_title = str_replace('/', '，', $res_title);
+            $res_title = str_replace('*', '，', $res_title);
+            $res_title = str_replace('=', '，', $res_title);
+
+            $goods_title .= $res_title . '，';
             $goods_sn .= $goods['goods_sn'].'/';
             $total .= $goods['total'].'/';
         }
