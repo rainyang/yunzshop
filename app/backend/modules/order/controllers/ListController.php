@@ -121,7 +121,7 @@ class ListController extends BaseController
     public function export($orders)
     {
         if (\YunShop::request()->export == 1) {
-            $orders = $orders->limit(10)->get();
+            $orders = $orders->get();
             if (!$orders->isEmpty()) {
                 $file_name = date('Ymdhis', time()) . '订单导出';//返现记录导出
                 $export_data[0] = $this->getColumns();
