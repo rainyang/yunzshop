@@ -14,6 +14,7 @@ use app\common\facades\Setting;
 use app\common\models\MemberShopInfo;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
+use app\common\services\finance\BalanceNoticeService;
 use app\common\services\PayFactory;
 use app\common\components\ApiController;
 
@@ -253,6 +254,9 @@ class BalanceController extends ApiController
         }
 
         DB::commit();
+
+        $result = BalanceNoticeService::withdrawSubmitNotice($this->model);
+        dd($result);
         return true;
     }
 
