@@ -5,10 +5,12 @@
  * Date: 2017/5/2
  * Time: 上午10:59
  */
+
 namespace app\frontend\modules\finance\listeners;
 
 use app\common\events\discount\OnDeductionInfoDisplayEvent;
 use app\common\events\discount\OnDeductionPriceCalculatedEvent;
+use app\frontend\models\order\PreOrderDeduction;
 use app\frontend\modules\finance\services\AfterOrderDeductiblePointService;
 use app\frontend\modules\finance\services\CalculationPointService;
 
@@ -32,7 +34,7 @@ class Order
     {
         $deduction_ids = $this->event->getOrderModel()->getParams('deduction_ids');
 
-        return AfterOrderDeductiblePointService::isChecked($deduction_ids,$this->deductionId);
+        return AfterOrderDeductiblePointService::isChecked($deduction_ids, $this->deductionId);
     }
 
     protected function getPointData()
@@ -58,14 +60,24 @@ class Order
     {
         $this->event = $event;
 
-        if($this->isChecked() == false){
+        if ($this->isChecked() == false) {
             return null;
         }
         $data = $this->getPointData();
         if (!$data) {
             return null;
         }
-        $event->addData($data);
+        $attributes = [
+            'name' => $data['name'],
+            'amount' => $data['price'],
+            'deduction_id' => 1,
+            'qty' => $data['value'],
+            'uid' => $this->event->getOrderModel()->uid,
+        ];
+        $orderDeduction = new PreOrderDeduction($attributes);
+        $orderDeduction->checked = $data['checked'];
+        $orderDeduction->setOrder($this->event->getOrderModel());
+        //$event->addData($data);
     }
 
     public function subscribe($events)

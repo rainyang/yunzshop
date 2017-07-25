@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Schema;
  *  订单生成后
  * Class PreGeneratedOrderModel
  * @package app\frontend\modules\order\services\models
+ * @property Collection orderDeductions
  */
 class PreGeneratedOrder extends Order
 {

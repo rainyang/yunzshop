@@ -10,6 +10,7 @@ use app\frontend\modules\goods\models\Brand;
 
 use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
+use Carbon\Carbon;
 
 
 /**
@@ -23,8 +24,9 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-
-        (new MessageService(\app\frontend\models\Order::completed()->first()))->received();
+        dd(Carbon::now()->startOfMonth()->timestamp);
+        dd(Carbon::now()->modify('-1 month')->startOfMonth()->timestamp);
+        //(new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }
 
     public function index1()
