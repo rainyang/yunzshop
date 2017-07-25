@@ -174,13 +174,14 @@ class ListController extends BaseController
             $res_title = str_replace('+', '，', $res_title);
             $res_title = str_replace('/', '，', $res_title);
             $res_title = str_replace('*', '，', $res_title);
+            $res_title = str_replace('=', '，', $res_title);
 
             $goods_title .= $res_title . '，';
             $goods_sn .= $goods['goods_sn'].'/';
             $total .= $goods['total'].'/';
         }
         $res = [
-            //'goods_title' => $goods_title,
+            'goods_title' => $goods_title,
             'goods_sn' => $goods_sn,
             'total' => $total
         ];
