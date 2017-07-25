@@ -142,14 +142,17 @@ class ListController extends BaseController
                         $item['price'],
                         $item['status_name'],
                         $item['create_time'],
-                        //!empty(strtotime($item['pay_time']))?$item['pay_time']:'',
-                        //!empty(strtotime($item['send_time']))?$item['send_time']:'',
-                        //!empty(strtotime($item['finish_time']))?$item['finish_time']:'',
+                        !empty(strtotime($item['pay_time']))?$item['pay_time']:'',
+                        !empty(strtotime($item['send_time']))?$item['send_time']:'',
+                        !empty(strtotime($item['finish_time']))?$item['finish_time']:'',
                         $item['express']['express_company_name'],
                         $item['express']['express_sn'],
                         $item['has_one_order_remark']['remark'],
                     ];
                 }
+                echo '<pre>';print_r($export_data['594']);
+                echo '<pre>';print_r($export_data['595']);
+                echo '<pre>';print_r($export_data['596']);exit;
                 (new ExportService())->export($file_name, $export_data);
             }
         }
