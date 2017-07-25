@@ -24,6 +24,6 @@ class ExportService
                 $sheet->setAutoFilter();
                 $sheet->rows($export_data);
             });
-        })->export('xls');
+        })->download('xls');
     }
 }
