@@ -255,8 +255,7 @@ class BalanceController extends ApiController
 
         DB::commit();
 
-        $result = BalanceNoticeService::withdrawSubmitNotice($this->model);
-        dd($result);
+        BalanceNoticeService::withdrawSubmitNotice($this->model);
         return true;
     }
 
