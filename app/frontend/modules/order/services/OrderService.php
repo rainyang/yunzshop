@@ -100,9 +100,9 @@ class OrderService
              */
 
             $data = [
-                'goods_id' => $memberCart->goods_id,
-                'goods_option_id' => $memberCart->option_id,
-                'total' => $memberCart->total,
+                'goods_id' => (int)$memberCart->goods_id,
+                'goods_option_id' => (int)$memberCart->option_id,
+                'total' => (int)$memberCart->total,
             ];
             return app('OrderManager')->make('PreGeneratedOrderGoods', $data);
         });
