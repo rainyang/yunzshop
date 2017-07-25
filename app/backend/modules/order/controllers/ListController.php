@@ -10,10 +10,10 @@ namespace app\backend\modules\order\controllers;
 
 use app\backend\modules\order\models\Order;
 use app\backend\modules\order\models\OrderJoinOrderGoods;
-use app\backend\modules\order\services\ExportService;
 use app\common\components\BaseController;
 
 use app\common\helpers\PaginationHelper;
+use app\common\services\ExportService;
 
 class ListController extends BaseController
 {
@@ -123,9 +123,58 @@ class ListController extends BaseController
         if (\YunShop::request()->export == 1) {
             $orders = $orders->get();
             if (!$orders->isEmpty()) {
-                $export_class = new ExportService();
-                $export_class->export($orders->toArray());
+                $file_name = date('Ymdhis', time()) . '订单导出';//返现记录导出
+                $export_data[0] = $this->getColumns();
+                foreach ($orders->toArray() as $key => $item) {
+                    $export_data[$key + 1] = [
+                        $item['order_sn'],
+                        $item['has_one_order_pay']['pay_sn'],
+                        $item['belongs_to_member']['nickname'],
+                        $item['address']['realname'],
+                        $item['address']['mobile'],
+                        $item['address']['address'],
+                        $this->getGoods($item, 'goods_title'),
+                        $this->getGoods($item, 'goods_sn'),
+                        $this->getGoods($item, 'total'),
+                        $item['has_one_pay_type']['name'],
+                        $item['goods_price'],
+                        $item['dispatch_price'],
+                        $item['price'],
+                        $item['status_name'],
+                        $item['create_time'],
+                        !empty(strtotime($item['pay_time']))?$item['pay_time']:'',
+                        !empty(strtotime($item['send_time']))?$item['send_time']:'',
+                        !empty(strtotime($item['finish_time']))?$item['finish_time']:'',
+                        $item['express']['express_company_name'],
+                        $item['express']['express_sn'],
+                        $item['has_one_order_remark']['remark'],
+                    ];
+                }
+                (new ExportService())->export($file_name, $export_data);
             }
         }
+    }
+
+    private function getColumns()
+    {
+        return ["订单编号", "支付单号", "粉丝昵称", "会员姓名", "联系电话", "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", "商品小计", "运费", "应收款", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注"];
+    }
+
+    private function getGoods($order, $key)
+    {
+        $goods_title = '';
+        $goods_sn = '';
+        $total = '';
+        foreach ($order['has_many_order_goods'] as $goods) {
+            $goods_title .= $goods['title'].'/';
+            $goods_sn .= $goods['goods_sn'].'/';
+            $total .= $goods['total'].'/';
+        }
+        $res = [
+            'goods_title' => $goods_title,
+            'goods_sn' => $goods_sn,
+            'total' => $total
+        ];
+        return $res[$key];
     }
 }
