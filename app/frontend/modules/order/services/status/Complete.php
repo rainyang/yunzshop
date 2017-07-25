@@ -42,7 +42,7 @@ class Complete extends Status
 
             ];
 
-            $result = array_merge($result, self::getRefundButtons($this->order));
+            //$result = array_merge($result, self::getRefundButtons($this->order));
 
         return $result;
     }

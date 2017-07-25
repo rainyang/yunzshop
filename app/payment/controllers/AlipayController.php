@@ -8,9 +8,14 @@
 
 namespace app\payment\controllers;
 
+use app\backend\modules\refund\services\RefundOperationService;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
+use app\common\models\Order;
+use app\common\models\PayOrder;
+use app\common\models\PayRefundOrder;
 use app\common\models\PayWithdrawOrder;
+use app\common\models\refund\RefundApply;
 use app\common\services\finance\Withdraw;
 use app\common\services\Pay;
 use app\payment\PaymentController;
@@ -25,14 +30,14 @@ class AlipayController extends PaymentController
 
         \Log::debug(sprintf('支付回调验证结果[%d]', intval($verify_result)));
 
-        if($verify_result) {
+        if ($verify_result) {
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
                 $data = [
-                    'total_fee'    => $_POST['total_fee'],
+                    'total_fee' => $_POST['total_fee'],
                     'out_trade_no' => $_POST['out_trade_no'],
-                    'trade_no'     => $_POST['trade_no'],
-                    'unit'         => 'yuan',
-                    'pay_type'     => '支付宝'
+                    'trade_no' => $_POST['trade_no'],
+                    'unit' => 'yuan',
+                    'pay_type' => '支付宝'
                 ];
 
                 $this->payResutl($data);
@@ -48,8 +53,8 @@ class AlipayController extends PaymentController
     {
         $verify_result = $this->getSignResult();
 
-        if($verify_result) {
-            if($_GET['trade_status'] == 'TRADE_SUCCESS') {
+        if ($verify_result) {
+            if ($_GET['trade_status'] == 'TRADE_SUCCESS') {
                 redirect(Url::absoluteApp('member/payYes'))->send();
             } else {
                 redirect(Url::absoluteApp('member/payErr'))->send();
@@ -69,16 +74,17 @@ class AlipayController extends PaymentController
 
         \Log::debug(sprintf('支付回调验证结果[%d]', intval($verify_result)));
 
-        if($verify_result) {
+        if ($verify_result) {
             if ($_POST['success_num'] >= 1) {
                 $plits = explode('^', $_POST['result_details']);
 
                 if ($plits[2] == 'SUCCESS') {
                     $data = [
-                        'total_fee'    => $plits[1],
-                        'trade_no'     => $plits[0],
-                        'unit'         => 'yuan',
-                        'pay_type'     => '支付宝'
+                        'total_fee' => $plits[1],
+                        'trade_no' => $plits[0],
+                        'unit' => 'yuan',
+                        'pay_type' => '支付宝',
+                        'batch_no' => $_POST['batch_no']
                     ];
 
                     $this->refundResutl($data);
@@ -101,16 +107,16 @@ class AlipayController extends PaymentController
 
         \Log::debug(sprintf('支付回调验证结果[%d]', intval($verify_result)));
 
-        if($verify_result) {
+        if ($verify_result) {
             if ($_POST['success_details']) {
                 $plits = explode('^', $_POST['success_details']);
 
                 if ($plits[4] == 'S') {
                     $data = [
-                        'total_fee'    => $plits[3],
-                        'trade_no'     => $plits[0],
-                        'unit'         => 'yuan',
-                        'pay_type'     => '支付宝'
+                        'total_fee' => $plits[3],
+                        'trade_no' => $plits[0],
+                        'unit' => 'yuan',
+                        'pay_type' => '支付宝'
                     ];
                 }
             } else {
@@ -118,10 +124,10 @@ class AlipayController extends PaymentController
 
                 if ($plits[4] == 'F') {
                     $data = [
-                        'total_fee'    => $plits[3],
-                        'trade_no'     => $plits[0],
-                        'unit'         => 'yuan',
-                        'pay_type'     => '支付宝'
+                        'total_fee' => $plits[3],
+                        'trade_no' => $plits[0],
+                        'unit' => 'yuan',
+                        'pay_type' => '支付宝'
                     ];
                 }
             }
@@ -161,7 +167,7 @@ class AlipayController extends PaymentController
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($post['out_trade_no'], $desc , json_encode($post));
+        Pay::payResponseDataLog($post['out_trade_no'], $desc, json_encode($post));
     }
 
     public function refundLog($post, $desc)
@@ -169,7 +175,7 @@ class AlipayController extends PaymentController
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog(0, $desc , json_encode($post));
+        Pay::payResponseDataLog(0, $desc, json_encode($post));
     }
 
     public function withdrawLog($post, $desc)
@@ -177,7 +183,7 @@ class AlipayController extends PaymentController
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($post['batch_no'], $desc , json_encode($post));
+        Pay::payResponseDataLog($post['batch_no'], $desc, json_encode($post));
     }
 
 
@@ -188,27 +194,38 @@ class AlipayController extends PaymentController
      */
     public function refundResutl($data)
     {
-        $pay_order = PayOrder::getPayOrderInfoByTradeNo($data['trade_no'])->first();
-
-        if ($pay_order) {
-            $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
-
-            if ($pay_refund_model) {
-                $pay_refund_model->status = 2;
-                $pay_refund_model->trade_no = $pay_refund_model->trade_no;
-                $pay_refund_model->third_type = $data['pay_type'];
-                $pay_refund_model->save();
-            }
-        }
-
         \Log::debug('退款操作', 'refund.succeeded');
 
-        $order_info = Order::where('uniacid',\YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
+        $pay_order = PayOrder::getPayOrderInfoByTradeNo($data['trade_no'])->first();
 
-        if (bccomp($order_info->price, $data['total_fee'], 2) == 0) {
-            \Log::debug('订单事件触发');
-            RefundOperationService::refundComplete(['order_id'=>$order_info->id]);
+        if (!$pay_order) {
+            return \Log::error('未找到退款订单支付信息', $data);
         }
+        $pay_refund_model = PayRefundOrder::getOrderInfo($pay_order->out_order_no);
+
+        if (!$pay_refund_model) {
+            return \Log::error('退款订单支付信息保存失败', $data);
+        }
+
+        $pay_refund_model->status = 2;
+        $pay_refund_model->trade_no = $pay_refund_model->trade_no;
+        $pay_refund_model->type = $data['pay_type'];
+        $pay_refund_model->save();
+
+        $refundApply = RefundApply::where('alipay_batch_sn',$data['batch_no'])->first();
+
+        if (!isset($refundApply)) {
+            return \Log::error('订单退款信息不存在', $data);
+        }
+        if (!(bccomp($refundApply->price, $data['total_fee'], 2) == 0)) {
+            return \Log::error("订单退款金额错误(订单金额:{$refundApply->price}|退款金额:{$data['total_fee']})|比较结果:" . bccomp($refundApply->price, $data['total_fee'], 2) . ")");
+        }
+
+
+        \Log::debug('订单退款(退款申请id:' . $refundApply->id . ',订单id:' . $refundApply->order_id . ')');
+        RefundOperationService::refundComplete(['id' => $refundApply->id]);
+
+
     }
 
     /**

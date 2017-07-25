@@ -31,7 +31,9 @@ class DetailController extends ApiController
         }
 
         $data = $order->toArray();
+        $data['button_models'] = array_merge($data['button_models'],$order->getStatusService()->getRefundButtons($order));
 
+        //$this->getStatusService()->
         //todo 配送类型
         if ($order['dispatch_type_id'] == 1) {
             $data['address_info'] = OrderAddress::select('address', 'mobile', 'realname')->where('order_id', $order['id'])->first();

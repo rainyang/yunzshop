@@ -5,6 +5,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 
 
+use app\common\models\Order;
 use app\frontend\modules\goods\models\Brand;
 
 use app\frontend\modules\order\services\OrderService;
@@ -21,10 +22,12 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-        dd(\Setting::get('shop.notice.notice_enable.created'));
+        $data = json_decode('{"total_fee":"0.01","trade_no":"2017072421001004680246740362","unit":"yuan","pay_type":"支付宝"}',true);
+        $result = Order::where('uniacid', \YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
+        dd($result);
         exit;
 
-        OrderService::autoClose();
+        //OrderService::autoClose();
         exit;
         // 这样下次 app()->make('OrderManager') 时, 会执行下面的闭包
         app('OrderManager')->extend('Order', function ($order, $app) {

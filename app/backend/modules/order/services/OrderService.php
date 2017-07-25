@@ -20,7 +20,8 @@ class OrderService
 
         $order->status = Order::CLOSE;
 
-        $order->save();
+        $result = $order->save();
         event(new AfterOrderCanceledEvent($order));
+        return $result;
     }
 }

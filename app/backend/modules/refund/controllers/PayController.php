@@ -34,6 +34,9 @@ class PayController extends BaseController
         if (!$result) {
             throw new ShopException('操作失败');
         }
+        if (is_string($result)) {
+            redirect($result)->send();
+        }
         return $this->message('操作成功');
 
     }

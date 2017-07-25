@@ -14,8 +14,8 @@ use Illuminate\Filesystem\Filesystem;
 define('SHOP_ROOT', dirname(__FILE__));
 
 
-
 use app\common\models\user\User;
+
 class YunShop
 {
     private static $_req;
@@ -90,7 +90,7 @@ class YunShop
         //执行方法
         $controller->preAction();
 
-        if ($controller->needTransaction($action)) {
+        if (method_exists($controller, 'needTransaction') && $controller->needTransaction($action)) {
             // action设置了需要回滚
             $content = \Illuminate\Support\Facades\DB::transaction(function () use ($action, $controller) {
                 return $controller->$action(

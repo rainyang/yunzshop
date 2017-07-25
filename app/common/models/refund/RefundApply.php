@@ -27,6 +27,7 @@ class RefundApply extends BaseModel
         'reply' => '',
         'remark' => '',
         'refund_address' => '',
+        'reject_reason' => '',
     ];
     protected $casts = [
         'images' => 'json',
@@ -210,10 +211,6 @@ class RefundApply extends BaseModel
         return false;
     }
 
-    public function order()
-    {
-        return $this->belongsTo(\app\backend\modules\order\models\Order::class, 'order_id', 'id');
-    }
     /**
      * 退款中
      * @return bool
@@ -227,6 +224,15 @@ class RefundApply extends BaseModel
             return false;
         }
         return true;
+    }
+
+    /**
+     * todo 为了配合供应商做出的修改,需要重新考虑区分插件与商城订单的机制
+     * {@inheritdoc}
+     */
+    public function order()
+    {
+        return $this->belongsTo(\app\common\models\Order::class, 'order_id', 'id');
     }
 
     protected static function boot()
