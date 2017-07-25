@@ -130,7 +130,7 @@ class ListController extends BaseController
                         $item['order_sn'],
                         $item['has_one_order_pay']['pay_sn'],
                         $item['belongs_to_member']['nickname'],
-                        $item['address']['realname'],
+                        /*$item['address']['realname'],
                         $item['address']['mobile'],
                         $item['address']['address'],
                         $this->getGoods($item, 'goods_title'),
@@ -147,12 +147,9 @@ class ListController extends BaseController
                         !empty(strtotime($item['finish_time']))?$item['finish_time']:'',
                         $item['express']['express_company_name'],
                         $item['express']['express_sn'],
-                        $item['has_one_order_remark']['remark'],
+                        $item['has_one_order_remark']['remark'],*/
                     ];
                 }
-                echo '<pre>';print_r($export_data['594']);
-                echo '<pre>';print_r($export_data['595']);
-                echo '<pre>';print_r($export_data['596']);exit;
                 (new ExportService())->export($file_name, $export_data);
             }
         }
