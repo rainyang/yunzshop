@@ -8,6 +8,7 @@ use app\common\components\ApiController;
 use app\common\models\Order;
 use app\frontend\modules\goods\models\Brand;
 
+use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
 
 
@@ -22,20 +23,8 @@ class TestController extends ApiController
     public $transactionActions = [''];
     public function index()
     {
-        $data = json_decode('{"total_fee":"0.01","trade_no":"2017072421001004680246740362","unit":"yuan","pay_type":"支付宝"}',true);
-        $result = Order::where('uniacid', \YunShop::app()->uniacid)->where('order_sn', $data['out_trade_no'])->first();
-        dd($result);
-        exit;
 
-        //OrderService::autoClose();
-        exit;
-        // 这样下次 app()->make('OrderManager') 时, 会执行下面的闭包
-        app('OrderManager')->extend('Order', function ($order, $app) {
-            //例如 使实例出来的对象带有某些属性,记住容器类是一个创建型模式
-            $order->uid = 1111;
-            return $order;
-        });
-        dd(app('OrderManager')->make('Order'));
+        (new MessageService(\app\frontend\models\Order::completed()->first()))->received();
     }
 
     public function index1()
