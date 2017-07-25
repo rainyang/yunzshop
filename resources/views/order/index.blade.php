@@ -97,16 +97,13 @@
                                             完成
                                         </option>
                                     </select>
-                                    {!! \app\backend\modules\goods\services\GoodsPrivilegeService::tpl_form_field_date(
-                                        'search[time_range]',
-                                        array(
-                                            'starttime'=>array_get($requestSearch,'time_range.start',0),
-                                            'endtime'=>array_get($requestSearch,'time_range.end',0),
-                                            'start'=>0,
-                                            'end'=>0
-                                        ),
-                                        true
-                                        )!!}
+                                    {!!
+                                        app\common\helpers\DateRange::tplFormFieldDateRange('search[time_range]', [
+                                'starttime'=>array_get($requestSearch,'time_range.start',0),
+                                'endtime'=>array_get($requestSearch,'time_range.end',0),
+                                'start'=>0,
+                                'end'=>0
+                                ], true)!!}
 
                                 </div>
                             @show
