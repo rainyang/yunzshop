@@ -28,7 +28,7 @@ class CalculationPointService
         $this->orderGoodsModels = $orderGoodsModels;
         //计算积分
         $this->calculationPoint();
-        $this->point_money = $this->point * $this->point_set['money'];
+        $this->point_money = floor($this->point * $this->point_set['money'] * 100) / 100;
     }
 
     /**
