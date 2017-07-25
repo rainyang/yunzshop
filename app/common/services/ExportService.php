@@ -21,6 +21,7 @@ class ExportService
                 ->setKeywords("office 2005 openxml php")
                 ->setCategory("report file");
             $excel->sheet('info', function ($sheet) use ($export_data) {
+                $sheet->setAutoFilter();
                 $sheet->rows($export_data);
             });
         })->export('xls');
