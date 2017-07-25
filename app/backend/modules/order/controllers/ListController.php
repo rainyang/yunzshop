@@ -134,10 +134,11 @@ class ListController extends BaseController
                         $item['address']['realname'],
                         $item['address']['mobile'],
                         $item['address']['address'],
+
                         /*$this->getGoods($item, 'goods_title'),
                         $this->getGoods($item, 'goods_sn'),
-                        $this->getGoods($item, 'total'),
-                        $item['has_one_pay_type']['name'],*/
+                        $this->getGoods($item, 'total'),*/
+                        $item['has_one_pay_type']['name'],
 
                         $item['goods_price'],
                         $item['dispatch_price'],
