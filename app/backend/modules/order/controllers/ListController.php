@@ -150,6 +150,7 @@ class ListController extends BaseController
                         $item['has_one_order_remark']['remark'],
                     ];
                 }
+                echo '<pre>';print_r($export_data['595']);exit;
                 (new ExportService())->export($file_name, $export_data);
             }
         }
