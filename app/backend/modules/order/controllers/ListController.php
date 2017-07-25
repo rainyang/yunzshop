@@ -150,7 +150,6 @@ class ListController extends BaseController
                         $item['has_one_order_remark']['remark'],
                     ];
                 }
-                //echo '<pre>';print_r($export_data['594']);exit;
                 (new ExportService())->export($file_name, $export_data);
             }
         }
@@ -167,9 +166,9 @@ class ListController extends BaseController
         $goods_sn = '';
         $total = '';
         foreach ($order['has_many_order_goods'] as $goods) {
-            $goods_title .= $goods['title'].'，';
-            $goods_sn .= $goods['goods_sn'].'，';
-            $total .= $goods['total'].'，';
+            $goods_title .= $goods['title'].'/';
+            $goods_sn .= $goods['goods_sn'].'/';
+            $total .= $goods['total'].'/';
         }
         $res = [
             'goods_title' => $goods_title,
