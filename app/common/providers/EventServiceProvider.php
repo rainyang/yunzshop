@@ -3,6 +3,7 @@
 namespace app\common\providers;
 
 
+use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
@@ -62,6 +63,11 @@ class EventServiceProvider extends ServiceProvider
         //微信接口回调触发事件进程
         WechatProcessor::class => [
             WechatProcessorListener::class//示例监听类
+        ],
+
+        //发送消息触发事件
+        SendMessageEvent::class => [
+
         ],
 
     ];
