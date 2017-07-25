@@ -71,7 +71,7 @@ class BalanceWithdrawController extends BaseController
     private function submitCheck()
     {
         $this->withdrawModel->status = $this->getPostStatus();
-        $this->withdrawModel->audit = time();
+        $this->withdrawModel->audit_at = time();
         $result = $this->withdrawUpdate();
         if ($result !== true) {
             return $result;
