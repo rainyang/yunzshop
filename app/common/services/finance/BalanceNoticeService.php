@@ -90,7 +90,6 @@ class BalanceNoticeService
                 "color" => "#4a5077"
             )
         );
-        dd($msg);
         $template_id = \Setting::get('shop.notice.withdraw_submit');
         static::notice($template_id,$msg,$withdrawModel->member_id);
     }
