@@ -44,6 +44,7 @@ class PreGeneratedOrderGoods extends OrderGoods
     {
         $this->order = $order;
         $this->uid = $order->uid;
+        $this->uniacid = $order->uniacid;
     }
 
 
@@ -111,9 +112,9 @@ class PreGeneratedOrderGoods extends OrderGoods
      */
     public function toArray()
     {
-        $attributes = ['vip_price' => sprintf('%.2f', $this->getFinalPrice()),
+        $attributes = array_merge($this->getAttributes(),['vip_price' => sprintf('%.2f', $this->getFinalPrice()),
             'coupon_price' => sprintf('%.2f', $this->getCouponPrice()),
-            'coupons' => $this->coupons];
+            'coupons' => $this->coupons]);
         $attributes = array_merge($this->getPreAttributes(), $attributes);
         // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
         $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
@@ -142,11 +143,6 @@ class PreGeneratedOrderGoods extends OrderGoods
 
                 throw new AppException('订单信息不存在');
             }
-            $attributes = array_merge([
-                'uid' => $this->order->getMember()->uid,
-                'order_id' => $this->order->id,
-                'uniacid' => $this->order->uniacid,
-            ], $attributes);
             $this->setRawAttributes($attributes);
         }
         return parent::save($options);
