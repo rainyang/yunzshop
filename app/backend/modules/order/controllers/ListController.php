@@ -180,7 +180,7 @@ class ListController extends BaseController
             $total .= $goods['total'].'/';
         }
         $res = [
-            'goods_title' => $goods_title,
+            //'goods_title' => $goods_title,
             'goods_sn' => $goods_sn,
             'total' => $total
         ];
