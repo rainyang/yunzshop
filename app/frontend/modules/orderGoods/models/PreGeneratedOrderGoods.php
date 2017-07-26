@@ -23,6 +23,7 @@ class PreGeneratedOrderGoods extends OrderGoods
      * @var PreGeneratedOrder
      */
     public $order;
+    public $coupons;
     /**
      * todo 防止toArray方法死循环,order对象应该直接以属性赋值,而不是setRelation设置关联模型
      * @var array

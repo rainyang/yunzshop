@@ -28,6 +28,8 @@ use Illuminate\Support\Facades\Schema;
  *  订单生成后
  * Class PreGeneratedOrderModel
  * @package app\frontend\modules\order\services\models
+ * @property Collection orderDeductions
+ * @property Collection orderCoupons
  */
 class PreGeneratedOrder extends Order
 {
@@ -159,11 +161,8 @@ class PreGeneratedOrder extends Order
      */
     public function toArray()
     {
-
         $this->setRawAttributes(array_merge($this->getAttributes(),$this->getPreAttributes()));
-//        foreach ($this->orderGoodsModels as $orderGoodsModel) {
-//            $data['order_goods'][] = $orderGoodsModel->toArray();
-//        }
+
         return parent::toArray();
     }
 
