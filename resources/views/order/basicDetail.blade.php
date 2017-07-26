@@ -107,6 +107,63 @@
 @if (!empty($order['has_one_refund_apply']))
     @include('refund.index')
 @endif
+@if (!empty($order['address']))
+    @include('dispatch.detail')
+@endif
+@if (!empty($order['has_one_refund_apply']))
+    @include('refund.index')
+@endif
+@if (!$order->deductions->isEmpty())
+<div class="panel panel-default">
+    <div class="panel-heading">
+        抵扣信息
+    </div>
+    <div class="panel-body table-responsive">
+        <table class="table table-hover">
+            <thead class="navbar-inner">
+            <tr>
+                <th class="col-md-5 col-lg-3">名称</th>
+                <th class="col-md-5 col-lg-1">抵扣值</th>
+                <th class="col-md-5 col-lg-3">抵扣金额</th>
+            </tr>
+            </thead>
+            @foreach ($order['deductions'] as $deduction)
+                <tr>
+                    <td>{{$deduction['name']}}</td>
+                    <td>{{$deduction['qty']}}</td>
+                    <td>¥{{$deduction['amount']}}</td>
+                </tr>
+
+            @endforeach
+        </table>
+    </div>
+</div>
+@endif
+@if (!($order->coupons->isEmpty()))
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            优惠券信息
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                <tr>
+                    <th class="col-md-5 col-lg-3">名称</th>
+                    <th class="col-md-5 col-lg-3">优惠金额</th>
+                </tr>
+                </thead>
+                @foreach ($order['coupons'] as $coupon)
+                    <tr>
+                        <td>{{$coupon['name']}}</td>
+                        <td>¥{{$coupon['amount']}}</td>
+                    </tr>
+
+                @endforeach
+            </table>
+        </div>
+    </div>
+@endif
+
 <div class="panel panel-default">
     <div class="panel-heading">
         商品信息
@@ -125,7 +182,8 @@
                 <th class="col-md-5 col-lg-1">操作</th>
             </tr>
             </thead>
-            @foreach ($order['has_many_order_goods'] as $order_goods)
+            @foreach ($order['hasManyOrderGoods'] as $order_goods)
+
                 <tr>
                     <td>{{$order_goods['goods_id']}}</td>
                     <td>

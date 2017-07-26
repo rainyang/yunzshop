@@ -14,6 +14,9 @@ class AddDataToPayType extends Migration
     public function up()
     {
         if (\Schema::hasTable('yz_pay_type')) {
+            if(\app\common\models\PayType::whereName('后台付款')->count()){
+                return;
+            }
             \app\common\models\PayType::insert(['name' => '后台付款', 'code' => 'backend', 'type' => 1, 'plugin_id' => 0, 'unit' => '元']);
             \app\common\models\PayType::where('code', 'backend')->update(['id' => 5]);
         }

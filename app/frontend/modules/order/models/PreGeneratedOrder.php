@@ -28,6 +28,8 @@ use Illuminate\Support\Facades\Schema;
  *  订单生成后
  * Class PreGeneratedOrderModel
  * @package app\frontend\modules\order\services\models
+ * @property Collection orderDeductions
+ * @property Collection orderCoupons
  */
 class PreGeneratedOrder extends Order
 {
@@ -159,32 +161,22 @@ class PreGeneratedOrder extends Order
      */
     public function toArray()
     {
-
         $this->setRawAttributes(array_merge($this->getAttributes(),$this->getPreAttributes()));
-//        foreach ($this->orderGoodsModels as $orderGoodsModel) {
-//            $data['order_goods'][] = $orderGoodsModel->toArray();
-//        }
+
         return parent::toArray();
     }
 
     public function push()
     {
-
-        // To sync all of the relationships to the database, we will simply spin through
-        // the relationships and save each model via this "push" method, which allows
-        // us to recurse into all of these nested relations for the model instance.
         foreach ($this->relations as $models) {
-            if (!isset($models->order_id) && Schema::hasColumn($models->table, 'order_id')) {
-                $models->order_id = $this->id;
+            $models = $models instanceof Collection
+                ? $models->all() : [$models];
+
+            foreach (array_filter($models) as $model) {
+                if (!isset($model->order_id) && Schema::hasColumn($model->getTable(), 'order_id')) {
+                    $model->order_id = $this->id;
+                }
             }
-//            $models = $models instanceof Collection
-//                ? $models->all() : [$models];
-//
-//            foreach ($models as $model) {
-//                if (! $model->push1()) {
-//                    return false;
-//                }
-//            }
         }
 
         return parent::push();
@@ -273,7 +265,7 @@ class PreGeneratedOrder extends Order
         //订单最终价格 = 商品最终价格 - 订单优惠 - 订单抵扣 + 订单运费
 
         $result = max($this->getFinalPrice() - $this->getDiscountPrice() - $this->getDeductionPrice() + $this->getDispatchPrice(), 0);
-        
+
         return $result;
     }
 

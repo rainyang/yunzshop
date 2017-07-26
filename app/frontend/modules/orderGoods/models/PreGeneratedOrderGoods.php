@@ -13,6 +13,8 @@ use app\common\exceptions\ShopException;
 use app\frontend\models\OrderGoods;
 use app\frontend\modules\orderGoods\price\OrderGoodsPriceCalculator;
 use app\frontend\modules\order\models\PreGeneratedOrder;
+use Illuminate\Support\Collection;
+use Yunshop\Love\Frontend\Models\LoveOrderGoods;
 
 class PreGeneratedOrderGoods extends OrderGoods
 {
@@ -21,6 +23,7 @@ class PreGeneratedOrderGoods extends OrderGoods
      * @var PreGeneratedOrder
      */
     public $order;
+    public $coupons;
     /**
      * todo 防止toArray方法死循环,order对象应该直接以属性赋值,而不是setRelation设置关联模型
      * @var array
@@ -44,6 +47,7 @@ class PreGeneratedOrderGoods extends OrderGoods
     {
         $this->order = $order;
         $this->uid = $order->uid;
+        $this->uniacid = $order->uniacid;
     }
 
 
@@ -66,6 +70,7 @@ class PreGeneratedOrderGoods extends OrderGoods
             'goods_id' => $this->goods->id,
             'goods_sn' => $this->goods->goods_sn,
             'price' => $this->getPrice(),
+            'vip_price' => $this->getFinalPrice(),
             'total' => $this->total,
             'title' => $this->goods->title,
             'thumb' => $this->goods->thumb,
@@ -73,13 +78,17 @@ class PreGeneratedOrderGoods extends OrderGoods
             'goods_cost_price' => $this->getGoodsCostPrice(),
             'goods_market_price' => $this->getGoodsMarketPrice(),
             'discount_price' => $this->getDiscountPrice(),
+            'coupon_price' => $this->getCouponPrice(),
         );
         if (isset($this->goodsOption)) {
+
             $attributes += [
                 'goods_option_id' => $this->goodsOption->id,
                 'goods_option_title' => $this->goodsOption->title,
             ];
         }
+
+        $attributes = array_merge($this->getAttributes(),$attributes);
 
         return $attributes;
     }
@@ -91,17 +100,27 @@ class PreGeneratedOrderGoods extends OrderGoods
     public function push()
     {
         $this->save();
+
         // 在订单商品保存后,为它的关联模型添加外键,以便保存
         foreach ($this->relations as $models) {
-            // 添加 order_goods_id 外键
-            if (!isset($models->order_goods_id) && \Schema::hasColumn($models->table, 'order_goods_id')) {
-                $models->order_goods_id = $this->id;
+            $models = $models instanceof Collection
+                ? $models->all() : [$models];
+
+            foreach (array_filter($models) as $model) {
+                // 添加 order_goods_id 外键
+                if (!isset($model->order_goods_id) && \Schema::hasColumn($model->getTable(), 'order_goods_id')) {
+                    $model->order_goods_id = $this->id;
+                }
+                // 添加 order_id 外键
+
+                if (!isset($model->order_id) && \Schema::hasColumn($model->getTable(), 'order_id')) {
+                    $model->order_id = $this->order_id;
+                }
             }
-            // 添加 order_id 外键
-            if (!isset($models->order_id) && \Schema::hasColumn($models->table, 'order_id')) {
-                $models->order_id = $this->order_id;
-            }
+
         }
+
+
         return parent::push();
     }
 
@@ -111,10 +130,7 @@ class PreGeneratedOrderGoods extends OrderGoods
      */
     public function toArray()
     {
-        $attributes = ['vip_price' => sprintf('%.2f', $this->getFinalPrice()),
-            'coupon_price' => sprintf('%.2f', $this->getCouponPrice()),
-            'coupons' => $this->coupons];
-        $attributes = array_merge($this->getPreAttributes(), $attributes);
+        $attributes = $this->getPreAttributes();
         // 格式化价格字段,将key中带有price,amount的属性,转为保留2位小数的字符串
         $attributes = array_combine(array_keys($attributes), array_map(function ($value, $key) {
             if (strpos($key, 'price') || strpos($key, 'amount')) {
@@ -135,20 +151,15 @@ class PreGeneratedOrderGoods extends OrderGoods
      */
     public function save(array $options = [])
     {
-        if (!isset($this->order_id)) {
-            $attributes = $this->getPreAttributes();
+        if (!isset($this->order)) {
 
-            if (!isset($this->order)) {
-
-                throw new AppException('订单信息不存在');
-            }
-            $attributes = array_merge([
-                'uid' => $this->order->getMember()->uid,
-                'order_id' => $this->order->id,
-                'uniacid' => $this->order->uniacid,
-            ], $attributes);
-            $this->setRawAttributes($attributes);
+            throw new AppException('订单信息不存在');
         }
+        $this->order_id = $this->order->id;
+        $attributes = $this->getPreAttributes();
+
+        $this->setRawAttributes($attributes);
+
         return parent::save($options);
     }
 

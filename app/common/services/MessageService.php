@@ -2,6 +2,7 @@
 
 namespace app\common\services;
 
+use app\common\events\message\SendMessageEvent;
 use app\common\models\AccountWechats;
 use app\Jobs\MessageNoticeJob;
 use EasyWeChat\Message\News;
@@ -36,6 +37,10 @@ class MessageService
     public function noticeQueue($notice, $templateId, $data, $openId)
     {
         $this->dispatch((new MessageNoticeJob($notice, $templateId, $data, $openId)));
+        event(new SendMessageEvent([
+            'data'          => $data,
+            'openid'        => $openId
+        ]));
     }
 
     public static function getWechatTemplates()

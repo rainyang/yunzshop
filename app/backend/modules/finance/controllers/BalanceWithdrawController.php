@@ -13,6 +13,7 @@ use app\common\models\Withdraw;
 use app\backend\modules\finance\services\WithdrawService;
 use app\common\components\BaseController;
 use app\common\facades\Setting;
+use app\common\services\finance\BalanceNoticeService;
 use Illuminate\Support\Facades\Log;
 
 class BalanceWithdrawController extends BaseController
@@ -61,7 +62,7 @@ class BalanceWithdrawController extends BaseController
             if ($result === true) {
                return $this->message('打款成功', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
             }
-            return $this->message($result, yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
+            return $this->message($result ?: "打款失败", yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]), 'error');
         }
         return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.balance-withdraw.detail", ['id' => $requestData['id']]));
     }
@@ -70,8 +71,17 @@ class BalanceWithdrawController extends BaseController
     private function submitCheck()
     {
         $this->withdrawModel->status = $this->getPostStatus();
-        return $this->withdrawUpdate();
+        $this->withdrawModel->audit_at = time();
+        $result = $this->withdrawUpdate();
+        if ($result !== true) {
+            return $result;
+        }
+        if ($this->withdrawModel->status == -1) {
+            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
+        }
+        return true;
     }
+
 
     //保存数据
     private function withdrawUpdate()
@@ -92,7 +102,7 @@ class BalanceWithdrawController extends BaseController
             //微信打款
             $resultPay = $this->wechatWithdrawPay($remark);
         }
-        file_put_contents(storage_path('logs/withdraw2.log'),print_r($resultPay,true));
+        //file_put_contents(storage_path('logs/withdraw2.log'),print_r($resultPay,true));
         if ($resultPay === true) {
             $this->withdrawModel->pay_at = time();
             $this->withdrawModel->status = 2;
@@ -114,12 +124,12 @@ class BalanceWithdrawController extends BaseController
     private function wechatWithdrawPay($remark)
     {
         $resultPay = WithdrawService::wechatWithdrawPay($this->withdrawModel, $remark);
-        file_put_contents(storage_path('logs/withdraw1.log'),print_r($resultPay,true));
+        //file_put_contents(storage_path('logs/withdraw1.log'),print_r($resultPay,true));
         Log::info('MemberId:' . $this->withdrawModel->member_id . ', ' . $remark . "微信打款中!");
-        if ($resultPay['errno'] == 0){
+        if ($resultPay !== true){
             return $resultPay['message'];
         }
-        return $resultPay;
+        return true;
     }
 
 

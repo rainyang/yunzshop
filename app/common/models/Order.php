@@ -138,6 +138,22 @@ class Order extends BaseModel
     }
 
     /**
+     * 关联模型 1对多:订单抵扣信息
+     */
+    public function deductions()
+    {
+        return $this->hasMany(app('OrderManager')->make('OrderDeduction'), 'order_id', 'id');
+    }
+
+    /**
+     * 关联模型 1对多:订单信息
+     */
+    public function coupons()
+    {
+        return $this->hasMany(app('OrderManager')->make('OrderCoupon'), 'order_id', 'id');
+    }
+
+    /**
      * 关联模型 1对多:改价记录
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -161,7 +177,7 @@ class Order extends BaseModel
      */
     public function hasOneRefundApply()
     {
-        return $this->hasOne(RefundApply::class, 'id', 'refund_id')->orderBy('created_at','desc');
+        return $this->hasOne(RefundApply::class, 'id', 'refund_id')->orderBy('created_at', 'desc');
 
     }
 
@@ -348,10 +364,12 @@ class Order extends BaseModel
     {
         return $this->is_virtual == 1;
     }
+
     public function close()
     {
         return OrderService::close($this);
     }
+
     /**
      * 初始化方法
      */
