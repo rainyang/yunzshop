@@ -1796,6 +1796,24 @@ return [
                     ],
 
                 'child' => [
+                    'member_export' => [
+                        'name' => '会员导出',
+                        'url' => 'member.member.export',
+                        'url_params' => '',
+                        'permit' => 1,
+                        'menu' => 0,
+                        'icon' => 'fa-circle-o',
+                        'parent_id' => '39',
+                        'sort' => 0,
+                        'item' => 'member_export',
+                        'parents' =>
+                            [
+                                'Member',
+                                'member_all',
+                            ],
+
+                    ],
+
                     'member_detail' => [
                         'id' => '127',
                         'name' => '会员详情',
