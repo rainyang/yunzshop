@@ -22,8 +22,11 @@ class Withdraw
         if ($withdrawModel && $withdrawModel->type == 'balance') {
             $withdrawModel->status = 2;
             $withdrawModel->arrival_at = time();
-
-            return $withdrawModel->save();
+            $result = $withdrawModel->save();
+            if ($result === true) {
+                BalanceNoticeService::withdrawSuccessNotice($withdrawModel);
+            }
+            return $result;
         }
         return static::otherWithdrawSuccess($withdrawSN);
     }
