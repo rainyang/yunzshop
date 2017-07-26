@@ -25,7 +25,7 @@ class BalanceNoticeService
             ),
             'money' => array(
                 'title' => '提现金额',
-                'value' => '￥' . $withdrawModel->amounts . '元',
+                'value' => '￥' . $withdrawModel->amounts . '元(手续费' .$withdrawModel->actual_poundage. '元)',
                 "color" => "#4a5077"
             ),
             'timet' => array(
@@ -51,12 +51,12 @@ class BalanceNoticeService
             ),
             'money' => array(
                 'title' => '提现金额',
-                'value' => '￥' . $withdrawModel->amounts . '元',
+                'value' => '￥' . $withdrawModel->amounts . '元(手续费' .$withdrawModel->actual_poundage. '元)',
                 "color" => "#4a5077"
             ),
             'timet' => array(
                 'title' => '提现时间',
-                'value' => date('Y-m-d H:i:s', $withdrawModel->pay_at),
+                'value' => date('Y-m-d H:i:s', $withdrawModel->arrival_at),
                 "color" => "#4a5077"
             ),
             'remark' => array(
@@ -64,7 +64,7 @@ class BalanceNoticeService
                 "color" => "#4a5077"
             )
         );
-        $template_id = \Setting::get('shop.notice.withdraw_submit');
+        $template_id = \Setting::get('shop.notice.withdraw_success');
         static::notice($template_id,$msg,$withdrawModel->member_id);
     }
 
@@ -77,7 +77,7 @@ class BalanceNoticeService
             ),
             'money' => array(
                 'title' => '提现金额',
-                'value' => '￥' . $withdrawModel->amounts . '元',
+                'value' => '￥' . $withdrawModel->amounts . '元(手续费' .$withdrawModel->actual_poundage. '元)',
                 "color" => "#4a5077"
             ),
             'timet' => array(
@@ -90,7 +90,7 @@ class BalanceNoticeService
                 "color" => "#4a5077"
             )
         );
-        $template_id = \Setting::get('shop.notice.withdraw_submit');
+        $template_id = \Setting::get('shop.notice.withdraw_fail');
         static::notice($template_id,$msg,$withdrawModel->member_id);
     }
 
